@@ -1,0 +1,72 @@
+# Skills
+Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks. Skills teach Claude how to complete specific tasks in a repeatable way, whether that's creating documents with your company's brand guidelines, analyzing data using your organization's specific workflows, or automating personal tasks.
+
+For more information, check out:
+- [What are skills?](https://support.claude.com/en/articles/12512176-what-are-skills)
+- [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
+- [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills)
+- [Equipping agents for the real world with Skills](https://anthropic.com/engineering/equipping-agents-for-the-real-world-with-skills)
+
+# About This Repository
+
+This repository contains example skills that demonstrate what's possible with Claude's skills system. These examples range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).
+
+Each skill is self-contained in its own directory with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these examples to get inspiration for your own skills or to understand different patterns and approaches.
+
+**Note:** These are reference examples for inspiration and learning. They showcase general-purpose capabilities rather than organization-specific workflows or sensitive content.
+
+## Disclaimer
+
+**These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these examples. These examples are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
+
+# Example Skills
+
+This repository includes a diverse collection of example skills demonstrating different capabilities:
+
+## Creative & Design
+- **algorithmic-art** - Create generative art using p5.js with seeded randomness, flow fields, and particle systems
+- **canvas-design** - Design beautiful visual art in .png and .pdf formats using design philosophies
+- **slack-gif-creator** - Create animated GIFs optimized for Slack's size constraints
+
+## Development & Technical
+- **artifacts-builder** - Build complex claude.ai HTML artifacts using React, Tailwind CSS, and shadcn/ui components
+- **mcp-server** - Guide for creating high-quality MCP servers to integrate external APIs and services
+- **webapp-testing** - Test local web applications using Playwright for UI verification and debugging
+
+## Enterprise & Communication
+- **brand-guidelines** - Apply Anthropic's official brand colors and typography to artifacts
+- **internal-comms** - Write internal communications like status reports, newsletters, and FAQs
+- **theme-factory** - Style artifacts with 10 pre-set professional themes or generate custom themes on-the-fly
+
+## Meta Skills
+- **skill-creator** - Guide for creating effective skills that extend Claude's capabilities
+- **template-skill** - A basic template to use as a starting point for new skills
+
+# Creating a Basic Skill
+
+Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
+
+```markdown
+---
+name: my-skill-name
+description: A clear description of what this skill does and when to use it
+---
+
+# My Skill Name
+
+[Add your instructions here that Claude will follow when this skill is active]
+
+## Examples
+- Example usage 1
+- Example usage 2
+
+## Guidelines
+- Guideline 1
+- Guideline 2
+```
+
+The frontmatter requires only two fields:
+- `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
+- `description` - A complete description of what the skill does and when to use it
+
+The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
