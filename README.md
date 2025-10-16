@@ -58,9 +58,11 @@ The `document-skills/` subdirectory contains skills that Anthropic developed to 
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
-You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
+You can register this repository as a Claude Code Plugin marketplace and install the plugins by running the following commands in Claude Code:
 ```
 /plugin marketplace add anthropics/skills
+/plugin install document-skills@anthropic-agent-skills
+/plugin install example-skills@anthropic-agent-skills
 ```
 
 After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the document-skills plugin from the marketplace, you can ask Claude Code to do something like: "use the pdf skill to extract the form fields from path/to/some-file.pdf"
