@@ -53,6 +53,15 @@ The `document-skills/` subdirectory contains skills that Anthropic developed to 
 
 **Important Disclaimer:** These document skills are point-in-time snapshots and are not actively maintained or updated. Versions of these skills ship pre-included with Claude. They are primarily intended as reference examples to illustrate how Anthropic approaches developing more complex skills that work with binary file formats and document structures.
 
+# Try in Claude Code
+
+You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
+```
+/plugin marketplace add anthropics/skills
+```
+
+After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the document-skills plugin from the marketplace, you can ask Claude Code to do something like: "use the pdf skill to extract the form fields from path/to/some-file.pdf"
+
 # Creating a Basic Skill
 
 Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
