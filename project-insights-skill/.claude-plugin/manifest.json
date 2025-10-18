@@ -1,0 +1,38 @@
+{
+  "name": "project-insights",
+  "version": "1.0.0",
+  "description": "Generate comprehensive GitHub Insights-style project analysis reports",
+  "author": "Claude Code Community",
+  "type": "skill",
+  "categories": ["development-tools", "analysis", "documentation"],
+  "tags": ["metrics", "git", "statistics", "code-analysis", "reporting"],
+  "homepage": "https://github.com/vinci7/project-insights-skill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinci7/project-insights-skill.git"
+  },
+  "license": "Apache-2.0",
+  "skills": [
+    {
+      "name": "project-insights",
+      "path": "SKILL.md",
+      "description": "Analyze projects and generate visual insight reports"
+    }
+  ],
+  "documentation": {
+    "readme": "README.md",
+    "quickstart": "QUICKSTART.md",
+    "examples": "reference/examples/",
+    "templates": "reference/templates/"
+  },
+  "dependencies": {
+    "optional": [
+      "cloc",
+      "tree",
+      "jq"
+    ]
+  },
+  "scripts": {
+    "collect-metrics": "scripts/collect-metrics.sh"
+  }
+}
