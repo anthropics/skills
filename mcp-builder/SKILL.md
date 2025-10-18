@@ -75,6 +75,10 @@ This comprehensive document contains the complete MCP specification and guidelin
 - **TypeScript SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
 - [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Node/TypeScript-specific best practices and examples
 
+**For Go implementations, also load:**
+- **Go SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
+- [🔷 Go Implementation Guide](./reference/go_mcp_server.md) - Go-specific best practices and examples
+
 #### 1.5 Exhaustively Study API Documentation
 
 To integrate a service, read through **ALL** available API documentation:
@@ -132,6 +136,12 @@ Now that you have a comprehensive plan, begin implementation following language-
 - Set up `package.json` and `tsconfig.json`
 - Use MCP TypeScript SDK
 - Define Zod schemas for input validation
+
+**For Go:**
+- Initialize Go module with `go mod init {service}-mcp` (see [🔷 Go Guide](./reference/go_mcp_server.md))
+- Create `main.go` or organize into packages if complex
+- Use the official MCP Go SDK
+- Define typed structs with json and jsonschema tags for input/output validation
 
 #### 2.2 Implement Core Infrastructure First
 
@@ -194,6 +204,15 @@ For each tool in the plan:
 - Explicit Promise<T> return types
 - Build process configured (`npm run build`)
 
+**For Go: Load [🔷 Go Implementation Guide](./reference/go_mcp_server.md) and ensure the following:**
+- Using `mcp.AddTool` with automatic schema inference
+- Typed structs with `json` and `jsonschema` tags
+- All functions respect `context.Context` for cancellation
+- Godoc-style comments for all exported items
+- Proper error handling via `mcp.NewToolResultError()`
+- Package-level constants (CharacterLimit, APIBaseURL)
+- Build process: `go build`, `go mod tidy`
+
 ---
 
 ### Phase 3: Review and Refine
@@ -231,11 +250,21 @@ To ensure quality, review the code for:
 - To manually test: Run server in tmux, then test with evaluation harness in main process
 - Or use the evaluation harness directly (it manages the server for stdio transport)
 
+**For Go:**
+- Build the server: `go build` and ensure it completes without errors
+- Run tests: `go test ./...`
+- Check code: `go vet ./...`
+- Format code: `gofmt -w .`
+- Tidy dependencies: `go mod tidy`
+- To manually test: Run server in tmux, then test with evaluation harness in main process
+- Or use the evaluation harness directly (it manages the server for stdio transport)
+
 #### 3.3 Use Quality Checklist
 
 To verify implementation quality, load the appropriate checklist from the language-specific guide:
 - Python: see "Quality Checklist" in [🐍 Python Guide](./reference/python_mcp_server.md)
 - Node/TypeScript: see "Quality Checklist" in [⚡ TypeScript Guide](./reference/node_mcp_server.md)
+- Go: see "Quality Checklist" in [🔷 Go Guide](./reference/go_mcp_server.md)
 
 ---
 
@@ -303,6 +332,7 @@ Load these resources as needed during development:
 ### SDK Documentation (Load During Phase 1/2)
 - **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
 - **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
+- **Go SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
 
 ### Language-Specific Implementation Guides (Load During Phase 2)
 - [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
@@ -316,6 +346,13 @@ Load these resources as needed during development:
   - Project structure
   - Zod schema patterns
   - Tool registration with `server.registerTool`
+  - Complete working examples
+  - Quality checklist
+
+- [🔷 Go Implementation Guide](./reference/go_mcp_server.md) - Complete Go SDK guide with:
+  - Server initialization patterns
+  - Typed struct examples with jsonschema tags
+  - Tool registration with `mcp.AddTool`
   - Complete working examples
   - Quality checklist
 
