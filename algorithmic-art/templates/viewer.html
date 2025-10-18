@@ -27,61 +27,61 @@
     <style>
         /* Anthropic Brand Colors */
         :root {
-            --anthropic-dark: #141413;
-            --anthropic-light: #faf9f5;
-            --anthropic-mid-gray: #b0aea5;
-            --anthropic-light-gray: #e8e6dc;
-            --anthropic-orange: #d97757;
             --anthropic-blue: #6a9bcc;
+            --anthropic-dark: #141413;
             --anthropic-green: #788c5d;
+            --anthropic-light: #faf9f5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-orange: #d97757;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
-            min-height: 100vh;
             color: var(--anthropic-dark);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
         }
 
         .container {
             display: flex;
+            gap: 20px;
             min-height: 100vh;
             padding: 20px;
-            gap: 20px;
         }
 
         /* Sidebar */
         .sidebar {
-            width: 320px;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 24px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
-            overflow-y: auto;
+            flex-shrink: 0;
             overflow-x: hidden;
+            overflow-y: auto;
+            padding: 24px;
+            width: 320px;
         }
 
         .sidebar h1 {
+            color: var(--anthropic-dark);
             font-family: 'Lora', serif;
             font-size: 24px;
             font-weight: 500;
-            color: var(--anthropic-dark);
             margin-bottom: 8px;
         }
 
         .sidebar .subtitle {
             color: var(--anthropic-mid-gray);
             font-size: 14px;
-            margin-bottom: 32px;
             line-height: 1.4;
+            margin-bottom: 32px;
         }
 
         /* Control Sections */
@@ -90,45 +90,45 @@
         }
 
         .control-section h3 {
+            align-items: center;
+            color: var(--anthropic-dark);
+            display: flex;
             font-size: 16px;
             font-weight: 600;
-            color: var(--anthropic-dark);
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
             gap: 8px;
+            margin-bottom: 16px;
         }
 
         .control-section h3::before {
-            content: '•';
             color: var(--anthropic-orange);
+            content: '•';
             font-weight: bold;
         }
 
         /* Seed Controls */
         .seed-input {
-            width: 100%;
             background: var(--anthropic-light);
-            padding: 12px;
+            border: 1px solid var(--anthropic-light-gray);
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             margin-bottom: 12px;
-            border: 1px solid var(--anthropic-light-gray);
+            padding: 12px;
             text-align: center;
+            width: 100%;
         }
 
         .seed-input:focus {
-            outline: none;
+            background: white;
             border-color: var(--anthropic-orange);
             box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
-            background: white;
+            outline: none;
         }
 
         .seed-controls {
             display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 8px;
+            grid-template-columns: 1fr 1fr;
             margin-bottom: 8px;
         }
 
@@ -142,57 +142,58 @@
         }
 
         .control-group label {
+            color: var(--anthropic-dark);
             display: block;
             font-size: 14px;
             font-weight: 500;
-            color: var(--anthropic-dark);
             margin-bottom: 8px;
         }
 
         .slider-container {
-            display: flex;
             align-items: center;
+            display: flex;
             gap: 12px;
         }
 
         .slider-container input[type="range"] {
-            flex: 1;
-            height: 4px;
+            -webkit-appearance: none;
+            appearance: none; /* Fixes "Also define the standard property 'appearance' for compatibility" */
             background: var(--anthropic-light-gray);
             border-radius: 2px;
+            flex: 1;
+            height: 4px;
             outline: none;
-            -webkit-appearance: none;
         }
 
         .slider-container input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
             background: var(--anthropic-orange);
             border-radius: 50%;
             cursor: pointer;
+            height: 16px;
             transition: all 0.2s ease;
+            width: 16px;
         }
 
         .slider-container input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
             background: #c86641;
+            transform: scale(1.1);
         }
 
         .slider-container input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
             background: var(--anthropic-orange);
-            border-radius: 50%;
             border: none;
+            border-radius: 50%;
             cursor: pointer;
+            height: 16px;
             transition: all 0.2s ease;
+            width: 16px;
         }
 
         .value-display {
+            color: var(--anthropic-mid-gray);
             font-family: 'Courier New', monospace;
             font-size: 12px;
-            color: var(--anthropic-mid-gray);
             min-width: 60px;
             text-align: right;
         }
@@ -203,44 +204,44 @@
         }
 
         .color-group label {
+            color: var(--anthropic-mid-gray);
             display: block;
             font-size: 12px;
-            color: var(--anthropic-mid-gray);
             margin-bottom: 4px;
         }
 
         .color-picker-container {
-            display: flex;
             align-items: center;
+            display: flex;
             gap: 8px;
         }
 
         .color-picker-container input[type="color"] {
-            width: 32px;
-            height: 32px;
+            background: none;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            background: none;
+            height: 32px;
             padding: 0;
+            width: 32px;
         }
 
         .color-value {
+            color: var(--anthropic-mid-gray);
             font-family: 'Courier New', monospace;
             font-size: 12px;
-            color: var(--anthropic-mid-gray);
         }
 
         /* Buttons */
         .button {
             background: var(--anthropic-orange);
-            color: white;
             border: none;
-            padding: 10px 16px;
             border-radius: 6px;
+            color: white;
+            cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            cursor: pointer;
+            padding: 10px 16px;
             transition: all 0.2s ease;
             width: 100%;
         }
@@ -281,35 +282,35 @@
 
         /* Canvas Area */
         .canvas-area {
-            flex: 1;
-            display: flex;
             align-items: center;
-            justify-content: center;
+            display: flex;
+            flex: 1;
             min-width: 0;
+            justify-content: center;
         }
 
         #canvas-container {
-            width: 100%;
-            max-width: 1000px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
             background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            max-width: 1000px;
+            overflow: hidden;
+            width: 100%;
         }
 
         #canvas-container canvas {
             display: block;
-            width: 100% !important;
             height: auto !important;
+            width: 100% !important;
         }
 
         /* Loading State */
         .loading {
-            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 18px;
             color: var(--anthropic-mid-gray);
+            display: flex;
+            font-size: 18px;
+            justify-content: center;
         }
 
         /* Responsive - Stack on mobile */
