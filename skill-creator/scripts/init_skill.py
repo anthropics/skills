@@ -17,7 +17,13 @@ from pathlib import Path
 
 SKILL_TEMPLATE = """---
 name: {skill_name}
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it. Max 1024 characters.]
+# Optional fields (uncomment and fill in as needed):
+# license: Complete terms in LICENSE.txt
+# allowed-tools: [Read, Write, Bash]
+# metadata:
+#   key1: value1
+#   key2: value2
 ---
 
 # {skill_title}

@@ -41,7 +41,20 @@ skill-name/
 
 #### SKILL.md (required)
 
-**Metadata Quality:** The `name` and `description` in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+**YAML Frontmatter:** Every SKILL.md must start with YAML frontmatter delimited by `---`. The frontmatter contains metadata that determines when and how Claude will use the skill.
+
+**Required Fields:**
+- `name` - Hyphen-case identifier (lowercase letters, digits, and hyphens only, max 40 characters)
+- `description` - Clear explanation of what the skill does and when to use it (max 1024 characters)
+
+**Optional Fields:**
+- `license` - License information for the skill
+- `allowed-tools` - List of pre-approved tools the skill can use (security feature for Claude Code)
+- `metadata` - Arbitrary key-value pairs for client-specific extensions
+
+**Metadata Quality:** The `name` and `description` determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. "This skill should be used when..." instead of "Use this skill when...").
+
+**Important:** Only use the allowed frontmatter properties listed above. Properties like `version` are not supported and will cause validation errors.
 
 #### Bundled Resources (optional)
 
