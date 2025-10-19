@@ -120,4 +120,5 @@ The markdown content below contains the instructions, examples, and guidelines t
 
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
+- **AgenticFlow** - [AgenticFlow Skill for Claude](https://github.com/PixelML/agenticflow-skill) - Enables Claude to design, build, and validate AgenticFlow automation workflows with 2,500+ service integrations. Works with Claude Code and Claude.ai.
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
