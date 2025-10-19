@@ -33,6 +33,7 @@ This repository includes a diverse collection of example skills demonstrating di
 ## Development & Technical
 - **artifacts-builder** - Build complex claude.ai HTML artifacts using React, Tailwind CSS, and shadcn/ui components
 - **mcp-server** - Guide for creating high-quality MCP servers to integrate external APIs and services
+- **rocq-prover** - Comprehensive toolkit for formal verification using Rocq (formerly Coq) with proof development, tactics library, and zero-admits philosophy
 - **webapp-testing** - Test local web applications using Playwright for UI verification and debugging
 
 ## Enterprise & Communication
