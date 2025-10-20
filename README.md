@@ -104,7 +104,7 @@ description: A clear description of what this skill does and when to use it
 ## Examples
 - Example usage 1
 - Example usage 2
-
+    
 ## Guidelines
 - Guideline 1
 - Guideline 2
@@ -112,7 +112,7 @@ description: A clear description of what this skill does and when to use it
 
 The frontmatter requires only two fields:
 - `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
-- `description` - A complete description of what the skill does and when to use it
+- `description` - A complete description of what the skill does and when to use it.
 
 The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
 
