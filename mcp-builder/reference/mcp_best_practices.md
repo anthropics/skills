@@ -11,6 +11,7 @@ This document compiles essential best practices and guidelines for building Mode
 ### Server Naming
 - **Python**: `{service}_mcp` (e.g., `slack_mcp`)
 - **Node/TypeScript**: `{service}-mcp-server` (e.g., `slack-mcp-server`)
+- **Go**: `{service}-mcp-server` (e.g., `slack-mcp-server`)
 
 ### Tool Naming
 - Use snake_case with service prefix
