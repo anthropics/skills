@@ -38,7 +38,7 @@ fi
 
 # Check if project name is provided
 if [ -z "$1" ]; then
-  echo "❌ Usage: ./create-react-shadcn-complete.sh <project-name>"
+  echo "❌ Usage: $(basename "$0") <project-name>"
   exit 1
 fi
 
