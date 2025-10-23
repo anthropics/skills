@@ -1,0 +1,73 @@
+PROPRIETARY LICENSE
+
+Copyright (c) 2025. All rights reserved.
+
+This skill ("Software") is proprietary and confidential.
+
+TERMS AND CONDITIONS:
+
+1. LICENSE GRANT
+   Subject to the terms of this license, you are granted a limited,
+   non-exclusive, non-transferable license to use this Software for
+   lawful business intelligence and lead research purposes only.
+
+2. PERMITTED USES
+   - Analyzing publicly accessible company websites
+   - Extracting publicly listed contact information
+   - Generating research reports for internal business use
+   - Using official APIs with proper authentication and licensing
+
+3. PROHIBITED USES
+   - Automated scraping of LinkedIn or other platforms in violation of ToS
+   - Harvesting non-public or protected personal information
+   - Circumventing technical access controls or rate limits
+   - Violating GDPR, CCPA, or other privacy regulations
+   - Selling or redistributing collected data without consent
+   - Using Software for spam, phishing, or malicious purposes
+
+4. COMPLIANCE REQUIREMENTS
+   You agree to:
+   - Comply with all applicable privacy laws (GDPR, CCPA, etc.)
+   - Respect website Terms of Service and robots.txt
+   - Implement proper data retention and deletion policies
+   - Provide opt-out mechanisms for contacts
+   - Maintain audit logs of data collection activities
+   - Only collect data for legitimate business purposes
+
+5. DATA HANDLING
+   - Implement appropriate security measures for collected data
+   - Encrypt sensitive information in transit and at rest
+   - Limit access to authorized personnel only
+   - Honor data subject rights (access, deletion, portability)
+   - Provide privacy notices as required by law
+
+6. LIABILITY DISCLAIMER
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR
+   ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF
+   THE SOFTWARE.
+
+7. INDEMNIFICATION
+   You agree to indemnify and hold harmless the authors from any
+   claims, damages, or liabilities arising from your use of the
+   Software, including violations of third-party rights or applicable
+   laws.
+
+8. TERMINATION
+   This license terminates automatically if you violate any terms.
+   Upon termination, you must cease use and delete all copies of
+   the Software.
+
+9. GOVERNING LAW
+   This license is governed by the laws of the jurisdiction in which
+   you operate your business.
+
+10. ETHICAL USE COMMITMENT
+    By using this Software, you commit to:
+    - Conducting research ethically and transparently
+    - Respecting individual privacy and data rights
+    - Using official channels and APIs when available
+    - Avoiding deceptive or manipulative practices
+    - Maintaining professional standards in business development
+
+For questions about licensing or compliance, consult your legal counsel.
