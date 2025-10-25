@@ -34,9 +34,15 @@
   animation: pulse 2s infinite;
 }
 
-.flame.cool { filter: brightness(0.8); }
-.flame.warm { filter: brightness(1.2) hue-rotate(-10deg); }
-.flame.hot { filter: brightness(1.5) hue-rotate(-20deg); }
+.flame.cool {
+  filter: brightness(0.8);
+}
+.flame.warm {
+  filter: brightness(1.2) hue-rotate(-10deg);
+}
+.flame.hot {
+  filter: brightness(1.5) hue-rotate(-20deg);
+}
 .flame.inferno {
   filter: brightness(2) hue-rotate(-30deg);
   animation: inferno 1s infinite alternate;
@@ -364,14 +370,25 @@
 
 /* Animations */
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes inferno {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.2) rotate(5deg); }
-  100% { transform: scale(1.1) rotate(-5deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1.1) rotate(-5deg);
+  }
 }
 
 /* Responsive */

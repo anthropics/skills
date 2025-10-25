@@ -22,7 +22,8 @@
   gap: 10px;
 }
 
-.practice-btn, .reset-btn {
+.practice-btn,
+.reset-btn {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;

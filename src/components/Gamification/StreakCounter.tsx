@@ -10,7 +10,7 @@ interface StreakCounterProps {
 const StreakCounter: React.FC<StreakCounterProps> = ({
   currentStreak,
   bestStreak,
-  todayPracticed
+  todayPracticed,
 }) => {
   const getFlameIntensity = (streak: number) => {
     if (streak >= 30) return 'inferno';
@@ -27,7 +27,9 @@ const StreakCounter: React.FC<StreakCounterProps> = ({
 
       <div className="streak-display">
         <div className="current-streak">
-          <div className={`flame ${getFlameIntensity(currentStreak)} ${todayPracticed ? 'active' : ''}`}>
+          <div
+            className={`flame ${getFlameIntensity(currentStreak)} ${todayPracticed ? 'active' : ''}`}
+          >
             🔥
           </div>
           <div className="streak-info">
@@ -50,10 +52,12 @@ const StreakCounter: React.FC<StreakCounterProps> = ({
 
       {currentStreak > 0 && (
         <div className="streak-motivation">
-          {currentStreak >= 30 && "🔥 Incrível! Você é uma máquina de prática!"}
-          {currentStreak >= 14 && currentStreak < 30 && "🌟 Excelente consistência!"}
-          {currentStreak >= 7 && currentStreak < 14 && "💪 Ótimo trabalho! Continue assim!"}
-          {currentStreak > 0 && currentStreak < 7 && "🚀 Bom começo! Vamos construir essa sequência!"}
+          {currentStreak >= 30 && '🔥 Incrível! Você é uma máquina de prática!'}
+          {currentStreak >= 14 && currentStreak < 30 && '🌟 Excelente consistência!'}
+          {currentStreak >= 7 && currentStreak < 14 && '💪 Ótimo trabalho! Continue assim!'}
+          {currentStreak > 0 &&
+            currentStreak < 7 &&
+            '🚀 Bom começo! Vamos construir essa sequência!'}
         </div>
       )}
     </div>

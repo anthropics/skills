@@ -16,7 +16,7 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
   midiData,
   onProgress,
   onNotePlay,
-  autoPlay = false
+  autoPlay = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,8 +36,8 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
         attack: 0.02,
         decay: 0.1,
         sustain: 0.3,
-        release: 1
-      }
+        release: 1,
+      },
     }).toDestination();
 
     synthRef.current.volume.value = volume;
@@ -110,14 +110,9 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
     // Schedule all notes
     midi.tracks.forEach(track => {
       track.notes.forEach(note => {
-        const eventId = Tone.Transport.schedule((time) => {
+        const eventId = Tone.Transport.schedule(time => {
           if (synthRef.current) {
-            synthRef.current.triggerAttackRelease(
-              note.name,
-              note.duration,
-              time,
-              note.velocity
-            );
+            synthRef.current.triggerAttackRelease(note.name, note.duration, time, note.velocity);
 
             // Notify parent component
             onNotePlay?.(note.name, note.velocity);
@@ -196,22 +191,18 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
         </div>
 
         <div className="progress-bar-container">
-          <span className="time-display">
-            {formatTime(progress * duration)}
-          </span>
+          <span className="time-display">{formatTime(progress * duration)}</span>
           <input
             type="range"
             min="0"
             max="1"
             step="0.001"
             value={progress}
-            onChange={(e) => seek(parseFloat(e.target.value))}
+            onChange={e => seek(parseFloat(e.target.value))}
             className="progress-bar"
             disabled={!midiRef.current}
           />
-          <span className="time-display">
-            {formatTime(duration)}
-          </span>
+          <span className="time-display">{formatTime(duration)}</span>
         </div>
       </div>
 
@@ -224,7 +215,7 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
             max="2"
             step="0.05"
             value={speed}
-            onChange={(e) => setSpeed(parseFloat(e.target.value))}
+            onChange={e => setSpeed(parseFloat(e.target.value))}
             className="setting-slider"
           />
           <div className="speed-presets">
@@ -243,7 +234,7 @@ const MidiPlayer: React.FC<MidiPlayerProps> = ({
             max="0"
             step="1"
             value={volume}
-            onChange={(e) => setVolume(parseInt(e.target.value))}
+            onChange={e => setVolume(parseInt(e.target.value))}
             className="setting-slider"
           />
         </div>

@@ -19,19 +19,19 @@ interface LeaderboardProps {
   onTimeFrameChange: (timeFrame: 'daily' | 'weekly' | 'monthly' | 'allTime') => void;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({
-  entries,
-  timeFrame,
-  onTimeFrameChange
-}) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ entries, timeFrame, onTimeFrameChange }) => {
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
-      default: return `#${rank}`;
+      case 1:
+        return '🥇';
+      case 2:
+        return '🥈';
+      case 3:
+        return '🥉';
+      default:
+        return `#${rank}`;
     }
   };
 
@@ -39,7 +39,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
     daily: 'Hoje',
     weekly: 'Esta Semana',
     monthly: 'Este Mês',
-    allTime: 'Todos os Tempos'
+    allTime: 'Todos os Tempos',
   };
 
   return (
@@ -70,9 +70,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({
               <div className="rank">{getRankIcon(entry.rank)}</div>
 
               <div className="user-info">
-                <div className="avatar">
-                  {entry.avatar || '🎹'}
-                </div>
+                <div className="avatar">{entry.avatar || '🎹'}</div>
                 <div className="user-details">
                   <span className="username">{entry.username}</span>
                   {entry.isCurrentUser && <span className="you-badge">Você</span>}

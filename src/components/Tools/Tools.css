@@ -259,7 +259,8 @@
   align-items: center;
 }
 
-.start-loop, .stop-loop {
+.start-loop,
+.stop-loop {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;

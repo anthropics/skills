@@ -125,14 +125,16 @@
   gap: 20px;
 }
 
-.recent-sessions, .practice-goals {
+.recent-sessions,
+.practice-goals {
   background: white;
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.recent-sessions h3, .practice-goals h3 {
+.recent-sessions h3,
+.practice-goals h3 {
   margin: 0 0 15px 0;
   color: #1f2937;
 }
