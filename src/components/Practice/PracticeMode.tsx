@@ -46,7 +46,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
 
   useEffect(() => {
     // Setup MIDI input listener
-    if (isActive && navigator.requestMIDIAccess) {
+    if (isActive && typeof navigator.requestMIDIAccess !== 'undefined') {
       setupMidiInput();
     }
   }, [isActive]);
@@ -70,7 +70,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     // Note On message
     if (command === 144 && velocity > 0) {
       const noteName = midiNoteToName(note);
-      handleNotePlay(noteName, _velocity);
+      handleNotePlay(noteName, velocity);
     }
   };
 
@@ -159,7 +159,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
 
   const getAccuracy = () => {
     const total = score.correct + score.incorrect;
-    if (total === 0) return 0;
+    if (total === 0) return '0';
     return ((score.correct / total) * 100).toFixed(1);
   };
 

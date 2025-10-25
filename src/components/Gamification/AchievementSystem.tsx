@@ -29,7 +29,6 @@ const AchievementSystem: React.FC<AchievementSystemProps> = ({
   const lockedAchievements = achievements.filter(a => !a.unlocked);
 
   const getLevelProgress = () => {
-    const _pointsForNextLevel = level * 100;
     return Math.min((totalPoints % 100) / 100, 1);
   };
 
