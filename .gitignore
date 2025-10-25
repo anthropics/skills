@@ -1,2 +1,41 @@
 .DS_Store
 
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.vite/
+.cache/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# OS
+Thumbs.db
+
+# Temporary
+.tmp/
+tmp/
+temp/
