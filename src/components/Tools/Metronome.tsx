@@ -6,10 +6,7 @@ interface MetronomeProps {
   onBpmChange?: (bpm: number) => void;
 }
 
-const Metronome: React.FC<MetronomeProps> = ({
-  initialBpm = 120,
-  onBpmChange
-}) => {
+const Metronome: React.FC<MetronomeProps> = ({ initialBpm = 120, onBpmChange }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [bpm, setBpm] = useState(initialBpm);
   const [beat, setBeat] = useState(0);
@@ -32,7 +29,10 @@ const Metronome: React.FC<MetronomeProps> = ({
     osc.type = 'sine';
 
     gainNode.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + duration);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      audioContextRef.current.currentTime + duration
+    );
 
     osc.start(audioContextRef.current.currentTime);
     osc.stop(audioContextRef.current.currentTime + duration);
@@ -105,7 +105,7 @@ const Metronome: React.FC<MetronomeProps> = ({
             min="40"
             max="240"
             value={bpm}
-            onChange={(e) => handleBpmChange(Number(e.target.value))}
+            onChange={e => handleBpmChange(Number(e.target.value))}
             className="bpm-slider"
           />
           <div className="bpm-presets">
@@ -117,10 +117,10 @@ const Metronome: React.FC<MetronomeProps> = ({
         </div>
 
         <div className="time-signature">
-          <label>Compasso:</label>
+          <label htmlFor="time-signature">Compasso:</label>
           <select
             value={beatsPerMeasure}
-            onChange={(e) => setBeatsPerMeasure(Number(e.target.value))}
+            onChange={e => setBeatsPerMeasure(Number(e.target.value))}
           >
             <option value={2}>2/4</option>
             <option value={3}>3/4</option>

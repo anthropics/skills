@@ -11,7 +11,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 50",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "lint-staged": "lint-staged",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",

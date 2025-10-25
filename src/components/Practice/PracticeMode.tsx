@@ -27,7 +27,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
   midiUrl,
   midiData,
   onScoreChange,
-  expectedNotes = []
+  expectedNotes = [],
 }) => {
   const [isActive, setIsActive] = useState(false);
   const [currentNote, setCurrentNote] = useState<string | null>(null);
@@ -56,7 +56,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
       const midiAccess = await navigator.requestMIDIAccess();
       const inputs = midiAccess.inputs.values();
 
-      for (let input of inputs) {
+      for (const input of inputs) {
         input.onmidimessage = handleMidiMessage;
       }
     } catch (error) {
@@ -70,7 +70,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     // Note On message
     if (command === 144 && velocity > 0) {
       const noteName = midiNoteToName(note);
-      handleNotePlay(noteName, velocity);
+      handleNotePlay(noteName, _velocity);
     }
   };
 
@@ -81,7 +81,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     return `${note}${octave}`;
   };
 
-  const handleNotePlay = (note: string, velocity: number) => {
+  const handleNotePlay = (note: string, _velocity: number) => {
     if (!isActive) return;
 
     const expectedNote = expectedNotesRef.current[currentNoteIndex.current];
@@ -90,7 +90,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     const noteEvent: NoteEvent = {
       note,
       time: Date.now(),
-      correct: isCorrect
+      correct: isCorrect,
     };
 
     setPlayedNotes(prev => [...prev, noteEvent]);
@@ -100,7 +100,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
       // Correct note
       setScore(prev => ({
         ...prev,
-        correct: prev.correct + 1
+        correct: prev.correct + 1,
       }));
       setCombo(prev => {
         const newCombo = prev + 1;
@@ -113,7 +113,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
       // Incorrect note
       setScore(prev => ({
         ...prev,
-        incorrect: prev.incorrect + 1
+        incorrect: prev.incorrect + 1,
       }));
       setCombo(0);
       setFeedback('✗ Incorreto');
@@ -128,7 +128,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     onScoreChange?.(accuracy);
   };
 
-  const handlePlayerNotePlay = (note: string, velocity: number) => {
+  const handlePlayerNotePlay = (note: string, _velocity: number) => {
     // Visual feedback for player notes
     setCurrentNote(note);
     setTimeout(() => setCurrentNote(null), 100);
@@ -191,9 +191,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
 
       {/* Real-time Feedback */}
       <div className="feedback-section">
-        <div className={`current-note ${currentNote ? 'active' : ''}`}>
-          {currentNote || '—'}
-        </div>
+        <div className={`current-note ${currentNote ? 'active' : ''}`}>{currentNote || '—'}</div>
         {feedback && (
           <div className={`feedback-message ${feedback.includes('✓') ? 'correct' : 'incorrect'}`}>
             {feedback}
@@ -222,12 +220,9 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
       </div>
 
       {/* Grade Display */}
-      {(score.correct + score.incorrect) > 0 && (
+      {score.correct + score.incorrect > 0 && (
         <div className="grade-display">
-          <div
-            className="grade-badge"
-            style={{ backgroundColor: getGrade().color }}
-          >
+          <div className="grade-badge" style={{ backgroundColor: getGrade().color }}>
             {getGrade().grade}
           </div>
           <div className="grade-info">
@@ -249,17 +244,18 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
       <div className="recent-notes">
         <h4>Últimas Notas Tocadas</h4>
         <div className="notes-list">
-          {playedNotes.slice(-10).reverse().map((noteEvent, index) => (
-            <div
-              key={index}
-              className={`note-item ${noteEvent.correct ? 'correct' : 'incorrect'}`}
-            >
-              <span className="note-name">{noteEvent.note}</span>
-              <span className="note-status">
-                {noteEvent.correct ? '✓' : '✗'}
-              </span>
-            </div>
-          ))}
+          {playedNotes
+            .slice(-10)
+            .reverse()
+            .map((noteEvent, index) => (
+              <div
+                key={index}
+                className={`note-item ${noteEvent.correct ? 'correct' : 'incorrect'}`}
+              >
+                <span className="note-name">{noteEvent.note}</span>
+                <span className="note-status">{noteEvent.correct ? '✓' : '✗'}</span>
+              </div>
+            ))}
         </div>
       </div>
 

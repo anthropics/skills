@@ -7,11 +7,7 @@ interface StudyLoopProps {
   currentMeasure: number;
 }
 
-const StudyLoop: React.FC<StudyLoopProps> = ({
-  measures,
-  onLoopChange,
-  currentMeasure
-}) => {
+const StudyLoop: React.FC<StudyLoopProps> = ({ measures, onLoopChange, currentMeasure }) => {
   const [isLooping, setIsLooping] = useState(false);
   const [loopStart, setLoopStart] = useState(1);
   const [loopEnd, setLoopEnd] = useState(4);
@@ -19,7 +15,8 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
   const [completedRepetitions, setCompletedRepetitions] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
 
-  const availableMeasures = measures.length > 0 ? measures : Array.from({ length: 32 }, (_, i) => i + 1);
+  const availableMeasures =
+    measures.length > 0 ? measures : Array.from({ length: 32 }, (_, i) => i + 1);
 
   useEffect(() => {
     if (isLooping && currentMeasure === loopEnd) {
@@ -34,10 +31,7 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
   }, [currentMeasure, loopEnd, isLooping, completedRepetitions, repetitions, onLoopChange]);
 
   const handleStartLoop = () => {
-    const loopMeasures = Array.from(
-      { length: loopEnd - loopStart + 1 },
-      (_, i) => loopStart + i
-    );
+    const loopMeasures = Array.from({ length: loopEnd - loopStart + 1 }, (_, i) => loopStart + i);
 
     setIsLooping(true);
     setCompletedRepetitions(0);
@@ -58,7 +52,9 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
         <h3>🔄 Loop de Estudo</h3>
         <div className="loop-status">
           {isLooping ? (
-            <span className="looping">Repetindo... ({completedRepetitions}/{repetitions})</span>
+            <span className="looping">
+              Repetindo... ({completedRepetitions}/{repetitions})
+            </span>
           ) : (
             <span className="paused">Pausado</span>
           )}
@@ -68,10 +64,11 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
       <div className="loop-controls">
         <div className="measure-range">
           <div className="range-input">
-            <label>Início:</label>
+            <label htmlFor="loop-start">Início:</label>
             <select
+              id="loop-start"
               value={loopStart}
-              onChange={(e) => setLoopStart(Number(e.target.value))}
+              onChange={e => setLoopStart(Number(e.target.value))}
               disabled={isLooping}
             >
               {availableMeasures.map(measure => (
@@ -83,10 +80,11 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
           </div>
 
           <div className="range-input">
-            <label>Fim:</label>
+            <label htmlFor="loop-end">Fim:</label>
             <select
+              id="loop-end"
               value={loopEnd}
-              onChange={(e) => setLoopEnd(Number(e.target.value))}
+              onChange={e => setLoopEnd(Number(e.target.value))}
               disabled={isLooping}
             >
               {availableMeasures
@@ -107,7 +105,7 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
             min="1"
             max="20"
             value={repetitions}
-            onChange={(e) => setRepetitions(Number(e.target.value))}
+            onChange={e => setRepetitions(Number(e.target.value))}
             disabled={isLooping}
           />
         </div>
@@ -123,10 +121,7 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
             </button>
           )}
 
-          <button
-            className="settings-toggle"
-            onClick={() => setShowSettings(!showSettings)}
-          >
+          <button className="settings-toggle" onClick={() => setShowSettings(!showSettings)}>
             ⚙️
           </button>
         </div>
@@ -135,10 +130,7 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
       {isLooping && (
         <div className="loop-progress">
           <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            ></div>
+            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
           </div>
           <span className="progress-text">
             {completedRepetitions} de {repetitions} repetições
@@ -172,11 +164,7 @@ const StudyLoop: React.FC<StudyLoopProps> = ({
 
       <div className="current-loop">
         <strong>Loop Atual:</strong> Compassos {loopStart} a {loopEnd}
-        {isLooping && (
-          <span className="current-measure">
-            • Compasso atual: {currentMeasure}
-          </span>
-        )}
+        {isLooping && <span className="current-measure">• Compasso atual: {currentMeasure}</span>}
       </div>
     </div>
   );

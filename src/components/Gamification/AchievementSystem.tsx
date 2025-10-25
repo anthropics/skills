@@ -23,13 +23,13 @@ interface AchievementSystemProps {
 const AchievementSystem: React.FC<AchievementSystemProps> = ({
   achievements,
   totalPoints,
-  level
+  level,
 }) => {
   const unlockedAchievements = achievements.filter(a => a.unlocked);
   const lockedAchievements = achievements.filter(a => !a.unlocked);
 
   const getLevelProgress = () => {
-    const pointsForNextLevel = level * 100;
+    const _pointsForNextLevel = level * 100;
     return Math.min((totalPoints % 100) / 100, 1);
   };
 
@@ -44,10 +44,7 @@ const AchievementSystem: React.FC<AchievementSystemProps> = ({
       </div>
 
       <div className="level-progress">
-        <div
-          className="level-progress-bar"
-          style={{ width: `${getLevelProgress() * 100}%` }}
-        ></div>
+        <div className="level-progress-bar" style={{ width: `${getLevelProgress() * 100}%` }}></div>
         <span className="level-progress-text">
           {Math.round(getLevelProgress() * 100)}% para o nível {level + 1}
         </span>

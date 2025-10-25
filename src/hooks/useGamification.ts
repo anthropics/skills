@@ -22,7 +22,7 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 1,
     unlocked: false,
     category: 'practice',
-    points: 50
+    points: 50,
   },
   {
     id: 'weekly_streak',
@@ -33,7 +33,7 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 7,
     unlocked: false,
     category: 'consistency',
-    points: 100
+    points: 100,
   },
   {
     id: 'accuracy_master',
@@ -44,7 +44,7 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 95,
     unlocked: false,
     category: 'accuracy',
-    points: 75
+    points: 75,
   },
   {
     id: 'marathon',
@@ -55,7 +55,7 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 30,
     unlocked: false,
     category: 'practice',
-    points: 80
+    points: 80,
   },
   {
     id: 'perfect_session',
@@ -66,22 +66,24 @@ const defaultAchievements: Achievement[] = [
     maxProgress: 1,
     unlocked: false,
     category: 'accuracy',
-    points: 150
-  }
+    points: 150,
+  },
 ];
 
 export const useGamification = () => {
   const [state, setState] = useState<GamificationState>(() => {
     const saved = localStorage.getItem('piano-tutor-gamification');
-    return saved ? JSON.parse(saved) : {
-      streak: 0,
-      bestStreak: 0,
-      todayPracticed: false,
-      achievements: defaultAchievements,
-      totalPoints: 0,
-      level: 1,
-      leaderboard: []
-    };
+    return saved
+      ? JSON.parse(saved)
+      : {
+          streak: 0,
+          bestStreak: 0,
+          todayPracticed: false,
+          achievements: defaultAchievements,
+          totalPoints: 0,
+          level: 1,
+          leaderboard: [],
+        };
   });
 
   // Salvar estado no localStorage
@@ -117,7 +119,7 @@ export const useGamification = () => {
         ...prev,
         streak: newStreak,
         bestStreak: Math.max(prev.bestStreak, newStreak),
-        todayPracticed
+        todayPracticed,
       };
     });
   }, []);
@@ -130,7 +132,7 @@ export const useGamification = () => {
             ...achievement,
             unlocked: true,
             unlockedAt: new Date(),
-            progress: achievement.maxProgress
+            progress: achievement.maxProgress,
           };
         }
         return achievement;
@@ -150,7 +152,7 @@ export const useGamification = () => {
         ...prev,
         achievements: updatedAchievements,
         totalPoints: newTotalPoints,
-        level: newLevel
+        level: newLevel,
       };
     });
   }, []);
@@ -166,7 +168,7 @@ export const useGamification = () => {
             ...achievement,
             progress: newProgress,
             unlocked: shouldUnlock,
-            ...(shouldUnlock && { unlockedAt: new Date() })
+            ...(shouldUnlock && { unlockedAt: new Date() }),
           };
         }
         return achievement;
@@ -174,7 +176,10 @@ export const useGamification = () => {
 
       // Verificar se alguma conquista foi desbloqueada
       const unlockedAchievement = updatedAchievements.find(
-        a => a.id === achievementId && a.unlocked && !prev.achievements.find(pa => pa.id === achievementId && pa.unlocked)
+        a =>
+          a.id === achievementId &&
+          a.unlocked &&
+          !prev.achievements.find(pa => pa.id === achievementId && pa.unlocked)
       );
 
       if (unlockedAchievement) {
@@ -188,90 +193,92 @@ export const useGamification = () => {
           ...prev,
           achievements: updatedAchievements,
           totalPoints: newTotalPoints,
-          level: newLevel
+          level: newLevel,
         };
       }
 
       return {
         ...prev,
-        achievements: updatedAchievements
+        achievements: updatedAchievements,
       };
     });
   }, []);
 
-  const recordSession = useCallback((sessionData: {
-    duration: number;
-    accuracy: number;
-    hasErrors: boolean;
-  }) => {
-    updateStreak();
+  const recordSession = useCallback(
+    (sessionData: { duration: number; accuracy: number; hasErrors: boolean }) => {
+      updateStreak();
 
-    // Atualizar progresso das conquistas
-    updateAchievementProgress('first_session', 1);
+      // Atualizar progresso das conquistas
+      updateAchievementProgress('first_session', 1);
 
-    if (sessionData.duration >= 30) {
-      updateAchievementProgress('marathon', sessionData.duration);
-    }
-
-    if (sessionData.accuracy >= 95) {
-      updateAchievementProgress('accuracy_master', sessionData.accuracy);
-    }
-
-    if (!sessionData.hasErrors) {
-      updateAchievementProgress('perfect_session', 1);
-    }
-
-    // Atualizar sequência semanal
-    updateAchievementProgress('weekly_streak', state.streak);
-  }, [updateStreak, updateAchievementProgress, state.streak]);
-
-  const loadLeaderboard = useCallback(async (timeFrame: 'daily' | 'weekly' | 'monthly' | 'allTime') => {
-    // Simular carregamento do leaderboard
-    const mockLeaderboard: LeaderboardEntry[] = [
-      {
-        userId: '1',
-        username: 'PianoMaster',
-        score: 12500,
-        level: 13,
-        streak: 45,
-        accuracy: 0.92,
-        rank: 1
-      },
-      {
-        userId: '2',
-        username: 'MusicLover',
-        score: 9800,
-        level: 10,
-        streak: 23,
-        accuracy: 0.87,
-        rank: 2
-      },
-      {
-        userId: '3',
-        username: 'Você',
-        score: state.totalPoints,
-        level: state.level,
-        streak: state.streak,
-        accuracy: 0.85,
-        rank: 3,
-        isCurrentUser: true
-      },
-      {
-        userId: '4',
-        username: 'BeginnerPro',
-        score: 4200,
-        level: 5,
-        streak: 7,
-        accuracy: 0.78,
-        rank: 4
+      if (sessionData.duration >= 30) {
+        updateAchievementProgress('marathon', sessionData.duration);
       }
-    ];
 
-    setState(prev => ({
-      ...prev,
-      leaderboard: mockLeaderboard
-    }));
-  }, [state.totalPoints, state.level, state.streak]);
+      if (sessionData.accuracy >= 95) {
+        updateAchievementProgress('accuracy_master', sessionData.accuracy);
+      }
+
+      if (!sessionData.hasErrors) {
+        updateAchievementProgress('perfect_session', 1);
+      }
+
+      // Atualizar sequência semanal
+      updateAchievementProgress('weekly_streak', state.streak);
+    },
+    [updateStreak, updateAchievementProgress, state.streak]
+  );
+
+  const loadLeaderboard = useCallback(
+    async (_timeFrame: 'daily' | 'weekly' | 'monthly' | 'allTime') => {
+      // Simular carregamento do leaderboard
+      const mockLeaderboard: LeaderboardEntry[] = [
+        {
+          userId: '1',
+          username: 'PianoMaster',
+          score: 12500,
+          level: 13,
+          streak: 45,
+          accuracy: 0.92,
+          rank: 1,
+        },
+        {
+          userId: '2',
+          username: 'MusicLover',
+          score: 9800,
+          level: 10,
+          streak: 23,
+          accuracy: 0.87,
+          rank: 2,
+        },
+        {
+          userId: '3',
+          username: 'Você',
+          score: state.totalPoints,
+          level: state.level,
+          streak: state.streak,
+          accuracy: 0.85,
+          rank: 3,
+          isCurrentUser: true,
+        },
+        {
+          userId: '4',
+          username: 'BeginnerPro',
+          score: 4200,
+          level: 5,
+          streak: 7,
+          accuracy: 0.78,
+          rank: 4,
+        },
+      ];
+
+      setState(prev => ({
+        ...prev,
+        leaderboard: mockLeaderboard,
+      }));
+    },
+    [state.totalPoints, state.level, state.streak]
+  );
 
   return {
     ...state,
@@ -279,6 +286,6 @@ export const useGamification = () => {
     unlockAchievement,
     updateAchievementProgress,
     recordSession,
-    loadLeaderboard
+    loadLeaderboard,
   };
 };

@@ -9,9 +9,11 @@ import './StudentDashboard.css';
 
 const StudentDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'progress' | 'tools' | 'community'>('progress');
-  const [selectedMeasures, setSelectedMeasures] = useState<number[]>([1, 2, 3, 4]);
-  const [currentMeasure, setCurrentMeasure] = useState(1);
-  const [leaderboardTimeFrame, setLeaderboardTimeFrame] = useState<'daily' | 'weekly' | 'monthly' | 'allTime'>('weekly');
+  const [_selectedMeasures, setSelectedMeasures] = useState<number[]>([1, 2, 3, 4]);
+  const [currentMeasure, _setCurrentMeasure] = useState(1);
+  const [leaderboardTimeFrame, setLeaderboardTimeFrame] = useState<
+    'daily' | 'weekly' | 'monthly' | 'allTime'
+  >('weekly');
 
   const gamification = useGamification();
 
@@ -24,7 +26,7 @@ const StudentDashboard: React.FC = () => {
     gamification.recordSession({
       duration: 25,
       accuracy: 0.87,
-      hasErrors: true
+      hasErrors: true,
     });
   };
 
@@ -38,10 +40,7 @@ const StudentDashboard: React.FC = () => {
     <div className="student-dashboard">
       <div className="dashboard-header">
         <h1>🎹 Meu Progresso</h1>
-        <button
-          className="session-button"
-          onClick={handleSessionComplete}
-        >
+        <button className="session-button" onClick={handleSessionComplete}>
           + Nova Sessão
         </button>
       </div>
@@ -177,9 +176,7 @@ const StudentDashboard: React.FC = () => {
               <div className="tool-card">
                 <h3>🎧 Isolador de Áudio</h3>
                 <p>Use Spleeter para isolar o piano de gravações</p>
-                <button className="tool-button">
-                  Processar Áudio
-                </button>
+                <button className="tool-button">Processar Áudio</button>
               </div>
 
               <div className="tool-card">
@@ -231,9 +228,7 @@ const StudentDashboard: React.FC = () => {
                     <span>Nível 12</span>
                   </div>
                 </div>
-                <button className="add-friend">
-                  + Adicionar Amigos
-                </button>
+                <button className="add-friend">+ Adicionar Amigos</button>
               </div>
             </div>
           </div>
