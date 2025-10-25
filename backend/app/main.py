@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.api.endpoints import analysis
+from app.api.endpoints import analysis, health
 
 # Configuration
 API_V1_STR = "/api/v1"
@@ -40,15 +40,11 @@ app.include_router(
     tags=["analysis"]
 )
 
-# Health check endpoint
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "service": "Music Training Platform API",
-        "version": "0.1.0"
-    }
+# Include health check router (no prefix for root-level health endpoints)
+app.include_router(
+    health.router,
+    tags=["health"]
+)
 
 # Root endpoint
 @app.get("/")

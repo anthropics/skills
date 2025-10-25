@@ -55,6 +55,12 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 httpx = "^0.25.2"
 
+# Production server
+gunicorn = "^21.2.0"
+
+# System monitoring
+psutil = "^5.9.6"
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
