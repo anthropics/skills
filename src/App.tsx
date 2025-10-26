@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import StudentDashboard from './pages/StudentDashboard';
+import ScoreFollowing from './pages/ScoreFollowing';
 import './App.css';
 
+type ViewType = 'dashboard' | 'practice' | 'learn' | 'score-following';
+
 function App() {
-  const [currentView] = useState<'dashboard' | 'practice' | 'learn'>('dashboard');
+  const [currentView, setCurrentView] = useState<ViewType>('dashboard');
 
   return (
     <div className="app">
@@ -15,7 +18,18 @@ function App() {
               <span className="tagline">Treinamento Inteligente com IA</span>
             </div>
             <nav className="main-nav">
-              <button className="nav-button active">Dashboard</button>
+              <button
+                className={`nav-button ${currentView === 'dashboard' ? 'active' : ''}`}
+                onClick={() => setCurrentView('dashboard')}
+              >
+                Dashboard
+              </button>
+              <button
+                className={`nav-button ${currentView === 'score-following' ? 'active' : ''}`}
+                onClick={() => setCurrentView('score-following')}
+              >
+                YouTube → Tutorial
+              </button>
               <button className="nav-button" disabled>
                 Prática
               </button>
@@ -27,7 +41,10 @@ function App() {
         </div>
       </header>
 
-      <main className="app-main">{currentView === 'dashboard' && <StudentDashboard />}</main>
+      <main className="app-main">
+        {currentView === 'dashboard' && <StudentDashboard />}
+        {currentView === 'score-following' && <ScoreFollowing />}
+      </main>
 
       <footer className="app-footer">
         <div className="container">
