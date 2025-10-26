@@ -39,11 +39,12 @@ export interface ConversionProgress {
 }
 
 class YouTubeToMidiService {
-  private apiEndpoint: string;
+  // Reserved for future backend API integration
+  // private apiEndpoint: string;
 
   constructor() {
     // In production, this would be your backend API
-    this.apiEndpoint = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    // this.apiEndpoint = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
   }
 
   /**
@@ -113,8 +114,14 @@ class YouTubeToMidiService {
 
   /**
    * Call the conversion API (placeholder)
-   * In production, this would call your backend API
+   * TODO: Implement when backend API is ready
+   *
+   * @private - Reserved for future backend integration
+   *
+   * Example usage:
+   * const result = await this.callConversionAPI(options);
    */
+  /*
   private async callConversionAPI(options: ConversionOptions): Promise<ConversionResult> {
     const response = await fetch(`${this.apiEndpoint}/convert`, {
       method: 'POST',
@@ -131,6 +138,7 @@ class YouTubeToMidiService {
     const data = await response.json();
     return data;
   }
+  */
 
   /**
    * Get a demo MIDI file for testing
