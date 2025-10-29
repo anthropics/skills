@@ -269,7 +269,9 @@ github.com/testcontainers/testcontainers-go/modules/<module-name>
 
 ### 3. Using Generic Containers (Fallback)
 
-When no pre-configured module exists, use generic containers:
+When no pre-configured module exists, use generic containers.
+
+**IMPORTANT: Always add a wait strategy when exposing ports** to ensure the container is ready before tests run. This is critical for reliability, especially in CI environments. Never use `time.Sleep` as a substitute - it's an anti-pattern that leads to flaky tests.
 
 ```go
 func TestCustomContainer(t *testing.T) {
@@ -282,8 +284,9 @@ func TestCustomContainer(t *testing.T) {
         testcontainers.WithEnv(map[string]string{
             "APP_ENV": "test",
         }),
+        // CRITICAL: Always add wait strategy for exposed ports
         testcontainers.WithWaitStrategy(
-            wait.ForHTTP("/health").WithStartupTimeout(time.Second*30),
+            wait.ForListeningPort("8080/tcp").WithStartupTimeout(time.Second*30),
         ),
     )
     testcontainers.CleanupContainer(t, ctr)
@@ -322,8 +325,12 @@ testcontainers.Run(
         hc.Binds = []string{"/host/path:/container/path"}
     }),
 
-    // Wait strategies
-    testcontainers.WithWaitStrategy(wait.ForLog("ready")),
+    // Wait strategies (REQUIRED when using WithExposedPorts)
+    // Use wait.ForListeningPort for reliability - never use time.Sleep!
+    testcontainers.WithWaitStrategy(
+        wait.ForListeningPort("80/tcp"),
+        // Or use other strategies: wait.ForLog(), wait.ForHTTP(), etc.
+    ),
 
     // Commands
     testcontainers.WithAfterReadyCommand(
@@ -725,9 +732,15 @@ testcontainers.Run(
 
 ### 8. Wait Strategies
 
-Wait strategies ensure containers are ready before tests run:
+**Wait strategies are critical for reliable tests.** They ensure containers are fully ready before tests run, which is especially important in CI environments where timing can vary.
 
-#### Port-Based Waiting
+**Best Practices:**
+- ✅ **Always use `wait.ForListeningPort()` when exposing ports** - This is the most reliable approach
+- ✅ **Choose appropriate wait strategies** based on your service (HTTP health checks, log patterns, etc.)
+- ❌ **Never use `time.Sleep()`** - This is an anti-pattern that leads to flaky tests
+- ✅ **Set reasonable timeouts** to handle slow CI environments
+
+#### Port-Based Waiting (Recommended for Exposed Ports)
 
 ```go
 import "github.com/testcontainers/testcontainers-go/wait"
@@ -1218,14 +1231,15 @@ func TestComposeStack(t *testing.T) {
 
 1. **Always use pre-configured modules when available** - They provide sensible defaults and helper methods
 2. **Register cleanup immediately** - Call `testcontainers.CleanupContainer(t, ctr)` before checking errors
-3. **Use wait strategies** - Ensure containers are ready before running tests
-4. **Leverage table-driven tests** - Test against multiple versions or configurations
-5. **Use custom networks** - For multi-container communication
-6. **Keep containers ephemeral** - Don't rely on state between tests
-7. **Check Docker availability** - Use `testcontainers.SkipIfProviderIsNotHealthy(t)`
-8. **Enable parallel execution** - Use `t.Parallel()` for faster test suites
-9. **Use module helper methods** - E.g., `ConnectionString()`, `Snapshot()`, `Restore()`
-10. **Debug with logs** - Use `WithLogConsumers()` when troubleshooting
+3. **Always add wait strategies when exposing ports** - Use `wait.ForListeningPort()` to ensure reliability, especially in CI. Never use `time.Sleep()` - it's an anti-pattern that causes flaky tests
+4. **Choose appropriate wait strategies** - Use `wait.ForHTTP()` for health endpoints, `wait.ForLog()` for log patterns, or `wait.ForListeningPort()` for port availability
+5. **Leverage table-driven tests** - Test against multiple versions or configurations
+6. **Use custom networks** - For multi-container communication
+7. **Keep containers ephemeral** - Don't rely on state between tests
+8. **Check Docker availability** - Use `testcontainers.SkipIfProviderIsNotHealthy(t)`
+9. **Enable parallel execution** - Use `t.Parallel()` for faster test suites
+10. **Use module helper methods** - E.g., `ConnectionString()`, `Snapshot()`, `Restore()`
+11. **Debug with logs** - Use `WithLogConsumers()` when troubleshooting
 
 ---
 
