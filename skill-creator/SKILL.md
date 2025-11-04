@@ -65,8 +65,8 @@ skill-name/
 
 Every SKILL.md consists of:
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields that determine when Claude uses the skill
-- **Body** (Markdown): Instructions and guidance for using the skill
+- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
+- **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
 
 #### Bundled Resources (optional)
 
@@ -154,28 +154,47 @@ bigquery-skill/
 └── reference/
     ├── finance.md (revenue, billing metrics)
     ├── sales.md (opportunities, pipeline)
-    ├── support.md (tickets, SLAs)
-    └── engineering.md (deployments, incidents)
+    ├── product.md (API usage, features)
+    └── marketing.md (campaigns, attribution)
 ```
 
-SKILL.md content:
+When a user asks about sales metrics, Claude only reads sales.md.
+
+Similarly, for skills supporting multiple frameworks or variants, organize by variant:
+
+```
+cloud-deploy/
+├── SKILL.md (workflow + provider selection)
+└── references/
+    ├── aws.md (AWS deployment patterns)
+    ├── gcp.md (GCP deployment patterns)
+    └── azure.md (Azure deployment patterns)
+```
+
+When the user chooses AWS, Claude only reads aws.md.
+
+**Pattern 3: Conditional details**
+
+Show basic content, link to advanced content:
 
 ```markdown
-# BigQuery Analysis
+# DOCX Processing
 
-This skill helps query company data.
+## Creating documents
 
-## Available domains
+Use docx-js for new documents. See [DOCX-JS.md](DOCX-JS.md).
 
-- **Finance**: Revenue, billing. See [finance.md](finance.md)
-- **Sales**: Opportunities, pipeline. See [sales.md](sales.md)
-- **Support**: Tickets, SLAs. See [support.md](support.md)
-- **Engineering**: Deployments, incidents. See [engineering.md](engineering.md)
+## Editing documents
 
-Read the relevant domain file before writing queries.
+For simple edits, modify the XML directly.
+
+**For tracked changes**: See [REDLINING.md](REDLINING.md)
+**For OOXML details**: See [OOXML.md](OOXML.md)
 ```
 
-**Best practices for references:**
+Claude reads REDLINING.md or OOXML.md only when the user needs those features.
+
+**Important guidelines:**
 
 - **Avoid deeply nested references** - Keep references one level deep from SKILL.md. All reference files should link directly from SKILL.md.
 - **Structure longer reference files** - For files longer than 100 lines, include a table of contents at the top so Claude can see the full scope when previewing.
@@ -286,10 +305,13 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 Write the YAML frontmatter with `name` and `description`:
 
-- **`name`**: The skill name
-- **`description`**: Be specific about what the skill does and when to use it
-  - **Be specific and include key terms** - Include both what the Skill does and specific triggers/contexts for when to use it
-  - **Provide enough detail for selection** - Claude uses this to choose from 100+ Skills, so be comprehensive, concise, and direct
+- `name`: The skill name
+- `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
+    - Include both what the Skill does and specific triggers/contexts for when to use it.
+    - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
+    - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
+
+Do not include any other fields in YAML frontmatter.
 
 ##### Body
 
@@ -313,10 +335,10 @@ The packaging script will:
 
 1. **Validate** the skill automatically, checking:
 
-   - YAML frontmatter format and required fields
-   - Skill naming conventions and directory structure
-   - Description completeness and quality
-   - File organization and resource references
+    - YAML frontmatter format and required fields
+    - Skill naming conventions and directory structure
+    - Description completeness and quality
+    - File organization and resource references
 
 2. **Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.
 
