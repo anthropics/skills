@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Template - Image Generation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+</head>
+<body style="margin: 0; padding: 20px; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <div style="max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px;">
+        <h1 style="margin-top: 0;">Chart.js Template</h1>
+        <p>This template uses Chart.js for creating professional charts. Modify the data and options below.</p>
+
+        <!-- Canvas for the chart -->
+        <canvas id="myChart" width="1920" height="1080"></canvas>
+
+        <!-- Download button -->
+        <button onclick="downloadChart()" style="margin-top: 20px; padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+            Download as PNG
+        </button>
+    </div>
+
+    <script>
+        // Chart configuration
+        const ctx = document.getElementById('myChart');
+        const chart = new Chart(ctx, {
+            type: 'bar', // Options: 'bar', 'line', 'pie', 'doughnut', 'radar', 'polarArea', 'scatter'
+
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'], // X-axis labels
+                datasets: [{
+                    label: 'Sales (USD)',
+                    data: [45000, 62000, 58000, 71000], // Your data here
+                    backgroundColor: '#2563EB', // Bar/point color
+                    borderColor: '#1E40AF', // Border color
+                    borderWidth: 2
+                }]
+            },
+
+            options: {
+                responsive: false, // Keep false for fixed dimensions
+                maintainAspectRatio: false,
+
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2024 Quarterly Sales', // Chart title
+                        font: {
+                            size: 32,
+                            weight: 'bold'
+                        },
+                        padding: 20
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 14
+                            },
+                            callback: function(value) {
+                                return '$' + (value / 1000) + 'K'; // Format numbers
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Sales (USD)',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Quarter',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Function to download chart as PNG
+        function downloadChart() {
+            const link = document.createElement('a');
+            link.download = 'chart.png';
+            link.href = chart.toBase64Image();
+            link.click();
+        }
+
+        // Alternative: Get data URL for embedding
+        function getChartDataURL() {
+            return chart.toBase64Image('image/png', 1.0); // PNG at 100% quality
+        }
+
+        // For JPG instead:
+        // chart.canvas.toDataURL('image/jpeg', 0.95); // JPG at 95% quality
+    </script>
+
+    <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background: #f9fafb; border-radius: 8px;">
+        <h2>Customization Guide</h2>
+
+        <h3>Chart Types</h3>
+        <ul>
+            <li><strong>bar</strong> - Vertical or horizontal bars</li>
+            <li><strong>line</strong> - Line graph for trends over time</li>
+            <li><strong>pie</strong> - Circular chart for proportions</li>
+            <li><strong>doughnut</strong> - Pie chart with center hole</li>
+            <li><strong>radar</strong> - Multi-axis comparison</li>
+            <li><strong>scatter</strong> - X-Y point plot</li>
+        </ul>
+
+        <h3>Color Palettes</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+// Professional Blues
+backgroundColor: ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD']
+
+// Warm Oranges
+backgroundColor: ['#EA580C', '#F97316', '#FB923C', '#FDBA74']
+
+// Multi-color Vibrant
+backgroundColor: ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6']
+
+// Grayscale Professional
+backgroundColor: ['#1F2937', '#4B5563', '#6B7280', '#9CA3AF']</pre>
+
+        <h3>Common Modifications</h3>
+        <ul>
+            <li>Change <code>data.labels</code> for X-axis categories</li>
+            <li>Change <code>data.datasets[0].data</code> for values</li>
+            <li>Change <code>options.plugins.title.text</code> for chart title</li>
+            <li>Change <code>backgroundColor</code> for colors</li>
+            <li>Adjust canvas width/height for different dimensions</li>
+        </ul>
+
+        <h3>Multiple Datasets</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+data: {
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    datasets: [
+        {
+            label: 'Product A',
+            data: [45, 62, 58, 71],
+            backgroundColor: '#2563EB'
+        },
+        {
+            label: 'Product B',
+            data: [38, 54, 61, 66],
+            backgroundColor: '#10B981'
+        }
+    ]
+}</pre>
+    </div>
+
+</body>
+</html>
