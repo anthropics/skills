@@ -1,0 +1,50 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="inventory-panel" class="inventory">
+        <!-- Header -->
+        <ui:VisualElement class="inventory__header">
+            <ui:Label text="Inventory" class="inventory__title" />
+            <ui:Label name="weight-label" text="Weight: 0/100" class="inventory__weight" />
+            <ui:Button name="close-button" text="×" class="close-button" />
+        </ui:VisualElement>
+
+        <!-- Filter Tabs -->
+        <ui:VisualElement class="inventory__tabs">
+            <ui:Button name="all-tab" text="All" class="tab-button tab-button--active" />
+            <ui:Button name="weapons-tab" text="Weapons" class="tab-button" />
+            <ui:Button name="armor-tab" text="Armor" class="tab-button" />
+            <ui:Button name="consumables-tab" text="Consumables" class="tab-button" />
+            <ui:Button name="misc-tab" text="Misc" class="tab-button" />
+        </ui:VisualElement>
+
+        <!-- Item Grid -->
+        <ui:ScrollView class="inventory__grid-container">
+            <ui:VisualElement name="item-grid" class="inventory__grid">
+                <!-- Grid cells will be populated dynamically -->
+                <!-- Example slot structure: -->
+                <!-- <ui:VisualElement class="item-slot">
+                    <ui:VisualElement class="item-slot__icon" />
+                    <ui:Label class="item-slot__quantity" text="1" />
+                </ui:VisualElement> -->
+            </ui:VisualElement>
+        </ui:ScrollView>
+
+        <!-- Item Details -->
+        <ui:VisualElement name="item-details" class="inventory__details">
+            <ui:Label name="item-name" text="Select an item" class="item-details__name" />
+            <ui:Label name="item-description" text="" class="item-details__description" />
+            <ui:VisualElement class="item-details__stats">
+                <ui:Label name="item-stats" text="" class="item-details__stat-text" />
+            </ui:VisualElement>
+            <ui:VisualElement class="item-details__actions">
+                <ui:Button name="use-button" text="Use" class="button button--primary" />
+                <ui:Button name="equip-button" text="Equip" class="button" />
+                <ui:Button name="drop-button" text="Drop" class="button button--danger" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Gold/Currency Display -->
+        <ui:VisualElement class="inventory__footer">
+            <ui:Label name="gold-label" text="Gold: 0" class="inventory__currency" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

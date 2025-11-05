@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="dialog-overlay" class="dialog-overlay">
+        <ui:VisualElement name="dialog-panel" class="dialog">
+            <!-- Header -->
+            <ui:VisualElement class="dialog__header">
+                <ui:Label name="dialog-title" text="Dialog Title" class="dialog__title" />
+                <ui:Button name="close-button" text="×" class="dialog__close-button" />
+            </ui:VisualElement>
+
+            <!-- Content -->
+            <ui:ScrollView name="dialog-content" class="dialog__content">
+                <ui:Label name="dialog-message" text="Dialog message goes here." class="dialog__message" />
+            </ui:ScrollView>
+
+            <!-- Footer -->
+            <ui:VisualElement class="dialog__footer">
+                <ui:Button name="cancel-button" text="Cancel" class="button button--secondary" />
+                <ui:Button name="confirm-button" text="OK" class="button button--primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

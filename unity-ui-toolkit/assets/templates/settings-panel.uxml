@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="settings-panel" class="settings">
+        <ui:VisualElement class="settings__header">
+            <ui:Label text="Settings" class="settings__title" />
+            <ui:Button name="back-button" text="Back" class="button" />
+        </ui:VisualElement>
+
+        <ui:ScrollView class="settings__content">
+            <!-- Graphics Section -->
+            <ui:Foldout text="Graphics" value="true" class="settings__section">
+                <ui:DropdownField name="quality-dropdown" label="Quality" class="setting-field" />
+                <ui:DropdownField name="resolution-dropdown" label="Resolution" class="setting-field" />
+                <ui:Toggle name="fullscreen-toggle" label="Fullscreen" class="setting-field" />
+                <ui:Toggle name="vsync-toggle" label="V-Sync" class="setting-field" />
+                <ui:SliderInt name="framerate-slider" label="FPS Limit" low-value="30" high-value="144" value="60" show-input-field="true" class="setting-field" />
+            </ui:Foldout>
+
+            <!-- Audio Section -->
+            <ui:Foldout text="Audio" value="true" class="settings__section">
+                <ui:Slider name="master-volume" label="Master Volume" low-value="0" high-value="100" value="100" show-input-field="true" class="setting-field" />
+                <ui:Slider name="music-volume" label="Music" low-value="0" high-value="100" value="75" show-input-field="true" class="setting-field" />
+                <ui:Slider name="sfx-volume" label="Sound Effects" low-value="0" high-value="100" value="75" show-input-field="true" class="setting-field" />
+                <ui:Toggle name="mute-toggle" label="Mute All" class="setting-field" />
+            </ui:Foldout>
+
+            <!-- Gameplay Section -->
+            <ui:Foldout text="Gameplay" value="false" class="settings__section">
+                <ui:Slider name="difficulty-slider" label="Difficulty" low-value="1" high-value="5" value="3" show-input-field="true" class="setting-field" />
+                <ui:Toggle name="tutorial-toggle" label="Show Tutorials" value="true" class="setting-field" />
+                <ui:Toggle name="hints-toggle" label="Show Hints" value="true" class="setting-field" />
+            </ui:Foldout>
+
+            <!-- Controls Section -->
+            <ui:Foldout text="Controls" value="false" class="settings__section">
+                <ui:Slider name="mouse-sensitivity" label="Mouse Sensitivity" low-value="0.1" high-value="2" value="1" show-input-field="true" class="setting-field" />
+                <ui:Toggle name="invert-y" label="Invert Y-Axis" class="setting-field" />
+            </ui:Foldout>
+        </ui:ScrollView>
+
+        <ui:VisualElement class="settings__footer">
+            <ui:Button name="reset-button" text="Reset to Defaults" class="button button--secondary" />
+            <ui:Button name="apply-button" text="Apply" class="button button--primary" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
