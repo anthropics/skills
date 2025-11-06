@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="main-menu" class="menu">
+        <!-- Background -->
+        <ui:VisualElement class="menu__background" />
+
+        <!-- Menu Panel -->
+        <ui:VisualElement class="menu__panel">
+            <ui:Label text="Game Title" class="menu__title" />
+
+            <ui:VisualElement class="menu__buttons">
+                <ui:Button name="play-button" text="Play" class="menu-button menu-button--primary" />
+                <ui:Button name="continue-button" text="Continue" class="menu-button" />
+                <ui:Button name="settings-button" text="Settings" class="menu-button" />
+                <ui:Button name="credits-button" text="Credits" class="menu-button" />
+                <ui:Button name="quit-button" text="Quit" class="menu-button menu-button--danger" />
+            </ui:VisualElement>
+
+            <ui:Label name="version-label" text="v1.0.0" class="menu__version" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

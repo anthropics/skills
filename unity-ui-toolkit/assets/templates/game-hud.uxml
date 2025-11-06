@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="hud-container" class="hud">
+        <!-- Top Bar -->
+        <ui:VisualElement class="hud__top-bar">
+            <ui:VisualElement class="hud__player-stats">
+                <ui:ProgressBar name="health-bar" class="stat-bar health-bar" title="Health" low-value="0" high-value="100" value="100" />
+                <ui:ProgressBar name="mana-bar" class="stat-bar mana-bar" title="Mana" low-value="0" high-value="100" value="100" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="hud__resources">
+                <ui:Label name="score-label" text="Score: 0" class="resource-label" />
+                <ui:Label name="coins-label" text="Coins: 0" class="resource-label" />
+                <ui:Label name="time-label" text="00:00" class="resource-label" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <!-- Center Notifications -->
+        <ui:VisualElement name="notification-container" class="hud__notifications" />
+
+        <!-- Bottom Action Bar -->
+        <ui:VisualElement class="hud__action-bar">
+            <ui:Button name="ability-1" class="ability-button" />
+            <ui:Button name="ability-2" class="ability-button" />
+            <ui:Button name="ability-3" class="ability-button" />
+            <ui:Button name="ability-4" class="ability-button" />
+        </ui:VisualElement>
+
+        <!-- Mini Map (optional) -->
+        <ui:VisualElement name="minimap" class="hud__minimap" />
+    </ui:VisualElement>
+</ui:UXML>
