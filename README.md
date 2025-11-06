@@ -42,6 +42,8 @@ This repository includes a diverse collection of example skills demonstrating di
 
 ## Meta Skills
 - **skill-creator** - Guide for creating effective skills that extend Claude's capabilities
+- **skill-quality-analyzer** - Comprehensive quality analysis tool for Claude Skills with evaluation across structure, security, UX, code quality, and integration dimensions
+- **skill-security-analyzer** - Security scanner for Claude Code skills detecting 40+ malicious patterns including command injection, obfuscation, YAML injection, and sandbox escapes
 - **template-skill** - A basic template to use as a starting point for new skills
 
 # Document Skills
