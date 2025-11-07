@@ -196,7 +196,50 @@ The packaging script will:
 
 2. **Package** the skill if validation passes, creating a zip file named after the skill (e.g., `my-skill.zip`) that includes all files and maintains the proper directory structure for distribution.
 
+3. **Prompt about marketplace registration** after successful packaging:
+   - Ask if the skill is part of a local marketplace
+   - Search for `marketplace.json` files in the current folder structure
+   - Present found marketplace files for confirmation
+   - Add the skill to the selected marketplace's plugin configuration
+   - Handle multiple marketplace files with confirmation prompts
+
 If validation fails, the script will report the errors and exit without creating a package. Fix any validation errors and run the packaging command again.
+
+#### Adding to a Local Marketplace
+
+After successful packaging, the script prompts whether the skill should be added to a local marketplace. This is useful when developing skills as part of a plugin or marketplace project.
+
+The marketplace registration workflow:
+
+1. **Prompt**: User is asked "Is this skill part of a marketplace?"
+2. **Search**: If yes, the script searches for `marketplace.json` files in the folder structure
+3. **Confirm**: Each found marketplace file is presented with a confirmation prompt
+4. **Select Plugin**: User selects which plugin within the marketplace to add the skill to
+5. **Update**: The skill path is added to the selected plugin's skills array
+6. **Verify**: The script confirms successful addition or reports any errors
+
+The script automatically:
+- Calculates the relative path from `marketplace.json` to the skill folder
+- Checks if the skill already exists to avoid duplicates
+- Preserves JSON formatting with proper indentation
+- Handles edge cases (no marketplace files found, invalid selections, etc.)
+
+Example marketplace.json structure:
+```json
+{
+  "name": "my-marketplace",
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "description": "Collection of custom skills",
+      "skills": [
+        "./skill-folder-1",
+        "./skill-folder-2"
+      ]
+    }
+  ]
+}
+```
 
 ### Step 6: Iterate
 
