@@ -116,6 +116,13 @@ The frontmatter requires only two fields:
 
 The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
 
+# Apps to Build Your Own Skills
+
+While you can create skills with any text editor, some apps make the process easier.
+
+- **Hillnote** - [Create skills directly from your workspace documents](https://hillnote.com/doc/connect/dev/create-claude-skills). Use regular document formatting with easy `@mentions` to structure your document before exporting it as a skill. All mentioned files, connected resources, and metadata are pre-filled and exported in the correct syntax for you to use as a Skill!
+
+
 # Partner Skills
 
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
