@@ -51,6 +51,152 @@ You need raw XML access for: comments, complex formatting, document structure, e
 * `word/media/` - Embedded images and media files
 * Tracked changes use `<w:ins>` (insertions) and `<w:del>` (deletions) tags
 
+
+## Advanced Pattern: Nested Table Content Extraction
+
+### Problem
+
+python-docx's `cell.text` property only extracts direct paragraph text. It does **not** traverse nested tables within cells.
+
+**Symptom:**
+```python
+cell.text  # Returns: '' or '
+'
+# But cell visually contains checkbox options, form fields, etc.
+```
+
+This occurs in:
+- Government forms (checkbox grids)
+- Evaluation forms (rating scales)
+- Surveys (multiple choice options)
+- Business checklists (option lists)
+
+### Detection
+
+Check if a cell contains nested tables:
+
+```python
+if cell.tables:
+    print(f"Found {len(cell.tables)} nested table(s)")
+    # Cell has nested content - need special extraction
+```
+
+### Solution
+
+Extract content from nested tables using the `cell.tables` property:
+
+```python
+def extract_cell_content_with_nested_tables(cell):
+    """
+    Extract all text from a cell, including text from nested tables.
+
+    Args:
+        cell: python-docx _Cell object
+
+    Returns:
+        str: Combined text from cell paragraphs and nested tables
+    """
+    text_parts = []
+
+    # Get direct paragraph text (not inside nested tables)
+    for para in cell.paragraphs:
+        para_text = para.text.strip()
+        if para_text:
+            text_parts.append(para_text)
+
+    # Get content from nested tables
+    if cell.tables:
+        for nested_table in cell.tables:
+            for nested_row in nested_table.rows:
+                # For checkbox lists: Column 0 = label, Column 1 = checkbox
+                # Extract text from first column only
+                if nested_row.cells:
+                    first_col_text = nested_row.cells[0].text.strip()
+                    # Filter out checkbox characters
+                    if first_col_text and first_col_text not in ['⁮', '☐', '☑', '☒']:
+                        text_parts.append(first_col_text)
+
+    return '
+'.join(text_parts) if text_parts else ''
+```
+
+### Example Usage
+
+```python
+from docx import Document
+
+# Wrong way - returns empty
+cell = table.rows[1].cells[0]
+basic_text = cell.text
+print(basic_text)  # Output: '' or '
+'
+
+# Right way - extracts nested content
+full_text = extract_cell_content_with_nested_tables(cell)
+print(full_text)
+# Output:
+# High potential
+# Moderate potential
+# Low potential
+```
+
+### Use Cases
+
+1. **Government Forms**: Tax forms, applications, permits
+2. **Evaluation Documents**: Feasibility analysis, performance reviews
+3. **Surveys**: Questionnaires with checkbox/radio options
+4. **Business Checklists**: Quality checklists, compliance forms
+5. **Complex Layouts**: Multi-column cells, nested data structures
+
+### Integration with Existing Workflows
+
+Use this pattern when standard `cell.text` returns empty but visual content exists:
+
+```python
+for row in table.rows:
+    for cell in row.cells:
+        # Check for nested tables first
+        if cell.tables:
+            content = extract_cell_content_with_nested_tables(cell)
+        else:
+            content = cell.text
+
+        # Process content
+        print(content)
+```
+
+### Recursive Extraction (For Deep Nesting)
+
+For documents with multiple levels of table nesting:
+
+```python
+def extract_cell_content_recursively(cell):
+    """Recursively extract text from deeply nested tables"""
+    text_parts = []
+
+    def _extract_recursive(cell_obj):
+        # Get direct paragraphs
+        for para in cell_obj.paragraphs:
+            para_text = para.text.strip()
+            if para_text and para_text not in ['⁮', '☐', '☑', '☒']:
+                text_parts.append(para_text)
+
+        # Recursively get nested tables
+        for nested_table in cell_obj.tables:
+            for nested_row in nested_table.rows:
+                for nested_cell in nested_row.cells:
+                    _extract_recursive(nested_cell)
+
+    _extract_recursive(cell)
+    return '
+'.join(text_parts) if text_parts else ''
+```
+
+### References
+
+- Stack Overflow: ["How to get all the text in a nested table using python?"](https://stackoverflow.com/questions/64334884/how-to-get-all-the-text-in-a-nested-table-using-python)
+- python-docx documentation: [Tables](https://python-docx.readthedocs.io/en/latest/user/tables.html)
+
 ## Creating a new Word document
 
 When creating a new Word document from scratch, use **docx-js**, which allows you to create Word documents using JavaScript/TypeScript.
