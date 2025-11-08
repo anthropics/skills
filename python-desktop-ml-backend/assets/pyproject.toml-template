@@ -1,0 +1,273 @@
+# Python ML Backend Project Configuration
+# Modern PEP 517/518 build system specification
+# Customize for your specific project needs
+
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ml-backend-app"
+version = "0.1.0"
+description = "High-performance ML inference backend for desktop applications"
+readme = "README.md"
+requires-python = ">=3.13.0"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["ml", "inference", "desktop", "python3.13"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# Core dependencies: ML frameworks and utilities
+dependencies = [
+    # Numerical computing
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+
+    # ML libraries (choose based on your use case)
+    # "torch>=2.0.0",  # PyTorch for deep learning
+    # "transformers>=4.30.0",  # Hugging Face transformers
+    "scikit-learn>=1.3.0",  # Classical ML
+
+    # Async and concurrency
+    "aiohttp>=3.8.0",  # Async HTTP client
+    "httpx>=0.24.0",  # Alternative async HTTP
+
+    # Data handling
+    "pydantic>=2.0.0",  # Data validation
+    "pydantic-core>=2.0.0",  # Pydantic core types
+
+    # Type hints and utilities
+    "typing-extensions>=4.7.0",  # Backported typing features
+    "numpy-typing>=0.1.0",  # Type hints for NumPy
+
+    # Logging and monitoring
+    "loguru>=0.7.0",  # Structured logging
+    "python-dotenv>=1.0.0",  # Environment variable management
+
+    # Database (choose based on your backend)
+    # "sqlalchemy>=2.0.0",  # ORM
+    # "asyncpg>=0.28.0",  # Async PostgreSQL driver
+    "aiosqlite>=0.17.0",  # Async SQLite
+
+    # Serialization
+    "msgpack>=1.0.0",  # Efficient serialization
+    "orjson>=3.9.0",  # Fast JSON serialization
+]
+
+# Optional dependencies for specific use cases
+[project.optional-dependencies]
+# GPU acceleration (uncomment if using CUDA)
+gpu = [
+    # "torch>=2.0.0[cuda]",  # PyTorch with CUDA
+    # "tensorflow[and-cuda]>=2.13.0",  # TensorFlow with CUDA
+]
+
+# Development tools
+dev = [
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "hypothesis>=6.80.0",  # Property-based testing
+
+    # Type checking
+    "mypy>=1.5.0",
+    "types-aiofiles>=23.2.0",
+    "types-requests>=2.31.0",
+
+    # Code quality
+    "black>=23.9.0",  # Code formatter
+    "ruff>=0.10.0",  # Linter
+    "isort>=5.12.0",  # Import sorting
+
+    # Performance profiling
+    "py-spy>=0.3.14",  # CPU profiler
+    "memory-profiler>=0.61.0",  # Memory profiler
+    "pyflame>=0.3.1",  # Stack trace profiler
+
+    # Documentation
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+]
+
+# PyO3/Rust integration (if using Rust extensions)
+pyo3 = [
+    "pyo3>=0.20.0",
+    "maturin>=1.2.0",  # PyO3 build tool
+]
+
+# Tauri integration
+tauri = [
+    "tauri>=1.5.0",  # Tauri Python bindings
+]
+
+# All optional dependencies
+all = [
+    # "ml-backend-app[gpu]",
+    "ml-backend-app[dev]",
+    "ml-backend-app[pyo3]",
+    "ml-backend-app[tauri]",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/ml-backend"
+Documentation = "https://ml-backend.readthedocs.io"
+Repository = "https://github.com/yourusername/ml-backend.git"
+"Bug Tracker" = "https://github.com/yourusername/ml-backend/issues"
+
+# Entry points for CLI tools
+[project.scripts]
+ml-backend = "ml_backend.cli:main"
+ml-inference = "ml_backend.inference:cli"
+
+[tool.setuptools]
+packages = ["ml_backend"]
+
+[tool.setuptools.package-data]
+ml_backend = ["py.typed"]  # Enable PEP 561 type checking
+
+# Black formatter configuration
+[tool.black]
+line-length = 100
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # Directories
+  \.git
+  | \.venv
+  | venv
+  | dist
+  | build
+  | \.eggs
+)/
+'''
+
+# Ruff linter configuration
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "ARG",  # flake8-unused-arguments
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+]
+ignore = [
+    "E501",  # Line length (handled by Black)
+    "B008",  # Do not perform function calls in argument defaults
+    "ARG001",  # Unused arguments (used by protocols)
+]
+
+[tool.ruff.isort]
+known-first-party = ["ml_backend"]
+known-third-party = ["numpy", "torch", "sklearn"]
+
+# MyPy type checking configuration
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+check_untyped_defs = true
+strict_optional = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+follow_imports = "normal"
+follow_imports_for_stubs = true
+ignore_missing_imports = false
+
+# Per-module overrides for packages without types
+[[tool.mypy.overrides]]
+module = [
+    "numpy.*",
+    "sklearn.*",
+    "scipy.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+    "--cov=ml_backend",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "gpu: marks tests requiring GPU",
+]
+asyncio_mode = "auto"
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+branch = true
+source = ["ml_backend"]
+omit = [
+    "*/tests/*",
+    "*/site-packages/*",
+    "*/__main__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@abc.abstractmethod",
+]
+precision = 2
+show_missing = true
+
+# Version management
+[tool.setuptools.dynamic]
+version = {attr = "ml_backend.__version__"}
+
+# Environment variables for Python 3.13 optimization
+# Set these in your shell startup or CI/CD pipeline:
+# export PYTHONOPTIMIZE=2           # Enable JIT compilation
+# export PYTHONJITCOUNTER=100       # JIT compilation threshold
+# export PYTHONDONTWRITEBYTECODE=0  # Generate .pyc files
+# export PYTHONUNBUFFERED=1         # Unbuffered output
+# export PYTHONHASHSEED=0           # Reproducible hashing
