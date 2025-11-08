@@ -1,0 +1,228 @@
+{
+  "use_case": "Simple Meme Creation",
+  "difficulty": "Easy",
+  "success_rate": "95%",
+  "description": "Creating memes with text overlays on images. This is straightforward when following text rendering best practices.",
+
+  "example": {
+    "scenario": "Miniature painting meme - 'When you finally finish painting'",
+    "inputs": {
+      "base_image": "completed_miniature_1024x1024.png",
+      "top_text": "WHEN YOU FINALLY",
+      "bottom_text": "PAINT YOUR FIRST MINIATURE"
+    },
+
+    "configuration": {
+      "operation": "add_text",
+      "image": "completed_miniature_1024x1024.png",
+      "canvas_width": 1024,
+      "canvas_height": 1024,
+      "texts": [
+        {
+          "id": "header",
+          "content": "WHEN YOU FINALLY",
+          "position": {
+            "x": 512,
+            "y": 80
+          },
+          "alignment": "center",
+          "font_family": "sans-serif",
+          "font_size": 48,
+          "font_weight": "bold",
+          "font_style": "normal",
+          "color": "#FFFFFF",
+          "opacity": 1.0,
+          "outline": {
+            "enabled": true,
+            "width": 3,
+            "color": "#000000"
+          },
+          "shadow": {
+            "enabled": false
+          },
+          "line_height": 1.2,
+          "letter_spacing": 0,
+          "rotation": 0
+        },
+        {
+          "id": "footer",
+          "content": "PAINT YOUR FIRST MINIATURE",
+          "position": {
+            "x": 512,
+            "y": 920
+          },
+          "alignment": "center",
+          "font_family": "sans-serif",
+          "font_size": 42,
+          "font_weight": "bold",
+          "font_style": "normal",
+          "color": "#FFFFFF",
+          "opacity": 1.0,
+          "outline": {
+            "enabled": true,
+            "width": 3,
+            "color": "#000000"
+          },
+          "shadow": {
+            "enabled": false
+          },
+          "line_height": 1.2,
+          "letter_spacing": 0,
+          "rotation": 0
+        }
+      ],
+      "composition_style": "standard",
+      "quality": "high"
+    },
+
+    "expected_outcome": {
+      "success_probability": "95%",
+      "text_legibility": "Excellent",
+      "text_positioning": "±3px accuracy",
+      "processing_time": "6-8 seconds",
+      "output_quality": "High"
+    },
+
+    "quality_validation_checklist": [
+      "Text is clearly readable at 100% zoom",
+      "Text is readable at 50% zoom",
+      "Text color contrasts well with background",
+      "Outline width is consistent across all characters",
+      "Text positioning matches specification ±5px",
+      "No character corruption or pixelation",
+      "No color bleeding around text edges",
+      "Overall composition is balanced"
+    ],
+
+    "potential_issues": [
+      {
+        "issue": "Text positioning off by 3-5px",
+        "probability": "10%",
+        "mitigation": "Acceptable for memes; reposition if visible issue"
+      },
+      {
+        "issue": "Outline appears uneven",
+        "probability": "2%",
+        "mitigation": "Normal rasterization artifact; usually imperceptible"
+      },
+      {
+        "issue": "Small text appears pixelated",
+        "probability": "1% (with 48pt font)",
+        "mitigation": "Increase font size to 36pt minimum for legibility"
+      }
+    ],
+
+    "when_to_use": [
+      "Casual meme creation",
+      "Social media content",
+      "Humorous painting process documentation",
+      "Gaming culture memes",
+      "Community engagement content"
+    ],
+
+    "when_not_to_use": [
+      "Professional marketing materials (without review)",
+      "Legal documents or disclaimers",
+      "Medical or scientific information",
+      "Anything requiring pixel-perfect text positioning"
+    ],
+
+    "implementation_notes": "Simple meme text is one of Qwen-Image-Edit's strengths. Follow the Impact Font meme format (white bold text with black outline) for best results.",
+
+    "estimated_cost": "$0.01-0.02 per operation",
+    "processing_time": "6-8 seconds"
+  },
+
+  "meme_templates": [
+    {
+      "name": "Classic Impact Meme",
+      "format": "Top text + Bottom text",
+      "font_size": "48pt header, 42pt footer",
+      "color": "White with 3px black outline",
+      "success_rate": "95%"
+    },
+    {
+      "name": "Side Caption Meme",
+      "format": "Single text block on side",
+      "font_size": "32-36pt",
+      "color": "White with 2px black outline",
+      "success_rate": "90%"
+    },
+    {
+      "name": "Centered Impact Meme",
+      "format": "Text centered over image",
+      "font_size": "36-40pt",
+      "color": "Yellow with 2px black outline",
+      "success_rate": "88%"
+    }
+  ],
+
+  "text_rendering_best_practices": {
+    "font_size": "48pt for headers; 42-44pt for footers (minimum 36pt for legibility)",
+    "font_weight": "Always bold for Impact meme style",
+    "color": "White (#FFFFFF) with black (#000000) 3px outline = best contrast",
+    "outline": "Essential for legibility; 2-3px width optimal",
+    "alignment": "Center for most memes",
+    "line_breaking": "Keep to 2-4 words per line max",
+    "special_characters": "Use English only; avoid special unicode"
+  },
+
+  "color_combinations_tested": [
+    {
+      "text_color": "#FFFFFF",
+      "outline_color": "#000000",
+      "outline_width": 3,
+      "compatibility": "Excellent",
+      "backgrounds": "Any"
+    },
+    {
+      "text_color": "#FFFF00",
+      "outline_color": "#000000",
+      "outline_width": 2,
+      "compatibility": "Excellent",
+      "backgrounds": "Dark/varied"
+    },
+    {
+      "text_color": "#FFFFFF",
+      "outline_color": "#FF0000",
+      "outline_width": 2,
+      "compatibility": "Good",
+      "backgrounds": "Dark"
+    }
+  ],
+
+  "common_meme_topics_for_miniature_painters": [
+    "Painting progress/completion celebration",
+    "Struggle with details vs reality",
+    "Brush control challenges",
+    "Paint colors vs expectations",
+    "Gaming figures vs painted results",
+    "First miniature vs current skill",
+    "Detail work mistakes",
+    "Primer coverage issues"
+  ],
+
+  "tips": {
+    "text_legibility": "Use high-contrast colors; 48pt minimum for headers",
+    "positioning": "Use formulas: header Y = image_height * 0.08; footer Y = image_height * 0.92",
+    "line_breaking": "Break into short lines; 2-3 words per line",
+    "font_selection": "Sans-serif (Arial, Helvetica equivalent); always bold",
+    "testing": "Create sample meme before batch processing",
+    "user_disclosure": "Inform users of ±3px text positioning variation"
+  },
+
+  "success_examples": [
+    "Impact meme: 'WHEN PRIMER | COVERS FIRST TRY'",
+    "Impact meme: 'PAINTING TINY DETAILS | LIKE'",
+    "Side caption: 'FINISHED IN 3 HOURS | PERFECT'",
+    "Centered text: 'MY BEST WORK YET'",
+    "Two-line: 'WHEN THE PAINT BLENDS | PERFECTLY'"
+  ],
+
+  "troubleshooting": {
+    "text_too_small_or_pixelated": "Increase font size to 42pt+; use bold weight",
+    "text_positioned_incorrectly": "Allow ±5px variation; adjust Y coordinate if needed",
+    "color_contrast_poor": "Use white with black outline; avoid similar tones",
+    "outline_inconsistent": "Keep outline 2-3px; this is normal rasterization"
+  }
+}

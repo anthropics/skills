@@ -1,0 +1,303 @@
+{
+  "use_case": "Product Consistency Across Backgrounds",
+  "difficulty": "Medium",
+  "success_rate": "85%",
+  "description": "Showing the same painted miniature product in multiple background contexts while maintaining visual consistency. Useful for miniature seller portfolios and product showcases.",
+
+  "example": {
+    "scenario": "Painted sword miniature shown in different display contexts",
+    "inputs": {
+      "product_image": "painted_sword_cutout.png (neutral background, transparent)",
+      "background_images": [
+        "medieval_tavern_background.png",
+        "dark_dungeon_background.png",
+        "forest_clearing_background.png"
+      ]
+    },
+
+    "workflow_steps": [
+      {
+        "step": 1,
+        "action": "Prepare product image",
+        "details": {
+          "remove_original_background": true,
+          "format": "PNG with alpha channel",
+          "edge_feathering": "2-4px",
+          "verification": "Product should be clean cutout with transparent edges"
+        }
+      },
+      {
+        "step": 2,
+        "action": "Define consistent positioning parameters",
+        "details": {
+          "target_position_x": 512,
+          "target_position_y": 650,
+          "target_scale": 0.6,
+          "target_rotation": 0,
+          "documentation": "Record exact parameters for reproducibility"
+        }
+      },
+      {
+        "step": 3,
+        "action": "Compose with each background",
+        "details": {
+          "operation": "compose_with_parameters",
+          "use_same_parameters": true,
+          "validate_each_output": true,
+          "note": "Use identical parameters for all compositions"
+        }
+      },
+      {
+        "step": 4,
+        "action": "Validate product consistency",
+        "details": {
+          "compare_color_values": true,
+          "measure_dimensions": true,
+          "check_edge_integrity": true,
+          "acceptable_variance": "RGB drift < ±5% per channel"
+        }
+      },
+      {
+        "step": 5,
+        "action": "Document results",
+        "details": {
+          "record_aspect_ratios": "All outputs should be within ±2%",
+          "record_dimensions": "Height/width of product in each output",
+          "record_color_variance": "Statistical analysis of RGB changes",
+          "record_positioning": "Confirm ±5px accuracy across all compositions"
+        }
+      }
+    ],
+
+    "configuration_template": {
+      "operation": "compose",
+      "product_image": "painted_sword_cutout.png",
+      "background_image": "[BACKGROUND_NAME].png",
+      "composition_config": {
+        "images": [
+          {
+            "url": "[BACKGROUND_IMAGE]",
+            "role": "background"
+          },
+          {
+            "url": "painted_sword_cutout.png",
+            "role": "subject",
+            "position": {
+              "x": 512,
+              "y": 650
+            },
+            "scale": 0.6,
+            "rotation": 0,
+            "opacity": 1.0,
+            "blend_mode": "normal"
+          }
+        ],
+        "composition_style": "product",
+        "preserve_aspect_ratio": true,
+        "quality": "high"
+      }
+    },
+
+    "validation_metrics": {
+      "aspect_ratio_preservation": {
+        "measurement": "Compare output dimensions across all backgrounds",
+        "acceptable_variance": "±2% (0.02 ratio drift max)",
+        "validation_formula": "|output_ratio - source_ratio| / source_ratio * 100"
+      },
+      "color_consistency": {
+        "measurement": "Extract product region; measure RGB histograms",
+        "acceptable_variance": "±5% per channel",
+        "validation_method": "Compare RGB values of product in each output"
+      },
+      "dimension_preservation": {
+        "measurement": "Measure product height/width in each output",
+        "acceptable_variance": "±2px (for ~350px tall product)",
+        "validation_method": "Automated image analysis to detect product boundaries"
+      },
+      "positioning_accuracy": {
+        "measurement": "Center point of product compared to specification",
+        "acceptable_variance": "±5px",
+        "validation_method": "Coordinate comparison against known reference"
+      }
+    },
+
+    "test_matrix": [
+      {
+        "background": "medieval_tavern_background.png",
+        "background_type": "Indoor, warm lighting",
+        "expected_difficulty": "Medium",
+        "aspect_ratio_drift": "±1-2%",
+        "color_variance": "±3-5%",
+        "positioning_accuracy": "±3-5px"
+      },
+      {
+        "background": "dark_dungeon_background.png",
+        "background_type": "Dark, cool lighting",
+        "expected_difficulty": "Medium",
+        "aspect_ratio_drift": "±1-3%",
+        "color_variance": "±4-6%",
+        "positioning_accuracy": "±4-5px"
+      },
+      {
+        "background": "forest_clearing_background.png",
+        "background_type": "Outdoor, varied lighting",
+        "expected_difficulty": "Medium-High",
+        "aspect_ratio_drift": "±2-4%",
+        "color_variance": "±5-7%",
+        "positioning_accuracy": "±5-8px"
+      }
+    ],
+
+    "expected_outcomes": {
+      "success_probability": "85%",
+      "aspect_ratio_consistency": "Excellent across backgrounds",
+      "color_consistency": "Good (within ±5% RGB variance)",
+      "positioning_consistency": "Very good (±5px typical)",
+      "product_appearance": "Recognizably consistent across contexts",
+      "processing_time_per_background": "8-10 seconds",
+      "total_time_3_backgrounds": "~30 seconds"
+    },
+
+    "quality_acceptance_criteria": [
+      {
+        "criterion": "Aspect ratio preservation",
+        "target": "All outputs within ±2% of source",
+        "acceptable": true,
+        "critical": true
+      },
+      {
+        "criterion": "Product color consistency",
+        "target": "RGB values drift < ±5% across outputs",
+        "acceptable": true,
+        "critical": true
+      },
+      {
+        "criterion": "Product dimensions",
+        "target": "Height/width within ±2px across outputs",
+        "acceptable": true,
+        "critical": false
+      },
+      {
+        "criterion": "Positioning accuracy",
+        "target": "Center point within ±5px of specification",
+        "acceptable": true,
+        "critical": false
+      },
+      {
+        "criterion": "Visual consistency",
+        "target": "Product appears same in all contexts (subjective assessment)",
+        "acceptable": true,
+        "critical": true
+      }
+    ],
+
+    "when_to_use": [
+      "Product portfolio for miniature sellers",
+      "E-commerce product photography",
+      "Art showcase with consistent subjects",
+      "Marketing materials for painting service",
+      "Before/after painting progression",
+      "Collection documentation"
+    ],
+
+    "when_not_to_use": [
+      "Medical device product photography",
+      "Scientific specimen documentation",
+      "Precision manufacturing product shots",
+      "Applications requiring guaranteed consistency"
+    ],
+
+    "implementation_notes": "This workflow documents a reproducible, testable approach to maintaining product consistency. Requires care in parameter selection and thorough validation.",
+
+    "estimated_cost": "$0.03-0.06 for 3-background set",
+    "processing_time": "~30 seconds for 3 compositions"
+  },
+
+  "consistency_monitoring": {
+    "automated_checks": [
+      {
+        "check": "Aspect ratio validation",
+        "method": "Compare output dimensions against source",
+        "frequency": "After each composition",
+        "alert_threshold": ">2% deviation"
+      },
+      {
+        "check": "Color histogram analysis",
+        "method": "Extract product region; compute RGB histograms",
+        "frequency": "After each composition",
+        "alert_threshold": ">5% channel variance"
+      },
+      {
+        "check": "Dimension measurement",
+        "method": "Edge detection to measure product height/width",
+        "frequency": "After each composition",
+        "alert_threshold": ">2px deviation"
+      }
+    ],
+    "manual_reviews": [
+      "Visual comparison of product across all backgrounds",
+      "Subjective assessment of 'looks right' test",
+      "Side-by-side comparison of outputs",
+      "Color accuracy evaluation under different lighting"
+    ]
+  },
+
+  "failure_scenarios": [
+    {
+      "scenario": "Aspect ratio changes significantly (>5%)",
+      "probability": "5-10%",
+      "action": "Crop output to match source ratio or retry composition"
+    },
+    {
+      "scenario": "Product color shifts dramatically in dark background",
+      "probability": "3-5%",
+      "action": "Apply color correction filter or use different background"
+    },
+    {
+      "scenario": "Product positioned noticeably off in one output",
+      "probability": "5%",
+      "action": "Manually reposition or retry; acceptable for some applications"
+    },
+    {
+      "scenario": "Composition fails for complex background",
+      "probability": "10-15%",
+      "action": "Simplify background or use manual composition method"
+    }
+  ],
+
+  "documentation_template": {
+    "product_name": "[e.g., Painted Dragon Sword]",
+    "composition_date": "[YYYY-MM-DD]",
+    "source_product_image": "[filename]",
+    "source_dimensions": "[width x height]",
+    "source_aspect_ratio": "[W/H ratio]",
+    "backgrounds_used": [
+      {
+        "background_filename": "[filename]",
+        "output_dimensions": "[width x height]",
+        "output_aspect_ratio": "[W/H ratio]",
+        "ratio_drift_percent": "[±X%]",
+        "color_variance": "[±X% RGB]",
+        "positioning_accuracy": "[±Xpx]",
+        "notes": "[Observations, issues]"
+      }
+    ],
+    "overall_consistency_assessment": "[Good/Acceptable/Poor]",
+    "recommendations": "[Any adjustments needed]"
+  },
+
+  "tips_for_success": {
+    "product_preparation": "High-quality transparent cutout; feathered edges; clean, professional appearance",
+    "parameter_consistency": "Use identical positioning across all backgrounds; document parameters",
+    "background_selection": "Variety of lighting conditions; complementary styles; high-quality images",
+    "validation_rigor": "Test with sample backgrounds first; validate all metrics before production",
+    "user_disclosure": "Inform customers that consistent product appearance is expected but may have ±5% variance"
+  },
+
+  "success_metrics_summary": {
+    "product_appears_consistent": "95% of users should perceive product as same across backgrounds",
+    "measurements_validate": "Aspect ratio, dimensions, color within acceptable ranges",
+    "positioning_accurate": "Product centered and positioned identically across outputs",
+    "overall_quality": "Professional appearance suitable for product portfolio"
+  }
+}

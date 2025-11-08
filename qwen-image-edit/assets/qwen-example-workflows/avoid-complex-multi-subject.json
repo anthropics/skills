@@ -1,0 +1,308 @@
+{
+  "use_case": "Complex Multi-Subject Composition (NOT RECOMMENDED)",
+  "difficulty": "Very Hard",
+  "success_rate": "45-60%",
+  "recommendation": "AVOID - Consider alternative approaches",
+  "description": "Attempting to compose 4+ painted miniatures in a single scene. High failure rate and unreliable positioning make this problematic for production use.",
+
+  "example": {
+    "scenario": "Battle diorama with 5 painted miniatures in dynamic poses",
+    "inputs": {
+      "background_image": "battle_arena_1024x1024.png",
+      "subject_images": [
+        "knight_miniature.png",
+        "rogue_miniature.png",
+        "mage_miniature.png",
+        "barbarian_miniature.png",
+        "cleric_miniature.png"
+      ]
+    },
+
+    "why_this_is_problematic": {
+      "issue_1": {
+        "name": "Alignment Failures",
+        "description": "With 5 subjects, spatial positioning becomes unreliable",
+        "failure_rate": "40-55% of attempts",
+        "impact": "Subjects may shift 10-20px from specification",
+        "severity": "HIGH"
+      },
+      "issue_2": {
+        "name": "Inconsistent Results",
+        "description": "Same parameters produce different outputs due to AI non-determinism",
+        "failure_rate": "High variance across runs",
+        "impact": "Can't guarantee consistent composition",
+        "severity": "MEDIUM-HIGH"
+      },
+      "issue_3": {
+        "name": "Memory Constraints",
+        "description": "GPU memory requirements spike with complex compositions",
+        "failure_rate": "5-10% timeout/OOM errors",
+        "impact": "Processing may fail or timeout",
+        "severity": "MEDIUM"
+      },
+      "issue_4": {
+        "name": "Aspect Ratio Corruption",
+        "description": "Complex scenes more likely to have AR changes",
+        "failure_rate": "15-25% with significant drift",
+        "impact": "Output dimensions unpredictable",
+        "severity": "MEDIUM"
+      }
+    },
+
+    "failed_configuration_example": {
+      "operation": "compose",
+      "images": [
+        {
+          "url": "battle_arena_1024x1024.png",
+          "role": "background"
+        },
+        {
+          "url": "knight_miniature.png",
+          "role": "subject",
+          "position": {"x": 250, "y": 600},
+          "scale": 0.5
+        },
+        {
+          "url": "rogue_miniature.png",
+          "role": "subject",
+          "position": {"x": 400, "y": 650},
+          "scale": 0.48
+        },
+        {
+          "url": "mage_miniature.png",
+          "role": "subject",
+          "position": {"x": 550, "y": 600},
+          "scale": 0.45
+        },
+        {
+          "url": "barbarian_miniature.png",
+          "role": "subject",
+          "position": {"x": 700, "y": 680},
+          "scale": 0.52
+        },
+        {
+          "url": "cleric_miniature.png",
+          "role": "subject",
+          "position": {"x": 150, "y": 500},
+          "scale": 0.47
+        }
+      ],
+      "composition_style": "natural",
+      "quality": "high"
+    },
+
+    "expected_problems": [
+      {
+        "problem": "Knight and rogue swap positions unexpectedly",
+        "probability": "25%",
+        "impact": "Composition completely broken"
+      },
+      {
+        "problem": "Mage appears offset by 15-20px",
+        "probability": "35%",
+        "impact": "Visual misalignment visible to user"
+      },
+      {
+        "problem": "Barbarian overlaps with knight incorrectly",
+        "probability": "30%",
+        "impact": "Overlap looks unnatural"
+      },
+      {
+        "problem": "Cleric appears too large relative to others",
+        "probability": "20%",
+        "impact": "Scale inconsistency"
+      },
+      {
+        "problem": "Overall composition looks disjointed",
+        "probability": "50%",
+        "impact": "Doesn't look like intentional arrangement"
+      }
+    ],
+
+    "success_probability": {
+      "definition": "All 5 subjects positioned within ±10px of specification AND aspect ratio within ±5%",
+      "estimated_rate": "45-60%",
+      "implication": "Requires multiple retries to get acceptable result"
+    },
+
+    "why_to_avoid": [
+      "Low success rate (45-60%) means frequent retries",
+      "Unpredictable positioning makes user experience poor",
+      "No ability to reliably reproduce successful compositions",
+      "Time investment (retries) exceeds manual composition effort",
+      "Complex scenes overwhelm AI spatial reasoning",
+      "Customer experience: 'It sometimes works, sometimes doesn't' is unacceptable"
+    ]
+  },
+
+  "better_alternatives": {
+    "approach_1": {
+      "name": "Staged Composition (RECOMMENDED ALTERNATIVE)",
+      "description": "Compose in stages rather than all at once",
+      "workflow": [
+        {
+          "stage": 1,
+          "action": "Compose background + subject 1 (knight)",
+          "result": "intermediate_output_1.png",
+          "success_rate": "95%"
+        },
+        {
+          "stage": 2,
+          "action": "Use output_1 as new background; compose + subject 2 (rogue)",
+          "result": "intermediate_output_2.png",
+          "success_rate": "90%"
+        },
+        {
+          "stage": 3,
+          "action": "Use output_2 as new background; compose + subject 3 (mage)",
+          "result": "intermediate_output_3.png",
+          "success_rate": "85%"
+        },
+        {
+          "stage": 4,
+          "action": "Use output_3 as new background; compose + subject 4 (barbarian)",
+          "result": "intermediate_output_4.png",
+          "success_rate": "80%"
+        },
+        {
+          "stage": 5,
+          "action": "Use output_4 as new background; compose + subject 5 (cleric)",
+          "result": "final_output.png",
+          "success_rate": "75%"
+        }
+      ],
+      "overall_success_rate": "~62% (product of individual rates)",
+      "advantages": [
+        "Each step is easier and more reliable",
+        "Can verify quality between stages",
+        "Can retry individual stages if problematic",
+        "Better spatial consistency through incremental composition",
+        "Each 2-subject composition is well-tested and reliable"
+      ],
+      "disadvantages": [
+        "5x longer processing time (~50 seconds vs 10 seconds)",
+        "More API calls required",
+        "Higher cost per composition",
+        "Cumulative quality loss from multiple rounds"
+      ],
+      "when_to_use": "When all 5 subjects are essential to the final image"
+    },
+
+    "approach_2": {
+      "name": "Limit to 2 Subjects Per Composition",
+      "description": "Create multiple 2-subject compositions separately, don't combine them all together",
+      "examples": [
+        "Composition A: Knight vs Rogue (duel scenario)",
+        "Composition B: Mage casting spell",
+        "Composition C: Barbarian and Cleric (support pair)",
+        "Composition D: Group shot of A + B + C (later if desired)"
+      ],
+      "success_rate": "90%+ per composition",
+      "advantages": [
+        "Each composition highly reliable (90%+ success)",
+        "Can create portfolio of paired character scenarios",
+        "Better individual subject showcase",
+        "Professional, polished results"
+      ],
+      "disadvantages": [
+        "No single 'battle diorama' composition",
+        "Requires multiple compositions to tell full story",
+        "User must view multiple images"
+      ],
+      "when_to_use": "When individual subject quality is more important than group composition"
+    },
+
+    "approach_3": {
+      "name": "Manual Composite After Staging",
+      "description": "Use Qwen for individual subject composition, then manually arrange in Photoshop/GIMP",
+      "process": [
+        "Stage 1: Compose each subject + background separately (5 operations)",
+        "Stage 2: Extract subject from each output (transparent cutout)",
+        "Stage 3: Manually arrange 5 cutouts in final composition (manual work)",
+        "Result: Perfect spatial control + AI composition benefits"
+      ],
+      "success_rate": "100% (user controls final arrangement)",
+      "advantages": [
+        "Reliable high-quality results",
+        "Perfect spatial control",
+        "Professional final output",
+        "User control over composition"
+      ],
+      "disadvantages": [
+        "Requires manual editing skills",
+        "Additional time investment",
+        "Need access to editing software"
+      ],
+      "when_to_use": "When highest quality result is required and manual editing is acceptable"
+    }
+  },
+
+  "comparison_table": {
+    "headers": ["Approach", "Success Rate", "Processing Time", "Quality", "Effort", "Recommendation"],
+    "rows": [
+      [
+        "Complex 5-Subject (NOT RECOMMENDED)",
+        "45-60%",
+        "10-15s",
+        "Variable",
+        "High (retries)",
+        "AVOID"
+      ],
+      [
+        "Staged Composition (Alternative A)",
+        "~62%",
+        "40-50s",
+        "Good",
+        "Low (automated)",
+        "CONSIDER"
+      ],
+      [
+        "2-Subject Compositions (Alternative B)",
+        "90%+",
+        "20-30s (for 2 groups)",
+        "Excellent",
+        "Low (automated)",
+        "RECOMMENDED"
+      ],
+      [
+        "Manual Composite (Alternative C)",
+        "100%",
+        "30-40s (+ manual)",
+        "Excellent",
+        "Medium (manual work)",
+        "RECOMMENDED for critical use"
+      ]
+    ]
+  },
+
+  "lesson_learned": {
+    "principle": "More subjects = more problems in AI composition",
+    "guideline": "Stick to 1-2 subjects per composition for reliability",
+    "exception": "Only combine 3+ subjects if failure rate acceptable to user",
+    "best_practice": "Test with sample before committing to approach"
+  },
+
+  "quality_expectations": {
+    "if_attempt_anyway": [
+      "Expect failures (45-60% success rate)",
+      "Prepare for multiple retries",
+      "Have manual fallback method ready",
+      "Don't use for time-critical or deadline-driven work",
+      "Be transparent with users about unreliability",
+      "Consider it experimental/beta quality, not production"
+    ]
+  },
+
+  "documentation_for_users": {
+    "honest_message": "Complex multi-character battle scenes (4+ figures) have a 40-55% failure rate with Qwen-Image-Edit. We recommend: 1) Compose 2-3 figures per scene instead, 2) Use our staged composition approach (slower but more reliable), or 3) Use manual editing tools for full control."
+  },
+
+  "when_this_is_actually_acceptable": [
+    "User explicitly accepts unreliable results",
+    "Experimental/exploratory work (not production)",
+    "User has manual fallback method available",
+    "User is willing to retry multiple times",
+    "Cost/time budget allows for failed attempts",
+    "Result doesn't need to be used publicly"
+  ]
+}

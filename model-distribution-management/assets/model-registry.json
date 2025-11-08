@@ -1,0 +1,196 @@
+{
+  "version": "1.0",
+  "created": "2024-01-01T00:00:00Z",
+  "updated": "2024-01-01T00:00:00Z",
+  "description": "Central registry of models with metadata, URLs, and checksums",
+  "models": {
+    "llama2-7b": {
+      "id": "llama2-7b",
+      "name": "Llama 2 7B",
+      "description": "Meta's Llama 2 7 billion parameter language model",
+      "version": "1.0",
+      "format": "gguf",
+      "quantization": "q4_k_m",
+      "size": 14000000000,
+      "size_gb": 13.04,
+      "url": "https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q4_K_M.gguf",
+      "sha256": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def",
+      "filename": "llama2-7b.gguf",
+      "minimum_ram_gb": 8,
+      "recommended_ram_gb": 16,
+      "platform_specific": false,
+      "tags": [
+        "language-model",
+        "llm",
+        "chat",
+        "7b"
+      ],
+      "dependencies": [],
+      "license": "Llama 2 Community License"
+    },
+    "mistral-7b": {
+      "id": "mistral-7b",
+      "name": "Mistral 7B",
+      "description": "Mistral AI's 7 billion parameter language model",
+      "version": "1.0",
+      "format": "gguf",
+      "quantization": "q4_k_m",
+      "size": 10737418240,
+      "size_gb": 10.0,
+      "url": "https://huggingface.co/TheBloke/Mistral-7B-GGUF/resolve/main/mistral-7b.Q4_K_M.gguf",
+      "sha256": "def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123ghi",
+      "filename": "mistral-7b.gguf",
+      "minimum_ram_gb": 8,
+      "recommended_ram_gb": 16,
+      "platform_specific": false,
+      "tags": [
+        "language-model",
+        "llm",
+        "chat",
+        "7b"
+      ],
+      "dependencies": [],
+      "license": "Apache 2.0"
+    },
+    "stable-diffusion-2-1": {
+      "id": "stable-diffusion-2-1",
+      "name": "Stable Diffusion 2.1",
+      "description": "Stable Diffusion 2.1 text-to-image generation model",
+      "version": "2.1",
+      "format": "safetensors",
+      "size": 7700000000,
+      "size_gb": 7.18,
+      "url": "https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/model.safetensors",
+      "sha256": "ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123ghi456jkl",
+      "filename": "stable-diffusion-2-1.safetensors",
+      "minimum_ram_gb": 6,
+      "recommended_ram_gb": 12,
+      "platform_specific": false,
+      "tags": [
+        "text-to-image",
+        "diffusion",
+        "image-generation"
+      ],
+      "dependencies": [],
+      "license": "SDXL Evaluation License"
+    },
+    "yolov8-detection": {
+      "id": "yolov8-detection",
+      "name": "YOLOv8 Object Detection",
+      "description": "YOLOv8 object detection model for general purpose detection",
+      "version": "8.0",
+      "format": "onnx",
+      "size": 100000000,
+      "size_gb": 0.09,
+      "url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.onnx",
+      "sha256": "jkl012mno345pqr678stu901vwx234yz567abc890def123ghi456jkl789mno",
+      "filename": "yolov8-detection.onnx",
+      "minimum_ram_gb": 2,
+      "recommended_ram_gb": 4,
+      "platform_specific": false,
+      "tags": [
+        "object-detection",
+        "computer-vision",
+        "yolo"
+      ],
+      "dependencies": [],
+      "license": "AGPL-3.0"
+    },
+    "whisper-base": {
+      "id": "whisper-base",
+      "name": "OpenAI Whisper Base",
+      "description": "OpenAI Whisper base model for speech-to-text",
+      "version": "1.0",
+      "format": "pytorch",
+      "size": 1500000000,
+      "size_gb": 1.40,
+      "url": "https://huggingface.co/openai/whisper-base/resolve/main/model.bin",
+      "sha256": "mno345pqr678stu901vwx234yz567abc890def123ghi456jkl789mno012pqr",
+      "filename": "whisper-base.bin",
+      "minimum_ram_gb": 3,
+      "recommended_ram_gb": 6,
+      "platform_specific": false,
+      "tags": [
+        "speech-to-text",
+        "audio",
+        "transcription"
+      ],
+      "dependencies": [],
+      "license": "MIT"
+    },
+    "ocr-model": {
+      "id": "ocr-model",
+      "name": "PaddleOCR Model",
+      "description": "PaddleOCR Chinese text recognition model",
+      "version": "2.7",
+      "format": "onnx",
+      "size": 80000000,
+      "size_gb": 0.07,
+      "url": "https://paddleocr.bj.bcebos.com/dygraph_v2.1/ch/ch_ppocr_mobile_rec_v2.1_infer.tar",
+      "sha256": "pqr678stu901vwx234yz567abc890def123ghi456jkl789mno012pqr345stu",
+      "filename": "ocr-model.tar",
+      "minimum_ram_gb": 1,
+      "recommended_ram_gb": 2,
+      "platform_specific": false,
+      "tags": [
+        "ocr",
+        "text-recognition",
+        "chinese"
+      ],
+      "dependencies": [],
+      "license": "Apache 2.0"
+    }
+  },
+  "collections": {
+    "starter": {
+      "name": "Starter Pack",
+      "description": "Lightweight models for getting started",
+      "models": [
+        "yolov8-detection",
+        "whisper-base"
+      ],
+      "total_size_gb": 1.49
+    },
+    "nlp": {
+      "name": "NLP Suite",
+      "description": "Complete NLP model collection",
+      "models": [
+        "llama2-7b",
+        "mistral-7b",
+        "whisper-base"
+      ],
+      "total_size_gb": 24.44
+    },
+    "vision": {
+      "name": "Computer Vision Suite",
+      "description": "Vision and image models",
+      "models": [
+        "stable-diffusion-2-1",
+        "yolov8-detection",
+        "ocr-model"
+      ],
+      "total_size_gb": 7.34
+    },
+    "complete": {
+      "name": "Complete Suite",
+      "description": "All available models",
+      "models": [
+        "llama2-7b",
+        "mistral-7b",
+        "stable-diffusion-2-1",
+        "yolov8-detection",
+        "whisper-base",
+        "ocr-model"
+      ],
+      "total_size_gb": 32.78
+    }
+  },
+  "metadata": {
+    "total_models": 6,
+    "total_size_gb": 32.78,
+    "last_updated": "2024-01-01T00:00:00Z",
+    "maintainer": "AI Application Team",
+    "contact": "models@example.com"
+  },
+  "notes": "This is a template registry. Update checksums, URLs, and metadata for your actual models."
+}

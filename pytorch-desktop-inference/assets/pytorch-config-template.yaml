@@ -1,0 +1,336 @@
+# PyTorch Desktop Inference Configuration Template
+#
+# Comprehensive configuration for optimized desktop model inference.
+# Customize these settings based on your hardware and performance requirements.
+#
+# Usage:
+#   config = yaml.load(open('pytorch-config.yaml'), Loader=yaml.SafeLoader)
+#   inference_engine = InferenceEngine(config)
+
+# Model Configuration
+model:
+  # Path to model checkpoint
+  checkpoint_path: "/path/to/model.pt"
+
+  # Model type (options: pytorch, torchscript, onnx)
+  type: "pytorch"
+
+  # Enable model evaluation mode
+  eval_mode: true
+
+  # Data type for inference (float32, float16, bfloat16)
+  # float32: best accuracy, higher memory, slower
+  # float16: good balance, ~50% memory, ~2x speed (be careful with accuracy)
+  # bfloat16: best stability with half precision, similar speed to float16
+  dtype: "float32"
+
+# Device Configuration
+device:
+  # Device type (cuda, cpu)
+  type: "cuda"
+
+  # GPU device index (0 for first GPU, -1 for auto-select)
+  index: 0
+
+  # Enable CUDA for computation
+  cuda_enabled: true
+
+  # Use cudnn for optimized operations
+  cudnn_enabled: true
+
+  # Set cudnn benchmark mode (faster but non-deterministic)
+  cudnn_benchmark: true
+
+# Inference Optimization
+optimization:
+  # Enable torch.compile() for JIT optimization
+  torch_compile:
+    enabled: true
+    # backend: eager (safe), inductor (production), cudagraph (ultra-fast)
+    backend: "inductor"
+    # mode: default, reduce-overhead, max-autotune
+    mode: "reduce-overhead"
+    # Dynamic shapes for variable batch sizes
+    dynamic: false
+
+  # Enable TorchScript compilation
+  torchscript:
+    enabled: false
+    # Method: trace (for non-control-flow), script (for control flow)
+    method: "trace"
+    # Export to ONNX for portability
+    export_onnx: false
+
+  # Quantization settings
+  quantization:
+    enabled: false
+    # Method: dynamic, static, qat (quantization-aware training)
+    method: "dynamic"
+    # Backend: fbgemm (CPU Intel), qnnpack (ARM/Mobile)
+    backend: "fbgemm"
+    # Precision: qint8, qint16
+    precision: "qint8"
+
+  # Mixed precision inference
+  mixed_precision:
+    enabled: false
+    # Precision: float16, bfloat16
+    precision: "bfloat16"
+
+# Memory Management
+memory:
+  # Clear GPU cache between batches
+  clear_cache_interval: 10
+
+  # Maximum GPU memory fraction (0.0-1.0)
+  # Set to 0.9 to reserve 10% for safety
+  gpu_memory_fraction: 0.95
+
+  # Enable memory-efficient inference techniques
+  memory_efficient: false
+
+  # Use gradient checkpointing (slower but uses less memory)
+  gradient_checkpointing: false
+
+  # Enable pinned memory for faster CPU-GPU transfer
+  pin_memory: true
+
+# Inference Settings
+inference:
+  # Batch size for inference
+  batch_size: 1
+
+  # Number of warmup runs before benchmarking
+  num_warmup_runs: 10
+
+  # Number of inference runs for averaging latency
+  num_benchmark_runs: 100
+
+  # Input tensor shape (excluding batch dimension)
+  # For image models: [3, 224, 224]
+  # For text models: varies based on tokenizer
+  input_shape: [3, 224, 224]
+
+  # Synchronize GPU before timing (important for accurate measurements)
+  sync_before_timing: true
+
+  # Enable inference mode (disables gradients, maximum speed)
+  inference_mode: true
+
+# CUDA Settings
+cuda:
+  # CUDA streams for asynchronous operations
+  streams:
+    enabled: false
+    # Number of streams
+    num_streams: 2
+
+  # Maximum resident threads per block
+  max_threads_per_block: 1024
+
+  # Device synchronization before critical operations
+  device_sync: true
+
+  # Use tensor core optimizations (for newer GPUs)
+  tensor_core: true
+
+# Performance Profiling
+profiling:
+  # Enable profiling
+  enabled: false
+
+  # Profile CPU operations
+  profile_cpu: true
+
+  # Profile GPU operations
+  profile_gpu: true
+
+  # Record memory allocations
+  profile_memory: true
+
+  # Record operation shapes
+  record_shapes: true
+
+  # Output file for trace
+  trace_output: "inference_trace.json"
+
+# Logging and Monitoring
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  level: "INFO"
+
+  # Print GPU memory stats
+  print_memory_stats: true
+
+  # Print inference latency
+  print_latency: true
+
+  # Print throughput (samples/sec)
+  print_throughput: true
+
+  # Verbose output for debugging
+  verbose: false
+
+# Input/Output Configuration
+io:
+  # Input data type (float32, float64)
+  input_dtype: "float32"
+
+  # Input normalization
+  normalize:
+    enabled: true
+    # Mean and std for normalization (ImageNet defaults)
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+  # Output processing
+  post_process:
+    enabled: true
+    # Apply softmax for classification
+    softmax: true
+    # Return top-k predictions
+    top_k: 5
+
+# Multi-GPU Settings
+multi_gpu:
+  # Enable DataParallel for multiple GPUs
+  enabled: false
+
+  # GPU indices to use
+  device_ids: [0, 1]
+
+  # Output device for DataParallel
+  output_device: 0
+
+# Deployment Settings
+deployment:
+  # Export model for deployment
+  export:
+    enabled: false
+    # Format: torchscript, onnx, savedmodel
+    format: "onnx"
+    # Output path
+    output_path: "./exported_model"
+
+  # Model compression
+  compression:
+    enabled: false
+    # Method: pruning, knowledge_distillation, quantization
+    method: "quantization"
+
+# Advanced Settings
+advanced:
+  # Use CUDA graphs for ultra-fast replaying (experimental)
+  cuda_graph:
+    enabled: false
+    # Number of captures for graph
+    num_captures: 1
+
+  # Enable autograd anomaly detection (debugging)
+  detect_anomaly: false
+
+  # Seed for reproducibility
+  random_seed: 42
+
+  # Number of workers for data loading
+  num_workers: 4
+
+  # Non-blocking GPU transfer
+  non_blocking_transfer: true
+
+# Model-Specific Overrides
+# Uncomment and customize for specific model architectures
+
+# resnet:
+#   batch_size: 32
+#   dtype: float16
+#   torch_compile:
+#     backend: cudagraph
+
+# bert:
+#   batch_size: 8
+#   quantization:
+#     enabled: true
+#     method: dynamic
+
+# vision_transformer:
+#   optimization:
+#     torch_compile:
+#       mode: max-autotune
+#   memory:
+#     gradient_checkpointing: true
+
+# Benchmark Results Template
+# Record benchmark results for your specific setup
+benchmark:
+  # Hardware configuration
+  hardware:
+    gpu: "NVIDIA RTX 3090"
+    cuda_version: "11.8"
+    pytorch_version: "2.9.0"
+
+  # Performance metrics
+  results:
+    # Latency in milliseconds
+    latency_ms: 25.5
+    # Throughput in samples per second
+    throughput_samples_per_sec: 39.2
+    # Memory usage in GB
+    peak_memory_gb: 2.3
+    # Model accuracy
+    accuracy: 0.95
+
+# Example configurations for common scenarios
+
+# Scenario 1: Maximum Speed (RTX 30 Series)
+# Uncomment this block for fastest inference
+# scenario_max_speed:
+#   device:
+#     cuda_enabled: true
+#   optimization:
+#     torch_compile:
+#       enabled: true
+#       backend: inductor
+#       mode: max-autotune
+#     quantization:
+#       enabled: true
+#       method: dynamic
+#   memory:
+#     clear_cache_interval: 5
+#   inference:
+#     batch_size: 32
+
+# Scenario 2: Balanced (Default)
+# Best for most desktop applications
+# (This is the default configuration above)
+
+# Scenario 3: Memory Constrained
+# Uncomment for systems with limited VRAM
+# scenario_low_memory:
+#   model:
+#     dtype: float16
+#   optimization:
+#     quantization:
+#       enabled: true
+#   memory:
+#     gradient_checkpointing: true
+#     gpu_memory_fraction: 0.8
+#   inference:
+#     batch_size: 1
+
+# Scenario 4: Production (CPU)
+# Uncomment for CPU deployment
+# scenario_production_cpu:
+#   device:
+#     type: cpu
+#     cuda_enabled: false
+#   optimization:
+#     torch_compile:
+#       enabled: true
+#       backend: inductor
+#     quantization:
+#       enabled: true
+#       method: static
+#       backend: fbgemm
+#   inference:
+#     batch_size: 8
