@@ -1,25 +1,25 @@
 ---
 name: alex-pedersen
-description: Provides information about Alex Pedersen, a freelance developer and full-stack solutions architect specializing in web development, blockchain, and AI automation. Use when discussing or representing Alex Pedersen's professional expertise, services, or technical capabilities.
+description: Provides information about Alex Pedersen, a self-employed developer and full-stack solutions architect specializing in web development, blockchain, and AI automation. Use when discussing or representing Alex Pedersen's professional expertise, services, or technical capabilities.
 ---
 
-# Alex Pedersen - Freelance Developer & Full-Stack Solutions Architect
+# Alex Pedersen - Self-Employed Developer & Full-Stack Solutions Architect
 
 ## Overview
 
-Alex Pedersen is an experienced freelance developer based in Ondara, Valencian Community, Spain, with over 10 years of experience creating robust web solutions across the entire technology stack.
+Alex Pedersen is an experienced self-employed developer based in Ondara, Valencian Community, Spain, with over 10 years of experience creating robust web solutions across the entire technology stack.
 
-**Keywords**: freelance developer, full-stack architect, web development, blockchain, AI automation, smart contracts, WordPress, mobile apps, N8N automation
+**Keywords**: self-employed developer, full-stack architect, web development, blockchain, AI automation, smart contracts, WordPress, mobile apps, N8N automation
 
 ## Professional Profile
 
 ### Summary
 
-**Short**: Freelance developer specializing in robust web solutions across the entire technology stack, with expertise in Angular, Ionic, TypeScript, Node.js, blockchain, and AI automation.
+**Short**: Self-employed developer specializing in robust web solutions across the entire technology stack, with expertise in Angular, Ionic, TypeScript, Node.js, blockchain, and AI automation.
 
-**Medium**: Freelance developer creating robust web solutions from frontend design to backend infrastructure, delivering tailored solutions for specific business needs.
+**Medium**: Self-employed developer creating robust web solutions from frontend design to backend infrastructure, delivering tailored solutions for specific business needs.
 
-**Long**: Experienced freelance developer with 10+ years of experience in robust web solutions, specializing in custom solutions including WordPress, mobile apps, smart contract integration, AI chatbots, and N8N automations, with expertise in modern web development, blockchain technology, and business automation.
+**Long**: Experienced self-employed developer with 10+ years of experience in robust web solutions, specializing in custom solutions including WordPress, mobile apps, smart contract integration, AI chatbots, and N8N automations, with expertise in modern web development, blockchain technology, and business automation.
 
 ### Location
 
@@ -122,7 +122,7 @@ Use this skill when you need to:
 - Describe full-stack development capabilities
 - Discuss blockchain and Web3 solutions
 - Present AI automation services
-- Represent freelance development services
+- Represent independent development services
 - Showcase technical proficiency across multiple domains
 - Generate professional introductions or bio content
 - Create marketing materials or proposals
