@@ -121,10 +121,6 @@ def extract_recursive(cell):
     return '\n'.join(text_parts)
 ```
 
-**References:**
-- [Stack Overflow: nested table extraction](https://stackoverflow.com/questions/64334884/)
-- [python-docx tables documentation](https://python-docx.readthedocs.io/en/latest/user/tables.html)
-
 ## Creating a new Word document
 
 When creating a new Word document from scratch, use **docx-js**, which allows you to create Word documents using JavaScript/TypeScript.
