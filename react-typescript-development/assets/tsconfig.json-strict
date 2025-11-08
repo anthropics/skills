@@ -1,0 +1,100 @@
+{
+  "compilerOptions": {
+    /**
+     * LANGUAGE AND ENVIRONMENT
+     * Core TypeScript settings for language features and runtime
+     */
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "useDefineForClassFields": true,
+    "experimentalDecorators": true,
+
+    /**
+     * MODULES
+     * Module resolution and emission settings
+     */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+
+    /**
+     * STRICT TYPE CHECKING
+     * Maximum type safety settings - all should be true in production
+     */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "useUnknownInCatchVariables": true,
+
+    /**
+     * ADDITIONAL CHECKS
+     * Extra safety checks for code quality
+     */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+
+    /**
+     * EMIT SETTINGS
+     * Control how files are generated
+     */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "newLine": "lf",
+
+    /**
+     * INTEROPERABILITY
+     * Compatibility with CommonJS and other modules
+     */
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+
+    /**
+     * PERFORMANCE & OPTIMIZATION
+     */
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+
+    /**
+     * PATH MAPPING
+     * Configure path aliases for cleaner imports
+     */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
+      "@types/*": ["src/types/*"],
+      "@stores/*": ["src/stores/*"],
+      "@contexts/*": ["src/contexts/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx"
+  ]
+}
