@@ -1,0 +1,102 @@
+; NSIS Script for Windows Installer
+; AI Miniature Repainting Application
+
+!include "MUI2.nsh"
+!include "x64.nsh"
+
+; Basic Configuration
+Name "AI Miniature Repainting"
+OutFile "AI-Miniature-Repainting-Setup.exe"
+InstallDir "$PROGRAMFILES\AIRepainting"
+InstallDirRegKey HKCU "Software\AIRepainting" "InstallPath"
+
+; Request admin privileges
+RequestExecutionLevel admin
+
+; MUI Settings
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "LICENSE.txt"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_LANGUAGE "English"
+
+; Version Information
+VIProductVersion "1.0.0.0"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "AI Miniature Repainting"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "1.0.0"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "CompanyName" "Your Company"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "AI-powered desktop application for miniature repainting"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "1.0.0.0"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright 2024"
+
+; Installer Sections
+Section "Install"
+  SetOutPath "$INSTDIR"
+
+  ; Copy application files
+  File "ai-repainting.exe"
+  File "ai-repainting.dll"
+
+  ; Copy resources
+  SetOutPath "$INSTDIR\resources"
+  File /r "resources\*.*"
+
+  ; Copy CUDA/GPU libraries if bundled
+  SetOutPath "$INSTDIR\cuda"
+  File /r "cuda\*.dll"
+
+  ; Store installation path
+  WriteRegStr HKCU "Software\AIRepainting" "InstallPath" "$INSTDIR"
+
+  ; Create uninstaller
+  WriteUninstaller "$INSTDIR\uninstall.exe"
+
+  ; Create Start Menu shortcuts
+  SetOutPath "$SMPROGRAMS"
+  CreateDirectory "$SMPROGRAMS\AIRepainting"
+  CreateShortcut "$SMPROGRAMS\AIRepainting\AI Miniature Repainting.lnk" "$INSTDIR\ai-repainting.exe"
+  CreateShortcut "$SMPROGRAMS\AIRepainting\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+
+  ; Create Desktop shortcut
+  CreateShortcut "$DESKTOP\AI Miniature Repainting.lnk" "$INSTDIR\ai-repainting.exe"
+
+  ; Add to Programs list
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting" \
+    "DisplayName" "AI Miniature Repainting"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting" \
+    "UninstallString" "$INSTDIR\uninstall.exe"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting" \
+    "DisplayVersion" "1.0.0"
+  WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting" \
+    "Publisher" "Your Company"
+SectionEnd
+
+; Uninstall Section
+Section "Uninstall"
+  ; Remove Start Menu items
+  RMDir /r "$SMPROGRAMS\AIRepainting"
+
+  ; Remove Desktop shortcut
+  Delete "$DESKTOP\AI Miniature Repainting.lnk"
+
+  ; Remove application files
+  RMDir /r "$INSTDIR"
+
+  ; Remove registry entries
+  DeleteRegKey HKCU "Software\AIRepainting"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting"
+SectionEnd
+
+; Descriptions
+LangString DESC_Install ${LANG_ENGLISH} "Install AI Miniature Repainting application"
+
+; Functions
+Function .onInit
+  ${If} ${RunningX64}
+    DetailPrint "64-bit system detected"
+  ${Else}
+    DetailPrint "32-bit system detected"
+  ${EndIf}
+FunctionEnd

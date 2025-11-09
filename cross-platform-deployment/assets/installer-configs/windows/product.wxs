@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- WiX Configuration for AI Miniature Repainting MSI Installer -->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <!-- Product Element: Defines the installer properties -->
+  <Product
+    Id="*"
+    Name="AI Miniature Repainting"
+    Language="1033"
+    Version="1.0.0.0"
+    Manufacturer="Your Company"
+    UpgradeCode="12345678-1234-1234-1234-123456789012">
+
+    <!-- Package Element: Installer metadata -->
+    <Package
+      InstallerVersion="500"
+      Compressed="yes"
+      InstallScope="perMachine"
+      AdminImage="no"
+      Description="AI-powered desktop application for miniature repainting"
+      Manufacturer="Your Company"
+      Keywords="AI, Repainting, Desktop, Machine Learning"/>
+
+    <!-- Media Element: Defines installer cab file -->
+    <Media
+      Id="1"
+      Cabinet="application.cab"
+      EmbedCab="yes"
+      DiskPrompt="Installation Media"/>
+
+    <!-- License and branding -->
+    <WixVariable
+      Id="WixUILicenseRtf"
+      Value="path\to\license.rtf"/>
+
+    <!-- Defines what gets installed -->
+    <Feature
+      Id="ProductFeature"
+      Title="AI Miniature Repainting"
+      Level="1"
+      Description="AI-powered miniature repainting assistant"
+      InstallDefault="local">
+
+      <ComponentRef Id="InstallDir"/>
+      <ComponentRef Id="ApplicationShortcuts"/>
+      <ComponentRef Id="UninstallShortcut"/>
+      <ComponentRef Id="EnvironmentVariables"/>
+
+      <!-- Optional GPU support component -->
+      <Feature
+        Id="GPUSupport"
+        Title="GPU Acceleration (CUDA)"
+        Level="2"
+        Description="Optional NVIDIA GPU acceleration support">
+        <ComponentRef Id="CUDALibraries"/>
+      </Feature>
+    </Feature>
+
+    <!-- Directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <!-- Program Files -->
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="AIRepainting"/>
+      </Directory>
+
+      <!-- Start Menu Programs -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="AIRepainting"/>
+      </Directory>
+
+      <!-- Desktop -->
+      <Directory Id="DesktopFolder" Name="Desktop"/>
+    </Directory>
+
+    <!-- Installation content -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <!-- Main application files -->
+      <Component
+        Id="InstallDir"
+        Guid="87654321-4321-4321-4321-210987654321"
+        Win64="yes">
+
+        <!-- Application executable -->
+        <File
+          Id="MainExecutable"
+          Name="ai-repainting.exe"
+          Source="path\to\ai-repainting.exe"
+          KeyPath="yes"
+          Vital="yes"/>
+
+        <!-- Application DLL -->
+        <File
+          Id="MainDLL"
+          Name="ai-repainting.dll"
+          Source="path\to\ai-repainting.dll"
+          Vital="yes"/>
+
+        <!-- Resource files -->
+        <RemoveFolder Id="INSTALLFOLDER" On="uninstall"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+
+        <!-- Registry entries for uninstall -->
+        <RegistryKey
+          Root="HKCU"
+          Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\AIRepainting">
+          <RegistryValue
+            Type="string"
+            Name="DisplayName"
+            Value="AI Miniature Repainting"/>
+          <RegistryValue
+            Type="string"
+            Name="Publisher"
+            Value="Your Company"/>
+          <RegistryValue
+            Type="string"
+            Name="DisplayVersion"
+            Value="1.0.0"/>
+          <RegistryValue
+            Type="string"
+            Name="URLInfoAbout"
+            Value="https://example.com"/>
+          <RegistryValue
+            Type="string"
+            Name="HelpLink"
+            Value="https://example.com/support"/>
+        </RegistryKey>
+
+        <!-- Add install path to registry -->
+        <RegistryKey
+          Root="HKCU"
+          Key="Software\AIRepainting">
+          <RegistryValue
+            Type="string"
+            Name="InstallPath"
+            Value="[INSTALLFOLDER]"/>
+        </RegistryKey>
+      </Component>
+
+      <!-- CUDA GPU libraries (optional component) -->
+      <Component
+        Id="CUDALibraries"
+        Guid="11223344-5566-7788-99aa-bbccddeeff00"
+        Win64="yes">
+
+        <!-- CUDA runtime libraries -->
+        <File
+          Id="CUDA_Runtime"
+          Name="cudart64_12.dll"
+          Source="path\to\cuda\cudart64_12.dll"
+          Vital="no"/>
+
+        <File
+          Id="CUDA_BLAS"
+          Name="cublas64_12.dll"
+          Source="path\to\cuda\cublas64_12.dll"
+          Vital="no"/>
+
+        <File
+          Id="CUDA_DNNL"
+          Name="cudnn64_9.dll"
+          Source="path\to\cuda\cudnn64_9.dll"
+          Vital="no"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Start Menu shortcuts -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component
+        Id="ApplicationShortcuts"
+        Guid="44556677-8899-aabb-ccdd-eeff00112233"
+        Win64="yes">
+
+        <!-- Main application shortcut -->
+        <Shortcut
+          Id="ApplicationShortcut"
+          Name="AI Miniature Repainting"
+          Description="AI-powered miniature repainting assistant"
+          Target="[#MainExecutable]"
+          WorkingDirectory="INSTALLFOLDER"/>
+
+        <!-- Shortcut to configuration directory -->
+        <Shortcut
+          Id="ConfigShortcut"
+          Name="Open Application Data"
+          Description="Open application configuration directory"
+          Target="[AppDataFolder]AIRepainting"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Desktop shortcut -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component
+        Id="UninstallShortcut"
+        Guid="55667788-99aa-bbcc-ddee-ff00112233445"
+        Win64="yes">
+
+        <Shortcut
+          Id="DesktopShortcut"
+          Name="AI Miniature Repainting"
+          Description="AI-powered miniature repainting assistant"
+          Target="[#MainExecutable]"
+          WorkingDirectory="INSTALLFOLDER"/>
+
+        <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\AIRepainting"
+          Name="DesktopShortcut"
+          Type="integer"
+          Value="1"
+          KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Environment variables (add to PATH if needed) -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component
+        Id="EnvironmentVariables"
+        Guid="66778899-aabc-cdef-00112233445566"
+        Win64="yes">
+
+        <Environment
+          Id="PATH"
+          Name="PATH"
+          Value="[INSTALLFOLDER]"
+          Permanent="no"
+          Part="append"
+          System="no"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- UI Configuration -->
+    <UIRef Id="WixUI_InstallDir"/>
+
+    <!-- Installation conditions -->
+    <Condition Message="This application requires Windows 7 or higher.">
+      <![CDATA[Installed OR (VersionNT64 >= 601)]]>
+    </Condition>
+
+    <!-- Major upgrade configuration -->
+    <MajorUpgrade
+      Schedule="afterInstallValidate"
+      AllowDowngrades="yes"
+      DownloadUrl="https://example.com/download"/>
+
+    <!-- Launch application after installation -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch AI Miniature Repainting"/>
+    <Property Id="WixShutdownDialog" Value="yes"/>
+
+  </Product>
+
+</Wix>

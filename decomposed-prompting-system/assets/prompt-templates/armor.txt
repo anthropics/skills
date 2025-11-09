@@ -1,0 +1,1 @@
+A beautifully painted suit of {material_description} armor: {base_color}, {finish_type}, {weathering_effects}, {lighting_style}, {detail_level}, professional miniature painting, masterpiece quality

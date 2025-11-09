@@ -1,0 +1,36 @@
+{
+  "window": {
+    "x": 100,
+    "y": 100,
+    "width": 540,
+    "height": 380
+  },
+  "background": "path/to/dmg-background.png",
+  "icon": "path/to/app-icon.icns",
+  "contents": [
+    {
+      "x": 100,
+      "y": 180,
+      "type": "file",
+      "path": "AI Miniature Repainting.app"
+    },
+    {
+      "x": 440,
+      "y": 180,
+      "type": "link",
+      "path": "/Applications"
+    }
+  ],
+  "iconSize": 128,
+  "labelSize": 12,
+  "textSize": 12,
+  "format": "UDBZ",
+  "comment": "AI Miniature Repainting Installer",
+  "isHiddenExtension": true,
+  "window": {
+    "x": 100,
+    "y": 100,
+    "width": 540,
+    "height": 380
+  }
+}

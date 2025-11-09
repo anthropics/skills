@@ -1,0 +1,31 @@
+Package: ai-miniature-repainting
+Version: 1.0.0-1
+Architecture: amd64
+Maintainer: Your Company <contact@example.com>
+Installed-Size: 250000
+Depends: libqt5core5a (>= 5.12),
+         libqt5gui5 (>= 5.12),
+         libqt5widgets5 (>= 5.12),
+         libc6 (>= 2.29),
+         libssl3 (>= 3.0),
+         libglib2.0-0 (>= 2.56)
+Recommends: nvidia-driver-560,
+            libcuda1 (>= 12.0),
+            libcudnn8 (>= 8.0)
+Suggests: nvidia-utils,
+          nvidia-cuda-toolkit
+Homepage: https://example.com
+Priority: optional
+Section: utils
+Description: AI-powered miniature repainting assistant
+ AI Miniature Repainting is a machine learning-powered desktop application
+ that provides real-time analysis, color suggestions, and technique guidance
+ for detailed miniature painting. It leverages NVIDIA CUDA for GPU-accelerated
+ processing when available, with automatic CPU fallback.
+ .
+ Features:
+ - Real-time AI analysis of painting techniques
+ - Intelligent color matching and suggestions
+ - GPU acceleration support (NVIDIA CUDA)
+ - Cross-platform compatibility (Windows, macOS, Linux)
+ - Professional-grade image processing

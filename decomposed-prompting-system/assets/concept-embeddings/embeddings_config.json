@@ -1,0 +1,273 @@
+{
+  "embedding_groups": {
+    "weathering": {
+      "description": "Control weathering intensity from pristine to battle-worn",
+      "embeddings": {
+        "light": {
+          "file": "weathering_light.bin",
+          "intensity_range": "0-30%",
+          "description": "Light surface weathering, minor discoloration",
+          "prompt_token": "<embedding:weathering_light>",
+          "vector_size": 768
+        },
+        "moderate": {
+          "file": "weathering_moderate.bin",
+          "intensity_range": "40-60%",
+          "description": "Moderate weathering with visible wear patterns",
+          "prompt_token": "<embedding:weathering_moderate>",
+          "vector_size": 768
+        },
+        "heavy": {
+          "file": "weathering_heavy.bin",
+          "intensity_range": "70-100%",
+          "description": "Heavy weathering, extensive wear and corrosion",
+          "prompt_token": "<embedding:weathering_heavy>",
+          "vector_size": 768
+        }
+      },
+      "slider_mapping": {
+        "0-30": "light",
+        "30-70": "moderate",
+        "70-100": "heavy"
+      },
+      "interpolation_method": "linear"
+    },
+    "metallic_shine": {
+      "description": "Control reflectivity from matte to mirror polish",
+      "embeddings": {
+        "matte": {
+          "file": "metallic_matte.bin",
+          "intensity_range": "0-30%",
+          "description": "Matte finish with no reflection",
+          "prompt_token": "<embedding:metallic_matte>",
+          "vector_size": 768
+        },
+        "satin": {
+          "file": "metallic_satin.bin",
+          "intensity_range": "40-60%",
+          "description": "Satin finish with subtle sheen",
+          "prompt_token": "<embedding:metallic_satin>",
+          "vector_size": 768
+        },
+        "gloss": {
+          "file": "metallic_gloss.bin",
+          "intensity_range": "70-100%",
+          "description": "Glossy mirror-like polish with high reflection",
+          "prompt_token": "<embedding:metallic_gloss>",
+          "vector_size": 768
+        }
+      },
+      "slider_mapping": {
+        "0-30": "matte",
+        "30-70": "satin",
+        "70-100": "gloss"
+      },
+      "interpolation_method": "slerp"
+    },
+    "detail_level": {
+      "description": "Control complexity and detail density",
+      "embeddings": {
+        "basic": {
+          "file": "detail_basic.bin",
+          "intensity_range": "0-25%",
+          "description": "Basic detail with simple brushwork",
+          "prompt_token": "<embedding:detail_basic>",
+          "vector_size": 768
+        },
+        "moderate": {
+          "file": "detail_moderate.bin",
+          "intensity_range": "25-50%",
+          "description": "Moderate detail with visible texture and features",
+          "prompt_token": "<embedding:detail_moderate>",
+          "vector_size": 768
+        },
+        "high": {
+          "file": "detail_high.bin",
+          "intensity_range": "50-75%",
+          "description": "Highly detailed with fine features and texture",
+          "prompt_token": "<embedding:detail_high>",
+          "vector_size": 768
+        },
+        "hyper": {
+          "file": "detail_hyper.bin",
+          "intensity_range": "75-100%",
+          "description": "Hyper-detailed with intricate fine work",
+          "prompt_token": "<embedding:detail_hyper>",
+          "vector_size": 768
+        }
+      },
+      "slider_mapping": {
+        "0-25": "basic",
+        "25-50": "moderate",
+        "50-75": "high",
+        "75-100": "hyper"
+      },
+      "interpolation_method": "cubic"
+    },
+    "rust_corrosion": {
+      "description": "Control rust and corrosion appearance",
+      "embeddings": {
+        "light": {
+          "file": "rust_light.bin",
+          "intensity_range": "0-35%",
+          "description": "Light surface rust with minor discoloration",
+          "prompt_token": "<embedding:rust_light>",
+          "vector_size": 768
+        },
+        "moderate": {
+          "file": "rust_moderate.bin",
+          "intensity_range": "35-70%",
+          "description": "Moderate rust with visible streaks and oxidation",
+          "prompt_token": "<embedding:rust_moderate>",
+          "vector_size": 768
+        },
+        "heavy": {
+          "file": "rust_heavy.bin",
+          "intensity_range": "70-100%",
+          "description": "Deep corrosion with pitting and extensive rust",
+          "prompt_token": "<embedding:rust_heavy>",
+          "vector_size": 768
+        }
+      },
+      "slider_mapping": {
+        "0-35": "light",
+        "35-70": "moderate",
+        "70-100": "heavy"
+      },
+      "interpolation_method": "linear"
+    },
+    "patina": {
+      "description": "Control aged patina on metals",
+      "embeddings": {
+        "copper_patina": {
+          "file": "patina_copper.bin",
+          "description": "Green/blue copper verdigris patina",
+          "prompt_token": "<embedding:patina_copper>",
+          "vector_size": 768,
+          "best_for": ["copper", "brass"]
+        },
+        "silver_patina": {
+          "file": "patina_silver.bin",
+          "description": "Tarnished black/gray silver patina",
+          "prompt_token": "<embedding:patina_silver>",
+          "vector_size": 768,
+          "best_for": ["silver", "platinum"]
+        },
+        "bronze_patina": {
+          "file": "patina_bronze.bin",
+          "description": "Brown/green aged bronze patina",
+          "prompt_token": "<embedding:patina_bronze>",
+          "vector_size": 768,
+          "best_for": ["bronze"]
+        },
+        "aged_universal": {
+          "file": "patina_aged.bin",
+          "description": "Universal aged patina for any metal",
+          "prompt_token": "<embedding:patina_aged>",
+          "vector_size": 768,
+          "best_for": ["all_metals"]
+        }
+      },
+      "interpolation_method": "linear"
+    },
+    "material_texture": {
+      "description": "Control specific material texture characteristics",
+      "embeddings": {
+        "ceramic": {
+          "file": "texture_ceramic.bin",
+          "description": "Smooth glazed ceramic surface",
+          "prompt_token": "<embedding:texture_ceramic>",
+          "vector_size": 768,
+          "material": "ceramic"
+        },
+        "fabric": {
+          "file": "texture_fabric.bin",
+          "description": "Woven cloth and textile pattern",
+          "prompt_token": "<embedding:texture_fabric>",
+          "vector_size": 768,
+          "material": "fabric"
+        },
+        "leather": {
+          "file": "texture_leather.bin",
+          "description": "Aged leather with visible creases and wear",
+          "prompt_token": "<embedding:texture_leather>",
+          "vector_size": 768,
+          "material": "leather"
+        },
+        "wood": {
+          "file": "texture_wood.bin",
+          "description": "Carved wood grain and natural patina",
+          "prompt_token": "<embedding:texture_wood>",
+          "vector_size": 768,
+          "material": "wood"
+        },
+        "stone": {
+          "file": "texture_stone.bin",
+          "description": "Rough stone surface with weathering",
+          "prompt_token": "<embedding:texture_stone>",
+          "vector_size": 768,
+          "material": "stone"
+        }
+      },
+      "interpolation_method": "linear"
+    },
+    "lighting_mood": {
+      "description": "Control lighting mood and style",
+      "embeddings": {
+        "dramatic": {
+          "file": "light_dramatic.bin",
+          "description": "Dramatic high-contrast lighting with strong shadows",
+          "prompt_token": "<embedding:light_dramatic>",
+          "vector_size": 768,
+          "style": "cinematic"
+        },
+        "studio": {
+          "file": "light_studio.bin",
+          "description": "Even studio lighting with soft shadows",
+          "prompt_token": "<embedding:light_studio>",
+          "vector_size": 768,
+          "style": "professional"
+        },
+        "rim": {
+          "file": "light_rim.bin",
+          "description": "Rim/backlighting with edge separation",
+          "prompt_token": "<embedding:light_rim>",
+          "vector_size": 768,
+          "style": "dimensional"
+        },
+        "ambient": {
+          "file": "light_ambient.bin",
+          "description": "Soft ambient lighting with minimal contrast",
+          "prompt_token": "<embedding:light_ambient>",
+          "vector_size": 768,
+          "style": "natural"
+        }
+      },
+      "interpolation_method": "linear"
+    }
+  },
+  "metadata": {
+    "format_version": "1.0",
+    "vector_dimension": 768,
+    "model_compatibility": [
+      "Stable Diffusion v1.4",
+      "Stable Diffusion v1.5",
+      "Stable Diffusion 2.0",
+      "ComfyUI",
+      "A1111 WebUI",
+      "Diffusers Library"
+    ],
+    "average_embedding_size_mb": 5,
+    "load_time_ms": 100,
+    "interpolation_time_ms": 5,
+    "vram_per_embedding_mb": "2-5",
+    "notes": "Embeddings are trained on miniature painting imagery and optimized for this domain"
+  },
+  "usage_guide": {
+    "single_embedding": "Use single embedding for focused effect: '<embedding:weathering_heavy> armor'",
+    "multiple_embeddings": "Combine embeddings: '<embedding:weathering_heavy> <embedding:metallic_gloss> armor'",
+    "interpolation": "Interpolate between light and heavy for slider control (30-70% intensity shift)",
+    "caching": "Cache common combinations to improve real-time responsiveness",
+    "performance": "Each embedding adds ~5-10ms to generation time"
+  }
+}

@@ -1,0 +1,1 @@
+Miniature base terrain: {material_description}, {base_color}, {weathering_effects}, {lighting_style}, {finish_type}, {detail_level}, environmental storytelling, tabletop gaming quality

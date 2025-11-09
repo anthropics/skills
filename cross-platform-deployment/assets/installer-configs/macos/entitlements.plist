@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- App Sandbox - Required for code signing and distribution -->
+  <key>com.apple.security.app-sandbox</key>
+  <true/>
+
+  <!-- Code Sign Entitlements -->
+  <key>com.apple.security.cs.allow-jit</key>
+  <true/>
+
+  <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+  <true/>
+
+  <key>com.apple.security.cs.disable-library-validation</key>
+  <true/>
+
+  <!-- File System Access -->
+  <key>com.apple.security.files.user-selected.read-write</key>
+  <true/>
+
+  <key>com.apple.security.files.downloads.read-write</key>
+  <true/>
+
+  <key>com.apple.security.files.home-relative.read-write</key>
+  <array>
+    <string>Documents</string>
+    <string>Desktop</string>
+    <string>Pictures</string>
+    <string>Downloads</string>
+  </array>
+
+  <!-- Hardware Access for GPU Computing -->
+  <key>com.apple.security.device.gpu</key>
+  <true/>
+
+  <key>com.apple.security.device.frame-buffer</key>
+  <true/>
+
+  <!-- Camera Access (for image processing features) -->
+  <key>com.apple.security.device.camera</key>
+  <true/>
+
+  <!-- USB Device Access (for external GPUs or hardware) -->
+  <key>com.apple.security.device.usb</key>
+  <true/>
+
+  <!-- Network Access -->
+  <key>com.apple.security.network.client</key>
+  <true/>
+
+  <key>com.apple.security.network.server</key>
+  <true/>
+
+  <!-- Microphone Access (if voice features implemented) -->
+  <key>com.apple.security.device.audio-input</key>
+  <false/>
+
+  <!-- Hardened Runtime Options -->
+  <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+  <false/>
+
+  <!-- Metal GPU Access (macOS native GPU API) -->
+  <key>com.apple.developer.metal.device</key>
+  <true/>
+
+  <!-- Optional: Allow AppleScript support -->
+  <key>com.apple.security.scripting-targets</key>
+  <array>
+    <!-- Add as needed -->
+  </array>
+
+  <!-- Privacy entitlements (macOS 10.14+) -->
+  <!-- Note: These are informational only; actual privacy prompts come from Info.plist -->
+  <key>privacy</key>
+  <dict>
+    <!-- Camera usage -->
+    <key>NSCameraUsageDescription</key>
+    <string>AI Miniature Repainting uses your camera for image capture and analysis.</string>
+
+    <!-- Photo library access -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Access to your photo library for importing images to enhance with AI.</string>
+
+    <!-- Microphone (if applicable) -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>AI Miniature Repainting may use microphone for voice commands.</string>
+
+    <!-- Local network access -->
+    <key>NSBonjourServices</key>
+    <array>
+      <string>_airepainting._tcp</string>
+    </array>
+  </dict>
+
+</dict>
+</plist>

@@ -1,0 +1,194 @@
+# AppImage Build Configuration
+# AI Miniature Repainting Application
+
+version: 1
+
+AppDir:
+  path: ./AppDir
+  app_id: com.example.airepainting
+
+# Binary and desktop file
+Binary:
+  path: ./AppDir/usr/bin/ai-repainting
+  arch: x86_64
+
+DesktopFile:
+  path: ./AppDir/usr/share/applications/ai-repainting.desktop
+
+# Runtime configuration
+Runtime:
+  version: continuous
+  arch: x86_64
+
+# Bundled libraries
+Libraries:
+  # Qt or other UI framework
+  - libQt5Core.so.5
+  - libQt5Gui.so.5
+  - libQt5Widgets.so.5
+  - libQt5Network.so.5
+
+  # System libraries
+  - libssl.so.3
+  - libcrypto.so.3
+  - libz.so.1
+  - libglib-2.0.so.0
+  - libpthread.so.0
+
+  # GPU libraries (if bundling CUDA)
+  - libcudart.so.12
+  - libcublas.so.12
+  - libcudnn.so.9
+  - libcufft.so.11
+  - libcusparse.so.12
+  - libcurand.so.12
+
+  # Optional ML framework
+  - libtensorflow.so.2
+  - libtensorflow_framework.so.2
+
+# AppImage settings
+AppImage:
+  # Update information for zsync delta updates
+  update_information: zsync|https://releases.example.com/AI-Miniature-Repainting-latest-x86_64.AppImage.zsync
+
+  # Signature and signing key
+  sign: true
+  sign_key: ABCD1234  # GPG key ID for signing
+
+  # Compression (xz for smaller file size, gzip for speed)
+  compress: xz
+
+  # File format version
+  file_format: 2
+
+  # Compatibility settings
+  extract: false  # Use FUSE2 mounting
+  guess_mainscript: false
+
+# Icon information
+Icon:
+  path: ./AppDir/usr/share/icons/hicolor/256x256/apps/ai-repainting.png
+  width: 256
+  height: 256
+
+# Desktop entry customization
+DesktopEntry:
+  Type: Application
+  Name: AI Miniature Repainting
+  Comment: AI-powered desktop application for miniature repainting
+  Exec: ai-repainting %F
+  Icon: ai-repainting
+  Categories: Utility;Graphics;
+  Keywords: AI;Repainting;Desktop;ML;
+  Terminal: false
+  StartupNotify: true
+  X-AppImage-Version: 1.0.0
+
+# Build options
+Build:
+  # Verbosity level (0, 1, 2)
+  verbose: 1
+
+  # Use portable build (no dependencies on system libraries)
+  portable: true
+
+  # Enable dependency resolution
+  auto_depends: true
+
+# Package metadata
+Package:
+  name: ai-miniature-repainting
+  version: 1.0.0
+  release: 1
+  summary: AI-powered miniature repainting assistant
+  description: |
+    AI Miniature Repainting is an AI-powered desktop application that assists
+    with detailed miniature painting. It provides real-time analysis, color
+    suggestions, and technique guidance powered by machine learning.
+
+  author:
+    name: Your Company
+    email: contact@example.com
+    url: https://example.com
+
+  license: MIT
+  categories:
+    - Utility
+    - Graphics
+
+# DEB package specific configuration
+DEB:
+  package_name: ai-miniature-repainting
+  version: 1.0.0
+  priority: optional
+  section: utils
+  architecture: amd64
+
+  dependencies:
+    - libqt5core5a (>= 5.12)
+    - libqt5gui5 (>= 5.12)
+    - libqt5widgets5 (>= 5.12)
+    - libc6 (>= 2.29)
+    - libssl3 (>= 3.0)
+    - libcuda1 (>= 11.0) | nvidia-cuda-runtime (>= 11.0)
+    - libcudnn8 (>= 8.0)
+
+  maintainer: Your Company <contact@example.com>
+  homepage: https://example.com
+
+  scripts:
+    pre_install: ./debian/preinst
+    post_install: ./debian/postinst
+    pre_remove: ./debian/prerm
+    post_remove: ./debian/postrm
+
+# RPM package specific configuration
+RPM:
+  package_name: ai-miniature-repainting
+  version: 1.0.0
+  release: 1
+
+  dependencies:
+    - qt5-qtbase >= 5.12
+    - openssl >= 3.0
+    - glibc >= 2.17
+    - libcuda >= 11.0
+    - libcudnn >= 8.0
+
+  license: MIT
+  group: Applications/Graphics
+
+  scripts:
+    pre_install: ./rpm/pre
+    post_install: ./rpm/post
+    pre_remove: ./rpm/preun
+    post_remove: ./rpm/postun
+
+# Source filters (what to exclude)
+Filters:
+  exclude:
+    - /usr/include
+    - /usr/lib/pkgconfig
+    - /usr/lib/cmake
+    - /usr/share/doc
+    - /usr/share/man
+    - /usr/share/locale
+    - .git
+    - .gitignore
+    - CMakeLists.txt
+    - Makefile
+    - "*.a"
+    - "*.la"
+    - "*.so.a"
+
+# Output settings
+Output:
+  appimage_path: ./AI-Miniature-Repainting-x86_64.AppImage
+  type: AppImage
+  arch: x86_64
+
+  # Optional: also create other formats
+  also_create:
+    - DEB
+    - RPM
