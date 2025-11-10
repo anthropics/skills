@@ -26,7 +26,11 @@ Unless otherwise stated by the user or existing template
 - **Black text (RGB: 0,0,0)**: ALL formulas and calculations
 - **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
 - **Red text (RGB: 255,0,0)**: Cells with issues; or, external links to other files
-- **Yellow background (RGB: 255,255,128)**: Key assumptions needing attention or cells that need to be updated
+- **Yellow background (RGB: 255,255,128; NOT 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+
+### Defaukt font
+- **Font**: Arial
+- **Font size**: 10
 
 ### Number Formatting Standards
 
@@ -35,7 +39,7 @@ Unless otherwise stated by the user or existing template
 - **Currency (USD)**: Use $#,##0_);($#,##0);--_) format; ALWAYS specify units in headers ("Revenue ($mm)")
 - **Zeros**: Use number formatting to make all zeros "--", including percentages (e.g., "$#,##0_);($#,##0);--_)")
 - **Percentages**: Default to #,##0.0%_);(#,##0.0%);--_%_) format (one decimal)
-- **Multiples**: Format as #,##0.0x_);(#,##0.0x);--_x_) for valuation multiples (EV/EBITDA, P/E)
+- **Multiples**: Format as #,##0.0x_);(#,##0.0x);--_x_) for valuation multiples (EV/EBITDA, P/E). Note: this is the same exact principle as for %s: one decimal, with consistent alignment between positives, negatives, and zeros
 - **Negative numbers**: Use parentheses (123) not minus -123
 
 ### Table formatting Standards
@@ -48,6 +52,7 @@ Unless otherwise stated by the user or existing template
   - For the Header only, Center Across Selection with Single Accounting Underline if the Header has multiple Sub-Headers present (do not underline otherwise)
 - **Conditional Formatting**:
   - Apply the custom formatting rule =MOD(ROW(),2)=0 -> Cell Fill RGB: 242,242,242 for large tables (NOT to the headers or sub-headers). This will shade alternating rows light grey to make them easier to read
+  - Ensure the formatting applies to every row in the table contents
   - However, be careful to remove this conditional formatting from key assumptions cells (because it will overwrite their existing cell fill)
 
 ### Formula Construction Rules
@@ -56,6 +61,7 @@ Unless otherwise stated by the user or existing template
 - Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
 - Position assumptions cells intuitively
   - For example, if driving a revenue row using percentages in a single-tab model, it is easier for the user to review a row with % inputs below the Revenue values than it is to flip back and forth between a separate assumptions section and the Revenues.
+  - Don't create a separate assumptions table if your assumptions are already captured inside the model. However, you can use a column to the right of the table to justify assumptions you are making.
 - Use cell references instead of hardcoded values in formulas
   - Example: Use =(1+C6)*B5 instead of =B5*1.05
 - Write formulas staring with the drivers
