@@ -25,25 +25,41 @@ Unless otherwise stated by the user or existing template
 - **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios
 - **Black text (RGB: 0,0,0)**: ALL formulas and calculations
 - **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
-- **Red text (RGB: 255,0,0)**: External links to other files
-- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+- **Red text (RGB: 255,0,0)**: Cells with issues; or, external links to other files
+- **Yellow background (RGB: 255,255,128)**: Key assumptions needing attention or cells that need to be updated
 
 ### Number Formatting Standards
 
 #### Required Format Rules
 - **Years**: Format as text strings (e.g., "2024" not "2,024")
-- **Currency**: Use $#,##0 format; ALWAYS specify units in headers ("Revenue ($mm)")
-- **Zeros**: Use number formatting to make all zeros "-", including percentages (e.g., "$#,##0;($#,##0);-")
-- **Percentages**: Default to 0.0% format (one decimal)
-- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)
+- **Currency (USD)**: Use $#,##0_);($#,##0);--_) format; ALWAYS specify units in headers ("Revenue ($mm)")
+- **Zeros**: Use number formatting to make all zeros "--", including percentages (e.g., "$#,##0_);($#,##0);--_)")
+- **Percentages**: Default to #,##0.0%_);(#,##0.0%);--_%_) format (one decimal)
+- **Multiples**: Format as #,##0.0x_);(#,##0.0x);--_x_) for valuation multiples (EV/EBITDA, P/E)
 - **Negative numbers**: Use parentheses (123) not minus -123
+
+### Table formatting Standards
+
+#### Required Format Rules
+- **Headers and Sub-Headers**: 
+  - Format as a cell with a black fill (RGB: 0,0,0), with white font color (RGB: 255,255,255)
+  - Align Left if column content is text; Align Right if column content is numbers
+- **Headers if Sub-Headers are present**: 
+  - For the Header only, Center Across Selection with Single Accounting Underline if the Header has multiple Sub-Headers present (do not underline otherwise)
+- **Conditional Formatting**:
+  - Apply the custom formatting rule =MOD(ROW(),2)=0 -> Cell Fill RGB: 242,242,242 for large tables (NOT to the headers or sub-headers). This will shade alternating rows light grey to make them easier to read
+  - However, be careful to remove this conditional formatting from key assumptions cells (because it will overwrite their existing cell fill)
 
 ### Formula Construction Rules
 
 #### Assumptions Placement
 - Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
+- Position assumptions cells intuitively
+  - For example, if driving a revenue row using percentages in a single-tab model, it is easier for the user to review a row with % inputs below the Revenue values than it is to flip back and forth between a separate assumptions section and the Revenues.
 - Use cell references instead of hardcoded values in formulas
-- Example: Use =B5*(1+$B$6) instead of =B5*1.05
+  - Example: Use =(1+C6)*B5 instead of =B5*1.05
+- Write formulas staring with the drivers
+  - Example: Use =(1+C6)*B5 instead of =B5*(1+C6), because C6 is driving the growth from B5 to C5
 
 #### Formula Error Prevention
 - Verify all cell references are correct
