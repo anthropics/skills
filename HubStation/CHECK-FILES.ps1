@@ -65,14 +65,14 @@ foreach ($file in $keyFiles) {
 
         if ($found) {
             $relativePath = $found.FullName.Replace($BasePath, ".")
-            Write-Host "  ✓ Found: $file at $relativePath" -ForegroundColor Green
+            Write-Host "  [OK] Found: $file at $relativePath" -ForegroundColor Green
             $foundCount++
         } else {
-            Write-Host "  ✗ Missing: $file" -ForegroundColor Red
+            Write-Host "  [MISS] Missing: $file" -ForegroundColor Red
             $missingCount++
         }
     } catch {
-        Write-Host "  ✗ Error checking $file : $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "  [ERROR] Error checking $file : $($_.Exception.Message)" -ForegroundColor Red
         $missingCount++
     }
 }
@@ -101,7 +101,7 @@ try {
             $content = Get-Content -Path $script.FullName -Raw -ErrorAction Stop
 
             if (-not $content) {
-                Write-Host "  ⚠ Empty file" -ForegroundColor Yellow
+                Write-Host "  [WARN] Empty file" -ForegroundColor Yellow
                 continue
             }
 
@@ -115,18 +115,18 @@ try {
             )
 
             if ($errors -and $errors.Count -gt 0) {
-                Write-Host "  ✗ Syntax Errors Found:" -ForegroundColor Red
+                Write-Host "  [FAIL] Syntax Errors Found:" -ForegroundColor Red
                 foreach ($err in $errors) {
                     Write-Host "    Line $($err.Extent.StartLineNumber): $($err.Message)" -ForegroundColor Red
                 }
                 $errorCount++
             } else {
-                Write-Host "  ✓ Syntax OK" -ForegroundColor Green
+                Write-Host "  [PASS] Syntax OK" -ForegroundColor Green
                 $okCount++
             }
 
         } catch {
-            Write-Host "  ✗ Error reading/parsing: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "  [ERROR] Error reading/parsing: $($_.Exception.Message)" -ForegroundColor Red
             $errorCount++
         }
     }
