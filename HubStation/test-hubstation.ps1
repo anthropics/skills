@@ -40,13 +40,13 @@ function Test-Endpoint {
             $response = Invoke-RestMethod -Uri $Url -Method Post -Body $bodyJson -ContentType "application/json" -TimeoutSec 5 -ErrorAction Stop
         }
 
-        Write-Host "✓ SUCCESS" -ForegroundColor Green
+        Write-Host "[SUCCESS]" -ForegroundColor Green
         Write-Host "Response:" -ForegroundColor White
         $response | ConvertTo-Json -Depth 3 | Write-Host
 
         return @{ success = $true; response = $response }
     } catch {
-        Write-Host "✗ FAILED" -ForegroundColor Red
+        Write-Host "[FAILED]" -ForegroundColor Red
         Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
 
         if ($_.Exception.Response) {
@@ -117,12 +117,12 @@ Write-Host "━━━━━━━━━━━━━━━━━━━━━━�
 
 try {
     $webResponse = Invoke-WebRequest -Uri "$baseUrl/web" -TimeoutSec 5 -ErrorAction Stop
-    Write-Host "✓ SUCCESS" -ForegroundColor Green
+    Write-Host "[SUCCESS]" -ForegroundColor Green
     Write-Host "Status: $($webResponse.StatusCode)" -ForegroundColor White
     Write-Host "Content Length: $($webResponse.Content.Length) bytes" -ForegroundColor White
     $results.staticFiles = @{ success = $true }
 } catch {
-    Write-Host "✗ FAILED" -ForegroundColor Red
+    Write-Host "[FAILED]" -ForegroundColor Red
     Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Red
     $results.staticFiles = @{ success = $false; error = $_.Exception.Message }
 }
@@ -177,15 +177,15 @@ foreach ($test in $results.Keys) {
 
     if ($testResult.success) {
         $passedTests++
-        Write-Host "✓ $testName" -ForegroundColor Green
+        Write-Host "[PASS] $testName" -ForegroundColor Green
     } else {
         # Check if it's an optional test
         if ($test -eq "gemini" -or $test -eq "runner") {
             $optionalFailed++
-            Write-Host "○ $testName (optional - module not loaded)" -ForegroundColor Yellow
+            Write-Host "[SKIP] $testName (optional - module not loaded)" -ForegroundColor Yellow
         } else {
             $failedTests++
-            Write-Host "✗ $testName - $($testResult.error)" -ForegroundColor Red
+            Write-Host "[FAIL] $testName - $($testResult.error)" -ForegroundColor Red
         }
     }
 }
@@ -208,7 +208,7 @@ Write-Host ""
 
 if ($failedTests -eq 0 -and $passedTests -gt 0) {
     Speak "All core tests passed"
-    Write-Host "✓ Core functionality is working!" -ForegroundColor Green
+    Write-Host "[OK] Core functionality is working!" -ForegroundColor Green
     Write-Host ""
 }
 
@@ -227,13 +227,13 @@ if ($results.runner.success -eq $false) {
 }
 
 if ($results.status.success) {
-    Write-Host "✓ You can access the web interface at:" -ForegroundColor Green
+    Write-Host "[OK] You can access the web interface at:" -ForegroundColor Green
     Write-Host "  http://localhost:9199/web" -ForegroundColor Cyan
     Write-Host ""
 }
 
 if ($results.reflectSubmit.success) {
-    Write-Host "✓ Check your reflection was saved:" -ForegroundColor Green
+    Write-Host "[OK] Check your reflection was saved:" -ForegroundColor Green
     Write-Host "  Get-Content HubStation\shared_bus\logs\hub_events.csv" -ForegroundColor Cyan
     Write-Host "  Get-ChildItem HubStation\shared_bus\reflections\" -ForegroundColor Cyan
     Write-Host ""
