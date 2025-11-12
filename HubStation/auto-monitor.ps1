@@ -236,7 +236,7 @@ function Apply-Fix {
 
         $result = Invoke-Expression $Fix.command
 
-        Write-Log "  ✓ Fix applied successfully" "SUCCESS"
+        Write-Log "  [OK] Fix applied successfully" "SUCCESS"
         Speak "Fix applied successfully"
 
         return @{
@@ -245,7 +245,7 @@ function Apply-Fix {
             timestamp = (Get-Date -Format "o")
         }
     } catch {
-        Write-Log "  ✗ Fix failed: $($_.Exception.Message)" "ERROR"
+        Write-Log "  [FAIL] Fix failed: $($_.Exception.Message)" "ERROR"
         Speak "Fix failed"
 
         return @{
