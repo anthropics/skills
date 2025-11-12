@@ -27,16 +27,17 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skill-creator",
-        "./mcp-builder",
-        "./canvas-design",
         "./algorithmic-art",
-        "./internal-comms",
-        "./webapp-testing",
         "./artifacts-builder",
+        "./brand-guidelines",
+        "./canvas-design",
+        "./frontend-design",
+        "./internal-comms",
+        "./mcp-builder",
+        "./skill-creator",
         "./slack-gif-creator",
         "./theme-factory",
-        "./brand-guidelines"
+        "./webapp-testing"
       ]
     }
   ]
