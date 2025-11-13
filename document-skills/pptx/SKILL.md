@@ -10,6 +10,18 @@ license: Proprietary. LICENSE.txt has complete terms
 
 A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
+## Favorite Templates
+
+**IMPORTANT - Check for user templates first**: When the user asks to create a new PowerPoint presentation, ALWAYS check for saved templates in `my_templates/` directory before starting from scratch.
+
+**Workflow**:
+1. List available templates: `ls -la my_templates/`
+2. If templates exist, ask the user: "I found [N] saved template(s): [list names]. Would you like to use one of these as a starting point?"
+3. If user selects a template, follow the [Creating a new PowerPoint presentation **using a template**](#creating-a-new-powerpoint-presentation-using-a-template) workflow
+4. If no templates or user declines, follow the [Creating a new PowerPoint presentation **without a template**](#creating-a-new-powerpoint-presentation-without-a-template) workflow
+
+**Template directory location**: `~/.claude/skills/document-skills/pptx/my_templates/` (relative path: `my_templates/` from skill base)
+
 ## Reading and analyzing content
 
 ### Text extraction
