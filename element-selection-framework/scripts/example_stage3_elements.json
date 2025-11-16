@@ -1,0 +1,105 @@
+[
+  {
+    "name": "Pattern Recognizer",
+    "system": "Photosynthesis",
+    "conditions_optimized": [2, 3],
+    "contributions": {
+      "mutual_information_increase": 0.3,
+      "new_connections": 0.5,
+      "uncertainty_reduction": 0.05
+    },
+    "prerequisites": ["Dancing Leaves"]
+  },
+  {
+    "name": "Multi-Modal Bridge",
+    "system": "Photosynthesis",
+    "conditions_optimized": [2, 3],
+    "contributions": {
+      "mutual_information_increase": 0.2,
+      "new_connections": 0.3,
+      "confidence": 0.02
+    },
+    "prerequisites": ["Dancing Leaves"]
+  },
+  {
+    "name": "Connection Former",
+    "system": "Photosynthesis",
+    "conditions_optimized": [2],
+    "contributions": {
+      "new_connections": 0.8,
+      "mutual_information_increase": 0.1
+    },
+    "prerequisites": ["Root Network"]
+  },
+  {
+    "name": "Entropy Regulator",
+    "system": "Rich Soil",
+    "conditions_optimized": [1, 4],
+    "contributions": {
+      "confidence": 0.03,
+      "uncertainty_reduction": 0.03
+    },
+    "prerequisites": []
+  },
+  {
+    "name": "Load Balancer",
+    "system": "Conscious Trunk",
+    "conditions_optimized": [2, 5],
+    "contributions": {
+      "confidence": 0.02,
+      "uncertainty_reduction": 0.02
+    },
+    "prerequisites": ["Rich Soil"]
+  },
+  {
+    "name": "Pathway Maintainer",
+    "system": "Root Network",
+    "conditions_optimized": [2],
+    "contributions": {
+      "mutual_information_increase": 0.1,
+      "new_connections": 0.2
+    },
+    "prerequisites": ["Rich Soil"]
+  },
+  {
+    "name": "Knowledge Organizer",
+    "system": "Living Branches",
+    "conditions_optimized": [1],
+    "contributions": {
+      "confidence": 0.01,
+      "uncertainty_reduction": 0.01
+    },
+    "prerequisites": ["Root Network"]
+  },
+  {
+    "name": "Relevance Filter",
+    "system": "Dancing Leaves",
+    "conditions_optimized": [1, 3],
+    "contributions": {
+      "uncertainty_reduction": 0.04,
+      "confidence": 0.01
+    },
+    "prerequisites": ["Living Branches"]
+  },
+  {
+    "name": "Timing Coordinator",
+    "system": "DKE",
+    "conditions_optimized": [3, 5, 6],
+    "contributions": {
+      "confidence": 0.02,
+      "uncertainty_reduction": 0.02,
+      "mutual_information_increase": 0.05
+    },
+    "prerequisites": []
+  },
+  {
+    "name": "Difficulty Calibrator",
+    "system": "Wise Gardener",
+    "conditions_optimized": [4, 6],
+    "contributions": {
+      "confidence": 0.03,
+      "uncertainty_reduction": 0.03
+    },
+    "prerequisites": ["Rich Soil"]
+  }
+]
