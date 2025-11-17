@@ -50,6 +50,76 @@ You need raw XML access for: comments, complex formatting, document structure, e
 * `word/comments.xml` - Comments referenced in document.xml
 * `word/media/` - Embedded images and media files
 * Tracked changes use `<w:ins>` (insertions) and `<w:del>` (deletions) tags
+### Nested table extraction
+
+python-docx's `cell.text` property doesn't traverse nested tables within cells. Cells with nested tables (common in forms, checklists, and surveys) appear empty when using `cell.text`.
+
+**Check for nested tables:**
+```python
+if cell.tables:
+    # Cell has nested tables - need special extraction
+    pass
+```
+
+**Extract nested table content:**
+```python
+def extract_cell_content_with_nested_tables(cell):
+    """Extract text from cell including nested tables."""
+    text_parts = []
+
+    # Direct paragraph text
+    for para in cell.paragraphs:
+        if para.text.strip():
+            text_parts.append(para.text.strip())
+
+    # Nested table content
+    if cell.tables:
+        for nested_table in cell.tables:
+            for nested_row in nested_table.rows:
+                if nested_row.cells:
+                    text = nested_row.cells[0].text.strip()
+                    # Filter checkbox characters
+                    if text and text not in ['⁮', '☐', '☑', '☒']:
+                        text_parts.append(text)
+
+    return '\n'.join(text_parts)
+```
+
+**Example:**
+```python
+from docx import Document
+
+cell = table.rows[1].cells[0]
+basic = cell.text  # Returns: '' or '\n'
+full = extract_cell_content_with_nested_tables(cell)  # Returns: 'High\nModerate\nLow'
+```
+
+**Common in:**
+- Government forms (checkbox grids)
+- Evaluation forms (rating scales)
+- Surveys (multiple choice)
+- Business checklists
+
+**For deeply nested tables:**
+```python
+def extract_recursive(cell):
+    """Recursively extract from deeply nested tables."""
+    text_parts = []
+
+    def _recurse(cell_obj):
+        for para in cell_obj.paragraphs:
+            text = para.text.strip()
+            if text and text not in ['⁮', '☐', '☑', '☒']:
+                text_parts.append(text)
+
+        for nested_table in cell_obj.tables:
+            for nested_row in nested_table.rows:
+                for nested_cell in nested_row.cells:
+                    _recurse(nested_cell)
+
+    _recurse(cell)
+    return '\n'.join(text_parts)
+```
 
 ## Creating a new Word document
 
