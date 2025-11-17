@@ -1,6 +1,6 @@
 ---
 name: mcp-builder
-description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
+description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP), Node/TypeScript (MCP SDK), or Go (MCP SDK).
 license: Complete terms in LICENSE.txt
 ---
 
@@ -75,6 +75,10 @@ This comprehensive document contains the complete MCP specification and guidelin
 - **TypeScript SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
 - [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Node/TypeScript-specific best practices and examples
 
+**For Go implementations, also load:**
+- **Go SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
+- [🔷 Go Implementation Guide](./reference/go_mcp_server.md) - Go-specific best practices and examples
+
 #### 1.5 Exhaustively Study API Documentation
 
 To integrate a service, read through **ALL** available API documentation:
@@ -103,7 +107,7 @@ Based on your research, create a detailed plan that includes:
 - Plan error handling strategies
 
 **Input/Output Design:**
-- Define input validation models (Pydantic for Python, Zod for TypeScript)
+- Define input validation models (Pydantic for Python, Zod for TypeScript, struct tags for Go)
 - Design consistent response formats (e.g., JSON or Markdown), and configurable levels of detail (e.g., Detailed or Concise)
 - Plan for large-scale usage (thousands of users/resources)
 - Implement character limits and truncation strategies (e.g., 25,000 tokens)
@@ -133,6 +137,12 @@ Now that you have a comprehensive plan, begin implementation following language-
 - Use MCP TypeScript SDK
 - Define Zod schemas for input validation
 
+**For Go:**
+- Create Go module with `go.mod` (see [🔷 Go Guide](./reference/go_mcp_server.md))
+- Use MCP Official Go SDK
+- Define struct types with `json` and `jsonschema` tags for validation
+- Organise code into logical files (main.go, tools.go, types.go, utils.go)
+
 #### 2.2 Implement Core Infrastructure First
 
 **To begin implementation, create shared utilities before implementing tools:**
@@ -147,7 +157,7 @@ Now that you have a comprehensive plan, begin implementation following language-
 For each tool in the plan:
 
 **Define Input Schema:**
-- Use Pydantic (Python) or Zod (TypeScript) for validation
+- Use Pydantic (Python), Zod (TypeScript), or struct tags (Go) for validation
 - Include proper constraints (min/max length, regex patterns, min/max values, ranges)
 - Provide clear, descriptive field descriptions
 - Include diverse examples in field descriptions
@@ -194,6 +204,14 @@ For each tool in the plan:
 - Explicit Promise<T> return types
 - Build process configured (`npm run build`)
 
+**For Go: Load [🔷 Go Implementation Guide](./reference/go_mcp_server.md) and ensure the following:**
+- Using `mcp.AddTool` with generic type parameters
+- Struct tags for JSON schema (`json` and `jsonschema`)
+- Context.Context passed to all I/O operations
+- Error wrapping with `fmt.Errorf` and `%w`
+- No use of `any` or `interface{}` where specific types can be used
+- Three-return pattern used correctly for tool handlers
+
 ---
 
 ### Phase 3: Review and Refine
@@ -207,7 +225,7 @@ To ensure quality, review the code for:
 - **Composability**: Shared logic extracted into functions
 - **Consistency**: Similar operations return similar formats
 - **Error Handling**: All external calls have error handling
-- **Type Safety**: Full type coverage (Python type hints, TypeScript types)
+- **Type Safety**: Full type coverage (Python type hints, TypeScript types, Go types)
 - **Documentation**: Every tool has comprehensive docstrings/descriptions
 
 #### 3.2 Test and Build
@@ -231,11 +249,19 @@ To ensure quality, review the code for:
 - To manually test: Run server in tmux, then test with evaluation harness in main process
 - Or use the evaluation harness directly (it manages the server for stdio transport)
 
+**For Go:**
+- Run `go build` and ensure it completes without errors
+- Run `go vet` to check for suspicious constructs
+- Verify the binary runs: `./your-mcp-server`
+- To manually test: Run server in tmux, then test with evaluation harness in main process
+- Or use the evaluation harness directly (it manages the server for stdio transport)
+
 #### 3.3 Use Quality Checklist
 
 To verify implementation quality, load the appropriate checklist from the language-specific guide:
 - Python: see "Quality Checklist" in [🐍 Python Guide](./reference/python_mcp_server.md)
 - Node/TypeScript: see "Quality Checklist" in [⚡ TypeScript Guide](./reference/node_mcp_server.md)
+- Go: see "Quality Checklist" in [🔷 Go Guide](./reference/go_mcp_server.md)
 
 ---
 
@@ -303,6 +329,7 @@ Load these resources as needed during development:
 ### SDK Documentation (Load During Phase 1/2)
 - **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
 - **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
+- **Go SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
 
 ### Language-Specific Implementation Guides (Load During Phase 2)
 - [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
@@ -316,6 +343,14 @@ Load these resources as needed during development:
   - Project structure
   - Zod schema patterns
   - Tool registration with `server.registerTool`
+  - Complete working examples
+  - Quality checklist
+
+- [🔷 Go Implementation Guide](./reference/go_mcp_server.md) - Complete Go guide with:
+  - Go module structure
+  - Struct tags for JSON Schema
+  - Tool registration with `mcp.AddTool`
+  - Generic type patterns
   - Complete working examples
   - Quality checklist
 
