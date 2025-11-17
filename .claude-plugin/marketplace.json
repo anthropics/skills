@@ -28,7 +28,6 @@
       "strict": false,
       "skills": [
         "./algorithmic-art",
-        "./artifacts-builder",
         "./brand-guidelines",
         "./canvas-design",
         "./frontend-design",
@@ -37,6 +36,7 @@
         "./skill-creator",
         "./slack-gif-creator",
         "./theme-factory",
+        "./web-artifacts-builder",
         "./webapp-testing"
       ]
     }

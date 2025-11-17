@@ -101,25 +101,25 @@ def ease_in_out_elastic(t: float) -> float:
 
 # Convenience mapping
 EASING_FUNCTIONS = {
-    'linear': linear,
-    'ease_in': ease_in_quad,
-    'ease_out': ease_out_quad,
-    'ease_in_out': ease_in_out_quad,
-    'bounce_in': ease_in_bounce,
-    'bounce_out': ease_out_bounce,
-    'bounce': ease_in_out_bounce,
-    'elastic_in': ease_in_elastic,
-    'elastic_out': ease_out_elastic,
-    'elastic': ease_in_out_elastic,
+    "linear": linear,
+    "ease_in": ease_in_quad,
+    "ease_out": ease_out_quad,
+    "ease_in_out": ease_in_out_quad,
+    "bounce_in": ease_in_bounce,
+    "bounce_out": ease_out_bounce,
+    "bounce": ease_in_out_bounce,
+    "elastic_in": ease_in_elastic,
+    "elastic_out": ease_out_elastic,
+    "elastic": ease_in_out_elastic,
 }
 
 
-def get_easing(name: str = 'linear'):
+def get_easing(name: str = "linear"):
     """Get easing function by name."""
     return EASING_FUNCTIONS.get(name, linear)
 
 
-def interpolate(start: float, end: float, t: float, easing: str = 'linear') -> float:
+def interpolate(start: float, end: float, t: float, easing: str = "linear") -> float:
     """
     Interpolate between two values with easing.
 
@@ -160,8 +160,9 @@ def ease_back_in_out(t: float) -> float:
     return (pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2
 
 
-def apply_squash_stretch(base_scale: tuple[float, float], intensity: float,
-                         direction: str = 'vertical') -> tuple[float, float]:
+def apply_squash_stretch(
+    base_scale: tuple[float, float], intensity: float, direction: str = "vertical"
+) -> tuple[float, float]:
     """
     Calculate squash and stretch scales for more dynamic animation.
 
@@ -175,24 +176,25 @@ def apply_squash_stretch(base_scale: tuple[float, float], intensity: float,
     """
     width_scale, height_scale = base_scale
 
-    if direction == 'vertical':
+    if direction == "vertical":
         # Compress vertically, expand horizontally (preserve volume)
-        height_scale *= (1 - intensity * 0.5)
-        width_scale *= (1 + intensity * 0.5)
-    elif direction == 'horizontal':
+        height_scale *= 1 - intensity * 0.5
+        width_scale *= 1 + intensity * 0.5
+    elif direction == "horizontal":
         # Compress horizontally, expand vertically
-        width_scale *= (1 - intensity * 0.5)
-        height_scale *= (1 + intensity * 0.5)
-    elif direction == 'both':
+        width_scale *= 1 - intensity * 0.5
+        height_scale *= 1 + intensity * 0.5
+    elif direction == "both":
         # General squash (both dimensions)
-        width_scale *= (1 - intensity * 0.3)
-        height_scale *= (1 - intensity * 0.3)
+        width_scale *= 1 - intensity * 0.3
+        height_scale *= 1 - intensity * 0.3
 
     return (width_scale, height_scale)
 
 
-def calculate_arc_motion(start: tuple[float, float], end: tuple[float, float],
-                        height: float, t: float) -> tuple[float, float]:
+def calculate_arc_motion(
+    start: tuple[float, float], end: tuple[float, float], height: float, t: float
+) -> tuple[float, float]:
     """
     Calculate position along a parabolic arc (natural motion path).
 
@@ -221,10 +223,12 @@ def calculate_arc_motion(start: tuple[float, float], end: tuple[float, float],
 
 
 # Add new easing functions to the convenience mapping
-EASING_FUNCTIONS.update({
-    'back_in': ease_back_in,
-    'back_out': ease_back_out,
-    'back_in_out': ease_back_in_out,
-    'anticipate': ease_back_in,     # Alias
-    'overshoot': ease_back_out,     # Alias
-})
+EASING_FUNCTIONS.update(
+    {
+        "back_in": ease_back_in,
+        "back_out": ease_back_out,
+        "back_in_out": ease_back_in_out,
+        "anticipate": ease_back_in,  # Alias
+        "overshoot": ease_back_out,  # Alias
+    }
+)
