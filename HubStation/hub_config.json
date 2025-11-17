@@ -1,0 +1,13 @@
+{
+  "Port": 9199,
+  "OllamaBaseUrl": "http://127.0.0.1:11434",
+  "DefaultVoice": "Microsoft Mark",
+  "Rate": 0,
+  "Volume": 100,
+  "WhisperCppExe": "D:\\tools\\whisper.cpp\\main.exe",
+  "WhisperModelPath": "D:\\models\\ggml-base.en.bin",
+  "TTSProvider": "polly",
+  "AWSRegion": "eu-west-1",
+  "PollyVoice": "Brian",
+  "StaticRoot": "..\\scripts"
+}

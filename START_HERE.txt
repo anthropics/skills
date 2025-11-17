@@ -1,0 +1,67 @@
+==============================================================================
+  EASY START - For Screen Readers and Keyboard Users
+==============================================================================
+
+QUICK START (Just 2 steps):
+
+1. Navigate to: The-CourtRoom-Masterpiece\HubStation\
+2. Double-click (or press Enter on): START.bat
+
+That's it! The system will SPEAK to you through each step.
+
+==============================================================================
+
+WHAT YOU'LL HEAR:
+
+1. "Starting HubStation setup"
+2. "Ollama is running" (or warning if not)
+3. "Gemini API key found" (or prompt to enter)
+4. "Port 9199 is available"
+5. "All checks passed. Starting HubStation now."
+6. "Gemini Service loaded"
+7. "Ollama Runner loaded"
+8. "Reflections module loaded"
+9. "Hub Station is now listening on port 9199"
+
+If you hear "Hub Station is now listening" - YOU'RE DONE! ✓
+
+==============================================================================
+
+IF SOMETHING GOES WRONG:
+
+Problem: "Ollama is not running"
+Solution: Open new PowerShell, type: ollama serve
+
+Problem: "Port 9199 is already in use"
+Solution: Close any running HubStation, or change port in hub_config.json
+
+Problem: No audio
+Solution: Check speaker volume, or Windows voice settings
+
+==============================================================================
+
+DETAILED GUIDE:
+
+See EASY_START.md for:
+- Troubleshooting
+- Screen reader tips
+- Keyboard shortcuts
+- Common commands
+
+==============================================================================
+
+STOP HUBSTATION:
+
+Press Ctrl+C in the HubStation window
+
+==============================================================================
+
+NEED HELP?
+
+All documentation files are in the main directory:
+- EASY_START.md (complete guide)
+- REFLECTION_SYSTEM_GUIDE.md (API reference)
+- INTEGRATION_TEST_GUIDE.md (testing)
+- WHATS_NEW.md (recent changes)
+
+==============================================================================
