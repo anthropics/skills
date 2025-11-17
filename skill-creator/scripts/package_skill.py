@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Skill Packager - Creates a distributable zip file of a skill folder
+Skill Packager - Creates a distributable .skill file of a skill folder
 
 Usage:
     python utils/package_skill.py <path/to/skill-folder> [output-directory]
@@ -18,14 +18,14 @@ from quick_validate import validate_skill
 
 def package_skill(skill_path, output_dir=None):
     """
-    Package a skill folder into a zip file.
+    Package a skill folder into a .skill file.
 
     Args:
         skill_path: Path to the skill folder
-        output_dir: Optional output directory for the zip file (defaults to current directory)
+        output_dir: Optional output directory for the .skill file (defaults to current directory)
 
     Returns:
-        Path to the created zip file, or None if error
+        Path to the created .skill file, or None if error
     """
     skill_path = Path(skill_path).resolve()
 
@@ -61,11 +61,11 @@ def package_skill(skill_path, output_dir=None):
     else:
         output_path = Path.cwd()
 
-    zip_filename = output_path / f"{skill_name}.zip"
+    skill_filename = output_path / f"{skill_name}.skill"
 
-    # Create the zip file
+    # Create the .skill file (zip format)
     try:
-        with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        with zipfile.ZipFile(skill_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             # Walk through the skill directory
             for file_path in skill_path.rglob('*'):
                 if file_path.is_file():
@@ -74,11 +74,11 @@ def package_skill(skill_path, output_dir=None):
                     zipf.write(file_path, arcname)
                     print(f"  Added: {arcname}")
 
-        print(f"\n✅ Successfully packaged skill to: {zip_filename}")
-        return zip_filename
+        print(f"\n✅ Successfully packaged skill to: {skill_filename}")
+        return skill_filename
 
     except Exception as e:
-        print(f"❌ Error creating zip file: {e}")
+        print(f"❌ Error creating .skill file: {e}")
         return None
 
 

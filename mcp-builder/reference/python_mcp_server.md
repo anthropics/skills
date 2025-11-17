@@ -204,32 +204,6 @@ async def list_items(params: ListInput) -> str:
     return json.dumps(response, indent=2)
 ```
 
-## Character Limits and Truncation
-
-Add a CHARACTER_LIMIT constant to prevent overwhelming responses:
-
-```python
-# At module level
-CHARACTER_LIMIT = 25000  # Maximum response size in characters
-
-async def search_tool(params: SearchInput) -> str:
-    result = generate_response(data)
-
-    # Check character limit and truncate if needed
-    if len(result) > CHARACTER_LIMIT:
-        # Truncate data and add notice
-        truncated_data = data[:max(1, len(data) // 2)]
-        response["data"] = truncated_data
-        response["truncated"] = True
-        response["truncation_message"] = (
-            f"Response truncated from {len(data)} to {len(truncated_data)} items. "
-            f"Use 'offset' parameter or add filters to see more results."
-        )
-        result = json.dumps(response, indent=2)
-
-    return result
-```
-
 ## Error Handling
 
 Provide clear, actionable error messages:
@@ -377,7 +351,6 @@ mcp = FastMCP("example_mcp")
 
 # Constants
 API_BASE_URL = "https://api.example.com/v1"
-CHARACTER_LIMIT = 25000  # Maximum response size in characters
 
 # Enums
 class ResponseFormat(str, Enum):
@@ -643,28 +616,23 @@ async def query_data(query: str, ctx: Context) -> str:
     return format_results(results)
 ```
 
-### Multiple Transport Options
+### Transport Options
 
-FastMCP supports different transport mechanisms:
+FastMCP supports two main transport mechanisms:
 
 ```python
-# Default: Stdio transport (for CLI tools)
+# stdio transport (for local tools) - default
 if __name__ == "__main__":
     mcp.run()
 
-# HTTP transport (for web services)
+# Streamable HTTP transport (for remote servers)
 if __name__ == "__main__":
     mcp.run(transport="streamable_http", port=8000)
-
-# SSE transport (for real-time updates)
-if __name__ == "__main__":
-    mcp.run(transport="sse", port=8000)
 ```
 
 **Transport selection:**
-- **Stdio**: Command-line tools, subprocess integration
-- **HTTP**: Web services, remote access, multiple clients
-- **SSE**: Real-time updates, push notifications
+- **stdio**: Command-line tools, local integrations, subprocess execution
+- **Streamable HTTP**: Web services, remote access, multiple clients
 
 ---
 
@@ -733,12 +701,11 @@ Before finalizing your Python MCP server implementation, ensure:
 - [ ] Resources registered for appropriate data endpoints
 - [ ] Lifespan management implemented for persistent connections
 - [ ] Structured output types used (TypedDict, Pydantic models)
-- [ ] Appropriate transport configured (stdio, HTTP, SSE)
+- [ ] Appropriate transport configured (stdio or streamable HTTP)
 
 ### Code Quality
 - [ ] File includes proper imports including Pydantic imports
 - [ ] Pagination is properly implemented where applicable
-- [ ] Large responses check CHARACTER_LIMIT and truncate with clear messages
 - [ ] Filtering options are provided for potentially large result sets
 - [ ] All async functions are properly defined with `async def`
 - [ ] HTTP client usage follows async patterns with proper context managers
