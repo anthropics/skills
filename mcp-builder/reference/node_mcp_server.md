@@ -11,9 +11,10 @@ This document provides Node/TypeScript-specific best practices and examples for 
 ### Key Imports
 ```typescript
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import express from "express";
 import { z } from "zod";
-import axios, { AxiosError } from "axios";
 ```
 
 ### Server Initialization
@@ -26,9 +27,22 @@ const server = new McpServer({
 
 ### Tool Registration Pattern
 ```typescript
-server.registerTool("tool_name", {...config}, async (params) => {
-  // Implementation
-});
+server.registerTool(
+  "tool_name",
+  {
+    title: "Tool Display Name",
+    description: "What the tool does",
+    inputSchema: { param: z.string() },
+    outputSchema: { result: z.string() }
+  },
+  async ({ param }) => {
+    const output = { result: `Processed: ${param}` };
+    return {
+      content: [{ type: "text", text: JSON.stringify(output) }],
+      structuredContent: output // Modern pattern for structured data
+    };
+  }
+);
 ```
 
 ---
@@ -40,6 +54,11 @@ The official MCP TypeScript SDK provides:
 - `registerTool` method for tool registration
 - Zod schema integration for runtime input validation
 - Type-safe tool handler implementations
+
+**IMPORTANT - Use Modern APIs Only:**
+- **DO use**: `server.registerTool()`, `server.registerResource()`, `server.registerPrompt()`
+- **DO NOT use**: Old deprecated APIs such as `server.tool()`, `server.setRequestHandler(ListToolsRequestSchema, ...)`, or manual handler registration
+- The `register*` methods provide better type safety, automatic schema handling, and are the recommended approach
 
 See the MCP SDK documentation in the references for complete details.
 
@@ -204,55 +223,43 @@ Error Handling:
         };
       }
 
-      // Format response based on requested format
-      let result: string;
+      // Prepare structured output
+      const output = {
+        total,
+        count: users.length,
+        offset: params.offset,
+        users: users.map((user: any) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          ...(user.team ? { team: user.team } : {}),
+          active: user.active ?? true
+        })),
+        has_more: total > params.offset + users.length,
+        ...(total > params.offset + users.length ? {
+          next_offset: params.offset + users.length
+        } : {})
+      };
 
+      // Format text representation based on requested format
+      let textContent: string;
       if (params.response_format === ResponseFormat.MARKDOWN) {
-        // Human-readable markdown format
-        const lines: string[] = [`# User Search Results: '${params.query}'`, ""];
-        lines.push(`Found ${total} users (showing ${users.length})`);
-        lines.push("");
-
+        const lines = [`# User Search Results: '${params.query}'`, "",
+          `Found ${total} users (showing ${users.length})`, ""];
         for (const user of users) {
           lines.push(`## ${user.name} (${user.id})`);
           lines.push(`- **Email**: ${user.email}`);
-          if (user.team) {
-            lines.push(`- **Team**: ${user.team}`);
-          }
+          if (user.team) lines.push(`- **Team**: ${user.team}`);
           lines.push("");
         }
-
-        result = lines.join("\n");
-
+        textContent = lines.join("\n");
       } else {
-        // Machine-readable JSON format
-        const response: any = {
-          total,
-          count: users.length,
-          offset: params.offset,
-          users: users.map((user: any) => ({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            ...(user.team ? { team: user.team } : {}),
-            active: user.active ?? true
-          }))
-        };
-
-        // Add pagination info if there are more results
-        if (total > params.offset + users.length) {
-          response.has_more = true;
-          response.next_offset = params.offset + users.length;
-        }
-
-        result = JSON.stringify(response, null, 2);
+        textContent = JSON.stringify(output, null, 2);
       }
 
       return {
-        content: [{
-          type: "text",
-          text: result
-        }]
+        content: [{ type: "text", text: textContent }],
+        structuredContent: output // Modern pattern for structured data
       };
     } catch (error) {
       return {
@@ -695,27 +702,57 @@ server.registerTool(
 );
 
 // Main function
-async function main() {
-  // Verify environment variables if needed
+// For stdio (local):
+async function runStdio() {
   if (!process.env.EXAMPLE_API_KEY) {
     console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
     process.exit(1);
   }
 
-  // Create transport
   const transport = new StdioServerTransport();
-
-  // Connect server to transport
   await server.connect(transport);
-
-  console.error("Example MCP server running via stdio");
+  console.error("MCP server running via stdio");
 }
 
-// Run the server
-main().catch((error) => {
-  console.error("Server error:", error);
-  process.exit(1);
-});
+// For streamable HTTP (remote):
+async function runHTTP() {
+  if (!process.env.EXAMPLE_API_KEY) {
+    console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
+    process.exit(1);
+  }
+
+  const app = express();
+  app.use(express.json());
+
+  app.post('/mcp', async (req, res) => {
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+      enableJsonResponse: true
+    });
+    res.on('close', () => transport.close());
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+  });
+
+  const port = parseInt(process.env.PORT || '3000');
+  app.listen(port, () => {
+    console.error(`MCP server running on http://localhost:${port}/mcp`);
+  });
+}
+
+// Choose transport based on environment
+const transport = process.env.TRANSPORT || 'stdio';
+if (transport === 'http') {
+  runHTTP().catch(error => {
+    console.error("Server error:", error);
+    process.exit(1);
+  });
+} else {
+  runStdio().catch(error => {
+    console.error("Server error:", error);
+    process.exit(1);
+  });
+}
 ```
 
 ---
@@ -777,30 +814,47 @@ server.registerResourceList(async () => {
 - **Resources**: When data is relatively static or template-based
 - **Tools**: When operations have side effects or complex workflows
 
-### Multiple Transport Options
+### Transport Options
 
-The TypeScript SDK supports different transport mechanisms:
+The TypeScript SDK supports two main transport mechanisms:
+
+#### Streamable HTTP (Recommended for Remote Servers)
+
+```typescript
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import express from "express";
+
+const app = express();
+app.use(express.json());
+
+app.post('/mcp', async (req, res) => {
+  // Create new transport for each request (stateless, prevents request ID collisions)
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true
+  });
+
+  res.on('close', () => transport.close());
+
+  await server.connect(transport);
+  await transport.handleRequest(req, res, req.body);
+});
+
+app.listen(3000);
+```
+
+#### stdio (For Local Integrations)
 
 ```typescript
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 
-// Stdio transport (default - for CLI tools)
-const stdioTransport = new StdioServerTransport();
-await server.connect(stdioTransport);
-
-// SSE transport (for real-time web updates)
-const sseTransport = new SSEServerTransport("/message", response);
-await server.connect(sseTransport);
-
-// HTTP transport (for web services)
-// Configure based on your HTTP framework integration
+const transport = new StdioServerTransport();
+await server.connect(transport);
 ```
 
-**Transport selection guide:**
-- **Stdio**: Command-line tools, subprocess integration, local development
-- **HTTP**: Web services, remote access, multiple simultaneous clients
-- **SSE**: Real-time updates, server-push notifications, web dashboards
+**Transport selection:**
+- **Streamable HTTP**: Web services, remote access, multiple clients
+- **stdio**: Command-line tools, local development, subprocess integration
 
 ### Notification Support
 
@@ -889,7 +943,7 @@ Before finalizing your Node/TypeScript MCP server implementation, ensure:
 
 ### Advanced Features (where applicable)
 - [ ] Resources registered for appropriate data endpoints
-- [ ] Appropriate transport configured (stdio, HTTP, SSE)
+- [ ] Appropriate transport configured (stdio or streamable HTTP)
 - [ ] Notifications implemented for dynamic server capabilities
 - [ ] Type-safe with SDK interfaces
 
