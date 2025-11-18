@@ -33,6 +33,7 @@ This repository includes a diverse collection of example skills demonstrating di
 ## Development & Technical
 - **artifacts-builder** - Build complex claude.ai HTML artifacts using React, Tailwind CSS, and shadcn/ui components
 - **mcp-server** - Guide for creating high-quality MCP servers to integrate external APIs and services
+- **modal-serverless-api** - Build production-ready serverless REST APIs on Modal with FastAPI, scheduled tasks, and persistent storage
 - **webapp-testing** - Test local web applications using Playwright for UI verification and debugging
 
 ## Enterprise & Communication
