@@ -7,6 +7,7 @@ license: Complete terms in LICENSE.txt
 # MCP Server Development Guide
 
 ## Overview
+See `./INSTALLING_MCP_SERVERS.md` for a short, practical guide explaining how to register MCP servers in VS Code (command-line `code --add-mcp` vs. Marketplace extension installs), examples of resulting `mcp.json` entries, and tips for pinning/checking versions.
 
 Create MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks.
 
