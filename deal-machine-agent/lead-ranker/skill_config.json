@@ -1,0 +1,16 @@
+{
+  "name": "lead-ranker",
+  "description": "Score and rank real estate leads by likelihood to sell using multi-factor analysis",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "scoring", "ranking", "analysis", "prioritization"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY",
+    "SCORING_WEIGHT_EQUITY",
+    "SCORING_WEIGHT_VACANCY",
+    "SCORING_WEIGHT_TAX_DELINQUENT",
+    "SCORING_WEIGHT_ABSENTEE_OWNER"
+  ]
+}

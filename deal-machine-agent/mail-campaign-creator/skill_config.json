@@ -1,0 +1,14 @@
+{
+  "name": "mail-campaign-creator",
+  "description": "Design and launch targeted direct mail campaigns with personalized messaging and strategic sequencing",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "campaigns", "direct-mail", "marketing", "sequences"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY",
+    "DEFAULT_MAIL_INTERVAL_DAYS",
+    "DEFAULT_MAIL_SEQUENCE_STEPS"
+  ]
+}

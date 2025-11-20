@@ -1,0 +1,12 @@
+{
+  "name": "lead-tag-manager",
+  "description": "Organize and categorize leads using strategic tagging for efficient management and targeted campaigns",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "organization", "tags", "filtering", "segmentation"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}
