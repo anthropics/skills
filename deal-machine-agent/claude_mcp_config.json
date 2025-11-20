@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "dealmachine": {
+      "command": "python3",
+      "args": [
+        "/home/user/skills/deal-machine-agent/mcp_server.py"
+      ],
+      "env": {
+        "DEALMACHINE_API_KEY": "nqcymtWdwB16"
+      }
+    }
+  }
+}
