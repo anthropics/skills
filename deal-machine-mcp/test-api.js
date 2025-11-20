@@ -1,7 +1,7 @@
 // Quick API test script
 import axios from 'axios';
 
-const API_KEY = 'nqcymtWdwB16';
+const API_KEY = process.env.DEALMACHINE_API_KEY || 'your_api_key_here';
 const BASE_URL = 'https://api.dealmachine.com/public/v1';
 
 async function testEndpoints() {

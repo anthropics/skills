@@ -1,7 +1,7 @@
 // Test the API client with proxy support
 import { DealMachineAPIClient } from './dist/api-client.js';
 
-const API_KEY = 'nqcymtWdwB16';
+const API_KEY = process.env.DEALMACHINE_API_KEY || 'your_api_key_here';
 
 async function testClient() {
   console.log('Testing Deal Machine API Client...\n');

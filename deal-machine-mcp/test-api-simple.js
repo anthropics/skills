@@ -1,7 +1,7 @@
 // Simpler API test to debug redirects
 import axios from 'axios';
 
-const API_KEY = 'nqcymtWdwB16';
+const API_KEY = process.env.DEALMACHINE_API_KEY || 'your_api_key_here';
 
 async function testSimple() {
   console.log('Testing Deal Machine API with different approaches...\n');
