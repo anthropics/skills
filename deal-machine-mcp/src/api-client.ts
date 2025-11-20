@@ -4,6 +4,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { Lead, DealMachineAPIResponse } from './types.js';
 
 const API_BASE_URL = 'https://api.dealmachine.com/public/v1';
@@ -21,13 +22,20 @@ export class DealMachineAPIClient {
       throw new Error('Deal Machine API key is required');
     }
 
+    // Configure proxy if environment variable is set
+    const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy;
+    const httpsAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
+
     this.client = axios.create({
       baseURL: API_BASE_URL,
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       timeout: 30000,
+      httpsAgent,
+      proxy: false, // Disable axios default proxy handling
     });
 
     // Reset rate limit counter every second
