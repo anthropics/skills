@@ -69,15 +69,25 @@ class TTS(tts.TTS):
         )
         self._session: Optional[aiohttp.ClientSession] = None
 
-    def _ensure_session(self) -> aiohttp.ClientSession:
-        """Ensure aiohttp session exists"""
-        if self._session is None:
-            self._session = aiohttp.ClientSession()
+    async def _ensure_session(self) -> aiohttp.ClientSession:
+        """Ensure aiohttp session exists (async context)"""
+        if self._session is None or self._session.closed:
+            # Create session with proper configuration
+            connector = aiohttp.TCPConnector(
+                limit=100,  # Max total connections
+                limit_per_host=10,  # Max connections per host
+                ttl_dns_cache=300  # DNS cache TTL
+            )
+            timeout = aiohttp.ClientTimeout(total=self._opts.timeout)
+            self._session = aiohttp.ClientSession(
+                connector=connector,
+                timeout=timeout
+            )
         return self._session
 
     async def aclose(self) -> None:
         """Close the aiohttp session"""
-        if self._session is not None:
+        if self._session is not None and not self._session.closed:
             await self._session.close()
             self._session = None
 
@@ -113,6 +123,14 @@ class TTS(tts.TTS):
     def provider(self) -> str:
         """Return the provider name"""
         return "custom-melotts"
+
+    async def __aenter__(self):
+        """Context manager entry"""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit with automatic cleanup"""
+        await self.aclose()
 
 
 class ChunkedStream(tts.ChunkedStream):
@@ -154,7 +172,7 @@ class ChunkedStream(tts.ChunkedStream):
             url = f"{self._opts.api_base_url}/synthesize/stream"
 
             # Make HTTP request to TTS API
-            session = self._tts._ensure_session()
+            session = await self._tts._ensure_session()
 
             async with session.post(
                 url,
@@ -175,7 +193,7 @@ class ChunkedStream(tts.ChunkedStream):
                 content_type = resp.headers.get("Content-Type", "")
                 if not content_type.startswith("audio/"):
                     raise agents.APIStatusError(
-                        message=f"Unexpected content type: {content_type}",
+                        message=f"Unexpected content type: {content_type}. Expected audio/*",
                         status_code=resp.status,
                         request_id=request_id,
                         body=None,
@@ -194,7 +212,7 @@ class ChunkedStream(tts.ChunkedStream):
 
                 # Stream audio chunks
                 chunk_count = 0
-                async for chunk, _ in resp.content.iter_chunks():
+                async for chunk in resp.content.iter_chunked(8192):
                     if chunk:
                         output_emitter.push(chunk)
                         chunk_count += 1
