@@ -1,0 +1,12 @@
+# FastAPI and server dependencies
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.5
+
+# MeloTTS dependencies
+git+https://github.com/myshell-ai/MeloTTS.git
+
+# Additional dependencies required by MeloTTS
+unidic-lite==1.0.8
+mecab-python3==1.0.9
+num2words==0.5.13

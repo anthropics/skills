@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "livekit-plugins-melotts"
+version = "1.0.0"
+description = "LiveKit TTS plugin for self-hosted MeloTTS API"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Custom TTS Plugin"}
+]
+keywords = ["livekit", "tts", "melotts", "voice", "agents"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "livekit-agents>=0.8.0",
+    "aiohttp>=3.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/livekit/agents"
+Documentation = "https://docs.livekit.io/agents"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["melotts_plugin*"]
