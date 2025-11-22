@@ -7,3 +7,10 @@
 # Generated documentation
 RECOMMENDATIONS.md
 RECOMMENDATIONS.md.backup
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
