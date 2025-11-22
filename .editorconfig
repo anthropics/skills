@@ -1,0 +1,36 @@
+# EditorConfig - Consistent coding styles across editors
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.{js,jsx,ts,tsx,astro,vue}]
+indent_size = 2
+
+[*.{css,scss,sass,less}]
+indent_size = 2
+
+[*.{html,xml,svg}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.py]
+indent_size = 4
+
+[*.go]
+indent_style = tab
