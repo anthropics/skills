@@ -1,3 +1,4 @@
+---
 
 # GenerateBlocks & GeneratePress Expert Guide
 
@@ -248,11 +249,179 @@ Show/hide blocks based on rules:
 ## GP Premium Modules
 
 ### Elements System
-Create reusable header, footer, and hook content.
+Create reusable header, footer, and hook content using GenerateBlocks.
 
 **Element Types**: Header, Footer, Hook, Layout, Block
 
 **Display Rules**: Entire site, Specific post types, Individual posts/pages, Archives, User roles
+
+---
+
+## GP Premium Block Elements (Hook) - CRITICAL
+
+### Creating Block Elements via PHP/WP-CLI
+
+Block Elements use TWO meta keys for type identification:
+
+1. `_generate_element_type` = `'block'` → Triggers `GeneratePress_Block_Element` class
+2. `_generate_block_type` = `'hook'` → Specifies the block element subtype
+
+**WRONG (won't work):**
+```php
+update_post_meta($id, '_generate_element_type', 'hook');  // Legacy Hook Element
+```
+
+**CORRECT:**
+```php
+update_post_meta($id, '_generate_element_type', 'block');  // Block Element
+update_post_meta($id, '_generate_block_type', 'hook');     // Hook subtype
+```
+
+### Block Element Meta Keys Reference
+
+```php
+// Required meta keys for Block Element Hook:
+update_post_meta($element_id, '_generate_element_type', 'block');
+update_post_meta($element_id, '_generate_block_type', 'hook');
+update_post_meta($element_id, '_generate_hook', 'generate_before_header');
+update_post_meta($element_id, '_generate_hook_priority', '5');
+
+// Display conditions (array format)
+update_post_meta($element_id, '_generate_element_display_conditions', array(
+    array('rule' => 'general:site')  // Entire site
+));
+
+// Optional
+update_post_meta($element_id, '_generate_element_exclude_conditions', array());
+update_post_meta($element_id, '_generate_element_user_conditions', array());
+```
+
+### Available Hook Locations
+
+**Before Header:**
+- `generate_before_header` - Before entire header (perfect for Top Bar)
+- `wp_body_open` - Very first hook after `<body>`
+
+**Header Area:**
+- `generate_before_header_content` - Inside header, before content
+- `generate_after_header_content` - Inside header, after content
+- `generate_after_header` - After entire header
+
+**Content Area:**
+- `generate_before_main_content` - Before main content
+- `generate_after_main_content` - After main content
+- `generate_before_content` - Before entry content
+- `generate_after_content` - After entry content
+
+**Footer Area:**
+- `generate_before_footer` - Before footer
+- `generate_after_footer` - After footer
+- `generate_footer_widgets` - Footer widget area
+
+### Block Type Values for `_generate_block_type`
+
+| Value | Description | Auto Hook |
+|-------|-------------|-----------|
+| `hook` | Custom hook location | Uses `_generate_hook` |
+| `site-header` | Replaces site header | `generate_header` |
+| `site-footer` | Replaces site footer | `generate_footer` |
+| `right-sidebar` | Right sidebar content | `generate_before_right_sidebar_content` |
+| `left-sidebar` | Left sidebar content | `generate_before_left_sidebar_content` |
+| `content-template` | Post/page template | `generate_before_do_template_part` |
+| `loop-template` | Archive loop template | `generate_before_main_content` |
+| `search-modal` | Search modal content | `generate_inside_search_modal` |
+
+### Complete Example: Creating a Top Bar Element
+
+```php
+<?php
+require_once('/var/www/html/wp-load.php');
+
+// GenerateBlocks content for Top Bar
+$topbar_content = '<!-- wp:generateblocks/element {"uniqueId":"topbar01","tagName":"div","styles":{"backgroundColor":"#80b238","paddingTop":"0.5rem","paddingBottom":"0.5rem"},"css":".gb-element-topbar01{background-color:#80b238;padding-top:0.5rem;padding-bottom:0.5rem}"} -->
+<div class="gb-element gb-element-topbar01">
+<!-- wp:generateblocks/element {"uniqueId":"topbar02","tagName":"div","styles":{"maxWidth":"1280px","marginLeft":"auto","marginRight":"auto","paddingLeft":"1.5rem","paddingRight":"1.5rem","display":"flex","justifyContent":"space-between","alignItems":"center"},"css":".gb-element-topbar02{max-width:1280px;margin-left:auto;margin-right:auto;padding-left:1.5rem;padding-right:1.5rem;display:flex;justify-content:space-between;align-items:center}"} -->
+<div class="gb-element gb-element-topbar02">
+<!-- wp:generateblocks/text {"uniqueId":"topbar03","tagName":"a","styles":{"color":"#ffffff","fontSize":"0.875rem","textDecoration":"none"},"css":".gb-text-topbar03{color:#ffffff;font-size:0.875rem;text-decoration:none}"} -->
+<a class="gb-text gb-text-topbar03" href="mailto:info@example.com">📧 info@example.com</a>
+<!-- /wp:generateblocks/text -->
+</div>
+<!-- /wp:generateblocks/element -->
+</div>
+<!-- /wp:generateblocks/element -->';
+
+// Create the Block Element
+$element_id = wp_insert_post(array(
+    'post_title' => 'Top Bar',
+    'post_content' => $topbar_content,
+    'post_status' => 'publish',
+    'post_type' => 'gp_elements'
+));
+
+// CRITICAL: Set BOTH type meta keys
+update_post_meta($element_id, '_generate_element_type', 'block');
+update_post_meta($element_id, '_generate_block_type', 'hook');
+update_post_meta($element_id, '_generate_hook', 'generate_before_header');
+update_post_meta($element_id, '_generate_hook_priority', '5');
+update_post_meta($element_id, '_generate_element_display_conditions', array(
+    array('rule' => 'general:site')
+));
+```
+
+### CSS Generation for Block Elements
+
+GenerateBlocks CSS is NOT automatically generated for Block Elements created via PHP/CLI.
+
+**Solution 1: Include CSS in block attributes**
+```javascript
+{
+  "uniqueId": "topbar01",
+  "css": ".gb-element-topbar01{background-color:#80b238;padding:0.5rem}"
+}
+```
+
+**Solution 2: Append CSS to existing GenerateBlocks stylesheet**
+```php
+$upload_dir = wp_upload_dir();
+$css_file = $upload_dir['basedir'] . '/generateblocks/style-57.css';
+$topbar_css = '.gb-element-topbar01{background-color:#80b238}';
+file_put_contents($css_file, file_get_contents($css_file) . $topbar_css);
+```
+
+**Solution 3: Open element in WordPress editor and save**
+This triggers the block parser to generate CSS automatically.
+
+### Display Condition Rules
+
+```php
+// Entire site
+array('rule' => 'general:site')
+
+// Specific page
+array('rule' => 'general:singular', 'object' => 123)
+
+// All posts
+array('rule' => 'post:post')
+
+// All pages
+array('rule' => 'post:page')
+
+// Front page
+array('rule' => 'general:front_page')
+
+// Blog page
+array('rule' => 'general:blog')
+
+// Archives
+array('rule' => 'archive:post')  // Post archives
+array('rule' => 'archive:category')  // Category archives
+
+// 404 page
+array('rule' => 'general:404')
+
+// Search results
+array('rule' => 'general:search')
+```
 
 ### Typography System
 Complete control over all text via Customizer:
