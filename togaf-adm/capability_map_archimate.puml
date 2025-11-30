@@ -1,0 +1,112 @@
+@startuml
+!include <archimate/Archimate>
+
+title Capability Map - Fintech Lending Platform
+
+' ========================================
+' Organization
+' ========================================
+
+' ========================================
+' Domain: Customer Management
+' ========================================
+
+package "Customer Management" {
+
+  Capability(cap_1_Customer_Acquisition, "🟡 Customer Acquisition\nL3 → L4 (Gap: +1)")
+
+  Capability(cap_1_Customer_Onboarding, "🟠 Customer Onboarding\nL2 → L4 (Gap: +2)")
+  Capability(sub_1_2_KYC_Verification, "🟡 KYC Verification\nL3 → L4")
+  Rel_Aggregation(cap_1_Customer_Onboarding, sub_1_2_KYC_Verification)
+  Capability(sub_1_2_Income_Verification, "🟠 Income Verification\nL1 → L3")
+  Rel_Aggregation(cap_1_Customer_Onboarding, sub_1_2_Income_Verification)
+
+  Capability(cap_1_Customer_Service, "🟡 Customer Service\nL2 → L3 (Gap: +1)")
+
+}
+
+' ========================================
+' Domain: Credit Management
+' ========================================
+
+package "Credit Management" {
+
+  Capability(cap_2_Credit_Origination, "🔴 Credit Origination\nL2 → L5 (Gap: +3)")
+  Capability(sub_2_1_Credit_Scoring, "🔴 Credit Scoring\nL1 → L5")
+  Rel_Aggregation(cap_2_Credit_Origination, sub_2_1_Credit_Scoring)
+  Capability(sub_2_1_Credit_Decision, "🟠 Credit Decision\nL2 → L4")
+  Rel_Aggregation(cap_2_Credit_Origination, sub_2_1_Credit_Decision)
+  Capability(sub_2_1_Pricing, "🟠 Pricing\nL2 → L4")
+  Rel_Aggregation(cap_2_Credit_Origination, sub_2_1_Pricing)
+
+  Capability(cap_2_Disbursement, "🟡 Disbursement\nL3 → L4 (Gap: +1)")
+
+  Capability(cap_2_Credit_Servicing, "🟡 Credit Servicing\nL2 → L3 (Gap: +1)")
+
+  Capability(cap_2_Collections, "🟠 Collections\nL2 → L4 (Gap: +2)")
+
+}
+
+' ========================================
+' Domain: Risk Management
+' ========================================
+
+package "Risk Management" {
+
+  Capability(cap_3_Credit_Risk, "🔴 Credit Risk\nL2 → L5 (Gap: +3)")
+
+  Capability(cap_3_Fraud_Detection, "🔴 Fraud Detection\nL0 → L3 (Gap: +3)")
+
+  Capability(cap_3_AML_Compliance, "🟡 AML Compliance\nL3 → L4 (Gap: +1)")
+
+}
+
+' ========================================
+' Domain: Technology
+' ========================================
+
+package "Technology" {
+
+  Capability(cap_4_Software_Development, "🟡 Software Development\nL3 → L4 (Gap: +1)")
+
+  Capability(cap_4_Cloud_Infrastructure, "🟠 Cloud Infrastructure\nL2 → L4 (Gap: +2)")
+
+  Capability(cap_4_Data_and_Analytics, "🔴 Data & Analytics\nL2 → L5 (Gap: +3)")
+
+}
+
+' ========================================
+' Legend
+' ========================================
+
+legend right
+  |<back:#C8E6C9>    </back>| ✅ No Gap (On Target) |
+  |<back:#FFF9C4>    </back>| 🟡 Small Gap (1 level) |
+  |<back:#FFE0B2>    </back>| 🟠 Medium Gap (2 levels) |
+  |<back:#FFCDD2>    </back>| 🔴 Critical Gap (3+ levels) |
+endlegend
+
+' ========================================
+' Styling (Color by Maturity Gap)
+' ========================================
+
+cap_1_Customer_Acquisition #back:#FFF9C4
+cap_1_Customer_Onboarding #back:#FFE0B2
+sub_1_2_KYC_Verification #back:#FFF9C4
+sub_1_2_Income_Verification #back:#FFE0B2
+cap_1_Customer_Service #back:#FFF9C4
+cap_2_Credit_Origination #back:#FFCDD2
+sub_2_1_Credit_Scoring #back:#FFCDD2
+sub_2_1_Credit_Decision #back:#FFE0B2
+sub_2_1_Pricing #back:#FFE0B2
+cap_2_Disbursement #back:#FFF9C4
+cap_2_Credit_Servicing #back:#FFF9C4
+cap_2_Collections #back:#FFE0B2
+cap_3_Credit_Risk #back:#FFCDD2
+cap_3_Fraud_Detection #back:#FFCDD2
+cap_3_AML_Compliance #back:#FFF9C4
+cap_4_Software_Development #back:#FFF9C4
+cap_4_Cloud_Infrastructure #back:#FFE0B2
+cap_4_Data_and_Analytics #back:#FFCDD2
+
+@enduml

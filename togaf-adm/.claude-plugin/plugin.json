@@ -1,0 +1,21 @@
+{
+  "name": "togaf-adm",
+  "version": "1.0.0",
+  "description": "Expert Enterprise Architect specialized in applying TOGAF Architecture Development Method (ADM) for defining, designing, and planning Enterprise Architecture. Covers all ADM phases with practical, business-oriented deliverables.",
+  "author": "Xavier Bustamante",
+  "homepage": "https://github.com/xavicrip/togaf-adm-skill",
+  "repository": "https://github.com/xavicrip/togaf-adm-skill",
+  "license": "MIT",
+  "keywords": [
+    "togaf",
+    "enterprise-architecture",
+    "adm",
+    "architecture-development-method",
+    "archimate",
+    "capability-mapping",
+    "value-stream",
+    "digital-transformation",
+    "cloud-migration"
+  ],
+  "skills": "."
+}

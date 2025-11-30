@@ -1,0 +1,132 @@
+{
+    "organization": "Fintech Lending Platform",
+    "domains": [
+        {
+            "name": "Customer Management",
+            "capabilities": [
+                {
+                    "name": "Customer Acquisition",
+                    "maturity_current": 3,
+                    "maturity_target": 4,
+                    "criticality": "HIGH"
+                },
+                {
+                    "name": "Customer Onboarding",
+                    "maturity_current": 2,
+                    "maturity_target": 4,
+                    "criticality": "CRITICAL",
+                    "sub_capabilities": [
+                        {
+                            "name": "KYC Verification",
+                            "maturity_current": 3,
+                            "maturity_target": 4
+                        },
+                        {
+                            "name": "Income Verification",
+                            "maturity_current": 1,
+                            "maturity_target": 3
+                        }
+                    ]
+                },
+                {
+                    "name": "Customer Service",
+                    "maturity_current": 2,
+                    "maturity_target": 3,
+                    "criticality": "MEDIUM"
+                }
+            ]
+        },
+        {
+            "name": "Credit Management",
+            "capabilities": [
+                {
+                    "name": "Credit Origination",
+                    "maturity_current": 2,
+                    "maturity_target": 5,
+                    "criticality": "CRITICAL",
+                    "sub_capabilities": [
+                        {
+                            "name": "Credit Scoring",
+                            "maturity_current": 1,
+                            "maturity_target": 5
+                        },
+                        {
+                            "name": "Credit Decision",
+                            "maturity_current": 2,
+                            "maturity_target": 4
+                        },
+                        {
+                            "name": "Pricing",
+                            "maturity_current": 2,
+                            "maturity_target": 4
+                        }
+                    ]
+                },
+                {
+                    "name": "Disbursement",
+                    "maturity_current": 3,
+                    "maturity_target": 4,
+                    "criticality": "HIGH"
+                },
+                {
+                    "name": "Credit Servicing",
+                    "maturity_current": 2,
+                    "maturity_target": 3,
+                    "criticality": "MEDIUM"
+                },
+                {
+                    "name": "Collections",
+                    "maturity_current": 2,
+                    "maturity_target": 4,
+                    "criticality": "HIGH"
+                }
+            ]
+        },
+        {
+            "name": "Risk Management",
+            "capabilities": [
+                {
+                    "name": "Credit Risk",
+                    "maturity_current": 2,
+                    "maturity_target": 5,
+                    "criticality": "CRITICAL"
+                },
+                {
+                    "name": "Fraud Detection",
+                    "maturity_current": 0,
+                    "maturity_target": 3,
+                    "criticality": "CRITICAL"
+                },
+                {
+                    "name": "AML Compliance",
+                    "maturity_current": 3,
+                    "maturity_target": 4,
+                    "criticality": "CRITICAL"
+                }
+            ]
+        },
+        {
+            "name": "Technology",
+            "capabilities": [
+                {
+                    "name": "Software Development",
+                    "maturity_current": 3,
+                    "maturity_target": 4,
+                    "criticality": "HIGH"
+                },
+                {
+                    "name": "Cloud Infrastructure",
+                    "maturity_current": 2,
+                    "maturity_target": 4,
+                    "criticality": "HIGH"
+                },
+                {
+                    "name": "Data & Analytics",
+                    "maturity_current": 2,
+                    "maturity_target": 5,
+                    "criticality": "CRITICAL"
+                }
+            ]
+        }
+    ]
+}

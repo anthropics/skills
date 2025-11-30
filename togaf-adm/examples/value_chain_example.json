@@ -1,0 +1,43 @@
+{
+    "organization": "Fintech Lending Platform",
+    "support_activities": [
+        {
+            "name": "Infrastructure",
+            "description": "Compliance, Finance, Legal, Governance"
+        },
+        {
+            "name": "HR Management",
+            "description": "Recruitment of data scientists and risk analysts"
+        },
+        {
+            "name": "Technology Development",
+            "description": "ML for credit scoring, Cloud platform, APIs"
+        },
+        {
+            "name": "Procurement",
+            "description": "Credit bureaus, Cloud providers (AWS), KYC/AML vendors"
+        }
+    ],
+    "primary_activities": [
+        {
+            "name": "Lead Acquisition",
+            "description": "Digital marketing, customer acquisition"
+        },
+        {
+            "name": "Credit Scoring",
+            "description": "Credit risk evaluation using ML models"
+        },
+        {
+            "name": "Underwriting",
+            "description": "Credit decision and pricing"
+        },
+        {
+            "name": "Disbursement",
+            "description": "Fund transfer to customer account"
+        },
+        {
+            "name": "Servicing",
+            "description": "Customer support, collections, payments"
+        }
+    ]
+}
