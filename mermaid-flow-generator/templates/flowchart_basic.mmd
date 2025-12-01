@@ -1,0 +1,16 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F5F5F5', 'primaryTextColor': '#333333', 'primaryBorderColor': '#CCCCCC', 'secondaryColor': '#5B7B94', 'lineColor': '#666666', 'fontFamily': 'Meiryo, sans-serif'}}}%%
+flowchart TD
+    START([開始]) --> STEP1[ステップ1]
+    STEP1 --> DECISION{判断}
+    DECISION -->|条件A| STEP2A[処理A]
+    DECISION -->|条件B| STEP2B[処理B]
+    STEP2A --> END([終了])
+    STEP2B --> END
+
+    classDef startEnd fill:#5B7B94,color:#fff,stroke:#333
+    classDef decision fill:#F5F5F5,stroke:#666,stroke-width:2px
+    classDef process fill:#fff,stroke:#CCC
+
+    class START,END startEnd
+    class DECISION decision
+    class STEP1,STEP2A,STEP2B process

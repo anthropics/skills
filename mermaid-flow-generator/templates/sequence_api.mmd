@@ -1,0 +1,16 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#F5F5F5', 'primaryTextColor': '#333333', 'actorTextColor': '#333333', 'actorBorder': '#666666', 'actorBkg': '#F5F5F5', 'signalColor': '#333333', 'signalTextColor': '#333333', 'labelTextColor': '#333333', 'loopTextColor': '#333333', 'noteBkgColor': '#F5F5F5', 'noteTextColor': '#333333', 'fontFamily': 'Meiryo, sans-serif'}}}%%
+sequenceDiagram
+    participant U as ユーザー
+    participant F as フロントエンド
+    participant A as APIサーバー
+    participant D as データベース
+
+    U->>F: 操作
+    F->>A: APIリクエスト
+    A->>D: データ取得
+    D-->>A: データ返却
+    A-->>F: APIレスポンス
+    F-->>U: 画面更新
+
+    Note over U,F: ユーザー操作
+    Note over A,D: サーバー処理
