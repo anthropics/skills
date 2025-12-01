@@ -15,10 +15,10 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./document-skills/xlsx",
-        "./document-skills/docx",
-        "./document-skills/pptx",
-        "./document-skills/pdf"
+        "./skills/xlsx",
+        "./skills/docx",
+        "./skills/pptx",
+        "./skills/pdf"
       ]
     },
     {
@@ -27,17 +27,17 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./algorithmic-art",
-        "./brand-guidelines",
-        "./canvas-design",
-        "./frontend-design",
-        "./internal-comms",
-        "./mcp-builder",
-        "./skill-creator",
-        "./slack-gif-creator",
-        "./theme-factory",
-        "./web-artifacts-builder",
-        "./webapp-testing"
+        "./skills/algorithmic-art",
+        "./skills/brand-guidelines",
+        "./skills/canvas-design",
+        "./skills/frontend-design",
+        "./skills/internal-comms",
+        "./skills/mcp-builder",
+        "./skills/skill-creator",
+        "./skills/slack-gif-creator",
+        "./skills/theme-factory",
+        "./skills/web-artifacts-builder",
+        "./skills/webapp-testing"
       ]
     }
   ]
