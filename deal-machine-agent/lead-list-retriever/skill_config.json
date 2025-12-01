@@ -1,0 +1,12 @@
+{
+  "name": "lead-list-retriever",
+  "description": "Fetch, display, and filter real estate leads from DealMachine",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "leads", "real-estate", "filtering", "list"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}

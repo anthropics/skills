@@ -1,0 +1,129 @@
+{
+  "name": "deal-machine-agent",
+  "version": "1.0.0",
+  "description": "AI-powered real estate investing assistant for DealMachine with lead ranking, campaign automation, and deal analysis",
+  "author": "DealMachine AI Agent Team",
+  "license": "MIT",
+  "repository": "https://github.com/TroyBuildsGIT/deal-machine-agent",
+  "keywords": [
+    "real-estate",
+    "dealmachine",
+    "investing",
+    "ai-agent",
+    "lead-generation",
+    "direct-mail",
+    "wholesaling",
+    "fix-and-flip",
+    "rental-properties"
+  ],
+  "skills": [
+    {
+      "id": "lead-list-retriever",
+      "name": "Lead List Retriever",
+      "description": "Fetch, display, and filter real estate leads from DealMachine",
+      "path": "./lead-list-retriever",
+      "icon": "📋"
+    },
+    {
+      "id": "lead-ranker",
+      "name": "Lead Ranker & Scorer",
+      "description": "Score and rank leads by likelihood to sell using multi-factor analysis",
+      "path": "./lead-ranker",
+      "icon": "🎯"
+    },
+    {
+      "id": "lead-analyzer",
+      "name": "Lead Detail Analyzer",
+      "description": "Provide deep, comprehensive analysis of individual leads with deal structures",
+      "path": "./lead-analyzer",
+      "icon": "🔍"
+    },
+    {
+      "id": "campaign-budget-planner",
+      "name": "Campaign Budget Planner",
+      "description": "Create strategic marketing budgets with ROI projections",
+      "path": "./campaign-budget-planner",
+      "icon": "💰"
+    },
+    {
+      "id": "mail-campaign-creator",
+      "name": "Mail Campaign Creator",
+      "description": "Design and launch targeted direct mail sequences",
+      "path": "./mail-campaign-creator",
+      "icon": "✉️"
+    },
+    {
+      "id": "lead-tag-manager",
+      "name": "Lead Tag Manager",
+      "description": "Organize leads with strategic tagging for efficient management",
+      "path": "./lead-tag-manager",
+      "icon": "🏷️"
+    },
+    {
+      "id": "lead-note-creator",
+      "name": "Lead Note Creator",
+      "description": "Create detailed, actionable notes to track lead interactions",
+      "path": "./lead-note-creator",
+      "icon": "📝"
+    },
+    {
+      "id": "campaign-monitor",
+      "name": "Campaign Monitor",
+      "description": "Track campaign performance and optimize marketing spend",
+      "path": "./campaign-monitor",
+      "icon": "📊"
+    },
+    {
+      "id": "roi-calculator",
+      "name": "ROI Calculator",
+      "description": "Calculate returns and analyze deal profitability",
+      "path": "./roi-calculator",
+      "icon": "💵"
+    },
+    {
+      "id": "investment-plan-wizard",
+      "name": "Investment Plan Wizard",
+      "description": "Guide investors through creating comprehensive investment plans",
+      "path": "./investment-plan-wizard",
+      "icon": "🧙"
+    }
+  ],
+  "requirements": {
+    "dealmachine_account": true,
+    "api_key": true,
+    "minimum_budget": 100
+  },
+  "supported_platforms": [
+    "claude-desktop",
+    "claude-web",
+    "chatgpt-plus"
+  ],
+  "api": {
+    "base_url": "https://api.dealmachine.com/public/v1",
+    "rate_limits": {
+      "requests_per_second": 10,
+      "requests_per_day": 5000
+    },
+    "authentication": "bearer_token"
+  },
+  "features": [
+    "Lead scoring and ranking",
+    "Direct mail campaign automation",
+    "ROI calculations for multiple strategies",
+    "Real-time campaign monitoring",
+    "Deal analysis and comparables",
+    "Budget planning and optimization",
+    "Lead organization and tagging",
+    "Detailed note-taking and CRM",
+    "Interactive investment planning wizard",
+    "Market analysis and insights"
+  ],
+  "target_users": [
+    "Beginner real estate investors",
+    "Experienced wholesalers",
+    "Fix and flip investors",
+    "Buy and hold investors",
+    "Part-time investors",
+    "Real estate teams"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "campaign-budget-planner",
+  "description": "Create strategic marketing budgets for real estate direct mail campaigns with ROI projections",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "budget", "planning", "marketing", "roi"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY",
+    "DEFAULT_MARKETING_BUDGET"
+  ]
+}

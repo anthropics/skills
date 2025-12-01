@@ -1,0 +1,13 @@
+{
+  "name": "investment-plan-wizard",
+  "description": "Guide investors through creating comprehensive investment plans from goal setting to execution",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "planning", "strategy", "wizard", "onboarding"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY",
+    "DEFAULT_MARKETING_BUDGET"
+  ]
+}

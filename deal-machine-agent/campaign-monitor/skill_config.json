@@ -1,0 +1,12 @@
+{
+  "name": "campaign-monitor",
+  "description": "Track mail campaign performance, analyze effectiveness, and optimize marketing spend with real-time monitoring",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "monitoring", "analytics", "performance", "tracking"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}

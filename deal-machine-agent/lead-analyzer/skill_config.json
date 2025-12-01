@@ -1,0 +1,12 @@
+{
+  "name": "lead-analyzer",
+  "description": "Provide deep, comprehensive analysis of individual real estate leads with deal structure recommendations",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "analysis", "property-analysis", "due-diligence", "deal-structure"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}

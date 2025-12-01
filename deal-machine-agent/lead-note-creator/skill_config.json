@@ -1,0 +1,12 @@
+{
+  "name": "lead-note-creator",
+  "description": "Create detailed, actionable notes to track lead interactions, insights, and deal progress",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "notes", "documentation", "tracking", "crm"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}

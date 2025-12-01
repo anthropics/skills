@@ -1,0 +1,12 @@
+{
+  "name": "roi-calculator",
+  "description": "Calculate returns, analyze deal profitability, and make data-driven investment decisions for real estate deals",
+  "version": "1.0.0",
+  "author": "DealMachine AI Agent",
+  "category": "real-estate",
+  "tags": ["dealmachine", "roi", "calculator", "analysis", "profitability"],
+  "dependencies": [],
+  "env_vars": [
+    "DEALMACHINE_API_KEY"
+  ]
+}
