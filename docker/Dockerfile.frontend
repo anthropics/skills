@@ -1,0 +1,65 @@
+# ============================================
+# Multi-stage build for production frontend
+# ============================================
+
+# Stage 1: Build
+FROM node:20-alpine AS builder
+
+ARG NODE_VERSION=20
+ARG BUILD_ENV=production
+
+WORKDIR /app
+
+# Install dependencies first (better caching)
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY vite.config.ts ./
+
+RUN npm ci --only=production --ignore-scripts && \
+    npm cache clean --force
+
+# Copy source code
+COPY public ./public
+COPY src ./src
+COPY index.html ./
+
+# Build application
+ENV NODE_ENV=production
+ENV VITE_BUILD_ENV=${BUILD_ENV}
+
+RUN npm run build && \
+    # Remove source maps in production
+    find dist -name "*.map" -type f -delete
+
+# Stage 2: Production runtime with nginx
+FROM nginx:1.25-alpine AS production
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy custom nginx configuration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx-default.conf /etc/nginx/conf.d/default.conf
+
+# Copy built assets from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Add health check endpoint
+RUN echo '<!DOCTYPE html><html><body>OK</body></html>' > /usr/share/nginx/html/health.html
+
+# Create nginx user for security
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost/health || exit 1
+
+# Run as non-root user
+USER nginx
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

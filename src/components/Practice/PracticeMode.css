@@ -1,0 +1,297 @@
+.practice-mode {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 30px;
+  color: white;
+}
+
+.practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.practice-header h2 {
+  margin: 0;
+  font-size: 1.8em;
+}
+
+.practice-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.practice-btn,
+.reset-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1em;
+}
+
+.practice-btn {
+  background: white;
+  color: #667eea;
+}
+
+.practice-btn.active {
+  background: #fbbf24;
+  color: #1f2937;
+}
+
+.practice-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.reset-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Feedback Section */
+.feedback-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.current-note {
+  font-size: 4em;
+  font-weight: bold;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+}
+
+.current-note.active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.feedback-message {
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-block;
+  animation: fadeIn 0.3s;
+}
+
+.feedback-message.correct {
+  background: #10b981;
+}
+
+.feedback-message.incorrect {
+  background: #ef4444;
+}
+
+/* Score Display */
+.score-display {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.score-card {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.score-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+  margin-bottom: 5px;
+}
+
+.score-value {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.score-value.correct {
+  color: #34d399;
+}
+
+.score-value.incorrect {
+  color: #fca5a5;
+}
+
+.score-value.accuracy {
+  color: #fbbf24;
+}
+
+.score-value.combo {
+  color: #f97316;
+}
+
+/* Grade Display */
+.grade-display {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.grade-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5em;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.grade-info {
+  flex: 1;
+}
+
+.grade-info p {
+  margin: 5px 0;
+  font-size: 1.1em;
+}
+
+/* Recent Notes */
+.recent-notes {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.recent-notes h4 {
+  margin: 0 0 15px 0;
+}
+
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.note-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.note-item.correct {
+  background: rgba(16, 185, 129, 0.3);
+  border: 2px solid #10b981;
+}
+
+.note-item.incorrect {
+  background: rgba(239, 68, 68, 0.3);
+  border: 2px solid #ef4444;
+}
+
+.note-name {
+  font-size: 1.1em;
+}
+
+.note-status {
+  font-size: 1.2em;
+}
+
+/* Instructions */
+.instructions {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.instructions h4 {
+  margin: 0 0 15px 0;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .practice-mode {
+    padding: 20px;
+  }
+
+  .practice-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .practice-header h2 {
+    font-size: 1.5em;
+  }
+
+  .practice-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .current-note {
+    font-size: 3em;
+    height: 80px;
+  }
+
+  .score-display {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grade-display {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .feedback-message {
+    font-size: 1.2em;
+  }
+}
