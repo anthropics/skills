@@ -1,0 +1,42 @@
+{
+    "name": "iPhone Product Launch",
+    "trigger": "Strategic decision to launch new iPhone model",
+    "value_delivered": "New iPhone available globally with strong adoption",
+    "stages": [
+        {
+            "name": "Design & Development",
+            "process": "Product Innovation Process",
+            "actors": ["Design Team", "Hardware Engineering", "Software Engineering"],
+            "applications": ["CAD/CAM Systems", "Xcode", "Silicon Design Tools"],
+            "metrics": {"duration": "12-18 months", "team": "1000+ engineers"}
+        },
+        {
+            "name": "Manufacturing Ramp-up",
+            "process": "Production Scaling",
+            "actors": ["Supply Chain Team", "Foxconn", "TSMC"],
+            "applications": ["SCM System", "MES", "Quality Control Systems"],
+            "metrics": {"duration": "3-6 months", "volume": "70-90M units"}
+        },
+        {
+            "name": "Marketing & Pre-Launch",
+            "process": "Product Marketing Campaign",
+            "actors": ["Marketing Team", "Tim Cook", "PR Team"],
+            "applications": ["Apple.com", "Marketing Automation", "Apple Store App"],
+            "metrics": {"duration": "2-3 months", "viewers": "10-20M keynote"}
+        },
+        {
+            "name": "Launch & Sales",
+            "process": "Global Product Launch",
+            "actors": ["Retail Teams", "Online Sales", "Carriers"],
+            "applications": ["Retail POS", "E-commerce Platform", "Inventory System"],
+            "metrics": {"first_weekend": "10-15M units", "countries": "30+"}
+        },
+        {
+            "name": "Post-Launch Support",
+            "process": "Customer Support & Updates",
+            "actors": ["AppleCare Team", "Genius Bar", "iOS Engineering"],
+            "applications": ["AppleCare System", "iOS Update Distribution", "App Store"],
+            "metrics": {"lifetime": "3-5 years", "satisfaction": "95%+"}
+        }
+    ]
+}

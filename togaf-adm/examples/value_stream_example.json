@@ -1,0 +1,97 @@
+{
+    "name": "Credit Origination",
+    "trigger": "Customer applies for credit online",
+    "value_delivered": "Credit approved and disbursed to customer account",
+    "stages": [
+        {
+            "name": "Application & Data Capture",
+            "activities": [
+                "Customer registration",
+                "Identity verification (KYC)",
+                "Document upload"
+            ],
+            "stakeholders": [
+                "Customer",
+                "Onboarding Bot"
+            ],
+            "systems": [
+                "Web Portal",
+                "KYC API",
+                "Document Storage"
+            ],
+            "metrics": {
+                "avg_time": "5 min",
+                "completion_rate": "85%"
+            }
+        },
+        {
+            "name": "Credit Evaluation",
+            "activities": [
+                "Pull credit bureau data",
+                "ML credit scoring",
+                "Income verification"
+            ],
+            "stakeholders": [
+                "Scoring Engine (automated)",
+                "Risk Analyst (edge cases)"
+            ],
+            "systems": [
+                "Score Engine",
+                "Bureau APIs",
+                "Rules Engine"
+            ],
+            "metrics": {
+                "avg_time": "30 sec",
+                "automation_rate": "90%"
+            }
+        },
+        {
+            "name": "Approval & Pricing",
+            "activities": [
+                "Credit decision (approve/reject)",
+                "Interest rate calculation",
+                "Offer generation"
+            ],
+            "stakeholders": [
+                "Decision Engine (automated)",
+                "Credit Officer (manual review)"
+            ],
+            "systems": [
+                "Decision Engine",
+                "Pricing Engine",
+                "Offer Generator"
+            ],
+            "metrics": {
+                "avg_time": "2 min",
+                "automation_rate": "95%"
+            }
+        },
+        {
+            "name": "Contract & Disbursement",
+            "activities": [
+                "Digital contract signature",
+                "Disbursement scheduling",
+                "Fund transfer"
+            ],
+            "stakeholders": [
+                "Customer",
+                "Payment System"
+            ],
+            "systems": [
+                "e-Signature API",
+                "Core Banking",
+                "Payment Gateway"
+            ],
+            "metrics": {
+                "avg_time": "3 min",
+                "success_rate": "99.9%"
+            }
+        }
+    ],
+    "overall_metrics": {
+        "lead_time": "15 min",
+        "cycle_time": "10 min",
+        "automation_rate": "92%",
+        "approval_rate": "68%"
+    }
+}
