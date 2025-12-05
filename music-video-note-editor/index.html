@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Notas Musicais para Vídeos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎹 Editor de Notas Musicais para Vídeos</h1>
+            <p>Adicione notas visuais aos seus vídeos de piano/teclado</p>
+        </header>
+
+        <main>
+            <!-- Seção de entrada de vídeo -->
+            <section class="video-input-section">
+                <h2>1. Adicionar Vídeo do YouTube</h2>
+                <div class="input-group">
+                    <input type="text" id="videoUrl" placeholder="Cole o link do YouTube aqui (ex: https://youtu.be/3mmcdnhBvDA)" />
+                    <button id="loadVideo">Carregar Vídeo</button>
+                </div>
+            </section>
+
+            <!-- Player de vídeo -->
+            <section class="video-section">
+                <h2>2. Visualizar Vídeo</h2>
+                <div id="videoContainer">
+                    <div id="player"></div>
+                </div>
+                <div class="video-controls">
+                    <button id="playPause">▶️ Play/Pause</button>
+                    <button id="rewind">⏪ -5s</button>
+                    <button id="forward">⏩ +5s</button>
+                    <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                </div>
+            </section>
+
+            <!-- Transcrição de Áudio -->
+            <section class="transcription-section">
+                <h2>3. Transcrição Automática (Áudio → MIDI)</h2>
+                <div class="transcription-controls">
+                    <p>Extraia as notas automaticamente do áudio do vídeo usando IA</p>
+                    <button id="transcribeAudio" class="feature-btn">🎵 Transcrever Áudio (Basic Pitch)</button>
+                    <div id="transcriptionStatus" class="status-message"></div>
+                    <div class="transcription-options">
+                        <label><input type="checkbox" id="autoAddTranscribedNotes" checked> Adicionar notas transcritas automaticamente</label>
+                        <label>Confiança mínima: <input type="range" id="confidenceThreshold" min="0" max="100" value="70"> <span id="confidenceValue">70%</span></label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conexão MIDI -->
+            <section class="midi-section">
+                <h2>4. Conectar Teclado MIDI</h2>
+                <div class="midi-controls">
+                    <p>Conecte seu teclado MIDI e pratique em tempo real</p>
+                    <button id="connectMIDI" class="feature-btn">🎹 Conectar Teclado MIDI</button>
+                    <div id="midiStatus" class="status-message">Status: Desconectado</div>
+                    <div id="midiDevices" class="device-list"></div>
+                    <div class="midi-monitor">
+                        <h4>Últimas Notas Tocadas:</h4>
+                        <div id="midiNoteDisplay" class="note-display"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modo Prática -->
+            <section class="practice-section">
+                <h2>5. Modo Prática Guiada</h2>
+                <div class="practice-controls">
+                    <p>Pratique com feedback em tempo real - toque as notas corretas no momento certo!</p>
+                    <div class="practice-buttons">
+                        <button id="startPractice" class="practice-btn">▶️ Iniciar Prática</button>
+                        <button id="stopPractice" class="practice-btn" disabled>⏹️ Parar Prática</button>
+                        <button id="resetPractice" class="practice-btn">🔄 Reiniciar</button>
+                    </div>
+                    <div class="practice-stats">
+                        <div class="stat-box">
+                            <h4>Acertos</h4>
+                            <div id="correctNotes" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Erros</h4>
+                            <div id="wrongNotes" class="stat-value">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Precisão</h4>
+                            <div id="accuracy" class="stat-value">100%</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Streak</h4>
+                            <div id="streak" class="stat-value">0 🔥</div>
+                        </div>
+                    </div>
+                    <div class="practice-feedback">
+                        <div id="feedbackMessage" class="feedback-message"></div>
+                        <canvas id="noteVisualization" width="800" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Partitura -->
+            <section class="score-section">
+                <h2>6. Visualização de Partitura</h2>
+                <div class="score-controls">
+                    <button id="generateScore" class="feature-btn">📝 Gerar Partitura (VexFlow)</button>
+                    <div class="score-options">
+                        <label>Clave:
+                            <select id="clefType">
+                                <option value="treble">Sol (Treble)</option>
+                                <option value="bass">Fá (Bass)</option>
+                            </select>
+                        </label>
+                        <label>Tempo: <input type="text" id="timeSignature" value="4/4" placeholder="4/4"></label>
+                    </div>
+                </div>
+                <div id="scoreOutput" class="score-output"></div>
+            </section>
+
+            <!-- Editor de notas -->
+            <section class="notes-editor-section">
+                <h2>7. Adicionar Notas Manualmente</h2>
+
+                <div class="note-controls">
+                    <div class="note-selector">
+                        <h3>Selecione a Nota:</h3>
+                        <div class="note-buttons">
+                            <button class="note-btn" data-note="C">Dó</button>
+                            <button class="note-btn sharp" data-note="C#">Dó#</button>
+                            <button class="note-btn" data-note="D">Ré</button>
+                            <button class="note-btn sharp" data-note="D#">Ré#</button>
+                            <button class="note-btn" data-note="E">Mi</button>
+                            <button class="note-btn" data-note="F">Fá</button>
+                            <button class="note-btn sharp" data-note="F#">Fá#</button>
+                            <button class="note-btn" data-note="G">Sol</button>
+                            <button class="note-btn sharp" data-note="G#">Sol#</button>
+                            <button class="note-btn" data-note="A">Lá</button>
+                            <button class="note-btn sharp" data-note="A#">Lá#</button>
+                            <button class="note-btn" data-note="B">Si</button>
+                        </div>
+                        <div class="note-properties">
+                            <label>Oitava: <input type="number" id="octave" value="4" min="1" max="7"></label>
+                            <label>Duração (s): <input type="number" id="noteDuration" value="0.5" min="0.1" max="5" step="0.1"></label>
+                        </div>
+                    </div>
+
+                    <button id="addNoteAtCurrentTime" class="add-note-btn">➕ Adicionar Nota no Tempo Atual</button>
+                </div>
+
+                <!-- Timeline visual -->
+                <div class="timeline-container">
+                    <h3>Timeline de Notas</h3>
+                    <div id="timeline" class="timeline"></div>
+                    <div class="timeline-ruler" id="timelineRuler"></div>
+                </div>
+
+                <!-- Lista de notas adicionadas -->
+                <div class="notes-list">
+                    <h3>Notas Adicionadas</h3>
+                    <div id="notesList"></div>
+                </div>
+            </section>
+
+            <!-- Gerador de prompts educacionais -->
+            <section class="prompts-section">
+                <h2>8. Prompts e Dicas de Aprendizado</h2>
+                <button id="generatePrompt">🤖 Gerar Dicas Automáticas</button>
+                <div class="prompt-container">
+                    <h3>Dicas de Técnica:</h3>
+                    <textarea id="promptsText" rows="10" placeholder="As dicas serão geradas aqui..."></textarea>
+                    <div class="prompt-categories">
+                        <button class="prompt-btn" data-category="posicao">Posição das Mãos</button>
+                        <button class="prompt-btn" data-category="intensidade">Intensidade</button>
+                        <button class="prompt-btn" data-category="pedal">Uso do Pedal</button>
+                        <button class="prompt-btn" data-category="ritmo">Ritmo e Timing</button>
+                        <button class="prompt-btn" data-category="tecnica">Técnica Geral</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Exportação -->
+            <section class="export-section">
+                <h2>9. Salvar e Exportar</h2>
+                <div class="export-controls">
+                    <button id="saveProject">💾 Salvar Projeto (JSON)</button>
+                    <button id="loadProject">📂 Carregar Projeto</button>
+                    <input type="file" id="projectFileInput" accept=".json" style="display: none;" />
+                    <button id="exportNotes">📄 Exportar Notas (CSV)</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Desenvolvido para criação de vídeos educacionais de piano/teclado</p>
+        </footer>
+    </div>
+
+    <!-- YouTube API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- VexFlow for music notation -->
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+
+    <!-- WebMIDI.js for MIDI support -->
+    <script src="https://cdn.jsdelivr.net/npm/webmidi@3.1.6/dist/iife/webmidi.iife.js"></script>
+
+    <!-- Main application scripts -->
+    <script src="midi-handler.js"></script>
+    <script src="transcription-handler.js"></script>
+    <script src="practice-mode.js"></script>
+    <script src="score-renderer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

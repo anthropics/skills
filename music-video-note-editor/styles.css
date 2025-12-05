@@ -1,0 +1,672 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+main {
+    padding: 30px;
+}
+
+section {
+    margin-bottom: 40px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+}
+
+h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+h3 {
+    color: #764ba2;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+/* Video Input Section */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+#videoUrl {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+button {
+    padding: 12px 24px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Video Section */
+#videoContainer {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 20px;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#player {
+    width: 100%;
+    aspect-ratio: 16/9;
+}
+
+.video-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#currentTime, #duration {
+    font-weight: bold;
+    color: #667eea;
+}
+
+/* Notes Editor Section */
+.note-controls {
+    margin-bottom: 30px;
+}
+
+.note-selector {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.note-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.note-btn {
+    padding: 15px;
+    font-size: 1em;
+    font-weight: bold;
+    border: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.note-btn.selected {
+    border-color: #000;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Sistema de cores das notas - naturais (claras) e sustenidos (escuros) */
+.note-btn[data-note="C"] { background: #90EE90; } /* Verde claro */
+.note-btn[data-note="C#"] { background: #2d5016; color: white; } /* Verde escuro */
+.note-btn[data-note="D"] { background: #87CEEB; } /* Azul claro */
+.note-btn[data-note="D#"] { background: #1e3a5f; color: white; } /* Azul escuro */
+.note-btn[data-note="E"] { background: #FFD700; } /* Amarelo claro */
+.note-btn[data-note="F"] { background: #FF6B6B; } /* Vermelho claro */
+.note-btn[data-note="F#"] { background: #8B0000; color: white; } /* Vermelho escuro */
+.note-btn[data-note="G"] { background: #DDA0DD; } /* Roxo claro */
+.note-btn[data-note="G#"] { background: #4B0082; color: white; } /* Roxo escuro */
+.note-btn[data-note="A"] { background: #FFA500; } /* Laranja claro */
+.note-btn[data-note="A#"] { background: #cc5200; color: white; } /* Laranja escuro */
+.note-btn[data-note="B"] { background: #FFB6C1; } /* Rosa claro */
+
+.note-properties {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.note-properties label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.note-properties input {
+    padding: 8px;
+    border: 2px solid #667eea;
+    border-radius: 5px;
+    width: 80px;
+}
+
+.add-note-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    background: #28a745;
+}
+
+.add-note-btn:hover {
+    background: #218838;
+}
+
+/* Timeline */
+.timeline-container {
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.timeline {
+    position: relative;
+    height: 150px;
+    background: #f0f0f0;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 10px;
+}
+
+.timeline-ruler {
+    height: 30px;
+    background: #e9ecef;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.time-marker {
+    position: absolute;
+    bottom: 0;
+    width: 2px;
+    height: 100%;
+    background: red;
+    z-index: 100;
+}
+
+.note-block {
+    position: absolute;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.note-block:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.note-block .delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    background: red;
+    border-radius: 50%;
+    font-size: 0.7em;
+    display: none;
+}
+
+.note-block:hover .delete-btn {
+    display: block;
+}
+
+/* Lista de notas */
+.notes-list {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#notesList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.note-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border-left: 5px solid #667eea;
+}
+
+.note-color {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    border: 2px solid #333;
+}
+
+.note-info {
+    flex: 1;
+}
+
+.note-item button {
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+
+/* Prompts Section */
+.prompt-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+#promptsText {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: inherit;
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+.prompt-categories {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.prompt-btn {
+    background: #764ba2;
+}
+
+.prompt-btn:hover {
+    background: #5e3a82;
+}
+
+#generatePrompt {
+    background: #28a745;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#generatePrompt:hover {
+    background: #218838;
+}
+
+/* Export Section */
+.export-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.export-controls button {
+    flex: 1;
+    min-width: 200px;
+}
+
+#saveProject {
+    background: #17a2b8;
+}
+
+#saveProject:hover {
+    background: #138496;
+}
+
+#loadProject {
+    background: #ffc107;
+    color: #333;
+}
+
+#loadProject:hover {
+    background: #e0a800;
+}
+
+#exportNotes {
+    background: #6c757d;
+}
+
+#exportNotes:hover {
+    background: #5a6268;
+}
+
+/* Transcription Section */
+.transcription-section,
+.midi-section,
+.practice-section,
+.score-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.feature-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 15px 30px;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.feature-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.status-message {
+    padding: 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.status-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status-message.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.status-message.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.transcription-options {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.transcription-options label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* MIDI Section */
+.midi-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.device-list {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.device-item {
+    padding: 10px;
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.badge {
+    background: #28a745;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+.midi-monitor {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.note-display {
+    min-height: 100px;
+    margin-top: 10px;
+}
+
+.midi-note-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+/* Practice Section */
+.practice-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.practice-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.practice-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 20px;
+}
+
+.practice-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.practice-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #667eea;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box h4 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.practice-feedback {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.feedback-message {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    min-height: 50px;
+}
+
+#noteVisualization {
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    background: #f8f9fa;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Score Section */
+.score-controls {
+    margin-bottom: 20px;
+}
+
+.score-options {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.score-options label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.score-options select,
+.score-options input {
+    padding: 8px;
+    border: 2px solid #667eea;
+    border-radius: 5px;
+}
+
+.score-output {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    min-height: 200px;
+    overflow-x: auto;
+}
+
+.score-output svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Footer */
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .note-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    }
+
+    .export-controls button {
+        min-width: 100%;
+    }
+
+    .practice-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .practice-buttons {
+        flex-direction: column;
+    }
+
+    .practice-btn {
+        min-width: 100%;
+    }
+
+    #noteVisualization {
+        width: 100%;
+    }
+}
