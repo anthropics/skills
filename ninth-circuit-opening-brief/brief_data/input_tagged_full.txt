@@ -1,0 +1,442 @@
+=== DISCLOSURE STATEMENT ===
+[Placeholder]
+
+=== INTRODUCTION ===
+No. 6461]
+__________________________________________________________________ IN THE UNITED STATES COURT OF APPEALS
+FOR THE NINTH CIRCUIT
+
+Tyler Allen Lofall,
+Plaintiff-Appellant,
+v.
+Clackamas County AT EL
+Officer Dana Gunnarson, (2) Officer Catlin Blyth, (3) CITY OF WEST LINN;
+(4) Deputy District Attorney Rebecca Portlock;(5) Clackamas County Jail, (6) Clackamas County Sheriffs Department, (7) County of Clackamas, (8) CCSO John Doe 1, (9) CCSO John Doe 2
+
+Defendant-Appellee.
+
+On Appeal from the United States District Court for the 3rd District of Oregon
+No.3:24-CV-00839-sb
+Hon. Stacy Beckerman
+
+APPELLANTS OPENING BRIEF
+
+Shawn A. Lillegren
+Office of Clackamas County Counsel
+2051 Kaen Rd Oregon City, OR 97045-1819
+Email: slillegren@clackamas.us
+Phone: (503) 655-8362
+Lead Counsel for County Defendants
+
+Michelle Enfield
+Oregon Department of Justice
+1162 Court St. NE Salem, OR 97301-4096
+Email: michelle.enfield@doj.oregon.gov
+Phone: (503) 947-4700
+Lead Counsel for DDA Portlock
+
+Plaintiff-
+Tyler A. Lofall
+Plaintiff-Appellant Pro se
+5809 West Park Place
+Pasco, WA 99301 Mail Only
+tyleralofall@gmail.com
+
+Lauren E. Nweze
+(Third Lead Counsel for West Linn)
+15875 Boones Ferry Rd
+#1469 Lake Oswego, OR 97035
+Email: lnweze@cisoregon.org
+Phone: (503) 763-3800
+Lead Counsel for West Linn Defendants
+
+Table of Contents
+Appellants OPENING BRIEF 1
+introduction 14
+STATEMENT OF JURISDICTIONAL FACTS 15
+ARGUMENT 16
+TABLE OF CONTENTS ii
+INTRODUCTION 1
+JURISDICTIONAL STATEMENT 4
+1) I. STATEMENT OF JURISDICTION 4
+2) II. CONSTITUTIONAL PROVISIONS INVOLVED 6
+III. THAT THIS CONSTITUTIONAL CONTROVERSY REMAINS LIVE AND WITHIN THE COURT'S ARTICLE III JURISDICTION 7
+ISSUE(S) PRESENTED 9
+STATEMENT OF THE CASE 10
+SUMMARY OF THE ARGUMENT 55
+STANDARD OF REVIEW 56
+ARGUMENT 57
+1) Factor One: Control of Property. 59
+a) Neither court exercised jurisdiction over any res. 59
+2) Factor Two: Inconvenience of Forum. 60
+a) The federal courthouse in Portland sits fifteen miles from the Clackamas County Courthouse. 60
+3) Factor Three: Avoidance of Piecemeal Litigation. 60
+a) Only the federal action unites all defendants—West Linn, Officers Blyth, and Gunnarson would have gone to trial with a ghost to blame things on, 60
+b) Clackamas County evaded 13 services, this would have rewarded them for intentional evasion and lack of accountability… something history shows as routine in Clackamas, 60
+c) DDA Portlock Also would have been seperated because Plaintiff didn't have the fraud evidence at the time, and who knew evidence would still be blocked through DDA. 60
+d) The state court had already fragmented the litigation by dismissing the County defendants on April 11, 2023, and May 11, 2022 while allowing the West Linn defendants to remain. ECF 35-2, 35-3. 60
+e) Federal abstention would not avoid piecemeal litigation; it would guarantee it. This factor favors federal retention. 60
+4) Factor Four: Order in Which Jurisdiction Was Obtained and Progress of Litigation. 61
+a) Due to the defendants own actions, in avoiding the service and hiding behind UTCR 7.020, giving notice that should be voided, and Plaintiffs Pro se status he wasn't aware of the the path to Default judgment. Additionally the notice given gave no name or statute (it gave UTCR 7 as apposed to UTCR 7.020) with two John Does, His AOB case just entering the Oregon Court of Appeals and they lost his Appeal, meanwhile litigating, and living out of state caused the County to escape state without ever appearing. By Oregon law, County could no show, in hopes that Plaintiff doesn't file the proper Default Application, they can send notice on a link via bulk email, and if Plaintiff does catch it, they can then show up with no penalty, however if they do not they get to call repetitive Prejudice against a Plaintiff who now has to start over to and serve you for another dozen times? for their intentional obstruction? Does this even need to be argued? (The state court register shows that Clackamas County was served approximately fifteen times but never answered, never moved, and never appeared. ECF 35-4. On April 4, 2023, Appellant filed a Motion to Compel Appearance. Seven days later, on April 11, 2023, the court dismissed the County defendants "for want of prosecution"—not for the County's failure to appear, but for Appellant's supposed failure to prosecute. ECF 35-2, 35-3. Meanwhile, the federal case reached responsive pleadings from every defendant. ECF 34, 36, 37. This factor strongly favors federal retention. 61
+5) 5. Factor Five: Adequacy of State Forum. 61
+6) 6. Factor Six: Forum Shopping. 62
+7) C. AIU's "Compelling Reason" Exception Applies. 63
+8) D. The Timing of the Federal Dismissal Confirms Tactical Abuse. 63
+9) E. Dismissal Rather Than Stay Was Independent Structural Error. 64
+10) ________________________________________ 64
+11) II. FRAUD ON THE COURT BY DEFENDANTS AND THEIR COUNSEL VOIDS THE UNDERLYING PROCEEDINGS AND STRIPS ALL IMMUNITY DEFENSES 65
+12) A. The Coordinated COVID Fabrication Canceled a Jury Trial. 65
+13) B. The Deletion of Sixty-Two Legal Files Was Deliberate Spoliation. 67
+14) C. The Seven-Day Defiance of a Release Order Was Administrative Fraud. 68
+15) D. The Synchronized Fabrication of Arrest Reports Deceived the Arraignment Judge. 68
+16) E. Defense Counsel's Consent-Then-Flip Extended the Fraud to the Federal Forum. 69
+17) F. Legal Consequences of Fraud on the Court. 70
+18) The legal consequences of proven fraud upon the court are categorical. 70
+19) 1. Judgments Obtained by Fraud Are Void. 70
+20) 2. Immunities Dissolve Where Officials Fabricate Evidence or Mislead the Court. 71
+21) 3. Statutes of Limitation Are Tolled. 71
+22) 4. Terminating Sanctions Are Required Where Lesser Sanctions Cannot Correct the Prejudice. 71
+23) ________________________________________ 72
+24) III. THE NINTH AMENDMENT PROHIBITS THE GOVERNMENT FROM CONSTRUCTING PROCEDURAL DOCTRINES THAT DESTROY THE PEOPLE'S GUARANTEED RIGHTS 72
+25) A. The Etymology of "Disparage" Reveals the Amendment's Core Command. 72
+26) B. The Influence of French and English Legal Thought at the Founding Requires This Interpretation. 73
+27) C. The Word "Enumeration" Is the Key to the Amendment's Meaning. 74
+28) 1. "Enumeration" Is Present Tense: The Act of Listing in Rank Order. 74
+29) 2. The Amendment Therefore Addresses Government Action. 75
+30) D. The Meaning of "Certain Rights": Specific, Identifiable, and Guaranteed. 75
+31) Appellant's rights are specific and guaranteed: 76
+32) (a) First Amendment: The right to petition the government for redress of grievances. 76
+33) (b) Fourth Amendment: The right to be free from arrest without probable cause. 76
+34) (c) Fifth Amendment: The right to due process before the federal government. 76
+35) (d) Sixth Amendment: The right to effective assistance of counsel and access to courts. 76
+36) (e) Seventh Amendment: The right to a civil jury trial. 76
+37) (f) Ninth Amendment: The right to have the foregoing rights remain undiminished. 76
+38) (g) Fourteenth Amendment: The right to due process before state governments. 76
+39) E. Rights Cannot Be Diminished: The Indivisibility Principle. 77
+40) 1. A Right Is Whole or It Is Nothing. 77
+41) 2. Constitutional Rights Work the Same Way. 77
+42) F. The Relationship Between Rights and Duties. 78
+43) 1. Every Right Has a Corresponding Duty. 78
+44) 2. The Federal Government Enforces When the State Fails. 78
+45) 3. Constitutional Violations Cannot Be Shielded by Procedure. 79
+46) (a) The state has a duty to respect constitutional rights. 79
+47) (b) State actors breach that duty—by fabricating arrest reports, by lying to cancel trials, by deleting legal files, by ignoring release orders. 79
+48) (c) Federal law is violated at the moment of breach—not at the moment of lawsuit, not at the moment of judgment, but at the moment of the unconstitutional act. 79
+49) (d) Immunity doctrines cannot retroactively erase a breach that has already occurred. 79
+50) G. The Amendment Prohibits Constructing Procedural Doctrines to Evade Accountability. 80
+51) 1. "Shall Not Be Construed" Addresses Interpretation. 80
+52) 2. Defendants Cannot Build Their Procedural Defenses Upon Their Own Wrongdoing. 80
+53) What defendants ask this Court to sanction is a system where government actors may: 81
+54) (a) Fabricate an arrest and remove a citizen from his property. 81
+55) (b) Lie to cancel jury trials. 81
+56) (c) Delete defense files during lockdown. 81
+57) (d) Ignore release orders. 81
+58) (e) Evade service for fifteen attempts. 81
+59) (f) Issue defective notices to trigger dismissal. 81
+60) (g) Consent to dismissal then flip to call the lawsuit "repetitive." 81
+61) (h) Time the federal dismissal for Day 181 to close every forum. 81
+62) H. The Judiciary Cannot Remove This Amendment From the Constitutional Structure. 82
+63) 1. This Is Not a Question for Judicial Determination. 82
+64) 2. The Judiciary Cannot Vote Away the People's Rights. 82
+65) 3. The Consequence of Judicial Abdication Is Careless Harm. 83
+66) I. Criminal Sanctions Provide an Alternative When Civil Remedies Are Evaded. 83
+67) 1. The Criminal Statutes Have Longer Limitations Periods. 83
+68) 2. Referral to the United States Attorney Is Appropriate. 84
+69) J. Application to This Case: Every Guaranteed Right Was Violated, and Procedure Cannot Excuse It. 84
+70) The only question remaining is whether the Ninth Amendment will enforce the correction. 85
+71) 1. Immunity Does Not Shield Fraud. 85
+72) 2. Abstention Does Not Apply Where Defendants Caused the State Forum's Failure. 85
+73) AIU and Colorado River cannot reward the consent-then-flip. Chambers, 501 U.S. at 44. 85
+74) 3. Limitations Do Not Bar Claims Where Defendants' Concealment Prevented Discovery. 85
+75) Equitable tolling applies. Appling, 340 F.3d at 777. 85
+76) 4. The Ninth Amendment Commands This Result. 86
+77) ________________________________________ 86
+78) CONCLUSION AND REQUESTED RELIEF 86
+79) This Court should: 87
+1. VACATE the September 3, 2025 judgment dismissing this action. 87
+2. REMAND to a different district judge with instructions to exercise jurisdiction and proceed to the merits. 87
+3. STRIKE all immunity, abstention, and limitations defenses predicated on the identified fraud, or alternatively enter terminating sanctions against defendants who participated in evidence destruction or material misrepresentation. 87
+4. ORDER immediate production of body-camera footage and the complete jail computer audit trail. 87
+5. REFER the matter to the United States Attorney for investigation of potential violations of 18 U.S.C. §§ 241, 242, and 1001. 87
+80) Anything less would ratify the very disparagement the Ninth Amendment was written to prevent. 88
+81) Respectfully submitted, 88
+82) /s/ Tyler Allen Lofall Tyler Allen Lofall Plaintiff-Appellant, Pro Se December 3, 202 88
+83) ] 88
+84) II. [Insert appropriate heading for the argument on issue #2] 90
+CONCLUSION 91
+
+
+INTRODUCTION
+Appellees move to dismiss this appeal on a single, factually incorrect premise: that Appellant's Motion to Alter or Amend Judgment (Rule 59(e)) was untimely, and therefore failed to toll the deadline to file a Notice of Appeal.
+This argument is foreclosed by the District Court's own finding. In its October 8, 2025 Order (ECF No. 65), the District Court explicitly acknowledged that Appellant "timely filed the motion but in the wrong case."
+Because the tolling motion was timely filed on October 1, 2025, the deadline to appeal did not begin to run until the District Court disposed of that motion on October 3, 2025. Appellant filed his Notice of Appeal on October 13, 2025—well within the 30-day window. Accordingly, jurisdiction is proper, and the Motion to Dismiss must be denied.
+
+STATEMENT OF JURISDICTIONAL FACTS
+1. September 3, 2025: The District Court entered Judgment dismissing the case (ECF No. 60).
+2. October 1, 2025 (The Deadline): Under Fed. R. Civ. P. 59(e), the deadline to file a motion to alter or amend was 28 days later: October 1, 2025.
+3. October 1, 2025 at 11:57 PM: Appellant submitted his Rule 59(e) motion via the CM/ECF system. The system generated a receipt confirming the document was received on this date. See Exhibit A (CM/ECF Receipt timestamped 11:57 PM). Due to a clerical error during the electronic submission process, the document was routed to the related, remanded case number (3:24-cv-00838-SB) rather than the active case number (3:24-cv-00839-SB).
+4. October 2, 2025 at 1:06 AM: Just 66 minutes past the midnight deadline, Appellant realized the routing error and emailed all defense counsel the full motion and 29 exhibits, providing actual notice. See Exhibit B (Email to Counsel dated Oct 2, 2025, 1:06 AM).
+5. October 3, 2025: The District Court entered an order denying the Rule 59(e) motion on its merits (ECF No. 63).
+6. October 8, 2025: In a subsequent order (ECF No. 65), Magistrate Judge Beckerman made a specific factual finding regarding the October 1 submission: "...he timely filed the motion but in the wrong case."
+7. October 13, 2025: Appellant filed his Notice of Appeal (ECF No. 66/67).
+
+ARGUMENT
+I. THE DISTRICT COURT'S FINDING THAT THE MOTION WAS "TIMELY FILED" IS DISPOSITIVE.
+Appellees ask this Court to ignore the District Court's own assessment of the record. In ECF No. 65, the District Court denied nunc pro tunc relief on procedural grounds but expressly validated the timeliness of the physical act of filing: "...because he timely filed the motion but in the wrong case."
+A filing is deemed "filed" when it is placed in the possession of the clerk. See United States v. Dae Rim Fishery Co., 794 F.2d 1392, 1395 (9th Cir. 1986) (holding that a complaint is filed when it is placed in the actual or constructive custody of the clerk, regardless of subsequent clerical errors). Appellant placed the motion in the custody of the CM/ECF system on October 1, 2025. The District Court acknowledged this fact. Therefore, the motion was timely.
+
+II. A TIMELY RULE 59(e) MOTION TOLLS THE APPEAL DEADLINE REGARDLESS OF DOCKETING ERRORS.
+Under Federal Rule of Appellate Procedure 4(a)(4)(A)(iv), the time to file an appeal runs for all parties from the entry of the order disposing of a timely Rule 59 motion.
+• Step 1: The Rule 59 motion was timely filed on October 1, 2025 (per ECF 65 and Dae Rim Fishery).
+• Step 2: The appeal deadline was tolled until the Court disposed of that motion.
+• Step 3: The Court disposed of the motion on October 3, 2025 (ECF No. 63).
+• Step 4: The new 30-day deadline to appeal began on October 3, 2025, expiring on November 2, 2025.
+• Step 5: Appellant filed his Notice of Appeal on October 13, 2025.
+The Notice of Appeal was filed 10 days after the tolling period ended. It is timely.
+
+III. A WRONG CASE NUMBER IS A CURABLE TECHNICAL DEFECT.
+The Supreme Court and this Circuit have long held that form should not triumph over substance, particularly for pro se litigants. A clerical error in a case number does not negate the legal effect of a timely submission. See Becker v. Montgomery, 532 U.S. 757 (2001) (imperfections in filing should not be fatal where no genuine doubt exists about the party's intent).
+Furthermore, Fed. R. Civ. P. 5(d)(4) states: "The clerk must not refuse to file a paper solely because it is not in the form prescribed by these rules or by a local rule or practice." Rejecting the tolling effect of a motion solely because it was routed to a sister docket number violates the spirit of Rule 5(d)(4).
+
+IV. APPELLEES SUFFERED NO PREJUDICE.
+Appellees received electronic notification of the filing on October 1, 2025 (via the related case docket) and actual service via email at 1:06 AM on October 2, 2025 (See Exhibit B). They were fully aware of the motion and its contents immediately. Their Motion to Dismiss is an attempt to exploit a clerical error to avoid appellate review of the merits.
+
+The District Court found that Appellant "timely filed" his Rule 59(e) motion. That finding triggers the tolling provision of FRAP 4(a)(4). Consequently, the Notice of Appeal filed on October 13, 2025, was timely.
+Appellant respectfully requests that this Court DENY Appellees' Motion to Dismiss and allow this appeal to proceed on the merits.
+DATED: November 27, 2025
+Respectfully submitted,
+/s/ Tyler Allen Lofall
+Tyler Allen Lofall, Pro Se
+6880 N.W. 271st Ave
+Hillsboro, OR 97124
+tyleralofall@gmail.com
+(386) 262-3322
+________________________________________
+CERTIFICATE OF SERVICE
+I hereby certify that I electronically filed the foregoing with the Clerk of the Court for the United States Court of Appeals for the Ninth Circuit by using the appellate CM/ECF system on November 27, 2025.
+/s/ Tyler Allen Lofall
+Tyler Allen Lofall
+________________________________________
+EXHIBIT INDEX
+Exhibit A: CM/ECF Receipt showing filing entered 10/1/2025 at 11:57 PM.
+Exhibit B: Email to Defense Counsel dated 10/2/2025 at 1:06 AM attaching the motion and exhibits.
+
+INTRODUCTION
+Plaintiff–Appellant Tyler Allen Lofall is a legally blind, pro se litigant who comes to this Court asking for one thing: accountability. Over the last five years, four interlocking proceedings—one civil Assignment of Benefits dispute, one criminal prosecution, and two civil rights actions—have exposed a pattern in which government actors and courts used procedure itself to erase his substantive rights. An irrevocable Assignment of Benefits for $111,943.56 in work fully performed was intercepted and forced into litigation; that litigation was then derailed by a warrantless arrest built on fabricated narratives, followed by a prosecution that became easier to pursue than to correct.
+Once in custody, Appellant was deliberately exposed to COVID 19, denied basic accommodations for his legal blindness, and had sixty two pro se legal files deleted from the jail law library system. Exculpatory evidence—including body camera footage showing that Macy, not Appellant, wielded the hammer and initiated the destruction—was buried behind DHS seals and discovery games.
+His AOB civil trial was conducted in absence while he was unlawfully detained. In five years, the only "trial" he has effectively seen was a one sided proceeding in which the heirs obtained a counter judgment against him while his claims were dismissed.
+At the same time, Clackamas County evaded service in state court despite repeated attempts; the state court dismissed those defendants "for want of prosecution" while motions to compel their appearance were pending. West Linn defendants obtained repeated set overs timed around parental leave and other conflicts, pushing hearings and trial dates to the edge of statutes of limitation. After Appellant gave more than a year's notice that he would pursue claims against Clackamas County before the limitations period expired, his federal case was dismissed one day after Oregon's 180 day refiling window under ORS 12.220 closed—leaving him with no forum at all. The District Court then labeled this action a "repetitive lawsuit," accepted Appellees' narratives at face value, and ignored submissions documenting fabricated reports, defective notices, and estoppel triggering "consent then flip" tactics.
+Those gaps in the record are not a reason to dismiss; they are part of the harm. Appellant lost his property through the spoiled AOB, his liberty through an arrest and detention procured by fabrication, and his ability to obtain counsel or preserve evidence through state created obstacles: evasion of service, suppression of recordings, deletion of files, and carefully timed dismissals. To treat this as an even playing field, or to suggest that Appellant simply "walked away" on the eve of a first trial, is to confuse self defense with attempted murder—to equate a homeowner tackling an intruder in his yard with the intruder's crime. When a person is jailed through no fault of his own, loses his case while he is held, and then is told that the resulting procedural tangle is his responsibility, the system is no longer merely mistaken; it is engaging in organized extortion under color of law.
+Appellees now contend they should face no accountability because Appellant is not a lawyer, and because doctrines like abstention and immunity can be stretched to cover lies, missing records, and coordinated obstruction. They are mistaken. The law is clear that courts may not reward fraud upon the court, deliberate evidence destruction, or state created procedural traps. This appeal presents compelling reasons for the Ninth Circuit to intervene: when arresting an innocent person on fabricated reports, issuing defective notices to allow one side to escape liability, concealing evidence across multiple cases, and timing dismissals to guarantee a statute of limitations "kill shot" are all treated as ordinary "case management," the problem is no longer just error—it is constitutional violation. This is the last crossroads: either these actors are finally held to account, or the message to every county and city is that they may lie, obstruct, and manipulate the forum against those who cannot afford counsel and expect the courts to look away.
+
+=== JURISDICTIONAL STATEMENT ===
+1) I. STATEMENT OF JURISDICTION
+The district court had subject-matter jurisdiction over this civil rights action under 28 U.S.C. §§ 1331 and 1343(a)(3)–(4) because Appellant Tyler Allen Lofall brought claims under 42 U.S.C. § 1983 for violations of the Fourth, Sixth, Seventh, Ninth, and Fourteenth Amendments to the United States Constitution. On Sept 3, 2025, Judgement was made in the United States District Court for the District of Oregon, Portland Division, entered a final judgment in Case No. 3:24-cv-00839-SB that disposed of all claims and all parties. Appellant notified the parties the morning of October first, then filed a timely Rule 59(e) motion to alter or amend the judgment in the district court. In ECF No. 60, the court expressly found that Appellant "timely filed the motion but in the wrong case." However, corrected it in 66 minutes in addition to the prior notice. Under Federal Rule of Appellate Procedure 4(a)(4)(A)(iv), that timely Rule 59(e) motion tolled the time to appeal. Appellant then filed a notice of appeal on October 14, 2025, within the time allowed by Rule 4(a) as tolled. See Fed. R. App. P. 3, 4(a)(1)(A), 4(a)(4)(A)(iv). Accordingly, this Court has jurisdiction over this appeal pursuant to 28 U.S.C. § 1291.
+2) II. CONSTITUTIONAL PROVISIONS INVOLVED
+First Amendment violated: Removed from courtroom, pro se trials, ex parte communications, regarding my personal matters, filing barriers for blind litigant and due to the malicious prosecution and unlawful arrest Appellant has been deprived every having his day in court.
+Fourth Amendment violated: False arrest based on fabricated probable cause (March 6, 2022).
+Sixth Amendment violated: Court-appointed advisor coordinated with DDA to give false COVID information, canceling trial (June 10, 2022). Legal files deleted, law library denied, corrective lenses withheld, undermined by his advisor, and had his own court appointed attorney withhold evidence, and make decisions on Appellant's behalf with explicit contradictory instructions.
+Seventh Amendment violated: AOB civil trial proceeded without Plaintiff, while unlawfully detained (June 8, 2022). State civil rights case never reached trial—County never appeared. Federal case dismissed without trial.
+Fourteenth Amendment violated: Held seven days past release order. Defective notices with blank fields. Federal dismissal timed to Day 181—closing both forums simultaneously, judged without proper review on a non-jurisdictional argument for lack of jurisdiction.
+Ninth Amendment violated: Every procedural doctrine—immunity, abstention, time-bar, forum shopping—has been weaponized to crush Plaintiff's substantive rights. "The 'enumeration' of certain /[guaranteed] rights has been construed to deny [AND] disparaged" other rights retained by the people.
+III. THAT THIS CONSTITUTIONAL CONTROVERSY REMAINS LIVE AND WITHIN THE COURT'S ARTICLE III JURISDICTION.
+This appeal arises from a § 1983 action alleging violations of multiple constitutional rights whose combined deprivation caused extreme hardship and left Appellant with no meaningful avenue for relief in the district court:
+Under United States v. Dae Rim Fishery Co., 794 F.2d 1392, 1395 (9th Cir. 1986), a document is deemed filed when it is placed in the actual or constructive custody of the clerk, regardless of subsequent clerical errors.
+The District Court explicitly found in its order dated October 8, 2025 (ECF 65) that Appellant "timely filed the motion but in the wrong case." This factual finding is dispositive. Because the motion was "timely filed" on October 1, 2025, it triggered the tolling provisions of Fed. R. App. P. 4(a)(4)(A)(iv).
+The time to file the Notice of Appeal did not begin to run until the District Court entered the order disposing of the Rule 59(e) motion on October 3, 2025 (ECF 63). The new 30-day deadline expired on November 2, 2025. Appellant filed his Notice of Appeal on October 13, 2025, well within the timely period
+
+=== STATUTORY [AND REGULATORY] AUTHORITIES ===
+[Placeholder]
+
+=== ISSUES PRESENTED ===
+I. Jurisdiction. Whether the district court's explicit finding that the rule 59(e) motion was "timely filed" (ecf 65) triggers appellate tolling under united states v Dae rim fishery co., defeating appellees' motion to dismiss for lack of jurisdiction.
+II. Repetitive lawsuit doctrine. Whether the district court erred in dismissing the federal action as a"repetitive lawsuit" when the state forum was rendered unavailable through systemic obstruction, including the evasion of service by defendants and the dismissal of the state case for "want of prosecution" while motions to compel were pending.
+III. Judicial abdication. Whether a district court violates due process when it adopts the defendants' narrative verbatim while ignoring documented record evidence of fraud—including the "covid lie," the "15-minute report synchronization," and the "consent-then-flip" strategy thereby engaging in judicial abdication.
+IV. Ninth amendment. Whether the ninth amendment's prohibition against construing the "enumeration" of rights to "deny or disparage" others prohibits the use of procedural immunity doctrines to shield bad-faith administrative acts.
+V. Can a court ignore documented fraud on the record, when it effects substantial rights?
+VI. Does the act of avoiding accountability by hiding requirements needed for the prosecuting a plaintiffs claim toll the statute.
+VII. In the case where there is multiple defendants that could be subject to a notice is the notice void with out the subjects name?
+VIII. Property lost due to a warrantless arrest, such as claim rights to an irrevocable assignment of benefits, does the arresting party have any responsibility if that harm complicates or creates a high probability of failure of remedy due to procedural complexity?
+
+=== STATEMENT OF THE CASE ===
+I. THE ASSIGNMENT OF BENEFITS AND THE THEFT THAT STARTED EVERYTHING
+1. In mid-2020, homeowner Joanna Lee Bozian executed an irrevocable Assignment of Benefits in favor of Plaintiff Tyler Lofall for insurance proceeds arising from fire damage to her residence in Damascus, Oregon. The AOB stated in relevant part: "For good and valuable consideration received, I, Joanna Lee Bozian irrevocably transfer and assign to Tyler Lofall . . . all cash values, proceeds and benefits arising thereunder." (ECF 8, Ex. D at 11–12.) The assignment further acknowledged that "an estimated 90% of the fire claim stated above has been completed and all work completed at the property has been completed by Tyler Lofall." Id. By October 2020, Plaintiff had completed all contracted repair work. The claim was submitted, approved by Assurant Insurance Company, and paid in the amount of $111,943.56. (ECF 8, Ex. D at 52.)
+2. The homeowner died. Her daughter and son-in-law—the "heirs"—had not visited the property in twenty years. They contacted the mortgage company and fraudulently convinced JP Morgan that Plaintiff had created the AOB through fraud. They removed Plaintiff's deposit information and inserted their own. (ECF 8, Ex. D at 208.) On November 24, 2020, heir Zac Bond emailed Plaintiff: "Get out of the house, and we will get you money immediately." (ECF 8, Ex. 6.) This was a ruse. After the mortgage inspection passed and funds were cleared for release on November 30, 2020, the very next day—December 1, 2020—the heirs reversed course entirely: "If you want money from the insurance claim, you will need to file a claim against Jolie's estate like any other creditor." (ECF 8, Ex. D at132, lines 611–12.)
+Plaintiff reported this theft to the Clackamas County District Attorney and Sheriff. Both declined to investigate. The DA's office pointed to the Sheriff's Office; the Sheriff's Office told Plaintiff it was "a civil matter." (ECF 8 ¶¶ 8–9.) This official abandonment forced Plaintiff into civil litigation to recover funds he had already earned. He filed Case No. 21CV02575 in Clackamas County Circuit Court in January 2021, proceeding pro se because the heirs' theft had left him indigent. Trial was eventually set for June 8, 2022. Plaintiff would never see that trial. The heirs' theft had set off a chain of events that would cost Plaintiff not only the $111,943.56, but his freedom, his property, his home, and five years of his life.
+II. THE WLPD-COACHED ATTACK: MARCH 4–6, 2022
+3. Plaintiff was staying with a West Linn friend, "Macy" Galla, who insisted on him staying there until he finished with his civil claim, since he had already moved his belongings back to Washington and was constantly being called back to court for the AOB case. Due to a combination of Covid, not being paid, his property being spread out from new indigency and the rough departure from Damascus, Plaintiff's current setup in Washougal had no internet and was really just a place to leave things and "sort of" have an eye on them that was closer (three hours closer than Lofall, Washington, where he is from). Because he was from out of state, he needed access to internet (not available in Washougal), and Covid-mandated demands and gaps in hearings made it so Plaintiff had large compilations that his basic laptop was not handling with Adobe.
+4. In early March, Macy—annoyed that Plaintiff was spending all his time on his claim and not paying attention to her—snapped when, on the day Plaintiff finished all seven motions he needed before trial, they were returned because his Master Exhibit List did not link directly to the motions. A simple citation was not good enough, nor was the table of contents linked to positions in the master list, which was done. Macy lost it, allegedly stemming from jealousy and substance abuse (backed later by March 7th events). She then took, or had in her possession, Plaintiff's car keys and his AOB work files—contract documents, evidence, and work records critical to his $111,943.56 claim. She irrationally would not return them.
+5. Macy wanted Plaintiff to leave without these things; and as cars do not move without keys, when that did not happen on March 4th, Macy called the West Linn Police Department and asked how to evict him. The answer she received was clear: (a) she could not execute a one-day eviction; and (b) legal process was required.
+6. A. WLPD dispatch logs and Plaintiff's many statements—messages, police reports, and 911 call logs—agree on what followed.
+7. Rather than following lawful eviction procedures, Macy orchestrated a staged arrest with the apparent coaching of law enforcement. (See ECF 8 ¶¶37–44; ECF 15, Ex. 36.)
+8. March 3, 2022. Macy sent Plaintiff a series of text messages while Plaintiff asked for his keys nine times, and Macy made her intentions explicit: "Come Sunday. Fire it is."; "Burn all your shit too." (See ECF 15, Ex. 36 (Pre-Arrest Text Messages).)
+9. March 4, 2022. After learning she could not simply evict Plaintiff and after hanging up on WLPD twice saying she was going to "burn down the house," Macy escalated. (See ECF 8 ¶ 34; ECF 15, Ex. 36.) She went out and purchased five gallons of gasoline. She returned to the property. She took a hammer and dropped a bag at the window over Plaintiff's bed outside, and started with the door, breaking glass: she smashed out seven windows; shattered the door; poured thirty pounds of flour over Plaintiff's bed, tools, clothes, and electronics—the first of three consecutive days of this destruction; cut the power, the heat, and the lights in freezing March temperatures; ran in and tipped the fridge over; and took a garden hose and flooded the inside of the house, spraying the TV, the electronics, the walls—anything she could—and turning everything into a paste. (See ECF 8 ¶¶ 37–44; ECF 15, Ex. 36 (WLPD Incident Report, Mar. 4, 2022).) (10.) Plaintiff called 911. He was the complainant—the victim—reporting criminal conduct. West Linn Police Department officers responded: they observed the broken windows; they documented the gasoline purchase and the arson threats; and they took no action against Macy. She was screaming and carrying five gallons of gasoline, running around the yard when they showed up. Despite her written threats to burn the house down, and despite Plaintiff asking them to take her to the hospital, they did nothing. (See ECF 15, Ex. 36; ECF 17-1, SAC ¶¶ 22–27.)
+10. March 5, 2022 (Morning). Macy continued her rampage. She poured another thirty pounds of flour over Plaintiff's property—sixty pounds total over two days. Officer Goode responded in the morning. He finally confiscated the five gallons of gasoline that his colleagues had left with Macy the day before. He still did not arrest Macy. He left her at the property with Plaintiff's belongings—and the hammer—still inside. (ECF 17-1, SAC ¶¶ 37–44.) (12.) March 5, 2022 (2:24 p.m.). That afternoon, Macy sent Plaintiff a series of text messages that would prove critical to understanding the premeditated nature of what followed: "Expect to [lose] heat and electricity again"; "Windows brake. By themselves. All the time."; "Acetone is a good flame starter"; "I have plenty of that"; "Cars catch on fire all the time"; "If your gone your stuff is safe"; "If you think to stay nothing is safe and no one"; "I would rather kill you then myself"; "I will kill us all first"; "I wish you were dead"; "Die." (Pre-Arrest JSON, Text Message Log (Mar. 5, 2022, 2:24–2:36 p.m.), ECF 15, Ex. 36.)
+11. An hour later, Plaintiff emailed court staff at Clackamas County Circuit Court pleading with them to accept his Master Exhibit List, or for help with it, as he had no way to accomplish this and they now had his only completed copies he immediately had access to. In that email, he wrote: "I'm at the last crossroad of getting paid and burning the world down . . . I need some answers please because I'm going to end up dead or in prison over this and this is absolutely the judicial system's doing." (Pre-Arrest JSON, Correspondence ID 5 (Mar. 5, 2022, 3:35 p.m.).) For fifteen months Plaintiff had asked them for help. The court did not respond. No intervention came. (They offered help on March 7th, but that help was no longer available when Plaintiff was out of jail.)
+12. March 6, 2022: The Staged Arrest. This was the third day. Macy poured another thirty pounds of flour—ninety pounds total over three days—over Plaintiff's property. But this day was different. Macy's daughter's boyfriend, age nineteen, was positioned with a camera. Macy's fourteen-year-old daughter was also present as a witness. This was not a spontaneous domestic dispute. This was orchestrated.
+13. Macy, wearing work gloves and carrying the same hammer she had used to smash the windows, took two garden hoses and began spraying water through the broken windows—directly onto Plaintiff's computers, legal files, television, and bed. Everything Plaintiff owned was being destroyed: his AOB evidence, his legal documents, his tools, his livelihood.
+14. After three days of arson threats, property destruction, and police inaction, Plaintiff did the only thing he could: he grabbed the hose to stop her from destroying his remaining property. Oregon law provides explicit protection for this conduct. ORS 161.229 authorizes the use of physical force to prevent the commission of theft or criminal mischief of property. ORS 161.209 permits physical force in self-defense.
+15. The nineteen-year-old boyfriend took photographs—but the photographs were selective. They captured Plaintiff grabbing the hose. They did not capture the context: the three days of destruction, the arson threats, the gasoline, the hammer in Macy's hand, the ninety pounds of flour, the broken windows, the water being sprayed onto Plaintiff's property. The boyfriend took those photographs directly to the West Linn Police station. He did not wait for officers to arrive at the scene. He delivered the photographs first.
+16. Officers Catlin Blyth and Dana Gunnarson then responded to the residence. They had been privy to the events leading to this event; there were officers in and out of the property every day, stopping by to check on progress. (ECF 17-1, SAC ¶¶ 22–27.) They had already reviewed the photographs at the station. They arrived with pre-formed intent. Within eight minutes—without conducting any investigation, without reviewing dispatch logs showing Plaintiff had been the 911 complainant for three consecutive days, without considering Macy's documented arson threats, without noting the gasoline confiscation the day before—they arrested Plaintiff on a misdemeanor harassment charge, for grabbing a hose from a woman who had spent three days threatening to burn him alive. (ECF 15, Ex.36; ECF 17-1 ¶ 45.)
+17. The officers never personally interviewed Macy at the scene. When Plaintiff argued that it was self-defense, Dana contended he was not allowed self-defense and treated his entire explanation as argumentative. Plaintiff pointed out the broken glass officers stepped on to call him outside while he was salvaging what he could and dragging it outside the reach of Macy's hose. After the arrest, Macy simply went inside and closed the door. The officers' entire basis for probable cause was the photographs delivered to the station by Macy's daughter's boyfriend—photographs that showed Plaintiff's defensive action but obscured Macy's aggression.
+18. Three domestic violence screening surveys were completed at the scene. All three came back negative: "did not screen in." There was no domestic violence. There was no victim. There was only a man defending his property from destruction by a woman who had threatened to kill him. (See ECF 8 ¶ 74; ECF 35-7 at 2.)
+19. On body camera or cruiser cam audio, Officer Blyth would be heard telling Officer Gunnarson they needed to find "another incident"—using the exact statutory language of ORS 166.065—and Blyth promising Lofall he could have his body camera footage. They then told Plaintiff they would put his property that was in tubs inside his truck and lock it. They got in the cruiser and looked up the elements of harassment together. He noted "offensive physical contact" and "multiple offenses," and Dana marched toward Macy to "get another incident" and got the door slammed in her face. This was not investigation. This was fabrication. This is a federal offense.
+20. Plaintiff invoked Oregon's self-defense statutes at the scene—ORS 161.229 (defense of property) and ORS 161.209 (use of physical force). The officers' response: "That's a trial issue."
+21. Self-defense defeats probable cause. If the officers acknowledged that Plaintiff was defending his property from destruction, there was no lawful basis for arrest. By telling him it was a "trial issue," they manufactured an arrest they knew could not survive scrutiny—but that would serve its purpose: removing Plaintiff from the residence, as Macy had wanted when she first called WLPD asking how to evict him.
+22. Plaintiff was booked into Clackamas County Jail. His contact lenses were going to be a problem. His prescription is −11.00/−12.00 diopters, twice the threshold for legal blindness. Without corrective lenses, he cannot see fingers at arm's length. His temporary wear contacts were already beyond date by the time he was jailed; the jail denied his requests for saline solution. The jail denied his requests for medical care for infections. He could not read filings, use the law library, or review discovery. He was rendered unable to participate in his own defense—and in his AOB civil case that was set for trial three months away.
+23. His car keys were never returned. His identification was in tubs by the side of the road and never recovered—a fact that would later prevent him from entering the federal courthouse. His tools and legal files were left outside in the rain at the West Linn property. Macy, the woman who had threatened arson and murder, was left in control of everything he owned.
+III. OFFICERS EDIT REPORTS IN SYNC
+24. What happened next reveals the conspiracy. Officer Dana Gunnarson prepared her initial arrest report. The report was submitted to her supervisor. The supervisor rejected it—the report did not establish the elements of the charge. This rejection occurred approximately twelve hours before Plaintiff's arraignment. The officers were called in as a team at 7:00 a.m. before the March 7 arraignment to coordinate their stories. They revised and edited their reports. The revised reports were submitted within fifteen minutes of each other—a synchronized fabrication. (ECF 17-1, SAC ¶¶ 29–31; see also ECF 15, Ex. 23 Police Report Timestamps).)
+25. The photos do show Macy with the hammer. But the photos were obscured and hidden from Plaintiff by his own defense counsel. He discovered this only after firing her. The photos prove Macy was the armed aggressor—but they were suppressed as exculpatory evidence. (ECF 8 ¶¶ 37–39; ECF 15, Ex. 36.)
+28. The police reports told a different story than reality. The hammer disappeared from the narrative. The seven broken windows were omitted. The three prior 911 calls where Plaintiff was the 911 complainant were not mentioned. The word "into" (water sprayed into the windows, onto Plaintiff's property) became "at" (water sprayed at the windows, as if Macy were merely watering the garden). The ninety pounds of flour was erased. The three days of arson threats were nowhere to be found. The fridge, the flood, and even the fire threats in other officer reports were ignored here.
+IV. THE ARRAIGNMENT: MARCH 7, 2022
+26. The next morning, March 7, 2022, Plaintiff was arraigned on the misdemeanor charge. Macy Galla appeared at the courthouse—and was caught by security attempting to bring methamphetamine into the courtroom. The drugs were confiscated. She was not arrested; she was not turned away. An asterisk was put on Plaintiff's charge, and no definitive reason was given for why he was arrested outside of the statutes on his information. (See ECF 8 ¶ 48; Court Security Log, Mar. 7, 2022, ECF 35-7 at 3.)
+27. This was the State's sole witness. A woman with methamphetamine use. A woman who had been the subject of three DHS interventions that year—including three psychiatric holds. A woman who would later text Plaintiff: "They took the girls. And my alimony . . . Wish we got along better." (Pre-Arrest JSON, Text Message Log (Aug. 25, 2022).) The District Attorney's office used Macy's coerced cooperation—threatening the custody of her children—to keep Plaintiff detained.
+28. At the arraignment, DDA Rebecca Portlock told the court that Plaintiff was "high risk," had an "override release" flag, and had "two or more felonies" with a "violent history." This was false. Plaintiff was before the court on a misdemeanor. He had never been in trouble in Oregon. His last legal issue was a DUI in 2013. He did not have two or more felonies. Nothing violent. Ever. But based on these fabricated representations, Plaintiff was denied release on recognizance. The "override release" flag reflected a classification decision that overstated his criminal history and risk level and was later used to justify harsher jail conditions.
+29. A No Contact Order was imposed. This meant Plaintiff could not return to the residence where Macy had destroyed his property, could not retrieve his tools, his legal files, his car keys, his evidence for the AOB case. Everything he needed to prosecute his $111,943.56 civil claim was now inaccessible—held by the same woman the State was using as its witness.
+V. FIRST DETENTION: MARCH 6 – APRIL 12, 2022 (DAY 1-37 DAYS)
+30. Plaintiff was denied saline solution for the infections developing from his months-old contacts. He was denied law library access for extended periods while pro se deadlines approached in his AOB civil case. He had e-filed seven motions in that case in early March 2022; all were now impossible to prosecute.
+31. On April 12, 2022, Plaintiff was released on his own recognizance. (ROR Order.) He stepped out into a world where he had nothing—no car, no clothes, no ID, no legal files.
+VI. RELEASE: APRIL 14, 2022 (HYPOTHERMIA/HOSPITAL)
+32. Two days after release, Plaintiff developed hypothermia. It was still winter. He was soaking wet, wearing only a sleeveless shirt—the only garment available when he was released from jail. It was hailing; he was freezing, searching for clothes or shelter.
+33. An officer stopped Plaintiff, who was trying to warm his hands with a small torch, and seemed concerned about Plaintiff burning himself. He asked if there was someone to call to get clothes. He had him call Macy; the only place he had clothes in the state. Unsuccessful on the clothes, he was taken to a hospital for hypothermia, with body temperature in the low nineties.
+34. Plaintiff never provided his name or identification to the responding officer. Yet the officer obtained Plaintiff's identity—he later claimed he "heard" Plaintiff tell the hospital his name, but no such disclosure occurred in the officer's presence. The officer went into the hospital and obtained Plaintiff's identity from hospital staff or medical records.
+35. From the hospital, someone called Macy. Whether it was the officer or hospital staff, the call created the violation that would be used to re-arrest Plaintiff: a No Contact Order violation. Plaintiff was re-arrested on a single no-contact violation charge—not for any contact he initiated, but because an officer obtained his identity from a hospital during a medical emergency and then used that emergency to manufacture a violation.
+36. This was not law enforcement. This was entrapment using protected health information.
+VII. RE-ARREST #2: MAY 6, 2022 (DAY 61-66 COURTHOUSE ARREST)
+37. On May 6, 2022, Plaintiff appeared at Clackamas County Court for a scheduled hearing. He was arrested at the courthouse on the no-contact violation charges arising from the April 14 hypothermia incident.
+38. Bail was set at $10,000. Plaintiff bailed out four days later, on May 10,2022. But the manipulation continued. The jail allowed him to bail out—then later recharged him with the same conduct. They postponed the charge, let the bail process, then recharged as if it were new. This was bail manipulation designed to ensure repeated arrests. (SAC ¶¶ 78–80 (ECF 17-1).)
+VIII. RE-ARREST #3: MAY 24, 2022 (CAR STOP)
+39. Plaintiff was released on May 10. He was out for fourteen days. During this time, Plaintiff was helping a friend recover a stolen vehicle. He was driving the friend's car—with the friend's knowledge and consent. The woman who had stolen the car was a passenger in the vehicle. Plaintiff was taking her to retrieve the license plate she had removed.
+40. On May 24, 2022, police pulled over the vehicle. Plaintiff explained the situation: this is my friend's car; she stole it; we recovered it together; he drove to get it; I was handed the keys and was making a stop to recover possession for my friend since I had things in it too.
+41. The police response: they gave the car keys to the thief. She stole the car again. Plaintiff was arrested and sent back to Clackamas County Jail. Cruiser cam footage exists documenting this arrest. (SAC ¶¶ 82–84 (ECF 17-1).)
+IX. FINAL DETENTION: MAY 24 – JULY 8, 2022 (DAY 77-122)
+42. A. May 24-28, 2022: Forced COVID Exposure: "Seeding"; days into this detention, the jail deliberately exposed Plaintiff to COVID-19. On May 28, 2022—with Plaintiff's AOB civil trial set for June 8—jail housing records show Plaintiff was moved "to COVID block after positive test on 05-28-2022" and placed in a cell with a COVID-positive inmate. He was told "6-foot mandatory Covid restrictions." This was false: housing logs showed multiple empty beds in non-COVID units and recorded that he was moved to the COVID block the following day, allowing further spread. (Housing Log Screenshot, May 29, 2022.)
+43. The pattern was systematic. Four empty cells, then four double-stacked cells with inmates catching COVID sequentially. Plaintiff's cellmate was David Dahlen—a man who had assaulted an officer and escaped the justice center. The jail wanted Dahlen infected too. First they infected Plaintiff. Then they left Plaintiff in the cell with Dahlen for days until Dahlen contracted the virus. Plaintiff tested positive for COVID on May 28, 2022. The housing book still shows this date—they "forgot to take it out." But the jail removed all of Plaintiff's medical records during the infection period. The absence of those records proves tampering; the proof lies in the fact that they knew Plaintiff was positive during a global pandemic and left him housed with Dahlen for another day, and then moved him into a cell with another inmate, Zac. It cannot be seen that there was another person directly, but it shows Plaintiff refused to get in his cell and went to an open cell—which he should already have had if they were not seeding people with Covid. (ECF 15, Ex. 36; ECF 17-1 ¶¶ 171–72.)
+44. Plaintiff filed a grievance on June 2, 2022, complaining about forced COVID exposure and dangerous housing conditions. The jail responded five weeks later. The jail's top officer wrote him off as "unhappy" when, at the time, he was functionally blind without corrective lenses, had had his documents deleted, and had a grievance pending for both of those things too, and ignored anything he said—on July 5, 2022. With Plaintiff's vision, he could not tell anything besides that the lieutenant was tall, as he could not tell you how many fingers he himself would be holding up at arm's reach. By then, the damage was done: the AOB trial had been missed, the criminal trials had been canceled, and the legal files had been deleted.
+45. June 8, 2022: The AOB Trial That Never Was on the morning of June 8, 2022, Plaintiff was transported toward the Clackamas County Courthouse for his $111,943.56 AOB trial. This was the claim he had been litigating for two years. This was the money the heirs had stolen. This was his day in court. Plaintiff was pulled off the bus. The explanation: one of the officers "switched hands" with a test and did not know if they all passed or not, even though Plaintiff had been cleared by medical on June 6, 2022. This story makes no sense; if test results were unclear, retest on the spot. But there was no retest. Instead, Plaintiff was returned to the jail, and his AOB case proceeded without him. On his "retrial" he had no claims. The court treated his absence as voluntary non-appearance. The case was dismissed.
+FRAUD UPON THE COURT NUMBER ______ -June 10 2022: Second Criminal Trial:(The COVID Lie)
+46. Plaintiff was not in the courtroom. They removed him as soon as he walked in—before Judge Steele arrived. They did not want him to see the judge, because his presence would ruin their story. What happened in his absence was captured on the transcript that Plaintiff obtained nearly two years later, on April 19, 2024. (48.) DDA Portlock told Judge Steele: "He tested positive for COVID . . . yesterday." (June 10, 2022 Tr. at 3–4, ECF 15, Ex. 1.) Judge Steele immediately responded with something hard to catch on the transcript because both were talking at once:
+"Apparently he didn't. Apparently he didn't," and then,
+"Mr.. Medina . . ."—referring to defense advisor Rubin Medina the court had assigned Plaintiff. Judge Steele continued:
+"The information I got from you yesterday was that he failed for the last two days." She said: "The information I got from you yesterday."
+47. "Yesterday" was June 9. There had been an ex parte meeting—a communication between officers of the court without the pro se litigant present. This is a constitutional violation. Plaintiff had a right to be present for any proceeding affecting his case. Moreover, Plaintiff had just walked into the courtroom and heard the DDA squeal, "Get him out of here before the judge sees him!" fifteen minutes prior. In addition, Medina had visited Plaintiff the day before and knew he was in general population.
+48. Judge Steele corrected the record in full: "It turns out he didn't. He didn't test positive yesterday . . . . It turns out that he tested positive on May 29th [twelve days earlier] and . . . he got out of quarantine . . . and was put into the general population." (June 10, 2022 Tr. at 6–8, ECF 15, Ex. 1.) Plaintiff was present, cleared, and ready for trial. The prosecutor and defense advisor had given coordinated false statements to the court. The judge acknowledged the falsity on the record and said, "Because of that I called the jury off."
+49. Consequently the trial was postponed. The day before—June 9—Macy had dropped off a letter at the court. She said the situation was "felt endangered" She was leaving the country. She felt in danger. She told Plaintiff's mother "they were making her choose." She left the country on June 9. If the State's sole witness felt that pressured, something was not right..
+50. This is fraud upon the court under Hazel-Atlas Glass Co. v. Hartford-Empire Co., 322 U.S. 238, 246 (1944): intentional fraud by officers of the court, directed at the court itself, which deceived the court. All four elements are satisfied.
+JUNE 20, 2022: SIXTY-TWO LEGAL FILES DELETED
+At exactly 5:10 p.m. on June 20, 2022—during mandatory dinner lock down (after being denied law library 6 days in a row) when all inmates were confined to cells with no witnesses—jail guard Baker accessed the law library computer system and deleted sixty-two of Plaintiff's legal files:
+
+JUNE 24, 2022: THE STATE'S WITNESS FINALLY SPEAKS—
+51. And Destroys the States case June 24, 2022, was the first time Macy Galla ever gave a statement in this case. The officers' arrest reports were fabricated from the kids' photographs and their own coordination—no witness statement had ever been taken from Macy at the scene. She went inside and closed the door. Now, for the first time, she was under oath.
+
+=== SUMMARY OF THE ARGUMENT ===
+[Placeholder]
+
+=== STANDARD OF REVIEW ===
+[Placeholder]
+
+=== ARGUMENT I ===
+(contains content from Argument section above and abstention factors)
+1) Factor One: Control of Property.
+a) Neither court exercised jurisdiction over any res.
+2) Factor Two: Inconvenience of Forum.
+a) The federal courthouse in Portland sits fifteen miles from the Clackamas County Courthouse.
+3) Factor Three: Avoidance of Piecemeal Litigation.
+a) Only the federal action unites all defendants—West Linn, Officers Blyth, and Gunnarson would have gone to trial with a ghost to blame things on,
+b) Clackamas County evaded 13 services, this would have rewarded them for intentional evasion and lack of accountability… something history shows as routine in Clackamas,
+c) DDA Portlock Also would have been seperated because Plaintiff didn't have the fraud evidence at the time, and who knew evidence would still be blocked through DDA.
+d) The state court had already fragmented the litigation by dismissing the County defendants on April 11, 2023, and May 11, 2022 while allowing the West Linn defendants to remain. ECF 35-2, 35-3.
+e) Federal abstention would not avoid piecemeal litigation; it would guarantee it. This factor favors federal retention.
+4) Factor Four: Order in Which Jurisdiction Was Obtained and Progress of Litigation.
+a) Due to the defendants own actions, in avoiding the service and hiding behind UTCR 7.020, giving notice that should be voided, and Plaintiffs Pro se status he wasn't aware of the the path to Default judgment. Additionally the notice given gave no name or statute (it gave UTCR 7 as apposed to UTCR 7.020) with two John Does, His AOB case just entering the Oregon Court of Appeals and they lost his Appeal, meanwhile litigating, and living out of state caused the County to escape state without ever appearing. By Oregon law, County could no show, in hopes that Plaintiff doesn't file the proper Default Application, they acan send notice on a link via bulk email, and if Plaintiff does catch it, they can then show up with no penalty, however if they do not they get to call "repetative" Prejudice against a Plaintiff who now has to start over to and serve you for another dozen times? for their intentional obstruction? Does this even need to be argued? (The state court register shows that Clackamas County was served approximately fifteen times but never answered, never moved, and never appeared. ECF 35-4. On April 4, 2023, Appellant filed a Motion to Compel Appearance. Seven days later, on April 11, 2023, the court dismissed the County defendants "for want of prosecution"—not for the County's failure to appear, but for Appellant's supposed failure to prosecute. ECF 35-2, 35-3. Meanwhile, the federal case reached responsive pleadings from every defendant. ECF 34, 36, 37. This factor strongly favors federal retention.
+5) Factor Five: Adequacy of State Forum.
+6) Factor Six: Forum Shopping.
+C. AIU's "Compelling Reason" Exception Applies.
+D. The Timing of the Federal Dismissal Confirms Tactical Abuse.
+E. Dismissal Rather Than Stay Was Independent Structural Error.
+
+=== ARGUMENT II ===
+II. FRAUD ON THE COURT BY DEFENDANTS AND THEIR COUNSEL VOIDS THE UNDERLYING PROCEEDINGS AND STRIPS ALL IMMUNITY DEFENSES
+A. The Coordinated COVID Fabrication Canceled a Jury Trial.
+B. The Deletion of Sixty-Two Legal Files Was Deliberate Spoliation.
+C. The Seven-Day Defiance of a Release Order Was Administrative Fraud.
+D. The Synchronized Fabrication of Arrest Reports Deceived the Arraignment Judge.
+E. Defense Counsel's Consent-Then-Flip Extended the Fraud to the Federal Forum.
+F. Legal Consequences of Fraud on the Court.
+1. Judgments Obtained by Fraud Are Void.
+2. Immunities Dissolve Where Officials Fabricate Evidence or Mislead the Court.
+3. Statutes of Limitation Are Tolled.
+4. Terminating Sanctions Are Required Where Lesser Sanctions Cannot Correct the Prejudice.
+
+=== ARGUMENT III ===
+III. THE NINTH AMENDMENT PROHIBITS THE GOVERNMENT FROM CONSTRUCTING PROCEDURAL DOCTRINES THAT DESTROY THE PEOPLE'S GUARANTEED RIGHTS
+A. The Etymology of "Disparage" Reveals the Amendment's Core Command.
+B. The Influence of French and English Legal Thought at the Founding Requires This Interpretation.
+C. The Word "Enumeration" Is the Key to the Amendment's Meaning.
+1. "Enumeration" Is Present Tense: The Act of Listing in Rank Order.
+2. The Amendment Therefore Addresses Government Action.
+D. The Meaning of "Certain Rights": Specific, Identifiable, and Guaranteed.
+Appellant's rights are specific and guaranteed:
+(a) First Amendment: The right to petition the government for redress of grievances.
+(b) Fourth Amendment: The right to be free from arrest without probable cause.
+(c) Fifth Amendment: The right to due process before the federal government.
+(d) Sixth Amendment: The right to effective assistance of counsel and access to courts.
+(e) Seventh Amendment: The right to a civil jury trial.
+(f) Ninth Amendment: The right to have the foregoing rights remain undiminished.
+(g) Fourteenth Amendment: The right to due process before state governments.
+E. Rights Cannot Be Diminished: The Indivisibility Principle.
+1. A Right Is Whole or It Is Nothing.
+2. Constitutional Rights Work the Same Way.
+F. The Relationship Between Rights and Duties.
+1. Every Right Has a Corresponding Duty.
+2. The Federal Government Enforces When the State Fails.
+3. Constitutional Violations Cannot Be Shielded by Procedure.
+(a) The state has a duty to respect constitutional rights.
+(b) State actors breach that duty—by fabricating arrest reports, by lying to cancel trials, by deleting legal files, by ignoring release orders.
+(c) Federal law is violated at the moment of breach—not at the moment of lawsuit, not at the moment of judgment, but at the moment of the unconstitutional act.
+(d) Immunity doctrines cannot retroactively erase a breach that has already occurred.
+G. The Amendment Prohibits Constructing Procedural Doctrines to Evade Accountability.
+1. "Shall Not Be Construed" Addresses Interpretation.
+2. Defendants Cannot Build Their Procedural Defenses Upon Their Own Wrongdoing.
+What defendants ask this Court to sanction is a system where government actors may:
+(a) Fabricate an arrest and remove a citizen from his property.
+(b) Lie to cancel jury trials.
+(c) Delete defense files during lockdown.
+(d) Ignore release orders.
+(e) Evade service for fifteen attempts.
+(f) Issue defective notices to trigger dismissal.
+(g) Consent to dismissal then flip to call the lawsuit "repetitive."
+(h) Time the federal dismissal for Day 181 to close every forum.
+H. The Judiciary Cannot Remove This Amendment From the Constitutional Structure.
+1. This Is Not a Question for Judicial Determination.
+2. The Judiciary Cannot Vote Away the People's Rights.
+3. The Consequence of Judicial Abdication Is Careless Harm.
+I. Criminal Sanctions Provide an Alternative When Civil Remedies Are Evaded.
+1. The Criminal Statutes Have Longer Limitations Periods.
+2. Referral to the United States Attorney Is Appropriate.
+J. Application to This Case: Every Guaranteed Right Was Violated, and Procedure Cannot Excuse It.
+The only question remaining is whether the Ninth Amendment will enforce the correction.
+1. Immunity Does Not Shield Fraud.
+2. Abstention Does Not Apply Where Defendants Caused the State Forum's Failure.
+AIU and Colorado River cannot reward the consent-then-flip. Chambers, 501 U.S. at 44.
+3. Limitations Do Not Bar Claims Where Defendants' Concealment Prevented Discovery.
+Equitable tolling applies. Appling, 340 F.3d at 777.
+4. The Ninth Amendment Commands This Result.
+
+=== CONCLUSION ===
+This Court should:
+1. VACATE the September 3, 2025 judgment dismissing this action.
+2. REMAND to a different district judge with instructions to exercise jurisdiction and proceed to the merits.
+3. STRIKE all immunity, abstention, and limitations defenses predicated on the identified fraud, or alternatively enter terminating sanctions against defendants who participated in evidence destruction or material misrepresentation.
+4. ORDER immediate production of body-camera footage and the complete jail computer audit trail.
+5. REFER the matter to the United States Attorney for investigation of potential violations of 18 U.S.C. §§ 241, 242, and 1001.
+Anything less would ratify the very disparagement the Ninth Amendment was written to prevent.
+Respectfully submitted,
+/s/ Tyler Allen Lofall Tyler Allen Lofall Plaintiff-Appellant, Pro Se
+
+=== STATEMENT OF RELATED CASES ===
+[Placeholder]
+
+=== ADDENDUM ===
+[Placeholder]
