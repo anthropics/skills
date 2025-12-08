@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 
 // 1. 检查 API Key
 const apiKey = process.env.MODELSCOPE_API_KEY;
@@ -10,28 +8,14 @@ if (!apiKey) {
 
 // 2. 处理参数
 const prompt = process.argv[2];
-const outputDir = process.argv[3];
 
 if (!prompt) {
     console.error("❌ Error: Please provide a prompt.");
     process.exit(1);
 }
 
-if (!outputDir) {
-    console.error("❌ Error: Please provide a prompt.");
-    process.exit(1);
-}
-
 const BASE_URL = "https://api-inference.modelscope.cn";
 const MODEL_ID = "Tongyi-MAI/Z-Image-Turbo";
-
-// 工具函数：生成安全的文件名
-function getSafeFilename(prompt) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    // 取提示词的前20个字符作为文件名的一部分，并去掉非法字符
-    const cleanPrompt = prompt.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);
-    return `img_${timestamp}_${cleanPrompt}.jpg`;
-}
 
 /**
  * 提交任务函数
