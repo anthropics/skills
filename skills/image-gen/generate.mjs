@@ -8,6 +8,7 @@ if (!apiKey) {
 
 // 2. 处理参数
 const prompt = process.argv[2];
+const size = process.argv[3];
 
 if (!prompt) {
     console.error("❌ Error: Please provide a prompt.");
@@ -24,7 +25,7 @@ const MODEL_ID = "Tongyi-MAI/Z-Image-Turbo";
  */
 async function submitTask(prompt) {
     try {
-        console.log(`🚀 Submitting task for: "${prompt.substring(0, 30)}..."`);
+        console.log(`🚀 Submitting task for: "${prompt.substring(0, 5)}..."`);
 
         const response = await fetch(
             `${BASE_URL}/v1/images/generations`,
@@ -38,6 +39,7 @@ async function submitTask(prompt) {
                 body: JSON.stringify({
                     model: MODEL_ID,
                     prompt: prompt,
+                    size: size ? size : '752x1280'
                 })
             }
         );
@@ -61,7 +63,7 @@ async function submitTask(prompt) {
  * @returns 
  */
 async function pollTask(taskId) {
-    console.log(`⏳ Task ID: ${taskId}. Polling for status...`);
+    console.log(`⏳ Task ID: ${taskId}.`);
 
     const pollUrl = `${BASE_URL}/v1/tasks/${taskId}`;
     const headers = {
@@ -102,10 +104,7 @@ async function pollTask(taskId) {
 (async () => {
     try {
         const taskId = await submitTask(prompt);
-        console.log(`\n🔄 Processing...`);
-
         const imageUrl = await pollTask(taskId);
-
         console.log(`🎉 Success! Image url: ${imageUrl}`);
 
     } catch (error) {
