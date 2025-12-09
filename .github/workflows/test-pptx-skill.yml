@@ -1,0 +1,137 @@
+name: Test PPTX Skill
+
+on:
+  push:
+    paths:
+      - 'skills/pptx/**'
+      - '.github/workflows/test-pptx-skill.yml'
+  pull_request:
+    paths:
+      - 'skills/pptx/**'
+      - '.github/workflows/test-pptx-skill.yml'
+  workflow_dispatch:
+
+jobs:
+  test-node:
+    name: Test Node.js Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'skills/pptx/package.json'
+
+      - name: Install Node.js dependencies
+        working-directory: skills/pptx
+        run: npm install
+
+      - name: Run workflow tests
+        working-directory: skills/pptx
+        run: node test/test-workflow.js
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-output
+          path: skills/pptx/test/output/
+          retention-days: 7
+
+  test-python:
+    name: Test Python Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Setup Python
+        working-directory: skills/pptx
+        run: uv python install 3.12
+
+      - name: Install Python dependencies
+        working-directory: skills/pptx
+        run: uv sync
+
+      - name: Test markitdown import
+        working-directory: skills/pptx
+        run: uv run python -c "from markitdown import MarkItDown; print('✅ markitdown imported successfully')"
+
+      - name: Test defusedxml import
+        working-directory: skills/pptx
+        run: uv run python -c "import defusedxml; print('✅ defusedxml imported successfully')"
+
+      - name: Test python-pptx import
+        working-directory: skills/pptx
+        run: uv run python -c "from pptx import Presentation; print('✅ python-pptx imported successfully')"
+
+  test-integration:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    needs: [test-node, test-python]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'skills/pptx/package.json'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+
+      - name: Install Node.js dependencies
+        working-directory: skills/pptx
+        run: npm install
+
+      - name: Setup Python and install dependencies
+        working-directory: skills/pptx
+        run: |
+          uv python install 3.12
+          uv sync
+
+      - name: Create test presentation
+        working-directory: skills/pptx
+        run: |
+          # Render test slide
+          node scripts/render-slides.js test/slides test/output --scale=2
+
+          # Create PPTX
+          node scripts/create-from-images.js test/output test/output/integration-test.pptx
+
+          # Verify PPTX was created
+          test -f test/output/integration-test.pptx
+          echo "✅ Integration test passed - PPTX created successfully"
+
+      - name: Extract and verify PPTX content
+        working-directory: skills/pptx
+        run: |
+          # Use markitdown to extract text (validates PPTX structure)
+          uv run python -m markitdown test/output/integration-test.pptx > test/output/extracted.md
+          cat test/output/extracted.md
+          echo "✅ PPTX content extraction successful"
+
+      - name: Upload integration test artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-output
+          path: skills/pptx/test/output/
+          retention-days: 7

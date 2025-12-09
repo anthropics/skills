@@ -464,21 +464,151 @@ Example for specific range:
 pdftoppm -jpeg -r 150 -f 2 -l 5 template.pdf slide  # Converts only pages 2-5
 ```
 
+## Image-Based Workflow (for Complex Slides)
+
+When the html2pptx converter struggles with complex HTML (SVG diagrams, intricate CSS layouts, gradients), use the **image-based workflow** which renders HTML to high-quality PNG images using Puppeteer.
+
+### When to Use Image-Based Workflow
+
+Use this approach when slides contain:
+- Complex SVG diagrams
+- CSS gradients or advanced styling
+- Intricate flexbox/grid layouts
+- Any HTML that doesn't convert properly with html2pptx
+
+### Setup
+
+First, install dependencies in the skill directory:
+
+```bash
+# Navigate to the skill directory
+cd ~/.claude/skills/pptx
+
+# Install Node.js dependencies (pptxgenjs, puppeteer)
+npm install
+
+# Install Python dependencies (markitdown, defusedxml, etc.)
+uv sync
+```
+
+### Workflow
+
+1. **Create HTML slides** with proper dimensions (e.g., `width: 10in; height: 5.625in` for 16:9)
+
+2. **Render HTML to PNG** using Puppeteer:
+   ```bash
+   node scripts/render-slides.js ./slides ./slide-images --scale=2
+   ```
+   Options:
+   - `--width=960` - Viewport width in pixels (default: 960)
+   - `--height=540` - Viewport height in pixels (default: 540)
+   - `--scale=2` - Device scale factor for crisp text (default: 2)
+
+3. **Create PPTX from images**:
+   ```bash
+   node scripts/create-from-images.js ./slide-images output.pptx
+   ```
+
+### Adding Diagram Overlays
+
+For slides that need separate diagram images overlaid (e.g., technical architecture diagrams):
+
+1. **Render diagrams separately** using the `renderHtml` function:
+   ```javascript
+   const { renderHtml } = require('./scripts/render-slides.js');
+   await renderHtml('diagram.html', 'diagram.png', { width: 1000, height: 600, scale: 2, isFile: true });
+   ```
+
+2. **Create a config file** (`slides-config.json`) to specify overlays:
+   ```json
+   {
+     "title": "My Presentation",
+     "author": "Author Name",
+     "layout": "LAYOUT_16x9",
+     "slides": [
+       { "image": "slide01.png" },
+       { "image": "slide02.png" },
+       {
+         "image": "slide03.png",
+         "diagram": "architecture-diagram.png",
+         "diagramPos": { "x": 0.5, "y": 1.5, "w": 5, "h": 3.5 }
+       }
+     ]
+   }
+   ```
+
+3. **Create the presentation**:
+   ```bash
+   node scripts/create-from-images.js ./slide-images output.pptx slides-config.json
+   ```
+
+### Example: Complete Image-Based Workflow
+
+```javascript
+const { renderSlides, renderHtml } = require('./scripts/render-slides.js');
+const { createPresentation } = require('./scripts/create-from-images.js');
+const path = require('path');
+
+async function buildPresentation() {
+    const slidesDir = './slides';
+    const imagesDir = './slide-images';
+    const diagramsDir = './diagram-images';
+
+    // 1. Render all HTML slides to PNG
+    await renderSlides(slidesDir, imagesDir, { scale: 2 });
+
+    // 2. Render complex diagrams separately
+    await renderHtml(
+        path.join(slidesDir, 'architecture-diagram.html'),
+        path.join(diagramsDir, 'arch.png'),
+        { width: 1000, height: 580, scale: 2, isFile: true }
+    );
+
+    // 3. Create presentation with config
+    await createPresentation(imagesDir, 'output.pptx', 'slides-config.json');
+}
+
+buildPresentation();
+```
+
 ## Code Style Guidelines
 **IMPORTANT**: When generating code for PPTX operations:
 - Write concise code
 - Avoid verbose variable names and redundant operations
 - Avoid unnecessary print statements
 
-## Dependencies
+## Setup & Dependencies
 
-Required dependencies (should already be installed):
+### Quick Setup (Recommended)
 
-- **markitdown**: `pip install "markitdown[pptx]"` (for text extraction from presentations)
-- **pptxgenjs**: `npm install -g pptxgenjs` (for creating presentations via html2pptx)
-- **playwright**: `npm install -g playwright` (for HTML rendering in html2pptx)
-- **react-icons**: `npm install -g react-icons react react-dom` (for icons)
+The skill includes `package.json` and `pyproject.toml` for easy dependency management:
+
+```bash
+# Navigate to skill directory
+cd ~/.claude/skills/pptx
+
+# Install Node.js dependencies
+npm install
+
+# Install Python dependencies
+uv sync
+```
+
+### Manual Installation
+
+If you prefer global installation:
+
+**Node.js dependencies:**
+- **pptxgenjs**: `npm install -g pptxgenjs` (for creating presentations)
+- **puppeteer**: `npm install -g puppeteer` (for HTML rendering to PNG)
 - **sharp**: `npm install -g sharp` (for SVG rasterization and image processing)
-- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
-- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
+- **react-icons**: `npm install -g react-icons react react-dom` (for icons)
+
+**Python dependencies:**
+- **markitdown**: `pip install "markitdown[pptx]"` (for text extraction)
 - **defusedxml**: `pip install defusedxml` (for secure XML parsing)
+- **python-pptx**: `pip install python-pptx` (for Python-based PPTX manipulation)
+
+**System dependencies:**
+- **LibreOffice**: `brew install libreoffice` / `apt install libreoffice` (for PDF conversion)
+- **Poppler**: `brew install poppler` / `apt install poppler-utils` (for pdftoppm)
