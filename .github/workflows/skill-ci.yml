@@ -264,8 +264,15 @@ jobs:
               with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                   for file_path in skill_dir.rglob('*'):
                       if file_path.is_file():
+                          # Skip hidden directories and their contents
+                          if '/.git/' in str(file_path) or str(file_path).endswith('/.git'):
+                              continue
+                          if '/.github/' in str(file_path):
+                              continue
                           # Skip non-essential files
                           if file_path.name in ['.DS_Store', '.gitignore']:
+                              continue
+                          if file_path.name.startswith('.'):
                               continue
                           if '__pycache__' in str(file_path):
                               continue
@@ -277,6 +284,9 @@ jobs:
                               continue
                           # Skip test output directories
                           if '/test/output/' in str(file_path):
+                              continue
+                          # Skip common large/non-essential paths
+                          if '/tests/' in str(file_path):
                               continue
 
                           # For multi-skill, include skill name in path
