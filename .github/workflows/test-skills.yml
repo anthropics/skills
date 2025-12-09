@@ -1,0 +1,359 @@
+name: Test Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/test-skills.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/test-skills.yml'
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Validate SKILL.md format for all skills
+  validate-skill-format:
+    name: Validate SKILL.md Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate all SKILL.md files
+        run: |
+          python3 << 'VALIDATION_SCRIPT'
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          skills_dir = Path("skills")
+          errors = []
+          warnings = []
+
+          for skill_dir in sorted(skills_dir.iterdir()):
+              if not skill_dir.is_dir():
+                  continue
+
+              skill_name = skill_dir.name
+              skill_md = skill_dir / "SKILL.md"
+
+              if not skill_md.exists():
+                  errors.append(f"{skill_name}: Missing SKILL.md file")
+                  continue
+
+              print(f"Validating: {skill_name}/SKILL.md")
+
+              with open(skill_md) as f:
+                  content = f.read()
+
+              # Check frontmatter exists
+              if not content.startswith('---'):
+                  errors.append(f"{skill_name}: SKILL.md must start with YAML frontmatter (---)")
+                  continue
+
+              # Extract frontmatter
+              match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+              if not match:
+                  errors.append(f"{skill_name}: Invalid frontmatter format (missing closing ---)")
+                  continue
+
+              frontmatter = match.group(1)
+
+              # Check required fields
+              if 'name:' not in frontmatter:
+                  errors.append(f"{skill_name}: Missing required 'name' field in frontmatter")
+
+              if 'description:' not in frontmatter:
+                  errors.append(f"{skill_name}: Missing required 'description' field in frontmatter")
+
+              # Extract and validate name
+              name_match = re.search(r'name:\s*([^\n]+)', frontmatter)
+              if name_match:
+                  name_value = name_match.group(1).strip().strip('"').strip("'")
+                  # Name should match directory name
+                  if name_value != skill_name:
+                      warnings.append(f"{skill_name}: Skill name '{name_value}' doesn't match directory name")
+                  # Name should be lowercase with hyphens
+                  if not re.match(r'^[a-z0-9-]+$', name_value):
+                      warnings.append(f"{skill_name}: Skill name '{name_value}' should be lowercase with hyphens only")
+
+              # Check description isn't empty
+              desc_match = re.search(r'description:\s*([^\n]+)', frontmatter)
+              if desc_match:
+                  desc_value = desc_match.group(1).strip().strip('"').strip("'")
+                  if len(desc_value) < 10:
+                      warnings.append(f"{skill_name}: Description seems too short")
+
+              # Check for content after frontmatter
+              body = content[match.end():].strip()
+              if len(body) < 50:
+                  warnings.append(f"{skill_name}: SKILL.md body seems very short")
+
+              print(f"  OK: {skill_name}")
+
+          # Print summary
+          print("\n" + "=" * 50)
+          print("VALIDATION SUMMARY")
+          print("=" * 50)
+
+          if warnings:
+              print(f"\nWarnings ({len(warnings)}):")
+              for w in warnings:
+                  print(f"  - {w}")
+
+          if errors:
+              print(f"\nErrors ({len(errors)}):")
+              for e in errors:
+                  print(f"  - {e}")
+              sys.exit(1)
+          else:
+              print("\nAll SKILL.md files are valid!")
+
+          VALIDATION_SCRIPT
+
+  # Job 2: Generate skill zips for Claude installation
+  generate-skill-zips:
+    name: Generate Skill Zips
+    runs-on: ubuntu-latest
+    needs: validate-skill-format
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate zips for all skills
+        run: |
+          python3 << 'ZIP_SCRIPT'
+          import os
+          import zipfile
+          from pathlib import Path
+
+          skills_dir = Path("skills")
+          output_dir = Path("skill-zips")
+          output_dir.mkdir(exist_ok=True)
+
+          for skill_dir in sorted(skills_dir.iterdir()):
+              if not skill_dir.is_dir():
+                  continue
+
+              skill_name = skill_dir.name
+              skill_md = skill_dir / "SKILL.md"
+
+              if not skill_md.exists():
+                  print(f"Skipping {skill_name}: No SKILL.md")
+                  continue
+
+              zip_path = output_dir / f"{skill_name}.zip"
+              print(f"Creating: {zip_path}")
+
+              with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                  # Walk the skill directory and add all files
+                  for file_path in skill_dir.rglob('*'):
+                      if file_path.is_file():
+                          # Skip common non-essential files
+                          if file_path.name in ['.DS_Store', '.gitignore']:
+                              continue
+                          if '__pycache__' in str(file_path):
+                              continue
+                          if 'node_modules' in str(file_path):
+                              continue
+                          if file_path.suffix in ['.pyc', '.pyo']:
+                              continue
+
+                          arcname = str(file_path.relative_to(skills_dir))
+                          zf.write(file_path, arcname)
+                          print(f"  + {arcname}")
+
+              print(f"  Size: {zip_path.stat().st_size} bytes\n")
+
+          print("All skill zips created!")
+          ZIP_SCRIPT
+
+      - name: Upload skill zips
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-zips
+          path: skill-zips/
+          retention-days: 7
+
+      - name: List generated zips
+        run: |
+          {
+            echo "## Generated Skill Zips"
+            echo ""
+            echo "| Skill | Size |"
+            echo "|-------|------|"
+            for f in skill-zips/*.zip; do
+              name=$(basename "$f" .zip)
+              size=$(du -h "$f" | cut -f1)
+              echo "| ${name} | ${size} |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Job 3: Test skill with Claude API (requires API key)
+  test-claude-api:
+    name: Test with Claude API
+    runs-on: ubuntu-latest
+    needs: generate-skill-zips
+    # Only run if ANTHROPIC_API_KEY is available (not on forks)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download skill zips
+        uses: actions/download-artifact@v4
+        with:
+          name: skill-zips
+          path: skill-zips/
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install anthropic SDK
+        run: pip install anthropic
+
+      - name: Test skill upload with Claude API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 << 'API_TEST_SCRIPT'
+          import os
+          import sys
+          import json
+          from pathlib import Path
+
+          api_key = os.environ.get("ANTHROPIC_API_KEY")
+          if not api_key:
+              print("ANTHROPIC_API_KEY not set, skipping API test")
+              sys.exit(0)
+
+          try:
+              import anthropic
+          except ImportError:
+              print("anthropic package not installed")
+              sys.exit(1)
+
+          client = anthropic.Anthropic(api_key=api_key)
+
+          # Test with pptx skill (one of ours)
+          zip_path = Path("skill-zips/pptx.zip")
+          if not zip_path.exists():
+              print(f"Skill zip not found: {zip_path}")
+              sys.exit(1)
+
+          print(f"Testing skill upload with: {zip_path}")
+
+          skill_id = None
+          try:
+              # Upload skill
+              print("1. Uploading skill to Claude API...")
+              with open(zip_path, "rb") as f:
+                  skill = client.beta.skills.create(
+                      display_title="PPTX Skill (CI Test)",
+                      files=[("skill.zip", f)],
+                      betas=["skills-2025-10-02"]
+                  )
+              skill_id = skill.id
+              print(f"   Skill ID: {skill_id}")
+              print(f"   Version: {skill.latest_version}")
+
+              # Quick validation - skill was accepted
+              print("\n2. Skill upload successful!")
+              print("   The skill format is valid and accepted by Claude API")
+
+          except anthropic.BadRequestError as e:
+              print(f"\nERROR: Bad request - {e}")
+              print("This may indicate the skill format is incorrect.")
+              sys.exit(1)
+          except anthropic.APIError as e:
+              print(f"\nERROR: API error - {e}")
+              sys.exit(1)
+          finally:
+              # Clean up: delete the test skill
+              if skill_id:
+                  print("\n3. Cleaning up: deleting test skill...")
+                  try:
+                      versions = client.beta.skills.versions.list(
+                          skill_id=skill_id,
+                          betas=["skills-2025-10-02"]
+                      )
+                      for version in versions.data:
+                          client.beta.skills.versions.delete(
+                              skill_id=skill_id,
+                              version=version.version,
+                              betas=["skills-2025-10-02"]
+                          )
+                      client.beta.skills.delete(
+                          skill_id=skill_id,
+                          betas=["skills-2025-10-02"]
+                      )
+                      print("   Skill deleted successfully")
+                  except Exception as e:
+                      print(f"   Warning: Failed to delete skill - {e}")
+
+          print("\nAPI test completed!")
+          API_TEST_SCRIPT
+
+  # Job 4: Integration test with Claude Code
+  test-claude-code:
+    name: Test with Claude Code
+    runs-on: ubuntu-latest
+    needs: validate-skill-format
+    # Only run if ANTHROPIC_API_KEY is available
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install skill to test location
+        run: |
+          mkdir -p ~/.claude/skills
+          cp -r skills/pptx ~/.claude/skills/pptx
+
+      - name: Test skill with Claude Code
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "Read,Write,Bash,Glob,Grep,Skill"
+          prompt: |
+            I want to verify the pptx skill is installed correctly.
+
+            Please do the following:
+            1. Check that the skill exists at ~/.claude/skills/pptx/SKILL.md
+            2. Read and summarize the skill's capabilities
+            3. Report whether the skill appears to be correctly installed
+
+            Do NOT actually create a presentation - just verify the skill is accessible.
+
+      - name: Verify skill was found
+        run: |
+          {
+            echo "## Claude Code Integration Test"
+            echo ""
+            if [ -f ~/.claude/skills/pptx/SKILL.md ]; then
+              echo "Skill was correctly installed at ~/.claude/skills/pptx/"
+            else
+              echo "Warning: Skill installation could not be verified"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
