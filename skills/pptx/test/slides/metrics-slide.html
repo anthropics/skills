@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  width: 960px;
+  height: 540px;
+  box-sizing: border-box;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.metric-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+.metric-value {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.metric-label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+}
+.metric-card.green .metric-value { color: #22c55e; }
+.metric-card.blue .metric-value { color: #3b82f6; }
+.metric-card.purple .metric-value { color: #a855f7; }
+.metric-card.orange .metric-value { color: #f97316; }
+.chart-section {
+  display: flex;
+  gap: 30px;
+}
+.chart-container {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 20px;
+}
+.chart-title {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: rgba(255,255,255,0.9);
+}
+</style>
+</head>
+<body>
+<h1>Q4 Performance Metrics</h1>
+<div class="dashboard">
+  <div class="metric-card green">
+    <div class="metric-value">98.7%</div>
+    <div class="metric-label">Uptime SLA</div>
+  </div>
+  <div class="metric-card blue">
+    <div class="metric-value">2.4M</div>
+    <div class="metric-label">API Requests/Day</div>
+  </div>
+  <div class="metric-card purple">
+    <div class="metric-value">45ms</div>
+    <div class="metric-label">Avg Response Time</div>
+  </div>
+  <div class="metric-card orange">
+    <div class="metric-value">12.5K</div>
+    <div class="metric-label">Active Users</div>
+  </div>
+</div>
+<div class="chart-section">
+  <div class="chart-container">
+    <div class="chart-title">Weekly Traffic Trend</div>
+    <svg viewBox="0 0 350 150" width="350" height="150" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3"/>
+          <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0"/>
+        </linearGradient>
+      </defs>
+      <!-- Grid lines -->
+      <line x1="40" y1="20" x2="340" y2="20" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="40" y1="60" x2="340" y2="60" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="40" y1="100" x2="340" y2="100" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <line x1="40" y1="140" x2="340" y2="140" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <!-- Area fill -->
+      <path d="M40 120 L90 100 L140 110 L190 70 L240 80 L290 50 L340 40 L340 140 L40 140 Z" fill="url(#lineGrad)"/>
+      <!-- Line -->
+      <path d="M40 120 L90 100 L140 110 L190 70 L240 80 L290 50 L340 40" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Data points -->
+      <circle cx="40" cy="120" r="4" fill="#3b82f6"/>
+      <circle cx="90" cy="100" r="4" fill="#3b82f6"/>
+      <circle cx="140" cy="110" r="4" fill="#3b82f6"/>
+      <circle cx="190" cy="70" r="4" fill="#3b82f6"/>
+      <circle cx="240" cy="80" r="4" fill="#3b82f6"/>
+      <circle cx="290" cy="50" r="4" fill="#3b82f6"/>
+      <circle cx="340" cy="40" r="4" fill="#3b82f6"/>
+      <!-- Labels -->
+      <text x="40" y="155" fill="rgba(255,255,255,0.5)" font-size="10" text-anchor="middle">Mon</text>
+      <text x="140" y="155" fill="rgba(255,255,255,0.5)" font-size="10" text-anchor="middle">Wed</text>
+      <text x="240" y="155" fill="rgba(255,255,255,0.5)" font-size="10" text-anchor="middle">Fri</text>
+      <text x="340" y="155" fill="rgba(255,255,255,0.5)" font-size="10" text-anchor="middle">Sun</text>
+    </svg>
+  </div>
+  <div class="chart-container">
+    <div class="chart-title">Request Distribution</div>
+    <svg viewBox="0 0 350 150" width="350" height="150" xmlns="http://www.w3.org/2000/svg">
+      <!-- Donut chart -->
+      <g transform="translate(100, 75)">
+        <circle cx="0" cy="0" r="50" fill="none" stroke="#22c55e" stroke-width="20" stroke-dasharray="125.6 188.4"/>
+        <circle cx="0" cy="0" r="50" fill="none" stroke="#3b82f6" stroke-width="20" stroke-dasharray="94.2 220" stroke-dashoffset="-125.6"/>
+        <circle cx="0" cy="0" r="50" fill="none" stroke="#f97316" stroke-width="20" stroke-dasharray="62.8 251.2" stroke-dashoffset="-219.8"/>
+        <circle cx="0" cy="0" r="50" fill="none" stroke="#a855f7" stroke-width="20" stroke-dasharray="31.4 282.6" stroke-dashoffset="-282.6"/>
+        <circle cx="0" cy="0" r="30" fill="#1e293b"/>
+      </g>
+      <!-- Legend -->
+      <rect x="200" y="30" width="12" height="12" rx="2" fill="#22c55e"/>
+      <text x="220" y="40" fill="rgba(255,255,255,0.8)" font-size="11">GET (40%)</text>
+      <rect x="200" y="55" width="12" height="12" rx="2" fill="#3b82f6"/>
+      <text x="220" y="65" fill="rgba(255,255,255,0.8)" font-size="11">POST (30%)</text>
+      <rect x="200" y="80" width="12" height="12" rx="2" fill="#f97316"/>
+      <text x="220" y="90" fill="rgba(255,255,255,0.8)" font-size="11">PUT (20%)</text>
+      <rect x="200" y="105" width="12" height="12" rx="2" fill="#a855f7"/>
+      <text x="220" y="115" fill="rgba(255,255,255,0.8)" font-size="11">DELETE (10%)</text>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

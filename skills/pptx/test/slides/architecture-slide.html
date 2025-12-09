@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%);
+  color: white;
+  width: 960px;
+  height: 540px;
+  box-sizing: border-box;
+}
+h1 {
+  font-size: 36px;
+  margin: 0 0 30px 0;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+.architecture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 420px;
+}
+.architecture svg {
+  filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.4));
+}
+/* Box styling */
+.box {
+  fill: rgba(255,255,255,0.1);
+  stroke: rgba(255,255,255,0.6);
+  stroke-width: 2;
+  rx: 8;
+}
+.box-primary {
+  fill: rgba(59,130,246,0.3);
+  stroke: #3b82f6;
+}
+.box-secondary {
+  fill: rgba(34,197,94,0.3);
+  stroke: #22c55e;
+}
+.box-accent {
+  fill: rgba(249,115,22,0.3);
+  stroke: #f97316;
+}
+.label {
+  fill: white;
+  font-size: 14px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.sublabel {
+  fill: rgba(255,255,255,0.8);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.arrow {
+  stroke: rgba(255,255,255,0.7);
+  stroke-width: 2;
+  fill: none;
+  marker-end: url(#arrowhead);
+}
+</style>
+</head>
+<body>
+<h1>System Architecture Overview</h1>
+<div class="architecture">
+  <svg viewBox="0 0 800 380" width="800" height="380" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255,255,255,0.7)"/>
+      </marker>
+      <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:rgba(255,255,255,0.15)"/>
+        <stop offset="100%" style="stop-color:rgba(255,255,255,0.05)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Client Layer -->
+    <rect x="300" y="20" width="200" height="70" class="box box-primary" rx="8"/>
+    <text x="400" y="50" class="label">Client Applications</text>
+    <text x="400" y="70" class="sublabel">Web / Mobile / CLI</text>
+
+    <!-- API Gateway -->
+    <rect x="300" y="130" width="200" height="70" class="box box-secondary" rx="8"/>
+    <text x="400" y="160" class="label">API Gateway</text>
+    <text x="400" y="180" class="sublabel">Authentication / Rate Limiting</text>
+
+    <!-- Services Layer -->
+    <rect x="50" y="250" width="150" height="70" class="box box-accent" rx="8"/>
+    <text x="125" y="280" class="label">Auth Service</text>
+    <text x="125" y="300" class="sublabel">JWT / OAuth2</text>
+
+    <rect x="225" y="250" width="150" height="70" class="box box-accent" rx="8"/>
+    <text x="300" y="280" class="label">Core Service</text>
+    <text x="300" y="300" class="sublabel">Business Logic</text>
+
+    <rect x="425" y="250" width="150" height="70" class="box box-accent" rx="8"/>
+    <text x="500" y="280" class="label">Data Service</text>
+    <text x="500" y="300" class="sublabel">CRUD Operations</text>
+
+    <rect x="600" y="250" width="150" height="70" class="box box-accent" rx="8"/>
+    <text x="675" y="280" class="label">Queue Service</text>
+    <text x="675" y="300" class="sublabel">Async Processing</text>
+
+    <!-- Arrows -->
+    <path d="M400 90 L400 130" class="arrow"/>
+    <path d="M350 200 L125 250" class="arrow"/>
+    <path d="M380 200 L300 250" class="arrow"/>
+    <path d="M420 200 L500 250" class="arrow"/>
+    <path d="M450 200 L675 250" class="arrow"/>
+
+    <!-- Connection lines between services -->
+    <path d="M200 285 L225 285" class="arrow" style="stroke-dasharray: 4 2"/>
+    <path d="M375 285 L425 285" class="arrow" style="stroke-dasharray: 4 2"/>
+    <path d="M575 285 L600 285" class="arrow" style="stroke-dasharray: 4 2"/>
+  </svg>
+</div>
+</body>
+</html>

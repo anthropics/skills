@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: white;
+  width: 400px;
+  height: 300px;
+}
+svg {
+  display: block;
+}
+</style>
+</head>
+<body>
+<svg viewBox="0 0 400 300" width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" font-family="Arial" font-size="16" font-weight="bold" fill="#1e293b">Data Flow Diagram</text>
+
+  <!-- Input -->
+  <rect x="30" y="120" width="80" height="60" rx="8" fill="#3b82f6" filter="url(#shadow)"/>
+  <text x="70" y="145" text-anchor="middle" font-family="Arial" font-size="12" fill="white">Input</text>
+  <text x="70" y="162" text-anchor="middle" font-family="Arial" font-size="10" fill="rgba(255,255,255,0.8)">Source</text>
+
+  <!-- Process -->
+  <rect x="160" y="120" width="80" height="60" rx="8" fill="#22c55e" filter="url(#shadow)"/>
+  <text x="200" y="145" text-anchor="middle" font-family="Arial" font-size="12" fill="white">Process</text>
+  <text x="200" y="162" text-anchor="middle" font-family="Arial" font-size="10" fill="rgba(255,255,255,0.8)">Transform</text>
+
+  <!-- Output -->
+  <rect x="290" y="120" width="80" height="60" rx="8" fill="#f97316" filter="url(#shadow)"/>
+  <text x="330" y="145" text-anchor="middle" font-family="Arial" font-size="12" fill="white">Output</text>
+  <text x="330" y="162" text-anchor="middle" font-family="Arial" font-size="10" fill="rgba(255,255,255,0.8)">Result</text>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+  <line x1="110" y1="150" x2="155" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="240" y1="150" x2="285" y2="150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Storage -->
+  <ellipse cx="200" cy="250" rx="60" ry="30" fill="#a855f7" filter="url(#shadow)"/>
+  <text x="200" y="255" text-anchor="middle" font-family="Arial" font-size="12" fill="white">Storage</text>
+
+  <!-- Vertical arrows -->
+  <line x1="200" y1="180" x2="200" y2="215" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
+</body>
+</html>
