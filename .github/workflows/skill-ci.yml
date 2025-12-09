@@ -1,0 +1,522 @@
+# Reusable CI workflow for Claude Skills
+#
+# This workflow can be used by any repository that implements a Claude skill.
+# It validates SKILL.md format, generates installable zips, and optionally
+# tests with Claude API and Claude Code.
+#
+# Usage in your workflow:
+#
+#   jobs:
+#     test-skill:
+#       uses: anthropics/skills/.github/workflows/skill-ci.yml@main
+#       with:
+#         skill_path: "."  # Path to skill directory (use "." for single-skill repos)
+#       secrets:
+#         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+#
+# For multi-skill repositories (like anthropics/skills itself):
+#
+#   jobs:
+#     test-skills:
+#       uses: anthropics/skills/.github/workflows/skill-ci.yml@main
+#       with:
+#         skill_path: "skills"
+#         multi_skill: true
+#       secrets:
+#         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+name: Skill CI
+
+on:
+  workflow_call:
+    inputs:
+      skill_path:
+        description: 'Path to skill directory. Use "." for single-skill repos or "skills" for multi-skill repos'
+        required: false
+        default: '.'
+        type: string
+      skill_name:
+        description: 'Name of the skill (for single-skill repos). Auto-detected from SKILL.md if not provided'
+        required: false
+        default: ''
+        type: string
+      multi_skill:
+        description: 'Set to true if this repo contains multiple skills in subdirectories'
+        required: false
+        default: false
+        type: boolean
+      run_api_test:
+        description: 'Run Claude API upload test'
+        required: false
+        default: true
+        type: boolean
+      run_claude_code_test:
+        description: 'Run Claude Code integration test'
+        required: false
+        default: true
+        type: boolean
+      test_skill_name:
+        description: 'Which skill to use for API/Claude Code tests (for multi-skill repos)'
+        required: false
+        default: ''
+        type: string
+    secrets:
+      ANTHROPIC_API_KEY:
+        description: 'Anthropic API key for testing skill upload'
+        required: false
+
+jobs:
+  # Job 1: Validate SKILL.md format
+  validate-skill-format:
+    name: Validate SKILL.md Format
+    runs-on: ubuntu-latest
+
+    outputs:
+      skill_name: ${{ steps.detect.outputs.skill_name }}
+      skill_count: ${{ steps.detect.outputs.skill_count }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Detect and validate skills
+        id: detect
+        env:
+          SKILL_PATH: ${{ inputs.skill_path }}
+          MULTI_SKILL: ${{ inputs.multi_skill }}
+          SKILL_NAME_INPUT: ${{ inputs.skill_name }}
+        run: |
+          python3 << 'VALIDATION_SCRIPT'
+          import os
+          import re
+          import sys
+          from pathlib import Path
+
+          skill_path = Path(os.environ.get("SKILL_PATH", "."))
+          multi_skill = os.environ.get("MULTI_SKILL", "false").lower() == "true"
+          skill_name_input = os.environ.get("SKILL_NAME_INPUT", "")
+
+          errors = []
+          warnings = []
+          validated_skills = []
+
+          def validate_skill_md(skill_md_path, skill_name):
+              """Validate a single SKILL.md file."""
+              if not skill_md_path.exists():
+                  return None, [f"{skill_name}: Missing SKILL.md file"]
+
+              with open(skill_md_path) as f:
+                  content = f.read()
+
+              errs = []
+              warns = []
+
+              # Check frontmatter exists
+              if not content.startswith('---'):
+                  errs.append(f"{skill_name}: SKILL.md must start with YAML frontmatter (---)")
+                  return None, errs
+
+              # Extract frontmatter
+              match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+              if not match:
+                  errs.append(f"{skill_name}: Invalid frontmatter format (missing closing ---)")
+                  return None, errs
+
+              frontmatter = match.group(1)
+
+              # Check required fields
+              if 'name:' not in frontmatter:
+                  errs.append(f"{skill_name}: Missing required 'name' field in frontmatter")
+
+              if 'description:' not in frontmatter:
+                  errs.append(f"{skill_name}: Missing required 'description' field in frontmatter")
+
+              # Extract name from frontmatter
+              detected_name = None
+              name_match = re.search(r'name:\s*([^\n]+)', frontmatter)
+              if name_match:
+                  detected_name = name_match.group(1).strip().strip('"').strip("'")
+                  # Name should be lowercase with hyphens
+                  if not re.match(r'^[a-z0-9-]+$', detected_name):
+                      warns.append(f"{skill_name}: Skill name '{detected_name}' should be lowercase with hyphens only")
+
+              # Check description isn't empty
+              desc_match = re.search(r'description:\s*([^\n]+)', frontmatter)
+              if desc_match:
+                  desc_value = desc_match.group(1).strip().strip('"').strip("'")
+                  if len(desc_value) < 10:
+                      warns.append(f"{skill_name}: Description seems too short")
+
+              # Check for content after frontmatter
+              body = content[match.end():].strip()
+              if len(body) < 50:
+                  warns.append(f"{skill_name}: SKILL.md body seems very short")
+
+              return detected_name, errs, warns
+
+          # Handle multi-skill vs single-skill repos
+          if multi_skill:
+              # Multi-skill: validate each subdirectory
+              if not skill_path.is_dir():
+                  print(f"ERROR: Skill path '{skill_path}' is not a directory")
+                  sys.exit(1)
+
+              for skill_dir in sorted(skill_path.iterdir()):
+                  if not skill_dir.is_dir():
+                      continue
+
+                  dir_name = skill_dir.name
+                  skill_md = skill_dir / "SKILL.md"
+
+                  print(f"Validating: {dir_name}/SKILL.md")
+                  result = validate_skill_md(skill_md, dir_name)
+
+                  if result[1]:  # errors
+                      errors.extend(result[1])
+                  else:
+                      validated_skills.append(result[0] or dir_name)
+                      if len(result) > 2 and result[2]:  # warnings
+                          warnings.extend(result[2])
+                      print(f"  OK: {dir_name}")
+          else:
+              # Single-skill: validate SKILL.md in skill_path
+              skill_md = skill_path / "SKILL.md"
+              skill_name = skill_name_input or skill_path.name or "skill"
+
+              print(f"Validating: {skill_name}/SKILL.md")
+              result = validate_skill_md(skill_md, skill_name)
+
+              if result[1]:  # errors
+                  errors.extend(result[1])
+              else:
+                  detected_name = result[0] or skill_name
+                  validated_skills.append(detected_name)
+                  if len(result) > 2 and result[2]:  # warnings
+                      warnings.extend(result[2])
+                  print(f"  OK: {detected_name}")
+
+          # Print summary
+          print("\n" + "=" * 50)
+          print("VALIDATION SUMMARY")
+          print("=" * 50)
+
+          if warnings:
+              print(f"\nWarnings ({len(warnings)}):")
+              for w in warnings:
+                  print(f"  - {w}")
+
+          if errors:
+              print(f"\nErrors ({len(errors)}):")
+              for e in errors:
+                  print(f"  - {e}")
+              sys.exit(1)
+          else:
+              print(f"\nValidated {len(validated_skills)} skill(s): {', '.join(validated_skills)}")
+
+          # Output for subsequent jobs
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"skill_name={validated_skills[0] if validated_skills else ''}\n")
+              f.write(f"skill_count={len(validated_skills)}\n")
+
+          VALIDATION_SCRIPT
+
+  # Job 2: Generate skill zip(s) for Claude installation
+  generate-skill-zips:
+    name: Generate Skill Zips
+    runs-on: ubuntu-latest
+    needs: validate-skill-format
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate skill zips
+        env:
+          SKILL_PATH: ${{ inputs.skill_path }}
+          MULTI_SKILL: ${{ inputs.multi_skill }}
+          SKILL_NAME: ${{ needs.validate-skill-format.outputs.skill_name }}
+        run: |
+          python3 << 'ZIP_SCRIPT'
+          import os
+          import zipfile
+          from pathlib import Path
+
+          skill_path = Path(os.environ.get("SKILL_PATH", "."))
+          multi_skill = os.environ.get("MULTI_SKILL", "false").lower() == "true"
+          skill_name = os.environ.get("SKILL_NAME", "skill")
+
+          output_dir = Path("skill-zips")
+          output_dir.mkdir(exist_ok=True)
+
+          def create_skill_zip(skill_dir, zip_name):
+              """Create a zip file for a skill directory."""
+              zip_path = output_dir / f"{zip_name}.zip"
+              print(f"Creating: {zip_path}")
+
+              with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+                  for file_path in skill_dir.rglob('*'):
+                      if file_path.is_file():
+                          # Skip non-essential files
+                          if file_path.name in ['.DS_Store', '.gitignore']:
+                              continue
+                          if '__pycache__' in str(file_path):
+                              continue
+                          if 'node_modules' in str(file_path):
+                              continue
+                          if '.venv' in str(file_path):
+                              continue
+                          if file_path.suffix in ['.pyc', '.pyo']:
+                              continue
+                          # Skip test output directories
+                          if '/test/output/' in str(file_path):
+                              continue
+
+                          # For multi-skill, include skill name in path
+                          if multi_skill:
+                              arcname = str(file_path.relative_to(skill_path.parent))
+                          else:
+                              arcname = f"{zip_name}/{file_path.relative_to(skill_dir)}"
+
+                          zf.write(file_path, arcname)
+                          print(f"  + {arcname}")
+
+              print(f"  Size: {zip_path.stat().st_size} bytes\n")
+              return zip_path
+
+          if multi_skill:
+              # Create zip for each skill
+              for skill_dir in sorted(skill_path.iterdir()):
+                  if not skill_dir.is_dir():
+                      continue
+                  if not (skill_dir / "SKILL.md").exists():
+                      continue
+                  create_skill_zip(skill_dir, skill_dir.name)
+          else:
+              # Create single zip
+              create_skill_zip(skill_path, skill_name)
+
+          print("All skill zips created!")
+          ZIP_SCRIPT
+
+      - name: Upload skill zips
+        uses: actions/upload-artifact@v4
+        with:
+          name: skill-zips
+          path: skill-zips/
+          retention-days: 7
+
+      - name: Summary
+        run: |
+          {
+            echo "## Generated Skill Zips"
+            echo ""
+            echo "| Skill | Size |"
+            echo "|-------|------|"
+            for f in skill-zips/*.zip; do
+              name=$(basename "$f" .zip)
+              size=$(du -h "$f" | cut -f1)
+              echo "| ${name} | ${size} |"
+            done
+            echo ""
+            echo "Download from the **Artifacts** section above."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Job 3: Test skill upload with Claude API
+  test-claude-api:
+    name: Test with Claude API
+    runs-on: ubuntu-latest
+    needs: generate-skill-zips
+    if: inputs.run_api_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download skill zips
+        uses: actions/download-artifact@v4
+        with:
+          name: skill-zips
+          path: skill-zips/
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install anthropic SDK
+        run: pip install anthropic
+
+      - name: Test skill upload
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MULTI_SKILL: ${{ inputs.multi_skill }}
+          TEST_SKILL: ${{ inputs.test_skill_name }}
+        run: |
+          python3 << 'API_TEST_SCRIPT'
+          import os
+          import sys
+          from pathlib import Path
+
+          api_key = os.environ.get("ANTHROPIC_API_KEY")
+          if not api_key:
+              print("ANTHROPIC_API_KEY not set, skipping API test")
+              print("To enable this test, add ANTHROPIC_API_KEY to your repository secrets")
+              sys.exit(0)
+
+          try:
+              import anthropic
+          except ImportError:
+              print("anthropic package not installed")
+              sys.exit(1)
+
+          client = anthropic.Anthropic(api_key=api_key)
+
+          # Find a skill zip to test
+          zip_dir = Path("skill-zips")
+          test_skill = os.environ.get("TEST_SKILL", "")
+
+          if test_skill:
+              zip_path = zip_dir / f"{test_skill}.zip"
+          else:
+              # Use first available zip
+              zips = list(zip_dir.glob("*.zip"))
+              if not zips:
+                  print("No skill zips found")
+                  sys.exit(1)
+              zip_path = zips[0]
+
+          if not zip_path.exists():
+              print(f"Skill zip not found: {zip_path}")
+              sys.exit(1)
+
+          skill_name = zip_path.stem
+          print(f"Testing skill upload: {skill_name}")
+
+          skill_id = None
+          try:
+              print("1. Uploading skill to Claude API...")
+              with open(zip_path, "rb") as f:
+                  skill = client.beta.skills.create(
+                      display_title=f"{skill_name} (CI Test)",
+                      files=[("skill.zip", f)],
+                      betas=["skills-2025-10-02"]
+                  )
+              skill_id = skill.id
+              print(f"   Skill ID: {skill_id}")
+              print(f"   Version: {skill.latest_version}")
+
+              print("\n2. Skill upload successful!")
+              print("   The skill format is valid and accepted by Claude API")
+
+          except anthropic.BadRequestError as e:
+              print(f"\nERROR: Bad request - {e}")
+              print("This indicates the skill format is incorrect.")
+              sys.exit(1)
+          except anthropic.APIError as e:
+              print(f"\nERROR: API error - {e}")
+              sys.exit(1)
+          finally:
+              if skill_id:
+                  print("\n3. Cleaning up test skill...")
+                  try:
+                      versions = client.beta.skills.versions.list(
+                          skill_id=skill_id,
+                          betas=["skills-2025-10-02"]
+                      )
+                      for version in versions.data:
+                          client.beta.skills.versions.delete(
+                              skill_id=skill_id,
+                              version=version.version,
+                              betas=["skills-2025-10-02"]
+                          )
+                      client.beta.skills.delete(
+                          skill_id=skill_id,
+                          betas=["skills-2025-10-02"]
+                      )
+                      print("   Cleaned up successfully")
+                  except Exception as e:
+                      print(f"   Warning: Cleanup failed - {e}")
+
+          print("\nAPI test completed!")
+          API_TEST_SCRIPT
+
+  # Job 4: Integration test with Claude Code
+  test-claude-code:
+    name: Test with Claude Code
+    runs-on: ubuntu-latest
+    needs: validate-skill-format
+    if: inputs.run_claude_code_test
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install skill to test location
+        env:
+          SKILL_PATH: ${{ inputs.skill_path }}
+          SKILL_NAME: ${{ needs.validate-skill-format.outputs.skill_name }}
+          MULTI_SKILL: ${{ inputs.multi_skill }}
+          TEST_SKILL: ${{ inputs.test_skill_name }}
+        run: |
+          mkdir -p ~/.claude/skills
+
+          if [ "$MULTI_SKILL" = "true" ]; then
+            # For multi-skill repos, install the test skill or first skill
+            if [ -n "$TEST_SKILL" ]; then
+              cp -r "${SKILL_PATH}/${TEST_SKILL}" ~/.claude/skills/
+            else
+              # Install first skill found
+              first_skill=$(find "${SKILL_PATH}" -maxdepth 1 -type d | head -2 | tail -1)
+              cp -r "$first_skill" ~/.claude/skills/
+            fi
+          else
+            # Single skill repo
+            cp -r "${SKILL_PATH}" ~/.claude/skills/"${SKILL_NAME}"
+          fi
+
+          echo "Installed skills:"
+          ls -la ~/.claude/skills/
+
+      - name: Test skill with Claude Code
+        continue-on-error: true
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          allowed_tools: "Read,Write,Bash,Glob,Grep,Skill"
+          direct_prompt: |
+            I want to verify a Claude skill is installed correctly.
+
+            Please do the following:
+            1. List the contents of ~/.claude/skills/ to see what skills are installed
+            2. Read the SKILL.md of any installed skill
+            3. Summarize what the skill does
+            4. Report whether the skill appears to be correctly formatted
+
+            Do NOT actually invoke the skill - just verify it's accessible and valid.
+
+      - name: Verify installation
+        run: |
+          {
+            echo "## Claude Code Integration Test"
+            echo ""
+            echo "### Installed Skills"
+            echo '```'
+            ls -la ~/.claude/skills/ || echo "No skills directory found"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
