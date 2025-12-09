@@ -1,0 +1,23 @@
+{
+  "name": "pptx-skill",
+  "version": "1.0.0",
+  "description": "PowerPoint creation skill for Claude Code using html2pptx and Puppeteer rendering",
+  "scripts": {
+    "render": "node scripts/render-slides.js",
+    "create": "node scripts/create-from-images.js",
+    "test": "node test/test-workflow.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0",
+    "puppeteer": "^23.0.0"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
