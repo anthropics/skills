@@ -336,6 +336,7 @@ jobs:
           cp -r skills/pptx ~/.claude/skills/pptx
 
       - name: Test skill with Claude Code
+        continue-on-error: true  # Don't fail if secrets aren't configured
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
