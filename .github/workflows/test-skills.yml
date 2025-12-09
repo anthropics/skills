@@ -317,6 +317,9 @@ jobs:
     needs: validate-skill-format
     # Only run if ANTHROPIC_API_KEY is available
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -335,8 +338,9 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           allowed_tools: "Read,Write,Bash,Glob,Grep,Skill"
-          prompt: |
+          direct_prompt: |
             I want to verify the pptx skill is installed correctly.
 
             Please do the following:
