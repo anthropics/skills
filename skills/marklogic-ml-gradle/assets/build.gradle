@@ -1,0 +1,28 @@
+plugins {
+  id "com.marklogic.ml-gradle" version "4.6.0"
+}
+
+repositories {
+  mavenCentral()
+  maven { url "https://developer.marklogic.com/maven2/" }
+}
+
+// Optional: Add dependencies for custom modules
+dependencies {
+  // Add any Java dependencies for custom modules here
+  // implementation 'com.marklogic:marklogic-client-api:6.4.0'
+}
+
+// Optional: Customize ml-gradle behavior
+ext {
+  // mlAppConfig {
+  //   // Customize AppConfig here
+  // }
+}
+
+// Optional: Add custom tasks
+task hello {
+  doLast {
+    println "Hello from ${mlAppName}!"
+  }
+}

@@ -1,0 +1,98 @@
+# Node.js/TypeScript testing task runner recipes
+# Usage: just [task] [args]
+
+default:
+    @just --list
+
+# Install dependencies
+install:
+    npm install
+
+# Run all tests
+test:
+    npm test
+
+# Run tests in watch mode
+test-watch:
+    npm test -- --watch
+
+# Run tests with UI
+test-ui:
+    npm test -- --ui
+
+# Run tests with coverage
+test-cov:
+    npm test -- --coverage
+
+# Run unit tests only
+test-unit:
+    npm test -- tests/unit/
+
+# Run integration tests only
+test-integration:
+    npm test -- tests/integration/
+
+# Run tests excluding slow ones
+test-fast:
+    npm test -- -m "not slow"
+
+# Run specific test file
+test-file FILE:
+    npm test -- tests/{{FILE}}
+
+# Run specific test by name
+test-one TEST:
+    npm test -- -t {{TEST}}
+
+# Run with debugging
+test-debug:
+    npm test -- --inspect-brk --single-thread
+
+# Repeat tests N times to find flakes
+test-flakes N="10":
+    npm test -- --run --reporter=verbose --repeat={{N}}
+
+# Generate coverage report and open it
+test-report:
+    npm test -- --coverage
+    open coverage/index.html
+
+# Run E2E tests
+e2e:
+    npx playwright test
+
+# Run E2E tests with UI
+e2e-ui:
+    npx playwright test --ui
+
+# Run E2E tests with browser debug
+e2e-debug:
+    npx playwright test --debug
+
+# Run E2E specific test
+e2e-one TEST:
+    npx playwright test {{TEST}}
+
+# Check architecture rules
+arch:
+    npm run arch
+
+# Find unused files and dependencies
+unused:
+    npm run knip
+
+# Lint code
+lint:
+    npm run lint
+
+# Format code
+format:
+    npm run format
+
+# Type check
+typecheck:
+    npm run typecheck
+
+# Full CI pipeline
+ci: lint typecheck test-cov e2e
+    @echo "✓ All checks passed!"

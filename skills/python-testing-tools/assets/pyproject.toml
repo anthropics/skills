@@ -1,0 +1,87 @@
+# Python Testing Tools - pyproject.toml template
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "my-project"
+version = "0.1.0"
+description = "My Python project"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "pytest-xdist>=3.3",
+    "pytest-randomly>=3.13",
+    "pytest-mock>=3.11",
+    "pytest-asyncio>=0.21",
+    "pytest-timeout>=2.1",
+    "pytest-benchmark>=4.0",
+    "hypothesis>=6.80",
+    "freezegun>=1.2",
+    "factory-boy>=3.3",
+    "faker>=19.0",
+    "responses>=0.23",
+    "testcontainers>=3.7",
+    "playwright>=1.39",
+    "pytest-playwright>=0.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+pythonpath = ["src"]
+
+# Coverage options
+addopts = [
+    "--cov=src",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-fail-under=80",
+    "-v",
+    "--tb=short",
+    "--strict-markers",
+]
+
+# Async support
+asyncio_mode = "auto"
+
+# Markers
+markers = [
+    "unit: unit tests",
+    "integration: integration tests",
+    "e2e: end-to-end tests",
+    "slow: slow tests",
+    "asyncio: async tests",
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/site-packages/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "^\\s*\\.\\.\\.\\s*$",
+]
+
+precision = 2
+show_missing = true
+
+[tool.coverage.html]
+directory = "htmlcov"

@@ -1,0 +1,48 @@
+# sops configuration example
+# Place this file in project root as .sops.yaml
+
+# Creation rules define which keys to use for encryption
+creation_rules:
+  # Encrypt all .enc.yaml files with age
+  - path_regex: \.enc\.yaml$
+    age: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+    # Replace the above with your age public key from:
+    # age-keygen -y ~/.config/age/keys.txt
+
+  # Encrypt environment-specific secrets
+  - path_regex: secrets/.*\.yaml$
+    age: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+
+  # Team setup: multiple recipients
+  # - path_regex: team-secrets/.*\.yaml$
+  #   age: >-
+  #     age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p,
+  #     age1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefghij
+
+# Example encrypted file structure:
+# secrets.enc.yaml (encrypted)
+# ├── database:
+# │   ├── host: localhost
+# │   ├── password: <encrypted>
+# ├── api_keys:
+# │   ├── stripe: <encrypted>
+# │   ├── sendgrid: <encrypted>
+
+# Usage:
+# 1. Create plaintext secrets file:
+#    cat > secrets.yaml <<EOF
+#    database:
+#      password: mypassword
+#    api_keys:
+#      stripe: sk_test_123
+#    EOF
+#
+# 2. Encrypt:
+#    sops -e secrets.yaml > secrets.enc.yaml
+#
+# 3. Commit encrypted file:
+#    git add secrets.enc.yaml .sops.yaml
+#    git commit -m "Add encrypted secrets"
+#
+# 4. Decrypt when needed:
+#    sops -d secrets.enc.yaml > /tmp/secrets.yaml

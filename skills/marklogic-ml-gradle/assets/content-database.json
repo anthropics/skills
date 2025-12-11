@@ -1,0 +1,66 @@
+{
+  "database-name": "%%DATABASE%%",
+  "schema-database": "%%SCHEMAS_DATABASE%%",
+  "triggers-database": "%%TRIGGERS_DATABASE%%",
+  "triple-index": true,
+  "collection-lexicon": true,
+  "uri-lexicon": true,
+
+  "range-element-index": [
+    {
+      "scalar-type": "string",
+      "namespace-uri": "",
+      "localname": "id",
+      "collation": "http://marklogic.com/collation/",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    },
+    {
+      "scalar-type": "dateTime",
+      "namespace-uri": "",
+      "localname": "created",
+      "collation": "",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+
+  "range-path-index": [
+    {
+      "scalar-type": "string",
+      "path-expression": "/document/email",
+      "collation": "http://marklogic.com/collation/codepoint",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+
+  "geospatial-element-index": [
+    {
+      "namespace-uri": "",
+      "localname": "location",
+      "coordinate-system": "wgs84",
+      "point-format": "point",
+      "range-value-positions": false,
+      "invalid-values": "reject"
+    }
+  ],
+
+  "word-lexicon": [
+    {
+      "namespace-uri": "",
+      "localname": "title",
+      "collation": "http://marklogic.com/collation/"
+    }
+  ],
+
+  "field": [
+    {
+      "field-name": "full-text",
+      "include-root": true,
+      "field-path": [
+        { "path": "//*", "weight": 1.0 }
+      ]
+    }
+  ]
+}

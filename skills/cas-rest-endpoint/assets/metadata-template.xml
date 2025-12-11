@@ -1,0 +1,14 @@
+<metadata>
+  <title>{{ENDPOINT_NAME}}</title>
+  <description>
+    <div>
+      {{ENDPOINT_DESCRIPTION}}
+    </div>
+  </description>
+  <method name="GET">
+    <param name="param1" />
+  </method>
+  <method name="POST"/>
+  <method name="PUT"/>
+  <method name="DELETE"/>
+</metadata>

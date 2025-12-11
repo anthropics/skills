@@ -1,0 +1,38 @@
+# mise configuration example
+# Place this file in project root as .mise.toml
+
+[tools]
+# Runtime versions
+node = "lts"          # Use latest LTS
+python = "3.12"       # Specific version
+# go = "1.21"
+# ruby = "3.3"
+
+[env]
+# Environment variables auto-loaded when in this directory
+APP_ENV = "dev"
+LOG_LEVEL = "debug"
+# DATABASE_URL = "postgres://localhost/mydb"
+
+[tasks.dev]
+description = "Start development server"
+run = "npm run dev"
+
+[tasks.build]
+description = "Build for production"
+run = [
+    "npm ci",
+    "npm run build"
+]
+
+[tasks.test]
+description = "Run test suite"
+run = "npm test -- --watch=false"
+
+[tasks.lint]
+description = "Run linter"
+run = "npm run lint"
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf dist node_modules .next"

@@ -1,0 +1,37 @@
+# MarkLogic Flux Import Options File Example
+# Usage: flux import-delimited-files @flux-import-options.txt
+
+# Connection
+--connection-string
+admin:admin@localhost:8004
+
+# Source
+--path
+data/employees.csv
+
+# Document Configuration
+--collections
+employee,imported
+
+--permissions
+app-role,read,app-role,update
+
+--uri-template
+/employee/{id}.json
+
+--json-root-name
+Employee
+
+# Performance
+--batch-size
+100
+
+--thread-count
+32
+
+--log-progress
+10000
+
+# Optional: Preview before full import
+# --preview
+# 10

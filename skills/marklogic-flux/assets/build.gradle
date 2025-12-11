@@ -1,0 +1,140 @@
+// MarkLogic Flux Gradle Integration Example
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.marklogic:flux-api:1.4.0"
+    }
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group.startsWith('com.fasterxml.jackson')) {
+                details.useVersion '2.15.2'
+                details.because 'Must ensure the Jackson version preferred by Spark is used'
+            }
+        }
+    }
+}
+
+// Import FluxReprocessTask from buildSrc
+// Place FluxReprocessTask.groovy in buildSrc/src/main/groovy/
+
+// Example Task 1: Import CSV files
+tasks.register("importEmployees") {
+    group = "Data Loading"
+    description = "Import employee CSV files"
+    doLast {
+        Flux.importDelimitedFiles()
+            .connectionString(FluxHelpers.toFluxConn(project))
+            .from { options ->
+                options.paths("data/employees.csv")
+                    .encoding("UTF-8")
+            }
+            .to { options ->
+                options.collections("employee")
+                    .permissionsString("app-role,read,app-role,update")
+                    .uriTemplate("/employee/{id}.json")
+                    .jsonRootName("Employee")
+            }
+            .execute()
+        println "Employee import completed."
+    }
+}
+
+// Example Task 2: Export to files
+tasks.register("exportEmployees") {
+    group = "Data Export"
+    description = "Export employee documents to ZIP"
+    doLast {
+        Flux.exportFiles()
+            .connectionString(FluxHelpers.toFluxConn(project))
+            .from { options ->
+                options.collections("employee")
+            }
+            .to { options ->
+                options.path("export/employees")
+                    .compression("zip")
+                    .zipFileCount(1)
+                    .prettyPrint()
+            }
+            .execute()
+        println "Employee export completed."
+    }
+}
+
+// Example Task 3: Reprocess documents
+tasks.register("addProcessedCollection", FluxReprocessTask) {
+    group = "Data Processing"
+    description = "Add 'processed' collection to all employee documents"
+    reader = "/queries/employee-uris.xqy"
+    writer = "/transforms/add-collection.xqy"
+    threads = 32
+    batch = 1
+    progress = 10000
+}
+
+// Example Task 4: Reprocess with variables
+tasks.register("updateMetadata", FluxReprocessTask) {
+    group = "Data Processing"
+    description = "Update document metadata with timestamp"
+    reader = "/queries/document-uris.xqy"
+    writer = "/transforms/update-metadata.xqy"
+    threads = 16
+    batch = 10
+    progress = 5000
+    readVars = ["status=active"]
+    writeVars = ["timestamp=${new Date().time}"]
+}
+
+// Example Task 5: Copy between databases
+tasks.register("copyToArchive") {
+    group = "Data Migration"
+    description = "Copy employee documents to archive database"
+    doLast {
+        Flux.copy()
+            .connectionString(FluxHelpers.toFluxConn(project))
+            .from { options ->
+                options.collections("employee")
+            }
+            .to { options ->
+                options.connectionString("admin:admin@localhost:8000")
+                    .database("archive-db")
+                    .collections("archived")
+                    .permissionsString("admin,update")
+                    .categories("content", "collections", "permissions")
+            }
+            .execute()
+        println "Copy to archive completed."
+    }
+}
+
+// Example Task 6: Import from JDBC
+tasks.register("importFromPostgres") {
+    group = "Data Loading"
+    description = "Import customers from PostgreSQL"
+    doLast {
+        Flux.importJdbc()
+            .connectionString(FluxHelpers.toFluxConn(project))
+            .from { options ->
+                options.jdbcUrl("jdbc:postgresql://localhost/sales?user=postgres&password=secret")
+                    .jdbcDriver("org.postgresql.Driver")
+                    .query("SELECT * FROM customers WHERE active = true")
+            }
+            .to { options ->
+                options.collections("customer", "imported")
+                    .permissionsString("app-role,read,app-role,update")
+                    .uriTemplate("/customer/{customer_id}.json")
+                    .jsonRootName("Customer")
+            }
+            .execute()
+        println "PostgreSQL import completed."
+    }
+}
+
+// Run multiple tasks in sequence
+tasks.register("processAllData") {
+    group = "Data Processing"
+    description = "Import, process, and export data"
+    dependsOn importEmployees, addProcessedCollection, exportEmployees
+}

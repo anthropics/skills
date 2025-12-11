@@ -1,0 +1,81 @@
+# Python testing task runner recipes
+# Usage: just [task] [args]
+
+default:
+    @just --list
+
+# Install dependencies
+install:
+    uv venv venv
+    source venv/bin/activate
+    uv pip install -e ".[dev]"
+
+# Run all tests
+test:
+    pytest
+
+# Run tests with coverage
+test-cov:
+    pytest --cov=src --cov-report=html --cov-report=term-missing
+
+# Run tests in parallel
+test-parallel:
+    pytest -n auto
+
+# Run unit tests only
+test-unit:
+    pytest -m unit
+
+# Run integration tests
+test-integration:
+    pytest -m integration
+
+# Run E2E tests
+test-e2e:
+    pytest -m e2e
+
+# Run tests excluding slow ones
+test-fast:
+    pytest -m "not slow"
+
+# Run with coverage and open report
+test-open:
+    pytest --cov=src --cov-report=html
+    open htmlcov/index.html
+
+# Repeat tests N times to find flakes
+test-flakes N="10":
+    pytest --count={{N}}
+
+# Run specific test file
+test-file FILE:
+    pytest tests/{{FILE}}
+
+# Run specific test
+test-one TEST:
+    pytest -k {{TEST}} -v
+
+# Run with debugging
+test-debug:
+    pytest -s -vv --tb=long --pdb
+
+# Run performance benchmarks
+bench:
+    pytest -m benchmark --benchmark-only
+
+# Check test coverage gaps
+coverage:
+    pytest --cov=src --cov-report=term-missing
+    @echo ""
+    @echo "For detailed HTML report:"
+    @echo "  open htmlcov/index.html"
+
+# Lint and type check (uses python-quality-tools skill)
+quality:
+    ruff check --fix .
+    ruff format .
+    pyright .
+
+# Full CI pipeline
+ci: quality test-cov
+    @echo "✓ All checks passed!"

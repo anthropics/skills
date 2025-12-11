@@ -1,0 +1,16 @@
+{
+  "server-name": "%%APPNAME%%-rest",
+  "server-type": "http",
+  "root": "/",
+  "port": "%%PORT%%",
+  "content-database": "%%DATABASE%%",
+  "modules-database": "%%MODULES_DATABASE%%",
+  "error-handler": "/MarkLogic/rest-api/error-handler.xqy",
+  "url-rewriter": "/MarkLogic/rest-api/rewriter.xml",
+  "authentication": "digest",
+  "default-user": "nobody",
+  "output-sgml-character-entities": "none",
+  "output-encoding": "UTF-8",
+  "output-method": "default",
+  "rewrite-resolves-globally": true
+}

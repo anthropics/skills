@@ -1,0 +1,82 @@
+# Codex CLI Configuration
+# Location: ~/.codex/config.toml
+# Reference: https://developers.openai.com/docs/codex/configuration
+
+# ============================================================================
+# Model Selection
+# ============================================================================
+
+# Primary coding model (use for serious code work)
+# Options: gpt-5-codex, gpt-5, gpt-5-mini
+model = "gpt-5-codex"
+
+# ============================================================================
+# Reasoning Effort
+# ============================================================================
+
+# Default reasoning level (can override per-command with --reasoning)
+# Options for gpt-5-codex: low, medium, high
+# Options for gpt-5: minimal, low, medium, high
+# Start with medium, dial up for complex tasks, down for speed/cost
+reasoning_effort = "medium"
+
+# ============================================================================
+# Behavior & Safety
+# ============================================================================
+
+# Default approval mode for risky actions
+# Options: ask (default - confirm each action), full-auto (no prompts)
+approval_mode = "ask"
+
+# Enable color output
+color = true
+
+# Show progress during execution
+progress = true
+
+# ============================================================================
+# Output Format
+# ============================================================================
+
+# Default output format
+# Options: text, json, jsonl
+format = "text"
+
+# Strip ANSI codes from output
+strip_ansi = false
+
+# ============================================================================
+# Advanced Settings
+# ============================================================================
+
+# Timeout for Codex responses (seconds)
+timeout = 120
+
+# Enable verbose logging
+verbose = false
+
+# Maximum tokens per response (varies by model)
+# gpt-5-codex: up to 4096
+# gpt-5: up to 16000
+max_tokens = 4096
+
+# Temperature for randomness (0.0-2.0, higher = more random)
+temperature = 0.7
+
+# Top-p nucleus sampling (0.0-1.0, higher = more diverse)
+top_p = 1.0
+
+# ============================================================================
+# Task-Specific Overrides
+# ============================================================================
+
+# You can create environment-specific configs or override per-command:
+#
+# For planning: Use gpt-5-codex with high reasoning
+# $ codex -m gpt-5-codex --reasoning high "Plan: ..."
+#
+# For quick fixes: Use gpt-5 with low reasoning
+# $ codex -m gpt-5 --reasoning low "Fix: ..."
+#
+# For extraction: Use gpt-5 with minimal reasoning for speed
+# $ codex -m gpt-5 --reasoning minimal "Extract: ..."

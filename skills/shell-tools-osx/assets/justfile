@@ -1,0 +1,111 @@
+# just task runner configuration example
+# Place this file in project root as justfile
+
+# Default task (runs when 'just' called with no args)
+default:
+    @just --list
+
+# Install dependencies
+install:
+    npm install
+
+# Start development server
+dev:
+    npm run dev
+
+# Start development server with file watching
+dev-watch:
+    watchexec -e ts,tsx,js,jsx -r -- npm run dev
+
+# Build for production
+build:
+    npm ci && npm run build
+
+# Run tests
+test:
+    npm test -- --watch=false
+
+# Run tests in watch mode
+test-watch:
+    watchexec -c -e ts,tsx -- npm test
+
+# Benchmark tests
+bench:
+    hyperfine --warmup 1 "npm test"
+
+# Run linter
+lint:
+    npm run lint
+
+# Fix linting issues
+lint-fix:
+    npm run lint -- --fix
+
+# Lint shell scripts
+lint-shell:
+    fd -e sh -x shellcheck
+
+# Type check
+typecheck:
+    npx tsc --noEmit
+
+# Clean build artifacts
+clean:
+    rm -rf dist .next out node_modules/.cache
+
+# Format code
+format:
+    npx prettier --write .
+
+# Analyze codebase
+analyze:
+    @echo "=== Code Statistics ==="
+    tokei . --sort lines
+    @echo ""
+    @echo "=== TODO/FIXME Count ==="
+    @echo "TODOs: $(rg -c TODO 2>/dev/null | awk -F: '{sum += $2} END {print sum}')"
+    @echo "FIXMEs: $(rg -c FIXME 2>/dev/null | awk -F: '{sum += $2} END {print sum}')"
+
+# Run all checks (lint, typecheck, test)
+check: lint lint-shell typecheck test
+
+# Search for pattern in code
+search PATTERN:
+    rg "{{PATTERN}}" --stats
+
+# Replace pattern in code (with preview)
+replace-preview OLD NEW:
+    sd "{{OLD}}" "{{NEW}}" src/**/*.ts -p
+
+# Replace pattern in code (apply)
+replace OLD NEW:
+    fd -e ts -e tsx -x sd "{{OLD}}" "{{NEW}}"
+
+# Update YAML config
+update-yaml FILE KEY VALUE:
+    yq eval '.{{KEY}} = "{{VALUE}}"' -i {{FILE}}
+
+# Task with parameters
+deploy ENV="staging":
+    @echo "Deploying to {{ENV}}..."
+    npm run build
+    ./scripts/deploy.sh --env {{ENV}}
+
+# Create GitHub PR
+pr TITLE BODY="":
+    gh pr create --title "{{TITLE}}" --body "{{BODY}}"
+
+# Multi-line task with error handling
+release VERSION:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "Creating release v{{VERSION}}"
+    git tag v{{VERSION}}
+    git push origin v{{VERSION}}
+    npm publish
+    gh release create v{{VERSION}} --generate-notes
+    echo "Released v{{VERSION}}"
+
+# Task with dependencies
+ci: clean install lint lint-shell typecheck test build
+    @echo "CI pipeline completed successfully"

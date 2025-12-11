@@ -1,0 +1,87 @@
+# pre-commit configuration example
+# Place this file in project root as .pre-commit-config.yaml
+# Then run: pre-commit install
+
+repos:
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+        args: [--unsafe]  # Allow custom YAML tags
+      - id: check-json
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-case-conflict
+      - id: mixed-line-ending
+
+  # Python formatting with Black
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # Python import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile, black]
+
+  # Python linting
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=100, --extend-ignore=E203]
+
+  # JavaScript/TypeScript - ESLint
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.56.0
+    hooks:
+      - id: eslint
+        files: \.(js|jsx|ts|tsx)$
+        args: [--fix]
+        additional_dependencies:
+          - eslint@8.56.0
+          - '@typescript-eslint/eslint-plugin'
+          - '@typescript-eslint/parser'
+
+  # JavaScript/TypeScript - Prettier
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: \.(js|jsx|ts|tsx|json|yaml|yml|md)$
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+  # Shell script checking with shellcheck
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        args: [-S, warning]  # Minimum severity: warning
+
+  # Secrets detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+
+# Configuration for pre-commit.ci (optional)
+ci:
+  autofix_commit_msg: 'chore: auto fixes from pre-commit hooks'
+  autoupdate_commit_msg: 'chore: pre-commit autoupdate'

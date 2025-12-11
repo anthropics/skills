@@ -1,0 +1,37 @@
+# MarkLogic Flux Export Options File Example
+# Usage: flux export-files @flux-export-options.txt
+
+# Connection
+--connection-string
+admin:admin@localhost:8004
+
+# Source Selection
+--collections
+employee
+
+# Optional: Add query filter
+# --string-query
+# Engineering
+
+# Output Configuration
+--path
+export/employees
+
+--compression
+zip
+
+--zip-file-count
+1
+
+--pretty-print
+
+# Performance
+--thread-count
+32
+
+--log-progress
+10000
+
+# Optional: Preview before full export
+# --preview
+# 10
