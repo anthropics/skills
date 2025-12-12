@@ -372,10 +372,12 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MULTI_SKILL: ${{ inputs.multi_skill }}
           TEST_SKILL: ${{ inputs.test_skill_name }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           python3 << 'API_TEST_SCRIPT'
           import os
           import sys
+          import time
           from pathlib import Path
 
           api_key = os.environ.get("ANTHROPIC_API_KEY")
@@ -411,14 +413,18 @@ jobs:
               sys.exit(1)
 
           skill_name = zip_path.stem
+          # Use unique display title to avoid conflicts with leftover test skills
+          run_id = os.environ.get("GITHUB_RUN_ID", str(int(time.time())))
+          display_title = f"{skill_name} (CI Test {run_id})"
           print(f"Testing skill upload: {skill_name}")
+          print(f"Display title: {display_title}")
 
           skill_id = None
           try:
               print("1. Uploading skill to Claude API...")
               with open(zip_path, "rb") as f:
                   skill = client.beta.skills.create(
-                      display_title=f"{skill_name} (CI Test)",
+                      display_title=display_title,
                       files=[("skill.zip", f)],
                       betas=["skills-2025-10-02"]
                   )
