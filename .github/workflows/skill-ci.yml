@@ -286,6 +286,12 @@ jobs:
                           # Skip test directories
                           if 'tests' in file_path.parts or 'test' in file_path.parts:
                               continue
+                          # Skip zip files (nested zips not allowed)
+                          if file_path.suffix == '.zip':
+                              continue
+                          # Skip the output directory
+                          if 'skill-zips' in file_path.parts:
+                              continue
 
                           # For multi-skill, include skill name in path
                           if multi_skill:
