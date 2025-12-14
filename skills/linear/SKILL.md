@@ -183,17 +183,25 @@ mutation {
 
 ### Project Status UUIDs
 
-Projects have status independent of issue progress:
-
-```
-Backlog:     1ed7da89-db44-4339-b0d7-ce37d8ff9604
-Planned:     33ebbb84-53ea-4dd8-a8db-49a8b3b9c502
-In Progress: 71d18c8f-53de-4752-be37-a6d529cb9c97
-Completed:   54294a72-010d-4ae7-9829-bed76232fb66
-Canceled:    562050cc-bb71-4b81-bf3d-8bed7cc44153
-```
+Projects have status independent of issue progress. Status UUIDs are **workspace-specific** - query your workspace to find them:
 
 ```graphql
+# Get your workspace's project status UUIDs
+query {
+  projectStatuses {
+    nodes {
+      id
+      name
+      type
+    }
+  }
+}
+```
+
+Common status names: `Backlog`, `Planned`, `In Progress`, `Completed`, `Canceled`
+
+```graphql
+# Update project status
 mutation {
   projectUpdate(id: "<project-uuid>", input: { statusId: "<status-uuid>" }) { success }
 }
