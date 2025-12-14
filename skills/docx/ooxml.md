@@ -19,6 +19,25 @@
   - **trackRevisions placement**: Add `<w:trackRevisions/>` after `<w:proofState>` in settings.xml
 - **Images**: Add to `word/media/`, reference in `document.xml`, set dimensions to prevent overflow
 
+### XML Serialization Guidelines
+**CRITICAL: XML Serialization**
+When writing XML back to files after manipulation with defusedxml.minidom, you MUST preserve the original formatting:
+- ✅ **USE**: `doc.toxml(encoding='utf-8')` - Preserves original formatting, Word-compatible
+- ❌ **NEVER USE**: `doc.toprettyxml()` - Adds extra whitespace that breaks Word compatibility
+
+Microsoft Word is extremely sensitive to XML whitespace. Using `toprettyxml()` adds newlines and indentation that Word interprets as part of the document structure, causing documents to become unreadable. Always use `toxml()` to maintain the compact format Word expects.
+
+**When writing XML manually (not using Document class):**
+```python
+# ✅ CORRECT - preserves formatting:
+with open(doc_path, 'wb') as f:
+    f.write(doc.toxml(encoding='utf-8'))
+
+# ❌ WRONG - breaks Word compatibility:
+with open(doc_path, 'wb') as f:
+    f.write(doc.toprettyxml(indent='  ', encoding='utf-8'))
+```
+
 ## Document Content Patterns
 
 ### Basic Structure
