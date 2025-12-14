@@ -15,15 +15,15 @@ The foundation block for layouts and sections.
 
 ```html
 <!-- Basic container -->
-<!-- wp:generateblocks/container {"uniqueId":"abc123","paddingTop":"40","paddingRight":"40","paddingBottom":"40","paddingLeft":"40"} -->
-<div class="gb-container gb-container-abc123">
+<!-- wp:generateblocks/container {"uniqueId":"14efce1c","paddingTop":"40","paddingRight":"40","paddingBottom":"40","paddingLeft":"40"} -->
+<div class="gb-container gb-container-14efce1c">
     <!-- Inner content -->
 </div>
 <!-- /wp:generateblocks/container -->
 
 <!-- Full-width section -->
-<!-- wp:generateblocks/container {"uniqueId":"xyz789","isGrid":true,"width":100,"widthMobile":100,"align":"full"} -->
-<div class="gb-container gb-container-xyz789 alignfull">
+<!-- wp:generateblocks/container {"uniqueId":"dfc37a3d","isGrid":true,"width":100,"widthMobile":100,"align":"full"} -->
+<div class="gb-container gb-container-dfc37a3d alignfull">
     <!-- Inner content -->
 </div>
 <!-- /wp:generateblocks/container -->
@@ -46,13 +46,13 @@ The foundation block for layouts and sections.
 CSS Grid layout system.
 
 ```html
-<!-- wp:generateblocks/grid {"uniqueId":"grid123","horizontalGap":"30","verticalGap":"30"} -->
-<div class="gb-grid-wrapper gb-grid-wrapper-grid123">
-    <!-- wp:generateblocks/container {"uniqueId":"col1","isGrid":true,"gridColumn":"span 6"} -->
+<!-- wp:generateblocks/grid {"uniqueId":"cc382b85","horizontalGap":"30","verticalGap":"30"} -->
+<div class="gb-grid-wrapper gb-grid-wrapper-cc382b85">
+    <!-- wp:generateblocks/container {"uniqueId":"9de1c95d","isGrid":true,"gridColumn":"span 6"} -->
     <div class="gb-container">Column 1</div>
     <!-- /wp:generateblocks/container -->
 
-    <!-- wp:generateblocks/container {"uniqueId":"col2","isGrid":true,"gridColumn":"span 6"} -->
+    <!-- wp:generateblocks/container {"uniqueId":"1c78ca88","isGrid":true,"gridColumn":"span 6"} -->
     <div class="gb-container">Column 2</div>
     <!-- /wp:generateblocks/container -->
 </div>
@@ -70,16 +70,16 @@ CSS Grid layout system.
 Buttons and button groups.
 
 ```html
-<!-- wp:generateblocks/button-container {"uniqueId":"btns123"} -->
-<div class="gb-button-wrapper gb-button-wrapper-btns123">
-    <!-- wp:generateblocks/button {"uniqueId":"btn1","backgroundColor":"#0073aa","textColor":"#ffffff"} -->
-    <a class="gb-button gb-button-btn1" href="#">
+<!-- wp:generateblocks/button-container {"uniqueId":"1b566f67"} -->
+<div class="gb-button-wrapper gb-button-wrapper-1b566f67">
+    <!-- wp:generateblocks/button {"uniqueId":"a3525e9a","backgroundColor":"#0073aa","textColor":"#ffffff"} -->
+    <a class="gb-button gb-button-a3525e9a" href="#">
         <span class="gb-button-text">Primary Button</span>
     </a>
     <!-- /wp:generateblocks/button -->
 
-    <!-- wp:generateblocks/button {"uniqueId":"btn2","backgroundColor":"transparent","textColor":"#0073aa","border":"2px solid #0073aa"} -->
-    <a class="gb-button gb-button-btn2" href="#">
+    <!-- wp:generateblocks/button {"uniqueId":"1b644ac6","backgroundColor":"transparent","textColor":"#0073aa","border":"2px solid #0073aa"} -->
+    <a class="gb-button gb-button-1b644ac6" href="#">
         <span class="gb-button-text">Secondary Button</span>
     </a>
     <!-- /wp:generateblocks/button -->
@@ -103,13 +103,13 @@ Buttons and button groups.
 Headings and text.
 
 ```html
-<!-- wp:generateblocks/headline {"uniqueId":"h123","element":"h2","fontSize":"32"} -->
-<h2 class="gb-headline gb-headline-h123">Headline Text</h2>
+<!-- wp:generateblocks/headline {"uniqueId":"8a47cb1b","element":"h2","fontSize":"32"} -->
+<h2 class="gb-headline gb-headline-8a47cb1b">Headline Text</h2>
 <!-- /wp:generateblocks/headline -->
 
 <!-- With icon -->
-<!-- wp:generateblocks/headline {"uniqueId":"h456","element":"h3","icon":"<svg>...</svg>","hasIcon":true} -->
-<h3 class="gb-headline gb-headline-h456 gb-headline-has-icon">
+<!-- wp:generateblocks/headline {"uniqueId":"b30bd2fa","element":"h3","icon":"<svg>...</svg>","hasIcon":true} -->
+<h3 class="gb-headline gb-headline-b30bd2fa gb-headline-has-icon">
     <span class="gb-icon"><svg>...</svg></span>
     <span class="gb-headline-text">Headline with Icon</span>
 </h3>
@@ -131,15 +131,15 @@ Headings and text.
 Enhanced image handling.
 
 ```html
-<!-- wp:generateblocks/image {"uniqueId":"img123","mediaId":123,"mediaUrl":"image.jpg"} -->
-<figure class="gb-image gb-image-img123">
+<!-- wp:generateblocks/image {"uniqueId":"e10dac8c","mediaId":123,"mediaUrl":"image.jpg"} -->
+<figure class="gb-image gb-image-e10dac8c">
     <img src="image.jpg" alt="Alt text" />
 </figure>
 <!-- /wp:generateblocks/image -->
 
 <!-- With link and caption -->
-<!-- wp:generateblocks/image {"uniqueId":"img456","mediaId":456,"href":"https://example.com"} -->
-<figure class="gb-image gb-image-img456">
+<!-- wp:generateblocks/image {"uniqueId":"11a34dda","mediaId":456,"href":"https://example.com"} -->
+<figure class="gb-image gb-image-11a34dda">
     <a href="https://example.com">
         <img src="image.jpg" alt="Alt text" />
     </a>
@@ -155,8 +155,8 @@ Enhanced image handling.
 Dynamic content loops.
 
 ```html
-<!-- wp:generateblocks/query-loop {"uniqueId":"query123","postType":"post","postsPerPage":6} -->
-<!-- wp:generateblocks/loop-item {"uniqueId":"item123"} -->
+<!-- wp:generateblocks/query-loop {"uniqueId":"303ad9f8","postType":"post","postsPerPage":6} -->
+<!-- wp:generateblocks/loop-item {"uniqueId":"03851512"} -->
 <div class="gb-loop-item">
     <!-- Dynamic content blocks -->
 </div>
@@ -230,20 +230,20 @@ Insert dynamic content anywhere.
 
 ```html
 <!-- Dynamic headline -->
-<!-- wp:generateblocks/headline {"uniqueId":"dh123","element":"h1","dynamicContentType":"post-title"} -->
-<h1 class="gb-headline gb-headline-dh123">{{post_title}}</h1>
+<!-- wp:generateblocks/headline {"uniqueId":"7837c26c","element":"h1","dynamicContentType":"post-title"} -->
+<h1 class="gb-headline gb-headline-7837c26c">{{post_title}}</h1>
 <!-- /wp:generateblocks/headline -->
 
 <!-- Dynamic image -->
-<!-- wp:generateblocks/image {"uniqueId":"di123","useDynamicData":true,"dynamicContentType":"featured-image"} -->
-<figure class="gb-image gb-image-di123">
+<!-- wp:generateblocks/image {"uniqueId":"b87c2145","useDynamicData":true,"dynamicContentType":"featured-image"} -->
+<figure class="gb-image gb-image-b87c2145">
     {{featured_image}}
 </figure>
 <!-- /wp:generateblocks/image -->
 
 <!-- Dynamic link -->
-<!-- wp:generateblocks/button {"uniqueId":"db123","dynamicLinkType":"post-url"} -->
-<a class="gb-button gb-button-db123" href="{{post_url}}">Read More</a>
+<!-- wp:generateblocks/button {"uniqueId":"cf4199cd","dynamicLinkType":"post-url"} -->
+<a class="gb-button gb-button-cf4199cd" href="{{post_url}}">Read More</a>
 <!-- /wp:generateblocks/button -->
 ```
 
@@ -295,8 +295,8 @@ Multiple background layers.
 Applied to individual block instance.
 
 ```html
-<!-- wp:generateblocks/container {"uniqueId":"local123","useLocalStyle":true} -->
-<div class="gb-container gb-container-local123">
+<!-- wp:generateblocks/container {"uniqueId":"9eb0e1da","useLocalStyle":true} -->
+<div class="gb-container gb-container-9eb0e1da">
     <!-- Styles apply only to this block -->
 </div>
 <!-- /wp:generateblocks/container -->
@@ -317,8 +317,8 @@ Reusable styles across blocks.
    - Select style to apply
 
 ```html
-<!-- wp:generateblocks/button {"uniqueId":"btn123","globalStyleId":"primary-button"} -->
-<a class="gb-button gb-button-btn123 gb-button-global-primary-button" href="#">
+<!-- wp:generateblocks/button {"uniqueId":"d49b460e","globalStyleId":"primary-button"} -->
+<a class="gb-button gb-button-d49b460e gb-button-global-primary-button" href="#">
     Button Text
 </a>
 <!-- /wp:generateblocks/button -->
@@ -337,20 +337,20 @@ function my_register_gb_patterns() {
             'title'       => __( 'Hero Section', 'textdomain' ),
             'description' => __( 'Full-width hero with text and CTA.', 'textdomain' ),
             'categories'  => array( 'generateblocks', 'featured' ),
-            'content'     => '<!-- wp:generateblocks/container {"uniqueId":"hero1","align":"full","paddingTop":"100","paddingBottom":"100","backgroundColor":"#1a1a1a"} -->
-<div class="gb-container gb-container-hero1 alignfull">
-    <!-- wp:generateblocks/container {"uniqueId":"hero-inner","width":"800","widthMobile":"100","marginLeft":"auto","marginRight":"auto","textAlign":"center"} -->
-    <div class="gb-container gb-container-hero-inner">
-        <!-- wp:generateblocks/headline {"uniqueId":"hero-title","element":"h1","textColor":"#ffffff","fontSize":"48"} -->
-        <h1 class="gb-headline gb-headline-hero-title">Welcome to Our Site</h1>
+            'content'     => '<!-- wp:generateblocks/container {"uniqueId":"c7982085","align":"full","paddingTop":"100","paddingBottom":"100","backgroundColor":"#1a1a1a"} -->
+<div class="gb-container gb-container-c7982085 alignfull">
+    <!-- wp:generateblocks/container {"uniqueId":"0c1aa271","width":"800","widthMobile":"100","marginLeft":"auto","marginRight":"auto","textAlign":"center"} -->
+    <div class="gb-container gb-container-0c1aa271">
+        <!-- wp:generateblocks/headline {"uniqueId":"ab651c71","element":"h1","textColor":"#ffffff","fontSize":"48"} -->
+        <h1 class="gb-headline gb-headline-ab651c71">Welcome to Our Site</h1>
         <!-- /wp:generateblocks/headline -->
-        <!-- wp:generateblocks/headline {"uniqueId":"hero-sub","element":"p","textColor":"#cccccc","fontSize":"18"} -->
-        <p class="gb-headline gb-headline-hero-sub">Your tagline goes here</p>
+        <!-- wp:generateblocks/headline {"uniqueId":"134435af","element":"p","textColor":"#cccccc","fontSize":"18"} -->
+        <p class="gb-headline gb-headline-134435af">Your tagline goes here</p>
         <!-- /wp:generateblocks/headline -->
-        <!-- wp:generateblocks/button-container {"uniqueId":"hero-btns"} -->
+        <!-- wp:generateblocks/button-container {"uniqueId":"42c02b64"} -->
         <div class="gb-button-wrapper">
-            <!-- wp:generateblocks/button {"uniqueId":"hero-btn1","backgroundColor":"#0073aa","textColor":"#ffffff"} -->
-            <a class="gb-button gb-button-hero-btn1" href="#">Get Started</a>
+            <!-- wp:generateblocks/button {"uniqueId":"85f3439b","backgroundColor":"#0073aa","textColor":"#ffffff"} -->
+            <a class="gb-button gb-button-85f3439b" href="#">Get Started</a>
             <!-- /wp:generateblocks/button -->
         </div>
         <!-- /wp:generateblocks/button-container -->
@@ -385,8 +385,8 @@ function my_register_pattern_categories() {
     /* Base styles */
 }
 
-.gb-container-uniqueId {
-    /* Specific container */
+.gb-container-5b449fe0 {
+    /* Specific container by uniqueId */
 }
 
 /* Grid */
@@ -431,13 +431,13 @@ function my_register_pattern_categories() {
 ```css
 /* GB generates these for responsive settings */
 @media (max-width: 1024px) {
-    .gb-container-uniqueId {
+    .gb-container-4656bc5b {
         /* Tablet styles */
     }
 }
 
 @media (max-width: 768px) {
-    .gb-container-uniqueId {
+    .gb-container-4656bc5b {
         /* Mobile styles */
     }
 }
