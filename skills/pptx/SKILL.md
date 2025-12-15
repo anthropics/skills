@@ -10,6 +10,18 @@ license: Proprietary. LICENSE.txt has complete terms
 
 A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
+## Choosing Your Approach
+
+| Task | Approach | When to use |
+|------|----------|-------------|
+| Read/analyze | markitdown or XML | Extract text, inspect structure |
+| Create from scratch | html2pptx | Standard layouts, HTML/CSS handles positioning |
+| Create from scratch | Direct PptxGenJS | Fine-grained control, calculated positions, algorithmic layouts |
+| Edit existing | OOXML | Modify XML directly |
+| Create from template | rearrange → inventory → replace | Follow existing design |
+
+**html2pptx vs Direct PptxGenJS:** Start with html2pptx. If it fights your layout or you need precise coordinate control, drop down to direct PptxGenJS. See [Direct PptxGenJS Reference](references/direct-pptxgenjs.md).
+
 ## Reading and analyzing content
 
 ### Text extraction
@@ -63,6 +75,13 @@ When creating a new PowerPoint presentation from scratch, use the **html2pptx** 
 - ✅ Ensure readability: strong contrast, appropriately sized text, clean alignment
 - ✅ Be consistent: repeat patterns, spacing, and visual language across slides
 
+**Design Constraints** (apply to all creation workflows):
+- **Stay on-palette**: Extract colors from template theme, don't introduce new ones
+- **Stay on-font**: Use template fonts or web-safe fallbacks that won't substitute
+- **Minimize objects**: One rich object beats layered simple objects (text box with border, not shape + text overlay)
+- **Validate visually**: Render thumbnails to catch overlap/cutoff problems coordinates won't reveal
+- **Internal harmony**: When consolidating objects, ensure properties work together (e.g., `inset` keeps text off borders)
+
 #### Color Palette Selection
 
 **Choosing colors creatively**:
@@ -95,51 +114,7 @@ When creating a new PowerPoint presentation from scratch, use the **html2pptx** 
 
 #### Visual Details Options
 
-**Geometric Patterns**:
-- Diagonal section dividers instead of horizontal
-- Asymmetric column widths (30/70, 40/60, 25/75)
-- Rotated text headers at 90° or 270°
-- Circular/hexagonal frames for images
-- Triangular accent shapes in corners
-- Overlapping shapes for depth
-
-**Border & Frame Treatments**:
-- Thick single-color borders (10-20pt) on one side only
-- Double-line borders with contrasting colors
-- Corner brackets instead of full frames
-- L-shaped borders (top+left or bottom+right)
-- Underline accents beneath headers (3-5pt thick)
-
-**Typography Treatments**:
-- Extreme size contrast (72pt headlines vs 11pt body)
-- All-caps headers with wide letter spacing
-- Numbered sections in oversized display type
-- Monospace (Courier New) for data/stats/technical content
-- Condensed fonts (Arial Narrow) for dense information
-- Outlined text for emphasis
-
-**Chart & Data Styling**:
-- Monochrome charts with single accent color for key data
-- Horizontal bar charts instead of vertical
-- Dot plots instead of bar charts
-- Minimal gridlines or none at all
-- Data labels directly on elements (no legends)
-- Oversized numbers for key metrics
-
-**Layout Innovations**:
-- Full-bleed images with text overlays
-- Sidebar column (20-30% width) for navigation/context
-- Modular grid systems (3×3, 4×4 blocks)
-- Z-pattern or F-pattern content flow
-- Floating text boxes over colored shapes
-- Magazine-style multi-column layouts
-
-**Background Treatments**:
-- Solid color blocks occupying 40-60% of slide
-- Gradient fills (vertical or diagonal only)
-- Split backgrounds (two colors, diagonal or vertical)
-- Edge-to-edge color bands
-- Negative space as a design element
+For design inspiration (geometric patterns, borders, typography, charts, layouts, backgrounds), see [Visual Details Options](references/visual-details-options.md).
 
 ### Layout Tips
 **When creating slides with charts or tables:**
