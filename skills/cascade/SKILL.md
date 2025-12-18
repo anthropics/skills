@@ -1,10 +1,10 @@
 ---
-name: dream-cascade
-description: Multi-agent research orchestration toolkit using Dream Cascade (hierarchical 3-tier synthesis) and Dream Swarm (parallel domain search) patterns. Use when (1) launching comprehensive research workflows, (2) gathering information from multiple sources, (3) synthesizing complex topics, (4) building custom orchestration pipelines, or (5) managing async research workflows. Integrates with 12 LLM providers and 17 data sources.
+name: cascade
+description: Hierarchical 3-tier multi-agent synthesis pattern for comprehensive research. Use when (1) launching comprehensive research workflows, (2) synthesizing complex topics from multiple sources, (3) creating executive summaries from parallel research, or (4) managing multi-tier synthesis pipelines. The Cascade pattern uses Belter workers → Drummer synthesis → Camina executive layers.
 license: MIT
 ---
 
-# Dream Cascade Research Orchestration
+# Cascade Research Orchestration
 
 Toolkit for executing multi-agent AI research workflows using hierarchical and parallel orchestration patterns.
 
