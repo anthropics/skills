@@ -4,8 +4,8 @@ A skill is a folder of instructions, scripts, and resources that agents can disc
 
 ## Guides
 
-- [Skill Authoring Guide](skill_authoring.md) — How to create skills, including folder layout and SKILL.md format
-- [Skill Client Integration Guide](skill_client_integration.md) — How to add Skills support to a new agent or product
+- [Skill Authoring Guide](skill-authoring.md) — How to create skills, including folder layout and SKILL.md format
+- [Skill Client Integration Guide](skill-client-integration.md) — How to add Skills support to a new agent or product
 
 # Version History
 
