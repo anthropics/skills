@@ -2,13 +2,19 @@
 """Apply text replacements to PowerPoint presentation.
 
 Usage:
-    python replace.py <input.pptx> <replacements.json> <output.pptx>
+    python replace.py <input.pptx> <replacements.json> <output.pptx> [--clear-all]
+
+By default, operates in "surgical" mode: only shapes with "paragraphs" defined
+in the replacement JSON are modified. Other shapes are left untouched.
+
+With --clear-all: ALL text shapes are cleared, and only shapes with "paragraphs"
+in the replacement JSON get new content. This is useful for template workflows
+where you want to start fresh, but destructive for partial edits.
 
 The replacements JSON should have the structure output by inventory.py.
-ALL text shapes identified by inventory.py will have their text cleared
-unless "paragraphs" is specified in the replacements for that shape.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -211,9 +217,18 @@ def check_duplicate_keys(pairs):
     return result
 
 
-def apply_replacements(pptx_file: str, json_file: str, output_file: str):
-    """Apply text replacements from JSON to PowerPoint presentation."""
+def apply_replacements(
+    pptx_file: str, json_file: str, output_file: str, clear_all: bool = False
+):
+    """Apply text replacements from JSON to PowerPoint presentation.
 
+    Args:
+        pptx_file: Path to input PowerPoint file
+        json_file: Path to replacement JSON file
+        output_file: Path to output PowerPoint file
+        clear_all: If True, clear ALL text shapes (old behavior).
+                   If False (default), only modify shapes with "paragraphs" in JSON.
+    """
     # Load presentation
     prs = Presentation(pptx_file)
 
@@ -244,6 +259,7 @@ def apply_replacements(pptx_file: str, json_file: str, output_file: str):
     shapes_processed = 0
     shapes_cleared = 0
     shapes_replaced = 0
+    shapes_skipped = 0
 
     # Process each slide from inventory
     for slide_key, shapes_dict in inventory.items():
@@ -266,15 +282,23 @@ def apply_replacements(pptx_file: str, json_file: str, output_file: str):
                 print(f"Warning: {shape_key} has no shape reference")
                 continue
 
+            # Check for replacement paragraphs
+            replacement_shape_data = replacements.get(slide_key, {}).get(shape_key, {})
+            has_replacement = "paragraphs" in replacement_shape_data
+
+            # In surgical mode (default), skip shapes without replacements
+            if not clear_all and not has_replacement:
+                shapes_skipped += 1
+                continue
+
             # ShapeData already validates text_frame in __init__
             text_frame = shape.text_frame  # type: ignore
 
             text_frame.clear()  # type: ignore
             shapes_cleared += 1
 
-            # Check for replacement paragraphs
-            replacement_shape_data = replacements.get(slide_key, {}).get(shape_key, {})
-            if "paragraphs" not in replacement_shape_data:
+            # If no replacement paragraphs, we're done with this shape
+            if not has_replacement:
                 continue
 
             shapes_replaced += 1
@@ -346,33 +370,53 @@ def apply_replacements(pptx_file: str, json_file: str, output_file: str):
     prs.save(output_file)
 
     # Report results
+    mode = "clear-all" if clear_all else "surgical"
     print(f"Saved updated presentation to: {output_file}")
+    print(f"Mode: {mode}")
     print(f"Processed {len(prs.slides)} slides")
-    print(f"  - Shapes processed: {shapes_processed}")
+    print(f"  - Shapes in inventory: {shapes_processed}")
     print(f"  - Shapes cleared: {shapes_cleared}")
     print(f"  - Shapes replaced: {shapes_replaced}")
+    if not clear_all:
+        print(f"  - Shapes untouched: {shapes_skipped}")
 
 
 def main():
     """Main entry point for command-line usage."""
-    if len(sys.argv) != 4:
-        print(__doc__)
+    parser = argparse.ArgumentParser(
+        description="Apply text replacements to PowerPoint presentation.",
+        epilog="""
+By default, operates in "surgical" mode where only shapes with "paragraphs"
+defined in the replacement JSON are modified. Use --clear-all for template
+workflows where you want to clear all shapes first.
+        """,
+    )
+    parser.add_argument("input_pptx", type=Path, help="Input PowerPoint file")
+    parser.add_argument("replacements_json", type=Path, help="Replacement JSON file")
+    parser.add_argument("output_pptx", type=Path, help="Output PowerPoint file")
+    parser.add_argument(
+        "--clear-all",
+        action="store_true",
+        help="Clear ALL text shapes before applying replacements (destructive for partial edits)",
+    )
+
+    args = parser.parse_args()
+
+    if not args.input_pptx.exists():
+        print(f"Error: Input file '{args.input_pptx}' not found")
         sys.exit(1)
 
-    input_pptx = Path(sys.argv[1])
-    replacements_json = Path(sys.argv[2])
-    output_pptx = Path(sys.argv[3])
-
-    if not input_pptx.exists():
-        print(f"Error: Input file '{input_pptx}' not found")
-        sys.exit(1)
-
-    if not replacements_json.exists():
-        print(f"Error: Replacements JSON file '{replacements_json}' not found")
+    if not args.replacements_json.exists():
+        print(f"Error: Replacements JSON file '{args.replacements_json}' not found")
         sys.exit(1)
 
     try:
-        apply_replacements(str(input_pptx), str(replacements_json), str(output_pptx))
+        apply_replacements(
+            str(args.input_pptx),
+            str(args.replacements_json),
+            str(args.output_pptx),
+            clear_all=args.clear_all,
+        )
     except Exception as e:
         print(f"Error applying replacements: {e}")
         import traceback

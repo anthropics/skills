@@ -310,9 +310,9 @@ When you need to create a presentation that follows an existing template's desig
      - If you reference a non-existent slide, you'll get an error indicating the slide doesn't exist
      - All validation errors are shown at once before the script exits
    - **IMPORTANT**: The replace.py script uses inventory.py internally to identify ALL text shapes
-   - **AUTOMATIC CLEARING**: ALL text shapes from the inventory will be cleared unless you provide "paragraphs" for them
+   - **SURGICAL MODE (default)**: Only shapes with "paragraphs" in your replacement JSON are modified. Other shapes are left untouched. This is safe for partial edits.
+   - **CLEAR-ALL MODE**: Use `--clear-all` flag to clear ALL text shapes first (old behavior). Useful for template workflows where you want to start fresh.
    - Add a "paragraphs" field to shapes that need content (not "replacement_paragraphs")
-   - Shapes without "paragraphs" in the replacement JSON will have their text cleared automatically
    - Paragraphs with bullets will be automatically left aligned. Don't set the `alignment` property on when `"bullet": true`
    - Generate appropriate replacement content for placeholder text
    - Use shape size to determine appropriate content length
@@ -360,14 +360,26 @@ When you need to create a presentation that follows an existing template's desig
    ]
    ```
 
-   **Shapes not listed in the replacement JSON are automatically cleared**:
+   **Surgical mode (default)** - only shapes you specify are modified:
    ```json
    {
      "slide-0": {
        "shape-0": {
          "paragraphs": [...] // This shape gets new text
        }
-       // shape-1 and shape-2 from inventory will be cleared automatically
+       // shape-1 and shape-2 are left UNTOUCHED (surgical mode)
+     }
+   }
+   ```
+
+   **Clear-all mode** (`--clear-all` flag) - all shapes cleared first:
+   ```json
+   {
+     "slide-0": {
+       "shape-0": {
+         "paragraphs": [...] // This shape gets new text
+       }
+       // shape-1 and shape-2 will be CLEARED (clear-all mode)
      }
    }
    ```
@@ -381,14 +393,18 @@ When you need to create a presentation that follows an existing template's desig
 
 7. **Apply replacements using the `replace.py` script**
    ```bash
+   # Surgical mode (default) - safe for partial edits
    python scripts/replace.py working.pptx replacement-text.json output.pptx
+
+   # Clear-all mode - for template workflows where you want to start fresh
+   python scripts/replace.py working.pptx replacement-text.json output.pptx --clear-all
    ```
 
    The script will:
    - First extract the inventory of ALL text shapes using functions from inventory.py
    - Validate that all shapes in the replacement JSON exist in the inventory
-   - Clear text from ALL shapes identified in the inventory
-   - Apply new text only to shapes with "paragraphs" defined in the replacement JSON
+   - **Surgical mode (default)**: Only clear and replace shapes that have "paragraphs" in the JSON. Other shapes are left untouched.
+   - **Clear-all mode**: Clear ALL shapes first, then apply replacements (use `--clear-all` flag)
    - Preserve formatting by applying paragraph properties from the JSON
    - Handle bullets, alignment, font properties, and colors automatically
    - Save the updated presentation
