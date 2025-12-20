@@ -16,12 +16,16 @@ output_path = Path(output_dir)
 output_path.mkdir(parents=True, exist_ok=True)
 zipfile.ZipFile(input_file).extractall(output_path)
 
-# Pretty print all XML files
+# Format all XML files - CRITICAL: Use toxml() to preserve Word compatibility
+# Microsoft Word is extremely sensitive to XML whitespace. Using toprettyxml()
+# adds newlines and indentation that break Word compatibility.
 xml_files = list(output_path.rglob("*.xml")) + list(output_path.rglob("*.rels"))
 for xml_file in xml_files:
     content = xml_file.read_text(encoding="utf-8")
     dom = defusedxml.minidom.parseString(content)
-    xml_file.write_bytes(dom.toprettyxml(indent="  ", encoding="ascii"))
+    # ✅ CORRECT: Use toxml() to preserve original formatting and Word compatibility
+    # ❌ WRONG: Never use toprettyxml() - it adds whitespace that breaks Word
+    xml_file.write_bytes(dom.toxml(encoding="ascii"))
 
 # For .docx files, suggest an RSID for tracked changes
 if input_file.endswith(".docx"):

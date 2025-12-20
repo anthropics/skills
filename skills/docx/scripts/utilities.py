@@ -305,7 +305,13 @@ class XMLEditor:
 
         Serializes the DOM tree and writes it back to the original file path,
         preserving the original encoding (ascii or utf-8).
+
+        CRITICAL: This method uses toxml() to preserve original formatting and
+        Word compatibility. Never use toprettyxml() as it adds whitespace that
+        breaks Word's ability to read the document.
         """
+        # ✅ CORRECT: Use toxml() to preserve original formatting and Word compatibility
+        # ❌ WRONG: Never use toprettyxml() - it adds whitespace that breaks Word
         content = self.dom.toxml(encoding=self.encoding)
         self.xml_path.write_bytes(content)
 
