@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Template - Image Generation</title>
+</head>
+<body style="margin: 0; padding: 20px; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <div style="max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px;">
+        <h1 style="margin-top: 0;">HTML Canvas Template</h1>
+        <p>Use this template for custom drawings, infographics, and technical diagrams.</p>
+
+        <!-- Canvas element -->
+        <canvas id="canvas" width="1920" height="1080" style="border: 1px solid #ddd; max-width: 100%; height: auto;"></canvas>
+
+        <!-- Download buttons -->
+        <div style="margin-top: 20px;">
+            <button onclick="downloadPNG()" style="padding: 10px 20px; background: #2563EB; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-right: 10px;">
+                Download as PNG
+            </button>
+            <button onclick="downloadJPG()" style="padding: 10px 20px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                Download as JPG
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // ================================
+        // DRAWING CODE - CUSTOMIZE THIS
+        // ================================
+
+        // Set background
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Example: Draw a title
+        ctx.fillStyle = '#1F2937';
+        ctx.font = 'bold 72px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Your Title Here', canvas.width / 2, 150);
+
+        // Example: Draw a subtitle
+        ctx.fillStyle = '#6B7280';
+        ctx.font = '32px sans-serif';
+        ctx.fillText('Subtitle or description', canvas.width / 2, 220);
+
+        // Example: Draw a colored rectangle
+        ctx.fillStyle = '#2563EB';
+        ctx.fillRect(200, 300, 400, 300);
+
+        // Example: Draw text on the rectangle
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 48px sans-serif';
+        ctx.fillText('Box 1', 400, 480);
+
+        // Example: Draw another rectangle
+        ctx.fillStyle = '#10B981';
+        ctx.fillRect(700, 300, 400, 300);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText('Box 2', 900, 480);
+
+        // Example: Draw a circle
+        ctx.fillStyle = '#F59E0B';
+        ctx.beginPath();
+        ctx.arc(1400, 450, 150, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText('Circle', 1400, 465);
+
+        // Example: Draw a line
+        ctx.strokeStyle = '#EF4444';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(200, 700);
+        ctx.lineTo(1720, 700);
+        ctx.stroke();
+
+        // Example: Add footer text
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Created with Image Generation Skill', canvas.width / 2, canvas.height - 50);
+
+        // ================================
+        // DOWNLOAD FUNCTIONS
+        // ================================
+
+        function downloadPNG() {
+            const link = document.createElement('a');
+            link.download = 'image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadJPG() {
+            const link = document.createElement('a');
+            link.download = 'image.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.95); // 95% quality
+            link.click();
+        }
+
+        // ================================
+        // HELPER FUNCTIONS
+        // ================================
+
+        // Draw centered text with automatic line wrapping
+        function drawTextCentered(text, x, y, maxWidth) {
+            const words = text.split(' ');
+            let line = '';
+            let lineHeight = parseInt(ctx.font) * 1.4;
+            let currentY = y;
+
+            for (let word of words) {
+                const testLine = line + word + ' ';
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && line !== '') {
+                    ctx.fillText(line, x, currentY);
+                    line = word + ' ';
+                    currentY += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, currentY);
+        }
+
+        // Draw rounded rectangle
+        function roundRect(x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // Draw a simple bar chart
+        function drawBarChart(data, x, y, width, height, labels) {
+            const max = Math.max(...data);
+            const barWidth = width / data.length * 0.8;
+            const spacing = width / data.length * 0.2;
+
+            data.forEach((value, index) => {
+                const barHeight = (value / max) * height;
+                const barX = x + index * (barWidth + spacing);
+                const barY = y + height - barHeight;
+
+                // Draw bar
+                ctx.fillStyle = '#2563EB';
+                ctx.fillRect(barX, barY, barWidth, barHeight);
+
+                // Draw label
+                ctx.fillStyle = '#1F2937';
+                ctx.font = '20px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[index], barX + barWidth / 2, y + height + 30);
+
+                // Draw value
+                ctx.fillText(value, barX + barWidth / 2, barY - 10);
+            });
+        }
+
+        // Example usage of bar chart helper:
+        // drawBarChart([45, 62, 58, 71], 200, 700, 1520, 300, ['Q1', 'Q2', 'Q3', 'Q4']);
+
+    </script>
+
+    <div style="max-width: 1200px; margin: 20px auto; padding: 20px; background: #f9fafb; border-radius: 8px;">
+        <h2>Canvas Drawing Guide</h2>
+
+        <h3>Text</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+ctx.font = 'bold 48px sans-serif';
+ctx.fillStyle = '#1F2937';
+ctx.textAlign = 'center'; // 'left', 'center', 'right'
+ctx.fillText('Your text here', x, y);</pre>
+
+        <h3>Rectangles</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+// Filled rectangle
+ctx.fillStyle = '#2563EB';
+ctx.fillRect(x, y, width, height);
+
+// Outlined rectangle
+ctx.strokeStyle = '#2563EB';
+ctx.lineWidth = 4;
+ctx.strokeRect(x, y, width, height);</pre>
+
+        <h3>Circles</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+ctx.fillStyle = '#10B981';
+ctx.beginPath();
+ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+ctx.fill();</pre>
+
+        <h3>Lines</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+ctx.strokeStyle = '#EF4444';
+ctx.lineWidth = 4;
+ctx.beginPath();
+ctx.moveTo(startX, startY);
+ctx.lineTo(endX, endY);
+ctx.stroke();</pre>
+
+        <h3>Gradients</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+gradient.addColorStop(0, '#2563EB');
+gradient.addColorStop(1, '#7C3AED');
+ctx.fillStyle = gradient;
+ctx.fillRect(x, y, width, height);</pre>
+
+        <h3>Common Canvas Dimensions</h3>
+        <ul>
+            <li><strong>1920×1080</strong> - Full HD presentation slide (16:9)</li>
+            <li><strong>1280×720</strong> - HD presentation slide (16:9)</li>
+            <li><strong>1080×1080</strong> - Instagram square post</li>
+            <li><strong>1080×1920</strong> - Instagram story (9:16)</li>
+            <li><strong>1200×630</strong> - Social media link preview</li>
+            <li><strong>1200×675</strong> - Twitter/X post (16:9)</li>
+        </ul>
+
+        <h3>Professional Color Palettes</h3>
+        <pre style="background: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+// Blues (Professional)
+['#1E3A8A', '#2563EB', '#3B82F6', '#60A5FA', '#93C5FD']
+
+// Greens (Success/Growth)
+['#065F46', '#059669', '#10B981', '#34D399', '#6EE7B7']
+
+// Oranges (Warm/Energy)
+['#7C2D12', '#EA580C', '#F97316', '#FB923C', '#FDBA74']
+
+// Purples (Creative)
+['#4C1D95', '#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD']
+
+// Reds (Alert/Important)
+['#7F1D1D', '#DC2626', '#EF4444', '#F87171', '#FCA5A5']
+
+// Grays (Neutral)
+['#111827', '#374151', '#6B7280', '#9CA3AF', '#D1D5DB']</pre>
+    </div>
+
+</body>
+</html>
