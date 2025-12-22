@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarkov FiR Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #ffa500; margin-bottom: 10px; }
+    .stats {
+      background: #2a2a2a;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-left: 4px solid #ffa500;
+    }
+    .stats-row { display: flex; gap: 30px; flex-wrap: wrap; }
+    .stat { }
+    .stat-value { color: #ffa500; font-size: 1.2em; font-weight: bold; }
+    .controls {
+      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    input[type="text"] {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      padding: 8px 12px;
+      font-family: inherit;
+      flex: 1;
+      min-width: 200px;
+    }
+    select, button {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      padding: 8px 12px;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    button:hover { background: #3a3a3a; }
+    button.reset { background: #8b0000; }
+    button.reset:hover { background: #a00000; }
+    .item-list { }
+    .item {
+      background: #2a2a2a;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-left: 4px solid #444;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .item.complete { border-left-color: #00ff00; opacity: 0.6; }
+    .item.partial { border-left-color: #ffff00; }
+    .item-name { flex: 1; min-width: 200px; }
+    .item-name strong { color: #fff; }
+    .item-type { color: #888; font-size: 0.85em; }
+    .item-count {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .item-count input {
+      width: 60px;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      padding: 5px;
+      text-align: center;
+      font-family: inherit;
+    }
+    .item-progress { color: #888; min-width: 80px; text-align: right; }
+    .item-progress.done { color: #00ff00; }
+    .quests { font-size: 0.8em; color: #888; margin-top: 5px; }
+    .quest-tag {
+      display: inline-block;
+      background: #333;
+      padding: 2px 6px;
+      margin: 2px;
+      border-radius: 3px;
+    }
+    .quest-tag.kappa { border: 1px solid #ffa500; }
+    .craft-tag { color: #00bfff; }
+    .hidden { display: none; }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+      font-size: 0.85em;
+      color: #666;
+    }
+    .footer a { color: #ffa500; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tarkov FiR Tracker</h1>
+    <p style="color:#888; margin-bottom:20px;">Found in Raid アイテム収集管理ツール</p>
+
+    <div class="stats">
+      <div class="stats-row">
+        <div class="stat">
+          進捗: <span class="stat-value" id="progress">0/0</span>
+        </div>
+        <div class="stat">
+          完了アイテム: <span class="stat-value" id="completed-items">0/0</span>
+        </div>
+        <div class="stat">
+          総収集数: <span class="stat-value" id="total-collected">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="search" placeholder="アイテム名で検索...">
+      <select id="filter">
+        <option value="all">すべて表示</option>
+        <option value="incomplete">未完了のみ</option>
+        <option value="partial">収集中のみ</option>
+        <option value="complete">完了のみ</option>
+      </select>
+      <select id="sort">
+        <option value="required-desc">必要数 多い順</option>
+        <option value="required-asc">必要数 少ない順</option>
+        <option value="name-asc">名前 A-Z</option>
+        <option value="progress-desc">進捗率 高い順</option>
+      </select>
+      <button class="reset" onclick="resetProgress()">リセット</button>
+    </div>
+
+    <div class="item-list" id="item-list"></div>
+
+    <div class="footer">
+      <p>データソース: <a href="https://github.com/fakundo/tarkov-raid-items" target="_blank">fakundo/tarkov-raid-items</a> + <a href="https://github.com/TarkovTracker/tarkovdata" target="_blank">TarkovTracker/tarkovdata</a></p>
+      <p>進捗はブラウザのCookieに保存されます</p>
+    </div>
+  </div>
+
+  <script>
+    // Embedded FiR data
+    const FIR_DATA = PLACEHOLDER_DATA;
+
+    // Cookie functions
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    function setCookie(name, value, days = 365) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+    }
+
+    // Progress storage
+    let progress = {};
+
+    function loadProgress() {
+      const saved = getCookie('tarkov_fir_progress');
+      if (saved) {
+        try {
+          progress = JSON.parse(decodeURIComponent(saved));
+        } catch (e) {
+          progress = {};
+        }
+      }
+    }
+
+    function saveProgress() {
+      setCookie('tarkov_fir_progress', encodeURIComponent(JSON.stringify(progress)));
+    }
+
+    function getCollected(itemId) {
+      return progress[itemId] || 0;
+    }
+
+    function setCollected(itemId, count) {
+      const item = FIR_DATA.items[itemId];
+      if (!item) return;
+      count = Math.max(0, Math.min(count, item.totalRequired));
+      if (count === 0) {
+        delete progress[itemId];
+      } else {
+        progress[itemId] = count;
+      }
+      saveProgress();
+      updateStats();
+      renderItems();
+    }
+
+    // Stats
+    function updateStats() {
+      let totalRequired = 0;
+      let totalCollected = 0;
+      let completedItems = 0;
+      const itemCount = Object.keys(FIR_DATA.items).length;
+
+      for (const [id, item] of Object.entries(FIR_DATA.items)) {
+        totalRequired += item.totalRequired;
+        const collected = getCollected(id);
+        totalCollected += collected;
+        if (collected >= item.totalRequired) {
+          completedItems++;
+        }
+      }
+
+      document.getElementById('progress').textContent = `${totalCollected}/${totalRequired}`;
+      document.getElementById('completed-items').textContent = `${completedItems}/${itemCount}`;
+      document.getElementById('total-collected').textContent = totalCollected;
+    }
+
+    // Render
+    function renderItems() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const filter = document.getElementById('filter').value;
+      const sort = document.getElementById('sort').value;
+
+      let items = Object.entries(FIR_DATA.items).map(([id, item]) => ({
+        id,
+        ...item,
+        collected: getCollected(id)
+      }));
+
+      // Filter
+      items = items.filter(item => {
+        if (search && !item.name.toLowerCase().includes(search)) return false;
+        const isComplete = item.collected >= item.totalRequired;
+        const isPartial = item.collected > 0 && !isComplete;
+        if (filter === 'incomplete' && isComplete) return false;
+        if (filter === 'partial' && !isPartial) return false;
+        if (filter === 'complete' && !isComplete) return false;
+        return true;
+      });
+
+      // Sort
+      items.sort((a, b) => {
+        switch (sort) {
+          case 'required-desc': return b.totalRequired - a.totalRequired;
+          case 'required-asc': return a.totalRequired - b.totalRequired;
+          case 'name-asc': return a.name.localeCompare(b.name);
+          case 'progress-desc':
+            const pA = a.collected / a.totalRequired;
+            const pB = b.collected / b.totalRequired;
+            return pB - pA;
+          default: return 0;
+        }
+      });
+
+      const list = document.getElementById('item-list');
+      list.innerHTML = items.map(item => {
+        const isComplete = item.collected >= item.totalRequired;
+        const isPartial = item.collected > 0 && !isComplete;
+        const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : '';
+        const progressClass = isComplete ? 'done' : '';
+
+        const questTags = item.questBreakdown.map(q =>
+          `<span class="quest-tag${q.kappa ? ' kappa' : ''}">${q.questName} (${q.count})</span>`
+        ).join('');
+
+        const craftInfo = item.canCraft
+          ? `<span class="craft-tag">[Craft: ${item.craftLocations.join(', ')}]</span>`
+          : '';
+
+        return `
+          <div class="item ${statusClass}">
+            <div class="item-name">
+              <strong>${item.name}</strong>
+              <div class="item-type">${item.type} ${craftInfo}</div>
+              <div class="quests">${questTags}</div>
+            </div>
+            <div class="item-count">
+              <button onclick="setCollected('${item.id}', ${item.collected - 1})">-</button>
+              <input type="number" value="${item.collected}" min="0" max="${item.totalRequired}"
+                onchange="setCollected('${item.id}', parseInt(this.value) || 0)">
+              <button onclick="setCollected('${item.id}', ${item.collected + 1})">+</button>
+            </div>
+            <div class="item-progress ${progressClass}">
+              ${item.collected}/${item.totalRequired}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetProgress() {
+      if (confirm('すべての進捗をリセットしますか？')) {
+        progress = {};
+        saveProgress();
+        updateStats();
+        renderItems();
+      }
+    }
+
+    // Event listeners
+    document.getElementById('search').addEventListener('input', renderItems);
+    document.getElementById('filter').addEventListener('change', renderItems);
+    document.getElementById('sort').addEventListener('change', renderItems);
+
+    // Initialize
+    loadProgress();
+    updateStats();
+    renderItems();
+  </script>
+</body>
+</html>
