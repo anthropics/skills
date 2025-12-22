@@ -166,6 +166,39 @@
     .result-row .value.need { color: var(--red); }
     .result-row .value.ok { color: var(--green); }
 
+    .fir-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .fir-controls button {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .fir-controls button:hover { background: #21262d; }
+    .fir-controls input {
+      width: 36px;
+      text-align: center;
+      padding: 2px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    .fir-controls .total { color: var(--muted); font-size: 0.85rem; }
+
     .result-sources {
       margin-top: 8px;
       padding-top: 8px;
@@ -356,6 +389,23 @@
       const s = getCookie('tarkov_fir_v2');
       if (s) try { return JSON.parse(decodeURIComponent(s)); } catch(e) {}
       return {};
+    }
+    function saveProgress(progress) {
+      setCookie('tarkov_fir_v2', encodeURIComponent(JSON.stringify(progress)));
+    }
+    function setCollected(itemId, count) {
+      const item = allItems[itemId];
+      if (!item || !item.fir) return;
+      const progress = loadProgress();
+      count = Math.max(0, Math.min(count, item.fir.totalRequired));
+      if (count === 0) delete progress[itemId];
+      else progress[itemId] = count;
+      saveProgress(progress);
+      // Re-render all columns
+      document.querySelectorAll('.search-column input').forEach(input => {
+        if (input.value.trim()) input.dispatchEvent(new Event('input'));
+      });
+      renderHistory();
     }
     function loadHistory() {
       const s = getCookie('tarkov_history');
@@ -575,9 +625,13 @@
               <span class="label">価格</span>
               <span class="value">${formatPrice(item.price)} (${item.slots}s)</span>
             </div>
-            <div class="result-row">
-              <span class="label">FiR</span>
-              <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${total}</span>
+            <div class="fir-controls">
+              <button onclick="setCollected('${item.id}', ${collected - 1})">-</button>
+              <input type="number" value="${collected}" min="0" max="${total}"
+                onchange="setCollected('${item.id}', parseInt(this.value)||0)">
+              <span class="total">/ ${total}</span>
+              <button onclick="setCollected('${item.id}', ${collected + 1})">+</button>
+              <span class="value ${isComplete ? 'ok' : 'need'}" style="margin-left:auto;">${isComplete ? '完了' : 'あと'+(total-collected)}</span>
             </div>
             ${sourcesHtml}
           </div>
