@@ -48,6 +48,9 @@ def main():
             validators = [DOCXSchemaValidator, RedliningValidator]
         case ".pptx":
             validators = [PPTXSchemaValidator]
+        case ".xlsx":
+            print("XLSX validation is not yet implemented")
+            sys.exit(1)
         case _:
             print(f"Error: Validation not supported for file type {file_extension}")
             sys.exit(1)
