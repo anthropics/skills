@@ -13,9 +13,24 @@
       padding: 20px;
       line-height: 1.6;
     }
-    .container { max-width: 1100px; margin: 0 auto; }
+    .container { max-width: 1200px; margin: 0 auto; }
     h1 { color: #ffa500; margin-bottom: 5px; }
     .subtitle { color: #888; margin-bottom: 20px; }
+
+    .tabs {
+      display: flex; gap: 5px; margin-bottom: 15px;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      cursor: pointer;
+    }
+    .tab.active { background: #ffa500; color: #000; border-color: #ffa500; }
+    .tab:hover:not(.active) { background: #3a3a3a; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
 
     .stats {
       background: #2a2a2a;
@@ -23,13 +38,13 @@
       margin-bottom: 20px;
       border-left: 4px solid #ffa500;
     }
-    .stats-row { display: flex; gap: 30px; flex-wrap: wrap; }
-    .stat-value { color: #ffa500; font-size: 1.2em; font-weight: bold; }
+    .stats-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .stat-value { color: #ffa500; font-weight: bold; }
 
     .controls {
       display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;
     }
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], textarea {
       background: #2a2a2a;
       border: 1px solid #444;
       color: #e0e0e0;
@@ -46,16 +61,25 @@
       cursor: pointer;
     }
     button:hover { background: #3a3a3a; }
-    button.reset { background: #8b0000; }
-    button.reset:hover { background: #a00000; }
-    button.price-btn { background: #006400; }
-    button.price-btn:hover { background: #008000; }
-    button.price-btn.loading { opacity: 0.5; cursor: wait; }
+    button.primary { background: #006400; }
+    button.primary:hover { background: #008000; }
+    button.danger { background: #8b0000; }
+    button.danger:hover { background: #a00000; }
+    button.loading { opacity: 0.5; cursor: wait; }
 
-    .level-filter {
-      display: flex; align-items: center; gap: 5px;
+    .bulk-search {
+      margin-bottom: 20px;
+      background: #2a2a2a;
+      padding: 15px;
+      border-left: 4px solid #00bfff;
     }
-    .level-filter input { width: 60px; text-align: center; }
+    .bulk-search textarea {
+      width: 100%;
+      height: 80px;
+      margin-bottom: 10px;
+      resize: vertical;
+    }
+    .bulk-search-info { font-size: 0.85em; color: #888; }
 
     .item-list { }
     .item {
@@ -64,68 +88,115 @@
       margin-bottom: 8px;
       border-left: 4px solid #444;
       display: grid;
-      grid-template-columns: auto 1fr auto auto auto;
+      grid-template-columns: 55px 1fr 90px 100px 90px 70px;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
     }
-    .item.complete { border-left-color: #00ff00; opacity: 0.6; }
+    .item.complete { border-left-color: #00ff00; }
     .item.partial { border-left-color: #ffff00; }
+    .item.sell-ok { background: #1a2a1a; }
+    .item.keep { background: #2a2a1a; }
 
     .item-level {
       background: #333;
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 0.85em;
-      min-width: 50px;
       text-align: center;
     }
     .item-level.early { background: #006400; color: #90ee90; }
     .item-level.mid { background: #8b8000; color: #ffff90; }
     .item-level.late { background: #8b0000; color: #ff9090; }
 
-    .item-name { min-width: 200px; }
+    .item-name { min-width: 150px; }
     .item-name strong { color: #fff; }
-    .item-type { color: #888; font-size: 0.85em; }
+    .item-meta { font-size: 0.8em; color: #888; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.75em;
+    }
+    .badge.craft { background: #003366; color: #66b3ff; }
+    .badge.barter { background: #4a3000; color: #ffcc00; }
+    .badge.keep { background: #4a4a00; color: #ffff66; }
+    .badge.sell { background: #004a00; color: #66ff66; }
 
     .item-price {
       font-size: 0.85em;
-      color: #00bfff;
-      min-width: 100px;
       text-align: right;
     }
-    .item-price.loading { color: #666; }
+    .price-main { color: #00bfff; }
+    .price-per-slot { color: #888; font-size: 0.8em; }
     .price-change { font-size: 0.75em; }
     .price-change.up { color: #ff4444; }
     .price-change.down { color: #44ff44; }
 
+    .item-status {
+      text-align: center;
+      font-size: 0.8em;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    .item-status.sell-ok { background: #004400; color: #44ff44; }
+    .item-status.keep { background: #444400; color: #ffff44; }
+    .item-status.need { background: #440000; color: #ff4444; }
+
     .item-count {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
     }
     .item-count input {
-      width: 50px;
+      width: 45px;
       text-align: center;
       padding: 5px;
     }
-    .item-count button { padding: 5px 10px; }
+    .item-count button { padding: 5px 8px; }
 
-    .item-progress { min-width: 70px; text-align: right; }
+    .item-progress { text-align: right; }
     .item-progress.done { color: #00ff00; }
 
-    .quests { font-size: 0.8em; color: #888; margin-top: 5px; grid-column: 1 / -1; }
+    .quests {
+      font-size: 0.75em;
+      color: #888;
+      margin-top: 5px;
+      grid-column: 1 / -1;
+    }
     .quest-tag {
       display: inline-block;
       background: #333;
-      padding: 2px 6px;
+      padding: 2px 5px;
       margin: 2px;
       border-radius: 3px;
     }
     .quest-tag.kappa { border: 1px solid #ffa500; }
-    .quest-tag .quest-level { color: #888; font-size: 0.9em; }
-    .craft-tag { color: #00bfff; }
 
-    .hidden { display: none; }
+    .api-status {
+      font-size: 0.85em;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    .api-status.ok { background: #1a3a1a; color: #90ee90; }
+    .api-status.error { background: #3a1a1a; color: #ff9090; }
+    .api-status.loading { background: #3a3a1a; color: #ffff90; }
+
+    .summary-section {
+      background: #2a2a2a;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #00bfff;
+    }
+    .summary-section h3 { color: #00bfff; margin-bottom: 10px; }
+    .summary-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .summary-item {
+      background: #333;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .summary-item .count { color: #ffa500; }
+    .summary-item .price { color: #00bfff; font-size: 0.85em; }
 
     .footer {
       margin-top: 30px;
@@ -136,72 +207,103 @@
     }
     .footer a { color: #ffa500; }
 
-    .api-status {
-      font-size: 0.85em;
-      padding: 5px 10px;
-      border-radius: 4px;
-    }
-    .api-status.ok { background: #1a3a1a; color: #90ee90; }
-    .api-status.error { background: #3a1a1a; color: #ff9090; }
-    .api-status.loading { background: #3a3a1a; color: #ffff90; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Tarkov FiR Tracker</h1>
-    <p class="subtitle">Found in Raid アイテム収集管理 + 進行状況 + フリマ価格</p>
+    <p class="subtitle">ズボラ向けFiRアイテム管理 - 売っていいか一目でわかる</p>
 
-    <div class="stats">
-      <div class="stats-row">
-        <div class="stat">
-          進捗: <span class="stat-value" id="progress">0/0</span>
-        </div>
-        <div class="stat">
-          完了: <span class="stat-value" id="completed-items">0/0</span>
-        </div>
-        <div class="stat">
-          収集済: <span class="stat-value" id="total-collected">0</span>
-        </div>
-        <div class="stat">
-          <span class="api-status" id="api-status">価格未取得</span>
-        </div>
-      </div>
+    <div class="tabs">
+      <div class="tab active" data-panel="tracker">収集管理</div>
+      <div class="tab" data-panel="bulk">一括検索</div>
+      <div class="tab" data-panel="sellable">売却判定</div>
     </div>
 
-    <div class="controls">
-      <input type="text" id="search" placeholder="アイテム名で検索...">
-      <div class="level-filter">
-        Lv <input type="number" id="level-min" value="1" min="1" max="70">
-        - <input type="number" id="level-max" value="70" min="1" max="70">
+    <!-- 収集管理パネル -->
+    <div class="panel active" id="panel-tracker">
+      <div class="stats">
+        <div class="stats-row">
+          <div class="stat">進捗: <span class="stat-value" id="progress">0/0</span></div>
+          <div class="stat">完了: <span class="stat-value" id="completed-items">0/0</span></div>
+          <div class="stat">売却可: <span class="stat-value" id="sellable-count">0</span></div>
+          <div class="stat"><span class="api-status" id="api-status">価格未取得</span></div>
+        </div>
       </div>
-      <select id="filter">
-        <option value="all">すべて</option>
-        <option value="incomplete">未完了</option>
-        <option value="partial">収集中</option>
-        <option value="complete">完了</option>
-      </select>
-      <select id="sort">
-        <option value="priority">進行順 (推奨)</option>
-        <option value="level">レベル順</option>
-        <option value="required-desc">必要数 多い順</option>
-        <option value="name-asc">名前 A-Z</option>
-        <option value="price-desc">価格 高い順</option>
-      </select>
-      <button class="price-btn" id="fetch-prices">価格取得</button>
-      <button class="reset" onclick="resetProgress()">リセット</button>
+
+      <div class="controls">
+        <input type="text" id="search" placeholder="アイテム名で検索...">
+        <select id="filter">
+          <option value="all">すべて</option>
+          <option value="incomplete">未完了</option>
+          <option value="sell-ok">売却OK</option>
+          <option value="keep">要保持</option>
+          <option value="craft-later">Craft後回し</option>
+        </select>
+        <select id="sort">
+          <option value="priority">進行順</option>
+          <option value="level">レベル順</option>
+          <option value="slot-value-desc">マス単価 高い順</option>
+          <option value="required-desc">必要数 多い順</option>
+        </select>
+        <button class="primary" id="fetch-prices">価格取得</button>
+        <button class="danger" onclick="resetProgress()">リセット</button>
+      </div>
+
+      <div class="item-list" id="item-list"></div>
     </div>
 
-    <div class="item-list" id="item-list"></div>
+    <!-- 一括検索パネル -->
+    <div class="panel" id="panel-bulk">
+      <div class="bulk-search">
+        <h3 style="margin-bottom:10px; color:#00bfff;">アイテム名一括検索</h3>
+        <textarea id="bulk-input" placeholder="アイテム名を1行ずつ入力（部分一致OK）&#10;例:&#10;flash drive&#10;salewa&#10;morphine"></textarea>
+        <button class="primary" onclick="bulkSearch()">検索</button>
+        <button onclick="clearBulkSearch()">クリア</button>
+        <span class="bulk-search-info">OCRで読み取ったアイテムリストを貼り付けて検索</span>
+      </div>
+      <div id="bulk-results"></div>
+    </div>
+
+    <!-- 売却判定パネル -->
+    <div class="panel" id="panel-sellable">
+      <div class="summary-section">
+        <h3>今すぐ売却OK（マス単価順）</h3>
+        <p style="font-size:0.85em; color:#888; margin-bottom:10px;">収集完了 + クラフト/バーター不要</p>
+        <div class="summary-list" id="sell-ok-list"></div>
+      </div>
+
+      <div class="summary-section" style="border-left-color:#ffcc00;">
+        <h3 style="color:#ffcc00;">要保持（クラフト/バーター用途あり）</h3>
+        <p style="font-size:0.85em; color:#888; margin-bottom:10px;">収集完了だがハイドアウトで使う可能性あり</p>
+        <div class="summary-list" id="keep-list"></div>
+      </div>
+
+      <div class="summary-section" style="border-left-color:#ff6666;">
+        <h3 style="color:#ff6666;">とりあえず溜めとけリスト</h3>
+        <p style="font-size:0.85em; color:#888; margin-bottom:10px;">複数クエストで必要 or 大量に必要なアイテム</p>
+        <div class="summary-list" id="stockpile-list"></div>
+      </div>
+    </div>
 
     <div class="footer">
       <p>データ: <a href="https://github.com/TarkovTracker/tarkovdata" target="_blank">TarkovTracker</a> | 価格: <a href="https://tarkov.dev/api/" target="_blank">tarkov.dev API</a></p>
-      <p>進捗はCookieに保存 | 価格はセッション中のみ</p>
+      <p>進捗はCookieに保存 | バーター/クラフト情報はAPI取得時に更新</p>
     </div>
   </div>
 
   <script>
-    // Embedded FiR data (replaced by build script)
     const FIR_DATA = PLACEHOLDER_DATA;
+
+    // ============================================
+    // State
+    // ============================================
+    let progress = {};
+    let priceData = {};
+    let barterData = {};  // Items used in barters
+    let craftData = {};   // Items used in crafts
+    let bulkSearchTerms = [];
 
     // ============================================
     // Cookie Storage
@@ -217,12 +319,6 @@
       const expires = new Date(Date.now() + days * 864e5).toUTCString();
       document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
     }
-
-    // ============================================
-    // Progress State
-    // ============================================
-    let progress = {};
-    let priceData = {};
 
     function loadProgress() {
       const saved = getCookie('tarkov_fir_progress');
@@ -253,12 +349,35 @@
         progress[itemId] = count;
       }
       saveProgress();
-      updateStats();
-      renderItems();
+      updateAll();
     }
 
     // ============================================
-    // Price Fetching (tarkov.dev API)
+    // Sell/Keep Status
+    // ============================================
+    function getItemStatus(itemId) {
+      const item = FIR_DATA.items[itemId];
+      const collected = getCollected(itemId);
+      const isComplete = collected >= item.totalRequired;
+
+      if (!isComplete) {
+        return { status: 'need', label: '収集中', class: 'need' };
+      }
+
+      // Check if used in crafts or barters
+      const usedInCraft = craftData[item.name?.toLowerCase()];
+      const usedInBarter = barterData[item.name?.toLowerCase()];
+      const canCraft = item.canCraft;
+
+      if (usedInCraft || usedInBarter) {
+        return { status: 'keep', label: '要保持', class: 'keep', reason: usedInCraft ? 'Craft素材' : 'Barter素材' };
+      }
+
+      return { status: 'sell-ok', label: '売却OK', class: 'sell-ok' };
+    }
+
+    // ============================================
+    // Price Fetching
     // ============================================
     async function fetchPrices() {
       const btn = document.getElementById('fetch-prices');
@@ -269,9 +388,6 @@
       status.textContent = '価格取得中...';
       status.className = 'api-status loading';
 
-      // Get item names to search
-      const itemNames = Object.values(FIR_DATA.items).map(i => i.name);
-
       const query = `
         query {
           items {
@@ -280,9 +396,22 @@
             shortName
             avg24hPrice
             low24hPrice
-            high24hPrice
             changeLast48hPercent
+            width
+            height
             iconLink
+          }
+          barters {
+            requiredItems {
+              item { name }
+              count
+            }
+          }
+          crafts {
+            requiredItems {
+              item { name }
+              count
+            }
           }
         }
       `;
@@ -295,11 +424,10 @@
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
         const data = await response.json();
         if (data.errors) throw new Error(data.errors[0].message);
 
-        // Build price lookup by name
+        // Build price lookup
         const priceByName = {};
         data.data.items.forEach(item => {
           priceByName[item.name.toLowerCase()] = item;
@@ -309,21 +437,41 @@
         // Match to our items
         Object.entries(FIR_DATA.items).forEach(([id, item]) => {
           const match = priceByName[item.name.toLowerCase()] ||
-                        priceByName[item.nameShort.toLowerCase()];
+                        priceByName[item.nameShort?.toLowerCase()];
           if (match) {
+            const slots = (match.width || 1) * (match.height || 1);
             priceData[id] = {
               avg: match.avg24hPrice,
               low: match.low24hPrice,
-              high: match.high24hPrice,
               change: match.changeLast48hPercent,
+              width: match.width || 1,
+              height: match.height || 1,
+              slots: slots,
+              perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0,
               icon: match.iconLink
             };
           }
         });
 
+        // Build barter usage lookup
+        barterData = {};
+        data.data.barters.forEach(barter => {
+          barter.requiredItems.forEach(req => {
+            barterData[req.item.name.toLowerCase()] = true;
+          });
+        });
+
+        // Build craft usage lookup
+        craftData = {};
+        data.data.crafts.forEach(craft => {
+          craft.requiredItems.forEach(req => {
+            craftData[req.item.name.toLowerCase()] = true;
+          });
+        });
+
         status.textContent = `価格取得完了 (${Object.keys(priceData).length}件)`;
         status.className = 'api-status ok';
-        renderItems();
+        updateAll();
 
       } catch (err) {
         console.error('Price fetch error:', err);
@@ -343,12 +491,91 @@
     }
 
     // ============================================
-    // Stats
+    // Bulk Search
+    // ============================================
+    function bulkSearch() {
+      const input = document.getElementById('bulk-input').value;
+      bulkSearchTerms = input.split('\n')
+        .map(s => s.trim().toLowerCase())
+        .filter(s => s.length > 0);
+
+      if (bulkSearchTerms.length === 0) {
+        document.getElementById('bulk-results').innerHTML = '<p style="color:#888;">検索語を入力してください</p>';
+        return;
+      }
+
+      const results = [];
+      Object.entries(FIR_DATA.items).forEach(([id, item]) => {
+        const nameLower = item.name.toLowerCase();
+        const matched = bulkSearchTerms.filter(term => nameLower.includes(term));
+        if (matched.length > 0) {
+          results.push({ id, item, matched, collected: getCollected(id) });
+        }
+      });
+
+      renderBulkResults(results);
+    }
+
+    function clearBulkSearch() {
+      document.getElementById('bulk-input').value = '';
+      bulkSearchTerms = [];
+      document.getElementById('bulk-results').innerHTML = '';
+    }
+
+    function renderBulkResults(results) {
+      const container = document.getElementById('bulk-results');
+
+      if (results.length === 0) {
+        container.innerHTML = '<p style="color:#ff6666;">一致するアイテムが見つかりませんでした</p>';
+        return;
+      }
+
+      // Group by match status
+      const found = results.filter(r => r.collected >= r.item.totalRequired);
+      const needed = results.filter(r => r.collected < r.item.totalRequired);
+
+      let html = `<p style="margin-bottom:15px;">検索結果: ${results.length}件</p>`;
+
+      if (needed.length > 0) {
+        html += `<div class="summary-section" style="border-left-color:#ff6666;">
+          <h3 style="color:#ff6666;">まだ必要 (${needed.length})</h3>
+          <div class="summary-list">`;
+        needed.forEach(r => {
+          const price = priceData[r.id];
+          html += `<div class="summary-item">
+            <strong>${r.item.name}</strong><br>
+            <span class="count">${r.collected}/${r.item.totalRequired}</span>
+            ${price ? `<span class="price">${formatPrice(price.avg)}</span>` : ''}
+          </div>`;
+        });
+        html += '</div></div>';
+      }
+
+      if (found.length > 0) {
+        html += `<div class="summary-section" style="border-left-color:#44ff44;">
+          <h3 style="color:#44ff44;">収集完了 (${found.length})</h3>
+          <div class="summary-list">`;
+        found.forEach(r => {
+          const status = getItemStatus(r.id);
+          html += `<div class="summary-item">
+            <strong>${r.item.name}</strong>
+            <span class="badge ${status.class}">${status.label}</span>
+          </div>`;
+        });
+        html += '</div></div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ============================================
+    // Stats & Rendering
     // ============================================
     function updateStats() {
       let totalRequired = 0;
       let totalCollected = 0;
       let completedItems = 0;
+      let sellableCount = 0;
       const itemCount = Object.keys(FIR_DATA.items).length;
 
       for (const [id, item] of Object.entries(FIR_DATA.items)) {
@@ -357,43 +584,44 @@
         totalCollected += collected;
         if (collected >= item.totalRequired) {
           completedItems++;
+          const status = getItemStatus(id);
+          if (status.status === 'sell-ok') sellableCount++;
         }
       }
 
       document.getElementById('progress').textContent = `${totalCollected}/${totalRequired}`;
       document.getElementById('completed-items').textContent = `${completedItems}/${itemCount}`;
-      document.getElementById('total-collected').textContent = totalCollected;
+      document.getElementById('sellable-count').textContent = sellableCount;
     }
 
-    // ============================================
-    // Render
-    // ============================================
+    function updateAll() {
+      updateStats();
+      renderItems();
+      renderSellableLists();
+    }
+
     function renderItems() {
       const search = document.getElementById('search').value.toLowerCase();
       const filter = document.getElementById('filter').value;
       const sort = document.getElementById('sort').value;
-      const levelMin = parseInt(document.getElementById('level-min').value) || 1;
-      const levelMax = parseInt(document.getElementById('level-max').value) || 70;
 
       let items = Object.entries(FIR_DATA.items).map(([id, item]) => ({
         id,
         ...item,
         collected: getCollected(id),
-        price: priceData[id]
+        price: priceData[id],
+        itemStatus: getItemStatus(id)
       }));
 
       // Filter
       items = items.filter(item => {
         if (search && !item.name.toLowerCase().includes(search)) return false;
 
-        const level = item.earliestAccess?.level || 1;
-        if (level < levelMin || level > levelMax) return false;
-
         const isComplete = item.collected >= item.totalRequired;
-        const isPartial = item.collected > 0 && !isComplete;
         if (filter === 'incomplete' && isComplete) return false;
-        if (filter === 'partial' && !isPartial) return false;
-        if (filter === 'complete' && !isComplete) return false;
+        if (filter === 'sell-ok' && item.itemStatus.status !== 'sell-ok') return false;
+        if (filter === 'keep' && item.itemStatus.status !== 'keep') return false;
+        if (filter === 'craft-later' && !item.canCraft) return false;
 
         return true;
       });
@@ -405,12 +633,10 @@
             return (a.earliestAccess?.priority || 999) - (b.earliestAccess?.priority || 999);
           case 'level':
             return (a.earliestAccess?.level || 99) - (b.earliestAccess?.level || 99);
+          case 'slot-value-desc':
+            return (b.price?.perSlot || 0) - (a.price?.perSlot || 0);
           case 'required-desc':
             return b.totalRequired - a.totalRequired;
-          case 'name-asc':
-            return a.name.localeCompare(b.name);
-          case 'price-desc':
-            return (b.price?.avg || 0) - (a.price?.avg || 0);
           default:
             return 0;
         }
@@ -420,53 +646,120 @@
       list.innerHTML = items.map(item => {
         const isComplete = item.collected >= item.totalRequired;
         const isPartial = item.collected > 0 && !isComplete;
-        const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : '';
+        const statusClass = item.itemStatus.status;
         const progressClass = isComplete ? 'done' : '';
 
         const level = item.earliestAccess?.level || '?';
         const levelClass = level <= 10 ? 'early' : level <= 25 ? 'mid' : 'late';
 
-        const questTags = item.questBreakdown.map(q =>
-          `<span class="quest-tag${q.kappa ? ' kappa' : ''}">
-            <span class="quest-level">Lv${q.level}</span> ${q.questName} (${q.count})
-          </span>`
-        ).join('');
+        // Badges
+        let badges = '';
+        if (item.canCraft) badges += '<span class="badge craft">Craft可</span>';
+        if (barterData[item.name.toLowerCase()]) badges += '<span class="badge barter">Barter素材</span>';
+        if (craftData[item.name.toLowerCase()]) badges += '<span class="badge craft">Craft素材</span>';
 
-        const craftInfo = item.canCraft
-          ? `<span class="craft-tag">[Craft]</span>`
-          : '';
-
-        // Price display
-        let priceHtml = '<span class="item-price">-</span>';
+        // Price
+        let priceHtml = '<div class="item-price">-</div>';
         if (item.price) {
           const changeClass = item.price.change > 0 ? 'up' : item.price.change < 0 ? 'down' : '';
-          const changeSign = item.price.change > 0 ? '+' : '';
           priceHtml = `
-            <span class="item-price">
-              ${formatPrice(item.price.avg)}
-              <span class="price-change ${changeClass}">${changeSign}${item.price.change?.toFixed(1) || 0}%</span>
-            </span>
+            <div class="item-price">
+              <div class="price-main">${formatPrice(item.price.avg)}</div>
+              <div class="price-per-slot">${formatPrice(item.price.perSlot)}/slot</div>
+            </div>
           `;
         }
 
+        // Status badge
+        const statusBadge = isComplete
+          ? `<div class="item-status ${item.itemStatus.class}">${item.itemStatus.label}</div>`
+          : `<div class="item-status need">必要</div>`;
+
+        // Quests
+        const questTags = item.questBreakdown.slice(0, 3).map(q =>
+          `<span class="quest-tag${q.kappa ? ' kappa' : ''}">Lv${q.level} ${q.questName} (${q.count})</span>`
+        ).join('');
+        const moreQuests = item.questBreakdown.length > 3 ? ` +${item.questBreakdown.length - 3}` : '';
+
         return `
-          <div class="item ${statusClass}">
+          <div class="item ${isComplete ? statusClass : ''} ${isPartial ? 'partial' : ''}">
             <div class="item-level ${levelClass}">Lv${level}</div>
             <div class="item-name">
               <strong>${item.name}</strong>
-              <div class="item-type">${item.type} ${craftInfo}</div>
+              <div class="item-meta">${badges}</div>
             </div>
             ${priceHtml}
+            ${statusBadge}
             <div class="item-count">
               <button onclick="setCollected('${item.id}', ${item.collected - 1})">-</button>
               <input type="number" value="${item.collected}" min="0" max="${item.totalRequired}"
                 onchange="setCollected('${item.id}', parseInt(this.value) || 0)">
               <button onclick="setCollected('${item.id}', ${item.collected + 1})">+</button>
             </div>
-            <div class="item-progress ${progressClass}">
-              ${item.collected}/${item.totalRequired}
+            <div class="item-progress ${progressClass}">${item.collected}/${item.totalRequired}</div>
+            <div class="quests">${questTags}${moreQuests}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderSellableLists() {
+      const sellOkItems = [];
+      const keepItems = [];
+      const stockpileItems = [];
+
+      Object.entries(FIR_DATA.items).forEach(([id, item]) => {
+        const collected = getCollected(id);
+        const isComplete = collected >= item.totalRequired;
+        const status = getItemStatus(id);
+        const price = priceData[id];
+
+        if (isComplete && status.status === 'sell-ok') {
+          sellOkItems.push({ id, item, price });
+        } else if (isComplete && status.status === 'keep') {
+          keepItems.push({ id, item, price, reason: status.reason });
+        }
+
+        // Stockpile: multiple quests or high quantity needed
+        if (item.questBreakdown.length >= 2 || item.totalRequired >= 5) {
+          stockpileItems.push({ id, item, collected, price });
+        }
+      });
+
+      // Sort by slot value
+      sellOkItems.sort((a, b) => (b.price?.perSlot || 0) - (a.price?.perSlot || 0));
+      keepItems.sort((a, b) => (b.price?.perSlot || 0) - (a.price?.perSlot || 0));
+      stockpileItems.sort((a, b) => b.item.totalRequired - a.item.totalRequired);
+
+      // Render sell-ok
+      document.getElementById('sell-ok-list').innerHTML = sellOkItems.length === 0
+        ? '<span style="color:#888;">なし（まだ収集完了アイテムがありません）</span>'
+        : sellOkItems.map(({ item, price }) => `
+            <div class="summary-item">
+              <strong>${item.name}</strong><br>
+              ${price ? `<span class="price">${formatPrice(price.avg)} (${formatPrice(price.perSlot)}/slot)</span>` : ''}
             </div>
-            <div class="quests">${questTags}</div>
+          `).join('');
+
+      // Render keep
+      document.getElementById('keep-list').innerHTML = keepItems.length === 0
+        ? '<span style="color:#888;">なし</span>'
+        : keepItems.map(({ item, price, reason }) => `
+            <div class="summary-item">
+              <strong>${item.name}</strong> <span class="badge barter">${reason}</span><br>
+              ${price ? `<span class="price">${formatPrice(price.avg)}</span>` : ''}
+            </div>
+          `).join('');
+
+      // Render stockpile
+      document.getElementById('stockpile-list').innerHTML = stockpileItems.slice(0, 20).map(({ id, item, collected, price }) => {
+        const remaining = item.totalRequired - collected;
+        const status = remaining > 0 ? `あと${remaining}個` : '完了';
+        return `
+          <div class="summary-item">
+            <strong>${item.name}</strong><br>
+            <span class="count">${collected}/${item.totalRequired}</span> ${status}
+            ${price ? `<span class="price">${formatPrice(price.avg)}</span>` : ''}
           </div>
         `;
       }).join('');
@@ -476,10 +769,21 @@
       if (confirm('すべての進捗をリセットしますか？')) {
         progress = {};
         saveProgress();
-        updateStats();
-        renderItems();
+        updateAll();
       }
     }
+
+    // ============================================
+    // Tab Navigation
+    // ============================================
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+      });
+    });
 
     // ============================================
     // Event Listeners
@@ -487,16 +791,13 @@
     document.getElementById('search').addEventListener('input', renderItems);
     document.getElementById('filter').addEventListener('change', renderItems);
     document.getElementById('sort').addEventListener('change', renderItems);
-    document.getElementById('level-min').addEventListener('change', renderItems);
-    document.getElementById('level-max').addEventListener('change', renderItems);
     document.getElementById('fetch-prices').addEventListener('click', fetchPrices);
 
     // ============================================
     // Initialize
     // ============================================
     loadProgress();
-    updateStats();
-    renderItems();
+    updateAll();
   </script>
 </body>
 </html>
