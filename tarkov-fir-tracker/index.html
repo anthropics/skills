@@ -13,8 +13,10 @@
       padding: 20px;
       line-height: 1.6;
     }
-    .container { max-width: 900px; margin: 0 auto; }
-    h1 { color: #ffa500; margin-bottom: 10px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { color: #ffa500; margin-bottom: 5px; }
+    .subtitle { color: #888; margin-bottom: 20px; }
+
     .stats {
       background: #2a2a2a;
       padding: 15px;
@@ -22,20 +24,19 @@
       border-left: 4px solid #ffa500;
     }
     .stats-row { display: flex; gap: 30px; flex-wrap: wrap; }
-    .stat { }
     .stat-value { color: #ffa500; font-size: 1.2em; font-weight: bold; }
+
     .controls {
-      display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+      display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;
     }
-    input[type="text"] {
+    input[type="text"], input[type="number"] {
       background: #2a2a2a;
       border: 1px solid #444;
       color: #e0e0e0;
       padding: 8px 12px;
       font-family: inherit;
-      flex: 1;
-      min-width: 200px;
     }
+    #search { flex: 1; min-width: 200px; }
     select, button {
       background: #2a2a2a;
       border: 1px solid #444;
@@ -47,38 +48,72 @@
     button:hover { background: #3a3a3a; }
     button.reset { background: #8b0000; }
     button.reset:hover { background: #a00000; }
+    button.price-btn { background: #006400; }
+    button.price-btn:hover { background: #008000; }
+    button.price-btn.loading { opacity: 0.5; cursor: wait; }
+
+    .level-filter {
+      display: flex; align-items: center; gap: 5px;
+    }
+    .level-filter input { width: 60px; text-align: center; }
+
     .item-list { }
     .item {
       background: #2a2a2a;
       padding: 12px;
       margin-bottom: 8px;
       border-left: 4px solid #444;
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto auto;
       align-items: center;
       gap: 15px;
     }
     .item.complete { border-left-color: #00ff00; opacity: 0.6; }
     .item.partial { border-left-color: #ffff00; }
-    .item-name { flex: 1; min-width: 200px; }
+
+    .item-level {
+      background: #333;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      min-width: 50px;
+      text-align: center;
+    }
+    .item-level.early { background: #006400; color: #90ee90; }
+    .item-level.mid { background: #8b8000; color: #ffff90; }
+    .item-level.late { background: #8b0000; color: #ff9090; }
+
+    .item-name { min-width: 200px; }
     .item-name strong { color: #fff; }
     .item-type { color: #888; font-size: 0.85em; }
+
+    .item-price {
+      font-size: 0.85em;
+      color: #00bfff;
+      min-width: 100px;
+      text-align: right;
+    }
+    .item-price.loading { color: #666; }
+    .price-change { font-size: 0.75em; }
+    .price-change.up { color: #ff4444; }
+    .price-change.down { color: #44ff44; }
+
     .item-count {
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .item-count input {
-      width: 60px;
-      background: #1a1a1a;
-      border: 1px solid #444;
-      color: #e0e0e0;
-      padding: 5px;
+      width: 50px;
       text-align: center;
-      font-family: inherit;
+      padding: 5px;
     }
-    .item-progress { color: #888; min-width: 80px; text-align: right; }
+    .item-count button { padding: 5px 10px; }
+
+    .item-progress { min-width: 70px; text-align: right; }
     .item-progress.done { color: #00ff00; }
-    .quests { font-size: 0.8em; color: #888; margin-top: 5px; }
+
+    .quests { font-size: 0.8em; color: #888; margin-top: 5px; grid-column: 1 / -1; }
     .quest-tag {
       display: inline-block;
       background: #333;
@@ -87,8 +122,11 @@
       border-radius: 3px;
     }
     .quest-tag.kappa { border: 1px solid #ffa500; }
+    .quest-tag .quest-level { color: #888; font-size: 0.9em; }
     .craft-tag { color: #00bfff; }
+
     .hidden { display: none; }
+
     .footer {
       margin-top: 30px;
       padding-top: 20px;
@@ -97,12 +135,21 @@
       color: #666;
     }
     .footer a { color: #ffa500; }
+
+    .api-status {
+      font-size: 0.85em;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    .api-status.ok { background: #1a3a1a; color: #90ee90; }
+    .api-status.error { background: #3a1a1a; color: #ff9090; }
+    .api-status.loading { background: #3a3a1a; color: #ffff90; }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Tarkov FiR Tracker</h1>
-    <p style="color:#888; margin-bottom:20px;">Found in Raid アイテム収集管理ツール</p>
+    <p class="subtitle">Found in Raid アイテム収集管理 + 進行状況 + フリマ価格</p>
 
     <div class="stats">
       <div class="stats-row">
@@ -110,44 +157,55 @@
           進捗: <span class="stat-value" id="progress">0/0</span>
         </div>
         <div class="stat">
-          完了アイテム: <span class="stat-value" id="completed-items">0/0</span>
+          完了: <span class="stat-value" id="completed-items">0/0</span>
         </div>
         <div class="stat">
-          総収集数: <span class="stat-value" id="total-collected">0</span>
+          収集済: <span class="stat-value" id="total-collected">0</span>
+        </div>
+        <div class="stat">
+          <span class="api-status" id="api-status">価格未取得</span>
         </div>
       </div>
     </div>
 
     <div class="controls">
       <input type="text" id="search" placeholder="アイテム名で検索...">
+      <div class="level-filter">
+        Lv <input type="number" id="level-min" value="1" min="1" max="70">
+        - <input type="number" id="level-max" value="70" min="1" max="70">
+      </div>
       <select id="filter">
-        <option value="all">すべて表示</option>
-        <option value="incomplete">未完了のみ</option>
-        <option value="partial">収集中のみ</option>
-        <option value="complete">完了のみ</option>
+        <option value="all">すべて</option>
+        <option value="incomplete">未完了</option>
+        <option value="partial">収集中</option>
+        <option value="complete">完了</option>
       </select>
       <select id="sort">
+        <option value="priority">進行順 (推奨)</option>
+        <option value="level">レベル順</option>
         <option value="required-desc">必要数 多い順</option>
-        <option value="required-asc">必要数 少ない順</option>
         <option value="name-asc">名前 A-Z</option>
-        <option value="progress-desc">進捗率 高い順</option>
+        <option value="price-desc">価格 高い順</option>
       </select>
+      <button class="price-btn" id="fetch-prices">価格取得</button>
       <button class="reset" onclick="resetProgress()">リセット</button>
     </div>
 
     <div class="item-list" id="item-list"></div>
 
     <div class="footer">
-      <p>データソース: <a href="https://github.com/fakundo/tarkov-raid-items" target="_blank">fakundo/tarkov-raid-items</a> + <a href="https://github.com/TarkovTracker/tarkovdata" target="_blank">TarkovTracker/tarkovdata</a></p>
-      <p>進捗はブラウザのCookieに保存されます</p>
+      <p>データ: <a href="https://github.com/TarkovTracker/tarkovdata" target="_blank">TarkovTracker</a> | 価格: <a href="https://tarkov.dev/api/" target="_blank">tarkov.dev API</a></p>
+      <p>進捗はCookieに保存 | 価格はセッション中のみ</p>
     </div>
   </div>
 
   <script>
-    // Embedded FiR data
+    // Embedded FiR data (replaced by build script)
     const FIR_DATA = PLACEHOLDER_DATA;
 
-    // Cookie functions
+    // ============================================
+    // Cookie Storage
+    // ============================================
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -160,8 +218,11 @@
       document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
     }
 
-    // Progress storage
+    // ============================================
+    // Progress State
+    // ============================================
     let progress = {};
+    let priceData = {};
 
     function loadProgress() {
       const saved = getCookie('tarkov_fir_progress');
@@ -196,7 +257,94 @@
       renderItems();
     }
 
+    // ============================================
+    // Price Fetching (tarkov.dev API)
+    // ============================================
+    async function fetchPrices() {
+      const btn = document.getElementById('fetch-prices');
+      const status = document.getElementById('api-status');
+
+      btn.classList.add('loading');
+      btn.disabled = true;
+      status.textContent = '価格取得中...';
+      status.className = 'api-status loading';
+
+      // Get item names to search
+      const itemNames = Object.values(FIR_DATA.items).map(i => i.name);
+
+      const query = `
+        query {
+          items {
+            id
+            name
+            shortName
+            avg24hPrice
+            low24hPrice
+            high24hPrice
+            changeLast48hPercent
+            iconLink
+          }
+        }
+      `;
+
+      try {
+        const response = await fetch('https://api.tarkov.dev/graphql', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        if (data.errors) throw new Error(data.errors[0].message);
+
+        // Build price lookup by name
+        const priceByName = {};
+        data.data.items.forEach(item => {
+          priceByName[item.name.toLowerCase()] = item;
+          priceByName[item.shortName.toLowerCase()] = item;
+        });
+
+        // Match to our items
+        Object.entries(FIR_DATA.items).forEach(([id, item]) => {
+          const match = priceByName[item.name.toLowerCase()] ||
+                        priceByName[item.nameShort.toLowerCase()];
+          if (match) {
+            priceData[id] = {
+              avg: match.avg24hPrice,
+              low: match.low24hPrice,
+              high: match.high24hPrice,
+              change: match.changeLast48hPercent,
+              icon: match.iconLink
+            };
+          }
+        });
+
+        status.textContent = `価格取得完了 (${Object.keys(priceData).length}件)`;
+        status.className = 'api-status ok';
+        renderItems();
+
+      } catch (err) {
+        console.error('Price fetch error:', err);
+        status.textContent = `エラー: ${err.message}`;
+        status.className = 'api-status error';
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    function formatPrice(price) {
+      if (!price) return '-';
+      if (price >= 1000000) return (price / 1000000).toFixed(1) + 'M';
+      if (price >= 1000) return Math.round(price / 1000) + 'K';
+      return price.toString();
+    }
+
+    // ============================================
     // Stats
+    // ============================================
     function updateStats() {
       let totalRequired = 0;
       let totalCollected = 0;
@@ -217,40 +365,54 @@
       document.getElementById('total-collected').textContent = totalCollected;
     }
 
+    // ============================================
     // Render
+    // ============================================
     function renderItems() {
       const search = document.getElementById('search').value.toLowerCase();
       const filter = document.getElementById('filter').value;
       const sort = document.getElementById('sort').value;
+      const levelMin = parseInt(document.getElementById('level-min').value) || 1;
+      const levelMax = parseInt(document.getElementById('level-max').value) || 70;
 
       let items = Object.entries(FIR_DATA.items).map(([id, item]) => ({
         id,
         ...item,
-        collected: getCollected(id)
+        collected: getCollected(id),
+        price: priceData[id]
       }));
 
       // Filter
       items = items.filter(item => {
         if (search && !item.name.toLowerCase().includes(search)) return false;
+
+        const level = item.earliestAccess?.level || 1;
+        if (level < levelMin || level > levelMax) return false;
+
         const isComplete = item.collected >= item.totalRequired;
         const isPartial = item.collected > 0 && !isComplete;
         if (filter === 'incomplete' && isComplete) return false;
         if (filter === 'partial' && !isPartial) return false;
         if (filter === 'complete' && !isComplete) return false;
+
         return true;
       });
 
       // Sort
       items.sort((a, b) => {
         switch (sort) {
-          case 'required-desc': return b.totalRequired - a.totalRequired;
-          case 'required-asc': return a.totalRequired - b.totalRequired;
-          case 'name-asc': return a.name.localeCompare(b.name);
-          case 'progress-desc':
-            const pA = a.collected / a.totalRequired;
-            const pB = b.collected / b.totalRequired;
-            return pB - pA;
-          default: return 0;
+          case 'priority':
+            return (a.earliestAccess?.priority || 999) - (b.earliestAccess?.priority || 999);
+          case 'level':
+            return (a.earliestAccess?.level || 99) - (b.earliestAccess?.level || 99);
+          case 'required-desc':
+            return b.totalRequired - a.totalRequired;
+          case 'name-asc':
+            return a.name.localeCompare(b.name);
+          case 'price-desc':
+            return (b.price?.avg || 0) - (a.price?.avg || 0);
+          default:
+            return 0;
         }
       });
 
@@ -261,21 +423,40 @@
         const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : '';
         const progressClass = isComplete ? 'done' : '';
 
+        const level = item.earliestAccess?.level || '?';
+        const levelClass = level <= 10 ? 'early' : level <= 25 ? 'mid' : 'late';
+
         const questTags = item.questBreakdown.map(q =>
-          `<span class="quest-tag${q.kappa ? ' kappa' : ''}">${q.questName} (${q.count})</span>`
+          `<span class="quest-tag${q.kappa ? ' kappa' : ''}">
+            <span class="quest-level">Lv${q.level}</span> ${q.questName} (${q.count})
+          </span>`
         ).join('');
 
         const craftInfo = item.canCraft
-          ? `<span class="craft-tag">[Craft: ${item.craftLocations.join(', ')}]</span>`
+          ? `<span class="craft-tag">[Craft]</span>`
           : '';
+
+        // Price display
+        let priceHtml = '<span class="item-price">-</span>';
+        if (item.price) {
+          const changeClass = item.price.change > 0 ? 'up' : item.price.change < 0 ? 'down' : '';
+          const changeSign = item.price.change > 0 ? '+' : '';
+          priceHtml = `
+            <span class="item-price">
+              ${formatPrice(item.price.avg)}
+              <span class="price-change ${changeClass}">${changeSign}${item.price.change?.toFixed(1) || 0}%</span>
+            </span>
+          `;
+        }
 
         return `
           <div class="item ${statusClass}">
+            <div class="item-level ${levelClass}">Lv${level}</div>
             <div class="item-name">
               <strong>${item.name}</strong>
               <div class="item-type">${item.type} ${craftInfo}</div>
-              <div class="quests">${questTags}</div>
             </div>
+            ${priceHtml}
             <div class="item-count">
               <button onclick="setCollected('${item.id}', ${item.collected - 1})">-</button>
               <input type="number" value="${item.collected}" min="0" max="${item.totalRequired}"
@@ -285,6 +466,7 @@
             <div class="item-progress ${progressClass}">
               ${item.collected}/${item.totalRequired}
             </div>
+            <div class="quests">${questTags}</div>
           </div>
         `;
       }).join('');
@@ -299,12 +481,19 @@
       }
     }
 
-    // Event listeners
+    // ============================================
+    // Event Listeners
+    // ============================================
     document.getElementById('search').addEventListener('input', renderItems);
     document.getElementById('filter').addEventListener('change', renderItems);
     document.getElementById('sort').addEventListener('change', renderItems);
+    document.getElementById('level-min').addEventListener('change', renderItems);
+    document.getElementById('level-max').addEventListener('change', renderItems);
+    document.getElementById('fetch-prices').addEventListener('click', fetchPrices);
 
+    // ============================================
     // Initialize
+    // ============================================
     loadProgress();
     updateStats();
     renderItems();

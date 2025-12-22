@@ -1,35 +1,37 @@
 {
   "metadata": {
-    "generatedAt": "2025-12-22T06:57:31.012Z",
+    "generatedAt": "2025-12-22T07:10:56.385Z",
     "source": "fakundo/tarkov-raid-items + TarkovTracker/tarkovdata",
     "totalUniqueItems": 169,
     "totalItemsNeeded": 607
   },
   "items": {
-    "BOTTLE_OF_PEVKO_LIGHT_BEER": {
-      "name": "Bottle of Pevko Light beer",
-      "nameShort": "Pevko",
-      "type": "Drink",
-      "totalRequired": 27,
+    "SALEWA_FIRST_AID_KIT": {
+      "name": "Salewa first aid kit",
+      "nameShort": "Salewa",
+      "type": "Medical supply",
+      "totalRequired": 3,
       "questBreakdown": [
         {
-          "questId": "BOOZE",
-          "questName": "Booze",
-          "count": 20,
-          "dealer": "RAGMAN",
-          "kappa": false
-        },
-        {
-          "questId": "EASY_MONEY_PART_2",
-          "questName": "Easy Money - Part 2",
-          "count": 7,
-          "dealer": "REF",
-          "kappa": false
+          "questId": "SHORTAGE",
+          "questName": "Shortage",
+          "count": 3,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 10
         }
       ],
+      "earliestAccess": {
+        "questName": "Shortage",
+        "level": 1,
+        "depth": 0,
+        "priority": 10
+      },
       "canCraft": true,
       "craftLocations": [
-        "NUTRITION_UNIT"
+        "MEDSTATION"
       ]
     },
     "DOGTAG_BEAR": {
@@ -39,20 +41,32 @@
       "totalRequired": 25,
       "questBreakdown": [
         {
-          "questId": "COMPENSATION_FOR_DAMAGE_TRUST",
-          "questName": "Compensation for Damage - Trust",
-          "count": 5,
-          "dealer": "FENCE",
-          "kappa": false
-        },
-        {
           "questId": "COUNTERACTION",
           "questName": "Counteraction",
           "count": 20,
           "dealer": "PEACEKEEPER",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 11,
+          "priority": 21
+        },
+        {
+          "questId": "COMPENSATION_FOR_DAMAGE_TRUST",
+          "questName": "Compensation for Damage - Trust",
+          "count": 5,
+          "dealer": "FENCE",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Counteraction",
+        "level": 1,
+        "depth": 11,
+        "priority": 21
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -67,69 +81,229 @@
           "questName": "Our Own Land",
           "count": 20,
           "dealer": "PRAPOR",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 11,
+          "priority": 21
         },
         {
           "questId": "COMPENSATION_FOR_DAMAGE_TRUST",
           "questName": "Compensation for Damage - Trust",
           "count": 5,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Our Own Land",
+        "level": 1,
+        "depth": 11,
+        "priority": 21
+      },
       "canCraft": false,
       "craftLocations": []
     },
-    "PILE_OF_MEDS": {
-      "name": "Pile of meds",
-      "nameShort": "Meds",
-      "type": "Medical supply",
-      "totalRequired": 20,
+    "ISKRA_LUNCH_BOX": {
+      "name": "Iskra ration pack",
+      "nameShort": "Iskra",
+      "type": "Food",
+      "totalRequired": 3,
       "questBreakdown": [
         {
-          "questId": "CRISIS",
-          "questName": "Crisis",
-          "count": 20,
-          "dealer": "THERAPIST",
-          "kappa": true
+          "questId": "ACQUAINTANCE",
+          "questName": "Acquaintance",
+          "count": 3,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 2,
+          "depth": 1,
+          "priority": 21
         }
       ],
+      "earliestAccess": {
+        "questName": "Acquaintance",
+        "level": 2,
+        "depth": 1,
+        "priority": 21
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "NUTRITION_UNIT"
+      ]
+    },
+    "CAN_OF_DELICIOUS_BEEF_STEW": {
+      "name": "Can of beef stew (Large)",
+      "nameShort": "Tushonka",
+      "type": "Food",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "ACQUAINTANCE",
+          "questName": "Acquaintance",
+          "count": 2,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 2,
+          "depth": 1,
+          "priority": 21
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Acquaintance",
+        "level": 2,
+        "depth": 1,
+        "priority": 21
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "NOODLES": {
+      "name": "Pack of instant noodles",
+      "nameShort": "Noodles",
+      "type": "Food",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "ACQUAINTANCE",
+          "questName": "Acquaintance",
+          "count": 2,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 2,
+          "depth": 1,
+          "priority": 21
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Acquaintance",
+        "level": 2,
+        "depth": 1,
+        "priority": 21
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "MODULE_3_M_BODYARMOR": {
+      "name": "BNTI Module-3M body armor",
+      "nameShort": "Module-3M",
+      "type": "Armor vest",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SUPPLIER",
+          "questName": "Supplier",
+          "count": 1,
+          "dealer": "SKIER",
+          "kappa": true,
+          "level": 5,
+          "depth": 0,
+          "priority": 50
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Supplier",
+        "level": 5,
+        "depth": 0,
+        "priority": 50
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "TOZ_106_BOLT_ACTION_SHOTGUN": {
+      "name": "TOZ-106 20ga bolt-action shotgun",
+      "nameShort": "TOZ-106",
+      "type": "Weapon Shotgun",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SUPPLIER",
+          "questName": "Supplier",
+          "count": 1,
+          "dealer": "SKIER",
+          "kappa": true,
+          "level": 5,
+          "depth": 0,
+          "priority": 50
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Supplier",
+        "level": 5,
+        "depth": 0,
+        "priority": 50
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "MORPHINE_INJECTOR": {
+      "name": "Morphine injector",
+      "nameShort": "Morphine",
+      "type": "Injector",
+      "totalRequired": 8,
+      "questBreakdown": [
+        {
+          "questId": "PAINKILLER",
+          "questName": "Painkiller",
+          "count": 4,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 8,
+          "depth": 3,
+          "priority": 83
+        },
+        {
+          "questId": "SPA_TOUR_PART_7",
+          "questName": "Spa Tour - Part 7",
+          "count": 4,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Painkiller",
+        "level": 8,
+        "depth": 3,
+        "priority": 83
+      },
       "canCraft": true,
       "craftLocations": [
         "MEDSTATION"
       ]
     },
-    "SECURE_FLASH_DRIVE": {
-      "name": "Secure Flash drive",
-      "nameShort": "Flash drive",
-      "type": "Info item",
-      "totalRequired": 20,
+    "60_ROUND_6_L_31_5_45_X_39_MAGAZINE_FOR_AK_74_AND_COMPATIBLES": {
+      "name": "AK-74 5.45x39 6L31 60-round magazine",
+      "nameShort": "6L31",
+      "type": "Magazine",
+      "totalRequired": 3,
       "questBreakdown": [
         {
-          "questId": "WHATS_ON_THE_FLASH_DRIVE",
-          "questName": "What’s on the Flash Drive?",
-          "count": 2,
-          "dealer": "SKIER",
-          "kappa": true
-        },
-        {
-          "questId": "MAKE_AMENDS_SOFTWARE",
-          "questName": "Make Amends - Software",
-          "count": 15,
-          "dealer": "MECHANIC",
-          "kappa": false
-        },
-        {
-          "questId": "SHADY_BUSINESS",
-          "questName": "Shady Business",
+          "questId": "ICE_CREAM_CONES",
+          "questName": "Ice Cream Cones",
           "count": 3,
-          "dealer": "JAEGER",
-          "kappa": true
+          "dealer": "PRAPOR",
+          "kappa": true,
+          "level": 9,
+          "depth": 5,
+          "priority": 95
         }
       ],
+      "earliestAccess": {
+        "questName": "Ice Cream Cones",
+        "level": 9,
+        "depth": 5,
+        "priority": 95
+      },
       "canCraft": true,
       "craftLocations": [
-        "INTELLIGENCE_CENTER"
+        "LAVATORY"
       ]
     },
     "CAN_OF_BEEF_STEW": {
@@ -143,288 +317,21 @@
           "questName": "General Wares",
           "count": 15,
           "dealer": "THERAPIST",
-          "kappa": true
+          "kappa": true,
+          "level": 10,
+          "depth": 5,
+          "priority": 105
         }
       ],
+      "earliestAccess": {
+        "questName": "General Wares",
+        "level": 10,
+        "depth": 5,
+        "priority": 105
+      },
       "canCraft": true,
       "craftLocations": [
         "NUTRITION_UNIT"
-      ]
-    },
-    "CPU_FAN": {
-      "name": "CPU fan",
-      "nameShort": "CPU fan",
-      "type": "Electronics",
-      "totalRequired": 15,
-      "questBreakdown": [
-        {
-          "questId": "FARMING_PART_4",
-          "questName": "Farming - Part 4",
-          "count": 15,
-          "dealer": "MECHANIC",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "SJ_1": {
-      "name": "SJ1 TGLabs combat stimulant injector",
-      "nameShort": "SJ1",
-      "type": "Injector",
-      "totalRequired": 15,
-      "questBreakdown": [
-        {
-          "questId": "ASSESSMENT_PART_3",
-          "questName": "Assessment - Part 3",
-          "count": 15,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
-    },
-    "BOTTLE_OF_OLOLO_MULTIVITAMINS": {
-      "name": "Bottle of OLOLO Multivitamins",
-      "nameShort": "Vitam.",
-      "type": "Medical supply",
-      "totalRequired": 14,
-      "questBreakdown": [
-        {
-          "questId": "CRISIS",
-          "questName": "Crisis",
-          "count": 10,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "THIRSTY_SECRETS",
-          "questName": "Thirsty - Secrets",
-          "count": 4,
-          "dealer": "THERAPIST",
-          "kappa": false
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BOTTLE_OF_TARKOVSKAYA_VODKA": {
-      "name": "Bottle of Tarkovskaya vodka",
-      "nameShort": "Vodka",
-      "type": "Drink",
-      "totalRequired": 12,
-      "questBreakdown": [
-        {
-          "questId": "BOOZE",
-          "questName": "Booze",
-          "count": 10,
-          "dealer": "RAGMAN",
-          "kappa": false
-        },
-        {
-          "questId": "EASY_MONEY_PART_2",
-          "questName": "Easy Money - Part 2",
-          "count": 2,
-          "dealer": "REF",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "NUTRITION_UNIT"
-      ]
-    },
-    "CULTIST_KNIFE": {
-      "name": "Cultist knife",
-      "nameShort": "Knife",
-      "type": "Weapon Melee",
-      "totalRequired": 12,
-      "questBreakdown": [
-        {
-          "questId": "NIGHT_SWEEP",
-          "questName": "Night Sweep",
-          "count": 12,
-          "dealer": "SKIER",
-          "kappa": false
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "TERRA_GROUP_LABS_ACCESS_KEYCARD": {
-      "name": "TerraGroup Labs access keycard",
-      "nameShort": "Access",
-      "type": "Keycard",
-      "totalRequired": 12,
-      "questBreakdown": [
-        {
-          "questId": "COLLEAGUES_PART_3",
-          "questName": "Colleagues - Part 3",
-          "count": 10,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "FISHING_PLACE",
-          "questName": "Fishing Place",
-          "count": 2,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BOTTLE_OF_DAN_JACKIEL_WHISKEY": {
-      "name": "Bottle of Dan Jackiel whiskey",
-      "nameShort": "Whiskey",
-      "type": "Drink",
-      "totalRequired": 11,
-      "questBreakdown": [
-        {
-          "questId": "COMPENSATION_FOR_DAMAGE_BARKEEP",
-          "questName": "Compensation for Damage - Barkeep",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": false
-        },
-        {
-          "questId": "BOOZE",
-          "questName": "Booze",
-          "count": 10,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "NUTRITION_UNIT"
-      ]
-    },
-    "MILITARY_COFDM_WIRELESS_SIGNAL_TRANSMITTER": {
-      "name": "Military COFDM Wireless Signal Transmitter",
-      "nameShort": "SG-C10",
-      "type": "Electronics",
-      "totalRequired": 11,
-      "questBreakdown": [
-        {
-          "questId": "LEND_LEASE_PART_2",
-          "questName": "Lend-Lease - Part 2",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        },
-        {
-          "questId": "SPECIAL_EQUIPMENT",
-          "questName": "Special Equipment",
-          "count": 5,
-          "dealer": "PEACEKEEPER",
-          "kappa": false
-        },
-        {
-          "questId": "NETWORK_PROVIDER_PART_1",
-          "questName": "Network Provider - Part 1",
-          "count": 4,
-          "dealer": "MECHANIC",
-          "kappa": false
-        },
-        {
-          "questId": "KEY_TO_THE_TOWER",
-          "questName": "Key to the Tower",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "INTELLIGENCE_CENTER"
-      ]
-    },
-    "FLEECE_CLOTH": {
-      "name": "Fleece fabric",
-      "nameShort": "Fleece",
-      "type": "Cloth",
-      "totalRequired": 10,
-      "questBreakdown": [
-        {
-          "questId": "TEXTILE_PART_2",
-          "questName": "Textile - Part 2",
-          "count": 10,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
-      ]
-    },
-    "POLYAMIDE_FABRIC_CORDURA": {
-      "name": "Cordura polyamide fabric",
-      "nameShort": "Cordura",
-      "type": "Cloth",
-      "totalRequired": 10,
-      "questBreakdown": [
-        {
-          "questId": "TEXTILE_PART_2",
-          "questName": "Textile - Part 2",
-          "count": 10,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
-      ]
-    },
-    "RIPSTOP_CLOTH": {
-      "name": "Ripstop fabric",
-      "nameShort": "Ripstop",
-      "type": "Cloth",
-      "totalRequired": 10,
-      "questBreakdown": [
-        {
-          "questId": "TEXTILE_PART_1",
-          "questName": "Textile - Part 1",
-          "count": 10,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
-      ]
-    },
-    "MORPHINE_INJECTOR": {
-      "name": "Morphine injector",
-      "nameShort": "Morphine",
-      "type": "Injector",
-      "totalRequired": 8,
-      "questBreakdown": [
-        {
-          "questId": "PAINKILLER",
-          "questName": "Painkiller",
-          "count": 4,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "SPA_TOUR_PART_7",
-          "questName": "Spa Tour - Part 7",
-          "count": 4,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
       ]
     },
     "SPARK_PLUG": {
@@ -438,314 +345,49 @@
           "questName": "Car Repair",
           "count": 8,
           "dealer": "THERAPIST",
-          "kappa": true
+          "kappa": true,
+          "level": 10,
+          "depth": 5,
+          "priority": 105
         }
       ],
+      "earliestAccess": {
+        "questName": "Car Repair",
+        "level": 10,
+        "depth": 5,
+        "priority": 105
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
     },
-    "BROKEN_G_PHONE": {
-      "name": "Broken GPhone smartphone",
-      "nameShort": "GPhone",
-      "type": "Electronics",
-      "totalRequired": 7,
+    "CAR_BATTERY": {
+      "name": "Car battery",
+      "nameShort": "Car battery",
+      "type": "Energy element",
+      "totalRequired": 4,
       "questBreakdown": [
         {
-          "questId": "SIGNAL_PART_2",
-          "questName": "Signal - Part 2",
-          "count": 3,
-          "dealer": "MECHANIC",
-          "kappa": true
-        },
-        {
-          "questId": "NETWORK_PROVIDER_PART_1",
-          "questName": "Network Provider - Part 1",
+          "questId": "CAR_REPAIR",
+          "questName": "Car Repair",
           "count": 4,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WORKBENCH"
-      ]
-    },
-    "GAS_ANALYZER": {
-      "name": "Gas analyzer",
-      "nameShort": "GasAn",
-      "type": "Electronics",
-      "totalRequired": 7,
-      "questBreakdown": [
-        {
-          "questId": "SANITARY_STANDARDS_PART_1",
-          "questName": "Sanitary Standards - Part 1",
-          "count": 1,
           "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "SANITARY_STANDARDS_PART_2",
-          "questName": "Sanitary Standards - Part 2",
-          "count": 2,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "NETWORK_PROVIDER_PART_1",
-          "questName": "Network Provider - Part 1",
-          "count": 4,
-          "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": true,
+          "level": 10,
+          "depth": 5,
+          "priority": 105
         }
       ],
+      "earliestAccess": {
+        "questName": "Car Repair",
+        "level": 10,
+        "depth": 5,
+        "priority": 105
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
-      ]
-    },
-    "LOWER_HALF_MASK": {
-      "name": "Lower half-mask",
-      "nameShort": "Half-mask",
-      "type": "Face cover",
-      "totalRequired": 7,
-      "questBreakdown": [
-        {
-          "questId": "THE_PUNISHER_PART_2",
-          "questName": "The Punisher - Part 2",
-          "count": 7,
-          "dealer": "PRAPOR",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "VIRTEX_PROGRAMMABLE_PROCESSOR": {
-      "name": "Virtex programmable processor",
-      "nameShort": "Virtex",
-      "type": "Electronics",
-      "totalRequired": 7,
-      "questBreakdown": [
-        {
-          "questId": "LEND_LEASE_PART_2",
-          "questName": "Lend-Lease - Part 2",
-          "count": 2,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        },
-        {
-          "questId": "SPECIAL_EQUIPMENT",
-          "questName": "Special Equipment",
-          "count": 5,
-          "dealer": "PEACEKEEPER",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "INTELLIGENCE_CENTER"
-      ]
-    },
-    "CAPACITORS": {
-      "name": "Capacitors",
-      "nameShort": "Caps",
-      "type": "Electronics",
-      "totalRequired": 6,
-      "questBreakdown": [
-        {
-          "questId": "FERTILIZERS",
-          "questName": "Fertilizers",
-          "count": 5,
-          "dealer": "MECHANIC",
-          "kappa": true
-        },
-        {
-          "questId": "CAMERA_ACTION",
-          "questName": "Camera, Action!",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WORKBENCH"
-      ]
-    },
-    "UHF_RFID_READER": {
-      "name": "UHF RFID Reader",
-      "nameShort": "RFIDR",
-      "type": "Electronics",
-      "totalRequired": 6,
-      "questBreakdown": [
-        {
-          "questId": "SPECIAL_EQUIPMENT",
-          "questName": "Special Equipment",
-          "count": 5,
-          "dealer": "PEACEKEEPER",
-          "kappa": false
-        },
-        {
-          "questId": "IMPORT",
-          "questName": "Import",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "INTELLIGENCE_CENTER"
-      ]
-    },
-    "VPX_FLASH_STORAGE_MODULE": {
-      "name": "VPX Flash Storage Module",
-      "nameShort": "VPX",
-      "type": "Electronics",
-      "totalRequired": 6,
-      "questBreakdown": [
-        {
-          "questId": "SPECIAL_EQUIPMENT",
-          "questName": "Special Equipment",
-          "count": 5,
-          "dealer": "PEACEKEEPER",
-          "kappa": false
-        },
-        {
-          "questId": "IMPORT",
-          "questName": "Import",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "INTELLIGENCE_CENTER"
-      ]
-    },
-    "WIRES": {
-      "name": "Bundle of wires",
-      "nameShort": "Wires",
-      "type": "Electronics",
-      "totalRequired": 6,
-      "questBreakdown": [
-        {
-          "questId": "FERTILIZERS",
-          "questName": "Fertilizers",
-          "count": 5,
-          "dealer": "MECHANIC",
-          "kappa": true
-        },
-        {
-          "questId": "CAMERA_ACTION",
-          "questName": "Camera, Action!",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WORKBENCH"
-      ]
-    },
-    "ARAMID_FIBER_CLOTH": {
-      "name": "Aramid fiber fabric",
-      "nameShort": "Aramid",
-      "type": "Cloth",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "TEXTILE_PART_1",
-          "questName": "Textile - Part 1",
-          "count": 5,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
-      ]
-    },
-    "BARS_A_2607_95_X_18": {
-      "name": "Bars A-2607 95Kh18 knife",
-      "nameShort": "A-2607",
-      "type": "Weapon Melee",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "THE_PUNISHER_PART_4",
-          "questName": "The Punisher - Part 4",
-          "count": 5,
-          "dealer": "PRAPOR",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "DRIED_MEAT": {
-      "name": "Pack of Tarker dried meat",
-      "nameShort": "Tarker",
-      "type": "Food",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "EASY_MONEY_PART_2",
-          "questName": "Easy Money - Part 2",
-          "count": 5,
-          "dealer": "REF",
-          "kappa": false
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "EL_COMPONENTS": {
-      "name": "Electronic components",
-      "nameShort": "EC",
-      "type": "Electronics",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "NETWORK_PROVIDER_PART_1",
-          "questName": "Network Provider - Part 1",
-          "count": 4,
-          "dealer": "MECHANIC",
-          "kappa": false
-        },
-        {
-          "questId": "CAMERA_ACTION",
-          "questName": "Camera, Action!",
-          "count": 1,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "KEKTAPE_DUCT_TAPE": {
-      "name": "KEKTAPE duct tape",
-      "nameShort": "KEK",
-      "type": "Other",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "TEXTILE_PART_2",
-          "questName": "Textile - Part 2",
-          "count": 5,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
       ]
     },
     "MALBORO_CIGARETTES": {
@@ -759,75 +401,20 @@
           "questName": "Bad Habit",
           "count": 5,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 12,
+          "depth": 3,
+          "priority": 123
         }
       ],
+      "earliestAccess": {
+        "questName": "Bad Habit",
+        "level": 12,
+        "depth": 3,
+        "priority": 123
+      },
       "canCraft": false,
       "craftLocations": []
-    },
-    "OFZ_30_X_160_MM_SHELL": {
-      "name": "OFZ 30x165mm shell",
-      "nameShort": "OFZ",
-      "type": "Other",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "REGULATED_MATERIALS",
-          "questName": "Regulated Materials",
-          "count": 5,
-          "dealer": "PRAPOR",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WORKBENCH"
-      ]
-    },
-    "PRINTED_CIRCUIT_BOARD": {
-      "name": "Printed circuit board",
-      "nameShort": "PCB",
-      "type": "Electronics",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "SIGNAL_PART_2",
-          "questName": "Signal - Part 2",
-          "count": 3,
-          "dealer": "MECHANIC",
-          "kappa": true
-        },
-        {
-          "questId": "FARMING_PART_2",
-          "questName": "Farming - Part 2",
-          "count": 2,
-          "dealer": "MECHANIC",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WORKBENCH"
-      ]
-    },
-    "SJ_6": {
-      "name": "SJ6 TGLabs combat stimulant injector",
-      "nameShort": "SJ6",
-      "type": "Injector",
-      "totalRequired": 5,
-      "questBreakdown": [
-        {
-          "questId": "ASSESSMENT_PART_3",
-          "questName": "Assessment - Part 3",
-          "count": 5,
-          "dealer": "MECHANIC",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
     },
     "STRIKE_CIGARETTES": {
       "name": "Strike Cigarettes",
@@ -840,9 +427,18 @@
           "questName": "Bad Habit",
           "count": 5,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 12,
+          "depth": 3,
+          "priority": 123
         }
       ],
+      "earliestAccess": {
+        "questName": "Bad Habit",
+        "level": 12,
+        "depth": 3,
+        "priority": 123
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -857,114 +453,630 @@
           "questName": "Bad Habit",
           "count": 5,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 12,
+          "depth": 3,
+          "priority": 123
         }
       ],
+      "earliestAccess": {
+        "questName": "Bad Habit",
+        "level": 12,
+        "depth": 3,
+        "priority": 123
+      },
       "canCraft": true,
       "craftLocations": [
         "NUTRITION_UNIT"
       ]
     },
-    "5_L_PROPANE_TANK": {
-      "name": "Propane tank (5L)",
-      "nameShort": "Propane",
-      "type": "Flammable material",
-      "totalRequired": 4,
+    "KINDA_COWBOY_HAT": {
+      "name": "Kinda cowboy hat",
+      "nameShort": "Cowboy",
+      "type": "Headwear",
+      "totalRequired": 2,
       "questBreakdown": [
         {
-          "questId": "THIRSTY_BREADWINNER",
-          "questName": "Thirsty - Breadwinner",
+          "questId": "DRESSED_TO_KILL",
+          "questName": "Dressed to Kill",
           "count": 2,
-          "dealer": "SKIER",
-          "kappa": false
-        },
-        {
-          "questId": "SPA_TOUR_PART_7",
-          "questName": "Spa Tour - Part 7",
-          "count": 2,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 15,
+          "depth": 3,
+          "priority": 153
         }
       ],
+      "earliestAccess": {
+        "questName": "Dressed to Kill",
+        "level": 15,
+        "depth": 3,
+        "priority": 153
+      },
       "canCraft": false,
       "craftLocations": []
     },
-    "CAR_BATTERY": {
-      "name": "Car battery",
-      "nameShort": "Car battery",
-      "type": "Energy element",
-      "totalRequired": 4,
+    "USHANKA_EAR_FLAP_CAP": {
+      "name": "Ushanka ear flap hat",
+      "nameShort": "Ushanka",
+      "type": "Headwear",
+      "totalRequired": 2,
       "questBreakdown": [
         {
-          "questId": "CAR_REPAIR",
-          "questName": "Car Repair",
-          "count": 4,
-          "dealer": "THERAPIST",
-          "kappa": true
+          "questId": "DRESSED_TO_KILL",
+          "questName": "Dressed to Kill",
+          "count": 2,
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 15,
+          "depth": 3,
+          "priority": 153
         }
       ],
+      "earliestAccess": {
+        "questName": "Dressed to Kill",
+        "level": 15,
+        "depth": 3,
+        "priority": 153
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "SECURE_FLASH_DRIVE": {
+      "name": "Secure Flash drive",
+      "nameShort": "Flash drive",
+      "type": "Info item",
+      "totalRequired": 20,
+      "questBreakdown": [
+        {
+          "questId": "SHADY_BUSINESS",
+          "questName": "Shady Business",
+          "count": 3,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 20,
+          "depth": 3,
+          "priority": 203
+        },
+        {
+          "questId": "WHATS_ON_THE_FLASH_DRIVE",
+          "questName": "What’s on the Flash Drive?",
+          "count": 2,
+          "dealer": "SKIER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "MAKE_AMENDS_SOFTWARE",
+          "questName": "Make Amends - Software",
+          "count": 15,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Shady Business",
+        "level": 20,
+        "depth": 3,
+        "priority": 203
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "INTELLIGENCE_CENTER"
+      ]
+    },
+    "3_B_TG": {
+      "name": "3-(b-TG) stimulant injector",
+      "nameShort": "3-(b-TG)",
+      "type": "Injector",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        },
+        {
+          "questId": "COLLEAGUES_PART_3",
+          "questName": "Colleagues - Part 3",
+          "count": 1,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "AHF_1_M": {
+      "name": "AHF1-M stimulant injector",
+      "nameShort": "AHF1-M",
+      "type": "Injector",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        },
+        {
+          "questId": "COLLEAGUES_PART_3",
+          "questName": "Colleagues - Part 3",
+          "count": 1,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "COCKTAIL_OBDOLBOS": {
+      "name": "Obdolbos cocktail injector",
+      "nameShort": "Obdolbos",
+      "type": "Injector",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "L_1_NOREPINEPHRINE": {
+      "name": "L1 (Norepinephrine) injector",
+      "nameShort": "L1",
+      "type": "Injector",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "MELDONIN": {
+      "name": "Meldonin injector",
+      "nameShort": "Meldonin",
+      "type": "Injector",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "M_U_L_E_STIMULATOR": {
+      "name": "M.U.L.E. stimulant injector",
+      "nameShort": "M.U.L.E.",
+      "type": "Injector",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "P_22": {
+      "name": "P22 (Product 22) stimulant injector",
+      "nameShort": "P22",
+      "type": "Injector",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "SAMPLES",
+          "questName": "Samples",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 21,
+          "depth": 8,
+          "priority": 218
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Samples",
+        "level": 21,
+        "depth": 8,
+        "priority": 218
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "OFZ_30_X_160_MM_SHELL": {
+      "name": "OFZ 30x165mm shell",
+      "nameShort": "OFZ",
+      "type": "Other",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "REGULATED_MATERIALS",
+          "questName": "Regulated Materials",
+          "count": 5,
+          "dealer": "PRAPOR",
+          "kappa": true,
+          "level": 25,
+          "depth": 5,
+          "priority": 255
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Regulated Materials",
+        "level": 25,
+        "depth": 5,
+        "priority": 255
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
     },
-    "CORRUGATED_HOSE": {
-      "name": "Corrugated hose",
-      "nameShort": "Hose",
-      "type": "Other",
+    "PORTABLE_DEFIBRILLATOR": {
+      "name": "Portable defibrillator",
+      "nameShort": "Defib",
+      "type": "Medical supply",
       "totalRequired": 4,
       "questBreakdown": [
         {
-          "questId": "SPA_TOUR_PART_3",
-          "questName": "Spa Tour - Part 3",
-          "count": 2,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
+          "questId": "AMBULANCE",
+          "questName": "Ambulance",
+          "count": 1,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 25,
+          "depth": 5,
+          "priority": 255
         },
         {
-          "questId": "SPA_TOUR_PART_7",
-          "questName": "Spa Tour - Part 7",
-          "count": 2,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
+          "questId": "CRISIS",
+          "questName": "Crisis",
+          "count": 3,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 48,
+          "depth": 0,
+          "priority": 480
         }
       ],
+      "earliestAccess": {
+        "questName": "Ambulance",
+        "level": 25,
+        "depth": 5,
+        "priority": 255
+      },
       "canCraft": true,
       "craftLocations": [
-        "LAVATORY"
+        "MEDSTATION"
       ]
     },
-    "FUEL_CONDITIONER": {
-      "name": "Fuel conditioner",
-      "nameShort": "FCond",
-      "type": "Flammable material",
-      "totalRequired": 4,
+    "CMS_KIT": {
+      "name": "CMS surgical kit",
+      "nameShort": "CMS",
+      "type": "Jaeger",
+      "totalRequired": 2,
       "questBreakdown": [
         {
-          "questId": "THE_BLOOD_OF_WAR_PART_2",
-          "questName": "The Blood of War - Part 2",
-          "count": 4,
-          "dealer": "RAGMAN",
-          "kappa": true
+          "questId": "AMBULANCE",
+          "questName": "Ambulance",
+          "count": 2,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 25,
+          "depth": 5,
+          "priority": 255
         }
       ],
+      "earliestAccess": {
+        "questName": "Ambulance",
+        "level": 25,
+        "depth": 5,
+        "priority": 255
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "6_STEN_140_M_MILITARY_BATTERY": {
+      "name": "6-STEN-140-M military battery",
+      "nameShort": "Tank battery",
+      "type": "Energy element",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "REGULATED_MATERIALS",
+          "questName": "Regulated Materials",
+          "count": 1,
+          "dealer": "PRAPOR",
+          "kappa": true,
+          "level": 25,
+          "depth": 5,
+          "priority": 255
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Regulated Materials",
+        "level": 25,
+        "depth": 5,
+        "priority": 255
+      },
       "canCraft": false,
       "craftLocations": []
     },
-    "MILITARY_FLASH_DRIVE": {
-      "name": "Military flash drive",
-      "nameShort": "MFD",
-      "type": "Info item",
-      "totalRequired": 4,
+    "TERRA_GROUP_LABS_ACCESS_KEYCARD": {
+      "name": "TerraGroup Labs access keycard",
+      "nameShort": "Access",
+      "type": "Keycard",
+      "totalRequired": 12,
       "questBreakdown": [
+        {
+          "questId": "FISHING_PLACE",
+          "questName": "Fishing Place",
+          "count": 2,
+          "dealer": "JAEGER",
+          "kappa": true,
+          "level": 25,
+          "depth": 6,
+          "priority": 256
+        },
+        {
+          "questId": "COLLEAGUES_PART_3",
+          "questName": "Colleagues - Part 3",
+          "count": 10,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Fishing Place",
+        "level": 25,
+        "depth": 6,
+        "priority": 256
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CAPACITORS": {
+      "name": "Capacitors",
+      "nameShort": "Caps",
+      "type": "Electronics",
+      "totalRequired": 6,
+      "questBreakdown": [
+        {
+          "questId": "FERTILIZERS",
+          "questName": "Fertilizers",
+          "count": 5,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 30,
+          "depth": 5,
+          "priority": 305
+        },
+        {
+          "questId": "CAMERA_ACTION",
+          "questName": "Camera, Action!",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Fertilizers",
+        "level": 30,
+        "depth": 5,
+        "priority": 305
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WORKBENCH"
+      ]
+    },
+    "WIRES": {
+      "name": "Bundle of wires",
+      "nameShort": "Wires",
+      "type": "Electronics",
+      "totalRequired": 6,
+      "questBreakdown": [
+        {
+          "questId": "FERTILIZERS",
+          "questName": "Fertilizers",
+          "count": 5,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 30,
+          "depth": 5,
+          "priority": 305
+        },
+        {
+          "questId": "CAMERA_ACTION",
+          "questName": "Camera, Action!",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Fertilizers",
+        "level": 30,
+        "depth": 5,
+        "priority": 305
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WORKBENCH"
+      ]
+    },
+    "UHF_RFID_READER": {
+      "name": "UHF RFID Reader",
+      "nameShort": "RFIDR",
+      "type": "Electronics",
+      "totalRequired": 6,
+      "questBreakdown": [
+        {
+          "questId": "IMPORT",
+          "questName": "Import",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 35,
+          "depth": 5,
+          "priority": 355
+        },
         {
           "questId": "SPECIAL_EQUIPMENT",
           "questName": "Special Equipment",
-          "count": 4,
+          "count": 5,
           "dealer": "PEACEKEEPER",
-          "kappa": false
+          "kappa": false,
+          "level": 60,
+          "depth": 26,
+          "priority": 626
         }
       ],
+      "earliestAccess": {
+        "questName": "Import",
+        "level": 35,
+        "depth": 5,
+        "priority": 355
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "INTELLIGENCE_CENTER"
+      ]
+    },
+    "VPX_FLASH_STORAGE_MODULE": {
+      "name": "VPX Flash Storage Module",
+      "nameShort": "VPX",
+      "type": "Electronics",
+      "totalRequired": 6,
+      "questBreakdown": [
+        {
+          "questId": "IMPORT",
+          "questName": "Import",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 35,
+          "depth": 5,
+          "priority": 355
+        },
+        {
+          "questId": "SPECIAL_EQUIPMENT",
+          "questName": "Special Equipment",
+          "count": 5,
+          "dealer": "PEACEKEEPER",
+          "kappa": false,
+          "level": 60,
+          "depth": 26,
+          "priority": 626
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Import",
+        "level": 35,
+        "depth": 5,
+        "priority": 355
+      },
       "canCraft": true,
       "craftLocations": [
         "INTELLIGENCE_CENTER"
@@ -981,16 +1093,2026 @@
           "questName": "Private Clinic",
           "count": 1,
           "dealer": "THERAPIST",
-          "kappa": true
+          "kappa": true,
+          "level": 35,
+          "depth": 9,
+          "priority": 359
         },
         {
           "questId": "CRISIS",
           "questName": "Crisis",
           "count": 3,
           "dealer": "THERAPIST",
-          "kappa": true
+          "kappa": true,
+          "level": 48,
+          "depth": 0,
+          "priority": 480
         }
       ],
+      "earliestAccess": {
+        "questName": "Private Clinic",
+        "level": 35,
+        "depth": 9,
+        "priority": 359
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "LEDX_SKIN_TRANSILLUMINATOR": {
+      "name": "LEDX Skin Transilluminator",
+      "nameShort": "LEDX",
+      "type": "Medical supply",
+      "totalRequired": 3,
+      "questBreakdown": [
+        {
+          "questId": "PRIVATE_CLINIC",
+          "questName": "Private Clinic",
+          "count": 1,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 35,
+          "depth": 9,
+          "priority": 359
+        },
+        {
+          "questId": "CRISIS",
+          "questName": "Crisis",
+          "count": 2,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 48,
+          "depth": 0,
+          "priority": 480
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Private Clinic",
+        "level": 35,
+        "depth": 9,
+        "priority": 359
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "RAVEN_FIGURINE": {
+      "name": "Raven figurine",
+      "nameShort": "Raven",
+      "type": "Valuable",
+      "totalRequired": 3,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        },
+        {
+          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_2",
+          "questName": "Living High is Not a Crime - Part 2",
+          "count": 2,
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "AXEL_PARROT_FIGURINE": {
+      "name": "Axel parrot figurine",
+      "nameShort": "Axel",
+      "type": "Valuable",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        },
+        {
+          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_2",
+          "questName": "Living High is Not a Crime - Part 2",
+          "count": 1,
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "GOLDEN_EGG": {
+      "name": "Golden egg",
+      "nameShort": "Egg",
+      "type": "Valuable",
+      "totalRequired": 2,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        },
+        {
+          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_1",
+          "questName": "Living High is Not a Crime - Part 1",
+          "count": 1,
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "42ND_SIGNATURE_BLEND_ENGLISH_TEA": {
+      "name": "42 Signature Blend English Tea",
+      "nameShort": "42",
+      "type": "Other",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "ANTIQUE_AXE": {
+      "name": "Antique axe",
+      "nameShort": "Axe",
+      "type": "Weapon Melee",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "BADDIES_RED_BEARD": {
+      "name": "Baddie's red beard",
+      "nameShort": "Baddie",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "BAKEEZY_COOK_BOOK": {
+      "name": "BakeEzy cook book",
+      "nameShort": "BakeEzy",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "BATTERED_ANTIQUE_BOOK": {
+      "name": "Battered antique book",
+      "nameShort": "Book",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "BEAR_BUDDY_PLUSH_TOY": {
+      "name": "BEAR Buddy plush toy",
+      "nameShort": "BEAR Buddy",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CAN_OF_DR_LUPOS_COFFEE_BEANS": {
+      "name": "Can of Dr. Lupo's coffee beans",
+      "nameShort": "DrLupo's",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CAN_OF_RAT_COLA": {
+      "name": "Can of RatCola soda",
+      "nameShort": "RatCola",
+      "type": "Drink",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CAN_OF_SPRATS": {
+      "name": "Can of sprats",
+      "nameShort": "Sprats",
+      "type": "Food",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "DEADLYSLOBS_BEARD_OIL": {
+      "name": "Deadlyslob's beard oil",
+      "nameShort": "BeardOil",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "DRD_BODY_ARMOR": {
+      "name": "DRD body armor",
+      "nameShort": "DRD",
+      "type": "Armor vest",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "EVASION_ARMBAND": {
+      "name": "Armband (Evasion)",
+      "nameShort": "Evasion",
+      "type": "Armband",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "FAKE_MUSTACHE": {
+      "name": "Fake mustache",
+      "nameShort": "Mustache",
+      "type": "Face cover",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "FIRE_KLEAN_GUN_LUBE": {
+      "name": "#FireKlean gun lube",
+      "nameShort": "#FireKlean",
+      "type": "Flammable material",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "GINGY_KEYCHAIN": {
+      "name": "Gingy keychain",
+      "nameShort": "Gingy",
+      "type": "Container",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "GLORIOUS_E_MASK": {
+      "name": "Glorious E lightweight armored mask",
+      "nameShort": "Glorious",
+      "type": "Face cover",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "GOLDEN_1_G_PHONE": {
+      "name": "Golden 1GPhone smartphone",
+      "nameShort": "1GPhone",
+      "type": "Electronics",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "GOLDEN_ROOSTER": {
+      "name": "Golden rooster figurine",
+      "nameShort": "Rooster",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "INSEQ": {
+      "name": "Inseq gas pipe wrench",
+      "nameShort": "Inseq",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "JAR_OF_DEVIL_DOG_MAYO": {
+      "name": "Jar of DevilDog mayo",
+      "nameShort": "Mayo",
+      "type": "Food",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "JOHNB_GLASSES": {
+      "name": "JohnB Liquid DNB glasses",
+      "nameShort": "JohnB",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "KOTTON_BEANIE": {
+      "name": "Kotton beanie",
+      "nameShort": "Kotton",
+      "type": "Headwear",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "LOOT_LORD_PLUSHIE": {
+      "name": "Loot Lord plushie",
+      "nameShort": "Loot Lord",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "LVNDMAR_KS_RAT_POISON": {
+      "name": "LVNDMARK's rat poison",
+      "nameShort": "Poison",
+      "type": "Household item",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "MISSAM_FORKLIFT_KEY": {
+      "name": "Missam forklift key",
+      "nameShort": "Danex",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "OLD_FIRESTEEL": {
+      "name": "Old firesteel",
+      "nameShort": "Firesteel",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "PESTILY_PLAGUE_MASK": {
+      "name": "Pestily plague mask",
+      "nameShort": "Plague mask",
+      "type": "Face cover",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "PRESS_PASS": {
+      "name": "Press pass (issued for NoiceGuy)",
+      "nameShort": "Pass",
+      "type": "Other",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "SHROUD_HALF_MASK": {
+      "name": "Shroud half-mask",
+      "nameShort": "Shroud",
+      "type": "Face cover",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "SILVER_BADGE": {
+      "name": "Silver Badge",
+      "nameShort": "Badge",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "SMOKE_BALACLAVA": {
+      "name": "Smoke balaclava",
+      "nameShort": "Smoke",
+      "type": "Face cover",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "TAMATTHI": {
+      "name": "Tamatthi kunai knife replica",
+      "nameShort": "Tamatthi",
+      "type": "Weapon Melee",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "VERITAS_GUITAR_PICK": {
+      "name": "Veritas guitar pick",
+      "nameShort": "Veritas",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "VIDEO_CASSETTE_CYBORG": {
+      "name": "Video cassette with the Cyborg Killer movie",
+      "nameShort": "VHS",
+      "type": "Info item",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "VIIBIIN": {
+      "name": "Viibiin sneaker",
+      "nameShort": "Viibiin",
+      "type": "Valuable",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "WZ_WALLET": {
+      "name": "WZ Wallet",
+      "nameShort": "WZ",
+      "type": "Container",
+      "totalRequired": 1,
+      "questBreakdown": [
+        {
+          "questId": "COLLECTOR",
+          "questName": "Collector",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": true,
+          "level": 40,
+          "depth": 15,
+          "priority": 415
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Collector",
+        "level": 40,
+        "depth": 15,
+        "priority": 415
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "PILE_OF_MEDS": {
+      "name": "Pile of meds",
+      "nameShort": "Meds",
+      "type": "Medical supply",
+      "totalRequired": 20,
+      "questBreakdown": [
+        {
+          "questId": "CRISIS",
+          "questName": "Crisis",
+          "count": 20,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 48,
+          "depth": 0,
+          "priority": 480
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Crisis",
+        "level": 48,
+        "depth": 0,
+        "priority": 480
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "BOTTLE_OF_OLOLO_MULTIVITAMINS": {
+      "name": "Bottle of OLOLO Multivitamins",
+      "nameShort": "Vitam.",
+      "type": "Medical supply",
+      "totalRequired": 14,
+      "questBreakdown": [
+        {
+          "questId": "CRISIS",
+          "questName": "Crisis",
+          "count": 10,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 48,
+          "depth": 0,
+          "priority": 480
+        },
+        {
+          "questId": "THIRSTY_SECRETS",
+          "questName": "Thirsty - Secrets",
+          "count": 4,
+          "dealer": "THERAPIST",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Crisis",
+        "level": 48,
+        "depth": 0,
+        "priority": 480
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CULTIST_KNIFE": {
+      "name": "Cultist knife",
+      "nameShort": "Knife",
+      "type": "Weapon Melee",
+      "totalRequired": 12,
+      "questBreakdown": [
+        {
+          "questId": "NIGHT_SWEEP",
+          "questName": "Night Sweep",
+          "count": 12,
+          "dealer": "SKIER",
+          "kappa": false,
+          "level": 50,
+          "depth": 0,
+          "priority": 500
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Night Sweep",
+        "level": 50,
+        "depth": 0,
+        "priority": 500
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "BOTTLE_OF_PEVKO_LIGHT_BEER": {
+      "name": "Bottle of Pevko Light beer",
+      "nameShort": "Pevko",
+      "type": "Drink",
+      "totalRequired": 27,
+      "questBreakdown": [
+        {
+          "questId": "BOOZE",
+          "questName": "Booze",
+          "count": 20,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 50,
+          "depth": 8,
+          "priority": 508
+        },
+        {
+          "questId": "EASY_MONEY_PART_2",
+          "questName": "Easy Money - Part 2",
+          "count": 7,
+          "dealer": "REF",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Booze",
+        "level": 50,
+        "depth": 8,
+        "priority": 508
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "NUTRITION_UNIT"
+      ]
+    },
+    "BOTTLE_OF_TARKOVSKAYA_VODKA": {
+      "name": "Bottle of Tarkovskaya vodka",
+      "nameShort": "Vodka",
+      "type": "Drink",
+      "totalRequired": 12,
+      "questBreakdown": [
+        {
+          "questId": "BOOZE",
+          "questName": "Booze",
+          "count": 10,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 50,
+          "depth": 8,
+          "priority": 508
+        },
+        {
+          "questId": "EASY_MONEY_PART_2",
+          "questName": "Easy Money - Part 2",
+          "count": 2,
+          "dealer": "REF",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Booze",
+        "level": 50,
+        "depth": 8,
+        "priority": 508
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "NUTRITION_UNIT"
+      ]
+    },
+    "BOTTLE_OF_DAN_JACKIEL_WHISKEY": {
+      "name": "Bottle of Dan Jackiel whiskey",
+      "nameShort": "Whiskey",
+      "type": "Drink",
+      "totalRequired": 11,
+      "questBreakdown": [
+        {
+          "questId": "BOOZE",
+          "questName": "Booze",
+          "count": 10,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 50,
+          "depth": 8,
+          "priority": 508
+        },
+        {
+          "questId": "COMPENSATION_FOR_DAMAGE_BARKEEP",
+          "questName": "Compensation for Damage - Barkeep",
+          "count": 1,
+          "dealer": "FENCE",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Booze",
+        "level": 50,
+        "depth": 8,
+        "priority": 508
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "NUTRITION_UNIT"
+      ]
+    },
+    "PURIFIED_WATER": {
+      "name": "Purified water",
+      "nameShort": "Superwater",
+      "type": "Drink",
+      "totalRequired": 3,
+      "questBreakdown": [
+        {
+          "questId": "BOOZE",
+          "questName": "Booze",
+          "count": 3,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 50,
+          "depth": 8,
+          "priority": 508
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Booze",
+        "level": 50,
+        "depth": 8,
+        "priority": 508
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WATER_COLLECTOR"
+      ]
+    },
+    "MILITARY_COFDM_WIRELESS_SIGNAL_TRANSMITTER": {
+      "name": "Military COFDM Wireless Signal Transmitter",
+      "nameShort": "SG-C10",
+      "type": "Electronics",
+      "totalRequired": 11,
+      "questBreakdown": [
+        {
+          "questId": "SPECIAL_EQUIPMENT",
+          "questName": "Special Equipment",
+          "count": 5,
+          "dealer": "PEACEKEEPER",
+          "kappa": false,
+          "level": 60,
+          "depth": 26,
+          "priority": 626
+        },
+        {
+          "questId": "LEND_LEASE_PART_2",
+          "questName": "Lend-Lease - Part 2",
+          "count": 1,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "NETWORK_PROVIDER_PART_1",
+          "questName": "Network Provider - Part 1",
+          "count": 4,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "KEY_TO_THE_TOWER",
+          "questName": "Key to the Tower",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Special Equipment",
+        "level": 60,
+        "depth": 26,
+        "priority": 626
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "INTELLIGENCE_CENTER"
+      ]
+    },
+    "VIRTEX_PROGRAMMABLE_PROCESSOR": {
+      "name": "Virtex programmable processor",
+      "nameShort": "Virtex",
+      "type": "Electronics",
+      "totalRequired": 7,
+      "questBreakdown": [
+        {
+          "questId": "SPECIAL_EQUIPMENT",
+          "questName": "Special Equipment",
+          "count": 5,
+          "dealer": "PEACEKEEPER",
+          "kappa": false,
+          "level": 60,
+          "depth": 26,
+          "priority": 626
+        },
+        {
+          "questId": "LEND_LEASE_PART_2",
+          "questName": "Lend-Lease - Part 2",
+          "count": 2,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Special Equipment",
+        "level": 60,
+        "depth": 26,
+        "priority": 626
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "INTELLIGENCE_CENTER"
+      ]
+    },
+    "MILITARY_FLASH_DRIVE": {
+      "name": "Military flash drive",
+      "nameShort": "MFD",
+      "type": "Info item",
+      "totalRequired": 4,
+      "questBreakdown": [
+        {
+          "questId": "SPECIAL_EQUIPMENT",
+          "questName": "Special Equipment",
+          "count": 4,
+          "dealer": "PEACEKEEPER",
+          "kappa": false,
+          "level": 60,
+          "depth": 26,
+          "priority": 626
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Special Equipment",
+        "level": 60,
+        "depth": 26,
+        "priority": 626
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "INTELLIGENCE_CENTER"
+      ]
+    },
+    "CPU_FAN": {
+      "name": "CPU fan",
+      "nameShort": "CPU fan",
+      "type": "Electronics",
+      "totalRequired": 15,
+      "questBreakdown": [
+        {
+          "questId": "FARMING_PART_4",
+          "questName": "Farming - Part 4",
+          "count": 15,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Farming - Part 4",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "SJ_1": {
+      "name": "SJ1 TGLabs combat stimulant injector",
+      "nameShort": "SJ1",
+      "type": "Injector",
+      "totalRequired": 15,
+      "questBreakdown": [
+        {
+          "questId": "ASSESSMENT_PART_3",
+          "questName": "Assessment - Part 3",
+          "count": 15,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Assessment - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "FLEECE_CLOTH": {
+      "name": "Fleece fabric",
+      "nameShort": "Fleece",
+      "type": "Cloth",
+      "totalRequired": 10,
+      "questBreakdown": [
+        {
+          "questId": "TEXTILE_PART_2",
+          "questName": "Textile - Part 2",
+          "count": 10,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Textile - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "POLYAMIDE_FABRIC_CORDURA": {
+      "name": "Cordura polyamide fabric",
+      "nameShort": "Cordura",
+      "type": "Cloth",
+      "totalRequired": 10,
+      "questBreakdown": [
+        {
+          "questId": "TEXTILE_PART_2",
+          "questName": "Textile - Part 2",
+          "count": 10,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Textile - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "RIPSTOP_CLOTH": {
+      "name": "Ripstop fabric",
+      "nameShort": "Ripstop",
+      "type": "Cloth",
+      "totalRequired": 10,
+      "questBreakdown": [
+        {
+          "questId": "TEXTILE_PART_1",
+          "questName": "Textile - Part 1",
+          "count": 10,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Textile - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "BROKEN_G_PHONE": {
+      "name": "Broken GPhone smartphone",
+      "nameShort": "GPhone",
+      "type": "Electronics",
+      "totalRequired": 7,
+      "questBreakdown": [
+        {
+          "questId": "SIGNAL_PART_2",
+          "questName": "Signal - Part 2",
+          "count": 3,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "NETWORK_PROVIDER_PART_1",
+          "questName": "Network Provider - Part 1",
+          "count": 4,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Signal - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WORKBENCH"
+      ]
+    },
+    "GAS_ANALYZER": {
+      "name": "Gas analyzer",
+      "nameShort": "GasAn",
+      "type": "Electronics",
+      "totalRequired": 7,
+      "questBreakdown": [
+        {
+          "questId": "SANITARY_STANDARDS_PART_1",
+          "questName": "Sanitary Standards - Part 1",
+          "count": 1,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "SANITARY_STANDARDS_PART_2",
+          "questName": "Sanitary Standards - Part 2",
+          "count": 2,
+          "dealer": "THERAPIST",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "NETWORK_PROVIDER_PART_1",
+          "questName": "Network Provider - Part 1",
+          "count": 4,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Sanitary Standards - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WORKBENCH"
+      ]
+    },
+    "LOWER_HALF_MASK": {
+      "name": "Lower half-mask",
+      "nameShort": "Half-mask",
+      "type": "Face cover",
+      "totalRequired": 7,
+      "questBreakdown": [
+        {
+          "questId": "THE_PUNISHER_PART_2",
+          "questName": "The Punisher - Part 2",
+          "count": 7,
+          "dealer": "PRAPOR",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "The Punisher - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "ARAMID_FIBER_CLOTH": {
+      "name": "Aramid fiber fabric",
+      "nameShort": "Aramid",
+      "type": "Cloth",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "TEXTILE_PART_1",
+          "questName": "Textile - Part 1",
+          "count": 5,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Textile - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "BARS_A_2607_95_X_18": {
+      "name": "Bars A-2607 95Kh18 knife",
+      "nameShort": "A-2607",
+      "type": "Weapon Melee",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "THE_PUNISHER_PART_4",
+          "questName": "The Punisher - Part 4",
+          "count": 5,
+          "dealer": "PRAPOR",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "The Punisher - Part 4",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "DRIED_MEAT": {
+      "name": "Pack of Tarker dried meat",
+      "nameShort": "Tarker",
+      "type": "Food",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "EASY_MONEY_PART_2",
+          "questName": "Easy Money - Part 2",
+          "count": 5,
+          "dealer": "REF",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Easy Money - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "EL_COMPONENTS": {
+      "name": "Electronic components",
+      "nameShort": "EC",
+      "type": "Electronics",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "NETWORK_PROVIDER_PART_1",
+          "questName": "Network Provider - Part 1",
+          "count": 4,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "CAMERA_ACTION",
+          "questName": "Camera, Action!",
+          "count": 1,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Network Provider - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "KEKTAPE_DUCT_TAPE": {
+      "name": "KEKTAPE duct tape",
+      "nameShort": "KEK",
+      "type": "Other",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "TEXTILE_PART_2",
+          "questName": "Textile - Part 2",
+          "count": 5,
+          "dealer": "RAGMAN",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Textile - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "PRINTED_CIRCUIT_BOARD": {
+      "name": "Printed circuit board",
+      "nameShort": "PCB",
+      "type": "Electronics",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "SIGNAL_PART_2",
+          "questName": "Signal - Part 2",
+          "count": 3,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "FARMING_PART_2",
+          "questName": "Farming - Part 2",
+          "count": 2,
+          "dealer": "MECHANIC",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Signal - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "WORKBENCH"
+      ]
+    },
+    "SJ_6": {
+      "name": "SJ6 TGLabs combat stimulant injector",
+      "nameShort": "SJ6",
+      "type": "Injector",
+      "totalRequired": 5,
+      "questBreakdown": [
+        {
+          "questId": "ASSESSMENT_PART_3",
+          "questName": "Assessment - Part 3",
+          "count": 5,
+          "dealer": "MECHANIC",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Assessment - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "MEDSTATION"
+      ]
+    },
+    "5_L_PROPANE_TANK": {
+      "name": "Propane tank (5L)",
+      "nameShort": "Propane",
+      "type": "Flammable material",
+      "totalRequired": 4,
+      "questBreakdown": [
+        {
+          "questId": "THIRSTY_BREADWINNER",
+          "questName": "Thirsty - Breadwinner",
+          "count": 2,
+          "dealer": "SKIER",
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "SPA_TOUR_PART_7",
+          "questName": "Spa Tour - Part 7",
+          "count": 2,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Thirsty - Breadwinner",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": false,
+      "craftLocations": []
+    },
+    "CORRUGATED_HOSE": {
+      "name": "Corrugated hose",
+      "nameShort": "Hose",
+      "type": "Other",
+      "totalRequired": 4,
+      "questBreakdown": [
+        {
+          "questId": "SPA_TOUR_PART_3",
+          "questName": "Spa Tour - Part 3",
+          "count": 2,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        },
+        {
+          "questId": "SPA_TOUR_PART_7",
+          "questName": "Spa Tour - Part 7",
+          "count": 2,
+          "dealer": "PEACEKEEPER",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "Spa Tour - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
+      "canCraft": true,
+      "craftLocations": [
+        "LAVATORY"
+      ]
+    },
+    "FUEL_CONDITIONER": {
+      "name": "Fuel conditioner",
+      "nameShort": "FCond",
+      "type": "Flammable material",
+      "totalRequired": 4,
+      "questBreakdown": [
+        {
+          "questId": "THE_BLOOD_OF_WAR_PART_2",
+          "questName": "The Blood of War - Part 2",
+          "count": 4,
+          "dealer": "RAGMAN",
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
+        }
+      ],
+      "earliestAccess": {
+        "questName": "The Blood of War - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1005,44 +3127,30 @@
           "questName": "Signal - Part 2",
           "count": 3,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         },
         {
           "questId": "CAMERA_ACTION",
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Signal - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
-    },
-    "PORTABLE_DEFIBRILLATOR": {
-      "name": "Portable defibrillator",
-      "nameShort": "Defib",
-      "type": "Medical supply",
-      "totalRequired": 4,
-      "questBreakdown": [
-        {
-          "questId": "CRISIS",
-          "questName": "Crisis",
-          "count": 3,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "AMBULANCE",
-          "questName": "Ambulance",
-          "count": 1,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
     },
     "RECHARGEABLE_BATTERY": {
       "name": "Rechargeable battery",
@@ -1055,16 +3163,28 @@
           "questName": "Signal - Part 2",
           "count": 3,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         },
         {
           "questId": "CAMERA_ACTION",
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Signal - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
@@ -1081,9 +3201,18 @@
           "questName": "Vitamins - Part 2",
           "count": 4,
           "dealer": "SKIER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Vitamins - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1098,9 +3227,18 @@
           "questName": "Make Amends - Equipment",
           "count": 4,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Make Amends - Equipment",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1115,31 +3253,21 @@
           "questName": "Farming - Part 2",
           "count": 4,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Farming - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
-      ]
-    },
-    "60_ROUND_6_L_31_5_45_X_39_MAGAZINE_FOR_AK_74_AND_COMPATIBLES": {
-      "name": "AK-74 5.45x39 6L31 60-round magazine",
-      "nameShort": "6L31",
-      "type": "Magazine",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "ICE_CREAM_CONES",
-          "questName": "Ice Cream Cones",
-          "count": 3,
-          "dealer": "PRAPOR",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
       ]
     },
     "ANTIQUE_TEAPOT": {
@@ -1153,9 +3281,18 @@
           "questName": "Living High is Not a Crime - Part 2",
           "count": 3,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1170,9 +3307,18 @@
           "questName": "Thirsty - Secrets",
           "count": 3,
           "dealer": "THERAPIST",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Thirsty - Secrets",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1187,9 +3333,18 @@
           "questName": "Compensation for Damage - Barkeep",
           "count": 3,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Compensation for Damage - Barkeep",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1204,16 +3359,28 @@
           "questName": "The Punisher - Part 5",
           "count": 1,
           "dealer": "PRAPOR",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         },
         {
           "questId": "COMPENSATION_FOR_DAMAGE_COLLECTION",
           "questName": "Compensation for Damage - Collection",
           "count": 2,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Punisher - Part 5",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1228,9 +3395,18 @@
           "questName": "Special Offer",
           "count": 3,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Special Offer",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1245,57 +3421,21 @@
           "questName": "Farming - Part 4",
           "count": 3,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Farming - Part 4",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "INTELLIGENCE_CENTER"
-      ]
-    },
-    "ISKRA_LUNCH_BOX": {
-      "name": "Iskra ration pack",
-      "nameShort": "Iskra",
-      "type": "Food",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "ACQUAINTANCE",
-          "questName": "Acquaintance",
-          "count": 3,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "NUTRITION_UNIT"
-      ]
-    },
-    "LEDX_SKIN_TRANSILLUMINATOR": {
-      "name": "LEDX Skin Transilluminator",
-      "nameShort": "LEDX",
-      "type": "Medical supply",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "PRIVATE_CLINIC",
-          "questName": "Private Clinic",
-          "count": 1,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "CRISIS",
-          "questName": "Crisis",
-          "count": 2,
-          "dealer": "THERAPIST",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
       ]
     },
     "MEDICAL_BLOODSET": {
@@ -1309,9 +3449,18 @@
           "questName": "Vitamins - Part 2",
           "count": 3,
           "dealer": "SKIER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Vitamins - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "MEDSTATION"
@@ -1328,99 +3477,22 @@
           "questName": "Textile - Part 1",
           "count": 3,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Textile - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
       ]
-    },
-    "PURIFIED_WATER": {
-      "name": "Purified water",
-      "nameShort": "Superwater",
-      "type": "Drink",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "BOOZE",
-          "questName": "Booze",
-          "count": 3,
-          "dealer": "RAGMAN",
-          "kappa": false
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "WATER_COLLECTOR"
-      ]
-    },
-    "RAVEN_FIGURINE": {
-      "name": "Raven figurine",
-      "nameShort": "Raven",
-      "type": "Valuable",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        },
-        {
-          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_2",
-          "questName": "Living High is Not a Crime - Part 2",
-          "count": 2,
-          "dealer": "RAGMAN",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "SALEWA_FIRST_AID_KIT": {
-      "name": "Salewa first aid kit",
-      "nameShort": "Salewa",
-      "type": "Medical supply",
-      "totalRequired": 3,
-      "questBreakdown": [
-        {
-          "questId": "SHORTAGE",
-          "questName": "Shortage",
-          "count": 3,
-          "dealer": "THERAPIST",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
-    },
-    "3_B_TG": {
-      "name": "3-(b-TG) stimulant injector",
-      "nameShort": "3-(b-TG)",
-      "type": "Injector",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "COLLEAGUES_PART_3",
-          "questName": "Colleagues - Part 3",
-          "count": 1,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "6_B_13": {
       "name": "6B13 assault armor",
@@ -1433,9 +3505,18 @@
           "questName": "Sew it Good - Part 3",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Sew it Good - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1450,33 +3531,18 @@
           "questName": "Thirsty - Secrets",
           "count": 2,
           "dealer": "THERAPIST",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "AHF_1_M": {
-      "name": "AHF1-M stimulant injector",
-      "nameShort": "AHF1-M",
-      "type": "Injector",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "COLLEAGUES_PART_3",
-          "questName": "Colleagues - Part 3",
-          "count": 1,
-          "dealer": "THERAPIST",
-          "kappa": true
-        },
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Thirsty - Secrets",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1491,9 +3557,18 @@
           "questName": "Easy Money - Part 2",
           "count": 2,
           "dealer": "REF",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Easy Money - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1508,33 +3583,18 @@
           "questName": "Living High is Not a Crime - Part 2",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "AXEL_PARROT_FIGURINE": {
-      "name": "Axel parrot figurine",
-      "nameShort": "Axel",
-      "type": "Valuable",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        },
-        {
-          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_2",
-          "questName": "Living High is Not a Crime - Part 2",
-          "count": 1,
-          "dealer": "RAGMAN",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1549,9 +3609,18 @@
           "questName": "Sew it Good - Part 4",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Sew it Good - Part 4",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
@@ -1568,26 +3637,18 @@
           "questName": "Living High is Not a Crime - Part 1",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "CAN_OF_DELICIOUS_BEEF_STEW": {
-      "name": "Can of beef stew (Large)",
-      "nameShort": "Tushonka",
-      "type": "Food",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "ACQUAINTANCE",
-          "questName": "Acquaintance",
-          "count": 2,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1602,56 +3663,22 @@
           "questName": "Spa Tour - Part 3",
           "count": 2,
           "dealer": "PEACEKEEPER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Spa Tour - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
       ]
-    },
-    "CMS_KIT": {
-      "name": "CMS surgical kit",
-      "nameShort": "CMS",
-      "type": "Jaeger",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "AMBULANCE",
-          "questName": "Ambulance",
-          "count": 2,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
-    },
-    "GOLDEN_EGG": {
-      "name": "Golden egg",
-      "nameShort": "Egg",
-      "type": "Valuable",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        },
-        {
-          "questId": "LIVING_HIGH_IS_NOT_A_CRIME_PART_1",
-          "questName": "Living High is Not a Crime - Part 1",
-          "count": 1,
-          "dealer": "RAGMAN",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "HEAT_EXCHANGE_ALKALI_SURFACE_WASHER": {
       "name": "Alkaline cleaner for heat exchangers",
@@ -1664,9 +3691,18 @@
           "questName": "Spa Tour - Part 7",
           "count": 2,
           "dealer": "PEACEKEEPER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Spa Tour - Part 7",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1681,26 +3717,18 @@
           "questName": "Living High is Not a Crime - Part 1",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "KINDA_COWBOY_HAT": {
-      "name": "Kinda cowboy hat",
-      "nameShort": "Cowboy",
-      "type": "Headwear",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "DRESSED_TO_KILL",
-          "questName": "Dressed to Kill",
-          "count": 2,
-          "dealer": "RAGMAN",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1715,16 +3743,28 @@
           "questName": "Key to the Tower",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         },
         {
           "questId": "CAMERA_ACTION",
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Key to the Tower",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1739,30 +3779,22 @@
           "questName": "Key to the Tower",
           "count": 2,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Key to the Tower",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
-    },
-    "NOODLES": {
-      "name": "Pack of instant noodles",
-      "nameShort": "Noodles",
-      "type": "Food",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "ACQUAINTANCE",
-          "questName": "Acquaintance",
-          "count": 2,
-          "dealer": "JAEGER",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "OX_BLEACH": {
       "name": "Ox bleach",
@@ -1775,9 +3807,18 @@
           "questName": "Spa Tour - Part 3",
           "count": 2,
           "dealer": "PEACEKEEPER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Spa Tour - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
@@ -1794,9 +3835,18 @@
           "questName": "Key to the Tower",
           "count": 2,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Key to the Tower",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
@@ -1813,9 +3863,18 @@
           "questName": "The Punisher - Part 5",
           "count": 2,
           "dealer": "PRAPOR",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Punisher - Part 5",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1830,30 +3889,22 @@
           "questName": "Farming - Part 2",
           "count": 2,
           "dealer": "MECHANIC",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Farming - Part 2",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
-    },
-    "USHANKA_EAR_FLAP_CAP": {
-      "name": "Ushanka ear flap hat",
-      "nameShort": "Ushanka",
-      "type": "Headwear",
-      "totalRequired": 2,
-      "questBreakdown": [
-        {
-          "questId": "DRESSED_TO_KILL",
-          "questName": "Dressed to Kill",
-          "count": 2,
-          "dealer": "RAGMAN",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "WARTECH_GEAR_RIG": {
       "name": "WARTECH TV-109 + TV-106 chest rig (A-TACS FG)",
@@ -1866,26 +3917,18 @@
           "questName": "Sew it Good - Part 4",
           "count": 2,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "42ND_SIGNATURE_BLEND_ENGLISH_TEA": {
-      "name": "42 Signature Blend English Tea",
-      "nameShort": "42",
-      "type": "Other",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Sew it Good - Part 4",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1900,26 +3943,18 @@
           "questName": "Surprise",
           "count": 1,
           "dealer": "REF",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "6_STEN_140_M_MILITARY_BATTERY": {
-      "name": "6-STEN-140-M military battery",
-      "nameShort": "Tank battery",
-      "type": "Energy element",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "REGULATED_MATERIALS",
-          "questName": "Regulated Materials",
-          "count": 1,
-          "dealer": "PRAPOR",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Surprise",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -1934,30 +3969,22 @@
           "questName": "The Punisher - Part 5",
           "count": 1,
           "dealer": "PRAPOR",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Punisher - Part 5",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
-    },
-    "ANTIQUE_AXE": {
-      "name": "Antique axe",
-      "nameShort": "Axe",
-      "type": "Weapon Melee",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "AVS_TE": {
       "name": "Crye Precision AVS plate carrier (Tagilla Edition)",
@@ -1970,77 +3997,18 @@
           "questName": "Special Offer",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BADDIES_RED_BEARD": {
-      "name": "Baddie's red beard",
-      "nameShort": "Baddie",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BAKEEZY_COOK_BOOK": {
-      "name": "BakeEzy cook book",
-      "nameShort": "BakeEzy",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BATTERED_ANTIQUE_BOOK": {
-      "name": "Battered antique book",
-      "nameShort": "Book",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "BEAR_BUDDY_PLUSH_TOY": {
-      "name": "BEAR Buddy plush toy",
-      "nameShort": "BEAR Buddy",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Special Offer",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2055,60 +4023,18 @@
           "questName": "The Huntsman Path - Factory Chief",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "CAN_OF_DR_LUPOS_COFFEE_BEANS": {
-      "name": "Can of Dr. Lupo's coffee beans",
-      "nameShort": "DrLupo's",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "CAN_OF_RAT_COLA": {
-      "name": "Can of RatCola soda",
-      "nameShort": "RatCola",
-      "type": "Drink",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "CAN_OF_SPRATS": {
-      "name": "Can of sprats",
-      "nameShort": "Sprats",
-      "type": "Food",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "The Huntsman Path - Factory Chief",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2123,26 +4049,18 @@
           "questName": "Living High is Not a Crime - Part 1",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "COCKTAIL_OBDOLBOS": {
-      "name": "Obdolbos cocktail injector",
-      "nameShort": "Obdolbos",
-      "type": "Injector",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2157,9 +4075,18 @@
           "questName": "Special Offer",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Special Offer",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2174,26 +4101,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "DEADLYSLOBS_BEARD_OIL": {
-      "name": "Deadlyslob's beard oil",
-      "nameShort": "BeardOil",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2208,9 +4127,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2225,162 +4153,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "DRD_BODY_ARMOR": {
-      "name": "DRD body armor",
-      "nameShort": "DRD",
-      "type": "Armor vest",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "EVASION_ARMBAND": {
-      "name": "Armband (Evasion)",
-      "nameShort": "Evasion",
-      "type": "Armband",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "FAKE_MUSTACHE": {
-      "name": "Fake mustache",
-      "nameShort": "Mustache",
-      "type": "Face cover",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "FIRE_KLEAN_GUN_LUBE": {
-      "name": "#FireKlean gun lube",
-      "nameShort": "#FireKlean",
-      "type": "Flammable material",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "GINGY_KEYCHAIN": {
-      "name": "Gingy keychain",
-      "nameShort": "Gingy",
-      "type": "Container",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "GLORIOUS_E_MASK": {
-      "name": "Glorious E lightweight armored mask",
-      "nameShort": "Glorious",
-      "type": "Face cover",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "GOLDEN_1_G_PHONE": {
-      "name": "Golden 1GPhone smartphone",
-      "nameShort": "1GPhone",
-      "type": "Electronics",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "GOLDEN_ROOSTER": {
-      "name": "Golden rooster figurine",
-      "nameShort": "Rooster",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "INSEQ": {
-      "name": "Inseq gas pipe wrench",
-      "nameShort": "Inseq",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2395,43 +4179,18 @@
           "questName": "Key to the Tower",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "JAR_OF_DEVIL_DOG_MAYO": {
-      "name": "Jar of DevilDog mayo",
-      "nameShort": "Mayo",
-      "type": "Food",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "JOHNB_GLASSES": {
-      "name": "JohnB Liquid DNB glasses",
-      "nameShort": "JohnB",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Key to the Tower",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2446,9 +4205,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2463,26 +4231,18 @@
           "questName": "Surprise",
           "count": 1,
           "dealer": "REF",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "KOTTON_BEANIE": {
-      "name": "Kotton beanie",
-      "nameShort": "Kotton",
-      "type": "Headwear",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Surprise",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2497,9 +4257,18 @@
           "questName": "Special Offer",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Special Offer",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2514,60 +4283,18 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "LOOT_LORD_PLUSHIE": {
-      "name": "Loot Lord plushie",
-      "nameShort": "Loot Lord",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "LVNDMAR_KS_RAT_POISON": {
-      "name": "LVNDMARK's rat poison",
-      "nameShort": "Poison",
-      "type": "Household item",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "L_1_NOREPINEPHRINE": {
-      "name": "L1 (Norepinephrine) injector",
-      "nameShort": "L1",
-      "type": "Injector",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2582,64 +4309,20 @@
           "questName": "The Huntsman Path - Sellout",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Huntsman Path - Sellout",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
-    },
-    "MELDONIN": {
-      "name": "Meldonin injector",
-      "nameShort": "Meldonin",
-      "type": "Injector",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "MISSAM_FORKLIFT_KEY": {
-      "name": "Missam forklift key",
-      "nameShort": "Danex",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "MODULE_3_M_BODYARMOR": {
-      "name": "BNTI Module-3M body armor",
-      "nameShort": "Module-3M",
-      "type": "Armor vest",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SUPPLIER",
-          "questName": "Supplier",
-          "count": 1,
-          "dealer": "SKIER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "LAVATORY"
-      ]
     },
     "MUTKEVICH": {
       "name": "Politician Mutkevich figurine",
@@ -2652,30 +4335,20 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
-    },
-    "M_U_L_E_STIMULATOR": {
-      "name": "M.U.L.E. stimulant injector",
-      "nameShort": "M.U.L.E.",
-      "type": "Injector",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
-      "canCraft": true,
-      "craftLocations": [
-        "MEDSTATION"
-      ]
     },
     "NIXXOR": {
       "name": "NIXXOR lens",
@@ -2688,47 +4361,22 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "WORKBENCH"
       ]
-    },
-    "OLD_FIRESTEEL": {
-      "name": "Old firesteel",
-      "nameShort": "Firesteel",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "PESTILY_PLAGUE_MASK": {
-      "name": "Pestily plague mask",
-      "nameShort": "Plague mask",
-      "type": "Face cover",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     },
     "PILGRIM_TOURIST_BACKPACK": {
       "name": "Pilgrim tourist backpack",
@@ -2741,9 +4389,18 @@
           "questName": "Sew it Good - Part 1",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Sew it Good - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
@@ -2760,26 +4417,18 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "PRESS_PASS": {
-      "name": "Press pass (issued for NoiceGuy)",
-      "nameShort": "Pass",
-      "type": "Other",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2794,26 +4443,18 @@
           "questName": "The Huntsman Path - Crooked Cop",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "P_22": {
-      "name": "P22 (Product 22) stimulant injector",
-      "nameShort": "P22",
-      "type": "Injector",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SAMPLES",
-          "questName": "Samples",
-          "count": 1,
-          "dealer": "PEACEKEEPER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "The Huntsman Path - Crooked Cop",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2828,9 +4469,18 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2845,9 +4495,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2862,9 +4521,18 @@
           "questName": "Living High is Not a Crime - Part 1",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Living High is Not a Crime - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2879,9 +4547,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2896,9 +4573,18 @@
           "questName": "The Delicious Sausage",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Delicious Sausage",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2913,9 +4599,18 @@
           "questName": "Special Offer",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Special Offer",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2930,26 +4625,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "SHROUD_HALF_MASK": {
-      "name": "Shroud half-mask",
-      "nameShort": "Shroud",
-      "type": "Face cover",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2964,26 +4651,18 @@
           "questName": "The Huntsman Path - Woods Keeper",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "SILVER_BADGE": {
-      "name": "Silver Badge",
-      "nameShort": "Badge",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "The Huntsman Path - Woods Keeper",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -2998,9 +4677,18 @@
           "questName": "Assessment - Part 3",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Assessment - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3015,26 +4703,18 @@
           "questName": "Sew it Good - Part 1",
           "count": 1,
           "dealer": "RAGMAN",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "SMOKE_BALACLAVA": {
-      "name": "Smoke balaclava",
-      "nameShort": "Smoke",
-      "type": "Face cover",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Sew it Good - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3049,9 +4729,18 @@
           "questName": "Surprise",
           "count": 1,
           "dealer": "REF",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Surprise",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3066,9 +4755,18 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3083,43 +4781,18 @@
           "questName": "Small Business - Part 1",
           "count": 1,
           "dealer": "FENCE",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "TAMATTHI": {
-      "name": "Tamatthi kunai knife replica",
-      "nameShort": "Tamatthi",
-      "type": "Weapon Melee",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "TOZ_106_BOLT_ACTION_SHOTGUN": {
-      "name": "TOZ-106 20ga bolt-action shotgun",
-      "nameShort": "TOZ-106",
-      "type": "Weapon Shotgun",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "SUPPLIER",
-          "questName": "Supplier",
-          "count": 1,
-          "dealer": "SKIER",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Small Business - Part 1",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3134,9 +4807,18 @@
           "questName": "The Huntsman Path - Trophy",
           "count": 1,
           "dealer": "JAEGER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "The Huntsman Path - Trophy",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3151,60 +4833,18 @@
           "questName": "Camera, Action!",
           "count": 1,
           "dealer": "MECHANIC",
-          "kappa": false
+          "kappa": false,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "VERITAS_GUITAR_PICK": {
-      "name": "Veritas guitar pick",
-      "nameShort": "Veritas",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "VIDEO_CASSETTE_CYBORG": {
-      "name": "Video cassette with the Cyborg Killer movie",
-      "nameShort": "VHS",
-      "type": "Info item",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
-    },
-    "VIIBIIN": {
-      "name": "Viibiin sneaker",
-      "nameShort": "Viibiin",
-      "type": "Valuable",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
+      "earliestAccess": {
+        "questName": "Camera, Action!",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": false,
       "craftLocations": []
     },
@@ -3219,30 +4859,22 @@
           "questName": "Spa Tour - Part 3",
           "count": 1,
           "dealer": "PEACEKEEPER",
-          "kappa": true
+          "kappa": true,
+          "level": 1,
+          "depth": 0,
+          "priority": 999
         }
       ],
+      "earliestAccess": {
+        "questName": "Spa Tour - Part 3",
+        "level": 1,
+        "depth": 0,
+        "priority": 999
+      },
       "canCraft": true,
       "craftLocations": [
         "LAVATORY"
       ]
-    },
-    "WZ_WALLET": {
-      "name": "WZ Wallet",
-      "nameShort": "WZ",
-      "type": "Container",
-      "totalRequired": 1,
-      "questBreakdown": [
-        {
-          "questId": "COLLECTOR",
-          "questName": "Collector",
-          "count": 1,
-          "dealer": "FENCE",
-          "kappa": true
-        }
-      ],
-      "canCraft": false,
-      "craftLocations": []
     }
   },
   "quests": {
@@ -4845,84 +6477,1756 @@
       "dealer": "SKIER"
     }
   },
-  "hideoutStations": {
-    "INTELLIGENCE_CENTER": {
-      "name": {
-        "en": "Intelligence Center",
-        "fr": "Centre de renseignement",
-        "ru": "Разведцентр"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+  "questProgression": {
+    "DEBUT": {
+      "id": 0,
+      "title": "Debut",
+      "level": 1,
+      "depth": 0,
+      "priority": 10
     },
-    "LAVATORY": {
-      "name": {
-        "en": "Lavatory",
-        "fr": "Sanitaires",
-        "ru": "Санузел"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+    "CHECKING": {
+      "id": 1,
+      "title": "Checking",
+      "level": 2,
+      "depth": 1,
+      "priority": 21
     },
-    "MEDSTATION": {
-      "name": {
-        "en": "Medstation",
-        "fr": "Unité de soins",
-        "ru": "Медблок"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+    "SHOOTOUT_PICNIC": {
+      "id": 2,
+      "title": "Shootout picnic",
+      "level": 3,
+      "depth": 2,
+      "priority": 32
     },
-    "NUTRITION_UNIT": {
-      "name": {
-        "en": "Nutrition Unit",
-        "fr": "Cuisine",
-        "ru": "Пищеблок"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+    "DELIVERY_FROM_THE_PAST": {
+      "id": 3,
+      "title": "Delivery from the past",
+      "level": 5,
+      "depth": 2,
+      "priority": 52
     },
-    "WATER_COLLECTOR": {
-      "name": {
-        "en": "Water Collector",
-        "fr": "Récupérateur d'eau",
-        "ru": "Водосборник"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+    "BP_DEPOT": {
+      "id": 4,
+      "title": "BP depot",
+      "level": 5,
+      "depth": 3,
+      "priority": 53
     },
-    "WORKBENCH": {
-      "name": {
-        "en": "Workbench",
-        "fr": "Établi",
-        "ru": "Верстак"
-      },
-      "link": {
-        "en": "https://escapefromtarkov.fandom.com/wiki/Hideout",
-        "de": "https://escapefromtarkov.fandom.com/de/wiki/Unterschlupf",
-        "fr": "https://escapefromtarkov.fandom.com/fr/wiki/Planque",
-        "ru": "https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B1%D0%B5%D0%B6%D0%B8%D1%89%D0%B5"
-      }
+    "BAD_REP_EVIDENCE": {
+      "id": 5,
+      "title": "Bad rep evidence",
+      "level": 6,
+      "depth": 4,
+      "priority": 64
+    },
+    "ICE_CREAM_CONES": {
+      "id": 6,
+      "title": "Ice cream cones",
+      "level": 9,
+      "depth": 5,
+      "priority": 95
+    },
+    "POSTMAN_PAT": {
+      "id": 7,
+      "title": "Postman Pat",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "SHAKING_UP_TELLER": {
+      "id": 8,
+      "title": "Shaking up teller",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "PERFECT_MEDIATOR": {
+      "id": 9,
+      "title": "Perfect mediator",
+      "level": 35,
+      "depth": 7,
+      "priority": 357
+    },
+    "GRENADIER": {
+      "id": 10,
+      "title": "Grenadier",
+      "level": 30,
+      "depth": 7,
+      "priority": 307
+    },
+    "INSOMNIA": {
+      "id": 11,
+      "title": "Insomnia",
+      "level": 30,
+      "depth": 8,
+      "priority": 308
+    },
+    "TEST_DRIVE__PT__1": {
+      "id": 12,
+      "title": "Test drive. Pt. 1",
+      "level": 30,
+      "depth": 8,
+      "priority": 308
+    },
+    "THE_PUNISHER___PART_1": {
+      "id": 13,
+      "title": "The Punisher - Part 1",
+      "level": 17,
+      "depth": 7,
+      "priority": 177
+    },
+    "THE_PUNISHER___PART_2": {
+      "id": 14,
+      "title": "The Punisher - Part 2",
+      "level": 18,
+      "depth": 8,
+      "priority": 188
+    },
+    "THE_PUNISHER___PART_3": {
+      "id": 15,
+      "title": "The Punisher - Part 3",
+      "level": 19,
+      "depth": 9,
+      "priority": 199
+    },
+    "THE_PUNISHER___PART_4": {
+      "id": 16,
+      "title": "The Punisher - Part 4",
+      "level": 20,
+      "depth": 10,
+      "priority": 210
+    },
+    "THE_PUNISHER___PART_5": {
+      "id": 17,
+      "title": "The Punisher - Part 5",
+      "level": 20,
+      "depth": 11,
+      "priority": 211
+    },
+    "THE_PUNISHER___PART_6": {
+      "id": 18,
+      "title": "The Punisher - Part 6",
+      "level": 21,
+      "depth": 12,
+      "priority": 222
+    },
+    "SHORTAGE": {
+      "id": 19,
+      "title": "Shortage",
+      "level": 1,
+      "depth": 0,
+      "priority": 10
+    },
+    "SANITARY_STANDARDS___PART_1": {
+      "id": 20,
+      "title": "Sanitary Standards - Part 1",
+      "level": 4,
+      "depth": 1,
+      "priority": 41
+    },
+    "SANITARY_STANDARDS___PART_2": {
+      "id": 21,
+      "title": "Sanitary Standards - Part 2",
+      "level": 8,
+      "depth": 2,
+      "priority": 82
+    },
+    "PAINKILLER": {
+      "id": 22,
+      "title": "Painkiller",
+      "level": 8,
+      "depth": 3,
+      "priority": 83
+    },
+    "PHARMACIST": {
+      "id": 23,
+      "title": "Pharmacist",
+      "level": 10,
+      "depth": 4,
+      "priority": 104
+    },
+    "SUPPLY_PLANS": {
+      "id": 24,
+      "title": "Supply plans",
+      "level": 13,
+      "depth": 5,
+      "priority": 135
+    },
+    "KIND_OF_SABOTAGE": {
+      "id": 25,
+      "title": "Kind of sabotage",
+      "level": 13,
+      "depth": 5,
+      "priority": 135
+    },
+    "GENERAL_WARES": {
+      "id": 26,
+      "title": "General wares",
+      "level": 10,
+      "depth": 5,
+      "priority": 105
+    },
+    "CAR_REPAIR": {
+      "id": 27,
+      "title": "Car repair",
+      "level": 10,
+      "depth": 5,
+      "priority": 105
+    },
+    "HEALTH_CARE_PRIVACY___PART_1": {
+      "id": 28,
+      "title": "Health Care Privacy - Part 1",
+      "level": 20,
+      "depth": 5,
+      "priority": 205
+    },
+    "HEALTH_CARE_PRIVACY___PART_2": {
+      "id": 29,
+      "title": "Health Care Privacy - Part 2",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "HEALTH_CARE_PRIVACY___PART_3": {
+      "id": 30,
+      "title": "Health Care Privacy - Part 3",
+      "level": 10,
+      "depth": 7,
+      "priority": 107
+    },
+    "HEALTH_CARE_PRIVACY___PART_4": {
+      "id": 31,
+      "title": "Health Care Privacy - Part 4",
+      "level": 10,
+      "depth": 8,
+      "priority": 108
+    },
+    "HEALTH_CARE_PRIVACY___PART_5": {
+      "id": 32,
+      "title": "Health Care Privacy - Part 5",
+      "level": 10,
+      "depth": 9,
+      "priority": 109
+    },
+    "DECONTAMINATION_SERVICE": {
+      "id": 33,
+      "title": "Decontamination Service",
+      "level": 30,
+      "depth": 10,
+      "priority": 310
+    },
+    "PRIVATE_CLINIC": {
+      "id": 34,
+      "title": "Private clinic",
+      "level": 35,
+      "depth": 9,
+      "priority": 359
+    },
+    "ATHLETE": {
+      "id": 35,
+      "title": "Athlete",
+      "level": 30,
+      "depth": 9,
+      "priority": 309
+    },
+    "SUPPLIER": {
+      "id": 36,
+      "title": "Supplier",
+      "level": 5,
+      "depth": 0,
+      "priority": 50
+    },
+    "THE_EXTORTIONIST": {
+      "id": 37,
+      "title": "The Extortionist",
+      "level": 7,
+      "depth": 1,
+      "priority": 71
+    },
+    "WHAT_S_ON_THE_FLASH_DRIVE_": {
+      "id": 38,
+      "title": "What's on the flash drive?",
+      "level": 8,
+      "depth": 2,
+      "priority": 82
+    },
+    "GOLDEN_SWAG": {
+      "id": 39,
+      "title": "Golden swag",
+      "level": 8,
+      "depth": 3,
+      "priority": 83
+    },
+    "CHEMICAL___PART_1": {
+      "id": 40,
+      "title": "Chemical - Part 1",
+      "level": 10,
+      "depth": 4,
+      "priority": 104
+    },
+    "CHEMICAL___PART_2": {
+      "id": 41,
+      "title": "Chemical - Part 2",
+      "level": 10,
+      "depth": 5,
+      "priority": 105
+    },
+    "CHEMICAL___PART_3": {
+      "id": 42,
+      "title": "Chemical - Part 3",
+      "level": 11,
+      "depth": 6,
+      "priority": 116
+    },
+    "CHEMICAL___PART_4": {
+      "id": 43,
+      "title": "Chemical - Part 4",
+      "level": 11,
+      "depth": 7,
+      "priority": 117
+    },
+    "VITAMINS___PART_1": {
+      "id": 44,
+      "title": "Vitamins - Part 1",
+      "level": 22,
+      "depth": 7,
+      "priority": 227
+    },
+    "VITAMINS___PART_2": {
+      "id": 45,
+      "title": "Vitamins - Part 2",
+      "level": 22,
+      "depth": 8,
+      "priority": 228
+    },
+    "FRIEND_FROM_THE_WEST___PART_1": {
+      "id": 46,
+      "title": "Friend from the West - Part 1",
+      "level": 9,
+      "depth": 4,
+      "priority": 94
+    },
+    "FRIEND_FROM_THE_WEST___PART_2": {
+      "id": 47,
+      "title": "Friend from the West - Part 2",
+      "level": 9,
+      "depth": 5,
+      "priority": 95
+    },
+    "LEND_LEASE___PART_1": {
+      "id": 48,
+      "title": "Lend lease - Part 1",
+      "level": 25,
+      "depth": 6,
+      "priority": 256
+    },
+    "LEND_LEASE___PART_2": {
+      "id": 49,
+      "title": "Lend lease - Part 2",
+      "level": 30,
+      "depth": 7,
+      "priority": 307
+    },
+    "PEACEKEEPING_MISSION": {
+      "id": 50,
+      "title": "Peacekeeping mission",
+      "level": 30,
+      "depth": 8,
+      "priority": 308
+    },
+    "INFORMED_MEANS_ARMED": {
+      "id": 51,
+      "title": "Informed means armed",
+      "level": 24,
+      "depth": 6,
+      "priority": 246
+    },
+    "CHUMMING": {
+      "id": 52,
+      "title": "Chumming",
+      "level": 27,
+      "depth": 7,
+      "priority": 277
+    },
+    "SILENT_CALIBER": {
+      "id": 53,
+      "title": "Silent caliber",
+      "level": 27,
+      "depth": 8,
+      "priority": 278
+    },
+    "FLINT": {
+      "id": 54,
+      "title": "Flint",
+      "level": 35,
+      "depth": 8,
+      "priority": 358
+    },
+    "BULLSHIT": {
+      "id": 55,
+      "title": "Bullshit",
+      "level": 27,
+      "depth": 8,
+      "priority": 278
+    },
+    "SETUP": {
+      "id": 56,
+      "title": "Setup",
+      "level": 27,
+      "depth": 9,
+      "priority": 279
+    },
+    "FISHING_GEAR": {
+      "id": 57,
+      "title": "Fishing Gear",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "TIGR_SAFARI": {
+      "id": 58,
+      "title": "Tigr Safari",
+      "level": 10,
+      "depth": 7,
+      "priority": 107
+    },
+    "SCRAP_METAL": {
+      "id": 59,
+      "title": "Scrap Metal",
+      "level": 10,
+      "depth": 8,
+      "priority": 108
+    },
+    "EAGLE_EYE": {
+      "id": 60,
+      "title": "Eagle Eye",
+      "level": 11,
+      "depth": 9,
+      "priority": 119
+    },
+    "HUMANITARIAN_SUPPLIES": {
+      "id": 61,
+      "title": "Humanitarian Supplies",
+      "level": 11,
+      "depth": 10,
+      "priority": 120
+    },
+    "THE_CULT___PART_1": {
+      "id": 62,
+      "title": "The Cult - Part 1",
+      "level": 12,
+      "depth": 11,
+      "priority": 131
+    },
+    "THE_CULT___PART_2": {
+      "id": 63,
+      "title": "The Cult - Part 2",
+      "level": 12,
+      "depth": 12,
+      "priority": 132
+    },
+    "SPA_TOUR___PART_1": {
+      "id": 64,
+      "title": "Spa Tour - Part 1",
+      "level": 12,
+      "depth": 11,
+      "priority": 131
+    },
+    "SPA_TOUR___PART_2": {
+      "id": 65,
+      "title": "Spa Tour - Part 2",
+      "level": 12,
+      "depth": 12,
+      "priority": 132
+    },
+    "SPA_TOUR___PART_3": {
+      "id": 66,
+      "title": "Spa Tour - Part 3",
+      "level": 12,
+      "depth": 13,
+      "priority": 133
+    },
+    "SPA_TOUR___PART_4": {
+      "id": 67,
+      "title": "Spa Tour - Part 4",
+      "level": 12,
+      "depth": 14,
+      "priority": 134
+    },
+    "SPA_TOUR___PART_5": {
+      "id": 68,
+      "title": "Spa Tour - Part 5",
+      "level": 12,
+      "depth": 15,
+      "priority": 135
+    },
+    "SPA_TOUR___PART_6": {
+      "id": 69,
+      "title": "Spa Tour - Part 6",
+      "level": 12,
+      "depth": 16,
+      "priority": 136
+    },
+    "SPA_TOUR___PART_7": {
+      "id": 70,
+      "title": "Spa Tour - Part 7",
+      "level": 12,
+      "depth": 17,
+      "priority": 137
+    },
+    "CARGO_X___PART_1": {
+      "id": 71,
+      "title": "Cargo X - Part 1",
+      "level": 12,
+      "depth": 18,
+      "priority": 138
+    },
+    "CARGO_X___PART_2": {
+      "id": 72,
+      "title": "Cargo X - Part 2",
+      "level": 12,
+      "depth": 19,
+      "priority": 139
+    },
+    "CARGO_X___PART_3": {
+      "id": 73,
+      "title": "Cargo X - Part 3",
+      "level": 12,
+      "depth": 20,
+      "priority": 140
+    },
+    "WET_JOB___PART_1": {
+      "id": 74,
+      "title": "Wet Job - Part 1",
+      "level": 14,
+      "depth": 18,
+      "priority": 158
+    },
+    "WET_JOB___PART_2": {
+      "id": 75,
+      "title": "Wet Job - Part 2",
+      "level": 14,
+      "depth": 19,
+      "priority": 159
+    },
+    "WET_JOB___PART_3": {
+      "id": 76,
+      "title": "Wet Job - Part 3",
+      "level": 14,
+      "depth": 20,
+      "priority": 160
+    },
+    "WET_JOB___PART_4": {
+      "id": 77,
+      "title": "Wet Job - Part 4",
+      "level": 14,
+      "depth": 21,
+      "priority": 161
+    },
+    "WET_JOB___PART_5": {
+      "id": 78,
+      "title": "Wet Job - Part 5",
+      "level": 14,
+      "depth": 22,
+      "priority": 162
+    },
+    "WET_JOB___PART_6": {
+      "id": 79,
+      "title": "Wet Job - Part 6",
+      "level": 14,
+      "depth": 23,
+      "priority": 163
+    },
+    "PSYCHO_SNIPER": {
+      "id": 80,
+      "title": "Psycho Sniper",
+      "level": 40,
+      "depth": 24,
+      "priority": 424
+    },
+    "THE_GUIDE": {
+      "id": 81,
+      "title": "The guide",
+      "level": 40,
+      "depth": 24,
+      "priority": 424
+    },
+    "GUNSMITH___PART_1": {
+      "id": 82,
+      "title": "Gunsmith - Part 1",
+      "level": 2,
+      "depth": 0,
+      "priority": 20
+    },
+    "GUNSMITH___PART_2": {
+      "id": 83,
+      "title": "Gunsmith - Part 2",
+      "level": 11,
+      "depth": 1,
+      "priority": 111
+    },
+    "GUNSMITH___PART_3": {
+      "id": 84,
+      "title": "Gunsmith - Part 3",
+      "level": 12,
+      "depth": 1,
+      "priority": 121
+    },
+    "GUNSMITH___PART_4": {
+      "id": 85,
+      "title": "Gunsmith - Part 4",
+      "level": 15,
+      "depth": 2,
+      "priority": 152
+    },
+    "GUNSMITH___PART_5": {
+      "id": 86,
+      "title": "Gunsmith - Part 5",
+      "level": 17,
+      "depth": 3,
+      "priority": 173
+    },
+    "GUNSMITH___PART_6": {
+      "id": 87,
+      "title": "Gunsmith - Part 6",
+      "level": 18,
+      "depth": 4,
+      "priority": 184
+    },
+    "GUNSMITH___PART_7": {
+      "id": 88,
+      "title": "Gunsmith - Part 7",
+      "level": 19,
+      "depth": 5,
+      "priority": 195
+    },
+    "GUNSMITH___PART_8": {
+      "id": 89,
+      "title": "Gunsmith - Part 8",
+      "level": 19,
+      "depth": 6,
+      "priority": 196
+    },
+    "GUNSMITH___PART_9": {
+      "id": 90,
+      "title": "Gunsmith - Part 9",
+      "level": 20,
+      "depth": 7,
+      "priority": 207
+    },
+    "GUNSMITH___PART_10": {
+      "id": 91,
+      "title": "Gunsmith - Part 10",
+      "level": 20,
+      "depth": 8,
+      "priority": 208
+    },
+    "GUNSMITH___PART_11": {
+      "id": 92,
+      "title": "Gunsmith - Part 11",
+      "level": 20,
+      "depth": 9,
+      "priority": 209
+    },
+    "GUNSMITH___PART_12": {
+      "id": 93,
+      "title": "Gunsmith - Part 12",
+      "level": 23,
+      "depth": 10,
+      "priority": 240
+    },
+    "GUNSMITH___PART_13": {
+      "id": 94,
+      "title": "Gunsmith - Part 13",
+      "level": 25,
+      "depth": 11,
+      "priority": 261
+    },
+    "GUNSMITH___PART_14": {
+      "id": 95,
+      "title": "Gunsmith - Part 14",
+      "level": 27,
+      "depth": 12,
+      "priority": 282
+    },
+    "GUNSMITH___PART_15": {
+      "id": 96,
+      "title": "Gunsmith - Part 15",
+      "level": 29,
+      "depth": 13,
+      "priority": 303
+    },
+    "GUNSMITH___PART_16": {
+      "id": 97,
+      "title": "Gunsmith - Part 16",
+      "level": 35,
+      "depth": 14,
+      "priority": 364
+    },
+    "SIGNAL___PART_1": {
+      "id": 98,
+      "title": "Signal - Part 1",
+      "level": 12,
+      "depth": 2,
+      "priority": 122
+    },
+    "SIGNAL___PART_2": {
+      "id": 99,
+      "title": "Signal - Part 2",
+      "level": 12,
+      "depth": 3,
+      "priority": 123
+    },
+    "SIGNAL___PART_3": {
+      "id": 100,
+      "title": "Signal - Part 3",
+      "level": 15,
+      "depth": 4,
+      "priority": 154
+    },
+    "SIGNAL___PART_4": {
+      "id": 101,
+      "title": "Signal - Part 4",
+      "level": 15,
+      "depth": 5,
+      "priority": 155
+    },
+    "SCOUT": {
+      "id": 102,
+      "title": "Scout",
+      "level": 12,
+      "depth": 4,
+      "priority": 124
+    },
+    "INSIDER": {
+      "id": 103,
+      "title": "Insider",
+      "level": 12,
+      "depth": 3,
+      "priority": 123
+    },
+    "FARMING___PART_1": {
+      "id": 104,
+      "title": "Farming - Part 1",
+      "level": 12,
+      "depth": 1,
+      "priority": 121
+    },
+    "FARMING___PART_2": {
+      "id": 105,
+      "title": "Farming - Part 2",
+      "level": 12,
+      "depth": 2,
+      "priority": 122
+    },
+    "FARMING___PART_3": {
+      "id": 106,
+      "title": "Farming - Part 3",
+      "level": 14,
+      "depth": 3,
+      "priority": 143
+    },
+    "FARMING___PART_4": {
+      "id": 107,
+      "title": "Farming - Part 4",
+      "level": 14,
+      "depth": 4,
+      "priority": 144
+    },
+    "IMPORT": {
+      "id": 108,
+      "title": "Import",
+      "level": 35,
+      "depth": 5,
+      "priority": 355
+    },
+    "FERTILIZERS": {
+      "id": 109,
+      "title": "Fertilizers",
+      "level": 30,
+      "depth": 5,
+      "priority": 305
+    },
+    "A_SHOOTER_BORN_IN_HEAVEN": {
+      "id": 110,
+      "title": "A Shooter Born in Heaven",
+      "level": 14,
+      "depth": 4,
+      "priority": 144
+    },
+    "ONLY_BUSINESS": {
+      "id": 111,
+      "title": "Only business",
+      "level": 15,
+      "depth": 0,
+      "priority": 150
+    },
+    "BIG_SALE": {
+      "id": 112,
+      "title": "Big sale",
+      "level": 15,
+      "depth": 1,
+      "priority": 151
+    },
+    "THE_BLOOD_OF_WAR___PART_1": {
+      "id": 113,
+      "title": "The Blood of War - Part 1",
+      "level": 15,
+      "depth": 2,
+      "priority": 152
+    },
+    "DRESSED_TO_KILL": {
+      "id": 114,
+      "title": "Dressed to kill",
+      "level": 15,
+      "depth": 3,
+      "priority": 153
+    },
+    "DATABASE___PART_1": {
+      "id": 115,
+      "title": "Database - Part 1",
+      "level": 15,
+      "depth": 2,
+      "priority": 152
+    },
+    "DATABASE___PART_2": {
+      "id": 116,
+      "title": "Database - Part 2",
+      "level": 15,
+      "depth": 3,
+      "priority": 153
+    },
+    "GRATITUDE": {
+      "id": 117,
+      "title": "Gratitude",
+      "level": 15,
+      "depth": 4,
+      "priority": 154
+    },
+    "SALES_NIGHT": {
+      "id": 118,
+      "title": "Sales Night",
+      "level": 30,
+      "depth": 5,
+      "priority": 305
+    },
+    "SUPERVISOR": {
+      "id": 119,
+      "title": "Supervisor",
+      "level": 40,
+      "depth": 6,
+      "priority": 406
+    },
+    "HOT_DELIVERY": {
+      "id": 120,
+      "title": "Hot Delivery",
+      "level": 29,
+      "depth": 5,
+      "priority": 295
+    },
+    "SCAVENGER": {
+      "id": 121,
+      "title": "Scavenger",
+      "level": 29,
+      "depth": 6,
+      "priority": 296
+    },
+    "MAKE_ULTRA_GREAT_AGAIN": {
+      "id": 122,
+      "title": "Make ULTRA Great Again",
+      "level": 15,
+      "depth": 1,
+      "priority": 151
+    },
+    "MINIBUS": {
+      "id": 123,
+      "title": "Minibus",
+      "level": 24,
+      "depth": 4,
+      "priority": 244
+    },
+    "SEW_IT_GOOD___PART_1": {
+      "id": 124,
+      "title": "Sew it good - Part 1",
+      "level": 25,
+      "depth": 4,
+      "priority": 254
+    },
+    "SEW_IT_GOOD___PART_2": {
+      "id": 125,
+      "title": "Sew it good - Part 2",
+      "level": 25,
+      "depth": 5,
+      "priority": 255
+    },
+    "SEW_IT_GOOD___PART_3": {
+      "id": 126,
+      "title": "Sew it good - Part 3",
+      "level": 25,
+      "depth": 6,
+      "priority": 256
+    },
+    "SEW_IT_GOOD___PART_4": {
+      "id": 127,
+      "title": "Sew it good - Part 4",
+      "level": 25,
+      "depth": 7,
+      "priority": 257
+    },
+    "CHARISMA_BRINGS_SUCCESS": {
+      "id": 128,
+      "title": "Charisma brings success",
+      "level": 25,
+      "depth": 8,
+      "priority": 258
+    },
+    "NO_FUSS_NEEDED": {
+      "id": 129,
+      "title": "No fuss needed",
+      "level": 25,
+      "depth": 7,
+      "priority": 257
+    },
+    "THE_BLOOD_OF_WAR___PART_2": {
+      "id": 130,
+      "title": "The Blood of War - Part 2",
+      "level": 23,
+      "depth": 5,
+      "priority": 235
+    },
+    "THE_BLOOD_OF_WAR___PART_3": {
+      "id": 131,
+      "title": "The Blood of War - Part 3",
+      "level": 30,
+      "depth": 6,
+      "priority": 306
+    },
+    "LIVING_HIGH_IS_NOT_A_CRIME___PART_1": {
+      "id": 132,
+      "title": "Living high is not a crime - Part 1",
+      "level": 27,
+      "depth": 7,
+      "priority": 277
+    },
+    "LIVING_HIGH_IS_NOT_A_CRIME___PART_2": {
+      "id": 133,
+      "title": "Living high is not a crime - Part 2",
+      "level": 27,
+      "depth": 7,
+      "priority": 277
+    },
+    "INTRODUCTION": {
+      "id": 134,
+      "title": "Introduction",
+      "level": 2,
+      "depth": 0,
+      "priority": 20
+    },
+    "ACQUAINTANCE": {
+      "id": 135,
+      "title": "Acquaintance",
+      "level": 2,
+      "depth": 1,
+      "priority": 21
+    },
+    "THE_SURVIVALIST_PATH___UNPROTECTED__BUT_DANGEROUS": {
+      "id": 136,
+      "title": "The survivalist path - Unprotected, but dangerous",
+      "level": 2,
+      "depth": 2,
+      "priority": 22
+    },
+    "THE_SURVIVALIST_PATH___THRIFTY": {
+      "id": 137,
+      "title": "The survivalist path - Thrifty",
+      "level": 2,
+      "depth": 2,
+      "priority": 22
+    },
+    "THE_SURVIVALIST_PATH___ZHIVCHIK": {
+      "id": 138,
+      "title": "The survivalist path - Zhivchik",
+      "level": 9,
+      "depth": 3,
+      "priority": 93
+    },
+    "THE_SURVIVALIST_PATH___WOUNDED_BEAST": {
+      "id": 139,
+      "title": "The survivalist path - Wounded beast",
+      "level": 10,
+      "depth": 3,
+      "priority": 103
+    },
+    "THE_SURVIVALIST_PATH___TOUGH_GUY": {
+      "id": 140,
+      "title": "The survivalist path - Tough guy",
+      "level": 10,
+      "depth": 4,
+      "priority": 104
+    },
+    "COURTESY_VISIT": {
+      "id": 141,
+      "title": "Courtesy visit",
+      "level": 20,
+      "depth": 5,
+      "priority": 205
+    },
+    "NOSTALGIA": {
+      "id": 142,
+      "title": "Nostalgia",
+      "level": 28,
+      "depth": 6,
+      "priority": 286
+    },
+    "THE_TARKOV_SHOOTER___PART_1": {
+      "id": 143,
+      "title": "The Tarkov shooter - Part 1",
+      "level": 2,
+      "depth": 3,
+      "priority": 23
+    },
+    "THE_TARKOV_SHOOTER___PART_2": {
+      "id": 144,
+      "title": "The Tarkov shooter - Part 2",
+      "level": 2,
+      "depth": 4,
+      "priority": 24
+    },
+    "THE_TARKOV_SHOOTER___PART_3": {
+      "id": 145,
+      "title": "The Tarkov shooter - Part 3",
+      "level": 2,
+      "depth": 5,
+      "priority": 25
+    },
+    "THE_TARKOV_SHOOTER___PART_4": {
+      "id": 146,
+      "title": "The Tarkov shooter - Part 4",
+      "level": 2,
+      "depth": 6,
+      "priority": 26
+    },
+    "THE_TARKOV_SHOOTER___PART_5": {
+      "id": 147,
+      "title": "The Tarkov shooter - Part 5",
+      "level": 2,
+      "depth": 7,
+      "priority": 27
+    },
+    "THE_TARKOV_SHOOTER___PART_6": {
+      "id": 148,
+      "title": "The Tarkov shooter - Part 6",
+      "level": 2,
+      "depth": 8,
+      "priority": 28
+    },
+    "THE_TARKOV_SHOOTER___PART_7": {
+      "id": 149,
+      "title": "The Tarkov shooter - Part 7",
+      "level": 2,
+      "depth": 9,
+      "priority": 29
+    },
+    "THE_TARKOV_SHOOTER___PART_8": {
+      "id": 150,
+      "title": "The Tarkov shooter - Part 8",
+      "level": 2,
+      "depth": 10,
+      "priority": 30
+    },
+    "THE_SURVIVALIST_PATH___COLD_BLOODED": {
+      "id": 151,
+      "title": "The survivalist path - Cold blooded",
+      "level": 2,
+      "depth": 4,
+      "priority": 24
+    },
+    "COLLEAGUES___PART_2": {
+      "id": 152,
+      "title": "Colleagues - Part 2",
+      "level": 21,
+      "depth": 7,
+      "priority": 217
+    },
+    "COLLEAGUES___PART_3": {
+      "id": 153,
+      "title": "Colleagues - Part 3",
+      "level": 21,
+      "depth": 9,
+      "priority": 219
+    },
+    "THE_SURVIVALIST_PATH___COMBAT_MEDIC": {
+      "id": 154,
+      "title": "The survivalist path - Combat medic",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "AMBULANCE": {
+      "id": 155,
+      "title": "Ambulance",
+      "level": 25,
+      "depth": 5,
+      "priority": 255
+    },
+    "THE_HUNTSMAN_PATH___SECURED_PERIMETER": {
+      "id": 156,
+      "title": "The Huntsman path - Secured perimeter",
+      "level": 15,
+      "depth": 4,
+      "priority": 154
+    },
+    "RESERVE": {
+      "id": 157,
+      "title": "Reserve",
+      "level": 20,
+      "depth": 5,
+      "priority": 205
+    },
+    "THE_HUNTSMAN_PATH___FOREST_CLEANING": {
+      "id": 158,
+      "title": "The Huntsman Path - Forest Cleaning",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "THE_HUNTSMAN_PATH___CONTROLLER": {
+      "id": 159,
+      "title": "The Huntsman path - Controller",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "THE_HUNTSMAN_PATH___EVIL_WATCHMAN": {
+      "id": 160,
+      "title": "The Huntsman path - Evil watchman",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "FISHING_PLACE": {
+      "id": 161,
+      "title": "Fishing place",
+      "level": 25,
+      "depth": 6,
+      "priority": 256
+    },
+    "THE_HUNTSMAN_PATH___TROPHY": {
+      "id": 162,
+      "title": "The Huntsman Path - Trophy",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "THE_HUNTSMAN_PATH___JUSTICE": {
+      "id": 163,
+      "title": "The Huntsman path - Justice",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "THE_HUNTSMAN_PATH___SELLOUT": {
+      "id": 164,
+      "title": "The Huntsman path - Sellout",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "THE_HUNTSMAN_PATH___WOODS_KEEPER": {
+      "id": 165,
+      "title": "The Huntsman Path - Woods Keeper",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "THE_HUNTSMAN_PATH___ERASER___PART_1": {
+      "id": 166,
+      "title": "The Huntsman path - Eraser - Part 1",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "THE_HUNTSMAN_PATH___ERASER___PART_2": {
+      "id": 167,
+      "title": "The Huntsman path - Eraser - Part 2",
+      "level": 17,
+      "depth": 7,
+      "priority": 177
+    },
+    "HUNTING_TRIP": {
+      "id": 168,
+      "title": "Hunting trip",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "OPERATION_AQUARIUS___PART_1": {
+      "id": 169,
+      "title": "Operation Aquarius - Part 1",
+      "level": 6,
+      "depth": 1,
+      "priority": 61
+    },
+    "OPERATION_AQUARIUS___PART_2": {
+      "id": 170,
+      "title": "Operation Aquarius - Part 2",
+      "level": 6,
+      "depth": 2,
+      "priority": 62
+    },
+    "POLIKHIM_HOBO": {
+      "id": 171,
+      "title": "Polikhim hobo",
+      "level": 10,
+      "depth": 4,
+      "priority": 104
+    },
+    "REGULATED_MATERIALS": {
+      "id": 172,
+      "title": "Regulated materials",
+      "level": 25,
+      "depth": 5,
+      "priority": 255
+    },
+    "STIRRUP": {
+      "id": 173,
+      "title": "Stirrup",
+      "level": 8,
+      "depth": 2,
+      "priority": 82
+    },
+    "MENTOR": {
+      "id": 174,
+      "title": "Mentor",
+      "level": 14,
+      "depth": 22,
+      "priority": 162
+    },
+    "BAD_HABIT": {
+      "id": 175,
+      "title": "Bad habit",
+      "level": 12,
+      "depth": 3,
+      "priority": 123
+    },
+    "THE_KEY_TO_SUCCESS": {
+      "id": 176,
+      "title": "The key to success",
+      "level": 26,
+      "depth": 6,
+      "priority": 266
+    },
+    "SHADY_BUSINESS": {
+      "id": 177,
+      "title": "Shady Business",
+      "level": 20,
+      "depth": 3,
+      "priority": 203
+    },
+    "POSTMAN_PAT___PART_2": {
+      "id": 178,
+      "title": "Postman Pat - Part 2",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "OUT_OF_CURIOSITY": {
+      "id": 179,
+      "title": "Out of curiosity",
+      "level": 11,
+      "depth": 7,
+      "priority": 117
+    },
+    "BIG_CUSTOMER": {
+      "id": 180,
+      "title": "Big customer",
+      "level": 11,
+      "depth": 7,
+      "priority": 117
+    },
+    "THE_SURVIVALIST_PATH___JUNKIE": {
+      "id": 181,
+      "title": "The survivalist path - Junkie",
+      "level": 1,
+      "depth": 5,
+      "priority": 15
+    },
+    "TEXTILE___PART_1": {
+      "id": 182,
+      "title": "Textile - Part 1",
+      "level": 42,
+      "depth": 8,
+      "priority": 428
+    },
+    "TEXTILE___PART_2": {
+      "id": 183,
+      "title": "Textile - Part 2",
+      "level": 42,
+      "depth": 9,
+      "priority": 429
+    },
+    "ANESTHESIA": {
+      "id": 184,
+      "title": "Anesthesia",
+      "level": 21,
+      "depth": 7,
+      "priority": 217
+    },
+    "COLLEAGUES___PART_1": {
+      "id": 185,
+      "title": "Colleagues - Part 1",
+      "level": 21,
+      "depth": 6,
+      "priority": 216
+    },
+    "RIGGED_GAME": {
+      "id": 186,
+      "title": "Rigged game",
+      "level": 21,
+      "depth": 8,
+      "priority": 218
+    },
+    "CHEMISTRY_CLOSET": {
+      "id": 187,
+      "title": "Chemistry closet",
+      "level": 21,
+      "depth": 8,
+      "priority": 218
+    },
+    "SAMPLES": {
+      "id": 188,
+      "title": "Samples",
+      "level": 21,
+      "depth": 8,
+      "priority": 218
+    },
+    "TERRAGROUP_EMPLOYEE": {
+      "id": 189,
+      "title": "TerraGroup employee",
+      "level": 21,
+      "depth": 9,
+      "priority": 219
+    },
+    "THE_HUNTSMAN_PATH___SADIST": {
+      "id": 190,
+      "title": "The Huntsman path - Sadist",
+      "level": 21,
+      "depth": 9,
+      "priority": 219
+    },
+    "THE_BUNKER___PART_1": {
+      "id": 191,
+      "title": "The bunker - Part 1",
+      "level": 10,
+      "depth": 4,
+      "priority": 104
+    },
+    "THE_BUNKER___PART_2": {
+      "id": 192,
+      "title": "The bunker - Part 2",
+      "level": 10,
+      "depth": 5,
+      "priority": 105
+    },
+    "SEARCH_MISSION": {
+      "id": 193,
+      "title": "Search mission",
+      "level": 5,
+      "depth": 1,
+      "priority": 51
+    },
+    "THE_STYLISH_ONE": {
+      "id": 194,
+      "title": "The stylish one",
+      "level": 26,
+      "depth": 7,
+      "priority": 267
+    },
+    "THE_SURVIVALIST_PATH___EAGLE_OWL": {
+      "id": 196,
+      "title": "The survivalist path - Eagle-owl",
+      "level": 1,
+      "depth": 5,
+      "priority": 15
+    },
+    "COLLECTOR": {
+      "id": 195,
+      "title": "Collector",
+      "level": 40,
+      "depth": 15,
+      "priority": 415
+    },
+    "AN_APPLE_A_DAY___KEEPS_THE_DOCTOR_AWAY": {
+      "id": 197,
+      "title": "An apple a day - keeps the doctor away",
+      "level": 1,
+      "depth": 8,
+      "priority": 18
+    },
+    "HUNTER": {
+      "id": 198,
+      "title": "Hunter",
+      "level": 33,
+      "depth": 2,
+      "priority": 332
+    },
+    "NO_OFFENCE": {
+      "id": 199,
+      "title": "No offence",
+      "level": 11,
+      "depth": 1,
+      "priority": 111
+    },
+    "TRUST_REGAIN": {
+      "id": 200,
+      "title": "Trust regain",
+      "level": 11,
+      "depth": 1,
+      "priority": 111
+    },
+    "LOYALTY_BUYOUT": {
+      "id": 201,
+      "title": "Loyalty buyout",
+      "level": 11,
+      "depth": 1,
+      "priority": 111
+    },
+    "HIPPOCRATIC_OATH": {
+      "id": 202,
+      "title": "Hippocratic Oath",
+      "level": 10,
+      "depth": 6,
+      "priority": 106
+    },
+    "DISEASE_HISTORY": {
+      "id": 203,
+      "title": "Disease history",
+      "level": 10,
+      "depth": 5,
+      "priority": 105
+    },
+    "A_FUEL_MATTER": {
+      "id": 204,
+      "title": "A fuel matter",
+      "level": 15,
+      "depth": 1,
+      "priority": 151
+    },
+    "SURPLUS_GOODS": {
+      "id": 205,
+      "title": "Surplus Goods",
+      "level": 12,
+      "depth": 5,
+      "priority": 125
+    },
+    "BACK_DOOR": {
+      "id": 206,
+      "title": "Back door",
+      "level": 12,
+      "depth": 6,
+      "priority": 126
+    },
+    "REVISION___PART_1": {
+      "id": 207,
+      "title": "Revision - Part 1",
+      "level": 11,
+      "depth": 10,
+      "priority": 120
+    },
+    "CLASSIFIED_TECHNOLOGIES": {
+      "id": 208,
+      "title": "Classified technologies",
+      "level": 11,
+      "depth": 11,
+      "priority": 121
+    },
+    "INVENTORY_CHECK": {
+      "id": 209,
+      "title": "Inventory check",
+      "level": 15,
+      "depth": 2,
+      "priority": 152
+    },
+    "NO_PLACE_FOR_RENEGADES": {
+      "id": 210,
+      "title": "No Place for Renegades",
+      "level": 12,
+      "depth": 6,
+      "priority": 126
+    },
+    "DOCUMENTS": {
+      "id": 211,
+      "title": "Documents",
+      "level": 10,
+      "depth": 7,
+      "priority": 107
+    },
+    "SAFE_CORRIDOR": {
+      "id": 212,
+      "title": "Safe corridor",
+      "level": 11,
+      "depth": 8,
+      "priority": 118
+    },
+    "THE_HUNTSMAN_PATH___FACTORY_CHIEF": {
+      "id": 213,
+      "title": "The Huntsman Path - Factory Chief",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "PEST_CONTROL": {
+      "id": 214,
+      "title": "Pest control",
+      "level": 17,
+      "depth": 6,
+      "priority": 176
+    },
+    "CAPTURING_OUTPOSTS": {
+      "id": 215,
+      "title": "Capturing Outposts",
+      "level": 42,
+      "depth": 13,
+      "priority": 433
+    },
+    "INTIMIDATOR": {
+      "id": 216,
+      "title": "Intimidator",
+      "level": 45,
+      "depth": 13,
+      "priority": 463
+    },
+    "CALIBRATION": {
+      "id": 217,
+      "title": "Calibration",
+      "level": 47,
+      "depth": 0,
+      "priority": 470
+    },
+    "NIGHT_SWEEP": {
+      "id": 218,
+      "title": "Night Sweep",
+      "level": 50,
+      "depth": 0,
+      "priority": 500
+    },
+    "SWIFT_ONE": {
+      "id": 219,
+      "title": "Swift One",
+      "level": 50,
+      "depth": 10,
+      "priority": 510
+    },
+    "CRISIS": {
+      "id": 220,
+      "title": "Crisis",
+      "level": 48,
+      "depth": 0,
+      "priority": 480
+    },
+    "ESCORT": {
+      "id": 221,
+      "title": "Escort",
+      "level": 60,
+      "depth": 13,
+      "priority": 613
+    },
+    "THE_CHOICE": {
+      "id": 222,
+      "title": "The Choice",
+      "level": 60,
+      "depth": 13,
+      "priority": 613
+    },
+    "CLEANER": {
+      "id": 223,
+      "title": "Cleaner",
+      "level": 45,
+      "depth": 25,
+      "priority": 475
+    },
+    "LONG_LINE": {
+      "id": 224,
+      "title": "Long Line",
+      "level": 45,
+      "depth": 7,
+      "priority": 457
+    },
+    "THE_HUNTSMAN_PATH___RELENTLESS": {
+      "id": 225,
+      "title": "The Huntsman path - Relentless",
+      "level": 65,
+      "depth": 0,
+      "priority": 650
+    },
+    "BOOZE": {
+      "id": 226,
+      "title": "Booze",
+      "level": 50,
+      "depth": 8,
+      "priority": 508
+    },
+    "THE_COURIER": {
+      "id": 227,
+      "title": "The Courier",
+      "level": 55,
+      "depth": 1,
+      "priority": 551
+    },
+    "SPECIAL_EQUIPMENT": {
+      "id": 228,
+      "title": "Special Equipment",
+      "level": 60,
+      "depth": 26,
+      "priority": 626
+    },
+    "LONG_ROAD": {
+      "id": 229,
+      "title": "Long Road",
+      "level": 20,
+      "depth": 6,
+      "priority": 206
+    },
+    "CORPORATE_SECRETS": {
+      "id": 230,
+      "title": "Corporate Secrets",
+      "level": 17,
+      "depth": 4,
+      "priority": 174
+    },
+    "SEASIDE_VACATION": {
+      "id": 231,
+      "title": "Seaside Vacation",
+      "level": 17,
+      "depth": 5,
+      "priority": 175
+    },
+    "EASY_JOB___PART_1": {
+      "id": 232,
+      "title": "Easy Job - Part 1",
+      "level": 1,
+      "depth": 9,
+      "priority": 19
+    },
+    "EASY_JOB___PART_2": {
+      "id": 233,
+      "title": "Easy Job - Part 2",
+      "level": 1,
+      "depth": 10,
+      "priority": 20
+    },
+    "CARGO_X___PART_4": {
+      "id": 234,
+      "title": "Cargo X - Part 4",
+      "level": 1,
+      "depth": 21,
+      "priority": 31
+    },
+    "THE_HERMIT": {
+      "id": 235,
+      "title": "The Hermit",
+      "level": 1,
+      "depth": 5,
+      "priority": 15
+    },
+    "COMMUNICATION_DIFFICULTIES": {
+      "id": 236,
+      "title": "Communication Difficulties",
+      "level": 1,
+      "depth": 2,
+      "priority": 12
+    },
+    "MISSING_CARGO": {
+      "id": 237,
+      "title": "Missing Cargo",
+      "level": 1,
+      "depth": 7,
+      "priority": 17
+    },
+    "THE_HUNTSMAN_PATH___OUTCASTS": {
+      "id": 238,
+      "title": "The Huntsman path - Outcasts",
+      "level": 1,
+      "depth": 6,
+      "priority": 16
+    },
+    "REVISION___PART_2": {
+      "id": 239,
+      "title": "Revision - Part 2",
+      "level": 1,
+      "depth": 10,
+      "priority": 20
+    },
+    "OUR_OWN_LAND": {
+      "id": 240,
+      "title": "Our Own Land",
+      "level": 1,
+      "depth": 11,
+      "priority": 21
+    },
+    "LOST_CONTACT": {
+      "id": 241,
+      "title": "Lost Contact",
+      "level": 1,
+      "depth": 7,
+      "priority": 17
+    },
+    "ENERGY_CRISIS": {
+      "id": 242,
+      "title": "Energy Crisis",
+      "level": 25,
+      "depth": 0,
+      "priority": 250
+    },
+    "OVERPOPULATION": {
+      "id": 243,
+      "title": "Overpopulation",
+      "level": 1,
+      "depth": 12,
+      "priority": 22
+    },
+    "COUNTERACTION": {
+      "id": 244,
+      "title": "Counteraction",
+      "level": 1,
+      "depth": 11,
+      "priority": 21
+    },
+    "BROADCAST": {
+      "id": 245,
+      "title": "Broadcast",
+      "level": 1,
+      "depth": 3,
+      "priority": 13
+    },
+    "TOP_SECRET": {
+      "id": 246,
+      "title": "Top Secret",
+      "level": 1,
+      "depth": 6,
+      "priority": 16
+    },
+    "STRAY_DOGS": {
+      "id": 247,
+      "title": "Stray Dogs",
+      "level": 1,
+      "depth": 7,
+      "priority": 17
+    },
+    "DRUG_TRAFFICKING": {
+      "id": 248,
+      "title": "Drug Trafficking",
+      "level": 1,
+      "depth": 8,
+      "priority": 18
+    },
+    "RECONNAISSANCE": {
+      "id": 249,
+      "title": "Reconnaissance",
+      "level": 1,
+      "depth": 10,
+      "priority": 20
     }
   }
 }
