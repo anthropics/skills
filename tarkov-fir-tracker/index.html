@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarkov FiR Lookup</title>
+  <title>Tarkov Item Lookup</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -16,6 +16,9 @@
       --yellow: #d29922;
       --red: #f85149;
       --blue: #58a6ff;
+      --bronze: #cd7f32;
+      --silver: #c0c0c0;
+      --gold: #ffd700;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -26,7 +29,6 @@
       padding: 12px;
     }
 
-    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
@@ -34,9 +36,11 @@
       margin-bottom: 12px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
     }
     .header h1 { font-size: 1.2rem; color: var(--accent); }
-    .header-controls { display: flex; gap: 8px; align-items: center; }
+    .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .header-controls button, .header-controls select {
       padding: 6px 12px;
       background: var(--card);
@@ -46,16 +50,10 @@
       font-size: 0.85rem;
       cursor: pointer;
     }
-    .header-controls button:hover { background: #21262d; }
     .status { font-size: 0.8rem; color: var(--muted); }
     .status.ok { color: var(--green); }
 
-    /* Tabs */
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 12px;
-    }
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
     .tab {
       padding: 8px 16px;
       background: var(--card);
@@ -65,16 +63,12 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-    .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .tab.active { background: var(--accent); color: #000; }
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* Search Columns */
-    .columns-container {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
+    /* Columns */
+    .columns-container { display: grid; gap: 8px; margin-bottom: 12px; }
     .columns-container.cols-2 { grid-template-columns: repeat(2, 1fr); }
     .columns-container.cols-3 { grid-template-columns: repeat(3, 1fr); }
     .columns-container.cols-4 { grid-template-columns: repeat(4, 1fr); }
@@ -85,7 +79,7 @@
       background: var(--card);
       border-radius: 6px;
       padding: 8px;
-      min-height: 200px;
+      min-height: 180px;
     }
     .search-column input {
       width: 100%;
@@ -99,15 +93,16 @@
     }
     .search-column input:focus { outline: none; border-color: var(--accent); }
 
+    /* Result Card */
     .result-card {
       background: var(--bg);
       border-radius: 4px;
       padding: 10px;
       border-left: 3px solid var(--border);
     }
-    .result-card.need { border-left-color: var(--red); }
-    .result-card.partial { border-left-color: var(--yellow); }
-    .result-card.complete { border-left-color: var(--green); }
+    .result-card.fir-need { border-left-color: var(--red); }
+    .result-card.fir-partial { border-left-color: var(--yellow); }
+    .result-card.fir-complete { border-left-color: var(--green); }
 
     .result-name {
       font-weight: 600;
@@ -115,6 +110,36 @@
       margin-bottom: 6px;
       word-break: break-word;
     }
+
+    /* Price Tier Colors */
+    .price-tier {
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .price-tier.none { color: var(--muted); }
+    .price-tier.low { color: #6cb6ff; } /* blue-ish */
+    .price-tier.mid { color: #f0883e; } /* orange */
+    .price-tier.high { color: #f85149; } /* red */
+    .price-tier.bronze {
+      color: #000;
+      background: linear-gradient(135deg, #cd7f32, #8b4513);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+    }
+    .price-tier.silver {
+      color: #000;
+      background: linear-gradient(135deg, #e8e8e8, #a8a8a8);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    }
+    .price-tier.gold {
+      color: #000;
+      background: linear-gradient(135deg, #ffd700, #daa520);
+      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
+    }
+
     .result-row {
       display: flex;
       justify-content: space-between;
@@ -123,7 +148,6 @@
     }
     .result-row .label { color: var(--muted); }
     .result-row .value { font-weight: 500; }
-    .result-row .value.price { color: var(--blue); }
     .result-row .value.need { color: var(--red); }
     .result-row .value.ok { color: var(--green); }
 
@@ -134,7 +158,6 @@
       font-size: 0.75rem;
       color: var(--muted);
     }
-    .result-sources.hidden { display: none; }
     .source-item {
       display: inline-block;
       background: #21262d;
@@ -152,7 +175,18 @@
       padding: 20px;
     }
 
-    /* Recent History */
+    .fir-badge {
+      display: inline-block;
+      background: var(--green);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+    }
+
+    /* History */
     .history-section {
       background: var(--card);
       border-radius: 6px;
@@ -177,31 +211,25 @@
     }
     .history-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 6px;
     }
     .history-item {
       background: var(--bg);
-      padding: 8px;
+      padding: 6px 8px;
       border-radius: 4px;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       border-left: 3px solid var(--border);
-    }
-    .history-item:hover { background: #21262d; }
-    .history-item.complete { border-left-color: var(--green); }
-    .history-item.partial { border-left-color: var(--yellow); }
-    .history-item.need { border-left-color: var(--red); }
-    .history-item .name { font-weight: 500; margin-bottom: 4px; }
-    .history-item .meta {
       display: flex;
       justify-content: space-between;
-      color: var(--muted);
-      font-size: 0.8rem;
+      align-items: center;
     }
-    .history-item .meta .price { color: var(--blue); }
+    .history-item:hover { background: #21262d; }
+    .history-item .name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
+    .history-item .price { font-size: 0.75rem; }
 
-    /* Bulk Search */
+    /* Bulk */
     .bulk-section {
       background: var(--card);
       padding: 16px;
@@ -216,7 +244,6 @@
       border-radius: 4px;
       color: var(--text);
       font-family: inherit;
-      font-size: 0.9rem;
       resize: vertical;
       margin-bottom: 10px;
     }
@@ -231,26 +258,15 @@
     }
     .bulk-results {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 8px;
     }
 
-    /* Settings */
-    .settings {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
     .setting-item {
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 0.85rem;
-    }
-    .setting-item input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
     }
 
     @media (max-width: 800px) {
@@ -263,7 +279,7 @@
 </head>
 <body>
   <div class="header">
-    <h1>Tarkov FiR Lookup</h1>
+    <h1>Tarkov Item Lookup</h1>
     <div class="header-controls">
       <select id="col-count">
         <option value="2">2列</option>
@@ -274,7 +290,7 @@
       </select>
       <label class="setting-item">
         <input type="checkbox" id="show-details" checked>
-        <span>詳細表示</span>
+        <span>詳細</span>
       </label>
       <button id="btn-fetch">データ取得</button>
       <span class="status" id="api-status">未取得</span>
@@ -286,20 +302,17 @@
     <div class="tab" data-panel="bulk">一括検索</div>
   </div>
 
-  <!-- クイック検索 -->
   <div class="panel active" id="panel-search">
-    <div class="history-section" id="history-section">
+    <div class="history-section">
       <div class="history-header">
         <h3>最近の検索</h3>
         <button onclick="clearHistory()">クリア</button>
       </div>
       <div class="history-grid" id="history-grid"></div>
     </div>
-
     <div class="columns-container cols-3" id="columns-container"></div>
   </div>
 
-  <!-- 一括検索 -->
   <div class="panel" id="panel-bulk">
     <div class="bulk-section">
       <textarea id="bulk-input" placeholder="アイテム名を1行ずつ入力..."></textarea>
@@ -315,51 +328,43 @@
     const BASE_DATA = PLACEHOLDER_DATA;
 
     // State
-    let allItems = {};
-    let priceData = {};
+    let allItems = {};      // All items (FiR + non-FiR)
+    let firItems = {};      // FiR item IDs with requirements
     let searchHistory = [];
     let showDetails = true;
 
-    // Cookie helpers
+    // Cookie
     function getCookie(n) { const m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : null; }
     function setCookie(n, v, d=365) { document.cookie = `${n}=${v}; expires=${new Date(Date.now()+d*864e5).toUTCString()}; path=/; SameSite=Lax`; }
 
     function loadProgress() {
-      const saved = getCookie('tarkov_fir_v2');
-      if (saved) try { return JSON.parse(decodeURIComponent(saved)); } catch(e) {}
+      const s = getCookie('tarkov_fir_v2');
+      if (s) try { return JSON.parse(decodeURIComponent(s)); } catch(e) {}
       return {};
     }
-    function saveProgress(progress) {
-      setCookie('tarkov_fir_v2', encodeURIComponent(JSON.stringify(progress)));
-    }
     function loadHistory() {
-      const saved = getCookie('tarkov_history');
-      if (saved) try { searchHistory = JSON.parse(decodeURIComponent(saved)); } catch(e) { searchHistory = []; }
+      const s = getCookie('tarkov_history');
+      if (s) try { searchHistory = JSON.parse(decodeURIComponent(s)); } catch(e) { searchHistory = []; }
     }
     function saveHistory() {
-      setCookie('tarkov_history', encodeURIComponent(JSON.stringify(searchHistory.slice(0, 20))));
+      setCookie('tarkov_history', encodeURIComponent(JSON.stringify(searchHistory.slice(0, 30))));
     }
 
-    // Init from base data
-    function initData() {
+    // Init FiR data from embedded
+    function initFirData() {
       Object.entries(BASE_DATA.items || {}).forEach(([id, item]) => {
-        allItems[id] = {
-          id,
-          name: item.name,
-          nameShort: item.nameShort,
+        firItems[id] = {
           totalRequired: item.totalRequired,
           sources: item.questBreakdown.map(q => ({
             type: 'quest',
             name: q.questName,
-            count: q.count,
-            level: q.level
-          })),
-          canCraft: item.canCraft
+            count: q.count
+          }))
         };
       });
     }
 
-    // Fetch API
+    // Fetch all items from API
     async function fetchData() {
       const btn = document.getElementById('btn-fetch');
       const status = document.getElementById('api-status');
@@ -368,13 +373,17 @@
       status.className = 'status';
 
       const query = `{
-        items { name shortName avg24hPrice width height }
+        items {
+          id name shortName
+          avg24hPrice width height
+          types
+        }
         hideoutStations {
           name
           levels {
             level
             itemRequirements {
-              item { name shortName }
+              item { id name shortName }
               count
               attributes { name value }
             }
@@ -393,101 +402,107 @@
 
         const data = json.data;
 
-        // Price lookup
-        const priceByName = {};
+        // Build all items
+        allItems = {};
         data.items.forEach(item => {
-          priceByName[item.name.toLowerCase()] = item;
-          if (item.shortName) priceByName[item.shortName.toLowerCase()] = item;
+          const slots = (item.width || 1) * (item.height || 1);
+          const perSlot = item.avg24hPrice ? Math.round(item.avg24hPrice / slots) : 0;
+
+          allItems[item.id] = {
+            id: item.id,
+            name: item.name,
+            nameShort: item.shortName,
+            price: item.avg24hPrice,
+            slots,
+            perSlot,
+            types: item.types || [],
+            fir: null // Will be set if FiR required
+          };
         });
 
-        Object.values(allItems).forEach(item => {
-          const match = priceByName[item.name.toLowerCase()] || priceByName[(item.nameShort||'').toLowerCase()];
+        // Match FiR items by name
+        Object.entries(BASE_DATA.items || {}).forEach(([baseId, baseItem]) => {
+          const match = Object.values(allItems).find(i =>
+            i.name.toLowerCase() === baseItem.name.toLowerCase()
+          );
           if (match) {
-            const slots = (match.width||1) * (match.height||1);
-            priceData[item.id] = {
-              avg: match.avg24hPrice,
-              slots,
-              perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0
+            match.fir = {
+              totalRequired: baseItem.totalRequired,
+              sources: baseItem.questBreakdown.map(q => ({
+                type: 'quest',
+                name: q.questName,
+                count: q.count
+              }))
             };
           }
         });
 
-        // Hideout FiR
+        // Add hideout FiR
         data.hideoutStations.forEach(station => {
           station.levels.forEach(level => {
             level.itemRequirements.forEach(req => {
               const isFir = req.attributes?.some(a => a.name === 'foundInRaid' && a.value === 'true');
-              if (isFir) {
-                const key = req.item.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                const existing = Object.values(allItems).find(i => i.name.toLowerCase() === req.item.name.toLowerCase());
-                if (existing) {
-                  existing.sources.push({
-                    type: 'hideout',
-                    name: `${station.name} Lv${level.level}`,
-                    count: req.count,
-                    level: level.level
-                  });
-                  existing.totalRequired += req.count;
-                } else {
-                  const id = `hideout_${key}`;
-                  allItems[id] = {
-                    id,
-                    name: req.item.name,
-                    nameShort: req.item.shortName,
-                    totalRequired: req.count,
-                    sources: [{
-                      type: 'hideout',
-                      name: `${station.name} Lv${level.level}`,
-                      count: req.count,
-                      level: level.level
-                    }],
-                    canCraft: false
-                  };
-                  const match = priceByName[req.item.name.toLowerCase()];
-                  if (match) {
-                    const slots = (match.width||1) * (match.height||1);
-                    priceData[id] = {
-                      avg: match.avg24hPrice,
-                      slots,
-                      perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0
-                    };
-                  }
+              if (isFir && allItems[req.item.id]) {
+                const item = allItems[req.item.id];
+                if (!item.fir) {
+                  item.fir = { totalRequired: 0, sources: [] };
                 }
+                item.fir.totalRequired += req.count;
+                item.fir.sources.push({
+                  type: 'hideout',
+                  name: `${station.name} Lv${level.level}`,
+                  count: req.count
+                });
               }
             });
           });
         });
 
-        status.textContent = '取得完了';
+        status.textContent = `${Object.keys(allItems).length}件取得`;
         status.className = 'status ok';
         renderHistory();
+
       } catch (err) {
         status.textContent = 'エラー';
-        status.className = 'status';
         console.error(err);
       } finally {
         btn.disabled = false;
       }
     }
 
+    // Price tier
+    function getPriceTier(perSlot) {
+      if (!perSlot || perSlot < 10000) return 'none';
+      if (perSlot >= 100000) return 'gold';
+      if (perSlot >= 50000) return 'silver';
+      if (perSlot >= 30000) return 'bronze';
+      if (perSlot >= 20000) return 'high';
+      if (perSlot >= 15000) return 'mid';
+      return 'low';
+    }
+
+    function formatPrice(p) {
+      if (!p) return '-';
+      if (p >= 1000000) return (p/1000000).toFixed(1)+'M';
+      if (p >= 1000) return Math.round(p/1000)+'K';
+      return p.toString();
+    }
+
     // Search
     function searchItem(query) {
-      if (!query) return null;
+      if (!query || Object.keys(allItems).length === 0) return null;
       const q = query.toLowerCase();
       const matches = Object.values(allItems).filter(item =>
         item.name.toLowerCase().includes(q) ||
         (item.nameShort && item.nameShort.toLowerCase().includes(q))
       );
-      // Best match: exact or starts with
       matches.sort((a, b) => {
         const aExact = a.name.toLowerCase() === q || (a.nameShort||'').toLowerCase() === q;
         const bExact = b.name.toLowerCase() === q || (b.nameShort||'').toLowerCase() === q;
-        if (aExact && !bExact) return -1;
-        if (bExact && !aExact) return 1;
+        if (aExact !== bExact) return aExact ? -1 : 1;
         const aStarts = a.name.toLowerCase().startsWith(q);
         const bStarts = b.name.toLowerCase().startsWith(q);
-        if (aStarts && !bStarts) return -1;
-        if (bStarts && !aStarts) return 1;
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
         return a.name.length - b.name.length;
       });
       return matches[0] || null;
@@ -497,7 +512,7 @@
       if (!itemId) return;
       searchHistory = searchHistory.filter(id => id !== itemId);
       searchHistory.unshift(itemId);
-      searchHistory = searchHistory.slice(0, 20);
+      searchHistory = searchHistory.slice(0, 30);
       saveHistory();
       renderHistory();
     }
@@ -508,53 +523,62 @@
       renderHistory();
     }
 
-    // Rendering
-    function formatPrice(p) {
-      if (!p) return '-';
-      if (p >= 1000000) return (p/1000000).toFixed(1)+'M';
-      if (p >= 1000) return Math.round(p/1000)+'K';
-      return p.toString();
-    }
-
+    // Render
     function renderResult(item, container) {
       const progress = loadProgress();
-      const collected = progress[item.id] || 0;
-      const isComplete = collected >= item.totalRequired;
-      const isPartial = collected > 0 && !isComplete;
-      const price = priceData[item.id];
+      const tier = getPriceTier(item.perSlot);
+      const hasFir = !!item.fir;
 
-      const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : 'need';
-      const statusText = isComplete ? '完了' : `あと${item.totalRequired - collected}`;
+      let firHtml = '';
+      if (hasFir) {
+        const collected = progress[item.id] || 0;
+        const total = item.fir.totalRequired;
+        const isComplete = collected >= total;
+        const isPartial = collected > 0 && !isComplete;
+        const statusClass = isComplete ? 'fir-complete' : isPartial ? 'fir-partial' : 'fir-need';
 
-      let sourcesHtml = '';
-      if (showDetails && item.sources.length > 0) {
-        sourcesHtml = `<div class="result-sources">
-          ${item.sources.map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
-        </div>`;
-      }
+        let sourcesHtml = '';
+        if (showDetails && item.fir.sources.length > 0) {
+          sourcesHtml = `<div class="result-sources">
+            ${item.fir.sources.map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
+          </div>`;
+        }
 
-      container.innerHTML = `
-        <div class="result-card ${statusClass}">
-          <div class="result-name">${item.name}</div>
-          <div class="result-row">
-            <span class="label">価格</span>
-            <span class="value price">${formatPrice(price?.avg)}</span>
-          </div>
-          <div class="result-row">
-            <span class="label">マス単価</span>
-            <span class="value price">${formatPrice(price?.perSlot)}/s</span>
-          </div>
+        firHtml = `
           <div class="result-row">
             <span class="label">FiR必要</span>
-            <span class="value">${item.totalRequired}個</span>
+            <span class="value">${total}個</span>
           </div>
           <div class="result-row">
             <span class="label">収集</span>
-            <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${item.totalRequired} ${statusText}</span>
+            <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${total}</span>
           </div>
           ${sourcesHtml}
-        </div>
-      `;
+        `;
+
+        container.innerHTML = `
+          <div class="result-card ${statusClass}">
+            <div class="result-name">${item.name}<span class="fir-badge">FiR</span></div>
+            <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
+            <div class="result-row">
+              <span class="label">価格</span>
+              <span class="value">${formatPrice(item.price)} (${item.slots}slot)</span>
+            </div>
+            ${firHtml}
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="result-card">
+            <div class="result-name">${item.name}</div>
+            <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
+            <div class="result-row">
+              <span class="label">価格</span>
+              <span class="value">${formatPrice(item.price)} (${item.slots}slot)</span>
+            </div>
+          </div>
+        `;
+      }
     }
 
     function createColumns() {
@@ -574,20 +598,19 @@
         `;
         container.appendChild(col);
 
-        const input = col.querySelector('input');
-        input.addEventListener('input', (e) => {
+        col.querySelector('input').addEventListener('input', (e) => {
           const query = e.target.value.trim();
-          const resultContainer = document.getElementById(`result-${i}`);
+          const rc = document.getElementById(`result-${i}`);
           if (!query) {
-            resultContainer.innerHTML = '<div class="no-result">検索してください</div>';
+            rc.innerHTML = '<div class="no-result">検索してください</div>';
             return;
           }
           const item = searchItem(query);
           if (item) {
-            renderResult(item, resultContainer);
+            renderResult(item, rc);
             addToHistory(item.id);
           } else {
-            resultContainer.innerHTML = '<div class="no-result">見つかりません</div>';
+            rc.innerHTML = '<div class="no-result">見つかりません</div>';
           }
         });
       }
@@ -595,48 +618,36 @@
 
     function renderHistory() {
       const grid = document.getElementById('history-grid');
-      const progress = loadProgress();
-
-      if (searchHistory.length === 0) {
+      if (searchHistory.length === 0 || Object.keys(allItems).length === 0) {
         grid.innerHTML = '<div class="no-result">履歴なし</div>';
         return;
       }
 
-      grid.innerHTML = searchHistory.slice(0, 12).map(id => {
+      grid.innerHTML = searchHistory.slice(0, 15).map(id => {
         const item = allItems[id];
         if (!item) return '';
-        const collected = progress[id] || 0;
-        const isComplete = collected >= item.totalRequired;
-        const isPartial = collected > 0 && !isComplete;
-        const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : 'need';
-        const price = priceData[id];
-
+        const tier = getPriceTier(item.perSlot);
         return `
-          <div class="history-item ${statusClass}" onclick="fillSearch('${item.name}')">
-            <div class="name">${item.nameShort || item.name.slice(0, 20)}</div>
-            <div class="meta">
-              <span>${collected}/${item.totalRequired}</span>
-              <span class="price">${formatPrice(price?.avg)}</span>
-            </div>
+          <div class="history-item" onclick="fillSearch('${item.name.replace(/'/g, "\\'")}')">
+            <span class="name">${item.nameShort || item.name.slice(0,12)}</span>
+            <span class="price price-tier ${tier}" style="font-size:0.75rem;padding:2px 4px;">${formatPrice(item.perSlot)}</span>
           </div>
         `;
       }).join('');
     }
 
     function fillSearch(name) {
-      const firstInput = document.querySelector('.search-column input');
-      if (firstInput) {
-        firstInput.value = name;
-        firstInput.dispatchEvent(new Event('input'));
+      const input = document.querySelector('.search-column input');
+      if (input) {
+        input.value = name;
+        input.dispatchEvent(new Event('input'));
       }
     }
 
-    // Bulk search
+    // Bulk
     function bulkSearch() {
-      const input = document.getElementById('bulk-input').value;
-      const terms = input.split('\n').map(s => s.trim()).filter(s => s);
+      const terms = document.getElementById('bulk-input').value.split('\n').map(s => s.trim()).filter(s => s);
       const container = document.getElementById('bulk-results');
-      const progress = loadProgress();
 
       if (terms.length === 0) {
         container.innerHTML = '<div class="no-result">入力してください</div>';
@@ -647,22 +658,13 @@
         const item = searchItem(term);
         if (!item) return `<div class="result-card"><div class="result-name">${term}</div><div class="no-result">見つかりません</div></div>`;
 
-        const collected = progress[item.id] || 0;
-        const isComplete = collected >= item.totalRequired;
-        const price = priceData[item.id];
-        const statusClass = isComplete ? 'complete' : collected > 0 ? 'partial' : 'need';
+        const tier = getPriceTier(item.perSlot);
+        const firLabel = item.fir ? `<span class="fir-badge">FiR ${item.fir.totalRequired}</span>` : '';
 
         return `
-          <div class="result-card ${statusClass}">
-            <div class="result-name">${item.name}</div>
-            <div class="result-row">
-              <span class="label">価格</span>
-              <span class="value price">${formatPrice(price?.avg)}</span>
-            </div>
-            <div class="result-row">
-              <span class="label">FiR</span>
-              <span class="value">${collected}/${item.totalRequired}</span>
-            </div>
+          <div class="result-card">
+            <div class="result-name">${item.nameShort || item.name.slice(0,20)}${firLabel}</div>
+            <div class="price-tier ${tier}" style="font-size:0.9rem;">${formatPrice(item.perSlot)}/s</div>
           </div>
         `;
       }).join('');
@@ -687,17 +689,15 @@
     document.getElementById('col-count').addEventListener('change', createColumns);
     document.getElementById('show-details').addEventListener('change', (e) => {
       showDetails = e.target.checked;
-      // Re-render current results
       document.querySelectorAll('.search-column input').forEach(input => {
         input.dispatchEvent(new Event('input'));
       });
     });
 
     // Init
-    initData();
+    initFirData();
     loadHistory();
     createColumns();
-    renderHistory();
     fetchData();
   </script>
 </body>
