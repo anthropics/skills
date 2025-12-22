@@ -3,515 +3,378 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarkov FiR Tracker</title>
+  <title>Tarkov FiR Lookup</title>
   <style>
     :root {
-      --bg-dark: #0d1117;
-      --bg-card: #161b22;
-      --bg-hover: #21262d;
+      --bg: #0d1117;
+      --card: #161b22;
       --border: #30363d;
       --text: #c9d1d9;
-      --text-muted: #8b949e;
+      --muted: #8b949e;
       --accent: #f0883e;
-      --accent-dim: #9e6a03;
       --green: #3fb950;
-      --green-dim: #238636;
       --yellow: #d29922;
       --red: #f85149;
       --blue: #58a6ff;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-      background: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
       min-height: 100vh;
+      padding: 12px;
     }
 
-    /* Layout */
-    .app { max-width: 1400px; margin: 0 auto; padding: 16px; }
-
-    header {
+    /* Header */
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 0;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
     }
-    header h1 { font-size: 1.5rem; color: var(--accent); font-weight: 600; }
-    .header-stats {
-      display: flex;
-      gap: 24px;
-      font-size: 0.9rem;
+    .header h1 { font-size: 1.2rem; color: var(--accent); }
+    .header-controls { display: flex; gap: 8px; align-items: center; }
+    .header-controls button, .header-controls select {
+      padding: 6px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
     }
-    .header-stats .value { color: var(--accent); font-weight: 600; }
+    .header-controls button:hover { background: #21262d; }
+    .status { font-size: 0.8rem; color: var(--muted); }
+    .status.ok { color: var(--green); }
 
     /* Tabs */
     .tabs {
       display: flex;
-      gap: 2px;
-      background: var(--bg-card);
-      padding: 4px;
-      border-radius: 8px;
-      margin-bottom: 16px;
+      gap: 4px;
+      margin-bottom: 12px;
     }
     .tab {
-      padding: 10px 20px;
-      background: transparent;
-      border: none;
-      border-radius: 6px;
-      color: var(--text-muted);
+      padding: 8px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px 4px 0 0;
+      color: var(--muted);
       cursor: pointer;
       font-size: 0.9rem;
-      transition: all 0.15s;
     }
-    .tab:hover { color: var(--text); background: var(--bg-hover); }
-    .tab.active { background: var(--accent); color: #000; font-weight: 500; }
-
+    .tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
     .panel { display: none; }
     .panel.active { display: block; }
 
-    /* Controls */
-    .controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      align-items: center;
+    /* Search Columns */
+    .columns-container {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
     }
-    .search-box {
-      flex: 1;
-      min-width: 250px;
-      position: relative;
-    }
-    .search-box input {
-      width: 100%;
-      padding: 10px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-size: 0.95rem;
-    }
-    .search-box input:focus { outline: none; border-color: var(--accent); }
+    .columns-container.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .columns-container.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .columns-container.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .columns-container.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .columns-container.cols-6 { grid-template-columns: repeat(6, 1fr); }
 
-    select, button {
-      padding: 10px 16px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+    .search-column {
+      background: var(--card);
       border-radius: 6px;
+      padding: 8px;
+      min-height: 200px;
+    }
+    .search-column input {
+      width: 100%;
+      padding: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
       color: var(--text);
       font-size: 0.9rem;
-      cursor: pointer;
+      margin-bottom: 8px;
     }
-    select:hover, button:hover { background: var(--bg-hover); }
-    button.primary { background: var(--green-dim); border-color: var(--green-dim); }
-    button.primary:hover { background: var(--green); }
-    button.danger { background: #b62324; border-color: #b62324; }
-    button.loading { opacity: 0.6; cursor: wait; }
+    .search-column input:focus { outline: none; border-color: var(--accent); }
 
-    .api-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    .api-badge.ok { background: var(--green-dim); color: var(--green); }
-    .api-badge.loading { background: var(--accent-dim); color: var(--accent); }
-    .api-badge.error { background: #b62324; color: var(--red); }
-
-    /* Item Grid */
-    .item-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .item-row {
-      display: grid;
-      grid-template-columns: 1fr 120px 100px 120px 100px;
-      gap: 16px;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--bg-card);
-      border-radius: 8px;
+    .result-card {
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 10px;
       border-left: 3px solid var(--border);
-      transition: all 0.15s;
     }
-    .item-row:hover { background: var(--bg-hover); }
-    .item-row.complete { border-left-color: var(--green); }
-    .item-row.partial { border-left-color: var(--yellow); }
-    .item-row.hideout { border-left-color: var(--blue); }
+    .result-card.need { border-left-color: var(--red); }
+    .result-card.partial { border-left-color: var(--yellow); }
+    .result-card.complete { border-left-color: var(--green); }
 
-    .item-info h3 {
+    .result-name {
+      font-weight: 600;
       font-size: 0.95rem;
-      font-weight: 500;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
       margin-bottom: 4px;
     }
-    .item-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+    .result-row .label { color: var(--muted); }
+    .result-row .value { font-weight: 500; }
+    .result-row .value.price { color: var(--blue); }
+    .result-row .value.need { color: var(--red); }
+    .result-row .value.ok { color: var(--green); }
 
-    /* Source Tags - Hierarchical colors */
-    .source-tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    /* Quest階層 - 緑系グラデーション (浅い=明るい, 深い=暗い) */
-    .source-tag.quest-early { background: #238636; color: #7ee787; }
-    .source-tag.quest-mid { background: #1a5c2a; color: #56d364; }
-    .source-tag.quest-late { background: #0f3d1a; color: #3fb950; }
-    /* Hideout階層 - 青系グラデーション */
-    .source-tag.hideout-early { background: #1f6feb; color: #a5d6ff; }
-    .source-tag.hideout-mid { background: #1158c7; color: #79c0ff; }
-    .source-tag.hideout-late { background: #0d419d; color: #58a6ff; }
-
-    .tag {
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 0.7rem;
-    }
-    .tag.craft { background: #388bfd26; color: var(--blue); }
-    .tag.barter { background: #d2992226; color: var(--yellow); }
-
-    .item-price {
-      text-align: right;
-    }
-    .item-price .main { font-weight: 500; color: var(--blue); }
-    .item-price .per-slot { font-size: 0.8rem; color: var(--text-muted); }
-
-    .item-status {
-      text-align: center;
-    }
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    .status-badge.sell { background: var(--green-dim); color: var(--green); }
-    .status-badge.keep { background: var(--accent-dim); color: var(--accent); }
-    .status-badge.need { background: #b6232426; color: var(--red); }
-
-    .item-counter {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    .item-counter button {
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-    }
-    .item-counter input {
-      width: 40px;
-      text-align: center;
-      padding: 4px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-    }
-    .item-counter .total { color: var(--text-muted); font-size: 0.85rem; }
-
-    .item-progress {
-      text-align: right;
-      font-weight: 500;
-    }
-    .item-progress.done { color: var(--green); }
-
-    /* Source Details (expandable) */
-    .source-details {
-      grid-column: 1 / -1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .result-sources {
+      margin-top: 8px;
       padding-top: 8px;
       border-top: 1px solid var(--border);
-      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
     }
+    .result-sources.hidden { display: none; }
+    .source-item {
+      display: inline-block;
+      background: #21262d;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin: 2px 2px 2px 0;
+    }
+    .source-item.quest { border-left: 2px solid var(--green); }
+    .source-item.hideout { border-left: 2px solid var(--blue); }
 
-    /* Bulk Search Panel */
-    .bulk-panel {
-      background: var(--bg-card);
+    .no-result {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
       padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
     }
-    .bulk-panel h3 { margin-bottom: 12px; color: var(--blue); }
-    .bulk-panel textarea {
-      width: 100%;
-      height: 120px;
-      padding: 12px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
+
+    /* Recent History */
+    .history-section {
+      background: var(--card);
       border-radius: 6px;
-      color: var(--text);
-      font-family: inherit;
-      resize: vertical;
+      padding: 12px;
       margin-bottom: 12px;
     }
-    .bulk-panel textarea:focus { outline: none; border-color: var(--blue); }
-    .bulk-actions { display: flex; gap: 8px; }
-
-    /* Summary Cards */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    .summary-card {
-      background: var(--bg-card);
-      border-radius: 8px;
-      padding: 16px;
-    }
-    .summary-card h3 {
-      font-size: 1rem;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .summary-card h3.green { color: var(--green); }
-    .summary-card h3.yellow { color: var(--yellow); }
-    .summary-card h3.red { color: var(--red); }
-
-    .summary-items {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    .summary-item {
+    .history-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px;
-      background: var(--bg-hover);
+      margin-bottom: 8px;
+    }
+    .history-header h3 { font-size: 0.9rem; color: var(--muted); }
+    .history-header button {
+      padding: 4px 8px;
+      background: transparent;
+      border: 1px solid var(--border);
       border-radius: 4px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      cursor: pointer;
     }
-    .summary-item .name { font-weight: 500; }
-    .summary-item .meta { font-size: 0.85rem; color: var(--text-muted); }
-    .summary-item .price { color: var(--blue); }
-
-    /* Footer */
-    footer {
-      margin-top: 40px;
-      padding: 20px 0;
-      border-top: 1px solid var(--border);
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .history-item {
+      background: var(--bg);
+      padding: 8px;
+      border-radius: 4px;
       font-size: 0.85rem;
-      color: var(--text-muted);
-      text-align: center;
+      cursor: pointer;
+      border-left: 3px solid var(--border);
     }
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    .history-item:hover { background: #21262d; }
+    .history-item.complete { border-left-color: var(--green); }
+    .history-item.partial { border-left-color: var(--yellow); }
+    .history-item.need { border-left-color: var(--red); }
+    .history-item .name { font-weight: 500; margin-bottom: 4px; }
+    .history-item .meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .history-item .meta .price { color: var(--blue); }
 
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-muted);
+    /* Bulk Search */
+    .bulk-section {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .bulk-section textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    .bulk-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+    .bulk-actions button {
+      padding: 8px 16px;
+      background: var(--accent);
+      border: none;
+      border-radius: 4px;
+      color: #000;
+      cursor: pointer;
+    }
+    .bulk-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
     }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .item-row {
-        grid-template-columns: 1fr 80px 80px;
-      }
-      .item-price, .item-status { display: none; }
+    /* Settings */
+    .settings {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .setting-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+    .setting-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .columns-container { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 500px) {
+      .columns-container { grid-template-columns: 1fr !important; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <h1>Tarkov FiR Tracker</h1>
-      <div class="header-stats">
-        <span>進捗: <span class="value" id="stat-progress">0/0</span></span>
-        <span>完了: <span class="value" id="stat-complete">0</span></span>
-        <span>売却可: <span class="value" id="stat-sellable">0</span></span>
-      </div>
-    </header>
+  <div class="header">
+    <h1>Tarkov FiR Lookup</h1>
+    <div class="header-controls">
+      <select id="col-count">
+        <option value="2">2列</option>
+        <option value="3" selected>3列</option>
+        <option value="4">4列</option>
+        <option value="5">5列</option>
+        <option value="6">6列</option>
+      </select>
+      <label class="setting-item">
+        <input type="checkbox" id="show-details" checked>
+        <span>詳細表示</span>
+      </label>
+      <button id="btn-fetch">データ取得</button>
+      <span class="status" id="api-status">未取得</span>
+    </div>
+  </div>
 
-    <div class="tabs">
-      <button class="tab active" data-panel="tracker">収集管理</button>
-      <button class="tab" data-panel="bulk">一括検索</button>
-      <button class="tab" data-panel="sell">売却判定</button>
+  <div class="tabs">
+    <div class="tab active" data-panel="search">クイック検索</div>
+    <div class="tab" data-panel="bulk">一括検索</div>
+  </div>
+
+  <!-- クイック検索 -->
+  <div class="panel active" id="panel-search">
+    <div class="history-section" id="history-section">
+      <div class="history-header">
+        <h3>最近の検索</h3>
+        <button onclick="clearHistory()">クリア</button>
+      </div>
+      <div class="history-grid" id="history-grid"></div>
     </div>
 
-    <!-- 収集管理 -->
-    <div class="panel active" id="panel-tracker">
-      <div class="controls">
-        <div class="search-box">
-          <input type="text" id="search" placeholder="アイテム名で検索...">
-        </div>
-        <select id="filter">
-          <option value="all">すべて</option>
-          <option value="incomplete">未完了</option>
-          <option value="quest">クエストのみ</option>
-          <option value="hideout">ハイドアウトのみ</option>
-          <option value="sell-ok">売却OK</option>
-          <option value="keep">要保持</option>
-        </select>
-        <select id="sort">
-          <option value="priority">進行順</option>
-          <option value="slot-value">マス単価順</option>
-          <option value="required">必要数順</option>
-        </select>
-        <button class="primary" id="btn-fetch">データ取得</button>
-        <span class="api-badge" id="api-status">未取得</span>
-      </div>
+    <div class="columns-container cols-3" id="columns-container"></div>
+  </div>
 
-      <div class="item-grid" id="item-grid"></div>
+  <!-- 一括検索 -->
+  <div class="panel" id="panel-bulk">
+    <div class="bulk-section">
+      <textarea id="bulk-input" placeholder="アイテム名を1行ずつ入力..."></textarea>
+      <div class="bulk-actions">
+        <button onclick="bulkSearch()">検索</button>
+        <button onclick="clearBulk()" style="background:var(--card);color:var(--text);border:1px solid var(--border);">クリア</button>
+      </div>
+      <div class="bulk-results" id="bulk-results"></div>
     </div>
-
-    <!-- 一括検索 -->
-    <div class="panel" id="panel-bulk">
-      <div class="bulk-panel">
-        <h3>アイテム名一括検索</h3>
-        <textarea id="bulk-input" placeholder="アイテム名を1行ずつ入力（部分一致OK）&#10;&#10;例:&#10;flash drive&#10;salewa&#10;morphine"></textarea>
-        <div class="bulk-actions">
-          <button class="primary" onclick="bulkSearch()">検索</button>
-          <button onclick="clearBulk()">クリア</button>
-          <span style="color:var(--text-muted); font-size:0.85rem;">OCRで読み取ったリストを貼り付け</span>
-        </div>
-      </div>
-      <div id="bulk-results"></div>
-    </div>
-
-    <!-- 売却判定 -->
-    <div class="panel" id="panel-sell">
-      <div class="summary-grid">
-        <div class="summary-card">
-          <h3 class="green">売却OK（マス単価順）</h3>
-          <div class="summary-items" id="list-sell"></div>
-        </div>
-        <div class="summary-card">
-          <h3 class="yellow">要保持（クラフト/バーター用）</h3>
-          <div class="summary-items" id="list-keep"></div>
-        </div>
-      </div>
-      <div class="summary-card">
-        <h3 class="red">溜めとけリスト（大量必要）</h3>
-        <div class="summary-items" id="list-stockpile"></div>
-      </div>
-    </div>
-
-    <footer>
-      データ: <a href="https://tarkov.dev/api/" target="_blank">tarkov.dev API</a> |
-      進捗はCookieに保存 | ハイドアウトFiR対応
-    </footer>
   </div>
 
   <script>
-    // Embedded base data (quest FiR items from static source)
     const BASE_DATA = PLACEHOLDER_DATA;
 
-    // ============================================
     // State
-    // ============================================
-    let allItems = {};       // Merged quest + hideout FiR items
-    let progress = {};       // User progress
-    let priceData = {};      // Price info
-    let barterItems = {};    // Used in barters
-    let craftItems = {};     // Used in crafts
-    let hideoutFirItems = {}; // Hideout FiR requirements
-    let apiLoaded = false;
+    let allItems = {};
+    let priceData = {};
+    let searchHistory = [];
+    let showDetails = true;
 
-    // ============================================
-    // Cookie Storage
-    // ============================================
-    function getCookie(name) {
-      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      return match ? match[2] : null;
-    }
-    function setCookie(name, value, days = 365) {
-      document.cookie = `${name}=${value}; expires=${new Date(Date.now() + days * 864e5).toUTCString()}; path=/; SameSite=Lax`;
-    }
+    // Cookie helpers
+    function getCookie(n) { const m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : null; }
+    function setCookie(n, v, d=365) { document.cookie = `${n}=${v}; expires=${new Date(Date.now()+d*864e5).toUTCString()}; path=/; SameSite=Lax`; }
+
     function loadProgress() {
       const saved = getCookie('tarkov_fir_v2');
-      if (saved) {
-        try { progress = JSON.parse(decodeURIComponent(saved)); } catch(e) { progress = {}; }
-      }
+      if (saved) try { return JSON.parse(decodeURIComponent(saved)); } catch(e) {}
+      return {};
     }
-    function saveProgress() {
+    function saveProgress(progress) {
       setCookie('tarkov_fir_v2', encodeURIComponent(JSON.stringify(progress)));
     }
+    function loadHistory() {
+      const saved = getCookie('tarkov_history');
+      if (saved) try { searchHistory = JSON.parse(decodeURIComponent(saved)); } catch(e) { searchHistory = []; }
+    }
+    function saveHistory() {
+      setCookie('tarkov_history', encodeURIComponent(JSON.stringify(searchHistory.slice(0, 20))));
+    }
 
-    // ============================================
-    // Initialize Items from Base Data
-    // ============================================
-    function initFromBaseData() {
-      // Copy quest FiR items
+    // Init from base data
+    function initData() {
       Object.entries(BASE_DATA.items || {}).forEach(([id, item]) => {
         allItems[id] = {
           id,
           name: item.name,
           nameShort: item.nameShort,
-          type: item.type,
           totalRequired: item.totalRequired,
           sources: item.questBreakdown.map(q => ({
             type: 'quest',
             name: q.questName,
             count: q.count,
-            dealer: q.dealer,
-            level: q.level,
-            depth: q.depth,
-            priority: q.priority,
-            kappa: q.kappa
+            level: q.level
           })),
-          canCraft: item.canCraft,
-          earliestLevel: item.earliestAccess?.level || 99,
-          earliestPriority: item.earliestAccess?.priority || 999
+          canCraft: item.canCraft
         };
       });
     }
 
-    // ============================================
-    // Fetch from tarkov.dev API
-    // ============================================
-    async function fetchAllData() {
+    // Fetch API
+    async function fetchData() {
       const btn = document.getElementById('btn-fetch');
       const status = document.getElementById('api-status');
-
-      btn.classList.add('loading');
       btn.disabled = true;
       status.textContent = '取得中...';
-      status.className = 'api-badge loading';
+      status.className = 'status';
 
       const query = `{
-        items {
-          id name shortName
-          avg24hPrice low24hPrice changeLast48hPercent
-          width height
-        }
-        barters {
-          requiredItems { item { name } count }
-        }
-        crafts {
-          requiredItems { item { name } count }
-        }
+        items { name shortName avg24hPrice width height }
         hideoutStations {
           name
           levels {
             level
             itemRequirements {
-              item { id name shortName }
+              item { name shortName }
               count
               attributes { name value }
             }
@@ -525,7 +388,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query })
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (json.errors) throw new Error(json.errors[0].message);
 
@@ -534,416 +396,276 @@
         // Price lookup
         const priceByName = {};
         data.items.forEach(item => {
-          const key = item.name.toLowerCase();
-          priceByName[key] = item;
+          priceByName[item.name.toLowerCase()] = item;
           if (item.shortName) priceByName[item.shortName.toLowerCase()] = item;
         });
 
-        // Match prices to our items
         Object.values(allItems).forEach(item => {
-          const match = priceByName[item.name.toLowerCase()] ||
-                        priceByName[(item.nameShort || '').toLowerCase()];
+          const match = priceByName[item.name.toLowerCase()] || priceByName[(item.nameShort||'').toLowerCase()];
           if (match) {
-            const slots = (match.width || 1) * (match.height || 1);
+            const slots = (match.width||1) * (match.height||1);
             priceData[item.id] = {
               avg: match.avg24hPrice,
-              low: match.low24hPrice,
-              change: match.changeLast48hPercent,
               slots,
               perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0
             };
           }
         });
 
-        // Barter items
-        barterItems = {};
-        data.barters.forEach(b => {
-          b.requiredItems.forEach(r => {
-            barterItems[r.item.name.toLowerCase()] = true;
-          });
-        });
-
-        // Craft items
-        craftItems = {};
-        data.crafts.forEach(c => {
-          c.requiredItems.forEach(r => {
-            craftItems[r.item.name.toLowerCase()] = true;
-          });
-        });
-
-        // Hideout FiR requirements
-        hideoutFirItems = {};
+        // Hideout FiR
         data.hideoutStations.forEach(station => {
           station.levels.forEach(level => {
             level.itemRequirements.forEach(req => {
-              // Check if FiR required
-              const isFir = req.attributes?.some(a =>
-                a.name === 'foundInRaid' && a.value === 'true'
-              );
-
+              const isFir = req.attributes?.some(a => a.name === 'foundInRaid' && a.value === 'true');
               if (isFir) {
-                const itemName = req.item.name;
-                const key = itemName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-
-                if (!hideoutFirItems[key]) {
-                  hideoutFirItems[key] = {
-                    id: `hideout_${key}`,
-                    name: itemName,
+                const key = req.item.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const existing = Object.values(allItems).find(i => i.name.toLowerCase() === req.item.name.toLowerCase());
+                if (existing) {
+                  existing.sources.push({
+                    type: 'hideout',
+                    name: `${station.name} Lv${level.level}`,
+                    count: req.count,
+                    level: level.level
+                  });
+                  existing.totalRequired += req.count;
+                } else {
+                  const id = `hideout_${key}`;
+                  allItems[id] = {
+                    id,
+                    name: req.item.name,
                     nameShort: req.item.shortName,
-                    type: 'Hideout',
-                    totalRequired: 0,
-                    sources: [],
-                    canCraft: false,
-                    earliestLevel: 99,
-                    earliestPriority: 999
+                    totalRequired: req.count,
+                    sources: [{
+                      type: 'hideout',
+                      name: `${station.name} Lv${level.level}`,
+                      count: req.count,
+                      level: level.level
+                    }],
+                    canCraft: false
                   };
-                }
-
-                hideoutFirItems[key].totalRequired += req.count;
-                hideoutFirItems[key].sources.push({
-                  type: 'hideout',
-                  name: `${station.name} Lv${level.level}`,
-                  count: req.count,
-                  stationLevel: level.level,
-                  priority: level.level * 10
-                });
-
-                // Update earliest
-                if (level.level < hideoutFirItems[key].earliestLevel) {
-                  hideoutFirItems[key].earliestLevel = level.level;
-                  hideoutFirItems[key].earliestPriority = level.level * 10;
+                  const match = priceByName[req.item.name.toLowerCase()];
+                  if (match) {
+                    const slots = (match.width||1) * (match.height||1);
+                    priceData[id] = {
+                      avg: match.avg24hPrice,
+                      slots,
+                      perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0
+                    };
+                  }
                 }
               }
             });
           });
         });
 
-        // Merge hideout FiR items into allItems
-        Object.values(hideoutFirItems).forEach(hItem => {
-          // Check if already exists (by name match)
-          const existingKey = Object.keys(allItems).find(k =>
-            allItems[k].name.toLowerCase() === hItem.name.toLowerCase()
-          );
-
-          if (existingKey) {
-            // Merge sources
-            allItems[existingKey].sources.push(...hItem.sources);
-            allItems[existingKey].totalRequired += hItem.totalRequired;
-          } else {
-            // Add new item
-            allItems[hItem.id] = hItem;
-
-            // Try to get price
-            const match = priceByName[hItem.name.toLowerCase()];
-            if (match) {
-              const slots = (match.width || 1) * (match.height || 1);
-              priceData[hItem.id] = {
-                avg: match.avg24hPrice,
-                low: match.low24hPrice,
-                change: match.changeLast48hPercent,
-                slots,
-                perSlot: match.avg24hPrice ? Math.round(match.avg24hPrice / slots) : 0
-              };
-            }
-          }
-        });
-
-        apiLoaded = true;
-        status.textContent = `完了 (${Object.keys(hideoutFirItems).length} hideout FiR)`;
-        status.className = 'api-badge ok';
-
-        renderAll();
-
+        status.textContent = '取得完了';
+        status.className = 'status ok';
+        renderHistory();
       } catch (err) {
+        status.textContent = 'エラー';
+        status.className = 'status';
         console.error(err);
-        status.textContent = `エラー: ${err.message}`;
-        status.className = 'api-badge error';
       } finally {
-        btn.classList.remove('loading');
         btn.disabled = false;
       }
     }
 
-    // ============================================
-    // Progress Management
-    // ============================================
-    function getCollected(itemId) {
-      return progress[itemId] || 0;
-    }
-    function setCollected(itemId, count) {
-      const item = allItems[itemId];
-      if (!item) return;
-      count = Math.max(0, Math.min(count, item.totalRequired));
-      if (count === 0) delete progress[itemId];
-      else progress[itemId] = count;
-      saveProgress();
-      renderAll();
-    }
-
-    // ============================================
-    // Item Status
-    // ============================================
-    function getItemStatus(itemId) {
-      const item = allItems[itemId];
-      const collected = getCollected(itemId);
-      if (collected < item.totalRequired) {
-        return { status: 'need', label: '収集中' };
-      }
-      const nameLower = item.name.toLowerCase();
-      if (craftItems[nameLower] || barterItems[nameLower]) {
-        return { status: 'keep', label: '要保持', reason: craftItems[nameLower] ? 'Craft' : 'Barter' };
-      }
-      return { status: 'sell', label: '売却OK' };
+    // Search
+    function searchItem(query) {
+      if (!query) return null;
+      const q = query.toLowerCase();
+      const matches = Object.values(allItems).filter(item =>
+        item.name.toLowerCase().includes(q) ||
+        (item.nameShort && item.nameShort.toLowerCase().includes(q))
+      );
+      // Best match: exact or starts with
+      matches.sort((a, b) => {
+        const aExact = a.name.toLowerCase() === q || (a.nameShort||'').toLowerCase() === q;
+        const bExact = b.name.toLowerCase() === q || (b.nameShort||'').toLowerCase() === q;
+        if (aExact && !bExact) return -1;
+        if (bExact && !aExact) return 1;
+        const aStarts = a.name.toLowerCase().startsWith(q);
+        const bStarts = b.name.toLowerCase().startsWith(q);
+        if (aStarts && !bStarts) return -1;
+        if (bStarts && !aStarts) return 1;
+        return a.name.length - b.name.length;
+      });
+      return matches[0] || null;
     }
 
-    // ============================================
-    // Formatting
-    // ============================================
+    function addToHistory(itemId) {
+      if (!itemId) return;
+      searchHistory = searchHistory.filter(id => id !== itemId);
+      searchHistory.unshift(itemId);
+      searchHistory = searchHistory.slice(0, 20);
+      saveHistory();
+      renderHistory();
+    }
+
+    function clearHistory() {
+      searchHistory = [];
+      saveHistory();
+      renderHistory();
+    }
+
+    // Rendering
     function formatPrice(p) {
       if (!p) return '-';
-      if (p >= 1000000) return (p / 1000000).toFixed(1) + 'M';
-      if (p >= 1000) return Math.round(p / 1000) + 'K';
+      if (p >= 1000000) return (p/1000000).toFixed(1)+'M';
+      if (p >= 1000) return Math.round(p/1000)+'K';
       return p.toString();
     }
 
-    function getSourceClass(source) {
-      if (source.type === 'quest') {
-        const lvl = source.level || 99;
-        if (lvl <= 15) return 'quest-early';
-        if (lvl <= 30) return 'quest-mid';
-        return 'quest-late';
-      } else {
-        const lvl = source.stationLevel || 9;
-        if (lvl <= 1) return 'hideout-early';
-        if (lvl <= 2) return 'hideout-mid';
-        return 'hideout-late';
+    function renderResult(item, container) {
+      const progress = loadProgress();
+      const collected = progress[item.id] || 0;
+      const isComplete = collected >= item.totalRequired;
+      const isPartial = collected > 0 && !isComplete;
+      const price = priceData[item.id];
+
+      const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : 'need';
+      const statusText = isComplete ? '完了' : `あと${item.totalRequired - collected}`;
+
+      let sourcesHtml = '';
+      if (showDetails && item.sources.length > 0) {
+        sourcesHtml = `<div class="result-sources">
+          ${item.sources.map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
+        </div>`;
+      }
+
+      container.innerHTML = `
+        <div class="result-card ${statusClass}">
+          <div class="result-name">${item.name}</div>
+          <div class="result-row">
+            <span class="label">価格</span>
+            <span class="value price">${formatPrice(price?.avg)}</span>
+          </div>
+          <div class="result-row">
+            <span class="label">マス単価</span>
+            <span class="value price">${formatPrice(price?.perSlot)}/s</span>
+          </div>
+          <div class="result-row">
+            <span class="label">FiR必要</span>
+            <span class="value">${item.totalRequired}個</span>
+          </div>
+          <div class="result-row">
+            <span class="label">収集</span>
+            <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${item.totalRequired} ${statusText}</span>
+          </div>
+          ${sourcesHtml}
+        </div>
+      `;
+    }
+
+    function createColumns() {
+      const count = parseInt(document.getElementById('col-count').value);
+      const container = document.getElementById('columns-container');
+      container.className = `columns-container cols-${count}`;
+      container.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const col = document.createElement('div');
+        col.className = 'search-column';
+        col.innerHTML = `
+          <input type="text" placeholder="アイテム名..." data-col="${i}">
+          <div class="result-container" id="result-${i}">
+            <div class="no-result">検索してください</div>
+          </div>
+        `;
+        container.appendChild(col);
+
+        const input = col.querySelector('input');
+        input.addEventListener('input', (e) => {
+          const query = e.target.value.trim();
+          const resultContainer = document.getElementById(`result-${i}`);
+          if (!query) {
+            resultContainer.innerHTML = '<div class="no-result">検索してください</div>';
+            return;
+          }
+          const item = searchItem(query);
+          if (item) {
+            renderResult(item, resultContainer);
+            addToHistory(item.id);
+          } else {
+            resultContainer.innerHTML = '<div class="no-result">見つかりません</div>';
+          }
+        });
       }
     }
 
-    // ============================================
-    // Rendering
-    // ============================================
-    function renderAll() {
-      renderStats();
-      renderItems();
-      renderSellLists();
-    }
+    function renderHistory() {
+      const grid = document.getElementById('history-grid');
+      const progress = loadProgress();
 
-    function renderStats() {
-      let total = 0, collected = 0, complete = 0, sellable = 0;
-      Object.values(allItems).forEach(item => {
-        total += item.totalRequired;
-        const c = getCollected(item.id);
-        collected += Math.min(c, item.totalRequired);
-        if (c >= item.totalRequired) {
-          complete++;
-          if (getItemStatus(item.id).status === 'sell') sellable++;
-        }
-      });
-      document.getElementById('stat-progress').textContent = `${collected}/${total}`;
-      document.getElementById('stat-complete').textContent = complete;
-      document.getElementById('stat-sellable').textContent = sellable;
-    }
-
-    function renderItems() {
-      const search = document.getElementById('search').value.toLowerCase();
-      const filter = document.getElementById('filter').value;
-      const sort = document.getElementById('sort').value;
-
-      let items = Object.values(allItems).map(item => ({
-        ...item,
-        collected: getCollected(item.id),
-        price: priceData[item.id],
-        itemStatus: getItemStatus(item.id)
-      }));
-
-      // Filter
-      items = items.filter(item => {
-        if (search && !item.name.toLowerCase().includes(search)) return false;
-        const isComplete = item.collected >= item.totalRequired;
-        const hasQuest = item.sources.some(s => s.type === 'quest');
-        const hasHideout = item.sources.some(s => s.type === 'hideout');
-
-        switch (filter) {
-          case 'incomplete': return !isComplete;
-          case 'quest': return hasQuest;
-          case 'hideout': return hasHideout;
-          case 'sell-ok': return item.itemStatus.status === 'sell';
-          case 'keep': return item.itemStatus.status === 'keep';
-          default: return true;
-        }
-      });
-
-      // Sort
-      items.sort((a, b) => {
-        switch (sort) {
-          case 'priority': return a.earliestPriority - b.earliestPriority;
-          case 'slot-value': return (b.price?.perSlot || 0) - (a.price?.perSlot || 0);
-          case 'required': return b.totalRequired - a.totalRequired;
-          default: return 0;
-        }
-      });
-
-      const grid = document.getElementById('item-grid');
-      if (items.length === 0) {
-        grid.innerHTML = '<div class="empty-state">該当するアイテムがありません</div>';
+      if (searchHistory.length === 0) {
+        grid.innerHTML = '<div class="no-result">履歴なし</div>';
         return;
       }
 
-      grid.innerHTML = items.map(item => {
-        const isComplete = item.collected >= item.totalRequired;
-        const isPartial = item.collected > 0 && !isComplete;
-        const hasHideout = item.sources.some(s => s.type === 'hideout');
-
-        // Sort sources by priority (earliest first = left)
-        const sortedSources = [...item.sources].sort((a, b) => (a.priority || 999) - (b.priority || 999));
-
-        // Source tags (left = early, right = late)
-        const sourceTags = sortedSources.slice(0, 4).map(s => {
-          const cls = getSourceClass(s);
-          const icon = s.type === 'quest' ? '' : '🏠';
-          return `<span class="source-tag ${cls}">${icon}${s.name} x${s.count}</span>`;
-        }).join('');
-        const moreSources = sortedSources.length > 4 ? `<span class="source-tag">+${sortedSources.length - 4}</span>` : '';
-
-        // Extra tags
-        let tags = '';
-        if (item.canCraft) tags += '<span class="tag craft">Craft可</span>';
-        if (barterItems[item.name.toLowerCase()]) tags += '<span class="tag barter">Barter素材</span>';
-        if (craftItems[item.name.toLowerCase()]) tags += '<span class="tag craft">Craft素材</span>';
-
-        // Price
-        const priceHtml = item.price
-          ? `<div class="item-price"><div class="main">${formatPrice(item.price.avg)}</div><div class="per-slot">${formatPrice(item.price.perSlot)}/slot</div></div>`
-          : '<div class="item-price"><div class="main">-</div></div>';
-
-        // Status
-        const statusHtml = `<div class="item-status"><span class="status-badge ${item.itemStatus.status}">${item.itemStatus.label}</span></div>`;
-
-        return `
-          <div class="item-row ${isComplete ? 'complete' : ''} ${isPartial ? 'partial' : ''} ${hasHideout && !isComplete ? 'hideout' : ''}">
-            <div class="item-info">
-              <h3>${item.name}</h3>
-              <div class="item-tags">${sourceTags}${moreSources}${tags}</div>
-            </div>
-            ${priceHtml}
-            ${statusHtml}
-            <div class="item-counter">
-              <button onclick="setCollected('${item.id}', ${item.collected - 1})">-</button>
-              <input type="number" value="${item.collected}" min="0" max="${item.totalRequired}"
-                onchange="setCollected('${item.id}', parseInt(this.value)||0)">
-              <button onclick="setCollected('${item.id}', ${item.collected + 1})">+</button>
-            </div>
-            <div class="item-progress ${isComplete ? 'done' : ''}">${item.collected}/${item.totalRequired}</div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderSellLists() {
-      const sellItems = [];
-      const keepItems = [];
-      const stockpileItems = [];
-
-      Object.values(allItems).forEach(item => {
-        const collected = getCollected(item.id);
+      grid.innerHTML = searchHistory.slice(0, 12).map(id => {
+        const item = allItems[id];
+        if (!item) return '';
+        const collected = progress[id] || 0;
         const isComplete = collected >= item.totalRequired;
-        const status = getItemStatus(item.id);
-        const price = priceData[item.id];
+        const isPartial = collected > 0 && !isComplete;
+        const statusClass = isComplete ? 'complete' : isPartial ? 'partial' : 'need';
+        const price = priceData[id];
 
-        if (isComplete && status.status === 'sell') {
-          sellItems.push({ item, price });
-        } else if (isComplete && status.status === 'keep') {
-          keepItems.push({ item, price, reason: status.reason });
-        }
-
-        if (item.totalRequired >= 4 || item.sources.length >= 2) {
-          stockpileItems.push({ item, collected, price });
-        }
-      });
-
-      sellItems.sort((a, b) => (b.price?.perSlot || 0) - (a.price?.perSlot || 0));
-      keepItems.sort((a, b) => (b.price?.perSlot || 0) - (a.price?.perSlot || 0));
-      stockpileItems.sort((a, b) => b.item.totalRequired - a.item.totalRequired);
-
-      document.getElementById('list-sell').innerHTML = sellItems.length === 0
-        ? '<div class="empty-state">なし</div>'
-        : sellItems.map(({ item, price }) => `
-            <div class="summary-item">
-              <span class="name">${item.name}</span>
-              <span class="price">${price ? formatPrice(price.perSlot) + '/slot' : '-'}</span>
-            </div>
-          `).join('');
-
-      document.getElementById('list-keep').innerHTML = keepItems.length === 0
-        ? '<div class="empty-state">なし</div>'
-        : keepItems.map(({ item, price, reason }) => `
-            <div class="summary-item">
-              <span><span class="name">${item.name}</span> <span class="meta">(${reason})</span></span>
-              <span class="price">${price ? formatPrice(price.avg) : '-'}</span>
-            </div>
-          `).join('');
-
-      document.getElementById('list-stockpile').innerHTML = stockpileItems.slice(0, 30).map(({ item, collected, price }) => {
-        const remain = item.totalRequired - collected;
         return `
-          <div class="summary-item">
-            <span><span class="name">${item.name}</span> <span class="meta">${collected}/${item.totalRequired}${remain > 0 ? ` (あと${remain})` : ' ✓'}</span></span>
-            <span class="price">${price ? formatPrice(price.avg) : '-'}</span>
+          <div class="history-item ${statusClass}" onclick="fillSearch('${item.name}')">
+            <div class="name">${item.nameShort || item.name.slice(0, 20)}</div>
+            <div class="meta">
+              <span>${collected}/${item.totalRequired}</span>
+              <span class="price">${formatPrice(price?.avg)}</span>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    // ============================================
-    // Bulk Search
-    // ============================================
+    function fillSearch(name) {
+      const firstInput = document.querySelector('.search-column input');
+      if (firstInput) {
+        firstInput.value = name;
+        firstInput.dispatchEvent(new Event('input'));
+      }
+    }
+
+    // Bulk search
     function bulkSearch() {
       const input = document.getElementById('bulk-input').value;
-      const terms = input.split('\n').map(s => s.trim().toLowerCase()).filter(s => s);
+      const terms = input.split('\n').map(s => s.trim()).filter(s => s);
+      const container = document.getElementById('bulk-results');
+      const progress = loadProgress();
 
       if (terms.length === 0) {
-        document.getElementById('bulk-results').innerHTML = '<div class="empty-state">検索語を入力してください</div>';
+        container.innerHTML = '<div class="no-result">入力してください</div>';
         return;
       }
 
-      const results = [];
-      Object.values(allItems).forEach(item => {
-        const nameLower = item.name.toLowerCase();
-        const matched = terms.filter(t => nameLower.includes(t));
-        if (matched.length > 0) {
-          results.push({ item, matched, collected: getCollected(item.id) });
-        }
-      });
+      container.innerHTML = terms.map(term => {
+        const item = searchItem(term);
+        if (!item) return `<div class="result-card"><div class="result-name">${term}</div><div class="no-result">見つかりません</div></div>`;
 
-      const needed = results.filter(r => r.collected < r.item.totalRequired);
-      const found = results.filter(r => r.collected >= r.item.totalRequired);
+        const collected = progress[item.id] || 0;
+        const isComplete = collected >= item.totalRequired;
+        const price = priceData[item.id];
+        const statusClass = isComplete ? 'complete' : collected > 0 ? 'partial' : 'need';
 
-      let html = `<p style="margin-bottom:16px;">検索結果: ${results.length}件</p>`;
-
-      if (needed.length > 0) {
-        html += `<div class="summary-card"><h3 class="red">まだ必要 (${needed.length})</h3><div class="summary-items">`;
-        needed.forEach(r => {
-          const price = priceData[r.item.id];
-          html += `<div class="summary-item"><span><span class="name">${r.item.name}</span> <span class="meta">${r.collected}/${r.item.totalRequired}</span></span><span class="price">${price ? formatPrice(price.avg) : '-'}</span></div>`;
-        });
-        html += '</div></div>';
-      }
-
-      if (found.length > 0) {
-        html += `<div class="summary-card" style="margin-top:16px;"><h3 class="green">収集完了 (${found.length})</h3><div class="summary-items">`;
-        found.forEach(r => {
-          const status = getItemStatus(r.item.id);
-          html += `<div class="summary-item"><span class="name">${r.item.name}</span><span class="status-badge ${status.status}">${status.label}</span></div>`;
-        });
-        html += '</div></div>';
-      }
-
-      if (results.length === 0) {
-        html = '<div class="empty-state">一致するアイテムが見つかりませんでした</div>';
-      }
-
-      document.getElementById('bulk-results').innerHTML = html;
+        return `
+          <div class="result-card ${statusClass}">
+            <div class="result-name">${item.name}</div>
+            <div class="result-row">
+              <span class="label">価格</span>
+              <span class="value price">${formatPrice(price?.avg)}</span>
+            </div>
+            <div class="result-row">
+              <span class="label">FiR</span>
+              <span class="value">${collected}/${item.totalRequired}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function clearBulk() {
@@ -951,20 +673,7 @@
       document.getElementById('bulk-results').innerHTML = '';
     }
 
-    // ============================================
-    // Reset
-    // ============================================
-    function resetProgress() {
-      if (confirm('すべての進捗をリセットしますか？')) {
-        progress = {};
-        saveProgress();
-        renderAll();
-      }
-    }
-
-    // ============================================
-    // Tab Navigation
-    // ============================================
+    // Tabs
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -974,23 +683,22 @@
       });
     });
 
-    // ============================================
-    // Event Listeners
-    // ============================================
-    document.getElementById('search').addEventListener('input', renderItems);
-    document.getElementById('filter').addEventListener('change', renderItems);
-    document.getElementById('sort').addEventListener('change', renderItems);
-    document.getElementById('btn-fetch').addEventListener('click', fetchAllData);
+    // Settings
+    document.getElementById('col-count').addEventListener('change', createColumns);
+    document.getElementById('show-details').addEventListener('change', (e) => {
+      showDetails = e.target.checked;
+      // Re-render current results
+      document.querySelectorAll('.search-column input').forEach(input => {
+        input.dispatchEvent(new Event('input'));
+      });
+    });
 
-    // ============================================
-    // Initialize
-    // ============================================
-    loadProgress();
-    initFromBaseData();
-    renderAll();
-
-    // Auto-fetch on load
-    fetchAllData();
+    // Init
+    initData();
+    loadHistory();
+    createColumns();
+    renderHistory();
+    fetchData();
   </script>
 </body>
 </html>
