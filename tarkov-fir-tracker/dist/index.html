@@ -80,6 +80,13 @@
       border-radius: 6px;
       padding: 8px;
       min-height: 180px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .results-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
     .search-column input {
       width: 100%;
@@ -97,19 +104,27 @@
     .result-card {
       background: var(--bg);
       border-radius: 4px;
-      padding: 10px;
+      padding: 8px;
       border-left: 3px solid var(--border);
+      transition: background 0.15s;
     }
-    .result-card.fir-need { border-left-color: var(--red); }
-    .result-card.fir-partial { border-left-color: var(--yellow); }
-    .result-card.fir-complete { border-left-color: var(--green); }
+    .result-card:hover { background: #21262d; }
+    .result-card.fir-need { border-left-color: var(--red); background: rgba(248,81,73,0.1); }
+    .result-card.fir-partial { border-left-color: var(--yellow); background: rgba(210,153,34,0.1); }
+    .result-card.fir-complete { border-left-color: var(--green); background: rgba(63,185,80,0.1); }
+    .result-card.tier-bronze { border-left-color: var(--bronze); }
+    .result-card.tier-silver { border-left-color: var(--silver); }
+    .result-card.tier-gold { border-left-color: var(--gold); background: rgba(255,215,0,0.08); }
 
     .result-name {
       font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
       word-break: break-word;
     }
+    .result-name.gold { color: var(--gold); }
+    .result-name.silver { color: var(--silver); }
+    .result-name.bronze { color: var(--bronze); }
 
     /* Price Tier Colors */
     .price-tier {
@@ -488,9 +503,9 @@
       return p.toString();
     }
 
-    // Search
-    function searchItem(query) {
-      if (!query || Object.keys(allItems).length === 0) return null;
+    // Search - returns multiple matches
+    function searchItems(query, limit = 8) {
+      if (!query || Object.keys(allItems).length === 0) return [];
       const q = query.toLowerCase();
       const matches = Object.values(allItems).filter(item =>
         item.name.toLowerCase().includes(q) ||
@@ -503,9 +518,16 @@
         const aStarts = a.name.toLowerCase().startsWith(q);
         const bStarts = b.name.toLowerCase().startsWith(q);
         if (aStarts !== bStarts) return aStarts ? -1 : 1;
-        return a.name.length - b.name.length;
+        // Prioritize higher value items
+        return (b.perSlot || 0) - (a.perSlot || 0);
       });
-      return matches[0] || null;
+      return matches.slice(0, limit);
+    }
+
+    // Single search for history
+    function searchItem(query) {
+      const results = searchItems(query, 1);
+      return results[0] || null;
     }
 
     function addToHistory(itemId) {
@@ -523,13 +545,14 @@
       renderHistory();
     }
 
-    // Render
-    function renderResult(item, container) {
+    // Render single item card HTML
+    function renderItemCard(item) {
       const progress = loadProgress();
       const tier = getPriceTier(item.perSlot);
       const hasFir = !!item.fir;
+      const nameClass = tier === 'gold' ? 'gold' : tier === 'silver' ? 'silver' : tier === 'bronze' ? 'bronze' : '';
+      const tierClass = (tier === 'gold' || tier === 'silver' || tier === 'bronze') ? `tier-${tier}` : '';
 
-      let firHtml = '';
       if (hasFir) {
         const collected = progress[item.id] || 0;
         const total = item.fir.totalRequired;
@@ -540,45 +563,46 @@
         let sourcesHtml = '';
         if (showDetails && item.fir.sources.length > 0) {
           sourcesHtml = `<div class="result-sources">
-            ${item.fir.sources.map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
+            ${item.fir.sources.slice(0,3).map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
           </div>`;
         }
 
-        firHtml = `
-          <div class="result-row">
-            <span class="label">FiR必要</span>
-            <span class="value">${total}個</span>
-          </div>
-          <div class="result-row">
-            <span class="label">収集</span>
-            <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${total}</span>
-          </div>
-          ${sourcesHtml}
-        `;
-
-        container.innerHTML = `
-          <div class="result-card ${statusClass}">
-            <div class="result-name">${item.name}<span class="fir-badge">FiR</span></div>
+        return `
+          <div class="result-card ${statusClass} ${tierClass}">
+            <div class="result-name ${nameClass}">${item.name}<span class="fir-badge">FiR</span></div>
             <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
             <div class="result-row">
               <span class="label">価格</span>
-              <span class="value">${formatPrice(item.price)} (${item.slots}slot)</span>
+              <span class="value">${formatPrice(item.price)} (${item.slots}s)</span>
             </div>
-            ${firHtml}
+            <div class="result-row">
+              <span class="label">FiR</span>
+              <span class="value ${isComplete ? 'ok' : 'need'}">${collected}/${total}</span>
+            </div>
+            ${sourcesHtml}
           </div>
         `;
       } else {
-        container.innerHTML = `
-          <div class="result-card">
-            <div class="result-name">${item.name}</div>
+        return `
+          <div class="result-card ${tierClass}">
+            <div class="result-name ${nameClass}">${item.name}</div>
             <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
             <div class="result-row">
               <span class="label">価格</span>
-              <span class="value">${formatPrice(item.price)} (${item.slots}slot)</span>
+              <span class="value">${formatPrice(item.price)} (${item.slots}s)</span>
             </div>
           </div>
         `;
       }
+    }
+
+    // Render multiple results
+    function renderResults(items, container) {
+      if (items.length === 0) {
+        container.innerHTML = '<div class="no-result">見つかりません</div>';
+        return;
+      }
+      container.innerHTML = `<div class="results-list">${items.map(item => renderItemCard(item)).join('')}</div>`;
     }
 
     function createColumns() {
@@ -605,12 +629,10 @@
             rc.innerHTML = '<div class="no-result">検索してください</div>';
             return;
           }
-          const item = searchItem(query);
-          if (item) {
-            renderResult(item, rc);
-            addToHistory(item.id);
-          } else {
-            rc.innerHTML = '<div class="no-result">見つかりません</div>';
+          const items = searchItems(query, 8);
+          renderResults(items, rc);
+          if (items.length > 0) {
+            addToHistory(items[0].id);
           }
         });
       }
@@ -657,16 +679,7 @@
       container.innerHTML = terms.map(term => {
         const item = searchItem(term);
         if (!item) return `<div class="result-card"><div class="result-name">${term}</div><div class="no-result">見つかりません</div></div>`;
-
-        const tier = getPriceTier(item.perSlot);
-        const firLabel = item.fir ? `<span class="fir-badge">FiR ${item.fir.totalRequired}</span>` : '';
-
-        return `
-          <div class="result-card">
-            <div class="result-name">${item.nameShort || item.name.slice(0,20)}${firLabel}</div>
-            <div class="price-tier ${tier}" style="font-size:0.9rem;">${formatPrice(item.perSlot)}/s</div>
-          </div>
-        `;
+        return renderItemCard(item);
       }).join('');
     }
 
