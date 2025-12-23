@@ -293,9 +293,9 @@ jobs:
                           if 'skill-zips' in file_path.parts:
                               continue
 
-                          # Archive path should be relative to skill directory
-                          # so SKILL.md is at the root of the zip
-                          arcname = str(file_path.relative_to(skill_dir))
+                          # Archive path: skill_name/relative_path
+                          # e.g., "pptx/SKILL.md", "pptx/ooxml/scripts/pack.py"
+                          arcname = f"{zip_name}/{file_path.relative_to(skill_dir)}"
 
                           zf.write(file_path, arcname)
                           print(f"  + {arcname}")
