@@ -28,6 +28,7 @@ jobs:
       multi_skill: true
       run_api_test: true
       run_claude_code_test: true
-      test_skill_name: "pptx"  # Use pptx skill for API/Claude Code tests
+      # API test uses matrix to test all skills
+      # Claude Code test uses first skill found
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

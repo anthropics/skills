@@ -74,6 +74,7 @@ jobs:
     outputs:
       skill_name: ${{ steps.detect.outputs.skill_name }}
       skill_count: ${{ steps.detect.outputs.skill_count }}
+      skill_names_json: ${{ steps.detect.outputs.skill_names_json }}
 
     steps:
       - uses: actions/checkout@v4
@@ -218,9 +219,12 @@ jobs:
               print(f"\nValidated {len(validated_skills)} skill(s): {', '.join(validated_skills)}")
 
           # Output for subsequent jobs
+          import json
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"skill_name={validated_skills[0] if validated_skills else ''}\n")
               f.write(f"skill_count={len(validated_skills)}\n")
+              # Output JSON array of skill names for matrix strategy
+              f.write(f"skill_names_json={json.dumps(validated_skills)}\n")
 
           VALIDATION_SCRIPT
 
@@ -343,10 +347,16 @@ jobs:
 
   # Job 3: Test skill upload with Claude API
   test-claude-api:
-    name: Test with Claude API
+    name: Test API - ${{ matrix.skill }}
     runs-on: ubuntu-latest
-    needs: generate-skill-zips
+    needs: [validate-skill-format, generate-skill-zips]
     if: inputs.run_api_test
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Use the skill names from validation, or fall back to test_skill_name for single-skill repos
+        skill: ${{ fromJson(needs.validate-skill-format.outputs.skill_names_json || '[""]') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -368,8 +378,7 @@ jobs:
       - name: Test skill upload
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          MULTI_SKILL: ${{ inputs.multi_skill }}
-          TEST_SKILL: ${{ inputs.test_skill_name }}
+          TEST_SKILL: ${{ matrix.skill }}
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: |
           python3 << 'API_TEST_SCRIPT'
@@ -392,14 +401,14 @@ jobs:
 
           client = anthropic.Anthropic(api_key=api_key)
 
-          # Find a skill zip to test
+          # Find the skill zip to test
           zip_dir = Path("skill-zips")
           test_skill = os.environ.get("TEST_SKILL", "")
 
           if test_skill:
               zip_path = zip_dir / f"{test_skill}.zip"
           else:
-              # Use first available zip
+              # Use first available zip (for single-skill repos)
               zips = list(zip_dir.glob("*.zip"))
               if not zips:
                   print("No skill zips found")
