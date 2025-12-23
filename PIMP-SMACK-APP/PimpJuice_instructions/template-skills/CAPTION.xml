@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  FEDERAL DISTRICT COURT CAPTION TEMPLATE
+  Placeholders linked to master_config.json
+  
+  Source: Standard federal court format per Local Rules
+-->
+
+<CAPTION>
+  <!-- Court Name Block -->
+  <COURT_BLOCK>
+    <COURT_NAME>{{CASE.court_name}}</COURT_NAME>
+  </COURT_BLOCK>
+
+  <!-- Party Block (Left Side) -->
+  <PARTY_BLOCK>
+    <PARTY_LINE>{{PARTIES.party_1_name}},</PARTY_LINE>
+    <PARTY_DESIGNATION>{{PARTIES.party_1_designation}},</PARTY_DESIGNATION>
+    <VS>v.</VS>
+    <PARTY_LINE>{{PARTIES.party_2_name}},</PARTY_LINE>
+    <PARTY_DESIGNATION>{{PARTIES.party_2_designation}}.</PARTY_DESIGNATION>
+  </PARTY_BLOCK>
+
+  <!-- Case Info Block (Right Side) -->
+  <CASE_BLOCK>
+    <CASE_NUMBER>Case No. {{CASE.case_number}}</CASE_NUMBER>
+    <JUDGE_LINE>{{CASE.judge_title}} {{CASE.judge_name}}</JUDGE_LINE>
+  </CASE_BLOCK>
+
+  <!-- Document Title -->
+  <TITLE_BLOCK>
+    <DOCUMENT_TITLE>{{DOCUMENT.title}}</DOCUMENT_TITLE>
+  </TITLE_BLOCK>
+</CAPTION>
+
+<!--
+  PLACEHOLDER → MASTER_CONFIG MAPPING:
+  
+  {{CASE.court_name}}           → "CASE"."court_name"
+  {{CASE.case_number}}          → "CASE"."case_number"
+  {{CASE.judge_title}}          → "CASE"."judge_title"  
+  {{CASE.judge_name}}           → "CASE"."judge_name"
+  {{PARTIES.party_1_name}}      → "PARTIES"."party_1_name"
+  {{PARTIES.party_1_designation}} → "PARTIES"."party_1_designation"
+  {{PARTIES.party_2_name}}      → "PARTIES"."party_2_name"
+  {{PARTIES.party_2_designation}} → "PARTIES"."party_2_designation"
+  {{DOCUMENT.title}}            → "DOCUMENT"."title"
+-->

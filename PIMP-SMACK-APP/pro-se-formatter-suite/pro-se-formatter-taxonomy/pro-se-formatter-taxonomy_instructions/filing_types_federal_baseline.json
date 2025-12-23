@@ -1,0 +1,791 @@
+{
+  "$schema": "(informal)",
+  "version": "0.2.0",
+  "scope": "formatter_taxonomy_baseline",
+  "principles": {
+    "mode_selection": [
+      "evidence_backed_mode (tool can see the timeline/inputs)",
+      "user_asserted_mode (tool proceeds on user assertions, must label assumptions)"
+    ],
+    "non_goals": [
+      "Do not rename/renumber/change evidence UID system."
+    ]
+  },
+  "CONSTRUCT_SLOTS": {
+    "note": "Canonical callable template-slot names. These strings are the stable interface used by the assembly code. Do not rename casually; downstream code calls these by name.",
+    "default_order": [
+      "Coverpage",
+      "Caption",
+      "Header",
+      "Foooter",
+      "Body",
+      "Signature",
+      "Cert_of_Service"
+    ],
+    "slots": [
+      "Coverpage",
+      "Caption",
+      "Header",
+      "Foooter",
+      "Body",
+      "Signature",
+      "Cert_of_Service"
+    ]
+  },
+  "template_parts": {
+    "Coverpage": {
+      "template_name": "Coverpage",
+      "purpose": "Coverpage template slot. This is a build-part identifier, not a body heading. It represents the cover/cover-sheet style page used by some courts/filing regimes (often different from the caption page). Populate only when the controlling rules/jurisdiction require it.",
+      "inputs_required": [
+        "court_name (if used)",
+        "case_caption (if used)",
+        "case_no (if used)",
+        "document_title"
+      ]
+    },
+    "Caption": {
+      "template_name": "Caption",
+      "purpose": "Caption template slot. This is the callable case caption block (court, parties, case number, judge, title block) that appears on filings. It is separated from Body headings so assembly code can place it correctly and reuse it across document types.",
+      "inputs_required": [
+        "court_name",
+        "case_caption",
+        "case_no",
+        "document_title"
+      ]
+    },
+    "Header": {
+      "template_name": "Header",
+      "purpose": "Header template slot. Represents repeating page header content (e.g., case number on each page, short title, or other court-required header fields). Header placement is programmatic and depends on having the needed header fields available.",
+      "inputs_required": [
+        "case_no (often)",
+        "short_title (optional)",
+        "page_numbering (optional)"
+      ]
+    },
+    "Foooter": {
+      "template_name": "Foooter",
+      "purpose": "Foooter template slot (name intentionally exact). Represents repeating page footer content such as page numbers, filing footer text, or other required footer metadata. Kept as a separate callable slot so footer rules can be sourced and applied without touching Body text.",
+      "inputs_required": [
+        "page_numbering (optional)",
+        "footer_text (optional)"
+      ]
+    },
+    "Body": {
+      "template_name": "Body",
+      "purpose": "Body template slot. This is where the substantive content goes. Only Body uses `body_headings_h1` (the outline/section order). Do not treat cover/caption/signature as body headings; those are separate template parts.",
+      "inputs_required": [
+        "body_headings_h1",
+        "facts_or_record (mode-dependent)",
+        "arguments_or_requests (document-type dependent)"
+      ]
+    },
+    "Signature": {
+      "template_name": "Signature",
+      "purpose": "Signature template slot. Represents signature lines/blocks for filer/declarant/counsel and any required signature metadata. Separated as a callable slot because signature requirements can vary by filing type and jurisdiction.",
+      "inputs_required": [
+        "signer_name",
+        "signer_role (pro se / counsel / declarant)",
+        "signature_date (optional)",
+        "signature_location (optional)"
+      ]
+    },
+    "Cert_of_Service": {
+      "template_name": "Cert_of_Service",
+      "purpose": "Cert_of_Service template slot. Represents the certificate-of-service block when required. This is intentionally separated so it can be injected only when a sourced rule requires it, and so its required fields (method/date/recipients) can be validated programmatically.",
+      "inputs_required": [
+        "service_date",
+        "service_method",
+        "service_recipients",
+        "signer_name (often)",
+        "signer_role (often)"
+      ]
+    }
+  },
+  "filing_types": {
+    "motion": {
+      "label": "Motion",
+      "definition": "A motion is a request for an order (specific relief) from the court. In the assembly pipeline, the motion’s Body contains the request, supporting facts/procedure, legal standard/argument (if used), and the conclusion stating the relief. Caption/header/footer/signature/certificates are separate constructed parts because they are governed by jurisdiction rules and are validated/placed programmatically.",
+      "pattern": "MOTION [TO/FOR] [MOTION_TYPE]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion"
+      ],
+      "common_checklist": [
+        "Relief requested is explicit",
+        "Meets-and-confers handled if required",
+        "Word/page limits checked (if any)",
+        "Citations supported (if any)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "conferral": "unknown",
+        "word_or_page_limits": "unknown",
+        "formatting_constraints": "unknown",
+        "hearing_or_notice_requirements": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "opposition": {
+      "label": "Opposition",
+      "definition": "An opposition responds to a motion’s request for relief. Its Body structure typically mirrors a motion (intro/background/argument/conclusion) but focuses on answering the movant’s points. In the pipeline, it shares the same construct slots so the caption, header/footer, signature, and service/cert blocks can be assembled and validated consistently.",
+      "pattern": "OPPOSITION TO [MOTION_NAME]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion"
+      ],
+      "common_checklist": [
+        "Responds to each requested relief item",
+        "Addresses key authorities cited by movant (if any)",
+        "Word/page limits checked (if any)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "conferral": "unknown",
+        "word_or_page_limits": "unknown",
+        "formatting_constraints": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "reply": {
+      "label": "Reply",
+      "definition": "A reply is the movant’s response to the opposition. It is usually narrower than the motion and should address disputed points rather than restating everything. In the assembly pipeline, the reply’s construct parts are similar to a motion, but the Body outline is shorter (typically intro/argument/conclusion) while the caption/signature/service parts remain stable slots.",
+      "pattern": "REPLY IN SUPPORT OF [MOTION_NAME]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Introduction",
+        "Argument",
+        "Conclusion"
+      ],
+      "common_checklist": [
+        "Narrowly addresses opposition points",
+        "Word/page limits checked (if any)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "word_or_page_limits": "unknown",
+        "formatting_constraints": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "brief": {
+      "label": "Brief / Memorandum",
+      "definition": "A brief/memorandum is a structured argument document (often on appeal, sometimes in district court) where the controlling rules define required sections, formatting, and certificates. In the pipeline, the brief frequently triggers additional generated artifacts (TOC/TOA) and stricter header/footer/case-number requirements; these remain separate constructed parts so the assembly code can enforce rule-driven formatting.",
+      "pattern": "BRIEF [OPENING/ANSWERING/REPLY]",
+      "CONSTRUCT_Order": [
+        "Coverpage",
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Statement of the Case / Background",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Introduction",
+        "Statement of the Case / Background",
+        "Argument",
+        "Conclusion"
+      ],
+      "common_checklist": [
+        "Section order follows controlling rules (if any)",
+        "TOC/TOA included if required",
+        "Word/page limits checked (if any)",
+        "Certificate of compliance/service handled if required"
+      ],
+      "possible_requirements": {
+        "toc_required": "unknown",
+        "toa_required": "unknown",
+        "word_or_page_limits": "unknown",
+        "certificates": "unknown",
+        "formatting_constraints": "unknown"
+      }
+    },
+    "pleading": {
+      "label": "Pleading (generic)",
+      "definition": "A pleading is a formal statement of claims/defenses and supporting allegations. Unlike a motion/brief, pleadings are more form-driven (parties, allegations, claims/defenses, prayer). In the pipeline, pleadings normally require a caption and signature and may require service-related blocks depending on stage; coverpages are less common but can be enabled by jurisdiction sources.",
+      "pattern": "PLEADING [TYPE]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Parties (placeholder)",
+        "Factual Allegations",
+        "Claims / Defenses (placeholder)",
+        "Prayer for Relief (placeholder)",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Parties (placeholder)",
+        "Factual Allegations",
+        "Claims / Defenses (placeholder)",
+        "Prayer for Relief (placeholder)"
+      ],
+      "common_checklist": [
+        "Claims/defenses are stated clearly",
+        "Prayer for relief present",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "formatting_constraints": "unknown",
+        "verification_or_signature_rules": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "complaint": {
+      "label": "Complaint",
+      "definition": "A complaint initiates a civil case and sets out parties, jurisdiction/venue, factual allegations, claims, and requested relief. In the assembly pipeline, it is a pleading with additional case-opening concerns (fees/IFP, cover sheet, summons/service). Those requirements must be sourced; the baseline keeps them as placeholders while the construct slots keep caption/body/signature programmatically addressable.",
+      "pattern": "COMPLAINT",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Parties",
+        "Jurisdiction / Venue (placeholder)",
+        "Factual Allegations",
+        "Claims for Relief",
+        "Prayer for Relief",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Parties",
+        "Jurisdiction / Venue (placeholder)",
+        "Factual Allegations",
+        "Claims for Relief",
+        "Prayer for Relief"
+      ],
+      "common_checklist": [
+        "Jurisdiction/venue addressed (placeholder if unknown)",
+        "Claims articulated",
+        "Prayer for relief present",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "civil_cover_sheet": "unknown",
+        "filing_fee_or_ifp": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "answer": {
+      "label": "Answer",
+      "definition": "An answer responds to a complaint by admitting/denying allegations and stating defenses. In the pipeline, the answer uses the same constructed caption/header/footer/signature slots as pleadings so the assembly code can reuse templates and validators, while the Body headings focus on responses and defenses.",
+      "pattern": "ANSWER",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Responses to Allegations",
+        "Affirmative Defenses (placeholder)",
+        "Prayer for Relief (placeholder)",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Responses to Allegations",
+        "Affirmative Defenses (placeholder)",
+        "Prayer for Relief (placeholder)"
+      ],
+      "common_checklist": [
+        "Each allegation is answered",
+        "Defenses listed (placeholder if unknown)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "verification_or_signature_rules": "unknown",
+        "service_requirements": "unknown"
+      }
+    },
+    "declaration": {
+      "label": "Declaration / Affidavit",
+      "definition": "A declaration/affidavit is a sworn factual statement used to support another filing. In the pipeline, the declaration Body contains declarant identity and fact blocks (your structured format), while signature/perjury language/notarization requirements are jurisdiction-dependent and must be sourced. We keep signature and service as callable slots so they can be assembled/validated without mixing them into body headings.",
+      "pattern": "DECLARATION OF [DECLARANT_NAME]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Title (e.g., 'Declaration of …')",
+        "Declarant Identity / Capacity",
+        "Facts (sworn) (placeholder)",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Title (e.g., 'Declaration of …')",
+        "Declarant Identity / Capacity",
+        "Facts (sworn) (placeholder)"
+      ],
+      "common_checklist": [
+        "Declarant identity present",
+        "Sworn facts present",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "notarization": "unknown",
+        "perjury_language": "unknown",
+        "exhibits_handling": "unknown"
+      }
+    },
+    "notice": {
+      "label": "Notice",
+      "definition": "A notice informs the court/parties of an event, position, or filing (e.g., notice of appearance, notice of supplemental authority, notice of settlement). In the pipeline, it is typically caption + short body + signature, with service requirements depending on the procedural posture. This is why caption/signature/service stay as constructed parts.",
+      "pattern": "NOTICE OF [THING]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Notice (body)",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Notice (body)"
+      ],
+      "common_checklist": [
+        "States what is being noticed",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "service_requirements": "unknown",
+        "timing_deadlines": "unknown"
+      }
+    },
+    "request_or_application": {
+      "label": "Request / Application (generic)",
+      "definition": "A request/application is a procedural ask that may be shorter or more administrative than a full motion (terminology varies by court). The pipeline treats it like a motion-family document with a clear request, short grounds, and conclusion, while still keeping caption/signature/service as separate constructed parts so rule-driven placement/validation is deterministic.",
+      "pattern": "[ADMINISTRATIVE] APPLICATION / REQUEST",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Request (what you want)",
+        "Grounds / Explanation (placeholder)",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Request (what you want)",
+        "Grounds / Explanation (placeholder)",
+        "Conclusion"
+      ],
+      "common_checklist": [
+        "What is requested is explicit",
+        "Any conferral addressed (if required)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "conferral": "unknown",
+        "page_limits": "unknown",
+        "supporting_declaration_required": "unknown"
+      }
+    },
+    "exhibits_or_appendix": {
+      "label": "Exhibits / Appendix / Attachments",
+      "definition": "Exhibits/appendix are supporting materials attached to another filing. In the pipeline, this can be a standalone assembled document or an attachment packet. The baseline keeps this flexible: the manifest focuses on Body (exhibit list + exhibits) and may optionally include caption/header/footer depending on how the court expects attachments packaged.",
+      "pattern": "EXHIBITS / APPENDIX / ATTACHMENTS",
+      "CONSTRUCT_Order": [
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "optional",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "optional",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Exhibit List (placeholder)",
+        "Exhibits (placeholder)"
+      ],
+      "body_headings_h1": [
+        "Exhibit List (placeholder)",
+        "Exhibits (placeholder)"
+      ],
+      "common_checklist": [
+        "Each exhibit is labeled consistently",
+        "References in the main filing match exhibit labels"
+      ],
+      "possible_requirements": {
+        "sealing_redaction": "unknown",
+        "pagination_or_bates": "unknown"
+      }
+    },
+    "proposed_order": {
+      "label": "Proposed Order",
+      "definition": "A proposed order is a draft the court may sign. The Body typically contains the order text plus date and a judge signature line. In the pipeline, the judge signature line is content, not a filer signature; therefore the constructed `Signature` slot may be omitted or treated as jurisdiction-specific. Caption/header/footer are kept as constructed parts so they can be formatted/placed deterministically.",
+      "pattern": "[PROPOSED] ORDER",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "unknown",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Order (body placeholder)",
+        "Date (placeholder)",
+        "Judge Signature Line (placeholder)"
+      ],
+      "body_headings_h1": [
+        "Order (body placeholder)",
+        "Date (placeholder)",
+        "Judge Signature Line (placeholder)"
+      ],
+      "common_checklist": [
+        "Order matches requested relief structure",
+        "Judge signature line placeholder present"
+      ],
+      "possible_requirements": {
+        "formatting_constraints": "unknown",
+        "submission_requirements": "unknown"
+      }
+    },
+    "stipulation": {
+      "label": "Stipulation",
+      "definition": "A stipulation is an agreement between parties filed with the court (sometimes paired with a proposed order). The Body contains the stipulation terms; signatures may include multiple parties/counsel, which is why the signature area is a constructed slot that can be expanded programmatically. Service requirements depend on posture and must be sourced.",
+      "pattern": "STIPULATION [AND (PROPOSED) ORDER (IF USED)]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Stipulation Terms",
+        "Signature Blocks (all parties)"
+      ],
+      "body_headings_h1": [
+        "Stipulation Terms",
+        "Signature Blocks (all parties)"
+      ],
+      "common_checklist": [
+        "Terms present",
+        "All parties' signatures accounted for"
+      ],
+      "possible_requirements": {
+        "conferral": "unknown",
+        "submission_requirements": "unknown"
+      }
+    },
+    "judgment": {
+      "label": "Judgment (requested/entered form)",
+      "definition": "A judgment is the court’s dispositive entry (or a proposed form submitted for entry, depending on procedure). The Body states what is ordered/awarded and includes a judge signature line area. In the pipeline, the judge’s signature line is part of Body content; a filer `Signature` slot may be absent unless a local procedure requires a submission signature block.",
+      "pattern": "JUDGMENT / AMENDED JUDGMENT",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "unknown",
+        "Cert_of_Service": "unknown"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Judgment (body placeholder)",
+        "Date (placeholder)",
+        "Judge Signature Line (placeholder)"
+      ],
+      "body_headings_h1": [
+        "Judgment (body placeholder)",
+        "Date (placeholder)",
+        "Judge Signature Line (placeholder)"
+      ],
+      "common_checklist": [
+        "Clearly states what is awarded/ordered",
+        "Signature line placeholder present"
+      ],
+      "possible_requirements": {
+        "separate_document_rule": "unknown",
+        "fees_costs_handling": "unknown"
+      }
+    },
+    "certificate": {
+      "label": "Certificate (service/compliance/etc.)",
+      "definition": "A certificate is a formal attestation (often certificate of service, sometimes compliance or interested parties). In the pipeline, certificates are handled as both (a) a standalone document type and (b) a constructed slot (`Cert_of_Service`) that can be inserted into other filings when sourced rules require it. Keeping both supports deterministic assembly without inventing requirements.",
+      "pattern": "CERTIFICATE OF [SERVICE/COMPLIANCE/INTERESTED PARTIES/etc.]",
+      "CONSTRUCT_Order": [
+        "Caption",
+        "Header",
+        "Foooter",
+        "Body",
+        "Signature",
+        "Cert_of_Service"
+      ],
+      "template_slot_use": {
+        "Coverpage": "optional",
+        "Caption": "required",
+        "Header": "optional",
+        "Foooter": "optional",
+        "Body": "required",
+        "Signature": "required",
+        "Cert_of_Service": "required"
+      },
+      "headings_h1": [
+        "Caption/Cover (placeholder)",
+        "Certificate (body)",
+        "Signature Block"
+      ],
+      "body_headings_h1": [
+        "Certificate (body)"
+      ],
+      "common_checklist": [
+        "States what is being certified",
+        "Includes method/date/recipients (if applicable)",
+        "Signature block present"
+      ],
+      "possible_requirements": {
+        "certificate_type": "unknown",
+        "mandatory_language": "unknown"
+      }
+    }
+  },
+  "components": {
+    "cover_page": {
+      "label": "Cover Page",
+      "description": "A cover/caption page (jurisdiction dependent).",
+      "rule_sources": []
+    },
+    "caption": {
+      "label": "Caption",
+      "description": "Case caption block used on pleadings/motions.",
+      "rule_sources": []
+    },
+    "signature_block": {
+      "label": "Signature Block",
+      "description": "Signature block for filer/declarant.",
+      "rule_sources": []
+    },
+    "table_of_contents": {
+      "label": "Table of Contents (TOC)",
+      "description": "Generated from headings when required.",
+      "rule_sources": []
+    },
+    "table_of_authorities": {
+      "label": "Table of Authorities (TOA)",
+      "description": "Generated from citations when required.",
+      "rule_sources": []
+    },
+    "timeline": {
+      "label": "Timeline",
+      "description": "Structured events/timeline input (evidence-backed mode)."
+    },
+    "evidence_card": {
+      "label": "EVI-CARD (placeholder)",
+      "description": "Placeholder only; existing external system; do-not-change."
+    }
+  }
+}

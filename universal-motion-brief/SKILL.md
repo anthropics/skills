@@ -13,6 +13,12 @@ Create motions or full briefs by merging structured data (JSON or XML converted 
 - You want deterministic, non-generative assembly (no rewriting).
 - You need separate runs for different documents (e.g., motion vs. brief) without mixing fields.
 
+## Shared Map (Matrix / Cheat Sheet)
+
+Use the shared drafting map to keep document-type definitions and build-order consistent across skills:
+
+- [LEGAL_DOCUMENT_DRAFTING_MAP.md](../_shared/LEGAL_DOCUMENT_DRAFTING_MAP.md)
+
 ## Inputs Needed
 1. `.docx` template with placeholder tokens like `{{CASE_NUMBER}}`, `{{FILING_TITLE}}`, `{{INTRO}}`, etc. (Do **not** place placeholders inside footnotes if you need to preserve them.)
 2. JSON data file matching your placeholders. XML is fine if you convert to JSON first.

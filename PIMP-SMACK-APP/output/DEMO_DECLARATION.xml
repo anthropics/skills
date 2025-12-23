@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?mso-application progid="Word.Document"?>
+<w:wordDocument xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml" xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" xmlns:o="urn:schemas-microsoft-com:office:office" xml:space="preserve">
+
+<!-- ============================================
+     DECLARATION TEMPLATE - PIMP SMACK WORKFLOW
+     Structure: 2+2+1 (Setup + Core + Conclusion)
+     Placeholders: {{PLACEHOLDER_NAME}}
+     ============================================ -->
+
+<w:styles>
+  <w:style w:type="paragraph" w:default="on" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:h-ansi="Times New Roman"/>
+      <w:sz w:val="24"/><w:sz-cs w:val="24"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:pPr>
+      <w:spacing w:before="480" w:after="240"/>
+      <w:jc w:val="center"/>
+      <w:outlineLvl w:val="0"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:b/><w:b-cs/>
+      <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="DeclarationPara">
+    <w:name w:val="Declaration Paragraph"/>
+    <w:pPr>
+      <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+      <w:ind w:first-line="720"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+    </w:rPr>
+  </w:style>
+
+  <w:style w:type="paragraph" w:styleId="NumberedFact">
+    <w:name w:val="Numbered Fact"/>
+    <w:pPr>
+      <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+      <w:ind w:left="720" w:hanging="720"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+    </w:rPr>
+  </w:style>
+</w:styles>
+
+<w:docPr>
+  <w:view w:val="print"/>
+  <w:zoom w:percent="100"/>
+</w:docPr>
+
+<w:body>
+  <wx:sect>
+    <!-- ==================== TITLE ==================== -->
+    <w:p>
+      <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+      <w:r><w:t>DECLARATION OF Tyler Allen Lofall</w:t></w:r>
+    </w:p>
+
+    <!-- ==================== PREAMBLE ==================== -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:first-line="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>I, Tyler Allen Lofall, declare under penalty of perjury under the laws of the United States of America that the following is true and correct:</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== SETUP FACTS (2) ==================== -->
+    <!-- Fact 1: Identity/Competence -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>1.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:tab/>
+        <w:t>I am the Plaintiff in this action and make this declaration based on my personal knowledge.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- Fact 2: Relationship to Case -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>2.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:tab/>
+        <w:t>I have personal knowledge of all facts stated herein.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== CORE FACTS (2) ==================== -->
+    <!-- Fact 3: Primary Substantive Fact -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>3.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:tab/>
+        <w:t>On October 1, 2025, I filed a motion via the CM/ECF system.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- Fact 4: Supporting Substantive Fact -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>4.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:tab/>
+        <w:t>The CM/ECF system confirmed the filing at 11:57 PM PDT.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== CONCLUSION FACT (1) ==================== -->
+    <!-- Fact 5: Summary/Conclusion -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:left="720" w:hanging="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>5.</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:tab/>
+        <w:t>Based on the foregoing, the motion was timely filed.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== 28 USC 1746 ATTESTATION ==================== -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="480" w:after="240" w:line="480" w:line-rule="auto"/>
+        <w:ind w:first-line="720"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>I declare under penalty of perjury that the foregoing is true and correct.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- Executed Line -->
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="360" w:after="120"/>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>Executed on December 21, 2025 at Pasco, Washington.</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== SIGNATURE BLOCK ==================== -->
+    <w:p>
+      <w:pPr><w:ind w:left="4320"/></w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Edwardian Script ITC" w:h-ansi="Edwardian Script ITC"/>
+          <w:b/><w:b-cs/><w:i/><w:i-cs/>
+          <w:sz w:val="52"/><w:sz-cs w:val="52"/>
+          <w:u w:val="single"/>
+        </w:rPr>
+        <w:t>/s/ Tyler Allen Lofall</w:t>
+      </w:r>
+    </w:p>
+
+    <w:p>
+      <w:pPr><w:ind w:left="4320"/></w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+          <w:b/><w:b-cs/>
+          <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+        </w:rPr>
+        <w:t>TYLER ALLEN LOFALL</w:t>
+      </w:r>
+    </w:p>
+
+    <!-- ==================== PAGE SETTINGS ==================== -->
+    <w:sectPr>
+      <w:hdr w:type="odd">
+        <w:p>
+          <w:pPr><w:jc w:val="center"/></w:pPr>
+          <w:r>
+            <w:rPr>
+              <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+              <w:b/><w:sz w:val="28"/>
+            </w:rPr>
+            <w:t>Case No. 25-6461</w:t>
+          </w:r>
+        </w:p>
+      </w:hdr>
+      <w:ftr w:type="odd">
+        <w:p>
+          <w:pPr><w:jc w:val="center"/></w:pPr>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>Page </w:t></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:instrText>PAGE</w:instrText></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>1</w:t></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
+        </w:p>
+      </w:ftr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>
+    </w:sectPr>
+  </wx:sect>
+</w:body>
+</w:wordDocument>

@@ -27,89 +27,90 @@ Assemble appellate brief sections from evidence pool data. Each section is gener
 
 *Pro se appellants exempt from corporate disclosure
 
-## Data Files Location
+# Ninth Circuit Brief Body Generator
 
-```
-legal_brief_system/data/
-├── case_info.json          # Case details, parties, dates
-├── evidence_pool.json      # Facts with citations (EXACT TEXT)
-├── authorities.json        # Cases, statutes, rules cited
-├── arguments.json          # Argument structure
-├── issues_presented.json   # Issues for appeal
-├── timeline.json           # Chronological events
-└── frap_compliance_rules.json  # Formatting rules
-```
+Teach the model to load the master fact set, stitch every FRAP-required section, and emit a DOCX that already lives in the dual-copy OUTBOX workflow. All prose remains verbatim from the JSON sources—no paraphrasing, no “improvements.”
 
-## Section Generation Workflow
+## When to Trigger This Skill
 
-### Step 1: Validate Data
-```bash
-python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\validate_brief.py"
-```
 
-### Step 2: Build from Evidence
-```bash
-python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\build_from_evidence.py"
-```
+## Files and References to Load
 
-### Step 3: Generate Complete Brief
-```bash
-python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\generate_brief.py"
-```
+1. `legal_brief_system/data/*.json` – case data, issues, authorities, argument content, evidence pool, timeline. See `references/data-map.md` for a full schema.
+2. `legal_brief_system/assemble_brief.py` – use when you need section-specific plain text output or to confirm which facts are mapped.
+3. `legal_brief_system/templates/BRIEF_SHELL.md` – marker list for every section inside the DOCX.
+4. `references/frap_rules.md` – FRAP 28/32 compliance checklist.
+5. `legal_brief_system/NO_REWORDING_RULES.md` – guardrail: read before issuing any generation prompts.
 
-## CRITICAL: NO REWORDING RULES
+## Workflow (Single Agent, Repeatable)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  SOURCE FILES (exact text) → ASSEMBLY ONLY → OUTPUT        │
-│                                                             │
-│  ✓ Read from JSON files                                     │
-│  ✓ Place text in correct sections                          │
-│  ✓ Add citation formatting                                  │
-│  ✓ Create footnotes from cross-references                  │
-│                                                             │
-│  ✗ DO NOT reword facts                                      │
-│  ✗ DO NOT "improve" writing                                 │
-│  ✗ DO NOT summarize then expand                             │
-│  ✗ DO NOT have subprocesses modify text                    │
-└─────────────────────────────────────────────────────────────┘
-```
+1. **Prep the data (no drafting here).**
+    - Update `case_info.json`, `issues_presented.json`, `arguments.json`, `argument_content.json`, `authorities.json`, `timeline.json`, `evidence_pool.json`.
+    - Tag each fact in `evidence_pool.json` with the correct `used_in_sections` keys (`statement_of_case`, `argument_I`, `argument_I_A`, etc.).
+2. **Validate before touching output.**
+    ```powershell
+    python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\validate_brief.py"
+    ```
+    Resolve any missing fields or malformed JSON before continuing.
+3. **Preview the evidence flow.**
+    ```powershell
+    python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\build_from_evidence.py"
+    ```
+    Inspect the generated TXT in `legal_brief_system/output/BRIEF_REVIEW_*.txt` to confirm each fact + footnote chain is correct.
+4. **Generate the DOCX (with dual OUTBOX copies).**
+    ```powershell
+    python "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\legal_brief_system\generate_brief.py" ^
+      --outbox-dir "d:\Nineth Circuit\CLAUDE_COPILOT HLP\NINTH CIR5\OUTBOX"
+    ```
+    - Reads every JSON file, injects the exact text into the DOCX, and writes the first copy to `legal_brief_system/output/`.
+    - Automatically writes `{Case}-{Filing}-{timestamp}.docx` to `OUTBOX/briefs/` and a read-only chronological copy to `OUTBOX/chronological/`.
+    - Use `--skip-outbox` only when explicitly sandboxing; production runs must keep the dual-copy rule.
+5. **Post-generation checklist.**
+    - Open the DOCX and verify each section matches the JSON source (no paraphrasing drift).
+    - Update TOC page numbers after final pagination.
+    - Insert the precise word count in the Certificate of Compliance.
+    - Export to PDF and combine with the cover page if filing immediately.
 
-## Evidence Pool Structure
+## Section-to-Source Mapping
 
-Each fact in `evidence_pool.json`:
-```json
-{
-    "id": "F001",
-    "category": "arrest",
-    "date": "2022-03-06",
-    "statement": "EXACT TEXT - never modify",
-    "record_cite": "ER-12",
-    "supporting_evidence": ["E001", "E002"],
-    "cross_references": ["F003", "F010"],
-    "used_in_sections": ["statement_of_case", "argument_I"]
-}
-```
+| Section | Source | Notes |
+| --- | --- | --- |
+| Disclosure | `case_info.json` | Uses pro se exemption text unless a custom block exists. |
+| Table of Contents | Auto-generated | Pulls headings + subheadings from `arguments.json`. |
+| Table of Authorities | `authorities.json` | Alphabetized; relies on `pages_cited`. |
+| Introduction | `argument_content.json > content_sections.introduction` | Draft text must already be present; the script will not invent prose. |
+| Jurisdiction | `case_info.json > jurisdiction` | Includes statutes, judgment date, NOA date. |
+| Issues Presented | `issues_presented.json` | Each issue prints verbatim. |
+| Statement of the Case | `evidence_pool.json` facts tagged with `statement_of_case` (falls back to `timeline.json` only if none are tagged). |
+| Summary of Argument | `argument_content.json > content_sections.summary_of_argument` | Keep concise; mirrors argument structure. |
+| Standard of Review | `issues_presented.json` | Groups issues by identical standards. |
+| Argument I/II/III | Combination of `argument_content.json` and `evidence_pool.json` facts tagged with `argument_*` keys. |
+| Conclusion | `case_info.json > conclusion.text` or default relief paragraph. |
+| Statement of Related Cases | `case_info.json > related_cases[]` (optional list). |
+| Certificates | Auto text + `case_info.json` signature block; fill in word count manually. |
 
-## Output Naming Convention
+## Guardrails: Exact Text Only
 
-Files saved to: `legal_brief_system/output/`
+- Never summarize or “improve” facts. If a change is needed, edit the JSON source and regenerate.
+- When adding a new fact:
+  1. Insert it into `evidence_pool.json` with `statement`, `record_cite`, and `used_in_sections` keys.
+  2. If the fact should appear in multiple arguments, list every relevant `argument_*` tag.
+  3. Re-run validation and regeneration.
+- When drafting substantive narrative (Intro, Summary, subarguments), always write directly into `argument_content.json`. The generator copies the text verbatim.
+- Keep FRAP/9th Cir formatting rules handy via `references/frap_rules.md` and ensure fonts, spacing, and citations remain compliant.
 
-Format: `Case_[number]_[section]_[date].docx`
+## Troubleshooting
 
-Example: `Case_25-6461_Statement_of_Case_20251206.docx`
-
-## Subprocess Rules
-
-When using subagents or subprocesses:
-
-1. **READ-ONLY access** to evidence files
-2. Subprocesses receive **COPIES** of data, not originals
-3. Output must be **VALIDATED** against source before acceptance
-4. Any modification to original text = **REJECT**
+- **Missing section text?** Confirm the corresponding JSON field exists and is tagged. Example: If Argument II.B is blank, ensure facts include `"argument_II_B"` and that `argument_content.json` has `content_sections.arguments["II"].B.content` filled.
+- **No OUTBOX copy?** You likely passed `--skip-outbox` or the OUTBOX path is wrong. Re-run with the correct `--outbox-dir`.
+- **Table of Authorities gaps?** Add the new authority to `authorities.json` with `bluebook` and `pages_cited`. Re-run the generator.
 
 ## References
 
+- `references/data-map.md` – exhaustive list of required data files and `used_in_sections` keys.
+- `legal_brief_system/templates/MOTION_SHELL.md` – FRAP 27 motion template with program-fill placeholders.
+- `references/motion-template-guide.md` – automation steps for populating the motion shell.
+- `legal_brief_system/generate_motion.py` – CLI to render motions via the block library.
+- `references/frap_rules.md` – FRAP 28/32 requirements and Ninth Circuit nuances.
+- `legal_brief_system/templates/BRIEF_SHELL.md` – Word marker definitions for every section.
 - `references/frap_rules.md` - FRAP formatting requirements
-- `references/ninth_circuit_rules.md` - Local rules
-- `references/brief_shell.md` - Section templates

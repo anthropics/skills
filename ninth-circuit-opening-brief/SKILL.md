@@ -1,3 +1,8 @@
+---
+name: ninth-circuit-opening-brief
+description: Assemble FRAP 28-compliant Ninth Circuit opening briefs by copying user-provided sections into a fixed template/ordering. Never rewrite substantive text.
+---
+
 # Ninth Circuit Opening Brief Skill
 
 ## Purpose
@@ -9,6 +14,12 @@ Assemble FRAP 28-compliant Opening Briefs for the Ninth Circuit Court of Appeals
 - User needs to assemble an Opening Brief from their written sections
 - User wants to format an existing brief for Ninth Circuit requirements
 - User needs Table of Contents / Table of Authorities generated from their text
+
+## Shared Map (Matrix / Cheat Sheet)
+
+Use the shared drafting map to keep document-type definitions and build-order consistent across skills:
+
+- [LEGAL_DOCUMENT_DRAFTING_MAP.md](../_shared/LEGAL_DOCUMENT_DRAFTING_MAP.md)
 
 ## Architecture
 

@@ -15,6 +15,12 @@ Generate properly formatted cover pages for Ninth Circuit filings. The cover pag
 - Creating a cover page for a motion
 - Any Ninth Circuit filing that requires a caption page
 
+## Shared Map (Matrix / Cheat Sheet)
+
+Use the shared drafting map to keep document-type definitions and build-order consistent across skills:
+
+- [LEGAL_DOCUMENT_DRAFTING_MAP.md](../_shared/LEGAL_DOCUMENT_DRAFTING_MAP.md)
+
 ## Required Information
 
 1. **Case Number** - Ninth Circuit case number (e.g., `25-6461`)

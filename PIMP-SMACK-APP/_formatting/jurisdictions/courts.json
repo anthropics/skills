@@ -1,0 +1,102 @@
+{
+  "_file": "courts",
+  "_version": "2.1.0",
+  "_notes": [
+    "Profiles are formatting defaults. Always verify local rules and standing orders before filing.",
+    "FRCP generally does not prescribe typography; district courts do via local rules/judge orders.",
+    "FRAP 32 contains baseline appellate formatting requirements."
+  ],
+  "profiles": {
+    "FRCP_BASE": {
+      "scope": "US_FED_DISTRICT_DEFAULT",
+      "page": {
+        "paper": "LETTER",
+        "margins_in": {
+          "top": 1.0,
+          "right": 1.0,
+          "bottom": 1.0,
+          "left": 1.0
+        }
+      },
+      "body_font": {
+        "family": "Times New Roman",
+        "size_pt": 12
+      },
+      "line_spacing": "double",
+      "first_line_indent_in": 0.5,
+      "notes": [
+        "Conservative default used in many district courts; local rules may differ."
+      ]
+    },
+    "FRAP_BASE": {
+      "scope": "US_FED_APPELLATE_DEFAULT",
+      "page": {
+        "paper": "LETTER",
+        "margins_in": {
+          "top": 1.0,
+          "right": 1.0,
+          "bottom": 1.0,
+          "left": 1.0
+        }
+      },
+      "body_font": {
+        "family": "Times New Roman",
+        "size_pt": 14,
+        "serif_required": true
+      },
+      "heading_font": {
+        "family": "Arial",
+        "size_pt": 14
+      },
+      "line_spacing": "double",
+      "headings_line_spacing": "single",
+      "block_quote_line_spacing": "single",
+      "footnote_font_size_pt": 14,
+      "notes": [
+        "Designed to be consistent with FRAP 32 type-size constraints; confirm current rule text."
+      ]
+    }
+  },
+  "courts": {
+    "DOR": {
+      "display_name": "U.S. District Court, District of Oregon",
+      "inherits": [
+        "FRCP_BASE"
+      ],
+      "local_rules": {
+        "notes": [
+          "Populate local rules (e.g., motion word limits) as needed; this file focuses on formatting.",
+          "D. Or. LR references should be verified against the current LR text."
+        ]
+      }
+    },
+    "NDCA": {
+      "display_name": "U.S. District Court, N.D. California",
+      "inherits": [
+        "FRCP_BASE"
+      ],
+      "local_rules": {
+        "notes": [
+          "Verify NDCA Civ. L.R. requirements for formatting/word limits."
+        ]
+      }
+    },
+    "NINTH_CIRCUIT": {
+      "display_name": "U.S. Court of Appeals for the Ninth Circuit",
+      "inherits": [
+        "FRAP_BASE"
+      ],
+      "appellate": {
+        "word_limits": {
+          "opening_brief_words": 14000,
+          "answering_brief_words": 14000,
+          "reply_brief_words": 7000
+        },
+        "notes": [
+          "Word limits may be affected by local rules, orders, and brief type (amicus/cross-appeal).",
+          "Ensure certificate of compliance matches FRAP 32(f) exclusions."
+        ]
+      }
+    }
+  }
+}
