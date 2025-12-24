@@ -264,6 +264,7 @@
       </label>
       <button id="btn-fetch">データ取得</button>
       <span class="status" id="api-status">未取得</span>
+      <button id="btn-download" style="margin-left:8px;">💾 DL</button>
     </div>
   </div>
 
@@ -972,6 +973,18 @@
     document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('ammo-price-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
+
+    // Download
+    document.getElementById('btn-download').addEventListener('click', () => {
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob(['<!DOCTYPE html>\n' + html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tarkov-tools.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
 
     // Init
     initFirData();
