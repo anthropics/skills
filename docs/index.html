@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarkov Tools</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #f0883e;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --red: #f85149;
+      --blue: #58a6ff;
+      --bronze: #cd7f32;
+      --silver: #c0c0c0;
+      --gold: #ffd700;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .header h1 { font-size: 1.2rem; color: var(--accent); }
+    .header-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .header-controls button, .header-controls select {
+      padding: 6px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .status { font-size: 0.8rem; color: var(--muted); }
+    .status.ok { color: var(--green); }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px 4px 0 0;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .tab.active { background: var(--accent); color: #000; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Columns */
+    .columns-container { display: grid; gap: 8px; margin-bottom: 12px; }
+    .columns-container.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .columns-container.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .columns-container.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .columns-container.cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .columns-container.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+    .search-column {
+      background: var(--card);
+      border-radius: 6px;
+      padding: 8px;
+      min-height: 180px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .results-list { display: flex; flex-direction: column; gap: 6px; }
+    .search-column input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .search-column input:focus { outline: none; border-color: var(--accent); }
+
+    /* Result Card */
+    .result-card {
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 8px;
+      border-left: 3px solid var(--border);
+      transition: background 0.15s;
+    }
+    .result-card:hover { background: #21262d; }
+    .result-card.fir-need { border-left-color: var(--red); background: rgba(248,81,73,0.1); }
+    .result-card.fir-partial { border-left-color: var(--yellow); background: rgba(210,153,34,0.1); }
+    .result-card.fir-complete { border-left-color: var(--green); background: rgba(63,185,80,0.1); }
+    .result-card.tier-bronze { border-left-color: var(--bronze); }
+    .result-card.tier-silver { border-left-color: var(--silver); }
+    .result-card.tier-gold { border-left-color: var(--gold); background: rgba(255,215,0,0.08); }
+
+    .result-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; word-break: break-word; }
+    .result-name.gold { color: var(--gold); }
+    .result-name.silver { color: var(--silver); }
+    .result-name.bronze { color: var(--bronze); }
+
+    .price-tier { font-size: 1.1rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+    .price-tier.none { color: var(--muted); }
+    .price-tier.low { color: #6cb6ff; }
+    .price-tier.mid { color: #f0883e; }
+    .price-tier.high { color: #f85149; }
+    .price-tier.bronze { color: #000; background: linear-gradient(135deg, #cd7f32, #8b4513); }
+    .price-tier.silver { color: #000; background: linear-gradient(135deg, #e8e8e8, #a8a8a8); }
+    .price-tier.gold { color: #000; background: linear-gradient(135deg, #ffd700, #daa520); }
+
+    .result-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
+    .result-row .label { color: var(--muted); }
+    .result-row .value { font-weight: 500; }
+    .result-row .value.need { color: var(--red); }
+    .result-row .value.ok { color: var(--green); }
+
+    .fir-controls { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+    .fir-controls button { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--card); border: 1px solid var(--border); border-radius: 4px; color: var(--text); cursor: pointer; font-size: 1rem; }
+    .fir-controls button:hover { background: #21262d; }
+    .fir-controls input { width: 36px; text-align: center; padding: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 0.85rem; }
+    .fir-controls .total { color: var(--muted); font-size: 0.85rem; }
+
+    .result-sources { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+    .source-item { display: inline-block; background: #21262d; padding: 2px 6px; border-radius: 3px; margin: 2px 2px 2px 0; }
+    .source-item.quest { border-left: 2px solid var(--green); }
+    .source-item.hideout { border-left: 2px solid var(--blue); }
+
+    .no-result { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px; }
+    .fir-badge { display: inline-block; background: var(--green); color: #000; font-size: 0.7rem; font-weight: 600; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
+
+    /* History */
+    .history-section { background: var(--card); border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .history-header h3 { font-size: 0.9rem; color: var(--muted); }
+    .history-header button { padding: 4px 8px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-size: 0.75rem; cursor: pointer; }
+    .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+    .history-item { background: var(--bg); padding: 6px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; border-left: 3px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .history-item:hover { background: #21262d; }
+    .history-item .name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
+
+    /* Bulk */
+    .bulk-section { background: var(--card); padding: 16px; border-radius: 6px; }
+    .bulk-section textarea { width: 100%; height: 100px; padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: inherit; resize: vertical; margin-bottom: 10px; }
+    .bulk-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+    .bulk-actions button { padding: 8px 16px; background: var(--accent); border: none; border-radius: 4px; color: #000; cursor: pointer; }
+    .bulk-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+
+    .setting-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+    /* Armor Calculator */
+    .armor-section { background: var(--card); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+    .armor-section h3 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; }
+    .armor-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .armor-controls select, .armor-controls input {
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+    .armor-controls label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: var(--muted); }
+
+    .ammo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; margin-bottom: 16px; }
+    .ammo-card {
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 10px;
+      border-left: 3px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .ammo-card:hover { background: #21262d; }
+    .ammo-card.selected { border-left-color: var(--accent); background: rgba(240,136,62,0.1); }
+    .ammo-card.threat-low { border-left-color: var(--green); }
+    .ammo-card.threat-mid { border-left-color: var(--yellow); }
+    .ammo-card.threat-high { border-left-color: var(--red); }
+    .ammo-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .ammo-stats { display: flex; gap: 12px; font-size: 0.8rem; color: var(--muted); }
+    .ammo-stats span { display: flex; align-items: center; gap: 4px; }
+    .ammo-stats .pen { color: var(--red); }
+    .ammo-stats .dmg { color: var(--blue); }
+    .ammo-stats .price { color: var(--gold); }
+
+    .armor-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .armor-card {
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+    .armor-card.recommended { border-color: var(--green); background: rgba(63,185,80,0.1); }
+    .armor-card.best-value { border-color: var(--gold); background: rgba(255,215,0,0.1); }
+    .armor-card h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
+    .armor-class { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; }
+    .armor-class.c1, .armor-class.c2 { background: var(--green); color: #000; }
+    .armor-class.c3, .armor-class.c4 { background: var(--yellow); color: #000; }
+    .armor-class.c5, .armor-class.c6 { background: var(--red); color: #fff; }
+    .pen-chance { font-size: 0.85rem; margin-bottom: 4px; }
+    .pen-chance .value { font-weight: 600; }
+    .pen-chance .safe { color: var(--green); }
+    .pen-chance .risky { color: var(--yellow); }
+    .pen-chance .dangerous { color: var(--red); }
+    .shots-to-kill { font-size: 0.9rem; font-weight: 600; color: var(--blue); margin-bottom: 8px; }
+
+    .class-compare { background: var(--card); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+    .class-compare h3 { color: var(--accent); margin-bottom: 12px; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .compare-table th, .compare-table td { padding: 8px; text-align: center; border-bottom: 1px solid var(--border); }
+    .compare-table th { color: var(--muted); font-weight: normal; }
+    .compare-table .class-cell { font-weight: 600; }
+    .compare-table .shots-cell { font-size: 1.1rem; font-weight: 700; }
+    .compare-table .shots-cell.good { color: var(--green); }
+    .compare-table .shots-cell.ok { color: var(--yellow); }
+    .compare-table .shots-cell.bad { color: var(--red); }
+    .compare-table .delta { font-size: 0.75rem; color: var(--green); }
+    .compare-table .cost-per-shot { color: var(--gold); font-size: 0.8rem; }
+    .survival-bar { height: 8px; background: var(--border); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+    .survival-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .survival-bar-fill.good { background: var(--green); }
+    .survival-bar-fill.ok { background: var(--yellow); }
+    .survival-bar-fill.bad { background: var(--red); }
+
+    @media (max-width: 800px) {
+      .columns-container { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 500px) {
+      .columns-container { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Tarkov Tools</h1>
+    <div class="header-controls">
+      <select id="col-count">
+        <option value="2">2列</option>
+        <option value="3" selected>3列</option>
+        <option value="4">4列</option>
+        <option value="5">5列</option>
+        <option value="6">6列</option>
+      </select>
+      <label class="setting-item">
+        <input type="checkbox" id="show-details" checked>
+        <span>詳細</span>
+      </label>
+      <button id="btn-fetch">データ取得</button>
+      <span class="status" id="api-status">未取得</span>
+      <button id="btn-download" style="margin-left:8px;">💾 DL</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-panel="search">アイテム検索</div>
+    <div class="tab" data-panel="bulk">一括検索</div>
+    <div class="tab" data-panel="armor">アーマー計算</div>
+  </div>
+
+  <div class="panel active" id="panel-search">
+    <div class="history-section">
+      <div class="history-header">
+        <h3>最近の検索</h3>
+        <button onclick="clearHistory()">クリア</button>
+      </div>
+      <div class="history-grid" id="history-grid"></div>
+    </div>
+    <div class="columns-container cols-3" id="columns-container"></div>
+  </div>
+
+  <div class="panel" id="panel-bulk">
+    <div class="bulk-section">
+      <textarea id="bulk-input" placeholder="アイテム名を1行ずつ入力..."></textarea>
+      <div class="bulk-actions">
+        <button onclick="bulkSearch()">検索</button>
+        <button onclick="clearBulk()" style="background:var(--card);color:var(--text);border:1px solid var(--border);">クリア</button>
+      </div>
+      <div class="bulk-results" id="bulk-results"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-armor">
+    <div class="armor-section">
+      <h3>脅威となる弾薬を選択</h3>
+      <div class="armor-controls">
+        <label>
+          口径フィルタ
+          <select id="caliber-filter">
+            <option value="all">すべて</option>
+            <option value="popular">主流弾のみ</option>
+          </select>
+        </label>
+        <label>
+          価格帯
+          <select id="ammo-price-filter">
+            <option value="all">すべて</option>
+            <option value="cheap">安い（〜500₽）</option>
+            <option value="mid">中価格（500〜1500₽）</option>
+            <option value="expensive">高い（1500₽〜）</option>
+          </select>
+        </label>
+        <label>
+          貫通力
+          <select id="pen-filter">
+            <option value="all">すべて</option>
+            <option value="low">低（〜20）</option>
+            <option value="mid">中（20〜40）</option>
+            <option value="high">高（40〜）</option>
+          </select>
+        </label>
+      </div>
+      <div class="ammo-grid" id="ammo-grid"></div>
+    </div>
+
+    <div class="class-compare" id="class-compare" style="display:none;">
+      <h3>Class別 生存弾数比較</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>初弾貫通率</th>
+            <th>期待生存弾数</th>
+            <th>前Classとの差</th>
+            <th>代表価格</th>
+            <th>1発あたりコスト</th>
+          </tr>
+        </thead>
+        <tbody id="compare-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="armor-section">
+      <h3>コスパ順 推奨アーマー</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ 1発あたりのコストが安い順</p>
+      <div class="armor-results" id="armor-results">
+        <div class="no-result">弾薬を選択してください</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BASE_DATA = {"metadata":{"generatedAt":"2025-12-22T07:10:56.385Z","source":"fakundo/tarkov-raid-items + TarkovTracker/tarkovdata","totalUniqueItems":169,"totalItemsNeeded":607},"items":{"SALEWA_FIRST_AID_KIT":{"name":"Salewa first aid kit","nameShort":"Salewa","type":"Medical supply","totalRequired":3,"questBreakdown":[{"questId":"SHORTAGE","questName":"Shortage","count":3,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":10}],"earliestAccess":{"questName":"Shortage","level":1,"depth":0,"priority":10},"canCraft":true,"craftLocations":["MEDSTATION"]},"DOGTAG_BEAR":{"name":"Dogtag (BEAR)","nameShort":"Dogtag (BEAR)","type":"Other","totalRequired":25,"questBreakdown":[{"questId":"COUNTERACTION","questName":"Counteraction","count":20,"dealer":"PEACEKEEPER","kappa":false,"level":1,"depth":11,"priority":21},{"questId":"COMPENSATION_FOR_DAMAGE_TRUST","questName":"Compensation for Damage - Trust","count":5,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Counteraction","level":1,"depth":11,"priority":21},"canCraft":false,"craftLocations":[]},"DOGTAG_USEC":{"name":"Dogtag (USEC)","nameShort":"Dogtag (USEC)","type":"Other","totalRequired":25,"questBreakdown":[{"questId":"OUR_OWN_LAND","questName":"Our Own Land","count":20,"dealer":"PRAPOR","kappa":false,"level":1,"depth":11,"priority":21},{"questId":"COMPENSATION_FOR_DAMAGE_TRUST","questName":"Compensation for Damage - Trust","count":5,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Our Own Land","level":1,"depth":11,"priority":21},"canCraft":false,"craftLocations":[]},"ISKRA_LUNCH_BOX":{"name":"Iskra ration pack","nameShort":"Iskra","type":"Food","totalRequired":3,"questBreakdown":[{"questId":"ACQUAINTANCE","questName":"Acquaintance","count":3,"dealer":"JAEGER","kappa":true,"level":2,"depth":1,"priority":21}],"earliestAccess":{"questName":"Acquaintance","level":2,"depth":1,"priority":21},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"CAN_OF_DELICIOUS_BEEF_STEW":{"name":"Can of beef stew (Large)","nameShort":"Tushonka","type":"Food","totalRequired":2,"questBreakdown":[{"questId":"ACQUAINTANCE","questName":"Acquaintance","count":2,"dealer":"JAEGER","kappa":true,"level":2,"depth":1,"priority":21}],"earliestAccess":{"questName":"Acquaintance","level":2,"depth":1,"priority":21},"canCraft":false,"craftLocations":[]},"NOODLES":{"name":"Pack of instant noodles","nameShort":"Noodles","type":"Food","totalRequired":2,"questBreakdown":[{"questId":"ACQUAINTANCE","questName":"Acquaintance","count":2,"dealer":"JAEGER","kappa":true,"level":2,"depth":1,"priority":21}],"earliestAccess":{"questName":"Acquaintance","level":2,"depth":1,"priority":21},"canCraft":false,"craftLocations":[]},"MODULE_3_M_BODYARMOR":{"name":"BNTI Module-3M body armor","nameShort":"Module-3M","type":"Armor vest","totalRequired":1,"questBreakdown":[{"questId":"SUPPLIER","questName":"Supplier","count":1,"dealer":"SKIER","kappa":true,"level":5,"depth":0,"priority":50}],"earliestAccess":{"questName":"Supplier","level":5,"depth":0,"priority":50},"canCraft":true,"craftLocations":["LAVATORY"]},"TOZ_106_BOLT_ACTION_SHOTGUN":{"name":"TOZ-106 20ga bolt-action shotgun","nameShort":"TOZ-106","type":"Weapon Shotgun","totalRequired":1,"questBreakdown":[{"questId":"SUPPLIER","questName":"Supplier","count":1,"dealer":"SKIER","kappa":true,"level":5,"depth":0,"priority":50}],"earliestAccess":{"questName":"Supplier","level":5,"depth":0,"priority":50},"canCraft":false,"craftLocations":[]},"MORPHINE_INJECTOR":{"name":"Morphine injector","nameShort":"Morphine","type":"Injector","totalRequired":8,"questBreakdown":[{"questId":"PAINKILLER","questName":"Painkiller","count":4,"dealer":"THERAPIST","kappa":true,"level":8,"depth":3,"priority":83},{"questId":"SPA_TOUR_PART_7","questName":"Spa Tour - Part 7","count":4,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Painkiller","level":8,"depth":3,"priority":83},"canCraft":true,"craftLocations":["MEDSTATION"]},"60_ROUND_6_L_31_5_45_X_39_MAGAZINE_FOR_AK_74_AND_COMPATIBLES":{"name":"AK-74 5.45x39 6L31 60-round magazine","nameShort":"6L31","type":"Magazine","totalRequired":3,"questBreakdown":[{"questId":"ICE_CREAM_CONES","questName":"Ice Cream Cones","count":3,"dealer":"PRAPOR","kappa":true,"level":9,"depth":5,"priority":95}],"earliestAccess":{"questName":"Ice Cream Cones","level":9,"depth":5,"priority":95},"canCraft":true,"craftLocations":["LAVATORY"]},"CAN_OF_BEEF_STEW":{"name":"Can of beef stew (Small)","nameShort":"Tushonka","type":"Food","totalRequired":15,"questBreakdown":[{"questId":"GENERAL_WARES","questName":"General Wares","count":15,"dealer":"THERAPIST","kappa":true,"level":10,"depth":5,"priority":105}],"earliestAccess":{"questName":"General Wares","level":10,"depth":5,"priority":105},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"SPARK_PLUG":{"name":"Spark plug","nameShort":"SPlug","type":"Electronics","totalRequired":8,"questBreakdown":[{"questId":"CAR_REPAIR","questName":"Car Repair","count":8,"dealer":"THERAPIST","kappa":true,"level":10,"depth":5,"priority":105}],"earliestAccess":{"questName":"Car Repair","level":10,"depth":5,"priority":105},"canCraft":true,"craftLocations":["WORKBENCH"]},"CAR_BATTERY":{"name":"Car battery","nameShort":"Car battery","type":"Energy element","totalRequired":4,"questBreakdown":[{"questId":"CAR_REPAIR","questName":"Car Repair","count":4,"dealer":"THERAPIST","kappa":true,"level":10,"depth":5,"priority":105}],"earliestAccess":{"questName":"Car Repair","level":10,"depth":5,"priority":105},"canCraft":true,"craftLocations":["WORKBENCH"]},"MALBORO_CIGARETTES":{"name":"Malboro Cigarettes","nameShort":"Malboro","type":"Cigarettes","totalRequired":5,"questBreakdown":[{"questId":"BAD_HABIT","questName":"Bad Habit","count":5,"dealer":"MECHANIC","kappa":true,"level":12,"depth":3,"priority":123}],"earliestAccess":{"questName":"Bad Habit","level":12,"depth":3,"priority":123},"canCraft":false,"craftLocations":[]},"STRIKE_CIGARETTES":{"name":"Strike Cigarettes","nameShort":"Strike","type":"Cigarettes","totalRequired":5,"questBreakdown":[{"questId":"BAD_HABIT","questName":"Bad Habit","count":5,"dealer":"MECHANIC","kappa":true,"level":12,"depth":3,"priority":123}],"earliestAccess":{"questName":"Bad Habit","level":12,"depth":3,"priority":123},"canCraft":false,"craftLocations":[]},"WILSTON_CIGARETTES":{"name":"Wilston cigarettes","nameShort":"Wilston","type":"Cigarettes","totalRequired":5,"questBreakdown":[{"questId":"BAD_HABIT","questName":"Bad Habit","count":5,"dealer":"MECHANIC","kappa":true,"level":12,"depth":3,"priority":123}],"earliestAccess":{"questName":"Bad Habit","level":12,"depth":3,"priority":123},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"KINDA_COWBOY_HAT":{"name":"Kinda cowboy hat","nameShort":"Cowboy","type":"Headwear","totalRequired":2,"questBreakdown":[{"questId":"DRESSED_TO_KILL","questName":"Dressed to Kill","count":2,"dealer":"RAGMAN","kappa":true,"level":15,"depth":3,"priority":153}],"earliestAccess":{"questName":"Dressed to Kill","level":15,"depth":3,"priority":153},"canCraft":false,"craftLocations":[]},"USHANKA_EAR_FLAP_CAP":{"name":"Ushanka ear flap hat","nameShort":"Ushanka","type":"Headwear","totalRequired":2,"questBreakdown":[{"questId":"DRESSED_TO_KILL","questName":"Dressed to Kill","count":2,"dealer":"RAGMAN","kappa":true,"level":15,"depth":3,"priority":153}],"earliestAccess":{"questName":"Dressed to Kill","level":15,"depth":3,"priority":153},"canCraft":false,"craftLocations":[]},"SECURE_FLASH_DRIVE":{"name":"Secure Flash drive","nameShort":"Flash drive","type":"Info item","totalRequired":20,"questBreakdown":[{"questId":"SHADY_BUSINESS","questName":"Shady Business","count":3,"dealer":"JAEGER","kappa":true,"level":20,"depth":3,"priority":203},{"questId":"WHATS_ON_THE_FLASH_DRIVE","questName":"What’s on the Flash Drive?","count":2,"dealer":"SKIER","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"MAKE_AMENDS_SOFTWARE","questName":"Make Amends - Software","count":15,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Shady Business","level":20,"depth":3,"priority":203},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"3_B_TG":{"name":"3-(b-TG) stimulant injector","nameShort":"3-(b-TG)","type":"Injector","totalRequired":2,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218},{"questId":"COLLEAGUES_PART_3","questName":"Colleagues - Part 3","count":1,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"AHF_1_M":{"name":"AHF1-M stimulant injector","nameShort":"AHF1-M","type":"Injector","totalRequired":2,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218},{"questId":"COLLEAGUES_PART_3","questName":"Colleagues - Part 3","count":1,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"COCKTAIL_OBDOLBOS":{"name":"Obdolbos cocktail injector","nameShort":"Obdolbos","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"L_1_NOREPINEPHRINE":{"name":"L1 (Norepinephrine) injector","nameShort":"L1","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"MELDONIN":{"name":"Meldonin injector","nameShort":"Meldonin","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"M_U_L_E_STIMULATOR":{"name":"M.U.L.E. stimulant injector","nameShort":"M.U.L.E.","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":true,"craftLocations":["MEDSTATION"]},"P_22":{"name":"P22 (Product 22) stimulant injector","nameShort":"P22","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"SAMPLES","questName":"Samples","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":21,"depth":8,"priority":218}],"earliestAccess":{"questName":"Samples","level":21,"depth":8,"priority":218},"canCraft":false,"craftLocations":[]},"OFZ_30_X_160_MM_SHELL":{"name":"OFZ 30x165mm shell","nameShort":"OFZ","type":"Other","totalRequired":5,"questBreakdown":[{"questId":"REGULATED_MATERIALS","questName":"Regulated Materials","count":5,"dealer":"PRAPOR","kappa":true,"level":25,"depth":5,"priority":255}],"earliestAccess":{"questName":"Regulated Materials","level":25,"depth":5,"priority":255},"canCraft":true,"craftLocations":["WORKBENCH"]},"PORTABLE_DEFIBRILLATOR":{"name":"Portable defibrillator","nameShort":"Defib","type":"Medical supply","totalRequired":4,"questBreakdown":[{"questId":"AMBULANCE","questName":"Ambulance","count":1,"dealer":"JAEGER","kappa":true,"level":25,"depth":5,"priority":255},{"questId":"CRISIS","questName":"Crisis","count":3,"dealer":"THERAPIST","kappa":true,"level":48,"depth":0,"priority":480}],"earliestAccess":{"questName":"Ambulance","level":25,"depth":5,"priority":255},"canCraft":true,"craftLocations":["MEDSTATION"]},"CMS_KIT":{"name":"CMS surgical kit","nameShort":"CMS","type":"Jaeger","totalRequired":2,"questBreakdown":[{"questId":"AMBULANCE","questName":"Ambulance","count":2,"dealer":"JAEGER","kappa":true,"level":25,"depth":5,"priority":255}],"earliestAccess":{"questName":"Ambulance","level":25,"depth":5,"priority":255},"canCraft":true,"craftLocations":["MEDSTATION"]},"6_STEN_140_M_MILITARY_BATTERY":{"name":"6-STEN-140-M military battery","nameShort":"Tank battery","type":"Energy element","totalRequired":1,"questBreakdown":[{"questId":"REGULATED_MATERIALS","questName":"Regulated Materials","count":1,"dealer":"PRAPOR","kappa":true,"level":25,"depth":5,"priority":255}],"earliestAccess":{"questName":"Regulated Materials","level":25,"depth":5,"priority":255},"canCraft":false,"craftLocations":[]},"TERRA_GROUP_LABS_ACCESS_KEYCARD":{"name":"TerraGroup Labs access keycard","nameShort":"Access","type":"Keycard","totalRequired":12,"questBreakdown":[{"questId":"FISHING_PLACE","questName":"Fishing Place","count":2,"dealer":"JAEGER","kappa":true,"level":25,"depth":6,"priority":256},{"questId":"COLLEAGUES_PART_3","questName":"Colleagues - Part 3","count":10,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Fishing Place","level":25,"depth":6,"priority":256},"canCraft":false,"craftLocations":[]},"CAPACITORS":{"name":"Capacitors","nameShort":"Caps","type":"Electronics","totalRequired":6,"questBreakdown":[{"questId":"FERTILIZERS","questName":"Fertilizers","count":5,"dealer":"MECHANIC","kappa":true,"level":30,"depth":5,"priority":305},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Fertilizers","level":30,"depth":5,"priority":305},"canCraft":true,"craftLocations":["WORKBENCH"]},"WIRES":{"name":"Bundle of wires","nameShort":"Wires","type":"Electronics","totalRequired":6,"questBreakdown":[{"questId":"FERTILIZERS","questName":"Fertilizers","count":5,"dealer":"MECHANIC","kappa":true,"level":30,"depth":5,"priority":305},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Fertilizers","level":30,"depth":5,"priority":305},"canCraft":true,"craftLocations":["WORKBENCH"]},"UHF_RFID_READER":{"name":"UHF RFID Reader","nameShort":"RFIDR","type":"Electronics","totalRequired":6,"questBreakdown":[{"questId":"IMPORT","questName":"Import","count":1,"dealer":"MECHANIC","kappa":true,"level":35,"depth":5,"priority":355},{"questId":"SPECIAL_EQUIPMENT","questName":"Special Equipment","count":5,"dealer":"PEACEKEEPER","kappa":false,"level":60,"depth":26,"priority":626}],"earliestAccess":{"questName":"Import","level":35,"depth":5,"priority":355},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"VPX_FLASH_STORAGE_MODULE":{"name":"VPX Flash Storage Module","nameShort":"VPX","type":"Electronics","totalRequired":6,"questBreakdown":[{"questId":"IMPORT","questName":"Import","count":1,"dealer":"MECHANIC","kappa":true,"level":35,"depth":5,"priority":355},{"questId":"SPECIAL_EQUIPMENT","questName":"Special Equipment","count":5,"dealer":"PEACEKEEPER","kappa":false,"level":60,"depth":26,"priority":626}],"earliestAccess":{"questName":"Import","level":35,"depth":5,"priority":355},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"OPHTHALMOSCOPE":{"name":"Ophthalmoscope","nameShort":"OScope","type":"Medical supply","totalRequired":4,"questBreakdown":[{"questId":"PRIVATE_CLINIC","questName":"Private Clinic","count":1,"dealer":"THERAPIST","kappa":true,"level":35,"depth":9,"priority":359},{"questId":"CRISIS","questName":"Crisis","count":3,"dealer":"THERAPIST","kappa":true,"level":48,"depth":0,"priority":480}],"earliestAccess":{"questName":"Private Clinic","level":35,"depth":9,"priority":359},"canCraft":false,"craftLocations":[]},"LEDX_SKIN_TRANSILLUMINATOR":{"name":"LEDX Skin Transilluminator","nameShort":"LEDX","type":"Medical supply","totalRequired":3,"questBreakdown":[{"questId":"PRIVATE_CLINIC","questName":"Private Clinic","count":1,"dealer":"THERAPIST","kappa":true,"level":35,"depth":9,"priority":359},{"questId":"CRISIS","questName":"Crisis","count":2,"dealer":"THERAPIST","kappa":true,"level":48,"depth":0,"priority":480}],"earliestAccess":{"questName":"Private Clinic","level":35,"depth":9,"priority":359},"canCraft":true,"craftLocations":["MEDSTATION"]},"RAVEN_FIGURINE":{"name":"Raven figurine","nameShort":"Raven","type":"Valuable","totalRequired":3,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415},{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_2","questName":"Living High is Not a Crime - Part 2","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"AXEL_PARROT_FIGURINE":{"name":"Axel parrot figurine","nameShort":"Axel","type":"Valuable","totalRequired":2,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415},{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_2","questName":"Living High is Not a Crime - Part 2","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"GOLDEN_EGG":{"name":"Golden egg","nameShort":"Egg","type":"Valuable","totalRequired":2,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415},{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_1","questName":"Living High is Not a Crime - Part 1","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"42ND_SIGNATURE_BLEND_ENGLISH_TEA":{"name":"42 Signature Blend English Tea","nameShort":"42","type":"Other","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"ANTIQUE_AXE":{"name":"Antique axe","nameShort":"Axe","type":"Weapon Melee","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"BADDIES_RED_BEARD":{"name":"Baddie's red beard","nameShort":"Baddie","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"BAKEEZY_COOK_BOOK":{"name":"BakeEzy cook book","nameShort":"BakeEzy","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"BATTERED_ANTIQUE_BOOK":{"name":"Battered antique book","nameShort":"Book","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"BEAR_BUDDY_PLUSH_TOY":{"name":"BEAR Buddy plush toy","nameShort":"BEAR Buddy","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"CAN_OF_DR_LUPOS_COFFEE_BEANS":{"name":"Can of Dr. Lupo's coffee beans","nameShort":"DrLupo's","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"CAN_OF_RAT_COLA":{"name":"Can of RatCola soda","nameShort":"RatCola","type":"Drink","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"CAN_OF_SPRATS":{"name":"Can of sprats","nameShort":"Sprats","type":"Food","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"DEADLYSLOBS_BEARD_OIL":{"name":"Deadlyslob's beard oil","nameShort":"BeardOil","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"DRD_BODY_ARMOR":{"name":"DRD body armor","nameShort":"DRD","type":"Armor vest","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"EVASION_ARMBAND":{"name":"Armband (Evasion)","nameShort":"Evasion","type":"Armband","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"FAKE_MUSTACHE":{"name":"Fake mustache","nameShort":"Mustache","type":"Face cover","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"FIRE_KLEAN_GUN_LUBE":{"name":"#FireKlean gun lube","nameShort":"#FireKlean","type":"Flammable material","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"GINGY_KEYCHAIN":{"name":"Gingy keychain","nameShort":"Gingy","type":"Container","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"GLORIOUS_E_MASK":{"name":"Glorious E lightweight armored mask","nameShort":"Glorious","type":"Face cover","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"GOLDEN_1_G_PHONE":{"name":"Golden 1GPhone smartphone","nameShort":"1GPhone","type":"Electronics","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"GOLDEN_ROOSTER":{"name":"Golden rooster figurine","nameShort":"Rooster","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"INSEQ":{"name":"Inseq gas pipe wrench","nameShort":"Inseq","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"JAR_OF_DEVIL_DOG_MAYO":{"name":"Jar of DevilDog mayo","nameShort":"Mayo","type":"Food","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"JOHNB_GLASSES":{"name":"JohnB Liquid DNB glasses","nameShort":"JohnB","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"KOTTON_BEANIE":{"name":"Kotton beanie","nameShort":"Kotton","type":"Headwear","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"LOOT_LORD_PLUSHIE":{"name":"Loot Lord plushie","nameShort":"Loot Lord","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"LVNDMAR_KS_RAT_POISON":{"name":"LVNDMARK's rat poison","nameShort":"Poison","type":"Household item","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"MISSAM_FORKLIFT_KEY":{"name":"Missam forklift key","nameShort":"Danex","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"OLD_FIRESTEEL":{"name":"Old firesteel","nameShort":"Firesteel","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"PESTILY_PLAGUE_MASK":{"name":"Pestily plague mask","nameShort":"Plague mask","type":"Face cover","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"PRESS_PASS":{"name":"Press pass (issued for NoiceGuy)","nameShort":"Pass","type":"Other","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"SHROUD_HALF_MASK":{"name":"Shroud half-mask","nameShort":"Shroud","type":"Face cover","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"SILVER_BADGE":{"name":"Silver Badge","nameShort":"Badge","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"SMOKE_BALACLAVA":{"name":"Smoke balaclava","nameShort":"Smoke","type":"Face cover","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"TAMATTHI":{"name":"Tamatthi kunai knife replica","nameShort":"Tamatthi","type":"Weapon Melee","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"VERITAS_GUITAR_PICK":{"name":"Veritas guitar pick","nameShort":"Veritas","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"VIDEO_CASSETTE_CYBORG":{"name":"Video cassette with the Cyborg Killer movie","nameShort":"VHS","type":"Info item","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"VIIBIIN":{"name":"Viibiin sneaker","nameShort":"Viibiin","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"WZ_WALLET":{"name":"WZ Wallet","nameShort":"WZ","type":"Container","totalRequired":1,"questBreakdown":[{"questId":"COLLECTOR","questName":"Collector","count":1,"dealer":"FENCE","kappa":true,"level":40,"depth":15,"priority":415}],"earliestAccess":{"questName":"Collector","level":40,"depth":15,"priority":415},"canCraft":false,"craftLocations":[]},"PILE_OF_MEDS":{"name":"Pile of meds","nameShort":"Meds","type":"Medical supply","totalRequired":20,"questBreakdown":[{"questId":"CRISIS","questName":"Crisis","count":20,"dealer":"THERAPIST","kappa":true,"level":48,"depth":0,"priority":480}],"earliestAccess":{"questName":"Crisis","level":48,"depth":0,"priority":480},"canCraft":true,"craftLocations":["MEDSTATION"]},"BOTTLE_OF_OLOLO_MULTIVITAMINS":{"name":"Bottle of OLOLO Multivitamins","nameShort":"Vitam.","type":"Medical supply","totalRequired":14,"questBreakdown":[{"questId":"CRISIS","questName":"Crisis","count":10,"dealer":"THERAPIST","kappa":true,"level":48,"depth":0,"priority":480},{"questId":"THIRSTY_SECRETS","questName":"Thirsty - Secrets","count":4,"dealer":"THERAPIST","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Crisis","level":48,"depth":0,"priority":480},"canCraft":false,"craftLocations":[]},"CULTIST_KNIFE":{"name":"Cultist knife","nameShort":"Knife","type":"Weapon Melee","totalRequired":12,"questBreakdown":[{"questId":"NIGHT_SWEEP","questName":"Night Sweep","count":12,"dealer":"SKIER","kappa":false,"level":50,"depth":0,"priority":500}],"earliestAccess":{"questName":"Night Sweep","level":50,"depth":0,"priority":500},"canCraft":false,"craftLocations":[]},"BOTTLE_OF_PEVKO_LIGHT_BEER":{"name":"Bottle of Pevko Light beer","nameShort":"Pevko","type":"Drink","totalRequired":27,"questBreakdown":[{"questId":"BOOZE","questName":"Booze","count":20,"dealer":"RAGMAN","kappa":false,"level":50,"depth":8,"priority":508},{"questId":"EASY_MONEY_PART_2","questName":"Easy Money - Part 2","count":7,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Booze","level":50,"depth":8,"priority":508},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"BOTTLE_OF_TARKOVSKAYA_VODKA":{"name":"Bottle of Tarkovskaya vodka","nameShort":"Vodka","type":"Drink","totalRequired":12,"questBreakdown":[{"questId":"BOOZE","questName":"Booze","count":10,"dealer":"RAGMAN","kappa":false,"level":50,"depth":8,"priority":508},{"questId":"EASY_MONEY_PART_2","questName":"Easy Money - Part 2","count":2,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Booze","level":50,"depth":8,"priority":508},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"BOTTLE_OF_DAN_JACKIEL_WHISKEY":{"name":"Bottle of Dan Jackiel whiskey","nameShort":"Whiskey","type":"Drink","totalRequired":11,"questBreakdown":[{"questId":"BOOZE","questName":"Booze","count":10,"dealer":"RAGMAN","kappa":false,"level":50,"depth":8,"priority":508},{"questId":"COMPENSATION_FOR_DAMAGE_BARKEEP","questName":"Compensation for Damage - Barkeep","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Booze","level":50,"depth":8,"priority":508},"canCraft":true,"craftLocations":["NUTRITION_UNIT"]},"PURIFIED_WATER":{"name":"Purified water","nameShort":"Superwater","type":"Drink","totalRequired":3,"questBreakdown":[{"questId":"BOOZE","questName":"Booze","count":3,"dealer":"RAGMAN","kappa":false,"level":50,"depth":8,"priority":508}],"earliestAccess":{"questName":"Booze","level":50,"depth":8,"priority":508},"canCraft":true,"craftLocations":["WATER_COLLECTOR"]},"MILITARY_COFDM_WIRELESS_SIGNAL_TRANSMITTER":{"name":"Military COFDM Wireless Signal Transmitter","nameShort":"SG-C10","type":"Electronics","totalRequired":11,"questBreakdown":[{"questId":"SPECIAL_EQUIPMENT","questName":"Special Equipment","count":5,"dealer":"PEACEKEEPER","kappa":false,"level":60,"depth":26,"priority":626},{"questId":"LEND_LEASE_PART_2","questName":"Lend-Lease - Part 2","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"NETWORK_PROVIDER_PART_1","questName":"Network Provider - Part 1","count":4,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999},{"questId":"KEY_TO_THE_TOWER","questName":"Key to the Tower","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Equipment","level":60,"depth":26,"priority":626},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"VIRTEX_PROGRAMMABLE_PROCESSOR":{"name":"Virtex programmable processor","nameShort":"Virtex","type":"Electronics","totalRequired":7,"questBreakdown":[{"questId":"SPECIAL_EQUIPMENT","questName":"Special Equipment","count":5,"dealer":"PEACEKEEPER","kappa":false,"level":60,"depth":26,"priority":626},{"questId":"LEND_LEASE_PART_2","questName":"Lend-Lease - Part 2","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Equipment","level":60,"depth":26,"priority":626},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"MILITARY_FLASH_DRIVE":{"name":"Military flash drive","nameShort":"MFD","type":"Info item","totalRequired":4,"questBreakdown":[{"questId":"SPECIAL_EQUIPMENT","questName":"Special Equipment","count":4,"dealer":"PEACEKEEPER","kappa":false,"level":60,"depth":26,"priority":626}],"earliestAccess":{"questName":"Special Equipment","level":60,"depth":26,"priority":626},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"CPU_FAN":{"name":"CPU fan","nameShort":"CPU fan","type":"Electronics","totalRequired":15,"questBreakdown":[{"questId":"FARMING_PART_4","questName":"Farming - Part 4","count":15,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Farming - Part 4","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SJ_1":{"name":"SJ1 TGLabs combat stimulant injector","nameShort":"SJ1","type":"Injector","totalRequired":15,"questBreakdown":[{"questId":"ASSESSMENT_PART_3","questName":"Assessment - Part 3","count":15,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Assessment - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["MEDSTATION"]},"FLEECE_CLOTH":{"name":"Fleece fabric","nameShort":"Fleece","type":"Cloth","totalRequired":10,"questBreakdown":[{"questId":"TEXTILE_PART_2","questName":"Textile - Part 2","count":10,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"POLYAMIDE_FABRIC_CORDURA":{"name":"Cordura polyamide fabric","nameShort":"Cordura","type":"Cloth","totalRequired":10,"questBreakdown":[{"questId":"TEXTILE_PART_2","questName":"Textile - Part 2","count":10,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"RIPSTOP_CLOTH":{"name":"Ripstop fabric","nameShort":"Ripstop","type":"Cloth","totalRequired":10,"questBreakdown":[{"questId":"TEXTILE_PART_1","questName":"Textile - Part 1","count":10,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 1","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"BROKEN_G_PHONE":{"name":"Broken GPhone smartphone","nameShort":"GPhone","type":"Electronics","totalRequired":7,"questBreakdown":[{"questId":"SIGNAL_PART_2","questName":"Signal - Part 2","count":3,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"NETWORK_PROVIDER_PART_1","questName":"Network Provider - Part 1","count":4,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Signal - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"GAS_ANALYZER":{"name":"Gas analyzer","nameShort":"GasAn","type":"Electronics","totalRequired":7,"questBreakdown":[{"questId":"SANITARY_STANDARDS_PART_1","questName":"Sanitary Standards - Part 1","count":1,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"SANITARY_STANDARDS_PART_2","questName":"Sanitary Standards - Part 2","count":2,"dealer":"THERAPIST","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"NETWORK_PROVIDER_PART_1","questName":"Network Provider - Part 1","count":4,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sanitary Standards - Part 1","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"LOWER_HALF_MASK":{"name":"Lower half-mask","nameShort":"Half-mask","type":"Face cover","totalRequired":7,"questBreakdown":[{"questId":"THE_PUNISHER_PART_2","questName":"The Punisher - Part 2","count":7,"dealer":"PRAPOR","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Punisher - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"ARAMID_FIBER_CLOTH":{"name":"Aramid fiber fabric","nameShort":"Aramid","type":"Cloth","totalRequired":5,"questBreakdown":[{"questId":"TEXTILE_PART_1","questName":"Textile - Part 1","count":5,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 1","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"BARS_A_2607_95_X_18":{"name":"Bars A-2607 95Kh18 knife","nameShort":"A-2607","type":"Weapon Melee","totalRequired":5,"questBreakdown":[{"questId":"THE_PUNISHER_PART_4","questName":"The Punisher - Part 4","count":5,"dealer":"PRAPOR","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Punisher - Part 4","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"DRIED_MEAT":{"name":"Pack of Tarker dried meat","nameShort":"Tarker","type":"Food","totalRequired":5,"questBreakdown":[{"questId":"EASY_MONEY_PART_2","questName":"Easy Money - Part 2","count":5,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Easy Money - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"EL_COMPONENTS":{"name":"Electronic components","nameShort":"EC","type":"Electronics","totalRequired":5,"questBreakdown":[{"questId":"NETWORK_PROVIDER_PART_1","questName":"Network Provider - Part 1","count":4,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Network Provider - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"KEKTAPE_DUCT_TAPE":{"name":"KEKTAPE duct tape","nameShort":"KEK","type":"Other","totalRequired":5,"questBreakdown":[{"questId":"TEXTILE_PART_2","questName":"Textile - Part 2","count":5,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"PRINTED_CIRCUIT_BOARD":{"name":"Printed circuit board","nameShort":"PCB","type":"Electronics","totalRequired":5,"questBreakdown":[{"questId":"SIGNAL_PART_2","questName":"Signal - Part 2","count":3,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"FARMING_PART_2","questName":"Farming - Part 2","count":2,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Signal - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"SJ_6":{"name":"SJ6 TGLabs combat stimulant injector","nameShort":"SJ6","type":"Injector","totalRequired":5,"questBreakdown":[{"questId":"ASSESSMENT_PART_3","questName":"Assessment - Part 3","count":5,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Assessment - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["MEDSTATION"]},"5_L_PROPANE_TANK":{"name":"Propane tank (5L)","nameShort":"Propane","type":"Flammable material","totalRequired":4,"questBreakdown":[{"questId":"THIRSTY_BREADWINNER","questName":"Thirsty - Breadwinner","count":2,"dealer":"SKIER","kappa":false,"level":1,"depth":0,"priority":999},{"questId":"SPA_TOUR_PART_7","questName":"Spa Tour - Part 7","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Thirsty - Breadwinner","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CORRUGATED_HOSE":{"name":"Corrugated hose","nameShort":"Hose","type":"Other","totalRequired":4,"questBreakdown":[{"questId":"SPA_TOUR_PART_3","questName":"Spa Tour - Part 3","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"SPA_TOUR_PART_7","questName":"Spa Tour - Part 7","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Spa Tour - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"FUEL_CONDITIONER":{"name":"Fuel conditioner","nameShort":"FCond","type":"Flammable material","totalRequired":4,"questBreakdown":[{"questId":"THE_BLOOD_OF_WAR_PART_2","questName":"The Blood of War - Part 2","count":4,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Blood of War - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"PC_CPU":{"name":"PC CPU","nameShort":"CPU","type":"Electronics","totalRequired":4,"questBreakdown":[{"questId":"SIGNAL_PART_2","questName":"Signal - Part 2","count":3,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Signal - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"RECHARGEABLE_BATTERY":{"name":"Rechargeable battery","nameShort":"RBattery","type":"Energy element","totalRequired":4,"questBreakdown":[{"questId":"SIGNAL_PART_2","questName":"Signal - Part 2","count":3,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Signal - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"RESPIRATOR":{"name":"Respirator","nameShort":"Respirator","type":"Face cover","totalRequired":4,"questBreakdown":[{"questId":"VITAMINS_PART_2","questName":"Vitamins - Part 2","count":4,"dealer":"SKIER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Vitamins - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SVDS":{"name":"SVDS 7.62x54R sniper rifle","nameShort":"SVDS","type":"Weapon Rifle","totalRequired":4,"questBreakdown":[{"questId":"MAKE_AMENDS_EQUIPMENT","questName":"Make Amends - Equipment","count":4,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Make Amends - Equipment","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"T_SHAPED_PLUG":{"name":"T-Shaped plug","nameShort":"T-Plug","type":"Electronics","totalRequired":4,"questBreakdown":[{"questId":"FARMING_PART_2","questName":"Farming - Part 2","count":4,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Farming - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"ANTIQUE_TEAPOT":{"name":"Antique teapot","nameShort":"Teapot","type":"Valuable","totalRequired":3,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_2","questName":"Living High is Not a Crime - Part 2","count":3,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"BOTTLE_OF_SALINE":{"name":"Bottle of saline solution","nameShort":"NaCl","type":"Medical supply","totalRequired":3,"questBreakdown":[{"questId":"THIRSTY_SECRETS","questName":"Thirsty - Secrets","count":3,"dealer":"THERAPIST","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Thirsty - Secrets","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CAN_OF_TAR_COLA":{"name":"Can of TarCola soda","nameShort":"TarCola","type":"Drink","totalRequired":3,"questBreakdown":[{"questId":"COMPENSATION_FOR_DAMAGE_BARKEEP","questName":"Compensation for Damage - Barkeep","count":3,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Compensation for Damage - Barkeep","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"COLT_M_4_A_1_5_56_X_45_ASSAULT_RIFLE":{"name":"Colt M4A1 5.56x45 assault rifle","nameShort":"M4A1","type":"Weapon Rifle","totalRequired":3,"questBreakdown":[{"questId":"THE_PUNISHER_PART_5","questName":"The Punisher - Part 5","count":1,"dealer":"PRAPOR","kappa":true,"level":1,"depth":0,"priority":999},{"questId":"COMPENSATION_FOR_DAMAGE_COLLECTION","questName":"Compensation for Damage - Collection","count":2,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Punisher - Part 5","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"COMM3":{"name":"Mystery Ranch NICE COMM 3 BVS frame system (Coyote)","nameShort":"COMM 3","type":"Backpack","totalRequired":3,"questBreakdown":[{"questId":"SPECIAL_OFFER","questName":"Special Offer","count":3,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Offer","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"GRAPHICS_CARD":{"name":"Graphics card","nameShort":"GPU","type":"Electronics","totalRequired":3,"questBreakdown":[{"questId":"FARMING_PART_4","questName":"Farming - Part 4","count":3,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Farming - Part 4","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["INTELLIGENCE_CENTER"]},"MEDICAL_BLOODSET":{"name":"Medical bloodset","nameShort":"Bloodset","type":"Medical supply","totalRequired":3,"questBreakdown":[{"questId":"VITAMINS_PART_2","questName":"Vitamins - Part 2","count":3,"dealer":"SKIER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Vitamins - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["MEDSTATION"]},"PARACORD":{"name":"Paracord","nameShort":"Paracord","type":"Other","totalRequired":3,"questBreakdown":[{"questId":"TEXTILE_PART_1","questName":"Textile - Part 1","count":3,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Textile - Part 1","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"6_B_13":{"name":"6B13 assault armor","nameShort":"6B13","type":"Armor vest","totalRequired":2,"questBreakdown":[{"questId":"SEW_IT_GOOD_PART_3","questName":"Sew it Good - Part 3","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sew it Good - Part 3","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"ADRENALINE":{"name":"Adrenaline injector","nameShort":"Adrenaline","type":"Injector","totalRequired":2,"questBreakdown":[{"questId":"THIRSTY_SECRETS","questName":"Thirsty - Secrets","count":2,"dealer":"THERAPIST","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Thirsty - Secrets","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"ALYONKA":{"name":"Alyonka chocolate bar","nameShort":"Alyonka","type":"Food","totalRequired":2,"questBreakdown":[{"questId":"EASY_MONEY_PART_2","questName":"Easy Money - Part 2","count":2,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Easy Money - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"ANTIQUE_VASE":{"name":"Antique vase","nameShort":"Vase","type":"Valuable","totalRequired":2,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_2","questName":"Living High is Not a Crime - Part 2","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 2","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"BLACK_ROCK_CHEST_RIG":{"name":"BlackRock chest rig (Gray)","nameShort":"BlackRock","type":"Chest rig","totalRequired":2,"questBreakdown":[{"questId":"SEW_IT_GOOD_PART_4","questName":"Sew it Good - Part 4","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sew it Good - Part 4","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"BRONZE_LION":{"name":"Bronze lion figurine","nameShort":"BLion","type":"Valuable","totalRequired":2,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_1","questName":"Living High is Not a Crime - Part 1","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CLIN_WIPER":{"name":"Clin window cleaner","nameShort":"Clin","type":"Household item","totalRequired":2,"questBreakdown":[{"questId":"SPA_TOUR_PART_3","questName":"Spa Tour - Part 3","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Spa Tour - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"HEAT_EXCHANGE_ALKALI_SURFACE_WASHER":{"name":"Alkaline cleaner for heat exchangers","nameShort":"Alkali","type":"Household item","totalRequired":2,"questBreakdown":[{"questId":"SPA_TOUR_PART_7","questName":"Spa Tour - Part 7","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Spa Tour - Part 7","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"HORSE_FIGURINE":{"name":"Horse figurine","nameShort":"Horse","type":"Valuable","totalRequired":2,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_1","questName":"Living High is Not a Crime - Part 1","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"LCD":{"name":"Working LCD","nameShort":"LCD","type":"Electronics","totalRequired":2,"questBreakdown":[{"questId":"KEY_TO_THE_TOWER","questName":"Key to the Tower","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999},{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Key to the Tower","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"MIL_BOARD":{"name":"Military circuit board","nameShort":"MCB","type":"Electronics","totalRequired":2,"questBreakdown":[{"questId":"KEY_TO_THE_TOWER","questName":"Key to the Tower","count":2,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Key to the Tower","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"OX_BLEACH":{"name":"Ox bleach","nameShort":"Bleach","type":"Household item","totalRequired":2,"questBreakdown":[{"questId":"SPA_TOUR_PART_3","questName":"Spa Tour - Part 3","count":2,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Spa Tour - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"PLEXIGLASS":{"name":"Piece of plexiglass","nameShort":"Plexiglass","type":"Other","totalRequired":2,"questBreakdown":[{"questId":"KEY_TO_THE_TOWER","questName":"Key to the Tower","count":2,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Key to the Tower","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"PM_9_X_18_PM_PISTOL":{"name":"Makarov PM 9x18PM pistol","nameShort":"PM","type":"Weapon Pistol","totalRequired":2,"questBreakdown":[{"questId":"THE_PUNISHER_PART_5","questName":"The Punisher - Part 5","count":2,"dealer":"PRAPOR","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Punisher - Part 5","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"POWERCORD":{"name":"Power cord","nameShort":"Cord","type":"Electronics","totalRequired":2,"questBreakdown":[{"questId":"FARMING_PART_2","questName":"Farming - Part 2","count":2,"dealer":"MECHANIC","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Farming - Part 2","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"WARTECH_GEAR_RIG":{"name":"WARTECH TV-109 + TV-106 chest rig (A-TACS FG)","nameShort":"TV-106 + TV-109","type":"Chest rig","totalRequired":2,"questBreakdown":[{"questId":"SEW_IT_GOOD_PART_4","questName":"Sew it Good - Part 4","count":2,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sew it Good - Part 4","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"6_B_33_FRONT":{"name":"6B33 ballistic plate (Front)","nameShort":"6B33 Front","type":"Armor plate","totalRequired":1,"questBreakdown":[{"questId":"SURPRISE","questName":"Surprise","count":1,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Surprise","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"AK_74_N_5_45_X_39_ASSAULT_RIFLE":{"name":"Kalashnikov AK-74N 5.45x39 assault rifle","nameShort":"AK-74N","type":"Weapon Rifle","totalRequired":1,"questBreakdown":[{"questId":"THE_PUNISHER_PART_5","questName":"The Punisher - Part 5","count":1,"dealer":"PRAPOR","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Punisher - Part 5","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"AVS_TE":{"name":"Crye Precision AVS plate carrier (Tagilla Edition)","nameShort":"AVS TE","type":"Armored chest rig","totalRequired":1,"questBreakdown":[{"questId":"SPECIAL_OFFER","questName":"Special Offer","count":1,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Offer","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"BOSS_CAP":{"name":"BOSS cap","nameShort":"Cap","type":"Headwear","totalRequired":1,"questBreakdown":[{"questId":"THE_HUNTSMAN_PATH_FACTORY_CHIEF","questName":"The Huntsman Path - Factory Chief","count":1,"dealer":"JAEGER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Huntsman Path - Factory Chief","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CAT_FIGURINE":{"name":"Cat figurine","nameShort":"Cat","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_1","questName":"Living High is Not a Crime - Part 1","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CPC_GE":{"name":"Crye Precision CPC plate carrier (Goons Edition)","nameShort":"CPC GE","type":"Armored chest rig","totalRequired":1,"questBreakdown":[{"questId":"SPECIAL_OFFER","questName":"Special Offer","count":1,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Offer","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"CULTIST":{"name":"Cultist figurine","nameShort":"Cultist","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"DED_MOROZ":{"name":"Ded Moroz figurine","nameShort":"Ded Moroz","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"DEN":{"name":"Den figurine","nameShort":"Den","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"INSULATING_TAPE":{"name":"Insulating tape","nameShort":"Tape","type":"Other","totalRequired":1,"questBreakdown":[{"questId":"KEY_TO_THE_TOWER","questName":"Key to the Tower","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Key to the Tower","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"KILLA":{"name":"Killa figurine","nameShort":"Killa","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"KORUND_VM_FRONT":{"name":"Korund-VM ballistic plates (Front)","nameShort":"Korund-VM Front","type":"Armor plate","totalRequired":1,"questBreakdown":[{"questId":"SURPRISE","questName":"Surprise","count":1,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Surprise","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"LBCR_GE":{"name":"LBT-1961A Load Bearing Chest Rig (Goons Edition)","nameShort":"LBCR GE","type":"Chest rig","totalRequired":1,"questBreakdown":[{"questId":"SPECIAL_OFFER","questName":"Special Offer","count":1,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Offer","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"LIGHT_BULB":{"name":"Light bulb","nameShort":"Bulb","type":"Electronics","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"MASKA_1_SCH_HELMET_KILLA":{"name":"\"Maska-1SCh\" bulletproof helmet","nameShort":"Maska 1Sсh","type":"Helmet","totalRequired":1,"questBreakdown":[{"questId":"THE_HUNTSMAN_PATH_SELLOUT","questName":"The Huntsman Path - Sellout","count":1,"dealer":"JAEGER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Huntsman Path - Sellout","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"MUTKEVICH":{"name":"Politician Mutkevich figurine","nameShort":"Politician","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"NIXXOR":{"name":"NIXXOR lens","nameShort":"NIXXOR","type":"Electronics","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["WORKBENCH"]},"PILGRIM_TOURIST_BACKPACK":{"name":"Pilgrim tourist backpack","nameShort":"Pilgrim","type":"Backpack","totalRequired":1,"questBreakdown":[{"questId":"SEW_IT_GOOD_PART_1","questName":"Sew it Good - Part 1","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sew it Good - Part 1","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]},"POWERBANK":{"name":"Portable Powerbank","nameShort":"Powerbank","type":"Energy element","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"PR_TARAN":{"name":"PR-Taran police baton","nameShort":"PR-Taran","type":"Weapon Melee","totalRequired":1,"questBreakdown":[{"questId":"THE_HUNTSMAN_PATH_CROOKED_COP","questName":"The Huntsman Path - Crooked Cop","count":1,"dealer":"JAEGER","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Huntsman Path - Crooked Cop","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"RAM":{"name":"RAM stick","nameShort":"RAM","type":"Electronics","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"RESHALA":{"name":"Reshala figurine","nameShort":"Reshala","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"ROLER_SUBMARINER_GOLD_WRIST_WATCH":{"name":"Roler Submariner gold wrist watch","nameShort":"Roler","type":"Valuable","totalRequired":1,"questBreakdown":[{"questId":"LIVING_HIGH_IS_NOT_A_CRIME_PART_1","questName":"Living High is Not a Crime - Part 1","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Living High is Not a Crime - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"RYZHY":{"name":"Ryzhy figurine","nameShort":"Ryzhy","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SALTY_DOG":{"name":"Salty Dog beef sausage","nameShort":"Sausage","type":"Food","totalRequired":1,"questBreakdown":[{"questId":"THE_DELICIOUS_SAUSAGE","questName":"The Delicious Sausage","count":1,"dealer":"JAEGER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Delicious Sausage","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SANITARS_BAG":{"name":"Sanitar's bag","nameShort":"Sanitar","type":"Backpack","totalRequired":1,"questBreakdown":[{"questId":"SPECIAL_OFFER","questName":"Special Offer","count":1,"dealer":"RAGMAN","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Special Offer","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SCAV":{"name":"Scav figurine","nameShort":"Scav","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SHTURMAN_KEY":{"name":"Shturman's stash key","nameShort":"SSK","type":"Key","totalRequired":1,"questBreakdown":[{"questId":"THE_HUNTSMAN_PATH_WOODS_KEEPER","questName":"The Huntsman Path - Woods Keeper","count":1,"dealer":"JAEGER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Huntsman Path - Woods Keeper","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SJ_9":{"name":"SJ9 TGLabs combat stimulant injector","nameShort":"SJ9","type":"Injector","totalRequired":1,"questBreakdown":[{"questId":"ASSESSMENT_PART_3","questName":"Assessment - Part 3","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Assessment - Part 3","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SKI_HAT_WITH_HOLES_FOR_EYES":{"name":"Ski hat with holes for eyes","nameShort":"Shmaska","type":"Headwear","totalRequired":1,"questBreakdown":[{"questId":"SEW_IT_GOOD_PART_1","questName":"Sew it Good - Part 1","count":1,"dealer":"RAGMAN","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Sew it Good - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SPRTN":{"name":"SPRTN Omega ballistic plate","nameShort":"SPRTN Omega","type":"Armor plate","totalRequired":1,"questBreakdown":[{"questId":"SURPRISE","questName":"Surprise","count":1,"dealer":"REF","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Surprise","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"SSD":{"name":"SSD drive","nameShort":"SSD","type":"Info item","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"TAGILLA":{"name":"Tagilla figurine","nameShort":"Tagilla","type":"Valuable Figurine","totalRequired":1,"questBreakdown":[{"questId":"SMALL_BUSINESS_PART_1","questName":"Small Business - Part 1","count":1,"dealer":"FENCE","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Small Business - Part 1","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"TT_PISTOL_7_62_X_25_TT_GOLD":{"name":"TT-33 7.62x25 TT pistol (Golden)","nameShort":"TT Gold","type":"Weapon Pistol","totalRequired":1,"questBreakdown":[{"questId":"THE_HUNTSMAN_PATH_TROPHY","questName":"The Huntsman Path - Trophy","count":1,"dealer":"JAEGER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"The Huntsman Path - Trophy","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"USB_A":{"name":"USB Adapter","nameShort":"USB-A","type":"Electronics","totalRequired":1,"questBreakdown":[{"questId":"CAMERA_ACTION","questName":"Camera, Action!","count":1,"dealer":"MECHANIC","kappa":false,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Camera, Action!","level":1,"depth":0,"priority":999},"canCraft":false,"craftLocations":[]},"WD_40_100_ML":{"name":"WD-40 (100ml)","nameShort":"WD-40","type":"Flammable material","totalRequired":1,"questBreakdown":[{"questId":"SPA_TOUR_PART_3","questName":"Spa Tour - Part 3","count":1,"dealer":"PEACEKEEPER","kappa":true,"level":1,"depth":0,"priority":999}],"earliestAccess":{"questName":"Spa Tour - Part 3","level":1,"depth":0,"priority":999},"canCraft":true,"craftLocations":["LAVATORY"]}},"quests":{"ACQUAINTANCE":{"name":{"en":"Acquaintance","de":"Bekanntschaft","fr":"Familiarisation","ru":"Знакомство"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Acquaintance","de":"https://escapefromtarkov.fandom.com/de/wiki/Bekanntschaft","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Familiarisation","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%97%D0%BD%D0%B0%D0%BA%D0%BE%D0%BC%D1%81%D1%82%D0%B2%D0%BE"},"kappa":true,"dealer":"JAEGER"},"AMBULANCE":{"name":{"en":"Ambulance","de":"Rettungswagen","ru":"Скорая помощь"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Ambulance","de":"https://escapefromtarkov.fandom.com/de/wiki/Rettungswagen","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Ambulance","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%BA%D0%BE%D1%80%D0%B0%D1%8F_%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C"},"kappa":true,"dealer":"JAEGER"},"ASSESSMENT_PART_3":{"name":{"en":"Assessment - Part 3","fr":"Évaluation - Partie 3","ru":"Проверка - Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Assessment_-_Part_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/%C3%89valuation_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B0_-_%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":false,"dealer":"MECHANIC"},"ATHLETE":{"name":{"en":"Athlete","de":"Athlet","fr":"Athlète","ru":"Физкультурник"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Athlete","de":"https://escapefromtarkov.fandom.com/de/wiki/Athlet","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Athl%C3%A8te","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A4%D0%B8%D0%B7%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80%D0%BD%D0%B8%D0%BA"},"kappa":true,"dealer":"THERAPIST"},"A_FUEL_MATTER":{"name":{"en":"A Fuel Matter","de":"Eine Frage des Treibstoffs","fr":"Une affaire de carburant","ru":"Топливный вопрос"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/A_Fuel_Matter","de":"https://escapefromtarkov.fandom.com/de/wiki/Eine_Frage_des_Treibstoffs","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Une_affaire_de_carburant","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A2%D0%BE%D0%BF%D0%BB%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9_%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81"},"kappa":true,"dealer":"RAGMAN"},"BAD_HABIT":{"name":{"en":"Bad Habit","de":"Schlechte Angewohnheit","fr":"Mauvaise habitude","ru":"Вредная привычка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Bad_Habit","de":"https://escapefromtarkov.fandom.com/de/wiki/Schlechte_Angewohnheit","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Mauvaise_habitude","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D1%80%D0%B5%D0%B4%D0%BD%D0%B0%D1%8F_%D0%BF%D1%80%D0%B8%D0%B2%D1%8B%D1%87%D0%BA%D0%B0"},"kappa":true,"dealer":"MECHANIC"},"BOOZE":{"name":{"en":"Booze","fr":"Picole","ru":"Выпивка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Booze","de":"https://escapefromtarkov.fandom.com/de/wiki/Booze","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Picole","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D1%8B%D0%BF%D0%B8%D0%B2%D0%BA%D0%B0"},"kappa":false,"dealer":"RAGMAN"},"CAMERA_ACTION":{"name":{"en":"Camera, Action!","fr":"Caméra, Action !"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Camera,_Action!","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Cam%C3%A9ra,_Action_!"},"kappa":false,"dealer":"MECHANIC"},"CARGO_X_PART_2":{"name":{"en":"Cargo X - Part 2","de":"Fracht X - Teil 2","fr":"Cargaison X - Partie 2","ru":"Груз X. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Cargo_X_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Fracht_X_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Cargaison_X_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%93%D1%80%D1%83%D0%B7_X._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"PEACEKEEPER"},"CAR_REPAIR":{"name":{"en":"Car Repair","de":"Autoreparatur","fr":"Réparation automobile","ru":"Авторем"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Car_Repair","de":"https://escapefromtarkov.fandom.com/de/wiki/Autoreparatur","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9paration_automobile","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%90%D0%B2%D1%82%D0%BE%D1%80%D0%B5%D0%BC"},"kappa":true,"dealer":"THERAPIST"},"CHEMISTRY_CLOSET":{"name":{"en":"Chemistry Closet","de":"Der Chemieschrank","fr":"Le placard du chimiste","ru":"Кабинет химии"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Chemistry_Closet","de":"https://escapefromtarkov.fandom.com/de/wiki/Der_Chemieschrank","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_placard_du_chimiste","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D0%B1%D0%B8%D0%BD%D0%B5%D1%82_%D1%85%D0%B8%D0%BC%D0%B8%D0%B8"},"kappa":true,"dealer":"MECHANIC"},"CHUMMING":{"name":{"en":"Chumming","de":"Ködern","fr":"Appâtage","ru":"Прикормка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Chumming","de":"https://escapefromtarkov.fandom.com/de/wiki/K%C3%B6dern","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Socialisation","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%80%D0%B8%D0%BA%D0%BE%D1%80%D0%BC%D0%BA%D0%B0"},"kappa":true,"dealer":"SKIER"},"COLLEAGUES_PART_1":{"name":{"en":"Colleagues - Part 1","de":"Kollegen - Teil 1","fr":"Collègues - Partie 1","ru":"Коллеги. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Colleagues_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Kollegen_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Coll%C3%A8gues_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%BE%D0%BB%D0%BB%D0%B5%D0%B3%D0%B8._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"THERAPIST"},"COLLEAGUES_PART_2":{"name":{"en":"Colleagues - Part 2","de":"Kollegen - Teil 2","fr":"Collègues - Partie 2","ru":"Коллеги. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Colleagues_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Kollegen_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Coll%C3%A8gues_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%BE%D0%BB%D0%BB%D0%B5%D0%B3%D0%B8._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"THERAPIST"},"COLLEAGUES_PART_3":{"name":{"en":"Colleagues - Part 3","de":"Kollegen - Teil 3","fr":"Collègues - Partie 3","ru":"Коллеги. Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Colleagues_-_Part_3","de":"https://escapefromtarkov.fandom.com/de/wiki/Kollegen_-_Teil_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Coll%C3%A8gues_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%BE%D0%BB%D0%BB%D0%B5%D0%B3%D0%B8._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":true,"dealer":"THERAPIST"},"COLLECTOR":{"name":{"en":"Collector","de":"Sammler","fr":"Collectionneur","ru":"Коллекционер"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Collector","de":"https://escapefromtarkov.fandom.com/de/wiki/Sammler","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Collectionneur","ru":"https://escapefromtarkov.fandom.com/ru/wiki/A049_C026_0101PD"},"kappa":true,"dealer":"FENCE"},"COMPENSATION_FOR_DAMAGE_BARKEEP":{"name":{"en":"Compensation for Damage - Barkeep","fr":"Réparation des dommages - Barman","ru":"Возмещение Ущерба - Бармен"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Compensation_for_Damage_-_Barkeep","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9paration_des_dommages_-_Barman","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D0%BE%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D0%B5_%D0%A3%D1%89%D0%B5%D1%80%D0%B1%D0%B0_-_%D0%91%D0%B0%D1%80%D0%BC%D0%B5%D0%BD"},"kappa":false,"dealer":"FENCE"},"COMPENSATION_FOR_DAMAGE_COLLECTION":{"name":{"en":"Compensation for Damage - Collection","fr":"Réparation des dommages - Collection","ru":"Возмещение Ущерба - Коллекция"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Compensation_for_Damage_-_Collection","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9paration_des_dommages_-_Collection","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D0%BE%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D0%B5_%D0%A3%D1%89%D0%B5%D1%80%D0%B1%D0%B0_-_%D0%9A%D0%BE%D0%BB%D0%BB%D0%B5%D0%BA%D1%86%D0%B8%D1%8F"},"kappa":false,"dealer":"FENCE"},"COMPENSATION_FOR_DAMAGE_TRUST":{"name":{"en":"Compensation for Damage - Trust","fr":"Réparation des dommages - Confiance","ru":"Возмещение Ущерба - Доверие"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Compensation_for_Damage_-_Trust","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9paration_des_dommages_-_Confiance","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D0%BE%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D0%B5_%D0%A3%D1%89%D0%B5%D1%80%D0%B1%D0%B0_-_%D0%94%D0%BE%D0%B2%D0%B5%D1%80%D0%B8%D0%B5"},"kappa":false,"dealer":"FENCE"},"COUNTERACTION":{"name":{"en":"Counteraction","fr":"Contremesure","ru":"Противостояние"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Counteraction","de":"https://escapefromtarkov.fandom.com/de/wiki/Counteraction","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Contremesure","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%80%D0%BE%D1%82%D0%B8%D0%B2%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D0%B5"},"kappa":false,"dealer":"PEACEKEEPER"},"CRISIS":{"name":{"en":"Crisis","fr":"Crise","ru":"Доктор \"Айболит\""},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Crisis","de":"https://escapefromtarkov.fandom.com/de/wiki/Crisis","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Crise","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%94%D0%BE%D0%BA%D1%82%D0%BE%D1%80_%22%D0%90%D0%B9%D0%B1%D0%BE%D0%BB%D0%B8%D1%82%22"},"kappa":true,"dealer":"THERAPIST"},"DATABASE_PART_1":{"name":{"en":"Database - Part 1","de":"Datenbank - Teil 1","fr":"Base de données - Partie 1","ru":"Картотека. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Database_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Datenbank_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Base_de_donn%C3%A9es_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"RAGMAN"},"DATABASE_PART_2":{"name":{"en":"Database - Part 2","de":"Datenbank - Teil 2","fr":"Base de données - Partie 2","ru":"Картотека. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Database_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Datenbank_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Base_de_donn%C3%A9es_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D1%80%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"RAGMAN"},"DECONTAMINATION_SERVICE":{"name":{"en":"Decontamination Service","de":"Dekontaminationsservice","fr":"Service de décontamination","ru":"Служба дезинфекции"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Decontamination_Service","de":"https://escapefromtarkov.fandom.com/de/wiki/Dekontaminationsservice","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Service_de_d%C3%A9contamination","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%BB%D1%83%D0%B6%D0%B1%D0%B0_%D0%B4%D0%B5%D0%B7%D0%B8%D0%BD%D1%84%D0%B5%D0%BA%D1%86%D0%B8%D0%B8"},"kappa":true,"dealer":"THERAPIST"},"DEVELOPERS_SECRETS_PART_1":{"name":{"en":"Developer's Secrets - Part 1","fr":"Secrets de développeur - Partie 1","ru":"Секрет успеваемости. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Developer%27s_Secrets_-_Part_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Secrets_de_d%C3%A9veloppeur_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B5%D0%BA%D1%80%D0%B5%D1%82_%D1%83%D1%81%D0%BF%D0%B5%D0%B2%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D0%B8._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":false,"dealer":"MECHANIC"},"DRESSED_TO_KILL":{"name":{"en":"Dressed to Kill","de":"Gekleidet um zu töten","fr":"Habillé pour tuer","ru":"Модный приговор"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Dressed_to_Kill","de":"https://escapefromtarkov.fandom.com/de/wiki/Gekleidet_um_zu_t%C3%B6ten","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Habill%C3%A9_pour_tuer","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9C%D0%BE%D0%B4%D0%BD%D1%8B%D0%B9_%D0%BF%D1%80%D0%B8%D0%B3%D0%BE%D0%B2%D0%BE%D1%80"},"kappa":true,"dealer":"RAGMAN"},"EASY_MONEY_PART_2":{"name":{"en":"Easy Money - Part 2","fr":"Argent Facile - Partie 2","ru":"Легкие деньги. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Easy_Money_-_Part_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Argent_Facile_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9B%D0%B5%D0%B3%D0%BA%D0%B8%D0%B5_%D0%B4%D0%B5%D0%BD%D1%8C%D0%B3%D0%B8._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":false,"dealer":"REF"},"FARMING_PART_2":{"name":{"en":"Farming - Part 2","de":"Jäger und Sammler - Teil 2","fr":"Récolte - Partie 2","ru":"Садоводство. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Farming_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/J%C3%A4ger_und_Sammler_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9colte_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B0%D0%B4%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"MECHANIC"},"FARMING_PART_3":{"name":{"en":"Farming - Part 3","de":"Jäger und Sammler - Teil 3","fr":"Récolte - Partie 3","ru":"Садоводство. Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Farming_-_Part_3","de":"https://escapefromtarkov.fandom.com/de/wiki/J%C3%A4ger_und_Sammler_-_Teil_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9colte_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B0%D0%B4%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":true,"dealer":"MECHANIC"},"FARMING_PART_4":{"name":{"en":"Farming - Part 4","de":"Jäger und Sammler - Teil 4","fr":"Récolte - Partie 4","ru":"Садоводство. Часть 4"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Farming_-_Part_4","de":"https://escapefromtarkov.fandom.com/de/wiki/J%C3%A4ger_und_Sammler_-_Teil_4","fr":"https://escapefromtarkov.fandom.com/fr/wiki/R%C3%A9colte_-_Partie_4","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B0%D0%B4%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_4"},"kappa":true,"dealer":"MECHANIC"},"FERTILIZERS":{"name":{"en":"Fertilizers","de":"Düngemittel","fr":"Fertilisant","ru":"Удобрения"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Fertilizers","de":"https://escapefromtarkov.fandom.com/de/wiki/D%C3%BCngemittel","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Fertilisant","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A3%D0%B4%D0%BE%D0%B1%D1%80%D0%B5%D0%BD%D0%B8%D1%8F"},"kappa":true,"dealer":"MECHANIC"},"FISHING_PLACE":{"name":{"en":"Fishing Place","de":"Angelstelle","fr":"Lieu de pêche","ru":"Рыбное место"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Fishing_Place","de":"https://escapefromtarkov.fandom.com/de/wiki/Angelstelle","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Lieu_de_p%C3%AAche","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A0%D1%8B%D0%B1%D0%BD%D0%BE%D0%B5_%D0%BC%D0%B5%D1%81%D1%82%D0%BE"},"kappa":true,"dealer":"JAEGER"},"FRIEND_FROM_THE_WEST_PART_1":{"name":{"en":"Friend From the West - Part 1","de":"Westlicher Freund - Teil 1","fr":"L'Ami venant de l'Ouest - Partie 1","ru":"Друг с запада. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Friend_From_the_West_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Westlicher_Freund_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/L%27Ami_venant_de_l%27Ouest_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%94%D1%80%D1%83%D0%B3_%D1%81_%D0%B7%D0%B0%D0%BF%D0%B0%D0%B4%D0%B0._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"SKIER"},"GENERAL_WARES":{"name":{"en":"General Wares","de":"Gemischtwaren","fr":"Approvisionnement général","ru":"Сельпо"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/General_Wares","de":"https://escapefromtarkov.fandom.com/de/wiki/Gemischtwaren","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Approvisionnement_g%C3%A9n%C3%A9ral","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B5%D0%BB%D1%8C%D0%BF%D0%BE"},"kappa":true,"dealer":"THERAPIST"},"GUNSMITH_PART_13":{"name":{"en":"Gunsmith - Part 13","de":"Büchsenmacher - Teil 13","fr":"Armurier - Partie 13","ru":"Оружейник. Часть 13 (R11 RSASS)"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Gunsmith_-_Part_13","de":"https://escapefromtarkov.fandom.com/de/wiki/B%C3%BCchsenmacher_-_Teil_13","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Armurier_-_Partie_13","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9E%D1%80%D1%83%D0%B6%D0%B5%D0%B9%D0%BD%D0%B8%D0%BA._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_13"},"kappa":true,"dealer":"MECHANIC"},"GUNSMITH_PART_2":{"name":{"en":"Gunsmith - Part 2","de":"Büchsenmacher - Teil 2","fr":"Armurier - Partie 2","ru":"Оружейник. Часть 2 (АКС-74У)"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Gunsmith_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/B%C3%BCchsenmacher_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Armurier_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9E%D1%80%D1%83%D0%B6%D0%B5%D0%B9%D0%BD%D0%B8%D0%BA._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"MECHANIC"},"GUNSMITH_PART_4":{"name":{"en":"Gunsmith - Part 4","de":"Büchsenmacher - Teil 4","fr":"Armurier - Partie 4","ru":"Оружейник. Часть 4 (СКС)"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Gunsmith_-_Part_4","de":"https://escapefromtarkov.fandom.com/de/wiki/B%C3%BCchsenmacher_-_Teil_4","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Armurier_-_Partie_4","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9E%D1%80%D1%83%D0%B6%D0%B5%D0%B9%D0%BD%D0%B8%D0%BA._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_4"},"kappa":true,"dealer":"MECHANIC"},"HEALTH_CARE_PRIVACY_PART_2":{"name":{"en":"Health Care Privacy - Part 2","de":"Geheimhaltung im Gesundheitswesen - Teil 2","fr":"Soins privés - Partie 2","ru":"Врачебная тайна. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Health_Care_Privacy_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Geheimhaltung_im_Gesundheitswesen_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Soins_priv%C3%A9s_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D1%80%D0%B0%D1%87%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F_%D1%82%D0%B0%D0%B9%D0%BD%D0%B0._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"THERAPIST"},"HEALTH_CARE_PRIVACY_PART_3":{"name":{"en":"Health Care Privacy - Part 3","de":"Geheimhaltung im Gesundheitswesen - Teil 3","fr":"Soins privés - Partie 3","ru":"Врачебная тайна. Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Health_Care_Privacy_-_Part_3","de":"https://escapefromtarkov.fandom.com/de/wiki/Geheimhaltung_im_Gesundheitswesen_-_Teil_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Soins_priv%C3%A9s_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D1%80%D0%B0%D1%87%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F_%D1%82%D0%B0%D0%B9%D0%BD%D0%B0._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":true,"dealer":"THERAPIST"},"HUNTING_TRIP":{"name":{"en":"Hunting Trip","de":"Jagdausflug","fr":"Partie de chasse","ru":"На охоту"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Hunting_Trip","de":"https://escapefromtarkov.fandom.com/de/wiki/Jagdausflug","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Partie_de_chasse","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9D%D0%B0_%D0%BE%D1%85%D0%BE%D1%82%D1%83"},"kappa":true,"dealer":"JAEGER"},"ICE_CREAM_CONES":{"name":{"en":"Ice Cream Cones","de":"Eistüten","fr":"Cornets de glace","ru":"Рожки для мороженого"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Ice_Cream_Cones","de":"https://escapefromtarkov.fandom.com/de/wiki/Eist%C3%BCten","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Cornets_de_glace","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A0%D0%BE%D0%B6%D0%BA%D0%B8_%D0%B4%D0%BB%D1%8F_%D0%BC%D0%BE%D1%80%D0%BE%D0%B6%D0%B5%D0%BD%D0%BE%D0%B3%D0%BE"},"kappa":true,"dealer":"PRAPOR"},"IMPORT":{"name":{"en":"Import","de":"Importware","fr":"Importation","ru":"Импорт"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Import","de":"https://escapefromtarkov.fandom.com/de/wiki/Importware","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Importation","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%98%D0%BC%D0%BF%D0%BE%D1%80%D1%82"},"kappa":true,"dealer":"MECHANIC"},"KEY_TO_THE_TOWER":{"name":{"en":"Key to the Tower","fr":"Clé de la tour","ru":"Ключ от Башни"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Key_to_the_Tower","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Cl%C3%A9_de_la_tour","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%BB%D1%8E%D1%87_%D0%BE%D1%82_%D0%91%D0%B0%D1%88%D0%BD%D0%B8"},"kappa":false,"dealer":"MECHANIC"},"LEND_LEASE_PART_2":{"name":{"en":"Lend-Lease - Part 2","fr":"Prêt-Bail - Partie 2","ru":"Лендлиз. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Lend-Lease_-_Part_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Pr%C3%AAt-Bail_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9B%D0%B5%D0%BD%D0%B4%D0%BB%D0%B8%D0%B7._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"PEACEKEEPER"},"LIVING_HIGH_IS_NOT_A_CRIME_PART_1":{"name":{"en":"Living High is Not a Crime - Part 1","de":"Im Überfluss zu leben ist kein Verbrechen - Teil 1","fr":"La richesse n'est pas un crime - Partie 1","ru":"Красиво жить не запретишь. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Living_High_is_Not_a_Crime_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Im_%C3%9Cberfluss_zu_leben_ist_kein_Verbrechen_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_richesse_n%27est_pas_un_crime_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%B8%D0%B2%D0%BE_%D0%B6%D0%B8%D1%82%D1%8C_%D0%BD%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%B5%D1%82%D0%B8%D1%88%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"RAGMAN"},"LIVING_HIGH_IS_NOT_A_CRIME_PART_2":{"name":{"en":"Living High is Not a Crime - Part 2","de":"Im Überfluss zu leben ist kein Verbrechen - Teil 2","fr":"La richesse n'est pas un crime - Partie 2","ru":"Красиво жить не запретишь. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Living_High_is_Not_a_Crime_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Im_%C3%9Cberfluss_zu_leben_ist_kein_Verbrechen_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_richesse_n%27est_pas_un_crime_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D1%80%D0%B0%D1%81%D0%B8%D0%B2%D0%BE_%D0%B6%D0%B8%D1%82%D1%8C_%D0%BD%D0%B5_%D0%B7%D0%B0%D0%BF%D1%80%D0%B5%D1%82%D0%B8%D1%88%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"RAGMAN"},"MAKE_AMENDS_EQUIPMENT":{"name":{"en":"Make Amends - Equipment","fr":"Faire amende honorable - Équipement","ru":"Загладить вину - Вооружение"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Make_Amends_-_Equipment","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Faire_amende_honorable_-_%C3%89quipement","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B4%D0%B8%D1%82%D1%8C_%D0%B2%D0%B8%D0%BD%D1%83_-_%D0%92%D0%BE%D0%BE%D1%80%D1%83%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5"},"kappa":false,"dealer":"MECHANIC"},"MAKE_AMENDS_SOFTWARE":{"name":{"en":"Make Amends - Software","fr":"Faire amende honorable - Logiciel"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Make_Amends_-_Software","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Faire_amende_honorable_-_Logiciel"},"kappa":false,"dealer":"MECHANIC"},"MAKE_ULTRA_GREAT_AGAIN":{"name":{"en":"Make ULTRA Great Again","fr":"Rendez au Ultra sa grandeur","ru":"Вернем Ультре былое величие"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Make_ULTRA_Great_Again","de":"https://escapefromtarkov.fandom.com/de/wiki/Make_ULTRA_Great_Again","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Rendez_au_Ultra_sa_grandeur","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D0%B5%D1%80%D0%BD%D0%B5%D0%BC_%D0%A3%D0%BB%D1%8C%D1%82%D1%80%D0%B5_%D0%B1%D1%8B%D0%BB%D0%BE%D0%B5_%D0%B2%D0%B5%D0%BB%D0%B8%D1%87%D0%B8%D0%B5"},"kappa":true,"dealer":"RAGMAN"},"MARATHON_BENEATH_THE_STREETS":{"name":{"en":"Marathon - Beneath The Streets"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Marathon_-_Beneath_The_Streets"},"kappa":false,"dealer":"THERAPIST"},"MARATHON_NEW_DAY_NEW_PATHS":{"name":{"en":"Marathon - New Day, New Paths"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Marathon_-_New_Day,_New_Paths"},"kappa":false,"dealer":"PEACEKEEPER"},"MARATHON_SECRETS_OF_POLIKHIM":{"name":{"en":"Marathon - Secrets of Polikhim","fr":"Les secrets de Polikhim"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Marathon_-_Secrets_of_Polikhim","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Les_secrets_de_Polikhim"},"kappa":false,"dealer":"MECHANIC"},"MARATHON_SIGHTSEEING":{"name":{"en":"Marathon - Sightseeing","fr":"Touristique","ru":"Марафон. Экскурсия"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Marathon_-_Sightseeing","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Touristique","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9C%D0%B0%D1%80%D0%B0%D1%84%D0%BE%D0%BD._%D0%AD%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D0%B8%D1%8F"},"kappa":false,"dealer":"SKIER"},"NETWORK_PROVIDER_PART_1":{"name":{"en":"Network Provider - Part 1","fr":"Fournisseur d'accès - Partie 1","ru":"Сетевой провайдер - Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Network_Provider_-_Part_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Fournisseur_d%27acc%C3%A8s_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B5%D1%82%D0%B5%D0%B2%D0%BE%D0%B9_%D0%BF%D1%80%D0%BE%D0%B2%D0%B0%D0%B9%D0%B4%D0%B5%D1%80_-_%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":false,"dealer":"MECHANIC"},"NIGHT_SWEEP":{"name":{"en":"Night Sweep","fr":"Balayage nocturne","ru":"Ночная прогулка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Night_Sweep","de":"https://escapefromtarkov.fandom.com/de/wiki/Night_Sweep","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Balayage_nocturne","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9D%D0%BE%D1%87%D0%BD%D0%B0%D1%8F_%D0%BF%D1%80%D0%BE%D0%B3%D1%83%D0%BB%D0%BA%D0%B0"},"kappa":false,"dealer":"SKIER"},"NO_SWIPING":{"name":{"en":"No Swiping","fr":"Arrête de chiper","ru":"Чужое добро"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/No_Swiping","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Arr%C3%AAte_de_chiper","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A7%D1%83%D0%B6%D0%BE%D0%B5_%D0%B4%D0%BE%D0%B1%D1%80%D0%BE"},"kappa":false,"dealer":"SKIER"},"OUR_OWN_LAND":{"name":{"en":"Our Own Land","fr":"Notre propre terre","ru":"Своя Земля"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Our_Own_Land","de":"https://escapefromtarkov.fandom.com/de/wiki/Our_Own_Land","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Notre_propre_terre","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B2%D0%BE%D1%8F_%D0%97%D0%B5%D0%BC%D0%BB%D1%8F"},"kappa":false,"dealer":"PRAPOR"},"PAINKILLER":{"name":{"en":"Painkiller","de":"Schmerzmittel","fr":"Antidouleur","ru":"Пейнкиллер"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Painkiller","de":"https://escapefromtarkov.fandom.com/de/wiki/Schmerzmittel","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Antidouleur","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D0%B5%D0%B9%D0%BD%D0%BA%D0%B8%D0%BB%D0%BB%D0%B5%D1%80"},"kappa":true,"dealer":"THERAPIST"},"PAYBACK":{"name":{"en":"Payback","fr":"Vengeance","ru":"Расплата"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Payback","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Vengeance","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A0%D0%B0%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%B0"},"kappa":false,"dealer":"LIGHTKEEPER"},"PEACEKEEPING_MISSION":{"name":{"en":"Peacekeeping Mission","de":"Friedensmission","fr":"Maintien de la paix","ru":"Миротворческая миссия"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Peacekeeping_Mission","de":"https://escapefromtarkov.fandom.com/de/wiki/Friedensmission","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Maintien_de_la_paix","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9C%D0%B8%D1%80%D0%BE%D1%82%D0%B2%D0%BE%D1%80%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B8%D1%81%D1%81%D0%B8%D1%8F"},"kappa":true,"dealer":"PEACEKEEPER"},"PETS_WONT_NEED_IT_PART_2":{"name":{"en":"Pets Won't Need It - Part 2","fr":"Les animaux n'en auront pas besoin - Partie 2","ru":"Инвентаризация. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Pets_Won%27t_Need_It_-_Part_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Les_animaux_n%27en_auront_pas_besoin_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%98%D0%BD%D0%B2%D0%B5%D0%BD%D1%82%D0%B0%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":false,"dealer":"THERAPIST"},"PRIVATE_CLINIC":{"name":{"en":"Private Clinic","de":"Privatklinik","fr":"Clinique privée","ru":"Частная клиника"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Private_Clinic","de":"https://escapefromtarkov.fandom.com/de/wiki/Privatklinik","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Clinique_priv%C3%A9e","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A7%D0%B0%D1%81%D1%82%D0%BD%D0%B0%D1%8F_%D0%BA%D0%BB%D0%B8%D0%BD%D0%B8%D0%BA%D0%B0"},"kappa":true,"dealer":"THERAPIST"},"PROVOCATION":{"name":{"en":"Provocation","ru":"Провокация"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Provocation","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Provocation","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%80%D0%BE%D0%B2%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D1%8F"},"kappa":false,"dealer":"LIGHTKEEPER"},"REGULATED_MATERIALS":{"name":{"en":"Regulated Materials","de":"Regulierte Materialien","fr":"Articles réglementés","ru":"Поставщик"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Regulated_Materials","de":"https://escapefromtarkov.fandom.com/de/wiki/Regulierte_Materialien","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Articles_r%C3%A9glement%C3%A9s","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D1%89%D0%B8%D0%BA"},"kappa":true,"dealer":"PRAPOR"},"SAMPLES":{"name":{"en":"Samples","de":"Proben","fr":"Échantillons","ru":"Образцы"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Samples","de":"https://escapefromtarkov.fandom.com/de/wiki/Proben","fr":"https://escapefromtarkov.fandom.com/fr/wiki/%C3%89chantillons","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9E%D0%B1%D1%80%D0%B0%D0%B7%D1%86%D1%8B"},"kappa":true,"dealer":"PEACEKEEPER"},"SANITARY_STANDARDS_PART_1":{"name":{"en":"Sanitary Standards - Part 1","de":"Gesundheitsstandards - Teil 1","fr":"Normes sanitaires - Partie 1","ru":"Санэпиднадзор. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Sanitary_Standards_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Gesundheitsstandards_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Normes_sanitaires_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B0%D0%BD%D1%8D%D0%BF%D0%B8%D0%B4%D0%BD%D0%B0%D0%B4%D0%B7%D0%BE%D1%80._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"THERAPIST"},"SANITARY_STANDARDS_PART_2":{"name":{"en":"Sanitary Standards - Part 2","de":"Gesundheitsstandards - Teil 2","fr":"Normes sanitaires - Partie 2","ru":"Санэпиднадзор. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Sanitary_Standards_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Gesundheitsstandards_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Normes_sanitaires_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B0%D0%BD%D1%8D%D0%BF%D0%B8%D0%B4%D0%BD%D0%B0%D0%B4%D0%B7%D0%BE%D1%80._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"THERAPIST"},"SEW_IT_GOOD_PART_1":{"name":{"en":"Sew it Good - Part 1","de":"Schön zusammennähen - Teil 1","fr":"On ne vit qu'une fois - Partie 1","ru":"Шить - не тужить. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Sew_it_Good_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Sch%C3%B6n_zusammenn%C3%A4hen_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/On_ne_vit_qu%27une_fois_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A8%D0%B8%D1%82%D1%8C_-_%D0%BD%D0%B5_%D1%82%D1%83%D0%B6%D0%B8%D1%82%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":true,"dealer":"RAGMAN"},"SEW_IT_GOOD_PART_3":{"name":{"en":"Sew it Good - Part 3","de":"Schön zusammennähen - Teil 3","fr":"On ne vit qu'une fois - Partie 3","ru":"Шить - не тужить. Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Sew_it_Good_-_Part_3","de":"https://escapefromtarkov.fandom.com/de/wiki/Sch%C3%B6n_zusammenn%C3%A4hen_-_Teil_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/On_ne_vit_qu%27une_fois_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A8%D0%B8%D1%82%D1%8C_-_%D0%BD%D0%B5_%D1%82%D1%83%D0%B6%D0%B8%D1%82%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":true,"dealer":"RAGMAN"},"SEW_IT_GOOD_PART_4":{"name":{"en":"Sew it Good - Part 4","de":"Schön zusammennähen - Teil 4","fr":"On ne vit qu'une fois - Partie 4","ru":"Шить - не тужить. Часть 4"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Sew_it_Good_-_Part_4","de":"https://escapefromtarkov.fandom.com/de/wiki/Sch%C3%B6n_zusammenn%C3%A4hen_-_Teil_4","fr":"https://escapefromtarkov.fandom.com/fr/wiki/On_ne_vit_qu%27une_fois_-_Partie_4","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A8%D0%B8%D1%82%D1%8C_-_%D0%BD%D0%B5_%D1%82%D1%83%D0%B6%D0%B8%D1%82%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_4"},"kappa":true,"dealer":"RAGMAN"},"SHADY_BUSINESS":{"name":{"en":"Shady Business","de":"Dunkles Geschäft","fr":"Magouilles","ru":"Мутное дело"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Shady_Business","de":"https://escapefromtarkov.fandom.com/de/wiki/Dunkles_Gesch%C3%A4ft","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Magouilles","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9C%D1%83%D1%82%D0%BD%D0%BE%D0%B5_%D0%B4%D0%B5%D0%BB%D0%BE"},"kappa":true,"dealer":"JAEGER"},"SHORTAGE":{"name":{"en":"Shortage","de":"Engpass","fr":"Pénurie","ru":"Дефицит"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Shortage","de":"https://escapefromtarkov.fandom.com/de/wiki/Engpass","fr":"https://escapefromtarkov.fandom.com/fr/wiki/P%C3%A9nurie","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%94%D0%B5%D1%84%D0%B8%D1%86%D0%B8%D1%82"},"kappa":true,"dealer":"THERAPIST"},"SIGNAL_PART_2":{"name":{"en":"Signal - Part 2","de":"Signal - Teil 2","fr":"Signal - Partie 2","ru":"Сигнал. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Signal_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Signal_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Signal_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%B8%D0%B3%D0%BD%D0%B0%D0%BB._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"MECHANIC"},"SMALL_BUSINESS_PART_1":{"name":{"en":"Small Business - Part 1","fr":"Petite entreprise - Partie 1","ru":"Малое предпринимательство. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Small_Business_-_Part_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Petite_entreprise_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9C%D0%B0%D0%BB%D0%BE%D0%B5_%D0%BF%D1%80%D0%B5%D0%B4%D0%BF%D1%80%D0%B8%D0%BD%D0%B8%D0%BC%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D1%82%D0%B2%D0%BE._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":false,"dealer":"FENCE"},"SNATCH":{"name":{"en":"Snatch","fr":"Saisie","ru":"Контр-компромат"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Snatch","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Saisie","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%BE%D0%BD%D1%82%D1%80-%D0%BA%D0%BE%D0%BC%D0%BF%D1%80%D0%BE%D0%BC%D0%B0%D1%82"},"kappa":false,"dealer":"LIGHTKEEPER"},"SPA_TOUR_PART_3":{"name":{"en":"Spa Tour - Part 3","de":"Spa Tour - Teil 3","fr":"Visite du spa - Partie 3","ru":"Путевка в санаторий. Часть 3"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Spa_Tour_-_Part_3","de":"https://escapefromtarkov.fandom.com/de/wiki/Spa_Tour_-_Teil_3","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Visite_du_spa_-_Partie_3","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D0%B5%D0%B2%D0%BA%D0%B0_%D0%B2_%D1%81%D0%B0%D0%BD%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D0%B9._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_3"},"kappa":true,"dealer":"PEACEKEEPER"},"SPA_TOUR_PART_4":{"name":{"en":"Spa Tour - Part 4","de":"Spa Tour - Teil 4","fr":"Visite du spa - Partie 4","ru":"Путевка в санаторий. Часть 4"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Spa_Tour_-_Part_4","de":"https://escapefromtarkov.fandom.com/de/wiki/Spa_Tour_-_Teil_4","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Visite_du_spa_-_Partie_4","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D0%B5%D0%B2%D0%BA%D0%B0_%D0%B2_%D1%81%D0%B0%D0%BD%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D0%B9._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_4"},"kappa":true,"dealer":"PEACEKEEPER"},"SPA_TOUR_PART_7":{"name":{"en":"Spa Tour - Part 7","de":"Spa Tour - Teil 7","fr":"Visite du spa - Partie 7","ru":"Путевка в санаторий. Часть 7"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Spa_Tour_-_Part_7","de":"https://escapefromtarkov.fandom.com/de/wiki/Spa_Tour_-_Teil_7","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Visite_du_spa_-_Partie_7","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D0%B5%D0%B2%D0%BA%D0%B0_%D0%B2_%D1%81%D0%B0%D0%BD%D0%B0%D1%82%D0%BE%D1%80%D0%B8%D0%B9._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_7"},"kappa":true,"dealer":"PEACEKEEPER"},"SPECIAL_EQUIPMENT":{"name":{"en":"Special Equipment","fr":"Équipement spécial","ru":"Заказ"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Special_Equipment","de":"https://escapefromtarkov.fandom.com/de/wiki/Special_Equipment","fr":"https://escapefromtarkov.fandom.com/fr/wiki/%C3%89quipement_sp%C3%A9cial","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%97%D0%B0%D0%BA%D0%B0%D0%B7"},"kappa":false,"dealer":"PEACEKEEPER"},"SPECIAL_OFFER":{"name":{"en":"Special Offer","fr":"Offre spéciale"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Special_Offer","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Offre_sp%C3%A9ciale"},"kappa":false,"dealer":"RAGMAN"},"SUPPLIER":{"name":{"en":"Supplier","de":"Lieferant","fr":"Fournisseur","ru":"Снабженец"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Supplier","de":"https://escapefromtarkov.fandom.com/de/wiki/Lieferant","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Fournisseur","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A1%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B5%D1%86"},"kappa":true,"dealer":"SKIER"},"SUPPLY_PLANS":{"name":{"en":"Supply Plans","de":"Versorgungspläne","fr":"Plans d'approvisionnement","ru":"Планы снабжения"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Supply_Plans","de":"https://escapefromtarkov.fandom.com/de/wiki/Versorgungspl%C3%A4ne","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Plans_d%27approvisionnement","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B_%D1%81%D0%BD%D0%B0%D0%B1%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F"},"kappa":true,"dealer":"THERAPIST"},"SURPRISE":{"name":{"en":"Surprise"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Surprise","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Surprise"},"kappa":false,"dealer":"REF"},"TEXTILE_PART_1":{"name":{"en":"Textile - Part 1","de":"Textilien - Teil 1","fr":"Textile - Partie 1","ru":"Текстиль. Часть 1"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Textile_-_Part_1","de":"https://escapefromtarkov.fandom.com/de/wiki/Textilien_-_Teil_1","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Textile_-_Partie_1","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A2%D0%B5%D0%BA%D1%81%D1%82%D0%B8%D0%BB%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_1"},"kappa":false,"dealer":"RAGMAN"},"TEXTILE_PART_2":{"name":{"en":"Textile - Part 2","de":"Textilien - Teil 2","fr":"Textile - Partie 2","ru":"Текстиль. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Textile_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Textilien_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Textile_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A2%D0%B5%D0%BA%D1%81%D1%82%D0%B8%D0%BB%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":false,"dealer":"RAGMAN"},"THE_BLOOD_OF_WAR_PART_2":{"name":{"en":"The Blood of War - Part 2","de":"Das Blut des Krieges - Teil 2","fr":"Le nerf de la guerre - Partie 2","ru":"Кровь войны. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Blood_of_War_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Das_Blut_des_Krieges_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_nerf_de_la_guerre_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D1%80%D0%BE%D0%B2%D1%8C_%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"RAGMAN"},"THE_DELICIOUS_SAUSAGE":{"name":{"en":"The Delicious Sausage","fr":"La délicieuse saucisse","ru":"Продразведка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Delicious_Sausage","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_d%C3%A9licieuse_saucisse","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%80%D0%BE%D0%B4%D1%80%D0%B0%D0%B7%D0%B2%D0%B5%D0%B4%D0%BA%D0%B0"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_BIG_GAME":{"name":{"en":"The Huntsman Path - Big Game","fr":"La voie du chasseur - Gros gibier","ru":"Путь охотника - Крупная дичь"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Big_Game","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Gros_gibier","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0_-_%D0%9A%D1%80%D1%83%D0%BF%D0%BD%D0%B0%D1%8F_%D0%B4%D0%B8%D1%87%D1%8C"},"kappa":false,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_CROOKED_COP":{"name":{"en":"The Huntsman Path - Crooked Cop","fr":"La voie du chasseur - Ripoux"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Crooked_Cop","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Ripoux"},"kappa":false,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_EVIL_WATCHMAN":{"name":{"en":"The Huntsman Path - Evil Watchman","de":"Pfad des Jägers. Böse Wächter","fr":"La voie du chasseur - Gardien maléfique","ru":"Путь охотника. Злой вахтёр"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Evil_Watchman","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._B%C3%B6se_W%C3%A4chter","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Gardien_mal%C3%A9fique","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%97%D0%BB%D0%BE%D0%B9_%D0%B2%D0%B0%D1%85%D1%82%D1%91%D1%80"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_FACTORY_CHIEF":{"name":{"en":"The Huntsman Path - Factory Chief","fr":"La voie du chasseur - Chef de l'usine","ru":"Путь охотника. Начальник завода"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Factory_Chief","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Chef_de_l%27usine","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%9D%D0%B0%D1%87%D0%B0%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA_%D0%B7%D0%B0%D0%B2%D0%BE%D0%B4%D0%B0"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_JUSTICE":{"name":{"en":"The Huntsman Path - Justice","de":"Pfad des Jägers. Waldbeschützer","fr":"La voie du chasseur - Justice","ru":"Путь охотника. Справедливость"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Justice","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._Waldbesch%C3%BCtzer","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Justice","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%B5%D0%B4%D0%BB%D0%B8%D0%B2%D0%BE%D1%81%D1%82%D1%8C"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_SECURED_PERIMETER":{"name":{"en":"The Huntsman Path - Secured Perimeter","de":"Pfad des Jägers. Gesicherter Bereich","fr":"La voie du chasseur - Périmètre sécurisé","ru":"Путь охотника. Охранка"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Secured_Perimeter","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._Gesicherter_Bereich","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_P%C3%A9rim%C3%A8tre_s%C3%A9curis%C3%A9","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%9E%D1%85%D1%80%D0%B0%D0%BD%D0%BA%D0%B0"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_SELLOUT":{"name":{"en":"The Huntsman Path - Sellout","de":"Pfad des Jägers. Ausverkauf","fr":"La voie du chasseur - Tout doit disparaître","ru":"Путь охотника. Переучёт"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Sellout","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._Ausverkauf","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Tout_doit_dispara%C3%AEtre","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%9F%D0%B5%D1%80%D0%B5%D1%83%D1%87%D1%91%D1%82"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_TROPHY":{"name":{"en":"The Huntsman Path - Trophy","de":"Pfad des Jägers. Die Trophäe","fr":"La voie du chasseur - Le trophée","ru":"Путь охотника. Трофей"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Trophy","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._Die_Troph%C3%A4e","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Le_troph%C3%A9e","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%A2%D1%80%D0%BE%D1%84%D0%B5%D0%B9"},"kappa":true,"dealer":"JAEGER"},"THE_HUNTSMAN_PATH_WOODS_KEEPER":{"name":{"en":"The Huntsman Path - Woods Keeper","de":"Pfad des Jägers. Waldbeschützer","fr":"La voie du chasseur - Gardien des bois","ru":"Путь охотника. Санитар леса"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Huntsman_Path_-_Woods_Keeper","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_J%C3%A4gers._Waldbesch%C3%BCtzer","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_chasseur_-_Gardien_des_bois","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%BE%D1%85%D0%BE%D1%82%D0%BD%D0%B8%D0%BA%D0%B0._%D0%A1%D0%B0%D0%BD%D0%B8%D1%82%D0%B0%D1%80_%D0%BB%D0%B5%D1%81%D0%B0"},"kappa":true,"dealer":"JAEGER"},"THE_PUNISHER_PART_2":{"name":{"en":"The Punisher - Part 2","de":"Der Peiniger - Teil 2","fr":"Le Punisher - Partie 2","ru":"Каратель. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Punisher_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/Der_Peiniger_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_Punisher_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D1%80%D0%B0%D1%82%D0%B5%D0%BB%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"PRAPOR"},"THE_PUNISHER_PART_4":{"name":{"en":"The Punisher - Part 4","de":"Der Peiniger - Teil 4","fr":"Le Punisher - Partie 4","ru":"Каратель. Часть 4"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Punisher_-_Part_4","de":"https://escapefromtarkov.fandom.com/de/wiki/Der_Peiniger_-_Teil_4","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_Punisher_-_Partie_4","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D1%80%D0%B0%D1%82%D0%B5%D0%BB%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_4"},"kappa":true,"dealer":"PRAPOR"},"THE_PUNISHER_PART_5":{"name":{"en":"The Punisher - Part 5","de":"Der Peiniger - Teil 5","fr":"Le Punisher - Partie 5","ru":"Каратель. Часть 5"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Punisher_-_Part_5","de":"https://escapefromtarkov.fandom.com/de/wiki/Der_Peiniger_-_Teil_5","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_Punisher_-_Partie_5","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9A%D0%B0%D1%80%D0%B0%D1%82%D0%B5%D0%BB%D1%8C._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_5"},"kappa":true,"dealer":"PRAPOR"},"THE_SURVIVALIST_PATH_TOUGH_GUY":{"name":{"en":"The Survivalist Path - Tough Guy","de":"Pfad des Überlebenskünstler - Harter Typ","fr":"La voie du survivaliste - Dur à cuire","ru":"Путь выживальщика. Крепыш"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Survivalist_Path_-_Tough_Guy","de":"https://escapefromtarkov.fandom.com/de/wiki/Pfad_des_%C3%9Cberlebensk%C3%BCnstler_-_Harter_Typ","fr":"https://escapefromtarkov.fandom.com/fr/wiki/La_voie_du_survivaliste_-_Dur_%C3%A0_cuire","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%9F%D1%83%D1%82%D1%8C_%D0%B2%D1%8B%D0%B6%D0%B8%D0%B2%D0%B0%D0%BB%D1%8C%D1%89%D0%B8%D0%BA%D0%B0._%D0%9A%D1%80%D0%B5%D0%BF%D1%8B%D1%88"},"kappa":true,"dealer":"JAEGER"},"THE_TARKOV_SHOOTER_PART_8":{"name":{"en":"The Tarkov Shooter - Part 8","fr":"Le tireur de Tarkov - Partie 8","ru":"Тарковский стрелок. Часть 8"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/The_Tarkov_Shooter_-_Part_8","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Le_tireur_de_Tarkov_-_Partie_8","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A2%D0%B0%D1%80%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D1%82%D1%80%D0%B5%D0%BB%D0%BE%D0%BA._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_8"},"kappa":true,"dealer":"JAEGER"},"THIRSTY_BREADWINNER":{"name":{"en":"Thirsty - Breadwinner","fr":"Assoiffé - Gagne-pain"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Thirsty_-_Breadwinner","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Assoiff%C3%A9_-_Gagne-pain"},"kappa":false,"dealer":"SKIER"},"THIRSTY_SECRETS":{"name":{"en":"Thirsty - Secrets","fr":"Assoiffé - Secrets"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Thirsty_-_Secrets","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Assoiff%C3%A9_-_Secrets"},"kappa":false,"dealer":"THERAPIST"},"URBAN_MEDICINE":{"name":{"en":"Urban Medicine","fr":"Médecine urbaine","ru":"Городская медицина"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Urban_Medicine","fr":"https://escapefromtarkov.fandom.com/fr/wiki/M%C3%A9decine_urbaine","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%93%D0%BE%D1%80%D0%BE%D0%B4%D1%81%D0%BA%D0%B0%D1%8F_%D0%BC%D0%B5%D0%B4%D0%B8%D1%86%D0%B8%D0%BD%D0%B0"},"kappa":false,"dealer":"THERAPIST"},"VITAMINS_PART_2":{"name":{"en":"Vitamins - Part 2","de":"\"Vitamine\" - Teil 2","fr":"Vitamines - Partie 2","ru":"Витамины. Часть 2"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/Vitamins_-_Part_2","de":"https://escapefromtarkov.fandom.com/de/wiki/%22Vitamine%22_-_Teil_2","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Vitamines_-_Partie_2","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%92%D0%B8%D1%82%D0%B0%D0%BC%D0%B8%D0%BD%D1%8B._%D0%A7%D0%B0%D1%81%D1%82%D1%8C_2"},"kappa":true,"dealer":"SKIER"},"WHATS_ON_THE_FLASH_DRIVE":{"name":{"en":"What’s on the Flash Drive?","de":"Was ist auf dem USB-Stick?","fr":"Qu'y a-t-il sur la clé USB ?","ru":"Что на флешке?"},"link":{"en":"https://escapefromtarkov.fandom.com/wiki/What%E2%80%99s_on_the_Flash_Drive%3F","de":"https://escapefromtarkov.fandom.com/de/wiki/Was_ist_auf_dem_USB-Stick%3F","fr":"https://escapefromtarkov.fandom.com/fr/wiki/Qu%27y_a-t-il_sur_la_cl%C3%A9_USB_%3F","ru":"https://escapefromtarkov.fandom.com/ru/wiki/%D0%A7%D1%82%D0%BE_%D0%BD%D0%B0_%D1%84%D0%BB%D0%B5%D1%88%D0%BA%D0%B5%3F"},"kappa":true,"dealer":"SKIER"}},"questProgression":{"DEBUT":{"id":0,"title":"Debut","level":1,"depth":0,"priority":10},"CHECKING":{"id":1,"title":"Checking","level":2,"depth":1,"priority":21},"SHOOTOUT_PICNIC":{"id":2,"title":"Shootout picnic","level":3,"depth":2,"priority":32},"DELIVERY_FROM_THE_PAST":{"id":3,"title":"Delivery from the past","level":5,"depth":2,"priority":52},"BP_DEPOT":{"id":4,"title":"BP depot","level":5,"depth":3,"priority":53},"BAD_REP_EVIDENCE":{"id":5,"title":"Bad rep evidence","level":6,"depth":4,"priority":64},"ICE_CREAM_CONES":{"id":6,"title":"Ice cream cones","level":9,"depth":5,"priority":95},"POSTMAN_PAT":{"id":7,"title":"Postman Pat","level":10,"depth":6,"priority":106},"SHAKING_UP_TELLER":{"id":8,"title":"Shaking up teller","level":10,"depth":6,"priority":106},"PERFECT_MEDIATOR":{"id":9,"title":"Perfect mediator","level":35,"depth":7,"priority":357},"GRENADIER":{"id":10,"title":"Grenadier","level":30,"depth":7,"priority":307},"INSOMNIA":{"id":11,"title":"Insomnia","level":30,"depth":8,"priority":308},"TEST_DRIVE__PT__1":{"id":12,"title":"Test drive. Pt. 1","level":30,"depth":8,"priority":308},"THE_PUNISHER___PART_1":{"id":13,"title":"The Punisher - Part 1","level":17,"depth":7,"priority":177},"THE_PUNISHER___PART_2":{"id":14,"title":"The Punisher - Part 2","level":18,"depth":8,"priority":188},"THE_PUNISHER___PART_3":{"id":15,"title":"The Punisher - Part 3","level":19,"depth":9,"priority":199},"THE_PUNISHER___PART_4":{"id":16,"title":"The Punisher - Part 4","level":20,"depth":10,"priority":210},"THE_PUNISHER___PART_5":{"id":17,"title":"The Punisher - Part 5","level":20,"depth":11,"priority":211},"THE_PUNISHER___PART_6":{"id":18,"title":"The Punisher - Part 6","level":21,"depth":12,"priority":222},"SHORTAGE":{"id":19,"title":"Shortage","level":1,"depth":0,"priority":10},"SANITARY_STANDARDS___PART_1":{"id":20,"title":"Sanitary Standards - Part 1","level":4,"depth":1,"priority":41},"SANITARY_STANDARDS___PART_2":{"id":21,"title":"Sanitary Standards - Part 2","level":8,"depth":2,"priority":82},"PAINKILLER":{"id":22,"title":"Painkiller","level":8,"depth":3,"priority":83},"PHARMACIST":{"id":23,"title":"Pharmacist","level":10,"depth":4,"priority":104},"SUPPLY_PLANS":{"id":24,"title":"Supply plans","level":13,"depth":5,"priority":135},"KIND_OF_SABOTAGE":{"id":25,"title":"Kind of sabotage","level":13,"depth":5,"priority":135},"GENERAL_WARES":{"id":26,"title":"General wares","level":10,"depth":5,"priority":105},"CAR_REPAIR":{"id":27,"title":"Car repair","level":10,"depth":5,"priority":105},"HEALTH_CARE_PRIVACY___PART_1":{"id":28,"title":"Health Care Privacy - Part 1","level":20,"depth":5,"priority":205},"HEALTH_CARE_PRIVACY___PART_2":{"id":29,"title":"Health Care Privacy - Part 2","level":10,"depth":6,"priority":106},"HEALTH_CARE_PRIVACY___PART_3":{"id":30,"title":"Health Care Privacy - Part 3","level":10,"depth":7,"priority":107},"HEALTH_CARE_PRIVACY___PART_4":{"id":31,"title":"Health Care Privacy - Part 4","level":10,"depth":8,"priority":108},"HEALTH_CARE_PRIVACY___PART_5":{"id":32,"title":"Health Care Privacy - Part 5","level":10,"depth":9,"priority":109},"DECONTAMINATION_SERVICE":{"id":33,"title":"Decontamination Service","level":30,"depth":10,"priority":310},"PRIVATE_CLINIC":{"id":34,"title":"Private clinic","level":35,"depth":9,"priority":359},"ATHLETE":{"id":35,"title":"Athlete","level":30,"depth":9,"priority":309},"SUPPLIER":{"id":36,"title":"Supplier","level":5,"depth":0,"priority":50},"THE_EXTORTIONIST":{"id":37,"title":"The Extortionist","level":7,"depth":1,"priority":71},"WHAT_S_ON_THE_FLASH_DRIVE_":{"id":38,"title":"What's on the flash drive?","level":8,"depth":2,"priority":82},"GOLDEN_SWAG":{"id":39,"title":"Golden swag","level":8,"depth":3,"priority":83},"CHEMICAL___PART_1":{"id":40,"title":"Chemical - Part 1","level":10,"depth":4,"priority":104},"CHEMICAL___PART_2":{"id":41,"title":"Chemical - Part 2","level":10,"depth":5,"priority":105},"CHEMICAL___PART_3":{"id":42,"title":"Chemical - Part 3","level":11,"depth":6,"priority":116},"CHEMICAL___PART_4":{"id":43,"title":"Chemical - Part 4","level":11,"depth":7,"priority":117},"VITAMINS___PART_1":{"id":44,"title":"Vitamins - Part 1","level":22,"depth":7,"priority":227},"VITAMINS___PART_2":{"id":45,"title":"Vitamins - Part 2","level":22,"depth":8,"priority":228},"FRIEND_FROM_THE_WEST___PART_1":{"id":46,"title":"Friend from the West - Part 1","level":9,"depth":4,"priority":94},"FRIEND_FROM_THE_WEST___PART_2":{"id":47,"title":"Friend from the West - Part 2","level":9,"depth":5,"priority":95},"LEND_LEASE___PART_1":{"id":48,"title":"Lend lease - Part 1","level":25,"depth":6,"priority":256},"LEND_LEASE___PART_2":{"id":49,"title":"Lend lease - Part 2","level":30,"depth":7,"priority":307},"PEACEKEEPING_MISSION":{"id":50,"title":"Peacekeeping mission","level":30,"depth":8,"priority":308},"INFORMED_MEANS_ARMED":{"id":51,"title":"Informed means armed","level":24,"depth":6,"priority":246},"CHUMMING":{"id":52,"title":"Chumming","level":27,"depth":7,"priority":277},"SILENT_CALIBER":{"id":53,"title":"Silent caliber","level":27,"depth":8,"priority":278},"FLINT":{"id":54,"title":"Flint","level":35,"depth":8,"priority":358},"BULLSHIT":{"id":55,"title":"Bullshit","level":27,"depth":8,"priority":278},"SETUP":{"id":56,"title":"Setup","level":27,"depth":9,"priority":279},"FISHING_GEAR":{"id":57,"title":"Fishing Gear","level":10,"depth":6,"priority":106},"TIGR_SAFARI":{"id":58,"title":"Tigr Safari","level":10,"depth":7,"priority":107},"SCRAP_METAL":{"id":59,"title":"Scrap Metal","level":10,"depth":8,"priority":108},"EAGLE_EYE":{"id":60,"title":"Eagle Eye","level":11,"depth":9,"priority":119},"HUMANITARIAN_SUPPLIES":{"id":61,"title":"Humanitarian Supplies","level":11,"depth":10,"priority":120},"THE_CULT___PART_1":{"id":62,"title":"The Cult - Part 1","level":12,"depth":11,"priority":131},"THE_CULT___PART_2":{"id":63,"title":"The Cult - Part 2","level":12,"depth":12,"priority":132},"SPA_TOUR___PART_1":{"id":64,"title":"Spa Tour - Part 1","level":12,"depth":11,"priority":131},"SPA_TOUR___PART_2":{"id":65,"title":"Spa Tour - Part 2","level":12,"depth":12,"priority":132},"SPA_TOUR___PART_3":{"id":66,"title":"Spa Tour - Part 3","level":12,"depth":13,"priority":133},"SPA_TOUR___PART_4":{"id":67,"title":"Spa Tour - Part 4","level":12,"depth":14,"priority":134},"SPA_TOUR___PART_5":{"id":68,"title":"Spa Tour - Part 5","level":12,"depth":15,"priority":135},"SPA_TOUR___PART_6":{"id":69,"title":"Spa Tour - Part 6","level":12,"depth":16,"priority":136},"SPA_TOUR___PART_7":{"id":70,"title":"Spa Tour - Part 7","level":12,"depth":17,"priority":137},"CARGO_X___PART_1":{"id":71,"title":"Cargo X - Part 1","level":12,"depth":18,"priority":138},"CARGO_X___PART_2":{"id":72,"title":"Cargo X - Part 2","level":12,"depth":19,"priority":139},"CARGO_X___PART_3":{"id":73,"title":"Cargo X - Part 3","level":12,"depth":20,"priority":140},"WET_JOB___PART_1":{"id":74,"title":"Wet Job - Part 1","level":14,"depth":18,"priority":158},"WET_JOB___PART_2":{"id":75,"title":"Wet Job - Part 2","level":14,"depth":19,"priority":159},"WET_JOB___PART_3":{"id":76,"title":"Wet Job - Part 3","level":14,"depth":20,"priority":160},"WET_JOB___PART_4":{"id":77,"title":"Wet Job - Part 4","level":14,"depth":21,"priority":161},"WET_JOB___PART_5":{"id":78,"title":"Wet Job - Part 5","level":14,"depth":22,"priority":162},"WET_JOB___PART_6":{"id":79,"title":"Wet Job - Part 6","level":14,"depth":23,"priority":163},"PSYCHO_SNIPER":{"id":80,"title":"Psycho Sniper","level":40,"depth":24,"priority":424},"THE_GUIDE":{"id":81,"title":"The guide","level":40,"depth":24,"priority":424},"GUNSMITH___PART_1":{"id":82,"title":"Gunsmith - Part 1","level":2,"depth":0,"priority":20},"GUNSMITH___PART_2":{"id":83,"title":"Gunsmith - Part 2","level":11,"depth":1,"priority":111},"GUNSMITH___PART_3":{"id":84,"title":"Gunsmith - Part 3","level":12,"depth":1,"priority":121},"GUNSMITH___PART_4":{"id":85,"title":"Gunsmith - Part 4","level":15,"depth":2,"priority":152},"GUNSMITH___PART_5":{"id":86,"title":"Gunsmith - Part 5","level":17,"depth":3,"priority":173},"GUNSMITH___PART_6":{"id":87,"title":"Gunsmith - Part 6","level":18,"depth":4,"priority":184},"GUNSMITH___PART_7":{"id":88,"title":"Gunsmith - Part 7","level":19,"depth":5,"priority":195},"GUNSMITH___PART_8":{"id":89,"title":"Gunsmith - Part 8","level":19,"depth":6,"priority":196},"GUNSMITH___PART_9":{"id":90,"title":"Gunsmith - Part 9","level":20,"depth":7,"priority":207},"GUNSMITH___PART_10":{"id":91,"title":"Gunsmith - Part 10","level":20,"depth":8,"priority":208},"GUNSMITH___PART_11":{"id":92,"title":"Gunsmith - Part 11","level":20,"depth":9,"priority":209},"GUNSMITH___PART_12":{"id":93,"title":"Gunsmith - Part 12","level":23,"depth":10,"priority":240},"GUNSMITH___PART_13":{"id":94,"title":"Gunsmith - Part 13","level":25,"depth":11,"priority":261},"GUNSMITH___PART_14":{"id":95,"title":"Gunsmith - Part 14","level":27,"depth":12,"priority":282},"GUNSMITH___PART_15":{"id":96,"title":"Gunsmith - Part 15","level":29,"depth":13,"priority":303},"GUNSMITH___PART_16":{"id":97,"title":"Gunsmith - Part 16","level":35,"depth":14,"priority":364},"SIGNAL___PART_1":{"id":98,"title":"Signal - Part 1","level":12,"depth":2,"priority":122},"SIGNAL___PART_2":{"id":99,"title":"Signal - Part 2","level":12,"depth":3,"priority":123},"SIGNAL___PART_3":{"id":100,"title":"Signal - Part 3","level":15,"depth":4,"priority":154},"SIGNAL___PART_4":{"id":101,"title":"Signal - Part 4","level":15,"depth":5,"priority":155},"SCOUT":{"id":102,"title":"Scout","level":12,"depth":4,"priority":124},"INSIDER":{"id":103,"title":"Insider","level":12,"depth":3,"priority":123},"FARMING___PART_1":{"id":104,"title":"Farming - Part 1","level":12,"depth":1,"priority":121},"FARMING___PART_2":{"id":105,"title":"Farming - Part 2","level":12,"depth":2,"priority":122},"FARMING___PART_3":{"id":106,"title":"Farming - Part 3","level":14,"depth":3,"priority":143},"FARMING___PART_4":{"id":107,"title":"Farming - Part 4","level":14,"depth":4,"priority":144},"IMPORT":{"id":108,"title":"Import","level":35,"depth":5,"priority":355},"FERTILIZERS":{"id":109,"title":"Fertilizers","level":30,"depth":5,"priority":305},"A_SHOOTER_BORN_IN_HEAVEN":{"id":110,"title":"A Shooter Born in Heaven","level":14,"depth":4,"priority":144},"ONLY_BUSINESS":{"id":111,"title":"Only business","level":15,"depth":0,"priority":150},"BIG_SALE":{"id":112,"title":"Big sale","level":15,"depth":1,"priority":151},"THE_BLOOD_OF_WAR___PART_1":{"id":113,"title":"The Blood of War - Part 1","level":15,"depth":2,"priority":152},"DRESSED_TO_KILL":{"id":114,"title":"Dressed to kill","level":15,"depth":3,"priority":153},"DATABASE___PART_1":{"id":115,"title":"Database - Part 1","level":15,"depth":2,"priority":152},"DATABASE___PART_2":{"id":116,"title":"Database - Part 2","level":15,"depth":3,"priority":153},"GRATITUDE":{"id":117,"title":"Gratitude","level":15,"depth":4,"priority":154},"SALES_NIGHT":{"id":118,"title":"Sales Night","level":30,"depth":5,"priority":305},"SUPERVISOR":{"id":119,"title":"Supervisor","level":40,"depth":6,"priority":406},"HOT_DELIVERY":{"id":120,"title":"Hot Delivery","level":29,"depth":5,"priority":295},"SCAVENGER":{"id":121,"title":"Scavenger","level":29,"depth":6,"priority":296},"MAKE_ULTRA_GREAT_AGAIN":{"id":122,"title":"Make ULTRA Great Again","level":15,"depth":1,"priority":151},"MINIBUS":{"id":123,"title":"Minibus","level":24,"depth":4,"priority":244},"SEW_IT_GOOD___PART_1":{"id":124,"title":"Sew it good - Part 1","level":25,"depth":4,"priority":254},"SEW_IT_GOOD___PART_2":{"id":125,"title":"Sew it good - Part 2","level":25,"depth":5,"priority":255},"SEW_IT_GOOD___PART_3":{"id":126,"title":"Sew it good - Part 3","level":25,"depth":6,"priority":256},"SEW_IT_GOOD___PART_4":{"id":127,"title":"Sew it good - Part 4","level":25,"depth":7,"priority":257},"CHARISMA_BRINGS_SUCCESS":{"id":128,"title":"Charisma brings success","level":25,"depth":8,"priority":258},"NO_FUSS_NEEDED":{"id":129,"title":"No fuss needed","level":25,"depth":7,"priority":257},"THE_BLOOD_OF_WAR___PART_2":{"id":130,"title":"The Blood of War - Part 2","level":23,"depth":5,"priority":235},"THE_BLOOD_OF_WAR___PART_3":{"id":131,"title":"The Blood of War - Part 3","level":30,"depth":6,"priority":306},"LIVING_HIGH_IS_NOT_A_CRIME___PART_1":{"id":132,"title":"Living high is not a crime - Part 1","level":27,"depth":7,"priority":277},"LIVING_HIGH_IS_NOT_A_CRIME___PART_2":{"id":133,"title":"Living high is not a crime - Part 2","level":27,"depth":7,"priority":277},"INTRODUCTION":{"id":134,"title":"Introduction","level":2,"depth":0,"priority":20},"ACQUAINTANCE":{"id":135,"title":"Acquaintance","level":2,"depth":1,"priority":21},"THE_SURVIVALIST_PATH___UNPROTECTED__BUT_DANGEROUS":{"id":136,"title":"The survivalist path - Unprotected, but dangerous","level":2,"depth":2,"priority":22},"THE_SURVIVALIST_PATH___THRIFTY":{"id":137,"title":"The survivalist path - Thrifty","level":2,"depth":2,"priority":22},"THE_SURVIVALIST_PATH___ZHIVCHIK":{"id":138,"title":"The survivalist path - Zhivchik","level":9,"depth":3,"priority":93},"THE_SURVIVALIST_PATH___WOUNDED_BEAST":{"id":139,"title":"The survivalist path - Wounded beast","level":10,"depth":3,"priority":103},"THE_SURVIVALIST_PATH___TOUGH_GUY":{"id":140,"title":"The survivalist path - Tough guy","level":10,"depth":4,"priority":104},"COURTESY_VISIT":{"id":141,"title":"Courtesy visit","level":20,"depth":5,"priority":205},"NOSTALGIA":{"id":142,"title":"Nostalgia","level":28,"depth":6,"priority":286},"THE_TARKOV_SHOOTER___PART_1":{"id":143,"title":"The Tarkov shooter - Part 1","level":2,"depth":3,"priority":23},"THE_TARKOV_SHOOTER___PART_2":{"id":144,"title":"The Tarkov shooter - Part 2","level":2,"depth":4,"priority":24},"THE_TARKOV_SHOOTER___PART_3":{"id":145,"title":"The Tarkov shooter - Part 3","level":2,"depth":5,"priority":25},"THE_TARKOV_SHOOTER___PART_4":{"id":146,"title":"The Tarkov shooter - Part 4","level":2,"depth":6,"priority":26},"THE_TARKOV_SHOOTER___PART_5":{"id":147,"title":"The Tarkov shooter - Part 5","level":2,"depth":7,"priority":27},"THE_TARKOV_SHOOTER___PART_6":{"id":148,"title":"The Tarkov shooter - Part 6","level":2,"depth":8,"priority":28},"THE_TARKOV_SHOOTER___PART_7":{"id":149,"title":"The Tarkov shooter - Part 7","level":2,"depth":9,"priority":29},"THE_TARKOV_SHOOTER___PART_8":{"id":150,"title":"The Tarkov shooter - Part 8","level":2,"depth":10,"priority":30},"THE_SURVIVALIST_PATH___COLD_BLOODED":{"id":151,"title":"The survivalist path - Cold blooded","level":2,"depth":4,"priority":24},"COLLEAGUES___PART_2":{"id":152,"title":"Colleagues - Part 2","level":21,"depth":7,"priority":217},"COLLEAGUES___PART_3":{"id":153,"title":"Colleagues - Part 3","level":21,"depth":9,"priority":219},"THE_SURVIVALIST_PATH___COMBAT_MEDIC":{"id":154,"title":"The survivalist path - Combat medic","level":17,"depth":5,"priority":175},"AMBULANCE":{"id":155,"title":"Ambulance","level":25,"depth":5,"priority":255},"THE_HUNTSMAN_PATH___SECURED_PERIMETER":{"id":156,"title":"The Huntsman path - Secured perimeter","level":15,"depth":4,"priority":154},"RESERVE":{"id":157,"title":"Reserve","level":20,"depth":5,"priority":205},"THE_HUNTSMAN_PATH___FOREST_CLEANING":{"id":158,"title":"The Huntsman Path - Forest Cleaning","level":17,"depth":5,"priority":175},"THE_HUNTSMAN_PATH___CONTROLLER":{"id":159,"title":"The Huntsman path - Controller","level":17,"depth":6,"priority":176},"THE_HUNTSMAN_PATH___EVIL_WATCHMAN":{"id":160,"title":"The Huntsman path - Evil watchman","level":17,"depth":6,"priority":176},"FISHING_PLACE":{"id":161,"title":"Fishing place","level":25,"depth":6,"priority":256},"THE_HUNTSMAN_PATH___TROPHY":{"id":162,"title":"The Huntsman Path - Trophy","level":17,"depth":5,"priority":175},"THE_HUNTSMAN_PATH___JUSTICE":{"id":163,"title":"The Huntsman path - Justice","level":17,"depth":6,"priority":176},"THE_HUNTSMAN_PATH___SELLOUT":{"id":164,"title":"The Huntsman path - Sellout","level":17,"depth":6,"priority":176},"THE_HUNTSMAN_PATH___WOODS_KEEPER":{"id":165,"title":"The Huntsman Path - Woods Keeper","level":17,"depth":5,"priority":175},"THE_HUNTSMAN_PATH___ERASER___PART_1":{"id":166,"title":"The Huntsman path - Eraser - Part 1","level":17,"depth":6,"priority":176},"THE_HUNTSMAN_PATH___ERASER___PART_2":{"id":167,"title":"The Huntsman path - Eraser - Part 2","level":17,"depth":7,"priority":177},"HUNTING_TRIP":{"id":168,"title":"Hunting trip","level":17,"depth":6,"priority":176},"OPERATION_AQUARIUS___PART_1":{"id":169,"title":"Operation Aquarius - Part 1","level":6,"depth":1,"priority":61},"OPERATION_AQUARIUS___PART_2":{"id":170,"title":"Operation Aquarius - Part 2","level":6,"depth":2,"priority":62},"POLIKHIM_HOBO":{"id":171,"title":"Polikhim hobo","level":10,"depth":4,"priority":104},"REGULATED_MATERIALS":{"id":172,"title":"Regulated materials","level":25,"depth":5,"priority":255},"STIRRUP":{"id":173,"title":"Stirrup","level":8,"depth":2,"priority":82},"MENTOR":{"id":174,"title":"Mentor","level":14,"depth":22,"priority":162},"BAD_HABIT":{"id":175,"title":"Bad habit","level":12,"depth":3,"priority":123},"THE_KEY_TO_SUCCESS":{"id":176,"title":"The key to success","level":26,"depth":6,"priority":266},"SHADY_BUSINESS":{"id":177,"title":"Shady Business","level":20,"depth":3,"priority":203},"POSTMAN_PAT___PART_2":{"id":178,"title":"Postman Pat - Part 2","level":10,"depth":6,"priority":106},"OUT_OF_CURIOSITY":{"id":179,"title":"Out of curiosity","level":11,"depth":7,"priority":117},"BIG_CUSTOMER":{"id":180,"title":"Big customer","level":11,"depth":7,"priority":117},"THE_SURVIVALIST_PATH___JUNKIE":{"id":181,"title":"The survivalist path - Junkie","level":1,"depth":5,"priority":15},"TEXTILE___PART_1":{"id":182,"title":"Textile - Part 1","level":42,"depth":8,"priority":428},"TEXTILE___PART_2":{"id":183,"title":"Textile - Part 2","level":42,"depth":9,"priority":429},"ANESTHESIA":{"id":184,"title":"Anesthesia","level":21,"depth":7,"priority":217},"COLLEAGUES___PART_1":{"id":185,"title":"Colleagues - Part 1","level":21,"depth":6,"priority":216},"RIGGED_GAME":{"id":186,"title":"Rigged game","level":21,"depth":8,"priority":218},"CHEMISTRY_CLOSET":{"id":187,"title":"Chemistry closet","level":21,"depth":8,"priority":218},"SAMPLES":{"id":188,"title":"Samples","level":21,"depth":8,"priority":218},"TERRAGROUP_EMPLOYEE":{"id":189,"title":"TerraGroup employee","level":21,"depth":9,"priority":219},"THE_HUNTSMAN_PATH___SADIST":{"id":190,"title":"The Huntsman path - Sadist","level":21,"depth":9,"priority":219},"THE_BUNKER___PART_1":{"id":191,"title":"The bunker - Part 1","level":10,"depth":4,"priority":104},"THE_BUNKER___PART_2":{"id":192,"title":"The bunker - Part 2","level":10,"depth":5,"priority":105},"SEARCH_MISSION":{"id":193,"title":"Search mission","level":5,"depth":1,"priority":51},"THE_STYLISH_ONE":{"id":194,"title":"The stylish one","level":26,"depth":7,"priority":267},"THE_SURVIVALIST_PATH___EAGLE_OWL":{"id":196,"title":"The survivalist path - Eagle-owl","level":1,"depth":5,"priority":15},"COLLECTOR":{"id":195,"title":"Collector","level":40,"depth":15,"priority":415},"AN_APPLE_A_DAY___KEEPS_THE_DOCTOR_AWAY":{"id":197,"title":"An apple a day - keeps the doctor away","level":1,"depth":8,"priority":18},"HUNTER":{"id":198,"title":"Hunter","level":33,"depth":2,"priority":332},"NO_OFFENCE":{"id":199,"title":"No offence","level":11,"depth":1,"priority":111},"TRUST_REGAIN":{"id":200,"title":"Trust regain","level":11,"depth":1,"priority":111},"LOYALTY_BUYOUT":{"id":201,"title":"Loyalty buyout","level":11,"depth":1,"priority":111},"HIPPOCRATIC_OATH":{"id":202,"title":"Hippocratic Oath","level":10,"depth":6,"priority":106},"DISEASE_HISTORY":{"id":203,"title":"Disease history","level":10,"depth":5,"priority":105},"A_FUEL_MATTER":{"id":204,"title":"A fuel matter","level":15,"depth":1,"priority":151},"SURPLUS_GOODS":{"id":205,"title":"Surplus Goods","level":12,"depth":5,"priority":125},"BACK_DOOR":{"id":206,"title":"Back door","level":12,"depth":6,"priority":126},"REVISION___PART_1":{"id":207,"title":"Revision - Part 1","level":11,"depth":10,"priority":120},"CLASSIFIED_TECHNOLOGIES":{"id":208,"title":"Classified technologies","level":11,"depth":11,"priority":121},"INVENTORY_CHECK":{"id":209,"title":"Inventory check","level":15,"depth":2,"priority":152},"NO_PLACE_FOR_RENEGADES":{"id":210,"title":"No Place for Renegades","level":12,"depth":6,"priority":126},"DOCUMENTS":{"id":211,"title":"Documents","level":10,"depth":7,"priority":107},"SAFE_CORRIDOR":{"id":212,"title":"Safe corridor","level":11,"depth":8,"priority":118},"THE_HUNTSMAN_PATH___FACTORY_CHIEF":{"id":213,"title":"The Huntsman Path - Factory Chief","level":17,"depth":5,"priority":175},"PEST_CONTROL":{"id":214,"title":"Pest control","level":17,"depth":6,"priority":176},"CAPTURING_OUTPOSTS":{"id":215,"title":"Capturing Outposts","level":42,"depth":13,"priority":433},"INTIMIDATOR":{"id":216,"title":"Intimidator","level":45,"depth":13,"priority":463},"CALIBRATION":{"id":217,"title":"Calibration","level":47,"depth":0,"priority":470},"NIGHT_SWEEP":{"id":218,"title":"Night Sweep","level":50,"depth":0,"priority":500},"SWIFT_ONE":{"id":219,"title":"Swift One","level":50,"depth":10,"priority":510},"CRISIS":{"id":220,"title":"Crisis","level":48,"depth":0,"priority":480},"ESCORT":{"id":221,"title":"Escort","level":60,"depth":13,"priority":613},"THE_CHOICE":{"id":222,"title":"The Choice","level":60,"depth":13,"priority":613},"CLEANER":{"id":223,"title":"Cleaner","level":45,"depth":25,"priority":475},"LONG_LINE":{"id":224,"title":"Long Line","level":45,"depth":7,"priority":457},"THE_HUNTSMAN_PATH___RELENTLESS":{"id":225,"title":"The Huntsman path - Relentless","level":65,"depth":0,"priority":650},"BOOZE":{"id":226,"title":"Booze","level":50,"depth":8,"priority":508},"THE_COURIER":{"id":227,"title":"The Courier","level":55,"depth":1,"priority":551},"SPECIAL_EQUIPMENT":{"id":228,"title":"Special Equipment","level":60,"depth":26,"priority":626},"LONG_ROAD":{"id":229,"title":"Long Road","level":20,"depth":6,"priority":206},"CORPORATE_SECRETS":{"id":230,"title":"Corporate Secrets","level":17,"depth":4,"priority":174},"SEASIDE_VACATION":{"id":231,"title":"Seaside Vacation","level":17,"depth":5,"priority":175},"EASY_JOB___PART_1":{"id":232,"title":"Easy Job - Part 1","level":1,"depth":9,"priority":19},"EASY_JOB___PART_2":{"id":233,"title":"Easy Job - Part 2","level":1,"depth":10,"priority":20},"CARGO_X___PART_4":{"id":234,"title":"Cargo X - Part 4","level":1,"depth":21,"priority":31},"THE_HERMIT":{"id":235,"title":"The Hermit","level":1,"depth":5,"priority":15},"COMMUNICATION_DIFFICULTIES":{"id":236,"title":"Communication Difficulties","level":1,"depth":2,"priority":12},"MISSING_CARGO":{"id":237,"title":"Missing Cargo","level":1,"depth":7,"priority":17},"THE_HUNTSMAN_PATH___OUTCASTS":{"id":238,"title":"The Huntsman path - Outcasts","level":1,"depth":6,"priority":16},"REVISION___PART_2":{"id":239,"title":"Revision - Part 2","level":1,"depth":10,"priority":20},"OUR_OWN_LAND":{"id":240,"title":"Our Own Land","level":1,"depth":11,"priority":21},"LOST_CONTACT":{"id":241,"title":"Lost Contact","level":1,"depth":7,"priority":17},"ENERGY_CRISIS":{"id":242,"title":"Energy Crisis","level":25,"depth":0,"priority":250},"OVERPOPULATION":{"id":243,"title":"Overpopulation","level":1,"depth":12,"priority":22},"COUNTERACTION":{"id":244,"title":"Counteraction","level":1,"depth":11,"priority":21},"BROADCAST":{"id":245,"title":"Broadcast","level":1,"depth":3,"priority":13},"TOP_SECRET":{"id":246,"title":"Top Secret","level":1,"depth":6,"priority":16},"STRAY_DOGS":{"id":247,"title":"Stray Dogs","level":1,"depth":7,"priority":17},"DRUG_TRAFFICKING":{"id":248,"title":"Drug Trafficking","level":1,"depth":8,"priority":18},"RECONNAISSANCE":{"id":249,"title":"Reconnaissance","level":1,"depth":10,"priority":20}}};
+
+    // State
+    let allItems = {};
+    let firItems = {};
+    let searchHistory = [];
+    let showDetails = true;
+    let ammoData = [];
+    let armorData = [];
+    let selectedAmmo = null;
+
+    // Popular calibers
+    const POPULAR_CALIBERS = ['7.62x39mm', '5.45x39mm', '5.56x45mm NATO', '7.62x51mm NATO', '9x19mm Parabellum', '12/70', '7.62x54mmR', '.338 Lapua Magnum', '9x39mm'];
+
+    // Cookie
+    function getCookie(n) { const m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : null; }
+    function setCookie(n, v, d=365) { document.cookie = `${n}=${v}; expires=${new Date(Date.now()+d*864e5).toUTCString()}; path=/; SameSite=Lax`; }
+
+    function loadProgress() {
+      const s = getCookie('tarkov_fir_v2');
+      if (s) try { return JSON.parse(decodeURIComponent(s)); } catch(e) {}
+      return {};
+    }
+    function saveProgress(progress) {
+      setCookie('tarkov_fir_v2', encodeURIComponent(JSON.stringify(progress)));
+    }
+    function setCollected(itemId, count) {
+      const item = allItems[itemId];
+      if (!item || !item.fir) return;
+      const progress = loadProgress();
+      count = Math.max(0, Math.min(count, item.fir.totalRequired));
+      if (count === 0) delete progress[itemId];
+      else progress[itemId] = count;
+      saveProgress(progress);
+      document.querySelectorAll('.search-column input').forEach(input => {
+        if (input.value.trim()) input.dispatchEvent(new Event('input'));
+      });
+      renderHistory();
+    }
+    function loadHistory() {
+      const s = getCookie('tarkov_history');
+      if (s) try { searchHistory = JSON.parse(decodeURIComponent(s)); } catch(e) { searchHistory = []; }
+    }
+    function saveHistory() {
+      setCookie('tarkov_history', encodeURIComponent(JSON.stringify(searchHistory.slice(0, 30))));
+    }
+
+    function initFirData() {
+      Object.entries(BASE_DATA.items || {}).forEach(([id, item]) => {
+        firItems[id] = {
+          totalRequired: item.totalRequired,
+          sources: item.questBreakdown.map(q => ({ type: 'quest', name: q.questName, count: q.count }))
+        };
+      });
+    }
+
+    // Fetch all data from API
+    async function fetchData() {
+      const btn = document.getElementById('btn-fetch');
+      const status = document.getElementById('api-status');
+      btn.disabled = true;
+      status.textContent = '取得中...';
+      status.className = 'status';
+
+      const query = `{
+        items {
+          id name shortName
+          avg24hPrice width height
+          types
+          properties {
+            ... on ItemPropertiesArmor {
+              class
+              durability
+              material { name }
+              zones
+            }
+            ... on ItemPropertiesArmorAttachment {
+              class
+              durability
+              material { name }
+              zones
+            }
+          }
+        }
+        ammo {
+          item { id name shortName avg24hPrice }
+          caliber
+          penetrationPower
+          damage
+          armorDamage
+        }
+        hideoutStations {
+          name
+          levels {
+            level
+            itemRequirements {
+              item { id name shortName }
+              count
+              attributes { name value }
+            }
+          }
+        }
+      }`;
+
+      try {
+        const res = await fetch('https://api.tarkov.dev/graphql', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+        const json = await res.json();
+        if (json.errors) throw new Error(json.errors[0].message);
+
+        const data = json.data;
+
+        // Build all items
+        allItems = {};
+        armorData = [];
+        data.items.forEach(item => {
+          const slots = (item.width || 1) * (item.height || 1);
+          const perSlot = item.avg24hPrice ? Math.round(item.avg24hPrice / slots) : 0;
+
+          allItems[item.id] = {
+            id: item.id,
+            name: item.name,
+            nameShort: item.shortName,
+            price: item.avg24hPrice,
+            slots,
+            perSlot,
+            types: item.types || [],
+            fir: null
+          };
+
+          // Collect armor data
+          if (item.properties && (item.properties.class !== undefined)) {
+            armorData.push({
+              id: item.id,
+              name: item.name,
+              shortName: item.shortName,
+              price: item.avg24hPrice,
+              class: item.properties.class,
+              durability: item.properties.durability,
+              material: item.properties.material?.name,
+              zones: item.properties.zones || []
+            });
+          }
+        });
+
+        // Match FiR items
+        Object.entries(BASE_DATA.items || {}).forEach(([baseId, baseItem]) => {
+          const match = Object.values(allItems).find(i => i.name.toLowerCase() === baseItem.name.toLowerCase());
+          if (match) {
+            match.fir = {
+              totalRequired: baseItem.totalRequired,
+              sources: baseItem.questBreakdown.map(q => ({ type: 'quest', name: q.questName, count: q.count }))
+            };
+          }
+        });
+
+        // Add hideout FiR
+        data.hideoutStations.forEach(station => {
+          station.levels.forEach(level => {
+            level.itemRequirements.forEach(req => {
+              const isFir = req.attributes?.some(a => a.name === 'foundInRaid' && a.value === 'true');
+              if (isFir && allItems[req.item.id]) {
+                const item = allItems[req.item.id];
+                if (!item.fir) item.fir = { totalRequired: 0, sources: [] };
+                item.fir.totalRequired += req.count;
+                item.fir.sources.push({ type: 'hideout', name: `${station.name} Lv${level.level}`, count: req.count });
+              }
+            });
+          });
+        });
+
+        // Build ammo data
+        ammoData = data.ammo.map(a => ({
+          id: a.item.id,
+          name: a.item.name,
+          shortName: a.item.shortName,
+          price: a.item.avg24hPrice,
+          caliber: a.caliber,
+          pen: a.penetrationPower,
+          damage: a.damage,
+          armorDamage: a.armorDamage
+        })).filter(a => a.pen > 0).sort((a, b) => b.pen - a.pen);
+
+        status.textContent = `${Object.keys(allItems).length}件`;
+        status.className = 'status ok';
+        renderHistory();
+        renderAmmoGrid();
+
+      } catch (err) {
+        status.textContent = 'エラー';
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Price tier
+    function getPriceTier(perSlot) {
+      if (!perSlot || perSlot < 10000) return 'none';
+      if (perSlot >= 100000) return 'gold';
+      if (perSlot >= 50000) return 'silver';
+      if (perSlot >= 30000) return 'bronze';
+      if (perSlot >= 20000) return 'high';
+      if (perSlot >= 15000) return 'mid';
+      return 'low';
+    }
+
+    function formatPrice(p) {
+      if (!p) return '-';
+      if (p >= 1000000) return (p/1000000).toFixed(1)+'M';
+      if (p >= 1000) return Math.round(p/1000)+'K';
+      return p.toString();
+    }
+
+    // Search
+    function searchItems(query, limit = 8) {
+      if (!query || Object.keys(allItems).length === 0) return [];
+      const q = query.toLowerCase();
+      const matches = Object.values(allItems).filter(item =>
+        item.name.toLowerCase().includes(q) || (item.nameShort && item.nameShort.toLowerCase().includes(q))
+      );
+      matches.sort((a, b) => {
+        const aExact = a.name.toLowerCase() === q || (a.nameShort||'').toLowerCase() === q;
+        const bExact = b.name.toLowerCase() === q || (b.nameShort||'').toLowerCase() === q;
+        if (aExact !== bExact) return aExact ? -1 : 1;
+        const aStarts = a.name.toLowerCase().startsWith(q);
+        const bStarts = b.name.toLowerCase().startsWith(q);
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        return (b.perSlot || 0) - (a.perSlot || 0);
+      });
+      return matches.slice(0, limit);
+    }
+
+    function searchItem(query) {
+      const results = searchItems(query, 1);
+      return results[0] || null;
+    }
+
+    function addToHistory(itemId) {
+      if (!itemId) return;
+      searchHistory = searchHistory.filter(id => id !== itemId);
+      searchHistory.unshift(itemId);
+      searchHistory = searchHistory.slice(0, 30);
+      saveHistory();
+      renderHistory();
+    }
+
+    function clearHistory() {
+      searchHistory = [];
+      saveHistory();
+      renderHistory();
+    }
+
+    // Render item card
+    function renderItemCard(item) {
+      const progress = loadProgress();
+      const tier = getPriceTier(item.perSlot);
+      const hasFir = !!item.fir;
+      const nameClass = tier === 'gold' ? 'gold' : tier === 'silver' ? 'silver' : tier === 'bronze' ? 'bronze' : '';
+      const tierClass = (tier === 'gold' || tier === 'silver' || tier === 'bronze') ? `tier-${tier}` : '';
+
+      if (hasFir) {
+        const collected = progress[item.id] || 0;
+        const total = item.fir.totalRequired;
+        const isComplete = collected >= total;
+        const isPartial = collected > 0 && !isComplete;
+        const statusClass = isComplete ? 'fir-complete' : isPartial ? 'fir-partial' : 'fir-need';
+
+        let sourcesHtml = '';
+        if (showDetails && item.fir.sources.length > 0) {
+          sourcesHtml = `<div class="result-sources">${item.fir.sources.slice(0,3).map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}</div>`;
+        }
+
+        return `
+          <div class="result-card ${statusClass} ${tierClass}">
+            <div class="result-name ${nameClass}">${item.name}<span class="fir-badge">FiR</span></div>
+            <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
+            <div class="result-row"><span class="label">価格</span><span class="value">${formatPrice(item.price)} (${item.slots}s)</span></div>
+            <div class="fir-controls">
+              <button onclick="setCollected('${item.id}', ${collected - 1})">-</button>
+              <input type="number" value="${collected}" min="0" max="${total}" onchange="setCollected('${item.id}', parseInt(this.value)||0)">
+              <span class="total">/ ${total}</span>
+              <button onclick="setCollected('${item.id}', ${collected + 1})">+</button>
+              <span class="value ${isComplete ? 'ok' : 'need'}" style="margin-left:auto;">${isComplete ? '完了' : 'あと'+(total-collected)}</span>
+            </div>
+            ${sourcesHtml}
+          </div>
+        `;
+      } else {
+        return `
+          <div class="result-card ${tierClass}">
+            <div class="result-name ${nameClass}">${item.name}</div>
+            <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
+            <div class="result-row"><span class="label">価格</span><span class="value">${formatPrice(item.price)} (${item.slots}s)</span></div>
+          </div>
+        `;
+      }
+    }
+
+    function renderResults(items, container) {
+      if (items.length === 0) {
+        container.innerHTML = '<div class="no-result">見つかりません</div>';
+        return;
+      }
+      container.innerHTML = `<div class="results-list">${items.map(item => renderItemCard(item)).join('')}</div>`;
+    }
+
+    function createColumns() {
+      const count = parseInt(document.getElementById('col-count').value);
+      const container = document.getElementById('columns-container');
+      container.className = `columns-container cols-${count}`;
+      container.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const col = document.createElement('div');
+        col.className = 'search-column';
+        col.innerHTML = `
+          <input type="text" placeholder="アイテム名..." data-col="${i}">
+          <div class="result-container" id="result-${i}"><div class="no-result">検索してください</div></div>
+        `;
+        container.appendChild(col);
+
+        col.querySelector('input').addEventListener('input', (e) => {
+          const query = e.target.value.trim();
+          const rc = document.getElementById(`result-${i}`);
+          if (!query) { rc.innerHTML = '<div class="no-result">検索してください</div>'; return; }
+          const items = searchItems(query, 8);
+          renderResults(items, rc);
+          if (items.length > 0) addToHistory(items[0].id);
+        });
+      }
+    }
+
+    function renderHistory() {
+      const grid = document.getElementById('history-grid');
+      if (searchHistory.length === 0 || Object.keys(allItems).length === 0) {
+        grid.innerHTML = '<div class="no-result">履歴なし</div>';
+        return;
+      }
+      grid.innerHTML = searchHistory.slice(0, 15).map(id => {
+        const item = allItems[id];
+        if (!item) return '';
+        const tier = getPriceTier(item.perSlot);
+        return `<div class="history-item" onclick="fillSearch('${item.name.replace(/'/g, "\\'")}')"><span class="name">${item.nameShort || item.name.slice(0,12)}</span><span class="price price-tier ${tier}" style="font-size:0.75rem;padding:2px 4px;">${formatPrice(item.perSlot)}</span></div>`;
+      }).join('');
+    }
+
+    function fillSearch(name) {
+      const input = document.querySelector('.search-column input');
+      if (input) { input.value = name; input.dispatchEvent(new Event('input')); }
+    }
+
+    // Bulk
+    function bulkSearch() {
+      const terms = document.getElementById('bulk-input').value.split('\n').map(s => s.trim()).filter(s => s);
+      const container = document.getElementById('bulk-results');
+      if (terms.length === 0) { container.innerHTML = '<div class="no-result">入力してください</div>'; return; }
+      container.innerHTML = terms.map(term => {
+        const item = searchItem(term);
+        if (!item) return `<div class="result-card"><div class="result-name">${term}</div><div class="no-result">見つかりません</div></div>`;
+        return renderItemCard(item);
+      }).join('');
+    }
+
+    function clearBulk() {
+      document.getElementById('bulk-input').value = '';
+      document.getElementById('bulk-results').innerHTML = '';
+    }
+
+    // ============================================
+    // Armor Calculator
+    // ============================================
+    function renderAmmoGrid() {
+      const grid = document.getElementById('ammo-grid');
+      const caliberFilter = document.getElementById('caliber-filter').value;
+      const priceFilter = document.getElementById('ammo-price-filter').value;
+      const penFilter = document.getElementById('pen-filter').value;
+
+      let filtered = ammoData.filter(a => {
+        if (caliberFilter === 'popular' && !POPULAR_CALIBERS.includes(a.caliber)) return false;
+        if (priceFilter === 'cheap' && a.price > 500) return false;
+        if (priceFilter === 'mid' && (a.price <= 500 || a.price > 1500)) return false;
+        if (priceFilter === 'expensive' && a.price <= 1500) return false;
+        if (penFilter === 'low' && a.pen > 20) return false;
+        if (penFilter === 'mid' && (a.pen <= 20 || a.pen > 40)) return false;
+        if (penFilter === 'high' && a.pen <= 40) return false;
+        return true;
+      });
+
+      // Limit to top 30 by penetration
+      filtered = filtered.slice(0, 30);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-result">条件に合う弾薬がありません</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(a => {
+        const threatClass = a.pen >= 40 ? 'threat-high' : a.pen >= 25 ? 'threat-mid' : 'threat-low';
+        const selected = selectedAmmo && selectedAmmo.id === a.id ? 'selected' : '';
+        return `
+          <div class="ammo-card ${threatClass} ${selected}" onclick="selectAmmo('${a.id}')">
+            <div class="ammo-name">${a.shortName || a.name}</div>
+            <div class="ammo-stats">
+              <span class="pen">貫通 ${a.pen}</span>
+              <span class="dmg">ダメ ${a.damage}</span>
+              <span class="price">${formatPrice(a.price)}₽</span>
+            </div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">${a.caliber}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectAmmo(ammoId) {
+      selectedAmmo = ammoData.find(a => a.id === ammoId);
+      renderAmmoGrid();
+      calculateArmor();
+    }
+
+    // Penetration chance formula (simplified Tarkov formula)
+    function calcPenChance(pen, armorClass, durabilityPercent = 100) {
+      // Simplified formula based on community research
+      const effectiveArmor = armorClass * 10 * (durabilityPercent / 100);
+      const diff = pen - effectiveArmor;
+
+      if (diff >= 20) return 100;
+      if (diff >= 10) return 90 + (diff - 10);
+      if (diff >= 0) return 50 + diff * 4;
+      if (diff >= -10) return 50 + diff * 4;
+      if (diff >= -20) return 10 + (diff + 10) * 4;
+      return Math.max(0, 10 + diff * 0.5);
+    }
+
+    // Calculate expected survival shots (probabilistic simulation)
+    function calcExpectedSurvival(pen, armorClass, durability, armorDamage) {
+      const simulations = 1000;
+      let totalShots = 0;
+
+      for (let sim = 0; sim < simulations; sim++) {
+        let currentDur = durability;
+        let shots = 0;
+
+        while (shots < 30) {
+          const durPercent = durability > 0 ? (currentDur / durability) * 100 : 0;
+          const penChance = calcPenChance(pen, armorClass, Math.max(0, durPercent)) / 100;
+
+          // Random penetration check
+          if (Math.random() < penChance) {
+            break; // Penetrated = dead
+          }
+
+          shots++;
+          currentDur -= armorDamage || pen * 0.5;
+          if (currentDur <= 0) {
+            // Armor destroyed, next shot will penetrate
+            break;
+          }
+        }
+        totalShots += shots;
+      }
+
+      return totalShots / simulations;
+    }
+
+    // Get representative price for a class (median of available armors)
+    function getClassRepPrice(armorClass) {
+      const classArmors = armorData.filter(a => a.class === armorClass && a.price > 0);
+      if (classArmors.length === 0) return 100000 * armorClass; // Estimate
+      classArmors.sort((a, b) => a.price - b.price);
+      return classArmors[Math.floor(classArmors.length / 3)].price; // Lower third as "budget" option
+    }
+
+    function calculateArmor() {
+      const results = document.getElementById('armor-results');
+      const compareSection = document.getElementById('class-compare');
+      const compareTbody = document.getElementById('compare-tbody');
+
+      if (!selectedAmmo) {
+        results.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
+        compareSection.style.display = 'none';
+        return;
+      }
+
+      // Calculate class comparison
+      const classStats = [];
+      let prevSurvival = 0;
+
+      for (let c = 2; c <= 6; c++) {
+        const penChance = calcPenChance(selectedAmmo.pen, c, 100);
+        const avgDurability = 45 + c * 8; // Rough estimate
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, c, avgDurability, selectedAmmo.armorDamage);
+        const repPrice = getClassRepPrice(c);
+        const costPerShot = expectedSurvival > 0.1 ? Math.round(repPrice / expectedSurvival) : Infinity;
+        const delta = expectedSurvival - prevSurvival;
+
+        classStats.push({
+          class: c,
+          penChance,
+          expectedSurvival,
+          delta,
+          repPrice,
+          costPerShot
+        });
+
+        prevSurvival = expectedSurvival;
+      }
+
+      // Render class comparison table
+      compareSection.style.display = 'block';
+      compareTbody.innerHTML = classStats.map((s, i) => {
+        const survivalClass = s.expectedSurvival >= 3 ? 'good' : s.expectedSurvival >= 1.5 ? 'ok' : 'bad';
+        const penClass = s.penChance < 20 ? 'safe' : s.penChance < 50 ? 'risky' : 'dangerous';
+        const deltaText = i === 0 ? '-' : (s.delta > 0 ? `<span class="delta">+${s.delta.toFixed(1)}発</span>` : `${s.delta.toFixed(1)}発`);
+        const barWidth = Math.min(100, s.expectedSurvival * 15);
+        const barClass = survivalClass;
+
+        return `<tr>
+          <td class="class-cell"><span class="armor-class c${s.class}">Class ${s.class}</span></td>
+          <td><span class="pen-chance"><span class="value ${penClass}">${Math.round(s.penChance)}%</span></span></td>
+          <td>
+            <div class="shots-cell ${survivalClass}">${s.expectedSurvival.toFixed(1)}発</div>
+            <div class="survival-bar"><div class="survival-bar-fill ${barClass}" style="width:${barWidth}%"></div></div>
+          </td>
+          <td>${deltaText}</td>
+          <td>${formatPrice(s.repPrice)}₽</td>
+          <td class="cost-per-shot">${s.costPerShot === Infinity ? '∞' : formatPrice(s.costPerShot)}₽/発</td>
+        </tr>`;
+      }).join('');
+
+      // Build armor list with survival data
+      const allArmorsWithStats = [];
+      armorData.forEach(armor => {
+        if (!armor.class || armor.class < 2 || !armor.price) return;
+
+        const penChance = calcPenChance(selectedAmmo.pen, armor.class, 100);
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, armor.class, armor.durability, selectedAmmo.armorDamage);
+        const costPerShot = expectedSurvival > 0.1 ? Math.round(armor.price / expectedSurvival) : Infinity;
+
+        allArmorsWithStats.push({
+          ...armor,
+          penChance,
+          expectedSurvival,
+          costPerShot
+        });
+      });
+
+      // Sort by cost per shot (best value first)
+      allArmorsWithStats.sort((a, b) => a.costPerShot - b.costPerShot);
+
+      // Find best cost-per-shot
+      const bestCostPerShot = allArmorsWithStats.length > 0 ? allArmorsWithStats[0].costPerShot : Infinity;
+
+      // Render top armors
+      let html = `<div style="margin-bottom:12px;padding:12px;background:var(--card);border-radius:6px;">
+        <div style="font-size:0.9rem;color:var(--muted);">選択中の弾薬</div>
+        <div style="font-size:1.1rem;font-weight:600;color:var(--accent);">${selectedAmmo.name}</div>
+        <div style="font-size:0.85rem;color:var(--muted);">貫通 ${selectedAmmo.pen} / ダメージ ${selectedAmmo.damage} / アーマーダメ ${selectedAmmo.armorDamage || '?'}</div>
+      </div>`;
+
+      const topArmors = allArmorsWithStats.slice(0, 12);
+      topArmors.forEach((armor, idx) => {
+        const survivalClass = armor.expectedSurvival >= 3 ? 'good' : armor.expectedSurvival >= 1.5 ? 'ok' : 'bad';
+        const isBestValue = armor.costPerShot === bestCostPerShot;
+        const cardClass = isBestValue ? 'best-value' : '';
+
+        html += `
+          <div class="armor-card ${cardClass}">
+            <span class="armor-class c${armor.class}">Class ${armor.class}</span>
+            ${isBestValue ? '<span style="color:var(--gold);font-size:0.8rem;margin-left:8px;">★ 最コスパ</span>' : ''}
+            <h4>${armor.shortName || armor.name}</h4>
+            <div style="display:flex;gap:16px;margin-top:8px;">
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">期待生存</div>
+                <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">価格</div>
+                <div style="color:var(--gold);">${formatPrice(armor.price)}₽</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">1発あたり</div>
+                <div style="color:var(--text);">${formatPrice(armor.costPerShot)}₽</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">耐久 ${armor.durability} / 初弾貫通率 ${Math.round(armor.penChance)}%</div>
+          </div>
+        `;
+      });
+
+      results.innerHTML = html;
+    }
+
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+      });
+    });
+
+    // Settings
+    document.getElementById('col-count').addEventListener('change', createColumns);
+    document.getElementById('show-details').addEventListener('change', (e) => {
+      showDetails = e.target.checked;
+      document.querySelectorAll('.search-column input').forEach(input => input.dispatchEvent(new Event('input')));
+    });
+
+    // Armor filters
+    document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('ammo-price-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
+
+    // Download
+    document.getElementById('btn-download').addEventListener('click', () => {
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob(['<!DOCTYPE html>\n' + html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tarkov-tools.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Init
+    initFirData();
+    loadHistory();
+    createColumns();
+    fetchData();
+  </script>
+</body>
+</html>
