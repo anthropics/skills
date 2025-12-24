@@ -208,6 +208,7 @@
       border: 1px solid var(--border);
     }
     .armor-card.recommended { border-color: var(--green); background: rgba(63,185,80,0.1); }
+    .armor-card.best-value { border-color: var(--gold); background: rgba(255,215,0,0.1); }
     .armor-card h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
     .armor-class { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; }
     .armor-class.c1, .armor-class.c2 { background: var(--green); color: #000; }
@@ -219,6 +220,24 @@
     .pen-chance .risky { color: var(--yellow); }
     .pen-chance .dangerous { color: var(--red); }
     .shots-to-kill { font-size: 0.9rem; font-weight: 600; color: var(--blue); margin-bottom: 8px; }
+
+    .class-compare { background: var(--card); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+    .class-compare h3 { color: var(--accent); margin-bottom: 12px; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .compare-table th, .compare-table td { padding: 8px; text-align: center; border-bottom: 1px solid var(--border); }
+    .compare-table th { color: var(--muted); font-weight: normal; }
+    .compare-table .class-cell { font-weight: 600; }
+    .compare-table .shots-cell { font-size: 1.1rem; font-weight: 700; }
+    .compare-table .shots-cell.good { color: var(--green); }
+    .compare-table .shots-cell.ok { color: var(--yellow); }
+    .compare-table .shots-cell.bad { color: var(--red); }
+    .compare-table .delta { font-size: 0.75rem; color: var(--green); }
+    .compare-table .cost-per-shot { color: var(--gold); font-size: 0.8rem; }
+    .survival-bar { height: 8px; background: var(--border); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+    .survival-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .survival-bar-fill.good { background: var(--green); }
+    .survival-bar-fill.ok { background: var(--yellow); }
+    .survival-bar-fill.bad { background: var(--red); }
 
     @media (max-width: 800px) {
       .columns-container { grid-template-columns: repeat(2, 1fr) !important; }
@@ -309,23 +328,26 @@
       <div class="ammo-grid" id="ammo-grid"></div>
     </div>
 
-    <div class="armor-section">
-      <h3>生存目標</h3>
-      <div class="armor-controls">
-        <label>
-          耐えたい弾数
-          <select id="survival-goal">
-            <option value="1">1発（裸よりマシ）</option>
-            <option value="2" selected>2発（最低限）</option>
-            <option value="3">3発（まあまあ）</option>
-            <option value="5">5発（タンク）</option>
-          </select>
-        </label>
-      </div>
+    <div class="class-compare" id="class-compare" style="display:none;">
+      <h3>Class別 生存弾数比較</h3>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>初弾貫通率</th>
+            <th>期待生存弾数</th>
+            <th>前Classとの差</th>
+            <th>代表価格</th>
+            <th>1発あたりコスト</th>
+          </tr>
+        </thead>
+        <tbody id="compare-tbody"></tbody>
+      </table>
     </div>
 
     <div class="armor-section">
-      <h3>推奨アーマー</h3>
+      <h3>コスパ順 推奨アーマー</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ 1発あたりのコストが安い順</p>
       <div class="armor-results" id="armor-results">
         <div class="no-result">弾薬を選択してください</div>
       </div>
@@ -770,92 +792,161 @@
       return Math.max(0, 10 + diff * 0.5);
     }
 
-    // Calculate shots to penetrate
-    function calcShotsToPen(pen, armorClass, durability, armorDamage) {
-      let currentDur = durability;
-      let shots = 0;
-      while (currentDur > 0 && shots < 20) {
-        shots++;
-        const durPercent = (currentDur / durability) * 100;
-        const penChance = calcPenChance(pen, armorClass, durPercent);
-        if (penChance >= 50) break; // Likely penetrates
-        currentDur -= armorDamage || pen * 0.5;
+    // Calculate expected survival shots (probabilistic simulation)
+    function calcExpectedSurvival(pen, armorClass, durability, armorDamage) {
+      const simulations = 1000;
+      let totalShots = 0;
+
+      for (let sim = 0; sim < simulations; sim++) {
+        let currentDur = durability;
+        let shots = 0;
+
+        while (shots < 30) {
+          const durPercent = durability > 0 ? (currentDur / durability) * 100 : 0;
+          const penChance = calcPenChance(pen, armorClass, Math.max(0, durPercent)) / 100;
+
+          // Random penetration check
+          if (Math.random() < penChance) {
+            break; // Penetrated = dead
+          }
+
+          shots++;
+          currentDur -= armorDamage || pen * 0.5;
+          if (currentDur <= 0) {
+            // Armor destroyed, next shot will penetrate
+            break;
+          }
+        }
+        totalShots += shots;
       }
-      return shots;
+
+      return totalShots / simulations;
+    }
+
+    // Get representative price for a class (median of available armors)
+    function getClassRepPrice(armorClass) {
+      const classArmors = armorData.filter(a => a.class === armorClass && a.price > 0);
+      if (classArmors.length === 0) return 100000 * armorClass; // Estimate
+      classArmors.sort((a, b) => a.price - b.price);
+      return classArmors[Math.floor(classArmors.length / 3)].price; // Lower third as "budget" option
     }
 
     function calculateArmor() {
       const results = document.getElementById('armor-results');
+      const compareSection = document.getElementById('class-compare');
+      const compareTbody = document.getElementById('compare-tbody');
+
       if (!selectedAmmo) {
         results.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
+        compareSection.style.display = 'none';
         return;
       }
 
-      const survivalGoal = parseInt(document.getElementById('survival-goal').value);
+      // Calculate class comparison
+      const classStats = [];
+      let prevSurvival = 0;
 
-      // Group armor by class and find best options
-      const armorByClass = {};
+      for (let c = 2; c <= 6; c++) {
+        const penChance = calcPenChance(selectedAmmo.pen, c, 100);
+        const avgDurability = 45 + c * 8; // Rough estimate
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, c, avgDurability, selectedAmmo.armorDamage);
+        const repPrice = getClassRepPrice(c);
+        const costPerShot = expectedSurvival > 0.1 ? Math.round(repPrice / expectedSurvival) : Infinity;
+        const delta = expectedSurvival - prevSurvival;
+
+        classStats.push({
+          class: c,
+          penChance,
+          expectedSurvival,
+          delta,
+          repPrice,
+          costPerShot
+        });
+
+        prevSurvival = expectedSurvival;
+      }
+
+      // Render class comparison table
+      compareSection.style.display = 'block';
+      compareTbody.innerHTML = classStats.map((s, i) => {
+        const survivalClass = s.expectedSurvival >= 3 ? 'good' : s.expectedSurvival >= 1.5 ? 'ok' : 'bad';
+        const penClass = s.penChance < 20 ? 'safe' : s.penChance < 50 ? 'risky' : 'dangerous';
+        const deltaText = i === 0 ? '-' : (s.delta > 0 ? `<span class="delta">+${s.delta.toFixed(1)}発</span>` : `${s.delta.toFixed(1)}発`);
+        const barWidth = Math.min(100, s.expectedSurvival * 15);
+        const barClass = survivalClass;
+
+        return `<tr>
+          <td class="class-cell"><span class="armor-class c${s.class}">Class ${s.class}</span></td>
+          <td><span class="pen-chance"><span class="value ${penClass}">${Math.round(s.penChance)}%</span></span></td>
+          <td>
+            <div class="shots-cell ${survivalClass}">${s.expectedSurvival.toFixed(1)}発</div>
+            <div class="survival-bar"><div class="survival-bar-fill ${barClass}" style="width:${barWidth}%"></div></div>
+          </td>
+          <td>${deltaText}</td>
+          <td>${formatPrice(s.repPrice)}₽</td>
+          <td class="cost-per-shot">${s.costPerShot === Infinity ? '∞' : formatPrice(s.costPerShot)}₽/発</td>
+        </tr>`;
+      }).join('');
+
+      // Build armor list with survival data
+      const allArmorsWithStats = [];
       armorData.forEach(armor => {
-        if (!armor.class || armor.class < 1) return;
-        if (!armorByClass[armor.class]) armorByClass[armor.class] = [];
+        if (!armor.class || armor.class < 2 || !armor.price) return;
 
         const penChance = calcPenChance(selectedAmmo.pen, armor.class, 100);
-        const shotsToPen = calcShotsToPen(selectedAmmo.pen, armor.class, armor.durability, selectedAmmo.armorDamage);
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, armor.class, armor.durability, selectedAmmo.armorDamage);
+        const costPerShot = expectedSurvival > 0.1 ? Math.round(armor.price / expectedSurvival) : Infinity;
 
-        armorByClass[armor.class].push({
+        allArmorsWithStats.push({
           ...armor,
           penChance,
-          shotsToPen
+          expectedSurvival,
+          costPerShot
         });
       });
 
-      // Sort each class by price
-      Object.values(armorByClass).forEach(arr => arr.sort((a, b) => (a.price || 999999) - (b.price || 999999)));
+      // Sort by cost per shot (best value first)
+      allArmorsWithStats.sort((a, b) => a.costPerShot - b.costPerShot);
 
-      // Find recommended class
-      let recommendedClass = null;
-      for (let c = 1; c <= 6; c++) {
-        const armors = armorByClass[c];
-        if (armors && armors.length > 0) {
-          const best = armors[0];
-          if (best.shotsToPen >= survivalGoal || best.penChance < 30) {
-            recommendedClass = c;
-            break;
-          }
-        }
-      }
+      // Find best cost-per-shot
+      const bestCostPerShot = allArmorsWithStats.length > 0 ? allArmorsWithStats[0].costPerShot : Infinity;
 
-      // Render results
+      // Render top armors
       let html = `<div style="margin-bottom:12px;padding:12px;background:var(--card);border-radius:6px;">
         <div style="font-size:0.9rem;color:var(--muted);">選択中の弾薬</div>
         <div style="font-size:1.1rem;font-weight:600;color:var(--accent);">${selectedAmmo.name}</div>
-        <div style="font-size:0.85rem;color:var(--muted);">貫通 ${selectedAmmo.pen} / ダメージ ${selectedAmmo.damage}</div>
+        <div style="font-size:0.85rem;color:var(--muted);">貫通 ${selectedAmmo.pen} / ダメージ ${selectedAmmo.damage} / アーマーダメ ${selectedAmmo.armorDamage || '?'}</div>
       </div>`;
 
-      for (let c = 1; c <= 6; c++) {
-        const armors = armorByClass[c];
-        if (!armors || armors.length === 0) continue;
+      const topArmors = allArmorsWithStats.slice(0, 12);
+      topArmors.forEach((armor, idx) => {
+        const survivalClass = armor.expectedSurvival >= 3 ? 'good' : armor.expectedSurvival >= 1.5 ? 'ok' : 'bad';
+        const isBestValue = armor.costPerShot === bestCostPerShot;
+        const cardClass = isBestValue ? 'best-value' : '';
 
-        const isRecommended = c === recommendedClass;
-        const topArmors = armors.slice(0, 3);
-
-        html += `<div class="armor-card ${isRecommended ? 'recommended' : ''}">
-          <span class="armor-class c${c}">Class ${c}</span>
-          ${isRecommended ? '<span style="color:var(--green);font-size:0.8rem;margin-left:8px;">★ 推奨</span>' : ''}
-
-          ${topArmors.map(armor => {
-            const chanceClass = armor.penChance < 20 ? 'safe' : armor.penChance < 50 ? 'risky' : 'dangerous';
-            return `
-              <div style="margin-top:8px;padding:8px;background:var(--bg);border-radius:4px;">
-                <h4 style="font-size:0.85rem;margin-bottom:4px;">${armor.shortName || armor.name}</h4>
-                <div class="pen-chance">貫通率: <span class="value ${chanceClass}">${Math.round(armor.penChance)}%</span></div>
-                <div class="shots-to-kill">耐久切れまで: 約${armor.shotsToPen}発</div>
-                <div style="font-size:0.85rem;color:var(--gold);">${formatPrice(armor.price)}₽</div>
+        html += `
+          <div class="armor-card ${cardClass}">
+            <span class="armor-class c${armor.class}">Class ${armor.class}</span>
+            ${isBestValue ? '<span style="color:var(--gold);font-size:0.8rem;margin-left:8px;">★ 最コスパ</span>' : ''}
+            <h4>${armor.shortName || armor.name}</h4>
+            <div style="display:flex;gap:16px;margin-top:8px;">
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">期待生存</div>
+                <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
               </div>
-            `;
-          }).join('')}
-        </div>`;
-      }
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">価格</div>
+                <div style="color:var(--gold);">${formatPrice(armor.price)}₽</div>
+              </div>
+              <div>
+                <div style="font-size:0.75rem;color:var(--muted);">1発あたり</div>
+                <div style="color:var(--text);">${formatPrice(armor.costPerShot)}₽</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">耐久 ${armor.durability} / 初弾貫通率 ${Math.round(armor.penChance)}%</div>
+          </div>
+        `;
+      });
 
       results.innerHTML = html;
     }
@@ -881,7 +972,6 @@
     document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('ammo-price-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
-    document.getElementById('survival-goal').addEventListener('change', calculateArmor);
 
     // Init
     initFirData();
