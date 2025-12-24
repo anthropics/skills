@@ -308,12 +308,12 @@
           </select>
         </label>
         <label>
-          価格帯
-          <select id="ammo-price-filter">
+          ダメージ
+          <select id="ammo-damage-filter">
             <option value="all">すべて</option>
-            <option value="cheap">安い（〜500₽）</option>
-            <option value="mid">中価格（500〜1500₽）</option>
-            <option value="expensive">高い（1500₽〜）</option>
+            <option value="low">低（〜40）</option>
+            <option value="mid">中（40〜60）</option>
+            <option value="high">高（60〜）</option>
           </select>
         </label>
         <label>
@@ -330,13 +330,13 @@
     </div>
 
     <div class="class-compare" id="class-compare" style="display:none;">
-      <h3>Class別 生存弾数比較</h3>
+      <h3>Class別 死亡までの被弾数</h3>
       <table class="compare-table">
         <thead>
           <tr>
             <th>Class</th>
             <th>初弾貫通率</th>
-            <th>期待生存弾数</th>
+            <th>死亡まで</th>
             <th>前Classとの差</th>
             <th>代表価格</th>
             <th>1発あたりコスト</th>
@@ -734,14 +734,14 @@
     function renderAmmoGrid() {
       const grid = document.getElementById('ammo-grid');
       const caliberFilter = document.getElementById('caliber-filter').value;
-      const priceFilter = document.getElementById('ammo-price-filter').value;
+      const damageFilter = document.getElementById('ammo-damage-filter').value;
       const penFilter = document.getElementById('pen-filter').value;
 
       let filtered = ammoData.filter(a => {
         if (caliberFilter === 'popular' && !POPULAR_CALIBERS.includes(a.caliber)) return false;
-        if (priceFilter === 'cheap' && a.price > 500) return false;
-        if (priceFilter === 'mid' && (a.price <= 500 || a.price > 1500)) return false;
-        if (priceFilter === 'expensive' && a.price <= 1500) return false;
+        if (damageFilter === 'low' && a.damage > 40) return false;
+        if (damageFilter === 'mid' && (a.damage <= 40 || a.damage > 60)) return false;
+        if (damageFilter === 'high' && a.damage <= 60) return false;
         if (penFilter === 'low' && a.pen > 20) return false;
         if (penFilter === 'mid' && (a.pen <= 20 || a.pen > 40)) return false;
         if (penFilter === 'high' && a.pen <= 40) return false;
@@ -765,7 +765,7 @@
             <div class="ammo-stats">
               <span class="pen">貫通 ${a.pen}</span>
               <span class="dmg">ダメ ${a.damage}</span>
-              <span class="price">${formatPrice(a.price)}₽</span>
+              <span style="color:var(--muted);">AD ${a.armorDamage || '?'}</span>
             </div>
             <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">${a.caliber}</div>
           </div>
@@ -793,30 +793,37 @@
       return Math.max(0, 10 + diff * 0.5);
     }
 
-    // Calculate expected survival shots (probabilistic simulation)
-    function calcExpectedSurvival(pen, armorClass, durability, armorDamage) {
-      const simulations = 1000;
+    // Calculate expected shots to kill (considering HP damage)
+    // Thorax HP: 85, death when depleted
+    function calcExpectedSurvival(pen, damage, armorClass, durability, armorDamage) {
+      const THORAX_HP = 85;
+      const BLUNT_THROUGHPUT = 0.25; // Approximate blunt damage factor
+      const simulations = 500;
       let totalShots = 0;
 
       for (let sim = 0; sim < simulations; sim++) {
         let currentDur = durability;
+        let currentHP = THORAX_HP;
         let shots = 0;
 
-        while (shots < 30) {
-          const durPercent = durability > 0 ? (currentDur / durability) * 100 : 0;
-          const penChance = calcPenChance(pen, armorClass, Math.max(0, durPercent)) / 100;
+        while (currentHP > 0 && shots < 30) {
+          shots++;
+          const durPercent = durability > 0 ? Math.max(0, (currentDur / durability) * 100) : 0;
+          const penChance = calcPenChance(pen, armorClass, durPercent) / 100;
 
           // Random penetration check
           if (Math.random() < penChance) {
-            break; // Penetrated = dead
+            // Penetrated - full damage
+            currentHP -= damage;
+          } else {
+            // Blocked - blunt damage only
+            const armorEffectiveness = Math.min(0.9, armorClass * 0.1);
+            const bluntDmg = damage * (1 - armorEffectiveness) * BLUNT_THROUGHPUT;
+            currentHP -= bluntDmg;
           }
 
-          shots++;
-          currentDur -= armorDamage || pen * 0.5;
-          if (currentDur <= 0) {
-            // Armor destroyed, next shot will penetrate
-            break;
-          }
+          // Reduce armor durability
+          currentDur -= armorDamage || pen * 0.4;
         }
         totalShots += shots;
       }
@@ -850,7 +857,7 @@
       for (let c = 2; c <= 6; c++) {
         const penChance = calcPenChance(selectedAmmo.pen, c, 100);
         const avgDurability = 45 + c * 8; // Rough estimate
-        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, c, avgDurability, selectedAmmo.armorDamage);
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, selectedAmmo.damage, c, avgDurability, selectedAmmo.armorDamage);
         const repPrice = getClassRepPrice(c);
         const costPerShot = expectedSurvival > 0.1 ? Math.round(repPrice / expectedSurvival) : Infinity;
         const delta = expectedSurvival - prevSurvival;
@@ -889,13 +896,24 @@
         </tr>`;
       }).join('');
 
-      // Build armor list with survival data
+      // Build armor list with survival data (thorax protection only)
       const allArmorsWithStats = [];
       armorData.forEach(armor => {
         if (!armor.class || armor.class < 2 || !armor.price) return;
+        // Skip side armor, back armor, non-thorax protection
+        const zones = armor.zones || [];
+        const name = (armor.name || '').toLowerCase();
+        // Skip if explicitly side or back armor
+        if (name.includes('side') || name.includes('back')) return;
+        // If zones specified, must have front thorax
+        const hasFrontThorax = zones.some(z => {
+          const zl = z.toLowerCase();
+          return (zl.includes('thorax') || zl.includes('chest')) && !zl.includes('back');
+        });
+        if (zones.length > 0 && !hasFrontThorax) return;
 
         const penChance = calcPenChance(selectedAmmo.pen, armor.class, 100);
-        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, armor.class, armor.durability, selectedAmmo.armorDamage);
+        const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, selectedAmmo.damage, armor.class, armor.durability, selectedAmmo.armorDamage);
         const costPerShot = expectedSurvival > 0.1 ? Math.round(armor.price / expectedSurvival) : Infinity;
 
         allArmorsWithStats.push({
@@ -932,7 +950,7 @@
             <h4>${armor.shortName || armor.name}</h4>
             <div style="display:flex;gap:16px;margin-top:8px;">
               <div>
-                <div style="font-size:0.75rem;color:var(--muted);">期待生存</div>
+                <div style="font-size:0.75rem;color:var(--muted);">死亡まで</div>
                 <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
               </div>
               <div>
@@ -971,7 +989,7 @@
 
     // Armor filters
     document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
-    document.getElementById('ammo-price-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('ammo-damage-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
 
     // Download
