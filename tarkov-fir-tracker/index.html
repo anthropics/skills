@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarkov Item Lookup</title>
+  <title>Tarkov Tools</title>
   <style>
     :root {
       --bg: #0d1117;
@@ -53,7 +53,7 @@
     .status { font-size: 0.8rem; color: var(--muted); }
     .status.ok { color: var(--green); }
 
-    .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
     .tab {
       padding: 8px 16px;
       background: var(--card);
@@ -83,12 +83,8 @@
       max-height: 500px;
       overflow-y: auto;
     }
-    .results-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .search-column input {
+    .results-list { display: flex; flex-direction: column; gap: 6px; }
+    .search-column input[type="text"] {
       width: 100%;
       padding: 8px;
       background: var(--bg);
@@ -116,206 +112,113 @@
     .result-card.tier-silver { border-left-color: var(--silver); }
     .result-card.tier-gold { border-left-color: var(--gold); background: rgba(255,215,0,0.08); }
 
-    .result-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-      word-break: break-word;
-    }
+    .result-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; word-break: break-word; }
     .result-name.gold { color: var(--gold); }
     .result-name.silver { color: var(--silver); }
     .result-name.bronze { color: var(--bronze); }
 
-    /* Price Tier Colors */
-    .price-tier {
-      font-size: 1.1rem;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 6px;
-    }
+    .price-tier { font-size: 1.1rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
     .price-tier.none { color: var(--muted); }
-    .price-tier.low { color: #6cb6ff; } /* blue-ish */
-    .price-tier.mid { color: #f0883e; } /* orange */
-    .price-tier.high { color: #f85149; } /* red */
-    .price-tier.bronze {
-      color: #000;
-      background: linear-gradient(135deg, #cd7f32, #8b4513);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.3);
-    }
-    .price-tier.silver {
-      color: #000;
-      background: linear-gradient(135deg, #e8e8e8, #a8a8a8);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
-    }
-    .price-tier.gold {
-      color: #000;
-      background: linear-gradient(135deg, #ffd700, #daa520);
-      text-shadow: 0 1px 1px rgba(255,255,255,0.5);
-    }
+    .price-tier.low { color: #6cb6ff; }
+    .price-tier.mid { color: #f0883e; }
+    .price-tier.high { color: #f85149; }
+    .price-tier.bronze { color: #000; background: linear-gradient(135deg, #cd7f32, #8b4513); }
+    .price-tier.silver { color: #000; background: linear-gradient(135deg, #e8e8e8, #a8a8a8); }
+    .price-tier.gold { color: #000; background: linear-gradient(135deg, #ffd700, #daa520); }
 
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-    }
+    .result-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
     .result-row .label { color: var(--muted); }
     .result-row .value { font-weight: 500; }
     .result-row .value.need { color: var(--red); }
     .result-row .value.ok { color: var(--green); }
 
-    .fir-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-    }
-    .fir-controls button {
-      width: 24px;
-      height: 24px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 1rem;
-    }
+    .fir-controls { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+    .fir-controls button { width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--card); border: 1px solid var(--border); border-radius: 4px; color: var(--text); cursor: pointer; font-size: 1rem; }
     .fir-controls button:hover { background: #21262d; }
-    .fir-controls input {
-      width: 36px;
-      text-align: center;
-      padding: 2px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      font-size: 0.85rem;
-    }
+    .fir-controls input { width: 36px; text-align: center; padding: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 0.85rem; }
     .fir-controls .total { color: var(--muted); font-size: 0.85rem; }
 
-    .result-sources {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-    .source-item {
-      display: inline-block;
-      background: #21262d;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin: 2px 2px 2px 0;
-    }
+    .result-sources { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); }
+    .source-item { display: inline-block; background: #21262d; padding: 2px 6px; border-radius: 3px; margin: 2px 2px 2px 0; }
     .source-item.quest { border-left: 2px solid var(--green); }
     .source-item.hideout { border-left: 2px solid var(--blue); }
 
-    .no-result {
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .fir-badge {
-      display: inline-block;
-      background: var(--green);
-      color: #000;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin-left: 6px;
-    }
+    .no-result { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px; }
+    .fir-badge { display: inline-block; background: var(--green); color: #000; font-size: 0.7rem; font-weight: 600; padding: 2px 6px; border-radius: 3px; margin-left: 6px; }
 
     /* History */
-    .history-section {
-      background: var(--card);
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+    .history-section { background: var(--card); border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .history-header h3 { font-size: 0.9rem; color: var(--muted); }
-    .history-header button {
-      padding: 4px 8px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--muted);
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 6px;
-    }
-    .history-item {
-      background: var(--bg);
-      padding: 6px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      border-left: 3px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .history-header button { padding: 4px 8px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-size: 0.75rem; cursor: pointer; }
+    .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+    .history-item { background: var(--bg); padding: 6px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; border-left: 3px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .history-item:hover { background: #21262d; }
     .history-item .name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
-    .history-item .price { font-size: 0.75rem; }
 
     /* Bulk */
-    .bulk-section {
-      background: var(--card);
-      padding: 16px;
-      border-radius: 6px;
-    }
-    .bulk-section textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
+    .bulk-section { background: var(--card); padding: 16px; border-radius: 6px; }
+    .bulk-section textarea { width: 100%; height: 100px; padding: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: inherit; resize: vertical; margin-bottom: 10px; }
+    .bulk-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+    .bulk-actions button { padding: 8px 16px; background: var(--accent); border: none; border-radius: 4px; color: #000; cursor: pointer; }
+    .bulk-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+
+    .setting-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+    /* Armor Calculator */
+    .armor-section { background: var(--card); border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+    .armor-section h3 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; }
+    .armor-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .armor-controls select, .armor-controls input {
+      padding: 8px 12px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--text);
-      font-family: inherit;
-      resize: vertical;
-      margin-bottom: 10px;
+      font-size: 0.9rem;
     }
-    .bulk-actions { display: flex; gap: 8px; margin-bottom: 12px; }
-    .bulk-actions button {
-      padding: 8px 16px;
-      background: var(--accent);
-      border: none;
-      border-radius: 4px;
-      color: #000;
-      cursor: pointer;
-    }
-    .bulk-results {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 8px;
-    }
+    .armor-controls label { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; color: var(--muted); }
 
-    .setting-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
+    .ammo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; margin-bottom: 16px; }
+    .ammo-card {
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 10px;
+      border-left: 3px solid var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
     }
+    .ammo-card:hover { background: #21262d; }
+    .ammo-card.selected { border-left-color: var(--accent); background: rgba(240,136,62,0.1); }
+    .ammo-card.threat-low { border-left-color: var(--green); }
+    .ammo-card.threat-mid { border-left-color: var(--yellow); }
+    .ammo-card.threat-high { border-left-color: var(--red); }
+    .ammo-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .ammo-stats { display: flex; gap: 12px; font-size: 0.8rem; color: var(--muted); }
+    .ammo-stats span { display: flex; align-items: center; gap: 4px; }
+    .ammo-stats .pen { color: var(--red); }
+    .ammo-stats .dmg { color: var(--blue); }
+    .ammo-stats .price { color: var(--gold); }
+
+    .armor-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .armor-card {
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+    .armor-card.recommended { border-color: var(--green); background: rgba(63,185,80,0.1); }
+    .armor-card h4 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
+    .armor-class { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; margin-bottom: 8px; }
+    .armor-class.c1, .armor-class.c2 { background: var(--green); color: #000; }
+    .armor-class.c3, .armor-class.c4 { background: var(--yellow); color: #000; }
+    .armor-class.c5, .armor-class.c6 { background: var(--red); color: #fff; }
+    .pen-chance { font-size: 0.85rem; margin-bottom: 4px; }
+    .pen-chance .value { font-weight: 600; }
+    .pen-chance .safe { color: var(--green); }
+    .pen-chance .risky { color: var(--yellow); }
+    .pen-chance .dangerous { color: var(--red); }
+    .shots-to-kill { font-size: 0.9rem; font-weight: 600; color: var(--blue); margin-bottom: 8px; }
 
     @media (max-width: 800px) {
       .columns-container { grid-template-columns: repeat(2, 1fr) !important; }
@@ -327,7 +230,7 @@
 </head>
 <body>
   <div class="header">
-    <h1>Tarkov Item Lookup</h1>
+    <h1>Tarkov Tools</h1>
     <div class="header-controls">
       <select id="col-count">
         <option value="2">2列</option>
@@ -346,8 +249,9 @@
   </div>
 
   <div class="tabs">
-    <div class="tab active" data-panel="search">クイック検索</div>
+    <div class="tab active" data-panel="search">アイテム検索</div>
     <div class="tab" data-panel="bulk">一括検索</div>
+    <div class="tab" data-panel="armor">アーマー計算</div>
   </div>
 
   <div class="panel active" id="panel-search">
@@ -372,14 +276,76 @@
     </div>
   </div>
 
+  <div class="panel" id="panel-armor">
+    <div class="armor-section">
+      <h3>脅威となる弾薬を選択</h3>
+      <div class="armor-controls">
+        <label>
+          口径フィルタ
+          <select id="caliber-filter">
+            <option value="all">すべて</option>
+            <option value="popular">主流弾のみ</option>
+          </select>
+        </label>
+        <label>
+          価格帯
+          <select id="ammo-price-filter">
+            <option value="all">すべて</option>
+            <option value="cheap">安い（〜500₽）</option>
+            <option value="mid">中価格（500〜1500₽）</option>
+            <option value="expensive">高い（1500₽〜）</option>
+          </select>
+        </label>
+        <label>
+          貫通力
+          <select id="pen-filter">
+            <option value="all">すべて</option>
+            <option value="low">低（〜20）</option>
+            <option value="mid">中（20〜40）</option>
+            <option value="high">高（40〜）</option>
+          </select>
+        </label>
+      </div>
+      <div class="ammo-grid" id="ammo-grid"></div>
+    </div>
+
+    <div class="armor-section">
+      <h3>生存目標</h3>
+      <div class="armor-controls">
+        <label>
+          耐えたい弾数
+          <select id="survival-goal">
+            <option value="1">1発（裸よりマシ）</option>
+            <option value="2" selected>2発（最低限）</option>
+            <option value="3">3発（まあまあ）</option>
+            <option value="5">5発（タンク）</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="armor-section">
+      <h3>推奨アーマー</h3>
+      <div class="armor-results" id="armor-results">
+        <div class="no-result">弾薬を選択してください</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const BASE_DATA = PLACEHOLDER_DATA;
 
     // State
-    let allItems = {};      // All items (FiR + non-FiR)
-    let firItems = {};      // FiR item IDs with requirements
+    let allItems = {};
+    let firItems = {};
     let searchHistory = [];
     let showDetails = true;
+    let ammoData = [];
+    let armorData = [];
+    let selectedAmmo = null;
+
+    // Popular calibers
+    const POPULAR_CALIBERS = ['7.62x39mm', '5.45x39mm', '5.56x45mm NATO', '7.62x51mm NATO', '9x19mm Parabellum', '12/70', '7.62x54mmR', '.338 Lapua Magnum', '9x39mm'];
 
     // Cookie
     function getCookie(n) { const m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : null; }
@@ -401,7 +367,6 @@
       if (count === 0) delete progress[itemId];
       else progress[itemId] = count;
       saveProgress(progress);
-      // Re-render all columns
       document.querySelectorAll('.search-column input').forEach(input => {
         if (input.value.trim()) input.dispatchEvent(new Event('input'));
       });
@@ -415,21 +380,16 @@
       setCookie('tarkov_history', encodeURIComponent(JSON.stringify(searchHistory.slice(0, 30))));
     }
 
-    // Init FiR data from embedded
     function initFirData() {
       Object.entries(BASE_DATA.items || {}).forEach(([id, item]) => {
         firItems[id] = {
           totalRequired: item.totalRequired,
-          sources: item.questBreakdown.map(q => ({
-            type: 'quest',
-            name: q.questName,
-            count: q.count
-          }))
+          sources: item.questBreakdown.map(q => ({ type: 'quest', name: q.questName, count: q.count }))
         };
       });
     }
 
-    // Fetch all items from API
+    // Fetch all data from API
     async function fetchData() {
       const btn = document.getElementById('btn-fetch');
       const status = document.getElementById('api-status');
@@ -442,6 +402,27 @@
           id name shortName
           avg24hPrice width height
           types
+          properties {
+            ... on ItemPropertiesArmor {
+              class
+              durability
+              material { name }
+              zones
+            }
+            ... on ItemPropertiesArmorAttachment {
+              class
+              durability
+              material { name }
+              zones
+            }
+          }
+        }
+        ammo {
+          item { id name shortName avg24hPrice }
+          caliber
+          penetrationPower
+          damage
+          armorDamage
         }
         hideoutStations {
           name
@@ -469,6 +450,7 @@
 
         // Build all items
         allItems = {};
+        armorData = [];
         data.items.forEach(item => {
           const slots = (item.width || 1) * (item.height || 1);
           const perSlot = item.avg24hPrice ? Math.round(item.avg24hPrice / slots) : 0;
@@ -481,23 +463,31 @@
             slots,
             perSlot,
             types: item.types || [],
-            fir: null // Will be set if FiR required
+            fir: null
           };
+
+          // Collect armor data
+          if (item.properties && (item.properties.class !== undefined)) {
+            armorData.push({
+              id: item.id,
+              name: item.name,
+              shortName: item.shortName,
+              price: item.avg24hPrice,
+              class: item.properties.class,
+              durability: item.properties.durability,
+              material: item.properties.material?.name,
+              zones: item.properties.zones || []
+            });
+          }
         });
 
-        // Match FiR items by name
+        // Match FiR items
         Object.entries(BASE_DATA.items || {}).forEach(([baseId, baseItem]) => {
-          const match = Object.values(allItems).find(i =>
-            i.name.toLowerCase() === baseItem.name.toLowerCase()
-          );
+          const match = Object.values(allItems).find(i => i.name.toLowerCase() === baseItem.name.toLowerCase());
           if (match) {
             match.fir = {
               totalRequired: baseItem.totalRequired,
-              sources: baseItem.questBreakdown.map(q => ({
-                type: 'quest',
-                name: q.questName,
-                count: q.count
-              }))
+              sources: baseItem.questBreakdown.map(q => ({ type: 'quest', name: q.questName, count: q.count }))
             };
           }
         });
@@ -509,23 +499,30 @@
               const isFir = req.attributes?.some(a => a.name === 'foundInRaid' && a.value === 'true');
               if (isFir && allItems[req.item.id]) {
                 const item = allItems[req.item.id];
-                if (!item.fir) {
-                  item.fir = { totalRequired: 0, sources: [] };
-                }
+                if (!item.fir) item.fir = { totalRequired: 0, sources: [] };
                 item.fir.totalRequired += req.count;
-                item.fir.sources.push({
-                  type: 'hideout',
-                  name: `${station.name} Lv${level.level}`,
-                  count: req.count
-                });
+                item.fir.sources.push({ type: 'hideout', name: `${station.name} Lv${level.level}`, count: req.count });
               }
             });
           });
         });
 
-        status.textContent = `${Object.keys(allItems).length}件取得`;
+        // Build ammo data
+        ammoData = data.ammo.map(a => ({
+          id: a.item.id,
+          name: a.item.name,
+          shortName: a.item.shortName,
+          price: a.item.avg24hPrice,
+          caliber: a.caliber,
+          pen: a.penetrationPower,
+          damage: a.damage,
+          armorDamage: a.armorDamage
+        })).filter(a => a.pen > 0).sort((a, b) => b.pen - a.pen);
+
+        status.textContent = `${Object.keys(allItems).length}件`;
         status.className = 'status ok';
         renderHistory();
+        renderAmmoGrid();
 
       } catch (err) {
         status.textContent = 'エラー';
@@ -553,13 +550,12 @@
       return p.toString();
     }
 
-    // Search - returns multiple matches
+    // Search
     function searchItems(query, limit = 8) {
       if (!query || Object.keys(allItems).length === 0) return [];
       const q = query.toLowerCase();
       const matches = Object.values(allItems).filter(item =>
-        item.name.toLowerCase().includes(q) ||
-        (item.nameShort && item.nameShort.toLowerCase().includes(q))
+        item.name.toLowerCase().includes(q) || (item.nameShort && item.nameShort.toLowerCase().includes(q))
       );
       matches.sort((a, b) => {
         const aExact = a.name.toLowerCase() === q || (a.nameShort||'').toLowerCase() === q;
@@ -568,13 +564,11 @@
         const aStarts = a.name.toLowerCase().startsWith(q);
         const bStarts = b.name.toLowerCase().startsWith(q);
         if (aStarts !== bStarts) return aStarts ? -1 : 1;
-        // Prioritize higher value items
         return (b.perSlot || 0) - (a.perSlot || 0);
       });
       return matches.slice(0, limit);
     }
 
-    // Single search for history
     function searchItem(query) {
       const results = searchItems(query, 1);
       return results[0] || null;
@@ -595,7 +589,7 @@
       renderHistory();
     }
 
-    // Render single item card HTML
+    // Render item card
     function renderItemCard(item) {
       const progress = loadProgress();
       const tier = getPriceTier(item.perSlot);
@@ -612,23 +606,17 @@
 
         let sourcesHtml = '';
         if (showDetails && item.fir.sources.length > 0) {
-          sourcesHtml = `<div class="result-sources">
-            ${item.fir.sources.slice(0,3).map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}
-          </div>`;
+          sourcesHtml = `<div class="result-sources">${item.fir.sources.slice(0,3).map(s => `<span class="source-item ${s.type}">${s.name} x${s.count}</span>`).join('')}</div>`;
         }
 
         return `
           <div class="result-card ${statusClass} ${tierClass}">
             <div class="result-name ${nameClass}">${item.name}<span class="fir-badge">FiR</span></div>
             <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
-            <div class="result-row">
-              <span class="label">価格</span>
-              <span class="value">${formatPrice(item.price)} (${item.slots}s)</span>
-            </div>
+            <div class="result-row"><span class="label">価格</span><span class="value">${formatPrice(item.price)} (${item.slots}s)</span></div>
             <div class="fir-controls">
               <button onclick="setCollected('${item.id}', ${collected - 1})">-</button>
-              <input type="number" value="${collected}" min="0" max="${total}"
-                onchange="setCollected('${item.id}', parseInt(this.value)||0)">
+              <input type="number" value="${collected}" min="0" max="${total}" onchange="setCollected('${item.id}', parseInt(this.value)||0)">
               <span class="total">/ ${total}</span>
               <button onclick="setCollected('${item.id}', ${collected + 1})">+</button>
               <span class="value ${isComplete ? 'ok' : 'need'}" style="margin-left:auto;">${isComplete ? '完了' : 'あと'+(total-collected)}</span>
@@ -641,16 +629,12 @@
           <div class="result-card ${tierClass}">
             <div class="result-name ${nameClass}">${item.name}</div>
             <div class="price-tier ${tier}">${formatPrice(item.perSlot)}/slot</div>
-            <div class="result-row">
-              <span class="label">価格</span>
-              <span class="value">${formatPrice(item.price)} (${item.slots}s)</span>
-            </div>
+            <div class="result-row"><span class="label">価格</span><span class="value">${formatPrice(item.price)} (${item.slots}s)</span></div>
           </div>
         `;
       }
     }
 
-    // Render multiple results
     function renderResults(items, container) {
       if (items.length === 0) {
         container.innerHTML = '<div class="no-result">見つかりません</div>';
@@ -670,24 +654,17 @@
         col.className = 'search-column';
         col.innerHTML = `
           <input type="text" placeholder="アイテム名..." data-col="${i}">
-          <div class="result-container" id="result-${i}">
-            <div class="no-result">検索してください</div>
-          </div>
+          <div class="result-container" id="result-${i}"><div class="no-result">検索してください</div></div>
         `;
         container.appendChild(col);
 
         col.querySelector('input').addEventListener('input', (e) => {
           const query = e.target.value.trim();
           const rc = document.getElementById(`result-${i}`);
-          if (!query) {
-            rc.innerHTML = '<div class="no-result">検索してください</div>';
-            return;
-          }
+          if (!query) { rc.innerHTML = '<div class="no-result">検索してください</div>'; return; }
           const items = searchItems(query, 8);
           renderResults(items, rc);
-          if (items.length > 0) {
-            addToHistory(items[0].id);
-          }
+          if (items.length > 0) addToHistory(items[0].id);
         });
       }
     }
@@ -698,38 +675,24 @@
         grid.innerHTML = '<div class="no-result">履歴なし</div>';
         return;
       }
-
       grid.innerHTML = searchHistory.slice(0, 15).map(id => {
         const item = allItems[id];
         if (!item) return '';
         const tier = getPriceTier(item.perSlot);
-        return `
-          <div class="history-item" onclick="fillSearch('${item.name.replace(/'/g, "\\'")}')">
-            <span class="name">${item.nameShort || item.name.slice(0,12)}</span>
-            <span class="price price-tier ${tier}" style="font-size:0.75rem;padding:2px 4px;">${formatPrice(item.perSlot)}</span>
-          </div>
-        `;
+        return `<div class="history-item" onclick="fillSearch('${item.name.replace(/'/g, "\\'")}')"><span class="name">${item.nameShort || item.name.slice(0,12)}</span><span class="price price-tier ${tier}" style="font-size:0.75rem;padding:2px 4px;">${formatPrice(item.perSlot)}</span></div>`;
       }).join('');
     }
 
     function fillSearch(name) {
       const input = document.querySelector('.search-column input');
-      if (input) {
-        input.value = name;
-        input.dispatchEvent(new Event('input'));
-      }
+      if (input) { input.value = name; input.dispatchEvent(new Event('input')); }
     }
 
     // Bulk
     function bulkSearch() {
       const terms = document.getElementById('bulk-input').value.split('\n').map(s => s.trim()).filter(s => s);
       const container = document.getElementById('bulk-results');
-
-      if (terms.length === 0) {
-        container.innerHTML = '<div class="no-result">入力してください</div>';
-        return;
-      }
-
+      if (terms.length === 0) { container.innerHTML = '<div class="no-result">入力してください</div>'; return; }
       container.innerHTML = terms.map(term => {
         const item = searchItem(term);
         if (!item) return `<div class="result-card"><div class="result-name">${term}</div><div class="no-result">見つかりません</div></div>`;
@@ -740,6 +703,161 @@
     function clearBulk() {
       document.getElementById('bulk-input').value = '';
       document.getElementById('bulk-results').innerHTML = '';
+    }
+
+    // ============================================
+    // Armor Calculator
+    // ============================================
+    function renderAmmoGrid() {
+      const grid = document.getElementById('ammo-grid');
+      const caliberFilter = document.getElementById('caliber-filter').value;
+      const priceFilter = document.getElementById('ammo-price-filter').value;
+      const penFilter = document.getElementById('pen-filter').value;
+
+      let filtered = ammoData.filter(a => {
+        if (caliberFilter === 'popular' && !POPULAR_CALIBERS.includes(a.caliber)) return false;
+        if (priceFilter === 'cheap' && a.price > 500) return false;
+        if (priceFilter === 'mid' && (a.price <= 500 || a.price > 1500)) return false;
+        if (priceFilter === 'expensive' && a.price <= 1500) return false;
+        if (penFilter === 'low' && a.pen > 20) return false;
+        if (penFilter === 'mid' && (a.pen <= 20 || a.pen > 40)) return false;
+        if (penFilter === 'high' && a.pen <= 40) return false;
+        return true;
+      });
+
+      // Limit to top 30 by penetration
+      filtered = filtered.slice(0, 30);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-result">条件に合う弾薬がありません</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(a => {
+        const threatClass = a.pen >= 40 ? 'threat-high' : a.pen >= 25 ? 'threat-mid' : 'threat-low';
+        const selected = selectedAmmo && selectedAmmo.id === a.id ? 'selected' : '';
+        return `
+          <div class="ammo-card ${threatClass} ${selected}" onclick="selectAmmo('${a.id}')">
+            <div class="ammo-name">${a.shortName || a.name}</div>
+            <div class="ammo-stats">
+              <span class="pen">貫通 ${a.pen}</span>
+              <span class="dmg">ダメ ${a.damage}</span>
+              <span class="price">${formatPrice(a.price)}₽</span>
+            </div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">${a.caliber}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectAmmo(ammoId) {
+      selectedAmmo = ammoData.find(a => a.id === ammoId);
+      renderAmmoGrid();
+      calculateArmor();
+    }
+
+    // Penetration chance formula (simplified Tarkov formula)
+    function calcPenChance(pen, armorClass, durabilityPercent = 100) {
+      // Simplified formula based on community research
+      const effectiveArmor = armorClass * 10 * (durabilityPercent / 100);
+      const diff = pen - effectiveArmor;
+
+      if (diff >= 20) return 100;
+      if (diff >= 10) return 90 + (diff - 10);
+      if (diff >= 0) return 50 + diff * 4;
+      if (diff >= -10) return 50 + diff * 4;
+      if (diff >= -20) return 10 + (diff + 10) * 4;
+      return Math.max(0, 10 + diff * 0.5);
+    }
+
+    // Calculate shots to penetrate
+    function calcShotsToPen(pen, armorClass, durability, armorDamage) {
+      let currentDur = durability;
+      let shots = 0;
+      while (currentDur > 0 && shots < 20) {
+        shots++;
+        const durPercent = (currentDur / durability) * 100;
+        const penChance = calcPenChance(pen, armorClass, durPercent);
+        if (penChance >= 50) break; // Likely penetrates
+        currentDur -= armorDamage || pen * 0.5;
+      }
+      return shots;
+    }
+
+    function calculateArmor() {
+      const results = document.getElementById('armor-results');
+      if (!selectedAmmo) {
+        results.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
+        return;
+      }
+
+      const survivalGoal = parseInt(document.getElementById('survival-goal').value);
+
+      // Group armor by class and find best options
+      const armorByClass = {};
+      armorData.forEach(armor => {
+        if (!armor.class || armor.class < 1) return;
+        if (!armorByClass[armor.class]) armorByClass[armor.class] = [];
+
+        const penChance = calcPenChance(selectedAmmo.pen, armor.class, 100);
+        const shotsToPen = calcShotsToPen(selectedAmmo.pen, armor.class, armor.durability, selectedAmmo.armorDamage);
+
+        armorByClass[armor.class].push({
+          ...armor,
+          penChance,
+          shotsToPen
+        });
+      });
+
+      // Sort each class by price
+      Object.values(armorByClass).forEach(arr => arr.sort((a, b) => (a.price || 999999) - (b.price || 999999)));
+
+      // Find recommended class
+      let recommendedClass = null;
+      for (let c = 1; c <= 6; c++) {
+        const armors = armorByClass[c];
+        if (armors && armors.length > 0) {
+          const best = armors[0];
+          if (best.shotsToPen >= survivalGoal || best.penChance < 30) {
+            recommendedClass = c;
+            break;
+          }
+        }
+      }
+
+      // Render results
+      let html = `<div style="margin-bottom:12px;padding:12px;background:var(--card);border-radius:6px;">
+        <div style="font-size:0.9rem;color:var(--muted);">選択中の弾薬</div>
+        <div style="font-size:1.1rem;font-weight:600;color:var(--accent);">${selectedAmmo.name}</div>
+        <div style="font-size:0.85rem;color:var(--muted);">貫通 ${selectedAmmo.pen} / ダメージ ${selectedAmmo.damage}</div>
+      </div>`;
+
+      for (let c = 1; c <= 6; c++) {
+        const armors = armorByClass[c];
+        if (!armors || armors.length === 0) continue;
+
+        const isRecommended = c === recommendedClass;
+        const topArmors = armors.slice(0, 3);
+
+        html += `<div class="armor-card ${isRecommended ? 'recommended' : ''}">
+          <span class="armor-class c${c}">Class ${c}</span>
+          ${isRecommended ? '<span style="color:var(--green);font-size:0.8rem;margin-left:8px;">★ 推奨</span>' : ''}
+
+          ${topArmors.map(armor => {
+            const chanceClass = armor.penChance < 20 ? 'safe' : armor.penChance < 50 ? 'risky' : 'dangerous';
+            return `
+              <div style="margin-top:8px;padding:8px;background:var(--bg);border-radius:4px;">
+                <h4 style="font-size:0.85rem;margin-bottom:4px;">${armor.shortName || armor.name}</h4>
+                <div class="pen-chance">貫通率: <span class="value ${chanceClass}">${Math.round(armor.penChance)}%</span></div>
+                <div class="shots-to-kill">耐久切れまで: 約${armor.shotsToPen}発</div>
+                <div style="font-size:0.85rem;color:var(--gold);">${formatPrice(armor.price)}₽</div>
+              </div>
+            `;
+          }).join('')}
+        </div>`;
+      }
+
+      results.innerHTML = html;
     }
 
     // Tabs
@@ -756,10 +874,14 @@
     document.getElementById('col-count').addEventListener('change', createColumns);
     document.getElementById('show-details').addEventListener('change', (e) => {
       showDetails = e.target.checked;
-      document.querySelectorAll('.search-column input').forEach(input => {
-        input.dispatchEvent(new Event('input'));
-      });
+      document.querySelectorAll('.search-column input').forEach(input => input.dispatchEvent(new Event('input')));
     });
+
+    // Armor filters
+    document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('ammo-price-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('survival-goal').addEventListener('change', calculateArmor);
 
     // Init
     initFirData();
