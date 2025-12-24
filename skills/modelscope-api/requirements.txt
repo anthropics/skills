@@ -1,0 +1,12 @@
+# ModelScope API 技能依赖
+
+# 基础依赖
+requests>=2.28.0
+pillow>=9.0.0
+
+# OpenAI 兼容接口
+openai>=1.0.0
+
+# 可选依赖（用于增强功能）
+# python-dotenv>=0.19.0  # 环境变量管理
+# tqdm>=4.64.0          # 进度条显示
