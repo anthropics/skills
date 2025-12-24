@@ -347,9 +347,17 @@
     </div>
 
     <div class="armor-section">
-      <h3>コスパ順 推奨アーマー</h3>
-      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ 1発あたりのコストが安い順</p>
+      <h3>アーマーベスト / 一体型</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ プレート不要の一体型アーマー</p>
       <div class="armor-results" id="armor-results">
+        <div class="no-result">弾薬を選択してください</div>
+      </div>
+    </div>
+
+    <div class="armor-section">
+      <h3>アーマープレート（胸部用）</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ プレートキャリアに挿入して使用</p>
+      <div class="armor-results" id="plate-results">
         <div class="no-result">弾薬を選択してください</div>
       </div>
     </div>
@@ -491,6 +499,16 @@
 
           // Collect armor data
           if (item.properties && (item.properties.class !== undefined)) {
+            // Detect if this is a plate
+            const nameLower = item.name.toLowerCase();
+            const isPlate = nameLower.includes('plate') ||
+                           nameLower.includes('granit') ||
+                           nameLower.includes('sapi') ||
+                           nameLower.includes('esapi') ||
+                           nameLower.includes('kiteco') ||
+                           nameLower.includes('korund-vm') === false && nameLower.includes('korund') ||
+                           (item.types || []).includes('armorPlate');
+
             armorData.push({
               id: item.id,
               name: item.name,
@@ -499,7 +517,8 @@
               class: item.properties.class,
               durability: item.properties.durability,
               material: item.properties.material?.name,
-              zones: item.properties.zones || []
+              zones: item.properties.zones || [],
+              isPlate: isPlate
             });
           }
         });
@@ -840,12 +859,14 @@
     }
 
     function calculateArmor() {
-      const results = document.getElementById('armor-results');
+      const armorResults = document.getElementById('armor-results');
+      const plateResults = document.getElementById('plate-results');
       const compareSection = document.getElementById('class-compare');
       const compareTbody = document.getElementById('compare-tbody');
 
       if (!selectedAmmo) {
-        results.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
+        armorResults.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
+        plateResults.innerHTML = '<div class="no-result">弾薬を選択してください</div>';
         compareSection.style.display = 'none';
         return;
       }
@@ -897,7 +918,9 @@
       }).join('');
 
       // Build armor list with survival data (thorax protection only)
-      const allArmorsWithStats = [];
+      const armorsWithStats = [];
+      const platesWithStats = [];
+
       armorData.forEach(armor => {
         if (!armor.class || armor.class < 2 || !armor.price) return;
         // Skip side armor, back armor, non-thorax protection
@@ -916,58 +939,69 @@
         const expectedSurvival = calcExpectedSurvival(selectedAmmo.pen, selectedAmmo.damage, armor.class, armor.durability, selectedAmmo.armorDamage);
         const costPerShot = expectedSurvival > 0.1 ? Math.round(armor.price / expectedSurvival) : Infinity;
 
-        allArmorsWithStats.push({
+        const item = {
           ...armor,
           penChance,
           expectedSurvival,
           costPerShot
-        });
+        };
+
+        if (armor.isPlate) {
+          platesWithStats.push(item);
+        } else {
+          armorsWithStats.push(item);
+        }
       });
 
       // Sort by cost per shot (best value first)
-      allArmorsWithStats.sort((a, b) => a.costPerShot - b.costPerShot);
+      armorsWithStats.sort((a, b) => a.costPerShot - b.costPerShot);
+      platesWithStats.sort((a, b) => a.costPerShot - b.costPerShot);
 
-      // Find best cost-per-shot
-      const bestCostPerShot = allArmorsWithStats.length > 0 ? allArmorsWithStats[0].costPerShot : Infinity;
+      // Render function
+      function renderArmorList(items, container, title) {
+        if (items.length === 0) {
+          container.innerHTML = '<div class="no-result">該当なし</div>';
+          return;
+        }
 
-      // Render top armors
-      let html = `<div style="margin-bottom:12px;padding:12px;background:var(--card);border-radius:6px;">
-        <div style="font-size:0.9rem;color:var(--muted);">選択中の弾薬</div>
-        <div style="font-size:1.1rem;font-weight:600;color:var(--accent);">${selectedAmmo.name}</div>
-        <div style="font-size:0.85rem;color:var(--muted);">貫通 ${selectedAmmo.pen} / ダメージ ${selectedAmmo.damage} / アーマーダメ ${selectedAmmo.armorDamage || '?'}</div>
-      </div>`;
+        const bestCostPerShot = items[0].costPerShot;
+        let html = '';
 
-      const topArmors = allArmorsWithStats.slice(0, 12);
-      topArmors.forEach((armor, idx) => {
-        const survivalClass = armor.expectedSurvival >= 3 ? 'good' : armor.expectedSurvival >= 1.5 ? 'ok' : 'bad';
-        const isBestValue = armor.costPerShot === bestCostPerShot;
-        const cardClass = isBestValue ? 'best-value' : '';
+        items.slice(0, 8).forEach((armor) => {
+          const survivalClass = armor.expectedSurvival >= 3 ? 'good' : armor.expectedSurvival >= 1.5 ? 'ok' : 'bad';
+          const isBestValue = armor.costPerShot === bestCostPerShot;
+          const cardClass = isBestValue ? 'best-value' : '';
 
-        html += `
-          <div class="armor-card ${cardClass}">
-            <span class="armor-class c${armor.class}">Class ${armor.class}</span>
-            ${isBestValue ? '<span style="color:var(--gold);font-size:0.8rem;margin-left:8px;">★ 最コスパ</span>' : ''}
-            <h4>${armor.shortName || armor.name}</h4>
-            <div style="display:flex;gap:16px;margin-top:8px;">
-              <div>
-                <div style="font-size:0.75rem;color:var(--muted);">死亡まで</div>
-                <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
+          html += `
+            <div class="armor-card ${cardClass}">
+              <span class="armor-class c${armor.class}">Class ${armor.class}</span>
+              ${isBestValue ? '<span style="color:var(--gold);font-size:0.8rem;margin-left:8px;">★ 最コスパ</span>' : ''}
+              <h4>${armor.shortName || armor.name}</h4>
+              <div style="display:flex;gap:16px;margin-top:8px;">
+                <div>
+                  <div style="font-size:0.75rem;color:var(--muted);">死亡まで</div>
+                  <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem;color:var(--muted);">価格</div>
+                  <div style="color:var(--gold);">${formatPrice(armor.price)}₽</div>
+                </div>
+                <div>
+                  <div style="font-size:0.75rem;color:var(--muted);">1発あたり</div>
+                  <div style="color:var(--text);">${formatPrice(armor.costPerShot)}₽</div>
+                </div>
               </div>
-              <div>
-                <div style="font-size:0.75rem;color:var(--muted);">価格</div>
-                <div style="color:var(--gold);">${formatPrice(armor.price)}₽</div>
-              </div>
-              <div>
-                <div style="font-size:0.75rem;color:var(--muted);">1発あたり</div>
-                <div style="color:var(--text);">${formatPrice(armor.costPerShot)}₽</div>
-              </div>
+              <div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">耐久 ${armor.durability} / 初弾貫通率 ${Math.round(armor.penChance)}%</div>
             </div>
-            <div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">耐久 ${armor.durability} / 初弾貫通率 ${Math.round(armor.penChance)}%</div>
-          </div>
-        `;
-      });
+          `;
+        });
 
-      results.innerHTML = html;
+        container.innerHTML = html;
+      }
+
+      // Render both lists
+      renderArmorList(armorsWithStats, armorResults, 'アーマー');
+      renderArmorList(platesWithStats, plateResults, 'プレート');
     }
 
     // Tabs
