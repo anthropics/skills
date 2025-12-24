@@ -1,0 +1,26 @@
+{
+  "name": "modelscope-api-js",
+  "version": "1.0.0",
+  "description": "JavaScript client for ModelScope API - text generation and image generation",
+  "main": "scripts/modelscope-api.js",
+  "scripts": {
+    "test": "node scripts/examples.js",
+    "example": "node scripts/examples.js"
+  },
+  "keywords": [
+    "modelscope",
+    "ai",
+    "ml",
+    "text-generation",
+    "image-generation",
+    "api-client"
+  ],
+  "author": "ModelScope",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

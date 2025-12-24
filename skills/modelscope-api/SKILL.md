@@ -12,34 +12,36 @@ This skill provides convenient access to ModelScope platform APIs for text gener
 
 ### Text Generation
 
-```python
-from skills.modelscope_api import ModelScopeAPI
+```javascript
+const { ModelScopeAPI } = require('./scripts/modelscope-api');
 
-# Initialize API client
-api = ModelScopeAPI(api_key="your-modelscope-token")
+// Initialize API client
+const api = new ModelScopeAPI('your-modelscope-token');
 
-# Generate text with streaming
-response = api.chat_completion(
-    model="Qwen/Qwen3-VL-235B-A22B-Instruct",
-    messages=[{"role": "user", "content": "Hello"}],
-    stream=True
-)
+// Generate text
+const response = await api.chatCompletion(
+    'Qwen/Qwen3-VL-235B-A22B-Instruct',
+    [{ role: 'user', content: 'Hello' }]
+);
+console.log(response.choices[0].message.content);
 
-# Process streaming response
-for chunk in response:
-    if chunk.choices and chunk.choices[0].delta.content:
-        print(chunk.choices[0].delta.content, end='', flush=True)
+// Generate text with streaming
+const stream = await api.chatCompletionStream(
+    'Qwen/Qwen3-VL-235B-A22B-Instruct',
+    [{ role: 'user', content: 'Hello' }]
+);
+// Process streaming response (see examples.js for full implementation)
 ```
 
 ### Image Generation
 
-```python
-# Generate image
-image_path = api.generate_image(
-    model="Tongyi-MAI/Z-Image-Turbo",
-    prompt="A golden cat",
-    output_path="result_image.jpg"
-)
+```javascript
+// Generate image
+const imageUrl = await api.generateImage(
+    'Tongyi-MAI/Z-Image-Turbo',
+    'A golden cat'
+);
+console.log('Generated image:', imageUrl);
 ```
 
 ## When to Use References

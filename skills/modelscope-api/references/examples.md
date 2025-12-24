@@ -2,57 +2,68 @@
 
 ## Text Generation Example
 
-```python
-from skills.modelscope_api import ModelScopeAPI
+```javascript
+const { ModelScopeAPI } = require('../scripts/modelscope-api');
 
-# Initialize API client
-api = ModelScopeAPI(api_key="your-modelscope-token")
+// Initialize API client
+const api = new ModelScopeAPI('your-modelscope-token');
 
-# Call text generation
-response = api.chat_completion(
-    model="Qwen/Qwen3-VL-235B-A22B-Instruct",
-    messages=[{"role": "user", "content": "Hello"}],
-    stream=True
-)
+// Call text generation
+const response = await api.chatCompletion(
+    'Qwen/Qwen3-VL-235B-A22B-Instruct',
+    [{ role: 'user', content: 'Hello' }],
+    { stream: true }
+);
 
-# Handle streaming response
-for chunk in response:
-    if chunk.choices:
-        content = chunk.choices[0].delta.content
-        if content:
-            print(content, end='', flush=True)
+// Handle response
+console.log(response.choices[0].message.content);
 ```
 
 ## Image Generation Example
 
-```python
-# Generate image
-image_path = api.generate_image(
-    model="Tongyi-MAI/Z-Image-Turbo",
-    prompt="A golden cat",
-    output_path="result_image.jpg"
-)
-print(f"Image saved to: {image_path}")
+```javascript
+// Generate image
+const imageUrl = await api.generateImage(
+    'Tongyi-MAI/Z-Image-Turbo',
+    'A golden cat'
+);
+console.log('Generated image:', imageUrl);
 ```
 
 ## Using LoRA Models
 
 ### Single LoRA
-```python
-image_path = api.generate_image(
-    model="Tongyi-MAI/Z-Image-Turbo",
-    prompt="A golden cat",
-    loras="lora-repo-id",
-    output_path="result_with_lora.jpg"
-)
+```javascript
+const imageUrl = await api.generateImage(
+    'Tongyi-MAI/Z-Image-Turbo',
+    'A golden cat',
+    '752x1280',
+    {
+        lora_path: 'lora-repo-id',
+        lora_weight: 0.8
+    }
+);
+console.log('Generated image with LoRA:', imageUrl);
 ```
 
 ### Multiple LoRAs (weights must sum to 1.0)
-```python
-image_path = api.generate_image(
-    model="Tongyi-MAI/Z-Image-Turbo",
-    prompt="A golden cat",
-    loras={"lora1": 0.6, "lora2": 0.4},
-    output_path="result_with_multiple_loras.jpg"
-)
+```javascript
+const loras = {
+    lora_paths: ['lora1-repo-id', 'lora2-repo-id'],
+    lora_weights: [0.6, 0.4]
+};
+
+// Validate LoRA weights first
+if (api.validateLoraWeights(loras)) {
+    const imageUrl = await api.generateImage(
+        'Tongyi-MAI/Z-Image-Turbo',
+        'A golden cat',
+        '752x1280',
+        {
+            lora_paths: loras.lora_paths,
+            lora_weights: loras.lora_weights
+        }
+    );
+    console.log('Generated image with multiple LoRAs:', imageUrl);
+}
 ```

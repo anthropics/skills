@@ -2,27 +2,35 @@
 
 ## Custom Request Parameters
 
-```python
-# Custom headers and parameters
-response = api.chat_completion(
-    model="Qwen/Qwen3-VL-235B-A22B-Instruct",
-    messages=[{"role": "user", "content": "Hello"}],
-    stream=True,
-    temperature=0.7,
-    max_tokens=1000
-)
+```javascript
+// Custom headers and parameters
+const response = await api.chatCompletion(
+    'Qwen/Qwen3-VL-235B-A22B-Instruct',
+    [{ role: 'user', content: 'Hello' }],
+    {
+        stream: true,
+        temperature: 0.7,
+        max_tokens: 1000
+    }
+);
 ```
 
 ## Batch Image Generation
 
-```python
-# Generate multiple images
-prompts = ["A golden cat", "A blue dog", "A red bird"]
-image_paths = api.batch_generate_images(
-    model="Tongyi-MAI/Z-Image-Turbo",
-    prompts=prompts,
-    output_dir="batch_images/"
-)
+```javascript
+// Generate multiple images
+const prompts = ["A golden cat", "A blue dog", "A red bird"];
+const imageUrls = await api.batchGenerateImages(
+    'Tongyi-MAI/Z-Image-Turbo',
+    prompts
+);
+
+// Process results
+imageUrls.forEach((url, index) => {
+    if (url) {
+        console.log(`Image ${index + 1}: ${url}`);
+    }
+});
 ```
 
 ## Error Handling

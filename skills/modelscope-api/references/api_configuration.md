@@ -19,5 +19,10 @@
 ## Installation Requirements
 
 ```bash
-pip install openai requests pillow
+npm install node-fetch
+```
+
+Or if using yarn:
+```bash
+yarn add node-fetch
 ```
