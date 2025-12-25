@@ -1,0 +1,18 @@
+[project]
+name = "pptx-skill"
+version = "1.0.0"
+description = "PowerPoint creation skill for Claude Code - Python dependencies"
+requires-python = ">=3.10"
+
+dependencies = [
+    "markitdown[pptx]",
+    "defusedxml",
+    "python-pptx",
+    "pillow",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pyright",
+]

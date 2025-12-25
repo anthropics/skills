@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1a2b4a 0%, #0891b2 100%);
+  color: white;
+  width: 960px;
+  height: 540px;
+  box-sizing: border-box;
+}
+h1 {
+  font-size: 48px;
+  margin: 0 0 20px 0;
+}
+.content {
+  display: flex;
+  gap: 40px;
+}
+.left {
+  flex: 1;
+}
+.right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ul {
+  font-size: 24px;
+  line-height: 1.8;
+}
+.diagram {
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.diagram svg {
+  width: 200px;
+  height: 200px;
+}
+</style>
+</head>
+<body>
+<h1>Test Slide</h1>
+<div class="content">
+  <div class="left">
+    <ul>
+      <li>Complex CSS gradients</li>
+      <li>SVG diagram support</li>
+      <li>Flexbox layouts</li>
+      <li>High-DPI rendering</li>
+    </ul>
+  </div>
+  <div class="right">
+    <div class="diagram">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="4"/>
+        <rect x="30" y="30" width="40" height="40" fill="rgba(255,255,255,0.3)" stroke="white" stroke-width="2"/>
+        <line x1="20" y1="50" x2="80" y2="50" stroke="white" stroke-width="2"/>
+        <line x1="50" y1="20" x2="50" y2="80" stroke="white" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+# CI workflow for the anthropics/skills repository
+#
+# This workflow uses the reusable skill-ci.yml workflow to test all skills.
+# Other repositories can use the same reusable workflow - see skill-ci.yml for usage.
+
+name: Test Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/test-skills.yml'
+      - '.github/workflows/skill-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/test-skills.yml'
+      - '.github/workflows/skill-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  test-skills:
+    uses: ./.github/workflows/skill-ci.yml
+    with:
+      skill_path: "skills"
+      multi_skill: true
+      run_api_test: true
+      run_claude_code_test: true
+      # API test uses matrix to test all skills
+      # Claude Code test uses first skill found
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
