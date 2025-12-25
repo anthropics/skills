@@ -521,7 +521,8 @@ jobs:
 
       - name: Test skill with Claude Code
         continue-on-error: true
-        uses: anthropics/claude-code-action@beta
+        # TODO: Change back to anthropics/claude-code-action@beta after PR #772 is merged
+        uses: robtaylor/claude-code-action@main
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
