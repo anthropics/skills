@@ -115,14 +115,18 @@ def format_output(result, verbose=False):
     if result.get('status') == 'error':
         return f"Error: {result.get('error')}"
     
+    database = result.get('database', 'unknown')
+    table_count = result.get('table_count', 0)
+    tables = result.get('tables', [])
+    
     lines = [
-        f"Database: {result['database']}",
-        f"Tables found: {result['table_count']}",
+        f"Database: {database}",
+        f"Tables found: {table_count}",
         ""
     ]
     
     current_schema = None
-    for table in result['tables']:
+    for table in tables:
         if table['schema'] != current_schema:
             current_schema = table['schema']
             lines.append(f"Schema: {current_schema}")

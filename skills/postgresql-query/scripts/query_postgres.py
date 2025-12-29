@@ -25,7 +25,7 @@ def get_connection_params(args):
     }
 
 
-def execute_query(conn_params, query, output_format='table', limit=None):
+def execute_query(conn_params, query, output_format='table', limit=None, read_only=True):
     """Execute a SQL query and return results."""
     try:
         import psycopg2
@@ -53,6 +53,8 @@ def execute_query(conn_params, query, output_format='table', limit=None):
         )
         
         with conn.cursor() as cur:
+            if read_only:
+                cur.execute("SET TRANSACTION READ ONLY")
             cur.execute(query)
             
             if cur.description is None:
@@ -150,11 +152,13 @@ Examples:
     parser.add_argument('--format', '-f', choices=['table', 'json'], default='table',
                         help='Output format (default: table)')
     parser.add_argument('--limit', '-l', type=int, help='Limit number of rows returned')
+    parser.add_argument('--allow-write', action='store_true',
+                        help='Allow write operations (INSERT, UPDATE, DELETE). Default is read-only.')
     
     args = parser.parse_args()
     
     conn_params = get_connection_params(args)
-    result = execute_query(conn_params, args.query, args.format, args.limit)
+    result = execute_query(conn_params, args.query, args.format, args.limit, read_only=not args.allow_write)
     
     if result.get('status') == 'error':
         print(f"Error: {result.get('error')}", file=sys.stderr)

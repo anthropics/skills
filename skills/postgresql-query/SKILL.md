@@ -27,10 +27,12 @@ Database connections require these parameters:
 
 ## Helper Scripts
 
-- `scripts/query_postgres.py` - Execute SQL queries and return results
+- `scripts/query_postgres.py` - Execute SQL queries and return results (read-only by default)
 - `scripts/list_tables.py` - List all tables in the database
 
 Always run scripts with `--help` first to see usage options.
+
+**Security Note**: By default, `query_postgres.py` runs in read-only mode. Use `--allow-write` flag to enable INSERT, UPDATE, DELETE operations.
 
 ## Quick Start
 
