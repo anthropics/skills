@@ -1,5 +1,5 @@
 Please use the following information enclosed in triple quotes (```) to generate a complete GitHub Copilot skill for Flutter project development, structured according to the GitHub Copilot skill format. Save the skill to the directory: skills/flutter-dart-project-development.
-'''
+```
 GitHub Copilot for Flutter has evolved from simple autocompletion to a deep "agentic" workflow that understands project-wide architecture. To maximize its utility in the Flutter project, you should focus on these specialized "skills" and configurations.
 
 Skill Specification and Configurations:
@@ -23,4 +23,4 @@ The Copilot Coding Agent (2025 feature) can handle multi-file state migrations:
 4. Integration with Modern Flutter 2025 Patterns
     - Clean Architecture: Instruct Copilot to place Providers in a presentation/providers/ directory and keep them separate from pure business logic in the domain/ layer.
     - Testing: Prompt: "Generate a widget test for LoginScreen that mocks AuthProvider using the mocktail package".
-'''
+```
