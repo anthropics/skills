@@ -272,6 +272,7 @@
     <div class="tab active" data-panel="search">アイテム検索</div>
     <div class="tab" data-panel="bulk">一括検索</div>
     <div class="tab" data-panel="armor">アーマー計算</div>
+    <div class="tab" data-panel="gear">装備効率</div>
   </div>
 
   <div class="panel active" id="panel-search">
@@ -367,6 +368,60 @@
     </div>
   </div>
 
+  <div class="panel" id="panel-gear">
+    <div class="armor-section">
+      <h3>装備効率フィルタ</h3>
+      <div class="armor-controls">
+        <label>
+          種類
+          <select id="gear-type-filter">
+            <option value="all">すべて</option>
+            <option value="rig">リグ（非装甲）</option>
+            <option value="armoredRig">アーマーリグ</option>
+            <option value="backpack">バックパック</option>
+          </select>
+        </label>
+        <label>
+          ソート
+          <select id="gear-sort">
+            <option value="efficiency">収納効率順</option>
+            <option value="pricePerSlot">コスパ順</option>
+            <option value="capacity">容量順</option>
+            <option value="weight">軽量順</option>
+          </select>
+        </label>
+        <label class="setting-item" style="flex-direction:row;align-items:center;">
+          <input type="checkbox" id="gear-buyable-only" checked>
+          <span>購入可能のみ</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="armor-section">
+      <h3>リグ / プレートキャリア</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">収納効率 = 内部スロット ÷ 外部サイズ</p>
+      <div class="armor-results" id="rig-results">
+        <div class="no-result">データ取得してください</div>
+      </div>
+    </div>
+
+    <div class="armor-section">
+      <h3>アーマーリグ（防御＋収納）</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">総合スコア = 収納効率 × 防御Class</p>
+      <div class="armor-results" id="armored-rig-results">
+        <div class="no-result">データ取得してください</div>
+      </div>
+    </div>
+
+    <div class="armor-section">
+      <h3>バックパック</h3>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;">※ バッグ in バッグは考慮外</p>
+      <div class="armor-results" id="backpack-results">
+        <div class="no-result">データ取得してください</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const BASE_DATA = PLACEHOLDER_DATA;
 
@@ -377,6 +432,7 @@
     let showDetails = true;
     let ammoData = [];
     let armorData = [];
+    let gearData = [];
     let selectedAmmo = null;
 
     // Popular calibers
@@ -435,7 +491,7 @@
       const query = `{
         items {
           id name shortName
-          avg24hPrice width height
+          avg24hPrice width height weight
           types
           buyFor {
             price
@@ -453,6 +509,17 @@
               durability
               material { name }
               zones
+            }
+            ... on ItemPropertiesChestRig {
+              class
+              durability
+              zones
+              capacity
+              grids { width height }
+            }
+            ... on ItemPropertiesBackpack {
+              capacity
+              grids { width height }
             }
           }
         }
@@ -496,6 +563,7 @@
         // Build all items
         allItems = {};
         armorData = [];
+        gearData = [];
         data.items.forEach(item => {
           const slots = (item.width || 1) * (item.height || 1);
           const perSlot = item.avg24hPrice ? Math.round(item.avg24hPrice / slots) : 0;
@@ -543,6 +611,43 @@
               material: item.properties.material?.name,
               zones: item.properties.zones || [],
               isPlate: isPlate
+            });
+          }
+
+          // Collect gear data (rigs, backpacks)
+          const props = item.properties;
+          if (props && (props.capacity !== undefined || props.grids)) {
+            const buyFor = item.buyFor || [];
+            const traderBuy = buyFor.find(b => b.vendor.name !== 'Flea Market');
+            const fleaBuy = buyFor.find(b => b.vendor.name === 'Flea Market');
+            const canBuy = buyFor.length > 0;
+            const bestPrice = traderBuy?.price || fleaBuy?.price || item.avg24hPrice || 0;
+
+            const outerSize = (item.width || 1) * (item.height || 1);
+            const capacity = props.capacity || 0;
+            const efficiency = outerSize > 0 ? capacity / outerSize : 0;
+
+            const isBackpack = (item.types || []).includes('backpack');
+            const isArmoredRig = props.class > 0;
+
+            gearData.push({
+              id: item.id,
+              name: item.name,
+              shortName: item.shortName,
+              price: bestPrice,
+              traderPrice: traderBuy?.price,
+              traderName: traderBuy?.vendor.name,
+              canBuy,
+              outerSize,
+              capacity,
+              efficiency,
+              weight: item.weight || 0,
+              pricePerSlot: capacity > 0 ? Math.round(bestPrice / capacity) : Infinity,
+              class: props.class || 0,
+              durability: props.durability || 0,
+              isBackpack,
+              isArmoredRig,
+              isRig: !isBackpack && !isArmoredRig
             });
           }
         });
@@ -601,6 +706,7 @@
         status.className = 'status ok';
         renderHistory();
         renderAmmoGrid();
+        renderGear();
 
       } catch (err) {
         status.textContent = 'エラー';
@@ -1049,6 +1155,111 @@
       renderArmorList(platesWithStats, plateResults, 'プレート');
     }
 
+    // ============================================
+    // Gear Efficiency
+    // ============================================
+    function renderGear() {
+      const rigResults = document.getElementById('rig-results');
+      const armoredRigResults = document.getElementById('armored-rig-results');
+      const backpackResults = document.getElementById('backpack-results');
+
+      const typeFilter = document.getElementById('gear-type-filter').value;
+      const sortBy = document.getElementById('gear-sort').value;
+      const buyableOnly = document.getElementById('gear-buyable-only').checked;
+
+      // Filter gear
+      let rigs = gearData.filter(g => g.isRig && !g.isArmoredRig && !g.isBackpack);
+      let armoredRigs = gearData.filter(g => g.isArmoredRig);
+      let backpacks = gearData.filter(g => g.isBackpack);
+
+      if (buyableOnly) {
+        rigs = rigs.filter(g => g.canBuy);
+        armoredRigs = armoredRigs.filter(g => g.canBuy);
+        backpacks = backpacks.filter(g => g.canBuy);
+      }
+
+      // Sort function
+      function sortGear(list) {
+        switch (sortBy) {
+          case 'efficiency':
+            return list.sort((a, b) => b.efficiency - a.efficiency);
+          case 'pricePerSlot':
+            return list.sort((a, b) => a.pricePerSlot - b.pricePerSlot);
+          case 'capacity':
+            return list.sort((a, b) => b.capacity - a.capacity);
+          case 'weight':
+            return list.sort((a, b) => a.weight - b.weight);
+          default:
+            return list;
+        }
+      }
+
+      rigs = sortGear(rigs);
+      armoredRigs = sortGear(armoredRigs);
+      backpacks = sortGear(backpacks);
+
+      // Render function
+      function renderGearList(items, container, showArmor = false) {
+        if (items.length === 0) {
+          container.innerHTML = '<div class="no-result">該当なし</div>';
+          return;
+        }
+
+        const bestValue = items[0];
+        let html = '';
+
+        items.slice(0, 10).forEach((gear) => {
+          const isBest = gear.id === bestValue.id;
+          const cardClass = isBest ? 'best-value' : '';
+          const priceLabel = gear.traderName || '価格';
+          const effClass = gear.efficiency >= 2 ? 'good' : gear.efficiency >= 1.5 ? 'ok' : 'bad';
+
+          const armorBadge = showArmor && gear.class > 0 ? '<span class="armor-class c' + gear.class + '">Class ' + gear.class + '</span>' : '';
+          const bestBadge = isBest ? '<span style="color:var(--gold);font-size:0.8rem;margin-left:8px;">★ 最高効率</span>' : '';
+          const durInfo = showArmor && gear.durability > 0 ? ' / 耐久 ' + gear.durability : '';
+
+          html += '<div class="armor-card ' + cardClass + '">' +
+            armorBadge + bestBadge +
+            '<h4>' + (gear.shortName || gear.name) + '</h4>' +
+            '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">' +
+              '<div><div style="font-size:0.75rem;color:var(--muted);">容量</div>' +
+              '<div style="font-size:1.1rem;font-weight:600;">' + gear.capacity + 'マス</div></div>' +
+              '<div><div style="font-size:0.75rem;color:var(--muted);">効率</div>' +
+              '<div class="shots-cell ' + effClass + '" style="font-size:1.1rem;">x' + gear.efficiency.toFixed(2) + '</div></div>' +
+              '<div><div style="font-size:0.75rem;color:var(--muted);">' + priceLabel + '</div>' +
+              '<div style="color:var(--gold);">' + formatPrice(gear.price) + '₽</div></div>' +
+              '<div><div style="font-size:0.75rem;color:var(--muted);">1マス単価</div>' +
+              '<div>' + formatPrice(gear.pricePerSlot) + '₽</div></div>' +
+            '</div>' +
+            '<div style="margin-top:8px;font-size:0.8rem;color:var(--muted);">' +
+              '外部 ' + gear.outerSize + 'マス / 重量 ' + gear.weight.toFixed(1) + 'kg' + durInfo +
+            '</div>' +
+          '</div>';
+        });
+
+        container.innerHTML = html;
+      }
+
+      // Render based on filter
+      if (typeFilter === 'all' || typeFilter === 'rig') {
+        renderGearList(rigs, rigResults);
+      } else {
+        rigResults.innerHTML = '<div class="no-result">フィルタで非表示</div>';
+      }
+
+      if (typeFilter === 'all' || typeFilter === 'armoredRig') {
+        renderGearList(armoredRigs, armoredRigResults, true);
+      } else {
+        armoredRigResults.innerHTML = '<div class="no-result">フィルタで非表示</div>';
+      }
+
+      if (typeFilter === 'all' || typeFilter === 'backpack') {
+        renderGearList(backpacks, backpackResults);
+      } else {
+        backpackResults.innerHTML = '<div class="no-result">フィルタで非表示</div>';
+      }
+    }
+
     // Tabs
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -1074,6 +1285,11 @@
       renderAmmoGrid();
       if (selectedAmmo) calculateArmor();
     });
+
+    // Gear filters
+    document.getElementById('gear-type-filter').addEventListener('change', renderGear);
+    document.getElementById('gear-sort').addEventListener('change', renderGear);
+    document.getElementById('gear-buyable-only').addEventListener('change', renderGear);
 
     // Download
     document.getElementById('btn-download').addEventListener('click', () => {
