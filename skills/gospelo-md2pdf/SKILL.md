@@ -1,6 +1,7 @@
 ---
 name: gospelo-md2pdf
 description: Convert Markdown files to PDF with Japanese font support and MermaidJS diagram rendering. Use when creating PDFs from markdown, documents with Japanese text, or technical docs with Mermaid diagrams.
+allowed-tools: Read, Bash(gospelo-md2pdf:*), Bash(pip install:*)
 ---
 
 # Markdown to PDF Converter
