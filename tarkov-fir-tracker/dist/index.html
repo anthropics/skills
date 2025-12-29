@@ -325,6 +325,10 @@
             <option value="high">高（40〜）</option>
           </select>
         </label>
+        <label class="setting-item" style="flex-direction:row;align-items:center;">
+          <input type="checkbox" id="buyable-only" checked>
+          <span>購入可能のみ</span>
+        </label>
       </div>
       <div class="ammo-grid" id="ammo-grid"></div>
     </div>
@@ -433,6 +437,10 @@
           id name shortName
           avg24hPrice width height
           types
+          buyFor {
+            price
+            vendor { name }
+          }
           properties {
             ... on ItemPropertiesArmor {
               class
@@ -449,7 +457,13 @@
           }
         }
         ammo {
-          item { id name shortName avg24hPrice }
+          item {
+            id name shortName avg24hPrice
+            buyFor {
+              price
+              vendor { name }
+            }
+          }
           caliber
           penetrationPower
           damage
@@ -509,11 +523,21 @@
                            nameLower.includes('korund-vm') === false && nameLower.includes('korund') ||
                            (item.types || []).includes('armorPlate');
 
+            // Check buyability
+            const buyFor = item.buyFor || [];
+            const traderBuy = buyFor.find(b => b.vendor.name !== 'Flea Market');
+            const fleaBuy = buyFor.find(b => b.vendor.name === 'Flea Market');
+            const canBuy = buyFor.length > 0;
+            const bestPrice = traderBuy?.price || fleaBuy?.price || item.avg24hPrice || 0;
+
             armorData.push({
               id: item.id,
               name: item.name,
               shortName: item.shortName,
-              price: item.avg24hPrice,
+              price: bestPrice,
+              traderPrice: traderBuy?.price,
+              traderName: traderBuy?.vendor.name,
+              canBuy,
               class: item.properties.class,
               durability: item.properties.durability,
               material: item.properties.material?.name,
@@ -550,16 +574,28 @@
         });
 
         // Build ammo data
-        ammoData = data.ammo.map(a => ({
-          id: a.item.id,
-          name: a.item.name,
-          shortName: a.item.shortName,
-          price: a.item.avg24hPrice,
-          caliber: a.caliber,
-          pen: a.penetrationPower,
-          damage: a.damage,
-          armorDamage: a.armorDamage
-        })).filter(a => a.pen > 0).sort((a, b) => b.pen - a.pen);
+        ammoData = data.ammo.map(a => {
+          const buyFor = a.item.buyFor || [];
+          const traderBuy = buyFor.find(b => b.vendor.name !== 'Flea Market');
+          const fleaBuy = buyFor.find(b => b.vendor.name === 'Flea Market');
+          const canBuy = buyFor.length > 0;
+          const bestPrice = traderBuy?.price || fleaBuy?.price || 0;
+
+          return {
+            id: a.item.id,
+            name: a.item.name,
+            shortName: a.item.shortName,
+            price: bestPrice,
+            traderPrice: traderBuy?.price,
+            traderName: traderBuy?.vendor.name,
+            fleaPrice: fleaBuy?.price,
+            canBuy,
+            caliber: a.caliber,
+            pen: a.penetrationPower,
+            damage: a.damage,
+            armorDamage: a.armorDamage
+          };
+        }).filter(a => a.pen > 0).sort((a, b) => b.pen - a.pen);
 
         status.textContent = `${Object.keys(allItems).length}件`;
         status.className = 'status ok';
@@ -755,8 +791,10 @@
       const caliberFilter = document.getElementById('caliber-filter').value;
       const damageFilter = document.getElementById('ammo-damage-filter').value;
       const penFilter = document.getElementById('pen-filter').value;
+      const buyableOnly = document.getElementById('buyable-only').checked;
 
       let filtered = ammoData.filter(a => {
+        if (buyableOnly && !a.canBuy) return false;
         if (caliberFilter === 'popular' && !POPULAR_CALIBERS.includes(a.caliber)) return false;
         if (damageFilter === 'low' && a.damage > 40) return false;
         if (damageFilter === 'mid' && (a.damage <= 40 || a.damage > 60)) return false;
@@ -778,6 +816,7 @@
       grid.innerHTML = filtered.map(a => {
         const threatClass = a.pen >= 40 ? 'threat-high' : a.pen >= 25 ? 'threat-mid' : 'threat-low';
         const selected = selectedAmmo && selectedAmmo.id === a.id ? 'selected' : '';
+        const priceInfo = a.traderName ? `${a.traderName} ${formatPrice(a.traderPrice)}₽` : (a.canBuy ? `${formatPrice(a.price)}₽` : '購入不可');
         return `
           <div class="ammo-card ${threatClass} ${selected}" onclick="selectAmmo('${a.id}')">
             <div class="ammo-name">${a.shortName || a.name}</div>
@@ -786,7 +825,8 @@
               <span class="dmg">ダメ ${a.damage}</span>
               <span style="color:var(--muted);">AD ${a.armorDamage || '?'}</span>
             </div>
-            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">${a.caliber}</div>
+            <div style="font-size:0.75rem;color:var(--gold);margin-top:4px;">${priceInfo}</div>
+            <div style="font-size:0.7rem;color:var(--muted);">${a.caliber}</div>
           </div>
         `;
       }).join('');
@@ -921,8 +961,12 @@
       const armorsWithStats = [];
       const platesWithStats = [];
 
+      const buyableOnly = document.getElementById('buyable-only').checked;
+
       armorData.forEach(armor => {
         if (!armor.class || armor.class < 2 || !armor.price) return;
+        // Filter by buyable
+        if (buyableOnly && !armor.canBuy) return;
         // Skip side armor, back armor, non-thorax protection
         const zones = armor.zones || [];
         const name = (armor.name || '').toLowerCase();
@@ -971,6 +1015,7 @@
           const survivalClass = armor.expectedSurvival >= 3 ? 'good' : armor.expectedSurvival >= 1.5 ? 'ok' : 'bad';
           const isBestValue = armor.costPerShot === bestCostPerShot;
           const cardClass = isBestValue ? 'best-value' : '';
+          const priceLabel = armor.traderName ? armor.traderName : '価格';
 
           html += `
             <div class="armor-card ${cardClass}">
@@ -983,7 +1028,7 @@
                   <div class="shots-cell ${survivalClass}" style="font-size:1.2rem;">${armor.expectedSurvival.toFixed(1)}発</div>
                 </div>
                 <div>
-                  <div style="font-size:0.75rem;color:var(--muted);">価格</div>
+                  <div style="font-size:0.75rem;color:var(--muted);">${priceLabel}</div>
                   <div style="color:var(--gold);">${formatPrice(armor.price)}₽</div>
                 </div>
                 <div>
@@ -1025,6 +1070,10 @@
     document.getElementById('caliber-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('ammo-damage-filter').addEventListener('change', renderAmmoGrid);
     document.getElementById('pen-filter').addEventListener('change', renderAmmoGrid);
+    document.getElementById('buyable-only').addEventListener('change', () => {
+      renderAmmoGrid();
+      if (selectedAmmo) calculateArmor();
+    });
 
     // Download
     document.getElementById('btn-download').addEventListener('click', () => {
