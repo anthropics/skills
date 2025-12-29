@@ -1,0 +1,26 @@
+Please use the following information enclosed in triple quotes (```) to generate a complete GitHub Copilot skill for Flutter project development, structured according to the GitHub Copilot skill format. Save the skill to the directory: skills/flutter-dart-project-development.
+'''
+GitHub Copilot for Flutter has evolved from simple autocompletion to a deep "agentic" workflow that understands project-wide architecture. To maximize its utility in the Flutter project, you should focus on these specialized "skills" and configurations.
+
+Skill Specification and Configurations:
+1. Configure Provider-Specific "Rules"
+Create a .github/copilot-instructions.md file to force Copilot into a "Provider-first" mindset. This prevents the AI from mixing styles. 
+    - Key Instruction: "Always use ChangeNotifier with ChangeNotifierProvider for state management".
+Architectural Guardrail: "Prefer using context.read<T>() for actions (callbacks) and context.watch<T>() or Consumer<T> for UI updates".
+    - Avoid Ephemeral State: Explicitly tell Copilot: "Do not use Providers for ephemeral state like TextEditingController or simple animations; use StatefulWidget for these". 
+
+2. High-Velocity Scaffolding Prompts
+Use these targeted prompts in the Copilot Chat (@workspace) to generate boilerplate instantly: 
+    - For Models: "Create a UserProvider class extending ChangeNotifier with a private _user object, a getter, and a updateProfile method that calls notifyListeners()".
+    - For Multi-Provider Setup: "Generate a MultiProvider wrapper for main.dart including UserProvider, SettingsProvider, and CartProvider".
+    - For Selective Rebuilds: "Convert this widget to use Selector instead of Consumer to only rebuild when the isLoggedIn property of AuthProvider changes". 
+
+3. "Agentic" Refactoring with Provider
+The Copilot Coding Agent (2025 feature) can handle multi-file state migrations: 
+    - Task: "Refactor the current ProfileScreen and its children to pull data from a new ProfileProvider instead of passing parameters through constructors."
+    - Optimization: "Analyze my Build methods and suggest where to use context.select to improve performance by reducing unnecessary rebuilds". 
+
+4. Integration with Modern Flutter 2025 Patterns
+    - Clean Architecture: Instruct Copilot to place Providers in a presentation/providers/ directory and keep them separate from pure business logic in the domain/ layer.
+    - Testing: Prompt: "Generate a widget test for LoginScreen that mocks AuthProvider using the mocktail package".
+'''
