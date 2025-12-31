@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+"""
+AI Advisor Workflow CLI起動スクリプト
+"""
+import sys
+from pathlib import Path
+
+# スクリプトディレクトリをパスに追加
+scripts_dir = Path(__file__).parent / "scripts"
+sys.path.insert(0, str(scripts_dir))
+
+# CLIのメイン関数をインポートして実行
+from workflow_cli import main
+
+if __name__ == "__main__":
+    main()

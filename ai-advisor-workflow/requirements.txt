@@ -1,0 +1,31 @@
+# Core dependencies
+requests>=2.28.0
+beautifulsoup4>=4.11.0
+pyyaml>=6.0
+pandas>=1.5.0
+numpy>=1.23.0
+python-dotenv>=0.20.0
+
+# Web scraping
+selenium>=4.0.0
+lxml>=4.9.0
+
+# Document generation
+python-pptx>=0.6.21
+reportlab>=3.6.0
+openpyxl>=3.0.0
+markdown>=3.4.0
+
+# AI/ML (optional, for advanced features)
+# openai>=0.27.0
+# anthropic>=0.3.0
+
+# Development tools
+pytest>=7.0.0
+black>=22.0.0
+flake8>=5.0.0
+
+# Utilities
+pathlib2>=2.3.7
+python-dateutil>=2.8.0
+pytz>=2023.3
