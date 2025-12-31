@@ -1,0 +1,117 @@
+# スキルメタデータ
+metadata:
+  id: "contract-template-generator"
+  name: "契約書テンプレート生成システム"
+  name_en: "Contract Template Generator"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "高橋健一"
+  profession: "行政書士"
+  organization: "法務サービス部"
+  
+profession:
+  category: "legal-professionals"
+  type: "gyosei-shoshi"
+  name_ja: "行政書士"
+  name_en: "Administrative Scrivener"
+
+description:
+  summary: "各種契約書を法的要件を満たしながら迅速に作成できる、AI搭載の契約書作成支援システム"
+  problem: "契約書作成に時間がかかり、法的不備のリスクがある"
+  solution: "テンプレートベースの契約書自動生成と法令チェック機能の提供"
+  features:
+    - "業務委託・NDA・売買契約等の主要契約書テンプレート"
+    - "条項のカスタマイズと法令チェック機能"
+    - "リスク分析とアラート表示機能"
+
+tags:
+  function:
+    - "document-generation"
+    - "template-generation"
+    - "compliance-check"
+    
+  business_process:
+    - "contract-drafting"
+    - "legal-review"
+    - "compliance"
+    
+  impact:
+    - "time-saving"
+    - "risk-reduction"
+    - "standardization"
+    
+  technology:
+    - "pdf-processing"
+    - "word-processing"
+    - "nlp"
+    
+  custom:
+    - "業務委託契約"
+    - "秘密保持契約"
+    - "売買契約"
+
+metrics:
+  efficiency:
+    time_saving: "80%"
+    time_before: "3 hours"
+    time_after: "30 minutes"
+    
+  quality:
+    accuracy: "98%"
+    error_reduction: "90%"
+    
+  economics:
+    cost_saving: "¥100,000/month"
+    roi: "4x"
+    payback_period: "3 months"
+    
+  usage:
+    estimated_users: 150
+    frequency: "weekly"
+
+io_specification:
+  inputs:
+    - name: "契約当事者情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+    - name: "契約条件"
+      type: "structured_data"
+      required: true
+      format: "JSON"
+      
+    - name: "参考契約書"
+      type: "file"
+      required: false
+      format: ["PDF", "Word"]
+      
+  outputs:
+    - name: "契約書ドラフト"
+      type: "document"
+      format: ["Word", "PDF"]
+      
+    - name: "リスク分析レポート"
+      type: "report"
+      format: ["PDF"]
+      
+    - name: "チェックリスト"
+      type: "checklist"
+      format: ["Excel"]
+
+relationships:
+  similar_skills:
+    - id: "license-application-generator"
+      similarity: 0.85
+      reason: "同じ文書生成・法務系スキル"
+      
+  complementary_skills:
+    - id: "document-archiver"
+      reason: "契約書の保管・管理に有用"
+      
+    - id: "e-signature-integration"
+      reason: "電子契約への移行"

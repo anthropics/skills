@@ -1,0 +1,117 @@
+# スキルメタデータ
+metadata:
+  id: "social-insurance-calculator"
+  name: "社会保険料自動計算システム"
+  name_en: "Social Insurance Calculator"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "中村美和"
+  profession: "社会保険労務士"
+  organization: "人事労務管理部"
+  
+profession:
+  category: "labor-professionals"
+  type: "sharoushi"
+  name_ja: "社会保険労務士"
+  name_en: "Labor and Social Security Attorney"
+
+description:
+  summary: "社会保険料の計算を自動化し、給与計算業務の効率化と正確性向上を実現するシステム"
+  problem: "社会保険料計算が複雑で、料率改定への対応や計算ミスのリスクがある"
+  solution: "最新料率の自動更新と従業員別保険料の一括計算機能"
+  features:
+    - "健康保険・厚生年金・介護保険料の自動計算"
+    - "保険料率の自動更新と標準報酬月額判定"
+    - "給与システムとの連携と一括処理機能"
+
+tags:
+  function:
+    - "insurance-calculation"
+    - "cost-calculation"
+    - "data-analysis"
+    
+  business_process:
+    - "expense-management"
+    - "compliance"
+    - "financial-reporting"
+    
+  impact:
+    - "time-saving"
+    - "accuracy-improvement"
+    - "automation"
+    
+  technology:
+    - "excel-processing"
+    - "database"
+    - "api-integration"
+    
+  custom:
+    - "健康保険料"
+    - "厚生年金保険料"
+    - "給与計算"
+
+metrics:
+  efficiency:
+    time_saving: "80%"
+    time_before: "3 days"
+    time_after: "0.5 days"
+    
+  quality:
+    accuracy: "99.9%"
+    error_reduction: "100%"
+    
+  economics:
+    cost_saving: "¥120,000/month"
+    roi: "5x"
+    payback_period: "2 months"
+    
+  usage:
+    estimated_users: 50
+    frequency: "monthly"
+
+io_specification:
+  inputs:
+    - name: "従業員マスタ"
+      type: "data"
+      required: true
+      format: ["CSV", "Excel"]
+      
+    - name: "給与データ"
+      type: "data"
+      required: true
+      format: ["CSV", "Excel"]
+      
+    - name: "事業所情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+  outputs:
+    - name: "保険料計算結果"
+      type: "report"
+      format: ["Excel", "CSV"]
+      
+    - name: "給与明細用データ"
+      type: "data"
+      format: ["CSV"]
+      
+    - name: "会計仕訳データ"
+      type: "data"
+      format: ["CSV", "TXT"]
+
+relationships:
+  similar_skills:
+    - id: "labor-insurance-updater"
+      similarity: 0.90
+      reason: "同じ保険料計算系スキル"
+      
+  complementary_skills:
+    - id: "payroll-system"
+      reason: "給与計算システムとの連携"
+      
+    - id: "tax-calculation"
+      reason: "源泉所得税計算との統合"

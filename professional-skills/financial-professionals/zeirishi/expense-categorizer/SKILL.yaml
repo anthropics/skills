@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "expense-categorizer"
+  name: "経費精算自動仕訳システム"
+  name_en: "Expense Categorization System"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "伊藤正樹"
+  profession: "税理士"
+  organization: "税務会計部"
+  
+profession:
+  category: "financial-professionals"
+  type: "zeirishi"
+  name_ja: "税理士"
+  name_en: "Tax Accountant"
+
+description:
+  summary: "AIを活用して経費精算の仕訳を自動化し、経理業務の効率化と正確性向上を実現するシステム"
+  problem: "経費精算の仕訳作業が煩雑で、勘定科目の判断や承認プロセスに時間がかかる"
+  solution: "OCRとAIによるレシート自動読取と仕訳判定、承認ワークフローの自動化"
+  features:
+    - "スマホ撮影レシートのOCR読取と勘定科目自動判定"
+    - "AIによる仕訳パターン学習と消費税区分判定"
+    - "承認ワークフローと主要会計ソフトへの自動連携"
+
+tags:
+  function:
+    - "data-analysis"
+    - "categorization"
+    - "validation"
+    
+  business_process:
+    - "expense-management"
+    - "bookkeeping"
+    - "approval-workflow"
+    
+  impact:
+    - "time-saving"
+    - "accuracy-improvement"
+    - "streamlining"
+    
+  technology:
+    - "ocr"
+    - "ai-ml"
+    - "api-integration"
+    
+  custom:
+    - "経費精算"
+    - "仕訳自動化"
+    - "勘定科目"
+
+metrics:
+  efficiency:
+    time_saving: "85%"
+    time_before: "20 minutes/item"
+    time_after: "3 minutes/item"
+    
+  quality:
+    accuracy: "95%"
+    error_reduction: "95%"
+    
+  economics:
+    cost_saving: "¥200,000/month"
+    roi: "6x"
+    payback_period: "2 months"
+    
+  usage:
+    estimated_users: 250
+    frequency: "daily"
+
+io_specification:
+  inputs:
+    - name: "レシート画像"
+      type: "image"
+      required: true
+      format: ["JPEG", "PNG", "PDF"]
+      
+    - name: "経費申請情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+    - name: "プロジェクトコード"
+      type: "text"
+      required: false
+      format: "string"
+      
+  outputs:
+    - name: "仕訳データ"
+      type: "data"
+      format: ["CSV", "JSON"]
+      
+    - name: "承認済経費一覧"
+      type: "report"
+      format: ["Excel", "PDF"]
+      
+    - name: "会計連携データ"
+      type: "data"
+      format: ["API", "CSV"]
+      
+    - name: "経費分析レポート"
+      type: "report"
+      format: ["PDF"]
+
+relationships:
+  similar_skills:
+    - id: "tax-return-assistant"
+      similarity: 0.85
+      reason: "同じ経理・税務系スキル"
+      
+  complementary_skills:
+    - id: "receipt-storage-system"
+      reason: "電子帳簿保存法対応"
+      
+    - id: "budget-management"
+      reason: "予算管理システムとの連携"

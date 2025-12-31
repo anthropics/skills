@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "work-rules-comparator"
+  name: "就業規則比較分析システム"
+  name_en: "Work Rules Comparison System"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "中村美和"
+  profession: "社会保険労務士"
+  organization: "人事労務管理部"
+  
+profession:
+  category: "labor-professionals"
+  type: "sharoushi"
+  name_ja: "社会保険労務士"
+  name_en: "Labor and Social Security Attorney"
+
+description:
+  summary: "自社の就業規則を法令や他社事例と比較し、改善点を提示する就業規則の最適化支援システム"
+  problem: "就業規則の法令適合性確認が困難で、業界標準との比較や改善点の把握が難しい"
+  solution: "AI分析による法令チェックと業界比較、具体的な改善提案の自動生成"
+  features:
+    - "労働基準法との整合性確認と最新法改正対応"
+    - "業界標準との比較分析とベストプラクティス提案"
+    - "リスク評価と優先度別改善提案の自動生成"
+
+tags:
+  function:
+    - "comparison-analysis"
+    - "compliance-check"
+    - "risk-assessment"
+    
+  business_process:
+    - "compliance"
+    - "legal-review"
+    - "hr-management"
+    
+  impact:
+    - "risk-reduction"
+    - "standardization"
+    - "audit-readiness"
+    
+  technology:
+    - "nlp"
+    - "ai-ml"
+    - "database"
+    
+  custom:
+    - "就業規則"
+    - "労働基準法"
+    - "人事制度"
+
+metrics:
+  efficiency:
+    time_saving: "60%"
+    time_before: "40 hours"
+    time_after: "16 hours"
+    
+  quality:
+    accuracy: "95%"
+    error_reduction: "80%"
+    
+  economics:
+    cost_saving: "¥100,000/review"
+    roi: "4x"
+    payback_period: "3 months"
+    
+  usage:
+    estimated_users: 120
+    frequency: "quarterly"
+
+io_specification:
+  inputs:
+    - name: "現行就業規則"
+      type: "document"
+      required: true
+      format: ["Word", "PDF"]
+      
+    - name: "企業情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+    - name: "比較対象規則"
+      type: "document"
+      required: false
+      format: ["Word", "PDF"]
+      
+  outputs:
+    - name: "分析レポート"
+      type: "report"
+      format: ["PDF", "Word"]
+      
+    - name: "改善提案書"
+      type: "document"
+      format: ["Word", "PDF"]
+      
+    - name: "リスク評価表"
+      type: "report"
+      format: ["Excel"]
+      
+    - name: "従業員説明資料"
+      type: "presentation"
+      format: ["PowerPoint", "PDF"]
+
+relationships:
+  similar_skills:
+    - id: "contract-compliance-checker"
+      similarity: 0.75
+      reason: "同じコンプライアンスチェック系スキル"
+      
+  complementary_skills:
+    - id: "employee-handbook-generator"
+      reason: "就業規則改定後の従業員周知に有用"
+      
+    - id: "hr-policy-manager"
+      reason: "人事制度全体の管理との連携"

@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "monthly-report-generator"
+  name: "月次決算報告書自動生成システム"
+  name_en: "Monthly Financial Report Generator"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "伊藤正樹"
+  profession: "税理士"
+  organization: "税務会計部"
+  
+profession:
+  category: "financial-professionals"
+  type: "zeirishi"
+  name_ja: "税理士"
+  name_en: "Tax Accountant"
+
+description:
+  summary: "会計データから経営判断に必要な月次決算報告書を自動生成し、タイムリーな経営情報の提供を実現するシステム"
+  problem: "月次決算の作成に時間がかかり、経営判断に必要な情報提供が遅れる"
+  solution: "会計データの自動集計と財務諸表・分析レポートの自動生成"
+  features:
+    - "会計ソフトとの連携による財務諸表の自動作成"
+    - "前年比較・予算実績対比などの分析レポート生成"
+    - "経営ダッシュボードとKPI可視化機能"
+
+tags:
+  function:
+    - "report-generation"
+    - "data-analysis"
+    - "trend-analysis"
+    
+  business_process:
+    - "financial-reporting"
+    - "management-reporting"
+    - "compliance"
+    
+  impact:
+    - "time-saving"
+    - "decision-support"
+    - "standardization"
+    
+  technology:
+    - "database"
+    - "api-integration"
+    - "data-visualization"
+    
+  custom:
+    - "月次決算"
+    - "財務諸表"
+    - "経営分析"
+
+metrics:
+  efficiency:
+    time_saving: "80%"
+    time_before: "10 days"
+    time_after: "2 days"
+    
+  quality:
+    accuracy: "99.9%"
+    error_reduction: "100%"
+    
+  economics:
+    cost_saving: "¥150,000/month"
+    roi: "7x"
+    payback_period: "2 months"
+    
+  usage:
+    estimated_users: 100
+    frequency: "monthly"
+
+io_specification:
+  inputs:
+    - name: "会計データ"
+      type: "data"
+      required: true
+      format: ["API", "CSV", "Excel"]
+      
+    - name: "予算データ"
+      type: "data"
+      required: false
+      format: ["Excel", "CSV"]
+      
+    - name: "部門マスタ"
+      type: "data"
+      required: false
+      format: ["CSV", "JSON"]
+      
+  outputs:
+    - name: "財務諸表"
+      type: "report"
+      format: ["Excel", "PDF"]
+      
+    - name: "経営分析レポート"
+      type: "report"
+      format: ["PowerPoint", "PDF"]
+      
+    - name: "KPIダッシュボード"
+      type: "dashboard"
+      format: ["Web", "PDF"]
+      
+    - name: "部門別損益"
+      type: "report"
+      format: ["Excel", "PDF"]
+
+relationships:
+  similar_skills:
+    - id: "financial-statement-analyzer"
+      similarity: 0.80
+      reason: "同じ財務分析系スキル"
+      
+  complementary_skills:
+    - id: "budget-planning-system"
+      reason: "予算策定との連携"
+      
+    - id: "cash-flow-forecaster"
+      reason: "資金繰り予測との統合"

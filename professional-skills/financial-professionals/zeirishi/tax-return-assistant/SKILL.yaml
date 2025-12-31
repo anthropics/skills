@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "tax-return-assistant"
+  name: "確定申告書類自動作成アシスタント"
+  name_en: "Tax Return Assistant"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "伊藤正樹"
+  profession: "税理士"
+  organization: "税務会計部"
+  
+profession:
+  category: "financial-professionals"
+  type: "zeirishi"
+  name_ja: "税理士"
+  name_en: "Tax Accountant"
+
+description:
+  summary: "個人事業主・フリーランス向けの確定申告書類作成を自動化し、申告業務の負担を大幅に軽減するシステム"
+  problem: "確定申告の記帳作業が煩雑で時間がかかり、申告ミスのリスクがある"
+  solution: "取引データの自動取込と仕訳生成、申告書類の自動作成機能"
+  features:
+    - "銀行・クレジットカード明細の自動取込とAI仕訳"
+    - "青色申告決算書と確定申告書の自動作成"
+    - "e-Tax形式での出力と各種控除の自動計算"
+
+tags:
+  function:
+    - "tax-calculation"
+    - "document-generation"
+    - "data-analysis"
+    
+  business_process:
+    - "bookkeeping"
+    - "financial-reporting"
+    - "compliance"
+    
+  impact:
+    - "time-saving"
+    - "accuracy-improvement"
+    - "automation"
+    
+  technology:
+    - "api-integration"
+    - "ocr"
+    - "ai-ml"
+    
+  custom:
+    - "確定申告"
+    - "青色申告"
+    - "所得税"
+
+metrics:
+  efficiency:
+    time_saving: "90%"
+    time_before: "10 hours/month"
+    time_after: "1 hour/month"
+    
+  quality:
+    accuracy: "99.5%"
+    error_reduction: "95%"
+    
+  economics:
+    cost_saving: "¥60,000/year"
+    roi: "8x"
+    payback_period: "2 months"
+    
+  usage:
+    estimated_users: 300
+    frequency: "daily"
+
+io_specification:
+  inputs:
+    - name: "銀行取引明細"
+      type: "data"
+      required: false
+      format: ["API", "CSV"]
+      
+    - name: "領収書・レシート"
+      type: "image"
+      required: false
+      format: ["JPEG", "PNG", "PDF"]
+      
+    - name: "事業者情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+  outputs:
+    - name: "青色申告決算書"
+      type: "document"
+      format: ["PDF", "e-Tax"]
+      
+    - name: "確定申告書B"
+      type: "document"
+      format: ["PDF", "e-Tax"]
+      
+    - name: "仕訳帳・総勘定元帳"
+      type: "report"
+      format: ["Excel", "PDF"]
+      
+    - name: "税額計算書"
+      type: "report"
+      format: ["PDF"]
+
+relationships:
+  similar_skills:
+    - id: "expense-categorizer"
+      similarity: 0.85
+      reason: "同じ経理・税務系スキル"
+      
+  complementary_skills:
+    - id: "invoice-manager"
+      reason: "請求書管理との連携"
+      
+    - id: "tax-planning-simulator"
+      reason: "節税シミュレーションとの統合"

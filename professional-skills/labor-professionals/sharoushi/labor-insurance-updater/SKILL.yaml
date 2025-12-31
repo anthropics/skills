@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "labor-insurance-updater"
+  name: "労働保険年度更新自動化システム"
+  name_en: "Labor Insurance Annual Update System"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "中村美和"
+  profession: "社会保険労務士"
+  organization: "人事労務管理部"
+  
+profession:
+  category: "labor-professionals"
+  type: "sharoushi"
+  name_ja: "社会保険労務士"
+  name_en: "Labor and Social Security Attorney"
+
+description:
+  summary: "労働保険の年度更新手続きを自動化し、複雑な計算と申告書作成を効率的に行うシステム"
+  problem: "年度更新の計算が複雑で時間がかかり、計算ミスのリスクが高い"
+  solution: "賃金データの自動集計と保険料計算、申告書作成の一括処理"
+  features:
+    - "給与データからの自動集計と労災・雇用保険料計算"
+    - "申告書・納付書の自動作成と電子申請対応"
+    - "メリット制・特別加入・分割納付の管理機能"
+
+tags:
+  function:
+    - "insurance-calculation"
+    - "report-generation"
+    - "data-analysis"
+    
+  business_process:
+    - "notification"
+    - "compliance"
+    - "financial-reporting"
+    
+  impact:
+    - "time-saving"
+    - "error-reduction"
+    - "automation"
+    
+  technology:
+    - "excel-processing"
+    - "pdf-processing"
+    - "api-integration"
+    
+  custom:
+    - "労災保険"
+    - "雇用保険"
+    - "年度更新"
+
+metrics:
+  efficiency:
+    time_saving: "75%"
+    time_before: "5 days"
+    time_after: "1 day"
+    
+  quality:
+    accuracy: "99.9%"
+    error_reduction: "100%"
+    
+  economics:
+    cost_saving: "¥50,000/year"
+    roi: "6x"
+    payback_period: "2 months"
+    
+  usage:
+    estimated_users: 80
+    frequency: "yearly"
+
+io_specification:
+  inputs:
+    - name: "賃金台帳データ"
+      type: "data"
+      required: true
+      format: ["CSV", "Excel"]
+      
+    - name: "労働者名簿"
+      type: "data"
+      required: true
+      format: ["CSV", "Excel"]
+      
+    - name: "事業場情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+  outputs:
+    - name: "労働保険申告書"
+      type: "document"
+      format: ["PDF"]
+      
+    - name: "計算内訳書"
+      type: "report"
+      format: ["Excel", "PDF"]
+      
+    - name: "電子申請データ"
+      type: "data"
+      format: ["XML"]
+      
+    - name: "納付書"
+      type: "document"
+      format: ["PDF"]
+
+relationships:
+  similar_skills:
+    - id: "social-insurance-calculator"
+      similarity: 0.90
+      reason: "同じ保険料計算系スキル"
+      
+  complementary_skills:
+    - id: "payroll-system"
+      reason: "賃金データの連携元"
+      
+    - id: "e-gov-connector"
+      reason: "電子申請システムとの連携"

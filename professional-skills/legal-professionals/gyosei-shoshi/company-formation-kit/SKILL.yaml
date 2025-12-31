@@ -1,0 +1,121 @@
+# スキルメタデータ
+metadata:
+  id: "company-formation-kit"
+  name: "会社設立支援パッケージ"
+  name_en: "Company Formation Kit"
+  version: "1.0.0"
+  created_date: "2025-01-01"
+  updated_date: "2025-01-01"
+  status: "active"
+  
+developer:
+  name: "高橋健一"
+  profession: "行政書士"
+  organization: "法務サービス部"
+  
+profession:
+  category: "legal-professionals"
+  type: "gyosei-shoshi"
+  name_ja: "行政書士"
+  name_en: "Administrative Scrivener"
+
+description:
+  summary: "法人設立に必要な書類一式を自動生成し、手続きガイドを提供する包括的支援システム"
+  problem: "会社設立手続きが複雑で、必要書類の準備に時間と専門知識が必要"
+  solution: "設立形態別の書類自動生成と手続きフローの可視化"
+  features:
+    - "株式会社・合同会社・NPO法人等の設立書類生成"
+    - "定款作成と認証手続きのガイダンス"
+    - "設立後の届出書類一式の自動作成"
+
+tags:
+  function:
+    - "document-generation"
+    - "template-generation"
+    - "validation"
+    
+  business_process:
+    - "registration"
+    - "compliance"
+    - "notification"
+    
+  impact:
+    - "time-saving"
+    - "error-reduction"
+    - "streamlining"
+    
+  technology:
+    - "pdf-processing"
+    - "word-processing"
+    - "template-engine"
+    
+  custom:
+    - "株式会社設立"
+    - "合同会社設立"
+    - "定款作成"
+
+metrics:
+  efficiency:
+    time_saving: "85%"
+    time_before: "40 hours"
+    time_after: "6 hours"
+    
+  quality:
+    accuracy: "99%"
+    error_reduction: "95%"
+    
+  economics:
+    cost_saving: "¥200,000/case"
+    roi: "10x"
+    payback_period: "1 month"
+    
+  usage:
+    estimated_users: 100
+    frequency: "monthly"
+
+io_specification:
+  inputs:
+    - name: "発起人情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+    - name: "会社概要"
+      type: "structured_data"
+      required: true
+      format: "JSON"
+      
+    - name: "事業計画"
+      type: "document"
+      required: false
+      format: ["PDF", "Word"]
+      
+  outputs:
+    - name: "定款"
+      type: "document"
+      format: ["Word", "PDF"]
+      
+    - name: "登記申請書類一式"
+      type: "document_set"
+      format: ["PDF"]
+      
+    - name: "設立手続きチェックリスト"
+      type: "checklist"
+      format: ["Excel", "PDF"]
+      
+    - name: "設立後届出書類"
+      type: "document_set"
+      format: ["PDF", "Word"]
+
+relationships:
+  similar_skills:
+    - id: "license-application-generator"
+      similarity: 0.80
+      reason: "同じ行政手続き支援系スキル"
+      
+  complementary_skills:
+    - id: "tax-registration-assistant"
+      reason: "設立後の税務届出に必要"
+      
+    - id: "social-insurance-registration"
+      reason: "設立後の社会保険手続きに必要"

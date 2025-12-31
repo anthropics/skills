@@ -1,0 +1,215 @@
+# スキルメタデータテンプレート
+# 各スキルディレクトリに配置するSKILL.yamlのテンプレート
+
+# 基本情報
+metadata:
+  id: "skill-unique-id"                    # 一意のスキルID（英数字とハイフン）
+  name: "スキル名称"                        # 日本語のスキル名
+  name_en: "Skill Name"                    # 英語のスキル名
+  version: "1.0.0"                         # セマンティックバージョニング
+  created_date: "2025-01-01"               # 作成日（YYYY-MM-DD）
+  updated_date: "2025-01-01"               # 最終更新日
+  status: "active"                         # active, beta, deprecated
+  
+# 開発者情報
+developer:
+  name: "開発者名"                          # スキル要求者名
+  profession: "職業名"                      # 要求者の職業
+  organization: "所属組織"                  # 所属組織（任意）
+  contact: "連絡先"                        # メールアドレス等（任意）
+
+# 職業分類
+profession:
+  category: "professional-category"         # 職業大分類（例: legal-professionals）
+  type: "profession-type"                  # 職業小分類（例: gyosei-shoshi）
+  name_ja: "職業名（日本語）"
+  name_en: "Profession Name (English)"
+
+# スキルの詳細説明
+description:
+  summary: "スキルの簡潔な説明（1-2文）"
+  problem: "解決する課題の詳細"
+  solution: "提供するソリューション"
+  features:
+    - "主要機能1"
+    - "主要機能2"
+    - "主要機能3"
+
+# タグ（skill-taxonomy.yamlに基づく）
+tags:
+  # 機能タグ（必須）
+  function:
+    - "document-generation"
+    - "validation"
+    
+  # 業務プロセスタグ（必須）
+  business_process:
+    - "license-application"
+    - "compliance"
+    
+  # 効果タグ（推奨）
+  impact:
+    - "time-saving"
+    - "accuracy-improvement"
+    
+  # 技術タグ（推奨）
+  technology:
+    - "pdf-processing"
+    - "template-engine"
+    
+  # カスタムタグ（任意）
+  custom:
+    - "建設業許可"
+    - "飲食業許可"
+
+# パフォーマンス指標
+metrics:
+  # 効率性指標
+  efficiency:
+    time_saving: "80%"                     # 時間削減率
+    time_before: "3 hours"                 # 従来の所要時間
+    time_after: "30 minutes"               # スキル使用後の所要時間
+    
+  # 品質指標
+  quality:
+    accuracy: "99%"                        # 精度
+    error_reduction: "95%"                 # エラー削減率
+    
+  # 経済効果
+  economics:
+    cost_saving: "¥100,000/month"          # コスト削減額
+    roi: "3-5x"                           # 投資対効果
+    payback_period: "3 months"             # 投資回収期間
+    
+  # 利用統計
+  usage:
+    estimated_users: 100                   # 想定利用者数
+    frequency: "daily"                     # 利用頻度（daily/weekly/monthly）
+
+# 入出力仕様
+io_specification:
+  # 入力
+  inputs:
+    - name: "申請者情報"
+      type: "form"
+      required: true
+      format: "JSON"
+      
+    - name: "添付書類"
+      type: "file"
+      required: false
+      format: ["PDF", "JPEG", "PNG"]
+      
+  # 出力
+  outputs:
+    - name: "申請書"
+      type: "document"
+      format: ["PDF", "Word"]
+      
+    - name: "チェックリスト"
+      type: "report"
+      format: ["Excel", "CSV"]
+
+# ワークフロー
+workflow:
+  steps:
+    - step: 1
+      name: "情報入力"
+      description: "申請に必要な基本情報を入力"
+      
+    - step: 2
+      name: "書類生成"
+      description: "入力情報を基に申請書類を自動生成"
+      
+    - step: 3
+      name: "検証"
+      description: "生成された書類の不備チェック"
+      
+    - step: 4
+      name: "出力"
+      description: "最終書類の出力とチェックリスト作成"
+
+# 技術仕様
+technical_specs:
+  # 依存関係
+  dependencies:
+    - name: "pdf-lib"
+      version: "^1.17.0"
+      purpose: "PDF生成"
+      
+    - name: "docx-templater"
+      version: "^3.40.0"
+      purpose: "Word文書生成"
+      
+  # 環境要件
+  requirements:
+    platforms: ["Windows", "macOS", "Linux"]
+    languages: ["ja", "en"]
+    min_memory: "4GB"
+    storage: "100MB"
+    
+  # API仕様（該当する場合）
+  api:
+    endpoints:
+      - method: "POST"
+        path: "/generate"
+        description: "書類生成エンドポイント"
+        
+    authentication: "API Key"
+
+# 関連情報
+relationships:
+  # 類似スキル
+  similar_skills:
+    - id: "contract-template-generator"
+      similarity: 0.85
+      reason: "同じ文書生成カテゴリ"
+      
+  # 補完スキル
+  complementary_skills:
+    - id: "document-archiver"
+      reason: "生成した書類の管理に有用"
+      
+  # 依存スキル
+  depends_on:
+    - id: "pdf-generator-core"
+      required: true
+      
+  # このスキルを利用するスキル
+  used_by:
+    - id: "business-startup-kit"
+      purpose: "会社設立時の許認可申請"
+
+# 利用例
+examples:
+  - title: "建設業許可申請"
+    scenario: "建設会社が新規で建設業許可を申請する場合"
+    input: "会社情報、役員情報、財務諸表"
+    output: "建設業許可申請書一式、添付書類チェックリスト"
+    
+  - title: "飲食店営業許可"
+    scenario: "新規飲食店開業時の営業許可申請"
+    input: "店舗情報、設備情報、食品衛生責任者情報"
+    output: "営業許可申請書、施設平面図テンプレート"
+
+# 更新履歴
+changelog:
+  - version: "1.0.0"
+    date: "2025-01-01"
+    changes:
+      - "初回リリース"
+      - "建設業、飲食業、古物商の3業種に対応"
+      
+  - version: "0.9.0"
+    date: "2024-12-15"
+    changes:
+      - "ベータ版リリース"
+      - "基本機能の実装"
+
+# ライセンス・利用規約
+license:
+  type: "Proprietary"                      # or MIT, Apache-2.0, etc.
+  terms: "社内利用限定"
+  restrictions:
+    - "外部への再配布禁止"
+    - "改変時は開発者への通知が必要"

@@ -1,0 +1,264 @@
+{
+  "version": "1.0.0",
+  "generated_date": "2025-01-01",
+  "total_skills": 9,
+  "skills": [
+    {
+      "id": "license-application-generator",
+      "name": "許認可申請書自動生成",
+      "path": "legal-professionals/gyosei-shoshi/license-application-generator",
+      "profession": {
+        "category": "legal-professionals",
+        "type": "gyosei-shoshi",
+        "name_ja": "行政書士"
+      },
+      "tags": {
+        "function": ["document-generation", "validation", "error-check"],
+        "business_process": ["license-application", "registration", "compliance"],
+        "impact": ["time-saving", "error-reduction", "standardization"],
+        "technology": ["pdf-processing", "word-processing", "template-engine"]
+      },
+      "metrics": {
+        "time_saving": "83%",
+        "accuracy": "99%",
+        "roi": "5x"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "contract-template-generator",
+      "name": "契約書テンプレート生成",
+      "path": "legal-professionals/gyosei-shoshi/contract-template-generator",
+      "profession": {
+        "category": "legal-professionals",
+        "type": "gyosei-shoshi",
+        "name_ja": "行政書士"
+      },
+      "tags": {
+        "function": ["template-generation", "document-generation", "validation"],
+        "business_process": ["contract-drafting", "legal-review", "risk-management"],
+        "impact": ["time-saving", "standardization", "risk-reduction"],
+        "technology": ["nlp", "template-engine", "word-processing"]
+      },
+      "metrics": {
+        "time_saving": "80%",
+        "accuracy": "98%",
+        "roi": "4x"
+      },
+      "priority": "medium"
+    },
+    {
+      "id": "company-formation-kit",
+      "name": "会社設立支援パッケージ",
+      "path": "legal-professionals/gyosei-shoshi/company-formation-kit",
+      "profession": {
+        "category": "legal-professionals",
+        "type": "gyosei-shoshi",
+        "name_ja": "行政書士"
+      },
+      "tags": {
+        "function": ["document-generation", "workflow-automation", "checklist-generation"],
+        "business_process": ["company-formation", "registration", "filing"],
+        "impact": ["time-saving", "cost-reduction", "error-reduction"],
+        "technology": ["pdf-processing", "workflow-engine", "template-system"]
+      },
+      "metrics": {
+        "time_saving": "85%",
+        "accuracy": "99%",
+        "cost_saving": "¥200,000-300,000"
+      },
+      "priority": "medium"
+    },
+    {
+      "id": "social-insurance-calculator",
+      "name": "社会保険料自動計算",
+      "path": "labor-professionals/sharoushi/social-insurance-calculator",
+      "profession": {
+        "category": "labor-professionals",
+        "type": "sharoushi",
+        "name_ja": "社会保険労務士"
+      },
+      "tags": {
+        "function": ["insurance-calculation", "rate-updating", "batch-processing"],
+        "business_process": ["payroll", "insurance-management", "compliance"],
+        "impact": ["time-saving", "accuracy-improvement", "automation"],
+        "technology": ["calculation-engine", "database", "api-integration"]
+      },
+      "metrics": {
+        "time_saving": "80%",
+        "accuracy": "99.9%",
+        "roi": "6x"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "labor-insurance-updater",
+      "name": "労働保険年度更新",
+      "path": "labor-professionals/sharoushi/labor-insurance-updater",
+      "profession": {
+        "category": "labor-professionals",
+        "type": "sharoushi",
+        "name_ja": "社会保険労務士"
+      },
+      "tags": {
+        "function": ["calculation", "data-aggregation", "report-generation"],
+        "business_process": ["annual-update", "insurance-filing", "compliance"],
+        "impact": ["time-saving", "accuracy-improvement", "deadline-management"],
+        "technology": ["excel-processing", "pdf-generation", "e-filing"]
+      },
+      "metrics": {
+        "time_saving": "75%",
+        "accuracy": "99.9%",
+        "error_elimination": "100%"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "work-rules-comparator",
+      "name": "就業規則比較分析",
+      "path": "labor-professionals/sharoushi/work-rules-comparator",
+      "profession": {
+        "category": "labor-professionals",
+        "type": "sharoushi",
+        "name_ja": "社会保険労務士"
+      },
+      "tags": {
+        "function": ["comparison-analysis", "compliance-check", "gap-analysis"],
+        "business_process": ["policy-review", "legal-compliance", "hr-management"],
+        "impact": ["risk-reduction", "standardization", "efficiency"],
+        "technology": ["nlp", "diff-engine", "reporting"]
+      },
+      "metrics": {
+        "time_saving": "60%",
+        "compliance_improvement": "95%",
+        "risk_reduction": "80%"
+      },
+      "priority": "medium"
+    },
+    {
+      "id": "tax-return-assistant",
+      "name": "確定申告書作成支援",
+      "path": "financial-professionals/zeirishi/tax-return-assistant",
+      "profession": {
+        "category": "financial-professionals",
+        "type": "zeirishi",
+        "name_ja": "税理士"
+      },
+      "tags": {
+        "function": ["tax-calculation", "document-generation", "validation"],
+        "business_process": ["tax-filing", "compliance", "financial-reporting"],
+        "impact": ["time-saving", "accuracy-improvement", "automation"],
+        "technology": ["calculation-engine", "e-tax-integration", "ocr"]
+      },
+      "metrics": {
+        "time_saving": "90%",
+        "accuracy": "99.5%",
+        "roi": "10x"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "expense-categorizer",
+      "name": "経費精算自動仕訳",
+      "path": "financial-professionals/zeirishi/expense-categorizer",
+      "profession": {
+        "category": "financial-professionals",
+        "type": "zeirishi",
+        "name_ja": "税理士"
+      },
+      "tags": {
+        "function": ["categorization", "data-analysis", "automation"],
+        "business_process": ["expense-management", "bookkeeping", "approval-workflow"],
+        "impact": ["time-saving", "accuracy-improvement", "cost-reduction"],
+        "technology": ["ai-ml", "ocr", "workflow-automation"]
+      },
+      "metrics": {
+        "time_saving": "85%",
+        "accuracy": "95%",
+        "cost_saving": "¥200,000/month"
+      },
+      "priority": "medium"
+    },
+    {
+      "id": "monthly-report-generator",
+      "name": "月次決算報告書生成",
+      "path": "financial-professionals/zeirishi/monthly-report-generator",
+      "profession": {
+        "category": "financial-professionals",
+        "type": "zeirishi",
+        "name_ja": "税理士"
+      },
+      "tags": {
+        "function": ["report-generation", "data-analysis", "visualization"],
+        "business_process": ["financial-reporting", "month-end-closing", "management-reporting"],
+        "impact": ["time-saving", "insight-generation", "decision-support"],
+        "technology": ["reporting-engine", "data-visualization", "pdf-generation"]
+      },
+      "metrics": {
+        "time_saving": "80%",
+        "accuracy": "99.9%",
+        "closing_acceleration": "70%"
+      },
+      "priority": "high"
+    }
+  ],
+  "tag_statistics": {
+    "function": {
+      "document-generation": 4,
+      "calculation": 3,
+      "validation": 3,
+      "report-generation": 2,
+      "data-analysis": 2,
+      "template-generation": 2,
+      "categorization": 1,
+      "comparison-analysis": 1,
+      "automation": 2
+    },
+    "business_process": {
+      "compliance": 5,
+      "registration": 3,
+      "financial-reporting": 3,
+      "license-application": 1,
+      "contract-drafting": 1,
+      "payroll": 1,
+      "expense-management": 1,
+      "tax-filing": 1
+    },
+    "impact": {
+      "time-saving": 9,
+      "accuracy-improvement": 5,
+      "error-reduction": 4,
+      "standardization": 3,
+      "risk-reduction": 2,
+      "automation": 2,
+      "cost-reduction": 2
+    },
+    "technology": {
+      "pdf-processing": 4,
+      "word-processing": 3,
+      "template-engine": 3,
+      "calculation-engine": 2,
+      "nlp": 2,
+      "ocr": 2,
+      "excel-processing": 1,
+      "ai-ml": 1,
+      "workflow-automation": 1
+    }
+  },
+  "profession_distribution": {
+    "legal-professionals": {
+      "gyosei-shoshi": 3
+    },
+    "labor-professionals": {
+      "sharoushi": 3
+    },
+    "financial-professionals": {
+      "zeirishi": 3
+    }
+  },
+  "priority_distribution": {
+    "high": 5,
+    "medium": 4,
+    "low": 0
+  }
+}

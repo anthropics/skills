@@ -1,0 +1,279 @@
+# スキル分類体系（Skill Taxonomy）
+# Professional Skills向けの標準タグ定義
+
+version: "1.0.0"
+updated: "2025-01-01"
+
+# 職業カテゴリ定義
+profession_categories:
+  legal-professionals:
+    name_ja: "法律専門職"
+    name_en: "Legal Professionals"
+    professions:
+      gyosei-shoshi:
+        name_ja: "行政書士"
+        name_en: "Administrative Scrivener"
+        description: "官公署に提出する書類の作成、許認可申請の代理"
+        
+      shiho-shoshi:
+        name_ja: "司法書士"
+        name_en: "Judicial Scrivener"
+        description: "登記・供託手続き、裁判所提出書類の作成"
+        
+      bengoshi:
+        name_ja: "弁護士"
+        name_en: "Attorney"
+        description: "法律相談、訴訟代理、契約書作成"
+        
+  labor-professionals:
+    name_ja: "労務専門職"
+    name_en: "Labor Professionals"
+    professions:
+      sharoushi:
+        name_ja: "社会保険労務士"
+        name_en: "Labor and Social Security Attorney"
+        description: "労働・社会保険関連の手続き、労務管理"
+        
+      roumu-consultant:
+        name_ja: "労務コンサルタント"
+        name_en: "Labor Consultant"
+        description: "人事労務管理の助言・指導"
+        
+  financial-professionals:
+    name_ja: "財務・会計専門職"
+    name_en: "Financial Professionals"
+    professions:
+      zeirishi:
+        name_ja: "税理士"
+        name_en: "Tax Accountant"
+        description: "税務相談、申告書作成、記帳代行"
+        
+      kaikei-shi:
+        name_ja: "公認会計士"
+        name_en: "Certified Public Accountant"
+        description: "監査、財務諸表作成、経営助言"
+        
+      fp:
+        name_ja: "ファイナンシャルプランナー"
+        name_en: "Financial Planner"
+        description: "資産運用、ライフプランニング"
+
+# タグカテゴリ定義
+tag_categories:
+  # 1. 機能タグ（Function Tags）
+  function:
+    name_ja: "機能"
+    name_en: "Function"
+    tags:
+      # 生成系
+      generation:
+        document-generation:
+          name_ja: "文書生成"
+          description: "各種文書の自動生成"
+          
+        report-generation:
+          name_ja: "レポート生成"
+          description: "報告書・レポートの自動作成"
+          
+        template-generation:
+          name_ja: "テンプレート生成"
+          description: "文書テンプレートの作成"
+          
+      # 計算系
+      calculation:
+        tax-calculation:
+          name_ja: "税額計算"
+          description: "各種税金の計算"
+          
+        insurance-calculation:
+          name_ja: "保険料計算"
+          description: "社会保険・労働保険料の計算"
+          
+        cost-calculation:
+          name_ja: "コスト計算"
+          description: "費用・原価の計算"
+          
+      # 分析系
+      analysis:
+        data-analysis:
+          name_ja: "データ分析"
+          description: "数値データの分析・集計"
+          
+        comparison-analysis:
+          name_ja: "比較分析"
+          description: "複数データの比較・差分分析"
+          
+        trend-analysis:
+          name_ja: "トレンド分析"
+          description: "時系列データの傾向分析"
+          
+      # 検証系
+      validation:
+        compliance-check:
+          name_ja: "コンプライアンスチェック"
+          description: "法令遵守の確認"
+          
+        error-check:
+          name_ja: "エラーチェック"
+          description: "入力ミス・記載漏れの検出"
+          
+        consistency-check:
+          name_ja: "整合性チェック"
+          description: "データ間の整合性確認"
+          
+  # 2. 業務プロセスタグ（Business Process Tags）
+  business_process:
+    name_ja: "業務プロセス"
+    name_en: "Business Process"
+    tags:
+      # 申請・届出
+      application:
+        license-application:
+          name_ja: "許認可申請"
+          description: "各種許可・認可の申請"
+          
+        registration:
+          name_ja: "登録・届出"
+          description: "各種登録・届出手続き"
+          
+        notification:
+          name_ja: "通知・報告"
+          description: "行政機関への通知・報告"
+          
+      # 契約・法務
+      legal:
+        contract-drafting:
+          name_ja: "契約書作成"
+          description: "各種契約書の起案"
+          
+        legal-review:
+          name_ja: "法務レビュー"
+          description: "法的観点からの確認"
+          
+        compliance:
+          name_ja: "コンプライアンス"
+          description: "法令遵守関連業務"
+          
+      # 会計・経理
+      accounting:
+        bookkeeping:
+          name_ja: "記帳"
+          description: "取引の記録・仕訳"
+          
+        financial-reporting:
+          name_ja: "財務報告"
+          description: "財務諸表の作成"
+          
+        expense-management:
+          name_ja: "経費管理"
+          description: "経費の記録・精算"
+          
+  # 3. 効果タグ（Impact Tags）
+  impact:
+    name_ja: "効果"
+    name_en: "Impact"
+    tags:
+      efficiency:
+        time-saving:
+          name_ja: "時間削減"
+          description: "作業時間の短縮"
+          metrics: ["percentage", "hours_saved"]
+          
+        automation:
+          name_ja: "自動化"
+          description: "手作業の自動化"
+          
+        streamlining:
+          name_ja: "業務効率化"
+          description: "プロセスの最適化"
+          
+      quality:
+        accuracy-improvement:
+          name_ja: "精度向上"
+          description: "ミス・エラーの削減"
+          
+        standardization:
+          name_ja: "標準化"
+          description: "業務の標準化・統一化"
+          
+        consistency:
+          name_ja: "一貫性確保"
+          description: "品質の安定化"
+          
+      compliance:
+        risk-reduction:
+          name_ja: "リスク削減"
+          description: "法的リスクの低減"
+          
+        audit-readiness:
+          name_ja: "監査対応"
+          description: "監査への備え"
+          
+  # 4. 技術タグ（Technology Tags）
+  technology:
+    name_ja: "技術"
+    name_en: "Technology"
+    tags:
+      document:
+        pdf-processing:
+          name_ja: "PDF処理"
+          description: "PDF文書の生成・編集"
+          
+        word-processing:
+          name_ja: "Word処理"
+          description: "Word文書の操作"
+          
+        excel-processing:
+          name_ja: "Excel処理"
+          description: "Excelファイルの操作"
+          
+      data:
+        database:
+          name_ja: "データベース"
+          description: "データの保存・検索"
+          
+        api-integration:
+          name_ja: "API連携"
+          description: "外部システムとの連携"
+          
+        data-import-export:
+          name_ja: "データ入出力"
+          description: "データのインポート・エクスポート"
+          
+      ai-ml:
+        nlp:
+          name_ja: "自然言語処理"
+          description: "テキスト解析・生成"
+          
+        ocr:
+          name_ja: "文字認識"
+          description: "画像からのテキスト抽出"
+          
+        prediction:
+          name_ja: "予測・推論"
+          description: "AIによる予測・判断"
+
+# タグ使用ルール
+tagging_rules:
+  minimum_tags: 3
+  maximum_tags: 10
+  required_categories:
+    - "function"
+    - "business_process"
+  recommended_categories:
+    - "impact"
+    - "technology"
+    
+# タグの関連性定義
+tag_relationships:
+  synergies:
+    - tags: ["document-generation", "pdf-processing"]
+      description: "PDF文書の自動生成"
+    - tags: ["tax-calculation", "financial-reporting"]
+      description: "税務申告書の作成"
+    - tags: ["compliance-check", "risk-reduction"]
+      description: "コンプライアンス管理"
+      
+  conflicts:
+    - tags: ["manual-process", "automation"]
+      description: "相反する処理方式"
