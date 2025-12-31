@@ -1,0 +1,72 @@
+{
+  "web_extractor": {
+    "timeout": 30,
+    "max_pages": 50,
+    "follow_links": true,
+    "max_depth": 3,
+    "user_agent": "Mozilla/5.0 (compatible; AIAdvisorBot/1.0)",
+    "respect_robots_txt": true,
+    "extract_patterns": {
+      "service_pages": ["service", "solution", "product", "サービス", "ソリューション", "製品"],
+      "case_study_pages": ["case", "example", "works", "事例", "実績", "導入"],
+      "about_pages": ["about", "company", "corporate", "会社", "企業", "概要"],
+      "tech_pages": ["technology", "tech", "research", "技術", "研究", "開発"]
+    }
+  },
+  "analysis": {
+    "industry_classification": true,
+    "business_process_extraction": true,
+    "competitor_analysis": false,
+    "market_trend_analysis": true,
+    "organizational_analysis": true,
+    "technology_stack_detection": true
+  },
+  "proposal": {
+    "categories": [
+      "業務効率化",
+      "顧客体験向上",
+      "データ分析・意思決定支援",
+      "新規事業・サービス開発"
+    ],
+    "max_proposals_per_category": 3,
+    "include_roi_calculation": true,
+    "include_implementation_roadmap": true,
+    "include_risk_assessment": true,
+    "customization_level": "high",
+    "language": "ja"
+  },
+  "skill_generation": {
+    "generate_tests": true,
+    "include_documentation": true,
+    "template_style": "standard",
+    "code_style": {
+      "language": "python",
+      "framework_preferences": ["fastapi", "streamlit", "gradio"],
+      "testing_framework": "pytest"
+    },
+    "include_deployment_scripts": true,
+    "include_requirements_txt": true
+  },
+  "output": {
+    "formats": {
+      "proposal": ["pdf", "pptx", "markdown"],
+      "report": ["json", "excel"],
+      "presentation": ["pptx"]
+    },
+    "include_executive_summary": true,
+    "include_technical_appendix": true,
+    "branding": {
+      "include_logo": false,
+      "color_scheme": "professional"
+    }
+  },
+  "advanced": {
+    "use_llm_for_analysis": true,
+    "llm_provider": "openai",
+    "llm_model": "gpt-4",
+    "enable_caching": true,
+    "cache_duration_hours": 24,
+    "parallel_processing": true,
+    "max_workers": 4
+  }
+}

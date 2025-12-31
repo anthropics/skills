@@ -45,6 +45,7 @@ dependencies:
 
 ## 使用方法
 
+### 単一URLの場合
 ```python
 from ai_advisor_workflow import AIAdvisorWorkflow
 
@@ -53,28 +54,68 @@ workflow = AIAdvisorWorkflow()
 
 # クライアントのHP URLを指定して実行
 result = workflow.execute(
-    client_url="https://example.com",
+    client_urls="https://example.com",
+    output_dir="./proposals/client_name",
+    generate_skills=True
+)
+```
+
+### 複数URL（リンク集）の場合
+```python
+# より詳細な分析のため、複数のURLを指定
+urls = [
+    "https://example.com",                    # メインサイト
+    "https://example.com/services",           # サービス詳細
+    "https://example.com/products",           # 製品情報
+    "https://example.com/case-studies",       # 導入事例
+    "https://example.com/about"               # 会社概要
+]
+
+result = workflow.execute(
+    client_urls=urls,
     output_dir="./proposals/client_name",
     generate_skills=True
 )
 
 # 結果の確認
-print(f"提案書: {result['proposal_path']}")
+print(f"分析したURL数: {len(result['client_urls'])}")
+print(f"提案書: {result['documents']}")
 print(f"生成されたスキル: {result['generated_skills']}")
+```
+
+### コマンドライン使用
+```bash
+# 単一URL
+python -m ai_advisor_workflow https://example.com
+
+# 複数URL
+python -m ai_advisor_workflow https://example.com https://example.com/services https://example.com/about
+
+# オプション指定
+python -m ai_advisor_workflow https://example.com https://example.com/services \
+  --output ./output/company_name \
+  --no-skills  # スキル生成をスキップ
 ```
 
 ## ワークフロー構成
 
 ```mermaid
 graph TD
-    A[HP URL入力] --> B[Web情報収集]
-    B --> C[業種・業務分析]
+    A[URL入力<br/>単一/複数対応] --> B[Web情報収集<br/>複数ページ統合分析]
+    B --> C[業種・業務分析<br/>詳細情報活用]
     C --> D[AI活用案生成]
     D --> E[優先順位評価]
     E --> F[提案書作成]
     F --> G[AgentSkills生成]
     G --> H[統合パッケージ出力]
 ```
+
+### 複数URL分析の利点
+1. **包括的な企業理解**: メインサイトだけでなく、サービス詳細や事例から深い洞察を獲得
+2. **正確な業種判定**: 複数の情報源から業種・業態をより正確に特定
+3. **詳細なサービス把握**: 各サービスページから具体的な提供価値を抽出
+4. **実績ベースの提案**: 事例ページから実際の課題解決パターンを学習
+5. **組織文化の理解**: 採用ページ等から企業文化を把握し、提案をカスタマイズ
 
 ## 出力ファイル構成
 

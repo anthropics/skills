@@ -8,7 +8,7 @@ import sys
 import json
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 import logging
 
 # 既存スキルのインポートパス設定
@@ -68,14 +68,14 @@ class AIAdvisorWorkflow:
         }
         
     def execute(self, 
-                client_url: str,
+                client_urls: Union[str, List[str]],
                 output_dir: str = "./output",
                 generate_skills: bool = True) -> Dict[str, Any]:
         """
         ワークフロー全体の実行
         
         Args:
-            client_url: クライアントのWebサイトURL
+            client_urls: クライアントのWebサイトURL（単一または複数）
             output_dir: 出力ディレクトリ
             generate_skills: AgentSkillsを生成するかどうか
             
@@ -83,14 +83,20 @@ class AIAdvisorWorkflow:
             実行結果の辞書
         """
         try:
-            logger.info(f"AI Advisor Workflow開始: {client_url}")
+            # URL正規化（単一URLの場合はリストに変換）
+            if isinstance(client_urls, str):
+                urls = [client_urls]
+            else:
+                urls = client_urls
+                
+            logger.info(f"AI Advisor Workflow開始: {len(urls)}個のURL")
             
             # 出力ディレクトリの準備
             self._prepare_output_directory(output_dir)
             
-            # Step 1: HP情報収集
+            # Step 1: HP情報収集（複数URL対応）
             logger.info("Step 1: HP情報収集開始")
-            web_data = self._extract_web_content(client_url)
+            web_data = self._extract_web_content_multi(urls)
             
             # Step 2: 業種・業務分析
             logger.info("Step 2: 業種・業務分析開始")
@@ -116,7 +122,7 @@ class AIAdvisorWorkflow:
             # 結果のまとめ
             self.results = {
                 "status": "success",
-                "client_url": client_url,
+                "client_urls": urls,
                 "timestamp": datetime.now().isoformat(),
                 "web_data_summary": self._summarize_web_data(web_data),
                 "industry_analysis": analysis_result,
@@ -151,28 +157,27 @@ class AIAdvisorWorkflow:
         for subdir in subdirs:
             (self.output_dir / subdir).mkdir(parents=True, exist_ok=True)
             
-    def _extract_web_content(self, url: str) -> Dict[str, Any]:
+    def _extract_web_content_multi(self, urls: List[str]) -> Dict[str, Any]:
         """
-        Webコンテンツの抽出
+        複数URLからWebコンテンツを抽出
         web-content-extractorスキルを活用
         """
         try:
-            # ここで実際のweb-content-extractorを呼び出す
-            # 現在はモックデータを返す
             from .hp_analyzer import HPAnalyzer
             
             analyzer = HPAnalyzer()
-            return analyzer.extract_content(url, self.config["web_extractor"])
+            return analyzer.extract_content_multi(urls, self.config["web_extractor"])
             
         except Exception as e:
             logger.error(f"Web情報抽出エラー: {str(e)}")
             # フォールバックとしてシンプルな抽出を実行
-            return self._simple_web_extract(url)
+            return self._simple_web_extract_multi(urls)
             
-    def _simple_web_extract(self, url: str) -> Dict[str, Any]:
+    def _simple_web_extract_multi(self, urls: List[str]) -> Dict[str, Any]:
         """シンプルなWeb情報抽出（フォールバック）"""
         return {
-            "url": url,
+            "urls": urls,
+            "main_url": urls[0],
             "title": "サンプル企業",
             "description": "サンプル企業の説明",
             "content": {
@@ -180,6 +185,7 @@ class AIAdvisorWorkflow:
                 "services": ["システム開発", "コンサルティング"],
                 "industry": "情報通信業"
             },
+            "pages_analyzed": len(urls),
             "extracted_at": datetime.now().isoformat()
         }
         
@@ -229,11 +235,13 @@ class AIAdvisorWorkflow:
     def _summarize_web_data(self, web_data: Dict[str, Any]) -> Dict[str, Any]:
         """Web情報のサマリー作成"""
         return {
-            "url": web_data.get("url", ""),
+            "urls": web_data.get("urls", []),
+            "main_url": web_data.get("main_url", ""),
             "title": web_data.get("title", ""),
             "industry": web_data.get("content", {}).get("industry", "不明"),
             "services": web_data.get("content", {}).get("services", []),
-            "pages_analyzed": len(web_data.get("pages", []))
+            "pages_analyzed": web_data.get("pages_analyzed", 0),
+            "total_pages": len(web_data.get("pages", []))
         }
         
     def _save_results(self):
@@ -253,8 +261,9 @@ def main():
         description="AI Advisor Workflow - AI活用提案自動生成システム"
     )
     parser.add_argument(
-        "url",
-        help="分析対象のWebサイトURL"
+        "urls",
+        nargs="+",
+        help="分析対象のWebサイトURL（複数指定可能）"
     )
     parser.add_argument(
         "--output",
@@ -282,7 +291,7 @@ def main():
     # ワークフローの実行
     workflow = AIAdvisorWorkflow(config)
     results = workflow.execute(
-        client_url=args.url,
+        client_urls=args.urls,
         output_dir=args.output,
         generate_skills=not args.no_skills
     )

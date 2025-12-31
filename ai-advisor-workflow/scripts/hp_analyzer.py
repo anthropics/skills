@@ -30,71 +30,97 @@ class HPAnalyzer:
             "company_info": {},
             "services": [],
             "products": [],
-            "contact_info": {}
+            "contact_info": {},
+            "additional_resources": {},  # 追加リソース情報
+            "departments": [],  # 部門・事業部情報
+            "case_studies": []  # 事例・実績
         }
         
-    def extract_content(self, url: str, config: Dict[str, Any]) -> Dict[str, Any]:
+    def extract_content_multi(self, urls: List[str], config: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Webサイトから情報を抽出
+        複数のWebサイトから情報を抽出
         
         Args:
-            url: 対象URL
+            urls: 対象URLリスト
             config: 抽出設定
             
         Returns:
             抽出されたコンテンツ
         """
         try:
+            # メインURLと追加URLを分離
+            main_url = urls[0]
+            additional_urls = urls[1:] if len(urls) > 1 else []
+            
+            logger.info(f"メインURL: {main_url}")
+            if additional_urls:
+                logger.info(f"追加URL: {len(additional_urls)}件")
+            
             # 既存のweb-content-extractorがあれば使用
             if self._check_existing_skill("web-content-extractor"):
-                return self._use_web_content_extractor(url, config)
+                return self._use_web_content_extractor_multi(urls, config)
             
             # フォールバック: 独自実装
-            return self._extract_with_beautifulsoup(url, config)
+            return self._extract_with_beautifulsoup_multi(urls, config)
             
         except Exception as e:
             logger.error(f"コンテンツ抽出エラー: {str(e)}")
-            return self._get_default_content(url)
+            return self._get_default_content_multi(urls)
             
     def _check_existing_skill(self, skill_name: str) -> bool:
         """既存スキルの存在確認"""
         skill_path = SKILLS_DIR / "skills" / skill_name
         return skill_path.exists()
         
-    def _use_web_content_extractor(self, url: str, config: Dict[str, Any]) -> Dict[str, Any]:
-        """既存のweb-content-extractorを使用"""
+    def _use_web_content_extractor_multi(self, urls: List[str], config: Dict[str, Any]) -> Dict[str, Any]:
+        """既存のweb-content-extractorを使用（複数URL対応）"""
         try:
             # web-content-extractorのインポートを試みる
             from web_content_extractor.scripts.main import WebContentExtractor
             
             extractor = WebContentExtractor(config)
-            result = extractor.extract(url)
             
-            # 結果を統一フォーマットに変換
-            return self._normalize_extractor_result(result)
+            # 各URLを処理
+            all_results = []
+            for url in urls:
+                result = extractor.extract(url)
+                all_results.append(result)
+            
+            # 結果を統合して統一フォーマットに変換
+            return self._normalize_extractor_results_multi(all_results, urls)
             
         except ImportError:
             logger.warning("web-content-extractorのインポートに失敗")
-            return self._extract_with_beautifulsoup(url, config)
+            return self._extract_with_beautifulsoup_multi(urls, config)
             
-    def _extract_with_beautifulsoup(self, url: str, config: Dict[str, Any]) -> Dict[str, Any]:
-        """BeautifulSoupを使用した独自抽出実装"""
-        logger.info(f"BeautifulSoupで抽出開始: {url}")
+    def _extract_with_beautifulsoup_multi(self, urls: List[str], config: Dict[str, Any]) -> Dict[str, Any]:
+        """BeautifulSoupを使用した複数URL抽出実装"""
+        logger.info(f"BeautifulSoupで{len(urls)}件のURLを抽出開始")
         
-        # メインページの取得
-        main_content = self._fetch_page(url)
+        # メインURLの処理
+        main_url = urls[0]
+        main_content = self._fetch_page(main_url)
         if not main_content:
-            return self._get_default_content(url)
+            return self._get_default_content_multi(urls)
             
         # メインページの解析
-        self._parse_main_page(url, main_content)
+        self._parse_main_page(main_url, main_content)
+        
+        # 追加URLの処理
+        for url in urls[1:]:
+            logger.info(f"追加URL処理: {url}")
+            content = self._fetch_page(url)
+            if content:
+                self._parse_additional_resource(url, content)
         
         # 関連ページのクロール（設定に応じて）
         if config.get("follow_links", True):
-            self._crawl_related_pages(url, config.get("max_pages", 10))
-            
+            max_pages_per_url = config.get("max_pages", 10) // max(len(urls), 1)
+            for url in urls:
+                self._crawl_related_pages(url, max_pages_per_url)
+                
         # 結果の整形
-        return self._format_extraction_result(url)
+        return self._format_extraction_result_multi(urls)
         
     def _fetch_page(self, url: str) -> Optional[str]:
         """ページコンテンツの取得"""
@@ -129,11 +155,15 @@ class HPAnalyzer:
         # 連絡先情報の抽出
         self._extract_contact_info(soup)
         
+        # 事例・実績の抽出
+        self._extract_case_studies(soup)
+        
         # ページデータの保存
         self.extracted_data["pages"].append({
             "url": url,
             "title": self.extracted_data["title"],
-            "content_summary": self._summarize_content(soup)
+            "content_summary": self._summarize_content(soup),
+            "page_type": "main"
         })
         
     def _extract_company_info(self, soup: BeautifulSoup):
@@ -271,22 +301,140 @@ class HPAnalyzer:
             "content_summary": self._summarize_content(soup)
         })
         
-    def _format_extraction_result(self, url: str) -> Dict[str, Any]:
-        """抽出結果のフォーマット"""
+    def _parse_additional_resource(self, url: str, content: str):
+        """追加リソースの解析"""
+        soup = BeautifulSoup(content, 'html.parser')
+        
+        # URLの種別を判定
+        url_lower = url.lower()
+        page_type = "general"
+        
+        if "product" in url_lower or "製品" in url_lower:
+            page_type = "product"
+            self._extract_product_details(soup)
+        elif "service" in url_lower or "サービス" in url_lower:
+            page_type = "service"
+            self._extract_service_details(soup)
+        elif "about" in url_lower or "会社" in url_lower:
+            page_type = "about"
+            self._extract_detailed_company_info(soup)
+        elif "case" in url_lower or "事例" in url_lower:
+            page_type = "case_study"
+            self._extract_case_studies(soup)
+        elif "recruit" in url_lower or "採用" in url_lower:
+            page_type = "recruitment"
+            self._extract_recruitment_info(soup)
+        
+        # ページ情報を保存
+        self.extracted_data["pages"].append({
+            "url": url,
+            "title": soup.find('title').text.strip() if soup.find('title') else "",
+            "content_summary": self._summarize_content(soup),
+            "page_type": page_type
+        })
+        
+        # 追加リソース情報を記録
+        if page_type not in self.extracted_data["additional_resources"]:
+            self.extracted_data["additional_resources"][page_type] = []
+        self.extracted_data["additional_resources"][page_type].append(url)
+    
+    def _extract_product_details(self, soup: BeautifulSoup):
+        """製品詳細の抽出"""
+        products = self._extract_list_items(soup)
+        self.extracted_data["products"].extend(products)
+        
+    def _extract_service_details(self, soup: BeautifulSoup):
+        """サービス詳細の抽出"""
+        services = self._extract_list_items(soup)
+        self.extracted_data["services"].extend(services)
+        
+    def _extract_detailed_company_info(self, soup: BeautifulSoup):
+        """詳細な会社情報の抽出"""
+        # 部門情報
+        departments = soup.find_all(['div', 'section'], 
+                                  class_=re.compile(r'(department|部門|事業)', re.I))
+        for dept in departments:
+            dept_info = self._extract_list_items(dept)
+            if dept_info:
+                self.extracted_data["departments"].extend(dept_info)
+                
+    def _extract_recruitment_info(self, soup: BeautifulSoup):
+        """採用情報の抽出（組織文化の理解に役立つ）"""
+        if "culture" not in self.extracted_data["company_info"]:
+            self.extracted_data["company_info"]["culture"] = []
+            
+        culture_keywords = ["社風", "ビジョン", "ミッション", "価値観", "culture", "vision"]
+        for keyword in culture_keywords:
+            elements = soup.find_all(text=re.compile(keyword, re.I))
+            for elem in elements:
+                parent = elem.parent
+                if parent:
+                    text = parent.get_text(strip=True)
+                    if len(text) > 20:
+                        self.extracted_data["company_info"]["culture"].append(text[:200])
+                        
+    def _extract_case_studies(self, soup: BeautifulSoup):
+        """事例・実績の抽出"""
+        case_sections = soup.find_all(['div', 'section', 'article'], 
+                                    class_=re.compile(r'(case|事例|実績)', re.I))
+        
+        for section in case_sections:
+            case_info = {
+                "title": "",
+                "industry": "",
+                "challenge": "",
+                "solution": "",
+                "result": ""
+            }
+            
+            # タイトル抽出
+            title = section.find(['h2', 'h3', 'h4'])
+            if title:
+                case_info["title"] = title.get_text(strip=True)
+                
+            # 内容から情報抽出
+            text = section.get_text()
+            
+            # 業種・課題・解決策・結果を抽出
+            patterns = {
+                "industry": r"業種[・:]　*(.*?)。",
+                "challenge": r"課題[・:]　*(.*?)。",
+                "solution": r"解決[・:]　*(.*?)。",
+                "result": r"結果[・:]　*(.*?)。"
+            }
+            
+            for key, pattern in patterns.items():
+                match = re.search(pattern, text)
+                if match:
+                    case_info[key] = match.group(1)
+                    
+            if case_info["title"] or case_info["challenge"]:
+                self.extracted_data["case_studies"].append(case_info)
+    
+    def _format_extraction_result_multi(self, urls: List[str]) -> Dict[str, Any]:
+        """複数URL抽出結果のフォーマット"""
         # 業種の推定
         industry = self._estimate_industry()
         
+        # サービスと製品の統合・重複除去
+        all_services = list(set(self.extracted_data["services"] + self.extracted_data["products"]))
+        
         return {
-            "url": url,
+            "urls": urls,
+            "main_url": urls[0],
             "title": self.extracted_data.get("title", ""),
             "description": self.extracted_data.get("description", ""),
             "content": {
                 "company_overview": self.extracted_data["company_info"],
-                "services": self.extracted_data["services"][:10],  # 上位10件
+                "services": all_services[:20],  # 上位20件
+                "departments": self.extracted_data["departments"][:10],
                 "industry": industry,
-                "contact": self.extracted_data["contact_info"]
+                "contact": self.extracted_data["contact_info"],
+                "case_studies": self.extracted_data["case_studies"][:10]
             },
-            "pages": self.extracted_data["pages"][:20],  # 上位20ページ
+            "pages": self.extracted_data["pages"][:50],  # 上位50ページ
+            "pages_analyzed": len(self.extracted_data["pages"]),
+            "additional_resources": self.extracted_data["additional_resources"],
             "extracted_at": self._get_timestamp()
         }
         
@@ -310,30 +458,57 @@ class HPAnalyzer:
                 
         return "その他"
         
-    def _normalize_extractor_result(self, result: Dict[str, Any]) -> Dict[str, Any]:
-        """既存extractorの結果を統一フォーマットに変換"""
+    def _normalize_extractor_results_multi(self, results: List[Dict[str, Any]], urls: List[str]) -> Dict[str, Any]:
+        """既存extractorの結果を統一フォーマットに変換（複数URL対応）"""
+        # メイン結果から基本情報を取得
+        main_result = results[0] if results else {}
+        
+        # 全結果からページとサービス情報を統合
+        all_pages = []
+        all_services = []
+        for result in results:
+            all_pages.extend(result.get("pages", []))
+            content = result.get("content", {})
+            if isinstance(content, dict) and "services" in content:
+                all_services.extend(content["services"])
+        
         return {
-            "url": result.get("url", ""),
-            "title": result.get("title", ""),
-            "description": result.get("meta_description", ""),
-            "content": result.get("content", {}),
-            "pages": result.get("pages", []),
+            "urls": urls,
+            "main_url": urls[0] if urls else "",
+            "title": main_result.get("title", ""),
+            "description": main_result.get("meta_description", ""),
+            "content": {
+                "company_overview": main_result.get("content", {}).get("company_overview", {}),
+                "services": list(set(all_services))[:20],
+                "departments": [],
+                "industry": main_result.get("content", {}).get("industry", "不明"),
+                "contact": main_result.get("content", {}).get("contact", {}),
+                "case_studies": []
+            },
+            "pages": all_pages[:50],
+            "pages_analyzed": len(all_pages),
+            "additional_resources": {},
             "extracted_at": self._get_timestamp()
         }
         
-    def _get_default_content(self, url: str) -> Dict[str, Any]:
+    def _get_default_content_multi(self, urls: List[str]) -> Dict[str, Any]:
         """デフォルトコンテンツ（エラー時）"""
         return {
-            "url": url,
+            "urls": urls,
+            "main_url": urls[0] if urls else "",
             "title": "Unknown Company",
             "description": "",
             "content": {
                 "company_overview": {"name": "不明", "business": ["情報取得失敗"]},
                 "services": ["Webサイトから情報を取得できませんでした"],
+                "departments": [],
                 "industry": "不明",
-                "contact": {}
+                "contact": {},
+                "case_studies": []
             },
             "pages": [],
+            "pages_analyzed": 0,
+            "additional_resources": {},
             "extracted_at": self._get_timestamp(),
             "error": True
         }
