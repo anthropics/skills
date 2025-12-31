@@ -1,0 +1,13 @@
+cargo:rerun-if-changed=build.rs
+cargo:rustc-cfg=if_docsrs_then_no_serde_core
+cargo:rustc-check-cfg=cfg(feature, values("result"))
+cargo:rustc-check-cfg=cfg(if_docsrs_then_no_serde_core)
+cargo:rustc-check-cfg=cfg(no_core_cstr)
+cargo:rustc-check-cfg=cfg(no_core_error)
+cargo:rustc-check-cfg=cfg(no_core_net)
+cargo:rustc-check-cfg=cfg(no_core_num_saturating)
+cargo:rustc-check-cfg=cfg(no_diagnostic_namespace)
+cargo:rustc-check-cfg=cfg(no_serde_derive)
+cargo:rustc-check-cfg=cfg(no_std_atomic)
+cargo:rustc-check-cfg=cfg(no_std_atomic64)
+cargo:rustc-check-cfg=cfg(no_target_has_atomic)

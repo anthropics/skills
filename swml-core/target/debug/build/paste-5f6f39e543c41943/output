@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=build.rs
+cargo:rustc-check-cfg=cfg(no_literal_fromstr)
+cargo:rustc-check-cfg=cfg(feature, values("protocol_feature_paste"))

@@ -1,0 +1,46 @@
+[package]
+name = "swml-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["SWML Development Team"]
+description = "Core implementation of SWML (Skill-Web Markup Language) theoretical foundation"
+license = "MIT"
+repository = "https://github.com/yourusername/swml-core"
+
+[dependencies]
+# Mathematical operations and linear algebra
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
+# Graph operations for skill network
+petgraph = "0.6"
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Async runtime for phase execution
+tokio = { version = "1.35", features = ["full"] }
+# Error handling
+thiserror = "1.0"
+# Logging
+log = "0.4"
+# UUID for unique identifiers
+uuid = { version = "1.6", features = ["v4", "serde"] }
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+[dev-dependencies]
+# Testing framework
+tokio-test = "0.4"
+# Property-based testing
+proptest = "1.4"
+# Benchmarking
+criterion = "0.5"
+# Logging for examples
+env_logger = "0.10"
+
+# [[bench]]
+# name = "omega_function"
+# harness = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

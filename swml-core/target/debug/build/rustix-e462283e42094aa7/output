@@ -1,0 +1,12 @@
+cargo:rerun-if-changed=build.rs
+cargo:rustc-cfg=static_assertions
+cargo:rustc-cfg=lower_upper_exp_for_non_zero
+cargo:rustc-cfg=rustc_diagnostics
+cargo:rustc-cfg=libc
+cargo:rustc-cfg=apple
+cargo:rustc-cfg=bsd
+cargo:rerun-if-env-changed=CARGO_CFG_RUSTIX_USE_EXPERIMENTAL_ASM
+cargo:rerun-if-env-changed=CARGO_CFG_RUSTIX_USE_LIBC
+cargo:rerun-if-env-changed=CARGO_FEATURE_USE_LIBC
+cargo:rerun-if-env-changed=CARGO_FEATURE_RUSTC_DEP_OF_STD
+cargo:rerun-if-env-changed=CARGO_CFG_MIRI
