@@ -1,18 +1,18 @@
-# **Third-Party Notices**
+# **第三方通知**
 
-THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THIS PRODUCT.
+以下列出可能包含在本产品部分中的第三方软件的归属通知。
 
 ---
 
-## **BSD 2-Clause License**
+## **BSD 2-Clause 许可证**
 
-The following components are licensed under BSD 2-Clause License reproduced below:
+以下组件根据下面复制的BSD 2-Clause许可证获得许可：
 
-**imageio 2.37.0**, Copyright (c) 2014-2022, imageio developers
+**imageio 2.37.0**，版权所有 (c) 2014-2022, imageio 开发者
 
-**imageio-ffmpeg 0.6.0**, Copyright (c) 2019-2025, imageio 
+**imageio-ffmpeg 0.6.0**，版权所有 (c) 2019-2025, imageio
 
-**License Text:**
+**许可证文本：**
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -24,15 +24,15 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ---
 
-## **GNU General Public License v3.0**
+## **GNU 通用公共许可证 v3.0**
 
-The following components are licensed under GNU General Public License v3.0 reproduced below:
+以下组件根据下面复制的GNU通用公共许可证v3.0获得许可：
 
-**FFmpeg 7.0.2**, Copyright (c) 2000-2024 the FFmpeg developers
+**FFmpeg 7.0.2**，版权所有 (c) 2000-2024 FFmpeg 开发者
 
-Source Code: [https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz](https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz)
+源代码：[https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz](https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz)
 
-**License Text:**
+**许可证文本：**
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
 
@@ -284,13 +284,13 @@ The GNU General Public License does not permit incorporating your program into p
 
 ---
 
-## **MIT-CMU License (HPND)**
+## **MIT-CMU 许可证 (HPND)**
 
-The following components are licensed under MIT-CMU License (HPND) reproduced below:
+以下组件根据下面复制的MIT-CMU许可证(HPND)获得许可：
 
-**Pillow 11.3.0**, Copyright © 1997-2011 by Secret Labs AB, Copyright © 1995-2011 by Fredrik Lundh and contributors, Copyright © 2010 by Jeffrey A. Clark and contributors
+**Pillow 11.3.0**，版权所有 © 1997-2011 Secret Labs AB，版权所有 © 1995-2011 Fredrik Lundh 及贡献者，版权所有 © 2010 Jeffrey A. Clark 及贡献者
 
-**License Text:**
+**许可证文本：**
 
 By obtaining, using, and/or copying this software and/or its associated documentation, you agree that you have read, understood, and will comply with the following terms and conditions:
 
@@ -300,9 +300,9 @@ SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTW
 
 ---
 
-## **SIL Open Font License v1.1**
+## **SIL 开源字体许可证 v1.1**
 
-The following fonts are licensed under SIL Open Font License v1.1 reproduced below:
+以下字体根据下面复制的SIL开源字体许可证v1.1获得许可：
 
 **Arsenal SC**, Copyright 2012 The Arsenal Project Authors ([andrij.design@gmail.com](mailto:andrij.design@gmail.com))
 

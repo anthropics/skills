@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Excel Formula Recalculation Script
-Recalculates all formulas in an Excel file using LibreOffice
+Excel公式重新计算脚本
+使用LibreOffice重新计算Excel文件中的所有公式
 """
 
 import json
@@ -14,7 +14,7 @@ from openpyxl import load_workbook
 
 
 def setup_libreoffice_macro():
-    """Setup LibreOffice macro for recalculation if not already configured"""
+    """如果尚未配置，为重新计算设置LibreOffice宏"""
     if platform.system() == 'Darwin':
         macro_dir = os.path.expanduser('~/Library/Application Support/LibreOffice/4/user/basic/Standard')
     else:
@@ -52,14 +52,14 @@ def setup_libreoffice_macro():
 
 def recalc(filename, timeout=30):
     """
-    Recalculate formulas in Excel file and report any errors
-    
-    Args:
-        filename: Path to Excel file
-        timeout: Maximum time to wait for recalculation (seconds)
-    
-    Returns:
-        dict with error locations and counts
+    重新计算Excel文件中的公式并报告任何错误
+
+    参数:
+        filename: Excel文件路径
+        timeout: 等待重新计算的最大时间（秒）
+
+    返回:
+        包含错误位置和计数的字典
     """
     if not Path(filename).exists():
         return {'error': f'File {filename} does not exist'}
@@ -75,11 +75,11 @@ def recalc(filename, timeout=30):
         abs_path
     ]
     
-    # Handle timeout command differences between Linux and macOS
+    # 处理Linux和macOS之间的超时命令差异
     if platform.system() != 'Windows':
         timeout_cmd = 'timeout' if platform.system() == 'Linux' else None
         if platform.system() == 'Darwin':
-            # Check if gtimeout is available on macOS
+            # 检查macOS上是否有gtimeout
             try:
                 subprocess.run(['gtimeout', '--version'], capture_output=True, timeout=1, check=False)
                 timeout_cmd = 'gtimeout'
@@ -98,7 +98,7 @@ def recalc(filename, timeout=30):
         else:
             return {'error': error_msg}
     
-    # Check for Excel errors in the recalculated file - scan ALL cells
+    # 检查重新计算文件中是否有Excel错误 - 扫描所有单元格
     try:
         wb = load_workbook(filename, data_only=True)
         
@@ -108,7 +108,7 @@ def recalc(filename, timeout=30):
         
         for sheet_name in wb.sheetnames:
             ws = wb[sheet_name]
-            # Check ALL rows and columns - no limits
+            # 检查所有行和列 - 无限制
             for row in ws.iter_rows():
                 for cell in row:
                     if cell.value is not None and isinstance(cell.value, str):
@@ -121,14 +121,14 @@ def recalc(filename, timeout=30):
         
         wb.close()
         
-        # Build result summary
+        # 构建结果摘要
         result = {
             'status': 'success' if total_errors == 0 else 'errors_found',
             'total_errors': total_errors,
             'error_summary': {}
         }
         
-        # Add non-empty error categories
+        # 添加非空的错误类别
         for err_type, locations in error_details.items():
             if locations:
                 result['error_summary'][err_type] = {
@@ -136,7 +136,7 @@ def recalc(filename, timeout=30):
                     'locations': locations[:20]  # Show up to 20 locations
                 }
         
-        # Add formula count for context - also check ALL cells
+        # 为上下文添加公式计数 - 也检查所有单元格
         wb_formulas = load_workbook(filename, data_only=False)
         formula_count = 0
         for sheet_name in wb_formulas.sheetnames:
@@ -157,13 +157,13 @@ def recalc(filename, timeout=30):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python recalc.py <excel_file> [timeout_seconds]")
-        print("\nRecalculates all formulas in an Excel file using LibreOffice")
-        print("\nReturns JSON with error details:")
-        print("  - status: 'success' or 'errors_found'")
-        print("  - total_errors: Total number of Excel errors found")
-        print("  - total_formulas: Number of formulas in the file")
-        print("  - error_summary: Breakdown by error type with locations")
+        print("用法: python recalc.py <excel_file> [timeout_seconds]")
+        print("\n使用LibreOffice重新计算Excel文件中的所有公式")
+        print("\n返回包含错误详情的JSON:")
+        print("  - status: 'success' 或 'errors_found'")
+        print("  - total_errors: 发现的Excel错误总数")
+        print("  - total_formulas: 文件中的公式数量")
+        print("  - error_summary: 按错误类型细分的位置")
         print("    - #VALUE!, #DIV/0!, #REF!, #NAME?, #NULL!, #NUM!, #N/A")
         sys.exit(1)
     

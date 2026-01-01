@@ -1,61 +1,61 @@
 ---
 name: algorithmic-art
-description: Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.
-license: Complete terms in LICENSE.txt
+description: 使用p5.js创建算法艺术，具有种子随机性和交互式参数探索。当用户请求使用代码创建艺术、生成式艺术、算法艺术、流场或粒子系统时使用此技能。创建原创算法艺术而不是复制现有艺术家的作品，以避免版权侵权。
+license: 完整条款见LICENSE.txt
 ---
 
-Algorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).
+算法哲学是计算美学运动，然后通过代码表达。输出.md文件（哲学）、.html文件（交互式查看器）和.js文件（生成算法）。
 
-This happens in two steps:
-1. Algorithmic Philosophy Creation (.md file)
-2. Express by creating p5.js generative art (.html + .js files)
+这发生在两个步骤中：
+1. 算法哲学创建（.md文件）
+2. 通过创建p5.js生成艺术来表达（.html + .js文件）
 
-First, undertake this task:
+首先，执行此任务：
 
-## ALGORITHMIC PHILOSOPHY CREATION
+## 算法哲学创建
 
-To begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that will be interpreted through:
-- Computational processes, emergent behavior, mathematical beauty
-- Seeded randomness, noise fields, organic systems
-- Particles, flows, fields, forces
-- Parametric variation and controlled chaos
+首先，创建一个算法哲学（不是静态图像或模板），它将被通过以下方式解读：
+- 计算过程、涌现行为、数学美学
+- 种子随机性、噪声场、有机系统
+- 粒子、流、场、力
+- 参数变化和受控混沌
 
-### THE CRITICAL UNDERSTANDING
-- What is received: Some subtle input or instructions by the user to take into account, but use as a foundation; it should not constrain creative freedom.
-- What is created: An algorithmic philosophy/generative aesthetic movement.
-- What happens next: The same version receives the philosophy and EXPRESSES IT IN CODE - creating p5.js sketches that are 90% algorithmic generation, 10% essential parameters.
+### 关键理解
+- 接收的内容：用户提供的一些微妙输入或指令作为基础，但不应限制创造自由。
+- 创建的内容：算法哲学/生成美学运动。
+- 接下来发生什么：同一版本接收哲学并通过代码表达它 - 创建p5.js草图，其中90%是算法生成，10%是基本参数。
 
-Consider this approach:
-- Write a manifesto for a generative art movement
-- The next phase involves writing the algorithm that brings it to life
+考虑这种方法：
+- 为生成艺术运动写宣言
+- 下一阶段涉及编写使之生动起来的算法
 
-The philosophy must emphasize: Algorithmic expression. Emergent behavior. Computational beauty. Seeded variation.
+哲学必须强调：算法表达。涌现行为。计算美学。种子变异。
 
-### HOW TO GENERATE AN ALGORITHMIC PHILOSOPHY
+### 如何生成算法哲学
 
-**Name the movement** (1-2 words): "Organic Turbulence" / "Quantum Harmonics" / "Emergent Stillness"
+**命名运动**（1-2个词）："有机湍流" / "量子和谐" / "涌现宁静"
 
-**Articulate the philosophy** (4-6 paragraphs - concise but complete):
+**阐述哲学**（4-6段 - 简洁但完整）：
 
-To capture the ALGORITHMIC essence, express how this philosophy manifests through:
-- Computational processes and mathematical relationships?
-- Noise functions and randomness patterns?
-- Particle behaviors and field dynamics?
-- Temporal evolution and system states?
-- Parametric variation and emergent complexity?
+为了捕捉算法本质，表达这种哲学如何通过以下方式体现：
+- 计算过程和数学关系？
+- 噪声函数和随机性模式？
+- 粒子行为和场动力学？
+- 时间演化和系统状态？
+- 参数变化和涌现复杂性？
 
-**CRITICAL GUIDELINES:**
-- **Avoid redundancy**: Each algorithmic aspect should be mentioned once. Avoid repeating concepts about noise theory, particle dynamics, or mathematical principles unless adding new depth.
-- **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final algorithm should appear as though it took countless hours to develop, was refined with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like "meticulously crafted algorithm," "the product of deep computational expertise," "painstaking optimization," "master-level implementation."
-- **Leave creative space**: Be specific about the algorithmic direction, but concise enough that the next Claude has room to make interpretive implementation choices at an extremely high level of craftsmanship.
+**关键指南：**
+- **避免冗余**：每个算法方面应只提及一次。除非增加新的深度，否则避免重复关于噪声理论、粒子动力学或数学原理的概念。
+- **反复强调工艺**：哲学必须反复强调，最终算法应该看起来像是花费了无数小时开发、精心完善、来自该领域绝对顶尖人士的作品。这种框架至关重要 - 重复使用短语如"精心制作的算法"、"深度计算专业知识的产物"、"艰苦优化"、"大师级实现"。
+- **留出创造空间**：对算法方向要具体，但要简洁到让下一个Claude有空间以极高工艺水平进行解释性实现选择。
 
-The philosophy must guide the next version to express ideas ALGORITHMICALLY, not through static images. Beauty lives in the process, not the final frame.
+哲学必须指导下一个版本以算法方式表达想法，而不是通过静态图像。美学存在于过程中，而不是最终帧。
 
-### PHILOSOPHY EXAMPLES
+### 哲学示例
 
-**"Organic Turbulence"**
-Philosophy: Chaos constrained by natural law, order emerging from disorder.
-Algorithmic expression: Flow fields driven by layered Perlin noise. Thousands of particles following vector forces, their trails accumulating into organic density maps. Multiple noise octaves create turbulent regions and calm zones. Color emerges from velocity and density - fast particles burn bright, slow ones fade to shadow. The algorithm runs until equilibrium - a meticulously tuned balance where every parameter was refined through countless iterations by a master of computational aesthetics.
+**"有机湍流"**
+哲学：被自然法则约束的混沌，从无序中涌现秩序。
+算法表达：由分层Perlin噪声驱动的流场。数千个粒子跟随向量力，它们的轨迹积累成有机密度图。多个噪声倍频程创建湍流区域和平静区域。颜色从速度和密度中涌现 - 快速粒子燃烧明亮，慢速粒子淡入阴影。算法运行至平衡 - 一个精心调谐的平衡，每个参数都经过无数次迭代由计算美学大师完善。
 
 **"Quantum Harmonics"**
 Philosophy: Discrete entities exhibiting wave-like interference patterns.
