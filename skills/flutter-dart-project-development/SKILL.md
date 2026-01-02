@@ -1,6 +1,6 @@
 ---
 name: flutter-dart-project-development
-description: Guides development of Flutter applications using Provider-based state management with best practices for architecture, testing, and modern Flutter 2025 patterns. Use this skill when working on Flutter/Dart projects that need state management guidance, code scaffolding, refactoring assistance, or architectural recommendations.
+description: Guides development of Flutter applications using Provider-based state management with best practices for architecture, testing, and modern Flutter patterns. Use this skill when working on Flutter/Dart projects that need state management guidance, code scaffolding, refactoring assistance, or architectural recommendations.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -8,7 +8,7 @@ license: Complete terms in LICENSE.txt
 
 ## Overview
 
-This skill provides comprehensive guidance for Flutter project development with a focus on Provider-based state management, architectural best practices, and modern Flutter 2025 patterns. It helps you implement clean, maintainable, and performant Flutter applications with consistent state management approaches.
+This skill provides comprehensive guidance for Flutter project development with a focus on Provider-based state management, architectural best practices, and modern Flutter patterns. It helps you implement clean, maintainable, and performant Flutter applications with consistent state management approaches.
 
 **Keywords**: Flutter, Dart, Provider, ChangeNotifier, state management, widget testing, clean architecture, performance optimization, mobile development
 
@@ -144,7 +144,7 @@ performance by reducing unnecessary rebuilds
    - Move state to ChangeNotifier Provider
    - Replace setState calls with notifyListeners
 
-## Integration with Modern Flutter 2025 Patterns
+## Integration with Modern Flutter Patterns
 
 ### Clean Architecture
 
