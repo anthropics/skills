@@ -1,7 +1,7 @@
 ---
 name: flutter-dart-project-development
 description: Guides development of Flutter applications using Provider-based state management with best practices for architecture, testing, and modern Flutter patterns. Use this skill when working on Flutter/Dart projects that need state management guidance, code scaffolding, refactoring assistance, or architectural recommendations.
-license: Apache-2.0
+license: Complete terms in LICENSE.txt
 ---
 
 # Flutter/Dart Project Development with Provider
