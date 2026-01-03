@@ -249,6 +249,7 @@ from haystack.components.retrievers.in_memory import InMemoryEmbeddingRetriever
 from haystack.components.builders import PromptBuilder
 from haystack.components.generators import HuggingFaceLocalGenerator
 from haystack.document_stores.in_memory import InMemoryDocumentStore
+from haystack.components.writers import DocumentWriter
 from haystack_integrations.components.converters.docling import DoclingConverter
 
 # Document store

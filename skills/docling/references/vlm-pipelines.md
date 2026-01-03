@@ -146,7 +146,7 @@ For large documents or limited VRAM:
 vlm_options = VlmPipelineOptions(
     model_name="granite_docling",
     batch_size=1,           # Process one page at a time
-    offload_to_cpu=True,    # Offload model weights to CPU when idle
+    offload_to_cpu=True,    # Offload model weights from GPU to CPU to save VRAM
 )
 ```
 

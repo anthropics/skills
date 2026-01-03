@@ -311,7 +311,7 @@ files = [str(f) for f in Path("documents/").glob("*.pdf")]
 with ProcessPoolExecutor(max_workers=4) as executor:
     results = list(executor.map(convert_file, files))
 
-success = sum(1 for _, ok in results if ok)
+success = sum(1 for _, converted in results if converted)
 print(f"Converted {success}/{len(files)} files")
 ```
 

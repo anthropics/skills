@@ -5,7 +5,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional
 
 
 def chunk_text(text: str, chunk_size: int, overlap: int) -> list[dict]:
@@ -46,7 +45,7 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> list[dict]:
             chunk_id += 1
 
         start = end - overlap
-        if start <= chunks[-1]["start_char"] if chunks else 0:
+        if chunks and start <= chunks[-1]["start_char"]:
             start = end  # Prevent infinite loop
 
     return chunks

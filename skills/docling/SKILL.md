@@ -160,7 +160,7 @@ for doc_path in input_dir.glob("*.pdf"):
 ### OCR for Scanned Documents
 
 ```python
-from docling.document_converter import DocumentConverter
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.pipeline_options import PipelineOptions
 from docling.datamodel.document import InputFormat
 
@@ -170,7 +170,7 @@ pipeline_options.do_ocr = True
 
 converter = DocumentConverter(
     format_options={
-        InputFormat.PDF: {"pipeline_options": pipeline_options}
+        InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
     }
 )
 
