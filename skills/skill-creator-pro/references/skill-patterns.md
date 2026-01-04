@@ -48,10 +48,10 @@ model: claude-sonnet-4-20250514           # Optional: model override
 **Purpose**: Claude Code reads this to decide when to activate the skill. Include specific trigger phrases users would say.
 
 ```yaml
-# Good: Clear what + when with triggers
+# Good: Clear what + when with triggers (third-person style)
 description: |
   Create data visualizations with charts and graphs.
-  Use when users ask to visualize data, create charts,
+  This skill should be used when users ask to visualize data, create charts,
   build dashboards, or display metrics graphically.
 
 # Bad: Vague, no triggers
@@ -230,6 +230,17 @@ description: |
 
 **Required sections**:
 ```markdown
+## Before Implementation
+
+Gather context to ensure successful implementation:
+
+| Source | Gather |
+|--------|--------|
+| **Codebase** | Existing structure, patterns, conventions to integrate with |
+| **Conversation** | User's specific requirements, constraints, preferences |
+| **Skill References** | Domain patterns from `references/` |
+| **User Guidelines** | Project-specific conventions, team standards |
+
 ## Required Clarifications
 1. **Data shape**: "What structure will input have?"
 2. **Output type**: "What artifact to create?"
@@ -273,6 +284,17 @@ description: |
 
 **Required sections**:
 ```markdown
+## Before Implementation
+
+Gather context to ensure successful implementation:
+
+| Source | Gather |
+|--------|--------|
+| **Codebase** | Existing structure, patterns, conventions to integrate with |
+| **Conversation** | User's specific requirements, constraints, preferences |
+| **Skill References** | Domain patterns from `references/` |
+| **User Guidelines** | Project-specific conventions, team standards |
+
 ## Workflow
 1. **Step 1** - Action
 2. **Step 2** - Action
@@ -315,6 +337,17 @@ description: |
 
 **Required sections**:
 ```markdown
+## Before Implementation
+
+Gather context to ensure successful implementation:
+
+| Source | Gather |
+|--------|--------|
+| **Codebase** | Existing structure, patterns, conventions to integrate with |
+| **Conversation** | User's specific requirements, constraints, preferences |
+| **Skill References** | Domain patterns from `references/` |
+| **User Guidelines** | Project-specific conventions, team standards |
+
 ## Available Scripts
 | Script | Purpose | Usage |
 |--------|---------|-------|
@@ -359,6 +392,17 @@ description: |
 
 **Required sections**:
 ```markdown
+## Before Implementation
+
+Gather context to ensure successful implementation:
+
+| Source | Gather |
+|--------|--------|
+| **Codebase** | Existing structure, patterns, conventions to integrate with |
+| **Conversation** | User's specific requirements, constraints, preferences |
+| **Skill References** | Domain patterns from `references/` |
+| **User Guidelines** | Project-specific conventions, team standards |
+
 ## Analysis Scope
 - What to analyze
 - What to ignore
@@ -401,6 +445,17 @@ description: |
 
 **Required sections**:
 ```markdown
+## Before Implementation
+
+Gather context to ensure successful implementation:
+
+| Source | Gather |
+|--------|--------|
+| **Codebase** | Existing structure, patterns, conventions to integrate with |
+| **Conversation** | User's specific requirements, constraints, preferences |
+| **Skill References** | Domain patterns from `references/` |
+| **User Guidelines** | Project-specific conventions, team standards |
+
 ## Quality Criteria
 | Criterion | Weight | Pass Threshold |
 |-----------|--------|----------------|
