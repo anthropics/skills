@@ -1,0 +1,89 @@
+# {{FEATURE_NAME}} - Proposal
+
+> **Status**: Draft | In Review | Approved
+> **Author**: {{AUTHOR}}
+> **Created**: {{DATE}}
+> **Last Updated**: {{DATE}}
+
+## Background
+
+<!-- Why is this change needed? What problem does it solve? What is the current state? -->
+
+## Goals
+
+<!-- What do we want to achieve? Be specific and measurable. -->
+
+- [ ] Goal 1: {{description}}
+- [ ] Goal 2: {{description}}
+
+## Non-Goals
+
+<!-- What are we explicitly NOT trying to do? This prevents scope creep. -->
+
+- {{non-goal 1}}
+- {{non-goal 2}}
+
+## Scope
+
+### In Scope
+
+<!-- What IS included in this change? -->
+
+- {{scope item 1}}
+- {{scope item 2}}
+
+### Out of Scope
+
+<!-- What is NOT included? Can be addressed in future iterations. -->
+
+- {{out of scope item 1}}
+- {{out of scope item 2}}
+
+## Proposed Solution
+
+<!-- High-level description of the approach. Details go in design.md. -->
+
+## Alternatives Considered
+
+<!-- What other approaches were considered? Why were they rejected? -->
+
+| Alternative | Pros | Cons | Why Rejected |
+|-------------|------|------|--------------|
+| {{alt 1}} | | | |
+| {{alt 2}} | | | |
+
+## Risks and Mitigations
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| {{risk 1}} | Low/Medium/High | Low/Medium/High | {{mitigation}} |
+| {{risk 2}} | Low/Medium/High | Low/Medium/High | {{mitigation}} |
+
+## Dependencies
+
+<!-- External dependencies, other teams, third-party services -->
+
+- {{dependency 1}}
+- {{dependency 2}}
+
+## Success Metrics
+
+<!-- How will we measure success? -->
+
+| Metric | Current | Target | How to Measure |
+|--------|---------|--------|----------------|
+| {{metric 1}} | {{value}} | {{value}} | {{method}} |
+
+## Open Questions
+
+<!-- Items needing clarification before proceeding -->
+
+- [ ] {{question 1}}
+- [ ] {{question 2}}
+
+## References
+
+<!-- Related documents, prior art, external resources -->
+
+- {{reference 1}}
+- {{reference 2}}
