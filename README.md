@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **AID** - [AID Skills for Claude](https://theaid.ai/toolkit/skills) - Complete AI development methodology with 21 skills for phase-gated software development (Discovery → PRD → Tech Spec → Development → QA & Ship). Includes system skills, TDD, atomic design, code review, and role-based personas. [GitHub](https://github.com/ilandahan/aid-skills)
