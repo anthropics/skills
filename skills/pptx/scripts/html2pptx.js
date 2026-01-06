@@ -134,6 +134,10 @@ function addElements(slideData, targetSlide, pres) {
   for (const el of slideData.elements) {
     if (el.type === 'image') {
       let imagePath = el.src.startsWith('file://') ? el.src.replace('file://', '') : el.src;
+      // Fix Windows file:// paths: /D:/path -> D:/path
+      if (imagePath.match(/^\/[A-Za-z]:\//)) {
+        imagePath = imagePath.substring(1);
+      }
       targetSlide.addImage({
         path: imagePath,
         x: el.position.x,
