@@ -91,4 +91,5 @@ The markdown content below contains the instructions, examples, and guidelines t
 
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
+- **Mapbox** - [Mapbox Agent Skills](https://github.com/mapbox/mcp-devkit-server/tree/main/skills) - Four comprehensive skills teaching Claude about map design (cartography), security best practices (token management), common style patterns, and framework integration (React, Vue, Svelte, Angular)
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
