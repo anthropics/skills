@@ -1,6 +1,6 @@
 ---
 name: skill-security-analyzer-v2
-description: Comprehensive security analysis for Claude Code skills with P0-P3 enhancements. Detects malicious code, obfuscation, YAML injection, typosquatting, time bombs, sandbox escapes, and 40+ attack patterns. Use for analyzing skills before installation or auditing existing skills.
+description: Comprehensive security analysis for Claude Code skills with P0-P3 enhancements. Detects malicious code, obfuscation, YAML injection, typosquatting, time bombs, sandbox escapes, and 40+ attack patterns. Use for analyzing skills before installation or auditing existing skills. Trigger this skill when: "Analyze this skill for security", "Check if [skill-name] is safe", "Audit security of installed skills", "Scan [file.zip] before installing", "Review skill vulnerabilities"
 version: 2.0
 ---
 
@@ -25,14 +25,6 @@ Enhanced security scanner for Claude Code skills implementing all P0-P3 recommen
 - ✅ P3: Basic anomaly detection
 - ✅ P3: Dependency tree analysis
 
-
-
-## Trigger this skill when:
-- "Analyze this skill for security"
-- "Check if [skill-name] is safe"
-- "Audit security of installed skills"
-- "Scan [file.zip] before installing"
-- "Review skill vulnerabilities"
 
 ## Quick Start
 
