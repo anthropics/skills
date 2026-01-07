@@ -17,14 +17,6 @@ Users select one of three analysis modes:
 2. **Interactive Review** - Step-by-step analysis with specific, actionable recommendations for improvement
 3. **Pass/Fail Certification** - Binary quality assessment with specific issues blocking certification
 
-## Trigger phrases:
-- "Analyze skill quality for [skill-name]"
-- "Review this skill: [url/path]"
-- "Evaluate skill from [source]"
-- "Run skill quality check on [skill]"
-- "Is this skill well-built?"
-- "Certify skill quality for [skill-name]"
-
 ## Evaluation Dimensions
 
 ### 1. Structure & Documentation (20%)
