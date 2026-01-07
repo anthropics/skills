@@ -17,17 +17,7 @@ Users select one of three analysis modes:
 2. **Interactive Review** - Step-by-step analysis with specific, actionable recommendations for improvement
 3. **Pass/Fail Certification** - Binary quality assessment with specific issues blocking certification
 
-## When to Use This Skill
-
-Use this skill when:
-- Evaluating a skill before installation from any source
-- Reviewing skills for quality and best practices adherence
-- Auditing existing skills for improvement opportunities
-- Validating skills before publishing or sharing
-- Comparing multiple skills for quality
-- Certifying skills meet quality standards
-
-**Trigger phrases:**
+## Trigger phrases:
 - "Analyze skill quality for [skill-name]"
 - "Review this skill: [url/path]"
 - "Evaluate skill from [source]"
