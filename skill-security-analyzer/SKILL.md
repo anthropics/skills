@@ -25,9 +25,9 @@ Enhanced security scanner for Claude Code skills implementing all P0-P3 recommen
 - ✅ P3: Basic anomaly detection
 - ✅ P3: Dependency tree analysis
 
-## When to Use
 
-Trigger this skill when:
+
+## Trigger this skill when:
 - "Analyze this skill for security"
 - "Check if [skill-name] is safe"
 - "Audit security of installed skills"
