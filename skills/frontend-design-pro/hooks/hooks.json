@@ -1,0 +1,16 @@
+{
+  "description": "Frontend design quality enforcement hook that warns about generic AI aesthetics",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/frontend_design_check.py"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
+    ]
+  }
+}

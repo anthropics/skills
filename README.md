@@ -92,3 +92,42 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+
+# Custom Skills
+
+## frontend-design-pro
+
+Enhanced frontend design skill that extends Anthropic's official `frontend-design` with community-tested improvements:
+
+### Features
+- **Anti-convergence patterns**: Forces variation in typography, color, and layout to prevent Claude from converging on new "default" aesthetics
+- **Visual iteration workflows**: Screenshot-driven refinement using Puppeteer/Playwright MCP
+- **Test-driven UI development**: Playwright test patterns for UI quality enforcement
+- **Design quality enforcement hook**: PreToolUse hook that warns when detecting generic AI aesthetics (Inter font, purple gradients, system fonts)
+
+### Installation
+
+```bash
+# Already installed via symlink at ~/.claude/skills/frontend-design-pro
+# Points to ~/Code/my-claude-skills/skills/frontend-design-pro
+```
+
+### Usage
+
+Simply ask Claude to build frontend work and the skill will activate:
+
+```
+"Use frontend-design-pro to create a landing page for my SaaS product"
+```
+
+The companion hook will automatically warn if you try to use generic fonts or purple gradients.
+
+### Updating from Upstream
+
+```bash
+cd ~/Code/my-claude-skills
+git fetch upstream
+git merge upstream/main --no-edit
+```
+
+This preserves your `frontend-design-pro` customizations while pulling updates to other official skills.
