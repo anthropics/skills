@@ -65,8 +65,47 @@ skill-name/
 
 Every SKILL.md consists of:
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
-- **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
+- **Frontmatter** (YAML): Contains metadata fields that control skill behavior and triggering.
+- **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers.
+
+##### Frontmatter Fields
+
+**Required fields:**
+
+| Field | Description |
+|:------|:------------|
+| `name` | Skill name. Must use lowercase letters, numbers, and hyphens only (max 64 characters). Should match the directory name. |
+| `description` | What the Skill does and when to use it (max 1024 characters). Claude uses this to decide when to apply the Skill. Include both capabilities AND trigger keywords. |
+
+**Optional fields:**
+
+| Field | Description |
+|:------|:------------|
+| `allowed-tools` | Tools Claude can use without asking permission when this Skill is active. Supports comma-separated values or YAML-style lists. |
+| `model` | Model to use when this Skill is active (e.g., `claude-sonnet-4-20250514`). Defaults to the conversation's model. |
+| `context` | Set to `fork` to run the Skill in a forked sub-agent context with its own conversation history. |
+| `agent` | Specify which agent type to use when `context: fork` is set (e.g., `Explore`, `Plan`, `general-purpose`, or a custom agent name). |
+| `hooks` | Define hooks scoped to this Skill's lifecycle. Supports `PreToolUse`, `PostToolUse`, and `Stop` events. |
+| `user-invocable` | Controls whether the Skill appears in the slash command menu. Defaults to `true`. |
+| `disable-model-invocation` | Set to `true` to prevent Claude from invoking the skill programmatically via the `Skill` tool. |
+
+**Example frontmatter with optional fields:**
+
+```yaml
+---
+name: pdf-processing
+description: Extract text, fill forms, merge PDFs. Use when working with PDF files, forms, or document extraction.
+allowed-tools:
+  - Read
+  - Bash(python:*)
+hooks:
+  PreToolUse:
+    - matcher: "Bash"
+      hooks:
+        - type: command
+          command: "./scripts/validate.sh $TOOL_INPUT"
+---
+```
 
 #### Bundled Resources (optional)
 
@@ -78,6 +117,12 @@ Executable code (Python/Bash/etc.) for tasks that require deterministic reliabil
 - **Example**: `scripts/rotate_pdf.py` for PDF rotation tasks
 - **Benefits**: Token efficient, deterministic, may be executed without loading into context
 - **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments
+
+**Important distinction:** Scripts bundled in a skill's `scripts/` directory are **skill-specific utilities** that Claude executes. Project-level tools (like build scripts, rendering pipelines, or infrastructure) belong in the **project root**, not in the skill. The skill should reference project tools via relative paths from the project root.
+
+Example:
+- `skill/scripts/validate_pdf.py` - Skill-specific: validates PDF format for this skill
+- `tools/render_deck.py` - Project tool: renders Slidev decks for the whole project
 
 ##### References (`references/`)
 
@@ -303,15 +348,22 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 ##### Frontmatter
 
-Write the YAML frontmatter with `name` and `description`:
+Write the YAML frontmatter with required and optional fields:
 
-- `name`: The skill name
-- `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
-  - Include both what the Skill does and specific triggers/contexts for when to use it.
-  - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
-  - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
+**Required:**
+- `name`: The skill name (lowercase, hyphens, max 64 chars)
+- `description`: Primary triggering mechanism. Include:
+  - What the Skill does (capabilities)
+  - Specific triggers/contexts for when to use it
+  - Keywords users would naturally say
+  - Example: "Comprehensive document creation, editing, and analysis with support for tracked changes and comments. Use when working with .docx files for: (1) Creating documents, (2) Editing content, (3) Tracked changes, or (4) Adding comments."
 
-Do not include any other fields in YAML frontmatter.
+**Optional (use as needed):**
+- `allowed-tools`: Restrict which tools Claude can use when skill is active
+- `model`: Specify a particular Claude model
+- `context`: Set to `fork` for isolated sub-agent execution
+- `hooks`: Define lifecycle hooks for security or automation
+- `user-invocable`: Set to `false` to hide from slash menu while still allowing programmatic invocation
 
 ##### Body
 
@@ -354,3 +406,90 @@ After testing the skill, users may request improvements. Often this happens righ
 2. Notice struggles or inefficiencies
 3. Identify how SKILL.md or bundled resources should be updated
 4. Implement changes and test again
+
+## Skills and Subagents
+
+Skills can work with subagents in two ways:
+
+### Give a Subagent Access to Skills
+
+Custom subagents (defined in `.claude/agents/`) do not automatically inherit Skills. To give a subagent access to specific Skills, list them in the subagent's `skills` field:
+
+```yaml
+# .claude/agents/code-reviewer.md
+---
+name: code-reviewer
+description: Review code for quality and best practices
+skills: pr-review, security-check
+---
+```
+
+The full content of each listed Skill is injected into the subagent's context at startup. Built-in agents (Explore, Plan, general-purpose) do not have access to Skills.
+
+### Run a Skill in a Forked Context
+
+Use `context: fork` to run a Skill in an isolated sub-agent context:
+
+```yaml
+---
+name: code-analysis
+description: Analyze code quality and generate detailed reports
+context: fork
+agent: general-purpose
+---
+```
+
+This is useful for Skills that perform complex multi-step operations without cluttering the main conversation.
+
+## Skill Distribution
+
+### Where Skills Live
+
+| Location   | Path                    | Applies to                        |
+|:-----------|:------------------------|:----------------------------------|
+| Enterprise | Managed settings        | All users in your organization    |
+| Personal   | `~/.claude/skills/`     | You, across all projects          |
+| Project    | `.claude/skills/`       | Anyone working in this repository |
+| Plugin     | Bundled with plugins    | Anyone with the plugin installed  |
+
+If two Skills have the same name, the higher row wins: managed overrides personal, personal overrides project, project overrides plugin.
+
+### Distribution Methods
+
+1. **Project Skills**: Commit `.claude/skills/` to version control. Anyone who clones the repository gets the Skills.
+2. **Plugins**: Create a `skills/` directory in your plugin. Distribute through a plugin marketplace.
+3. **Managed**: Administrators can deploy Skills organization-wide through managed settings.
+4. **Package files**: Use `package_skill.py` to create `.skill` files for manual distribution.
+
+## Troubleshooting
+
+### Skill Not Triggering
+
+The description field is how Claude decides whether to use your Skill. Vague descriptions like "Helps with documents" don't give Claude enough information.
+
+**Good description pattern:**
+1. What does this Skill do? (List specific capabilities)
+2. When should Claude use it? (Include trigger keywords users would say)
+
+**Example:**
+```yaml
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
+```
+
+### Skill Doesn't Load
+
+**Check the file path.** Skills must be in the correct directory with exact filename `SKILL.md` (case-sensitive):
+- Personal: `~/.claude/skills/my-skill/SKILL.md`
+- Project: `.claude/skills/my-skill/SKILL.md`
+
+**Check YAML syntax:**
+- Frontmatter must start with `---` on line 1 (no blank lines before)
+- End with `---` before the Markdown content
+- Use spaces for indentation (not tabs)
+
+### Multiple Skills Conflict
+
+If Claude uses the wrong Skill, the descriptions are probably too similar. Make each description distinct by using specific trigger terms.
+
+**Instead of:** Two skills with "data analysis" in both descriptions
+**Use:** One for "sales data in Excel files and CRM exports" and another for "log files and system metrics"
