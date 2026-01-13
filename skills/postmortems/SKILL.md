@@ -146,17 +146,16 @@ Ask if they want to refine the analysis or action items, or if ready to generate
 
 ### Report Structure
 
-Use the template in `templates/postmortem_template.md` as a starting point. The report includes:
+Use the template in `templates/postmortem_template.md` as a starting point. The simplified template focuses on:
 
-1. Executive Summary
-2. Incident Details
-3. Impact (User, Business, Technical)
-4. Timeline
-5. Root Cause Analysis
-6. Resolution
-7. Action Items (categorized)
+1. Issue Overview
+2. Where It Went Wrong
+3. Why It Went Wrong (Root Cause Analysis)
+4. Impact
+5. Resolution
+6. Action Items
+7. Pre-Release Checklist (for future release reviews)
 8. Lessons Learned
-9. Appendices
 
 ### Drafting the Report
 
