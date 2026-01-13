@@ -1,12 +1,12 @@
 ---
 name: gospelo-md2pdf
-description: Convert Markdown files to PDF with Japanese font support and MermaidJS diagram rendering. Use when creating PDFs from markdown, documents with Japanese text, or technical docs with Mermaid diagrams.
+description: Convert Markdown files to PDF with Japanese font support, MermaidJS diagram rendering, and automatic image embedding. Use when creating PDFs from markdown, documents with Japanese text, technical docs with Mermaid diagrams, or documents with images.
 allowed-tools: Read, Bash(gospelo-md2pdf:*), Bash(pip install:*)
 ---
 
 # Markdown to PDF Converter
 
-Convert Markdown to beautifully formatted PDFs with Japanese text and MermaidJS diagrams.
+Convert Markdown to beautifully formatted PDFs with Japanese text, MermaidJS diagrams, and embedded images.
 
 ## Quick Start
 
@@ -25,6 +25,7 @@ Activate this skill when asked to:
 - Generate/export a PDF document
 - Create PDFs with Japanese text
 - Create PDFs with Mermaid diagrams
+- Create PDFs with embedded images
 
 ## Installation
 
@@ -43,6 +44,9 @@ apt-get update && apt-get install -y fonts-noto-cjk
 ```bash
 brew install pango glib gdk-pixbuf font-noto-sans-cjk-jp
 pip install --upgrade gospelo-md2pdf
+
+# Set library path (required for WeasyPrint)
+export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH
 ```
 
 ## Mermaid Diagrams Setup
@@ -80,6 +84,7 @@ gospelo-md2pdf input.md output.pdf
 
 - **Japanese Text**: Noto Sans CJK font support
 - **MermaidJS**: Flowcharts, sequence diagrams, ER diagrams, etc. (via Kroki API)
+- **Image Embedding**: Local and remote images automatically embedded as Base64 data URIs
 - **Tables**: GitHub-flavored markdown tables
 - **Code Blocks**: Syntax highlighting
 - **Special Classes**: summary, warning, info boxes
@@ -101,3 +106,4 @@ gospelo-md2pdf input.md output.pdf
 | Japanese not rendering | `apt-get install fonts-noto-cjk` |
 | Mermaid not rendering | Add `kroki.io` to allowed domains (Settings → Capabilities) |
 | Kroki connection error | Check network settings and allowed domains |
+| macOS: libgobject error | `export DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH` |
