@@ -38,60 +38,64 @@ Postmortems should be **blameless** - focusing on systems, processes, and roles 
 - Incidents that exposed systemic issues
 - Incidents that required escalation or major remediation efforts
 
-**Timeline:**
-- Schedule postmortem meeting within 24-48 hours of incident resolution
-- Complete postmortem report within 5 business days of the meeting
+**Timeline (team practice reference):**
+- Teams typically schedule postmortem meetings within 24-48 hours of incident resolution
+- Postmortem reports are usually completed within 5 business days of the meeting
+- When assisting with postmortems, help create reports promptly while details are fresh
 
-### 2. Assemble the Postmortem Team
+### 2. Gather Postmortem Information
 
-**Key participants:**
-- Incident commander/responder
+When helping with a postmortem, ensure you have information from:
+
+**Key sources:**
+- Incident commander/responder notes
 - On-call engineer(s) involved
 - Service owners
 - Subject matter experts relevant to the incident
 - Anyone who made key decisions during the incident
 
-**Roles:**
-- **Postmortem Lead**: Facilitates the meeting and writes the report
-- **Timeline Scribe**: Documents the chronological sequence of events
-- **Action Item Owner**: Tracks and assigns follow-up actions
+**Information to collect:**
+- Chronological sequence of events
+- Decisions made and actions taken
+- Impact metrics and measurements
+- System logs, monitoring data, or error reports
+- Communication records (internal and external)
 
-### 3. Conduct the Postmortem Meeting
+**Note:** If you're helping organize a postmortem, teams typically involve these roles, but as an AI assistant, focus on synthesizing and documenting the information provided rather than coordinating team participation.
 
-**Meeting structure:**
+### 3. Postmortem Analysis and Documentation
 
-1. **Opening (5 minutes)**
-   - State that this is a blameless postmortem
-   - Explain why blameless postmortems are important
-   - Set ground rules: focus on systems and processes, not individuals
+When helping with postmortems, structure your analysis around these key areas:
 
-2. **Timeline Construction (20-30 minutes)**
-   - Build a chronological timeline of events
+1. **Timeline Construction**
+   - Build a chronological timeline of events from available information
    - Include: first alert, detection, communication, mitigation attempts, resolution
    - Use role-based language (e.g., "the on-call engineer") not names
-   - Document all key decisions and actions
+   - Document all key decisions and actions mentioned
 
-3. **Impact Assessment (10 minutes)**
-   - Quantify user impact (affected users, duration, error rates)
-   - Document business impact (revenue, SLA breaches, customer complaints)
+2. **Impact Assessment**
+   - Quantify user impact (affected users, duration, error rates) from provided data
+   - Document business impact (revenue, SLA breaches, customer complaints) if available
    - Record technical metrics (downtime, error rates, performance degradation)
 
-4. **Root Cause Analysis (20-30 minutes)**
-   - Use "5 Whys" technique to dig deeper
+3. **Root Cause Analysis**
+   - Use "5 Whys" technique to dig deeper into causes
    - Identify contributing factors, not just the immediate cause
    - Consider: system design, process gaps, monitoring gaps, human factors
    - Frame in terms of systems and processes, not individual actions
 
-5. **Action Items (20-30 minutes)**
+4. **Action Items Generation**
    - Generate actionable, specific, bounded action items
    - Categorize by: investigate, mitigate, repair, detect, mitigate future, prevent
-   - Assign owners and deadlines
+   - Suggest owners and deadlines based on context
    - Prioritize actions that address root causes
 
-6. **Closing (5 minutes)**
-   - Summarize key learnings
-   - Confirm action item assignments
-   - Schedule follow-up review if needed
+5. **Summary and Learnings**
+   - Summarize key learnings from the incident
+   - Highlight what went well and what could be improved
+   - Identify systemic improvements needed
+
+**Note:** If you're helping facilitate an actual postmortem meeting, teams typically follow a structured agenda with time allocations, but as an AI assistant, focus on helping document and analyze the information provided rather than managing meeting logistics.
 
 ### 4. Write the Postmortem Report
 
@@ -231,21 +235,23 @@ When incidents involve third-party services, use this framework:
    - Establish expectations with the 3rd party
    - Share expectations with teams so they can build appropriate resilience
 
-## Postmortem Approval
+## Postmortem Review and Approval
 
-**Approval process:**
-- Postmortems should be reviewed and approved by service owners or managers
-- Approval indicates:
-  - Agreement with findings, including root cause
-  - Agreement that action items adequately address the root cause
-- Approvers may request additional actions or identify gaps
+**Review considerations:**
+- When helping create postmortems, ensure the report is ready for review by service owners or managers
+- A complete postmortem should demonstrate:
+  - Clear agreement on findings, including root cause
+  - Action items that adequately address the root cause
+- Be prepared to revise based on feedback from approvers who may request additional actions or identify gaps
 
-**Approval workflow:**
-1. Postmortem lead completes draft
+**Typical review workflow (for reference):**
+1. Complete postmortem draft
 2. Share with participants for review
-3. Submit to approver(s)
-4. Address feedback and revise
+3. Submit to approver(s) for approval
+4. Address feedback and revise as needed
 5. Final approval and publication
+
+**Note:** Approval processes vary by organization. When assisting, focus on creating comprehensive, well-structured postmortems that facilitate review and approval rather than managing the approval workflow itself.
 
 ## Postmortem Metrics
 
@@ -261,11 +267,11 @@ Track these metrics to measure postmortem effectiveness:
 
 ### Do's
 
-✅ **Do** schedule postmortems quickly (24-48 hours)
-✅ **Do** include diverse perspectives (not just engineers)
+✅ **Do** help create postmortems promptly while details are fresh (teams typically aim for 24-48 hours after resolution)
+✅ **Do** incorporate diverse perspectives when information is available (not just engineering views)
 ✅ **Do** focus on systems and processes
 ✅ **Do** create specific, actionable, bounded action items
-✅ **Do** follow up on action items
+✅ **Do** help track and document action items (follow-up is typically handled by teams)
 ✅ **Do** share postmortems widely for learning
 ✅ **Do** use templates for consistency
 ✅ **Do** quantify impact with metrics
