@@ -92,14 +92,17 @@ Ask if there's any more information they want to provide, or if it's time to mov
 
 ### Root Cause Analysis
 
-Guide users through root cause analysis using techniques from [references/root-cause-analysis.md](references/root-cause-analysis.md):
+Analyze root causes using techniques from [references/root-cause-analysis.md](references/root-cause-analysis.md). Based on information provided in the conversation:
 
-1. **5 Whys**: Ask iterative "why" questions to dig deeper
-2. **Causal Chain**: Build symptom → immediate cause → contributing factor → root cause
-3. **Systems Thinking**: Consider technical, process, and organizational layers
+1. **Synthesize available information**: Review what the user has shared about the incident
+2. **Apply 5 Whys**: Analyze the chain of "whys" from available information, ask targeted questions only when information is missing
+3. **Build Causal Chain**: Construct symptom → immediate cause → contributing factor → root cause
+4. **Apply Systems Thinking**: Consider technical, process, and organizational layers
 
 **What to do:**
-- Guide interactive 5 Whys analysis
+- Analyze root causes proactively from conversation context
+- Present your analysis and ask for confirmation or clarification
+- Only ask targeted questions about specific gaps, not the entire chain
 - Help identify contributing factors beyond immediate cause
 - Frame causes in terms of systems and processes, not individuals
 - Suggest alternative explanations and "second stories"
@@ -109,7 +112,7 @@ Guide users through root cause analysis using techniques from [references/root-c
 - Use role-based language, not names
 - Ask "why did the system allow this" not "why did this person do this"
 
-If user provides information that blames individuals, help reframe it in blameless terms.
+If user provides information that blames individuals, automatically reframe it in blameless terms.
 
 ### Action Items Generation
 
