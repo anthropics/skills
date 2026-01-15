@@ -191,6 +191,31 @@ def title_case_skill_name(skill_name):
     return ' '.join(word.capitalize() for word in skill_name.split('-'))
 
 
+def validate_skill_name(skill_name):
+    """
+    Validate skill name format and length.
+
+    Args:
+        skill_name: Name of the skill to validate
+
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    # Check length (max 64 characters per spec)
+    if len(skill_name) > 64:
+        return False, f"Skill name is too long ({len(skill_name)} characters). Maximum is 64 characters."
+
+    # Check naming convention (hyphen-case: lowercase with hyphens)
+    import re
+    if not re.match(r'^[a-z0-9-]+$', skill_name):
+        return False, "Skill name must be hyphen-case (lowercase letters, digits, and hyphens only)"
+
+    if skill_name.startswith('-') or skill_name.endswith('-') or '--' in skill_name:
+        return False, "Skill name cannot start/end with hyphen or contain consecutive hyphens"
+
+    return True, None
+
+
 def init_skill(skill_name, path):
     """
     Initialize a new skill directory with template SKILL.md.
@@ -202,6 +227,12 @@ def init_skill(skill_name, path):
     Returns:
         Path to created skill directory, or None if error
     """
+    # Validate skill name
+    is_valid, error_msg = validate_skill_name(skill_name)
+    if not is_valid:
+        print(f"❌ Error: {error_msg}")
+        return None
+
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
 
@@ -276,7 +307,7 @@ def main():
         print("\nSkill name requirements:")
         print("  - Hyphen-case identifier (e.g., 'data-analyzer')")
         print("  - Lowercase letters, digits, and hyphens only")
-        print("  - Max 40 characters")
+        print("  - Max 64 characters")
         print("  - Must match directory name exactly")
         print("\nExamples:")
         print("  init_skill.py my-new-skill --path skills/public")
