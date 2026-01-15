@@ -26,7 +26,7 @@ skills/<skill-name>/
 ### Key Skills Categories
 
 **Document Skills** (proprietary, reference implementations):
-- [docx](skills/docx/) - Uses docx-js (create) and Python OOXML library (edit), supports tracked changes
+                      - [docx](Q) - Uses docx-js (create) and Python OOXML library (edit), supports tracked changes
 - [pptx](skills/pptx/) - HTML to PowerPoint conversion, OOXML editing
 - [pdf](skills/pdf/) - PDF manipulation, form filling
 - [xlsx](skills/xlsx/) - Excel generation and editing
@@ -82,133 +82,74 @@ Key references in [skills/mcp-builder/reference/](skills/mcp-builder/reference/)
 
 **Design priorities**:
 1. Comprehensive API coverage > specialized workflows
-2. Clear, consistent tool naming with prefixes
-3. Actionable error messages
-4. Context management (pagination, filtering)
+# Copilot Instructions for Skills Repository
 
-### Web Testing Pattern
+- Purpose: teach AI agents how to extend Claude with modular skills. Each skill is a self-contained folder the agent loads dynamically.
 
-Use [scripts/with_server.py](skills/webapp-testing/scripts/with_server.py) for server lifecycle:
-```bash
-python scripts/with_server.py --server "npm run dev" --port 5173 -- python test.py
+## Fast orientation
+- Core map: skills/* holds skills; spec/agent-skills-spec.md documents the standard; template/SKILL.md is the starter template.
+- Read SKILL.md frontmatter first (name, description, license), then the body. Skills rely on progressive disclosure: keep instructions concise; move depth into references/ or scripts/.
+- Avoid creating extra READMEs or aux docs inside skills; use SKILL.md only. Respect existing licenses (most Apache 2.0; docx/pdf/pptx/xlsx are source-available).
+
+## Skill structure (consistent across folders)
+- SKILL.md (required), LICENSE.txt, optional scripts/, references/, assets/. Keep individual reference files under ~10k words.
+- scripts/ is for runnable helpers (Python/JS/Bash). Prefer running with --help before reading internals; document parameters with docstrings if you add scripts.
+- references/ holds long-form docs; assets/ carries templates/fonts/media; ooxml/schemas/ store XML schemas.
+
+## Critical workflows and examples
+- DOCX/PPTX/XLSX OOXML editing (docx/pptx/xlsx skills): unpack → edit → validate (pptx) → pack.
 ```
-
-**Critical**: Always `page.wait_for_load_state('networkidle')` before DOM inspection on dynamic apps.
-
-## Project Conventions
-
-### Content Guidelines
-
-1. **Conciseness is paramount** - Context window is shared across all skills. Challenge every paragraph: "Does Claude need this?"
-2. **Progressive disclosure** - Split large skills: core workflow in SKILL.md, details in references/
-3. **Read full documentation files** - SKILL.md files often mandate "READ ENTIRE FILE" for critical docs (ooxml.md, docx-js.md)
-4. **Scripts as black boxes** - Run with `--help` first, don't read source unless necessary
-
-### Documentation Patterns
-
-**SKILL.md structure**:
-```markdown
----
-name: skill-name
-description: Complete description including what it does AND when to use it
-license: License info or see LICENSE.txt
----
-
-# Skill Name
-
-## Overview
-Brief intro
-
-## Workflow Decision Tree
-When to use which approach
-
-## Core Workflows
-Step-by-step procedures
-
-## Reference Files
-Links to bundled resources
+python ooxml/scripts/unpack.py <file> <dir>
+python ooxml/scripts/validate.py <dir> --original <file>  # pptx
+python ooxml/scripts/pack.py <dir> <file>
 ```
+- Document library pattern (docx/pptx): see [skills/docx/ooxml.md](skills/docx/ooxml.md). Use Document.load, query nodes, modify, save. Preserve unchanged runs/RSIDs when redlining.
+- Tracked changes workflow (docx): convert to markdown with pandoc --track-changes=all, batch edits (3–10), edit XML via Document, then repack.
+- MCP server skills (mcp-builder): prefer TypeScript + streamable HTTP; enforce clear tool prefixes, pagination/filtering support, actionable errors. References in [skills/mcp-builder/reference](skills/mcp-builder/reference).
+- Web testing (webapp-testing): wrap app lifecycle with scripts/with_server.py, always wait for networkidle before DOM inspection.
+- Creative/layout skills (canvas-design, frontend-design, algorithmic-art): keep outputs concise; use provided assets/fonts; avoid adding new font files.
+# Copilot Instructions for Skills Repository
 
-**Avoid creating**:
-- README.md files within skills (use SKILL.md only)
-- Auxiliary documentation (INSTALLATION_GUIDE.md, CHANGELOG.md, etc.)
-- User-facing docs (skills are for AI agents)
+- Purpose: teach AI agents how to extend Claude with modular skills. Each skill is a self-contained folder the agent loads dynamically.
 
-### Python Patterns
+## Fast orientation
+- Core map: skills/* holds skills; spec/agent-skills-spec.md documents the standard; template/SKILL.md is the starter template.
+- Read SKILL.md frontmatter first (name, description, license), then the body. Skills rely on progressive disclosure: keep instructions concise; move depth into references/ or scripts/.
+- Avoid creating extra READMEs or aux docs inside skills; use SKILL.md only. Respect existing licenses (most Apache 2.0; docx/pdf/pptx/xlsx are source-available).
 
-- Use `scripts/` directory for all Python code
-- Common utilities in `scripts/__init__.py`, `scripts/utilities.py`, `scripts/document.py`
-- Always include docstrings for script parameters
-- Prefer black-box script usage over reading source
+## Skill structure (consistent across folders)
+- SKILL.md (required), LICENSE.txt, optional scripts/, references/, assets/. Keep individual reference files under ~10k words.
+- scripts/ is for runnable helpers (Python/JS/Bash). Prefer running with --help before reading internals; document parameters with docstrings if you add scripts.
+- references/ holds long-form docs; assets/ carries templates/fonts/media; ooxml/schemas/ store XML schemas.
 
-### File Organization
-
-- `references/` - Documentation loaded as-needed (keep individual files <10k words)
-- `scripts/` - Executable code, token-efficient
-- `assets/` - Files used in output (templates, fonts, media)
-- `ooxml/schemas/` - XML schemas for document validation
-
-## Integration Points
-
-### External Dependencies
-
-**Document creation**:
-- `docx-js` (npm) - TypeScript library for DOCX creation
-- `pandoc` - Document conversion, especially for tracked changes visualization
-
-**Python**:
-- Standard libraries: `xml.etree.ElementTree`, `zipfile`, `json`
-- External: `anthropic`, `mcp`, `playwright`, `pillow`, `imageio`
-
-**Validation**:
-- OOXML schemas in `ooxml/schemas/` for XML validation
-
-### Testing
-
-No formal test suite. Skills are tested through:
-1. Claude.ai integration (paid plans)
-2. Claude Code plugin system
-3. API integration
-
-## Special Notes
-
-### License Awareness
-
-- Most skills are Apache 2.0 (open source)
-- Document skills (docx/pdf/pptx/xlsx) are proprietary/source-available
-- Canvas fonts have individual OFL licenses in `skills/canvas-design/canvas-fonts/`
-
-### Specification
-
-Agent Skills specification moved to external site: https://agentskills.io/specification
-
-### Partner Skills
-
-Skills are extensible - partners can create skills for specific software (example: Notion Skills for Claude)
-
-## Quick Reference
-
-**Create new skill**: Use [template/SKILL.md](template/SKILL.md) or follow [skill-creator](skills/skill-creator/SKILL.md) guidance
-
-**Common commands**:
-```bash
-# OOXML workflows
-python ooxml/scripts/unpack.py file.docx unpacked/
-python ooxml/scripts/pack.py unpacked/ output.docx
-python ooxml/scripts/validate.py unpacked/ --original file.pptx
-
-# Document conversion
-pandoc --track-changes=all input.docx -o output.md
-
-# Web testing
-python scripts/with_server.py --server "npm run dev" --port 3000 -- python test.py
-
-# Thumbnail generation (PPTX)
-python scripts/thumbnail.py presentation.pptx --cols 4
+## Critical workflows and examples
+- DOCX/PPTX/XLSX OOXML editing (docx/pptx/xlsx skills): unpack → edit → validate (pptx) → pack.
 ```
+python ooxml/scripts/unpack.py <file> <dir>
+python ooxml/scripts/validate.py <dir> --original <file>  # pptx
+python ooxml/scripts/pack.py <dir> <file>
+```
+- Document library pattern (docx/pptx): see [skills/docx/ooxml.md](skills/docx/ooxml.md). Use Document.load, query nodes, modify, save. Preserve unchanged runs/RSIDs when redlining.
+- Tracked changes workflow (docx): convert to markdown with pandoc --track-changes=all, batch edits (3–10), edit XML via Document, then repack.
+- MCP server skills (mcp-builder): prefer TypeScript + streamable HTTP; enforce clear tool prefixes, pagination/filtering support, actionable errors. References in [skills/mcp-builder/reference](skills/mcp-builder/reference).
+- Web testing (webapp-testing): wrap app lifecycle with scripts/with_server.py, always wait for networkidle before DOM inspection.
+- Creative/layout skills (canvas-design, frontend-design, algorithmic-art): keep outputs concise; use provided assets/fonts; avoid adding new font files.
 
-**Key files to reference**:
-- [spec/agent-skills-spec.md](spec/agent-skills-spec.md) - Points to agentskills.io
-- [skills/docx/ooxml.md](skills/docx/ooxml.md) - Document library API (~600 lines, read in full)
-- [skills/docx/docx-js.md](skills/docx/docx-js.md) - docx-js usage (~500 lines, read in full)
-- [skills/skill-creator/SKILL.md](skills/skill-creator/SKILL.md) - Skill creation patterns
+## Conventions to follow
+- Conciseness first: challenge every paragraph; keep SKILL.md <5k words, ideally <500 lines.
+- Keep instructions actionable and repo-specific; avoid aspirational guidance.
+- When adding new skills, start from [template/SKILL.md](template/SKILL.md) or mirror patterns in [skills/skill-creator/SKILL.md](skills/skill-creator/SKILL.md).
+- Do not move shared utilities; reuse scripts/utilities.py and scripts/document.py where possible.
+- Cite key references rather than inlining long text; e.g., [skills/docx/docx-js.md](skills/docx/docx-js.md), [skills/pptx/ooxml.md](skills/pptx/ooxml.md), [skills/pdf/reference.md](skills/pdf/reference.md).
+
+## Testing and validation
+- No monorepo test runner. Validate document workflows by unpack/edit/pack; for pptx run validate.py.
+- For web tests, run with_server wrapper plus your test script; ensure server port matches flag.
+- If adding scripts, keep them executable and include minimal usage examples.
+
+## Quick reference
+- Specification: [spec/agent-skills-spec.md](spec/agent-skills-spec.md) points to agentskills.io.
+- Marketplace metadata lives in .claude-plugin/marketplace.json.
+- Common commands: pandoc --track-changes=all input.docx -o output.md, python scripts/thumbnail.py presentation.pptx --cols 4 (pptx thumbnails).
+
+If any section feels unclear or missing for your task, point it out and I will tighten or expand it.
