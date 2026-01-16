@@ -1,0 +1,40 @@
+{
+  "name": "xlsx-agent",
+  "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "xlsx"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Choose tool**: pandas for data, openpyxl for formulas/formatting"
+    },
+    {
+      "step": "step-2",
+      "description": "**Create/Load**: Create new workbook or load existing file"
+    },
+    {
+      "step": "step-3",
+      "description": "**Modify**: Add/edit data, formulas, and formatting"
+    },
+    {
+      "step": "step-4",
+      "description": "**Save**: Write to file"
+    },
+    {
+      "step": "step-5",
+      "description": "**Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script"
+    },
+    {
+      "step": "step-6",
+      "description": "**Verify and fix any errors**:"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "xlsx"
+  }
+}

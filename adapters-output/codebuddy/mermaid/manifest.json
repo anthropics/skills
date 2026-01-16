@@ -1,0 +1,54 @@
+{
+  "name": "mermaid",
+  "version": "1.0.0",
+  "description": "A comprehensive skill for creating all types of Mermaid diagrams including flowcharts, sequence diagrams, class diagrams, state diagrams, entity relationship diagrams, user journey diagrams, Gantt charts, pie charts, quadrant charts, requirement diagrams, Git graphs, C4 diagrams, mindmaps, timelines, ZenUML, Sankey diagrams, XY charts, block diagrams, packet diagrams, Kanban boards, architecture diagrams, radar charts, and treemaps. Use this skill whenever the user requests to create, draw, or visualize any diagram, flowchart, or structured chart using Mermaid syntax.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "mermaid",
+      "name": "mermaid",
+      "description": "A comprehensive skill for creating all types of Mermaid diagrams including flowcharts, sequence diagrams, class diagrams, state diagrams, entity relationship diagrams, user journey diagrams, Gantt charts, pie charts, quadrant charts, requirement diagrams, Git graphs, C4 diagrams, mindmaps, timelines, ZenUML, Sankey diagrams, XY charts, block diagrams, packet diagrams, Kanban boards, architecture diagrams, radar charts, and treemaps. Use this skill whenever the user requests to create, draw, or visualize any diagram, flowchart, or structured chart using Mermaid syntax.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**Identify the diagram type** from the user's request",
+          "description": "**Identify the diagram type** from the user's request:",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**Load the appropriate example file** from the `examples/` directory",
+          "description": "**Load the appropriate example file** from the `examples/` directory:",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**Follow the specific instructions** in that example file for syntax, structure, and best practices",
+          "description": "**Follow the specific instructions** in that example file for syntax, structure, and best practices",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**Generate the Mermaid code** wrapped in a code block",
+          "description": "**Generate the Mermaid code** wrapped in a code block:",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**Include styling and configuration** when needed",
+          "description": "**Include styling and configuration** when needed:",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "**Validate the syntax**",
+          "description": "**Validate the syntax**:",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

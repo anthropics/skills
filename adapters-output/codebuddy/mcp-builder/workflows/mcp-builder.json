@@ -1,0 +1,33 @@
+{
+  "id": "mcp-builder",
+  "name": "MCP Server Development Guide",
+  "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).",
+  "steps": [
+    {
+      "id": 1,
+      "name": "**Tool Inspection**",
+      "description": "**Tool Inspection**: List available tools and understand their capabilities",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "**Content Exploration**",
+      "description": "**Content Exploration**: Use READ-ONLY operations to explore available data",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "**Question Generation**",
+      "description": "**Question Generation**: Create 10 complex, realistic questions",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "**Answer Verification**",
+      "description": "**Answer Verification**: Solve each question yourself to verify answers",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

@@ -1,0 +1,188 @@
+{
+  "name": "pptx-agent",
+  "description": "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "pptx"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Read theme file**: Check `ppt/theme/theme1.xml` for colors (`<a:clrScheme>`) and fonts (`<a:fontScheme>`)"
+    },
+    {
+      "step": "step-2",
+      "description": "**Sample slide content**: Examine `ppt/slides/slide1.xml` for actual font usage (`<a:rPr>`) and colors"
+    },
+    {
+      "step": "step-3",
+      "description": "**Search for patterns**: Use grep to find color (`<a:solidFill>`, `<a:srgbClr>`) and font references across all XML files"
+    },
+    {
+      "step": "step-1",
+      "description": "**Consider the subject matter**: What is this presentation about? What tone, industry, or mood does it suggest?"
+    },
+    {
+      "step": "step-2",
+      "description": "**Check for branding**: If the user mentions a company/organization, consider their brand colors and identity"
+    },
+    {
+      "step": "step-3",
+      "description": "**Match palette to content**: Select colors that reflect the subject"
+    },
+    {
+      "step": "step-4",
+      "description": "**State your approach**: Explain your design choices before writing code"
+    },
+    {
+      "step": "step-1",
+      "description": "**Classic Blue**: Deep navy (#1C2833), slate gray (#2E4053), silver (#AAB7B8), off-white (#F4F6F6)"
+    },
+    {
+      "step": "step-2",
+      "description": "**Teal & Coral**: Teal (#5EA8A7), deep teal (#277884), coral (#FE4447), white (#FFFFFF)"
+    },
+    {
+      "step": "step-3",
+      "description": "**Bold Red**: Red (#C0392B), bright red (#E74C3C), orange (#F39C12), yellow (#F1C40F), green (#2ECC71)"
+    },
+    {
+      "step": "step-4",
+      "description": "**Warm Blush**: Mauve (#A49393), blush (#EED6D3), rose (#E8B4B8), cream (#FAF7F2)"
+    },
+    {
+      "step": "step-5",
+      "description": "**Burgundy Luxury**: Burgundy (#5D1D2E), crimson (#951233), rust (#C15937), gold (#997929)"
+    },
+    {
+      "step": "step-6",
+      "description": "**Deep Purple & Emerald**: Purple (#B165FB), dark blue (#181B24), emerald (#40695B), white (#FFFFFF)"
+    },
+    {
+      "step": "step-7",
+      "description": "**Cream & Forest Green**: Cream (#FFE1C7), forest green (#40695B), white (#FCFCFC)"
+    },
+    {
+      "step": "step-8",
+      "description": "**Pink & Purple**: Pink (#F8275B), coral (#FF574A), rose (#FF737D), purple (#3D2F68)"
+    },
+    {
+      "step": "step-9",
+      "description": "**Lime & Plum**: Lime (#C5DE82), plum (#7C3A5F), coral (#FD8C6E), blue-gray (#98ACB5)"
+    },
+    {
+      "step": "step-10",
+      "description": "**Black & Gold**: Gold (#BF9A4A), black (#000000), cream (#F4F6F6)"
+    },
+    {
+      "step": "step-11",
+      "description": "**Sage & Terracotta**: Sage (#87A96B), terracotta (#E07A5F), cream (#F4F1DE), charcoal (#2C2C2C)"
+    },
+    {
+      "step": "step-12",
+      "description": "**Charcoal & Red**: Charcoal (#292929), red (#E33737), light gray (#CCCBCB)"
+    },
+    {
+      "step": "step-13",
+      "description": "**Vibrant Orange**: Orange (#F96D00), light gray (#F2F2F2), charcoal (#222831)"
+    },
+    {
+      "step": "step-14",
+      "description": "**Forest Green**: Black (#191A19), green (#4E9F3D), dark green (#1E5128), white (#FFFFFF)"
+    },
+    {
+      "step": "step-15",
+      "description": "**Retro Rainbow**: Purple (#722880), pink (#D72D51), orange (#EB5C18), amber (#F08800), gold (#DEB600)"
+    },
+    {
+      "step": "step-16",
+      "description": "**Vintage Earthy**: Mustard (#E3B448), sage (#CBD18F), forest green (#3A6B35), cream (#F4F1DE)"
+    },
+    {
+      "step": "step-17",
+      "description": "**Coastal Rose**: Old rose (#AD7670), beaver (#B49886), eggshell (#F3ECDC), ash gray (#BFD5BE)"
+    },
+    {
+      "step": "step-18",
+      "description": "**Orange & Turquoise**: Light orange (#FC993E), grayish turquoise (#667C6F), white (#FCFCFC)"
+    },
+    {
+      "step": "step-1",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`html2pptx.md`](html2pptx.md) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with presentation creation."
+    },
+    {
+      "step": "step-2",
+      "description": "Create an HTML file for each slide with proper dimensions (e.g., 720pt × 405pt for 16:9)"
+    },
+    {
+      "step": "step-3",
+      "description": "Create and run a JavaScript file using the [`html2pptx.js`](scripts/html2pptx.js) library to convert HTML slides to PowerPoint and save the presentation"
+    },
+    {
+      "step": "step-4",
+      "description": "**Visual validation**: Generate thumbnails and inspect for layout issues"
+    },
+    {
+      "step": "step-1",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing."
+    },
+    {
+      "step": "step-2",
+      "description": "Unpack the presentation: `python ooxml/scripts/unpack.py <office_file> <output_dir>`"
+    },
+    {
+      "step": "step-3",
+      "description": "Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)"
+    },
+    {
+      "step": "step-4",
+      "description": "**CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py <dir> --original <file>`"
+    },
+    {
+      "step": "step-5",
+      "description": "Pack the final presentation: `python ooxml/scripts/pack.py <input_directory> <office_file>`"
+    },
+    {
+      "step": "step-1",
+      "description": "**Extract template text AND create visual thumbnail grid**:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Analyze template and save inventory to a file**:"
+    },
+    {
+      "step": "step-3",
+      "description": "**Create presentation outline based on template inventory**:"
+    },
+    {
+      "step": "step-4",
+      "description": "**Duplicate, reorder, and delete slides using `rearrange.py`**:"
+    },
+    {
+      "step": "step-5",
+      "description": "**Extract ALL text using the `inventory.py` script**:"
+    },
+    {
+      "step": "step-6",
+      "description": "**Generate replacement text and save the data to a JSON file**"
+    },
+    {
+      "step": "step-7",
+      "description": "**Apply replacements using the `replace.py` script**"
+    },
+    {
+      "step": "step-1",
+      "description": "**Convert PPTX to PDF**:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Convert PDF pages to JPEG images**:"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "pptx"
+  }
+}

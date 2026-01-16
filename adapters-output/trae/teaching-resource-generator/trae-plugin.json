@@ -1,0 +1,15 @@
+{
+  "name": "teaching-resource-generator",
+  "version": "1.0.0",
+  "description": "帮助生成各种教学资源，包括课件、练习题、教学案例、学习指南等。适用于快速创建高质量的教学材料。",
+  "author": "Teaching AI",
+  "type": "skill",
+  "skills": [
+    {
+      "name": "teaching-resource-generator",
+      "description": "帮助生成各种教学资源，包括课件、练习题、教学案例、学习指南等。适用于快速创建高质量的教学材料。",
+      "instructions": "SKILL.md",
+      "resources": []
+    }
+  ]
+}

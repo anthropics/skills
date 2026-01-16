@@ -1,44 +1,92 @@
 {
-  "name": "anthropic-agent-skills",
+  "name": "teaching-ai-skills",
   "owner": {
-    "name": "Keith Lazuka",
-    "email": "klazuka@anthropic.com"
+    "name": "TeachingAI",
+    "email": "teachingai@163.com"
   },
   "metadata": {
-    "description": "Anthropic example skills",
+    "description": "Teaching AI 免费技能市场 - 提供各种实用的 AI 技能集合，包括教学、开发、设计、文档处理等",
     "version": "1.0.0"
   },
   "plugins": [
     {
-      "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+      "name": "teaching-skills",
+      "description": "教学与教育相关技能集合，包括课程设计、学习评估、教学资源生成等",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
+        "./skills/course-designer",
+        "./skills/learning-assessor",
+        "./skills/teaching-resource-generator"
       ]
     },
     {
-      "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
+      "name": "document-skills",
+      "description": "文档处理技能集合，支持 Excel、Word、PowerPoint、PDF 等办公文档的创建、编辑和处理",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/docx",
+        "./skills/pptx",
+        "./skills/pdf",
+        "./skills/xlsx",
+        "./skills/doc-coauthoring"
+      ]
+    },
+    {
+      "name": "markdown-skills",
+      "description": "Markdown 相关技能集合，包括 Mermaid 图表绘制等",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/mermaid"
+      ]
+    },
+    {
+      "name": "development-skills",
+      "description": "开发技能集合，包括代码生成、测试编写、文档构建、项目文档生成、MCP 构建器、Web 开发、前端设计等",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/code-generator",
+        "./skills/test-writer",
+        "./skills/documentation-builder",
+        "./skills/zh-product-doc-generator",
+        "./skills/mcp-builder",
+        "./skills/webapp-testing",
+        "./skills/frontend-design",
+        "./skills/web-artifacts-builder",
+        "./skills/theme-factory"
+      ]
+    },
+    {
+      "name": "design-skills",
+      "description": "设计与创意技能集合，包括算法艺术、品牌指南、画布设计等",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/algorithmic-art",
         "./skills/brand-guidelines",
-        "./skills/canvas-design",
-        "./skills/doc-coauthoring",
-        "./skills/frontend-design",
+        "./skills/canvas-design"
+      ]
+    },
+    {
+      "name": "social-skills",
+      "description": "社交与协作技能集合，包括内部沟通、Slack GIF 创建等",
+      "source": "./",
+      "strict": false,
+      "skills": [
         "./skills/internal-comms",
-        "./skills/mcp-builder",
-        "./skills/skill-creator",
-        "./skills/slack-gif-creator",
-        "./skills/theme-factory",
-        "./skills/web-artifacts-builder",
-        "./skills/webapp-testing"
+        "./skills/slack-gif-creator"
+      ]
+    },
+    {
+      "name": "utility-skills",
+      "description": "工具与实用技能集合，包括技能创建器等",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/skill-creator"
       ]
     }
   ]

@@ -1,0 +1,36 @@
+{
+  "name": "internal-comms",
+  "version": "1.0.0",
+  "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever asked to write some sort of internal communications (status reports, leadership updates, 3P updates, company newsletters, FAQs, incident reports, project updates, etc.).",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "internal-comms",
+      "name": "internal-comms",
+      "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever asked to write some sort of internal communications (status reports, leadership updates, 3P updates, company newsletters, FAQs, incident reports, project updates, etc.).",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**Identify the communication type** from the request",
+          "description": "**Identify the communication type** from the request",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**Load the appropriate guideline file** from the `examples/` directory",
+          "description": "**Load the appropriate guideline file** from the `examples/` directory:",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**Follow the specific instructions** in that file for formatting, tone, and content gathering",
+          "description": "**Follow the specific instructions** in that file for formatting, tone, and content gathering",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

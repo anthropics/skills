@@ -1,0 +1,15 @@
+{
+  "name": "code-generator",
+  "version": "1.0.0",
+  "description": "帮助生成高质量的代码，包括函数、类、模块和完整项目。支持多种编程语言，遵循最佳实践和设计模式。适用于快速开发、代码示例生成或教学演示。",
+  "author": "Teaching AI",
+  "type": "skill",
+  "skills": [
+    {
+      "name": "code-generator",
+      "description": "帮助生成高质量的代码，包括函数、类、模块和完整项目。支持多种编程语言，遵循最佳实践和设计模式。适用于快速开发、代码示例生成或教学演示。",
+      "instructions": "SKILL.md",
+      "resources": []
+    }
+  ]
+}

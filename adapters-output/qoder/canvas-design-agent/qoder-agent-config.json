@@ -1,0 +1,24 @@
+{
+  "name": "canvas-design-agent",
+  "description": "Create beautiful visual art in .png and .pdf documents using design philosophy. You should use this skill when the user asks to create a poster, piece of art, design, or other static piece. Create original visual designs, never copying existing artists' work to avoid copyright violations.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "canvas-design"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "Design Philosophy Creation (.md file)"
+    },
+    {
+      "step": "step-2",
+      "description": "Express by creating it on a canvas (.pdf file or .png file)"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "canvas-design"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "web-artifacts-builder-agent",
+  "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "web-artifacts-builder"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "Initialize the frontend repo using `scripts/init-artifact.sh`"
+    },
+    {
+      "step": "step-2",
+      "description": "Develop your artifact by editing the generated code"
+    },
+    {
+      "step": "step-3",
+      "description": "Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`"
+    },
+    {
+      "step": "step-4",
+      "description": "Display artifact to user"
+    },
+    {
+      "step": "step-5",
+      "description": "(Optional) Test the artifact"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "web-artifacts-builder"
+  }
+}

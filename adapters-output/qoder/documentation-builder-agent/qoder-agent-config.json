@@ -1,0 +1,36 @@
+{
+  "name": "documentation-builder-agent",
+  "description": "帮助生成技术文档，包括 API 文档、用户手册、开发指南、README 等。支持多种文档格式，确保文档清晰、完整、易于理解。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "documentation-builder"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**清晰性**: 文档应清晰易懂，避免歧义"
+    },
+    {
+      "step": "step-2",
+      "description": "**完整性**: 覆盖所有重要功能和场景"
+    },
+    {
+      "step": "step-3",
+      "description": "**准确性**: 确保文档与代码一致"
+    },
+    {
+      "step": "step-4",
+      "description": "**实用性**: 提供实际可用的示例"
+    },
+    {
+      "step": "step-5",
+      "description": "**可维护性**: 文档应易于更新和维护"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "documentation-builder"
+  }
+}

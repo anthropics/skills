@@ -1,0 +1,48 @@
+{
+  "name": "documentation-builder",
+  "version": "1.0.0",
+  "description": "帮助生成技术文档，包括 API 文档、用户手册、开发指南、README 等。支持多种文档格式，确保文档清晰、完整、易于理解。",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "documentation-builder",
+      "name": "文档构建技能",
+      "description": "帮助生成技术文档，包括 API 文档、用户手册、开发指南、README 等。支持多种文档格式，确保文档清晰、完整、易于理解。",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**清晰性**",
+          "description": "**清晰性**: 文档应清晰易懂，避免歧义",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**完整性**",
+          "description": "**完整性**: 覆盖所有重要功能和场景",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**准确性**",
+          "description": "**准确性**: 确保文档与代码一致",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**实用性**",
+          "description": "**实用性**: 提供实际可用的示例",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**可维护性**",
+          "description": "**可维护性**: 文档应易于更新和维护",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

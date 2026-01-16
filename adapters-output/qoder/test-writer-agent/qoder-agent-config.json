@@ -1,0 +1,37 @@
+{
+  "name": "test-writer-agent",
+  "description": "帮助编写单元测试、集成测试和端到端测试。支持多种测试框架，生成测试用例、测试数据和测试报告。适用于确保代码质量和功能正确性。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "code-generation",
+    "testing"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**全面性**: 覆盖正常流程、边界情况和异常情况"
+    },
+    {
+      "step": "step-2",
+      "description": "**独立性**: 每个测试应独立运行，不依赖其他测试"
+    },
+    {
+      "step": "step-3",
+      "description": "**可重复性**: 测试结果应一致，不受环境影响"
+    },
+    {
+      "step": "step-4",
+      "description": "**清晰性**: 测试代码应清晰易懂"
+    },
+    {
+      "step": "step-5",
+      "description": "**快速性**: 测试应快速执行"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "test-writer"
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "id": "pptx",
+  "name": "PPTX creation, editing, and analysis",
+  "description": "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks",
+  "steps": [
+    {
+      "id": 1,
+      "name": "**Read theme file**",
+      "description": "**Read theme file**: Check `ppt/theme/theme1.xml` for colors (`<a:clrScheme>`) and fonts (`<a:fontScheme>`)",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "**Sample slide content**",
+      "description": "**Sample slide content**: Examine `ppt/slides/slide1.xml` for actual font usage (`<a:rPr>`) and colors",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "**Search for patterns**",
+      "description": "**Search for patterns**: Use grep to find color (`<a:solidFill>`, `<a:srgbClr>`) and font references across all XML files",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "**Consider the subject matter**",
+      "description": "**Consider the subject matter**: What is this presentation about? What tone, industry, or mood does it suggest?",
+      "type": "instruction"
+    },
+    {
+      "id": 5,
+      "name": "**Check for branding**",
+      "description": "**Check for branding**: If the user mentions a company/organization, consider their brand colors and identity",
+      "type": "instruction"
+    },
+    {
+      "id": 6,
+      "name": "**Match palette to content**",
+      "description": "**Match palette to content**: Select colors that reflect the subject",
+      "type": "instruction"
+    },
+    {
+      "id": 7,
+      "name": "**State your approach**",
+      "description": "**State your approach**: Explain your design choices before writing code",
+      "type": "instruction"
+    },
+    {
+      "id": 8,
+      "name": "**Classic Blue**",
+      "description": "**Classic Blue**: Deep navy (#1C2833), slate gray (#2E4053), silver (#AAB7B8), off-white (#F4F6F6)",
+      "type": "instruction"
+    },
+    {
+      "id": 9,
+      "name": "**Teal & Coral**",
+      "description": "**Teal & Coral**: Teal (#5EA8A7), deep teal (#277884), coral (#FE4447), white (#FFFFFF)",
+      "type": "instruction"
+    },
+    {
+      "id": 10,
+      "name": "**Bold Red**",
+      "description": "**Bold Red**: Red (#C0392B), bright red (#E74C3C), orange (#F39C12), yellow (#F1C40F), green (#2ECC71)",
+      "type": "instruction"
+    },
+    {
+      "id": 11,
+      "name": "**Warm Blush**",
+      "description": "**Warm Blush**: Mauve (#A49393), blush (#EED6D3), rose (#E8B4B8), cream (#FAF7F2)",
+      "type": "instruction"
+    },
+    {
+      "id": 12,
+      "name": "**Burgundy Luxury**",
+      "description": "**Burgundy Luxury**: Burgundy (#5D1D2E), crimson (#951233), rust (#C15937), gold (#997929)",
+      "type": "instruction"
+    },
+    {
+      "id": 13,
+      "name": "**Deep Purple & Emerald**",
+      "description": "**Deep Purple & Emerald**: Purple (#B165FB), dark blue (#181B24), emerald (#40695B), white (#FFFFFF)",
+      "type": "instruction"
+    },
+    {
+      "id": 14,
+      "name": "**Cream & Forest Green**",
+      "description": "**Cream & Forest Green**: Cream (#FFE1C7), forest green (#40695B), white (#FCFCFC)",
+      "type": "instruction"
+    },
+    {
+      "id": 15,
+      "name": "**Pink & Purple**",
+      "description": "**Pink & Purple**: Pink (#F8275B), coral (#FF574A), rose (#FF737D), purple (#3D2F68)",
+      "type": "instruction"
+    },
+    {
+      "id": 16,
+      "name": "**Lime & Plum**",
+      "description": "**Lime & Plum**: Lime (#C5DE82), plum (#7C3A5F), coral (#FD8C6E), blue-gray (#98ACB5)",
+      "type": "instruction"
+    },
+    {
+      "id": 17,
+      "name": "**Black & Gold**",
+      "description": "**Black & Gold**: Gold (#BF9A4A), black (#000000), cream (#F4F6F6)",
+      "type": "instruction"
+    },
+    {
+      "id": 18,
+      "name": "**Sage & Terracotta**",
+      "description": "**Sage & Terracotta**: Sage (#87A96B), terracotta (#E07A5F), cream (#F4F1DE), charcoal (#2C2C2C)",
+      "type": "instruction"
+    },
+    {
+      "id": 19,
+      "name": "**Charcoal & Red**",
+      "description": "**Charcoal & Red**: Charcoal (#292929), red (#E33737), light gray (#CCCBCB)",
+      "type": "instruction"
+    },
+    {
+      "id": 20,
+      "name": "**Vibrant Orange**",
+      "description": "**Vibrant Orange**: Orange (#F96D00), light gray (#F2F2F2), charcoal (#222831)",
+      "type": "instruction"
+    },
+    {
+      "id": 21,
+      "name": "**Forest Green**",
+      "description": "**Forest Green**: Black (#191A19), green (#4E9F3D), dark green (#1E5128), white (#FFFFFF)",
+      "type": "instruction"
+    },
+    {
+      "id": 22,
+      "name": "**Retro Rainbow**",
+      "description": "**Retro Rainbow**: Purple (#722880), pink (#D72D51), orange (#EB5C18), amber (#F08800), gold (#DEB600)",
+      "type": "instruction"
+    },
+    {
+      "id": 23,
+      "name": "**Vintage Earthy**",
+      "description": "**Vintage Earthy**: Mustard (#E3B448), sage (#CBD18F), forest green (#3A6B35), cream (#F4F1DE)",
+      "type": "instruction"
+    },
+    {
+      "id": 24,
+      "name": "**Coastal Rose**",
+      "description": "**Coastal Rose**: Old rose (#AD7670), beaver (#B49886), eggshell (#F3ECDC), ash gray (#BFD5BE)",
+      "type": "instruction"
+    },
+    {
+      "id": 25,
+      "name": "**Orange & Turquoise**",
+      "description": "**Orange & Turquoise**: Light orange (#FC993E), grayish turquoise (#667C6F), white (#FCFCFC)",
+      "type": "instruction"
+    },
+    {
+      "id": 26,
+      "name": "**MANDATORY - READ ENTIRE FILE**",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`html2pptx.md`](html2pptx.md) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with presentation creation.",
+      "type": "instruction"
+    },
+    {
+      "id": 27,
+      "name": "Create an HTML file for each slide with proper dimensions (e.g., 720pt × 405pt for 16",
+      "description": "Create an HTML file for each slide with proper dimensions (e.g., 720pt × 405pt for 16:9)",
+      "type": "instruction"
+    },
+    {
+      "id": 28,
+      "name": "Create and run a JavaScript file using the [`html2pptx.js`](scripts/html2pptx.js) library to convert HTML slides to PowerPoint and save the presentation",
+      "description": "Create and run a JavaScript file using the [`html2pptx.js`](scripts/html2pptx.js) library to convert HTML slides to PowerPoint and save the presentation",
+      "type": "instruction"
+    },
+    {
+      "id": 29,
+      "name": "**Visual validation**",
+      "description": "**Visual validation**: Generate thumbnails and inspect for layout issues",
+      "type": "instruction"
+    },
+    {
+      "id": 30,
+      "name": "**MANDATORY - READ ENTIRE FILE**",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.",
+      "type": "instruction"
+    },
+    {
+      "id": 31,
+      "name": "Unpack the presentation",
+      "description": "Unpack the presentation: `python ooxml/scripts/unpack.py <office_file> <output_dir>`",
+      "type": "instruction"
+    },
+    {
+      "id": 32,
+      "name": "Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)",
+      "description": "Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)",
+      "type": "instruction"
+    },
+    {
+      "id": 33,
+      "name": "**CRITICAL**",
+      "description": "**CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py <dir> --original <file>`",
+      "type": "instruction"
+    },
+    {
+      "id": 34,
+      "name": "Pack the final presentation",
+      "description": "Pack the final presentation: `python ooxml/scripts/pack.py <input_directory> <office_file>`",
+      "type": "instruction"
+    },
+    {
+      "id": 35,
+      "name": "**Extract template text AND create visual thumbnail grid**",
+      "description": "**Extract template text AND create visual thumbnail grid**:",
+      "type": "instruction"
+    },
+    {
+      "id": 36,
+      "name": "**Analyze template and save inventory to a file**",
+      "description": "**Analyze template and save inventory to a file**:",
+      "type": "instruction"
+    },
+    {
+      "id": 37,
+      "name": "**Create presentation outline based on template inventory**",
+      "description": "**Create presentation outline based on template inventory**:",
+      "type": "instruction"
+    },
+    {
+      "id": 38,
+      "name": "**Duplicate, reorder, and delete slides using `rearrange.py`**",
+      "description": "**Duplicate, reorder, and delete slides using `rearrange.py`**:",
+      "type": "instruction"
+    },
+    {
+      "id": 39,
+      "name": "**Extract ALL text using the `inventory.py` script**",
+      "description": "**Extract ALL text using the `inventory.py` script**:",
+      "type": "instruction"
+    },
+    {
+      "id": 40,
+      "name": "**Generate replacement text and save the data to a JSON file**",
+      "description": "**Generate replacement text and save the data to a JSON file**",
+      "type": "instruction"
+    },
+    {
+      "id": 41,
+      "name": "**Apply replacements using the `replace.py` script**",
+      "description": "**Apply replacements using the `replace.py` script**",
+      "type": "instruction"
+    },
+    {
+      "id": 42,
+      "name": "**Convert PPTX to PDF**",
+      "description": "**Convert PPTX to PDF**:",
+      "type": "instruction"
+    },
+    {
+      "id": 43,
+      "name": "**Convert PDF pages to JPEG images**",
+      "description": "**Convert PDF pages to JPEG images**:",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

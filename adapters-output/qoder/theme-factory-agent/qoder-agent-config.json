@@ -1,0 +1,88 @@
+{
+  "name": "theme-factory-agent",
+  "description": "Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fonts that you can apply to any artifact that has been creating, or can generate a new theme on-the-fly.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "theme-factory"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Show the theme showcase**: Display the `theme-showcase.pdf` file to allow users to see all available themes visually. Do not make any modifications to it; simply show the file for viewing."
+    },
+    {
+      "step": "step-2",
+      "description": "**Ask for their choice**: Ask which theme to apply to the deck"
+    },
+    {
+      "step": "step-3",
+      "description": "**Wait for selection**: Get explicit confirmation about the chosen theme"
+    },
+    {
+      "step": "step-4",
+      "description": "**Apply the theme**: Once a theme has been chosen, apply the selected theme's colors and fonts to the deck/artifact"
+    },
+    {
+      "step": "step-1",
+      "description": "**Ocean Depths** - Professional and calming maritime theme"
+    },
+    {
+      "step": "step-2",
+      "description": "**Sunset Boulevard** - Warm and vibrant sunset colors"
+    },
+    {
+      "step": "step-3",
+      "description": "**Forest Canopy** - Natural and grounded earth tones"
+    },
+    {
+      "step": "step-4",
+      "description": "**Modern Minimalist** - Clean and contemporary grayscale"
+    },
+    {
+      "step": "step-5",
+      "description": "**Golden Hour** - Rich and warm autumnal palette"
+    },
+    {
+      "step": "step-6",
+      "description": "**Arctic Frost** - Cool and crisp winter-inspired theme"
+    },
+    {
+      "step": "step-7",
+      "description": "**Desert Rose** - Soft and sophisticated dusty tones"
+    },
+    {
+      "step": "step-8",
+      "description": "**Tech Innovation** - Bold and modern tech aesthetic"
+    },
+    {
+      "step": "step-9",
+      "description": "**Botanical Garden** - Fresh and organic garden colors"
+    },
+    {
+      "step": "step-10",
+      "description": "**Midnight Galaxy** - Dramatic and cosmic deep tones"
+    },
+    {
+      "step": "step-1",
+      "description": "Read the corresponding theme file from the `themes/` directory"
+    },
+    {
+      "step": "step-2",
+      "description": "Apply the specified colors and fonts consistently throughout the deck"
+    },
+    {
+      "step": "step-3",
+      "description": "Ensure proper contrast and readability"
+    },
+    {
+      "step": "step-4",
+      "description": "Maintain the theme's visual identity across all slides"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "theme-factory"
+  }
+}

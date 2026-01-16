@@ -1,0 +1,48 @@
+{
+  "name": "teaching-resource-generator",
+  "version": "1.0.0",
+  "description": "帮助生成各种教学资源，包括课件、练习题、教学案例、学习指南等。适用于快速创建高质量的教学材料。",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "teaching-resource-generator",
+      "name": "教学资源生成技能",
+      "description": "帮助生成各种教学资源，包括课件、练习题、教学案例、学习指南等。适用于快速创建高质量的教学材料。",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**内容规划**",
+          "description": "**内容规划**: 确定课件主题和结构",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**内容生成**",
+          "description": "**内容生成**: 创建每张幻灯片的内容",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**视觉设计**",
+          "description": "**视觉设计**: 添加图表、图片和视觉元素",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**互动设计**",
+          "description": "**互动设计**: 设计互动环节和讨论问题",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**优化完善**",
+          "description": "**优化完善**: 检查逻辑和视觉效果",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

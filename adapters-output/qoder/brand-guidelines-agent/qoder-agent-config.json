@@ -1,0 +1,28 @@
+{
+  "name": "brand-guidelines-agent",
+  "description": "Applies Anthropic's official brand colors and typography to any sort of artifact that may benefit from having Anthropic's look-and-feel. Use it when brand colors or style guidelines, visual formatting, or company design standards apply.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "brand-guidelines"
+  ],
+  "workflow": [
+    {
+      "step": "analyze",
+      "description": "Analyze requirements"
+    },
+    {
+      "step": "execute",
+      "description": "Execute skill task"
+    },
+    {
+      "step": "output",
+      "description": "Generate output"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "brand-guidelines"
+  }
+}

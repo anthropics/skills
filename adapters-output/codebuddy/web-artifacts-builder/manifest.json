@@ -1,0 +1,48 @@
+{
+  "name": "web-artifacts-builder",
+  "version": "1.0.0",
+  "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "web-artifacts-builder",
+      "name": "Web Artifacts Builder",
+      "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Initialize the frontend repo using `scripts/init-artifact.sh`",
+          "description": "Initialize the frontend repo using `scripts/init-artifact.sh`",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "Develop your artifact by editing the generated code",
+          "description": "Develop your artifact by editing the generated code",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`",
+          "description": "Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "Display artifact to user",
+          "description": "Display artifact to user",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "(Optional) Test the artifact",
+          "description": "(Optional) Test the artifact",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

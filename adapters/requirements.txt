@@ -1,0 +1,7 @@
+# Requirements for platform adapters
+# Note: yaml is optional - scripts will work without it using simple parsing
+
+# Optional: For better YAML parsing (recommended)
+# pyyaml>=6.0
+
+# All scripts work without external dependencies using built-in Python libraries

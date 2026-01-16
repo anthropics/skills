@@ -1,0 +1,15 @@
+{
+  "name": "documentation-builder",
+  "version": "1.0.0",
+  "description": "帮助生成技术文档，包括 API 文档、用户手册、开发指南、README 等。支持多种文档格式，确保文档清晰、完整、易于理解。",
+  "author": "Teaching AI",
+  "type": "skill",
+  "skills": [
+    {
+      "name": "documentation-builder",
+      "description": "帮助生成技术文档，包括 API 文档、用户手册、开发指南、README 等。支持多种文档格式，确保文档清晰、完整、易于理解。",
+      "instructions": "SKILL.md",
+      "resources": []
+    }
+  ]
+}

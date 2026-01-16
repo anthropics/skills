@@ -1,0 +1,44 @@
+{
+  "name": "webapp-testing-agent",
+  "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "testing"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "Navigate and wait for networkidle"
+    },
+    {
+      "step": "step-2",
+      "description": "Take screenshot or inspect DOM"
+    },
+    {
+      "step": "step-3",
+      "description": "Identify selectors from rendered state"
+    },
+    {
+      "step": "step-4",
+      "description": "Execute actions with discovered selectors"
+    },
+    {
+      "step": "step-1",
+      "description": "**Inspect rendered DOM**:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Identify selectors** from inspection results"
+    },
+    {
+      "step": "step-3",
+      "description": "**Execute actions** using discovered selectors"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "webapp-testing"
+  }
+}

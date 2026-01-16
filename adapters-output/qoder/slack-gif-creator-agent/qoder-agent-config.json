@@ -1,0 +1,36 @@
+{
+  "name": "slack-gif-creator-agent",
+  "description": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like \"make me a GIF of X doing Y for Slack.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "slack-gif-creator"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Fewer frames** - Lower FPS (10 instead of 20) or shorter duration"
+    },
+    {
+      "step": "step-2",
+      "description": "**Fewer colors** - `num_colors=48` instead of 128"
+    },
+    {
+      "step": "step-3",
+      "description": "**Smaller dimensions** - 128x128 instead of 480x480"
+    },
+    {
+      "step": "step-4",
+      "description": "**Remove duplicates** - `remove_duplicates=True` in save()"
+    },
+    {
+      "step": "step-5",
+      "description": "**Emoji mode** - `optimize_for_emoji=True` auto-optimizes"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "slack-gif-creator"
+  }
+}

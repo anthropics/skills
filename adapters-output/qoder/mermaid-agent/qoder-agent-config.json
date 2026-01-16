@@ -1,0 +1,40 @@
+{
+  "name": "mermaid-agent",
+  "description": "A comprehensive skill for creating all types of Mermaid diagrams including flowcharts, sequence diagrams, class diagrams, state diagrams, entity relationship diagrams, user journey diagrams, Gantt charts, pie charts, quadrant charts, requirement diagrams, Git graphs, C4 diagrams, mindmaps, timelines, ZenUML, Sankey diagrams, XY charts, block diagrams, packet diagrams, Kanban boards, architecture diagrams, radar charts, and treemaps. Use this skill whenever the user requests to create, draw, or visualize any diagram, flowchart, or structured chart using Mermaid syntax.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "mermaid"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Identify the diagram type** from the user's request:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Load the appropriate example file** from the `examples/` directory:"
+    },
+    {
+      "step": "step-3",
+      "description": "**Follow the specific instructions** in that example file for syntax, structure, and best practices"
+    },
+    {
+      "step": "step-4",
+      "description": "**Generate the Mermaid code** wrapped in a code block:"
+    },
+    {
+      "step": "step-5",
+      "description": "**Include styling and configuration** when needed:"
+    },
+    {
+      "step": "step-6",
+      "description": "**Validate the syntax**:"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "mermaid"
+  }
+}

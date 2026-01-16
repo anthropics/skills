@@ -1,0 +1,36 @@
+{
+  "name": "learning-assessor-agent",
+  "description": "帮助创建学习评估工具，包括测验题目、评估标准、评分 rubric 和学习分析。适用于评估学习效果、设计考试题目或分析学习数据。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "learning-assessor"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**目标对齐**: 每道题目都应对应明确的学习目标"
+    },
+    {
+      "step": "step-2",
+      "description": "**难度梯度**: 题目应覆盖不同认知层次（记忆、理解、应用、分析、评价、创造）"
+    },
+    {
+      "step": "step-3",
+      "description": "**清晰明确**: 题目表述清晰，避免歧义"
+    },
+    {
+      "step": "step-4",
+      "description": "**公平性**: 确保题目对所有学习者公平"
+    },
+    {
+      "step": "step-5",
+      "description": "**有效性**: 题目应能有效测量目标知识和技能"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "learning-assessor"
+  }
+}

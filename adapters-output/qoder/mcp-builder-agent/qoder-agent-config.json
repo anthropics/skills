@@ -1,0 +1,32 @@
+{
+  "name": "mcp-builder-agent",
+  "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "mcp-builder"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Tool Inspection**: List available tools and understand their capabilities"
+    },
+    {
+      "step": "step-2",
+      "description": "**Content Exploration**: Use READ-ONLY operations to explore available data"
+    },
+    {
+      "step": "step-3",
+      "description": "**Question Generation**: Create 10 complex, realistic questions"
+    },
+    {
+      "step": "step-4",
+      "description": "**Answer Verification**: Solve each question yourself to verify answers"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "mcp-builder"
+  }
+}

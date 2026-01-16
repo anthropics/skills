@@ -1,0 +1,36 @@
+{
+  "name": "teaching-resource-generator-agent",
+  "description": "帮助生成各种教学资源，包括课件、练习题、教学案例、学习指南等。适用于快速创建高质量的教学材料。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "teaching-resource-generator"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**内容规划**: 确定课件主题和结构"
+    },
+    {
+      "step": "step-2",
+      "description": "**内容生成**: 创建每张幻灯片的内容"
+    },
+    {
+      "step": "step-3",
+      "description": "**视觉设计**: 添加图表、图片和视觉元素"
+    },
+    {
+      "step": "step-4",
+      "description": "**互动设计**: 设计互动环节和讨论问题"
+    },
+    {
+      "step": "step-5",
+      "description": "**优化完善**: 检查逻辑和视觉效果"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "teaching-resource-generator"
+  }
+}

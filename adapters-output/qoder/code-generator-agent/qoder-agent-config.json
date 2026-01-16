@@ -1,0 +1,36 @@
+{
+  "name": "code-generator-agent",
+  "description": "帮助生成高质量的代码，包括函数、类、模块和完整项目。支持多种编程语言，遵循最佳实践和设计模式。适用于快速开发、代码示例生成或教学演示。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "code-generation"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**清晰性**: 代码应清晰易懂，命名规范"
+    },
+    {
+      "step": "step-2",
+      "description": "**可维护性**: 结构良好，易于修改和扩展"
+    },
+    {
+      "step": "step-3",
+      "description": "**健壮性**: 包含错误处理和边界检查"
+    },
+    {
+      "step": "step-4",
+      "description": "**文档化**: 提供完整的注释和文档"
+    },
+    {
+      "step": "step-5",
+      "description": "**测试性**: 代码应易于测试"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "code-generator"
+  }
+}

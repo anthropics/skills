@@ -1,0 +1,32 @@
+{
+  "name": "course-designer-agent",
+  "description": "帮助设计和规划课程内容，包括课程大纲、学习目标、教学计划和评估方案。适用于教育工作者、培训师或需要创建结构化学习内容的场景。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "course-designer"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**需求分析**"
+    },
+    {
+      "step": "step-2",
+      "description": "**内容规划**"
+    },
+    {
+      "step": "step-3",
+      "description": "**活动设计**"
+    },
+    {
+      "step": "step-4",
+      "description": "**评估设计**"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "course-designer"
+  }
+}

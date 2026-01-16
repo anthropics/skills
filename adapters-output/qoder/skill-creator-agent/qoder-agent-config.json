@@ -1,0 +1,124 @@
+{
+  "name": "skill-creator-agent",
+  "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "skill-creator"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "Specialized workflows - Multi-step procedures for specific domains"
+    },
+    {
+      "step": "step-2",
+      "description": "Tool integrations - Instructions for working with specific file formats or APIs"
+    },
+    {
+      "step": "step-3",
+      "description": "Domain expertise - Company-specific knowledge, schemas, business logic"
+    },
+    {
+      "step": "step-4",
+      "description": "Bundled resources - Scripts, references, and assets for complex and repetitive tasks"
+    },
+    {
+      "step": "step-1",
+      "description": "**Metadata (name + description)** - Always in context (~100 words)"
+    },
+    {
+      "step": "step-2",
+      "description": "**SKILL.md body** - When skill triggers (<5k words)"
+    },
+    {
+      "step": "step-3",
+      "description": "**Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)"
+    },
+    {
+      "step": "step-1",
+      "description": "Understand the skill with concrete examples"
+    },
+    {
+      "step": "step-2",
+      "description": "Plan reusable skill contents (scripts, references, assets)"
+    },
+    {
+      "step": "step-3",
+      "description": "Initialize the skill (run init_skill.py)"
+    },
+    {
+      "step": "step-4",
+      "description": "Edit the skill (implement resources and write SKILL.md)"
+    },
+    {
+      "step": "step-5",
+      "description": "Package the skill (run package_skill.py)"
+    },
+    {
+      "step": "step-6",
+      "description": "Iterate based on real usage"
+    },
+    {
+      "step": "step-1",
+      "description": "Considering how to execute on the example from scratch"
+    },
+    {
+      "step": "step-2",
+      "description": "Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly"
+    },
+    {
+      "step": "step-1",
+      "description": "Rotating a PDF requires re-writing the same code each time"
+    },
+    {
+      "step": "step-2",
+      "description": "A `scripts/rotate_pdf.py` script would be helpful to store in the skill"
+    },
+    {
+      "step": "step-1",
+      "description": "Writing a frontend webapp requires the same boilerplate HTML/React each time"
+    },
+    {
+      "step": "step-2",
+      "description": "An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill"
+    },
+    {
+      "step": "step-1",
+      "description": "Querying BigQuery requires re-discovering the table schemas and relationships each time"
+    },
+    {
+      "step": "step-2",
+      "description": "A `references/schema.md` file documenting the table schemas would be helpful to store in the skill"
+    },
+    {
+      "step": "step-1",
+      "description": "**Validate** the skill automatically, checking:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension."
+    },
+    {
+      "step": "step-1",
+      "description": "Use the skill on real tasks"
+    },
+    {
+      "step": "step-2",
+      "description": "Notice struggles or inefficiencies"
+    },
+    {
+      "step": "step-3",
+      "description": "Identify how SKILL.md or bundled resources should be updated"
+    },
+    {
+      "step": "step-4",
+      "description": "Implement changes and test again"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "skill-creator"
+  }
+}

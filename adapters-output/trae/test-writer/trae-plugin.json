@@ -1,0 +1,15 @@
+{
+  "name": "test-writer",
+  "version": "1.0.0",
+  "description": "帮助编写单元测试、集成测试和端到端测试。支持多种测试框架，生成测试用例、测试数据和测试报告。适用于确保代码质量和功能正确性。",
+  "author": "Teaching AI",
+  "type": "skill",
+  "skills": [
+    {
+      "name": "test-writer",
+      "description": "帮助编写单元测试、集成测试和端到端测试。支持多种测试框架，生成测试用例、测试数据和测试报告。适用于确保代码质量和功能正确性。",
+      "instructions": "SKILL.md",
+      "resources": []
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "id": "skill-creator",
+  "name": "Skill Creator",
+  "description": "Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.",
+  "steps": [
+    {
+      "id": 1,
+      "name": "Specialized workflows - Multi-step procedures for specific domains",
+      "description": "Specialized workflows - Multi-step procedures for specific domains",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "Tool integrations - Instructions for working with specific file formats or APIs",
+      "description": "Tool integrations - Instructions for working with specific file formats or APIs",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "Domain expertise - Company-specific knowledge, schemas, business logic",
+      "description": "Domain expertise - Company-specific knowledge, schemas, business logic",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "Bundled resources - Scripts, references, and assets for complex and repetitive tasks",
+      "description": "Bundled resources - Scripts, references, and assets for complex and repetitive tasks",
+      "type": "instruction"
+    },
+    {
+      "id": 5,
+      "name": "**Metadata (name + description)** - Always in context (~100 words)",
+      "description": "**Metadata (name + description)** - Always in context (~100 words)",
+      "type": "instruction"
+    },
+    {
+      "id": 6,
+      "name": "**SKILL.md body** - When skill triggers (<5k words)",
+      "description": "**SKILL.md body** - When skill triggers (<5k words)",
+      "type": "instruction"
+    },
+    {
+      "id": 7,
+      "name": "**Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)",
+      "description": "**Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)",
+      "type": "instruction"
+    },
+    {
+      "id": 8,
+      "name": "Understand the skill with concrete examples",
+      "description": "Understand the skill with concrete examples",
+      "type": "instruction"
+    },
+    {
+      "id": 9,
+      "name": "Plan reusable skill contents (scripts, references, assets)",
+      "description": "Plan reusable skill contents (scripts, references, assets)",
+      "type": "instruction"
+    },
+    {
+      "id": 10,
+      "name": "Initialize the skill (run init_skill.py)",
+      "description": "Initialize the skill (run init_skill.py)",
+      "type": "instruction"
+    },
+    {
+      "id": 11,
+      "name": "Edit the skill (implement resources and write SKILL.md)",
+      "description": "Edit the skill (implement resources and write SKILL.md)",
+      "type": "instruction"
+    },
+    {
+      "id": 12,
+      "name": "Package the skill (run package_skill.py)",
+      "description": "Package the skill (run package_skill.py)",
+      "type": "instruction"
+    },
+    {
+      "id": 13,
+      "name": "Iterate based on real usage",
+      "description": "Iterate based on real usage",
+      "type": "instruction"
+    },
+    {
+      "id": 14,
+      "name": "Considering how to execute on the example from scratch",
+      "description": "Considering how to execute on the example from scratch",
+      "type": "instruction"
+    },
+    {
+      "id": 15,
+      "name": "Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly",
+      "description": "Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly",
+      "type": "instruction"
+    },
+    {
+      "id": 16,
+      "name": "Rotating a PDF requires re-writing the same code each time",
+      "description": "Rotating a PDF requires re-writing the same code each time",
+      "type": "instruction"
+    },
+    {
+      "id": 17,
+      "name": "A `scripts/rotate_pdf.py` script would be helpful to store in the skill",
+      "description": "A `scripts/rotate_pdf.py` script would be helpful to store in the skill",
+      "type": "instruction"
+    },
+    {
+      "id": 18,
+      "name": "Writing a frontend webapp requires the same boilerplate HTML/React each time",
+      "description": "Writing a frontend webapp requires the same boilerplate HTML/React each time",
+      "type": "instruction"
+    },
+    {
+      "id": 19,
+      "name": "An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill",
+      "description": "An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill",
+      "type": "instruction"
+    },
+    {
+      "id": 20,
+      "name": "Querying BigQuery requires re-discovering the table schemas and relationships each time",
+      "description": "Querying BigQuery requires re-discovering the table schemas and relationships each time",
+      "type": "instruction"
+    },
+    {
+      "id": 21,
+      "name": "A `references/schema.md` file documenting the table schemas would be helpful to store in the skill",
+      "description": "A `references/schema.md` file documenting the table schemas would be helpful to store in the skill",
+      "type": "instruction"
+    },
+    {
+      "id": 22,
+      "name": "**Validate** the skill automatically, checking",
+      "description": "**Validate** the skill automatically, checking:",
+      "type": "instruction"
+    },
+    {
+      "id": 23,
+      "name": "**Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.",
+      "description": "**Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.",
+      "type": "instruction"
+    },
+    {
+      "id": 24,
+      "name": "Use the skill on real tasks",
+      "description": "Use the skill on real tasks",
+      "type": "instruction"
+    },
+    {
+      "id": 25,
+      "name": "Notice struggles or inefficiencies",
+      "description": "Notice struggles or inefficiencies",
+      "type": "instruction"
+    },
+    {
+      "id": 26,
+      "name": "Identify how SKILL.md or bundled resources should be updated",
+      "description": "Identify how SKILL.md or bundled resources should be updated",
+      "type": "instruction"
+    },
+    {
+      "id": 27,
+      "name": "Implement changes and test again",
+      "description": "Implement changes and test again",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

@@ -1,0 +1,60 @@
+{
+  "name": "webapp-testing",
+  "version": "1.0.0",
+  "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "webapp-testing",
+      "name": "Web Application Testing",
+      "description": "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Navigate and wait for networkidle",
+          "description": "Navigate and wait for networkidle",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "Take screenshot or inspect DOM",
+          "description": "Take screenshot or inspect DOM",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "Identify selectors from rendered state",
+          "description": "Identify selectors from rendered state",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "Execute actions with discovered selectors",
+          "description": "Execute actions with discovered selectors",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**Inspect rendered DOM**",
+          "description": "**Inspect rendered DOM**:",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "**Identify selectors** from inspection results",
+          "description": "**Identify selectors** from inspection results",
+          "type": "instruction"
+        },
+        {
+          "id": 7,
+          "name": "**Execute actions** using discovered selectors",
+          "description": "**Execute actions** using discovered selectors",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

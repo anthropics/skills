@@ -1,0 +1,120 @@
+{
+  "name": "algorithmic-art",
+  "version": "1.0.0",
+  "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "algorithmic-art",
+      "name": "algorithmic-art",
+      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "Algorithmic Philosophy Creation (.md file)",
+          "description": "Algorithmic Philosophy Creation (.md file)",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "Express by creating p5.js generative art (.html + .js files)",
+          "description": "Express by creating p5.js generative art (.html + .js files)",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**Read** `templates/viewer.html` using the Read tool",
+          "description": "**Read** `templates/viewer.html` using the Read tool",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**Study** the exact structure, styling, and Anthropic branding",
+          "description": "**Study** the exact structure, styling, and Anthropic branding",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**Use that file as the LITERAL STARTING POINT** - not just inspiration",
+          "description": "**Use that file as the LITERAL STARTING POINT** - not just inspiration",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "**Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)",
+          "description": "**Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)",
+          "type": "instruction"
+        },
+        {
+          "id": 7,
+          "name": "**Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)",
+          "description": "**Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)",
+          "type": "instruction"
+        },
+        {
+          "id": 8,
+          "name": "**Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic",
+          "description": "**Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic",
+          "type": "instruction"
+        },
+        {
+          "id": 9,
+          "name": "**Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)",
+          "description": "**Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)",
+          "type": "instruction"
+        },
+        {
+          "id": 10,
+          "name": "**In claude.ai**",
+          "description": "**In claude.ai**: Displayed as an interactive artifact - runs instantly",
+          "type": "instruction"
+        },
+        {
+          "id": 11,
+          "name": "**As a file**",
+          "description": "**As a file**: Save and open in any browser - no server needed",
+          "type": "instruction"
+        },
+        {
+          "id": 12,
+          "name": "**Sharing**",
+          "description": "**Sharing**: Send the HTML file - it's completely self-contained",
+          "type": "instruction"
+        },
+        {
+          "id": 13,
+          "name": "**Interpret the user's intent** - What aesthetic is being sought?",
+          "description": "**Interpret the user's intent** - What aesthetic is being sought?",
+          "type": "instruction"
+        },
+        {
+          "id": 14,
+          "name": "**Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach",
+          "description": "**Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach",
+          "type": "instruction"
+        },
+        {
+          "id": 15,
+          "name": "**Implement it in code** - Build the algorithm that expresses this philosophy",
+          "description": "**Implement it in code** - Build the algorithm that expresses this philosophy",
+          "type": "instruction"
+        },
+        {
+          "id": 16,
+          "name": "**Design appropriate parameters** - What should be tunable?",
+          "description": "**Design appropriate parameters** - What should be tunable?",
+          "type": "instruction"
+        },
+        {
+          "id": 17,
+          "name": "**Build matching UI controls** - Sliders/inputs for those parameters",
+          "description": "**Build matching UI controls** - Sliders/inputs for those parameters",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

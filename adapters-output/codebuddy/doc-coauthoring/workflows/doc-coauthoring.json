@@ -1,0 +1,123 @@
+{
+  "id": "doc-coauthoring",
+  "name": "Doc Co-Authoring Workflow",
+  "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.",
+  "steps": [
+    {
+      "id": 1,
+      "name": "**Context Gathering**",
+      "description": "**Context Gathering**: User provides all relevant context while Claude asks clarifying questions",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "**Refinement & Structure**",
+      "description": "**Refinement & Structure**: Iteratively build each section through brainstorming and editing",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "**Reader Testing**",
+      "description": "**Reader Testing**: Test the doc with a fresh Claude (no context) to catch blind spots before others read it",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "What type of document is this? (e.g., technical spec, decision doc, proposal)",
+      "description": "What type of document is this? (e.g., technical spec, decision doc, proposal)",
+      "type": "instruction"
+    },
+    {
+      "id": 5,
+      "name": "Who's the primary audience?",
+      "description": "Who's the primary audience?",
+      "type": "instruction"
+    },
+    {
+      "id": 6,
+      "name": "What's the desired impact when someone reads this?",
+      "description": "What's the desired impact when someone reads this?",
+      "type": "instruction"
+    },
+    {
+      "id": 7,
+      "name": "Is there a template or specific format to follow?",
+      "description": "Is there a template or specific format to follow?",
+      "type": "instruction"
+    },
+    {
+      "id": 8,
+      "name": "Any other constraints or context to know?",
+      "description": "Any other constraints or context to know?",
+      "type": "instruction"
+    },
+    {
+      "id": 9,
+      "name": "Clarifying questions will be asked about what to include",
+      "description": "Clarifying questions will be asked about what to include",
+      "type": "instruction"
+    },
+    {
+      "id": 10,
+      "name": "5-20 options will be brainstormed",
+      "description": "5-20 options will be brainstormed",
+      "type": "instruction"
+    },
+    {
+      "id": 11,
+      "name": "User will indicate what to keep/remove/combine",
+      "description": "User will indicate what to keep/remove/combine",
+      "type": "instruction"
+    },
+    {
+      "id": 12,
+      "name": "The section will be drafted",
+      "description": "The section will be drafted",
+      "type": "instruction"
+    },
+    {
+      "id": 13,
+      "name": "It will be refined through surgical edits",
+      "description": "It will be refined through surgical edits",
+      "type": "instruction"
+    },
+    {
+      "id": 14,
+      "name": "Open a fresh Claude conversation",
+      "description": "Open a fresh Claude conversation: https://claude.ai",
+      "type": "instruction"
+    },
+    {
+      "id": 15,
+      "name": "Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)",
+      "description": "Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)",
+      "type": "instruction"
+    },
+    {
+      "id": 16,
+      "name": "Ask Reader Claude the generated questions",
+      "description": "Ask Reader Claude the generated questions",
+      "type": "instruction"
+    },
+    {
+      "id": 17,
+      "name": "Recommend they do a final read-through themselves - they own this document and are responsible for its quality",
+      "description": "Recommend they do a final read-through themselves - they own this document and are responsible for its quality",
+      "type": "instruction"
+    },
+    {
+      "id": 18,
+      "name": "Suggest double-checking any facts, links, or technical details",
+      "description": "Suggest double-checking any facts, links, or technical details",
+      "type": "instruction"
+    },
+    {
+      "id": 19,
+      "name": "Ask them to verify it achieves the impact they wanted",
+      "description": "Ask them to verify it achieves the impact they wanted",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

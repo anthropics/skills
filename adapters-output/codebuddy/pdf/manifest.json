@@ -1,0 +1,36 @@
+{
+  "name": "pdf",
+  "version": "1.0.0",
+  "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "pdf",
+      "name": "PDF Processing Guide",
+      "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "analyze",
+          "description": "Analyze requirements",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "execute",
+          "description": "Execute skill task",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "output",
+          "description": "Generate output",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

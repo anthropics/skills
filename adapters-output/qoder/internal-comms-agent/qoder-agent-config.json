@@ -1,0 +1,28 @@
+{
+  "name": "internal-comms-agent",
+  "description": "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever asked to write some sort of internal communications (status reports, leadership updates, 3P updates, company newsletters, FAQs, incident reports, project updates, etc.).",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "internal-comms"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Identify the communication type** from the request"
+    },
+    {
+      "step": "step-2",
+      "description": "**Load the appropriate guideline file** from the `examples/` directory:"
+    },
+    {
+      "step": "step-3",
+      "description": "**Follow the specific instructions** in that file for formatting, tone, and content gathering"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "internal-comms"
+  }
+}

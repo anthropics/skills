@@ -1,0 +1,48 @@
+{
+  "name": "test-writer",
+  "version": "1.0.0",
+  "description": "帮助编写单元测试、集成测试和端到端测试。支持多种测试框架，生成测试用例、测试数据和测试报告。适用于确保代码质量和功能正确性。",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "test-writer",
+      "name": "测试编写技能",
+      "description": "帮助编写单元测试、集成测试和端到端测试。支持多种测试框架，生成测试用例、测试数据和测试报告。适用于确保代码质量和功能正确性。",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**全面性**",
+          "description": "**全面性**: 覆盖正常流程、边界情况和异常情况",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**独立性**",
+          "description": "**独立性**: 每个测试应独立运行，不依赖其他测试",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**可重复性**",
+          "description": "**可重复性**: 测试结果应一致，不受环境影响",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**清晰性**",
+          "description": "**清晰性**: 测试代码应清晰易懂",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**快速性**",
+          "description": "**快速性**: 测试应快速执行",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

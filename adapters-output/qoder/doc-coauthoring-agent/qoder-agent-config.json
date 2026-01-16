@@ -1,0 +1,92 @@
+{
+  "name": "doc-coauthoring-agent",
+  "description": "Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "doc-coauthoring"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**Context Gathering**: User provides all relevant context while Claude asks clarifying questions"
+    },
+    {
+      "step": "step-2",
+      "description": "**Refinement & Structure**: Iteratively build each section through brainstorming and editing"
+    },
+    {
+      "step": "step-3",
+      "description": "**Reader Testing**: Test the doc with a fresh Claude (no context) to catch blind spots before others read it"
+    },
+    {
+      "step": "step-1",
+      "description": "What type of document is this? (e.g., technical spec, decision doc, proposal)"
+    },
+    {
+      "step": "step-2",
+      "description": "Who's the primary audience?"
+    },
+    {
+      "step": "step-3",
+      "description": "What's the desired impact when someone reads this?"
+    },
+    {
+      "step": "step-4",
+      "description": "Is there a template or specific format to follow?"
+    },
+    {
+      "step": "step-5",
+      "description": "Any other constraints or context to know?"
+    },
+    {
+      "step": "step-1",
+      "description": "Clarifying questions will be asked about what to include"
+    },
+    {
+      "step": "step-2",
+      "description": "5-20 options will be brainstormed"
+    },
+    {
+      "step": "step-3",
+      "description": "User will indicate what to keep/remove/combine"
+    },
+    {
+      "step": "step-4",
+      "description": "The section will be drafted"
+    },
+    {
+      "step": "step-5",
+      "description": "It will be refined through surgical edits"
+    },
+    {
+      "step": "step-1",
+      "description": "Open a fresh Claude conversation: https://claude.ai"
+    },
+    {
+      "step": "step-2",
+      "description": "Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)"
+    },
+    {
+      "step": "step-3",
+      "description": "Ask Reader Claude the generated questions"
+    },
+    {
+      "step": "step-1",
+      "description": "Recommend they do a final read-through themselves - they own this document and are responsible for its quality"
+    },
+    {
+      "step": "step-2",
+      "description": "Suggest double-checking any facts, links, or technical details"
+    },
+    {
+      "step": "step-3",
+      "description": "Ask them to verify it achieves the impact they wanted"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "doc-coauthoring"
+  }
+}

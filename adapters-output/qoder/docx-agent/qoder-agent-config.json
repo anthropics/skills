@@ -1,0 +1,76 @@
+{
+  "name": "docx-agent",
+  "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "docx"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`docx-js.md`](docx-js.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation."
+    },
+    {
+      "step": "step-2",
+      "description": "Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)"
+    },
+    {
+      "step": "step-3",
+      "description": "Export as .docx using Packer.toBuffer()"
+    },
+    {
+      "step": "step-1",
+      "description": "**MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files."
+    },
+    {
+      "step": "step-2",
+      "description": "Unpack the document: `python ooxml/scripts/unpack.py <office_file> <output_directory>`"
+    },
+    {
+      "step": "step-3",
+      "description": "Create and run a Python script using the Document library (see \"Document Library\" section in ooxml.md)"
+    },
+    {
+      "step": "step-4",
+      "description": "Pack the final document: `python ooxml/scripts/pack.py <input_directory> <office_file>`"
+    },
+    {
+      "step": "step-1",
+      "description": "**Get markdown representation**: Convert document to markdown with tracked changes preserved:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Identify and group changes**: Review the document and identify ALL changes needed, organizing them into logical batches:"
+    },
+    {
+      "step": "step-3",
+      "description": "**Read documentation and unpack**:"
+    },
+    {
+      "step": "step-4",
+      "description": "**Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:"
+    },
+    {
+      "step": "step-5",
+      "description": "**Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:"
+    },
+    {
+      "step": "step-6",
+      "description": "**Final verification**: Do a comprehensive check of the complete document:"
+    },
+    {
+      "step": "step-1",
+      "description": "**Convert DOCX to PDF**:"
+    },
+    {
+      "step": "step-2",
+      "description": "**Convert PDF pages to JPEG images**:"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "docx"
+  }
+}

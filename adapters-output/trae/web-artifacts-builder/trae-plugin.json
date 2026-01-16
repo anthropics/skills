@@ -1,0 +1,17 @@
+{
+  "name": "web-artifacts-builder",
+  "version": "1.0.0",
+  "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+  "author": "Teaching AI",
+  "type": "skill",
+  "skills": [
+    {
+      "name": "web-artifacts-builder",
+      "description": "Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.",
+      "instructions": "SKILL.md",
+      "resources": [
+        "scripts/"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "name": "algorithmic-art-agent",
+  "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "code-generation"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "Algorithmic Philosophy Creation (.md file)"
+    },
+    {
+      "step": "step-2",
+      "description": "Express by creating p5.js generative art (.html + .js files)"
+    },
+    {
+      "step": "step-1",
+      "description": "**Read** `templates/viewer.html` using the Read tool"
+    },
+    {
+      "step": "step-2",
+      "description": "**Study** the exact structure, styling, and Anthropic branding"
+    },
+    {
+      "step": "step-3",
+      "description": "**Use that file as the LITERAL STARTING POINT** - not just inspiration"
+    },
+    {
+      "step": "step-4",
+      "description": "**Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)"
+    },
+    {
+      "step": "step-5",
+      "description": "**Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)"
+    },
+    {
+      "step": "step-1",
+      "description": "**Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic"
+    },
+    {
+      "step": "step-2",
+      "description": "**Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)"
+    },
+    {
+      "step": "step-1",
+      "description": "**In claude.ai**: Displayed as an interactive artifact - runs instantly"
+    },
+    {
+      "step": "step-2",
+      "description": "**As a file**: Save and open in any browser - no server needed"
+    },
+    {
+      "step": "step-3",
+      "description": "**Sharing**: Send the HTML file - it's completely self-contained"
+    },
+    {
+      "step": "step-1",
+      "description": "**Interpret the user's intent** - What aesthetic is being sought?"
+    },
+    {
+      "step": "step-2",
+      "description": "**Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach"
+    },
+    {
+      "step": "step-3",
+      "description": "**Implement it in code** - Build the algorithm that expresses this philosophy"
+    },
+    {
+      "step": "step-4",
+      "description": "**Design appropriate parameters** - What should be tunable?"
+    },
+    {
+      "step": "step-5",
+      "description": "**Build matching UI controls** - Sliders/inputs for those parameters"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "algorithmic-art"
+  }
+}

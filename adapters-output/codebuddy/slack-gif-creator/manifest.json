@@ -1,0 +1,48 @@
+{
+  "name": "slack-gif-creator",
+  "version": "1.0.0",
+  "description": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like \"make me a GIF of X doing Y for Slack.",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "slack-gif-creator",
+      "name": "Slack GIF Creator",
+      "description": "Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like \"make me a GIF of X doing Y for Slack.",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**Fewer frames** - Lower FPS (10 instead of 20) or shorter duration",
+          "description": "**Fewer frames** - Lower FPS (10 instead of 20) or shorter duration",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**Fewer colors** - `num_colors=48` instead of 128",
+          "description": "**Fewer colors** - `num_colors=48` instead of 128",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**Smaller dimensions** - 128x128 instead of 480x480",
+          "description": "**Smaller dimensions** - 128x128 instead of 480x480",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**Remove duplicates** - `remove_duplicates=True` in save()",
+          "description": "**Remove duplicates** - `remove_duplicates=True` in save()",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**Emoji mode** - `optimize_for_emoji=True` auto-optimizes",
+          "description": "**Emoji mode** - `optimize_for_emoji=True` auto-optimizes",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

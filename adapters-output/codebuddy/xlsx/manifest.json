@@ -1,0 +1,54 @@
+{
+  "name": "xlsx",
+  "version": "1.0.0",
+  "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "xlsx",
+      "name": "Requirements for Outputs",
+      "description": "Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**Choose tool**",
+          "description": "**Choose tool**: pandas for data, openpyxl for formulas/formatting",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**Create/Load**",
+          "description": "**Create/Load**: Create new workbook or load existing file",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**Modify**",
+          "description": "**Modify**: Add/edit data, formulas, and formatting",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**Save**",
+          "description": "**Save**: Write to file",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "**Recalculate formulas (MANDATORY IF USING FORMULAS)**",
+          "description": "**Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "**Verify and fix any errors**",
+          "description": "**Verify and fix any errors**:",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

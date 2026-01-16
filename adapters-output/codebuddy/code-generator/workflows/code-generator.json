@@ -1,0 +1,39 @@
+{
+  "id": "code-generator",
+  "name": "代码生成技能",
+  "description": "帮助生成高质量的代码，包括函数、类、模块和完整项目。支持多种编程语言，遵循最佳实践和设计模式。适用于快速开发、代码示例生成或教学演示。",
+  "steps": [
+    {
+      "id": 1,
+      "name": "**清晰性**",
+      "description": "**清晰性**: 代码应清晰易懂，命名规范",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "**可维护性**",
+      "description": "**可维护性**: 结构良好，易于修改和扩展",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "**健壮性**",
+      "description": "**健壮性**: 包含错误处理和边界检查",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "**文档化**",
+      "description": "**文档化**: 提供完整的注释和文档",
+      "type": "instruction"
+    },
+    {
+      "id": 5,
+      "name": "**测试性**",
+      "description": "**测试性**: 代码应易于测试",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

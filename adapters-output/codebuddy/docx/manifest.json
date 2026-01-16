@@ -1,0 +1,108 @@
+{
+  "name": "docx",
+  "version": "1.0.0",
+  "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "docx",
+      "name": "DOCX creation, editing, and analysis",
+      "description": "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. When Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**MANDATORY - READ ENTIRE FILE**",
+          "description": "**MANDATORY - READ ENTIRE FILE**: Read [`docx-js.md`](docx-js.md) (~500 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with document creation.",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)",
+          "description": "Create a JavaScript/TypeScript file using Document, Paragraph, TextRun components (You can assume all dependencies are installed, but if not, refer to the dependencies section below)",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "Export as .docx using Packer.toBuffer()",
+          "description": "Export as .docx using Packer.toBuffer()",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "**MANDATORY - READ ENTIRE FILE**",
+          "description": "**MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files.",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "Unpack the document",
+          "description": "Unpack the document: `python ooxml/scripts/unpack.py <office_file> <output_directory>`",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "Create and run a Python script using the Document library (see \"Document Library\" section in ooxml.md)",
+          "description": "Create and run a Python script using the Document library (see \"Document Library\" section in ooxml.md)",
+          "type": "instruction"
+        },
+        {
+          "id": 7,
+          "name": "Pack the final document",
+          "description": "Pack the final document: `python ooxml/scripts/pack.py <input_directory> <office_file>`",
+          "type": "instruction"
+        },
+        {
+          "id": 8,
+          "name": "**Get markdown representation**",
+          "description": "**Get markdown representation**: Convert document to markdown with tracked changes preserved:",
+          "type": "instruction"
+        },
+        {
+          "id": 9,
+          "name": "**Identify and group changes**",
+          "description": "**Identify and group changes**: Review the document and identify ALL changes needed, organizing them into logical batches:",
+          "type": "instruction"
+        },
+        {
+          "id": 10,
+          "name": "**Read documentation and unpack**",
+          "description": "**Read documentation and unpack**:",
+          "type": "instruction"
+        },
+        {
+          "id": 11,
+          "name": "**Implement changes in batches**",
+          "description": "**Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:",
+          "type": "instruction"
+        },
+        {
+          "id": 12,
+          "name": "**Pack the document**",
+          "description": "**Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:",
+          "type": "instruction"
+        },
+        {
+          "id": 13,
+          "name": "**Final verification**",
+          "description": "**Final verification**: Do a comprehensive check of the complete document:",
+          "type": "instruction"
+        },
+        {
+          "id": 14,
+          "name": "**Convert DOCX to PDF**",
+          "description": "**Convert DOCX to PDF**:",
+          "type": "instruction"
+        },
+        {
+          "id": 15,
+          "name": "**Convert PDF pages to JPEG images**",
+          "description": "**Convert PDF pages to JPEG images**:",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}

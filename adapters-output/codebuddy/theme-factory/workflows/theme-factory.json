@@ -1,0 +1,117 @@
+{
+  "id": "theme-factory",
+  "name": "Theme Factory Skill",
+  "description": "Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fonts that you can apply to any artifact that has been creating, or can generate a new theme on-the-fly.",
+  "steps": [
+    {
+      "id": 1,
+      "name": "**Show the theme showcase**",
+      "description": "**Show the theme showcase**: Display the `theme-showcase.pdf` file to allow users to see all available themes visually. Do not make any modifications to it; simply show the file for viewing.",
+      "type": "instruction"
+    },
+    {
+      "id": 2,
+      "name": "**Ask for their choice**",
+      "description": "**Ask for their choice**: Ask which theme to apply to the deck",
+      "type": "instruction"
+    },
+    {
+      "id": 3,
+      "name": "**Wait for selection**",
+      "description": "**Wait for selection**: Get explicit confirmation about the chosen theme",
+      "type": "instruction"
+    },
+    {
+      "id": 4,
+      "name": "**Apply the theme**",
+      "description": "**Apply the theme**: Once a theme has been chosen, apply the selected theme's colors and fonts to the deck/artifact",
+      "type": "instruction"
+    },
+    {
+      "id": 5,
+      "name": "**Ocean Depths** - Professional and calming maritime theme",
+      "description": "**Ocean Depths** - Professional and calming maritime theme",
+      "type": "instruction"
+    },
+    {
+      "id": 6,
+      "name": "**Sunset Boulevard** - Warm and vibrant sunset colors",
+      "description": "**Sunset Boulevard** - Warm and vibrant sunset colors",
+      "type": "instruction"
+    },
+    {
+      "id": 7,
+      "name": "**Forest Canopy** - Natural and grounded earth tones",
+      "description": "**Forest Canopy** - Natural and grounded earth tones",
+      "type": "instruction"
+    },
+    {
+      "id": 8,
+      "name": "**Modern Minimalist** - Clean and contemporary grayscale",
+      "description": "**Modern Minimalist** - Clean and contemporary grayscale",
+      "type": "instruction"
+    },
+    {
+      "id": 9,
+      "name": "**Golden Hour** - Rich and warm autumnal palette",
+      "description": "**Golden Hour** - Rich and warm autumnal palette",
+      "type": "instruction"
+    },
+    {
+      "id": 10,
+      "name": "**Arctic Frost** - Cool and crisp winter-inspired theme",
+      "description": "**Arctic Frost** - Cool and crisp winter-inspired theme",
+      "type": "instruction"
+    },
+    {
+      "id": 11,
+      "name": "**Desert Rose** - Soft and sophisticated dusty tones",
+      "description": "**Desert Rose** - Soft and sophisticated dusty tones",
+      "type": "instruction"
+    },
+    {
+      "id": 12,
+      "name": "**Tech Innovation** - Bold and modern tech aesthetic",
+      "description": "**Tech Innovation** - Bold and modern tech aesthetic",
+      "type": "instruction"
+    },
+    {
+      "id": 13,
+      "name": "**Botanical Garden** - Fresh and organic garden colors",
+      "description": "**Botanical Garden** - Fresh and organic garden colors",
+      "type": "instruction"
+    },
+    {
+      "id": 14,
+      "name": "**Midnight Galaxy** - Dramatic and cosmic deep tones",
+      "description": "**Midnight Galaxy** - Dramatic and cosmic deep tones",
+      "type": "instruction"
+    },
+    {
+      "id": 15,
+      "name": "Read the corresponding theme file from the `themes/` directory",
+      "description": "Read the corresponding theme file from the `themes/` directory",
+      "type": "instruction"
+    },
+    {
+      "id": 16,
+      "name": "Apply the specified colors and fonts consistently throughout the deck",
+      "description": "Apply the specified colors and fonts consistently throughout the deck",
+      "type": "instruction"
+    },
+    {
+      "id": 17,
+      "name": "Ensure proper contrast and readability",
+      "description": "Ensure proper contrast and readability",
+      "type": "instruction"
+    },
+    {
+      "id": 18,
+      "name": "Maintain the theme's visual identity across all slides",
+      "description": "Maintain the theme's visual identity across all slides",
+      "type": "instruction"
+    }
+  ],
+  "inputs": [],
+  "outputs": []
+}

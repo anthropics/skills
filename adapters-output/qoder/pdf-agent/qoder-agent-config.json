@@ -1,0 +1,28 @@
+{
+  "name": "pdf-agent",
+  "description": "Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "pdf"
+  ],
+  "workflow": [
+    {
+      "step": "analyze",
+      "description": "Analyze requirements"
+    },
+    {
+      "step": "execute",
+      "description": "Execute skill task"
+    },
+    {
+      "step": "output",
+      "description": "Generate output"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "pdf"
+  }
+}
