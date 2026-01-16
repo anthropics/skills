@@ -1,0 +1,136 @@
+{
+  "name": "zh-product-doc-generator-agent",
+  "description": "基于标准模板快速生成项目文档，包括产品调研、需求分析、PRD、架构设计、技术文档等13种项目交付文档模板。适用于软件开发项目的全生命周期文档生成。",
+  "version": "1.0.0",
+  "type": "skill-agent",
+  "capabilities": [
+    "zh-product-doc-generator"
+  ],
+  "workflow": [
+    {
+      "step": "step-1",
+      "description": "**指定文档类型**"
+    },
+    {
+      "step": "step-2",
+      "description": "**指定项目信息**"
+    },
+    {
+      "step": "step-3",
+      "description": "**批量生成文档**"
+    },
+    {
+      "step": "step-1",
+      "description": "`1、产品调研模板.md` - 产品调研阶段文档"
+    },
+    {
+      "step": "step-2",
+      "description": "`2、需求调研模板.md` - 需求调研阶段文档"
+    },
+    {
+      "step": "step-3",
+      "description": "`3、技术调研模板.md` - 技术调研阶段文档（技术选型、技术可行性分析）"
+    },
+    {
+      "step": "step-4",
+      "description": "`4、需求分析模板.md` - 需求分析阶段文档"
+    },
+    {
+      "step": "step-5",
+      "description": "`5、PRD文档模板.md` - 产品需求文档"
+    },
+    {
+      "step": "step-6",
+      "description": "`6、视觉与交互 DNA 规范模板.md` - 设计规范文档"
+    },
+    {
+      "step": "step-7",
+      "description": "`7、UI 设计说明模板.md` - UI设计文档"
+    },
+    {
+      "step": "step-8",
+      "description": "`8、领域模型说明模板.md` - 领域模型文档"
+    },
+    {
+      "step": "step-9",
+      "description": "`9、系统架构设计模板.md` - 系统架构文档"
+    },
+    {
+      "step": "step-10",
+      "description": "`10、技术细分模板.md` - 技术实现文档"
+    },
+    {
+      "step": "step-11",
+      "description": "`11、功能提测模板.md` - 提测文档"
+    },
+    {
+      "step": "step-12",
+      "description": "`12、测试结果模板.md` - 测试报告"
+    },
+    {
+      "step": "step-13",
+      "description": "`13、上线通知模板.md` - 上线文档"
+    },
+    {
+      "step": "step-14",
+      "description": "`14、项目运维模板.md` - 运维文档"
+    },
+    {
+      "step": "step-1",
+      "description": "**选择模板**"
+    },
+    {
+      "step": "step-2",
+      "description": "**填写占位符**"
+    },
+    {
+      "step": "step-3",
+      "description": "**定制化调整**"
+    },
+    {
+      "step": "step-4",
+      "description": "**文档评审**"
+    },
+    {
+      "step": "step-1",
+      "description": "产品调研文档"
+    },
+    {
+      "step": "step-2",
+      "description": "PRD 文档"
+    },
+    {
+      "step": "step-3",
+      "description": "系统架构设计文档"
+    },
+    {
+      "step": "step-4",
+      "description": "技术细分文档"
+    },
+    {
+      "step": "step-1",
+      "description": "**占位符替换**: 确保所有 `{}` 占位符都被正确替换"
+    },
+    {
+      "step": "step-2",
+      "description": "**文档关联**: 注意文档之间的关联关系，保持一致性"
+    },
+    {
+      "step": "step-3",
+      "description": "**版本管理**: 使用版本记录表跟踪文档变更"
+    },
+    {
+      "step": "step-4",
+      "description": "**团队协作**: 明确文档责任人，确保文档质量"
+    },
+    {
+      "step": "step-5",
+      "description": "**持续更新**: 根据项目进展及时更新文档内容"
+    }
+  ],
+  "instructions": "SKILL.md",
+  "metadata": {
+    "source": "teaching-ai-skills",
+    "original_skill": "zh-product-doc-generator"
+  }
+}

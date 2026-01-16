@@ -1,0 +1,198 @@
+{
+  "name": "zh-product-doc-generator",
+  "version": "1.0.0",
+  "description": "基于标准模板快速生成项目文档，包括产品调研、需求分析、PRD、架构设计、技术文档等13种项目交付文档模板。适用于软件开发项目的全生命周期文档生成。",
+  "author": "Teaching AI",
+  "type": "workflow-plugin",
+  "workflows": [
+    {
+      "id": "zh-product-doc-generator",
+      "name": "项目文档生成技能",
+      "description": "基于标准模板快速生成项目文档，包括产品调研、需求分析、PRD、架构设计、技术文档等13种项目交付文档模板。适用于软件开发项目的全生命周期文档生成。",
+      "steps": [
+        {
+          "id": 1,
+          "name": "**指定文档类型**",
+          "description": "**指定文档类型**",
+          "type": "instruction"
+        },
+        {
+          "id": 2,
+          "name": "**指定项目信息**",
+          "description": "**指定项目信息**",
+          "type": "instruction"
+        },
+        {
+          "id": 3,
+          "name": "**批量生成文档**",
+          "description": "**批量生成文档**",
+          "type": "instruction"
+        },
+        {
+          "id": 4,
+          "name": "`1、产品调研模板.md` - 产品调研阶段文档",
+          "description": "`1、产品调研模板.md` - 产品调研阶段文档",
+          "type": "instruction"
+        },
+        {
+          "id": 5,
+          "name": "`2、需求调研模板.md` - 需求调研阶段文档",
+          "description": "`2、需求调研模板.md` - 需求调研阶段文档",
+          "type": "instruction"
+        },
+        {
+          "id": 6,
+          "name": "`3、技术调研模板.md` - 技术调研阶段文档（技术选型、技术可行性分析）",
+          "description": "`3、技术调研模板.md` - 技术调研阶段文档（技术选型、技术可行性分析）",
+          "type": "instruction"
+        },
+        {
+          "id": 7,
+          "name": "`4、需求分析模板.md` - 需求分析阶段文档",
+          "description": "`4、需求分析模板.md` - 需求分析阶段文档",
+          "type": "instruction"
+        },
+        {
+          "id": 8,
+          "name": "`5、PRD文档模板.md` - 产品需求文档",
+          "description": "`5、PRD文档模板.md` - 产品需求文档",
+          "type": "instruction"
+        },
+        {
+          "id": 9,
+          "name": "`6、视觉与交互 DNA 规范模板.md` - 设计规范文档",
+          "description": "`6、视觉与交互 DNA 规范模板.md` - 设计规范文档",
+          "type": "instruction"
+        },
+        {
+          "id": 10,
+          "name": "`7、UI 设计说明模板.md` - UI设计文档",
+          "description": "`7、UI 设计说明模板.md` - UI设计文档",
+          "type": "instruction"
+        },
+        {
+          "id": 11,
+          "name": "`8、领域模型说明模板.md` - 领域模型文档",
+          "description": "`8、领域模型说明模板.md` - 领域模型文档",
+          "type": "instruction"
+        },
+        {
+          "id": 12,
+          "name": "`9、系统架构设计模板.md` - 系统架构文档",
+          "description": "`9、系统架构设计模板.md` - 系统架构文档",
+          "type": "instruction"
+        },
+        {
+          "id": 13,
+          "name": "`10、技术细分模板.md` - 技术实现文档",
+          "description": "`10、技术细分模板.md` - 技术实现文档",
+          "type": "instruction"
+        },
+        {
+          "id": 14,
+          "name": "`11、功能提测模板.md` - 提测文档",
+          "description": "`11、功能提测模板.md` - 提测文档",
+          "type": "instruction"
+        },
+        {
+          "id": 15,
+          "name": "`12、测试结果模板.md` - 测试报告",
+          "description": "`12、测试结果模板.md` - 测试报告",
+          "type": "instruction"
+        },
+        {
+          "id": 16,
+          "name": "`13、上线通知模板.md` - 上线文档",
+          "description": "`13、上线通知模板.md` - 上线文档",
+          "type": "instruction"
+        },
+        {
+          "id": 17,
+          "name": "`14、项目运维模板.md` - 运维文档",
+          "description": "`14、项目运维模板.md` - 运维文档",
+          "type": "instruction"
+        },
+        {
+          "id": 18,
+          "name": "**选择模板**",
+          "description": "**选择模板**",
+          "type": "instruction"
+        },
+        {
+          "id": 19,
+          "name": "**填写占位符**",
+          "description": "**填写占位符**",
+          "type": "instruction"
+        },
+        {
+          "id": 20,
+          "name": "**定制化调整**",
+          "description": "**定制化调整**",
+          "type": "instruction"
+        },
+        {
+          "id": 21,
+          "name": "**文档评审**",
+          "description": "**文档评审**",
+          "type": "instruction"
+        },
+        {
+          "id": 22,
+          "name": "产品调研文档",
+          "description": "产品调研文档",
+          "type": "instruction"
+        },
+        {
+          "id": 23,
+          "name": "PRD 文档",
+          "description": "PRD 文档",
+          "type": "instruction"
+        },
+        {
+          "id": 24,
+          "name": "系统架构设计文档",
+          "description": "系统架构设计文档",
+          "type": "instruction"
+        },
+        {
+          "id": 25,
+          "name": "技术细分文档",
+          "description": "技术细分文档",
+          "type": "instruction"
+        },
+        {
+          "id": 26,
+          "name": "**占位符替换**",
+          "description": "**占位符替换**: 确保所有 `{}` 占位符都被正确替换",
+          "type": "instruction"
+        },
+        {
+          "id": 27,
+          "name": "**文档关联**",
+          "description": "**文档关联**: 注意文档之间的关联关系，保持一致性",
+          "type": "instruction"
+        },
+        {
+          "id": 28,
+          "name": "**版本管理**",
+          "description": "**版本管理**: 使用版本记录表跟踪文档变更",
+          "type": "instruction"
+        },
+        {
+          "id": 29,
+          "name": "**团队协作**",
+          "description": "**团队协作**: 明确文档责任人，确保文档质量",
+          "type": "instruction"
+        },
+        {
+          "id": 30,
+          "name": "**持续更新**",
+          "description": "**持续更新**: 根据项目进展及时更新文档内容",
+          "type": "instruction"
+        }
+      ],
+      "inputs": [],
+      "outputs": []
+    }
+  ]
+}
