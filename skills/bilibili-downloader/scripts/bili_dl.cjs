@@ -79,14 +79,27 @@ function fetch(url) {
  */
 async function getVideoInfo(bvid) {
     const url = `https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`;
-    const data = await fetch(url);
+    
+    try {
+        const data = await fetch(url);
+        
+        if (data.code === -404) {
+            throw new Error('视频不存在或已被删除');
+        }
+        if (data.code === -403) {
+            throw new Error('视频访问受限');
+        }
+        if (data.code !== 0) {
+            throw new Error(`API错误: ${data.message || data.code}`);
+        }
 
-    if (data.code !== 0) {
-        console.error(`获取视频信息失败:`, data);
-        return null;
+        return data.data;
+    } catch (error) {
+        if (error.message.includes('视频')) {
+            throw error;
+        }
+        throw new Error('获取视频信息失败: 网络错误');
     }
-
-    return data.data;
 }
 
 /**
@@ -94,59 +107,88 @@ async function getVideoInfo(bvid) {
  */
 async function getVideoPlayurl(bvid, cid) {
     const url = `https://api.bilibili.com/x/player/playurl?bvid=${bvid}&cid=${cid}&qn=80&fnval=16&fnver=0&fourk=1`;
-    const data = await fetch(url);
+    
+    try {
+        const data = await fetch(url);
+        
+        if (data.code === -404) {
+            throw new Error('播放信息不存在');
+        }
+        if (data.code !== 0) {
+            throw new Error(`获取播放链接失败: ${data.message || data.code}`);
+        }
 
-    if (data.code !== 0) {
-        console.error(`获取播放URL失败:`, data);
-        return null;
+        return data.data;
+    } catch (error) {
+        if (error.message.includes('播放')) {
+            throw error;
+        }
+        throw new Error('获取播放信息失败: 网络错误');
     }
-
-    return data.data;
 }
 
 /**
- * 下载文件
+ * 下载文件（带重试机制）
  */
-function downloadFile(url, filename) {
+function downloadFile(url, filename, retries = 3) {
     return new Promise((resolve, reject) => {
-        const protocol = url.startsWith('https') ? https : http;
-        const options = {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer': 'https://www.bilibili.com/',
-            }
+        const attemptDownload = (attempt) => {
+            const protocol = url.startsWith('https') ? https : http;
+            const options = {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Referer': 'https://www.bilibili.com/',
+                }
+            };
+
+            const fullPath = path.join(SAVE_DIR, filename);
+            console.log(`开始下载: ${fullPath} (尝试 ${attempt}/${retries})`);
+
+            protocol.get(url, options, (res) => {
+                if (res.statusCode !== 200) {
+                    reject(new Error(`HTTP ${res.statusCode}`));
+                    return;
+                }
+
+                const totalSize = parseInt(res.headers['content-length'] || '0', 10);
+                let downloaded = 0;
+
+                const fileStream = fs.createWriteStream(fullPath);
+
+                res.on('data', (chunk) => {
+                    downloaded += chunk.length;
+                    fileStream.write(chunk);
+
+                    const progress = totalSize > 0 ? ((downloaded / totalSize) * 100).toFixed(1) : 0;
+                    process.stdout.write(`\r下载进度: ${progress}%`);
+                });
+
+                res.on('end', () => {
+                    fileStream.end();
+                    console.log(`\n✅ 下载完成: ${fullPath}`);
+                    resolve();
+                });
+
+                res.on('error', (error) => {
+                    fileStream.end();
+                    if (attempt < retries) {
+                        console.log(`\n下载失败，重试中...`);
+                        setTimeout(() => attemptDownload(attempt + 1), 1000 * attempt);
+                    } else {
+                        reject(error);
+                    }
+                });
+            }).on('error', (error) => {
+                if (attempt < retries) {
+                    console.log(`\n网络错误，重试中...`);
+                    setTimeout(() => attemptDownload(attempt + 1), 1000 * attempt);
+                } else {
+                    reject(error);
+                }
+            });
         };
 
-        const fullPath = path.join(SAVE_DIR, filename); // Use SAVE_DIR here
-        console.log(`开始下载: ${fullPath}`);
-
-        protocol.get(url, options, (res) => {
-            const totalSize = parseInt(res.headers['content-length'] || '0', 10);
-            let downloaded = 0;
-
-            const fileStream = fs.createWriteStream(fullPath); // Write to the full path
-
-            res.on('data', (chunk) => {
-                downloaded += chunk.length;
-                fileStream.write(chunk);
-
-                const progress = totalSize > 0 ? ((downloaded / totalSize) * 100).toFixed(1) : 0;
-                process.stdout.write(`\r下载进度: ${progress}%`);
-            });
-
-            res.on('end', () => {
-                fileStream.end();
-                console.log(`\n✅ 下载完成: ${fullPath}`);
-                resolve();
-            });
-
-            res.on('error', (error) => {
-                fileStream.end();
-                reject(error);
-            });
-        }).on('error', (error) => {
-            reject(error);
-        });
+        attemptDownload(1);
     });
 }
 
@@ -154,78 +196,60 @@ function downloadFile(url, filename) {
  * 主函数
  */
 async function main() {
-    // Use the URL from command-line arguments
-    const bvid = extractBVID(VIDEO_URL_ARG);
-    if (!bvid) {
-        console.error('无法从URL中提取BV号，请检查URL格式');
-        return;
-    }
-
-    console.log(`视频BV号: ${bvid}`);
-
-    // CID is still auto-detected if not provided via arguments (though not implemented for args yet)
-    // For now, we rely on auto-detection from video info
-    let cid = ''; // VIDEO_CID is removed as it's not passed via args
-
-    console.log(`正在获取视频 ${bvid} 的信息以获取CID...`);
-    const videoInfo = await getVideoInfo(bvid);
-    if (videoInfo) {
-        cid = videoInfo.cid;
-        console.log(`获取到CID: ${cid}`);
-        console.log(`视频标题: ${videoInfo.title}`); // Display title here
-    } else {
-        console.log('无法获取视频信息');
-        return;
-    }
-
-    console.log(`正在获取视频 ${bvid} 的播放链接...`);
-    const playData = await getVideoPlayurl(bvid, cid);
-
-    if (!playData) {
-        console.log('获取播放链接失败');
-        return;
-    }
-
-    const dashData = playData.dash || {};
-    const videos = dashData.video || [];
-
-    if (videos.length === 0) {
-        console.log('没有找到视频流');
-        return;
-    }
-
-    // 选择最高质量的视频
-    const video = videos.reduce((max, v) => (v.bandwidth > max.bandwidth ? v : max), videos[0]);
-    const videoUrl = video.baseUrl;
-
-    console.log(`视频质量: ${video.width}x${video.height}`);
-    console.log(`视频编码: ${video.codecs || 'N/A'}`);
-    console.log(`带宽: ${video.bandwidth}`);
-
-    // 获取音频
-    const audios = dashData.audio || [];
-    let audioUrl = null;
-
-    if (audios.length > 0) {
-        // 选择最高质量的音频
-        const audio = audios.reduce((max, a) => (a.bandwidth > max.bandwidth ? a : max), audios[0]);
-        audioUrl = audio.baseUrl;
-        console.log(`音频质量: ${audio.id}`);
-        console.log(`音频编码: ${audio.codecs || 'N/A'}`);
-        console.log(`带宽: ${audio.bandwidth}`);
-    }
-
-    // Download video and audio using the provided save directory
-    const videoFilename = `${bvid}_video.mp4`;
-    const audioFilename = `${bvid}_audio.mp4`;
-
     try {
-        await downloadFile(videoUrl, videoFilename);
-        if (audioUrl) {
-            await downloadFile(audioUrl, audioFilename);
+        // Use the URL from command-line arguments
+        const bvid = extractBVID(VIDEO_URL_ARG);
+        if (!bvid) {
+            throw new Error('无效的BV号或URL格式');
         }
+
+        console.log(`视频BV号: ${bvid}`);
+
+        console.log(`正在获取视频信息...`);
+        const videoInfo = await getVideoInfo(bvid);
+        const cid = videoInfo.cid;
+        console.log(`视频: ${videoInfo.title}`);
+
+        console.log(`正在获取播放链接...`);
+        const playData = await getVideoPlayurl(bvid, cid);
+
+        const dashData = playData.dash || {};
+        const videos = dashData.video || [];
+
+        if (videos.length === 0) {
+            throw new Error('没有可用的视频流');
+        }
+
+        // 选择最高质量的视频
+        const video = videos.reduce((max, v) => (v.bandwidth > max.bandwidth ? v : max), videos[0]);
+        const videoUrl = video.baseUrl;
+
+        console.log(`质量: ${video.width}x${video.height}`);
+
+        // 获取音频
+        const audios = dashData.audio || [];
+        let audioUrl = null;
+
+        if (audios.length > 0) {
+            const audio = audios.reduce((max, a) => (a.bandwidth > max.bandwidth ? a : max), audios[0]);
+            audioUrl = audio.baseUrl;
+        }
+
+        // 并发下载视频和音频
+        const videoFilename = `${bvid}_video.mp4`;
+        const audioFilename = `${bvid}_audio.mp4`;
+
+        const downloads = [downloadFile(videoUrl, videoFilename)];
+        if (audioUrl) {
+            downloads.push(downloadFile(audioUrl, audioFilename));
+        }
+        
+        await Promise.all(downloads);
+        console.log('\n🎉 下载完成!');
+        
     } catch (error) {
-        console.error('下载过程中发生错误:', error);
+        console.error('❌ ' + error.message);
+        process.exit(1);
     }
 }
 
