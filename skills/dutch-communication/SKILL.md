@@ -72,6 +72,71 @@ Dit werkt omdat...
 | The issue is | Het probleem is |
 | The solution is | De oplossing is |
 
+## Recruitment Communicatie Voorbeelden
+
+### Kandidaat Benaderen (LinkedIn)
+```
+Hi [Naam],
+
+Ik zag je profiel en je ervaring met [X] viel me op. We zoeken
+momenteel een [Functie] bij [Bedrijf] en ik denk dat dit goed
+bij je zou passen.
+
+Heb je 15 minuten voor een kort gesprek deze week?
+
+Groet,
+[Naam]
+```
+
+### Telefonische Intake Samenvatting
+```
+Bedankt voor het gesprek! Even de belangrijkste punten:
+
+Huidige situatie:
+- [Huidige functie en werkgever]
+- [Reden om te kijken]
+
+Wensen:
+- Salaris: €[X] - €[Y]
+- Reistijd: max [X] minuten
+- Belangrijkste: [prioriteit kandidaat]
+
+Volgende stap: Ik zoek geschikte vacatures en kom hier deze
+week op terug.
+```
+
+### Feedback aan Opdrachtgever
+```
+Gesprek met [Kandidaat] gehad. Mijn observaties:
+
+Pluspunten:
+- Sterke ervaring in [X]
+- Goede culturele fit
+- Direct beschikbaar
+
+Aandachtspunten:
+- Salariseis ligt [X]% boven budget
+- Minder ervaring met [Y]
+
+Advies: Wel uitnodigen, in gesprek peilen hoe hard de
+salariseis is.
+```
+
+## Veelgebruikte Recruitment Termen
+
+| Engels | Nederlands |
+|--------|------------|
+| Job posting | Vacature |
+| Applicant/Candidate | Sollicitant/Kandidaat |
+| Interview | Sollicitatiegesprek |
+| Job offer | Aanbod |
+| Notice period | Opzegtermijn |
+| Salary expectations | Salariswens |
+| Cultural fit | Culturele match |
+| Reference check | Referentiecheck |
+| Onboarding | Inwerkperiode |
+| Temp/Perm | Tijdelijk/Vast |
+
 ## Wanneer te Gebruiken
 
 Deze skill is actief wanneer:

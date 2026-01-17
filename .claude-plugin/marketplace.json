@@ -50,6 +50,17 @@
         "./skills/user-preferences-template",
         "./skills/dutch-communication"
       ]
+    },
+    {
+      "name": "recruitment-skills",
+      "description": "Collection of recruitment skills for writing job postings, candidate communication, and Dutch language support in recruitment processes",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/vacatureteksten",
+        "./skills/kandidaat-communicatie",
+        "./skills/dutch-communication"
+      ]
     }
   ]
 }
