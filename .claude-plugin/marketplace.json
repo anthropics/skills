@@ -40,6 +40,16 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "user-preference-skills",
+      "description": "Collection of user preference skills for personalizing Claude's behavior, including templates and language preferences",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/user-preferences-template",
+        "./skills/dutch-communication"
+      ]
     }
   ]
 }
