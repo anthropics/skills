@@ -303,7 +303,7 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 ##### Frontmatter
 
-Write the YAML frontmatter with required and optional fields per the Agent Skills specification:
+Write the YAML frontmatter with required and optional fields:
 
 **Required fields:**
 
@@ -320,7 +320,7 @@ Write the YAML frontmatter with required and optional fields per the Agent Skill
 - `metadata`: Arbitrary key-value mapping for additional metadata
 - `allowed-tools`: Space-delimited list of pre-approved tools (experimental)
 
-Only use fields defined in the Agent Skills specification.
+Only use the fields documented above.
 
 ##### Body
 
