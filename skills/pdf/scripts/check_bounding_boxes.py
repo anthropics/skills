@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from collections import defaultdict
 import json
 import sys
 
@@ -25,35 +26,39 @@ def get_bounding_box_messages(fields_json_stream) -> list[str]:
         disjoint_vertical = r1[1] >= r2[3] or r1[3] <= r2[1]
         return not (disjoint_horizontal or disjoint_vertical)
 
-    rects_and_fields = []
+    # Group bounding boxes by page number to reduce comparisons
+    # This optimization significantly improves performance for multi-page forms
+    boxes_by_page = defaultdict(list)
     for f in fields["form_fields"]:
-        rects_and_fields.append(RectAndField(f["label_bounding_box"], "label", f))
-        rects_and_fields.append(RectAndField(f["entry_bounding_box"], "entry", f))
+        page = f["page_number"]
+        boxes_by_page[page].append(RectAndField(f["label_bounding_box"], "label", f))
+        boxes_by_page[page].append(RectAndField(f["entry_bounding_box"], "entry", f))
 
     has_error = False
-    for i, ri in enumerate(rects_and_fields):
-        # This is O(N^2); we can optimize if it becomes a problem.
-        for j in range(i + 1, len(rects_and_fields)):
-            rj = rects_and_fields[j]
-            if ri.field["page_number"] == rj.field["page_number"] and rects_intersect(ri.rect, rj.rect):
-                has_error = True
-                if ri.field is rj.field:
-                    messages.append(f"FAILURE: intersection between label and entry bounding boxes for `{ri.field['description']}` ({ri.rect}, {rj.rect})")
-                else:
-                    messages.append(f"FAILURE: intersection between {ri.rect_type} bounding box for `{ri.field['description']}` ({ri.rect}) and {rj.rect_type} bounding box for `{rj.field['description']}` ({rj.rect})")
-                if len(messages) >= 20:
-                    messages.append("Aborting further checks; fix bounding boxes and try again")
-                    return messages
-        if ri.rect_type == "entry":
-            if "entry_text" in ri.field:
-                font_size = ri.field["entry_text"].get("font_size", 14)
-                entry_height = ri.rect[3] - ri.rect[1]
-                if entry_height < font_size:
+    # Only compare boxes within the same page (boxes on different pages can't overlap)
+    for page, page_boxes in boxes_by_page.items():
+        for i, ri in enumerate(page_boxes):
+            for j in range(i + 1, len(page_boxes)):
+                rj = page_boxes[j]
+                if rects_intersect(ri.rect, rj.rect):
                     has_error = True
-                    messages.append(f"FAILURE: entry bounding box height ({entry_height}) for `{ri.field['description']}` is too short for the text content (font size: {font_size}). Increase the box height or decrease the font size.")
+                    if ri.field is rj.field:
+                        messages.append(f"FAILURE: intersection between label and entry bounding boxes for `{ri.field['description']}` ({ri.rect}, {rj.rect})")
+                    else:
+                        messages.append(f"FAILURE: intersection between {ri.rect_type} bounding box for `{ri.field['description']}` ({ri.rect}) and {rj.rect_type} bounding box for `{rj.field['description']}` ({rj.rect})")
                     if len(messages) >= 20:
                         messages.append("Aborting further checks; fix bounding boxes and try again")
                         return messages
+            if ri.rect_type == "entry":
+                if "entry_text" in ri.field:
+                    font_size = ri.field["entry_text"].get("font_size", 14)
+                    entry_height = ri.rect[3] - ri.rect[1]
+                    if entry_height < font_size:
+                        has_error = True
+                        messages.append(f"FAILURE: entry bounding box height ({entry_height}) for `{ri.field['description']}` is too short for the text content (font size: {font_size}). Increase the box height or decrease the font size.")
+                        if len(messages) >= 20:
+                            messages.append("Aborting further checks; fix bounding boxes and try again")
+                            return messages
 
     if not has_error:
         messages.append("SUCCESS: All bounding boxes are valid")
