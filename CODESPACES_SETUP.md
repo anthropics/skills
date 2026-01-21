@@ -1,4 +1,4 @@
-# 🚀 Codespaces Quick Setup
+# 🚀 ⚡️CodeSpaces Quick Setup
 
 Get the Skills repository running in **6 minutes** with this streamlined workflow.
 
@@ -7,17 +7,17 @@ Get the Skills repository running in **6 minutes** with this streamlined workflo
 ### 1. Navigate to the repository
 Go to: https://github.com/allsxxing/skills
 
-### 2. Launch Codespace
+### 2. Launch ⚡️CodeSpaces
 Click **Code** → **Codespaces** → **Create codespace on main**
 
 ### 3. Wait for initialization
-Wait ~3 minutes for the Codespace to spin up
+Wait ~3 minutes for ⚡️CodeSpaces to spin up
 
 ### 4. Copy the setup script
 Open [`ULTRA-COMPACT-ONELINER.txt`](ULTRA-COMPACT-ONELINER.txt) and copy the entire command
 
 ### 5. Paste into terminal
-Paste the command into the Codespaces terminal
+Paste the command into the ⚡️CodeSpaces terminal
 
 ### 6. Press ENTER
 The script will install all dependencies in ~3 minutes
