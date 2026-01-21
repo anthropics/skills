@@ -1,0 +1,5 @@
+#!/bin/bash
+# Codespaces Ultra-Compact Setup for Skills Repository
+# Run this single command to install all dependencies in ~3 minutes
+
+set -e && sudo apt-get update -qq && sudo apt-get install -y -qq pandoc libreoffice poppler-utils && npm install -g docx pptxgenjs playwright react-icons react react-dom sharp && pip install -q defusedxml pillow imageio imageio-ffmpeg numpy anthropic mcp "markitdown[pptx]" && playwright install chromium --with-deps && echo "✅ Setup complete! All dependencies installed."
