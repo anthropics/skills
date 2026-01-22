@@ -23,44 +23,66 @@ Start with:
 
 ## Phase 1: Context Gathering
 
-Ask these questions to adapt the setup:
+Ask these questions. User can skip any by saying "skip" or "next".
 
-**1. Compliance** (if yes, add code classification to CLAUDE.md):
-> Does your work involve healthcare data (HIPAA), financial data (PCI-DSS), government contracts (FedRAMP), or EU personal data (GDPR)?
+**1. Compliance** (skip if not applicable):
+> Does your work involve healthcare data (HIPAA), financial data (PCI-DSS), government contracts (FedRAMP), or EU personal data (GDPR)? (say "skip" if none)
 
-**2. Security** (if yes, recommend human-written for critical paths):
-> Does this project contain security-critical code like authentication, payments, or encryption?
+**2. Security** (skip if not applicable):
+> Any security-critical code (auth, payments, encryption) that should stay human-written? (skip if none)
 
-**3. Tech Stack** (store for CLAUDE.md):
+**3. Tech Stack**:
 > What's your tech stack? (e.g., 'Node.js, Express, PostgreSQL, Jest')
 
-**4. Commands** (store for CLAUDE.md):
-> What command runs your tests? What starts your dev server?
+**4. Commands** (skip if unknown):
+> Test command? Dev server command? (skip if not set up yet)
+
+**5. Architecture & Design** (optional - skip or provide docs):
+> Do you have existing docs I should read? Options:
+> - Point to files (docs/architecture.md, README.md)
+> - Paste content here
+> - Answer a few questions
+> - Skip entirely
+
+If they want questions (all skippable individually):
+
+> **Architecture**: How is your app structured? (monolith/microservices/serverless) [skip]
+> **Code org**: Directory structure convention? Where do routes, services, models live? [skip]
+> **Patterns**: Any specific patterns? (MVC, Repository, error handling conventions) [skip]
+> **Data layer**: ORM, raw queries, caching? [skip]
+> **Integrations**: External services/APIs to know about? [skip]
+
+Only include answered questions in CLAUDE.md. Skip means skip - don't ask follow-ups.
 
 ## Phase 2: Create CLAUDE.md
 
-Create minimal CLAUDE.md in project root:
+Create CLAUDE.md with only the sections user provided (skip empty sections):
 
 ```markdown
 # Project Context
 
-Tech stack: [from Q3]
+Tech stack: [from Q3, required]
 
 ## Commands
-Test: [from Q4]
-Dev: [from Q4]
-```
+Test: [from Q4, if provided]
+Dev: [from Q4, if provided]
 
-If compliance YES, add:
+## Architecture
+[from Q5, if provided - summarize key points]
 
-```markdown
+## Code Organization
+[from Q5, if provided - directory conventions]
+
+## Patterns & Conventions
+[from Q5, if provided - error handling, validation, etc.]
+
 ## Code Classification
-
+[if compliance/security YES]
 DO NOT use AI for code in:
-- [ask user for security-critical directories]
-
-These require human implementation.
+- [user-specified directories]
 ```
+
+Only include sections the user actually provided. A minimal CLAUDE.md with just tech stack is fine.
 
 ## Phase 3: First Feature
 
