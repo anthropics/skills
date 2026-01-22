@@ -82,7 +82,7 @@ description: A clear description of what this skill does and when to use it
 ```
 
 The frontmatter requires only two fields:
-- `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
+- `name` - A unique identifier for your skill. This **must** be lowercase, numbers, and hyphens only (e.g. `my-awesome-skill`). Spaces and uppercase letters are not allowed.
 - `description` - A complete description of what the skill does and when to use it
 
 The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
