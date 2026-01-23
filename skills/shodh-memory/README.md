@@ -6,7 +6,7 @@ Persistent memory system for AI agents. Store decisions, learnings, and context 
 
 ### With Claude Code
 ```bash
-claude mcp add shodh-memory -- npx -y @anthropic-ai/shodh-memory
+claude mcp add shodh-memory -- npx -y @shodh/memory-mcp
 ```
 
 Or add the skill directly:
@@ -21,7 +21,7 @@ cp SKILL.md ~/.claude/skills/shodh-memory/SKILL.md
 cargo install shodh-memory
 
 # Or run with npx
-npx -y @anthropic-ai/shodh-memory
+npx -y @shodh/memory-mcp
 ```
 
 ## What This Skill Teaches
@@ -62,9 +62,9 @@ Claude (with skill):
 
 ## Links
 
-- [GitHub Repository](https://github.com/roshera/shodh-memory)
-- [Documentation](https://shodh-memory.dev/docs)
-- [MCP Server on npm](https://www.npmjs.com/package/@anthropic-ai/shodh-memory)
+- [GitHub Repository](https://github.com/varun29ankuS/shodh-memory)
+- [Documentation](https://shodh-memory.com)
+- [MCP Server on npm](https://www.npmjs.com/package/@shodh/memory-mcp)
 
 ## License
 
