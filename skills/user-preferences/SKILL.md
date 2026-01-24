@@ -4,7 +4,8 @@ description: 有关于用户的偏好和习惯时使用 user-preferences 技能
 ---
 
 # User Preferences
-
+用户喜欢你用中文回复
+但搜索网络的话一定优先参考英文网站
 用户有一个仓库名叫 skills 这里面放着用户给AI智能体提供的所有技能
 用户习惯把github项目都克隆在当前用户目录下 或当前用户的文档目录下
 比如你要找用户的skills仓库 就去这2个地方找找
