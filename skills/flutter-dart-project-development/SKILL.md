@@ -259,7 +259,6 @@ Create this file to enforce Provider-first mindset:
 - Mock Providers using mocktail package
 - Test Provider logic separately from UI
 - Use widget tests with mocked Providers for screens
-```
 
 ## Best Practices Summary
 
