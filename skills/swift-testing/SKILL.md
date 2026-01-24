@@ -65,6 +65,87 @@ D) **Accessibility identifiers required**
 E) **Stability notes**
 - waits, scroll strategy, alert handling, anchors
 
+F) **App-side implementation code (REQUIRED)**
+- Swift code to add accessibility identifiers to the app
+- Must be copy/paste ready for the ViewController
+- Include `viewDidLoad()` setup method
+- Include helper extensions if needed (e.g., `UIView.allSubviews()`)
+
+---
+
+## App-Side Implementation (CRITICAL)
+
+Tests WILL FAIL if accessibility identifiers are not implemented in the app. Always generate:
+
+### 1. ViewController Setup Code
+
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+    setupAccessibilityIdentifiers()
+}
+
+private func setupAccessibilityIdentifiers() {
+    myLabel.accessibilityIdentifier = "screen.label"
+    myButton.accessibilityIdentifier = "screen.button"
+}
+```
+
+### 2. For elements without IBOutlets
+
+```swift
+private func findAndSetAccessibilityIdentifiers() {
+    for subview in view.allSubviews() {
+        guard let button = subview as? UIButton,
+              let title = button.configuration?.title ?? button.title(for: .normal) else {
+            continue
+        }
+        switch title {
+        case "Submit":
+            button.accessibilityIdentifier = "screen.button.submit"
+        default:
+            break
+        }
+    }
+}
+```
+
+### 3. Required UIView Extension
+
+```swift
+extension UIView {
+    func allSubviews() -> [UIView] {
+        var result = subviews
+        for subview in subviews {
+            result.append(contentsOf: subview.allSubviews())
+        }
+        return result
+    }
+}
+```
+
+---
+
+## Pre-Flight Verification (REQUIRED)
+
+Before tests can run successfully, verify:
+
+| Step | Action | Validation |
+|------|--------|------------|
+| 1 | Implement accessibility identifiers in app code | Code compiles |
+| 2 | Build the app target | ⌘+B succeeds |
+| 3 | Run app in simulator manually | Elements visible |
+| 4 | Run UI tests | ⌘+U succeeds |
+
+### Common Failure: "Element not found"
+
+**Cause:** Accessibility identifiers not set in app code
+
+**Fix:**
+1. Add `setupAccessibilityIdentifiers()` to `viewDidLoad()`
+2. Rebuild app (⌘+B)
+3. Re-run tests (⌘+U)
+
 ---
 
 ## Non-negotiable engineering rules
@@ -135,6 +216,7 @@ Generate:
 - screen objects required for that scenario
 - the test case using those screen objects
 - identifier list to add
+- **app-side implementation code for identifiers**
 
 ### If user provides existing test code
 Refactor into:
@@ -180,3 +262,27 @@ Agent output:
 - [ ] Scrolling bounded
 - [ ] Failure diagnostics included
 - [ ] Output includes A–E sections (contract)
+- [ ] **App-side identifier implementation code included**
+- [ ] **Pre-flight verification steps communicated to user**
+
+---
+
+## Dependency Verification
+
+Before marking test generation complete:
+
+| Check | Required | How to Verify |
+|-------|----------|---------------|
+| Test files created | ✅ | Files exist in UITests folder |
+| Screen objects created | ✅ | Files exist in Screens folder |
+| **App-side identifiers implemented** | ✅ | ViewController updated |
+| **App builds successfully** | ✅ | ⌘+B passes |
+
+### Failure Prevention
+
+**Root Cause of Most Failures:** Gap between "identifiers listed" and "identifiers implemented"
+
+**Prevention:**
+1. Always generate app-side implementation code (Section F)
+2. Always update the ViewController file directly
+3. Always verify app builds before claiming tests are ready
