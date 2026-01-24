@@ -5,19 +5,28 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Web Artifacts Builder
+# Web 工件构建器
 
 To build powerful frontend claude.ai artifacts, follow these steps:
+要构建强大的前端 claude.ai 工件，请遵循以下步骤：
 1. Initialize the frontend repo using `scripts/init-artifact.sh`
+   使用 `scripts/init-artifact.sh` 初始化前端仓库
 2. Develop your artifact by editing the generated code
+   通过编辑生成的代码开发工件
 3. Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`
+   使用 `scripts/bundle-artifact.sh` 将所有代码捆绑到一个 HTML 文件中
 4. Display artifact to user
+   向用户显示工件
 5. (Optional) Test the artifact
+   （可选）测试工件
 
 **Stack**: React 18 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui
 
 ## Design & Style Guidelines
+设计和样式指南
 
 VERY IMPORTANT: To avoid what is often referred to as "AI slop", avoid using excessive centered layouts, purple gradients, uniform rounded corners, and Inter font.
+非常重要：要避免所谓的"AI 垃圾"，避免使用过度的中心布局、紫色渐变、统一的圆角和 Inter 字体。
 
 ## Quick Start
 

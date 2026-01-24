@@ -5,14 +5,24 @@ license: Complete terms in LICENSE.txt
 ---
 
 ## When to use this skill
+何时使用此技能
+
 To write internal communications, use this skill for:
+要撰写内部通信，请将此技能用于：
 - 3P updates (Progress, Plans, Problems)
+  3P 更新（进度、计划、问题）
 - Company newsletters
+  公司新闻通讯
 - FAQ responses
+  常见问题解答
 - Status reports
+  状态报告
 - Leadership updates
+  领导层更新
 - Project updates
+  项目更新
 - Incident reports
+  事件报告
 
 ## How to use this skill
 

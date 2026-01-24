@@ -5,8 +5,10 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Skill Creator
+# Skill 创建者
 
 This skill provides guidance for creating effective skills.
+此技能提供了创建有效技能的指导。
 
 ## About Skills
 

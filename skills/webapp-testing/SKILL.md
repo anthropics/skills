@@ -5,13 +5,17 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Web Application Testing
+# Web 应用程序测试
 
 To test local web applications, write native Python Playwright scripts.
+要测试本地 Web 应用程序，请编写本地 Python Playwright 脚本。
 
 **Helper Scripts Available**:
+**可用的辅助脚本**：
 - `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
 
-**Always run scripts with `--help` first** to see usage. DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.
+**Always run scripts with `--help` first** to see usage.
+**始终先使用 `--help` 运行脚本**来查看用法。 DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.
 
 ## Decision Tree: Choosing Your Approach
 
