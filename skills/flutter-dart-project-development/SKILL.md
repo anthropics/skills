@@ -54,7 +54,7 @@ Selector<T, R>      // For selective rebuilds based on specific properties
 
 ## High-Velocity Scaffolding
 
-Use these targeted prompts with GitHub Copilot Chat (@workspace) to generate boilerplate instantly:
+Use these targeted prompts with Claude (or your AI assistant) to generate boilerplate instantly:
 
 ### Creating Provider Models
 
