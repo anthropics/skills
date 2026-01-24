@@ -1,5 +1,6 @@
 Please use the following information enclosed in triple quotes (```) to generate a complete GitHub Copilot skill for Flutter project development, structured according to the GitHub Copilot skill format. Save the skill to the directory: skills/flutter-dart-project-development.
 ```
+Define a GitHub Copilot skill:
 GitHub Copilot for Flutter has evolved from simple autocompletion to a deep "agentic" workflow that understands project-wide architecture. To maximize its utility in the Flutter project, you should focus on these specialized "skills" and configurations.
 
 Skill Specification and Configurations:
