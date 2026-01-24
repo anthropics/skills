@@ -5,19 +5,29 @@ license: Complete terms in LICENSE.txt
 ---
 
 # Slack GIF Creator
+# Slack GIF 创建器
 
 A toolkit providing utilities and knowledge for creating animated GIFs optimized for Slack.
+一个工具包，提供为 Slack 优化创建动画 GIF 的实用程序和知识。
 
 ## Slack Requirements
+Slack 要求
 
 **Dimensions:**
+**尺寸：**
 - Emoji GIFs: 128x128 (recommended)
+  表情符号 GIF：128x128（推荐）
 - Message GIFs: 480x480
+  消息 GIF：480x480
 
 **Parameters:**
+**参数：**
 - FPS: 10-30 (lower is smaller file size)
+  FPS：10-30（较低的文件大小）
 - Colors: 48-128 (fewer = smaller file size)
+  颜色：48-128（更少=更小的文件大小）
 - Duration: Keep under 3 seconds for emoji GIFs
+  持续时间：表情符号 GIF 保持在 3 秒以下
 
 ## Core Workflow
 

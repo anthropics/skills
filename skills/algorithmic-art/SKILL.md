@@ -5,20 +5,30 @@ license: Complete terms in LICENSE.txt
 ---
 
 Algorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).
+算法哲学是计算美学运动，然后通过代码表达。输出.md 文件（哲学）、.html 文件（交互式查看器）和.js 文件（生成算法）。
 
 This happens in two steps:
+分两个步骤进行：
 1. Algorithmic Philosophy Creation (.md file)
+   算法哲学创建（.md 文件）
 2. Express by creating p5.js generative art (.html + .js files)
+   通过创建 p5.js 生成艺术来表达（.html + .js 文件）
 
 First, undertake this task:
 
 ## ALGORITHMIC PHILOSOPHY CREATION
+## 算法哲学创建
 
 To begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that will be interpreted through:
+首先，创建一个算法哲学（不是静态图像或模板），将通过以下方式进行解读：
 - Computational processes, emergent behavior, mathematical beauty
+  计算过程、涌现行为、数学美学
 - Seeded randomness, noise fields, organic systems
+  有种子的随机性、噪声场、有机系统
 - Particles, flows, fields, forces
+  粒子、流动、场、力
 - Parametric variation and controlled chaos
+  参数变化和受控混沌
 
 ### THE CRITICAL UNDERSTANDING
 - What is received: Some subtle input or instructions by the user to take into account, but use as a foundation; it should not constrain creative freedom.

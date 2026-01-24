@@ -5,12 +5,16 @@ license: Complete terms in LICENSE.txt
 ---
 
 This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+此技能指导创建独特的、生产级的前端界面，避免通用的"AI 垃圾"美学。实现真实的工作代码，并对美学细节和创意选择给予特殊关注。
 
 The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+用户提供前端需求：一个要构建的组件、页面、应用程序或界面。他们可能会包括有关目的、受众或技术约束的背景。
 
 ## Design Thinking
+设计思维
 
 Before coding, understand the context and commit to a BOLD aesthetic direction:
+编码前，理解背景并选择一个大胆的美学方向：
 - **Purpose**: What problem does this interface solve? Who uses it?
 - **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
 - **Constraints**: Technical requirements (framework, performance, accessibility).

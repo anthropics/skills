@@ -5,14 +5,18 @@ license: Complete terms in LICENSE.txt
 ---
 
 # MCP Server Development Guide
+# MCP 服务器开发指南
 
 ## Overview
+概述
 
 Create MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks.
+创建 MCP（模型上下文协议）服务器，使 LLM 能够通过设计良好的工具与外部服务交互。MCP 服务器的质量通过它使 LLM 完成现实任务的能力来衡量。
 
 ---
 
 # Process
+# 过程
 
 ## 🚀 High-Level Workflow
 

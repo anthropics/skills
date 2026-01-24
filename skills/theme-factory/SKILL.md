@@ -6,15 +6,22 @@ license: Complete terms in LICENSE.txt
 
 
 # Theme Factory Skill
+# 主题工厂技能
 
 This skill provides a curated collection of professional font and color themes themes, each with carefully selected color palettes and font pairings. Once a theme is chosen, it can be applied to any artifact.
+此技能提供了精心策划的专业字体和颜色主题集合，每种主题都包含精心选择的色调和字体配对。选择主题后，可以将其应用于任何工件。
 
 ## Purpose
+目的
 
 To apply consistent, professional styling to presentation slide decks, use this skill. Each theme includes:
+要将一致的专业样式应用于演示幻灯片组，请使用此技能。每个主题包括：
 - A cohesive color palette with hex codes
+  具有十六进制代码的协调色调
 - Complementary font pairings for headers and body text
+  用于标题和正文的互补字体配对
 - A distinct visual identity suitable for different contexts and audiences
+  适合不同背景和受众的独特视觉身份
 
 ## Usage Instructions
 

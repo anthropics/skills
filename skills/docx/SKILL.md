@@ -5,10 +5,13 @@ license: Proprietary. LICENSE.txt has complete terms
 ---
 
 # DOCX creation, editing, and analysis
+# DOCX 创建、编辑和分析
 
 ## Overview
+## 概述
 
-A user may ask you to create, edit, or analyze the contents of a .docx file. A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+A user may ask you to create, edit, or analyze the contents of a .docx file.
+用户可能会要求您创建、编辑或分析 .docx 文件的内容。 A .docx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
 ## Workflow Decision Tree
 

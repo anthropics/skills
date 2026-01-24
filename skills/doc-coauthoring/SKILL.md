@@ -4,8 +4,10 @@ description: Guide users through a structured workflow for co-authoring document
 ---
 
 # Doc Co-Authoring Workflow
+# 文档共同创作工作流程
 
-This skill provides a structured workflow for guiding users through collaborative document creation. Act as an active guide, walking users through three stages: Context Gathering, Refinement & Structure, and Reader Testing.
+This skill provides a structured workflow for guiding users through collaborative document creation.
+此技能提供了一个结构化的工作流程，用于指导用户完成协作文档创建。 Act as an active guide, walking users through three stages: Context Gathering, Refinement & Structure, and Reader Testing.
 
 ## When to Offer This Workflow
 

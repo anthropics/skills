@@ -5,8 +5,10 @@ license: Proprietary. LICENSE.txt has complete terms
 ---
 
 # Requirements for Outputs
+# 输出要求
 
 ## All Excel files
+## 所有 Excel 文件
 
 ### Zero Formula Errors
 - Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)
@@ -17,6 +19,7 @@ license: Proprietary. LICENSE.txt has complete terms
 - Existing template conventions ALWAYS override these guidelines
 
 ## Financial models
+## 财务模型
 
 ### Color Coding Standards
 Unless otherwise stated by the user or existing template

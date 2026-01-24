@@ -5,10 +5,13 @@ license: Proprietary. LICENSE.txt has complete terms
 ---
 
 # PPTX creation, editing, and analysis
+# PPTX 创建、编辑和分析
 
 ## Overview
+## 概述
 
-A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
+A user may ask you to create, edit, or analyze the contents of a .pptx file.
+用户可能会要求您创建、编辑或分析 .pptx 文件的内容。 A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
 ## Reading and analyzing content
 
