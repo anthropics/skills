@@ -6,7 +6,7 @@ license: Complete terms in LICENSE.txt
 
 # Web Application Testing
 
-To test local web applications, write native Python Playwright scripts.
+To test local web applications, write native Python Playwright scripts. See `requirements.txt` for dependencies.
 
 **Helper Scripts Available**:
 - `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
