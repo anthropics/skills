@@ -274,17 +274,22 @@ class DocxXMLEditor(XMLEditor):
             list: List containing the processed element(s)
 
         Raises:
+            TypeError: If the provided element is not a valid DOM element
             ValueError: If the element contains no w:ins elements
 
         Example:
             # Reject a single insertion
             ins = doc["word/document.xml"].get_node(tag="w:ins", attrs={"w:id": "5"})
-            doc["word/document.xml"].revert_insertion(ins)
+            if ins:
+                doc["word/document.xml"].revert_insertion(ins)
 
             # Reject all insertions in a paragraph
             para = doc["word/document.xml"].get_node(tag="w:p", line_number=42)
-            doc["word/document.xml"].revert_insertion(para)
+            if para:
+                doc["word/document.xml"].revert_insertion(para)
         """
+        if not elem or not hasattr(elem, "tagName"):
+            raise TypeError("Provided element is not a valid DOM element.")
         # Collect insertions
         ins_elements = []
         if elem.tagName == "w:ins":
@@ -353,17 +358,22 @@ class DocxXMLEditor(XMLEditor):
             list: If elem is w:del, returns [elem, new_ins]. Otherwise returns [elem].
 
         Raises:
+            TypeError: If the provided element is not a valid DOM element
             ValueError: If the element contains no w:del elements
 
         Example:
             # Reject a single deletion - returns [w:del, w:ins]
             del_elem = doc["word/document.xml"].get_node(tag="w:del", attrs={"w:id": "3"})
-            nodes = doc["word/document.xml"].revert_deletion(del_elem)
+            if del_elem:
+                nodes = doc["word/document.xml"].revert_deletion(del_elem)
 
             # Reject all deletions in a paragraph - returns [para]
             para = doc["word/document.xml"].get_node(tag="w:p", line_number=42)
-            nodes = doc["word/document.xml"].revert_deletion(para)
+            if para:
+                nodes = doc["word/document.xml"].revert_deletion(para)
         """
+        if not elem or not hasattr(elem, "tagName"):
+            raise TypeError("Provided element is not a valid DOM element.")
         # Collect deletions FIRST - before we modify the DOM
         del_elements = []
         is_single_del = elem.tagName == "w:del"
@@ -493,8 +503,11 @@ class DocxXMLEditor(XMLEditor):
             Element: The modified element
 
         Raises:
+            TypeError: If the provided element is not a valid DOM element
             ValueError: If element has existing tracked changes or invalid structure
         """
+        if not elem or not hasattr(elem, "nodeName"):
+            raise TypeError("Provided element is not a valid DOM element.")
         if elem.nodeName == "w:r":
             # Check for existing w:delText
             if elem.getElementsByTagName("w:delText"):
@@ -632,9 +645,16 @@ class Document:
             initials: Default author initials for comments (default: "C")
         """
         self.original_path = Path(unpacked_dir)
+        if not self.original_path.exists():
+            raise FileNotFoundError(f"Unpacked directory not found: {unpacked_dir}")
+        if not self.original_path.is_dir():
+            raise NotADirectoryError(f"Path is not a directory: {unpacked_dir}")
 
-        if not self.original_path.exists() or not self.original_path.is_dir():
-            raise ValueError(f"Directory not found: {unpacked_dir}")
+        word_subdir = self.original_path / "word"
+        if not word_subdir.is_dir():
+            raise NotADirectoryError(
+                f"Required 'word' subdirectory not found in {unpacked_dir}"
+            )
 
         # Create temporary directory with subdirectories for unpacked content and baseline
         self.temp_dir = tempfile.mkdtemp(prefix="docx_")
