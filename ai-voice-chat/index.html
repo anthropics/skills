@@ -299,7 +299,8 @@
             document.getElementById('status').textContent = 'Thinking...';
 
             try {
-                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                // Using CORS proxy to allow browser access
+                const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.anthropic.com/v1/messages'), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -315,7 +316,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                    const errorText = await response.text();
+                    throw new Error(`API error: ${response.status} - ${errorText}`);
                 }
 
                 const data = await response.json();
@@ -331,7 +333,7 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                addMessage('Error connecting to AI. Check your API key.', 'ai');
+                addMessage('Error: ' + error.message, 'ai');
                 document.getElementById('status').textContent = '';
             }
         }
