@@ -65,8 +65,33 @@ skill-name/
 
 Every SKILL.md consists of:
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
+- **Frontmatter** (YAML): Contains required and optional metadata fields. The `name` and `description` fields are what Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
 - **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
+
+**Frontmatter Fields:**
+
+| Field | Required | Constraints |
+|-------|----------|-------------|
+| `name` | Yes | Max 64 chars. Lowercase letters, numbers, hyphens only. No consecutive hyphens (`--`). Cannot start/end with hyphen. Must match parent directory name. |
+| `description` | Yes | Max 1024 chars. Describes what the skill does and when to use it. |
+| `license` | No | License name or reference to bundled license file. |
+| `compatibility` | No | Max 500 chars. Environment requirements (intended product, system packages, network access, etc.). |
+| `metadata` | No | Arbitrary key-value map for additional properties (e.g., author, version). |
+| `allowed-tools` | No | Space-delimited list of pre-approved tools. (Experimental) |
+
+Example with optional fields:
+```yaml
+---
+name: pdf-processing
+description: Extract text and tables from PDF files, fill forms, merge documents.
+license: Apache-2.0
+compatibility: Requires Python 3.9+ and poppler-utils
+metadata:
+  author: example-org
+  version: "1.0"
+allowed-tools: Bash(python:*) Read
+---
+```
 
 #### Bundled Resources (optional)
 
@@ -115,8 +140,8 @@ The skill should only contain the information needed for an AI agent to do the j
 
 Skills use a three-level loading system to manage context efficiently:
 
-1. **Metadata (name + description)** - Always in context (~100 words)
-2. **SKILL.md body** - When skill triggers (<5k words)
+1. **Metadata (name + description)** - Always in context (~100 tokens)
+2. **SKILL.md body** - When skill triggers (<5000 tokens recommended)
 3. **Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)
 
 #### Progressive Disclosure Patterns
@@ -303,15 +328,18 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 ##### Frontmatter
 
-Write the YAML frontmatter with `name` and `description`:
+Write the YAML frontmatter with required and optional fields:
 
-- `name`: The skill name
-- `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
-  - Include both what the Skill does and specific triggers/contexts for when to use it.
-  - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
+**Required fields:**
+- `name`: The skill name (max 64 chars, lowercase/numbers/hyphens only, must match directory name)
+- `description`: Primary triggering mechanism (max 1024 chars). Include both what the Skill does and specific triggers/contexts for when to use it. Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
   - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
 
-Do not include any other fields in YAML frontmatter.
+**Optional fields (include only when needed):**
+- `license`: License name or reference to bundled license file
+- `compatibility`: Environment requirements if the skill has specific dependencies (max 500 chars)
+- `metadata`: Additional key-value properties like author, version
+- `allowed-tools`: Space-delimited pre-approved tools (experimental)
 
 ##### Body
 
@@ -334,7 +362,6 @@ scripts/package_skill.py <path/to/skill-folder> ./dist
 The packaging script will:
 
 1. **Validate** the skill automatically, checking:
-
    - YAML frontmatter format and required fields
    - Skill naming conventions and directory structure
    - Description completeness and quality
@@ -343,6 +370,11 @@ The packaging script will:
 2. **Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.
 
 If validation fails, the script will report the errors and exit without creating a package. Fix any validation errors and run the packaging command again.
+
+Alternatively, use the official `skills-ref` validation tool:
+```bash
+skills-ref validate ./my-skill
+```
 
 ### Step 6: Iterate
 
