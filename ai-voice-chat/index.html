@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Voice Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: #0066ff;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: #1c1c1e;
+            margin-right: auto;
+        }
+
+        .input-area {
+            padding: 16px;
+            background: #1c1c1e;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        #textInput {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: none;
+            background: #2c2c2e;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #0066ff;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.listening {
+            background: #ff3b30;
+            animation: pulse 1.5s infinite;
+        }
+
+        button.speaking {
+            background: #34c759;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .setup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .setup-content {
+            background: #1c1c1e;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .setup-content h2 {
+            margin-bottom: 16px;
+        }
+
+        .setup-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: none;
+            background: #2c2c2e;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .setup-content button {
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .setup-content small {
+            color: #8e8e93;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            color: #8e8e93;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="setupModal" class="setup-modal">
+        <div class="setup-content">
+            <h2>Setup</h2>
+            <p>Enter your Anthropic API key to get started:</p>
+            <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-...">
+            <small>Your API key is stored locally in your browser and never sent anywhere except to Anthropic's API.</small>
+            <button onclick="saveApiKey()">Start</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="chat-area" id="chatArea"></div>
+        <div class="status" id="status"></div>
+        <div class="input-area">
+            <input type="text" id="textInput" placeholder="Type or hold mic to speak..." />
+            <button id="micButton" onclick="toggleVoice()">🎤</button>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = localStorage.getItem('anthropic_api_key');
+        let recognition = null;
+        let isListening = false;
+        let isSpeaking = false;
+        let conversationHistory = [];
+
+        const systemPrompt = `You are a confident, direct, and honest AI assistant. Key traits:
+- Be straightforward and clear
+- Don't over-apologize or be overly polite
+- Give direct answers without excessive hedging
+- Be honest even if it's not what someone wants to hear
+- Skip unnecessary pleasantries
+- Be concise and to the point
+- Show confidence in your responses`;
+
+        // Check if API key exists
+        if (!apiKey) {
+            document.getElementById('setupModal').classList.remove('hidden');
+        } else {
+            document.getElementById('setupModal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                localStorage.setItem('anthropic_api_key', key);
+                apiKey = key;
+                document.getElementById('setupModal').classList.add('hidden');
+                addMessage('Setup complete. Ready to chat.', 'ai');
+            }
+        }
+
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                addMessage(transcript, 'user');
+                sendMessage(transcript);
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopListening();
+            };
+
+            recognition.onend = () => {
+                stopListening();
+            };
+        }
+
+        function toggleVoice() {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            if (!recognition) {
+                alert('Voice recognition not supported on this browser');
+                return;
+            }
+            isListening = true;
+            document.getElementById('micButton').classList.add('listening');
+            document.getElementById('status').textContent = 'Listening...';
+            recognition.start();
+        }
+
+        function stopListening() {
+            isListening = false;
+            document.getElementById('micButton').classList.remove('listening');
+            document.getElementById('status').textContent = '';
+            if (recognition) recognition.stop();
+        }
+
+        function addMessage(text, sender) {
+            const chatArea = document.getElementById('chatArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = text;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        async function sendMessage(text) {
+            if (!apiKey) {
+                document.getElementById('setupModal').classList.remove('hidden');
+                return;
+            }
+
+            conversationHistory.push({
+                role: 'user',
+                content: text
+            });
+
+            document.getElementById('status').textContent = 'Thinking...';
+
+            try {
+                // Using CORS proxy to allow browser access
+                const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.anthropic.com/v1/messages'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-3-5-sonnet-20241022',
+                        max_tokens: 1024,
+                        system: systemPrompt,
+                        messages: conversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API error: ${response.status} - ${errorText}`);
+                }
+
+                const data = await response.json();
+                const aiResponse = data.content[0].text;
+
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+
+                addMessage(aiResponse, 'ai');
+                speak(aiResponse);
+
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Error: ' + error.message, 'ai');
+                document.getElementById('status').textContent = '';
+            }
+        }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.1;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = () => {
+                    isSpeaking = true;
+                    document.getElementById('micButton').classList.add('speaking');
+                    document.getElementById('status').textContent = 'Speaking...';
+                };
+
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    document.getElementById('micButton').classList.remove('speaking');
+                    document.getElementById('status').textContent = '';
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Text input handling
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const text = e.target.value.trim();
+                if (text) {
+                    addMessage(text, 'user');
+                    sendMessage(text);
+                    e.target.value = '';
+                }
+            }
+        });
+
+        // Prevent zoom on input focus (iOS)
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                document.body.style.fontSize = '16px';
+            });
+        });
+    </script>
+</body>
+</html>
