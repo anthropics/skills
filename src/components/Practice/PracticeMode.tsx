@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MidiPlayer from '../Player/MidiPlayer';
+import { PostureCamera } from '../Posture/PostureCamera';
+import type { PostureAnalysis } from '../../services/handPostureDetection';
 import './PracticeMode.css';
 
 interface Note {
@@ -36,6 +38,9 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
   const [feedback, setFeedback] = useState<string>('');
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
+  const [postureEnabled, setPostureEnabled] = useState(false);
+  const [postureScore, setPostureScore] = useState<number>(0);
+  const [postureBonus, setPostureBonus] = useState<number>(0);
 
   const expectedNotesRef = useRef<Note[]>(expectedNotes);
   const currentNoteIndex = useRef(0);
@@ -134,6 +139,19 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     setTimeout(() => setCurrentNote(null), 100);
   };
 
+  const handlePostureUpdate = (analysis: PostureAnalysis) => {
+    setPostureScore(analysis.score);
+
+    // Award bonus XP for maintaining good posture
+    if (analysis.score >= 80 && isActive) {
+      setPostureBonus(prev => prev + 1);
+      if (postureBonus > 0 && postureBonus % 10 === 0) {
+        setFeedback('🎯 Bônus de Postura! +5 XP');
+        setTimeout(() => setFeedback(''), 2000);
+      }
+    }
+  };
+
   const startPractice = () => {
     setIsActive(true);
     setPlayedNotes([]);
@@ -172,6 +190,12 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     return { grade: 'D', color: '#ef4444' };
   };
 
+  const getPostureColor = (score: number): string => {
+    if (score >= 80) return '#10b981'; // Green
+    if (score >= 60) return '#f59e0b'; // Yellow
+    return '#ef4444'; // Red
+  };
+
   return (
     <div className="practice-mode">
       <div className="practice-header">
@@ -186,8 +210,38 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
           <button onClick={resetPractice} className="reset-btn">
             🔄 Reiniciar
           </button>
+          <button
+            onClick={() => setPostureEnabled(!postureEnabled)}
+            className={`posture-btn ${postureEnabled ? 'active' : ''}`}
+            title="Ativar detecção de postura com IA"
+          >
+            {postureEnabled ? '📹 Câmera Ativa' : '📷 Ativar Postura IA'}
+          </button>
         </div>
       </div>
+
+      {/* Hand Posture Detection */}
+      {postureEnabled && (
+        <PostureCamera isActive={postureEnabled} onAnalysisUpdate={handlePostureUpdate} />
+      )}
+
+      {/* Posture Score Display */}
+      {postureEnabled && postureScore > 0 && (
+        <div className="posture-score-banner">
+          <span className="posture-label">Postura:</span>
+          <span
+            className="posture-value"
+            style={{
+              color: getPostureColor(postureScore),
+            }}
+          >
+            {postureScore}/100
+          </span>
+          {postureBonus > 0 && (
+            <span className="posture-bonus">+{Math.floor(postureBonus / 10) * 5} XP Bônus</span>
+          )}
+        </div>
+      )}
 
       {/* Real-time Feedback */}
       <div className="feedback-section">

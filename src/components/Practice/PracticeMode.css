@@ -23,7 +23,8 @@
 }
 
 .practice-btn,
-.reset-btn {
+.reset-btn,
+.posture-btn {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
@@ -55,6 +56,66 @@
 
 .reset-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.posture-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.posture-btn.active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: 2px solid white;
+  animation: pulse 2s infinite;
+}
+
+.posture-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+}
+
+/* Posture Score Banner */
+.posture-score-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px 25px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.posture-label {
+  font-size: 1.2em;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.posture-value {
+  font-size: 1.8em;
+  font-weight: 900;
+}
+
+.posture-bonus {
+  padding: 5px 12px;
+  background: #fbbf24;
+  color: #1f2937;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9em;
 }
 
 /* Feedback Section */
