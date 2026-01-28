@@ -40,6 +40,25 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "ai-pmo-skills",
+      "description": "AI-PMO Skills for construction and infrastructure project management including Gantt planning, progress tracking, risk analysis, executive dashboards, stakeholder communications, forecasting, and contract management",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/gantt-planner",
+        "./skills/progress-tracker",
+        "./skills/risk-analyzer",
+        "./skills/executive-dashboard",
+        "./skills/letter-generator",
+        "./skills/forecast-engine",
+        "./skills/contract-analyzer",
+        "./skills/act-processor",
+        "./skills/deviation-alert",
+        "./skills/resource-allocator",
+        "./skills/telegram-worklog"
+      ]
     }
   ]
 }
