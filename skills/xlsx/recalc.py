@@ -100,26 +100,27 @@ def recalc(filename, timeout=30):
     
     # Check for Excel errors in the recalculated file - scan ALL cells
     try:
-        wb = load_workbook(filename, data_only=True)
-        
         excel_errors = ['#VALUE!', '#DIV/0!', '#REF!', '#NAME?', '#NULL!', '#NUM!', '#N/A']
         error_details = {err: [] for err in excel_errors}
         total_errors = 0
         
-        for sheet_name in wb.sheetnames:
-            ws = wb[sheet_name]
-            # Check ALL rows and columns - no limits
-            for row in ws.iter_rows():
-                for cell in row:
-                    if cell.value is not None and isinstance(cell.value, str):
-                        for err in excel_errors:
-                            if err in cell.value:
-                                location = f"{sheet_name}!{cell.coordinate}"
-                                error_details[err].append(location)
-                                total_errors += 1
-                                break
-        
-        wb.close()
+        # Optimization: use read_only=True for faster parsing and lower memory usage
+        wb = load_workbook(filename, data_only=True, read_only=True)
+        try:
+            for sheet_name in wb.sheetnames:
+                ws = wb[sheet_name]
+                # Check ALL rows and columns - no limits
+                for row in ws.iter_rows():
+                    for cell in row:
+                        if cell.value is not None and isinstance(cell.value, str):
+                            for err in excel_errors:
+                                if err in cell.value:
+                                    location = f"{sheet_name}!{cell.coordinate}"
+                                    error_details[err].append(location)
+                                    total_errors += 1
+                                    break
+        finally:
+            wb.close()
         
         # Build result summary
         result = {
@@ -137,15 +138,17 @@ def recalc(filename, timeout=30):
                 }
         
         # Add formula count for context - also check ALL cells
-        wb_formulas = load_workbook(filename, data_only=False)
         formula_count = 0
-        for sheet_name in wb_formulas.sheetnames:
-            ws = wb_formulas[sheet_name]
-            for row in ws.iter_rows():
-                for cell in row:
-                    if cell.value and isinstance(cell.value, str) and cell.value.startswith('='):
-                        formula_count += 1
-        wb_formulas.close()
+        wb_formulas = load_workbook(filename, data_only=False, read_only=True)
+        try:
+            for sheet_name in wb_formulas.sheetnames:
+                ws = wb_formulas[sheet_name]
+                for row in ws.iter_rows():
+                    for cell in row:
+                        if cell.value and isinstance(cell.value, str) and cell.value.startswith('='):
+                            formula_count += 1
+        finally:
+            wb_formulas.close()
         
         result['total_formulas'] = formula_count
         
