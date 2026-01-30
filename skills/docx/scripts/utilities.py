@@ -60,11 +60,14 @@ class XMLEditor:
             xml_path: Path to XML file to edit (str or Path)
 
         Raises:
-            ValueError: If the XML file does not exist
+            FileNotFoundError: If the XML file does not exist
+            ValueError: If the path is not a file
         """
         self.xml_path = Path(xml_path)
         if not self.xml_path.exists():
-            raise ValueError(f"XML file not found: {xml_path}")
+            raise FileNotFoundError(f"XML file not found: {xml_path}")
+        if not self.xml_path.is_file():
+            raise ValueError(f"XML path must be a file, not a directory: {xml_path}")
 
         with open(self.xml_path, "rb") as f:
             header = f.read(200).decode("utf-8", errors="ignore")
