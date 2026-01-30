@@ -1,0 +1,116 @@
+[package]
+name = "open-responses-engine"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "High-performance Rust backend for Open Responses API"
+license = "MIT"
+repository = "https://github.com/your-org/open-responses-engine"
+keywords = ["llm", "api", "openai", "responses", "server"]
+categories = ["web-programming::http-server", "asynchronous"]
+
+[workspace]
+members = [
+    "crates/or-core",
+    "crates/or-server",
+    "crates/or-providers",
+    "crates/or-inference",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+tokio-stream = "0.1"
+futures = "0.3"
+async-trait = "0.1"
+
+# HTTP server
+axum = { version = "0.7", features = ["macros", "ws"] }
+tower = { version = "0.4", features = ["full"] }
+tower-http = { version = "0.5", features = ["cors", "trace", "timeout", "compression-gzip"] }
+hyper = { version = "1.1", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Validation
+validator = { version = "0.18", features = ["derive"] }
+
+# HTTP client
+reqwest = { version = "0.11", features = ["json", "stream", "rustls-tls"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging & Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Configuration
+config = "0.14"
+dotenvy = "0.15"
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+bytes = "1.5"
+
+# Caching
+moka = { version = "0.12", features = ["future"] }
+
+# Metrics
+prometheus = "0.13"
+
+# Crypto
+sha2 = "0.10"
+
+# Inference (optional)
+burn = { version = "0.14", optional = true }
+smartcore = { version = "0.3", optional = true }
+
+[dependencies]
+or-core = { path = "crates/or-core" }
+or-server = { path = "crates/or-server" }
+or-providers = { path = "crates/or-providers" }
+
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+config.workspace = true
+dotenvy.workspace = true
+anyhow.workspace = true
+
+[dev-dependencies]
+axum-test = "14"
+pretty_assertions = "1.4"
+tokio-test = "0.4"
+
+[features]
+default = []
+local-inference = ["or-inference"]
+gpu = ["burn/wgpu"]
+full = ["local-inference", "gpu"]
+
+[[bin]]
+name = "or-server"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.dev.package."*"]
+opt-level = 3

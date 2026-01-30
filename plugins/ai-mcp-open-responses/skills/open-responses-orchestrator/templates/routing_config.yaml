@@ -1,0 +1,268 @@
+# Open Responses Router Configuration
+# Defines provider endpoints, routing rules, and rate limits
+
+# ==============================================================================
+# Server Configuration
+# ==============================================================================
+server:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 4
+  timeout: 300  # Request timeout in seconds
+  max_request_size: "10MB"
+
+# ==============================================================================
+# Authentication
+# ==============================================================================
+auth:
+  # API key validation
+  api_keys:
+    enabled: true
+    header: "Authorization"
+    prefix: "Bearer "
+
+  # Optional JWT validation
+  jwt:
+    enabled: false
+    issuer: "https://auth.example.com"
+    audience: "open-responses-api"
+
+# ==============================================================================
+# Provider Configuration
+# ==============================================================================
+providers:
+  # OpenAI
+  openai:
+    enabled: true
+    base_url: "https://api.openai.com/v1"
+    api_key_env: "OPENAI_API_KEY"
+    models:
+      - id: "gpt-4o"
+        context_length: 128000
+        max_output: 16384
+        supports_vision: true
+        supports_tools: true
+      - id: "gpt-4o-mini"
+        context_length: 128000
+        max_output: 16384
+        supports_vision: true
+        supports_tools: true
+      - id: "gpt-4-turbo"
+        context_length: 128000
+        max_output: 4096
+        supports_vision: true
+        supports_tools: true
+    rate_limits:
+      requests_per_minute: 500
+      tokens_per_minute: 200000
+    retry:
+      max_attempts: 3
+      backoff_base: 2
+      backoff_max: 60
+
+  # Anthropic
+  anthropic:
+    enabled: true
+    base_url: "https://api.anthropic.com/v1"
+    api_key_env: "ANTHROPIC_API_KEY"
+    api_version: "2024-01-01"
+    models:
+      - id: "claude-sonnet-4-20250514"
+        context_length: 200000
+        max_output: 8192
+        supports_vision: true
+        supports_tools: true
+      - id: "claude-opus-4-20250514"
+        context_length: 200000
+        max_output: 8192
+        supports_vision: true
+        supports_tools: true
+    rate_limits:
+      requests_per_minute: 100
+      tokens_per_minute: 100000
+    retry:
+      max_attempts: 3
+      backoff_base: 2
+      backoff_max: 60
+
+  # Ollama (Local)
+  ollama:
+    enabled: true
+    base_url: "http://localhost:11434"
+    models:
+      - id: "llama3.2"
+        context_length: 128000
+        max_output: 8192
+        supports_vision: false
+        supports_tools: true
+      - id: "codellama"
+        context_length: 16384
+        max_output: 4096
+        supports_vision: false
+        supports_tools: false
+      - id: "llama3.2-vision"
+        context_length: 128000
+        max_output: 8192
+        supports_vision: true
+        supports_tools: false
+    health_check:
+      enabled: true
+      interval: 30
+      endpoint: "/api/tags"
+
+  # LiteLLM Proxy
+  litellm:
+    enabled: false
+    base_url: "http://localhost:4000"
+    api_key_env: "LITELLM_API_KEY"
+    models:
+      - id: "*"  # Supports dynamic model loading
+        context_length: 128000
+        max_output: 8192
+
+  # Azure OpenAI
+  azure:
+    enabled: false
+    base_url: "https://{resource}.openai.azure.com"
+    api_key_env: "AZURE_OPENAI_API_KEY"
+    api_version: "2024-02-01"
+    deployments:
+      - name: "gpt-4o-deployment"
+        model: "gpt-4o"
+      - name: "gpt-4o-mini-deployment"
+        model: "gpt-4o-mini"
+
+# ==============================================================================
+# Routing Rules
+# ==============================================================================
+routing:
+  # Model pattern matching (first match wins)
+  rules:
+    # OpenAI models
+    - pattern: "openai/*"
+      provider: openai
+      strip_prefix: true  # "openai/gpt-4o" -> "gpt-4o"
+
+    - pattern: "gpt-*"
+      provider: openai
+      strip_prefix: false
+
+    # Anthropic models
+    - pattern: "anthropic/*"
+      provider: anthropic
+      strip_prefix: true
+
+    - pattern: "claude-*"
+      provider: anthropic
+      strip_prefix: false
+
+    # Local models
+    - pattern: "local/*"
+      provider: ollama
+      strip_prefix: true
+
+    - pattern: "ollama/*"
+      provider: ollama
+      strip_prefix: true
+
+    # LiteLLM catch-all
+    - pattern: "litellm/*"
+      provider: litellm
+      strip_prefix: true
+
+    # Azure OpenAI
+    - pattern: "azure/*"
+      provider: azure
+      strip_prefix: true
+
+  # Default provider when no pattern matches
+  default_provider: openai
+
+  # Fallback chain (try next provider on failure)
+  fallback:
+    enabled: true
+    chain:
+      - openai
+      - anthropic
+      - ollama
+    trigger_on:
+      - 503  # Service Unavailable
+      - 529  # Overloaded
+
+# ==============================================================================
+# Caching
+# ==============================================================================
+cache:
+  enabled: true
+  backend: "redis"  # redis | memory | none
+  redis:
+    url: "redis://localhost:6379"
+    prefix: "or:"
+    ttl: 3600  # Cache TTL in seconds
+
+  # Cache key includes these fields
+  key_fields:
+    - model
+    - input
+    - instructions
+    - temperature
+    - response_format
+
+# ==============================================================================
+# Observability
+# ==============================================================================
+observability:
+  # Logging
+  logging:
+    level: "info"  # debug | info | warn | error
+    format: "json"  # json | text
+    include_request_body: false
+    include_response_body: false
+
+  # Metrics (Prometheus)
+  metrics:
+    enabled: true
+    endpoint: "/metrics"
+    include_labels:
+      - model
+      - provider
+      - status
+
+  # Tracing (OpenTelemetry)
+  tracing:
+    enabled: false
+    exporter: "otlp"
+    endpoint: "http://localhost:4317"
+    sample_rate: 0.1
+
+# ==============================================================================
+# Security
+# ==============================================================================
+security:
+  # CORS
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:3000"
+      - "https://*.example.com"
+    methods:
+      - GET
+      - POST
+      - OPTIONS
+    headers:
+      - Authorization
+      - Content-Type
+      - X-Request-ID
+
+  # Request validation
+  validation:
+    max_input_length: 1000000  # Characters
+    max_tools: 128
+    max_tool_output: 100000  # Characters
+
+  # Rate limiting (per API key)
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    tokens_per_minute: 100000
+    burst: 10

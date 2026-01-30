@@ -249,9 +249,85 @@ If migrating from pure OpenAI Responses API:
 
 ---
 
-## Additional Resources
+## Workflow Decision Tree
 
-- **`templates/`** — JSON/YAML request/response examples and routing configurations
-- **`reference/`** — Open Responses specification, schema definitions, and provider documentation
+```
+Task: Build Open Responses Router
+│
+├─ Deployment Type?
+│  ├─ Python (FastAPI) → Use templates/Dockerfile + requirements.txt
+│  ├─ Rust (High-perf) → See rust-open-responses-engine skill
+│  └─ Existing Backend → Add routing middleware
+│
+├─ Provider Setup?
+│  ├─ Cloud Only → Configure OpenAI + Anthropic in routing_config.yaml
+│  ├─ Local Only → Configure Ollama in docker-compose.yml
+│  └─ Hybrid → Configure fallback chain with cloud backup
+│
+├─ Features Needed?
+│  ├─ Streaming → Enable SSE endpoints
+│  ├─ Caching → Add Redis via docker-compose.yml
+│  ├─ Monitoring → Enable Prometheus + Grafana profiles
+│  └─ Tracing → Enable Jaeger profile
+│
+└─ Scale?
+   ├─ Single Instance → Basic docker-compose.yml
+   └─ Production → Add load balancer, replicas
+```
 
-Use these resources for implementation guidance and API reference.
+---
+
+## Quick Start
+
+```bash
+# 1. Configure providers
+cp templates/routing_config.yaml config/routing.yaml
+# Edit config/routing.yaml with your API keys
+
+# 2. Start the stack
+docker-compose -f templates/docker-compose.yml up
+
+# 3. Test the API
+curl -X POST http://localhost:8080/v1/responses \
+  -H "Content-Type: application/json" \
+  -d '{"model": "openai/gpt-4o", "input": "Hello!"}'
+```
+
+---
+
+## Reference Materials
+
+| Resource | Path | Purpose |
+|----------|------|---------|
+| API Specification | `reference/open_responses_spec.md` | Full API reference, streaming, errors |
+| Routing Config | `templates/routing_config.yaml` | Provider setup, routing rules, caching |
+| Docker Compose | `templates/docker-compose.yml` | Full stack with Redis, Ollama, monitoring |
+| Requirements | `templates/requirements.txt` | Python dependencies |
+
+---
+
+## Sandbox & Docker
+
+```bash
+# Development (with Ollama for local models)
+docker-compose -f templates/docker-compose.yml up router ollama redis
+
+# Full stack with monitoring
+docker-compose -f templates/docker-compose.yml --profile monitoring up
+
+# Production build
+docker build -f templates/Dockerfile --target runtime -t or-router:prod .
+```
+
+---
+
+## Provider Configuration
+
+Set environment variables for cloud providers:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+export ANTHROPIC_API_KEY="sk-ant-..."
+```
+
+For local models, Ollama starts automatically via docker-compose.

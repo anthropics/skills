@@ -420,10 +420,102 @@ impl ClassificationEngine {
 
 ---
 
-## Additional Resources
+## Workflow Decision Tree
 
-- **`scripts/`** — Build scripts, benchmark utilities, deployment helpers
-- **`templates/`** — API specification snippets, Cargo.toml templates
-- **`reference/`** — Rust crate documentation links, architecture notes
+```
+Task: Build Rust Open Responses Engine
+│
+├─ Build Type?
+│  ├─ Development → ./scripts/build.sh dev
+│  ├─ Release → ./scripts/build.sh release
+│  ├─ Full (GPU) → ./scripts/build.sh full
+│  └─ Docker → ./scripts/build.sh docker
+│
+├─ Inference Backend?
+│  ├─ API Proxy Only → No local inference
+│  ├─ Burn (GPU) → Enable gpu feature
+│  ├─ SmartCore (CPU) → Enable local-inference feature
+│  └─ External Ollama → Configure in config.toml
+│
+├─ Deployment?
+│  ├─ Single Binary → cargo build --release
+│  ├─ Docker → docker build --target runtime
+│  ├─ Docker + GPU → docker build --target gpu-runtime
+│  └─ Kubernetes → Use Dockerfile + Helm charts
+│
+└─ Observability?
+   ├─ Logging → Configure tracing in config.toml
+   ├─ Metrics → Enable Prometheus endpoint
+   └─ Tracing → Enable OpenTelemetry exporter
+```
 
-Use these resources to accelerate your Rust backend development.
+---
+
+## Quick Start
+
+```bash
+# 1. Initialize project from template
+cp templates/Cargo.toml Cargo.toml
+cp templates/config.toml config/default.toml
+
+# 2. Build and run
+./scripts/build.sh dev
+./target/debug/or-server --config config/default.toml
+
+# 3. Or use Docker
+./scripts/build.sh docker
+docker run -p 8080:8080 or-engine:latest
+```
+
+---
+
+## Reference Materials
+
+| Resource | Path | Purpose |
+|----------|------|---------|
+| Architecture Guide | `reference/rust_architecture.md` | Types, traits, streaming, error handling |
+| Cargo Template | `templates/Cargo.toml` | Workspace setup, dependencies |
+| Config Template | `templates/config.toml` | Server, providers, caching, auth |
+| Build Script | `scripts/build.sh` | Dev, release, Docker builds |
+| Docker Compose | `templates/docker-compose.yml` | Full stack with Redis, Ollama, monitoring |
+
+---
+
+## Sandbox & Docker
+
+```bash
+# Development with hot reload
+docker-compose -f templates/docker-compose.yml --profile dev up engine-dev
+
+# Production stack
+docker-compose -f templates/docker-compose.yml up engine ollama redis
+
+# With monitoring (Prometheus + Grafana)
+docker-compose -f templates/docker-compose.yml --profile monitoring up
+
+# GPU-enabled
+docker build -f templates/Dockerfile --target gpu-runtime -t or-engine:gpu .
+```
+
+---
+
+## Performance Tuning
+
+| Setting | Value | Impact |
+|---------|-------|--------|
+| `server.workers` | CPU cores | Parallelism |
+| `cache.max_size` | 10000 | Memory vs hit rate |
+| `cache.ttl_secs` | 3600 | Freshness vs load |
+| `[profile.release] lto = true` | - | Binary size, startup |
+
+---
+
+## Crate Features
+
+```toml
+[features]
+default = []
+local-inference = ["or-inference"]  # Burn + SmartCore
+gpu = ["burn/wgpu"]                 # GPU acceleration
+full = ["local-inference", "gpu"]   # Everything
+```

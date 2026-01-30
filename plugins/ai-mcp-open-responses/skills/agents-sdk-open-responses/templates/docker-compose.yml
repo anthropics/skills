@@ -1,0 +1,159 @@
+# Agents SDK Development Stack
+# Complete environment with local LLM and agent runner
+
+version: "3.9"
+
+services:
+  # ==========================================================================
+  # Agent Runner
+  # ==========================================================================
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: agents-runner
+    stdin_open: true
+    tty: true
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - LOCAL_API_KEY=local-key
+      - OPEN_RESPONSES_URL=http://router:8080/v1
+      - OLLAMA_URL=http://ollama:11434
+    volumes:
+      - .:/app
+      - agent-cache:/home/agent/.cache
+    depends_on:
+      - router
+    networks:
+      - agents-network
+    command: ["python", "agent_runner.py", "--interactive", "--provider", "local"]
+
+  # ==========================================================================
+  # Open Responses Router
+  # ==========================================================================
+  router:
+    image: open-responses-router:latest
+    build:
+      context: ../open-responses-orchestrator
+      dockerfile: templates/Dockerfile
+    container_name: agents-router
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_URL=http://ollama:11434
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    depends_on:
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - agents-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Ollama Local LLM
+  # ==========================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: agents-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - agents-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Redis Cache
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: agents-redis
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - agents-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Jupyter Notebook (Development)
+  # ==========================================================================
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: agents-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPEN_RESPONSES_URL=http://router:8080/v1
+    volumes:
+      - .:/app
+      - jupyter-data:/home/agent/.jupyter
+    networks:
+      - agents-network
+    command: >
+      jupyter notebook
+      --ip=0.0.0.0
+      --port=8888
+      --no-browser
+      --allow-root
+      --NotebookApp.token=''
+    profiles:
+      - dev
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  agents-network:
+    driver: bridge
+    name: agents-sdk-network
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  ollama-models:
+    name: agents-ollama-models
+  redis-data:
+    name: agents-redis-data
+  agent-cache:
+    name: agents-cache
+  jupyter-data:
+    name: agents-jupyter-data

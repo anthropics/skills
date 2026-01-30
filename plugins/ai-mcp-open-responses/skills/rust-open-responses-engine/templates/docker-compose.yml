@@ -1,0 +1,211 @@
+# Rust Open Responses Engine Stack
+# Development and production deployment configurations
+
+version: "3.9"
+
+services:
+  # ==========================================================================
+  # Open Responses Engine (Rust)
+  # ==========================================================================
+  engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: or-engine
+    ports:
+      - "8080:8080"
+    environment:
+      - RUST_LOG=info
+      - OR_SERVER__HOST=0.0.0.0
+      - OR_SERVER__PORT=8080
+      - OR_CACHE__REDIS_URL=redis://redis:6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./config:/app/config:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - or-network
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 2G
+        reservations:
+          cpus: "1"
+          memory: 512M
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Development Server (with hot reload)
+  # ==========================================================================
+  engine-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: or-engine-dev
+    ports:
+      - "8080:8080"
+    environment:
+      - RUST_LOG=debug
+      - OR_SERVER__HOST=0.0.0.0
+      - OR_SERVER__PORT=8080
+      - OR_CACHE__REDIS_URL=redis://redis:6379
+    volumes:
+      - .:/app
+      - cargo-cache:/usr/local/cargo/registry
+      - target-cache:/app/target
+    depends_on:
+      - redis
+    networks:
+      - or-network
+    profiles:
+      - dev
+
+  # ==========================================================================
+  # Redis Cache
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: or-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - or-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Ollama (Local LLM)
+  # ==========================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: or-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - or-network
+    deploy:
+      resources:
+        limits:
+          cpus: "8"
+          memory: 16G
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Prometheus Metrics
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: or-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=7d"
+    networks:
+      - or-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # ==========================================================================
+  # Grafana Dashboard
+  # ==========================================================================
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: or-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - or-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # ==========================================================================
+  # Load Testing (k6)
+  # ==========================================================================
+  k6:
+    image: grafana/k6:latest
+    container_name: or-k6
+    volumes:
+      - ./tests/load:/scripts
+    networks:
+      - or-network
+    profiles:
+      - testing
+    command: run /scripts/load_test.js
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  or-network:
+    driver: bridge
+    name: open-responses-rust-network
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  redis-data:
+    name: or-redis-data
+  ollama-models:
+    name: or-ollama-models
+  prometheus-data:
+    name: or-prometheus-data
+  grafana-data:
+    name: or-grafana-data
+  cargo-cache:
+    name: or-cargo-cache
+  target-cache:
+    name: or-target-cache

@@ -276,9 +276,84 @@ litellm --config litellm_config.yaml --port 4000
 
 ---
 
-## Additional Resources
+## Workflow Decision Tree
 
-- **`reference/`** — Agents SDK API documentation, Open Responses schemas
-- **`scripts/`** — Setup scripts, example agent configurations, test utilities
+```
+Task: Build Agent Workflow
+│
+├─ Agent Complexity?
+│  ├─ Single Agent → Define agent with tools
+│  ├─ Multi-Agent → Use handoffs for specialization
+│  └─ Orchestrator → Create coordinator with handoffs
+│
+├─ Model Selection?
+│  ├─ Fast/Cheap → local/llama3.2 or openai/gpt-4o-mini
+│  ├─ Smart → anthropic/claude-sonnet-4-20250514
+│  └─ Code → local/codellama
+│
+├─ Execution Environment?
+│  ├─ Interactive → python scripts/agent_runner.py --interactive
+│  ├─ Scripted → python scripts/agent_runner.py --task "..."
+│  └─ Docker → docker-compose up agent
+│
+└─ Safety Requirements?
+   ├─ Basic → Input length validation
+   ├─ Production → Add PII detection, content policy
+   └─ Enterprise → Add output validation, audit logging
+```
 
-Use these resources to accelerate your agent development workflow.
+---
+
+## Quick Start
+
+```bash
+# 1. Install dependencies
+pip install -r scripts/requirements.txt
+
+# 2. Configure agent
+cp templates/agent_config.yaml config/my_agent.yaml
+# Edit config/my_agent.yaml
+
+# 3. Run interactively
+python scripts/agent_runner.py --interactive --provider local
+
+# 4. Or use Docker (includes Ollama + Open Responses)
+docker-compose -f templates/docker-compose.yml up
+```
+
+---
+
+## Reference Materials
+
+| Resource | Path | Purpose |
+|----------|------|---------|
+| SDK Patterns | `reference/agents_sdk_patterns.md` | Agent design, tools, handoffs, guardrails |
+| Agent Runner | `scripts/agent_runner.py` | Configurable CLI for running agents |
+| Agent Config | `templates/agent_config.yaml` | YAML configuration template |
+| Docker Compose | `templates/docker-compose.yml` | Full stack with Ollama + router |
+
+---
+
+## Sandbox & Docker
+
+```bash
+# Full stack (Ollama + Router + Agent)
+docker-compose -f templates/docker-compose.yml up
+
+# Interactive agent session
+docker-compose run agent python agent_runner.py --interactive
+
+# Development with Jupyter
+docker-compose -f templates/docker-compose.yml --profile dev up jupyter
+```
+
+---
+
+## Provider Selection
+
+| Provider | Model | Best For |
+|----------|-------|----------|
+| `local/llama3.2` | Ollama | General tasks, fast |
+| `local/codellama` | Ollama | Code generation |
+| `openai/gpt-4o` | OpenAI | Complex reasoning |
+| `anthropic/claude-sonnet-4-20250514` | Anthropic | Analysis, writing |

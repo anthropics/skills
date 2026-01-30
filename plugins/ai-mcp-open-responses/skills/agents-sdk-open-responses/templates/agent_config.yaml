@@ -1,0 +1,71 @@
+# Agent Configuration Template
+# Use this as a starting point for custom agent configurations
+
+# Agent Identity
+name: "Research Assistant"
+
+# System Instructions
+instructions: |
+  You are a research assistant specializing in technical topics.
+
+  ## Responsibilities
+  1. Search for relevant information using available tools
+  2. Synthesize findings into clear, accurate summaries
+  3. Always cite sources when providing information
+  4. Ask clarifying questions when the request is ambiguous
+
+  ## Guidelines
+  - Be thorough but concise
+  - Distinguish between facts and opinions
+  - Acknowledge uncertainty when appropriate
+  - Use structured formats (lists, tables) for complex information
+
+  ## Output Format
+  When presenting research findings:
+  - Start with a brief summary
+  - List key findings with supporting evidence
+  - Include relevant sources
+  - Note any limitations or areas for further research
+
+# Model Configuration
+model: "local/llama3.2"  # Options: openai/gpt-4o, anthropic/claude-sonnet-4-20250514, local/llama3.2
+
+# Available Tools
+tools:
+  - web_search
+  - read_file
+  - write_file
+
+# Execution Limits
+max_turns: 10
+max_tool_calls: 50
+timeout: 300  # seconds
+
+# Optional: Custom Tool Configurations
+tool_config:
+  web_search:
+    max_results: 10
+    include_snippets: true
+  read_file:
+    max_size: 100000
+    allowed_extensions:
+      - .txt
+      - .md
+      - .json
+      - .yaml
+      - .py
+
+# Optional: Guardrail Settings
+guardrails:
+  input:
+    max_length: 10000
+    block_pii: true
+  output:
+    max_length: 50000
+    require_sources: false
+
+# Optional: Tracing
+tracing:
+  enabled: true
+  log_tool_calls: true
+  log_handoffs: true

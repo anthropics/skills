@@ -1,0 +1,49 @@
+# Open Responses Orchestrator Dependencies
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+starlette>=0.35.0
+
+# HTTP Client
+httpx>=0.26.0
+aiohttp>=3.9.0
+
+# Validation
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Provider SDKs
+openai>=1.10.0
+anthropic>=0.18.0
+
+# Streaming
+sse-starlette>=1.8.0
+anyio>=4.2.0
+
+# Configuration
+pyyaml>=6.0.0
+python-dotenv>=1.0.0
+
+# Caching
+redis>=5.0.0
+aiocache>=0.12.0
+
+# Rate Limiting
+slowapi>=0.1.0
+
+# Observability
+structlog>=24.1.0
+prometheus-client>=0.19.0
+opentelemetry-api>=1.22.0
+opentelemetry-sdk>=1.22.0
+opentelemetry-instrumentation-fastapi>=0.43b0
+opentelemetry-exporter-otlp>=1.22.0
+
+# Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.0
+
+# Utilities
+tenacity>=8.2.0
+orjson>=3.9.0

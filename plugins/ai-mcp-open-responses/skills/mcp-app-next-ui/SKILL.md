@@ -234,12 +234,75 @@ export async function myToolHandler(params: MyToolParams) {
 
 ---
 
-## Additional Resources
+## Workflow Decision Tree
 
-The following subdirectories contain supplementary materials:
+```
+Task: Build MCP App UI
+│
+├─ New Project?
+│  ├─ Yes → Run setup_project.sh from scripts/
+│  │         └─ Customize templates/mcp_server_template.ts
+│  └─ No → Add MCP to existing project
+│           └─ npm install @modelcontextprotocol/ext-apps
+│
+├─ UI Type?
+│  ├─ Data Display → Use DataTable, Card patterns from reference/shadcn_patterns.md
+│  ├─ Form Input → Use Form with validation patterns
+│  └─ Interactive → Use useApp hook with callServerTool
+│
+├─ Deployment?
+│  ├─ Local Dev → python scripts/dev_server.py
+│  ├─ Docker → docker-compose up from templates/
+│  └─ Production → Build with Dockerfile (multi-stage)
+│
+└─ Styling?
+   ├─ Host Theme → useHostStyles() for dark mode sync
+   └─ Custom → Tailwind + shadcn/ui components
+```
 
-- **`scripts/`** — Helper scripts for development, building, and deployment
-- **`templates/`** — Starter templates for components, pages, and configurations
-- **`reference/`** — API references, schema definitions, and protocol documentation
+---
 
-Use these resources as starting points and adapt them to your specific requirements.
+## Quick Start
+
+```bash
+# 1. Create new project
+./scripts/setup_project.sh my-mcp-app
+
+# 2. Start development servers
+cd my-mcp-app
+python ../scripts/dev_server.py --frontend-port 3000 --mcp-port 8080
+
+# 3. Or use Docker
+docker-compose -f templates/docker-compose.yml up
+```
+
+---
+
+## Reference Materials
+
+Load these resources during development:
+
+| Resource | Path | Purpose |
+|----------|------|---------|
+| Architecture Guide | `reference/mcp_apps_architecture.md` | Core concepts, security, communication |
+| shadcn Patterns | `reference/shadcn_patterns.md` | Component patterns, dark mode, forms |
+| Server Template | `templates/mcp_server_template.ts` | Production-ready MCP server |
+| Docker Config | `templates/docker-compose.yml` | Container orchestration |
+| Setup Script | `scripts/setup_project.sh` | Project scaffolding |
+
+---
+
+## Sandbox & Docker
+
+For isolated development and testing:
+
+```bash
+# Development with hot reload
+docker-compose -f templates/docker-compose.yml up frontend
+
+# Full stack (frontend + MCP server + Redis)
+docker-compose -f templates/docker-compose.yml up
+
+# Production build
+docker build -f templates/Dockerfile --target runner -t mcp-app:prod .
+```

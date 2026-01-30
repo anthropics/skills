@@ -1,0 +1,119 @@
+# MCP App Docker Compose Configuration
+# Orchestrates frontend, MCP server, and development dependencies
+
+version: "3.9"
+
+services:
+  # ==========================================================================
+  # Frontend (Next.js MCP App)
+  # ==========================================================================
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development  # Use 'runner' for production
+    container_name: mcp-app-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_MCP_URL=http://mcp-server:8080
+      - WATCHPACK_POLLING=true  # Enable hot reload in Docker
+    volumes:
+      - .:/app
+      - /app/node_modules  # Preserve node_modules from container
+      - /app/.next  # Preserve build cache
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # MCP Server (Node.js/TypeScript)
+  # ==========================================================================
+  mcp-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: mcp-server
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - MCP_PORT=8080
+      - LOG_LEVEL=debug
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Redis (Optional: Session/Cache Storage)
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: mcp-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+  # ==========================================================================
+  # PostgreSQL (Optional: Persistent Storage)
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: mcp-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: mcp
+      POSTGRES_PASSWORD: mcp_secret
+      POSTGRES_DB: mcp_app
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d  # SQL init scripts
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mcp -d mcp_app"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mcp-network
+    restart: unless-stopped
+
+# ==========================================================================
+# Networks
+# ==========================================================================
+networks:
+  mcp-network:
+    driver: bridge
+    name: mcp-app-network
+
+# ==========================================================================
+# Volumes
+# ==========================================================================
+volumes:
+  redis-data:
+    name: mcp-redis-data
+  postgres-data:
+    name: mcp-postgres-data

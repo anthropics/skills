@@ -1,0 +1,171 @@
+# Open Responses Engine Configuration
+# Production configuration template
+
+# ==============================================================================
+# Server Configuration
+# ==============================================================================
+[server]
+host = "0.0.0.0"
+port = 8080
+workers = 4  # Number of worker threads (0 = auto-detect)
+timeout_secs = 300
+max_request_size = "10MB"
+keep_alive_secs = 75
+
+# ==============================================================================
+# TLS Configuration (Optional)
+# ==============================================================================
+[server.tls]
+enabled = false
+cert_path = "/etc/ssl/certs/server.crt"
+key_path = "/etc/ssl/private/server.key"
+
+# ==============================================================================
+# Providers Configuration
+# ==============================================================================
+
+[providers.openai]
+enabled = true
+base_url = "https://api.openai.com/v1"
+api_key_env = "OPENAI_API_KEY"
+timeout_secs = 120
+max_retries = 3
+models = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo"]
+
+[providers.anthropic]
+enabled = true
+base_url = "https://api.anthropic.com/v1"
+api_key_env = "ANTHROPIC_API_KEY"
+api_version = "2024-01-01"
+timeout_secs = 120
+max_retries = 3
+models = ["claude-sonnet-4-20250514", "claude-opus-4-20250514"]
+
+[providers.ollama]
+enabled = true
+base_url = "http://localhost:11434"
+timeout_secs = 300
+health_check_interval_secs = 30
+models = ["llama3.2", "codellama", "mistral"]
+
+[providers.local]
+enabled = false
+model_path = "/models"
+device = "cuda"  # cuda | cpu | mps
+
+# ==============================================================================
+# Routing Configuration
+# ==============================================================================
+[routing]
+default_provider = "openai"
+
+[[routing.rules]]
+pattern = "openai/*"
+provider = "openai"
+strip_prefix = true
+
+[[routing.rules]]
+pattern = "gpt-*"
+provider = "openai"
+
+[[routing.rules]]
+pattern = "anthropic/*"
+provider = "anthropic"
+strip_prefix = true
+
+[[routing.rules]]
+pattern = "claude-*"
+provider = "anthropic"
+
+[[routing.rules]]
+pattern = "local/*"
+provider = "ollama"
+strip_prefix = true
+
+[[routing.rules]]
+pattern = "ollama/*"
+provider = "ollama"
+strip_prefix = true
+
+[routing.fallback]
+enabled = true
+chain = ["openai", "anthropic", "ollama"]
+trigger_on_status = [503, 529]
+
+# ==============================================================================
+# Cache Configuration
+# ==============================================================================
+[cache]
+enabled = true
+backend = "redis"  # redis | memory | none
+max_size = 10000
+ttl_secs = 3600
+
+[cache.redis]
+url = "redis://localhost:6379"
+prefix = "or:"
+pool_size = 10
+
+[cache.memory]
+max_capacity = 1000
+
+# ==============================================================================
+# Rate Limiting
+# ==============================================================================
+[rate_limit]
+enabled = true
+requests_per_minute = 100
+tokens_per_minute = 200000
+burst_size = 20
+key_by = "api_key"  # api_key | ip | header:X-Custom-Key
+
+# ==============================================================================
+# Authentication
+# ==============================================================================
+[auth]
+enabled = true
+header = "Authorization"
+prefix = "Bearer "
+# API keys can be set via environment or loaded from file
+api_keys_env = "OR_API_KEYS"  # Comma-separated list
+# api_keys_file = "/etc/or/api_keys.txt"
+
+# ==============================================================================
+# Logging
+# ==============================================================================
+[logging]
+level = "info"  # trace | debug | info | warn | error
+format = "json"  # json | pretty
+include_spans = true
+
+[logging.file]
+enabled = false
+path = "/var/log/or-engine/server.log"
+rotation = "daily"
+max_files = 7
+
+# ==============================================================================
+# Metrics
+# ==============================================================================
+[metrics]
+enabled = true
+endpoint = "/metrics"
+include_labels = ["model", "provider", "status"]
+
+# ==============================================================================
+# Tracing (OpenTelemetry)
+# ==============================================================================
+[tracing]
+enabled = false
+exporter = "otlp"  # otlp | jaeger | zipkin
+endpoint = "http://localhost:4317"
+sample_rate = 0.1
+service_name = "open-responses-engine"
+
+# ==============================================================================
+# Health Checks
+# ==============================================================================
+[health]
+endpoint = "/health"
+include_dependencies = true
+timeout_secs = 5
