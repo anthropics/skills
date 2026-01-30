@@ -43,6 +43,29 @@ curl -s -X POST -H "Authorization: Bearer $ENDPOINTS_API_KEY" \
   "$ENDPOINTS_API_URL/api/scan" | jq
 ```
 
+### Prompt Routing
+
+The `prompt` parameter controls which endpoint items are added to:
+
+| Prompt Format | Behavior | Example |
+|---------------|----------|---------|
+| `category name` | Creates new endpoint with AI-generated slug | `job tracker` → `/job-tracker/january-2026` |
+| `category - slug` | Adds to existing endpoint | `job-tracker - usds` → `/job-tracker/usds` |
+
+**Examples:**
+```bash
+# Create new endpoint (AI determines slug based on content)
+-F "prompt=job tracker"
+
+# Add to existing endpoint /job-tracker/usds
+-F "prompt=job-tracker - usds"
+
+# Add to existing endpoint /invoices/acme-corp
+-F "prompt=invoices - acme-corp"
+```
+
+Use `category - slug` format when adding multiple documents to the same endpoint.
+
 ### Create Empty Endpoint
 ```bash
 curl -s -X POST -H "Authorization: Bearer $ENDPOINTS_API_KEY" \

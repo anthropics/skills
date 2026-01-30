@@ -109,7 +109,14 @@ Scan files or text with AI extraction.
 |-------|------|-------------|
 | `files` | File[] | Files to scan (PDF, images, docs) |
 | `texts` | String[] | Text content to scan |
-| `prompt` | String | Category hint (e.g., "job tracker") |
+| `prompt` | String | Controls endpoint routing (see below) |
+
+**Prompt Routing:**
+
+The `prompt` parameter determines which endpoint items are added to:
+
+- `"category name"` - Creates new endpoint with AI-generated slug (e.g., `"job tracker"` → `/job-tracker/january-2026`)
+- `"category - slug"` - Adds to existing endpoint (e.g., `"job-tracker - usds"` → `/job-tracker/usds`)
 
 **Response:**
 ```json
