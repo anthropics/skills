@@ -1,0 +1,9 @@
+AI MCP & Open Responses Toolkit License
+
+Copyright (c) 2025
+
+This skill collection is provided for use with Claude Code and compatible
+MCP-enabled applications. See individual skill files for specific usage
+guidelines and restrictions.
+
+For questions about licensing, please contact the repository maintainers.

@@ -1,0 +1,13 @@
+{
+  "id": "ai-mcp-open-responses",
+  "name": "AI MCP & Open Responses Toolkit",
+  "version": "0.1.0",
+  "description": "Skills for MCP Apps (Next/React/Tailwind/shadcn), Open Responses, Agents SDK and Rust backends.",
+  "skills": [
+    {"path": "skills/mcp-app-next-ui/SKILL.md"},
+    {"path": "skills/open-responses-orchestrator/SKILL.md"},
+    {"path": "skills/agents-sdk-open-responses/SKILL.md"},
+    {"path": "skills/rust-open-responses-engine/SKILL.md"}
+  ],
+  "agents": []
+}
