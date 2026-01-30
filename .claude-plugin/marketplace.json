@@ -40,6 +40,20 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "id": "ai-mcp-open-responses",
+      "name": "ai-mcp-open-responses",
+      "description": "Skills for MCP Apps (Next/React/Tailwind/shadcn), Open Responses, Agents SDK and Rust backends.",
+      "path": "plugins/ai-mcp-open-responses/.claude-plugin/plugin.json",
+      "source": "./plugins/ai-mcp-open-responses",
+      "strict": false,
+      "skills": [
+        "./plugins/ai-mcp-open-responses/skills/mcp-app-next-ui",
+        "./plugins/ai-mcp-open-responses/skills/open-responses-orchestrator",
+        "./plugins/ai-mcp-open-responses/skills/agents-sdk-open-responses",
+        "./plugins/ai-mcp-open-responses/skills/rust-open-responses-engine"
+      ]
     }
   ]
 }
