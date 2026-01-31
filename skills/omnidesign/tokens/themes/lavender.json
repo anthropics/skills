@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "lavender",
+    "$description": "Lavender theme with soft purple tones - dreamy and creative like Lovable's Lavender"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#2D1B4E",
+        "$description": "Primary text - deep violet for contrast on lavender surfaces"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#6B5A7A",
+        "$description": "Secondary text - muted purple-gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FAF5FF",
+        "$description": "Text on light surfaces - soft lavender-white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "Link text - soft lavender purple"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#C4B5FD",
+        "$description": "Link on hover - bright lavender"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FAF5FF",
+        "$description": "Default surface - pale lavender cream"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Elevated surface - pure white"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#F3E8FF",
+        "$description": "Depressed surface - soft violet for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(167, 139, 250, 0.1)",
+        "$description": "Overlay - lavender-tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#DDD6FE",
+        "$description": "Default border - soft lavender"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#EDE9FE",
+        "$description": "Subtle border - very faint purple"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#C4B5FD",
+        "$description": "Strong border - visible lavender"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#8B5CF6",
+        "$description": "Primary action - vibrant violet"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "Primary hover - bright lavender"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#7C3AED",
+        "$description": "Secondary action - deep violet"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "Focus ring - soft lavender glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#10B981",
+        "$description": "Success - emerald green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#F59E0B",
+        "$description": "Warning - warm amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#EF4444",
+        "$description": "Error - vibrant red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Info - sky blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(139, 92, 246, 0.12), 0 2px 4px -2px rgba(139, 92, 246, 0.08)",
+      "$description": "Card shadow - lavender-tinted elevation"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(139, 92, 246, 0.15), 0 4px 6px -4px rgba(139, 92, 246, 0.1)",
+      "$description": "Dropdown shadow - violet-tinted depth"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(139, 92, 246, 0.2), 0 8px 10px -6px rgba(139, 92, 246, 0.15)",
+      "$description": "Modal shadow - prominent lavender-tinted"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(167, 139, 250, 0.4)",
+      "$description": "Focus glow - soft lavender ring"
+    }
+  }
+}

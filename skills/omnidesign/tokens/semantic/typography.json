@@ -1,0 +1,118 @@
+{
+  "heading": {
+    "hero": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.6xl}",
+        "fontWeight": "{fontWeight.bold}",
+        "lineHeight": "{lineHeight.tight}",
+        "letterSpacing": "{letterSpacing.tight}"
+      },
+      "$description": "Hero heading typography for landing pages"
+    },
+    "page": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.4xl}",
+        "fontWeight": "{fontWeight.bold}",
+        "lineHeight": "{lineHeight.tight}",
+        "letterSpacing": "{letterSpacing.tight}"
+      },
+      "$description": "Page title typography"
+    },
+    "section": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.2xl}",
+        "fontWeight": "{fontWeight.semibold}",
+        "lineHeight": "{lineHeight.snug}",
+        "letterSpacing": "{letterSpacing.tight}"
+      },
+      "$description": "Section heading typography"
+    },
+    "card": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.xl}",
+        "fontWeight": "{fontWeight.semibold}",
+        "lineHeight": "{lineHeight.snug}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "Card heading typography"
+    }
+  },
+  "body": {
+    "default": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.base}",
+        "fontWeight": "{fontWeight.normal}",
+        "lineHeight": "{lineHeight.normal}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "Default body text typography"
+    },
+    "small": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.normal}",
+        "lineHeight": "{lineHeight.normal}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "Small body text typography"
+    },
+    "large": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.lg}",
+        "fontWeight": "{fontWeight.normal}",
+        "lineHeight": "{lineHeight.relaxed}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "Large body text typography"
+    }
+  },
+  "ui": {
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.medium}",
+        "lineHeight": "{lineHeight.normal}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "UI label typography"
+    },
+    "button": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.base}",
+        "fontWeight": "{fontWeight.medium}",
+        "lineHeight": "{lineHeight.normal}",
+        "letterSpacing": "{letterSpacing.wide}"
+      },
+      "$description": "Button text typography"
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamily.sans}",
+        "fontSize": "{fontSize.xs}",
+        "fontWeight": "{fontWeight.normal}",
+        "lineHeight": "{lineHeight.normal}",
+        "letterSpacing": "{letterSpacing.normal}"
+      },
+      "$description": "Caption text typography"
+    }
+  }
+}

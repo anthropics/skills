@@ -1,0 +1,69 @@
+{
+  "space": {
+    "sectionY": {
+      "$type": "dimension",
+      "$value": "{spacing.16}",
+      "$description": "Vertical section padding"
+    },
+    "sectionX": {
+      "$type": "dimension",
+      "$value": "{spacing.6}",
+      "$description": "Horizontal section padding"
+    },
+    "cardPadding": {
+      "$type": "dimension",
+      "$value": "{spacing.6}",
+      "$description": "Card internal padding"
+    },
+    "cardGap": {
+      "$type": "dimension",
+      "$value": "{spacing.4}",
+      "$description": "Gap between card elements"
+    },
+    "stackSm": {
+      "$type": "dimension",
+      "$value": "{spacing.2}",
+      "$description": "Small vertical stack spacing"
+    },
+    "stackMd": {
+      "$type": "dimension",
+      "$value": "{spacing.4}",
+      "$description": "Medium vertical stack spacing"
+    },
+    "stackLg": {
+      "$type": "dimension",
+      "$value": "{spacing.6}",
+      "$description": "Large vertical stack spacing"
+    },
+    "inlineSm": {
+      "$type": "dimension",
+      "$value": "{spacing.2}",
+      "$description": "Small horizontal inline spacing"
+    },
+    "inlineMd": {
+      "$type": "dimension",
+      "$value": "{spacing.4}",
+      "$description": "Medium horizontal inline spacing"
+    },
+    "inlineLg": {
+      "$type": "dimension",
+      "$value": "{spacing.6}",
+      "$description": "Large horizontal inline spacing"
+    },
+    "formGap": {
+      "$type": "dimension",
+      "$value": "{spacing.4}",
+      "$description": "Gap between form fields"
+    },
+    "inputPadding": {
+      "$type": "dimension",
+      "$value": "{spacing.3}",
+      "$description": "Input field internal padding"
+    },
+    "containerMax": {
+      "$type": "dimension",
+      "$value": "{spacing.24}",
+      "$description": "Max-width for content containers (converted to rem in usage)"
+    }
+  }
+}

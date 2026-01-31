@@ -1,0 +1,44 @@
+{
+  "motion": {
+    "hover": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.fast}",
+        "easing": "{easing.easeOut}"
+      },
+      "$description": "Subtle feedback for hover interactions"
+    },
+    "enter": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.normal}",
+        "easing": "{easing.easeOut}"
+      },
+      "$description": "Elements appearing on screen"
+    },
+    "exit": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.fast}",
+        "easing": "{easing.easeIn}"
+      },
+      "$description": "Elements leaving the screen"
+    },
+    "page": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.slow}",
+        "easing": "{easing.easeInOut}"
+      },
+      "$description": "Page transitions"
+    },
+    "spring": {
+      "$type": "transition",
+      "$value": {
+        "duration": "{duration.normal}",
+        "easing": "{easing.spring}"
+      },
+      "$description": "Bouncy interactions with overshoot"
+    }
+  }
+}
