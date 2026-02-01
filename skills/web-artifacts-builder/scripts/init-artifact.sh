@@ -8,19 +8,11 @@ NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
 
 echo "🔍 Detected Node.js version: $NODE_VERSION"
 
-if [ "$NODE_VERSION" -lt 18 ]; then
-  echo "❌ Error: Node.js 18 or higher is required"
+if [ "$NODE_VERSION" -lt 20 ]; then
+  echo "❌ Error: Node.js 20 or higher is required"
   echo "   Current version: $(node -v)"
+  echo "   Please upgrade Node.js: https://nodejs.org/"
   exit 1
-fi
-
-# Set Vite version based on Node version
-if [ "$NODE_VERSION" -ge 20 ]; then
-  VITE_VERSION="latest"
-  echo "✅ Using Vite latest (Node 20+)"
-else
-  VITE_VERSION="5.4.11"
-  echo "✅ Using Vite $VITE_VERSION (Node 18 compatible)"
 fi
 
 # Detect OS and set sed syntax
@@ -38,7 +30,7 @@ fi
 
 # Check if project name is provided
 if [ -z "$1" ]; then
-  echo "❌ Usage: ./create-react-shadcn-complete.sh <project-name>"
+  echo "❌ Usage: ./init-artifact.sh <project-name>"
   exit 1
 fi
 
@@ -53,9 +45,9 @@ if [ ! -f "$COMPONENTS_TARBALL" ]; then
   exit 1
 fi
 
-echo "🚀 Creating new React + Vite project: $PROJECT_NAME"
+echo "🚀 Creating new React 19 + Vite project: $PROJECT_NAME"
 
-# Create new Vite project (always use latest create-vite, pin vite version later)
+# Create new Vite project with React 19
 pnpm create vite "$PROJECT_NAME" --template react-ts
 
 # Navigate into project directory
@@ -65,20 +57,16 @@ echo "🧹 Cleaning up Vite template..."
 $SED_INPLACE '/<link rel="icon".*vite\.svg/d' index.html
 $SED_INPLACE 's/<title>.*<\/title>/<title>'"$PROJECT_NAME"'<\/title>/' index.html
 
-echo "📦 Installing base dependencies..."
+echo "📦 Installing base dependencies with React 19..."
 pnpm install
+pnpm add react@latest react-dom@latest
+pnpm add -D @types/react@latest @types/react-dom@latest
 
-# Pin Vite version for Node 18
-if [ "$NODE_VERSION" -lt 20 ]; then
-  echo "📌 Pinning Vite to $VITE_VERSION for Node 18 compatibility..."
-  pnpm add -D vite@$VITE_VERSION
-fi
-
-echo "📦 Installing Tailwind CSS and dependencies..."
-pnpm install -D tailwindcss@3.4.1 postcss autoprefixer @types/node tailwindcss-animate
+echo "📦 Installing Tailwind CSS v4..."
+pnpm install -D tailwindcss@latest @tailwindcss/vite postcss autoprefixer @types/node
 pnpm install class-variance-authority clsx tailwind-merge lucide-react next-themes
 
-echo "⚙️  Creating Tailwind and PostCSS configuration..."
+echo "⚙️  Creating PostCSS configuration..."
 cat > postcss.config.js << 'EOF'
 export default {
   plugins: {
@@ -88,138 +76,84 @@ export default {
 }
 EOF
 
-echo "📝 Configuring Tailwind with shadcn theme..."
-cat > tailwind.config.js << 'EOF'
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: ["class"],
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
-    },
-  },
-  plugins: [require("tailwindcss-animate")],
-}
-EOF
-
-# Add Tailwind directives and CSS variables to index.css
-echo "🎨 Adding Tailwind directives and CSS variables..."
+# Tailwind v4 uses CSS-first configuration - no tailwind.config.js needed!
+echo "🎨 Creating Tailwind CSS v4 styles with @theme..."
 cat > src/index.css << 'EOF'
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
-  }
+/* Tailwind v4: CSS-first configuration using @theme */
+@theme {
+  /* Colors - shadcn/ui compatible */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(0 0% 3.9%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(0 0% 3.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(0 0% 3.9%);
+  --color-primary: hsl(0 0% 9%);
+  --color-primary-foreground: hsl(0 0% 98%);
+  --color-secondary: hsl(0 0% 96.1%);
+  --color-secondary-foreground: hsl(0 0% 9%);
+  --color-muted: hsl(0 0% 96.1%);
+  --color-muted-foreground: hsl(0 0% 45.1%);
+  --color-accent: hsl(0 0% 96.1%);
+  --color-accent-foreground: hsl(0 0% 9%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 89.8%);
+  --color-input: hsl(0 0% 89.8%);
+  --color-ring: hsl(0 0% 3.9%);
 
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-  }
+  /* Border radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Dark mode */
+.dark {
+  --color-background: hsl(0 0% 3.9%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-card: hsl(0 0% 3.9%);
+  --color-card-foreground: hsl(0 0% 98%);
+  --color-popover: hsl(0 0% 3.9%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(0 0% 98%);
+  --color-primary-foreground: hsl(0 0% 9%);
+  --color-secondary: hsl(0 0% 14.9%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-muted: hsl(0 0% 14.9%);
+  --color-muted-foreground: hsl(0 0% 63.9%);
+  --color-accent: hsl(0 0% 14.9%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-destructive: hsl(0 62.8% 30.6%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+  --color-border: hsl(0 0% 14.9%);
+  --color-input: hsl(0 0% 14.9%);
+  --color-ring: hsl(0 0% 83.1%);
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+/* Base styles */
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground;
 }
 EOF
 
@@ -250,15 +184,16 @@ config.compilerOptions.paths = { '@/*': ['./src/*'] };
 fs.writeFileSync(path, JSON.stringify(config, null, 2));
 "
 
-# Update vite.config.ts
-echo "⚙️  Updating Vite configuration..."
+# Update vite.config.ts with Tailwind v4 plugin
+echo "⚙️  Updating Vite configuration for Tailwind v4..."
 cat > vite.config.ts << 'EOF'
 import path from "path";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -276,7 +211,7 @@ pnpm install sonner cmdk vaul embla-carousel-react react-day-picker react-resiza
 echo "📦 Extracting shadcn/ui components..."
 tar -xzf "$COMPONENTS_TARBALL" -C src/
 
-# Create components.json for reference
+# Create components.json for reference (updated for Tailwind v4)
 echo "📝 Creating components.json config..."
 cat > components.json << 'EOF'
 {
@@ -285,7 +220,7 @@ cat > components.json << 'EOF'
   "rsc": false,
   "tsx": true,
   "tailwind": {
-    "config": "tailwind.config.js",
+    "config": "",
     "css": "src/index.css",
     "baseColor": "slate",
     "cssVariables": true,
@@ -301,7 +236,8 @@ cat > components.json << 'EOF'
 }
 EOF
 
-echo "✅ Setup complete! You can now use Tailwind CSS and shadcn/ui in your project."
+echo ""
+echo "✅ Setup complete! React 19 + Tailwind CSS v4 + shadcn/ui ready."
 echo ""
 echo "📦 Included components (40+ total):"
 echo "  - accordion, alert, aspect-ratio, avatar, badge, breadcrumb"
@@ -311,6 +247,17 @@ echo "  - form, hover-card, input, label, menubar, navigation-menu"
 echo "  - popover, progress, radio-group, resizable, scroll-area"
 echo "  - select, separator, sheet, skeleton, slider, sonner"
 echo "  - switch, table, tabs, textarea, toast, toggle, toggle-group, tooltip"
+echo ""
+echo "🆕 React 19 features available:"
+echo "  - ref as prop (no forwardRef needed)"
+echo "  - use() hook for promises/context"
+echo "  - useActionState for forms"
+echo "  - useOptimistic for optimistic updates"
+echo ""
+echo "🎨 Tailwind v4 features:"
+echo "  - CSS-first config with @theme"
+echo "  - No tailwind.config.js needed"
+echo "  - Native dark mode support"
 echo ""
 echo "To start developing:"
 echo "  cd $PROJECT_NAME"
