@@ -1,39 +1,11 @@
 ---
-# agentskills.io compliant frontmatter
 name: clarity-gate
-version: 2.0.0
-description: >
-  Pre-ingestion verification for epistemic quality in RAG systems.
-  Ensures documents are properly qualified before entering knowledge bases.
-  Produces CGD (Clarity-Gated Documents) and validates SOT (Source of Truth) files.
-author: Francesco Marinoni Moretto
-license: CC-BY-4.0
-repository: https://github.com/frmoretto/clarity-gate
-triggers:
-  - clarity gate
-  - check for hallucination risks
-  - can an LLM read this safely
-  - review for equivocation
-  - verify document clarity
-  - pre-ingestion check
-  - cgd verify
-  - sot verify
-capabilities:
-  - document-verification
-  - epistemic-quality
-  - rag-preparation
-  - cgd-generation
-  - sot-validation
-outputs:
-  - type: cgd
-    extension: .cgd.md
-    spec: docs/CLARITY_GATE_FORMAT_SPEC.md
-spec_version: "2.0"
+description: Pre-ingestion verification for epistemic quality in RAG systems. Ensures documents are properly qualified before entering knowledge bases. Produces CGD (Clarity-Gated Documents) and validates SOT (Source of Truth) files.
 ---
 
-# Clarity Gate v2.0
+# Clarity Gate v2.1
 
-**Purpose:** Pre-ingestion verification system that enforces epistemic quality before documents enter RAG knowledge bases. Produces Clarity-Gated Documents (CGD) compliant with the Clarity Gate Format Specification v2.0.
+**Purpose:** Pre-ingestion verification system that enforces epistemic quality before documents enter RAG knowledge bases. Produces Clarity-Gated Documents (CGD) compliant with the Clarity Gate Format Specification v2.1.
 
 **Core Question:** "If another LLM reads this document, will it mistake assumptions for facts?"
 
@@ -41,17 +13,16 @@ spec_version: "2.0"
 
 ---
 
-## What's New in v2.0
+## What's New in v2.1
 
 | Feature | Description |
 |---------|-------------|
-| **CGD Format Compliance** | Outputs compliant CGD files with YAML frontmatter and end markers |
-| **SOT Validation** | Validates Source of Truth files against SOT Format Spec |
-| **Spec References** | Links to formal specifications for validation rules |
-| **agentskills.io Compliant** | Standard frontmatter for skill discovery |
-| **Validation Rules Section** | Maps 9 points to formal rule codes |
-| **Quine Protection** | End marker detection ignores markers inside code fences (§2.3) |
-| **Redacted Export** | Export documents with exclusion content replaced by `[REDACTED]` (§8.11) |
+| **Claim Completion Status** | PENDING/VERIFIED determined by field presence (no explicit status field) |
+| **Source Field Semantics** | Actionable source (PENDING) vs. what-was-found (VERIFIED) |
+| **Claim ID Format Guidance** | Hash-based IDs preferred, collision analysis for scale |
+| **Body Structure Requirements** | HITL Verification Record section mandatory when claims exist |
+| **New Validation Codes** | E-ST10, W-ST11, W-HC01, W-HC02, E-SC06 (FORMAT_SPEC); E-TB01-07 (SOT validation) |
+| **Bundled Scripts** | `claim_id.py` and `document_hash.py` for deterministic computations |
 
 ---
 
@@ -61,9 +32,104 @@ This skill implements and references:
 
 | Specification | Version | Location |
 |---------------|---------|----------|
-| Clarity Gate Format (Unified) | v2.0 | [docs/CLARITY_GATE_FORMAT_SPEC.md](../../docs/CLARITY_GATE_FORMAT_SPEC.md) |
+| Clarity Gate Format (Unified) | v2.1 | [docs/CLARITY_GATE_FORMAT_SPEC.md](../../docs/CLARITY_GATE_FORMAT_SPEC.md) |
 
 **Note:** v2.0 unifies CGD and SOT into a single `.cgd.md` format. SOT is now a CGD with an optional `tier:` block.
+
+---
+
+## Validation Codes
+
+Clarity Gate defines validation codes for structural and semantic checks per FORMAT_SPEC v2.1:
+
+### HITL Claim Validation (§1.3.2-1.3.3)
+| Code | Check | Severity |
+|------|-------|----------|
+| **W-HC01** | Partial `confirmed-by`/`confirmed-date` fields | WARNING |
+| **W-HC02** | Vague source (e.g., "industry reports", "TBD") | WARNING |
+| **E-SC06** | Schema error in `hitl-claims` structure | ERROR |
+
+### Body Structure (§1.2.1)
+| Code | Check | Severity |
+|------|-------|----------|
+| **E-ST10** | Missing `## HITL Verification Record` when claims exist | ERROR |
+| **W-ST11** | Table rows don't match `hitl-claims` count | WARNING |
+
+### SOT Table Validation (§3.1)
+| Code | Check | Severity |
+|------|-------|----------|
+| **E-TB01** | No `## Verified Claims` section | ERROR |
+| **E-TB02** | Table has no data rows | ERROR |
+| **E-TB03** | Required columns missing | ERROR |
+| **E-TB04** | Column order wrong | ERROR |
+| **E-TB05** | Empty cell in required column | ERROR |
+| **E-TB06** | Invalid date format in Verified column | ERROR |
+| **E-TB07** | Verified date in future (beyond 24h grace) | ERROR |
+
+**Note:** Additional validation codes may be defined in RFC-001 (clarification document) but are not part of the normative FORMAT_SPEC.
+
+---
+
+## Bundled Scripts
+
+This skill includes Python scripts for deterministic computations per FORMAT_SPEC.
+
+### scripts/claim_id.py
+
+Computes stable, hash-based claim IDs for HITL tracking (per §1.3.4).
+
+```bash
+# Generate claim ID
+python scripts/claim_id.py "Base price is $99/mo" "api-pricing/1"
+# Output: claim-75fb137a
+
+# Run test vectors
+python scripts/claim_id.py --test
+```
+
+**Algorithm:**
+1. Normalize text (strip + collapse whitespace)
+2. Concatenate with location using pipe delimiter
+3. SHA-256 hash, take first 8 hex chars
+4. Prefix with "claim-"
+
+**Test vectors:**
+- `claim_id("Base price is $99/mo", "api-pricing/1")` → `claim-75fb137a`
+- `claim_id("The API supports GraphQL", "features/1")` → `claim-eb357742`
+
+### scripts/document_hash.py
+
+Computes document SHA-256 hash per FORMAT_SPEC §2.2-2.4 with full canonicalization.
+
+```bash
+# Compute hash
+python scripts/document_hash.py my-doc.cgd.md
+# Output: 7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730
+
+# Verify existing hash
+python scripts/document_hash.py --verify my-doc.cgd.md
+# Output: PASS: Hash verified: 7d865e...
+
+# Run normalization tests
+python scripts/document_hash.py --test
+```
+
+**Algorithm (per §2.2-2.4):**
+1. Extract content between opening `---\n` and `<!-- CLARITY_GATE_END -->`
+2. Remove `document-sha256` line from YAML frontmatter ONLY (with multiline continuation support)
+3. Canonicalize:
+   - Strip trailing whitespace per line
+   - Collapse 3+ consecutive newlines to 2
+   - Normalize final newline (exactly 1 LF)
+   - UTF-8 NFC normalization
+4. Compute SHA-256
+
+**Cross-platform normalization:**
+- BOM removed if present
+- CRLF to LF (Windows)
+- CR to LF (old Mac)
+- Boundary detection (prevents hash computation on content outside CGD structure)
+- Whitespace variations produce identical hashes (deterministic across platforms)
 
 ---
 
@@ -273,11 +339,11 @@ Claim Extracted --> Does Source of Truth Exist?
 
 ## CGD Output Format
 
-When producing a Clarity-Gated Document, use this format per [CLARITY_GATE_FORMAT_SPEC.md](../../docs/CLARITY_GATE_FORMAT_SPEC.md) v2.0:
+When producing a Clarity-Gated Document, use this format per [CLARITY_GATE_FORMAT_SPEC.md](../../docs/CLARITY_GATE_FORMAT_SPEC.md) v2.1:
 
 ```yaml
 ---
-clarity-gate-version: 2.0
+clarity-gate-version: 2.1
 processed-date: 2026-01-12
 processed-by: Claude + Human Review
 clarity-status: CLEAR
@@ -343,6 +409,44 @@ Clarity Gate: CLEAR | REVIEWED
 - `exclusions-coverage` — Optional. Fraction of body inside exclusion blocks (0.0–1.0).
 
 **Escape Mechanism:** To write about markers like `*(estimated)*` without triggering parsing, wrap in backticks: `` `*(estimated)*` ``
+
+### Claim Completion Status (v2.1)
+
+Claim verification status is determined by field **presence**, not an explicit status field:
+
+| State | `confirmed-by` | `confirmed-date` | Meaning |
+|-------|----------------|------------------|----------|
+| **PENDING** | absent | absent | Awaiting human verification |
+| **VERIFIED** | present | present | Human has confirmed |
+| *(invalid)* | present | absent | W-HC01: partial fields |
+| *(invalid)* | absent | present | W-HC01: partial fields |
+
+**Why no explicit status field?** Field presence is self-enforcing—you can't accidentally set status without providing who/when.
+
+### Source Field Semantics (v2.1)
+
+The `source` field meaning changes based on claim state:
+
+| State | `source` Contains | Example |
+|-------|-------------------|----------|
+| **PENDING** | Where to verify (actionable) | `"Check Q3 planning doc"` |
+| **VERIFIED** | What was found (evidence) | `"Q3 planning doc, page 12"` |
+
+**Vague source detection (W-HC02):** Sources like `"industry reports"`, `"research"`, `"TBD"` trigger warnings.
+
+### Claim ID Format (v2.1)
+
+**General pattern:** `claim-[a-z0-9._-]{1,64}` (alphanumeric, dots, underscores, hyphens)
+
+| Approach | Pattern | Example | Use Case |
+|----------|---------|---------|----------|
+| **Hash-based** (preferred) | `claim-[a-f0-9]{8,}` | `claim-75fb137a` | Deterministic, collision-resistant |
+| **Sequential** | `claim-[0-9]+` | `claim-1`, `claim-2` | Simple documents |
+| **Semantic** | `claim-[a-z0-9-]+` | `claim-revenue-q3` | Human-friendly |
+
+**Collision probability:** At 1,000 claims with 8-char hex IDs: ~0.012%. For >1,000 claims, use 12+ hex characters.
+
+**Recommendation:** Use hash-based IDs generated by `scripts/claim_id.py` for consistency and collision resistance.
 
 ---
 
@@ -517,6 +621,16 @@ Reply "confirmed" or flag any I misread.
 
 ## Changelog
 
+### v2.1.0 (2026-01-27)
+- **ADDED:** Claim Completion Status semantics (PENDING/VERIFIED by field presence)
+- **ADDED:** Source Field Semantics (actionable vs. what-was-found)
+- **ADDED:** Claim ID Format guidance with collision analysis
+- **ADDED:** Body Structure Requirements (HITL Verification Record mandatory when claims exist)
+- **ADDED:** New validation codes: E-ST10, W-ST11, W-HC01, W-HC02, E-SC06 (FORMAT_SPEC §1.2-1.3)
+- **ADDED:** Bundled scripts: `claim_id.py`, `document_hash.py`
+- **UPDATED:** References to FORMAT_SPEC v2.1
+- **UPDATED:** CGD output example to version 2.1
+
 ### v2.0.0 (2026-01-13)
 - **ADDED:** agentskills.io compliant YAML frontmatter
 - **ADDED:** Clarity Gate Format Specification v2.0 compliance (unified CGD/SOT)
@@ -556,7 +670,7 @@ Reply "confirmed" or flag any I misread.
 
 ---
 
-**Version:** 2.0.0
-**Spec Version:** 2.0
+**Version:** 2.1.2
+**Spec Version:** 2.1
 **Author:** Francesco Marinoni Moretto
 **License:** CC-BY-4.0
