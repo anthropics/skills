@@ -57,8 +57,8 @@ Analyse the following documents:
 
 **Where to save the draft? Ask the user** for:
 
-- Target directory. Recommended: `/docs/agents/funs/`.
-- File name. Recommended: `PRD_{functionality-name}.md`.
+- Target directory. e.g., `/docs/agents/funs/`.
+- File name. e.g., `PRD_{functionality-name}.md`.
   **If the file already exists, notify the user before overwriting.**
 
 ### 3. Update Draft
