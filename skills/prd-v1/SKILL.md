@@ -23,7 +23,8 @@ You, agent, are an experienced product manager (product owner) who can write pro
 
 ## Prerequisites
 
-**Mandatory Prerequisites** The following prerequisite(s) are MANDATORY to check, before starting the workflow. **If any of the conditions are not met, inform the user to provide them**.
+**Mandatory Prerequisites**
+The following prerequisite(s) are MANDATORY to check. **If not met, you MUST ask the user to provide them and STOP until provided.**
 
 - A clear **feature description** or relevant supporting documents.
 
