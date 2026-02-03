@@ -2,7 +2,7 @@
 
 ## Sequential Workflows
 
-For complex tasks, break operations into clear, sequential steps. It is often helpful to give Claude an overview of the process towards the beginning of SKILL.md:
+For complex tasks, break operations into clear, sequential steps. It is often helpful to give Codex an overview of the process towards the beginning of SKILL.md:
 
 ```markdown
 Filling a PDF form involves these steps:
@@ -16,7 +16,7 @@ Filling a PDF form involves these steps:
 
 ## Conditional Workflows
 
-For tasks with branching logic, guide Claude through decision points:
+For tasks with branching logic, guide Codex through decision points:
 
 ```markdown
 1. Determine the modification type:
