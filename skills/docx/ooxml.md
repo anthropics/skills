@@ -13,7 +13,7 @@
 - **Whitespace**: Add `xml:space='preserve'` to `<w:t>` elements with leading/trailing spaces
 - **Unicode**: Escape characters in ASCII content: `"` becomes `&#8220;`
   - **Character encoding reference**: Curly quotes `""` become `&#8220;&#8221;`, apostrophe `'` becomes `&#8217;`, em-dash `—` becomes `&#8212;`
-- **Tracked changes**: Use `<w:del>` and `<w:ins>` tags with `w:author="Claude"` outside `<w:r>` elements
+- **Tracked changes**: Use `<w:del>` and `<w:ins>` tags with `w:author="Codex"` outside `<w:r>` elements
   - **Critical**: `<w:ins>` closes with `</w:ins>`, `<w:del>` closes with `</w:del>` - never mix
   - **RSIDs must be 8-digit hex**: Use values like `00AB1234` (only 0-9, A-F characters)
   - **trackRevisions placement**: Add `<w:trackRevisions/>` after `<w:proofState>` in settings.xml
@@ -556,7 +556,7 @@ nodes = doc["word/document.xml"].insert_after(nodes[-1], "<w:r><w:t>C</w:t></w:r
 **Use the Document class above for all tracked changes.** The patterns below are for reference when constructing replacement XML strings.
 
 ### Validation Rules
-The validator checks that the document text matches the original after reverting Claude's changes. This means:
+The validator checks that the document text matches the original after reverting Codex's changes. This means:
 - **NEVER modify text inside another author's `<w:ins>` or `<w:del>` tags**
 - **ALWAYS use nested deletions** to remove another author's insertions
 - **Every edit must be properly tracked** with `<w:ins>` or `<w:del>` tags
@@ -569,7 +569,7 @@ The validator checks that the document text matches the original after reverting
 
 **Text Insertion:**
 ```xml
-<w:ins w:id="1" w:author="Claude" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
+<w:ins w:id="1" w:author="Codex" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
   <w:r w:rsidR="00792858">
     <w:t>inserted text</w:t>
   </w:r>
@@ -578,7 +578,7 @@ The validator checks that the document text matches the original after reverting
 
 **Text Deletion:**
 ```xml
-<w:del w:id="2" w:author="Claude" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
+<w:del w:id="2" w:author="Codex" w:date="2025-07-30T23:05:00Z" w16du:dateUtc="2025-07-31T06:05:00Z">
   <w:r w:rsidDel="00792858">
     <w:delText>deleted text</w:delText>
   </w:r>
@@ -589,11 +589,11 @@ The validator checks that the document text matches the original after reverting
 ```xml
 <!-- Nest deletion inside the original insertion -->
 <w:ins w:author="Jane Smith" w:id="16">
-  <w:del w:author="Claude" w:id="40">
+  <w:del w:author="Codex" w:id="40">
     <w:r><w:delText>monthly</w:delText></w:r>
   </w:del>
 </w:ins>
-<w:ins w:author="Claude" w:id="41">
+<w:ins w:author="Codex" w:id="41">
   <w:r><w:t>weekly</w:t></w:r>
 </w:ins>
 ```
@@ -604,7 +604,7 @@ The validator checks that the document text matches the original after reverting
 <w:del w:author="Jane Smith" w:id="50">
   <w:r><w:delText>within 30 days</w:delText></w:r>
 </w:del>
-<w:ins w:author="Claude" w:id="51">
+<w:ins w:author="Codex" w:id="51">
   <w:r><w:t>within 30 days</w:t></w:r>
 </w:ins>
 ```

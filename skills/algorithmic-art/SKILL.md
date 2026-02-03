@@ -47,7 +47,7 @@ To capture the ALGORITHMIC essence, express how this philosophy manifests throug
 **CRITICAL GUIDELINES:**
 - **Avoid redundancy**: Each algorithmic aspect should be mentioned once. Avoid repeating concepts about noise theory, particle dynamics, or mathematical principles unless adding new depth.
 - **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final algorithm should appear as though it took countless hours to develop, was refined with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like "meticulously crafted algorithm," "the product of deep computational expertise," "painstaking optimization," "master-level implementation."
-- **Leave creative space**: Be specific about the algorithmic direction, but concise enough that the next Claude has room to make interpretive implementation choices at an extremely high level of craftsmanship.
+- **Leave creative space**: Be specific about the algorithmic direction, but concise enough that the next Codex has room to make interpretive implementation choices at an extremely high level of craftsmanship.
 
 The philosophy must guide the next version to express ideas ALGORITHMICALLY, not through static images. Beauty lives in the process, not the final frame.
 
@@ -79,7 +79,7 @@ Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start
 - **ALGORITHMIC PHILOSOPHY**: Creating a computational worldview to be expressed through code
 - **PROCESS OVER PRODUCT**: Always emphasize that beauty emerges from the algorithm's execution - each run is unique
 - **PARAMETRIC EXPRESSION**: Ideas communicate through mathematical relationships, forces, behaviors - not static composition
-- **ARTISTIC FREEDOM**: The next Claude interprets the philosophy algorithmically - provide creative implementation room
+- **ARTISTIC FREEDOM**: The next Codex interprets the philosophy algorithmically - provide creative implementation room
 - **PURE GENERATIVE ART**: This is about making LIVING ALGORITHMS, not static images with randomness
 - **EXPERT CRAFTSMANSHIP**: Repeatedly emphasize the final algorithm must feel meticulously crafted, refined through countless iterations, the product of deep expertise by someone at the absolute top of their field in computational aesthetics
 
@@ -214,7 +214,7 @@ Output:
 1. **Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic
 2. **Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)
 
-The HTML artifact contains everything: p5.js (from CDN), the algorithm, parameter controls, and UI - all in one file that works immediately in claude.ai artifacts or any browser. Start from the template file, not from scratch.
+The HTML artifact contains everything: p5.js (from CDN), the algorithm, parameter controls, and UI - all in one file that works immediately in codex.ai artifacts or any browser. Start from the template file, not from scratch.
 
 ---
 
@@ -222,7 +222,7 @@ The HTML artifact contains everything: p5.js (from CDN), the algorithm, paramete
 
 **REMINDER: `templates/viewer.html` should have already been read (see STEP 0). Use that file as the starting point.**
 
-To allow exploration of the generative art, create a single, self-contained HTML artifact. Ensure this artifact works immediately in claude.ai or any browser - no setup required. Embed everything inline.
+To allow exploration of the generative art, create a single, self-contained HTML artifact. Ensure this artifact works immediately in codex.ai or any browser - no setup required. Embed everything inline.
 
 ### CRITICAL: WHAT'S FIXED VS VARIABLE
 
@@ -338,7 +338,7 @@ Add as many control-group divs as there are parameters.
 ### USING THE ARTIFACT
 
 The HTML artifact works immediately:
-1. **In claude.ai**: Displayed as an interactive artifact - runs instantly
+1. **In codex.ai**: Displayed as an interactive artifact - runs instantly
 2. **As a file**: Save and open in any browser - no server needed
 3. **Sharing**: Send the HTML file - it's completely self-contained
 
