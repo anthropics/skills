@@ -3,8 +3,6 @@ import json
 import sys
 
 
-# Script to check that the `fields.json` file that Claude creates when analyzing PDFs
-# does not have overlapping bounding boxes. See forms.md.
 
 
 @dataclass
@@ -14,7 +12,6 @@ class RectAndField:
     field: dict
 
 
-# Returns a list of messages that are printed to stdout for Claude to read.
 def get_bounding_box_messages(fields_json_stream) -> list[str]:
     messages = []
     fields = json.load(fields_json_stream)
@@ -32,7 +29,6 @@ def get_bounding_box_messages(fields_json_stream) -> list[str]:
 
     has_error = False
     for i, ri in enumerate(rects_and_fields):
-        # This is O(N^2); we can optimize if it becomes a problem.
         for j in range(i + 1, len(rects_and_fields)):
             rj = rects_and_fields[j]
             if ri.field["page_number"] == rj.field["page_number"] and rects_intersect(ri.rect, rj.rect):
@@ -63,7 +59,6 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: check_bounding_boxes.py [fields.json]")
         sys.exit(1)
-    # Input file should be in the `fields.json` format described in forms.md.
     with open(sys.argv[1]) as f:
         messages = get_bounding_box_messages(f)
     for msg in messages:

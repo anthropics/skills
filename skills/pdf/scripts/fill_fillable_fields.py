@@ -6,13 +6,11 @@ from pypdf import PdfReader, PdfWriter
 from extract_form_field_info import get_field_info
 
 
-# Fills fillable form fields in a PDF. See forms.md.
 
 
 def fill_pdf_fields(input_pdf_path: str, fields_json_path: str, output_pdf_path: str):
     with open(fields_json_path) as f:
         fields = json.load(f)
-    # Group by page number.
     fields_by_page = {}
     for field in fields:
         if "value" in field:
@@ -48,8 +46,6 @@ def fill_pdf_fields(input_pdf_path: str, fields_json_path: str, output_pdf_path:
     for page, field_values in fields_by_page.items():
         writer.update_page_form_field_values(writer.pages[page - 1], field_values, auto_regenerate=False)
 
-    # This seems to be necessary for many PDF viewers to format the form values correctly.
-    # It may cause the viewer to show a "save changes" dialog even if the user doesn't make any changes.
     writer.set_need_appearances_writer(True)
     
     with open(output_pdf_path, "wb") as f:
@@ -75,18 +71,6 @@ def validation_error_for_field_value(field_info, field_value):
     return None
 
 
-# pypdf (at least version 5.7.0) has a bug when setting the value for a selection list field.
-# In _writer.py around line 966:
-#
-# if field.get(FA.FT, "/Tx") == "/Ch" and field_flags & FA.FfBits.Combo == 0:
-#     txt = "\n".join(annotation.get_inherited(FA.Opt, []))
-#
-# The problem is that for selection lists, `get_inherited` returns a list of two-element lists like
-# [["value1", "Text 1"], ["value2", "Text 2"], ...]
-# This causes `join` to throw a TypeError because it expects an iterable of strings.
-# The horrible workaround is to patch `get_inherited` to return a list of the value strings.
-# We call the original method and adjust the return value only if the argument to `get_inherited`
-# is `FA.Opt` and if the return value is a list of two-element lists.
 def monkeypatch_pydpf_method():
     from pypdf.generic import DictionaryObject
     from pypdf.constants import FieldDictionaryAttributes
