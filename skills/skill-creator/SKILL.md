@@ -65,8 +65,51 @@ skill-name/
 
 Every SKILL.md consists of:
 
-- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.
+- **Frontmatter** (YAML): Contains metadata fields that configure skill behavior. The `description` field is particularly important as Claude uses it to determine when the skill should be used.
 - **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).
+
+##### Frontmatter Reference
+
+Configure skill behavior using YAML frontmatter fields between `---` markers:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | No | Display name for the skill. Defaults to directory name. Lowercase, hyphens only, max 64 chars. |
+| `description` | Recommended | What the skill does and when to use it. Claude uses this to decide when to apply the skill. |
+| `argument-hint` | No | Hint shown during autocomplete for expected arguments. Example: `[issue-number]` or `[filename] [format]`. |
+| `disable-model-invocation` | No | Set to `true` to prevent Claude from auto-loading this skill. Use for workflows you want to trigger manually. Default: `false`. |
+| `user-invocable` | No | Set to `false` to hide from the `/` menu. Use for background knowledge users shouldn't invoke directly. Default: `true`. |
+| `allowed-tools` | No | Tools Claude can use without asking permission when this skill is active. |
+| `model` | No | Model to use when this skill is active. |
+| `context` | No | Set to `fork` to run in an isolated subagent context. |
+| `agent` | No | Which subagent type to use when `context: fork` is set (e.g., `Explore`, `Plan`, `general-purpose`). |
+| `hooks` | No | Hooks scoped to this skill's lifecycle. |
+
+##### String Substitutions
+
+Skills support string substitution for dynamic values:
+
+| Variable | Description |
+|----------|-------------|
+| `$ARGUMENTS` | All arguments passed when invoking the skill. If not present in content, arguments are appended as `ARGUMENTS: <value>`. |
+| `$ARGUMENTS[N]` | Access a specific argument by 0-based index, e.g., `$ARGUMENTS[0]` for the first argument. |
+| `$N` | Shorthand for `$ARGUMENTS[N]`, e.g., `$0` for first argument, `$1` for second. |
+| `${CLAUDE_SESSION_ID}` | The current session ID. Useful for logging or session-specific files. |
+
+**Example using substitutions:**
+
+```yaml
+---
+name: migrate-component
+description: Migrate a component from one framework to another
+argument-hint: [component] [from-framework] [to-framework]
+---
+
+Migrate the $0 component from $1 to $2.
+Preserve all existing behavior and tests.
+```
+
+Running `/migrate-component SearchBar React Vue` substitutes the values into the prompt.
 
 #### Bundled Resources (optional)
 
@@ -303,15 +346,15 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 ##### Frontmatter
 
-Write the YAML frontmatter with `name` and `description`:
+Write the YAML frontmatter starting with `name` and `description`:
 
-- `name`: The skill name
+- `name`: The skill name (lowercase, hyphens only)
 - `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
   - Include both what the Skill does and specific triggers/contexts for when to use it.
   - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
   - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
 
-Do not include any other fields in YAML frontmatter.
+See the Frontmatter Reference table above for additional optional fields like `argument-hint`, `context`, `agent`, `allowed-tools`, and `model`.
 
 ##### Body
 
@@ -354,3 +397,35 @@ After testing the skill, users may request improvements. Often this happens righ
 2. Notice struggles or inefficiencies
 3. Identify how SKILL.md or bundled resources should be updated
 4. Implement changes and test again
+
+## Troubleshooting
+
+### Skill not triggering
+
+If Claude doesn't use your skill when expected:
+
+1. Check the description includes keywords users would naturally say
+2. Verify the skill appears when asking "What skills are available?"
+3. Try rephrasing your request to match the description more closely
+4. Invoke it directly with `/skill-name` to test
+
+### Skill triggers too often
+
+If Claude uses your skill when you don't want it:
+
+1. Make the description more specific
+2. Add `disable-model-invocation: true` to only allow manual invocation
+
+### Claude doesn't see all skills
+
+Skill descriptions are loaded into context so Claude knows what's available. If you have many skills, they may exceed the character budget (default 15,000 characters). Run `/context` to check for a warning about excluded skills.
+
+To increase the limit, set the `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable:
+
+```bash
+export SLASH_COMMAND_TOOL_CHAR_BUDGET=50000
+```
+
+### Skills hot reload
+
+Skills reload automatically when modified—no restart needed. If changes don't appear, verify the file was saved and check for YAML syntax errors in the frontmatter.
