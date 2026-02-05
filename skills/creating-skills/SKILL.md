@@ -1,10 +1,10 @@
 ---
-name: skill-creator
+name: creating-skills
 description: Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.
 license: Complete terms in LICENSE.txt
 ---
 
-# Skill Creator
+# Creating Skills
 
 This skill provides guidance for creating effective skills.
 
@@ -305,7 +305,7 @@ Any example files and directories not needed for the skill should be deleted. Th
 
 Write the YAML frontmatter with `name` and `description`:
 
-- `name`: The skill name
+- `name`: The skill name. Gerund form (verb + -ing) is recommended, e.g. `processing-pdfs`, `analyzing-spreadsheets`, `creating-skills`. See [naming conventions](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices#naming-conventions).
 - `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.
   - Include both what the Skill does and specific triggers/contexts for when to use it.
   - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
