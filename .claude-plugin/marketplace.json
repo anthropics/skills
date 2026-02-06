@@ -40,6 +40,15 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "education-skills",
+      "description": "Educational skills for learning and understanding code",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/ai-code-mentor"
+      ]
     }
   ]
 }
