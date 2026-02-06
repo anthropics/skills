@@ -40,6 +40,15 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "stock-master",
+      "description": "Beginner-friendly stock technical analysis tool with hybrid data sources (Yahoo Finance + Alpha Vantage MCP). Provides easy-to-understand analysis reports, buy/sell signals, Excel portfolio management, and Feishu sync. Supports US, HK, and A-share markets.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stock-master"
+      ]
     }
   ]
 }
