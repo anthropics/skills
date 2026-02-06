@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "cyberpunk",
+    "$description": "Neon pink/purple on black - synthwave inspired for gaming and creative apps"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#E0E0E0",
+        "$description": "Primary text on cyberpunk - near white with cyan tint"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#9CA3AF",
+        "$description": "Secondary text - purple-gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Text color for light surfaces - pure black"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#F472B6",
+        "$description": "Link text color - neon pink"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#FB7185",
+        "$description": "Link text color on hover - brighter pink"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#050505",
+        "$description": "Default surface background - nearly pure black"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#0A0A0A",
+        "$description": "Elevated surface background - slightly lighter black"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Depressed surface background - pure black for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(5, 5, 5, 0.9)",
+        "$description": "Overlay background for modals - semi-transparent black"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#2D1B4E",
+        "$description": "Default border color - purple tint"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#1A1A2E",
+        "$description": "Subtle border for dividers - dark purple"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#4C1D95",
+        "$description": "Stronger border for emphasis - neon purple"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#F472B6",
+        "$description": "Primary interactive element color - neon pink"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#FB7185",
+        "$description": "Primary interactive color on hover - brighter pink"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#A855F7",
+        "$description": "Secondary interactive element color - purple accent"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#D946EF",
+        "$description": "Focus ring outline color - magenta glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#39FF14",
+        "$description": "Success state color - neon green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FFFF00",
+        "$description": "Warning state color - pure neon yellow"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#FF006E",
+        "$description": "Error state color - neon magenta"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#00FFFF",
+        "$description": "Info state color - cyan"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(244, 114, 182, 0.3), 0 2px 4px -2px rgba(217, 70, 239, 0.2)",
+      "$description": "Card elevation shadow - pink/purple neon glow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -4px rgba(217, 70, 239, 0.3)",
+      "$description": "Dropdown menu elevation shadow - purple-tinted shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(244, 114, 182, 0.4)",
+      "$description": "Modal dialog elevation shadow - pink glow shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(244, 114, 182, 0.8), 0 0 10px rgba(217, 70, 239, 0.4)",
+      "$description": "Focus ring glow shadow - intense neon glow"
+    }
+  }
+}

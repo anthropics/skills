@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "spring",
+    "$description": "Light mint with soft pink - fresh and playful"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#1F2937",
+        "$description": "Primary text on light surfaces - dark gray"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#6B7280",
+        "$description": "Secondary text - gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#F0FDFA",
+        "$description": "Text color for dark surfaces - mint white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#0D9488",
+        "$description": "Link text color - mint teal"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#0F766E",
+        "$description": "Link text color on hover - deeper mint teal"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#F0FDFA",
+        "$description": "Default surface background - light mint white"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#ECFDF5",
+        "$description": "Elevated surface background - very light mint"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#E6F7F2",
+        "$description": "Depressed surface background - light mint for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(31, 41, 55, 0.5)",
+        "$description": "Overlay background for modals - semi-transparent dark"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#CCFBF1",
+        "$description": "Default border color - light mint gray"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#ECFDF5",
+        "$description": "Subtle border for dividers - very faint mint"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#99F6E4",
+        "$description": "Stronger border for emphasis - mint"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#14B8A6",
+        "$description": "Primary interactive element color - mint teal"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#0D9488",
+        "$description": "Primary interactive color on hover - deeper mint teal"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#F472B6",
+        "$description": "Secondary interactive element color - soft pink"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#5EEAD4",
+        "$description": "Focus ring outline color - mint glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#059669",
+        "$description": "Success state color - emerald"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#D97706",
+        "$description": "Warning state color - amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DB2777",
+        "$description": "Error state color - pink"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#0D9488",
+        "$description": "Info state color - mint teal"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(31, 41, 55, 0.05), 0 2px 4px -2px rgba(31, 41, 55, 0.03)",
+      "$description": "Card elevation shadow - soft shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(31, 41, 55, 0.08), 0 4px 6px -4px rgba(31, 41, 55, 0.05)",
+      "$description": "Dropdown menu elevation shadow - medium shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(31, 41, 55, 0.1), 0 8px 10px -6px rgba(31, 41, 55, 0.08)",
+      "$description": "Modal dialog elevation shadow - prominent shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(20, 184, 166, 0.3)",
+      "$description": "Focus ring glow shadow - mint glow ring"
+    }
+  }
+}

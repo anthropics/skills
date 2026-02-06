@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "solar",
+    "$description": "Light yellow-gold warmth - inspired by Lovable's Solar theme"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#292524",
+        "$description": "Primary text on light surfaces - warm dark brown"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#78716C",
+        "$description": "Secondary text - warm stone gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FEFCE8",
+        "$description": "Text color for dark surfaces - warm yellow-white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#CA8A04",
+        "$description": "Link text color - golden yellow"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#A16207",
+        "$description": "Link text color on hover - deeper golden"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FEFCE8",
+        "$description": "Default surface background - light yellow cream"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FEF9C3",
+        "$description": "Elevated surface background - warmer yellow"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#FEF08A",
+        "$description": "Depressed surface background - golden yellow for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(41, 37, 36, 0.5)",
+        "$description": "Overlay background for modals - semi-transparent warm dark"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#FDE047",
+        "$description": "Default border color - golden yellow"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#FEF9C3",
+        "$description": "Subtle border for dividers - very faint yellow"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#FACC15",
+        "$description": "Stronger border for emphasis - visible golden"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#EAB308",
+        "$description": "Primary interactive element color - golden yellow"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#CA8A04",
+        "$description": "Primary interactive color on hover - deeper golden"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#EA580C",
+        "$description": "Secondary interactive element color - warm orange accent"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#FACC15",
+        "$description": "Focus ring outline color - golden glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#16A34A",
+        "$description": "Success state color - green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#CA8A04",
+        "$description": "Warning state color - golden yellow"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error state color - red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#EA580C",
+        "$description": "Info state color - orange"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(234, 179, 8, 0.08), 0 2px 4px -2px rgba(234, 179, 8, 0.05)",
+      "$description": "Card elevation shadow - warm golden shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(41, 37, 36, 0.08), 0 4px 6px -4px rgba(41, 37, 36, 0.05)",
+      "$description": "Dropdown menu elevation shadow - warm shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(41, 37, 36, 0.1), 0 8px 10px -6px rgba(41, 37, 36, 0.08)",
+      "$description": "Modal dialog elevation shadow - prominent warm shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(250, 204, 21, 0.4)",
+      "$description": "Focus ring glow shadow - golden glow ring"
+    }
+  }
+}

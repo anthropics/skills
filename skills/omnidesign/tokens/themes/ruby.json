@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "ruby",
+    "$description": "Burgundy and wine red theme for luxury brands - elegant, sophisticated, and premium aesthetic"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#FEF2F2",
+        "$description": "Primary text on dark surfaces - near white for readability"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#FCA5A5",
+        "$description": "Secondary text - light rose for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#4C0519",
+        "$description": "Text color for light surfaces - deep burgundy"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#FB7185",
+        "$description": "Link text color - rose accent"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#FDA4AF",
+        "$description": "Link text color on hover - lighter rose"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#881337",
+        "$description": "Default surface background - deep burgundy wine"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#9F1239",
+        "$description": "Elevated surface background - lighter burgundy for cards"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#4C0519",
+        "$description": "Depressed surface background - even darker wine for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(76, 5, 25, 0.85)",
+        "$description": "Overlay background for modals - semi-transparent burgundy"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#9F1239",
+        "$description": "Default border color - muted burgundy"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#881337",
+        "$description": "Subtle border for dividers - faint wine"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#BE123C",
+        "$description": "Stronger border for emphasis - visible burgundy"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#E11D48",
+        "$description": "Primary interactive element color - vibrant rose"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#BE123C",
+        "$description": "Primary interactive color on hover - darker rose"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#F43F5E",
+        "$description": "Secondary interactive element color - pink-red"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#FB7185",
+        "$description": "Focus ring outline color - rose glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#86EFAC",
+        "$description": "Success state color - emerald green for contrast"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FDE047",
+        "$description": "Warning state color - yellow for visibility"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#FDA4AF",
+        "$description": "Error state color - pink-red matching theme"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#67E8F9",
+        "$description": "Info state color - cyan for clarity"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(225, 29, 72, 0.2), 0 2px 4px -1px rgba(225, 29, 72, 0.15)",
+      "$description": "Card elevation shadow - rose-tinted shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)",
+      "$description": "Dropdown menu elevation shadow - deep shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 12px 24px -4px rgba(0, 0, 0, 0.4)",
+      "$description": "Modal dialog elevation shadow - most prominent"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(251, 113, 133, 0.4)",
+      "$description": "Focus ring glow shadow - rose glow ring"
+    }
+  }
+}

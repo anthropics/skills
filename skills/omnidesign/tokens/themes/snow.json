@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "snow",
+    "$description": "Pure white with subtle gray - the cleanest, most minimal"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#18181B",
+        "$description": "Primary text on light surfaces - near black"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#71717A",
+        "$description": "Secondary text - neutral gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Text color for dark surfaces - pure white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Link text color - neutral blue"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#2563EB",
+        "$description": "Link text color on hover - deeper blue"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Default surface background - pure white"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FAFAFA",
+        "$description": "Elevated surface background - near-white gray"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#F4F4F5",
+        "$description": "Depressed surface background - very light gray for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.4)",
+        "$description": "Overlay background for modals - semi-transparent black"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#E4E4E7",
+        "$description": "Default border color - neutral light gray"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#F4F4F5",
+        "$description": "Subtle border for dividers - very faint gray"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#A1A1AA",
+        "$description": "Stronger border for emphasis - medium gray"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Primary interactive element color - blue"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#2563EB",
+        "$description": "Primary interactive color on hover - deeper blue"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#71717A",
+        "$description": "Secondary interactive element color - neutral gray"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#60A5FA",
+        "$description": "Focus ring outline color - light blue glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#16A34A",
+        "$description": "Success state color - green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#CA8A04",
+        "$description": "Warning state color - yellow"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error state color - red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Info state color - blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.02)",
+      "$description": "Card elevation shadow - minimal neutral shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04)",
+      "$description": "Dropdown menu elevation shadow - minimal shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.06)",
+      "$description": "Modal dialog elevation shadow - minimal shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(59, 130, 246, 0.3)",
+      "$description": "Focus ring glow shadow - blue glow ring"
+    }
+  }
+}

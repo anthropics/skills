@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "berry",
+    "$description": "Berry theme with rich raspberry and magenta tones - bold and playful"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#2D1B2E",
+        "$description": "Primary text - deep purple-black for contrast"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#6B5B6B",
+        "$description": "Secondary text - muted purple-gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FFF5F9",
+        "$description": "Text on light surfaces - soft pink-white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#D946EF",
+        "$description": "Link text - vibrant fuchsia"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#E879F9",
+        "$description": "Link on hover - bright magenta"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFF5F9",
+        "$description": "Default surface - soft pink-white with berry undertones"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Elevated surface - pure white"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#FDF2F8",
+        "$description": "Depressed surface - very pale pink for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(217, 70, 239, 0.12)",
+        "$description": "Overlay - magenta-tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#F5D0FE",
+        "$description": "Default border - soft lavender-pink"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#FAE8FF",
+        "$description": "Subtle border - faint pink"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#E879F9",
+        "$description": "Strong border - visible magenta"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#D946EF",
+        "$description": "Primary action - vibrant fuchsia"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#E879F9",
+        "$description": "Primary hover - bright magenta"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#BE185D",
+        "$description": "Secondary action - deep berry pink"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#E879F9",
+        "$description": "Focus ring - magenta glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#059669",
+        "$description": "Success - rich emerald"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#D97706",
+        "$description": "Warning - warm amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error - bold red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#0891B2",
+        "$description": "Info - teal cyan"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(217, 70, 239, 0.15), 0 2px 4px -2px rgba(217, 70, 239, 0.1)",
+      "$description": "Card shadow - magenta-tinted elevation"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(217, 70, 239, 0.2), 0 4px 6px -4px rgba(217, 70, 239, 0.15)",
+      "$description": "Dropdown shadow - berry-tinted depth"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(217, 70, 239, 0.25), 0 8px 10px -6px rgba(217, 70, 239, 0.18)",
+      "$description": "Modal shadow - prominent magenta-tinted"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(232, 121, 249, 0.4)",
+      "$description": "Focus glow - soft magenta ring"
+    }
+  }
+}

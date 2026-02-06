@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "coral",
+    "$description": "Coral theme with peachy orange tones - friendly and approachable"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#2D1F1B",
+        "$description": "Primary text - warm brown-black for contrast on coral surfaces"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#6B5B52",
+        "$description": "Secondary text - warm brown-gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FFF7ED",
+        "$description": "Text on light surfaces - warm cream-white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#F97316",
+        "$description": "Link text - vibrant orange"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#FB923C",
+        "$description": "Link on hover - bright coral"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFF7ED",
+        "$description": "Default surface - warm cream with coral undertones"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Elevated surface - pure white"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#FFEDD5",
+        "$description": "Depressed surface - soft peach for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(249, 115, 22, 0.12)",
+        "$description": "Overlay - warm orange-tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#FDBA74",
+        "$description": "Default border - soft orange-peach"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#FED7AA",
+        "$description": "Subtle border - very faint peach"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#FB923C",
+        "$description": "Strong border - visible coral"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#F97316",
+        "$description": "Primary action - vibrant orange"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#FB923C",
+        "$description": "Primary hover - bright coral"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#C2410C",
+        "$description": "Secondary action - deep burnt orange"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#FB923C",
+        "$description": "Focus ring - warm coral glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#059669",
+        "$description": "Success - emerald green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#D97706",
+        "$description": "Warning - warm amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error - bold red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#0891B2",
+        "$description": "Info - teal cyan"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(249, 115, 22, 0.12), 0 2px 4px -2px rgba(249, 115, 22, 0.08)",
+      "$description": "Card shadow - warm orange-tinted elevation"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(249, 115, 22, 0.15), 0 4px 6px -4px rgba(249, 115, 22, 0.1)",
+      "$description": "Dropdown shadow - coral-tinted depth"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(249, 115, 22, 0.2), 0 8px 10px -6px rgba(249, 115, 22, 0.15)",
+      "$description": "Modal shadow - warm coral-tinted"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(251, 146, 60, 0.4)",
+      "$description": "Focus glow - soft coral ring"
+    }
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "neutral": {
+    "50": {
+      "$type": "color",
+      "$value": "#FAFAFA",
+      "$description": "Neutral gray, lightest shade"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#F5F5F5",
+      "$description": "Neutral gray, very light"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#E5E5E5",
+      "$description": "Neutral gray, light"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#D4D4D4",
+      "$description": "Neutral gray, light-medium"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#A3A3A3",
+      "$description": "Neutral gray, medium"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#737373",
+      "$description": "Neutral gray, base shade"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#525252",
+      "$description": "Neutral gray, medium-dark"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#404040",
+      "$description": "Neutral gray, dark"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#262626",
+      "$description": "Neutral gray, very dark"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#171717",
+      "$description": "Neutral gray, darkest"
+    },
+    "950": {
+      "$type": "color",
+      "$value": "#0A0A0A",
+      "$description": "Neutral gray, near black"
+    }
+  },
+  "blue": {
+    "50": {
+      "$type": "color",
+      "$value": "#EFF6FF",
+      "$description": "Cold blue, lightest shade"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#DBEAFE",
+      "$description": "Cold blue, very light"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#BFDBFE",
+      "$description": "Cold blue, light"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#93C5FD",
+      "$description": "Cold blue, light-medium"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#60A5FA",
+      "$description": "Cold blue, medium"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#2563EB",
+      "$description": "Cold blue, base shade - enterprise primary"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#1D4ED8",
+      "$description": "Cold blue, medium-dark"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#1E40AF",
+      "$description": "Cold blue, dark"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#1E3A8A",
+      "$description": "Cold blue, very dark"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#172554",
+      "$description": "Cold blue, darkest"
+    },
+    "950": {
+      "$type": "color",
+      "$value": "#0F172A",
+      "$description": "Cold blue, near black"
+    }
+  },
+  "purple": {
+    "50": {
+      "$type": "color",
+      "$value": "#F5F3FF",
+      "$description": "Deep violet, lightest shade"
+    },
+    "100": {
+      "$type": "color",
+      "$value": "#EDE9FE",
+      "$description": "Deep violet, very light"
+    },
+    "200": {
+      "$type": "color",
+      "$value": "#DDD6FE",
+      "$description": "Deep violet, light"
+    },
+    "300": {
+      "$type": "color",
+      "$value": "#C4B5FD",
+      "$description": "Deep violet, light-medium"
+    },
+    "400": {
+      "$type": "color",
+      "$value": "#A78BFA",
+      "$description": "Deep violet, medium"
+    },
+    "500": {
+      "$type": "color",
+      "$value": "#6D28D9",
+      "$description": "Deep violet, base shade - starry accent"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#5B21B6",
+      "$description": "Deep violet, medium-dark"
+    },
+    "700": {
+      "$type": "color",
+      "$value": "#4C1D95",
+      "$description": "Deep violet, dark"
+    },
+    "800": {
+      "$type": "color",
+      "$value": "#3730A3",
+      "$description": "Deep violet, very dark"
+    },
+    "900": {
+      "$type": "color",
+      "$value": "#312E81",
+      "$description": "Deep violet, darkest"
+    },
+    "950": {
+      "$type": "color",
+      "$value": "#1E1B4B",
+      "$description": "Deep violet, near black"
+    }
+  },
+  "green": {
+    "500": {
+      "$type": "color",
+      "$value": "#22C55E",
+      "$description": "Success green, base shade"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#16A34A",
+      "$description": "Success green, dark shade"
+    }
+  },
+  "amber": {
+    "500": {
+      "$type": "color",
+      "$value": "#F59E0B",
+      "$description": "Warning amber, base shade"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#D97706",
+      "$description": "Warning amber, dark shade"
+    }
+  },
+  "red": {
+    "500": {
+      "$type": "color",
+      "$value": "#EF4444",
+      "$description": "Error red, base shade"
+    },
+    "600": {
+      "$type": "color",
+      "$value": "#DC2626",
+      "$description": "Error red, dark shade"
+    }
+  },
+  "white": {
+    "$type": "color",
+    "$value": "#FFFFFF",
+    "$description": "Pure white"
+  },
+  "black": {
+    "$type": "color",
+    "$value": "#000000",
+    "$description": "Pure black"
+  }
+}

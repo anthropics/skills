@@ -1,0 +1,114 @@
+{
+  "text": {
+    "default": {
+      "$type": "color",
+      "$value": "{color.neutral.900}",
+      "$description": "Primary text color for body content"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{color.neutral.500}",
+      "$description": "Secondary text color for less important content"
+    },
+    "inverted": {
+      "$type": "color",
+      "$value": "{color.white}",
+      "$description": "Text color for dark backgrounds"
+    },
+    "link": {
+      "$type": "color",
+      "$value": "{color.blue.500}",
+      "$description": "Link text color"
+    },
+    "link.hover": {
+      "$type": "color",
+      "$value": "{color.blue.600}",
+      "$description": "Link text color on hover"
+    }
+  },
+  "surface": {
+    "default": {
+      "$type": "color",
+      "$value": "{color.white}",
+      "$description": "Default surface background color"
+    },
+    "raised": {
+      "$type": "color",
+      "$value": "{color.white}",
+      "$description": "Elevated surface background (cards, popovers)"
+    },
+    "sunken": {
+      "$type": "color",
+      "$value": "{color.neutral.50}",
+      "$description": "Depressed surface background (inputs, wells)"
+    },
+    "overlay": {
+      "$type": "color",
+      "$value": "{color.neutral.950}",
+      "$description": "Overlay background for modals and backdrops"
+    }
+  },
+  "border": {
+    "default": {
+      "$type": "color",
+      "$value": "{color.neutral.200}",
+      "$description": "Default border color"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{color.neutral.100}",
+      "$description": "Subtle border for dividers and separators"
+    },
+    "strong": {
+      "$type": "color",
+      "$value": "{color.neutral.300}",
+      "$description": "Stronger border for emphasis"
+    }
+  },
+  "interactive": {
+    "primary": {
+      "$type": "color",
+      "$value": "{color.blue.500}",
+      "$description": "Primary interactive element color"
+    },
+    "primary.hover": {
+      "$type": "color",
+      "$value": "{color.blue.600}",
+      "$description": "Primary interactive color on hover"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{color.neutral.100}",
+      "$description": "Secondary interactive element color"
+    }
+  },
+  "status": {
+    "success": {
+      "$type": "color",
+      "$value": "{color.green.500}",
+      "$description": "Success state color"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{color.amber.500}",
+      "$description": "Warning state color"
+    },
+    "error": {
+      "$type": "color",
+      "$value": "{color.red.500}",
+      "$description": "Error state color"
+    },
+    "info": {
+      "$type": "color",
+      "$value": "{color.blue.500}",
+      "$description": "Info state color"
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "color",
+      "$value": "{color.blue.500}",
+      "$description": "Focus ring outline color"
+    }
+  }
+}

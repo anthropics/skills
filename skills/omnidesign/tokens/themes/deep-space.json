@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "deep-space",
+    "$description": "Near-black with deep purple stars - cosmic theme for creative tools"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#E9D5FF",
+        "$description": "Primary text on deep space - lavender white"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#A78BFA",
+        "$description": "Secondary text - purple-gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#0D0015",
+        "$description": "Text color for light surfaces - deep cosmic black"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#C084FC",
+        "$description": "Link text color - cosmic purple"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#D8B4FE",
+        "$description": "Link text color on hover - brighter cosmic purple"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#0D0015",
+        "$description": "Default surface background - deep cosmic black"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#1A0526",
+        "$description": "Elevated surface background - purple-tinted space"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#05000A",
+        "$description": "Depressed surface background - void black for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(13, 0, 21, 0.9)",
+        "$description": "Overlay background for modals - semi-transparent void"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#2E1065",
+        "$description": "Default border color - deep purple border"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#1A0526",
+        "$description": "Subtle border for dividers - dark purple"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#581C87",
+        "$description": "Stronger border for emphasis - visible purple"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#C084FC",
+        "$description": "Primary interactive element color - cosmic purple"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#E879F9",
+        "$description": "Primary interactive color on hover - lighter purple"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#3B0764",
+        "$description": "Secondary interactive element color - deep purple"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#E9D5FF",
+        "$description": "Focus ring outline color - lavender glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#34D399",
+        "$description": "Success state color - mint green for deep space"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Warning state color - amber star"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#FC8181",
+        "$description": "Error state color - coral nebula"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#E9D5FF",
+        "$description": "Info state color - lavender"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(192, 132, 252, 0.2), 0 2px 4px -2px rgba(139, 92, 246, 0.15)",
+      "$description": "Card elevation shadow - purple nebula glow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(139, 92, 246, 0.3)",
+      "$description": "Dropdown menu elevation shadow - purple-tinted void shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.75), 0 8px 10px -6px rgba(192, 132, 252, 0.4)",
+      "$description": "Modal dialog elevation shadow - cosmic shadow with purple glow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(233, 213, 255, 0.6), 0 0 8px rgba(192, 132, 252, 0.3)",
+      "$description": "Focus ring glow shadow - lavender star glow"
+    }
+  }
+}
