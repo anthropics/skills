@@ -1,0 +1,35 @@
+# Code Owners for Piano Tutor Platform
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owners - require review from these users for all files
+* @criptolandiatv
+
+# Frontend code
+/src/ @criptolandiatv
+/public/ @criptolandiatv
+
+# Backend code
+/backend/ @criptolandiatv
+
+# Infrastructure and deployment
+/docker/ @criptolandiatv
+/scripts/ @criptolandiatv
+/.github/workflows/ @criptolandiatv
+docker-compose*.yml @criptolandiatv
+DEPLOYMENT.md @criptolandiatv
+RUNBOOK.md @criptolandiatv
+
+# Configuration files
+package.json @criptolandiatv
+tsconfig*.json @criptolandiatv
+.eslintrc.json @criptolandiatv
+.prettierrc @criptolandiatv
+vite.config.ts @criptolandiatv
+
+# Documentation
+*.md @criptolandiatv
+CONTRIBUTING.md @criptolandiatv
+
+# Security-sensitive files
+.env*.example @criptolandiatv
+.github/workflows/deploy-production.yml @criptolandiatv
