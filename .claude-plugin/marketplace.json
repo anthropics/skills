@@ -40,6 +40,15 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "creative-skills",
+      "description": "Creative and game development skills including pixel art sprite sheet generation",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/pixel-art-spritesheet"
+      ]
     }
   ]
 }
