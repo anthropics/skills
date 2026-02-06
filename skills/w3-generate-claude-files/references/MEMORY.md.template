@@ -1,0 +1,265 @@
+# MEMORY.md - Project Context & Knowledge Base
+
+> **Note**: This is a Node.js/TypeScript example. Adapt the examples and tech details to match YOUR tech stack.
+
+**Last Updated**: [DATE]
+**Updated By**: [NAME]
+
+---
+
+## 🎯 Quick Facts
+
+| Aspect | Details |
+|--------|---------|
+| **Project** | [PROJECT_NAME] |
+| **Purpose** | [WHAT_IT_DOES] |
+| **Tech** | Node.js + TypeScript + Express + PostgreSQL |
+| **Main Pain Point** | [N+1 queries / Slow endpoints / etc] |
+| **Auth Type** | [JWT / Session / OAuth / etc] |
+| **Database** | PostgreSQL v14+ |
+| **Cache** | [Redis / In-memory / None] |
+| **Logging** | Winston logger |
+| **Deployment** | [Docker / Vercel / AWS / etc] |
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────┐
+│   Client    │
+└──────┬──────┘
+       │ HTTP/REST
+┌──────▼──────────────────┐
+│   Express API Server    │
+└──────┬──────────────────┘
+       │
+   ┌───┴──────┬─────────┐
+   │           │         │
+┌──▼──┐   ┌──▼──┐  ┌──▼──┐
+│Service│  │Cache│  │Logger│
+└──┬───┘   └─────┘  └──────┘
+   │
+┌──▼──────────┐
+│  Database   │
+│ PostgreSQL  │
+└─────────────┘
+```
+
+---
+
+## 📁 Key Files Quick Reference
+
+| File | Purpose | Last Modified |
+|------|---------|---|
+| `src/server.ts` | Express app setup | [DATE] |
+| `src/api/index.ts` | Route registration | [DATE] |
+| `src/middleware/auth.ts` | JWT verification | [DATE] |
+| `src/services/[Name]Service.ts` | Business logic | [DATE] |
+| `src/utils/logger.ts` | Winston logger | [DATE] |
+| `src/utils/errors.ts` | Custom errors | [DATE] |
+| `tests/integration/` | API tests | [DATE] |
+
+---
+
+## 🔑 Important Conventions
+
+### 1. **Validation Pattern** (zod)
+```typescript
+import { z } from 'zod'
+
+const UserSchema = z.object({
+  email: z.string().email('Invalid email'),
+  age: z.number().int().min(0).max(150),
+})
+
+// In controller
+const user = UserSchema.parse(req.body) // Throws ZodError if invalid
+```
+
+### 2. **Error Handling** (AppError)
+```typescript
+import { AppError } from '../../utils/errors'
+
+throw new AppError('Email already exists', 409)
+
+// Result: { success: false, error: "Email already exists" }
+```
+
+### 3. **Service Layer Pattern**
+```typescript
+// Controller (api/users/controller.ts)
+export async function createUser(req: Request, res: Response) {
+  const user = await UserService.create(data)
+  res.json({ success: true, data: user })
+}
+
+// Service (services/UserService.ts)
+export class UserService extends BaseService {
+  static async create(data: CreateUserDto) {
+    return await this.repository.create(data)
+  }
+}
+```
+
+### 4. **Repository Pattern** (DB Access)
+```typescript
+// Service calls repository (not direct DB queries)
+const user = await this.repository.findByEmail(email)
+```
+
+### 5. **API Response Wrapper**
+```typescript
+// Always wrap responses
+res.json({
+  success: true,
+  data: user,
+})
+
+// Errors
+res.status(400).json({
+  success: false,
+  error: 'Email already exists',
+})
+```
+
+### 6. **Logging Pattern**
+```typescript
+import { logger } from '../../utils/logger'
+
+// ✅ CORRECT
+logger.info('User created', { userId: user.id })
+logger.error('Create user failed', error)
+
+// ❌ WRONG
+console.log('User created:', user)
+```
+
+---
+
+## 🚨 Known Gotchas
+
+### 1. **N+1 Query Problem**
+**Issue**: Separate queries per item = slow
+```typescript
+// ❌ WRONG
+const users = await User.findAll()
+const usersWithPosts = await Promise.all(
+  users.map(u => Post.findByUserId(u.id)) // N+1!
+)
+
+// ✅ CORRECT
+const usersWithPosts = await User.findAll({
+  include: ['posts'] // Single query with JOIN
+})
+```
+
+### 2. **Database Connections**
+**Issue**: New connection per request = slow
+```typescript
+// ✅ CORRECT: Use connection pool (src/utils/db.ts)
+// Don't create new connections!
+```
+
+### 3. **CORS Issues**
+**File**: `src/middleware/cors.ts`
+- Add frontend URL to CORS_ORIGINS
+- Update req.origin check
+
+### 4. **JWT Token Expiry**
+**Solution**: Use refresh tokens
+- POST /api/auth/refresh endpoint
+- Store in httpOnly cookie
+- See src/middleware/auth.ts
+
+### 5. **Rate Limiting**
+**File**: `src/middleware/rateLimit.ts`
+- 100 req/min per IP (default)
+- Customizable per endpoint
+
+---
+
+## 🔄 Recent Changes & Context
+
+### [DATE] - [FEATURE_NAME]
+- **What changed**: [BRIEF_DESCRIPTION]
+- **Files affected**: [src/file.ts, src/other.ts]
+- **Breaking**: Yes/No
+- **Context**: [WHY_IT_CHANGED]
+
+### [OLDER_DATE] - [OLDER_FEATURE]
+- **What changed**: [...]
+
+---
+
+## 📊 Performance Notes
+
+### Slow Endpoints
+| Endpoint | Issue | Fix |
+|----------|-------|-----|
+| GET /[endpoint] | [ISSUE] | [FIX] |
+
+### Optimization Opportunities
+- [ ] Add Redis caching for [THING]
+- [ ] Index [COLUMN] column
+- [ ] Implement pagination for [ENDPOINT]
+
+---
+
+## 🔐 Security Checkpoints
+
+- [x] No hardcoded secrets (using .env)
+- [x] JWT token validation in middleware
+- [x] Input validation with zod
+- [x] Rate limiting enabled
+- [x] CORS configured
+- [ ] [ADD_MORE_AS_NEEDED]
+
+---
+
+## 🧪 Testing Patterns
+
+### Unit Tests (Services)
+```bash
+# Location: src/services/__tests__/[Service].test.ts
+# Mock repositories and external services
+```
+
+### Integration Tests (API)
+```bash
+# Location: tests/integration/[feature].test.ts
+# Make real HTTP requests, check responses
+```
+
+### E2E Tests (User Flows)
+```bash
+# Location: tests/e2e/[flow].test.ts
+# Use Playwright for real browser testing
+```
+
+### Mock External APIs
+```typescript
+// NEVER call real APIs in tests
+jest.mock('openai', () => ({
+  // Mock implementation
+}))
+```
+
+---
+
+## 📚 References
+
+- [CLAUDE.md](./CLAUDE.md) - Project rules
+- [CODEMAP.md](./CODEMAP.md) - Codebase structure
+- [README.md](./README.md) - Setup & how to run
+- Database Schema: [/migrations](./migrations/)
+
+---
+
+## 💡 Tips for Future Changes
+
+1. **New Database Column?** → Create migration, update model
+2. **New Validation Rule?** → Update zod schema
+3. **New Error Type?** → Add to AppError
+4. **New API Endpoint?** → Follow existing pattern
+5. **Slow Query?** → Check indexes, add eager loading
