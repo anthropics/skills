@@ -1,0 +1,11 @@
+Apache License 2.0
+
+Copyright 2024-2026 wolfejam
+
+Licensed under the Apache License, Version 2.0.
+http://www.apache.org/licenses/LICENSE-2.0
+
+---
+FAF (Foundational AI-context Format)
+IANA Media Type: application/vnd.faf+yaml
+Anthropic MCP Registry: #2759
