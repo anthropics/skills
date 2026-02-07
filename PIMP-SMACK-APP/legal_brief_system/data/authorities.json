@@ -1,0 +1,192 @@
+{
+    "cases": [
+        {
+            "name": "Ashcroft v. Iqbal",
+            "citation": "556 U.S. 662 (2009)",
+            "bluebook": "Ashcroft v. Iqbal, 556 U.S. 662 (2009)",
+            "pages_cited": [
+                4,
+                7,
+                12
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Plausibility pleading standard"
+        },
+        {
+            "name": "Bell Atlantic Corp. v. Twombly",
+            "citation": "550 U.S. 544 (2007)",
+            "bluebook": "Bell Atl. Corp. v. Twombly, 550 U.S. 544 (2007)",
+            "pages_cited": [
+                4,
+                6
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Plausibility pleading standard"
+        },
+        {
+            "name": "Bounds v. Smith",
+            "citation": "430 U.S. 817 (1977)",
+            "bluebook": "Bounds v. Smith, 430 U.S. 817 (1977)",
+            "pages_cited": [
+                8,
+                13,
+                15
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Right of access to courts requires adequate law libraries or legal assistance"
+        },
+        {
+            "name": "Ex parte Young",
+            "citation": "209 U.S. 123 (1908)",
+            "bluebook": "Ex parte Young, 209 U.S. 123 (1908)",
+            "pages_cited": [
+                11,
+                14
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "State officials can be sued for prospective relief"
+        },
+        {
+            "name": "Mathews v. Eldridge",
+            "citation": "424 U.S. 319 (1976)",
+            "bluebook": "Mathews v. Eldridge, 424 U.S. 319 (1976)",
+            "pages_cited": [
+                9,
+                13
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Due process requires notice and opportunity to be heard"
+        },
+        {
+            "name": "Monell v. Dep't of Social Services",
+            "citation": "436 U.S. 658 (1978)",
+            "bluebook": "Monell v. Dep't of Soc. Servs., 436 U.S. 658 (1978)",
+            "pages_cited": [
+                8,
+                11,
+                16
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Municipal liability under § 1983 for official policy"
+        },
+        {
+            "name": "Thompson v. Clark",
+            "citation": "142 S. Ct. 1332 (2022)",
+            "bluebook": "Thompson v. Clark, 142 S. Ct. 1332 (2022)",
+            "pages_cited": [
+                14
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Malicious prosecution claims need only show case ended not inconsistent with innocence"
+        },
+        {
+            "name": "Zinermon v. Burch",
+            "citation": "494 U.S. 113 (1990)",
+            "bluebook": "Zinermon v. Burch, 494 U.S. 113 (1990)",
+            "pages_cited": [
+                12
+            ],
+            "jurisdiction": "U.S. Supreme Court",
+            "key_holding": "Procedural due process for deprivation of liberty"
+        }
+    ],
+    "statutes": [
+        {
+            "title": "42",
+            "section": "1983",
+            "bluebook": "42 U.S.C. § 1983",
+            "pages_cited": [
+                1,
+                7,
+                8,
+                11
+            ],
+            "description": "Civil action for deprivation of rights"
+        },
+        {
+            "title": "28",
+            "section": "1331",
+            "bluebook": "28 U.S.C. § 1331",
+            "pages_cited": [
+                2
+            ],
+            "description": "Federal question jurisdiction"
+        },
+        {
+            "title": "28",
+            "section": "1291",
+            "bluebook": "28 U.S.C. § 1291",
+            "pages_cited": [
+                2
+            ],
+            "description": "Appeals from final decisions"
+        }
+    ],
+    "rules": [
+        {
+            "rule": "FRAP 4(a)(1)(A)",
+            "bluebook": "Fed. R. App. P. 4(a)(1)(A)",
+            "pages_cited": [
+                2
+            ],
+            "description": "Time to file notice of appeal"
+        },
+        {
+            "rule": "FRCP 12(b)(6)",
+            "bluebook": "Fed. R. Civ. P. 12(b)(6)",
+            "pages_cited": [
+                3,
+                6,
+                10
+            ],
+            "description": "Motion to dismiss for failure to state a claim"
+        }
+    ],
+    "constitutional_provisions": [
+        {
+            "amendment": "First",
+            "bluebook": "U.S. Const. amend. I",
+            "pages_cited": [
+                8,
+                13
+            ],
+            "description": "Right of access to courts"
+        },
+        {
+            "amendment": "Fourth",
+            "bluebook": "U.S. Const. amend. IV",
+            "pages_cited": [
+                3,
+                7
+            ],
+            "description": "Unreasonable searches and seizures"
+        },
+        {
+            "amendment": "Fifth",
+            "bluebook": "U.S. Const. amend. V",
+            "pages_cited": [
+                3
+            ],
+            "description": "Double jeopardy"
+        },
+        {
+            "amendment": "Sixth",
+            "bluebook": "U.S. Const. amend. VI",
+            "pages_cited": [
+                3
+            ],
+            "description": "Right to counsel, fair trial"
+        },
+        {
+            "amendment": "Fourteenth",
+            "bluebook": "U.S. Const. amend. XIV",
+            "pages_cited": [
+                3,
+                8,
+                12,
+                13
+            ],
+            "description": "Due process, equal protection"
+        }
+    ]
+}
