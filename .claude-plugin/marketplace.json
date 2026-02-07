@@ -38,7 +38,8 @@
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
         "./skills/web-artifacts-builder",
-        "./skills/webapp-testing"
+        "./skills/webapp-testing",
+        "./skills/agent-first-refactoring"
       ]
     }
   ]
