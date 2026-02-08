@@ -29,9 +29,11 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
-You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
+You can register this repository as a Claude Code Plugin marketplace and install the plugins by running the following commands in Claude Code:
 ```
 /plugin marketplace add anthropics/skills
+/plugin install document-skills@anthropic-agent-skills
+/plugin install example-skills@anthropic-agent-skills
 ```
 
 Then, to install a specific set of skills:
