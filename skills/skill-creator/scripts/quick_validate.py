@@ -30,6 +30,32 @@ def validate_skill(skill_path):
 
     frontmatter_text = match.group(1)
 
+    # Pre-parse check: detect unquoted values with special YAML characters
+    # that would cause yaml.safe_load() to silently misparse them.
+    YAML_SPECIAL_CHARS = {':', '#', '{', '}', '[', ']'}
+    FIELDS_TO_CHECK = ['description', 'compatibility']
+    for field in FIELDS_TO_CHECK:
+        field_match = re.search(
+            rf'^{re.escape(field)}:\s*(.+)$', frontmatter_text, re.MULTILINE
+        )
+        if field_match:
+            raw_value = field_match.group(1).strip()
+            # Skip values that are already properly quoted
+            if (raw_value.startswith('"') and raw_value.endswith('"')) or \
+               (raw_value.startswith("'") and raw_value.endswith("'")):
+                continue
+            # Check for special YAML characters in the unquoted value
+            found_chars = [ch for ch in YAML_SPECIAL_CHARS if ch in raw_value]
+            if found_chars:
+                chars_display = ', '.join(repr(ch) for ch in sorted(found_chars))
+                return False, (
+                    f"The '{field}' value in SKILL.md frontmatter contains special "
+                    f"YAML characters ({chars_display}) but is not quoted. "
+                    f"This will cause the skill to silently fail to load. "
+                    f"Wrap the value in quotes, e.g.:\n"
+                    f"  {field}: \"your {field} text here\""
+                )
+
     # Parse YAML frontmatter
     try:
         frontmatter = yaml.safe_load(frontmatter_text)
