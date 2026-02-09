@@ -311,6 +311,7 @@ Write the YAML frontmatter with `name` and `description`:
   - Include both what the Skill does and specific triggers/contexts for when to use it.
   - Include all "when to use" information here - Not in the body. The body is only loaded after triggering, so "When to Use This Skill" sections in the body are not helpful to Claude.
   - Example description for a `docx` skill: "Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks"
+  - **YAML quoting requirement**: Always wrap the `description` value in double quotes when it contains YAML special characters (colons `:`, commas `,`, brackets `[](){}`, quotes, or starts with `-`). Without quotes, YAML parsers will fail with "No valid skills found" errors. The example above correctly uses quotes because it contains colons and parentheses.
 
 Do not include any other fields in YAML frontmatter.
 
