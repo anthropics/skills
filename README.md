@@ -62,6 +62,8 @@ You can use Anthropic's pre-built skills, and upload custom skills, via the Clau
 
 Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
 
+> **Important**: The skill definition file must be named exactly `SKILL.md` (uppercase). Using `skill.md` (lowercase) or any other capitalization will cause the skill to silently fail to load. This is case-sensitive on all platforms, including macOS and Windows which have case-insensitive filesystems by default.
+
 ```markdown
 ---
 name: my-skill-name
@@ -86,6 +88,17 @@ The frontmatter requires only two fields:
 - `description` - A complete description of what the skill does and when to use it
 
 The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
+
+## Troubleshooting
+
+### Skill Not Loading
+
+If your skill doesn't appear or load:
+
+1. **Verify the filename is exactly `SKILL.md`** (uppercase) - this is case-sensitive and the most common cause of skills not loading
+2. Check that your YAML frontmatter is valid (proper indentation, correct syntax)
+3. Ensure the skill directory is in a recognized location (`.claude/skills/` in your home directory or project)
+4. Review debug logs with `claude --debug` to see how many skills were loaded
 
 # Partner Skills
 
