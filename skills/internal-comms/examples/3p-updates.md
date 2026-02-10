@@ -1,47 +1,46 @@
-## Instructions
-You are being asked to write a 3P update. 3P updates stand for "Progress, Plans, Problems." The main audience is for executives, leadership, other teammates, etc. They're meant to be very succinct and to-the-point: think something you can read in 30-60sec or less. They're also for people with some, but not a lot of context on what the team does.
+## 说明
+您被要求编写 3P 更新。3P 代表"进度、计划、问题"。主要受众是高管、领导层、其他队友等。它们旨在非常简洁和切中要害：想想您可以在 30-60 秒或更短的时间内阅读的东西。它们也适合对团队的工作有一些但不多上下文的人。
 
-3Ps can cover a team of any size, ranging all the way up to the entire company. The bigger the team, the less granular the tasks should be. For example, "mobile team" might have "shipped feature" or "fixed bugs," whereas the company might have really meaty 3Ps, like "hired 20 new people" or "closed 10 new deals." 
+3P 可以涵盖任何规模的团队，一直到整个公司。团队越大，任务的粒度应该越低。例如，"移动团队"可能有"发布功能"或"修复错误"，而公司可能真的有实质性的 3P，如"雇用了 20 名新员工"或"达成了 10 项新交易"。
 
-They represent the work of the team across a time period, almost always one week. They include three sections:
-1) Progress: what the team has accomplished over the next time period. Focus mainly on things shipped, milestones achieved, tasks created, etc.
-2) Plans: what the team plans to do over the next time period. Focus on what things are top-of-mind, really high priority, etc. for the team.
-3) Problems: anything that is slowing the team down. This could be things like too few people, bugs or blockers that are preventing the team from moving forward, some deal that fell through, etc.
+它们代表团队在一段时间内的工作，几乎总是为期一周。它们包括三个部分：
+1) 进度：团队在下一个时间段内完成的事情。主要关注已发布的内容、已实现的里程碑、已创建的任务等。
+2) 计划：团队计划在下一个时间段内做的事情。主要关注团队最关心的事情、真正高优先级的事情等。
+3) 问题：任何让团队慢下来的事情。这可能是人太少、阻止团队前进的错误或障碍、一些失败的交易等。
 
-Before writing them, make sure that you know the team name. If it's not specified, you can ask explicitly what the team name you're writing for is.
-
-
-## Tools Available
-Whenever possible, try to pull from available sources to get the information you need:
-- Slack: posts from team members with their updates - ideally look for posts in large channels with lots of reactions
-- Google Drive: docs written from critical team members with lots of views
-- Email: emails with lots of responses of lots of content that seems relevant
-- Calendar: non-recurring meetings that have a lot of importance, like product reviews, etc.
+在编写它们之前，请确保您知道团队名称。如果没有指定，您可以明确询问您正在为哪个团队名称编写。
 
 
-Try to gather as much context as you can, focusing on the things that covered the time period you're writing for:
-- Progress: anything between a week ago and today
-- Plans: anything from today to the next week
-- Problems: anything between a week ago and today
+## 可用工具
+尽可能尝试从可用来源中获取您需要的信息：
+- Slack：团队成员的帖子及其更新——最好在有很多反应的大型频道中寻找帖子
+- Google Drive：关键团队成员编写的文档，有很多浏览量
+- 电子邮件：有很多回复的电子邮件，其中包含很多看起来相关的内容
+- 日历：有很多重要性的非经常性会议，如产品审查等
 
 
-If you don't have access, you can ask the user for things they want to cover. They might also include these things to you directly, in which case you're mostly just formatting for this particular format.
+尝试收集尽可能多的上下文，专注于涵盖您正在编写的时间段的内容：
+- 进度：从一周前到今天的任何事情
+- 计划：从今天到下周的任何事情
+- 问题：从一周前到今天的任何事情
 
-## Workflow
 
-1. **Clarify scope**: Confirm the team name and time period (usually past week for Progress/Problems, next
-week for Plans)
-2. **Gather information**: Use available tools or ask the user directly
-3. **Draft the update**: Follow the strict formatting guidelines
-4. **Review**: Ensure it's concise (30-60 seconds to read) and data-driven
+如果您没有访问权限，可以询问用户他们想要涵盖的事情。他们也可能直接将这些内容包括给您，在这种情况下，您主要只是为此特定格式进行格式化。
 
-## Formatting
+## 工作流程
 
-The format is always the same, very strict formatting. Never use any formatting other than this. Pick an emoji that is fun and captures the vibe of the team and update.
+1. **澄清范围**：确认团队名称和时间段（通常是过去一周的进度/问题，下周的计划）
+2. **收集信息**：使用可用的工具或直接询问用户
+3. **起草更新**：遵循严格的格式指南
+4. **审查**：确保它简洁（30-60 秒阅读）和数据驱动
 
-[pick an emoji] [Team Name] (Dates Covered, usually a week)
-Progress: [1-3 sentences of content]
-Plans: [1-3 sentences of content]
-Problems: [1-3 sentences of content]
+## 格式化
 
-Each section should be no more than 1-3 sentences: clear, to the point. It should be data-driven, and generally include metrics where possible. The tone should be very matter-of-fact, not super prose-heavy.
+格式始终相同，格式非常严格。永远不要使用任何其他格式。选择一个有趣并捕捉团队和更新氛围的表情符号。
+
+[选择一个表情符号] [团队名称]（涵盖的日期，通常是一周）
+进度：[1-3 句内容]
+计划：[1-3 句内容]
+问题：[1-3 句内容]
+
+每个部分应不超过 1-3 句话：清晰、切中要害。它应该是数据驱动的，并且尽可能包括指标。语气应该非常实事求是，而不是非常散文。

@@ -1,137 +1,137 @@
-**CRITICAL: You MUST complete these steps in order. Do not skip ahead to writing code.**
+**重要提示：您必须按顺序完成这些步骤。不要跳到编写代码。**
 
-If you need to fill out a PDF form, first check to see if the PDF has fillable form fields. Run this script from this file's directory:
- `python scripts/check_fillable_fields <file.pdf>`, and depending on the result go to either the "Fillable fields" or "Non-fillable fields" and follow those instructions.
+如果您需要填写 PDF 表单，首先检查 PDF 是否具有可填写的表单字段。从此文件的目录运行此脚本：
+ `python scripts/check_fillable_fields <file.pdf>`，然后根据结果转到"可填写字段"或"不可填写字段"并按照这些说明操作。
 
-# Fillable fields
-If the PDF has fillable form fields:
-- Run this script from this file's directory: `python scripts/extract_form_field_info.py <input.pdf> <field_info.json>`. It will create a JSON file with a list of fields in this format:
+# 可填写字段
+如果 PDF 具有可填写的表单字段：
+- 从此文件的目录运行此脚本：`python scripts/extract_form_field_info.py <input.pdf> <field_info.json>`。它将使用此格式创建一个包含字段列表的 JSON 文件：
 ```
 [
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
-    "rect": ([left, bottom, right, top] bounding box in PDF coordinates, y=0 is the bottom of the page),
-    "type": ("text", "checkbox", "radio_group", or "choice"),
+    "field_id": (字段的唯一 ID),
+    "page": (页码，从 1 开始),
+    "rect": ([左、下、右、上] PDF 坐标中的边界框，y=0 是页面的底部),
+    "type": ("text"、"checkbox"、"radio_group" 或 "choice"),
   },
-  // Checkboxes have "checked_value" and "unchecked_value" properties:
+  // 复选框具有 "checked_value" 和 "unchecked_value" 属性：
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (字段的唯一 ID),
+    "page": (页码，从 1 开始),
     "type": "checkbox",
-    "checked_value": (Set the field to this value to check the checkbox),
-    "unchecked_value": (Set the field to this value to uncheck the checkbox),
+    "checked_value": (将字段设置为此值以选中复选框),
+    "unchecked_value": (将字段设置为此值以取消选中复选框),
   },
-  // Radio groups have a "radio_options" list with the possible choices.
+  // 单选组具有可能选择的 "radio_options" 列表。
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (字段的唯一 ID),
+    "page": (页码，从 1 开始),
     "type": "radio_group",
     "radio_options": [
       {
-        "value": (set the field to this value to select this radio option),
-        "rect": (bounding box for the radio button for this option)
+        "value": (将字段设置为此值以选择此单选选项),
+        "rect": (此选项的单选按钮的边界框)
       },
-      // Other radio options
+      // 其他单选选项
     ]
   },
-  // Multiple choice fields have a "choice_options" list with the possible choices:
+  // 多选字段具有可能选择的 "choice_options" 列表：
   {
-    "field_id": (unique ID for the field),
-    "page": (page number, 1-based),
+    "field_id": (字段的唯一 ID),
+    "page": (页码，从 1 开始),
     "type": "choice",
     "choice_options": [
       {
-        "value": (set the field to this value to select this option),
-        "text": (display text of the option)
+        "value": (将字段设置为此值以选择此选项),
+        "text": (选项的显示文本)
       },
-      // Other choice options
+      // 其他选择选项
     ],
   }
 ]
 ```
-- Convert the PDF to PNGs (one image for each page) with this script (run from this file's directory):
+- 使用此脚本将 PDF 转换为 PNG（每页一个图像）（从此文件的目录运行）：
 `python scripts/convert_pdf_to_images.py <file.pdf> <output_directory>`
-Then analyze the images to determine the purpose of each form field (make sure to convert the bounding box PDF coordinates to image coordinates).
-- Create a `field_values.json` file in this format with the values to be entered for each field:
+然后分析图像以确定每个表单字段的用途（确保将边界框 PDF 坐标转换为图像坐标）。
+- 使用此格式创建一个 `field_values.json` 文件，其中包含要为每个字段输入的值：
 ```
 [
   {
-    "field_id": "last_name", // Must match the field_id from `extract_form_field_info.py`
-    "description": "The user's last name",
-    "page": 1, // Must match the "page" value in field_info.json
+    "field_id": "last_name", // 必须与 `extract_form_field_info.py` 中的 field_id 匹配
+    "description": "用户的姓氏",
+    "page": 1, // 必须与 field_info.json 中的 "page" 值匹配
     "value": "Simpson"
   },
   {
     "field_id": "Checkbox12",
-    "description": "Checkbox to be checked if the user is 18 or over",
+    "description": "如果用户年满 18 岁或以上，则选中的复选框",
     "page": 1,
-    "value": "/On" // If this is a checkbox, use its "checked_value" value to check it. If it's a radio button group, use one of the "value" values in "radio_options".
+    "value": "/On" // 如果这是复选框，使用其 "checked_value" 值来选中它。如果是单选按钮组，使用 "radio_options" 中的一个 "value" 值。
   },
-  // more fields
+  // 更多字段
 ]
 ```
-- Run the `fill_fillable_fields.py` script from this file's directory to create a filled-in PDF:
+- 从此文件的目录运行 `fill_fillable_fields.py` 脚本以创建填写的 PDF：
 `python scripts/fill_fillable_fields.py <input pdf> <field_values.json> <output pdf>`
-This script will verify that the field IDs and values you provide are valid; if it prints error messages, correct the appropriate fields and try again.
+此脚本将验证您提供的字段 ID 和值是否有效；如果打印错误消息，请更正相应的字段并重试。
 
-# Non-fillable fields
-If the PDF doesn't have fillable form fields, you'll add text annotations. First try to extract coordinates from the PDF structure (more accurate), then fall back to visual estimation if needed.
+# 不可填写的字段
+如果 PDF 没有可填写的表单字段，您将添加文本注释。首先尝试从 PDF 结构中提取坐标（更准确），然后在需要时回退到视觉估计。
 
-## Step 1: Try Structure Extraction First
+## 步骤 1：首先尝试结构提取
 
-Run this script to extract text labels, lines, and checkboxes with their exact PDF coordinates:
+运行此脚本以提取带有精确 PDF 坐标的文本标签、线条和复选框：
 `python scripts/extract_form_structure.py <input.pdf> form_structure.json`
 
-This creates a JSON file containing:
-- **labels**: Every text element with exact coordinates (x0, top, x1, bottom in PDF points)
-- **lines**: Horizontal lines that define row boundaries
-- **checkboxes**: Small square rectangles that are checkboxes (with center coordinates)
-- **row_boundaries**: Row top/bottom positions calculated from horizontal lines
+这将创建一个包含以下内容的 JSON 文件：
+- **labels**：每个带有精确坐标（x0、top、x1、bottom，以 PDF 点为单位）的文本元素
+- **lines**：定义行边界的水平线
+- **checkboxes**：小方形矩形，是复选框（带有中心坐标）
+- **row_boundaries**：从水平线计算的行的顶部/底部位置
 
-**Check the results**: If `form_structure.json` has meaningful labels (text elements that correspond to form fields), use **Approach A: Structure-Based Coordinates**. If the PDF is scanned/image-based and has few or no labels, use **Approach B: Visual Estimation**.
+**检查结果**：如果 `form_structure.json` 具有有意义的标签（对应于表单字段的文本元素），请使用**方法 A：基于结构的坐标**。如果 PDF 是扫描/基于图像的，并且很少或没有标签，请使用**方法 B：视觉估计**。
 
 ---
 
-## Approach A: Structure-Based Coordinates (Preferred)
+## 方法 A：基于结构的坐标（首选）
 
-Use this when `extract_form_structure.py` found text labels in the PDF.
+当 `extract_form_structure.py` 在 PDF 中找到文本标签时使用此方法。
 
-### A.1: Analyze the Structure
+### A.1：分析结构
 
-Read form_structure.json and identify:
+阅读 form_structure.json 并识别：
 
-1. **Label groups**: Adjacent text elements that form a single label (e.g., "Last" + "Name")
-2. **Row structure**: Labels with similar `top` values are in the same row
-3. **Field columns**: Entry areas start after label ends (x0 = label.x1 + gap)
-4. **Checkboxes**: Use the checkbox coordinates directly from the structure
+1. **标签组**：形成单个标签的相邻文本元素（例如，"Last" + "Name"）
+2. **行结构**：具有相似 `top` 值的标签在同一行中
+3. **字段列**：条目区域在标签结束后开始（x0 = label.x1 + gap）
+4. **复选框**：直接使用结构中的复选框坐标
 
-**Coordinate system**: PDF coordinates where y=0 is at TOP of page, y increases downward.
+**坐标系**：PDF 坐标，其中 y=0 在页面的顶部，y 向下增加。
 
-### A.2: Check for Missing Elements
+### A.2：检查缺失元素
 
-The structure extraction may not detect all form elements. Common cases:
-- **Circular checkboxes**: Only square rectangles are detected as checkboxes
-- **Complex graphics**: Decorative elements or non-standard form controls
-- **Faded or light-colored elements**: May not be extracted
+结构提取可能不会检测到所有表单元素。常见情况：
+- **圆形复选框**：只有方形矩形被检测为复选框
+- **复杂图形**：装饰性元素或非标准表单控件
+- **褪色或浅色元素**：可能不会被提取
 
-If you see form fields in the PDF images that aren't in form_structure.json, you'll need to use **visual analysis** for those specific fields (see "Hybrid Approach" below).
+如果您在 PDF 图像中看到不在 form_structure.json 中的表单字段，您需要对那些特定字段使用**视觉分析**（请参阅下面的"混合方法"）。
 
-### A.3: Create fields.json with PDF Coordinates
+### A.3：使用 PDF 坐标创建 fields.json
 
-For each field, calculate entry coordinates from the extracted structure:
+对于每个字段，从提取的结构中计算条目坐标：
 
-**Text fields:**
-- entry x0 = label x1 + 5 (small gap after label)
-- entry x1 = next label's x0, or row boundary
-- entry top = same as label top
-- entry bottom = row boundary line below, or label bottom + row_height
+**文本字段：**
+- entry x0 = label x1 + 5（标签后的小间隙）
+- entry x1 = 下一个标签的 x0 或行边界
+- entry top = 与 label top 相同
+- entry bottom = 下方的行边界线或 label bottom + row_height
 
-**Checkboxes:**
-- Use the checkbox rectangle coordinates directly from form_structure.json
+**复选框：**
+- 直接使用 form_structure.json 中的复选框矩形坐标
 - entry_bounding_box = [checkbox.x0, checkbox.top, checkbox.x1, checkbox.bottom]
 
-Create fields.json using `pdf_width` and `pdf_height` (signals PDF coordinates):
+使用 `pdf_width` 和 `pdf_height` 创建 fields.json（表示 PDF 坐标）：
 ```json
 {
   "pages": [
@@ -140,16 +140,16 @@ Create fields.json using `pdf_width` and `pdf_height` (signals PDF coordinates):
   "form_fields": [
     {
       "page_number": 1,
-      "description": "Last name entry field",
-      "field_label": "Last Name",
+      "description": "姓氏条目字段",
+      "field_label": "姓氏",
       "label_bounding_box": [43, 63, 87, 73],
       "entry_bounding_box": [92, 63, 260, 79],
       "entry_text": {"text": "Smith", "font_size": 10}
     },
     {
       "page_number": 1,
-      "description": "US Citizen Yes checkbox",
-      "field_label": "Yes",
+      "description": "美国公民是复选框",
+      "field_label": "是",
       "label_bounding_box": [260, 200, 280, 210],
       "entry_bounding_box": [285, 197, 292, 205],
       "entry_text": {"text": "X"}
@@ -158,72 +158,72 @@ Create fields.json using `pdf_width` and `pdf_height` (signals PDF coordinates):
 }
 ```
 
-**Important**: Use `pdf_width`/`pdf_height` and coordinates directly from form_structure.json.
+**重要**：使用 `pdf_width`/`pdf_height` 和直接来自 form_structure.json 的坐标。
 
-### A.4: Validate Bounding Boxes
+### A.4：验证边界框
 
-Before filling, check your bounding boxes for errors:
+在填写之前，检查边界框是否有错误：
 `python scripts/check_bounding_boxes.py fields.json`
 
-This checks for intersecting bounding boxes and entry boxes that are too small for the font size. Fix any reported errors before filling.
+这将检查相交的边界框和对于字体大小来说太小的条目框。在填写之前修复任何报告的错误。
 
 ---
 
-## Approach B: Visual Estimation (Fallback)
+## 方法 B：视觉估计（回退）
 
-Use this when the PDF is scanned/image-based and structure extraction found no usable text labels (e.g., all text shows as "(cid:X)" patterns).
+当 PDF 是扫描/基于图像的且结构提取未找到可用的文本标签时使用此方法（例如，所有文本显示为 "(cid:X)" 模式）。
 
-### B.1: Convert PDF to Images
+### B.1：将 PDF 转换为图像
 
 `python scripts/convert_pdf_to_images.py <input.pdf> <images_dir/>`
 
-### B.2: Initial Field Identification
+### B.2：初始字段识别
 
-Examine each page image to identify form sections and get **rough estimates** of field locations:
-- Form field labels and their approximate positions
-- Entry areas (lines, boxes, or blank spaces for text input)
-- Checkboxes and their approximate locations
+检查每个页面图像以识别表单部分并获得字段位置的**粗略估计**：
+- 表单字段标签及其近似位置
+- 条目区域（文本输入的线条、框或空白空间）
+- 复选框及其近似位置
 
-For each field, note approximate pixel coordinates (they don't need to be precise yet).
+对于每个字段，请注意近似像素坐标（它们尚不需要精确）。
 
-### B.3: Zoom Refinement (CRITICAL for accuracy)
+### B.3：缩放细化（对准确性至关重要）
 
-For each field, crop a region around the estimated position to refine coordinates precisely.
+对于每个字段，在估计位置周围裁剪一个区域以精确细化坐标。
 
-**Create a zoomed crop using ImageMagick:**
+**使用 ImageMagick 创建缩放裁剪：**
 ```bash
 magick <page_image> -crop <width>x<height>+<x>+<y> +repage <crop_output.png>
 ```
 
-Where:
-- `<x>, <y>` = top-left corner of crop region (use your rough estimate minus padding)
-- `<width>, <height>` = size of crop region (field area plus ~50px padding on each side)
+其中：
+- `<x>, <y>` = 裁剪区域的左上角（使用您的粗略估计减去填充）
+- `<width>, <height>` = 裁剪区域的大小（字段区域加上每侧约 50px 填充）
 
-**Example:** To refine a "Name" field estimated around (100, 150):
+**示例：** 要细化估计在 (100, 150) 左右的"名称"字段：
 ```bash
 magick images_dir/page_1.png -crop 300x80+50+120 +repage crops/name_field.png
 ```
 
-(Note: if the `magick` command isn't available, try `convert` with the same arguments).
+（注意：如果 `magick` 命令不可用，请尝试使用相同参数的 `convert`。）
 
-**Examine the cropped image** to determine precise coordinates:
-1. Identify the exact pixel where the entry area begins (after the label)
-2. Identify where the entry area ends (before next field or edge)
-3. Identify the top and bottom of the entry line/box
+**检查裁剪的图像**以确定精确坐标：
+1. 确定条目区域开始的精确像素（标签后）
+2. 确定条目区域结束的位置（下一个字段或边缘之前）
+3. 确定条目线/框的顶部和底部
 
-**Convert crop coordinates back to full image coordinates:**
+**将裁剪坐标转换回完整图像坐标：**
 - full_x = crop_x + crop_offset_x
 - full_y = crop_y + crop_offset_y
 
-Example: If the crop started at (50, 120) and the entry box starts at (52, 18) within the crop:
+示例：如果裁剪从 (50, 120) 开始，并且条目框在裁剪内从 (52, 18) 开始：
 - entry_x0 = 52 + 50 = 102
 - entry_top = 18 + 120 = 138
 
-**Repeat for each field**, grouping nearby fields into single crops when possible.
+**对每个字段重复此操作**，在可能的情况下将附近的字段分组到单个裁剪中。
 
-### B.4: Create fields.json with Refined Coordinates
+### B.4：使用细化坐标创建 fields.json
 
-Create fields.json using `image_width` and `image_height` (signals image coordinates):
+使用 `image_width` 和 `image_height` 创建 fields.json（表示图像坐标）：
 ```json
 {
   "pages": [
@@ -232,8 +232,8 @@ Create fields.json using `image_width` and `image_height` (signals image coordin
   "form_fields": [
     {
       "page_number": 1,
-      "description": "Last name entry field",
-      "field_label": "Last Name",
+      "description": "姓氏条目字段",
+      "field_label": "姓氏",
       "label_bounding_box": [120, 175, 242, 198],
       "entry_bounding_box": [255, 175, 720, 218],
       "entry_text": {"text": "Smith", "font_size": 10}
@@ -242,53 +242,53 @@ Create fields.json using `image_width` and `image_height` (signals image coordin
 }
 ```
 
-**Important**: Use `image_width`/`image_height` and the refined pixel coordinates from the zoom analysis.
+**重要**：使用 `image_width`/`image_height` 和来自缩放分析的细化像素坐标。
 
-### B.5: Validate Bounding Boxes
+### B.5：验证边界框
 
-Before filling, check your bounding boxes for errors:
+在填写之前，检查边界框是否有错误：
 `python scripts/check_bounding_boxes.py fields.json`
 
-This checks for intersecting bounding boxes and entry boxes that are too small for the font size. Fix any reported errors before filling.
+这将检查相交的边界框和对于字体大小来说太小的条目框。在填写之前修复任何报告的错误。
 
 ---
 
-## Hybrid Approach: Structure + Visual
+## 混合方法：结构 + 视觉
 
-Use this when structure extraction works for most fields but misses some elements (e.g., circular checkboxes, unusual form controls).
+当结构提取对大多数字段有效但遗漏了一些元素（例如，圆形复选框、非标准表单控件）时使用此方法。
 
-1. **Use Approach A** for fields that were detected in form_structure.json
-2. **Convert PDF to images** for visual analysis of missing fields
-3. **Use zoom refinement** (from Approach B) for the missing fields
-4. **Combine coordinates**: For fields from structure extraction, use `pdf_width`/`pdf_height`. For visually-estimated fields, you must convert image coordinates to PDF coordinates:
+1. **使用方法 A** 处理在 form_structure.json 中检测到的字段
+2. **将 PDF 转换为图像**以进行缺失字段的视觉分析
+3. **使用缩放细化**（来自方法 B）处理缺失字段
+4. **组合坐标**：对于来自结构提取的字段，使用 `pdf_width`/`pdf_height`。对于视觉估计的字段，您必须将图像坐标转换为 PDF 坐标：
    - pdf_x = image_x * (pdf_width / image_width)
    - pdf_y = image_y * (pdf_height / image_height)
-5. **Use a single coordinate system** in fields.json - convert all to PDF coordinates with `pdf_width`/`pdf_height`
+5. **在 fields.json 中使用单一坐标系** - 将所有内容转换为带有 `pdf_width`/`pdf_height` 的 PDF 坐标
 
 ---
 
-## Step 2: Validate Before Filling
+## 步骤 2：填写前验证
 
-**Always validate bounding boxes before filling:**
+**始终在填写之前验证边界框：**
 `python scripts/check_bounding_boxes.py fields.json`
 
-This checks for:
-- Intersecting bounding boxes (which would cause overlapping text)
-- Entry boxes that are too small for the specified font size
+这将检查：
+- 相交的边界框（将导致重叠文本）
+- 对于指定字体大小来说太小的条目框
 
-Fix any reported errors in fields.json before proceeding.
+在继续之前修复 fields.json 中的任何报告错误。
 
-## Step 3: Fill the Form
+## 步骤 3：填写表单
 
-The fill script auto-detects the coordinate system and handles conversion:
+填写脚本自动检测坐标系并处理转换：
 `python scripts/fill_pdf_form_with_annotations.py <input.pdf> fields.json <output.pdf>`
 
-## Step 4: Verify Output
+## 步骤 4：验证输出
 
-Convert the filled PDF to images and verify text placement:
+将填写的 PDF 转换为图像并验证文本放置：
 `python scripts/convert_pdf_to_images.py <output.pdf> <verify_images/>`
 
-If text is mispositioned:
-- **Approach A**: Check that you're using PDF coordinates from form_structure.json with `pdf_width`/`pdf_height`
-- **Approach B**: Check that image dimensions match and coordinates are accurate pixels
-- **Hybrid**: Ensure coordinate conversions are correct for visually-estimated fields
+如果文本位置错误：
+- **方法 A**：检查您是否使用带有 `pdf_width`/`pdf_height` 的 form_structure.json 中的 PDF 坐标
+- **方法 B**：检查图像尺寸是否匹配以及坐标是否为准确的像素
+- **混合**：确保视觉估计字段的坐标转换正确

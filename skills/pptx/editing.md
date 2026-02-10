@@ -1,57 +1,57 @@
-# Editing Presentations
+# 编辑演示文稿
 
-## Template-Based Workflow
+## 基于模板的工作流程
 
-When using an existing presentation as a template:
+使用现有演示文稿作为模板时：
 
-1. **Analyze existing slides**:
+1. **分析现有幻灯片**：
    ```bash
    python scripts/thumbnail.py template.pptx
    python -m markitdown template.pptx
    ```
-   Review `thumbnails.jpg` to see layouts, and markitdown output to see placeholder text.
+   查看 `thumbnails.jpg` 以了解布局，以及 markitdown 输出以查看占位符文本。
 
-2. **Plan slide mapping**: For each content section, choose a template slide.
+2. **规划幻灯片映射**：对于每个内容部分，选择一个模板幻灯片。
 
-   ⚠️ **USE VARIED LAYOUTS** — monotonous presentations are a common failure mode. Don't default to basic title + bullet slides. Actively seek out:
-   - Multi-column layouts (2-column, 3-column)
-   - Image + text combinations
-   - Full-bleed images with text overlay
-   - Quote or callout slides
-   - Section dividers
-   - Stat/number callouts
-   - Icon grids or icon + text rows
+   ⚠️ **使用多样化布局** — 单调的演示文稿是一种常见的失败模式。不要默认使用基本的标题 + 项目符号幻灯片。积极寻找：
+   - 多栏布局（2 栏、3 栏）
+   - 图像 + 文本组合
+   - 带文本叠加的全出血图像
+   - 引用或标注幻灯片
+   - 章节分隔符
+   - 统计/数字标注
+   - 图标网格或图标 + 文本行
 
-   **Avoid:** Repeating the same text-heavy layout for every slide.
+   **避免：** 为每张幻灯片重复相同的重度文本布局。
 
-   Match content type to layout style (e.g., key points → bullet slide, team info → multi-column, testimonials → quote slide).
+   将内容类型与布局样式匹配（例如，关键点 → 项目符号幻灯片，团队信息 → 多栏，推荐语 → 引用幻灯片）。
 
-3. **Unpack**: `python scripts/office/unpack.py template.pptx unpacked/`
+3. **解包**：`python scripts/office/unpack.py template.pptx unpacked/`
 
-4. **Build presentation** (do this yourself, not with subagents):
-   - Delete unwanted slides (remove from `<p:sldIdLst>`)
-   - Duplicate slides you want to reuse (`add_slide.py`)
-   - Reorder slides in `<p:sldIdLst>`
-   - **Complete all structural changes before step 5**
+4. **构建演示文稿**（自己完成，不使用子代理）：
+   - 删除不需要的幻灯片（从 `<p:sldIdLst>` 中删除）
+   - 复制要重复使用的幻灯片（`add_slide.py`）
+   - 在 `<p:sldIdLst>` 中重新排序幻灯片
+   - **在步骤 5 之前完成所有结构更改**
 
-5. **Edit content**: Update text in each `slide{N}.xml`.
-   **Use subagents here if available** — slides are separate XML files, so subagents can edit in parallel.
+5. **编辑内容**：更新每个 `slide{N}.xml` 中的文本。
+   **如果有可用子代理，请在此处使用** — 幻灯片是单独的 XML 文件，因此子代理可以并行编辑。
 
-6. **Clean**: `python scripts/clean.py unpacked/`
+6. **清理**：`python scripts/clean.py unpacked/`
 
-7. **Pack**: `python scripts/office/pack.py unpacked/ output.pptx --original template.pptx`
+7. **打包**：`python scripts/office/pack.py unpacked/ output.pptx --original template.pptx`
 
 ---
 
-## Scripts
+## 脚本
 
-| Script | Purpose |
+| 脚本 | 目的 |
 |--------|---------|
-| `unpack.py` | Extract and pretty-print PPTX |
-| `add_slide.py` | Duplicate slide or create from layout |
-| `clean.py` | Remove orphaned files |
-| `pack.py` | Repack with validation |
-| `thumbnail.py` | Create visual grid of slides |
+| `unpack.py` | 提取并美化打印 PPTX |
+| `add_slide.py` | 复制幻灯片或从布局创建 |
+| `clean.py` | 删除孤立文件 |
+| `pack.py` | 带验证重新打包 |
+| `thumbnail.py` | 创建幻灯片视觉网格 |
 
 ### unpack.py
 
@@ -59,16 +59,16 @@ When using an existing presentation as a template:
 python scripts/office/unpack.py input.pptx unpacked/
 ```
 
-Extracts PPTX, pretty-prints XML, escapes smart quotes.
+提取 PPTX，美化打印 XML，转义智能引号。
 
 ### add_slide.py
 
 ```bash
-python scripts/add_slide.py unpacked/ slide2.xml      # Duplicate slide
-python scripts/add_slide.py unpacked/ slideLayout2.xml # From layout
+python scripts/add_slide.py unpacked/ slide2.xml      # 复制幻灯片
+python scripts/add_slide.py unpacked/ slideLayout2.xml # 从布局
 ```
 
-Prints `<p:sldId>` to add to `<p:sldIdLst>` at desired position.
+打印 `<p:sldId>` 以在所需位置添加到 `<p:sldIdLst>`。
 
 ### clean.py
 
@@ -76,7 +76,7 @@ Prints `<p:sldId>` to add to `<p:sldIdLst>` at desired position.
 python scripts/clean.py unpacked/
 ```
 
-Removes slides not in `<p:sldIdLst>`, unreferenced media, orphaned rels.
+删除不在 `<p:sldIdLst>` 中的幻灯片、未引用的媒体、孤立的关系。
 
 ### pack.py
 
@@ -84,7 +84,7 @@ Removes slides not in `<p:sldIdLst>`, unreferenced media, orphaned rels.
 python scripts/office/pack.py unpacked/ output.pptx --original input.pptx
 ```
 
-Validates, repairs, condenses XML, re-encodes smart quotes.
+验证、修复、压缩 XML、重新编码智能引号。
 
 ### thumbnail.py
 
@@ -92,114 +92,114 @@ Validates, repairs, condenses XML, re-encodes smart quotes.
 python scripts/thumbnail.py input.pptx [output_prefix] [--cols N]
 ```
 
-Creates `thumbnails.jpg` with slide filenames as labels. Default 3 columns, max 12 per grid.
+创建带有幻灯片文件名作为标签的 `thumbnails.jpg`。默认 3 列，每个网格最多 12 张。
 
-**Use for template analysis only** (choosing layouts). For visual QA, use `soffice` + `pdftoppm` to create full-resolution individual slide images—see SKILL.md.
-
----
-
-## Slide Operations
-
-Slide order is in `ppt/presentation.xml` → `<p:sldIdLst>`.
-
-**Reorder**: Rearrange `<p:sldId>` elements.
-
-**Delete**: Remove `<p:sldId>`, then run `clean.py`.
-
-**Add**: Use `add_slide.py`. Never manually copy slide files—the script handles notes references, Content_Types.xml, and relationship IDs that manual copying misses.
+**仅用于模板分析**（选择布局）。对于视觉 QA，使用 `soffice` + `pdftoppm` 创建全分辨率单独幻灯片图像 — 请参阅 SKILL.md。
 
 ---
 
-## Editing Content
+## 幻灯片操作
 
-**Subagents:** If available, use them here (after completing step 4). Each slide is a separate XML file, so subagents can edit in parallel. In your prompt to subagents, include:
-- The slide file path(s) to edit
-- **"Use the Edit tool for all changes"**
-- The formatting rules and common pitfalls below
+幻灯片顺序位于 `ppt/presentation.xml` → `<p:sldIdLst>`。
 
-For each slide:
-1. Read the slide's XML
-2. Identify ALL placeholder content—text, images, charts, icons, captions
-3. Replace each placeholder with final content
+**重新排序**：重新排列 `<p:sldId>` 元素。
 
-**Use the Edit tool, not sed or Python scripts.** The Edit tool forces specificity about what to replace and where, yielding better reliability.
+**删除**：删除 `<p:sldId>`，然后运行 `clean.py`。
 
-### Formatting Rules
-
-- **Bold all headers, subheadings, and inline labels**: Use `b="1"` on `<a:rPr>`. This includes:
-  - Slide titles
-  - Section headers within a slide
-  - Inline labels like (e.g.: "Status:", "Description:") at the start of a line
-- **Never use unicode bullets (•)**: Use proper list formatting with `<a:buChar>` or `<a:buAutoNum>`
-- **Bullet consistency**: Let bullets inherit from the layout. Only specify `<a:buChar>` or `<a:buNone>`.
+**添加**：使用 `add_slide.py`。永远不要手动复制幻灯片文件 — 该脚本处理注释引用、Content_Types.xml 和手动复制会遗漏的关系 ID。
 
 ---
 
-## Common Pitfalls
+## 编辑内容
 
-### Template Adaptation
+**子代理**：如果有可用，请在此处使用（完成步骤 4 后）。每个幻灯片都是一个单独的 XML 文件，因此子代理可以并行编辑。在您给子代理的提示中，包括：
+- 要编辑的幻灯片文件路径
+- **"对所有更改使用编辑工具"**
+- 以下格式规则和常见陷阱
 
-When source content has fewer items than the template:
-- **Remove excess elements entirely** (images, shapes, text boxes), don't just clear text
-- Check for orphaned visuals after clearing text content
-- Run visual QA to catch mismatched counts
+对于每张幻灯片：
+1. 阅读幻灯片的 XML
+2. 识别所有占位符内容 — 文本、图像、图表、图标、说明文字
+3. 将每个占位符替换为最终内容
 
-When replacing text with different length content:
-- **Shorter replacements**: Usually safe
-- **Longer replacements**: May overflow or wrap unexpectedly
-- Test with visual QA after text changes
-- Consider truncating or splitting content to fit the template's design constraints
+**使用编辑工具，而不是 sed 或 Python 脚本。** 编辑工具强制指定要替换的内容和位置，从而产生更好的可靠性。
 
-**Template slots ≠ Source items**: If template has 4 team members but source has 3 users, delete the 4th member's entire group (image + text boxes), not just the text.
+### 格式规则
 
-### Multi-Item Content
+- **加粗所有标题、副标题和内联标签**：在 `<a:rPr>` 上使用 `b="1"`。这包括：
+  - 幻灯片标题
+  - 幻灯片内的章节标题
+  - 行首的内联标签（例如："状态："、"描述："）
+- **永远不要使用 unicode 项目符号（•）**：使用带有 `<a:buChar>` 或 `<a:buAutoNum>` 的正确列表格式
+- **项目符号一致性**：让项目符号从布局继承。仅指定 `<a:buChar>` 或 `<a:buNone>`。
 
-If source has multiple items (numbered lists, multiple sections), create separate `<a:p>` elements for each — **never concatenate into one string**.
+---
 
-**❌ WRONG** — all items in one paragraph:
+## 常见陷阱
+
+### 模板适应
+
+当源内容的项目少于模板时：
+- **完全删除多余的元素**（图像、形状、文本框），而不仅仅是清除文本
+- 清除文本内容后检查孤立的视觉效果
+- 运行视觉 QA 以捕捉不匹配的计数
+
+当用不同长度的内容替换文本时：
+- **较短的替换**：通常安全
+- **较长的替换**：可能会溢出或意外换行
+- 文本更改后进行视觉 QA
+- 考虑截断或拆分内容以适应模板的设计约束
+
+**模板槽 ≠ 源项目**：如果模板有 4 个团队成员但源有 3 个用户，请删除第 4 个成员的整个组（图像 + 文本框），而不仅仅是文本。
+
+### 多项目内容
+
+如果源有多个项目（编号列表、多个章节），为每个项目创建单独的 `<a:p>` 元素 — **永远不要连接成一个字符串**。
+
+**❌ 错误** — 一个段落中的所有项目：
 ```xml
 <a:p>
-  <a:r><a:rPr .../><a:t>Step 1: Do the first thing. Step 2: Do the second thing.</a:t></a:r>
+  <a:r><a:rPr .../><a:t>第 1 步：做第一件事。第 2 步：做第二件事。</a:t></a:r>
 </a:p>
 ```
 
-**✅ CORRECT** — separate paragraphs with bold headers:
+**✅ 正确** — 带有加粗标题的独立段落：
 ```xml
 <a:p>
   <a:pPr algn="l"><a:lnSpc><a:spcPts val="3919"/></a:lnSpc></a:pPr>
-  <a:r><a:rPr lang="en-US" sz="2799" b="1" .../><a:t>Step 1</a:t></a:r>
+  <a:r><a:rPr lang="en-US" sz="2799" b="1" .../><a:t>第 1 步</a:t></a:r>
 </a:p>
 <a:p>
   <a:pPr algn="l"><a:lnSpc><a:spcPts val="3919"/></a:lnSpc></a:pPr>
-  <a:r><a:rPr lang="en-US" sz="2799" .../><a:t>Do the first thing.</a:t></a:r>
+  <a:r><a:rPr lang="en-US" sz="2799" .../><a:t>做第一件事。</a:t></a:r>
 </a:p>
 <a:p>
   <a:pPr algn="l"><a:lnSpc><a:spcPts val="3919"/></a:lnSpc></a:pPr>
-  <a:r><a:rPr lang="en-US" sz="2799" b="1" .../><a:t>Step 2</a:t></a:r>
+  <a:r><a:rPr lang="en-US" sz="2799" b="1" .../><a:t>第 2 步</a:t></a:r>
 </a:p>
-<!-- continue pattern -->
+<!-- 继续模式 -->
 ```
 
-Copy `<a:pPr>` from the original paragraph to preserve line spacing. Use `b="1"` on headers.
+从原始段落复制 `<a:pPr>` 以保留行间距。在标题上使用 `b="1"`。
 
-### Smart Quotes
+### 智能引号
 
-Handled automatically by unpack/pack. But the Edit tool converts smart quotes to ASCII.
+由 unpack/pack 自动处理。但编辑工具会将智能引号转换为 ASCII。
 
-**When adding new text with quotes, use XML entities:**
+**添加带引号的新文本时，使用 XML 实体：**
 
 ```xml
-<a:t>the &#x201C;Agreement&#x201D;</a:t>
+<a:t> &#x201C;协议&#x201D;</a:t>
 ```
 
-| Character | Name | Unicode | XML Entity |
+| 字符 | 名称 | Unicode | XML 实体 |
 |-----------|------|---------|------------|
-| `“` | Left double quote | U+201C | `&#x201C;` |
-| `”` | Right double quote | U+201D | `&#x201D;` |
-| `‘` | Left single quote | U+2018 | `&#x2018;` |
-| `’` | Right single quote | U+2019 | `&#x2019;` |
+| `"`` | 左双引号 | U+201C | `&#x201C;` |
+| `"` | 右双引号 | U+201D | `&#x201D;` |
+| `'` | 左单引号 | U+2018 | `&#x2018;` |
+| `'` | 右单引号 | U+2019 | `&#x2019;` |
 
-### Other
+### 其他
 
-- **Whitespace**: Use `xml:space="preserve"` on `<a:t>` with leading/trailing spaces
-- **XML parsing**: Use `defusedxml.minidom`, not `xml.etree.ElementTree` (corrupts namespaces)
+- **空白**：在带有前导/尾随空格的 `<a:t>` 上使用 `xml:space="preserve"`
+- **XML 解析**：使用 `defusedxml.minidom`，而不是 `xml.etree.ElementTree`（破坏命名空间）
