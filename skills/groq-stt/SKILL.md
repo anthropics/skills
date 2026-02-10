@@ -1,10 +1,10 @@
 ````skill
 ---
-name: groq-speech-to-text
+name: groq-stt
 description: Transcribe audio files using Groq API (Whisper models).
 ---
 
-# Groq Speech-to-Text Skill
+# Groq STT Skill
 
 This skill uploads an audio file to the Groq Speech-to-Text API and saves the transcription.
 
