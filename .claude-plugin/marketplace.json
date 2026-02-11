@@ -12,33 +12,35 @@
     {
       "name": "document-skills",
       "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "source": "./",
+      "version":"1.0.0",
+      "source": "./skills",
       "strict": false,
       "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
+        "./xlsx",
+        "./docx",
+        "./pptx",
+        "./pdf"
       ]
     },
     {
       "name": "example-skills",
       "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
-      "source": "./",
+      "version":"1.0.0",
+      "source": "./skills",
       "strict": false,
       "skills": [
-        "./skills/algorithmic-art",
-        "./skills/brand-guidelines",
-        "./skills/canvas-design",
-        "./skills/doc-coauthoring",
-        "./skills/frontend-design",
-        "./skills/internal-comms",
-        "./skills/mcp-builder",
-        "./skills/skill-creator",
-        "./skills/slack-gif-creator",
-        "./skills/theme-factory",
-        "./skills/web-artifacts-builder",
-        "./skills/webapp-testing"
+        "./algorithmic-art",
+        "./brand-guidelines",
+        "./canvas-design",
+        "./doc-coauthoring",
+        "./frontend-design",
+        "./internal-comms",
+        "./mcp-builder",
+        "./skill-creator",
+        "./slack-gif-creator",
+        "./theme-factory",
+        "./web-artifacts-builder",
+        "./webapp-testing"
       ]
     }
   ]
