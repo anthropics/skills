@@ -112,9 +112,18 @@ def authenticated_request(
     # -----------------------------------------------------------------------
     # 3. Body handling
     # -----------------------------------------------------------------------
+    # Normalize JSON bodies to compact form (no extra whitespace) so the
+    # bytes we sign match what the server will reconstruct via
+    # JSON.parse -> JSON.stringify on its side.
     body_bytes: bytes | None = None
     if isinstance(body, str):
-        body_bytes = body.encode("utf-8")
+        import json as _json
+        try:
+            body_bytes = _json.dumps(
+                _json.loads(body), separators=(",", ":")
+            ).encode("utf-8")
+        except (_json.JSONDecodeError, ValueError):
+            body_bytes = body.encode("utf-8")
     elif isinstance(body, bytes):
         body_bytes = body
     # else: body is None -> body_bytes stays None

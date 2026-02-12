@@ -1,23 +1,20 @@
 ---
 name: x402
 description: "Make BSV-authenticated or paid API requests. Use for: BRC-31 auth, 402 payment, BSV micropayments, x402, paid API calls. Requires MetaNet Client wallet running at localhost:3321."
+argument-hint: [URL or description of API to call]
 ---
-
-# x402 — BSV Auth & Payment Skill
-
-Make authenticated and paid requests to BSV API servers using BRC-31 mutual authentication and BRC-29 micropayments, with MetaNet Client as the wallet.
 
 ## Prerequisites
 
-Before using this skill, verify:
+**MetaNet Client** must be running. Check with:
+```bash
+curl -s -H "Origin: http://localhost" http://localhost:3321/isAuthenticated
+```
+If not running, tell the user to start it (macOS: `/Applications/Metanet Client.app`, or download from https://getmetanet.com).
 
-1. **MetaNet Client** is running — check with:
-   ```bash
-   curl -s -H "Origin: http://localhost" http://localhost:3321/isAuthenticated
-   ```
-   If not running, tell the user to start `/Applications/Metanet Client.app`.
+## Task
 
-2. **Python `requests` package** is installed (`pip install requests`).
+$ARGUMENTS
 
 ## Commands
 
@@ -38,9 +35,9 @@ Handshake is automatic — never call it manually before `auth` or `pay`.
 1. **Discover** — Always run `discover <base_url>` first for a new server. Present endpoints to the user: method, path, description, auth requirement, cost in satoshis.
 
 2. **Route** — Match user intent to an endpoint:
-   - `auth: true`, no payment — use **`auth`**
-   - `payment` with satoshis — use **`pay`** (do NOT ask user to confirm — consent is implicit; typical costs are 1-100 sats)
-   - `auth: false` — plain curl, no skill needed
+   - `auth: true`, no payment → use **`auth`**
+   - `payment` with satoshis → use **`pay`** (do NOT ask user to confirm — consent is implicit by invoking this skill; typical costs are 1-100 sats)
+   - `auth: false` → plain curl, no skill needed
 
 3. **Call** — Run the appropriate command. For requests with a JSON body, pass it as the 4th argument:
    ```bash
@@ -72,12 +69,18 @@ User asks: "call the paid endpoint on poc-server"
 ```bash
 python3 ./scripts/brc31_helpers.py pay POST "https://poc-server.dev-a3e.workers.dev/paid"
 ```
-The library automatically: sends auth request, receives 402, creates 10-sat payment tx via wallet, retries with payment, returns `{"status": 200, ...}` with payment confirmation.
+The library automatically: sends auth request → receives 402 → creates 10-sat payment tx via wallet → retries with payment → returns `{"status": 200, ...}` with payment confirmation.
+
+## Payment Transport
+
+Payment is sent via `x-bsv-payment` header as JSON: `{"derivationPrefix":"...","derivationSuffix":"...","transaction":"<base64 BEEF>"}`. The client handles this automatically.
+
+**Header-only servers:** Most servers only accept payment in the header. The client has a body-mode fallback for payments >6KB, but only uses it when the request has no original body to preserve. Typical payments are ~2KB, well under the threshold.
 
 ## Default Test Server
 
 - **Live:** `https://poc-server.dev-a3e.workers.dev`
-- **Local:** `http://localhost:8787`
+- **Local:** `http://localhost:8787` (run `cd poc-server && npm run dev`)
 
 ## When NOT to Use
 
@@ -91,9 +94,10 @@ Only consult this section if something goes wrong.
 
 | Symptom | Fix |
 |---------|-----|
-| `MetaNet Client not running` | Start `/Applications/Metanet Client.app` |
+| `MetaNet Client not running` | Start MetaNet Client app or download from https://getmetanet.com |
 | Discovery returns 404 | Server may not have `/.well-known/x402-info`; proceed with known endpoint info or ask user |
 | Connection error | Server may be down or wallet not running |
 | Payment error | Tell user to check MetaNet Client for approval prompt; may also be insufficient funds |
+| `Signature is not valid` on POST | Session may be stale. Clear: `python3 ./cli.py session --clear <server_url>` |
 | Persistent auth failures | Clear session: `python3 ./cli.py session --clear <server_url>` |
 | Need verbose output | Use full CLI: `python3 ./cli.py -v auth POST "<url>"` |

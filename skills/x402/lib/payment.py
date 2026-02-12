@@ -575,12 +575,16 @@ def paid_request(
         # Build the payment header value
         payment_json = json.dumps(payment, separators=(",", ":"))
 
-        # Determine transport mode (header vs body) matching TS SDK logic.
+        # Determine transport mode (header vs body).
+        # Body mode ONLY works when the original request has no body to
+        # preserve — otherwise we'd overwrite the application payload
+        # (e.g. {"fileSize":...}) with payment JSON.  Most servers
+        # (NanoStore, banana-agent) don't support body mode anyway.
         retry_headers = dict(original_headers)
+        has_original_body = body is not None and len(body) > 0
 
-        if len(payment_json) > HEADER_SIZE_THRESHOLD:
-            # Large payment -- send as body (server reads from body when
-            # header value is literally "body").
+        if len(payment_json) > HEADER_SIZE_THRESHOLD and not has_original_body:
+            # Large payment, no original body -- send as body.
             log.debug(
                 "Payment JSON too large for header (%d bytes), using body transport",
                 len(payment_json),
@@ -590,6 +594,15 @@ def paid_request(
             retry_headers["content-type"] = "application/json"
         else:
             # Normal case -- payment JSON in header.
+            # For large payments with an original body, we must use the
+            # header even though it's big.  Express/GCP allows headers
+            # up to ~80KB; Cloudflare Workers up to 8KB per header.
+            if len(payment_json) > HEADER_SIZE_THRESHOLD:
+                log.warning(
+                    "Payment JSON is %d bytes but body mode unavailable "
+                    "(original body present). Sending in header anyway.",
+                    len(payment_json),
+                )
             retry_headers["x-bsv-payment"] = payment_json
             retry_body = body
 
