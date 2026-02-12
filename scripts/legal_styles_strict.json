@@ -1,0 +1,209 @@
+{
+    "$schema": "./legal_styles.schema.json",
+    "DOCUMENT_SETTINGS": {
+        "MARGIN_TOP": 1.0,
+        "MARGIN_BOTTOM": 1.0,
+        "MARGIN_LEFT": 1.0,
+        "MARGIN_RIGHT": 1.0,
+        "DEFAULT_FONT": "California FB",
+        "DEFAULT_SIZE": 14
+    },
+    "STYLES": {
+        "NORMAL": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 0,
+            "SPACING_AFTER": 0,
+            "LINE_SPACING": 2.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": 0.5,
+            "PAGINATION": {
+                "WIDOW_CONTROL": true
+            }
+        },
+        "HEADING_1": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": true,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "CENTER",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 0,
+            "SPACING_AFTER": 12,
+            "LINE_SPACING": 1.0,
+            "CAPS": "ALL",
+            "INDENT_LEFT": 0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": 0,
+            "PAGINATION": {
+                "KEEP_WITH_NEXT": true,
+                "KEEP_LINES_TOGETHER": true
+            },
+            "NEXT_STYLE": "NORMAL",
+            "OUTLINE_LEVEL": 1
+        },
+        "HEADING_2": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "ROMAN",
+            "SPACING_BEFORE": 48,
+            "SPACING_AFTER": 30,
+            "LINE_SPACING": 1.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": -0.5,
+            "PAGINATION": {
+                "KEEP_WITH_NEXT": true,
+                "KEEP_LINES_TOGETHER": true
+            },
+            "NEXT_STYLE": "NORMAL",
+            "OUTLINE_LEVEL": 2
+        },
+        "HEADING_3": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "ABC",
+            "SPACING_BEFORE": 12,
+            "SPACING_AFTER": 6,
+            "LINE_SPACING": 1.0,
+            "CAPS": "TITLE",
+            "INDENT_LEFT": 0.25,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": -0.5,
+            "PAGINATION": {
+                "KEEP_WITH_NEXT": true,
+                "KEEP_LINES_TOGETHER": true
+            },
+            "NEXT_STYLE": "NORMAL",
+            "OUTLINE_LEVEL": 3
+        },
+        "HEADING_4": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": true,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "123",
+            "SPACING_BEFORE": 12,
+            "SPACING_AFTER": 6,
+            "LINE_SPACING": 1.0,
+            "CAPS": "SENTENCE",
+            "INDENT_LEFT": 0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": 0,
+            "PAGINATION": {
+                "KEEP_WITH_NEXT": true,
+                "KEEP_LINES_TOGETHER": true
+            },
+            "NEXT_STYLE": "NORMAL",
+            "OUTLINE_LEVEL": 4
+        },
+        "QUOTED_CITATION": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": true,
+            "UNDERLINE": false,
+            "ALIGNMENT": "JUSTIFY",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 12,
+            "SPACING_AFTER": 12,
+            "LINE_SPACING": 1.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 0.5,
+            "INDENT_RIGHT": 0.5,
+            "FIRST_LINE_INDENT": 0
+        },
+        "FOOTNOTE_TEXT": {
+            "FONT": "California FB",
+            "FONT_SIZE": 12,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 0,
+            "SPACING_AFTER": 0,
+            "LINE_SPACING": 1.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": 0
+        },
+        "TOC_1": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 0,
+            "SPACING_AFTER": 6,
+            "LINE_SPACING": 1.0,
+            "CAPS": "ALL",
+            "INDENT_LEFT": 0.25,
+            "INDENT_RIGHT": 0.25,
+            "FIRST_LINE_INDENT": -0.25,
+            "TABS": [
+                { "POSITION": 6.5, "ALIGNMENT": "RIGHT", "LEADER": "DOTS" }
+            ]
+        },
+        "TOC_2": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "LEFT",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 0,
+            "SPACING_AFTER": 0,
+            "LINE_SPACING": 1.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 0.5,
+            "INDENT_RIGHT": 0.25,
+            "FIRST_LINE_INDENT": -0.25,
+            "TABS": [
+                { "POSITION": 6.5, "ALIGNMENT": "RIGHT", "LEADER": "DOTS" }
+            ]
+        },
+        "SIGNATURE_BLOCK": {
+            "FONT": "California FB",
+            "FONT_SIZE": 14,
+            "BOLD": false,
+            "ITALIC": false,
+            "UNDERLINE": false,
+            "ALIGNMENT": "RIGHT",
+            "NUMBERING": "NONE",
+            "SPACING_BEFORE": 24,
+            "SPACING_AFTER": 0,
+            "LINE_SPACING": 1.0,
+            "CAPS": "NONE",
+            "INDENT_LEFT": 3.0,
+            "INDENT_RIGHT": 0,
+            "FIRST_LINE_INDENT": 0,
+            "PAGINATION": {
+                "KEEP_LINES_TOGETHER": true
+            }
+        }
+    }
+}

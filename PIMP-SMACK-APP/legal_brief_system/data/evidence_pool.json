@@ -1,0 +1,309 @@
+{
+    "_schema_version": "1.0",
+    "_description": "Evidence pool - each fact stays grouped with its references, citations, and cross-references",
+    "facts": [
+        {
+            "id": "F001",
+            "category": "arrest",
+            "date": "2022-03-06",
+            "statement": "Officers Gunnarson and Blyth arrested Appellant without a warrant",
+            "record_cite": "ER-12",
+            "page_line": "page 1, lines 3-5",
+            "supporting_evidence": [
+                "E001",
+                "E002"
+            ],
+            "cross_references": [
+                "F003",
+                "F010"
+            ],
+            "footnote_text": "The arrest occurred despite Appellant having committed no crime, as later confirmed when all charges were dismissed. See F010.",
+            "legal_significance": "Fourth Amendment violation - warrantless arrest",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_I"
+            ]
+        },
+        {
+            "id": "F002",
+            "category": "access_to_courts",
+            "date": "2022-06-20",
+            "statement": "At 5:10 PM during dinner lockdown, a jail guard deleted 62 of Appellant's legal files",
+            "record_cite": "ER-102",
+            "page_line": "page 1",
+            "supporting_evidence": [
+                "E003"
+            ],
+            "cross_references": [
+                "F004",
+                "F005"
+            ],
+            "footnote_text": "These files contained critical evidence and legal arguments. The deletion occurred while Appellant was confined and unable to protect his property.",
+            "legal_significance": "Access to courts violation - destruction of legal materials",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_I_A"
+            ]
+        },
+        {
+            "id": "F003",
+            "category": "arrest",
+            "date": "2022-05-24",
+            "statement": "Appellant was re-arrested by John Doe Officers 1 and 2",
+            "record_cite": "ER-78",
+            "page_line": "page 2",
+            "supporting_evidence": [
+                "E004"
+            ],
+            "cross_references": [
+                "F001"
+            ],
+            "footnote_text": "This second arrest for the same conduct raises double jeopardy concerns.",
+            "legal_significance": "Fifth Amendment - double jeopardy",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_II"
+            ]
+        },
+        {
+            "id": "F004",
+            "category": "due_process",
+            "date": "2022-07-01",
+            "statement": "Court ordered Appellant's release, but jail continued detention for seven additional days",
+            "record_cite": "ER-115",
+            "page_line": "page 1, lines 8-12",
+            "supporting_evidence": [
+                "E005",
+                "E006"
+            ],
+            "cross_references": [
+                "F002"
+            ],
+            "footnote_text": "During this unlawful detention, Appellant was denied access to legal resources, compounding the constitutional violations.",
+            "legal_significance": "Fourteenth Amendment - unlawful detention",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_II_A"
+            ]
+        },
+        {
+            "id": "F005",
+            "category": "due_process",
+            "date": "2022-03-06 to 2022-07-08",
+            "statement": "Appellant's discovery requests were denied 14 times while incarcerated",
+            "record_cite": "ER-130",
+            "page_line": "pages 1-3",
+            "supporting_evidence": [
+                "E007"
+            ],
+            "cross_references": [
+                "F002",
+                "F004"
+            ],
+            "footnote_text": "The systematic denial of discovery prevented Appellant from gathering evidence to support his defense.",
+            "legal_significance": "Procedural due process violation",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_II_B"
+            ]
+        },
+        {
+            "id": "F006",
+            "category": "collusion",
+            "date": "2022-06-10",
+            "statement": "DA Rebecca Portlock and court-appointed advisor Rubin Medina colluded to delay trial",
+            "record_cite": "ER-89",
+            "page_line": "transcript pages 12-15",
+            "supporting_evidence": [
+                "E008"
+            ],
+            "cross_references": [
+                "F001",
+                "F003"
+            ],
+            "footnote_text": "The state's own witness later called DA Portlock 'a liar and full of half-truths' on the record.",
+            "legal_significance": "Sixth Amendment - right to fair trial",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_II"
+            ]
+        },
+        {
+            "id": "F007",
+            "category": "policy",
+            "date": "2022-03-04",
+            "statement": "Police reports show officers made selective statements violating department policy",
+            "record_cite": "ER-45",
+            "page_line": "pages 1-4",
+            "supporting_evidence": [
+                "E009"
+            ],
+            "cross_references": [
+                "F001",
+                "F008"
+            ],
+            "footnote_text": "West Linn Police Department changed its policy immediately after notice of this suit, demonstrating awareness of prior deficiencies.",
+            "legal_significance": "Monell - pattern of policy violations",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_III"
+            ]
+        },
+        {
+            "id": "F008",
+            "category": "policy",
+            "date": "2022-post-notice",
+            "statement": "West Linn Police Department changed policy immediately following notice of suit",
+            "record_cite": "ER-150",
+            "page_line": "policy document",
+            "supporting_evidence": [
+                "E010"
+            ],
+            "cross_references": [
+                "F007"
+            ],
+            "footnote_text": "Policy changes after litigation notice are evidence of prior unconstitutional custom.",
+            "legal_significance": "Evidence of unconstitutional policy/custom",
+            "used_in_sections": [
+                "argument_III_B"
+            ]
+        },
+        {
+            "id": "F009",
+            "category": "filings",
+            "date": "2021-2024",
+            "statement": "Appellant's filings were ignored or rejected approximately 150 times",
+            "record_cite": "ER-160",
+            "page_line": "filing log exhibit",
+            "supporting_evidence": [
+                "E011"
+            ],
+            "cross_references": [
+                "F002",
+                "F005"
+            ],
+            "footnote_text": "Documents were returned without explanation, rejected from PACER, and lost by the Oregon Court of Appeals.",
+            "legal_significance": "Systematic denial of access to courts",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_I_B"
+            ]
+        },
+        {
+            "id": "F010",
+            "category": "outcome",
+            "date": "2022-07-13",
+            "statement": "State case was dismissed, marking the state's fault",
+            "record_cite": "ER-120",
+            "page_line": "dismissal order",
+            "supporting_evidence": [
+                "E012"
+            ],
+            "cross_references": [
+                "F001",
+                "F003"
+            ],
+            "footnote_text": "The dismissal supports malicious prosecution claims under Thompson v. Clark.",
+            "legal_significance": "Favorable termination for malicious prosecution",
+            "used_in_sections": [
+                "statement_of_case",
+                "argument_II"
+            ]
+        }
+    ],
+    "evidence": [
+        {
+            "id": "E001",
+            "type": "document",
+            "description": "Arrest report - March 6, 2022",
+            "er_page": "ER-12",
+            "ecf_number": null
+        },
+        {
+            "id": "E002",
+            "type": "document",
+            "description": "Police reports - March 4, 2022",
+            "er_page": "ER-45",
+            "ecf_number": null
+        },
+        {
+            "id": "E003",
+            "type": "record",
+            "description": "Jail computer logs showing file deletion",
+            "er_page": "ER-102",
+            "ecf_number": null
+        },
+        {
+            "id": "E004",
+            "type": "document",
+            "description": "Second arrest records - May 24, 2022",
+            "er_page": "ER-78",
+            "ecf_number": null
+        },
+        {
+            "id": "E005",
+            "type": "order",
+            "description": "Court release order - July 1, 2022",
+            "er_page": "ER-115",
+            "ecf_number": null
+        },
+        {
+            "id": "E006",
+            "type": "record",
+            "description": "Jail records showing continued detention",
+            "er_page": "ER-116",
+            "ecf_number": null
+        },
+        {
+            "id": "E007",
+            "type": "record",
+            "description": "Discovery request denials (14 instances)",
+            "er_page": "ER-130",
+            "ecf_number": null
+        },
+        {
+            "id": "E008",
+            "type": "transcript",
+            "description": "June 10, 2022 hearing transcript",
+            "er_page": "ER-89",
+            "ecf_number": null
+        },
+        {
+            "id": "E009",
+            "type": "document",
+            "description": "Police reports showing selective statements",
+            "er_page": "ER-45",
+            "ecf_number": null
+        },
+        {
+            "id": "E010",
+            "type": "document",
+            "description": "WLPD policy change documentation",
+            "er_page": "ER-150",
+            "ecf_number": null
+        },
+        {
+            "id": "E011",
+            "type": "exhibit",
+            "description": "Filing log from Clackamas County",
+            "er_page": "ER-160",
+            "ecf_number": null
+        },
+        {
+            "id": "E012",
+            "type": "order",
+            "description": "State case dismissal order - July 13, 2022",
+            "er_page": "ER-120",
+            "ecf_number": null
+        }
+    ],
+    "categories": {
+        "arrest": "Facts about arrests and seizures (4th Amendment)",
+        "access_to_courts": "Facts about denial of legal access (1st/14th Amendment)",
+        "due_process": "Facts about procedural violations (14th Amendment)",
+        "collusion": "Facts about coordination against Appellant",
+        "policy": "Facts supporting Monell municipal liability",
+        "filings": "Facts about rejected/ignored court filings",
+        "outcome": "Facts about case outcomes and favorable terminations"
+    }
+}

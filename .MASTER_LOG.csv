@@ -1,0 +1,40 @@
+TIMESTAMP|CHECK OR RUN|STATUS|CHANGES SINCE LAST RUN|SKILL WORKED ON|MODEL RUNNING|MODEL READ INSTRUCTIONS/CLEAN FILES|CHECK IN OR OUT|NOTE
+2025-12-22T20:19:40.434226|CHECK|PASS|First run - no previous index|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T20:28:05.497663|CHECK|PASS|declaration-builder: sections changed; ninth-circuit-brief-body: sections changed; ninth-circuit-opening-brief: sections changed|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T20:37:39.872867|CHECK|PASS|declaration-builder: sections changed; ninth-circuit-declaration: sections changed|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T20:38:33.849043|CHECK|PASS|ninth-circuit-brief-body: sections changed; ninth-circuit-opening-brief: sections changed|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T20:55:04.578433,RUN,SUCCESS,No changes detected,schema_builder,schema_builder.py,N/A,UPDATE,SCHEMA_CHECK
+2025-12-22T20:55:10.598140,CHECK,FAIL,N/A,validate_cover_page,schema_validator.py,READ,VALIDATION,"Case: 25-6461, Errors: 1 errors, 0 warnings"
+2025-12-22T21:46:13.373488,RUN,SUCCESS,NEW CASE: 25-6461,schema_builder,schema_builder.py,N/A,UPDATE,SCHEMA_UPDATE
+2025-12-22T21:46:13.374552,RUN,SUCCESS,NEW CITATIONS: 7 learned,schema_builder,schema_builder.py,N/A,UPDATE,SCHEMA_UPDATE
+2025-12-22T21:46:13.380873,RUN,SUCCESS,⚠ Unknown OUTBOX subdir '2025-12-22_NinthCircuitDecl-Lofall_Declaration.docx' for 2025-12-22_NinthCircuitDecl-Lofall_Declaration.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.381867,RUN,SUCCESS,⚠ Unknown OUTBOX subdir '2025-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx' for 2025-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.382275,RUN,SUCCESS,⚠ Unknown OUTBOX subdir '2025-12-22_NinthCircuitDecl-Lofall_Declaration_Advanced.docx' for 2025-12-22_NinthCircuitDecl-Lofall_Declaration_Advanced.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.382915,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'Lofall_Declaration_2025-12-22.docx' for Lofall_Declaration_2025-12-22.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.383307,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'Lofall_Declaration_Advanced.docx' for Lofall_Declaration_Advanced.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.383709,RUN,SUCCESS,⚠ Unknown OUTBOX subdir '~$25-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx' for ~$25-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.384115,RUN,SUCCESS,✓ Moved 24-1234-APPELLANT'S_OPENING_BRIEF-20251207_152117.docx → ninth-circuit-opening-brief/_examples/[2025-12-22]-24-1234-APPELLANT'S_OPENING_BRIEF-20251207_152117.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.384528,RUN,SUCCESS,✓ Moved 24-1234-APPELLANT'S_OPENING_BRIEF-20251207_154203.docx → ninth-circuit-opening-brief/_examples/[2025-12-22]-24-1234-APPELLANT'S_OPENING_BRIEF-20251207_154203.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.384940,RUN,SUCCESS,✓ Moved DRAFT-opening-brief-full-20251207_045837.docx → ninth-circuit-opening-brief/_examples/[2025-12-22]-DRAFT-opening-brief-full-20251207_045837.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.385369,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251206_234543-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.385731,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251206_234643-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.386129,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251207_045837-DRAFT-opening-brief-full.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.386488,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251207_152117-24-1234-APPELLANT'S_OPENING_BRIEF.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.387124,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251207_154203-24-1234-APPELLANT'S_OPENING_BRIEF.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.387685,RUN,SUCCESS,⚠ Unknown OUTBOX subdir 'chronological' for 20251221_052450-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.388391,RUN,SUCCESS,✓ Moved 25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234543.docx → ninth-circuit-cover/_examples/[2025-12-22]-25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234543.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.388938,RUN,SUCCESS,✓ Moved 25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234643.docx → ninth-circuit-cover/_examples/[2025-12-22]-25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234643.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.389327,RUN,SUCCESS,✓ Moved 25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251221_052450.docx → ninth-circuit-cover/_examples/[2025-12-22]-25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251221_052450.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T21:46:13.389721,RUN,SUCCESS,✓ Moved Motion_for_Leave_Oversize_Brief.docx → universal-motion-brief/_examples/[2025-12-22]-Motion_for_Leave_Oversize_Brief.docx,schema_builder,schema_builder.py,N/A,UPDATE,FILE_MOVE
+2025-12-22T22:06:31.887954|CHECK|FAIL|Removed skills: ninth-circuit-cover, ninth-circuit-opening-brief, universal-motion-brief; algorithmic-art: structure changed; artifacts-builder: structure changed|ALL|build_index_enhanced.py|NO|CHECK|3 issues found
+2025-12-22T22:06:53.228624|CHECK|PASS|New skills: universal-motion-brief, ninth-circuit-opening-brief, ninth-circuit-cover|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T22:14:17.835625|CHECK|PASS|algorithmic-art: sections changed; artifacts-builder: sections changed; brand-guidelines: sections changed|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T22:25:51.224443|CHECK|PASS|No changes detected|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T22:30:38.285201|CHECK|PASS|No changes detected|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T22:42:51.462905|CHECK|PASS|No changes detected|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T22:54:04.256315|CHECK|PASS|No changes detected|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-22T23:10:36.418956|CHECK|FAIL|Rebuilt skill index|ALL|build_index_enhanced.py|NO|CHECK|4 issues found
+2025-12-22T23:10:59.198469|CHECK|PASS|Rebuilt skill index|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-23T00:54:24.098133|CHECK|PASS|Rebuilt skill index|ALL|build_index_enhanced.py|YES|CHECK|All skills valid
+2025-12-23T01:21:51.803276|CHECK|FAIL|Rebuilt skill index|ALL|build_index_enhanced.py|NO|CHECK|28 issues found
+2025-12-23T01:22:11.071560|CHECK|FAIL|Rebuilt skill index|ALL|build_index_enhanced.py|NO|CHECK|28 issues found

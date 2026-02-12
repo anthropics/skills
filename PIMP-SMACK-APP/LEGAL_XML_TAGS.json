@@ -1,0 +1,444 @@
+{
+  "_schema": "LEGAL_XML_TAGS/1.0",
+  "_sources": [
+    "OASIS LegalDocML (Akoma Ntoso) v1.0",
+    "OASIS LegalRuleML v1.0", 
+    "OASIS ECF 5.01",
+    "OOXML (Office Open XML)"
+  ],
+  "_namespace": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0",
+  "_github": "github.com/oasis-open/legaldocml-akomantoso",
+
+  "DOCUMENT_TYPES": {
+    "_note": "Top-level document elements",
+    "akomaNtoso": {
+      "description": "Root element for all LegalDocML documents",
+      "required": true
+    },
+    "doc": {
+      "description": "Generic document - use for briefs, motions, pleadings",
+      "attributes": ["name"],
+      "name_values": ["brief", "motion", "pleading", "declaration", "order"]
+    },
+    "act": {
+      "description": "Legislative act (not typically used in litigation)"
+    },
+    "bill": {
+      "description": "Legislative bill"
+    },
+    "judgment": {
+      "description": "Court judgment/opinion"
+    }
+  },
+
+  "DOCUMENT_STRUCTURE": {
+    "_note": "Major structural divisions of a document",
+    
+    "meta": {
+      "description": "MANDATORY metadata block",
+      "children": ["identification", "references", "notes", "proprietary"],
+      "contains": "FRBR identification, references to parties/courts"
+    },
+    
+    "identification": {
+      "description": "Document identity using FRBR model",
+      "children": ["FRBRWork", "FRBRExpression", "FRBRManifestation"],
+      "attribute": "source"
+    },
+    
+    "FRBRWork": {
+      "description": "Abstract work identity",
+      "children": ["FRBRthis", "FRBRdate", "FRBRcountry", "FRBRauthor"]
+    },
+    
+    "FRBRthis": {
+      "description": "IRI for this document",
+      "example": "/akn/us/doc/brief/9thcir/2025-12345"
+    },
+    
+    "references": {
+      "description": "External references (parties, courts, laws)",
+      "children": ["TLCOrganization", "TLCPerson", "TLCConcept", "TLCObject"]
+    },
+    
+    "TLCOrganization": {
+      "description": "Organization reference (court, company)",
+      "attributes": ["eId", "href"],
+      "example": "<TLCOrganization eId=\"court\" href=\"/ontology/court/us/9thcircuit\"/>"
+    },
+    
+    "TLCPerson": {
+      "description": "Person reference (party, judge)",
+      "attributes": ["eId", "href"],
+      "example": "<TLCPerson eId=\"appellant\" href=\"/ontology/person/smith\"/>"
+    },
+    
+    "coverPage": {
+      "description": "Cover page content",
+      "use": "Appellate brief covers, title pages"
+    },
+    
+    "preface": {
+      "description": "Prefatory matter before main body",
+      "use": "TOC, TOA, corporate disclosure"
+    },
+    
+    "mainBody": {
+      "description": "Main document content",
+      "children": ["section", "part", "chapter"]
+    },
+    
+    "conclusions": {
+      "description": "Concluding matter",
+      "children": ["signature"],
+      "use": "Signature blocks, certificates"
+    }
+  },
+
+  "HIERARCHICAL_CONTAINERS": {
+    "_note": "Nested structural elements for document organization",
+    
+    "part": {
+      "description": "Major division",
+      "attributes": ["eId"],
+      "numbering": "I, II, III..."
+    },
+    
+    "chapter": {
+      "description": "Chapter within part",
+      "attributes": ["eId"]
+    },
+    
+    "section": {
+      "description": "Section - PRIMARY container for brief headings",
+      "attributes": ["eId"],
+      "children": ["heading", "paragraph", "subsection"],
+      "example": "<section eId=\"sec_argument\"><heading>ARGUMENT</heading>...</section>"
+    },
+    
+    "subsection": {
+      "description": "Subsection within section",
+      "attributes": ["eId"],
+      "numbering": "A, B, C..."
+    },
+    
+    "paragraph": {
+      "description": "Numbered paragraph",
+      "attributes": ["eId"],
+      "numbering": "1, 2, 3..."
+    },
+    
+    "subparagraph": {
+      "description": "Sub-paragraph",
+      "attributes": ["eId"],
+      "numbering": "a, b, c..."
+    },
+    
+    "heading": {
+      "description": "Section heading text",
+      "example": "<heading>JURISDICTIONAL STATEMENT</heading>"
+    },
+    
+    "num": {
+      "description": "Number/letter for hierarchical elements",
+      "example": "<num>I.</num>"
+    }
+  },
+
+  "BLOCK_ELEMENTS": {
+    "_note": "Paragraph-level content elements",
+    
+    "p": {
+      "description": "Paragraph of text",
+      "attributes": ["eId"],
+      "children": "Inline elements"
+    },
+    
+    "blockList": {
+      "description": "Numbered or bulleted list",
+      "children": ["item"],
+      "attributes": ["eId"]
+    },
+    
+    "item": {
+      "description": "List item",
+      "children": ["num", "p"],
+      "example": "<item><num>1.</num><p>First item</p></item>"
+    },
+    
+    "toc": {
+      "description": "Table of Contents container",
+      "children": ["tocItem"]
+    },
+    
+    "tocItem": {
+      "description": "TOC entry",
+      "attributes": ["href", "level"],
+      "example": "<tocItem href=\"#sec_argument\" level=\"1\">ARGUMENT.....5</tocItem>"
+    },
+    
+    "blockQuote": {
+      "description": "Extended quotation (indented)",
+      "use": "Statutory text, case quotes"
+    },
+    
+    "formula": {
+      "description": "Mathematical or logical formula"
+    }
+  },
+
+  "INLINE_ELEMENTS": {
+    "_note": "Character-level markup within paragraphs",
+    
+    "ref": {
+      "description": "Cross-reference or citation link",
+      "attributes": ["href"],
+      "example": "<ref href=\"/akn/us/case/supreme/2007/twombly\">Twombly</ref>"
+    },
+    
+    "term": {
+      "description": "Defined term",
+      "attributes": ["refersTo"],
+      "use": "Terms defined in definitions section"
+    },
+    
+    "date": {
+      "description": "Date element",
+      "attributes": ["date"],
+      "example": "<date date=\"2025-01-15\">January 15, 2025</date>"
+    },
+    
+    "person": {
+      "description": "Person name reference",
+      "attributes": ["refersTo"],
+      "example": "<person refersTo=\"#appellant\">John Smith</person>"
+    },
+    
+    "organization": {
+      "description": "Organization name reference",
+      "attributes": ["refersTo"]
+    },
+    
+    "location": {
+      "description": "Geographic location",
+      "attributes": ["refersTo"]
+    },
+    
+    "docTitle": {
+      "description": "Document title reference"
+    },
+    
+    "docNumber": {
+      "description": "Document number (case number)"
+    },
+    
+    "docDate": {
+      "description": "Document date"
+    },
+    
+    "b": {
+      "description": "Bold text"
+    },
+    
+    "i": {
+      "description": "Italic text",
+      "use": "Case names, Latin terms"
+    },
+    
+    "u": {
+      "description": "Underlined text"
+    },
+    
+    "sub": {
+      "description": "Subscript"
+    },
+    
+    "sup": {
+      "description": "Superscript"
+    }
+  },
+
+  "CITATION_ELEMENTS": {
+    "_note": "Specialized elements for legal citations",
+    
+    "citation": {
+      "description": "Generic citation container",
+      "attributes": ["type"],
+      "type_values": ["case", "statute", "rule", "regulation", "record", "secondary"]
+    },
+    
+    "case_citation": {
+      "_custom": true,
+      "structure": {
+        "caseName": "Party v. Party",
+        "volume": "550",
+        "reporter": "U.S.",
+        "page": "544",
+        "year": "2007",
+        "pincite": "555-56"
+      },
+      "example": "<citation type=\"case\"><caseName style=\"italic\">Twombly</caseName>, 550 U.S. 544, 555 (2007)</citation>"
+    },
+    
+    "statute_citation": {
+      "_custom": true,
+      "structure": {
+        "title": "42",
+        "code": "U.S.C.",
+        "section": "1983"
+      },
+      "example": "<citation type=\"statute\">42 U.S.C. § 1983</citation>"
+    },
+    
+    "rule_citation": {
+      "_custom": true,
+      "structure": {
+        "rules": "Fed. R. Civ. P.",
+        "rule": "12(b)(6)"
+      },
+      "example": "<citation type=\"rule\">Fed. R. Civ. P. 12(b)(6)</citation>"
+    },
+    
+    "record_citation": {
+      "_custom": true,
+      "description": "Ninth Circuit ER citations",
+      "structure": {
+        "volume": "2",
+        "recordType": "ER|SER|FER",
+        "page": "345"
+      },
+      "example": "<citation type=\"record\">2-ER-345</citation>"
+    }
+  },
+
+  "TABLE_OF_AUTHORITIES": {
+    "_note": "Structure for TOA generation",
+    
+    "tableOfAuthorities": {
+      "description": "Container for TOA",
+      "children": ["section"]
+    },
+    
+    "toa_section": {
+      "type_values": ["cases", "statutes", "rules", "regulations", "other"],
+      "children": ["heading", "entry"]
+    },
+    
+    "toa_entry": {
+      "structure": {
+        "authority": "Full citation",
+        "pages": "Pages where cited"
+      },
+      "example": {
+        "authority": "Bell Atlantic Corp. v. Twombly, 550 U.S. 544 (2007)",
+        "pages": "3, 5, 12-14"
+      }
+    }
+  },
+
+  "SIGNATURE_ELEMENTS": {
+    "_note": "Signature block components",
+    
+    "signature": {
+      "description": "Signature block container",
+      "children": ["person", "role", "location", "date"]
+    },
+    
+    "signature_line": {
+      "_custom": true,
+      "structure": {
+        "dated_line": "DATED this __ day of __, 20__",
+        "respectfully": "Respectfully submitted,",
+        "signature": "/s/ Name",
+        "name": "NAME IN CAPS",
+        "role": "Plaintiff, Pro se",
+        "address": "Full address",
+        "contact": "Phone/email"
+      }
+    }
+  },
+
+  "OOXML_FORMATTING": {
+    "_note": "Word-specific XML elements for formatting",
+    "_namespace": "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
+    
+    "page_setup": {
+      "sectPr": "Section properties",
+      "pgSz": "Page size (w:w=\"12240\" w:h=\"15840\" = Letter)",
+      "pgMar": "Margins (1440 twips = 1 inch)"
+    },
+    
+    "paragraph_formatting": {
+      "pPr": "Paragraph properties",
+      "spacing": "Line spacing (line=\"480\" = double)",
+      "jc": "Justification (val=\"center|left|right|both\")",
+      "ind": "Indentation (firstLine, left, right)"
+    },
+    
+    "run_formatting": {
+      "rPr": "Run properties",
+      "rFonts": "Font family (ascii, hAnsi)",
+      "sz": "Font size in half-points (28 = 14pt)",
+      "b": "Bold",
+      "i": "Italic",
+      "u": "Underline",
+      "caps": "All caps"
+    },
+    
+    "field_codes": {
+      "fldSimple": "Simple field",
+      "TOC": "Table of contents field",
+      "PAGE": "Page number field",
+      "NUMPAGES": "Total pages field"
+    }
+  },
+
+  "PIMP_CUSTOM_TAGS": {
+    "_note": "Our custom tags - use these in templates",
+    
+    "LEGAL_H1": {
+      "description": "Major section heading",
+      "format": "centered, bold, caps",
+      "example": "<LEGAL_H1>ARGUMENT</LEGAL_H1>"
+    },
+    
+    "LEGAL_H2": {
+      "description": "Subsection heading",
+      "format": "left, bold, numbered (I., II.)",
+      "example": "<LEGAL_H2>I. The Court Erred</LEGAL_H2>"
+    },
+    
+    "LEGAL_H3": {
+      "description": "Sub-subsection heading",
+      "format": "left, bold, lettered (A., B.)",
+      "example": "<LEGAL_H3>A. Standard of Review</LEGAL_H3>"
+    },
+    
+    "LEGAL_BODY": {
+      "description": "Body paragraph",
+      "format": "justified, first-line indent, double-spaced",
+      "example": "<LEGAL_BODY>The district court erred...</LEGAL_BODY>"
+    },
+    
+    "LEGAL_QUOTE": {
+      "description": "Block quotation",
+      "format": "indented, single-spaced",
+      "example": "<LEGAL_QUOTE>\"To survive a motion to dismiss...\"</LEGAL_QUOTE>"
+    },
+    
+    "LEGAL_CITE": {
+      "description": "Inline citation",
+      "example": "<LEGAL_CITE type=\"case\">Twombly, 550 U.S. at 555</LEGAL_CITE>"
+    },
+    
+    "UID_REF": {
+      "description": "Reference to UID in evidence system",
+      "example": "<UID_REF>123</UID_REF>"
+    },
+    
+    "EVI_REF": {
+      "description": "Reference to evidence item",
+      "example": "<EVI_REF id=\"EV001\">Exhibit A</EVI_REF>"
+    }
+  }
+}

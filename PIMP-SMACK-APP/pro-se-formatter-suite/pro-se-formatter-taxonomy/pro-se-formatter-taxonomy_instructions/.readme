@@ -1,0 +1,45 @@
+READ FIRST
+
+1) Read `SUITE_INDEX.md` (suite-wide index, identical copy)
+2) Read `filing_types_federal_baseline.json` (filing types + assembly contract + Body H1 outlines)
+3) Read `rules_workspace_federal_template.json` (workspace for source-backed requirements)
+4) Optional reference: `heading1_groups_baseline.json` (legacy glossary/back-compat)
+
+PURPOSE
+
+This taxonomy provides a practical baseline set of common federal filing types (including judgments), plus a deterministic assembly contract that downstream code can call by stable slot identifiers.
+
+CORE TERMS (WHAT THESE FIELDS MEAN)
+
+- Filing type (`filing_types[TYPE]`)
+  - A document-kind record.
+  - Carries a definition, a per-type assembly order (`CONSTRUCT_Order`), and a Body outline (`body_headings_h1`).
+
+- Construct slots (`CONSTRUCT_SLOTS.slots`)
+  - Canonical callable identifiers for document parts.
+  - These strings serve as the stable interface for assembly code.
+
+- Template parts (`template_parts`)
+  - Documentation for each construct slot.
+  - Specifies purpose + expected inputs for building that part.
+
+- Body H1 outline (`body_headings_h1`)
+  - The ordered Heading-1 section outline used inside the Body part.
+  - Drives section structure and supports TOC generation.
+
+ASSEMBLY CHAIN (HOW TO USE THIS FILE)
+
+1) Choose a filing type key (example: `motion`, `opposition`, `reply`, `opening_brief`).
+2) Load `CONSTRUCT_SLOTS` + `template_parts` to resolve slot identifiers and their required inputs.
+3) Read `filing_types[TYPE].CONSTRUCT_Order` to get the per-type build sequence of construct slots.
+4) Build the Body content using `filing_types[TYPE].body_headings_h1`.
+
+RULES WORKSPACE (WHERE CITED REQUIREMENTS LIVE)
+
+- Use `rules_workspace_federal_template.json` to store citations and extracted requirements (word limits, formatting deltas, conferral, certificates).
+- Keep each requirement tied to sources so later automation can trace it.
+
+INVARIANTS
+
+- Evidence UID system: preserve UIDs exactly as provided by the external evidence system.
+- Local rules / certificates: populate requirements from cited sources.

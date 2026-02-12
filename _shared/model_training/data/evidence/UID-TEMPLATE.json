@@ -1,0 +1,20 @@
+{
+  "uid": "TEMPLATE",
+  "Location": [
+    {"document": "SOURCE_DOCUMENT_NAME", "page": 1, "paragraph": 1}
+  ],
+  "claim": ["Constitutional claim or legal theory goes here"],
+  "parties_involved": [
+    {"party_type": "DEFENDANT", "name": "Party Name", "role": "Their role in the violation"}
+  ],
+  "description_of_evidence": "Plain English description of what this evidence shows",
+  "depiction_quote": "Direct quote from the source document",
+  "significance": "Why this matters to the case - what it proves",
+  "precedence": [
+    {"caselaw1": "Case Name, Citation (Year)", "relevance": "How this case applies"}
+  ],
+  "citation": "Full citation to source document",
+  "source": "Document name or exhibit number",
+  "complements_uid": "",
+  "notes": "Additional context or connections to other evidence"
+}
