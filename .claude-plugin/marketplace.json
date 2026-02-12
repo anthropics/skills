@@ -40,6 +40,15 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "x402-bsv-payments",
+      "description": "BSV micropayment skill — BRC-31 mutual authentication and BRC-29 HTTP payments via MetaNet Client wallet",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/x402"
+      ]
     }
   ]
 }
