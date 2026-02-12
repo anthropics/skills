@@ -1,6 +1,6 @@
 @{
     RootModule        = 'LegalTripletTool.psm1'
-    ModuleVersion     = '0.2.0'
+    ModuleVersion     = '0.3.0'
     GUID              = 'd6efe1de-7d0b-4fc0-a3d4-1fbc7ccde582'
     Author            = 'Codex'
     CompanyName       = 'Independent'
@@ -14,7 +14,8 @@
         'Search-LegalTriplets',
         'Merge-LegalObjectsUnifiedOutput',
         'Export-LegalUnifiedOutput',
-        'Start-ComputerControlConsole'
+        'Start-ComputerControlConsole',
+        'Build-EvidenceSourceXml'
     )
     PrivateData = @{
         PSData = @{

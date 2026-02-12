@@ -622,6 +622,251 @@ Return JSON with optional actions array. Example: {"actions":[{"type":"mousemove
     }
 }
 
+
+function ConvertTo-NormalizedDate {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Value)
+
+    if ([string]::IsNullOrWhiteSpace($Value)) { return $null }
+    $trim = $Value.Trim()
+
+    $formats = @(
+        'yyyy-MM-dd','MM/dd/yy','MM/dd/yyyy','M/d/yyyy','M/d/yy','yyyy/MM/dd','MMMM d, yyyy','MMM d, yyyy'
+    )
+
+    foreach ($fmt in $formats) {
+        try {
+            $dt = [datetime]::ParseExact($trim, $fmt, [System.Globalization.CultureInfo]::InvariantCulture)
+            return $dt.ToString('yyyy-MM-dd')
+        } catch {}
+    }
+
+    try {
+        $dt = [datetime]::Parse($trim, [System.Globalization.CultureInfo]::InvariantCulture)
+        return $dt.ToString('yyyy-MM-dd')
+    } catch {
+        return $null
+    }
+}
+
+function Get-CitationTargetsFromText {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Text)
+
+    $targets = New-Object System.Collections.Generic.List[string]
+    if ([string]::IsNullOrWhiteSpace($Text)) { return @() }
+
+    $patterns = @(
+        'ECF\s*(No\.)?\s*(?<ecf>\d+)(\s*[,\-]?\s*(Ex\.?|Exhibit)\s*(?<ex>\d+))?',
+        'Document\s*(?<doc>\d+(\-\d+)?)',
+        'ER\s*(?<er>\d+)'
+    )
+
+    foreach ($pattern in $patterns) {
+        $matches = [regex]::Matches($Text, $pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+        foreach ($m in $matches) {
+            if ($m.Groups['ecf'].Success) {
+                $ecf = $m.Groups['ecf'].Value
+                if ($m.Groups['ex'].Success) {
+                    $targets.Add("ECF$ecf-$($m.Groups['ex'].Value)")
+                } else {
+                    $targets.Add("ECF$ecf")
+                }
+            } elseif ($m.Groups['doc'].Success) {
+                $targets.Add("DOC$($m.Groups['doc'].Value)")
+            } elseif ($m.Groups['er'].Success) {
+                $targets.Add("ER$($m.Groups['er'].Value)")
+            }
+        }
+    }
+
+    return @($targets | Sort-Object -Unique)
+}
+
+function New-ImmutableEvidenceSnapshot {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$InputPath,
+        [Parameter(Mandatory)] [string]$SnapshotRoot
+    )
+
+    if (-not (Test-Path $SnapshotRoot)) {
+        New-Item -ItemType Directory -Path $SnapshotRoot -Force | Out-Null
+    }
+
+    $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+    $destDir = Join-Path $SnapshotRoot "snapshot_$stamp"
+    New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+
+    if (Test-Path $InputPath -PathType Container) {
+        Copy-Item -Path (Join-Path $InputPath '*') -Destination $destDir -Recurse -Force
+    } else {
+        Copy-Item -Path $InputPath -Destination $destDir -Force
+    }
+
+    return Get-Item $destDir
+}
+
+function Build-EvidenceSourceXml {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string]$SourceXmlPath,
+        [Parameter(Mandatory)] [string]$WorkingRoot,
+        [string]$EvidenceFilesRoot,
+        [switch]$CreateSnapshot,
+        [switch]$PromptBeforeMissing
+    )
+
+    if (-not (Test-Path $SourceXmlPath)) {
+        throw "Source XML not found: $SourceXmlPath"
+    }
+
+    if (-not (Test-Path $WorkingRoot)) {
+        New-Item -ItemType Directory -Path $WorkingRoot -Force | Out-Null
+    }
+
+    if ($CreateSnapshot) {
+        $snapshotSource = if ($EvidenceFilesRoot) { $EvidenceFilesRoot } else { Split-Path -Parent $SourceXmlPath }
+        $snapshotDir = Join-Path $WorkingRoot 'original_snapshots'
+        $snapshot = New-ImmutableEvidenceSnapshot -InputPath $snapshotSource -SnapshotRoot $snapshotDir
+    }
+
+    [xml]$doc = Get-Content -Raw -Path $SourceXmlPath
+
+    $meta = $doc.MasterFacts.Meta
+    if (-not $meta) { throw 'Expected <MasterFacts><Meta> in source XML.' }
+
+    $facts = @($doc.MasterFacts.Facts.Fact)
+    $docket = $meta.Court_Docketing_No
+    if ([string]::IsNullOrWhiteSpace($docket)) {
+        $nameMatch = [regex]::Match([System.IO.Path]::GetFileNameWithoutExtension($SourceXmlPath), '(ECF\d+(?:-\d+)?)', 'IgnoreCase')
+        if ($nameMatch.Success) { $docket = $nameMatch.Groups[1].Value.ToUpperInvariant() }
+    }
+    if ([string]::IsNullOrWhiteSpace($docket)) { $docket = 'DOC' }
+
+    $normalizedFiledDate = ConvertTo-NormalizedDate -Value ([string]$meta.FiledDate)
+    if ($normalizedFiledDate) { $meta.FiledDate = $normalizedFiledDate }
+
+    $requiredTargets = New-Object System.Collections.Generic.List[string]
+    $normalizedFacts = New-Object System.Collections.Generic.List[object]
+
+    foreach ($fact in $facts) {
+        if ($null -eq $fact) { continue }
+        $rawId = [string]$fact.id
+        if (-not [string]::IsNullOrWhiteSpace($rawId) -and -not $rawId.StartsWith("$docket")) {
+            $fact.id = "$docket`_$rawId"
+        }
+
+        if ($fact.Temporal -and $fact.Temporal.Date) {
+            $d = ConvertTo-NormalizedDate -Value ([string]$fact.Temporal.Date)
+            if ($d) { $fact.Temporal.Date = $d }
+        }
+        if ($fact.Temporal -and $fact.Temporal.Date2) {
+            $d2 = ConvertTo-NormalizedDate -Value ([string]$fact.Temporal.Date2)
+            if ($d2) { $fact.Temporal.Date2 = $d2 }
+        }
+
+        if ($fact.Triplet) {
+            if ($fact.Triplet.Event -and -not $fact.Triplet.Action) {
+                $actionNode = $doc.CreateElement('Action')
+                $actionNode.InnerText = [string]$fact.Triplet.Event
+                $fact.Triplet.AppendChild($actionNode) | Out-Null
+            }
+        }
+
+        $citationText = ''
+        if ($fact.Triplet -and $fact.Triplet.Citation) { $citationText = [string]$fact.Triplet.Citation }
+        $statementText = if ($fact.Statement) { [string]$fact.Statement } else { '' }
+        $targets = @()
+        $targets += Get-CitationTargetsFromText -Text $citationText
+        $targets += Get-CitationTargetsFromText -Text $statementText
+        $targets = @($targets | Sort-Object -Unique)
+
+        foreach ($t in $targets) { $requiredTargets.Add($t) }
+
+        $normalizedFacts.Add([pscustomobject]@{
+            FactId = [string]$fact.id
+            Who = if ($fact.Triplet -and $fact.Triplet.Name) { [string]$fact.Triplet.Name } else { '' }
+            What = if ($fact.Statement) { [string]$fact.Statement } else { '' }
+            Where = $citationText
+            Targets = $targets
+        })
+    }
+
+    $baseName = [System.IO.Path]::GetFileNameWithoutExtension($SourceXmlPath)
+    $baseName = $baseName -replace '(?i)_source$',''
+    $outXmlPath = Join-Path $WorkingRoot ($baseName + '.xml')
+
+    $pipeline = $doc.CreateElement('Pipeline')
+    $stage = $doc.CreateElement('Stage')
+    $stage.InnerText = 'stage1-source-normalization'
+    $pipeline.AppendChild($stage) | Out-Null
+
+    $input = $doc.CreateElement('InputFile')
+    $input.InnerText = (Resolve-Path $SourceXmlPath).Path
+    $pipeline.AppendChild($input) | Out-Null
+
+    $runUtc = $doc.CreateElement('RunUtc')
+    $runUtc.InnerText = [DateTime]::UtcNow.ToString('s') + 'Z'
+    $pipeline.AppendChild($runUtc) | Out-Null
+
+    if ($CreateSnapshot -and $snapshot) {
+        $snap = $doc.CreateElement('SnapshotDir')
+        $snap.InnerText = $snapshot.FullName
+        $pipeline.AppendChild($snap) | Out-Null
+    }
+
+    $doc.MasterFacts.AppendChild($pipeline) | Out-Null
+    $doc.Save($outXmlPath)
+
+    $targetsUnique = @($requiredTargets | Sort-Object -Unique)
+    $checkRows = New-Object System.Collections.Generic.List[object]
+
+    foreach ($target in $targetsUnique) {
+        $present = $false
+        $matches = @()
+        if ($EvidenceFilesRoot -and (Test-Path $EvidenceFilesRoot)) {
+            $needle = $target -replace '[^A-Za-z0-9-]',''
+            $matches = @(Get-ChildItem -Path $EvidenceFilesRoot -File -Recurse | Where-Object { $_.BaseName -match [regex]::Escape($needle) -or $_.Name -match [regex]::Escape($needle) })
+            $present = $matches.Count -gt 0
+        }
+
+        $checkRows.Add([pscustomobject]@{
+            Target = $target
+            Present = $present
+            MatchCount = $matches.Count
+            Matches = @($matches | Select-Object -ExpandProperty FullName)
+        })
+    }
+
+    $checkpointPath = Join-Path $WorkingRoot ($baseName + '_checkpoint.json')
+    $checkpointObj = [pscustomobject]@{
+        Stage = 'stage1-source-normalization'
+        SourceXml = (Resolve-Path $SourceXmlPath).Path
+        OutputXml = $outXmlPath
+        Docket = $docket
+        RequiredTargets = $targetsUnique
+        TargetChecks = $checkRows
+        ContinueRecommended = -not (@($checkRows | Where-Object { -not $_.Present }).Count -gt 0)
+    }
+    $checkpointObj | ConvertTo-Json -Depth 100 | Set-Content -Path $checkpointPath -Encoding UTF8
+
+    if ($PromptBeforeMissing -and (@($checkRows | Where-Object { -not $_.Present }).Count -gt 0)) {
+        $answer = Read-Host 'Some citation targets are missing. Continue anyway? [y/N]'
+        if ($answer -notmatch '^(y|yes)$') {
+            throw "Checkpoint halted by user. See $checkpointPath"
+        }
+    }
+
+    return [pscustomobject]@{
+        OutputXmlPath = $outXmlPath
+        CheckpointPath = $checkpointPath
+        Docket = $docket
+        FactCount = $facts.Count
+        RequiredTargetCount = $targetsUnique.Count
+    }
+}
+
 Export-ModuleMember -Function @(
     'Get-LegalObjectCollection',
     'ConvertTo-LegalTripletSet',
@@ -629,5 +874,6 @@ Export-ModuleMember -Function @(
     'Search-LegalTriplets',
     'Merge-LegalObjectsUnifiedOutput',
     'Export-LegalUnifiedOutput',
-    'Start-ComputerControlConsole'
+    'Start-ComputerControlConsole',
+    'Build-EvidenceSourceXml'
 )

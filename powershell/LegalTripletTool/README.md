@@ -6,58 +6,50 @@ PowerShell module for legal-evidence extraction workflows:
 - preserve selected object blocks as atomic JSON (no destructive splitting),
 - resolve `Fact.id` ↔ `arg_id` and `seed_arg_id` relationships,
 - run exact/fuzzy/backoff phrase search,
-- merge near-duplicate objects into branches,
-- export a unified machine-consumable output,
+- build Stage-1 source-normalized XML + checkpoint file for citation-target tracing,
 - prototype a local GGUF-driven computer-control capture loop.
 
 ## Install from terminal
-
-From this repository root:
 
 ```powershell
 pwsh -NoProfile -Command "Import-Module ./powershell/LegalTripletTool/LegalTripletTool.psd1 -Force"
 ```
 
-Optional persistent install:
+## Stage 1 (source XML normalization + checkpoint)
+
+`Build-EvidenceSourceXml` is the first controlled stage for your pipeline.
+
+What it does:
+- requires a source XML input (ex: `ECF60_fact_id_triplet_source.xml`),
+- outputs a normalized XML in working root with `_source` removed from filename,
+- normalizes dates to `YYYY-MM-DD` where parsable,
+- normalizes fact IDs to `[Court_Docketing_No]_[fact_id]` (not hardcoded),
+- adds `<Action>` from `<Event>` (keeps existing data, avoids breaking compatibility),
+- extracts citation targets (`ECF##`, `ECF##-##`, `Document ##`, `ER ##`) from statement/citation text,
+- creates a checkpoint JSON showing required targets and whether matching files were found,
+- can create immutable snapshot copies of originals in `working_root/original_snapshots`.
+
+Example:
 
 ```powershell
-pwsh -NoProfile -Command "\
-  $dest = Join-Path $HOME 'Documents/PowerShell/Modules/LegalTripletTool'; \
-  New-Item -ItemType Directory -Path $dest -Force | Out-Null; \
-  Copy-Item ./powershell/LegalTripletTool/* $dest -Recurse -Force; \
-  Import-Module LegalTripletTool -Force"
+$result = Build-EvidenceSourceXml `
+  -SourceXmlPath ./input/ECF60_fact_id_triplet_source.xml `
+  -WorkingRoot ./work `
+  -EvidenceFilesRoot ./evidence `
+  -CreateSnapshot
+
+$result
+Get-Content -Raw $result.CheckpointPath | ConvertFrom-Json
 ```
 
-## Quick start
+## Existing commands
 
 ```powershell
 $collection = Get-LegalObjectCollection -Path ./evidence -Recurse -AttemptPdfText -NoSplitProperties Triplet,Temporal,Meta
 $triplets = $collection | ConvertTo-LegalTripletSet -IncludeLinks
 $matches = Search-LegalTriplets -Triplets $triplets -Query "failure to disclose" -Mode Backoff -MaxMatches 50
 $seedLinks = Resolve-LegalSeedLinks -Collection $collection
-$unified = Merge-LegalObjectsUnifiedOutput -Collection $collection -BranchSimilarity 0.90 -AskBeforeRemoval
-Export-LegalUnifiedOutput -UnifiedOutput $unified -Path ./out/unified.json
 ```
-
-## Handling your XML Fact IDs + JSON arg IDs
-
-Use `Resolve-LegalSeedLinks` to map:
-- XML `Fact id="F001"` style items,
-- JSON `arg_id` direct matches (e.g., `F017`),
-- JSON `seed_arg_id` chain matches (e.g., `ECF60F015/F017`).
-
-This gives you a cross-file map that can be used as your chain/domino relationship graph.
-
-## Search modes
-
-- `Exact`: literal string search across `Subject + Predicate + Object`.
-- `Fuzzy`: Levenshtein-based whole-record similarity (`-MinimumSimilarity`).
-- `Backoff`: starts with full query, then shorter prefixes until hits are found.
-
-## Linking behavior for large content
-
-Large documents are represented as links instead of being inlined (`LinkThresholdChars`).
-This preserves source fidelity and avoids destructive rewriting of content.
 
 ## Computer control console prototype
 
@@ -70,15 +62,3 @@ This preserves source fidelity and avoids destructive rewriting of content.
 
 Streaming mode (`-EnableStreaming`) keeps response context as an overlay payload for the next tick.
 Optional `-EnableInputControl` allows model-returned action JSON to drive mouse and keyboard.
-
-Example action JSON expected from model response:
-
-```json
-{
-  "actions": [
-    {"type": "mousemove", "x": 640, "y": 380},
-    {"type": "click", "x": 640, "y": 380},
-    {"type": "sendkeys", "keys": "^l"}
-  ]
-}
-```
