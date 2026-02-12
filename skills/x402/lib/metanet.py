@@ -190,6 +190,7 @@ def create_action(
     outputs: list[dict],
     description: str,
     accept_delayed_broadcast: bool = False,
+    randomize_outputs: bool = True,
 ) -> dict:
     """Create a transaction via MetaNet Client.
 
@@ -203,6 +204,8 @@ def create_action(
         description: Human-readable description of the transaction purpose.
         accept_delayed_broadcast: If False (default), broadcast immediately.
             If True, the wallet may delay broadcasting.
+        randomize_outputs: If True (default), wallet may reorder outputs.
+            Set to False for BRC-29 payments to ensure payment is at index 0.
 
     Returns:
         Dict with at minimum:
@@ -220,6 +223,7 @@ def create_action(
         "outputs": outputs,
         "options": {
             "acceptDelayedBroadcast": accept_delayed_broadcast,
+            "randomizeOutputs": randomize_outputs,
         },
     })
 

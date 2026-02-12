@@ -419,10 +419,11 @@ def create_payment(
             outputs=[{
                 "lockingScript": locking_script,
                 "satoshis": satoshis,
-                "outputDescription": f"BRC-29 payment output",
+                "outputDescription": "BRC-29 payment output",
             }],
             description=description,
             accept_delayed_broadcast=False,
+            randomize_outputs=False,
         )
     except Exception as e:
         raise PaymentError(f"Failed to create payment transaction: {e}") from e
