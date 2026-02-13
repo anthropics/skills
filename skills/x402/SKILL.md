@@ -71,6 +71,15 @@ python3 ./scripts/brc31_helpers.py pay POST "https://poc-server.dev-a3e.workers.
 ```
 The library automatically: sends auth request → receives 402 → creates 10-sat payment tx via wallet → retries with payment → returns `{"status": 200, ...}` with payment confirmation.
 
+## Refunds
+
+Servers that support BRC-29 refunds will automatically return refund data when a paid request fails after payment. The client **auto-detects and internalizes refunds** — no manual action needed.
+
+- **Inline refunds**: Returned in the same response as the error (e.g., `/paid` fails immediately)
+- **Deferred refunds**: Returned later when polling `/status/{id}` for async operations that failed
+
+The `discover` command shows which endpoints support refunds. The `pay` command output includes a `refund` block when a refund was received and internalized.
+
 ## Payment Transport
 
 Payment is sent via `x-bsv-payment` header as JSON: `{"derivationPrefix":"...","derivationSuffix":"...","transaction":"<base64 BEEF>"}`. The client handles this automatically.
