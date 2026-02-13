@@ -31,7 +31,19 @@ def discover(server_url):
     try:
         resp = _requests.get(url, timeout=10)
         if resp.status_code == 200:
-            return resp.json()
+            info = resp.json()
+            # Annotate with refund summary for display
+            caps = info.get("capabilities", {})
+            if caps.get("refunds"):
+                info["_refund_summary"] = {
+                    "supported": True,
+                    "protocol": caps.get("refundProtocol", "unknown"),
+                    "endpoints_with_refunds": [
+                        ep["path"] for ep in info.get("endpoints", [])
+                        if isinstance(ep.get("refund"), dict) and ep["refund"].get("supported")
+                    ],
+                }
+            return info
         else:
             return {"error": f"HTTP {resp.status_code}", "body": resp.text}
     except Exception as e:
@@ -89,6 +101,27 @@ def main():
             "headers": dict(resp.headers),
             "body": resp.text,
         }
+        # Auto-detect and process refund in response
+        try:
+            body_parsed = resp.json()
+            if isinstance(body_parsed, dict):
+                refund_data = body_parsed.get("refund")
+                if refund_data and isinstance(refund_data, dict) and not refund_data.get("already_refunded"):
+                    from lib.refund import parse_refund, process_refund
+                    refund_info = parse_refund(body_parsed)
+                    if refund_info:
+                        try:
+                            refund_result = process_refund(refund_info)
+                            result["refund"] = {
+                                "processed": True,
+                                "accepted": refund_result.get("accepted", False),
+                                "satoshis": refund_info.satoshis,
+                                "txid": refund_info.txid,
+                            }
+                        except Exception as e:
+                            result["refund"] = {"processed": False, "error": str(e)}
+        except Exception:
+            pass
         print(json.dumps(result, indent=2))
 
     else:

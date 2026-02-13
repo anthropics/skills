@@ -646,6 +646,26 @@ def paid_request(
             "paid_request: payment accepted! status=%d (attempt %d/%d)",
             response.status_code, attempt, max_payment_attempts,
         )
+
+        # Auto-detect and internalize refunds in error responses
+        if response.status_code >= 400:
+            try:
+                from lib.refund import parse_refund, process_refund
+                resp_body = response.json()
+                refund = parse_refund(resp_body)
+                if refund:
+                    try:
+                        refund_result = process_refund(refund)
+                        log.info(
+                            "Refund auto-internalized: %d sats, accepted=%s",
+                            refund.satoshis,
+                            refund_result.get("accepted", False),
+                        )
+                    except Exception as re:
+                        log.error("Failed to internalize refund: %s", re)
+            except Exception:
+                pass  # Response not JSON or no refund — that's fine
+
         return response
 
     # Should not reach here, but just in case

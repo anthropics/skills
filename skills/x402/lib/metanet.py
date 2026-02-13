@@ -243,3 +243,42 @@ def create_action(
         )
 
     return result
+
+
+def internalize_action(
+    tx_bytes: bytes,
+    outputs: list,
+    description: str = "Incoming payment",
+) -> dict:
+    """Internalize an incoming transaction into the wallet.
+
+    This is the receiving side of a BRC-29 payment. The wallet records
+    the specified outputs as owned, allowing the user to spend them later.
+
+    Used for refunds: when a server returns a payment after failing to
+    deliver a service.
+
+    Args:
+        tx_bytes: Raw transaction bytes (BEEF format).
+        outputs: List of output specs, each with:
+            - "outputIndex": int (which output in the tx belongs to us)
+            - "protocol": "wallet payment"
+            - "paymentRemittance": {
+                "derivationPrefix": str,
+                "derivationSuffix": str,
+                "senderIdentityKey": str (66-char hex, the PAYER's key)
+              }
+        description: Human-readable description (min 5 chars).
+
+    Returns:
+        Dict with "accepted": bool and possibly other fields.
+
+    Raises:
+        MetaNetClientError: if the wallet rejects the internalization.
+    """
+    result = _call("internalizeAction", {
+        "tx": list(tx_bytes),       # JSON number array, same as createAction
+        "outputs": outputs,
+        "description": description,
+    })
+    return result
