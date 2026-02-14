@@ -1,0 +1,4438 @@
+[
+  {
+    "id": "FTC-233-1-former-price",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Former Price Comparisons",
+    "severity": "critical",
+    "summary": "Price comparisons to a \"former price\" must be based on actual prices at which the item was offered in good faith for a reasonably substantial period.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "was\\s+\\$\\d+",
+        "formerly\\s+\\$\\d+",
+        "regular\\s+price\\s+\\$\\d+",
+        "compare\\s+at\\s+\\$\\d+"
+      ],
+      "keywords": [
+        "was",
+        "formerly",
+        "regular price",
+        "compare at"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only show \"was $X\" prices that reflect genuine prior pricing. Maintain records of historical pricing.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 233.1",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-233#233.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-233-2-retail-value",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Comparable Value Claims",
+    "severity": "warning",
+    "summary": "Retail value or comparable value claims must accurately reflect the price at which comparable products are sold by others.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "retail\\s+value\\s+\\$\\d+",
+        "comparable\\s+value",
+        "compare\\s+to\\s+\\$\\d+"
+      ],
+      "keywords": [
+        "retail value",
+        "comparable value",
+        "compare to"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify comparable prices before using \"Retail Value\" or \"Compare at\" claims. Document competitive pricing.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 233.2",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-233#233.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims",
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-233-3-list-price",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Manufacturer List Price Claims",
+    "severity": "warning",
+    "summary": "Claims of savings from manufacturer's list price or suggested retail price must reflect prices at which products are actually sold.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "msrp\\s+\\$\\d+",
+        "list\\s+price\\s+\\$\\d+",
+        "suggested\\s+retail"
+      ],
+      "keywords": [
+        "MSRP",
+        "list price",
+        "suggested retail"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only reference MSRP if products are actually sold at that price in the market.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 233.3",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-233#233.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims",
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-233-4-bargain",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Bargain Offers Based on Other Purchases",
+    "severity": "warning",
+    "summary": "Offers like \"Buy one, get one free\" must not inflate the price of the first item to recover the cost of the \"free\" item.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "buy\\s+one.*get\\s+one",
+        "bogo",
+        "buy\\s+\\d+.*get\\s+\\d+"
+      ],
+      "keywords": [
+        "BOGO",
+        "buy one get one",
+        "buy 2 get 1"
+      ]
+    },
+    "remediation": {
+      "guidance": "In BOGO offers, the first item price must be the regular price. Do not inflate to cover free item.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 233.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-233#233.4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-238-1-bait",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "No Bait Advertising",
+    "severity": "critical",
+    "summary": "Bait advertising is an alluring but insincere offer to sell a product which the advertiser does not intend to sell.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "while\\s+supplies\\s+last",
+        "limited\\s+quantities?",
+        "limited\\s+stock"
+      ],
+      "keywords": [
+        "while supplies last",
+        "limited quantity",
+        "limited stock"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure advertised products are available in reasonable quantities. Do not use low prices just to lure customers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 238.1",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-238#238.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-238-2-switch",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "No Bait and Switch",
+    "severity": "critical",
+    "summary": "It is deceptive to disparage the advertised product, fail to show it, or refuse to take orders for it in order to switch consumers to a higher-priced item.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Honor advertised prices. Do not discourage purchase of advertised items to upsell alternatives.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 238.2",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-238#238.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-238-3-adequate-supply",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Must Have Adequate Supply",
+    "severity": "warning",
+    "summary": "Advertisers must have adequate supply of advertised products to meet reasonably anticipated demand.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Stock sufficient inventory for advertised offers. If limited, clearly disclose quantity available.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 238.3",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-238#238.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-238-4-refusal",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "No Refusal to Sell Advertised Item",
+    "severity": "critical",
+    "summary": "Refusal to show, demonstrate, or sell the advertised product is evidence of bait advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Train staff to actively sell advertised products. Do not create obstacles to purchasing advertised items.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 238.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-238#238.4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-251-1-conditions",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Free\" Offer Conditions Must Be Disclosed",
+    "severity": "critical",
+    "summary": "All conditions and obligations for receiving a \"free\" item must be clearly and conspicuously disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "free\\s*\\*",
+        "free.*conditions\\s+apply",
+        "free.*see\\s+(details|terms)"
+      ],
+      "keywords": [
+        "conditions apply",
+        "terms",
+        "with purchase"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all conditions upfront: \"Free with $50 purchase\" not hidden in fine print.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251.1(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251#251.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-251-1-continuous",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "No Continuous \"Free\" Offers",
+    "severity": "warning",
+    "summary": "\"Free\" offers cannot be used continuously - they must be intermittent to preserve the meaning of \"free.\"",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Limit duration of free offers. A perpetual \"free gift\" promotion is deceptive.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251.1(e)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251#251.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-251-1-free-genuine",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Free\" Must Be Genuinely Free",
+    "severity": "critical",
+    "summary": "The word \"Free\" may only be used when the consumer pays nothing for the item and is not required to purchase anything else at an inflated price.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\bfree\\b",
+        "at\\s+no\\s+(additional\\s+)?cost",
+        "complimentary",
+        "gift\\s+with\\s+purchase"
+      ],
+      "keywords": [
+        "free",
+        "no cost",
+        "complimentary",
+        "gift"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only use \"FREE\" when the item is truly free with no hidden costs or inflated companion purchase requirements.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251.1(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251#251.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-251-1-regular-price",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Free\" Cannot Inflate Regular Price",
+    "severity": "critical",
+    "summary": "The regular price of merchandise sold with a \"free\" offer must not be increased to cover the cost of the free item.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Maintain regular pricing during free promotions. Do not mark up base product to cover \"free\" item costs.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251.1(c)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251#251.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-251-1-shipping",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Free\" Item Shipping Charges",
+    "severity": "warning",
+    "summary": "Shipping and handling charges for a \"free\" item must be reasonable and disclosed. Excessive S&H that covers item cost is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "free.*\\$\\d+.*shipping",
+        "just\\s+pay\\s+shipping",
+        "free.*s&h"
+      ],
+      "keywords": [
+        "shipping",
+        "handling",
+        "S&H",
+        "just pay shipping"
+      ]
+    },
+    "remediation": {
+      "guidance": "If charging S&H for \"free\" items, charges must be reasonable and clearly disclosed before checkout.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251.1(d)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251#251.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-0-purpose",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsement Guide Purpose",
+    "severity": "info",
+    "summary": "The FTC Endorsement Guides address the application of Section 5 of the FTC Act to endorsements and testimonials in advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Understand that endorsement guidelines apply to all advertising mediums including social media.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.0",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.0",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-0-scope",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsement Guide Scope",
+    "severity": "info",
+    "summary": "FTC Endorsement Guides apply to endorsements and testimonials in advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "endorsement",
+        "testimonial",
+        "advertising"
+      ]
+    },
+    "remediation": {
+      "guidance": "Apply these guidelines to all endorsements in marketing materials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.0",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-current",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Current User Requirement",
+    "severity": "warning",
+    "summary": "Endorsers must be bona fide users of the product at time of endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "current user",
+        "bona fide",
+        "actual user"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure endorsers are current users of the product or service.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.1(c)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-honest",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsements Must Reflect Honest Opinions",
+    "severity": "critical",
+    "summary": "Endorsements must reflect the honest opinions, findings, beliefs, or experience of the endorser.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "testimonial",
+        "endorsement",
+        "customer\\s+(says?|review|story)"
+      ],
+      "keywords": [
+        "testimonial",
+        "endorsement",
+        "customer review",
+        "user says"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all endorsements are genuine and reflect actual user experience. Do not script or fabricate testimonials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-misleading",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsements Cannot Be Misleading",
+    "severity": "critical",
+    "summary": "Endorsements may not contain any representations that would be deceptive or could not be substantiated if made directly by the advertiser.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Verify that all claims in endorsements can be substantiated. Remove unverifiable statements.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-substantiation",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Claim Substantiation",
+    "severity": "critical",
+    "summary": "Claims in endorsements must be substantiated by the advertiser.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "substantiation",
+        "verify",
+        "proof"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify all claims made in endorsements are accurate and can be proven.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.1(b)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-typical",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Atypical Results Require Disclosure",
+    "severity": "critical",
+    "summary": "If an endorsement represents results that are not typical, the advertiser must clearly disclose expected results for consumers.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "results\\s+not\\s+typical",
+        "individual\\s+results\\s+(may\\s+)?vary",
+        "your\\s+results\\s+may\\s+differ"
+      ],
+      "keywords": [
+        "results not typical",
+        "results may vary",
+        "individual results"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure of typical results when showing exceptional testimonials. Example: \"Results not typical. Most users see [X].\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(c)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-actor",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Actor Portrayal Requires Disclosure",
+    "severity": "warning",
+    "summary": "If the person appearing in an advertisement is not an actual consumer, this must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "actor\\s+portrayal",
+        "dramatization",
+        "simulation"
+      ],
+      "keywords": [
+        "actor portrayal",
+        "dramatization",
+        "paid actor"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose \"Actor portrayal\" or \"Dramatization\" when not using actual customers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.2(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-consumer",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Consumer Endorser Must Be Actual User",
+    "severity": "critical",
+    "summary": "An advertisement using an endorsement by a consumer must use an actual consumer of the product or service.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "real customer",
+        "actual user",
+        "verified purchase"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only use endorsements from people who have actually used the product. Actors portraying consumers must be disclosed.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.2(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-disclosure",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Consumer Endorsement Disclosure",
+    "severity": "warning",
+    "summary": "Consumer endorsements should clearly disclose what the typical consumer experience is.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "typical",
+        "average",
+        "consumer experience"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure of typical outcomes alongside testimonials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.2(b)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-typical",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Typical Results Disclosure",
+    "severity": "critical",
+    "summary": "If results are not typical, must clearly disclose expected results or that results may vary.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\"[^\"]{20,}\"s*[-–—]",
+        "lost\\s+\\d+\\s+pounds",
+        "earned\\s+\\$\\d+"
+      ],
+      "keywords": [
+        "typical results",
+        "results may vary",
+        "individual results"
+      ]
+    },
+    "remediation": {
+      "guidance": "Add \"Results not typical\" or disclose generally expected results.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.2(a)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert-evaluation",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Must Actually Evaluate Product",
+    "severity": "critical",
+    "summary": "Experts must actually exercise their expertise in evaluating the product features relevant to their endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Document that expert endorsers have conducted actual evaluation using their professional expertise.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.3(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert-qualified",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Endorsers Must Be Qualified",
+    "severity": "critical",
+    "summary": "An expert endorser must possess the expertise represented by the endorsement and must have actually evaluated the product.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "doctor\\s+(recommended|approved)",
+        "expert\\s+(review|opinion|approved)",
+        "dermatologist\\s+tested",
+        "clinically\\s+(tested|proven)"
+      ],
+      "keywords": [
+        "doctor recommended",
+        "expert approved",
+        "clinically tested"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify expert credentials. Ensure expert has actually examined/tested the product before endorsing.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.3(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Qualification",
+    "severity": "warning",
+    "summary": "Expert endorsers must have qualifications to give expert opinion on the subject.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "expert",
+        "qualified",
+        "credentials",
+        "specialist"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify expert credentials match the subject matter of endorsement.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.3",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-4-org",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Organization Endorsement Standards",
+    "severity": "warning",
+    "summary": "Organization endorsements must represent the collective judgment of the organization, not just individual members.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(approved|endorsed)\\s+by\\s+[A-Z]",
+        "association\\s+(approved|endorsed)",
+        "seal\\s+of\\s+approval"
+      ],
+      "keywords": [
+        "approved by",
+        "endorsed by",
+        "seal of approval",
+        "certified by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure organization endorsements follow proper approval processes and reflect collective judgment.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-affiliate",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Affiliate Link Disclosure",
+    "severity": "critical",
+    "summary": "Affiliate links and commission arrangements must be disclosed when recommending products.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "affiliate\\s+link",
+        "earn\\s+a?\\s*commission",
+        "may\\s+earn\\s+from"
+      ],
+      "keywords": [
+        "affiliate link",
+        "earn commission",
+        "referral link"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose affiliate relationships. Example: \"This post contains affiliate links. I may earn a commission.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-clear",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Clear and Conspicuous Disclosure",
+    "severity": "critical",
+    "summary": "Disclosures must be clear, conspicuous, and hard to miss.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\*\\s*disclaimer",
+        "fine\\s*print"
+      ],
+      "keywords": [
+        "clear",
+        "conspicuous",
+        "prominent",
+        "visible"
+      ]
+    },
+    "remediation": {
+      "guidance": "Place disclosures prominently, not buried in text. Use clear language like \"#ad\" or \"Paid partnership\".",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-connection",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Material Connection Disclosure",
+    "severity": "critical",
+    "summary": "Material connections between endorsers and advertisers must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "#ad\\b",
+        "#sponsored",
+        "#partner",
+        "paid\\s+partnership"
+      ],
+      "keywords": [
+        "material connection",
+        "sponsored",
+        "paid",
+        "affiliate"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose any payment, free products, employment, or business relationship.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-disclosure-clear",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Disclosure Must Be Clear and Conspicuous",
+    "severity": "warning",
+    "summary": "Disclosures must be clear, conspicuous, and placed where consumers will notice them before engaging with the endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "fine print",
+        "small print",
+        "terms and conditions apply",
+        "see details",
+        "restrictions apply",
+        "subject to terms"
+      ]
+    },
+    "remediation": {
+      "guidance": "Place disclosures at the beginning of content. Use clear language like \"Ad\" or \"Sponsored\". Avoid burying in hashtags.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-employee",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Employee Endorser Disclosure",
+    "severity": "critical",
+    "summary": "Employees who endorse products in their personal capacity must disclose their employment relationship.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "employee",
+        "work for",
+        "employed by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Require employees posting about company products to clearly disclose their employment.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-free-product",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Free Product Disclosure",
+    "severity": "critical",
+    "summary": "If an endorser received a free product to review, this must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(free|gifted|complimentary)\\s+product",
+        "received\\s+(free|for\\s+review)",
+        "pr\\s+sample"
+      ],
+      "keywords": [
+        "free product",
+        "gifted",
+        "PR sample",
+        "received for review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure when products were provided for free. Example: \"Product provided for review.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-material-connection",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Material Connection Disclosure Required",
+    "severity": "critical",
+    "summary": "When there is a material connection between an endorser and seller that would affect the weight of the endorsement, it must be disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "#?ad\\b",
+        "#?sponsored",
+        "#?partner(ship)?",
+        "paid\\s+(partnership|promotion|ad)",
+        "in\\s+collaboration\\s+with"
+      ],
+      "keywords": [
+        "#ad",
+        "#sponsored",
+        "paid partnership",
+        "affiliate",
+        "material connection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all material connections: payments, free products, employment, family relationships, equity stakes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-social",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Social Media Disclosure",
+    "severity": "critical",
+    "summary": "Social media posts by paid influencers must clearly disclose the material connection.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "@\\w+\\s+(says?|loves?|recommends?)",
+        "influencer",
+        "ambassador"
+      ],
+      "keywords": [
+        "social media",
+        "influencer",
+        "#ad",
+        "sponsored"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use #ad or \"Sponsored\" at the beginning of posts, not hidden in hashtags.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/disclosures-101-social-media-influencers",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-6-liability",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Advertiser Liable for Endorser Claims",
+    "severity": "warning",
+    "summary": "Advertisers are liable for false or unsubstantiated statements made by endorsers, and for failing to disclose material connections.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Monitor endorser content. Provide clear guidelines to endorsers. Require compliance training.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.6",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-6-monitoring",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Advertiser Must Monitor Endorsers",
+    "severity": "warning",
+    "summary": "Advertisers must take steps to monitor endorsers and address non-compliant content.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Implement monitoring program for influencer and affiliate content. Address violations promptly.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.6",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-1-purpose",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Green Guides Purpose",
+    "severity": "info",
+    "summary": "The Green Guides help marketers avoid making environmental claims that are unfair or deceptive under Section 5 of the FTC Act.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Environmental marketing claims must be truthful, substantiated, and not misleading.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.1",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-10-nontoxic",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Non-Toxic Claims",
+    "severity": "warning",
+    "summary": "Non-toxic claims must be substantiated for all foreseeable human and environmental exposures.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "non[\\s-]?toxic",
+        "toxin[\\s-]?free",
+        "safe\\s+for.*environment"
+      ],
+      "keywords": [
+        "non-toxic",
+        "toxin free",
+        "safe for environment"
+      ]
+    },
+    "remediation": {
+      "guidance": "Substantiate non-toxic claims with testing. Consider all exposure routes and populations.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.10",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.10",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-12-recyclable",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Recyclable Claims",
+    "severity": "warning",
+    "summary": "Recyclable claims should be qualified if recycling facilities are not available to a substantial majority of consumers.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\brecyclable\\b",
+        "can\\s+be\\s+recycled",
+        "\\d+%\\s+recyclable"
+      ],
+      "keywords": [
+        "recyclable",
+        "recycle",
+        "recycling"
+      ]
+    },
+    "remediation": {
+      "guidance": "Qualify recyclable claims: \"Recyclable where facilities exist\" or \"Check local recycling.\" Specify which components.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.12",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.12",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-13-recycled",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Recycled Content Claims",
+    "severity": "warning",
+    "summary": "Recycled content claims must specify whether content is pre-consumer or post-consumer recycled material.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(made\\s+with|contains?)\\s+\\d+%\\s+recycled",
+        "post[\\s-]?consumer\\s+recycled",
+        "pre[\\s-]?consumer\\s+recycled"
+      ],
+      "keywords": [
+        "recycled content",
+        "post-consumer",
+        "pre-consumer",
+        "made with recycled"
+      ]
+    },
+    "remediation": {
+      "guidance": "Distinguish between pre-consumer and post-consumer recycled content. Specify percentage accurately.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.13",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.13",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-15-renewable",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Renewable Energy Claims",
+    "severity": "warning",
+    "summary": "Renewable energy claims must be substantiated. If using RECs, marketers should not overstate environmental benefits.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(powered|made)\\s+(by|with)\\s+renewable",
+        "\\d+%\\s+renewable\\s+energy",
+        "solar\\s+powered",
+        "wind\\s+powered"
+      ],
+      "keywords": [
+        "renewable energy",
+        "solar powered",
+        "wind energy",
+        "clean energy"
+      ]
+    },
+    "remediation": {
+      "guidance": "Distinguish between on-site generation and REC purchases. Disclose methodology.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.15",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.15",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-16-materials",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Renewable Materials Claims",
+    "severity": "info",
+    "summary": "Renewable materials claims should not be deceptive about the overall environmental benefit.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "renewable\\s+materials?",
+        "plant[\\s-]?based",
+        "bio[\\s-]?based"
+      ],
+      "keywords": [
+        "renewable materials",
+        "plant-based",
+        "bio-based"
+      ]
+    },
+    "remediation": {
+      "guidance": "Specify what percentage of materials are from renewable sources. Identify the renewable materials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.16",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.16",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-3-general",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Environmental Claims Must Be Substantiated",
+    "severity": "critical",
+    "summary": "All environmental claims must be substantiated by competent and reliable scientific evidence.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Maintain documentation supporting all environmental claims. Claims should be specific and verifiable.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.3",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-3-qualification",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Qualify Broad Environmental Claims",
+    "severity": "warning",
+    "summary": "Broad environmental claims should be qualified to prevent deception about the product's environmental attributes.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "eco[\\s-]?friendly",
+        "environmentally\\s+friendly",
+        "green\\s+product",
+        "earth[\\s-]?friendly"
+      ],
+      "keywords": [
+        "eco-friendly",
+        "environmentally friendly",
+        "green",
+        "earth friendly"
+      ]
+    },
+    "remediation": {
+      "guidance": "Avoid vague claims like \"eco-friendly\". Use specific claims like \"Made with 50% recycled plastic.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.3",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-4-general-benefit",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "General Environmental Benefit Claims",
+    "severity": "critical",
+    "summary": "Unqualified general environmental benefit claims (e.g., \"green\" or \"eco-friendly\") are difficult to substantiate and should be avoided.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\b(green|eco|sustainable)\\b(?![\\w-])",
+        "good\\s+for\\s+(the\\s+)?environment",
+        "planet[\\s-]?friendly"
+      ],
+      "keywords": [
+        "green",
+        "sustainable",
+        "eco",
+        "planet friendly"
+      ]
+    },
+    "remediation": {
+      "guidance": "Replace vague environmental claims with specific, measurable benefits that can be documented.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-5-carbon",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Carbon Offset Claims",
+    "severity": "warning",
+    "summary": "Carbon offset claims must reflect genuine, verifiable, permanent emission reductions and should be properly qualified.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "carbon\\s+(neutral|negative|zero|offset)",
+        "net[\\s-]?zero\\s+(carbon|emissions?)",
+        "climate\\s+(neutral|positive)"
+      ],
+      "keywords": [
+        "carbon neutral",
+        "carbon offset",
+        "net zero",
+        "climate neutral"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use third-party verified carbon offsets. Disclose offset methodology and certifying body.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-6-seals",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Environmental Certifications and Seals",
+    "severity": "warning",
+    "summary": "Environmental certifications and seals can be deceptive if they imply general environmental benefit without qualification.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "certified\\s+(green|sustainable|eco)",
+        "seal\\s+of\\s+approval",
+        "\\d+%\\s+certified"
+      ],
+      "keywords": [
+        "certified",
+        "seal",
+        "certification",
+        "approved"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clarify what specific attribute the certification covers. Disclose certifying organization.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.6",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-7-compostable",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Compostable Claims",
+    "severity": "warning",
+    "summary": "Compostable claims should specify whether the item is suitable for home composting or requires industrial facilities.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\bcompostable\\b",
+        "industrially\\s+compostable",
+        "home\\s+compostable"
+      ],
+      "keywords": [
+        "compostable",
+        "composting",
+        "industrial compost",
+        "home compost"
+      ]
+    },
+    "remediation": {
+      "guidance": "Specify composting conditions: \"Commercially compostable only\" or \"Home compostable.\" Include timeframe if relevant.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.7",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.7",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-8-degradable",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Degradable and Biodegradable Claims",
+    "severity": "critical",
+    "summary": "Degradable claims require evidence that the product will completely break down within one year under normal disposal conditions.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "biodegradable",
+        "bio[\\s-]?degradable",
+        "degrades?\\s+naturally",
+        "breaks?\\s+down\\s+(naturally|quickly)"
+      ],
+      "keywords": [
+        "biodegradable",
+        "degradable",
+        "breaks down",
+        "decomposes"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only claim biodegradable if product fully decomposes within 1 year. Qualify for specific disposal conditions.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.8",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.8",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-260-9-free-of",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Free-Of Environmental Claims",
+    "severity": "warning",
+    "summary": "Free-of claims must be truthful and should not be made if the substance was never present or associated with the product category.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "free\\s+of\\s+[a-z]+",
+        "[a-z]+-free\\b",
+        "contains?\\s+no\\s+[a-z]+"
+      ],
+      "keywords": [
+        "free of",
+        "free",
+        "contains no",
+        "without"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only claim \"free of X\" if (1) X is typically present in similar products, and (2) absence provides environmental benefit.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.9",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260#260.9",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CANCEL-HARD",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Difficult Cancellation Process",
+    "severity": "warning",
+    "summary": "Cancellation must be as easy as sign-up. Complex cancellation processes (call-only, multiple steps, retention offers) violate FTC guidelines.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "call\\s+to\\s+cancel",
+        "contact.*to\\s+cancel",
+        "cancellation\\s+(fee|charge|penalty)"
+      ],
+      "keywords": [
+        "cancel subscription",
+        "how to cancel",
+        "cancellation policy",
+        "stop subscription"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide simple online cancellation option. Do not require phone calls or multiple retention attempts.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Click-to-Cancel",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2023/03/ftc-proposes-rule-provision-making-it-easy-consumers-click-cancel",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-BEST",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Superlative Claims Without Basis",
+    "severity": "warning",
+    "summary": "Claims like \"best\", \"#1\", \"leading\", or \"top-rated\" require substantiation through comparative testing or market data.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "#\\s*1\\s+(selling|rated|brand|choice|recommended)",
+        "(best|top|leading|premier)\\s+(selling|rated|quality)",
+        "(america|world)'?s?\\s+(best|#\\s*1|favorite|leading)",
+        "award[\\s-]?winning"
+      ],
+      "keywords": [
+        "best",
+        "number one",
+        "top rated",
+        "leading brand",
+        "award winning"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove unsubstantiated superlative claims or provide evidence (market share data, comparative tests, awards).",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-CLINICAL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Clinically Proven\" Without Clinical Trials",
+    "severity": "critical",
+    "summary": "Claims like \"clinically proven\" or \"clinically tested\" require actual clinical trials supporting the specific claim.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "clinically\\s+(proven|tested|shown|demonstrated)",
+        "clinical\\s+(studies?|trials?|evidence)\\s+(show|prove|demonstrate)",
+        "backed\\s+by\\s+(science|research|studies)"
+      ],
+      "keywords": [
+        "clinically proven",
+        "clinical study",
+        "scientific evidence",
+        "research shows"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove \"clinically proven\" unless backed by published, peer-reviewed clinical trials. Cite specific studies.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-DOCTOR",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Doctor Recommended\" Without Substantiation",
+    "severity": "warning",
+    "summary": "Claims like \"doctor recommended\" or \"#1 doctor choice\" must be based on actual surveys or endorsements from qualified medical professionals.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(doctor|physician|MD|dermatologist)s?\\s+(recommended|approved|choice|trusted)",
+        "#?1\\s+(doctor|physician|dermatologist)\\s+(recommended|choice)",
+        "(recommended|approved)\\s+by\\s+(doctors?|physicians?|MDs?)"
+      ],
+      "keywords": [
+        "doctor recommended",
+        "physician approved",
+        "medical professional",
+        "dermatologist tested"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove doctor recommendation claims or provide substantiation (survey methodology, sample size, date).",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.3",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-GUARANTEE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"100% Guaranteed\" Claims",
+    "severity": "warning",
+    "summary": "Absolute guarantee claims must be honored and any conditions must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "100%\\s*(money[\\s-]?back\\s+)?guarantee",
+        "guaranteed\\s+(results?|satisfaction|to\\s+work)",
+        "(full|complete)\\s+refund\\s+guarantee",
+        "no[\\s-]?questions?[\\s-]?asked\\s+refund"
+      ],
+      "keywords": [
+        "money back guarantee",
+        "satisfaction guaranteed",
+        "guaranteed results",
+        "full refund"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose all conditions, limitations, and procedures for any guarantee. Honor all guarantees offered.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-HEALTH",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Unsubstantiated Health Benefit Claims",
+    "severity": "critical",
+    "summary": "Health benefit claims (cures, treats, prevents disease) require competent and reliable scientific evidence.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(cures?|treats?|prevents?|heals?)\\s+(cancer|diabetes|arthritis|disease|illness)",
+        "eliminates?\\s+(pain|symptoms?|disease)",
+        "reverses?\\s+(aging|diabetes|disease)",
+        "boosts?\\s+(immune|immunity)\\s*system"
+      ],
+      "keywords": [
+        "cure",
+        "treat",
+        "prevent disease",
+        "heal",
+        "immune boost",
+        "anti-aging"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove unsupported health claims. Use qualified language like \"may support\" with appropriate disclaimers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/health-products-compliance-guidance",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims",
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-PERCENT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Specific Percentage Efficacy Claims",
+    "severity": "warning",
+    "summary": "Specific percentage claims (e.g., \"90% effective\", \"reduces wrinkles by 50%\") require supporting evidence.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d{2,3}%\\s*(effective|reduction|improvement|increase|decrease)",
+        "(reduces?|improves?|increases?)\\s+(by\\s+)?\\d{2,3}%",
+        "\\d+\\s*out\\s*of\\s*\\d+\\s*(people|users?|customers?)"
+      ],
+      "keywords": [
+        "percent effective",
+        "reduction",
+        "improvement",
+        "efficacy"
+      ]
+    },
+    "remediation": {
+      "guidance": "Substantiate percentage claims with studies or testing. Include methodology and conditions.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-SCIENTIFIC",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Scientifically Proven\" Without Studies",
+    "severity": "critical",
+    "summary": "Claims invoking scientific authority must be supported by actual scientific studies relevant to the claim.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "scientifically\\s+(proven|tested|formulated|backed)",
+        "science\\s+(shows|proves|confirms)",
+        "(based\\s+on|backed\\s+by)\\s+science",
+        "breakthrough\\s+(formula|technology|discovery)"
+      ],
+      "keywords": [
+        "scientifically proven",
+        "science backed",
+        "breakthrough",
+        "revolutionary"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove scientific proof claims or cite specific peer-reviewed studies with links to publications.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-CLAIM-WEIGHT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Unsubstantiated Weight Loss Claims",
+    "severity": "critical",
+    "summary": "Claims like \"Lose X pounds in Y days\" require competent and reliable scientific evidence. Most rapid weight loss claims are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "lose\\s+\\d+\\s*(lbs?|pounds?|kg|kilos?)\\s*(in|within)\\s*\\d+\\s*(days?|weeks?)",
+        "drop\\s+\\d+\\s*(lbs?|pounds?)\\s*(fast|quick|rapid)",
+        "shed\\s+(up\\s+to\\s+)?\\d+\\s*(lbs?|pounds?)",
+        "burn\\s+\\d+\\s*calories",
+        "melt\\s+(away\\s+)?(fat|pounds)"
+      ],
+      "keywords": [
+        "weight loss",
+        "lose weight",
+        "burn fat",
+        "slim down",
+        "shed pounds"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove specific weight loss claims unless supported by clinical trials. Add disclaimer about typical results and need for diet/exercise.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/gut-check-reference-guide-media-spotting-false-weight-loss-claims",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-CANCEL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Difficult Cancellation",
+    "severity": "critical",
+    "summary": "Making cancellation significantly harder than sign-up is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "must\\s+call\\s+to\\s+cancel",
+        "call.*to\\s+cancel.*subscription",
+        "cancellation.*phone\\s+(only|required)",
+        "visit.*in[\\s-]?person.*cancel"
+      ],
+      "keywords": [
+        "call to cancel",
+        "cancel by phone",
+        "contact us to cancel"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement \"click-to-cancel\" - online cancellation should be as easy as online sign-up.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2021/10/ftc-brings-first-case-challenging-illegal-dark-patterns-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-CONFIRM",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Confirmshaming",
+    "severity": "warning",
+    "summary": "Using manipulative language to shame users out of declining offers is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "no,?\\s+i\\s+(don'?t|do\\s+not)\\s+(want|like|need)",
+        "no\\s+thanks,?\\s+i\\s+(hate|don'?t\\s+like)",
+        "i\\s+(prefer|want)\\s+to\\s+pay\\s+(more|full)",
+        "i\\s+don'?t\\s+want\\s+to\\s+save"
+      ],
+      "keywords": [
+        "no thanks I",
+        "I prefer to pay",
+        "I don't want to save"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use neutral opt-out language. Replace \"No, I don't want savings\" with \"No thanks\" or \"Decline\".",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-HIDDEN",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Hidden Costs at Checkout",
+    "severity": "critical",
+    "summary": "Revealing hidden fees, taxes, or charges only at checkout is a deceptive drip pricing dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(service|processing|handling|convenience)\\s+fee",
+        "fee.*added.*checkout",
+        "\\+\\s*\\$\\d+.*fee",
+        "additional\\s+(fee|charge|cost)s?\\s+(may\\s+)?apply"
+      ],
+      "keywords": [
+        "service fee",
+        "processing fee",
+        "convenience fee",
+        "fees apply",
+        "additional charges"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display total price including all mandatory fees upfront. No surprise charges at checkout.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/10/ftc-proposes-rule-ban-junk-fees",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-MISDIRECT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Visual Misdirection",
+    "severity": "warning",
+    "summary": "Using visual tricks (fake X buttons, disguised ads, misleading buttons) to manipulate user choices is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "fake button",
+        "close button",
+        "dismiss",
+        "misdirection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all UI elements behave as expected. Close buttons should close, not redirect.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-PRESELECT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Pre-Selected Add-Ons",
+    "severity": "warning",
+    "summary": "Pre-checking boxes for add-ons, insurance, or upgrades without user action is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "pre[\\s-]?selected",
+        "(add|include).*by\\s+default",
+        "opt[\\s-]?out.*uncheck"
+      ],
+      "keywords": [
+        "pre-selected",
+        "added by default",
+        "opt-out",
+        "uncheck to remove"
+      ]
+    },
+    "remediation": {
+      "guidance": "Do not pre-select any optional add-ons. Let users affirmatively choose extras.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-FREE-CONDITION",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Hidden Conditions for \"Free\" Products",
+    "severity": "critical",
+    "summary": "Offers of \"free\" products with hidden conditions (shipping, subscription, purchase requirement) must clearly disclose all terms.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "free\\s*[!\\*]",
+        "free.*\\$\\d+\\s+(shipping|s&h|handling)",
+        "free.*with\\s+(purchase|subscription|order)",
+        "\\$0(\\.00)?.*\\$\\d+\\.\\d+\\s+shipping"
+      ],
+      "keywords": [
+        "free",
+        "no cost",
+        "complimentary",
+        "shipping fee",
+        "handling charge"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all conditions for \"free\" offers prominently and before checkout. E.g., \"Free with $50 purchase\" not just \"FREE\".",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 251",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-251",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-FREE-TRIAL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Free Trial Auto-Charge Without Disclosure",
+    "severity": "critical",
+    "summary": "Free trials that automatically convert to paid subscriptions must clearly disclose the conversion terms before enrollment.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "free\\s+trial.*\\$\\d+",
+        "try\\s+(free|it)\\s*(for)?\\s*\\d+\\s*days?",
+        "(starts?|begins?)\\s+(free|at\\s+\\$0)",
+        "cancel\\s+(anytime|before)",
+        "after\\s+(free\\s+)?trial.*\\$\\d+"
+      ],
+      "keywords": [
+        "free trial",
+        "trial period",
+        "auto-renew",
+        "cancel anytime",
+        "after trial"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose before checkout: (1) Free trial length, (2) Post-trial price, (3) How to cancel. Get affirmative consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / ROSCA",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2021/10/ftc-brings-first-case-challenging-illegal-dark-patterns-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-CARBON",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Carbon Neutral Without Certification",
+    "severity": "warning",
+    "summary": "Carbon neutral and carbon offset claims should be substantiated with reliable third-party certification.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "carbon\\s+(neutral|negative|zero|free)",
+        "net[\\s-]?zero\\s+(carbon|emissions?)",
+        "carbon\\s+offset",
+        "climate\\s+(neutral|positive)"
+      ],
+      "keywords": [
+        "carbon neutral",
+        "carbon offset",
+        "net zero",
+        "climate neutral"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide certification details for carbon neutral claims. Disclose offset methodology and certifier.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "carbon",
+        "environmental",
+        "certification"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-DEGRADE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Misleading Biodegradable Claims",
+    "severity": "warning",
+    "summary": "\"Biodegradable\" claims require evidence that the product completely breaks down within one year under normal disposal conditions.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "biodegradable",
+        "bio[\\s-]?degradable",
+        "breaks?\\s+down\\s+naturally",
+        "decomposes?\\s+(naturally|quickly)"
+      ],
+      "keywords": [
+        "biodegradable",
+        "compostable",
+        "breaks down",
+        "decomposes"
+      ]
+    },
+    "remediation": {
+      "guidance": "Substantiate biodegradable claims with testing. Specify timeframe and disposal conditions.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.8",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "biodegradable",
+        "environmental"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-ECO",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Unsubstantiated Eco-Friendly Claims",
+    "severity": "warning",
+    "summary": "Broad environmental claims like \"eco-friendly\" or \"green\" must be qualified and substantiated.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "eco[\\s-]?friendly",
+        "(environmentally|earth)\\s+(friendly|safe|conscious)",
+        "good\\s+for\\s+(the\\s+)?(planet|earth|environment)",
+        "planet[\\s-]?friendly"
+      ],
+      "keywords": [
+        "eco-friendly",
+        "environmentally friendly",
+        "green product",
+        "earth friendly"
+      ]
+    },
+    "remediation": {
+      "guidance": "Replace vague \"eco-friendly\" with specific, substantiated claims (e.g., \"Made with 50% recycled content\").",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "environmental",
+        "substantiation"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-NATURAL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Misleading Natural or Organic Claims",
+    "severity": "warning",
+    "summary": "\"Natural\" and \"organic\" claims should be specific and substantiated. For food/cosmetics, USDA standards may apply.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\b(100%\\s+)?(all[\\s-]?)natural\\b",
+        "\\bnatural\\s+(ingredients?|formula|product)\\b",
+        "\\borganic\\b(?!.*certified)",
+        "made\\s+with\\s+natural"
+      ],
+      "keywords": [
+        "natural",
+        "all natural",
+        "organic",
+        "naturally derived"
+      ]
+    },
+    "remediation": {
+      "guidance": "Specify what makes the product natural. For organic claims, obtain USDA certification if applicable.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "natural",
+        "organic",
+        "environmental"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-RECYCLE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Unqualified Recyclable Claims",
+    "severity": "warning",
+    "summary": "\"Recyclable\" claims must specify what parts are recyclable and whether recycling facilities are available to consumers.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\b(100%\\s+)?recyclable\\b",
+        "can\\s+be\\s+recycled",
+        "recycle\\s+this\\s+(product|package|item)"
+      ],
+      "keywords": [
+        "recyclable",
+        "recycle",
+        "recycling",
+        "recyclable packaging"
+      ]
+    },
+    "remediation": {
+      "guidance": "Qualify recyclable claims: specify which parts, include recycling instructions, note facility availability.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.12",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "recyclable",
+        "environmental"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-GREEN-SUSTAIN",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Vague Sustainable Claims",
+    "severity": "info",
+    "summary": "Broad claims like \"sustainable\" should be qualified with specific, substantiated environmental benefits.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\bsustainable\\b",
+        "sustainably\\s+(sourced|made|produced)",
+        "sustainability\\s+(certified|focused)"
+      ],
+      "keywords": [
+        "sustainable",
+        "sustainably sourced",
+        "sustainability"
+      ]
+    },
+    "remediation": {
+      "guidance": "Replace vague sustainability claims with specific achievements (e.g., \"Made with 100% renewable energy\").",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 260.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-260",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "green-claims",
+        "sustainability",
+        "environmental"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NATIVE-DISCLOSURE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Missing Advertisement Label",
+    "severity": "warning",
+    "summary": "Native ads must include clear and prominent disclosure that identifies them as advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(paid|promoted|sponsored)\\s+(post|placement)",
+        "#?ad\\b",
+        "#?sponsored",
+        "advertisement"
+      ],
+      "keywords": [
+        "ad",
+        "advertisement",
+        "sponsored",
+        "promoted",
+        "paid placement"
+      ]
+    },
+    "remediation": {
+      "guidance": "Add clear \"Ad\" or \"Advertisement\" label in a prominent location using contrasting text.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Native Advertising Guide",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/native-advertising-guide-businesses",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NATIVE-EDITORIAL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Sponsored Content Disguised as Editorial",
+    "severity": "critical",
+    "summary": "Paid content that mimics editorial content must be clearly identified as advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sponsored\\s+(content|post|article)",
+        "partner\\s+content",
+        "presented\\s+by",
+        "brought\\s+to\\s+you\\s+by",
+        "in\\s+partnership\\s+with"
+      ],
+      "keywords": [
+        "sponsored content",
+        "partner content",
+        "presented by",
+        "brought to you by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly label sponsored content with \"Advertisement\", \"Sponsored\", or \"Paid Content\" in prominent placement.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Native Advertising Guide",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/native-advertising-guide-businesses",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NEGATIVE-OPTION",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Negative Option / Subscription Trap",
+    "severity": "critical",
+    "summary": "Subscription services must clearly disclose terms and obtain express informed consent before charging. Silence cannot equal consent.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(subscription|membership|plan)\\s+will\\s+(auto|automatically)",
+        "continue.*\\s+until.*cancel",
+        "(auto[\\s-]?renew|recurring)",
+        "billed\\s+(monthly|annually|weekly)"
+      ],
+      "keywords": [
+        "auto-renew",
+        "recurring charge",
+        "subscription",
+        "membership",
+        "billed automatically"
+      ]
+    },
+    "remediation": {
+      "guidance": "Before charging, clearly disclose: (1) Total cost, (2) Recurring nature, (3) Cancellation method. Require checkbox consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "ROSCA / FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/legal-library/browse/rules/negative-option-rule",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "consent"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-RECURRING-HIDE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Hidden Recurring Charges",
+    "severity": "critical",
+    "summary": "Recurring charges must be clearly disclosed upfront, not hidden in fine print or terms of service.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "then\\s+\\$\\d+(\\.\\d+)?\\s*/(mo|month|yr|year)",
+        "recurring\\s+charge",
+        "billed\\s+every\\s+\\d+\\s+(days?|weeks?|months?)",
+        "\\*\\s*recurring"
+      ],
+      "keywords": [
+        "recurring",
+        "monthly charge",
+        "annual fee",
+        "billed every",
+        "automatic payment"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display recurring charge amount and frequency prominently near the price and in checkout summary.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "ROSCA",
+      "source_url": "https://www.ftc.gov/business-guidance/legal-library/browse/rules/negative-option-rule",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-EMPLOYEE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Employee/Insider Reviews Without Disclosure",
+    "severity": "critical",
+    "summary": "Reviews from employees, owners, or business insiders must clearly disclose the material connection.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "employee review",
+        "insider review",
+        "staff review",
+        "owner review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Require all employee reviewers to prominently disclose their employment relationship.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-FAKE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake or AI-Generated Reviews",
+    "severity": "critical",
+    "summary": "Using fake, fabricated, or AI-generated reviews to deceive consumers is prohibited. Reviews must reflect genuine consumer experiences.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "as\\s+an\\s+ai",
+        "i\\s+cannot\\s+provide",
+        "(amazing|excellent|fantastic)\\s+product.*(highly|would)\\s+recommend"
+      ],
+      "keywords": [
+        "verified purchase",
+        "authentic review",
+        "customer feedback"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove all fake or AI-generated reviews. Only display authentic customer reviews with verified purchases.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-INCENTIVE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Incentivized Reviews Without Disclosure",
+    "severity": "critical",
+    "summary": "Offering discounts, free products, or other incentives for reviews without clear disclosure violates FTC guidelines.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "review\\s+for\\s+(discount|free|coupon)",
+        "leave\\s+a?\\s*review.*get\\s+(\\$|percent|%|off|discount)",
+        "(free|discount).*in\\s+exchange\\s+for.*review",
+        "write\\s+a?\\s*review.*receive"
+      ],
+      "keywords": [
+        "review discount",
+        "review reward",
+        "review incentive",
+        "free for review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose when reviews are incentivized with labels like \"Incentivized Review\" or \"Received free product for review.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-MANIPULATE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Review Manipulation / Cherry-Picking",
+    "severity": "warning",
+    "summary": "Displaying only positive reviews, hiding negative reviews, or manipulating the order of reviews to mislead consumers is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "showing.*positive\\s+reviews\\s+only",
+        "top\\s+reviews.*highest\\s+rated"
+      ],
+      "keywords": [
+        "filtered reviews",
+        "best reviews",
+        "top rated reviews"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display reviews objectively. Allow consumers to sort by rating including negative reviews.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-PLATFORM",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake Review Counts or Star Ratings",
+    "severity": "critical",
+    "summary": "Displaying fake or inflated review counts, star ratings, or aggregate scores is deceptive advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+[,\\d]*\\s*reviews?.*\\d+(\\.\\d)?\\s*stars?",
+        "rated\\s+\\d+(\\.\\d)?\\s*out\\s+of\\s*5"
+      ],
+      "keywords": [
+        "star rating",
+        "customer reviews",
+        "average rating",
+        "review count"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all displayed ratings and review counts accurately reflect actual verified customer reviews.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-SUPPRESS",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Review Gating / Selective Review Solicitation",
+    "severity": "warning",
+    "summary": "Soliciting reviews only from satisfied customers or filtering out negative reviews before they are posted is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "how\\s+would\\s+you\\s+rate.*before",
+        "satisfied.*leave.*review",
+        "(5|five)\\s*star.*customers"
+      ],
+      "keywords": [
+        "review gate",
+        "happy customers only",
+        "satisfied customers",
+        "selective reviews"
+      ]
+    },
+    "remediation": {
+      "guidance": "Solicit reviews from all customers equally. Do not screen or gate reviews based on expected rating.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-DEMAND",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fabricated High Demand Claims",
+    "severity": "warning",
+    "summary": "Claims like \"selling fast\" or \"X people viewing\" that are fabricated or manipulated are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+\\s+people\\s+(viewing|watching|looking)",
+        "\\d+\\s+(sold|bought)\\s+in\\s+(last|past)",
+        "selling\\s+(fast|quickly)",
+        "(hot|popular|trending)\\s+(item|product)",
+        "in\\s+high\\s+demand"
+      ],
+      "keywords": [
+        "people viewing",
+        "sold today",
+        "trending",
+        "popular item",
+        "high demand"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only display real-time data that is accurate. Remove if viewer counts or demand claims are fabricated.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-EXCLUSIVE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "False Exclusivity Claims",
+    "severity": "warning",
+    "summary": "Claims of exclusivity (\"exclusive offer\", \"invitation only\") that are not genuine are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "exclusive\\s+(offer|deal|discount|access)",
+        "invitation\\s+only",
+        "(vip|member)\\s+exclusive",
+        "specially?\\s+selected",
+        "chosen\\s+(few|customers?)"
+      ],
+      "keywords": [
+        "exclusive offer",
+        "invitation only",
+        "VIP access",
+        "members only",
+        "special selection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove false exclusivity claims. Only use \"exclusive\" for genuinely limited or member-only offers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-SALE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Perpetual Sale / False Deadline",
+    "severity": "warning",
+    "summary": "Running perpetual \"sales\" or claiming \"sale ends today\" when it does not is deceptive pricing.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sale\\s+ends?\\s+(today|tonight|soon|midnight)",
+        "(last|final)\\s+(day|chance|opportunity)",
+        "ends?\\s+(soon|today|tonight|tomorrow)",
+        "(today|tonight)\\s+only"
+      ],
+      "keywords": [
+        "sale ends",
+        "last chance",
+        "final day",
+        "today only",
+        "limited time"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only advertise sales with genuine end dates. Document regular vs. sale pricing periods.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-STOCK",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "False Low Stock Claims",
+    "severity": "critical",
+    "summary": "Claims like \"Only X left!\" or \"Low stock\" that are false or manipulated to create urgency are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "only\\s+\\d+\\s+(left|remaining|in\\s+stock)",
+        "just\\s+\\d+\\s+(left|remaining)",
+        "(low|limited)\\s+stock",
+        "selling\\s+(out|fast)",
+        "almost\\s+(gone|sold\\s+out)"
+      ],
+      "keywords": [
+        "only left",
+        "low stock",
+        "limited quantity",
+        "selling fast",
+        "almost gone"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only display stock counts that reflect actual inventory. Remove if counts are fabricated or artificially limited.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-TIMER",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake Countdown Timers",
+    "severity": "critical",
+    "summary": "Countdown timers that reset, extend, or do not reflect real deadlines are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+:\\d+:\\d+\\s*(remaining|left)",
+        "offer\\s+expires?\\s+in",
+        "deal\\s+ends?\\s+in",
+        "hurry.*\\d+\\s*(hours?|minutes?|seconds?)\\s*(left|remaining)"
+      ],
+      "keywords": [
+        "countdown",
+        "time left",
+        "expires in",
+        "hours remaining",
+        "deal ends"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove countdown timers unless they reflect genuine time-limited offers. Do not reset timers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/blogs/business-blog",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-USA-ASSEMBLED",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "\"Assembled in USA\" Misuse",
+    "severity": "warning",
+    "summary": "\"Assembled in USA\" requires principal assembly in the US. Must not imply higher US content than exists.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "assembled\\s+in\\s+(the\\s+)?u\\.?s\\.?a?\\.?",
+        "assembled\\s+in\\s+(america|united\\s+states)"
+      ],
+      "keywords": [
+        "assembled in USA",
+        "assembled in America",
+        "US assembly"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only use \"Assembled in USA\" if significant assembly occurs in the US. Disclose foreign components.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Made in USA Policy",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/complying-made-usa-standard",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-USA-ORIGIN",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Country of Origin Misrepresentation",
+    "severity": "critical",
+    "summary": "Misrepresenting country of origin through flags, symbols, or misleading statements is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(american|usa)\\s+(flag|quality|pride)",
+        "patriotic.*made"
+      ],
+      "keywords": [
+        "country of origin",
+        "US flag",
+        "American flag",
+        "patriotic"
+      ]
+    },
+    "remediation": {
+      "guidance": "Accurately represent country of origin. Do not use US flags/symbols for foreign-made products.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/complying-made-usa-standard",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-USA-UNQUALIFIED",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Unqualified \"Made in USA\" Claim",
+    "severity": "critical",
+    "summary": "Unqualified \"Made in USA\" claims require that the product be \"all or virtually all\" made in the United States.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "made\\s+in\\s+(the\\s+)?u\\.?s\\.?a?\\.?(?!.*assembled)",
+        "american\\s+made",
+        "proudly\\s+made\\s+in\\s+(america|u\\.?s\\.?)",
+        "100%\\s+american"
+      ],
+      "keywords": [
+        "made in USA",
+        "American made",
+        "made in America",
+        "USA made"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify that final assembly and all significant parts/processing are in the USA. If not, qualify the claim.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Made in USA Policy",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/complying-made-usa-standard",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-bait-switch",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "No Bait and Switch",
+    "severity": "critical",
+    "summary": "Advertising an offer that is not genuinely available to lure customers is illegal.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "bait",
+        "switch",
+        "unavailable",
+        "sold out"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure advertised products/prices are actually available to consumers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/advertising-marketing",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-hidden-fees",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Hidden Fee Disclosure",
+    "severity": "critical",
+    "summary": "All material fees must be clearly disclosed upfront, not hidden.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\$\\d+.*\\*",
+        "plus.*fees?",
+        "additional.*charges?"
+      ],
+      "keywords": [
+        "fees",
+        "charges",
+        "hidden",
+        "surprise"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all fees prominently before purchase. No surprise charges.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/advertising-marketing/pricing",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-truth-advertising",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Truth in Advertising",
+    "severity": "critical",
+    "summary": "Advertising must be truthful, not misleading, and backed by evidence.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "truthful",
+        "substantiated",
+        "evidence",
+        "deceptive"
+      ]
+    },
+    "remediation": {
+      "guidance": "Substantiate all advertising claims before making them.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/advertising-marketing/truth-advertising",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]
