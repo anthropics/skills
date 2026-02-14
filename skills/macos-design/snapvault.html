@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapVault - Screenshot Organizer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px;
+      color-scheme: light dark;
+    }
+
+    /* CSS Variables - Light Mode */
+    :root {
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F5F5F7;
+      --bg-tertiary: #E8E8ED;
+      --bg-elevated: #FFFFFF;
+
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --text-tertiary: #AEAEB2;
+
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.15);
+
+      --accent: #007AFF;
+      --accent-hover: #0066D6;
+
+      --surface-hover: rgba(0, 0, 0, 0.04);
+      --surface-active: rgba(0, 0, 0, 0.08);
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+
+      --sidebar-bg: rgba(246, 246, 246, 0.72);
+      --topbar-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Dark Mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1C1C1E;
+        --bg-secondary: #2C2C2E;
+        --bg-tertiary: #3A3A3C;
+        --bg-elevated: #2C2C2E;
+
+        --text-primary: #F5F5F7;
+        --text-secondary: #98989D;
+        --text-tertiary: #636366;
+
+        --border: rgba(255, 255, 255, 0.08);
+        --border-strong: rgba(255, 255, 255, 0.15);
+
+        --accent: #0A84FF;
+        --accent-hover: #409CFF;
+
+        --surface-hover: rgba(255, 255, 255, 0.06);
+        --surface-active: rgba(255, 255, 255, 0.1);
+
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+        --shadow-lg: 0 8px 30px rgba(0,0,0,0.4);
+
+        --sidebar-bg: rgba(30, 30, 30, 0.72);
+        --topbar-bg: rgba(28, 28, 30, 0.8);
+      }
+    }
+
+    /* Window Container */
+    .macos-window {
+      width: 100%;
+      max-width: 1200px;
+      height: 760px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.1),
+        0 12px 40px rgba(0,0,0,0.15),
+        0 40px 80px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+
+    /* Top Bar */
+    .top-bar {
+      height: 52px;
+      background: var(--topbar-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+    }
+
+    /* Traffic Lights */
+    .traffic-lights {
+      display: flex;
+      gap: 8px;
+      margin-right: 16px;
+    }
+
+    .traffic-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+      transition: opacity 150ms ease;
+    }
+
+    .traffic-light:hover {
+      opacity: 0.8;
+    }
+
+    .traffic-light.close { background: #FF5F57; }
+    .traffic-light.minimize { background: #FEBC2E; }
+    .traffic-light.maximize { background: #28C840; }
+
+    /* Top Bar Content */
+    .top-bar-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      -webkit-app-region: no-drag;
+    }
+
+    .top-bar-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .search-container {
+      flex: 1;
+      max-width: 400px;
+      margin-left: auto;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 28px;
+      padding: 0 12px 0 32px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      transition: all 150ms ease;
+      position: relative;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+    }
+
+    .top-bar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .icon-button:hover {
+      background: var(--surface-hover);
+    }
+
+    .icon-button:active {
+      background: var(--surface-active);
+    }
+
+    .btn-primary {
+      height: 28px;
+      padding: 0 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 150ms ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 5px;
+      font-size: 10px;
+      background: rgba(128,128,128,0.15);
+      border-radius: 3px;
+      border: 0.5px solid rgba(128,128,128,0.2);
+      color: var(--text-secondary);
+      margin-left: 4px;
+      font-weight: 500;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--sidebar-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-right: 0.5px solid var(--border);
+      padding: 12px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 150ms ease;
+      user-select: none;
+    }
+
+    .sidebar-item:hover {
+      background: var(--surface-hover);
+    }
+
+    .sidebar-item.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .sidebar-item-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-item-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .sidebar-item.active .sidebar-item-count {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: var(--bg-primary);
+    }
+
+    .content-header {
+      margin-bottom: 20px;
+    }
+
+    .content-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .content-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Grid */
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .screenshot-card {
+      background: var(--bg-elevated);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 0.5px solid var(--border);
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
+
+    .screenshot-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 0 0.5px rgba(0,0,0,0.05),
+        0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .screenshot-card:hover .screenshot-overlay {
+      opacity: 1;
+    }
+
+    .screenshot-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--text-tertiary);
+    }
+
+    .screenshot-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 200ms ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .screenshot-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .screenshot-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .screenshot-action-btn:hover {
+      transform: scale(1.1);
+      background: white;
+    }
+
+    .screenshot-info {
+      padding: 10px 12px;
+    }
+
+    .screenshot-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .screenshot-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      max-width: 320px;
+    }
+
+    .empty-state-action {
+      height: 34px;
+      padding: 0 20px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 150ms ease;
+    }
+
+    .empty-state-action:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #F5F5F7;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border: 0.5px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      width: 20px;
+      height: 20px;
+      background: #30D158;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .screenshot-card {
+      animation: fadeIn 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+    }
+
+    .screenshot-card:nth-child(1) { animation-delay: 0ms; }
+    .screenshot-card:nth-child(2) { animation-delay: 50ms; }
+    .screenshot-card:nth-child(3) { animation-delay: 100ms; }
+    .screenshot-card:nth-child(4) { animation-delay: 150ms; }
+    .screenshot-card:nth-child(5) { animation-delay: 200ms; }
+    .screenshot-card:nth-child(6) { animation-delay: 250ms; }
+    .screenshot-card:nth-child(7) { animation-delay: 300ms; }
+    .screenshot-card:nth-child(8) { animation-delay: 350ms; }
+
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed transparent;
+      transition: all 200ms ease;
+      border-radius: 8px;
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(10, 132, 255, 0.05);
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(128, 128, 128, 0.3);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(128, 128, 128, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="macos-window">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="traffic-lights">
+        <div class="traffic-light close"></div>
+        <div class="traffic-light minimize"></div>
+        <div class="traffic-light maximize"></div>
+      </div>
+
+      <div class="top-bar-content">
+        <div class="top-bar-title">SnapVault</div>
+
+        <div class="search-container">
+          <div class="search-wrapper">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9 9L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search screenshots..."
+              id="searchInput"
+            >
+          </div>
+        </div>
+
+        <div class="top-bar-actions">
+          <button class="icon-button" title="Grid View">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="1" width="5.5" height="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="9.5" y="1" width="5.5" height="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="1" y="9.5" width="5.5" height="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="9.5" y="9.5" width="5.5" height="5.5" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+
+          <button class="btn-primary" id="newBtn">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1V13M1 7H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            New
+            <span class="kbd">⌘N</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-header">Library</div>
+          <div class="sidebar-item active">
+            <div class="sidebar-item-icon">📸</div>
+            All Screenshots
+            <span class="sidebar-item-count">47</span>
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">⭐</div>
+            Favorites
+            <span class="sidebar-item-count">12</span>
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">🕐</div>
+            Recent
+            <span class="sidebar-item-count">8</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-header">Collections</div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">💼</div>
+            Work
+            <span class="sidebar-item-count">23</span>
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">🎨</div>
+            Design
+            <span class="sidebar-item-count">15</span>
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">📱</div>
+            Mobile
+            <span class="sidebar-item-count">9</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-header">Smart</div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">🖼️</div>
+            Images
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">📝</div>
+            Text Heavy
+          </div>
+          <div class="sidebar-item">
+            <div class="sidebar-item-icon">🌐</div>
+            Websites
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content drop-zone" id="contentArea">
+        <div class="content-header">
+          <div class="content-title">All Screenshots</div>
+          <div class="content-subtitle">47 items • Last updated today</div>
+        </div>
+
+        <div class="screenshot-grid" id="screenshotGrid">
+          <!-- Sample Screenshots -->
+          <div class="screenshot-card">
+            <div class="screenshot-image">🖼️</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Dashboard Design</div>
+              <div class="screenshot-meta">Today at 2:34 PM</div>
+            </div>
+          </div>
+
+          <div class="screenshot-card">
+            <div class="screenshot-image">📊</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Analytics Chart</div>
+              <div class="screenshot-meta">Today at 1:15 PM</div>
+            </div>
+          </div>
+
+          <div class="screenshot-card">
+            <div class="screenshot-image">🎨</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Color Palette</div>
+              <div class="screenshot-meta">Yesterday at 4:22 PM</div>
+            </div>
+          </div>
+
+          <div class="screenshot-card">
+            <div class="screenshot-image">📱</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Mobile Mockup</div>
+              <div class="screenshot-meta">Yesterday at 11:08 AM</div>
+            </div>
+          </div>
+
+          <div class="screenshot-card">
+            <div class="screenshot-image">💻</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Code Editor</div>
+              <div class="screenshot-meta">Dec 13 at 3:45 PM</div>
+            </div>
+          </div>
+
+          <div class="screenshot-card">
+            <div class="screenshot-image">🌐</div>
+            <div class="screenshot-overlay">
+              <div class="screenshot-actions">
+                <button class="screenshot-action-btn" title="Quick Look">👁️</button>
+                <button class="screenshot-action-btn" title="Copy">📋</button>
+                <button class="screenshot-action-btn" title="Share">🔗</button>
+              </div>
+            </div>
+            <div class="screenshot-info">
+              <div class="screenshot-title">Landing Page</div>
+              <div class="screenshot-meta">Dec 12 at 9:30 AM</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <div class="toast-icon">✓</div>
+    <span id="toastMessage">Screenshot saved</span>
+  </div>
+
+  <script>
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Cmd+N or Ctrl+N - New screenshot
+      if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+        e.preventDefault();
+        showToast('Screenshot captured!');
+      }
+
+      // Cmd+F or Ctrl+F - Focus search
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+      }
+
+      // Escape - Clear search
+      if (e.key === 'Escape') {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').blur();
+      }
+    });
+
+    // New button click
+    document.getElementById('newBtn').addEventListener('click', () => {
+      showToast('Screenshot captured!');
+    });
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.textContent = message;
+
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // Drag and drop
+    const contentArea = document.getElementById('contentArea');
+
+    contentArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      contentArea.classList.add('drag-over');
+    });
+
+    contentArea.addEventListener('dragleave', () => {
+      contentArea.classList.remove('drag-over');
+    });
+
+    contentArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      contentArea.classList.remove('drag-over');
+      showToast('Screenshots imported!');
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const cards = document.querySelectorAll('.screenshot-card');
+
+      cards.forEach(card => {
+        const title = card.querySelector('.screenshot-title').textContent.toLowerCase();
+        if (title.includes(query)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+
+    // Sidebar navigation
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    sidebarItems.forEach(item => {
+      item.addEventListener('click', () => {
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+    // Screenshot action buttons
+    document.querySelectorAll('.screenshot-action-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const title = btn.getAttribute('title');
+
+        if (title === 'Copy') {
+          showToast('Copied to clipboard!');
+        } else if (title === 'Share') {
+          showToast('Share link copied!');
+        } else if (title === 'Quick Look') {
+          showToast('Opening Quick Look...');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
