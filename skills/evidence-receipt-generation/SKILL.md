@@ -51,8 +51,10 @@ Do not use this skill when:
 ## Usage Example
 
 ```bash
-gait verify ./artifacts/runpack.zip --json
-gait run receipt --from ./artifacts/runpack.zip --json > ./artifacts/receipt.json
+gait demo --json
+mkdir -p ./artifacts
+gait verify run_demo --json
+gait run receipt --from run_demo --json > ./artifacts/receipt.json
 ```
 
 Expected result:
@@ -62,7 +64,9 @@ Expected result:
 ## Validation Example
 
 ```bash
-gait run receipt --from ./artifacts/runpack.zip --json > ./artifacts/receipt.json
+gait demo --json
+mkdir -p ./artifacts
+gait run receipt --from run_demo --json > ./artifacts/receipt.json
 python3 - <<'PY'
 import json
 from pathlib import Path

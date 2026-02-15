@@ -31,16 +31,22 @@ Do not use this skill when:
 
 1. Verify the failing artifact first:
    - `gait verify <failure_target> --json`
-2. Enter an isolated triage workspace:
+2. Resolve path-based targets before changing directories:
+   - keep identifiers unchanged (for example run ids)
+   - if `<failure_target>` is a relative file path, normalize to absolute path
+   - if `<baseline_target>` is provided as a relative file path, normalize to absolute path
+   - `failure_target_ref="$(python3 -c 'import os,sys; v=sys.argv[1]; print(os.path.abspath(v) if os.path.exists(v) else v)' <failure_target>)"`
+   - `baseline_target_ref="$(python3 -c 'import os,sys; v=sys.argv[1]; print(os.path.abspath(v) if os.path.exists(v) else v)' <baseline_target>)"` (only when provided)
+3. Enter an isolated triage workspace:
    - `mkdir -p <workdir> && cd <workdir>`
-3. If failure came from regress grading, bind reruns to the requested target:
-   - `gait regress init --from <failure_target> --json`
+4. If failure came from regress grading, bind reruns to the requested target:
+   - `gait regress init --from <failure_target_ref> --json`
    - `gait regress run --json`
-4. If baseline evidence exists, compute deterministic diff:
-   - `gait pack diff <baseline_target> <failure_target> --json`
-5. If environment health is uncertain, run diagnostics:
+5. If baseline evidence exists, compute deterministic diff:
+   - `gait pack diff <baseline_target_ref> <failure_target_ref> --json`
+6. If environment health is uncertain, run diagnostics:
    - `gait doctor --json`
-6. Return triage summary:
+7. Return triage summary:
    - integrity status
    - failing stage and reason codes
    - diff highlights (if provided)
@@ -56,9 +62,11 @@ Do not use this skill when:
 ## Usage Example
 
 ```bash
-gait verify ./artifacts/runpack_failed.zip --json
+gait demo --json
+gait verify run_demo --json
+failure_target_ref="$(python3 -c 'import os,sys; v=sys.argv[1]; print(os.path.abspath(v) if os.path.exists(v) else v)' run_demo)"
 mkdir -p ./triage && cd ./triage
-gait regress init --from ../artifacts/runpack_failed.zip --json
+gait regress init --from "${failure_target_ref}" --json
 gait regress run --json
 gait doctor --json
 ```
@@ -72,13 +80,15 @@ Expected result:
 ## Validation Example
 
 ```bash
-gait verify ./artifacts/runpack_failed.zip --json > ./artifacts/verify.json
+gait demo --json
+mkdir -p ./artifacts
+gait verify run_demo --json > ./artifacts/verify.json
 python3 - <<'PY'
 import json
 from pathlib import Path
 p = json.loads(Path('./artifacts/verify.json').read_text(encoding='utf-8'))
 assert 'ok' in p
-assert 'manifest_digest' in p
+assert 'run_id' in p or 'bundle' in p
 print('validated verify payload keys present')
 PY
 ```

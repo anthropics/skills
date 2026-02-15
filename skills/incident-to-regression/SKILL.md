@@ -28,17 +28,21 @@ Do not use this skill when:
 
 ## Workflow
 
-1. Enter the declared working directory before generating artifacts:
+1. Resolve `run_source` before changing directories:
+   - keep identifiers unchanged (for example run ids)
+   - if `run_source` is a relative file path, normalize to absolute path
+   - `run_source_ref="$(python3 -c 'import os,sys; v=sys.argv[1]; print(os.path.abspath(v) if os.path.exists(v) else v)' <run_source>)"`
+2. Enter the declared working directory before generating artifacts:
    - `mkdir -p <workdir> && cd <workdir>`
-2. Initialize deterministic fixture from the incident source:
-   - `gait regress init --from <run_source> --json`
-3. Parse fields from init output and record them:
+3. Initialize deterministic fixture from the incident source:
+   - `gait regress init --from <run_source_ref> --json`
+4. Parse fields from init output and record them:
    - `ok`, `run_id`, `fixture_name`, `fixture_dir`, `config_path`, `next_commands`
-4. Execute regression graders:
+5. Execute regression graders:
    - `gait regress run --json`
-5. If CI evidence is needed, rerun with JUnit output:
+6. If CI evidence is needed, rerun with JUnit output:
    - `gait regress run --json --junit <junit_path>`
-6. Return a concise summary with:
+7. Return a concise summary with:
    - source identifier
    - fixture directory and config path
    - status and failed grader count
@@ -54,8 +58,11 @@ Do not use this skill when:
 ## Usage Example
 
 ```bash
+run_source_ref="$(python3 -c 'import os,sys; v=sys.argv[1]; print(os.path.abspath(v) if os.path.exists(v) else v)' run_demo)"
 mkdir -p ./regress-workdir && cd ./regress-workdir
-gait regress init --from run_demo --json
+gait demo --json
+gait regress init --from "${run_source_ref}" --json
+mkdir -p ./artifacts
 gait regress run --json --junit ./artifacts/junit.xml
 ```
 
@@ -68,6 +75,9 @@ Expected result:
 
 ```bash
 mkdir -p ./regress-workdir && cd ./regress-workdir
+gait demo --json
+gait regress init --from run_demo --json
+mkdir -p ./artifacts
 gait regress run --json > ./artifacts/regress_result.json
 python3 - <<'PY'
 import json
