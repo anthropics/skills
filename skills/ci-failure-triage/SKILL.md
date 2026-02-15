@@ -8,6 +8,19 @@ license: Apache-2.0
 
 Use this skill to isolate failing CI causes with deterministic artifact checks.
 
+## Gait Context
+
+Gait is an offline-first runtime for AI agents that enforces tool-boundary policy, emits signed and verifiable evidence artifacts, and supports deterministic regressions.
+
+Use this skill when:
+- incident triage requires artifact-first root-cause isolation
+- CI gate failures need deterministic reruns tied to a failing artifact
+- evidence outputs must be generated from Gait artifacts
+
+Do not use this skill when:
+- Gait CLI is unavailable in the environment
+- no Gait run/pack artifact or run identifier is available as input
+
 ## Required Inputs
 
 - `failure_target`: failing run id, runpack path, or pack path.
@@ -18,13 +31,16 @@ Use this skill to isolate failing CI causes with deterministic artifact checks.
 
 1. Verify the failing artifact first:
    - `gait verify <failure_target> --json`
-2. If failure came from regress grading, rerun deterministically:
+2. Enter an isolated triage workspace:
+   - `mkdir -p <workdir> && cd <workdir>`
+3. If failure came from regress grading, bind reruns to the requested target:
+   - `gait regress init --from <failure_target> --json`
    - `gait regress run --json`
-3. If baseline evidence exists, compute deterministic diff:
+4. If baseline evidence exists, compute deterministic diff:
    - `gait pack diff <baseline_target> <failure_target> --json`
-4. If environment health is uncertain, run diagnostics:
+5. If environment health is uncertain, run diagnostics:
    - `gait doctor --json`
-5. Return triage summary:
+6. Return triage summary:
    - integrity status
    - failing stage and reason codes
    - diff highlights (if provided)
@@ -41,12 +57,15 @@ Use this skill to isolate failing CI causes with deterministic artifact checks.
 
 ```bash
 gait verify ./artifacts/runpack_failed.zip --json
-gait doctor --json
+mkdir -p ./triage && cd ./triage
+gait regress init --from ../artifacts/runpack_failed.zip --json
 gait regress run --json
+gait doctor --json
 ```
 
 Expected result:
 - verify output reports integrity status for the target artifact
+- regress init output references the requested `failure_target`
 - doctor output reports actionable diagnostics
 - regress output reports stable pass/fail status and failures
 

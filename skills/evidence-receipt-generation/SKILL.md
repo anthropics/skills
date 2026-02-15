@@ -8,6 +8,19 @@ license: Apache-2.0
 
 Use this skill to generate integrity-backed receipts that are portable across CI, tickets, and audit handoff.
 
+## Gait Context
+
+Gait is an offline-first runtime for AI agents that enforces tool-boundary policy, emits signed and verifiable evidence artifacts, and supports deterministic regressions.
+
+Use this skill when:
+- incident triage needs portable receipt handoff proof
+- CI gate failures require receipt/evidence attachment
+- evidence outputs must be generated from Gait artifacts
+
+Do not use this skill when:
+- Gait CLI is unavailable in the environment
+- no Gait run/pack artifact or run identifier is available as input
+
 ## Required Inputs
 
 - `source`: run id, runpack path, or pack path.
@@ -18,8 +31,9 @@ Use this skill to generate integrity-backed receipts that are portable across CI
 1. Verify integrity before receipt generation:
    - `gait verify <source> --json`
 2. Generate receipt from source artifact:
-   - `gait run receipt --from <source> --json`
-3. Parse receipt fields for handoff:
+   - when `out_path` is provided: `gait run receipt --from <source> --json > <out_path>`
+   - when `out_path` is omitted: `gait run receipt --from <source> --json`
+3. Parse receipt fields for handoff from `out_path` (if set) or stdout:
    - `ok`, `run_id`, `manifest_digest`, `ticket_footer`, `bundle`
 4. Return concise evidence block containing:
    - source identifier
@@ -38,12 +52,12 @@ Use this skill to generate integrity-backed receipts that are portable across CI
 
 ```bash
 gait verify ./artifacts/runpack.zip --json
-gait run receipt --from ./artifacts/runpack.zip --json
+gait run receipt --from ./artifacts/runpack.zip --json > ./artifacts/receipt.json
 ```
 
 Expected result:
 - verify returns `ok=true` for intact artifacts
-- receipt returns a non-empty `ticket_footer` suitable for issue or PR evidence
+- receipt file contains a non-empty `ticket_footer` suitable for issue or PR evidence
 
 ## Validation Example
 
