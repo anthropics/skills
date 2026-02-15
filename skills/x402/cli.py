@@ -15,6 +15,7 @@ from lib.handshake import do_handshake, get_or_create_session, HandshakeError
 from lib.auth_request import authenticated_request, AuthRequestError
 from lib.session import load_session, clear_session, clear_all_sessions, Session
 from lib.metanet import get_identity_key, MetaNetClientError
+from lib import registry
 
 # payment.py may not exist yet (built in parallel); import conditionally.
 try:
@@ -224,11 +225,47 @@ def cmd_session(args):
     return 0
 
 
+def cmd_list(args):
+    """List agents from the 402agints.com registry."""
+    try:
+        agents = registry.list_agents()
+    except Exception as e:
+        print_err(f"Could not load agent registry: {e}")
+        return 1
+
+    if not agents:
+        print("No agents found in registry.")
+        return 0
+
+    # Calculate column widths
+    name_w = max(len(a.get("name", "")) for a in agents)
+    name_w = max(name_w, 4)  # minimum "Name" header width
+    tagline_w = max(len(a.get("tagline", "")) for a in agents)
+    tagline_w = max(tagline_w, 7)  # minimum "Tagline" header width
+
+    # Print table
+    print(f"  {C.BOLD}{'Name':<{name_w}}  {'Tagline':<{tagline_w}}  {'URL'}{C.RESET}")
+    print(f"  {'-' * name_w}  {'-' * tagline_w}  {'-' * 40}")
+    for a in agents:
+        name = a.get("name", "?")
+        tagline = a.get("tagline", "")
+        url = a.get("url", "")
+        print(f"  {C.CYAN}{name:<{name_w}}{C.RESET}  {tagline:<{tagline_w}}  {C.DIM}{url}{C.RESET}")
+
+    return 0
+
+
 def cmd_auth(args):
     """Make a BRC-31 authenticated request (no payment)."""
     method = args.method.upper()
     url = args.url
     body = args.body
+
+    try:
+        url = registry.resolve(url)
+    except ValueError as e:
+        print_err(str(e))
+        return 1
 
     print(
         f"{C.DIM}BRC-31 auth request:{C.RESET} "
@@ -278,6 +315,12 @@ def cmd_pay(args):
     url = args.url
     body = args.body
 
+    try:
+        url = registry.resolve(url)
+    except ValueError as e:
+        print_err(str(e))
+        return 1
+
     print(
         f"{C.DIM}BRC-31 auth + BRC-29 payment request:{C.RESET} "
         f"{C.BOLD}{method}{C.RESET} {C.CYAN}{url}{C.RESET}"
@@ -321,6 +364,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="BRC-31 authentication + BRC-29 payment client CLI.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""examples:
+  python3 cli.py list
   python3 cli.py identity
   python3 cli.py handshake http://localhost:8787
   python3 cli.py session http://localhost:8787
@@ -328,8 +372,9 @@ def build_parser() -> argparse.ArgumentParser:
   python3 cli.py session --clear-all
   python3 cli.py auth GET http://localhost:8787/
   python3 cli.py auth POST http://localhost:8787/free
+  python3 cli.py auth POST banana/generate          (name-based)
   python3 cli.py pay POST http://localhost:8787/paid
-  python3 cli.py pay POST http://localhost:8787/paid '{"key":"value"}'
+  python3 cli.py pay POST banana/generate '{"prompt":"a cat"}' (name-based)
 """,
     )
     parser.add_argument(
@@ -342,6 +387,12 @@ def build_parser() -> argparse.ArgumentParser:
         dest="command",
         title="commands",
         metavar="<command>",
+    )
+
+    # --- list ---
+    subparsers.add_parser(
+        "list",
+        help="List agents from the 402agints.com registry.",
     )
 
     # --- identity ---
@@ -452,6 +503,7 @@ def main() -> int:
         return 0
 
     dispatch = {
+        "list": cmd_list,
         "identity": cmd_identity,
         "handshake": cmd_handshake,
         "session": cmd_session,

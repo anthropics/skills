@@ -1,0 +1,103 @@
+"""Agent name registry — resolves short names to full URLs via 402agints.com."""
+import json
+import os
+import time
+
+import requests
+
+REGISTRY_URL = "https://402agints.com/.well-known/agents"
+
+_CACHE_DIR = os.path.join(os.path.expanduser("~"), ".local", "share", "brc31-sessions")
+_CACHE_FILE = os.path.join(_CACHE_DIR, "registry.json")
+_TTL_SECONDS = 300  # 5 minutes
+
+
+def _load_registry() -> dict:
+    """Fetch the agent registry from REGISTRY_URL, caching to disk.
+
+    On fetch failure, falls back to a cached copy (even if expired).
+    Raises RuntimeError if fetch fails and no cache exists.
+    """
+    # Try to fetch fresh data
+    try:
+        resp = requests.get(REGISTRY_URL, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        data["_fetched_at"] = time.time()
+
+        # Write cache
+        os.makedirs(_CACHE_DIR, exist_ok=True)
+        with open(_CACHE_FILE, "w") as f:
+            json.dump(data, f)
+
+        return data
+    except Exception:
+        pass
+
+    # Fetch failed — try cache (even if expired)
+    if os.path.exists(_CACHE_FILE):
+        with open(_CACHE_FILE, "r") as f:
+            return json.load(f)
+
+    raise RuntimeError(
+        f"Could not fetch agent registry from {REGISTRY_URL} "
+        "and no local cache exists."
+    )
+
+
+def _get_registry() -> dict:
+    """Return the registry, using the cache if fresh enough."""
+    if os.path.exists(_CACHE_FILE):
+        try:
+            with open(_CACHE_FILE, "r") as f:
+                cached = json.load(f)
+            fetched_at = cached.get("_fetched_at", 0)
+            if time.time() - fetched_at < _TTL_SECONDS:
+                return cached
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    return _load_registry()
+
+
+def resolve(identifier: str) -> str:
+    """Resolve an agent identifier to a full URL.
+
+    If *identifier* starts with ``http://`` or ``https://``, it is returned
+    as-is.  Otherwise the first ``/`` splits it into (name, path) and the
+    name is looked up in the registry.
+
+    Returns the full URL (``agent_url + "/" + path`` when a path is present).
+    Raises ``ValueError`` if the name is not found.
+    """
+    if identifier.startswith("http://") or identifier.startswith("https://"):
+        return identifier
+
+    # Split on first "/" to separate name from path
+    if "/" in identifier:
+        name, path = identifier.split("/", 1)
+    else:
+        name = identifier
+        path = ""
+
+    reg = _get_registry()
+    agents = reg.get("agents", [])
+
+    for agent in agents:
+        if agent.get("name", "").lower() == name.lower():
+            base = agent["url"].rstrip("/")
+            if path:
+                return f"{base}/{path}"
+            return base
+
+    available = [a.get("name", "?") for a in agents]
+    raise ValueError(
+        f"Agent '{name}' not found in registry. "
+        f"Available: {', '.join(available)}"
+    )
+
+
+def list_agents() -> list:
+    """Return all agents from the registry."""
+    reg = _get_registry()
+    return reg.get("agents", [])

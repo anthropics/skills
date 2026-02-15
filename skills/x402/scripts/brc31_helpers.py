@@ -2,8 +2,9 @@
 """BRC-31/BRC-29 CLI helpers for use in Claude /x402 skill.
 
 Usage:
-  brc31_helpers.py identity                       Get wallet identity key
-  brc31_helpers.py discover <server_url>           Fetch /.well-known/x402-info manifest
+  brc31_helpers.py list                            List agents from 402agints.com registry
+  brc31_helpers.py identity                        Get wallet identity key
+  brc31_helpers.py discover <name_or_url>          Fetch /.well-known/x402-info manifest
   brc31_helpers.py handshake <server_url>          BRC-31 handshake
   brc31_helpers.py session <server_url>            Show stored session JSON
   brc31_helpers.py auth <METHOD> <url> [body]      Authenticated request
@@ -22,6 +23,7 @@ from lib.auth_request import authenticated_request
 from lib.payment import paid_request
 from lib.session import load_session
 from lib.metanet import get_identity_key
+from lib import registry
 
 
 def discover(server_url):
@@ -57,11 +59,16 @@ def main():
 
     cmd = sys.argv[1]
 
-    if cmd == "identity":
+    if cmd == "list":
+        agents = registry.list_agents()
+        print(json.dumps(agents, indent=2))
+
+    elif cmd == "identity":
         print(get_identity_key())
 
     elif cmd == "discover":
-        url = sys.argv[2]
+        identifier = sys.argv[2]
+        url = registry.resolve(identifier)
         result = discover(url)
         print(json.dumps(result, indent=2))
 

@@ -16,15 +16,24 @@ If not running, tell the user to start it (macOS: `/Applications/Metanet Client.
 
 $ARGUMENTS
 
+## Agent Registry
+
+A directory of available agents lives at `402agints.com`. Run `list` to see all registered agents — their names, capabilities, and URLs. Agent names resolve automatically anywhere a URL is expected.
+
+**Always start with `list`** when the user's request could match any registered agent. Use the agent descriptions, capabilities, and taglines to match the user's natural language intent to the right agent. Don't assume which agent to use — check the registry.
+
+The registry is cached locally for 5 minutes at `~/.local/share/brc31-sessions/registry.json`. Full URLs (`https://...`) still work directly and bypass the registry.
+
 ## Commands
 
 All operations use the helper script bundled with this skill. All commands output JSON to stdout.
 
 | Command | Purpose |
 |---------|---------|
-| `python3 ./scripts/brc31_helpers.py discover <base_url>` | Learn server endpoints, auth requirements, costs |
-| `python3 ./scripts/brc31_helpers.py auth <METHOD> <url> [body]` | Authenticated request (no payment) |
-| `python3 ./scripts/brc31_helpers.py pay <METHOD> <url> [body]` | Authenticated + paid request (auto-handles 402) |
+| `python3 ./scripts/brc31_helpers.py list` | List all agents from the 402agints.com registry |
+| `python3 ./scripts/brc31_helpers.py discover <name_or_url>` | Learn server endpoints, auth requirements, costs |
+| `python3 ./scripts/brc31_helpers.py auth <METHOD> <name_or_url> [body]` | Authenticated request (no payment) |
+| `python3 ./scripts/brc31_helpers.py pay <METHOD> <name_or_url> [body]` | Authenticated + paid request (auto-handles 402) |
 | `python3 ./scripts/brc31_helpers.py identity` | Get wallet's 66-char hex identity key |
 | `python3 ./scripts/brc31_helpers.py session <base_url>` | Inspect cached session |
 
@@ -32,44 +41,56 @@ Handshake is automatic — never call it manually before `auth` or `pay`.
 
 ## Decision Tree
 
-1. **Discover** — Always run `discover <base_url>` first for a new server. Present endpoints to the user: method, path, description, auth requirement, cost in satoshis.
+1. **List** — Run `list` to see all registered agents. Match the user's intent to an agent by reading the name, tagline, and capabilities from the registry. There may be many agents — pick the best match.
 
-2. **Route** — Match user intent to an endpoint:
+2. **Discover** — Run `discover <agent_name>` on the matched agent to get its full manifest: endpoints, pricing, input schemas. Present a summary to yourself (or the user if they're exploring).
+
+3. **Route** — Match user intent to an endpoint:
    - `auth: true`, no payment → use **`auth`**
    - `payment` with satoshis → use **`pay`** (do NOT ask user to confirm — consent is implicit by invoking this skill; typical costs are 1-100 sats)
    - `auth: false` → plain curl, no skill needed
 
-3. **Call** — Run the appropriate command. For requests with a JSON body, pass it as the 4th argument:
+4. **Call** — Run the appropriate command. For requests with a JSON body, pass it as the 4th argument:
    ```bash
-   python3 ./scripts/brc31_helpers.py auth POST "<url>" '{"key":"value"}'
+   python3 ./scripts/brc31_helpers.py pay POST <agent_name>/<endpoint> '{"key":"value"}'
    ```
 
-4. **Present** — Parse the JSON response (`{status, headers, body}`). The `body` is a string that may contain nested JSON — parse it before presenting.
+5. **Present** — Parse the JSON response (`{status, headers, body}`). The `body` is a string that may contain nested JSON — parse it before presenting.
 
 ## Examples
 
-### Discovery
-User asks: "what APIs does poc-server offer?"
-```bash
-python3 ./scripts/brc31_helpers.py discover "https://poc-server.dev-a3e.workers.dev"
-```
-Returns a manifest with `name`, `serverIdentityKey`, `endpoints[]`. Summarize as:
-- **POST /free** — Auth required, no cost. Returns identity confirmation.
-- **POST /paid** — Auth + payment: 10 sats. Returns payment confirmation.
+### Typical flow: user asks for something an agent can do
+User asks: "generate an image of a sunset"
 
-### Authenticated Request (Free)
-User asks: "call the free endpoint on poc-server"
 ```bash
-python3 ./scripts/brc31_helpers.py auth POST "https://poc-server.dev-a3e.workers.dev/free"
-```
-Expected: `{"status": 200, "headers": {...}, "body": "{\"message\":\"...\"}"}`
+# Step 1: Check what agents are available
+python3 ./scripts/brc31_helpers.py list
+# → Returns JSON array. Read taglines/capabilities. Pick the image generation agent.
 
-### Paid Request
-User asks: "call the paid endpoint on poc-server"
-```bash
-python3 ./scripts/brc31_helpers.py pay POST "https://poc-server.dev-a3e.workers.dev/paid"
+# Step 2: Discover its endpoints and pricing
+python3 ./scripts/brc31_helpers.py discover <matched_agent_name>
+# → Returns manifest with endpoints, pricing tiers, input schemas
+
+# Step 3: Call the paid endpoint
+python3 ./scripts/brc31_helpers.py pay POST <agent_name>/<endpoint> '{"prompt":"a sunset"}'
+# → Handles auth + 402 + payment automatically. Returns result.
 ```
-The library automatically: sends auth request → receives 402 → creates 10-sat payment tx via wallet → retries with payment → returns `{"status": 200, ...}` with payment confirmation.
+
+### Discovery by URL (for unregistered servers)
+```bash
+python3 ./scripts/brc31_helpers.py discover "https://some-server.example.com"
+```
+Returns a manifest with `name`, `serverIdentityKey`, `endpoints[]`.
+
+### Authenticated request (free endpoint)
+```bash
+python3 ./scripts/brc31_helpers.py auth POST <agent_name>/<endpoint>
+```
+
+### Direct URL (bypasses registry)
+```bash
+python3 ./scripts/brc31_helpers.py pay POST "https://some-server.example.com/paid"
+```
 
 ## Refunds
 
