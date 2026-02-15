@@ -86,7 +86,7 @@ def main():
 
     elif cmd == "auth":
         method = sys.argv[2].upper()
-        url = sys.argv[3]
+        url = registry.resolve(sys.argv[3])
         body = sys.argv[4] if len(sys.argv) > 4 else None
         resp = authenticated_request(method, url, body=body)
         result = {
@@ -98,7 +98,7 @@ def main():
 
     elif cmd == "pay":
         method = sys.argv[2].upper()
-        url = sys.argv[3]
+        url = registry.resolve(sys.argv[3])
         body = sys.argv[4] if len(sys.argv) > 4 else None
         resp = paid_request(method, url, body=body)
         result = {
