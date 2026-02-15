@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **The LLM Council** - [Multi-LLM Council for adversarial debate and cross-validation](https://github.com/sherifkozman/the-llm-council) - Orchestrates Claude, GPT-4, and Gemini for production-grade implementation, code review, architecture design, and security analysis
