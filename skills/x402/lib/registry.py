@@ -97,6 +97,36 @@ def resolve(identifier: str) -> str:
     )
 
 
+def resolve_x402_info(identifier: str) -> str:
+    """Resolve an identifier to its x402-info manifest URL.
+
+    For agents with an ``x402_info`` field in the registry, returns that URL
+    directly (e.g. a hosted manifest on 402agints.com for third-party services).
+    Otherwise falls back to ``{agent_url}/.well-known/x402-info``.
+
+    Full URLs are treated as base URLs and get ``/.well-known/x402-info``
+    appended.
+    """
+    if identifier.startswith("http://") or identifier.startswith("https://"):
+        return f"{identifier.rstrip('/')}/.well-known/x402-info"
+
+    name = identifier.split("/")[0] if "/" in identifier else identifier
+
+    reg = _get_registry()
+    for agent in reg.get("agents", []):
+        if agent.get("name", "").lower() == name.lower():
+            return agent.get(
+                "x402_info",
+                f"{agent['url'].rstrip('/')}/.well-known/x402-info",
+            )
+
+    available = [a.get("name", "?") for a in reg.get("agents", [])]
+    raise ValueError(
+        f"Agent '{name}' not found in registry. "
+        f"Available: {', '.join(available)}"
+    )
+
+
 def list_agents() -> list:
     """Return all agents from the registry."""
     reg = _get_registry()

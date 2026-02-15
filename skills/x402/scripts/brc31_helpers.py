@@ -26,12 +26,10 @@ from lib.metanet import get_identity_key
 from lib import registry
 
 
-def discover(server_url):
-    """Fetch /.well-known/x402-info from the server. Returns parsed JSON or error."""
-    base = server_url.rstrip("/")
-    url = f"{base}/.well-known/x402-info"
+def discover(manifest_url):
+    """Fetch an x402-info manifest from a URL. Returns parsed JSON or error."""
     try:
-        resp = _requests.get(url, timeout=10)
+        resp = _requests.get(manifest_url, timeout=10)
         if resp.status_code == 200:
             info = resp.json()
             # Annotate with refund summary for display
@@ -68,8 +66,8 @@ def main():
 
     elif cmd == "discover":
         identifier = sys.argv[2]
-        url = registry.resolve(identifier)
-        result = discover(url)
+        x402_url = registry.resolve_x402_info(identifier)
+        result = discover(x402_url)
         print(json.dumps(result, indent=2))
 
     elif cmd == "handshake":

@@ -1,133 +1,144 @@
----
-name: x402
-description: "Make BSV-authenticated or paid API requests. Use for: BRC-31 auth, 402 payment, BSV micropayments, x402, paid API calls. Requires MetaNet Client wallet running at localhost:3321."
-argument-hint: [URL or description of API to call]
----
+# x402
 
-## Prerequisites
+Claude Code skill for BSV micropayments. Discover, authenticate, and pay AI services with Bitcoin SV — all from natural language.
 
-**MetaNet Client** must be running. Check with:
-```bash
-curl -s -H "Origin: http://localhost" http://localhost:3321/isAuthenticated
+## What It Does
+
+Say what you want. The skill handles the rest:
+
 ```
-If not running, tell the user to start it (macOS: `/Applications/Metanet Client.app`, or download from https://getmetanet.com).
+/x402 generate an image of a mountain sunset
+/x402 transcribe this audio file
+/x402 search twitter for AI agent discussions
+/x402 upload this file to NanoStore for a year
+```
 
-## Task
+Under the hood:
 
-$ARGUMENTS
+1. **Discovers** available services from the [402agints.com](https://402agints.com) agent directory
+2. **Authenticates** with [BRC-31](https://brc.dev/31) mutual auth (automatic handshake + session caching)
+3. **Pays** with [BRC-29](https://brc.dev/29) micropayments (automatic 402 handling, transaction creation)
+4. **Refunds** automatically if a paid request fails — the refund is internalized to your wallet with no manual steps
 
-## Agent Registry
+## Available Services
 
-A directory of available agents lives at `402agints.com`. Run `list` to see all registered agents — their names, capabilities, and URLs. Agent names resolve automatically anywhere a URL is expected.
+The skill discovers agents from [402agints.com/.well-known/agents](https://402agints.com/.well-known/agents):
 
-**Always start with `list`** when the user's request could match any registered agent. Use the agent descriptions, capabilities, and taglines to match the user's natural language intent to the right agent. Don't assume which agent to use — check the registry.
+| Agent | What it does | Cost |
+|:------|:-------------|:-----|
+| **Banana Agent** | AI image generation (Google Nano Banana Pro) | ~$0.19/image |
+| **Veo Agent** | AI video generation with audio (Google Veo 3.1 Fast) | ~$0.75–$1.50/clip |
+| **Whisper Agent** | Speech-to-text transcription (Whisper Large v3 Turbo) | ~$0.0006/min |
+| **X Research Agent** | Twitter/X search, profiles, threads, trending | ~$0.005–$0.06/req |
+| **NanoStore** | File hosting with UHRP content addressing (Babbage) | ~$0.0004/MB/yr |
 
-The registry is cached locally for 5 minutes at `~/.local/share/brc31-sessions/registry.json`. Full URLs (`https://...`) still work directly and bypass the registry.
+Third-party services like NanoStore are listed in the directory with hosted manifests — clients connect directly, no proxy.
 
-## Commands
+## Install
 
-All operations use the helper script bundled with this skill. All commands output JSON to stdout.
+Requires [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and [MetaNet Client](https://getmetanet.com).
 
-| Command | Purpose |
-|---------|---------|
-| `python3 ./scripts/brc31_helpers.py list` | List all agents from the 402agints.com registry |
-| `python3 ./scripts/brc31_helpers.py discover <name_or_url>` | Learn server endpoints, auth requirements, costs |
-| `python3 ./scripts/brc31_helpers.py auth <METHOD> <name_or_url> [body]` | Authenticated request (no payment) |
-| `python3 ./scripts/brc31_helpers.py pay <METHOD> <name_or_url> [body]` | Authenticated + paid request (auto-handles 402) |
-| `python3 ./scripts/brc31_helpers.py identity` | Get wallet's 66-char hex identity key |
-| `python3 ./scripts/brc31_helpers.py session <base_url>` | Inspect cached session |
+```
+/plugin marketplace add calgooon/x402
+/plugin install x402@calgooon-x402
+```
 
-Handshake is automatic — never call it manually before `auth` or `pay`.
+> **Troubleshooting:** If you get a "Failed to finalize marketplace cache" error, run `/plugin`, select **Manage marketplaces > Add marketplace**, and paste `https://github.com/Calgooon/x402`. Then run `/plugin install x402@calgooon-x402`.
 
-## Decision Tree
+### Prerequisites
 
-1. **List** — Run `list` to see all registered agents. Match the user's intent to an agent by reading the name, tagline, and capabilities from the registry. There may be many agents — pick the best match.
+- **MetaNet Client** running at `localhost:3321` (download from [getmetanet.com](https://getmetanet.com))
+- **Python 3** with `requests` (`pip install requests`)
 
-2. **Discover** — Run `discover <agent_name>` on the matched agent to get its full manifest: endpoints, pricing, input schemas. Present a summary to yourself (or the user if they're exploring).
+## Usage
 
-3. **Route** — Match user intent to an endpoint:
-   - `auth: true`, no payment → use **`auth`**
-   - `payment` with satoshis → use **`pay`** (do NOT ask user to confirm — consent is implicit by invoking this skill; typical costs are 1-100 sats)
-   - `auth: false` → plain curl, no skill needed
+The `/x402` command is the entry point. You can use it conversationally or with specific commands:
 
-4. **Call** — Run the appropriate command. For requests with a JSON body, pass it as the 4th argument:
-   ```bash
-   python3 ./scripts/brc31_helpers.py pay POST <agent_name>/<endpoint> '{"key":"value"}'
-   ```
+### Natural language
+```
+/x402 generate a photo of a cat in a top hat
+/x402 upload report.pdf to NanoStore for 1 year
+/x402 search twitter for "bitcoin scaling" from the last 24 hours
+/x402 transcribe meeting.wav
+```
 
-5. **Present** — Parse the JSON response (`{status, headers, body}`). The `body` is a string that may contain nested JSON — parse it before presenting.
+### Specific commands
+```
+/x402 list                              # List all agents in the directory
+/x402 discover banana                   # Show endpoints, pricing, schemas for an agent
+/x402 discover nanostore                # Works for third-party services too
+/x402 auth GET nanostore/list           # Authenticated request (no payment)
+/x402 pay POST banana/generate {"prompt":"a sunset"}  # Paid request
+```
+
+### Command reference
+
+| Command | What it does |
+|:--------|:-------------|
+| `/x402 list` | List all registered agents with capabilities and pricing |
+| `/x402 discover <agent>` | Fetch the x402-info manifest — endpoints, schemas, pricing, error codes |
+| `/x402 auth <METHOD> <agent/path>` | Make a BRC-31 authenticated request (no payment) |
+| `/x402 pay <METHOD> <agent/path> [body]` | Make an authenticated + paid request (auto-handles 402 flow) |
+| `/x402 identity` | Show your wallet's identity key |
+| `/x402 session <url>` | Inspect a cached BRC-31 session |
+
+Agent names (`banana`, `nanostore`, `whisper`, etc.) resolve automatically. Full URLs work too.
 
 ## Examples
 
-### Typical flow: user asks for something an agent can do
-User asks: "generate an image of a sunset"
-
-```bash
-# Step 1: Check what agents are available
-python3 ./scripts/brc31_helpers.py list
-# → Returns JSON array. Read taglines/capabilities. Pick the image generation agent.
-
-# Step 2: Discover its endpoints and pricing
-python3 ./scripts/brc31_helpers.py discover <matched_agent_name>
-# → Returns manifest with endpoints, pricing tiers, input schemas
-
-# Step 3: Call the paid endpoint
-python3 ./scripts/brc31_helpers.py pay POST <agent_name>/<endpoint> '{"prompt":"a sunset"}'
-# → Handles auth + 402 + payment automatically. Returns result.
+### Generate an image
+```
+/x402 generate a photo of a cat wearing a top hat
+→ discovers banana agent, pays ~9,000 sats, returns image URL
 ```
 
-### Discovery by URL (for unregistered servers)
-```bash
-python3 ./scripts/brc31_helpers.py discover "https://some-server.example.com"
+### Upload a file
 ```
-Returns a manifest with `name`, `serverIdentityKey`, `endpoints[]`.
-
-### Authenticated request (free endpoint)
-```bash
-python3 ./scripts/brc31_helpers.py auth POST <agent_name>/<endpoint>
+/x402 upload report.pdf to NanoStore for 1 year
+→ discovers NanoStore, pays ~730 sats for 1MB/year, returns presigned upload URL
 ```
 
-### Direct URL (bypasses registry)
-```bash
-python3 ./scripts/brc31_helpers.py pay POST "https://some-server.example.com/paid"
+### Search Twitter
+```
+/x402 find tweets about bitcoin scaling from the last 24 hours
+→ discovers x-research agent, pays ~3,000 sats, returns sorted results
 ```
 
-## Refunds
+### Transcribe audio
+```
+/x402 transcribe meeting.wav
+→ discovers whisper agent, pays based on audio length, returns text
+```
 
-Servers that support BRC-29 refunds will automatically return refund data when a paid request fails after payment. The client **auto-detects and internalizes refunds** — no manual action needed.
+## How It Works
 
-- **Inline refunds**: Returned in the same response as the error (e.g., `/paid` fails immediately)
-- **Deferred refunds**: Returned later when polling `/status/{id}` for async operations that failed
+```
+/x402 <user request>
+  → skill runs `list` to find matching agent by capabilities
+  → skill runs `discover <agent>` to read the x402-info manifest
+  → skill reads endpoint schemas, pricing, auth requirements
+  → skill runs `pay POST <agent>/<endpoint> '{...}'`
+    → BRC-31 handshake (automatic, cached 1 hour)
+    → initial request → server returns 402 with price
+    → wallet creates payment transaction
+    → retry with x-bsv-payment header → server accepts, returns result
+  → skill presents result to user
+```
 
-The `discover` command shows which endpoints support refunds. The `pay` command output includes a `refund` block when a refund was received and internalized.
+All payment is automatic — no confirmation prompts for typical micropayments (1–100,000 sats).
 
-## Payment Transport
+## Agent Directory
 
-Payment is sent via `x-bsv-payment` header as JSON: `{"derivationPrefix":"...","derivationSuffix":"...","transaction":"<base64 BEEF>"}`. The client handles this automatically.
+The skill resolves short names (like `banana` or `nanostore`) to full URLs via the [402agints.com](https://402agints.com) registry. Any BRC-31/BRC-29 service can be listed — including third-party services that don't serve their own discovery manifest.
 
-**Header-only servers:** Most servers only accept payment in the header. The client has a body-mode fallback for payments >6KB, but only uses it when the request has no original body to preserve. Typical payments are ~2KB, well under the threshold.
+The registry is cached locally for 5 minutes. Full URLs (`https://...`) bypass the registry entirely.
 
-## Default Test Server
+## Protocol
 
-- **Live:** `https://poc-server.dev-a3e.workers.dev`
-- **Local:** `http://localhost:8787` (run `cd poc-server && npm run dev`)
+- **[BRC-31](https://brc.dev/31)**: Mutual HTTP authentication with identity keys and signed requests
+- **[BRC-29](https://brc.dev/29)**: HTTP micropayments via 402 Payment Required flow
+- **[BRC-100](https://brc.dev/100)**: MetaNet Client wallet interface (key derivation, signing, transaction creation)
 
-## When NOT to Use
+## License
 
-- Regular HTTP APIs without BSV authentication
-- APIs using OAuth, API keys, or JWT (unless specifically BRC-31)
-- Coinbase x402 protocol (EVM/Solana only — this skill is BSV-only)
-
-## Troubleshooting
-
-Only consult this section if something goes wrong.
-
-| Symptom | Fix |
-|---------|-----|
-| `MetaNet Client not running` | Start MetaNet Client app or download from https://getmetanet.com |
-| Discovery returns 404 | Server may not have `/.well-known/x402-info`; proceed with known endpoint info or ask user |
-| Connection error | Server may be down or wallet not running |
-| Payment error | Tell user to check MetaNet Client for approval prompt; may also be insufficient funds |
-| `Signature is not valid` on POST | Session may be stale. Clear: `python3 ./cli.py session --clear <server_url>` |
-| Persistent auth failures | Clear session: `python3 ./cli.py session --clear <server_url>` |
-| Need verbose output | Use full CLI: `python3 ./cli.py -v auth POST "<url>"` |
+MIT
