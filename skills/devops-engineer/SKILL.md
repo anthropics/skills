@@ -369,3 +369,11 @@ Automate in this order (highest ROI first):
 2. **Error-prone processes** where humans make mistakes
 3. **Blocking tasks** where someone waits for another person
 4. **Scaling bottlenecks** where manual steps limit growth
+
+## Tool Integrations
+
+This skill supports direct integration with DevOps platforms via MCP servers. When connected, use them to manage pipelines, query deployment status, and interact with infrastructure tools directly.
+
+See `references/integrations.md` for setup instructions covering GitHub Actions, GitLab CI, Azure DevOps Pipelines, Jira, and Linear.
+
+If no MCP servers or CLI tools are available, ask the user to share pipeline configs or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

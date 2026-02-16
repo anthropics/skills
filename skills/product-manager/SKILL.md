@@ -210,3 +210,11 @@ Our product [primary differentiation].
 | Focus on one segment | Expand to adjacent segments |
 | Manual processes are fine | Automate and systematize |
 | Measure engagement deeply | Measure growth and revenue |
+
+## Tool Integrations
+
+This skill supports direct integration with product and project tools via MCP servers. When connected, use them to pull real metrics, analyze roadmap progress, and review delivery data.
+
+See `references/integrations.md` for setup instructions covering Jira, Linear, Azure DevOps, GitHub, and GitLab.
+
+If no MCP servers or CLI tools are available, ask the user to share their data or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

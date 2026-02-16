@@ -220,3 +220,11 @@ See `references/prd-template.md` for a lightweight Product Requirements Document
 - **Maximum Viable Product** — Scope creep turned it into a full release
 - **No success metrics** — No way to know if the MVP validated the hypothesis
 - **No feedback loop** — MVP shipped but no mechanism to collect user input
+
+## Tool Integrations
+
+This skill supports direct integration with project management tools via MCP servers. When connected, use them to create stories, manage backlogs, and update priorities directly.
+
+See `references/integrations.md` for setup instructions covering Jira, Trello, Azure DevOps, Linear, GitHub Projects, and GitLab Boards.
+
+If no MCP servers or CLI tools are available, ask the user to provide backlog data manually or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

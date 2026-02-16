@@ -232,3 +232,11 @@ See `references/ui-patterns.md` for implementation guidance on:
 - Data tables with sorting and filtering
 - Infinite scroll and pagination
 - Form validation and error display
+
+## Tool Integrations
+
+This skill supports direct integration with development platforms and real-time services via MCP servers. When connected, use them to review code, manage design issues, and test real-time UI features.
+
+See `references/integrations.md` for setup instructions covering GitHub, GitLab, Jira, and Pusher Channels (for real-time UI debugging).
+
+If no MCP servers or CLI tools are available, ask the user to share code or design specs directly or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

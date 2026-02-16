@@ -229,3 +229,11 @@ See `references/policy-templates.md` for starter templates covering:
 - Data Classification Policy
 - Vulnerability Management Policy
 - Change Management Policy
+
+## Tool Integrations
+
+This skill supports direct integration with development and security platforms via MCP servers. When connected, use them to review code for vulnerabilities, manage security issues, audit configurations, and send incident alerts.
+
+See `references/integrations.md` for setup instructions covering GitHub, GitLab, Azure DevOps, Jira, and Pusher Channels (for incident communication).
+
+If no MCP servers or CLI tools are available, ask the user to share code or security findings directly or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

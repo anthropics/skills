@@ -290,3 +290,11 @@ Before cutting over to the new system:
 - [ ] Communication sent to stakeholders
 - [ ] Downtime window confirmed (if needed)
 - [ ] Rollback decision deadline agreed (e.g., rollback if not stable within 2 hours)
+
+## Tool Integrations
+
+This skill supports direct integration with source and target platforms via MCP servers. When connected, use them to analyze codebases, track migration tasks, and monitor progress across systems.
+
+See `references/integrations.md` for setup instructions covering GitHub, GitLab, Azure DevOps, Jira, and Pusher Channels (for migration status broadcasting).
+
+If no MCP servers or CLI tools are available, ask the user to describe their architecture or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).

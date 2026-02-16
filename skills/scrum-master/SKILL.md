@@ -233,3 +233,11 @@ Attempted Resolution: [What the team has already tried]
 Ask: [Specific action needed from management]
 Deadline: [When resolution is needed to avoid sprint failure]
 ```
+
+## Tool Integrations
+
+This skill supports direct integration with project management tools via MCP (Model Context Protocol) servers. When connected, use them to fetch real sprint data, manage boards, and update issues directly rather than working from user descriptions.
+
+See `references/integrations.md` for setup instructions covering Jira, Trello, Azure DevOps, Linear, GitHub Projects, and GitLab Boards.
+
+If no MCP servers or CLI tools are available, ask the user to provide sprint data manually or suggest they connect a server from the [MCP Registry](https://registry.modelcontextprotocol.io).
