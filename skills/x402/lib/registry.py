@@ -1,11 +1,11 @@
-"""Agent name registry — resolves short names to full URLs via 402agints.com."""
+"""Agent name registry — resolves short names to full URLs via x402agency.com."""
 import json
 import os
 import time
 
 import requests
 
-REGISTRY_URL = "https://402agints.com/.well-known/agents"
+REGISTRY_URL = "https://x402agency.com/.well-known/agents"
 
 _CACHE_DIR = os.path.join(os.path.expanduser("~"), ".local", "share", "brc31-sessions")
 _CACHE_FILE = os.path.join(_CACHE_DIR, "registry.json")
@@ -101,7 +101,7 @@ def resolve_x402_info(identifier: str) -> str:
     """Resolve an identifier to its x402-info manifest URL.
 
     For agents with an ``x402_info`` field in the registry, returns that URL
-    directly (e.g. a hosted manifest on 402agints.com for third-party services).
+    directly (e.g. a hosted manifest on x402agency.com for third-party services).
     Otherwise falls back to ``{agent_url}/.well-known/x402-info``.
 
     Full URLs are treated as base URLs and get ``/.well-known/x402-info``

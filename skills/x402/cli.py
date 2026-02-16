@@ -226,7 +226,7 @@ def cmd_session(args):
 
 
 def cmd_list(args):
-    """List agents from the 402agints.com registry."""
+    """List agents from the x402agency.com registry."""
     try:
         agents = registry.list_agents()
     except Exception as e:
@@ -392,7 +392,7 @@ def build_parser() -> argparse.ArgumentParser:
     # --- list ---
     subparsers.add_parser(
         "list",
-        help="List agents from the 402agints.com registry.",
+        help="List agents from the x402agency.com registry.",
     )
 
     # --- identity ---

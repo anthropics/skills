@@ -15,14 +15,14 @@ Say what you want. The skill handles the rest:
 
 Under the hood:
 
-1. **Discovers** available services from the [402agints.com](https://402agints.com) agent directory
+1. **Discovers** available services from the [x402agency.com](https://x402agency.com) agent directory
 2. **Authenticates** with [BRC-31](https://brc.dev/31) mutual auth (automatic handshake + session caching)
 3. **Pays** with [BRC-29](https://brc.dev/29) micropayments (automatic 402 handling, transaction creation)
 4. **Refunds** automatically if a paid request fails — the refund is internalized to your wallet with no manual steps
 
 ## Available Services
 
-The skill discovers agents from [402agints.com/.well-known/agents](https://402agints.com/.well-known/agents):
+The skill discovers agents from [x402agency.com/.well-known/agents](https://x402agency.com/.well-known/agents):
 
 | Agent | What it does | Cost |
 |:------|:-------------|:-----|
@@ -129,7 +129,7 @@ All payment is automatic — no confirmation prompts for typical micropayments (
 
 ## Agent Directory
 
-The skill resolves short names (like `banana` or `nanostore`) to full URLs via the [402agints.com](https://402agints.com) registry. Any BRC-31/BRC-29 service can be listed — including third-party services that don't serve their own discovery manifest.
+The skill resolves short names (like `banana` or `nanostore`) to full URLs via the [x402agency.com](https://x402agency.com) registry. Any BRC-31/BRC-29 service can be listed — including third-party services that don't serve their own discovery manifest.
 
 The registry is cached locally for 5 minutes. Full URLs (`https://...`) bypass the registry entirely.
 

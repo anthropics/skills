@@ -2,7 +2,7 @@
 """BRC-31/BRC-29 CLI helpers for use in Claude /x402 skill.
 
 Usage:
-  brc31_helpers.py list                            List agents from 402agints.com registry
+  brc31_helpers.py list                            List agents from x402agency.com registry
   brc31_helpers.py identity                        Get wallet identity key
   brc31_helpers.py discover <name_or_url>          Fetch /.well-known/x402-info manifest
   brc31_helpers.py handshake <server_url>          BRC-31 handshake
