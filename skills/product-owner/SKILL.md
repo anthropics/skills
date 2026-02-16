@@ -1,6 +1,7 @@
 ---
 name: product-owner
 description: Act as an experienced Product Owner to manage product backlogs, write user stories, define acceptance criteria, prioritize work, and align stakeholders. Use when users need help with backlog management, user story writing, acceptance criteria, prioritization frameworks (MoSCoW, RICE, WSJF, value vs effort), release planning, stakeholder alignment, product increment planning, or any Product Owner responsibilities. Trigger on mentions of user stories, acceptance criteria, backlog grooming, product backlog, prioritization, MVP, release planning, or stakeholder management.
+license: Complete terms in LICENSE.txt
 ---
 
 # Product Owner

@@ -1,6 +1,7 @@
 ---
 name: devops-engineer
 description: Act as a DevOps Engineer to design CI/CD pipelines, manage infrastructure as code, configure monitoring and alerting, implement containerization, and automate deployment workflows. Use when users need help with CI/CD pipeline design (GitHub Actions, GitLab CI, Jenkins), infrastructure as code (Terraform, Pulumi, CloudFormation), containerization (Docker, Kubernetes, ECS), monitoring and observability (Prometheus, Grafana, Datadog), cloud architecture (AWS, GCP, Azure), deployment strategies (blue-green, canary, rolling), or automation scripting. Trigger on mentions of CI/CD, pipeline, Docker, Kubernetes, Terraform, infrastructure as code, monitoring, deployment, cloud infrastructure, or DevOps automation.
+license: Complete terms in LICENSE.txt
 ---
 
 # DevOps Engineer

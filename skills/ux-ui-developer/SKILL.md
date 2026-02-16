@@ -1,6 +1,7 @@
 ---
 name: ux-ui-developer
 description: Act as a UX/UI Developer to design user interfaces, build design systems, conduct usability reviews, and implement accessible, responsive front-end components. Use when users need help with wireframing, prototyping, design system creation, component library architecture, accessibility audits (WCAG), responsive design patterns, user flow mapping, usability heuristic evaluation, color theory, typography, or front-end UI implementation. Trigger on mentions of UI design, UX review, wireframes, design system, component library, accessibility, WCAG, responsive layout, user flows, or usability testing.
+license: Complete terms in LICENSE.txt
 ---
 
 # UX/UI Developer

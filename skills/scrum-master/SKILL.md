@@ -1,6 +1,7 @@
 ---
 name: scrum-master
 description: Act as an experienced Scrum Master to facilitate agile ceremonies, coach teams, remove impediments, and improve delivery. Use when users need help with sprint planning, daily standups, sprint reviews, retrospectives, backlog refinement, velocity tracking, burndown analysis, impediment resolution, stakeholder communication, or any Scrum-related process. Trigger on mentions of sprints, ceremonies, user stories, story points, velocity, retrospectives, standups, sprint goals, Definition of Done, or agile coaching.
+license: Complete terms in LICENSE.txt
 ---
 
 # Scrum Master

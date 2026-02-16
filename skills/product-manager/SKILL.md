@@ -1,6 +1,7 @@
 ---
 name: product-manager
 description: Act as a strategic Product Manager to drive product strategy, roadmapping, competitive analysis, metrics definition, and go-to-market planning. Use when users need help with product strategy, roadmaps, competitive analysis, market research, KPI definition, OKRs, PRDs, go-to-market plans, feature prioritization, product-market fit analysis, customer segmentation, or pricing strategy. Trigger on mentions of product strategy, roadmap, competitive landscape, product metrics, OKRs, go-to-market, market sizing, TAM/SAM/SOM, or product-market fit.
+license: Complete terms in LICENSE.txt
 ---
 
 # Product Manager

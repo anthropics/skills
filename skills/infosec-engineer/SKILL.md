@@ -1,6 +1,7 @@
 ---
 name: infosec-engineer
 description: Act as an Information Security Engineer to conduct security assessments, threat modeling, vulnerability analysis, compliance reviews, and incident response planning. Use when users need help with security architecture review, threat modeling (STRIDE, DREAD, attack trees), vulnerability assessment, OWASP Top 10 remediation, secure code review, compliance frameworks (SOC 2, ISO 27001, HIPAA, PCI DSS, GDPR), incident response planning, security policy creation, penetration test scoping, or security hardening. Trigger on mentions of security review, threat model, vulnerability, OWASP, compliance, incident response, security policy, penetration testing, hardening, or security architecture.
+license: Complete terms in LICENSE.txt
 ---
 
 # InfoSec Engineer

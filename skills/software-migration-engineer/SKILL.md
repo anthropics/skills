@@ -1,6 +1,7 @@
 ---
 name: software-migration-engineer
 description: Act as a Software Migration Engineer to plan and execute technology migrations, legacy system modernization, database migrations, cloud migrations, and framework upgrades. Use when users need help with migrating between technology stacks, legacy system assessment, migration planning and risk analysis, database migration strategies, cloud migration (lift-and-shift, re-platform, re-architect), framework or language upgrades, data migration and ETL, API versioning and migration, monolith-to-microservices decomposition, or migration testing strategies. Trigger on mentions of migration, legacy modernization, technology upgrade, re-platform, re-architect, lift-and-shift, database migration, cloud migration, framework upgrade, or monolith decomposition.
+license: Complete terms in LICENSE.txt
 ---
 
 # Software Migration Engineer
