@@ -213,7 +213,7 @@ def authenticated_request(
             url=url,
             headers=merged_headers,
             data=body_bytes,
-            timeout=30,
+            timeout=300,
         )
     except _requests.RequestException as e:
         raise AuthRequestError(f"HTTP request failed: {e}") from e
