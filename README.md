@@ -15,7 +15,7 @@ This repository contains skills that demonstrate what's possible with Codex's sk
 
 Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Codex uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
 
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Codex's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
+Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
 
 ## Disclaimer
 
