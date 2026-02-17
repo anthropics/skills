@@ -300,7 +300,7 @@ Generate 5-10 questions that readers would realistically ask.
 ### Step 2: Setup Testing
 
 Provide testing instructions:
-1. Open a fresh Codex conversation: https://codex.ai
+1. Open a fresh Codex conversation: https://claude.ai
 2. Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)
 3. Ask Reader Codex the generated questions
 
