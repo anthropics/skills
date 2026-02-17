@@ -13,7 +13,7 @@
 - **Whitespace**: Add `xml:space='preserve'` to `<w:t>` elements with leading/trailing spaces
 - **Unicode**: Escape characters in ASCII content: `"` becomes `&#8220;`
   - **Character encoding reference**: Curly quotes `""` become `&#8220;&#8221;`, apostrophe `'` becomes `&#8217;`, em-dash `—` becomes `&#8212;`
-- **Tracked changes**: Use `<w:del>` and `<w:ins>` tags with `w:author="Codex"` outside `<w:r>` elements
+- **Tracked changes**: Use `<w:del>` and `<w:ins>` tags with `w:author="Claude"` outside `<w:r>` elements
   - **Critical**: `<w:ins>` closes with `</w:ins>`, `<w:del>` closes with `</w:del>` - never mix
   - **RSIDs must be 8-digit hex**: Use values like `00AB1234` (only 0-9, A-F characters)
   - **trackRevisions placement**: Add `<w:trackRevisions/>` after `<w:proofState>` in settings.xml
