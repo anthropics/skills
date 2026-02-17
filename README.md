@@ -56,7 +56,7 @@ To use any skill from this repository or upload custom skills, follow the instru
 
 ## Codex API
 
-You can use Anthropic's pre-built skills, and upload custom skills, via the Codex API. See the [Skills API Quickstart](https://docs.claude.com/en/api/skills-guide#creating-a-skill) for more.
+You can use Anthropic's pre-built skills, and upload custom skills, via the Codex API. See the [Claude Skills API Quickstart](https://docs.claude.com/en/api/skills-guide#creating-a-skill) for more.
 
 # Creating a Basic Skill
 
