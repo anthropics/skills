@@ -106,9 +106,14 @@ def main():
             "headers": dict(resp.headers),
             "body": resp.text,
         }
-        # Auto-detect and process refund in response
+        # Parse response body once for auto-detection
+        body_parsed = None
         try:
             body_parsed = resp.json()
+        except Exception:
+            pass
+        # Auto-detect and process refund in response
+        try:
             if isinstance(body_parsed, dict):
                 refund_data = body_parsed.get("refund")
                 if refund_data and isinstance(refund_data, dict) and not refund_data.get("already_refunded"):
@@ -125,6 +130,29 @@ def main():
                             }
                         except Exception as e:
                             result["refund"] = {"processed": False, "error": str(e)}
+        except Exception:
+            pass
+        # Auto-detect and execute action template in response
+        try:
+            if isinstance(body_parsed, dict):
+                action_data = body_parsed.get("action")
+                if action_data and isinstance(action_data, dict) and action_data.get("outputs"):
+                    from lib.metanet import _call as wallet_call
+                    try:
+                        action_result = wallet_call("createAction", {
+                            "description": action_data.get("description", "Agent action"),
+                            "outputs": action_data["outputs"],
+                            "options": action_data.get("options", {}),
+                            "labels": action_data.get("labels", ["app:x402"]),
+                        })
+                        txid = action_result.get("txid")
+                        result["action_executed"] = {
+                            "txid": txid,
+                            "inscription_id": f"{txid}_0" if txid else None,
+                            "description": action_data.get("description"),
+                        }
+                    except Exception as e:
+                        result["action_error"] = str(e)
         except Exception:
             pass
         print(json.dumps(result, indent=2))

@@ -30,6 +30,7 @@ The skill discovers agents from [x402agency.com/.well-known/agents](https://x402
 | **Veo Agent** | AI video generation with audio (Google Veo 3.1 Fast) | ~$0.75–$1.50/clip |
 | **Whisper Agent** | Speech-to-text transcription (Whisper Large v3 Turbo) | ~$0.0006/min |
 | **X Research Agent** | Twitter/X search, profiles, threads, trending | ~$0.005–$0.06/req |
+| **1Sat Agent** | 1Sat Ordinals inscriptions (any file type) | 200–256,000 sats |
 | **NanoStore** | File hosting with UHRP content addressing (Babbage) | ~$0.0004/MB/yr |
 
 Third-party services like NanoStore are listed in the directory with hosted manifests — clients connect directly, no proxy.
@@ -108,6 +109,12 @@ Agent names (`banana`, `nanostore`, `whisper`, etc.) resolve automatically. Full
 ```
 /x402 transcribe meeting.wav
 → discovers whisper agent, pays based on audio length, returns text
+```
+
+### Inscribe an image as a 1Sat Ordinal
+```
+/x402 inscribe this image as an ordinal
+→ discovers 1sat-agent, pays service fee, builds script, wallet broadcasts, returns txid
 ```
 
 ## How It Works
