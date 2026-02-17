@@ -81,6 +81,7 @@ The `/x402` command is the entry point. You can use it conversationally or with 
 | `/x402 auth <METHOD> <agent/path>` | Make a BRC-31 authenticated request (no payment) |
 | `/x402 pay <METHOD> <agent/path> [body]` | Make an authenticated + paid request (auto-handles 402 flow) |
 | `/x402 identity` | Show your wallet's identity key |
+| `/x402 execute-action <json>` | Execute a pending action template (broadcasts inscription tx after user confirms) |
 | `/x402 session <url>` | Inspect a cached BRC-31 session |
 
 Agent names (`banana`, `nanostore`, `whisper`, etc.) resolve automatically. Full URLs work too.
@@ -133,6 +134,8 @@ Agent names (`banana`, `nanostore`, `whisper`, etc.) resolve automatically. Full
 ```
 
 All payment is automatic — no confirmation prompts for typical micropayments (1–100,000 sats).
+
+When a `pay` response contains `pending_action` (e.g. from 1sat-agent), present the cost breakdown to the user and ask for confirmation before calling `execute-action`. Do NOT broadcast automatically.
 
 ## Agent Directory
 
