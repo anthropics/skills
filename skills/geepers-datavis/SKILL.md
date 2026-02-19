@@ -1,5 +1,5 @@
 ---
-name: datavis
+name: geepers-datavis
 description: Comprehensive data visualization toolkit for creating beautiful, mathematically elegant visualizations with D3.js, Chart.js, and custom SVG. Use when (1) building interactive data visualizations, (2) designing color palettes for charts, (3) choosing scales and visual encodings, (4) creating data pipelines from Census/SEC/Wikipedia APIs, (5) crafting narrative-driven data stories, (6) making perceptually accurate charts, or (7) implementing force-directed networks, timelines, or geographic maps.
 license: MIT
 ---

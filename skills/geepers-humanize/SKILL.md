@@ -1,5 +1,5 @@
 ---
-name: humanize
+name: geepers-humanize
 description: Strip out robot-sounding language from docs and code. Use when editing READMEs, prepping content for publication, or cleaning up generated docs. Also enforces the "AI" terminology ban.
 license: MIT
 ---

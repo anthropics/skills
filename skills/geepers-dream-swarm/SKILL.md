@@ -1,5 +1,5 @@
 ---
-name: dream-swarm
+name: geepers-dream-swarm
 description: Launch parallel multi-domain search workflows using the Dream Swarm orchestrator. Use when (1) searching across multiple data sources simultaneously, (2) aggregating information from APIs, databases, and web sources, (3) comparing findings across domains, (4) rapid parallel data gathering. Requires the MCP server to be running.
 license: MIT
 ---
