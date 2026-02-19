@@ -24,7 +24,7 @@ def fs_get(endpoint, token, params=None):
 person = fs_get(f"/platform/tree/persons/{pid}", token)
 ancestry = fs_get("/platform/tree/ancestry", token, {"person": pid, "generations": 4})
 results = fs_get("/platform/tree/search", token,
-                  {"q": 'surname:"Silva" givenName:"Antonio" birthLikePlace:"Botucatu"'})
+                  {"q": 'surname:"Miller" givenName:"Johann" birthLikePlace:"Hamburg"'})
 ```
 
 **Token**: Browser DevTools → Application → Cookies → `fssessionid`. Lasts ~24h. Send as `Authorization: Bearer {token}`, NOT as Cookie header.
