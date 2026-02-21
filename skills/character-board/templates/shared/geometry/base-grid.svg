@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" font-family="Arial, sans-serif">
+  <!--
+    BASE GRID TEMPLATE
+    Import this as a background layer in other SVGs.
+    Two grids included: 16px (South Park) and 20px (Boondocks).
+    Toggle visibility via display attribute on each <g>.
+  -->
+  <rect width="800" height="600" fill="#fafaf6"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="800" height="36" fill="#1a1a1a"/>
+  <text x="14" y="24" fill="#ffffff" font-size="13" font-weight="bold" letter-spacing="2">SHARED — BASE SNAP GRID</text>
+  <text x="560" y="24" fill="#888" font-size="10">Import as background layer</text>
+
+  <!-- ── GRID A: 16px (South Park) ── -->
+  <g id="grid-16px" display="inline">
+    <defs>
+      <pattern id="g16-main" width="16" height="16" patternUnits="userSpaceOnUse" x="0" y="0">
+        <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#d8d8cc" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="g16-major" width="80" height="80" patternUnits="userSpaceOnUse" x="0" y="0">
+        <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#c0c0b0" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect x="0" y="36" width="380" height="556" fill="url(#g16-main)"/>
+    <rect x="0" y="36" width="380" height="556" fill="url(#g16-major)" opacity="0.6"/>
+
+    <!-- Centerlines -->
+    <line x1="190" y1="36" x2="190" y2="592" stroke="#cc3300" stroke-width="1" stroke-dasharray="8,5" opacity="0.5"/>
+    <line x1="0" y1="314" x2="380" y2="314" stroke="#cc3300" stroke-width="1" stroke-dasharray="8,5" opacity="0.5"/>
+
+    <!-- Labels -->
+    <rect x="2" y="38" width="130" height="18" fill="#e03030" opacity="0.85" rx="2"/>
+    <text x="8" y="51" fill="#ffffff" font-size="9" font-weight="bold">SOUTH PARK · 16px SNAP</text>
+    <text x="8"  y="72" fill="#666" font-size="8">Minor grid: 16px</text>
+    <text x="8"  y="84" fill="#666" font-size="8">Major grid: 80px (5×16)</text>
+    <text x="8"  y="96" fill="#666" font-size="8">Centerlines: red dashed</text>
+    <text x="8"  y="108" fill="#666" font-size="8">All anchor points snap to 16px</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="400" y1="36" x2="400" y2="592" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- ── GRID B: 20px (Boondocks) ── -->
+  <g id="grid-20px" display="inline">
+    <defs>
+      <pattern id="g20-main" width="20" height="20" patternUnits="userSpaceOnUse" x="400" y="0">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#d4d0c8" stroke-width="0.5"/>
+      </pattern>
+      <pattern id="g20-major" width="100" height="100" patternUnits="userSpaceOnUse" x="400" y="0">
+        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#b8b4a8" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect x="400" y="36" width="400" height="556" fill="url(#g20-main)"/>
+    <rect x="400" y="36" width="400" height="556" fill="url(#g20-major)" opacity="0.6"/>
+
+    <!-- Centerlines -->
+    <line x1="600" y1="36" x2="600" y2="592" stroke="#2266cc" stroke-width="1" stroke-dasharray="10,6" opacity="0.5"/>
+    <line x1="400" y1="314" x2="800" y2="314" stroke="#2266cc" stroke-width="1" stroke-dasharray="10,6" opacity="0.5"/>
+
+    <!-- Labels -->
+    <rect x="402" y="38" width="148" height="18" fill="#2d4a6b" opacity="0.9" rx="2"/>
+    <text x="408" y="51" fill="#ffffff" font-size="9" font-weight="bold">BOONDOCKS · 20px SNAP</text>
+    <text x="408" y="72" fill="#666" font-size="8">Minor grid: 20px</text>
+    <text x="408" y="84" fill="#666" font-size="8">Major grid: 100px (5×20)</text>
+    <text x="408" y="96" fill="#666" font-size="8">Centerlines: blue dashed</text>
+    <text x="408" y="108" fill="#666" font-size="8">All anchor points snap to 20px</text>
+  </g>
+
+  <!-- ── USAGE NOTE (bottom) ── -->
+  <rect x="0" y="548" width="800" height="52" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  <text x="14" y="566" fill="#1a1a1a" font-size="10" font-weight="bold">HOW TO USE:</text>
+  <text x="14" y="582" fill="#555" font-size="9">1. Copy the appropriate &lt;defs&gt; block into your target SVG   2. Add &lt;rect width="100%" height="100%" fill="url(#grid-id)"/&gt; as first child of &lt;svg&gt;</text>
+  <text x="14" y="595" fill="#555" font-size="9">3. Set opacity="0.4" to use as subtle background   4. Remove before export   5. Keep grid layer separate — never merge with artwork</text>
+</svg>

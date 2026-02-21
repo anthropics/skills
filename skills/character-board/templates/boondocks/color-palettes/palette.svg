@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 560" width="940" height="560" font-family="Arial, sans-serif">
+  <rect width="940" height="560" fill="#f2f0ec"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="940" height="44" fill="#1a1a1a"/>
+  <text x="16" y="29" fill="#ffffff" font-size="16" font-weight="bold" letter-spacing="2">COLOR PALETTE — BOONDOCKS ANIME</text>
+  <text x="660" y="29" fill="#666" font-size="11">CEL-SHADE · BASE + SHADOW + HIGHLIGHT</text>
+
+  <!-- SKIN GROUP -->
+  <text x="20" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">SKIN</text>
+  <line x1="20" y1="72" x2="360" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="20"  y="78" width="90" height="90" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="65"  y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="65"  y="192" fill="#555" font-size="9" text-anchor="middle">#C8915A</text>
+  <rect x="120" y="78" width="90" height="90" fill="#9e6838" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="165" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="165" y="192" fill="#555" font-size="9" text-anchor="middle">#9E6838</text>
+  <rect x="220" y="78" width="90" height="90" fill="#e4b988" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="265" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">HIGHLIGHT</text>
+  <text x="265" y="192" fill="#555" font-size="9" text-anchor="middle">#E4B988</text>
+
+  <!-- HAIR GROUP -->
+  <text x="380" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">HAIR</text>
+  <line x1="380" y1="72" x2="620" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="380" y="78" width="70" height="90" fill="#1a1a1a" stroke="#555" stroke-width="2" rx="3"/>
+  <text x="415" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="415" y="192" fill="#555" font-size="9" text-anchor="middle">#1A1A1A</text>
+  <rect x="460" y="78" width="70" height="90" fill="#0d0d0d" stroke="#555" stroke-width="2" rx="3"/>
+  <text x="495" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="495" y="192" fill="#555" font-size="9" text-anchor="middle">#0D0D0D</text>
+  <rect x="540" y="78" width="70" height="90" fill="#3d3020" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="575" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">ACCENT</text>
+  <text x="575" y="192" fill="#555" font-size="9" text-anchor="middle">#3D3020</text>
+
+  <!-- OUTLINE GROUP -->
+  <text x="650" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTLINE</text>
+  <line x1="650" y1="72" x2="920" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="650" y="78" width="80" height="90" fill="#1a1a1a" stroke="#555" stroke-width="2" rx="3"/>
+  <text x="690" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">CONTOUR</text>
+  <text x="690" y="192" fill="#555" font-size="9" text-anchor="middle">#1A1A1A · 4px</text>
+  <rect x="740" y="78" width="80" height="90" fill="#2a2a2a" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="780" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">INTERIOR</text>
+  <text x="780" y="192" fill="#555" font-size="9" text-anchor="middle">#2A2A2A · 2px</text>
+  <rect x="830" y="78" width="80" height="90" fill="#4a3818" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="870" y="180" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SKIN LINE</text>
+  <text x="870" y="192" fill="#555" font-size="9" text-anchor="middle">#4A3818 · 2.5px</text>
+
+  <!-- OUTFIT PRIMARY GROUP -->
+  <text x="20" y="222" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTFIT PRIMARY</text>
+  <line x1="20" y1="226" x2="360" y2="226" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="20"  y="232" width="90" height="90" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="65"  y="334" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="65"  y="346" fill="#555" font-size="9" text-anchor="middle">#2D4A6B</text>
+  <rect x="120" y="232" width="90" height="90" fill="#1c3050" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="165" y="334" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="165" y="346" fill="#555" font-size="9" text-anchor="middle">#1C3050</text>
+  <rect x="220" y="232" width="90" height="90" fill="#3f6590" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="265" y="334" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">HIGHLIGHT</text>
+  <text x="265" y="346" fill="#555" font-size="9" text-anchor="middle">#3F6590</text>
+
+  <!-- OUTFIT SECONDARY GROUP -->
+  <text x="380" y="222" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTFIT SECONDARY</text>
+  <line x1="380" y1="226" x2="640" y2="226" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="380" y="232" width="80" height="90" fill="#1a4488" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="420" y="334" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="420" y="346" fill="#555" font-size="9" text-anchor="middle">#1A4488</text>
+  <rect x="470" y="232" width="80" height="90" fill="#0e2f66" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="510" y="334" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="510" y="346" fill="#555" font-size="9" text-anchor="middle">#0E2F66</text>
+
+  <!-- EYES GROUP -->
+  <text x="660" y="222" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">EYES</text>
+  <line x1="660" y1="226" x2="920" y2="226" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="660" y="232" width="58" height="68" fill="#553300" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="689" y="312" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">IRIS</text>
+  <text x="689" y="324" fill="#555" font-size="9" text-anchor="middle">#553300</text>
+  <rect x="728" y="232" width="58" height="68" fill="#111111" stroke="#555" stroke-width="2" rx="3"/>
+  <text x="757" y="312" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">PUPIL</text>
+  <text x="757" y="324" fill="#555" font-size="9" text-anchor="middle">#111111</text>
+  <rect x="796" y="232" width="58" height="68" fill="#f0ede0" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="825" y="312" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">WHITE</text>
+  <text x="825" y="324" fill="#555" font-size="9" text-anchor="middle">#F0EDE0</text>
+  <rect x="864" y="232" width="56" height="68" fill="#ffffff" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="892" y="312" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">REFLECT</text>
+  <text x="892" y="324" fill="#555" font-size="9" text-anchor="middle">#FFFFFF</text>
+
+  <!-- ACCENT / ACCESSORY GROUP -->
+  <text x="20" y="376" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">ACCENT / ACCESSORY</text>
+  <line x1="20" y1="380" x2="400" y2="380" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="20"  y="386" width="80" height="80" fill="#ccaa00" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="60"  y="478" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BELT BUCKLE</text>
+  <text x="60"  y="490" fill="#555" font-size="9" text-anchor="middle">#CCAA00</text>
+  <rect x="110" y="386" width="80" height="80" fill="#996600" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="150" y="478" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BELT SHADOW</text>
+  <text x="150" y="490" fill="#555" font-size="9" text-anchor="middle">#996600</text>
+  <rect x="200" y="386" width="80" height="80" fill="#8b0000" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="240" y="478" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">ACCENT RED</text>
+  <text x="240" y="490" fill="#555" font-size="9" text-anchor="middle">#8B0000</text>
+  <rect x="290" y="386" width="80" height="80" fill="#5d4e37" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="330" y="478" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">NEUTRAL WARM</text>
+  <text x="330" y="490" fill="#555" font-size="9" text-anchor="middle">#5D4E37</text>
+
+  <!-- CEL-SHADE DIAGRAM -->
+  <rect x="440" y="376" width="480" height="168" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5" rx="4"/>
+  <rect x="440" y="376" width="480" height="26" fill="#1a1a1a" rx="4"/>
+  <text x="680" y="394" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">CEL-SHADE METHOD</text>
+  <!-- Base -->
+  <rect x="456" y="414" width="120" height="40" fill="#c8915a" rx="3"/>
+  <text x="516" y="438" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">BASE</text>
+  <!-- Arrow -->
+  <text x="596" y="438" fill="#1a1a1a" font-size="18" text-anchor="middle">+</text>
+  <!-- Shadow layer -->
+  <rect x="616" y="414" width="120" height="40" fill="#9e6838" rx="3" opacity="0.85"/>
+  <text x="676" y="425" fill="#ffffff" font-size="8" text-anchor="middle" font-weight="bold">SHADOW LAYER</text>
+  <text x="676" y="440" fill="#ffffff" font-size="8" text-anchor="middle">(multiply blend)</text>
+  <!-- Arrow -->
+  <text x="756" y="438" fill="#1a1a1a" font-size="18" text-anchor="middle">=</text>
+  <!-- Result -->
+  <rect x="766" y="414" width="140" height="40" rx="3" fill="#c8915a"/>
+  <rect x="810" y="414" width="96" height="40" rx="3" fill="#9e6838" opacity="0.7"/>
+  <text x="838" y="438" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">RESULT</text>
+  <!-- Note -->
+  <text x="456" y="480" fill="#555" font-size="9">Skin line color: #4A3818 (2.5px) for interior face/hand detail</text>
+  <text x="456" y="496" fill="#555" font-size="9">Contour outline: #1A1A1A (4px) — Boondocks signature thick border</text>
+  <text x="456" y="512" fill="#555" font-size="9">Interior lines: #2A2A2A (2px) for cloth folds, anatomy definition</text>
+  <text x="456" y="528" fill="#555" font-size="9">Max 20 colors total · Rim light optional: #E4B988 applied on lit edges</text>
+</svg>

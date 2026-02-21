@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 600" width="840" height="600" font-family="Arial, sans-serif">
+  <defs>
+    <pattern id="g20" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e8e4dc" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="840" height="600" fill="#f2f0ec"/>
+  <rect width="840" height="600" fill="url(#g20)"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="840" height="40" fill="#1a1a1a"/>
+  <text x="14" y="26" fill="#ffffff" font-size="15" font-weight="bold" letter-spacing="2">GEOMETRY CONSTRUCTION GUIDE — BOONDOCKS ANIME</text>
+
+  <!-- ────────────────────────────────────────
+       LEFT: HEAD CONSTRUCTION DETAIL
+  ──────────────────────────────────────── -->
+  <text x="56" y="62" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">HEAD CONSTRUCTION</text>
+
+  <!-- Head base circle -->
+  <circle cx="150" cy="138" r="66" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="150" cy="138" r="66" fill="#c8915a" stroke="#1a1a1a" stroke-width="3" opacity="0.7"/>
+  <!-- Chin extension (angular jaw) -->
+  <path d="M 84 145 L 92 182 L 150 194 L 208 182 L 216 145" fill="#c8915a" stroke="#1a1a1a" stroke-width="3" opacity="0.7"/>
+
+  <!-- Vertical centerline -->
+  <line x1="150" y1="68" x2="150" y2="210" stroke="#2266cc" stroke-width="1.5" stroke-dasharray="8,4" opacity="0.7"/>
+  <!-- Horizontal eye line (midpoint of circle) -->
+  <line x1="72"  y1="138" x2="228" y2="138" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.7"/>
+
+  <!-- Facial thirds markers -->
+  <!-- Top of head → hairline: 68 to 96  (28px) -->
+  <!-- Hairline → brow:       96 to 116  (20px) -->
+  <!-- Brow → nose:          116 to 160  (44px) -->
+  <!-- Nose → chin:          160 to 194  (34px) -->
+  <line x1="60" y1="96"  x2="240" y2="96"  stroke="#228822" stroke-width="1" stroke-dasharray="5,4" opacity="0.6"/>
+  <line x1="60" y1="116" x2="240" y2="116" stroke="#228822" stroke-width="1" stroke-dasharray="5,4" opacity="0.6"/>
+  <line x1="60" y1="160" x2="240" y2="160" stroke="#228822" stroke-width="1" stroke-dasharray="5,4" opacity="0.6"/>
+
+  <!-- Labels for thirds -->
+  <text x="244" y="82"  fill="#228822" font-size="9">hair zone</text>
+  <text x="244" y="108" fill="#228822" font-size="9">forehead</text>
+  <text x="244" y="130" fill="#228822" font-size="9">brow line</text>
+  <text x="244" y="152" fill="#cc2200" font-size="9">EYE LINE ← midpoint</text>
+  <text x="244" y="172" fill="#228822" font-size="9">nose</text>
+  <text x="244" y="190" fill="#228822" font-size="9">mouth / chin</text>
+
+  <!-- Eye placeholders (large) -->
+  <ellipse cx="119" cy="138" rx="20" ry="22" fill="#1a1a1a" opacity="0.85"/>
+  <ellipse cx="181" cy="138" rx="20" ry="22" fill="#1a1a1a" opacity="0.85"/>
+  <ellipse cx="119" cy="138" rx="14" ry="15" fill="#553300"/>
+  <ellipse cx="181" cy="138" rx="14" ry="15" fill="#553300"/>
+  <circle  cx="123" cy="133" r="4" fill="#ffffff"/>
+  <circle  cx="185" cy="133" r="4" fill="#ffffff"/>
+
+  <!-- Eyebrow guides (angular) -->
+  <path d="M 98 120 L 140 124" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+  <path d="M 162 124 L 204 119" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- Nose (small, angular) -->
+  <path d="M 150 158 L 154 174 L 148 174" fill="none" stroke="#4a3818" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Mouth -->
+  <path d="M 132 182 L 150 188 L 168 182" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- ────────────────────────────────────────
+       CENTER: FULL BODY PROPORTION (7H)
+  ──────────────────────────────────────── -->
+  <text x="340" y="62" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">7-HEAD PROPORTION</text>
+
+  <!-- Proportion ruler: 58 to 478, 420px = 7H, each H = 60px -->
+  <line x1="336" y1="68" x2="336" y2="488" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="330" y1="68"  x2="342" y2="68"  stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="330" y1="128" x2="342" y2="128" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="188" x2="342" y2="188" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="248" x2="342" y2="248" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="308" x2="342" y2="308" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="368" x2="342" y2="368" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="428" x2="342" y2="428" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="330" y1="488" x2="342" y2="488" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="326" y="71"  fill="#1a1a1a" font-size="9" text-anchor="end">1H</text>
+  <text x="326" y="131" fill="#cc2200" font-size="9" text-anchor="end">2H</text>
+  <text x="326" y="191" fill="#cc2200" font-size="9" text-anchor="end">3H</text>
+  <text x="326" y="251" fill="#cc2200" font-size="9" text-anchor="end">4H</text>
+  <text x="326" y="311" fill="#cc2200" font-size="9" text-anchor="end">5H</text>
+  <text x="326" y="371" fill="#cc2200" font-size="9" text-anchor="end">6H</text>
+  <text x="326" y="431" fill="#cc2200" font-size="9" text-anchor="end">7H</text>
+
+  <!-- Horizontal proportion lines -->
+  <line x1="350" y1="128" x2="690" y2="128" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+  <line x1="350" y1="188" x2="690" y2="188" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+  <line x1="350" y1="248" x2="690" y2="248" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+  <line x1="350" y1="308" x2="690" y2="308" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+  <line x1="350" y1="368" x2="690" y2="368" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+  <line x1="350" y1="428" x2="690" y2="428" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.3"/>
+
+  <!-- Body centerline -->
+  <line x1="470" y1="60" x2="470" y2="500" stroke="#2266cc" stroke-width="1.5" stroke-dasharray="8,5" opacity="0.5"/>
+
+  <!-- Head zone label -->
+  <rect x="350" y="68" width="24" height="14" fill="#ccaa00" opacity="0.8" rx="2"/>
+  <text x="362" y="79" fill="#1a1a1a" font-size="7" text-anchor="middle" font-weight="bold">HEAD</text>
+
+  <!-- Body construction (simplified) -->
+  <!-- Head ellipse (1H = 68 to 128) -->
+  <ellipse cx="470" cy="98" rx="44" ry="30" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5" opacity="0.8"/>
+  <!-- Jaw -->
+  <path d="M 428 106 L 434 128 L 470 134 L 506 128 L 512 106" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5" opacity="0.8"/>
+  <!-- Neck (128 to 148) -->
+  <rect x="462" y="128" width="16" height="24" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Shoulders / chest label band (2H = 128 to 188) -->
+  <rect x="350" y="128" width="24" height="14" fill="#2d4a6b" opacity="0.8" rx="2"/>
+  <text x="362" y="139" fill="#ffffff" font-size="7" text-anchor="middle" font-weight="bold">TORSO</text>
+  <!-- Torso (148 to 248) — trapezoid -->
+  <path d="M 420 148 L 408 248 L 432 248 L 470 252 L 508 248 L 532 248 L 520 148 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5" opacity="0.8"/>
+  <!-- Left upper arm (148 to 248) -->
+  <path d="M 420 152 L 398 156 L 386 250 L 408 256 L 420 196 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Right upper arm -->
+  <path d="M 520 152 L 542 156 L 554 250 L 532 256 L 520 196 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Forearms (248 to 338, 3H to ~4.7H) -->
+  <path d="M 386 250 L 378 320 L 396 326 L 408 256 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <path d="M 554 250 L 562 320 L 544 326 L 532 256 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Pelvis/waist label -->
+  <rect x="350" y="248" width="24" height="14" fill="#1a1a1a" opacity="0.7" rx="2"/>
+  <text x="362" y="259" fill="#ffffff" font-size="7" text-anchor="middle" font-weight="bold">BELT</text>
+  <!-- Pelvis (248 to 308) -->
+  <path d="M 432 248 L 428 308 L 512 308 L 508 248 Z" fill="#1a1a4a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Thighs (5H–6H, 308–368) label -->
+  <rect x="350" y="308" width="24" height="14" fill="#1a4488" opacity="0.8" rx="2"/>
+  <text x="362" y="319" fill="#ffffff" font-size="7" text-anchor="middle">THI</text>
+  <!-- Thighs -->
+  <path d="M 430 308 L 422 368 L 456 372 L 468 312 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <path d="M 510 308 L 518 368 L 484 372 L 472 312 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Shins (6H–7H, 368–428) -->
+  <rect x="350" y="368" width="24" height="14" fill="#163980" opacity="0.8" rx="2"/>
+  <text x="362" y="379" fill="#ffffff" font-size="7" text-anchor="middle">SHIN</text>
+  <path d="M 422 368 L 414 432 L 448 436 L 456 372 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <path d="M 518 368 L 526 432 L 492 436 L 484 372 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <!-- Feet -->
+  <path d="M 408 432 L 406 452 L 452 454 L 452 438 Z" fill="#1a1a1a" opacity="0.85"/>
+  <path d="M 488 438 L 488 454 L 534 452 L 532 432 Z" fill="#1a1a1a" opacity="0.85"/>
+
+  <!-- Hands -->
+  <ellipse cx="386" cy="334" rx="15" ry="12" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+  <ellipse cx="554" cy="334" rx="15" ry="12" fill="#c8915a" stroke="#1a1a1a" stroke-width="2" opacity="0.8"/>
+
+  <!-- ── RIGHT PANEL: Proportion summary ── -->
+  <rect x="704" y="52" width="126" height="430" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <rect x="704" y="52" width="126" height="28" fill="#1a1a1a" rx="3"/>
+  <text x="767" y="71" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" letter-spacing="1">PROPORTIONS</text>
+
+  <text x="712" y="96"  fill="#1a1a1a" font-size="9" font-weight="bold">Total height:</text>
+  <text x="823" y="96"  fill="#555" font-size="9" text-anchor="end">7H</text>
+  <line x1="710" y1="101" x2="824" y2="101" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="116" fill="#1a1a1a" font-size="9" font-weight="bold">Head:</text>
+  <text x="823" y="116" fill="#555" font-size="9" text-anchor="end">1H (60px)</text>
+  <line x1="710" y1="121" x2="824" y2="121" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="136" fill="#1a1a1a" font-size="9" font-weight="bold">Neck:</text>
+  <text x="823" y="136" fill="#555" font-size="9" text-anchor="end">0.3H</text>
+  <line x1="710" y1="141" x2="824" y2="141" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="156" fill="#1a1a1a" font-size="9" font-weight="bold">Torso:</text>
+  <text x="823" y="156" fill="#555" font-size="9" text-anchor="end">2H</text>
+  <line x1="710" y1="161" x2="824" y2="161" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="176" fill="#1a1a1a" font-size="9" font-weight="bold">Pelvis:</text>
+  <text x="823" y="176" fill="#555" font-size="9" text-anchor="end">1H</text>
+  <line x1="710" y1="181" x2="824" y2="181" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="196" fill="#1a1a1a" font-size="9" font-weight="bold">Thighs:</text>
+  <text x="823" y="196" fill="#555" font-size="9" text-anchor="end">1H</text>
+  <line x1="710" y1="201" x2="824" y2="201" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="216" fill="#1a1a1a" font-size="9" font-weight="bold">Shins:</text>
+  <text x="823" y="216" fill="#555" font-size="9" text-anchor="end">1H</text>
+  <line x1="710" y1="221" x2="824" y2="221" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="236" fill="#1a1a1a" font-size="9" font-weight="bold">Feet:</text>
+  <text x="823" y="236" fill="#555" font-size="9" text-anchor="end">0.3H</text>
+  <line x1="710" y1="241" x2="824" y2="241" stroke="#cccccc" stroke-width="1.5"/>
+  <text x="712" y="258" fill="#1a1a1a" font-size="9" font-weight="bold">Eye position:</text>
+  <text x="823" y="258" fill="#555" font-size="9" text-anchor="end">½ head height</text>
+  <line x1="710" y1="263" x2="824" y2="263" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="278" fill="#1a1a1a" font-size="9" font-weight="bold">Eye size:</text>
+  <text x="823" y="278" fill="#555" font-size="9" text-anchor="end">large (anime)</text>
+  <line x1="710" y1="283" x2="824" y2="283" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="298" fill="#1a1a1a" font-size="9" font-weight="bold">Jaw style:</text>
+  <text x="823" y="298" fill="#555" font-size="9" text-anchor="end">angular</text>
+  <line x1="710" y1="303" x2="824" y2="303" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="318" fill="#1a1a1a" font-size="9" font-weight="bold">Contour:</text>
+  <text x="823" y="318" fill="#555" font-size="9" text-anchor="end">4px</text>
+  <line x1="710" y1="323" x2="824" y2="323" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="338" fill="#1a1a1a" font-size="9" font-weight="bold">Interior:</text>
+  <text x="823" y="338" fill="#555" font-size="9" text-anchor="end">2px</text>
+  <line x1="710" y1="343" x2="824" y2="343" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="358" fill="#1a1a1a" font-size="9" font-weight="bold">Shading:</text>
+  <text x="823" y="358" fill="#555" font-size="9" text-anchor="end">cel (1 stop)</text>
+  <line x1="710" y1="363" x2="824" y2="363" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="378" fill="#1a1a1a" font-size="9" font-weight="bold">Facial thirds:</text>
+  <text x="823" y="378" fill="#555" font-size="9" text-anchor="end">3 equal zones</text>
+  <line x1="710" y1="383" x2="824" y2="383" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="398" fill="#1a1a1a" font-size="9" font-weight="bold">Grid snap:</text>
+  <text x="823" y="398" fill="#555" font-size="9" text-anchor="end">20px</text>
+  <line x1="710" y1="403" x2="824" y2="403" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="418" fill="#1a1a1a" font-size="9" font-weight="bold">Perspective:</text>
+  <text x="823" y="418" fill="#555" font-size="9" text-anchor="end">slight 3/4</text>
+  <line x1="710" y1="423" x2="824" y2="423" stroke="#eee" stroke-width="1"/>
+  <text x="712" y="438" fill="#1a1a1a" font-size="9" font-weight="bold">Primary shapes:</text>
+  <text x="823" y="438" fill="#555" font-size="9" text-anchor="end">20+ segments</text>
+  <text x="712" y="454" fill="#555" font-size="9">ellipse head · polygon</text>
+  <text x="712" y="468" fill="#555" font-size="9">jaw · angular paths</text>
+
+  <!-- Color legend for proportion zones -->
+  <rect x="56" y="224" width="260" height="108" fill="#ffffff" stroke="#cccccc" stroke-width="1" rx="3" opacity="0.9"/>
+  <text x="186" y="242" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">GUIDE COLOR KEY</text>
+  <line x1="64" y1="248" x2="308" y2="248" stroke="#eee" stroke-width="1"/>
+  <line x1="64" y1="265" x2="84" y2="265" stroke="#2266cc" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="90" y="269" fill="#1a1a1a" font-size="9">Vertical centerline</text>
+  <line x1="64" y1="283" x2="84" y2="283" stroke="#cc2200" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="90" y="287" fill="#1a1a1a" font-size="9">Eye line / head-unit markers</text>
+  <line x1="64" y1="301" x2="84" y2="301" stroke="#228822" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="90" y="305" fill="#1a1a1a" font-size="9">Facial thirds</text>
+  <line x1="64" y1="319" x2="84" y2="319" stroke="#aaaaaa" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <text x="90" y="323" fill="#1a1a1a" font-size="9">Construction ghost</text>
+</svg>

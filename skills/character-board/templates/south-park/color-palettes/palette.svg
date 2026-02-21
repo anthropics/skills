@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 460" width="880" height="460" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect width="880" height="460" fill="#f5f5f0"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="880" height="44" fill="#1a1a1a"/>
+  <text x="16" y="29" fill="#ffffff" font-size="16" font-weight="bold" letter-spacing="2">COLOR PALETTE — SOUTH PARK FLAT CUTOUT</text>
+  <text x="700" y="29" fill="#666" font-size="11">FLAT FILLS ONLY · NO GRADIENTS</text>
+
+  <!-- SKIN GROUP -->
+  <text x="20" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">SKIN</text>
+  <line x1="20" y1="72" x2="280" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <!-- Base -->
+  <rect x="20"  y="78" width="80" height="80" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="60"  y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="60"  y="182" fill="#555"    font-size="9" text-anchor="middle">#F5C88A</text>
+  <!-- Shadow -->
+  <rect x="110" y="78" width="80" height="80" fill="#d4a164" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="150" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="150" y="182" fill="#555"    font-size="9" text-anchor="middle">#D4A164</text>
+  <!-- Highlight -->
+  <rect x="200" y="78" width="80" height="80" fill="#fae0b2" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="240" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">HIGHLIGHT</text>
+  <text x="240" y="182" fill="#555"    font-size="9" text-anchor="middle">#FAE0B2</text>
+
+  <!-- HAIR GROUP -->
+  <text x="310" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">HAIR</text>
+  <line x1="310" y1="72" x2="570" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="310" y="78" width="80" height="80" fill="#3d2200" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="350" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="350" y="182" fill="#555"    font-size="9" text-anchor="middle">#3D2200</text>
+  <rect x="400" y="78" width="80" height="80" fill="#241600" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="440" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="440" y="182" fill="#555"    font-size="9" text-anchor="middle">#241600</text>
+  <rect x="490" y="78" width="80" height="80" fill="#7a4f1a" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="530" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">ACCENT</text>
+  <text x="530" y="182" fill="#555"    font-size="9" text-anchor="middle">#7A4F1A</text>
+
+  <!-- OUTLINE GROUP -->
+  <text x="600" y="68" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTLINE</text>
+  <line x1="600" y1="72" x2="860" y2="72" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="600" y="78" width="80" height="80" fill="#1a1a1a" stroke="#555" stroke-width="2" rx="3"/>
+  <text x="640" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">MAIN</text>
+  <text x="640" y="182" fill="#555"    font-size="9" text-anchor="middle">#1A1A1A</text>
+  <rect x="690" y="78" width="80" height="80" fill="#444444" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="730" y="170" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SECONDARY</text>
+  <text x="730" y="182" fill="#555"    font-size="9" text-anchor="middle">#444444</text>
+
+  <!-- OUTFIT PRIMARY GROUP -->
+  <text x="20" y="216" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTFIT PRIMARY</text>
+  <line x1="20" y1="220" x2="280" y2="220" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="20"  y="226" width="80" height="80" fill="#e03030" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="60"  y="318" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="60"  y="330" fill="#555"    font-size="9" text-anchor="middle">#E03030</text>
+  <rect x="110" y="226" width="80" height="80" fill="#b02020" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="150" y="318" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="150" y="330" fill="#555"    font-size="9" text-anchor="middle">#B02020</text>
+  <rect x="200" y="226" width="80" height="80" fill="#ff6060" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="240" y="318" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">HIGHLIGHT</text>
+  <text x="240" y="330" fill="#555"    font-size="9" text-anchor="middle">#FF6060</text>
+
+  <!-- OUTFIT SECONDARY GROUP -->
+  <text x="310" y="216" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">OUTFIT SECONDARY</text>
+  <line x1="310" y1="220" x2="500" y2="220" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="310" y="226" width="80" height="80" fill="#2266cc" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="350" y="318" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">BASE</text>
+  <text x="350" y="330" fill="#555"    font-size="9" text-anchor="middle">#2266CC</text>
+  <rect x="400" y="226" width="80" height="80" fill="#1a4e99" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="440" y="318" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">SHADOW</text>
+  <text x="440" y="330" fill="#555"    font-size="9" text-anchor="middle">#1A4E99</text>
+
+  <!-- EYES GROUP -->
+  <text x="530" y="216" fill="#1a1a1a" font-size="11" font-weight="bold" letter-spacing="1">EYES</text>
+  <line x1="530" y1="220" x2="860" y2="220" stroke="#1a1a1a" stroke-width="1"/>
+  <rect x="530" y="226" width="60" height="60" fill="#1a1a1a" stroke="#555"    stroke-width="2" rx="3"/>
+  <text x="560" y="298" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">PUPIL</text>
+  <text x="560" y="310" fill="#555"    font-size="9" text-anchor="middle">#1A1A1A</text>
+  <rect x="600" y="226" width="60" height="60" fill="#ffffff" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="630" y="298" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">WHITE</text>
+  <text x="630" y="310" fill="#555"    font-size="9" text-anchor="middle">#FFFFFF</text>
+  <rect x="670" y="226" width="60" height="60" fill="#4488ee" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="700" y="298" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">IRIS</text>
+  <text x="700" y="310" fill="#555"    font-size="9" text-anchor="middle">#4488EE</text>
+  <rect x="740" y="226" width="60" height="60" fill="#eeeeff" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="770" y="298" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">REFLECT</text>
+  <text x="770" y="310" fill="#555"    font-size="9" text-anchor="middle">#EEEEFF</text>
+  <rect x="800" y="226" width="60" height="60" fill="#ff9922" stroke="#1a1a1a" stroke-width="2" rx="3"/>
+  <text x="830" y="298" fill="#1a1a1a" font-size="9" text-anchor="middle" font-weight="bold">ACCENT</text>
+  <text x="830" y="310" fill="#555"    font-size="9" text-anchor="middle">#FF9922</text>
+
+  <!-- Footer: Usage rules -->
+  <rect x="0" y="420" width="880" height="40" fill="#1a1a1a" opacity="0.06"/>
+  <text x="20"  y="443" fill="#444" font-size="10" font-weight="bold">RULES:</text>
+  <text x="68"  y="443" fill="#444" font-size="10">Flat fills only · Shadow = base hue −20% lightness · No gradients · No filters · Outline always #1A1A1A · Max 12 colors total</text>
+</svg>

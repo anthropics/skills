@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" width="900" height="560" font-family="Arial Black, Arial, sans-serif">
+  <!-- Background -->
+  <rect width="900" height="560" fill="#f5f5f0"/>
+
+  <!-- Grid overlay (16px) -->
+  <defs>
+    <pattern id="grid16" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#e0e0d8" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="560" fill="url(#grid16)"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="900" height="44" fill="#1a1a1a"/>
+  <text x="16" y="29" fill="#ffffff" font-size="18" font-weight="bold" letter-spacing="2">CHARACTER SPEC — SOUTH PARK FLAT CUTOUT STYLE</text>
+  <text x="744" y="29" fill="#aaaaaa" font-size="12">v1.0 · DATE</text>
+
+  <!-- Section labels -->
+  <text x="130" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">FRONT</text>
+  <text x="380" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">¾ TURN</text>
+  <text x="620" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">SIDE PROFILE</text>
+
+  <!-- Height ruler (left edge) -->
+  <line x1="28" y1="80" x2="28" y2="480" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="22" y1="80"  x2="34" y2="80"  stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="22" y1="213" x2="34" y2="213" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="22" y1="346" x2="34" y2="346" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="22" y1="413" x2="34" y2="413" stroke="#1a1a1a" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="22" y1="480" x2="34" y2="480" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="18" y="83"  fill="#1a1a1a" font-size="9" text-anchor="end">1H</text>
+  <text x="18" y="216" fill="#1a1a1a" font-size="9" text-anchor="end">2H</text>
+  <text x="18" y="349" fill="#1a1a1a" font-size="9" text-anchor="end">3H</text>
+  <text x="18" y="416" fill="#1a1a1a" font-size="9" text-anchor="end">3.5H</text>
+  <text x="18" y="483" fill="#1a1a1a" font-size="9" text-anchor="end">4H</text>
+
+  <!-- ── FRONT VIEW ── -->
+  <!-- Head (large circle, 1/3 height) -->
+  <circle cx="130" cy="147" r="67" fill="#f5c88a" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Eyes -->
+  <circle cx="108" cy="140" r="8" fill="#1a1a1a"/>
+  <circle cx="152" cy="140" r="8" fill="#1a1a1a"/>
+  <circle cx="110" cy="138" r="3" fill="#ffffff"/>
+  <circle cx="154" cy="138" r="3" fill="#ffffff"/>
+  <!-- Mouth -->
+  <path d="M 112 162 Q 130 174 148 162" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Body (trapezoid) -->
+  <path d="M 95 218 L 82 340 L 178 340 L 165 218 Z" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Left arm -->
+  <rect x="58" y="225" width="28" height="90" rx="14" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Right arm -->
+  <rect x="174" y="225" width="28" height="90" rx="14" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Left leg -->
+  <rect x="93" y="343" width="32" height="90" rx="10" fill="#2266cc" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Right leg -->
+  <rect x="135" y="343" width="32" height="90" rx="10" fill="#2266cc" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Shoes -->
+  <ellipse cx="109" cy="437" rx="20" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="151" cy="437" rx="20" ry="9" fill="#1a1a1a"/>
+  <!-- Centerline -->
+  <line x1="130" y1="80" x2="130" y2="480" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,4" opacity="0.5"/>
+
+  <!-- ── ¾ TURN VIEW ── -->
+  <!-- Head (slightly oval for 3/4) -->
+  <ellipse cx="380" cy="147" rx="60" ry="67" fill="#f5c88a" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Eyes (near eye bigger) -->
+  <circle cx="365" cy="140" r="9" fill="#1a1a1a"/>
+  <circle cx="400" cy="140" r="6" fill="#1a1a1a"/>
+  <circle cx="367" cy="138" r="3" fill="#ffffff"/>
+  <circle cx="402" cy="138" r="2" fill="#ffffff"/>
+  <!-- Mouth (shifted) -->
+  <path d="M 358 162 Q 374 174 392 162" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Nose (visible in 3/4) -->
+  <path d="M 393 148 Q 400 155 395 162" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Body -->
+  <path d="M 342 218 L 330 340 L 425 340 L 420 218 Z" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Visible arm (right) -->
+  <rect x="421" y="225" width="26" height="88" rx="13" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Legs -->
+  <rect x="340" y="343" width="32" height="90" rx="10" fill="#2266cc" stroke="#1a1a1a" stroke-width="3"/>
+  <rect x="383" y="343" width="32" height="90" rx="10" fill="#2266cc" stroke="#1a1a1a" stroke-width="3"/>
+  <ellipse cx="356" cy="437" rx="20" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="399" cy="437" rx="20" ry="9" fill="#1a1a1a"/>
+
+  <!-- ── SIDE PROFILE ── -->
+  <!-- Head -->
+  <ellipse cx="616" cy="147" rx="55" ry="67" fill="#f5c88a" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Single eye -->
+  <circle cx="600" cy="140" r="8" fill="#1a1a1a"/>
+  <circle cx="602" cy="138" r="3" fill="#ffffff"/>
+  <!-- Nose (side) -->
+  <path d="M 640 148 L 656 158 L 648 168" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Mouth (side) -->
+  <path d="M 594 162 Q 608 172 620 162" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Body (side, narrower) -->
+  <path d="M 582 218 L 572 340 L 660 340 L 655 218 Z" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Side arm (visible) -->
+  <rect x="658" y="225" width="24" height="88" rx="12" fill="#e03030" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Legs (side — one in front, one behind slightly) -->
+  <rect x="578" y="343" width="32" height="90" rx="10" fill="#1d55bb" stroke="#1a1a1a" stroke-width="3"/>
+  <rect x="615" y="343" width="32" height="90" rx="10" fill="#2266cc" stroke="#1a1a1a" stroke-width="3"/>
+  <ellipse cx="594" cy="437" rx="20" ry="9" fill="#111111"/>
+  <ellipse cx="631" cy="437" rx="22" ry="9" fill="#1a1a1a"/>
+
+  <!-- ── EXPRESSION STRIP ── -->
+  <rect x="20" y="494" width="860" height="58" fill="#e8e8e2" rx="4"/>
+  <text x="36" y="510" fill="#1a1a1a" font-size="10" font-weight="bold" letter-spacing="1">EXPRESSIONS</text>
+  <!-- Neutral -->
+  <circle cx="90"  cy="530" r="18" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="84"  cy="526" r="4" fill="#1a1a1a"/>
+  <circle cx="96"  cy="526" r="4" fill="#1a1a1a"/>
+  <path d="M 83 536 L 97 536" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="90" y="554" fill="#555" font-size="8" text-anchor="middle">NEUTRAL</text>
+  <!-- Happy -->
+  <circle cx="168" cy="530" r="18" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="162" cy="526" r="4" fill="#1a1a1a"/>
+  <circle cx="174" cy="526" r="4" fill="#1a1a1a"/>
+  <path d="M 160 534 Q 168 544 176 534" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <text x="168" y="554" fill="#555" font-size="8" text-anchor="middle">HAPPY</text>
+  <!-- Angry -->
+  <circle cx="246" cy="530" r="18" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 238 520 L 244 526 M 254 520 L 248 526" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="241" cy="528" r="4" fill="#1a1a1a"/>
+  <circle cx="251" cy="528" r="4" fill="#1a1a1a"/>
+  <path d="M 240 537 L 252 537" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="246" y="554" fill="#555" font-size="8" text-anchor="middle">ANGRY</text>
+  <!-- Surprised -->
+  <circle cx="324" cy="530" r="18" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="318" cy="525" r="5" fill="#1a1a1a"/>
+  <circle cx="330" cy="525" r="5" fill="#1a1a1a"/>
+  <circle cx="318" cy="524" r="2" fill="#ffffff"/>
+  <circle cx="330" cy="524" r="2" fill="#ffffff"/>
+  <ellipse cx="324" cy="537" rx="5" ry="4" fill="#1a1a1a"/>
+  <text x="324" y="554" fill="#555" font-size="8" text-anchor="middle">SURPRISED</text>
+  <!-- Sad -->
+  <circle cx="402" cy="530" r="18" fill="#f5c88a" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 395 522 L 398 527 M 409 522 L 406 527" stroke="#1a1a1a" stroke-width="1.5"/>
+  <circle cx="396" cy="528" r="4" fill="#1a1a1a"/>
+  <circle cx="408" cy="528" r="4" fill="#1a1a1a"/>
+  <path d="M 394 539 Q 402 533 410 539" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <text x="402" y="554" fill="#555" font-size="8" text-anchor="middle">SAD</text>
+
+  <!-- CHARACTER NAME plate -->
+  <rect x="760" y="494" width="120" height="58" fill="#1a1a1a" rx="4"/>
+  <text x="820" y="514" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle" letter-spacing="1">CHARACTER</text>
+  <text x="820" y="530" fill="#ffdd44" font-size="14" font-weight="bold" text-anchor="middle">NAME</text>
+  <text x="820" y="546" fill="#888888" font-size="8" text-anchor="middle">South Park Style</text>
+
+  <!-- Dividers between views -->
+  <line x1="248" y1="64" x2="248" y2="488" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="500" y1="64" x2="500" y2="488" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="740" y1="64" x2="740" y2="488" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+</svg>

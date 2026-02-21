@@ -1,0 +1,281 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="960" height="620" font-family="Arial, sans-serif">
+  <!-- Background -->
+  <rect width="960" height="620" fill="#f2f0ec"/>
+
+  <!-- Subtle grid -->
+  <defs>
+    <pattern id="bg-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e4e0da" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="620" fill="url(#bg-grid)"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="960" height="44" fill="#1a1a1a"/>
+  <text x="16" y="29" fill="#ffffff" font-size="17" font-weight="bold" letter-spacing="2">CHARACTER SPEC — BOONDOCKS ANIME STYLE</text>
+  <text x="780" y="29" fill="#888" font-size="11">v1.0 · DATE</text>
+
+  <!-- Section labels -->
+  <text x="138" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">FRONT</text>
+  <text x="390" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">¾ TURN</text>
+  <text x="636" y="72" fill="#1a1a1a" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">SIDE PROFILE</text>
+
+  <!-- Dividers -->
+  <line x1="270" y1="58" x2="270" y2="510" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="510" y1="58" x2="510" y2="510" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="760" y1="58" x2="760" y2="510" stroke="#cccccc" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- Height ruler (7 heads) -->
+  <line x1="30" y1="82" x2="30" y2="502" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Each head = 60px. 7H = 420px. Range 82 to 502 = 420px. -->
+  <line x1="24" y1="82"  x2="36" y2="82"  stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="24" y1="142" x2="36" y2="142" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="202" x2="36" y2="202" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="262" x2="36" y2="262" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="322" x2="36" y2="322" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="382" x2="36" y2="382" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="442" x2="36" y2="442" stroke="#cc2200" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="24" y1="502" x2="36" y2="502" stroke="#1a1a1a" stroke-width="2"/>
+  <text x="20" y="85"  fill="#1a1a1a" font-size="9" text-anchor="end" font-weight="bold">1H</text>
+  <text x="20" y="145" fill="#cc2200" font-size="9" text-anchor="end">2H</text>
+  <text x="20" y="205" fill="#cc2200" font-size="9" text-anchor="end">3H</text>
+  <text x="20" y="265" fill="#cc2200" font-size="9" text-anchor="end">4H</text>
+  <text x="20" y="325" fill="#cc2200" font-size="9" text-anchor="end">5H</text>
+  <text x="20" y="385" fill="#cc2200" font-size="9" text-anchor="end">6H</text>
+  <text x="20" y="445" fill="#cc2200" font-size="9" text-anchor="end">7H</text>
+
+  <!-- Proportion lines across -->
+  <line x1="50" y1="142" x2="760" y2="142" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+  <line x1="50" y1="202" x2="760" y2="202" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+  <line x1="50" y1="262" x2="760" y2="262" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+  <line x1="50" y1="322" x2="760" y2="322" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+  <line x1="50" y1="382" x2="760" y2="382" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+  <line x1="50" y1="442" x2="760" y2="442" stroke="#cc2200" stroke-width="1" stroke-dasharray="6,5" opacity="0.35"/>
+
+  <!-- ── FRONT VIEW ── -->
+  <!-- Vertical centerline -->
+  <line x1="138" y1="78" x2="138" y2="508" stroke="#2266cc" stroke-width="1" stroke-dasharray="8,5" opacity="0.4"/>
+  <!-- Head (circle + angular jaw) -->
+  <ellipse cx="138" cy="110" rx="42" ry="44" fill="#c8915a" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Jaw definition (angular) -->
+  <path d="M 98 118 L 108 142 L 138 148 L 168 142 L 178 118" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Hair -->
+  <path d="M 96 100 Q 94 78 110 72 Q 138 62 166 72 Q 182 78 180 100 Q 174 86 138 84 Q 102 86 96 100 Z"
+        fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Eyes (large anime, at midpoint) -->
+  <ellipse cx="118" cy="108" rx="13" ry="15" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1"/>
+  <ellipse cx="158" cy="108" rx="13" ry="15" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1"/>
+  <ellipse cx="118" cy="108" rx="9" ry="10" fill="#553300"/>
+  <ellipse cx="158" cy="108" rx="9" ry="10" fill="#553300"/>
+  <ellipse cx="118" cy="108" rx="5" ry="6" fill="#111111"/>
+  <ellipse cx="158" cy="108" rx="5" ry="6" fill="#111111"/>
+  <circle cx="121" cy="104" r="2.5" fill="#ffffff"/>
+  <circle cx="161" cy="104" r="2.5" fill="#ffffff"/>
+  <!-- Eyebrows (angular) -->
+  <path d="M 105 93 L 132 96" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 145 96 L 172 93" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <!-- Nose (small, angular) -->
+  <path d="M 138 114 L 140 128 L 136 128" fill="none" stroke="#8b5e3c" stroke-width="2" stroke-linecap="round"/>
+  <!-- Mouth -->
+  <path d="M 126 136 L 138 140 L 150 136" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Neck -->
+  <rect x="128" y="148" width="20" height="24" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Shoulders & body (angular torso) -->
+  <path d="M 80 172 L 68 282 L 108 290 L 138 294 L 168 290 L 208 282 L 196 172 L 158 166 L 118 166 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Upper arms -->
+  <path d="M 80 172 L 58 176 L 46 266 L 72 272 L 80 200 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 196 172 L 218 176 L 230 266 L 204 272 L 196 200 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Forearms -->
+  <path d="M 46 266 L 38 330 L 60 334 L 72 272 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 230 266 L 238 330 L 216 334 L 204 272 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Hands -->
+  <ellipse cx="50"  cy="340" rx="14" ry="10" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <ellipse cx="226" cy="340" rx="14" ry="10" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Belt/waist -->
+  <rect x="100" y="290" width="76" height="16" rx="2" fill="#1a1a1a"/>
+  <rect x="130" y="292" width="16" height="12" rx="1" fill="#ccaa00"/>
+  <!-- Legs (thighs) -->
+  <path d="M 108 306 L 96 382 L 128 388 L 138 310 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 168 306 L 180 382 L 148 388 L 138 310 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Shins -->
+  <path d="M 96 382 L 88 450 L 116 454 L 128 388 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 180 382 L 188 450 L 160 454 L 148 388 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Feet -->
+  <path d="M 82 450 L 80 468 L 118 470 L 120 456 Z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 156 456 L 158 470 L 196 468 L 194 450 Z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- ── ¾ TURN VIEW (simplified, shifted) ── -->
+  <line x1="390" y1="78" x2="390" y2="508" stroke="#2266cc" stroke-width="1" stroke-dasharray="8,5" opacity="0.3"/>
+  <!-- Head -->
+  <ellipse cx="388" cy="110" rx="40" ry="44" fill="#c8915a" stroke="#1a1a1a" stroke-width="3"/>
+  <path d="M 350 118 L 360 142 L 388 148 L 422 140 L 428 116" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Hair (3/4) -->
+  <path d="M 348 100 Q 346 78 360 72 Q 388 62 416 72 Q 430 78 428 100 Q 422 86 388 84 Q 354 86 348 100 Z"
+        fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Far eye (small) -->
+  <ellipse cx="368" cy="108" rx="10" ry="12" fill="#1a1a1a"/>
+  <ellipse cx="368" cy="108" rx="6"  ry="7"  fill="#553300"/>
+  <ellipse cx="368" cy="108" rx="3"  ry="4"  fill="#111"/>
+  <circle  cx="370" cy="104" r="2"   fill="#ffffff"/>
+  <!-- Near eye (larger) -->
+  <ellipse cx="402" cy="108" rx="14" ry="15" fill="#1a1a1a"/>
+  <ellipse cx="402" cy="108" rx="10" ry="11" fill="#553300"/>
+  <ellipse cx="402" cy="108" rx="5"  ry="6"  fill="#111"/>
+  <circle  cx="405" cy="104" r="2.5" fill="#ffffff"/>
+  <!-- Nose (visible from 3/4) -->
+  <path d="M 414 118 L 422 128 L 416 132" fill="none" stroke="#8b5e3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Brows -->
+  <path d="M 356 93 L 380 96" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 392 95 L 418 91" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Mouth -->
+  <path d="M 372 136 L 385 140 L 400 136" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Neck -->
+  <rect x="378" y="148" width="18" height="24" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Torso (3/4 — slightly rotated) -->
+  <path d="M 334 172 L 322 282 L 360 290 L 388 294 L 428 290 L 444 282 L 440 172 L 404 166 L 372 166 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Near arm -->
+  <path d="M 440 172 L 462 178 L 474 268 L 452 274 L 444 200 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 462 268 L 470 332 L 448 336 L 452 274 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <ellipse cx="462" cy="342" rx="14" ry="10" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Far arm (partially visible) -->
+  <path d="M 334 172 L 316 178 L 306 240 L 326 246 Z" fill="#22395a" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Belt -->
+  <rect x="354" y="290" width="76" height="16" rx="2" fill="#1a1a1a"/>
+  <rect x="384" y="292" width="16" height="12" rx="1" fill="#ccaa00"/>
+  <!-- Legs (3/4) -->
+  <path d="M 360 306 L 350 382 L 378 388 L 388 310 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 418 306 L 426 382 L 400 388 L 390 310 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 350 382 L 342 450 L 370 454 L 378 388 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 426 382 L 434 450 L 406 454 L 400 388 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Feet -->
+  <path d="M 336 450 L 334 468 L 372 470 L 374 456 Z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 402 456 L 404 470 L 442 468 L 440 450 Z" fill="#111" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- ── SIDE PROFILE ── -->
+  <!-- Head -->
+  <ellipse cx="636" cy="110" rx="36" ry="44" fill="#c8915a" stroke="#1a1a1a" stroke-width="3"/>
+  <path d="M 604 118 L 612 142 L 636 148 L 660 140 L 666 118" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Hair (side) -->
+  <path d="M 600 98 Q 598 75 615 68 Q 636 60 660 68 Q 674 76 672 98 Q 666 84 636 82 Q 606 84 600 98 Z"
+        fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Side eye -->
+  <ellipse cx="626" cy="108" rx="12" ry="14" fill="#1a1a1a"/>
+  <ellipse cx="626" cy="108" rx="8"  ry="9"  fill="#553300"/>
+  <ellipse cx="626" cy="108" rx="4"  ry="5"  fill="#111"/>
+  <circle  cx="628" cy="104" r="2"   fill="#ffffff"/>
+  <!-- Side brow -->
+  <path d="M 614 92 L 638 95" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Nose (clear from side) -->
+  <path d="M 668 118 L 680 130 L 672 138" fill="none" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Mouth (side) -->
+  <path d="M 620 136 L 632 140 L 648 136" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Neck -->
+  <rect x="626" y="148" width="16" height="24" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Torso (side — narrow) -->
+  <path d="M 598 172 L 590 282 L 622 290 L 650 288 L 674 280 L 672 172 L 648 166 L 620 166 Z"
+        fill="#2d4a6b" stroke="#1a1a1a" stroke-width="3"/>
+  <!-- Visible arm -->
+  <path d="M 672 172 L 690 178 L 700 268 L 680 274 L 672 198 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 690 268 L 698 330 L 678 334 L 680 274 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <ellipse cx="690" cy="340" rx="14" ry="10" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Belt -->
+  <rect x="580" y="288" width="76" height="16" rx="2" fill="#1a1a1a"/>
+  <!-- Legs (side) -->
+  <path d="M 590 306 L 580 388 L 612 392 L 618 310 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 636 306 L 648 388 L 680 382 L 660 308 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 580 388 L 572 458 L 604 460 L 612 392 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 648 388 L 656 458 L 688 452 L 680 382 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2.5"/>
+  <!-- Feet -->
+  <path d="M 562 456 L 558 472 L 606 474 L 608 462 Z" fill="#111" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 650 462 L 652 476 L 700 474 L 698 458 Z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
+
+  <!-- ── EXPRESSION STRIP ── -->
+  <rect x="20" y="518" width="920" height="90" fill="#e8e4dc" rx="4"/>
+  <text x="36" y="534" fill="#1a1a1a" font-size="10" font-weight="bold" letter-spacing="1">EXPRESSIONS</text>
+
+  <!-- Neutral -->
+  <ellipse cx="90" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 64 565 L 70 578 L 90 582 L 110 578 L 116 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <ellipse cx="80"  cy="560" rx="8" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="100" cy="560" rx="8" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="80"  cy="560" rx="5" ry="6" fill="#553300"/>
+  <ellipse cx="100" cy="560" rx="5" ry="6" fill="#553300"/>
+  <circle  cx="82"  cy="557" r="2" fill="#ffffff"/>
+  <circle  cx="102" cy="557" r="2" fill="#ffffff"/>
+  <path d="M 80 575 L 100 575" stroke="#1a1a1a" stroke-width="1.5"/>
+  <text x="90" y="600" fill="#444" font-size="8" text-anchor="middle">NEUTRAL</text>
+
+  <!-- Happy -->
+  <ellipse cx="196" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 170 565 L 176 578 L 196 582 L 216 578 L 222 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <ellipse cx="186" cy="558" rx="9" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="206" cy="558" rx="9" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="186" cy="560" rx="6" ry="5" fill="#553300"/>
+  <ellipse cx="206" cy="560" rx="6" ry="5" fill="#553300"/>
+  <circle  cx="188" cy="556" r="2" fill="#ffffff"/>
+  <circle  cx="208" cy="556" r="2" fill="#ffffff"/>
+  <path d="M 182 571 Q 196 582 210 571" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <text x="196" y="600" fill="#444" font-size="8" text-anchor="middle">HAPPY</text>
+
+  <!-- Angry -->
+  <ellipse cx="302" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 276 565 L 282 578 L 302 582 L 322 578 L 328 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 280 548 L 292 555" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 316 555 L 328 548" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="289" cy="560" rx="8" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="315" cy="560" rx="8" ry="9" fill="#1a1a1a"/>
+  <ellipse cx="289" cy="560" rx="5" ry="6" fill="#553300"/>
+  <ellipse cx="315" cy="560" rx="5" ry="6" fill="#553300"/>
+  <path d="M 288 574 L 318 574" stroke="#1a1a1a" stroke-width="1.5"/>
+  <text x="302" y="600" fill="#444" font-size="8" text-anchor="middle">ANGRY</text>
+
+  <!-- Surprised -->
+  <ellipse cx="408" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 382 565 L 388 578 L 408 582 L 428 578 L 434 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <ellipse cx="396" cy="557" rx="10" ry="12" fill="#1a1a1a"/>
+  <ellipse cx="420" cy="557" rx="10" ry="12" fill="#1a1a1a"/>
+  <ellipse cx="396" cy="557" rx="7" ry="8" fill="#553300"/>
+  <ellipse cx="420" cy="557" rx="7" ry="8" fill="#553300"/>
+  <circle  cx="398" cy="553" r="2.5" fill="#ffffff"/>
+  <circle  cx="422" cy="553" r="2.5" fill="#ffffff"/>
+  <ellipse cx="408" cy="576" rx="7" ry="5" fill="#1a1a1a"/>
+  <text x="408" y="600" fill="#444" font-size="8" text-anchor="middle">SURPRISED</text>
+
+  <!-- Determined -->
+  <ellipse cx="514" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 488 565 L 494 578 L 514 582 L 534 578 L 540 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 490 550 L 506 556" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 524 556 L 540 549" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="502" cy="562" rx="9" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="526" cy="562" rx="9" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="502" cy="562" rx="6" ry="7" fill="#553300"/>
+  <ellipse cx="526" cy="562" rx="6" ry="7" fill="#553300"/>
+  <circle  cx="504" cy="558" r="2" fill="#ffffff"/>
+  <circle  cx="528" cy="558" r="2" fill="#ffffff"/>
+  <path d="M 500 575 Q 514 580 528 575" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <text x="514" y="600" fill="#444" font-size="8" text-anchor="middle">DETERMINED</text>
+
+  <!-- Sad -->
+  <ellipse cx="620" cy="565" rx="30" ry="34" fill="#c8915a" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M 594 565 L 600 578 L 620 582 L 640 578 L 646 565" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <path d="M 596 554 L 608 558" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 634 558 L 646 553" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+  <ellipse cx="606" cy="562" rx="8" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="632" cy="562" rx="8" ry="10" fill="#1a1a1a"/>
+  <ellipse cx="606" cy="563" rx="5" ry="7" fill="#553300"/>
+  <ellipse cx="632" cy="563" rx="5" ry="7" fill="#553300"/>
+  <!-- Teardrops -->
+  <ellipse cx="600" cy="573" rx="3" ry="4" fill="#88aadd" opacity="0.8"/>
+  <ellipse cx="636" cy="573" rx="3" ry="4" fill="#88aadd" opacity="0.8"/>
+  <path d="M 604 576 Q 620 584 636 576" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+  <text x="620" y="600" fill="#444" font-size="8" text-anchor="middle">SAD</text>
+
+  <!-- Character name plate -->
+  <rect x="820" y="518" width="120" height="90" fill="#1a1a1a" rx="4"/>
+  <text x="880" y="540" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle" letter-spacing="1">CHARACTER</text>
+  <text x="880" y="558" fill="#d4a855" font-size="14" font-weight="bold" text-anchor="middle">NAME</text>
+  <text x="880" y="576" fill="#888888" font-size="8" text-anchor="middle">Boondocks Style</text>
+  <text x="880" y="592" fill="#666666" font-size="8" text-anchor="middle">7H · Anime</text>
+</svg>

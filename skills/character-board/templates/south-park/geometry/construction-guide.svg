@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 540" width="780" height="540" font-family="Arial, sans-serif">
+  <!-- Background + grid -->
+  <defs>
+    <pattern id="g16" width="16" height="16" patternUnits="userSpaceOnUse">
+      <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#e8e8e0" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="780" height="540" fill="#f8f8f4"/>
+  <rect width="780" height="540" fill="url(#g16)"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="780" height="40" fill="#1a1a1a"/>
+  <text x="14" y="26" fill="#ffffff" font-size="15" font-weight="bold" letter-spacing="2">GEOMETRY CONSTRUCTION GUIDE — SOUTH PARK</text>
+
+  <!-- ── PROPORTION RULER (left) ── -->
+  <line x1="36" y1="58" x2="36" y2="498" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- Head zone: 58–168 (110px) -->
+  <line x1="28" y1="58"  x2="44" y2="58"  stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="28" y1="168" x2="44" y2="168" stroke="#cc2200" stroke-width="2"/>
+  <!-- Body zone: 168–328 (160px) -->
+  <line x1="28" y1="328" x2="44" y2="328" stroke="#cc2200" stroke-width="2"/>
+  <!-- Leg zone: 328–498 (170px, but rounded) -->
+  <!-- Foot line -->
+  <line x1="28" y1="498" x2="44" y2="498" stroke="#1a1a1a" stroke-width="2"/>
+
+  <text x="22" y="61"  fill="#1a1a1a" font-size="9" text-anchor="end" font-weight="bold">TOP</text>
+  <text x="22" y="171" fill="#cc2200" font-size="9" text-anchor="end" font-weight="bold">1H</text>
+  <text x="22" y="284" fill="#cc2200" font-size="9" text-anchor="end" font-weight="bold">2H</text>
+  <text x="22" y="331" fill="#cc2200" font-size="9" text-anchor="end" font-weight="bold">3H</text>
+  <text x="22" y="415" fill="#cc2200" font-size="9" text-anchor="end" font-weight="bold">3.5H</text>
+  <text x="22" y="501" fill="#1a1a1a" font-size="9" text-anchor="end" font-weight="bold">4H</text>
+
+  <!-- Horizontal proportion lines (dashed) -->
+  <line x1="58" y1="168" x2="720" y2="168" stroke="#cc2200" stroke-width="1" stroke-dasharray="8,5" opacity="0.5"/>
+  <line x1="58" y1="278" x2="720" y2="278" stroke="#cc2200" stroke-width="1" stroke-dasharray="8,5" opacity="0.5"/>
+  <line x1="58" y1="328" x2="720" y2="328" stroke="#cc2200" stroke-width="1" stroke-dasharray="8,5" opacity="0.5"/>
+  <line x1="58" y1="413" x2="720" y2="413" stroke="#cc2200" stroke-width="1" stroke-dasharray="8,5" opacity="0.3"/>
+
+  <!-- Vertical centerline -->
+  <line x1="310" y1="50" x2="310" y2="510" stroke="#2266cc" stroke-width="1.5" stroke-dasharray="10,5" opacity="0.6"/>
+  <text x="314" y="64" fill="#2266cc" font-size="9">CL</text>
+
+  <!-- ── HEAD SHAPE (PRIMITIVE: circle) ── -->
+  <!-- Guide circle (construction) -->
+  <circle cx="310" cy="113" r="55" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Filled head shape -->
+  <circle cx="310" cy="113" r="55" fill="#f5c88a" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <!-- Head label -->
+  <text x="390" y="110" fill="#1a1a1a" font-size="10" font-weight="bold">HEAD</text>
+  <text x="390" y="124" fill="#555" font-size="9">⌀ = 110px (1H)</text>
+  <text x="390" y="138" fill="#555" font-size="9">Shape: Circle</text>
+  <!-- Annotation line -->
+  <line x1="366" y1="113" x2="384" y2="113" stroke="#888" stroke-width="1"/>
+
+  <!-- ── BODY SHAPE (PRIMITIVE: trapezoid) ── -->
+  <!-- Construction rect ghost -->
+  <rect x="252" y="170" width="116" height="156" fill="none" stroke="#aaaaaa" stroke-width="1" stroke-dasharray="4,3"/>
+  <!-- Filled trapezoid -->
+  <path d="M 265 170 L 252 326 L 368 326 L 355 170 Z" fill="#e03030" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <text x="390" y="238" fill="#1a1a1a" font-size="10" font-weight="bold">BODY</text>
+  <text x="390" y="252" fill="#555" font-size="9">Shape: Trapezoid</text>
+  <text x="390" y="266" fill="#555" font-size="9">Width: top 90px · bot 116px</text>
+  <text x="390" y="280" fill="#555" font-size="9">Height: 156px (1.42H)</text>
+  <line x1="368" y1="248" x2="384" y2="248" stroke="#888" stroke-width="1"/>
+
+  <!-- ── LEFT ARM (pill shape) ── -->
+  <rect x="192" y="182" width="28" height="100" rx="14" fill="#e03030" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <!-- RIGHT ARM -->
+  <rect x="400" y="182" width="28" height="100" rx="14" fill="#e03030" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <text x="130" y="232" fill="#1a1a1a" font-size="10" font-weight="bold">ARMS</text>
+  <text x="130" y="246" fill="#555" font-size="9">Pill · 28×100px</text>
+  <text x="130" y="260" fill="#555" font-size="9">Radius: 14px</text>
+  <line x1="192" y1="236" x2="176" y2="236" stroke="#888" stroke-width="1"/>
+
+  <!-- ── LEGS ── -->
+  <rect x="265" y="330" width="42" height="120" rx="12" fill="#2266cc" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <rect x="313" y="330" width="42" height="120" rx="12" fill="#2266cc" stroke="#1a1a1a" stroke-width="3" opacity="0.85"/>
+  <text x="390" y="366" fill="#1a1a1a" font-size="10" font-weight="bold">LEGS</text>
+  <text x="390" y="380" fill="#555" font-size="9">Pill · 42×120px</text>
+  <text x="390" y="394" fill="#555" font-size="9">Radius: 12px</text>
+  <line x1="358" y1="376" x2="384" y2="376" stroke="#888" stroke-width="1"/>
+
+  <!-- ── FEET (ellipses) ── -->
+  <ellipse cx="286" cy="456" rx="28" ry="12" fill="#1a1a1a" opacity="0.85"/>
+  <ellipse cx="334" cy="456" rx="28" ry="12" fill="#1a1a1a" opacity="0.85"/>
+  <text x="390" y="454" fill="#1a1a1a" font-size="10" font-weight="bold">FEET</text>
+  <text x="390" y="468" fill="#555" font-size="9">Ellipse · 56×24px</text>
+
+  <!-- ── PROPORTION SUMMARY (right panel) ── -->
+  <rect x="580" y="58" width="190" height="350" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5" rx="4" opacity="0.9"/>
+  <rect x="580" y="58" width="190" height="30"  fill="#1a1a1a" rx="4"/>
+  <text x="675" y="78" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">PROPORTIONS</text>
+  <text x="594" y="108" fill="#1a1a1a" font-size="10" font-weight="bold">Total height:</text>
+  <text x="756" y="108" fill="#333" font-size="10" text-anchor="end">400px (4H)</text>
+  <line x1="590" y1="114" x2="762" y2="114" stroke="#eee" stroke-width="1"/>
+  <text x="594" y="130" fill="#1a1a1a" font-size="10" font-weight="bold">Head:</text>
+  <text x="756" y="130" fill="#333" font-size="10" text-anchor="end">110px · 1H (27.5%)</text>
+  <line x1="590" y1="136" x2="762" y2="136" stroke="#eee" stroke-width="1"/>
+  <text x="594" y="152" fill="#1a1a1a" font-size="10" font-weight="bold">Body:</text>
+  <text x="756" y="152" fill="#333" font-size="10" text-anchor="end">156px · 1.42H (39%)</text>
+  <line x1="590" y1="158" x2="762" y2="158" stroke="#eee" stroke-width="1"/>
+  <text x="594" y="174" fill="#1a1a1a" font-size="10" font-weight="bold">Legs:</text>
+  <text x="756" y="174" fill="#333" font-size="10" text-anchor="end">120px · 1.09H (30%)</text>
+  <line x1="590" y1="180" x2="762" y2="180" stroke="#eee" stroke-width="1"/>
+  <text x="594" y="196" fill="#1a1a1a" font-size="10" font-weight="bold">Feet:</text>
+  <text x="756" y="196" fill="#333" font-size="10" text-anchor="end">14px · 0.13H (3.5%)</text>
+  <line x1="590" y1="202" x2="762" y2="202" stroke="#cccccc" stroke-width="1.5"/>
+  <text x="594" y="222" fill="#1a1a1a" font-size="10" font-weight="bold">Arm width:</text>
+  <text x="756" y="222" fill="#333" font-size="10" text-anchor="end">28px</text>
+  <text x="594" y="238" fill="#1a1a1a" font-size="10" font-weight="bold">Arm length:</text>
+  <text x="756" y="238" fill="#333" font-size="10" text-anchor="end">100px (body-flush)</text>
+  <line x1="590" y1="244" x2="762" y2="244" stroke="#cccccc" stroke-width="1.5"/>
+  <text x="594" y="266" fill="#1a1a1a" font-size="10" font-weight="bold">Stroke width:</text>
+  <text x="756" y="266" fill="#333" font-size="10" text-anchor="end">3px solid</text>
+  <text x="594" y="282" fill="#1a1a1a" font-size="10" font-weight="bold">Grid snap:</text>
+  <text x="756" y="282" fill="#333" font-size="10" text-anchor="end">16px</text>
+  <text x="594" y="298" fill="#1a1a1a" font-size="10" font-weight="bold">Shading:</text>
+  <text x="756" y="298" fill="#333" font-size="10" text-anchor="end">NONE (flat fill)</text>
+  <text x="594" y="314" fill="#1a1a1a" font-size="10" font-weight="bold">Perspective:</text>
+  <text x="756" y="314" fill="#333" font-size="10" text-anchor="end">NONE (orthographic)</text>
+  <text x="594" y="330" fill="#1a1a1a" font-size="10" font-weight="bold">Gradients:</text>
+  <text x="756" y="330" fill="#333" font-size="10" text-anchor="end">NONE</text>
+  <text x="594" y="346" fill="#1a1a1a" font-size="10" font-weight="bold">Outline:</text>
+  <text x="756" y="346" fill="#333" font-size="10" text-anchor="end">#1A1A1A 3px</text>
+  <text x="594" y="362" fill="#1a1a1a" font-size="10" font-weight="bold">Primary shapes:</text>
+  <text x="756" y="362" fill="#333" font-size="10" text-anchor="end">6 primitives</text>
+  <text x="594" y="378" fill="#555" font-size="9">circle · trapezoid · pill ×4</text>
+  <text x="594" y="392" fill="#555" font-size="9">ellipse ×2</text>
+
+  <!-- Grid snap indicator -->
+  <rect x="580" y="424" width="190" height="46" fill="#fffff0" stroke="#cccc00" stroke-width="1.5" rx="3"/>
+  <text x="675" y="442" fill="#888800" font-size="9" font-weight="bold" text-anchor="middle">SNAP GRID: 16px</text>
+  <text x="675" y="458" fill="#888800" font-size="9" text-anchor="middle">All anchor points on 16px intervals</text>
+</svg>

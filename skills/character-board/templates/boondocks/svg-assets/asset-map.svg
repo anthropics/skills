@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 580" width="980" height="580" font-family="monospace, Arial, sans-serif">
+  <rect width="980" height="580" fill="#f2f0ec"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="980" height="40" fill="#1a1a1a"/>
+  <text x="14" y="26" fill="#ffffff" font-size="15" font-weight="bold" letter-spacing="2">SVG ASSET MAP — BOONDOCKS RIG</text>
+  <text x="680" y="26" fill="#888" font-size="10">CEL-SHADE ANIME · 22 PARTS</text>
+
+  <!-- ── LEGEND (right) ── -->
+  <rect x="720" y="50" width="246" height="486" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <rect x="720" y="50" width="246" height="28" fill="#1a1a1a" rx="3"/>
+  <text x="843" y="69" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">LAYER ORDER (z-index)</text>
+  <text x="730" y="93" fill="#1a1a1a" font-size="9" font-weight="bold">Z   ID                    Group</text>
+  <line x1="726" y1="98" x2="960" y2="98" stroke="#ddd" stroke-width="1"/>
+
+  <!-- Layer list -->
+  <text x="730" y="113" fill="#cc2200" font-size="9" font-weight="bold">22</text><text x="752" y="113" fill="#1a1a1a" font-size="9">accessory-2</text>
+  <text x="730" y="127" fill="#cc2200" font-size="9" font-weight="bold">21</text><text x="752" y="127" fill="#1a1a1a" font-size="9">accessory-1</text>
+  <text x="730" y="141" fill="#cc2200" font-size="9" font-weight="bold">20</text><text x="752" y="141" fill="#1a1a1a" font-size="9">outfit-overlay</text>
+  <text x="730" y="155" fill="#cc2200" font-size="9" font-weight="bold">19</text><text x="752" y="155" fill="#1a1a1a" font-size="9">hair-front</text>
+  <text x="730" y="169" fill="#cc2200" font-size="9" font-weight="bold">18</text><text x="752" y="169" fill="#1a1a1a" font-size="9">face (eyes/mouth)</text>
+  <text x="730" y="183" fill="#cc2200" font-size="9" font-weight="bold">17</text><text x="752" y="183" fill="#1a1a1a" font-size="9">right-eye</text>
+  <text x="730" y="197" fill="#cc2200" font-size="9" font-weight="bold">16</text><text x="752" y="197" fill="#1a1a1a" font-size="9">left-eye</text>
+  <text x="730" y="211" fill="#cc2200" font-size="9" font-weight="bold">15</text><text x="752" y="211" fill="#1a1a1a" font-size="9">head</text>
+  <text x="730" y="225" fill="#cc2200" font-size="9" font-weight="bold">14</text><text x="752" y="225" fill="#1a1a1a" font-size="9">neck</text>
+  <text x="730" y="239" fill="#cc2200" font-size="9" font-weight="bold">13</text><text x="752" y="239" fill="#1a1a1a" font-size="9">right-hand</text>
+  <text x="730" y="253" fill="#cc2200" font-size="9" font-weight="bold">12</text><text x="752" y="253" fill="#1a1a1a" font-size="9">right-forearm</text>
+  <text x="730" y="267" fill="#cc2200" font-size="9" font-weight="bold">11</text><text x="752" y="267" fill="#1a1a1a" font-size="9">right-upper-arm</text>
+  <text x="730" y="281" fill="#cc2200" font-size="9" font-weight="bold">10</text><text x="752" y="281" fill="#1a1a1a" font-size="9">torso</text>
+  <text x="730" y="295" fill="#cc2200" font-size="9" font-weight="bold"> 9</text><text x="752" y="295" fill="#1a1a1a" font-size="9">left-upper-arm</text>
+  <text x="730" y="309" fill="#cc2200" font-size="9" font-weight="bold"> 8</text><text x="752" y="309" fill="#1a1a1a" font-size="9">left-forearm</text>
+  <text x="730" y="323" fill="#cc2200" font-size="9" font-weight="bold"> 7</text><text x="752" y="323" fill="#1a1a1a" font-size="9">left-hand</text>
+  <text x="730" y="337" fill="#cc2200" font-size="9" font-weight="bold"> 6</text><text x="752" y="337" fill="#1a1a1a" font-size="9">right-foot</text>
+  <text x="730" y="351" fill="#cc2200" font-size="9" font-weight="bold"> 5</text><text x="752" y="351" fill="#1a1a1a" font-size="9">right-shin</text>
+  <text x="730" y="365" fill="#cc2200" font-size="9" font-weight="bold"> 4</text><text x="752" y="365" fill="#1a1a1a" font-size="9">right-thigh</text>
+  <text x="730" y="379" fill="#cc2200" font-size="9" font-weight="bold"> 3</text><text x="752" y="379" fill="#1a1a1a" font-size="9">left-foot</text>
+  <text x="730" y="393" fill="#cc2200" font-size="9" font-weight="bold"> 2</text><text x="752" y="393" fill="#1a1a1a" font-size="9">left-shin</text>
+  <text x="730" y="407" fill="#cc2200" font-size="9" font-weight="bold"> 1</text><text x="752" y="407" fill="#1a1a1a" font-size="9">left-thigh</text>
+  <line x1="726" y1="415" x2="960" y2="415" stroke="#ddd" stroke-width="1"/>
+  <text x="730" y="432" fill="#555" font-size="9" font-weight="bold">Registration points:</text>
+  <text x="730" y="447" fill="#555" font-size="9">● head/eyes → center of part</text>
+  <text x="730" y="461" fill="#555" font-size="9">● upper-arms → shoulder joint</text>
+  <text x="730" y="475" fill="#555" font-size="9">● forearms   → elbow joint</text>
+  <text x="730" y="489" fill="#555" font-size="9">● thighs     → hip joint</text>
+  <text x="730" y="503" fill="#555" font-size="9">● shins      → knee joint</text>
+  <text x="730" y="517" fill="#555" font-size="9">● torso      → waist center</text>
+  <text x="730" y="531" fill="#555" font-size="9">● accessory  → geometric center</text>
+
+  <!-- ── EXPLODED CHARACTER VIEW ── -->
+
+  <!-- left-thigh (z=1) -->
+  <g id="left-thigh">
+    <path d="M 84 296 L 76 356 L 108 360 L 116 300 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="70" y="290" width="52" height="76" fill="none" stroke="#22aa44" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="96" y="378" fill="#22aa44" font-size="7" text-anchor="middle">left-thigh</text>
+  <circle cx="96" cy="296" r="3" fill="#22aa44"/>
+
+  <!-- left-shin (z=2) -->
+  <g id="left-shin">
+    <path d="M 76 356 L 68 420 L 100 424 L 108 360 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="60" y="350" width="54" height="80" fill="none" stroke="#44cc66" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="87" y="442" fill="#44cc66" font-size="7" text-anchor="middle">left-shin</text>
+  <circle cx="87" cy="356" r="3" fill="#44cc66"/>
+
+  <!-- left-foot (z=3) -->
+  <g id="left-foot">
+    <path d="M 58 420 L 56 444 L 104 446 L 104 428 Z" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+  </g>
+  <rect x="52" y="416" width="56" height="36" fill="none" stroke="#66dd88" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="80" y="464" fill="#66dd88" font-size="7" text-anchor="middle">left-foot</text>
+
+  <!-- right-thigh (z=4) -->
+  <g id="right-thigh">
+    <path d="M 164 296 L 172 356 L 140 360 L 132 300 Z" fill="#163980" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="126" y="290" width="52" height="76" fill="none" stroke="#2299cc" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="152" y="378" fill="#2299cc" font-size="7" text-anchor="middle">right-thigh</text>
+  <circle cx="152" cy="296" r="3" fill="#2299cc"/>
+
+  <!-- right-shin (z=5) -->
+  <g id="right-shin">
+    <path d="M 172 356 L 180 420 L 148 424 L 140 360 Z" fill="#1a4488" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="134" y="350" width="52" height="80" fill="none" stroke="#44aadd" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="160" y="442" fill="#44aadd" font-size="7" text-anchor="middle">right-shin</text>
+  <circle cx="156" cy="356" r="3" fill="#44aadd"/>
+
+  <!-- right-foot (z=6) -->
+  <g id="right-foot">
+    <path d="M 136 428 L 136 446 L 184 444 L 182 420 Z" fill="#111" stroke="#1a1a1a" stroke-width="1.5"/>
+  </g>
+  <rect x="130" y="416" width="58" height="36" fill="none" stroke="#66ccee" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="159" y="464" fill="#66ccee" font-size="7" text-anchor="middle">right-foot</text>
+
+  <!-- left-hand (z=7) -->
+  <g id="left-hand">
+    <ellipse cx="36" cy="318" rx="16" ry="12" fill="#c8915a" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="16" y="308" width="40" height="24" fill="none" stroke="#cc8800" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="36" y="344" fill="#cc8800" font-size="7" text-anchor="middle">left-hand</text>
+
+  <!-- left-forearm (z=8) -->
+  <g id="left-forearm">
+    <path d="M 38 226 L 30 310 L 48 316 L 56 232 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="24" y="220" width="38" height="100" fill="none" stroke="#dd9900" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="43" y="332" fill="#dd9900" font-size="7" text-anchor="middle">left-forearm</text>
+  <circle cx="47" cy="226" r="3" fill="#dd9900"/>
+
+  <!-- left-upper-arm (z=9) -->
+  <g id="left-upper-arm">
+    <path d="M 78 166 L 56 170 L 44 224 L 64 230 L 76 190 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="40" y="160" width="44" height="76" fill="none" stroke="#cc6600" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="62" y="248" fill="#cc6600" font-size="7" text-anchor="middle">left-upper-arm</text>
+  <circle cx="78" cy="166" r="3" fill="#cc6600"/>
+
+  <!-- torso (z=10) -->
+  <g id="torso">
+    <path d="M 82 156 L 70 248 L 94 256 L 124 260 L 154 260 L 184 256 L 208 248 L 196 156 L 158 148 L 120 148 Z"
+          fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2.5"/>
+    <!-- Belt -->
+    <rect x="86" y="256" width="76" height="14" rx="2" fill="#1a1a1a"/>
+    <rect x="115" y="258" width="14" height="10" rx="1" fill="#ccaa00"/>
+  </g>
+  <rect x="64" y="140" width="150" height="136" fill="none" stroke="#9922cc" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="139" y="288" fill="#9922cc" font-size="7" text-anchor="middle">torso</text>
+  <circle cx="139" cy="204" r="3" fill="#9922cc"/>
+
+  <!-- right-upper-arm (z=11) -->
+  <g id="right-upper-arm">
+    <path d="M 196 166 L 218 170 L 230 224 L 210 230 L 202 190 Z" fill="#2d4a6b" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="194" y="160" width="42" height="76" fill="none" stroke="#cc4400" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="215" y="248" fill="#cc4400" font-size="7" text-anchor="middle">right-upper-arm</text>
+  <circle cx="196" cy="166" r="3" fill="#cc4400"/>
+
+  <!-- right-forearm (z=12) -->
+  <g id="right-forearm">
+    <path d="M 222 226 L 230 310 L 248 314 L 240 232 Z" fill="#c8915a" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="216" y="220" width="38" height="100" fill="none" stroke="#dd4422" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="235" y="332" fill="#dd4422" font-size="7" text-anchor="middle">right-forearm</text>
+  <circle cx="228" cy="226" r="3" fill="#dd4422"/>
+
+  <!-- right-hand (z=13) -->
+  <g id="right-hand">
+    <ellipse cx="242" cy="320" rx="16" ry="12" fill="#c8915a" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="222" y="308" width="40" height="24" fill="none" stroke="#ee4444" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="242" y="344" fill="#ee4444" font-size="7" text-anchor="middle">right-hand</text>
+
+  <!-- neck (z=14) -->
+  <g id="neck">
+    <rect x="130" y="134" width="18" height="22" fill="#c8915a" stroke="#1a1a1a" stroke-width="2"/>
+  </g>
+  <rect x="126" y="130" width="26" height="30" fill="none" stroke="#aa55cc" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="139" y="174" fill="#aa55cc" font-size="7" text-anchor="middle">neck</text>
+
+  <!-- head (z=15) -->
+  <g id="head">
+    <ellipse cx="139" cy="96" rx="54" ry="40" fill="#c8915a" stroke="#1a1a1a" stroke-width="3"/>
+    <path d="M 88 104 L 96 130 L 139 136 L 182 130 L 190 104" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+    <!-- Hair back -->
+    <path d="M 85 92 Q 84 68 100 60 Q 139 48 178 60 Q 194 68 193 92 Q 186 76 139 74 Q 92 76 85 92 Z"
+          fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1.5"/>
+  </g>
+  <rect x="80" y="44" width="118" height="100" fill="none" stroke="#cc2244" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="139" y="156" fill="#cc2244" font-size="7" text-anchor="middle">head</text>
+  <circle cx="139" cy="96" r="3" fill="#cc2244"/>
+
+  <!-- left-eye (z=16) -->
+  <g id="left-eye">
+    <ellipse cx="116" cy="92" rx="16" ry="18" fill="#1a1a1a"/>
+    <ellipse cx="116" cy="92" rx="10" ry="12" fill="#553300"/>
+    <ellipse cx="116" cy="92" rx="5" ry="6" fill="#111"/>
+    <circle  cx="119" cy="88" r="3" fill="#ffffff"/>
+  </g>
+  <rect x="97" y="72" width="38" height="40" fill="none" stroke="#aa2266" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="116" y="122" fill="#aa2266" font-size="7" text-anchor="middle">left-eye</text>
+
+  <!-- right-eye (z=17) -->
+  <g id="right-eye">
+    <ellipse cx="162" cy="92" rx="16" ry="18" fill="#1a1a1a"/>
+    <ellipse cx="162" cy="92" rx="10" ry="12" fill="#553300"/>
+    <ellipse cx="162" cy="92" rx="5" ry="6" fill="#111"/>
+    <circle  cx="165" cy="88" r="3" fill="#ffffff"/>
+  </g>
+  <rect x="143" y="72" width="38" height="40" fill="none" stroke="#882244" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="162" y="122" fill="#882244" font-size="7" text-anchor="middle">right-eye</text>
+
+  <!-- hair-front (z=19) -->
+  <g id="hair-front">
+    <!-- side strands -->
+    <path d="M 85 92 Q 76 106 80 126 L 90 120 Q 90 102 98 92 Z" fill="#1a1a1a"/>
+    <path d="M 193 92 Q 202 106 198 126 L 188 120 Q 188 102 180 92 Z" fill="#1a1a1a"/>
+  </g>
+  <rect x="74" y="52" width="24" height="80" fill="none" stroke="#558822" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="86" y="142" fill="#558822" font-size="7" text-anchor="middle">hair-front</text>
+
+  <!-- accessory-1 (z=21) — cap brim -->
+  <g id="accessory-1">
+    <path d="M 106 58 L 102 44 L 176 44 L 172 58 Z" fill="#cc0000" stroke="#1a1a1a" stroke-width="2"/>
+    <path d="M 78 62 L 200 62 L 195 68 L 83 68 Z" fill="#cc0000" stroke="#1a1a1a" stroke-width="1.5"/>
+  </g>
+  <rect x="74" y="38" width="130" height="34" fill="none" stroke="#888822" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="139" y="84" fill="#888822" font-size="7" text-anchor="middle">accessory-1</text>
+
+  <!-- accessory-2 (z=22) — chain/pendant -->
+  <g id="accessory-2">
+    <line x1="110" y1="166" x2="139" y2="184" stroke="#ccaa00" stroke-width="2"/>
+    <line x1="139" y1="184" x2="168" y2="166" stroke="#ccaa00" stroke-width="2"/>
+    <circle cx="139" cy="186" r="8" fill="#ccaa00" stroke="#1a1a1a" stroke-width="1.5"/>
+    <text x="139" y="190" fill="#1a1a1a" font-size="7" text-anchor="middle" font-weight="bold">★</text>
+  </g>
+  <rect x="104" y="162" width="70" height="36" fill="none" stroke="#aaaa22" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="139" y="212" fill="#aaaa22" font-size="7" text-anchor="middle">accessory-2</text>
+
+  <!-- ── PART DETAIL TABLE ── -->
+  <rect x="290" y="50" width="420" height="500" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <rect x="290" y="50" width="420" height="28" fill="#1a1a1a" rx="3"/>
+  <text x="500" y="69" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="1">PART SPECIFICATIONS</text>
+
+  <text x="300" y="94" fill="#1a1a1a" font-size="9" font-weight="bold">ID</text>
+  <text x="366" y="94" fill="#1a1a1a" font-size="9" font-weight="bold">Shape</text>
+  <text x="444" y="94" fill="#1a1a1a" font-size="9" font-weight="bold">Approx Size</text>
+  <text x="558" y="94" fill="#1a1a1a" font-size="9" font-weight="bold">Pivot</text>
+  <text x="640" y="94" fill="#1a1a1a" font-size="9" font-weight="bold">Layer</text>
+  <line x1="296" y1="99" x2="704" y2="99" stroke="#1a1a1a" stroke-width="1"/>
+
+  <!-- Rows: 22 parts at 18px each -->
+  <text x="300" y="114" fill="#1a1a1a" font-size="8">hair-back</text>      <text x="366" y="114" fill="#555" font-size="8">path</text>        <text x="444" y="114" fill="#555" font-size="8">110×60px</text>        <text x="558" y="114" fill="#555" font-size="8">hairline</text>   <text x="640" y="114" fill="#555" font-size="8">—</text>
+  <line x1="296" y1="118" x2="704" y2="118" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="132" fill="#1a1a1a" font-size="8">head</text>            <text x="366" y="132" fill="#555" font-size="8">ellipse+path</text> <text x="444" y="132" fill="#555" font-size="8">108×96px</text>        <text x="558" y="132" fill="#555" font-size="8">center</text>     <text x="640" y="132" fill="#555" font-size="8">15</text>
+  <line x1="296" y1="136" x2="704" y2="136" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="150" fill="#1a1a1a" font-size="8">hair-front</text>      <text x="366" y="150" fill="#555" font-size="8">path</text>        <text x="444" y="150" fill="#555" font-size="8">24×80px</text>         <text x="558" y="150" fill="#555" font-size="8">top</text>        <text x="640" y="150" fill="#555" font-size="8">19</text>
+  <line x1="296" y1="154" x2="704" y2="154" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="168" fill="#1a1a1a" font-size="8">left-eye</text>        <text x="366" y="168" fill="#555" font-size="8">ellipse</text>    <text x="444" y="168" fill="#555" font-size="8">32×36px</text>         <text x="558" y="168" fill="#555" font-size="8">center</text>     <text x="640" y="168" fill="#555" font-size="8">16</text>
+  <line x1="296" y1="172" x2="704" y2="172" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="186" fill="#1a1a1a" font-size="8">right-eye</text>       <text x="366" y="186" fill="#555" font-size="8">ellipse</text>    <text x="444" y="186" fill="#555" font-size="8">32×36px</text>         <text x="558" y="186" fill="#555" font-size="8">center</text>     <text x="640" y="186" fill="#555" font-size="8">17</text>
+  <line x1="296" y1="190" x2="704" y2="190" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="204" fill="#1a1a1a" font-size="8">face (expr)</text>      <text x="366" y="204" fill="#555" font-size="8">group</text>      <text x="444" y="204" fill="#555" font-size="8">96×80px</text>         <text x="558" y="204" fill="#555" font-size="8">mid-face</text>   <text x="640" y="204" fill="#555" font-size="8">18</text>
+  <line x1="296" y1="208" x2="704" y2="208" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="222" fill="#1a1a1a" font-size="8">neck</text>             <text x="366" y="222" fill="#555" font-size="8">rect</text>        <text x="444" y="222" fill="#555" font-size="8">18×22px</text>         <text x="558" y="222" fill="#555" font-size="8">top edge</text>   <text x="640" y="222" fill="#555" font-size="8">14</text>
+  <line x1="296" y1="226" x2="704" y2="226" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="240" fill="#1a1a1a" font-size="8">torso</text>            <text x="366" y="240" fill="#555" font-size="8">polygon</text>    <text x="444" y="240" fill="#555" font-size="8">150×120px</text>       <text x="558" y="240" fill="#555" font-size="8">waist ctr</text>  <text x="640" y="240" fill="#555" font-size="8">10</text>
+  <line x1="296" y1="244" x2="704" y2="244" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="258" fill="#1a1a1a" font-size="8">left-upper-arm</text>  <text x="366" y="258" fill="#555" font-size="8">polygon</text>    <text x="444" y="258" fill="#555" font-size="8">44×68px</text>         <text x="558" y="258" fill="#555" font-size="8">shoulder</text>   <text x="640" y="258" fill="#555" font-size="8"> 9</text>
+  <line x1="296" y1="262" x2="704" y2="262" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="276" fill="#1a1a1a" font-size="8">left-forearm</text>    <text x="366" y="276" fill="#555" font-size="8">polygon</text>    <text x="444" y="276" fill="#555" font-size="8">26×84px</text>         <text x="558" y="276" fill="#555" font-size="8">elbow</text>      <text x="640" y="276" fill="#555" font-size="8"> 8</text>
+  <line x1="296" y1="280" x2="704" y2="280" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="294" fill="#1a1a1a" font-size="8">left-hand</text>       <text x="366" y="294" fill="#555" font-size="8">ellipse</text>    <text x="444" y="294" fill="#555" font-size="8">32×24px</text>         <text x="558" y="294" fill="#555" font-size="8">wrist</text>      <text x="640" y="294" fill="#555" font-size="8"> 7</text>
+  <line x1="296" y1="298" x2="704" y2="298" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="312" fill="#1a1a1a" font-size="8">right-upper-arm</text> <text x="366" y="312" fill="#555" font-size="8">polygon</text>    <text x="444" y="312" fill="#555" font-size="8">44×68px</text>         <text x="558" y="312" fill="#555" font-size="8">shoulder</text>   <text x="640" y="312" fill="#555" font-size="8">11</text>
+  <line x1="296" y1="316" x2="704" y2="316" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="330" fill="#1a1a1a" font-size="8">right-forearm</text>   <text x="366" y="330" fill="#555" font-size="8">polygon</text>    <text x="444" y="330" fill="#555" font-size="8">26×84px</text>         <text x="558" y="330" fill="#555" font-size="8">elbow</text>      <text x="640" y="330" fill="#555" font-size="8">12</text>
+  <line x1="296" y1="334" x2="704" y2="334" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="348" fill="#1a1a1a" font-size="8">right-hand</text>      <text x="366" y="348" fill="#555" font-size="8">ellipse</text>    <text x="444" y="348" fill="#555" font-size="8">32×24px</text>         <text x="558" y="348" fill="#555" font-size="8">wrist</text>      <text x="640" y="348" fill="#555" font-size="8">13</text>
+  <line x1="296" y1="352" x2="704" y2="352" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="366" fill="#1a1a1a" font-size="8">left-thigh</text>      <text x="366" y="366" fill="#555" font-size="8">polygon</text>    <text x="444" y="366" fill="#555" font-size="8">52×60px</text>         <text x="558" y="366" fill="#555" font-size="8">hip</text>        <text x="640" y="366" fill="#555" font-size="8"> 1</text>
+  <line x1="296" y1="370" x2="704" y2="370" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="384" fill="#1a1a1a" font-size="8">left-shin</text>       <text x="366" y="384" fill="#555" font-size="8">polygon</text>    <text x="444" y="384" fill="#555" font-size="8">50×68px</text>         <text x="558" y="384" fill="#555" font-size="8">knee</text>       <text x="640" y="384" fill="#555" font-size="8"> 2</text>
+  <line x1="296" y1="388" x2="704" y2="388" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="402" fill="#1a1a1a" font-size="8">left-foot</text>       <text x="366" y="402" fill="#555" font-size="8">path</text>        <text x="444" y="402" fill="#555" font-size="8">56×24px</text>         <text x="558" y="402" fill="#555" font-size="8">ankle</text>      <text x="640" y="402" fill="#555" font-size="8"> 3</text>
+  <line x1="296" y1="406" x2="704" y2="406" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="420" fill="#1a1a1a" font-size="8">right-thigh</text>     <text x="366" y="420" fill="#555" font-size="8">polygon</text>    <text x="444" y="420" fill="#555" font-size="8">52×60px</text>         <text x="558" y="420" fill="#555" font-size="8">hip</text>        <text x="640" y="420" fill="#555" font-size="8"> 4</text>
+  <line x1="296" y1="424" x2="704" y2="424" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="438" fill="#1a1a1a" font-size="8">right-shin</text>      <text x="366" y="438" fill="#555" font-size="8">polygon</text>    <text x="444" y="438" fill="#555" font-size="8">50×68px</text>         <text x="558" y="438" fill="#555" font-size="8">knee</text>       <text x="640" y="438" fill="#555" font-size="8"> 5</text>
+  <line x1="296" y1="442" x2="704" y2="442" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="456" fill="#1a1a1a" font-size="8">right-foot</text>      <text x="366" y="456" fill="#555" font-size="8">path</text>        <text x="444" y="456" fill="#555" font-size="8">56×24px</text>         <text x="558" y="456" fill="#555" font-size="8">ankle</text>      <text x="640" y="456" fill="#555" font-size="8"> 6</text>
+  <line x1="296" y1="460" x2="704" y2="460" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="474" fill="#1a1a1a" font-size="8">outfit-overlay</text>  <text x="366" y="474" fill="#555" font-size="8">group</text>      <text x="444" y="474" fill="#555" font-size="8">full body</text>       <text x="558" y="474" fill="#555" font-size="8">n/a</text>        <text x="640" y="474" fill="#555" font-size="8">20</text>
+  <line x1="296" y1="478" x2="704" y2="478" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="492" fill="#1a1a1a" font-size="8">accessory-1</text>     <text x="366" y="492" fill="#555" font-size="8">custom</text>     <text x="444" y="492" fill="#555" font-size="8">130×34px</text>       <text x="558" y="492" fill="#555" font-size="8">geo ctr</text>    <text x="640" y="492" fill="#555" font-size="8">21</text>
+  <line x1="296" y1="496" x2="704" y2="496" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="300" y="510" fill="#1a1a1a" font-size="8">accessory-2</text>     <text x="366" y="510" fill="#555" font-size="8">custom</text>     <text x="444" y="510" fill="#555" font-size="8">70×36px</text>         <text x="558" y="510" fill="#555" font-size="8">geo ctr</text>    <text x="640" y="510" fill="#555" font-size="8">22</text>
+  <line x1="296" y1="514" x2="704" y2="514" stroke="#cccccc" stroke-width="1.5"/>
+
+  <text x="300" y="532" fill="#1a1a1a" font-size="9" font-weight="bold">SVG Convention:</text>
+  <text x="300" y="548" fill="#555" font-size="9">&lt;g id="[part-name]" transform-origin="[px py]"&gt; ... &lt;/g&gt;</text>
+</svg>

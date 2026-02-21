@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" width="820" height="340" font-family="Arial, sans-serif">
+  <rect width="820" height="340" fill="#f8f8f4"/>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="820" height="40" fill="#1a1a1a"/>
+  <text x="14" y="26" fill="#ffffff" font-size="15" font-weight="bold" letter-spacing="2">SHARED — SKIN TONE REFERENCE</text>
+  <text x="600" y="26" fill="#888" font-size="10">UNIVERSAL · BOTH STYLES</text>
+
+  <!-- Column headers -->
+  <text x="70"  y="60" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">BASE</text>
+  <text x="170" y="60" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">SHADOW</text>
+  <text x="270" y="60" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">HIGHLIGHT</text>
+  <text x="400" y="60" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">SKIN LINE</text>
+  <text x="500" y="60" fill="#1a1a1a" font-size="10" font-weight="bold" text-anchor="middle">LIP / BLUSH</text>
+  <text x="640" y="60" fill="#1a1a1a" font-size="10" font-weight="bold">USAGE NOTES</text>
+
+  <!-- ── Row 1: Fair / Light ── -->
+  <text x="4" y="100" fill="#555" font-size="9" writing-mode="vertical-rl" transform="rotate(180 4 130)" text-anchor="middle">FAIR</text>
+  <rect x="20"  y="68" width="100" height="70" fill="#ffe0c8" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="70"  y="148" fill="#555" font-size="8" text-anchor="middle">#FFE0C8</text>
+  <rect x="120" y="68" width="100" height="70" fill="#d4a882" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="170" y="148" fill="#555" font-size="8" text-anchor="middle">#D4A882</text>
+  <rect x="220" y="68" width="100" height="70" fill="#fff0e0" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="270" y="148" fill="#555" font-size="8" text-anchor="middle">#FFF0E0</text>
+  <rect x="336" y="68" width="88"  height="70" fill="#b87040" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="400" y="148" fill="#555" font-size="8" text-anchor="middle">#B87040</text>
+  <rect x="452" y="68" width="88"  height="70" fill="#e8a090" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="500" y="148" fill="#555" font-size="8" text-anchor="middle">#E8A090</text>
+  <text x="558" y="92"  fill="#555" font-size="9">SP: flat fill only</text>
+  <text x="558" y="106" fill="#555" font-size="9">BD: add highlight on nose bridge</text>
+  <text x="558" y="120" fill="#555" font-size="9">    and cheekbones</text>
+
+  <!-- ── Row 2: Medium / Tan ── -->
+  <text x="4" y="200" fill="#555" font-size="9" writing-mode="vertical-rl" transform="rotate(180 4 210)" text-anchor="middle">TAN</text>
+  <rect x="20"  y="158" width="100" height="70" fill="#c8915a" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="70"  y="238" fill="#555" font-size="8" text-anchor="middle">#C8915A</text>
+  <rect x="120" y="158" width="100" height="70" fill="#9e6838" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="170" y="238" fill="#555" font-size="8" text-anchor="middle">#9E6838</text>
+  <rect x="220" y="158" width="100" height="70" fill="#e4b988" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="270" y="238" fill="#555" font-size="8" text-anchor="middle">#E4B988</text>
+  <rect x="336" y="158" width="88"  height="70" fill="#7a4818" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="400" y="238" fill="#555" font-size="8" text-anchor="middle">#7A4818</text>
+  <rect x="452" y="158" width="88"  height="70" fill="#cc7060" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="500" y="238" fill="#555" font-size="8" text-anchor="middle">#CC7060</text>
+  <text x="558" y="182" fill="#555" font-size="9">Default Boondocks palette</text>
+  <text x="558" y="196" fill="#555" font-size="9">SP: flat body fill</text>
+  <text x="558" y="210" fill="#555" font-size="9">BD: primary skin group</text>
+
+  <!-- ── Row 3: Dark / Deep ── -->
+  <text x="4" y="290" fill="#555" font-size="9" writing-mode="vertical-rl" transform="rotate(180 4 296)" text-anchor="middle">DEEP</text>
+  <rect x="20"  y="248" width="100" height="70" fill="#7a4820" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="70"  y="328" fill="#555" font-size="8" text-anchor="middle">#7A4820</text>
+  <rect x="120" y="248" width="100" height="70" fill="#5c3010" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="170" y="328" fill="#555" font-size="8" text-anchor="middle">#5C3010</text>
+  <rect x="220" y="248" width="100" height="70" fill="#a06030" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="270" y="328" fill="#555" font-size="8" text-anchor="middle">#A06030</text>
+  <rect x="336" y="248" width="88"  height="70" fill="#3c2008" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="400" y="328" fill="#555" font-size="8" text-anchor="middle">#3C2008</text>
+  <rect x="452" y="248" width="88"  height="70" fill="#aa5050" stroke="#1a1a1a" stroke-width="1.5" rx="3"/>
+  <text x="500" y="328" fill="#555" font-size="8" text-anchor="middle">#AA5050</text>
+  <text x="558" y="272" fill="#555" font-size="9">SP: use outline carefully —</text>
+  <text x="558" y="286" fill="#555" font-size="9">    may need #333 instead of</text>
+  <text x="558" y="300" fill="#555" font-size="9">    pure black for contrast</text>
+  <text x="558" y="314" fill="#555" font-size="9">BD: rim-light is key detail</text>
+
+  <!-- Row dividers -->
+  <line x1="14" y1="155" x2="800" y2="155" stroke="#cccccc" stroke-width="1"/>
+  <line x1="14" y1="245" x2="800" y2="245" stroke="#cccccc" stroke-width="1"/>
+  <!-- Column dividers -->
+  <line x1="326" y1="55" x2="326" y2="330" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="548" y1="55" x2="548" y2="330" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+</svg>
