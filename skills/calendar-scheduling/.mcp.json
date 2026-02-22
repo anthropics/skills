@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "temporal-cortex": {
+      "command": "npx",
+      "args": ["-y", "@temporal-cortex/cortex-mcp"]
+    }
+  }
+}

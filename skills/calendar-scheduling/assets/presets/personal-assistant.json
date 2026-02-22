@@ -1,0 +1,16 @@
+{
+  "name": "Personal Assistant",
+  "description": "General-purpose scheduling for personal use. Balances focus time with meetings.",
+  "defaults": {
+    "min_free_slot_minutes": 30,
+    "privacy": "opaque",
+    "format": "toon"
+  },
+  "workflow_hints": [
+    "Always check availability before suggesting times",
+    "Prefer morning slots (9-12) for focus work, afternoon (13-17) for meetings",
+    "Ask for confirmation before booking",
+    "Suggest buffer time (15 min) between back-to-back meetings",
+    "Use TOON format for list_events to save tokens"
+  ]
+}
