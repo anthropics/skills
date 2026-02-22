@@ -32,9 +32,9 @@ if [[ -f "$CREDS_FILE" ]]; then
 
   # List configured providers
   if command -v python3 &>/dev/null; then
-    python3 -c "
-import json
-creds = json.load(open('${CREDS_FILE}'))
+    CREDS_FILE="$CREDS_FILE" python3 -c "
+import json, os
+creds = json.load(open(os.environ['CREDS_FILE']))
 providers = set()
 for key in creds:
     if key.endswith('_client'):
@@ -61,9 +61,9 @@ if [[ -f "$CONFIG_FILE" ]]; then
   echo "  Config file: ${CONFIG_FILE}"
 
   if command -v python3 &>/dev/null; then
-    python3 -c "
-import json
-config = json.load(open('${CONFIG_FILE}'))
+    CONFIG_FILE="$CONFIG_FILE" python3 -c "
+import json, os
+config = json.load(open(os.environ['CONFIG_FILE']))
 tz = config.get('timezone', 'not set')
 ws = config.get('week_start', 'monday')
 providers = config.get('providers', {})

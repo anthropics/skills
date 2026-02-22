@@ -31,8 +31,8 @@ fi
 
 # Read existing config
 if [[ -f "$CONFIG_FILE" ]]; then
-  CURRENT_TZ=$(python3 -c "import json; print(json.load(open('${CONFIG_FILE}')).get('timezone', ''))" 2>/dev/null || echo "")
-  CURRENT_WS=$(python3 -c "import json; print(json.load(open('${CONFIG_FILE}')).get('week_start', 'monday'))" 2>/dev/null || echo "monday")
+  CURRENT_TZ=$(CONFIG_FILE="$CONFIG_FILE" python3 -c "import json, os; print(json.load(open(os.environ['CONFIG_FILE'])).get('timezone', ''))" 2>/dev/null || echo "")
+  CURRENT_WS=$(CONFIG_FILE="$CONFIG_FILE" python3 -c "import json, os; print(json.load(open(os.environ['CONFIG_FILE'])).get('week_start', 'monday'))" 2>/dev/null || echo "monday")
   echo "Current configuration:"
   echo "  Timezone:   ${CURRENT_TZ:-not set}"
   echo "  Week start: ${CURRENT_WS}"
@@ -50,6 +50,13 @@ fi
 
 read -rp "Enter IANA timezone (e.g., America/New_York) [${CURRENT_TZ:-${DETECTED_TZ:-UTC}}]: " INPUT_TZ
 TIMEZONE="${INPUT_TZ:-${CURRENT_TZ:-${DETECTED_TZ:-UTC}}}"
+
+# Validate IANA timezone format (letters, digits, underscores, slashes, plus, minus)
+if [[ ! "$TIMEZONE" =~ ^[A-Za-z0-9/_+-]+$ ]]; then
+  echo "ERROR: Invalid timezone format: ${TIMEZONE}"
+  echo "Expected IANA timezone like America/New_York or UTC"
+  exit 1
+fi
 
 echo "Timezone set to: ${TIMEZONE}"
 echo ""
@@ -75,20 +82,22 @@ echo ""
 # Write config
 if [[ -f "$CONFIG_FILE" ]]; then
   # Update existing config preserving other fields
-  python3 -c "
-import json
-config = json.load(open('${CONFIG_FILE}'))
-config['timezone'] = '${TIMEZONE}'
-config['week_start'] = '${WEEK_START}'
-json.dump(config, open('${CONFIG_FILE}', 'w'), indent=2)
+  CONFIG_FILE="$CONFIG_FILE" TIMEZONE="$TIMEZONE" WEEK_START="$WEEK_START" python3 -c "
+import json, os
+cf = os.environ['CONFIG_FILE']
+config = json.load(open(cf))
+config['timezone'] = os.environ['TIMEZONE']
+config['week_start'] = os.environ['WEEK_START']
+json.dump(config, open(cf, 'w'), indent=2)
 print('Configuration updated.')
 "
 else
   # Create new config
-  python3 -c "
-import json
-config = {'timezone': '${TIMEZONE}', 'week_start': '${WEEK_START}'}
-json.dump(config, open('${CONFIG_FILE}', 'w'), indent=2)
+  CONFIG_FILE="$CONFIG_FILE" TIMEZONE="$TIMEZONE" WEEK_START="$WEEK_START" python3 -c "
+import json, os
+cf = os.environ['CONFIG_FILE']
+config = {'timezone': os.environ['TIMEZONE'], 'week_start': os.environ['WEEK_START']}
+json.dump(config, open(cf, 'w'), indent=2)
 print('Configuration created.')
 "
 fi
