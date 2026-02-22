@@ -1,0 +1,18 @@
+{
+  "name": "Team Coordinator",
+  "description": "Team scheduling across multiple calendars. Finds common availability for group meetings.",
+  "defaults": {
+    "min_free_slot_minutes": 30,
+    "privacy": "full",
+    "format": "json"
+  },
+  "workflow_hints": [
+    "Use get_availability with multiple calendar_ids for cross-calendar merge",
+    "Use privacy mode 'full' to see how many calendars contribute to busy blocks",
+    "Consider timezone differences — convert_timezone for distributed teams",
+    "Suggest 2-3 alternative slots when proposing meeting times",
+    "For recurring meetings, use expand_rrule to preview all instances before booking",
+    "Minimum 30-minute slots unless participants agree to shorter",
+    "Check all participants' availability before booking any slot"
+  ]
+}

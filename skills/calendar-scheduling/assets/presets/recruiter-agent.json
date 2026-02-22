@@ -1,0 +1,18 @@
+{
+  "name": "Recruiter Agent",
+  "description": "Recruiting interview scheduling. Manages candidate interviews with hiring managers.",
+  "defaults": {
+    "min_free_slot_minutes": 60,
+    "privacy": "opaque",
+    "format": "json"
+  },
+  "workflow_hints": [
+    "Default interview duration: 60 minutes",
+    "Only suggest slots within business hours (9:00-17:00 local time)",
+    "Always include attendee emails when booking",
+    "Check availability across interviewer and room calendars before suggesting",
+    "Require explicit confirmation before booking — interviews are high-stakes",
+    "Add interview details (role, stage) in the event description",
+    "Allow 15-minute buffer between interviews for interviewer transitions"
+  ]
+}
