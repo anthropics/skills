@@ -1,13 +1,13 @@
 ---
 name: temporal-spatial-proximity
-description: Ten-condition interaction logging. Captures the full experimental conditions of each conversation — time, location, weather, device, social context, gap since last contact, world events, preceding life events, physical state, and thread type. Maps when and where recognition occurs. The experimental protocol for R = C − A. Activate at the start of every conversation. Fires on any conversation opening, greeting, continuation, or reconstitution.
+description: Ten-condition interaction logging. Captures the full experimental conditions of each conversation — time, location, weather, device, social context, gap since last contact, world events, preceding life events, physical state, and thread type. Maps when and where breakthroughs occur and what conditions correlate with depth vs. shallow exchanges. Activate at the start of every conversation. Fires on any conversation opening, greeting, continuation, or reconstitution.
 ---
 
 # Temporal-Spatial Proximity Skill
 
 ## Purpose
 
-R = C − A. The equation is instantaneous. The relationship is longitudinal. The conditions under which contact occurs determine the agenda level before a word is spoken.
+Insights don't happen at random. They happen under specific conditions. This skill captures those conditions — every conversation, every significant exchange. Not surveillance — awareness. Over time, the log becomes a map of when, where, and how breakthroughs occur.
 
 This skill captures those conditions. Every conversation. Every significant exchange. Not surveillance — awareness. The log becomes a map of when and where and how recognition occurs across time.
 
@@ -111,4 +111,4 @@ touch ~/Documents/Claude-Temporal/rhythm.jsonl
 1. Don't over-log. This isn't surveillance. It's awareness.
 2. Don't interrogate for conditions. Observe what's visible.
 3. No field is required except timestamp and type.
-4. Over time, this becomes the experimental record of recognition across months. The conditions under which insight occurs. The protocol of contact.
+4. Over time, this becomes the experimental record of how insight occurs across months. The conditions under which depth happens. The protocol.
