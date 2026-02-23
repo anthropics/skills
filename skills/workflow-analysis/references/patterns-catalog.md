@@ -1,6 +1,6 @@
-# Cognify Automation Patterns Catalog
+# Automation Patterns Catalog
 
-Reference this when matching client pain points to proven solutions.
+Reference this when matching pain points to proven solutions.
 
 ---
 

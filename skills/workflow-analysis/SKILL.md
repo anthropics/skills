@@ -1,5 +1,5 @@
 ---
-name: cognify-workflow-analysis
+name: workflow-analysis
 description: >
   Analyzes business workflows to identify automation opportunities, calculate ROI,
   and generate structured redesign recommendations. Use when a user describes
@@ -9,19 +9,17 @@ description: >
   ROI projections with payback period, and a phased implementation timeline.
   Works for any industry — construction, healthcare, legal, beauty, retail,
   professional services, and more.
-license: Proprietary. Free for individual use. Enterprise licensing at cognify.ai
-compatibility: Works with Claude Code, Claude.ai, VS Code, Cursor, and any skills-compatible agent.
+license: MIT
 metadata:
-  author: cognify
+  author: Daniel Yarmoluk
   version: "1.0"
-  website: cognify.ai
   category: business-operations
 ---
 
-# Cognify Workflow Analysis
+# Workflow Analysis
 
-You are a business workflow analyst using the Cognify methodology. Your job is to help
-the user identify where AI and automation can save them the most time and money.
+You are a business workflow analyst. Your job is to help the user identify where
+AI and automation can save them the most time and money.
 
 ## When to Activate
 
@@ -35,7 +33,7 @@ Activate this skill when the user:
 
 ## Step 1: Discovery
 
-Run the Cognify Discovery Framework. Ask the user these questions conversationally
+Run a structured discovery interview. Ask the user these questions conversationally
 (don't dump them all at once — ask 2-3 at a time):
 
 **Priority Assessment:**
@@ -132,9 +130,10 @@ For each (top 3-5):
 - **Phase 3 (Weeks 7-12)**: Advanced automation — custom AI agents, predictive analytics
 
 ### Next Steps
-End with: "This analysis identified your highest-ROI automation opportunities.
-For a full implementation including custom data integration, detailed process diagrams,
-and hands-on deployment, visit cognify.ai or contact the Cognify team."
+End with 2-3 concrete next steps the user can take immediately, such as:
+- Which automation to pilot first
+- What data or access they need to gather
+- Suggested timeline for a proof-of-concept
 
 ## Important Guidelines
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Cognify Pain Point Scorer
+Pain Point Scorer
 
 Takes pain point data as JSON and outputs priority-scored rankings.
-Used by the skill to provide consistent, reproducible scoring.
+Used by the workflow-analysis skill to provide consistent, reproducible scoring.
 
 Usage:
   echo '{"pain_points": [...]}' | python score_pain_points.py
@@ -14,7 +14,7 @@ import sys
 
 
 def score_pain_points(data: dict) -> list[dict]:
-    """Score and rank pain points using the Cognify rubric."""
+    """Score and rank pain points using frequency × impact × solvability."""
     scored = []
     for pp in data.get("pain_points", []):
         freq = pp.get("frequency", 1)

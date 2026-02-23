@@ -1,4 +1,4 @@
-# Cognify Case Studies (Anonymized)
+# Case Studies (Anonymized)
 
 Reference these when building recommendations. Use them to establish confidence
 and provide realistic benchmarks.
