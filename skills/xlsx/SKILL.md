@@ -1,259 +1,259 @@
 ---
 name: xlsx
-description: "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .csv, or .tsv file (e.g., adding columns, computing formulas, formatting, charting, cleaning messy data); create a new spreadsheet from scratch or from other data sources; or convert between tabular file formats. Trigger especially when the user references a spreadsheet file by name or path — even casually (like \"the xlsx in my downloads\") — and wants something done to it or produced from it. Also trigger for cleaning or restructuring messy tabular data files (malformed rows, misplaced headers, junk data) into proper spreadsheets. The deliverable must be a spreadsheet file. Do NOT trigger when the primary deliverable is a Word document, HTML report, standalone Python script, database pipeline, or Google Sheets API integration, even if tabular data is involved."
+description: "当电子表格文件作为主要输入或输出时使用此技能。适用于以下场景：打开、读取、编辑或修复现有的 .xlsx、.xlsm、.csv 或 .tsv 文件（如添加列、计算公式、格式化、图表、清理数据）；从零开始或从其他数据源创建新的电子表格；或在表格文件格式之间进行转换。当用户提及电子表格文件名称或路径时（即使是随意提及，如"我下载目录里的那个 xlsx"），只要需要对其进行操作或从中生成内容，都应触发此技能。同样适用于将混乱的表格数据文件（格式错误的行、错位的表头、垃圾数据）清理和重组为规范的电子表格。交付物必须是电子表格文件。当主要交付物是 Word 文档、HTML 报告、独立 Python 脚本、数据库流水线或 Google Sheets API 集成时，即使涉及表格数据，也不应触发此技能。"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# Requirements for Outputs
+# 输出要求
 
-## All Excel files
+## 所有 Excel 文件
 
-### Professional Font
-- Use a consistent, professional font (e.g., Arial, Times New Roman) for all deliverables unless otherwise instructed by the user
+### 专业字体
+- 除非用户另有指示，否则所有交付物应使用统一的专业字体（如 Arial、Times New Roman）
 
-### Zero Formula Errors
-- Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)
+### 零公式错误
+- 每个 Excel 模型交付时必须保证零公式错误（#REF!、#DIV/0!、#VALUE!、#N/A、#NAME?）
 
-### Preserve Existing Templates (when updating templates)
-- Study and EXACTLY match existing format, style, and conventions when modifying files
-- Never impose standardized formatting on files with established patterns
-- Existing template conventions ALWAYS override these guidelines
+### 保留现有模板（更新模板时）
+- 修改文件时应研究并严格匹配现有格式、样式和规范
+- 切勿对已有固定模式的文件强制应用标准化格式
+- 现有模板规范始终优先于本指南
 
-## Financial models
+## 财务模型
 
-### Color Coding Standards
-Unless otherwise stated by the user or existing template
+### 颜色编码标准
+除非用户另有说明或现有模板已有规定
 
-#### Industry-Standard Color Conventions
-- **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios
-- **Black text (RGB: 0,0,0)**: ALL formulas and calculations
-- **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook
-- **Red text (RGB: 255,0,0)**: External links to other files
-- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated
+#### 行业标准颜色规范
+- **蓝色文字 (RGB: 0,0,255)**：硬编码输入值，以及用户进行场景分析时会更改的数字
+- **黑色文字 (RGB: 0,0,0)**：所有公式和计算
+- **绿色文字 (RGB: 0,128,0)**：从同一工作簿内其他工作表引用的链接
+- **红色文字 (RGB: 255,0,0)**：链接到其他文件的外部引用
+- **黄色背景 (RGB: 255,255,0)**：需要关注的关键假设或需要更新的单元格
 
-### Number Formatting Standards
+### 数字格式标准
 
-#### Required Format Rules
-- **Years**: Format as text strings (e.g., "2024" not "2,024")
-- **Currency**: Use $#,##0 format; ALWAYS specify units in headers ("Revenue ($mm)")
-- **Zeros**: Use number formatting to make all zeros "-", including percentages (e.g., "$#,##0;($#,##0);-")
-- **Percentages**: Default to 0.0% format (one decimal)
-- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)
-- **Negative numbers**: Use parentheses (123) not minus -123
+#### 必须遵循的格式规则
+- **年份**：格式化为文本字符串（如 "2024" 而非 "2,024"）
+- **货币**：使用 $#,##0 格式；必须在表头中标明单位（"Revenue ($mm)"）
+- **零值**：使用数字格式将所有零值显示为 "-"，包括百分比（如 "$#,##0;($#,##0);-"）
+- **百分比**：默认使用 0.0% 格式（保留一位小数）
+- **倍数**：估值倍数（EV/EBITDA、P/E）使用 0.0x 格式
+- **负数**：使用括号 (123) 而非负号 -123
 
-### Formula Construction Rules
+### 公式构建规则
 
-#### Assumptions Placement
-- Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells
-- Use cell references instead of hardcoded values in formulas
-- Example: Use =B5*(1+$B$6) instead of =B5*1.05
+#### 假设值放置
+- 将所有假设值（增长率、利润率、倍数等）放在独立的假设单元格中
+- 在公式中使用单元格引用而非硬编码值
+- 示例：使用 =B5*(1+$B$6) 而非 =B5*1.05
 
-#### Formula Error Prevention
-- Verify all cell references are correct
-- Check for off-by-one errors in ranges
-- Ensure consistent formulas across all projection periods
-- Test with edge cases (zero values, negative numbers)
-- Verify no unintended circular references
+#### 公式错误预防
+- 验证所有单元格引用是否正确
+- 检查范围中的偏移错误
+- 确保所有预测期间的公式一致
+- 使用边界情况测试（零值、负数）
+- 确认没有意外的循环引用
 
-#### Documentation Requirements for Hardcodes
-- Comment or in cells beside (if end of table). Format: "Source: [System/Document], [Date], [Specific Reference], [URL if applicable]"
-- Examples:
+#### 硬编码值的文档要求
+- 在单元格中添加批注或在表格末尾的相邻单元格中注明。格式："Source: [系统/文档], [日期], [具体引用], [URL（如适用）]"
+- 示例：
   - "Source: Company 10-K, FY2024, Page 45, Revenue Note, [SEC EDGAR URL]"
   - "Source: Company 10-Q, Q2 2025, Exhibit 99.1, [SEC EDGAR URL]"
   - "Source: Bloomberg Terminal, 8/15/2025, AAPL US Equity"
   - "Source: FactSet, 8/20/2025, Consensus Estimates Screen"
 
-# XLSX creation, editing, and analysis
+# XLSX 文件的创建、编辑与分析
 
-## Overview
+## 概述
 
-A user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.
+用户可能要求你创建、编辑或分析 .xlsx 文件的内容。针对不同任务，你可以使用不同的工具和工作流程。
 
-## Important Requirements
+## 重要要求
 
-**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `scripts/recalc.py` script. The script automatically configures LibreOffice on first run, including in sandboxed environments where Unix sockets are restricted (handled by `scripts/office/soffice.py`)
+**公式重新计算需要 LibreOffice**：可以假定已安装 LibreOffice，使用 `scripts/recalc.py` 脚本进行公式值的重新计算。该脚本在首次运行时会自动配置 LibreOffice，包括在限制 Unix 套接字的沙箱环境中（由 `scripts/office/soffice.py` 处理）。
 
-## Reading and analyzing data
+## 读取和分析数据
 
-### Data analysis with pandas
-For data analysis, visualization, and basic operations, use **pandas** which provides powerful data manipulation capabilities:
+### 使用 pandas 进行数据分析
+对于数据分析、可视化和基本操作，使用 **pandas**，它提供强大的数据处理能力：
 
 ```python
 import pandas as pd
 
-# Read Excel
-df = pd.read_excel('file.xlsx')  # Default: first sheet
-all_sheets = pd.read_excel('file.xlsx', sheet_name=None)  # All sheets as dict
+# 读取 Excel
+df = pd.read_excel('file.xlsx')  # 默认：第一个工作表
+all_sheets = pd.read_excel('file.xlsx', sheet_name=None)  # 所有工作表作为字典
 
-# Analyze
-df.head()      # Preview data
-df.info()      # Column info
-df.describe()  # Statistics
+# 分析
+df.head()      # 预览数据
+df.info()      # 列信息
+df.describe()  # 统计摘要
 
-# Write Excel
+# 写入 Excel
 df.to_excel('output.xlsx', index=False)
 ```
 
-## Excel File Workflows
+## Excel 文件工作流程
 
-## CRITICAL: Use Formulas, Not Hardcoded Values
+## 关键原则：使用公式，而非硬编码值
 
-**Always use Excel formulas instead of calculating values in Python and hardcoding them.** This ensures the spreadsheet remains dynamic and updateable.
+**始终使用 Excel 公式而非在 Python 中计算后硬编码结果。** 这样可确保电子表格保持动态性和可更新性。
 
-### ❌ WRONG - Hardcoding Calculated Values
+### 错误做法 - 硬编码计算值
 ```python
-# Bad: Calculating in Python and hardcoding result
+# 错误：在 Python 中计算并硬编码结果
 total = df['Sales'].sum()
-sheet['B10'] = total  # Hardcodes 5000
+sheet['B10'] = total  # 硬编码 5000
 
-# Bad: Computing growth rate in Python
+# 错误：在 Python 中计算增长率
 growth = (df.iloc[-1]['Revenue'] - df.iloc[0]['Revenue']) / df.iloc[0]['Revenue']
-sheet['C5'] = growth  # Hardcodes 0.15
+sheet['C5'] = growth  # 硬编码 0.15
 
-# Bad: Python calculation for average
+# 错误：用 Python 计算平均值
 avg = sum(values) / len(values)
-sheet['D20'] = avg  # Hardcodes 42.5
+sheet['D20'] = avg  # 硬编码 42.5
 ```
 
-### ✅ CORRECT - Using Excel Formulas
+### 正确做法 - 使用 Excel 公式
 ```python
-# Good: Let Excel calculate the sum
+# 正确：让 Excel 计算总和
 sheet['B10'] = '=SUM(B2:B9)'
 
-# Good: Growth rate as Excel formula
+# 正确：增长率使用 Excel 公式
 sheet['C5'] = '=(C4-C2)/C2'
 
-# Good: Average using Excel function
+# 正确：使用 Excel 函数计算平均值
 sheet['D20'] = '=AVERAGE(D2:D19)'
 ```
 
-This applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.
+此规则适用于所有计算——总计、百分比、比率、差值等。电子表格应在源数据变更时能够自动重新计算。
 
-## Common Workflow
-1. **Choose tool**: pandas for data, openpyxl for formulas/formatting
-2. **Create/Load**: Create new workbook or load existing file
-3. **Modify**: Add/edit data, formulas, and formatting
-4. **Save**: Write to file
-5. **Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the scripts/recalc.py script
+## 常见工作流程
+1. **选择工具**：pandas 用于数据处理，openpyxl 用于公式/格式化
+2. **创建/加载**：创建新工作簿或加载现有文件
+3. **修改**：添加/编辑数据、公式和格式
+4. **保存**：写入文件
+5. **重新计算公式（使用公式时为必选步骤）**：使用 scripts/recalc.py 脚本
    ```bash
    python scripts/recalc.py output.xlsx
    ```
-6. **Verify and fix any errors**: 
-   - The script returns JSON with error details
-   - If `status` is `errors_found`, check `error_summary` for specific error types and locations
-   - Fix the identified errors and recalculate again
-   - Common errors to fix:
-     - `#REF!`: Invalid cell references
-     - `#DIV/0!`: Division by zero
-     - `#VALUE!`: Wrong data type in formula
-     - `#NAME?`: Unrecognized formula name
+6. **验证并修复错误**：
+   - 脚本会返回包含错误详情的 JSON
+   - 如果 `status` 为 `errors_found`，检查 `error_summary` 获取具体的错误类型和位置
+   - 修复发现的错误后重新计算
+   - 常见需修复的错误：
+     - `#REF!`：无效的单元格引用
+     - `#DIV/0!`：除以零
+     - `#VALUE!`：公式中数据类型错误
+     - `#NAME?`：无法识别的公式名称
 
-### Creating new Excel files
+### 创建新的 Excel 文件
 
 ```python
-# Using openpyxl for formulas and formatting
+# 使用 openpyxl 处理公式和格式
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 wb = Workbook()
 sheet = wb.active
 
-# Add data
+# 添加数据
 sheet['A1'] = 'Hello'
 sheet['B1'] = 'World'
 sheet.append(['Row', 'of', 'data'])
 
-# Add formula
+# 添加公式
 sheet['B2'] = '=SUM(A1:A10)'
 
-# Formatting
+# 格式化
 sheet['A1'].font = Font(bold=True, color='FF0000')
 sheet['A1'].fill = PatternFill('solid', start_color='FFFF00')
 sheet['A1'].alignment = Alignment(horizontal='center')
 
-# Column width
+# 列宽
 sheet.column_dimensions['A'].width = 20
 
 wb.save('output.xlsx')
 ```
 
-### Editing existing Excel files
+### 编辑现有 Excel 文件
 
 ```python
-# Using openpyxl to preserve formulas and formatting
+# 使用 openpyxl 保留公式和格式
 from openpyxl import load_workbook
 
-# Load existing file
+# 加载现有文件
 wb = load_workbook('existing.xlsx')
-sheet = wb.active  # or wb['SheetName'] for specific sheet
+sheet = wb.active  # 或使用 wb['SheetName'] 指定工作表
 
-# Working with multiple sheets
+# 处理多个工作表
 for sheet_name in wb.sheetnames:
     sheet = wb[sheet_name]
     print(f"Sheet: {sheet_name}")
 
-# Modify cells
+# 修改单元格
 sheet['A1'] = 'New Value'
-sheet.insert_rows(2)  # Insert row at position 2
-sheet.delete_cols(3)  # Delete column 3
+sheet.insert_rows(2)  # 在第 2 行插入行
+sheet.delete_cols(3)  # 删除第 3 列
 
-# Add new sheet
+# 添加新工作表
 new_sheet = wb.create_sheet('NewSheet')
 new_sheet['A1'] = 'Data'
 
 wb.save('modified.xlsx')
 ```
 
-## Recalculating formulas
+## 重新计算公式
 
-Excel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `scripts/recalc.py` script to recalculate formulas:
+由 openpyxl 创建或修改的 Excel 文件包含公式字符串但不含计算值。使用提供的 `scripts/recalc.py` 脚本重新计算公式：
 
 ```bash
 python scripts/recalc.py <excel_file> [timeout_seconds]
 ```
 
-Example:
+示例：
 ```bash
 python scripts/recalc.py output.xlsx 30
 ```
 
-The script:
-- Automatically sets up LibreOffice macro on first run
-- Recalculates all formulas in all sheets
-- Scans ALL cells for Excel errors (#REF!, #DIV/0!, etc.)
-- Returns JSON with detailed error locations and counts
-- Works on both Linux and macOS
+该脚本：
+- 首次运行时自动配置 LibreOffice 宏
+- 重新计算所有工作表中的所有公式
+- 扫描所有单元格以检测 Excel 错误（#REF!、#DIV/0! 等）
+- 返回包含详细错误位置和计数的 JSON
+- 兼容 Linux 和 macOS
 
-## Formula Verification Checklist
+## 公式验证清单
 
-Quick checks to ensure formulas work correctly:
+确保公式正确运行的快速检查：
 
-### Essential Verification
-- [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model
-- [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)
-- [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)
+### 基本验证
+- [ ] **测试 2-3 个样本引用**：在构建完整模型前验证引用是否拉取了正确的值
+- [ ] **列映射**：确认 Excel 列匹配（如第 64 列 = BL，而非 BK）
+- [ ] **行偏移**：注意 Excel 行从 1 开始（DataFrame 第 5 行 = Excel 第 6 行）
 
-### Common Pitfalls
-- [ ] **NaN handling**: Check for null values with `pd.notna()`
-- [ ] **Far-right columns**: FY data often in columns 50+ 
-- [ ] **Multiple matches**: Search all occurrences, not just first
-- [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)
-- [ ] **Wrong references**: Verify all cell references point to intended cells (#REF!)
-- [ ] **Cross-sheet references**: Use correct format (Sheet1!A1) for linking sheets
+### 常见陷阱
+- [ ] **NaN 处理**：使用 `pd.notna()` 检查空值
+- [ ] **最右侧列**：财年数据通常在第 50+ 列
+- [ ] **多重匹配**：搜索所有匹配项，而不仅是第一个
+- [ ] **除以零**：在公式中使用 `/` 前检查分母（#DIV/0!）
+- [ ] **错误引用**：验证所有单元格引用指向预期的单元格（#REF!）
+- [ ] **跨工作表引用**：使用正确格式（Sheet1!A1）链接工作表
 
-### Formula Testing Strategy
-- [ ] **Start small**: Test formulas on 2-3 cells before applying broadly
-- [ ] **Verify dependencies**: Check all cells referenced in formulas exist
-- [ ] **Test edge cases**: Include zero, negative, and very large values
+### 公式测试策略
+- [ ] **从小处着手**：先在 2-3 个单元格上测试公式，再大范围应用
+- [ ] **验证依赖关系**：检查公式中引用的所有单元格是否存在
+- [ ] **测试边界情况**：包括零值、负值和极大值
 
-### Interpreting scripts/recalc.py Output
-The script returns JSON with error details:
+### 解读 scripts/recalc.py 输出
+脚本返回包含错误详情的 JSON：
 ```json
 {
-  "status": "success",           // or "errors_found"
-  "total_errors": 0,              // Total error count
-  "total_formulas": 42,           // Number of formulas in file
-  "error_summary": {              // Only present if errors found
+  "status": "success",           // 或 "errors_found"
+  "total_errors": 0,              // 错误总数
+  "total_formulas": 42,           // 文件中的公式数量
+  "error_summary": {              // 仅在发现错误时出现
     "#REF!": {
       "count": 2,
       "locations": ["Sheet1!B5", "Sheet1!C10"]
@@ -262,31 +262,31 @@ The script returns JSON with error details:
 }
 ```
 
-## Best Practices
+## 最佳实践
 
-### Library Selection
-- **pandas**: Best for data analysis, bulk operations, and simple data export
-- **openpyxl**: Best for complex formatting, formulas, and Excel-specific features
+### 库选择
+- **pandas**：最适合数据分析、批量操作和简单数据导出
+- **openpyxl**：最适合复杂格式、公式和 Excel 特有功能
 
-### Working with openpyxl
-- Cell indices are 1-based (row=1, column=1 refers to cell A1)
-- Use `data_only=True` to read calculated values: `load_workbook('file.xlsx', data_only=True)`
-- **Warning**: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost
-- For large files: Use `read_only=True` for reading or `write_only=True` for writing
-- Formulas are preserved but not evaluated - use scripts/recalc.py to update values
+### 使用 openpyxl
+- 单元格索引从 1 开始（row=1, column=1 对应单元格 A1）
+- 使用 `data_only=True` 读取计算值：`load_workbook('file.xlsx', data_only=True)`
+- **警告**：如果以 `data_only=True` 打开并保存，公式将被替换为值并永久丢失
+- 对于大文件：使用 `read_only=True` 读取或 `write_only=True` 写入
+- 公式会被保留但不会被求值——使用 scripts/recalc.py 更新值
 
-### Working with pandas
-- Specify data types to avoid inference issues: `pd.read_excel('file.xlsx', dtype={'id': str})`
-- For large files, read specific columns: `pd.read_excel('file.xlsx', usecols=['A', 'C', 'E'])`
-- Handle dates properly: `pd.read_excel('file.xlsx', parse_dates=['date_column'])`
+### 使用 pandas
+- 指定数据类型以避免推断问题：`pd.read_excel('file.xlsx', dtype={'id': str})`
+- 对于大文件，读取特定列：`pd.read_excel('file.xlsx', usecols=['A', 'C', 'E'])`
+- 正确处理日期：`pd.read_excel('file.xlsx', parse_dates=['date_column'])`
 
-## Code Style Guidelines
-**IMPORTANT**: When generating Python code for Excel operations:
-- Write minimal, concise Python code without unnecessary comments
-- Avoid verbose variable names and redundant operations
-- Avoid unnecessary print statements
+## 代码风格指南
+**重要**：生成用于 Excel 操作的 Python 代码时：
+- 编写精简简洁的 Python 代码，不添加不必要的注释
+- 避免冗长的变量名和多余的操作
+- 避免不必要的 print 语句
 
-**For Excel files themselves**:
-- Add comments to cells with complex formulas or important assumptions
-- Document data sources for hardcoded values
-- Include notes for key calculations and model sections
+**对于 Excel 文件本身**：
+- 为包含复杂公式或重要假设的单元格添加批注
+- 为硬编码值标注数据来源
+- 为关键计算和模型部分添加说明

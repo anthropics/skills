@@ -1,106 +1,106 @@
 ---
 name: pptx
-description: "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
+description: "当涉及 .pptx 文件的任何操作时，请使用此技能——无论是作为输入、输出还是两者兼有。包括：创建幻灯片、演示文稿或提案演示；读取、解析或提取任何 .pptx 文件中的文本（即使提取的内容将用于其他用途，如邮件或摘要）；编辑、修改或更新现有演示文稿；合并或拆分幻灯片文件；使用模板、布局、演讲者备注或批注。当用户提到"演示文稿"、"幻灯片"、"PPT"或引用 .pptx 文件名时触发，无论他们之后打算如何使用内容。如果需要打开、创建或操作 .pptx 文件，请使用此技能。"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# PPTX Skill
+# PPTX 技能
 
-## Quick Reference
+## 快速参考
 
-| Task | Guide |
-|------|-------|
-| Read/analyze content | `python -m markitdown presentation.pptx` |
-| Edit or create from template | Read [editing.md](editing.md) |
-| Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| 任务 | 指南 |
+|------|------|
+| 读取/分析内容 | `python -m markitdown presentation.pptx` |
+| 基于模板编辑或创建 | 阅读 [editing.md](editing.md) |
+| 从零开始创建 | 阅读 [pptxgenjs.md](pptxgenjs.md) |
 
 ---
 
-## Reading Content
+## 读取内容
 
 ```bash
-# Text extraction
+# 提取文本
 python -m markitdown presentation.pptx
 
-# Visual overview
+# 可视化预览
 python scripts/thumbnail.py presentation.pptx
 
-# Raw XML
+# 原始 XML
 python scripts/office/unpack.py presentation.pptx unpacked/
 ```
 
 ---
 
-## Editing Workflow
+## 编辑工作流
 
-**Read [editing.md](editing.md) for full details.**
+**详细内容请阅读 [editing.md](editing.md)。**
 
-1. Analyze template with `thumbnail.py`
-2. Unpack → manipulate slides → edit content → clean → pack
-
----
-
-## Creating from Scratch
-
-**Read [pptxgenjs.md](pptxgenjs.md) for full details.**
-
-Use when no template or reference presentation is available.
+1. 使用 `thumbnail.py` 分析模板
+2. 解包 → 操作幻灯片 → 编辑内容 → 清理 → 打包
 
 ---
 
-## Design Ideas
+## 从零开始创建
 
-**Don't create boring slides.** Plain bullets on a white background won't impress anyone. Consider ideas from this list for each slide.
+**详细内容请阅读 [pptxgenjs.md](pptxgenjs.md)。**
 
-### Before Starting
+当没有可用的模板或参考演示文稿时使用。
 
-- **Pick a bold, content-informed color palette**: The palette should feel designed for THIS topic. If swapping your colors into a completely different presentation would still "work," you haven't made specific enough choices.
-- **Dominance over equality**: One color should dominate (60-70% visual weight), with 1-2 supporting tones and one sharp accent. Never give all colors equal weight.
-- **Dark/light contrast**: Dark backgrounds for title + conclusion slides, light for content ("sandwich" structure). Or commit to dark throughout for a premium feel.
-- **Commit to a visual motif**: Pick ONE distinctive element and repeat it — rounded image frames, icons in colored circles, thick single-side borders. Carry it across every slide.
+---
 
-### Color Palettes
+## 设计思路
 
-Choose colors that match your topic — don't default to generic blue. Use these palettes as inspiration:
+**不要创建无聊的幻灯片。** 白色背景上的纯文本要点不会给任何人留下深刻印象。请为每张幻灯片参考以下设计思路。
 
-| Theme | Primary | Secondary | Accent |
-|-------|---------|-----------|--------|
-| **Midnight Executive** | `1E2761` (navy) | `CADCFC` (ice blue) | `FFFFFF` (white) |
-| **Forest & Moss** | `2C5F2D` (forest) | `97BC62` (moss) | `F5F5F5` (cream) |
-| **Coral Energy** | `F96167` (coral) | `F9E795` (gold) | `2F3C7E` (navy) |
-| **Warm Terracotta** | `B85042` (terracotta) | `E7E8D1` (sand) | `A7BEAE` (sage) |
-| **Ocean Gradient** | `065A82` (deep blue) | `1C7293` (teal) | `21295C` (midnight) |
-| **Charcoal Minimal** | `36454F` (charcoal) | `F2F2F2` (off-white) | `212121` (black) |
-| **Teal Trust** | `028090` (teal) | `00A896` (seafoam) | `02C39A` (mint) |
-| **Berry & Cream** | `6D2E46` (berry) | `A26769` (dusty rose) | `ECE2D0` (cream) |
-| **Sage Calm** | `84B59F` (sage) | `69A297` (eucalyptus) | `50808E` (slate) |
-| **Cherry Bold** | `990011` (cherry) | `FCF6F5` (off-white) | `2F3C7E` (navy) |
+### 开始之前
 
-### For Each Slide
+- **选择大胆且贴合内容的配色方案**：配色方案应该让人感觉是专门为此主题设计的。如果把你的配色方案换到一个完全不同的演示文稿中仍然"适用"，说明你的选择还不够具针对性。
+- **主次分明**：一种颜色应占主导地位（60-70% 的视觉比重），搭配 1-2 种辅助色调和一种醒目的强调色。切勿让所有颜色平分秋色。
+- **深浅对比**：标题和结论幻灯片使用深色背景，内容页使用浅色背景（"三明治"结构）。或全程使用深色背景，营造高端质感。
+- **统一视觉主题**：选择一种独特的元素并重复使用——圆角图片框、彩色圆圈中的图标、粗单边边框。将其贯穿于每张幻灯片。
 
-**Every slide needs a visual element** — image, chart, icon, or shape. Text-only slides are forgettable.
+### 配色方案
 
-**Layout options:**
-- Two-column (text left, illustration on right)
-- Icon + text rows (icon in colored circle, bold header, description below)
-- 2x2 or 2x3 grid (image on one side, grid of content blocks on other)
-- Half-bleed image (full left or right side) with content overlay
+选择与主题相匹配的颜色——不要默认使用通用蓝色。以下配色方案供参考：
 
-**Data display:**
-- Large stat callouts (big numbers 60-72pt with small labels below)
-- Comparison columns (before/after, pros/cons, side-by-side options)
-- Timeline or process flow (numbered steps, arrows)
+| 主题 | 主色 | 辅色 | 强调色 |
+|------|------|------|--------|
+| **午夜商务** | `1E2761`（深蓝） | `CADCFC`（冰蓝） | `FFFFFF`（白色） |
+| **森林与苔藓** | `2C5F2D`（森林绿） | `97BC62`（苔藓绿） | `F5F5F5`（奶油白） |
+| **珊瑚活力** | `F96167`（珊瑚色） | `F9E795`（金色） | `2F3C7E`（深蓝） |
+| **暖赭石** | `B85042`（赭石色） | `E7E8D1`（沙色） | `A7BEAE`（鼠尾草绿） |
+| **海洋渐变** | `065A82`（深蓝） | `1C7293`（青色） | `21295C`（午夜蓝） |
+| **木炭极简** | `36454F`（炭灰） | `F2F2F2`（灰白） | `212121`（黑色） |
+| **青蓝信任** | `028090`（青蓝） | `00A896`（海沫绿） | `02C39A`（薄荷绿） |
+| **浆果与奶油** | `6D2E46`（浆果色） | `A26769`（暗玫瑰） | `ECE2D0`（奶油色） |
+| **鼠尾草宁静** | `84B59F`（鼠尾草绿） | `69A297`（桉叶绿） | `50808E`（板岩蓝） |
+| **樱桃醒目** | `990011`（樱桃红） | `FCF6F5`（灰白） | `2F3C7E`（深蓝） |
 
-**Visual polish:**
-- Icons in small colored circles next to section headers
-- Italic accent text for key stats or taglines
+### 每张幻灯片
 
-### Typography
+**每张幻灯片都需要一个视觉元素**——图片、图表、图标或形状。纯文本幻灯片令人过目即忘。
 
-**Choose an interesting font pairing** — don't default to Arial. Pick a header font with personality and pair it with a clean body font.
+**布局选项：**
+- 双栏（左侧文本，右侧插图）
+- 图标 + 文本行（彩色圆圈中的图标、粗体标题、下方描述）
+- 2x2 或 2x3 网格（一侧图片，另一侧内容块网格）
+- 半出血图片（占满左侧或右侧）搭配内容叠加
 
-| Header Font | Body Font |
-|-------------|-----------|
+**数据展示：**
+- 大数据突出展示（60-72pt 大数字，下方小标签）
+- 对比栏（前/后、优/劣、并列选项）
+- 时间线或流程图（编号步骤、箭头）
+
+**视觉打磨：**
+- 章节标题旁的小彩色圆圈图标
+- 关键数据或标语使用斜体强调文本
+
+### 字体排版
+
+**选择有趣的字体搭配**——不要默认使用 Arial。选择有个性的标题字体，搭配简洁的正文字体。
+
+| 标题字体 | 正文字体 |
+|----------|----------|
 | Georgia | Calibri |
 | Arial Black | Arial |
 | Calibri | Calibri Light |
@@ -110,112 +110,112 @@ Choose colors that match your topic — don't default to generic blue. Use these
 | Palatino | Garamond |
 | Consolas | Calibri |
 
-| Element | Size |
-|---------|------|
-| Slide title | 36-44pt bold |
-| Section header | 20-24pt bold |
-| Body text | 14-16pt |
-| Captions | 10-12pt muted |
+| 元素 | 字号 |
+|------|------|
+| 幻灯片标题 | 36-44pt 粗体 |
+| 章节标题 | 20-24pt 粗体 |
+| 正文文本 | 14-16pt |
+| 说明文字 | 10-12pt 弱化色 |
 
-### Spacing
+### 间距
 
-- 0.5" minimum margins
-- 0.3-0.5" between content blocks
-- Leave breathing room—don't fill every inch
+- 最小边距 0.5 英寸
+- 内容块之间 0.3-0.5 英寸
+- 留出呼吸空间——不要填满每一寸
 
-### Avoid (Common Mistakes)
+### 避免（常见错误）
 
-- **Don't repeat the same layout** — vary columns, cards, and callouts across slides
-- **Don't center body text** — left-align paragraphs and lists; center only titles
-- **Don't skimp on size contrast** — titles need 36pt+ to stand out from 14-16pt body
-- **Don't default to blue** — pick colors that reflect the specific topic
-- **Don't mix spacing randomly** — choose 0.3" or 0.5" gaps and use consistently
-- **Don't style one slide and leave the rest plain** — commit fully or keep it simple throughout
-- **Don't create text-only slides** — add images, icons, charts, or visual elements; avoid plain title + bullets
-- **Don't forget text box padding** — when aligning lines or shapes with text edges, set `margin: 0` on the text box or offset the shape to account for padding
-- **Don't use low-contrast elements** — icons AND text need strong contrast against the background; avoid light text on light backgrounds or dark text on dark backgrounds
-- **NEVER use accent lines under titles** — these are a hallmark of AI-generated slides; use whitespace or background color instead
+- **不要重复相同的布局** —— 在不同幻灯片之间变换使用栏、卡片和标注
+- **不要居中正文** —— 段落和列表左对齐；仅标题居中
+- **不要忽视字号对比** —— 标题需要 36pt 以上才能从 14-16pt 正文中脱颖而出
+- **不要默认使用蓝色** —— 选择能反映具体主题的颜色
+- **不要随意混用间距** —— 选择 0.3 英寸或 0.5 英寸的间距并保持一致
+- **不要只美化一张幻灯片而忽略其余** —— 要么全程精心设计，要么全程保持简约
+- **不要创建纯文本幻灯片** —— 添加图片、图标、图表或视觉元素；避免纯标题 + 要点
+- **不要忘记文本框内边距** —— 将线条或形状与文本边缘对齐时，将文本框的 `margin: 0` 设置为零，或偏移形状以补偿内边距
+- **不要使用低对比度元素** —— 图标和文本都需要与背景形成强烈对比；避免浅色背景上的浅色文字或深色背景上的深色文字
+- **绝对不要在标题下方使用强调线** —— 这是 AI 生成幻灯片的典型特征；改用留白或背景色
 
 ---
 
-## QA (Required)
+## 质量检查（必需）
 
-**Assume there are problems. Your job is to find them.**
+**假设存在问题。你的任务就是找到它们。**
 
-Your first render is almost never correct. Approach QA as a bug hunt, not a confirmation step. If you found zero issues on first inspection, you weren't looking hard enough.
+你的第一版渲染几乎不可能完全正确。将质量检查视为一次找错行动，而非确认步骤。如果第一次检查没有发现任何问题，说明你检查得还不够仔细。
 
-### Content QA
+### 内容质量检查
 
 ```bash
 python -m markitdown output.pptx
 ```
 
-Check for missing content, typos, wrong order.
+检查是否有遗漏内容、拼写错误、顺序错误。
 
-**When using templates, check for leftover placeholder text:**
+**使用模板时，检查是否有残留的占位符文本：**
 
 ```bash
 python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum|this.*(page|slide).*layout"
 ```
 
-If grep returns results, fix them before declaring success.
+如果 grep 返回结果，请在宣布完成之前修复它们。
 
-### Visual QA
+### 视觉质量检查
 
-**⚠️ USE SUBAGENTS** — even for 2-3 slides. You've been staring at the code and will see what you expect, not what's there. Subagents have fresh eyes.
+**请使用子代理** —— 即使只有 2-3 张幻灯片也是如此。你一直在盯着代码，会看到你期望看到的内容，而不是实际存在的内容。子代理拥有全新的视角。
 
-Convert slides to images (see [Converting to Images](#converting-to-images)), then use this prompt:
+将幻灯片转换为图片（参见[转换为图片](#转换为图片)），然后使用以下提示词：
 
 ```
-Visually inspect these slides. Assume there are issues — find them.
+对这些幻灯片进行视觉检查。假设存在问题——找到它们。
 
-Look for:
-- Overlapping elements (text through shapes, lines through words, stacked elements)
-- Text overflow or cut off at edges/box boundaries
-- Decorative lines positioned for single-line text but title wrapped to two lines
-- Source citations or footers colliding with content above
-- Elements too close (< 0.3" gaps) or cards/sections nearly touching
-- Uneven gaps (large empty area in one place, cramped in another)
-- Insufficient margin from slide edges (< 0.5")
-- Columns or similar elements not aligned consistently
-- Low-contrast text (e.g., light gray text on cream-colored background)
-- Low-contrast icons (e.g., dark icons on dark backgrounds without a contrasting circle)
-- Text boxes too narrow causing excessive wrapping
-- Leftover placeholder content
+检查以下内容：
+- 元素重叠（文本穿过形状、线条穿过文字、元素堆叠）
+- 文本溢出或在边缘/框边界处被截断
+- 装饰线条按单行文本定位但标题换行成两行
+- 来源引用或页脚与上方内容碰撞
+- 元素间距过小（< 0.3 英寸）或卡片/区域几乎相接
+- 间距不均匀（某处大面积空白，另一处过于拥挤）
+- 与幻灯片边缘的边距不足（< 0.5 英寸）
+- 栏或相似元素未保持一致对齐
+- 低对比度文本（如浅灰色文字在奶油色背景上）
+- 低对比度图标（如深色图标在深色背景上且没有对比色圆圈）
+- 文本框过窄导致过度换行
+- 残留的占位符内容
 
-For each slide, list issues or areas of concern, even if minor.
+对每张幻灯片列出问题或值得关注的地方，即使是细微问题。
 
-Read and analyze these images:
-1. /path/to/slide-01.jpg (Expected: [brief description])
-2. /path/to/slide-02.jpg (Expected: [brief description])
+阅读并分析以下图片：
+1. /path/to/slide-01.jpg（预期内容：[简要描述]）
+2. /path/to/slide-02.jpg（预期内容：[简要描述]）
 
-Report ALL issues found, including minor ones.
+报告发现的所有问题，包括细微问题。
 ```
 
-### Verification Loop
+### 验证循环
 
-1. Generate slides → Convert to images → Inspect
-2. **List issues found** (if none found, look again more critically)
-3. Fix issues
-4. **Re-verify affected slides** — one fix often creates another problem
-5. Repeat until a full pass reveals no new issues
+1. 生成幻灯片 → 转换为图片 → 检查
+2. **列出发现的问题**（如果未发现问题，请更仔细地再看一遍）
+3. 修复问题
+4. **重新验证受影响的幻灯片** —— 一个修复往往会引发另一个问题
+5. 重复直到完整检查一遍后不再发现新问题
 
-**Do not declare success until you've completed at least one fix-and-verify cycle.**
+**在完成至少一轮修复与验证循环之前，不要宣布成功。**
 
 ---
 
-## Converting to Images
+## 转换为图片
 
-Convert presentations to individual slide images for visual inspection:
+将演示文稿转换为单独的幻灯片图片以进行视觉检查：
 
 ```bash
 python scripts/office/soffice.py --headless --convert-to pdf output.pptx
 pdftoppm -jpeg -r 150 output.pdf slide
 ```
 
-This creates `slide-01.jpg`, `slide-02.jpg`, etc.
+这将生成 `slide-01.jpg`、`slide-02.jpg` 等文件。
 
-To re-render specific slides after fixes:
+修复后重新渲染特定幻灯片：
 
 ```bash
 pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
@@ -223,10 +223,10 @@ pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
 
 ---
 
-## Dependencies
+## 依赖项
 
-- `pip install "markitdown[pptx]"` - text extraction
-- `pip install Pillow` - thumbnail grids
-- `npm install -g pptxgenjs` - creating from scratch
-- LibreOffice (`soffice`) - PDF conversion (auto-configured for sandboxed environments via `scripts/office/soffice.py`)
-- Poppler (`pdftoppm`) - PDF to images
+- `pip install "markitdown[pptx]"` - 文本提取
+- `pip install Pillow` - 缩略图网格
+- `npm install -g pptxgenjs` - 从零创建
+- LibreOffice (`soffice`) - PDF 转换（通过 `scripts/office/soffice.py` 自动配置沙盒环境）
+- Poppler (`pdftoppm`) - PDF 转图片
