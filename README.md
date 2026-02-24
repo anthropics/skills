@@ -92,4 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
-- **CogmemAi** - [CogmemAi Memory Skill for Claude Code](https://github.com/hifriendbot/cogmemai-mcp/tree/master/skill/cogmemai-memory) — Persistent memory management for AI coding assistants. Teaches Claude best practices for saving, organizing, and recalling memories across sessions using the [CogmemAi MCP server](https://github.com/hifriendbot/cogmemai-mcp).
+- **CogmemAi** - [CogmemAi Memory Skill for Claude Code](https://github.com/hifriendbot/cogmemai-mcp/tree/main/skill/cogmemai-memory) — Persistent memory management for AI coding assistants. Teaches Claude best practices for saving, organizing, and recalling memories across sessions using the [CogmemAi MCP server](https://github.com/hifriendbot/cogmemai-mcp).
