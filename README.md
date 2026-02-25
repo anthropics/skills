@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **Evos** - [Operational Domain Skills](https://github.com/ai-evos/agent-skills): 8 eval-verified capabilities codifying 15+ years of domain expertise across logistics, manufacturing, retail, and energy operations. Includes freight exception management, carrier relationships, customs compliance, inventory planning, returns processing, production scheduling, quality non-conformance, and energy procurement.
