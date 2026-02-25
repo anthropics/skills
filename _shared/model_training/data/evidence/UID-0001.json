@@ -1,0 +1,20 @@
+{
+  "uid": "0001",
+  "Location": [
+    {"document": "Declaration Narrative", "page": 1, "paragraph": 1}
+  ],
+  "claim": ["Sample claim - replace with actual"],
+  "parties_involved": [
+    {"party_type": "PLAINTIFF", "name": "Tyler Lofall", "role": "Pro Se Litigant"}
+  ],
+  "description_of_evidence": "Sample evidence card - replace with actual evidence",
+  "depiction_quote": "Sample quote from document",
+  "significance": "This is a sample card to demonstrate the structure",
+  "precedence": [
+    {"caselaw1": "Sample v. Case, 123 F.3d 456 (9th Cir. 2020)", "relevance": "Sample relevance"}
+  ],
+  "citation": "Declaration Narrative, p. 1",
+  "source": "Declaration Narrative",
+  "complements_uid": "",
+  "notes": "This is a starter card. Replace with real evidence."
+}
