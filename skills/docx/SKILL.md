@@ -1,6 +1,6 @@
 ---
 name: docx
-description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of \"Word doc\", \"word document\", \".docx\", or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a \"report\", \"memo\", \"letter\", \"template\", or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
+description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
@@ -61,6 +61,9 @@ Generate .docx files with JavaScript, then validate. Install: `npm install -g do
 ```javascript
 const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun,
         Header, Footer, AlignmentType, PageOrientation, LevelFormat, ExternalHyperlink,
+        InternalHyperlink, Bookmark, FootnoteReferenceRun, PositionalTab,
+        PositionalTabAlignment, PositionalTabRelativeTo, PositionalTabLeader,
+        TabStopType, TabStopPosition, Column, SectionType,
         TableOfContents, HeadingLevel, BorderStyle, WidthType, ShadingType,
         VerticalAlign, PageNumber, PageBreak } = require('docx');
 
@@ -241,6 +244,111 @@ new Paragraph({ children: [new PageBreak()] })
 new Paragraph({ pageBreakBefore: true, children: [new TextRun("New page")] })
 ```
 
+### Hyperlinks
+
+```javascript
+// External link
+new Paragraph({
+  children: [new ExternalHyperlink({
+    children: [new TextRun({ text: "Click here", style: "Hyperlink" })],
+    link: "https://example.com",
+  })]
+})
+
+// Internal link (bookmark + reference)
+// 1. Create bookmark at destination
+new Paragraph({ heading: HeadingLevel.HEADING_1, children: [
+  new Bookmark({ id: "chapter1", children: [new TextRun("Chapter 1")] }),
+]})
+// 2. Link to it
+new Paragraph({ children: [new InternalHyperlink({
+  children: [new TextRun({ text: "See Chapter 1", style: "Hyperlink" })],
+  anchor: "chapter1",
+})]})
+```
+
+### Footnotes
+
+```javascript
+const doc = new Document({
+  footnotes: {
+    1: { children: [new Paragraph("Source: Annual Report 2024")] },
+    2: { children: [new Paragraph("See appendix for methodology")] },
+  },
+  sections: [{
+    children: [new Paragraph({
+      children: [
+        new TextRun("Revenue grew 15%"),
+        new FootnoteReferenceRun(1),
+        new TextRun(" using adjusted metrics"),
+        new FootnoteReferenceRun(2),
+      ],
+    })]
+  }]
+});
+```
+
+### Tab Stops
+
+```javascript
+// Right-align text on same line (e.g., date opposite a title)
+new Paragraph({
+  children: [
+    new TextRun("Company Name"),
+    new TextRun("\tJanuary 2025"),
+  ],
+  tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
+})
+
+// Dot leader (e.g., TOC-style)
+new Paragraph({
+  children: [
+    new TextRun("Introduction"),
+    new TextRun({ children: [
+      new PositionalTab({
+        alignment: PositionalTabAlignment.RIGHT,
+        relativeTo: PositionalTabRelativeTo.MARGIN,
+        leader: PositionalTabLeader.DOT,
+      }),
+      "3",
+    ]}),
+  ],
+})
+```
+
+### Multi-Column Layouts
+
+```javascript
+// Equal-width columns
+sections: [{
+  properties: {
+    column: {
+      count: 2,          // number of columns
+      space: 720,        // gap between columns in DXA (720 = 0.5 inch)
+      equalWidth: true,
+      separate: true,    // vertical line between columns
+    },
+  },
+  children: [/* content flows naturally across columns */]
+}]
+
+// Custom-width columns (equalWidth must be false)
+sections: [{
+  properties: {
+    column: {
+      equalWidth: false,
+      children: [
+        new Column({ width: 5400, space: 720 }),
+        new Column({ width: 3240 }),
+      ],
+    },
+  },
+  children: [/* content */]
+}]
+```
+
+Force a column break with a new section using `type: SectionType.NEXT_COLUMN`.
+
 ### Table of Contents
 
 ```javascript
@@ -280,6 +388,7 @@ sections: [{
 - **Table width = sum of columnWidths** - for DXA, ensure they add up exactly
 - **Always add cell margins** - use `margins: { top: 80, bottom: 80, left: 120, right: 120 }` for readable padding
 - **Use `ShadingType.CLEAR`** - never SOLID for table shading
+- **Never use tables as dividers/rules** - cells have minimum height and render as empty boxes (including in headers/footers); use `border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "2E75B6", space: 1 } }` on a Paragraph instead. For two-column footers, use tab stops (see Tab Stops section), not tables
 - **TOC requires HeadingLevel only** - no custom styles on heading paragraphs
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
