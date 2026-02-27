@@ -38,6 +38,7 @@
 | 10 | [序列并行详解](10-sequence-parallelism.md) | Megatron SP、DeepSpeed Ulysses、Ring Attention | 30 分钟 |
 | 11 | [专家并行与 MoE](11-expert-parallelism-moe.md) | MoE 原理、Expert Parallelism、负载均衡 | 35 分钟 |
 | 12 | [混合精度训练](12-mixed-precision-training.md) | FP16/BF16/FP8、Loss Scaling、Transformer Engine | 30 分钟 |
+| 13 | [AdamW 优化器深入讲解](13-adamw-optimizer.md) | SGD→Adam→AdamW 演化、解耦权重衰减、显存开销 | 25 分钟 |
 
 ---
 
