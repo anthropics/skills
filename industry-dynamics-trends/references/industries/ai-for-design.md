@@ -14,6 +14,21 @@
 |--------|------------|
 | **报告标题** | AI for Design 行业前沿洞察（[时间]月刊） |
 | **三条目名称**（每条动态的 3 个子项） | 【最新动态】 / 【行业风向】 / 【设计启发点】 |
+| **配图与多媒体** | 建议至少 5 条动态配有 1 张界面截图或 1 段演示/演讲视频引用；格式遵循 `references/output-format.md` 与 `references/multimedia-curation.md`。 |
+
+---
+
+## 信源发现维度（本行业）
+
+通用维度见 `references/source-discovery.md`；本行业采用以下覆盖与优先级（执行检索时按此展开，可附典型关键词或站点示例）：
+
+| 维度 | 本行业表述 | 典型关键词/站点示例 |
+|------|------------|---------------------|
+| **主流与榜单** | 设计工具榜单、Design tools 年度盘点、设计媒体 | Best design tools 2025、Smashing Magazine、A List Apart、Design tools roundup |
+| **新锐与发布** | Product Hunt Design、Figma 社区/插件、新 AI 设计工具发布 | Product Hunt Design、Figma Community、AI design tool launch、Changelog |
+| **开源与社区** | Design system 开源项目、UI 组件库、设计 token 工具 | GitHub design system、Open source UI kit、Design tokens、Reddit r/UI_Design |
+| **视觉与案例** | Behance/Dribbble 项目、大厂 Design Blog、DesignOps 案例、大会演讲/视频 | Behance AI design、Dribbble UI、Design blog（Figma/Adobe/Linear 等）、Config / Design at Scale 演讲 |
+| **生态与版图** | 设计工具集成与 landscape、Figma/Sketch/Adobe 生态动态 | Design tools landscape、Figma plugins、Adobe Firefly、设计工具集成 |
 
 ---
 
@@ -33,6 +48,8 @@
 4. **【硬核内容过滤】**：仅收录【产品应用侧】（设计工具新功能、UI/UX 工作流 AI 插件、企业级落地案例）和【模型技术侧】（底层多模态模型参数突破、生成保真度提升）；坚决剔除纯观点输出和无落地的理论探讨。
 
 （通用细则见 `references/verification-curation.md`。）
+
+执行时须同时参考 **信源发现维度（本行业）**（见上）与 `references/multimedia-curation.md`：本行业建议**至少 5 条动态**配有界面截图或演示/演讲视频引用，图片与视频须符合信源优先级与引用格式（时间点、来源 URL、来源链接索引）。
 
 ---
 
@@ -56,9 +73,10 @@
 * **【最新动态】**：[客观陈述事件及具体参数/能力] [1]
 * **【行业风向】**：[对企业级交付标准、产研协同或工具链生态的影响]
 * **【设计启发点】**：[Leader 管理/培训建议，或一线设计师实操/提效指南]
+* **【配图/视频】**（建议，若证据充分）：![描述](url) [n] 或 视频 [n]（时间点 mm:ss）
 ```
 
-完整模板见 `assets/report-template.md`；标题与三条目以本文件为准。
+本行业**建议**在【最新动态】或【设计启发点】处为每条动态配 1 张截图或 1 个视频引用（若证据充分）；格式遵循 `references/output-format.md` 与 `references/multimedia-curation.md`。完整模板见 `assets/report-template.md`；标题与三条目以本文件为准。
 
 ---
 
