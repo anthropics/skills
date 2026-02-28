@@ -13,6 +13,7 @@ license: Proprietary. LICENSE.txt has complete terms
 | Read/analyze content | `python -m markitdown presentation.pptx` |
 | Edit or create from template | Read [editing.md](editing.md) |
 | Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| **Chinese presentations** | **Read [chinese-guide.md](chinese-guide.md)** |
 
 ---
 
