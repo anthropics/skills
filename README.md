@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **Prismism** - [Prismism Skills](https://github.com/prismism-dev/prismism-skills) — Upload any file and get a shareable, tracked link with built-in analytics and access control. API-first document delivery built for AI agents.
