@@ -1,0 +1,5 @@
+requests>=2.31.0
+pandas>=2.0.0
+schedule>=1.2.0
+python-dateutil>=2.8.2
+akshare>=1.12.0
