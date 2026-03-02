@@ -10,8 +10,8 @@
 ### 动态 1：[一句话总结该条核心价值]
 * **【最新动态】**：[客观陈述事件及关键参数/能力] [1]
 * **【行业风向】**：[对企业级交付标准、产研协同或工具链的实质影响]
-* **【设计启发点】**：[针对 Leader 或一线设计师的可落地建议]
-* **【配图/视频】**（可选）：![描述](图片URL) [2] 或 视频 [2]（时间点 mm:ss）
+* **【设计启发点】**：[针对设计部门Design Leader 或一线设计师的可落地建议]
+* **【配图/视频】**（可选，有则更好）：![描述](图片URL) [2] 或 视频 [2]（时间点 mm:ss）
 
 ### 动态 2：[一句话总结]
 * **【最新动态】**：[陈述] [2]
@@ -33,7 +33,8 @@
 ---
 
 ### 来源链接索引
-- [1] [文章/新闻标题] - [发布平台] (YYYY年X月X日)：[完整 URL]
-- [2] [描述] - 截图 - [发布平台/页面] (YYYY年X月X日)：[完整 URL]
-- [3] [文章/新闻标题] - [发布平台] (YYYY年X月X日)：[完整 URL]
+（正文引用用 `[n](#ref-n)` 便于跳转到本索引；每条前加 `<a id="ref-n"></a>`，URL 用 `<a href="完整URL" target="_blank" rel="noopener noreferrer">打开</a>` 新标签页打开，将「完整URL」替换为实际来源地址。详见 `references/output-format.md` 链接与点击体验。）
+- <a id="ref-1"></a>[1] [文章/新闻标题] - [发布平台] (YYYY年X月X日)：<a href="完整URL" target="_blank" rel="noopener noreferrer">打开</a>
+- <a id="ref-2"></a>[2] [描述] - 截图 - [发布平台/页面] (YYYY年X月X日)：<a href="完整URL" target="_blank" rel="noopener noreferrer">打开</a>
+- <a id="ref-3"></a>[3] [文章/新闻标题] - [发布平台] (YYYY年X月X日)：<a href="完整URL" target="_blank" rel="noopener noreferrer">打开</a>
 - [……按正文引用序号完整列出，不得缺号；图片/视频格式见 output-format.md……]
