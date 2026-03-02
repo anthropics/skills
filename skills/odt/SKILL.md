@@ -8,7 +8,7 @@ license: Apache-2.0
 
 ## Overview
 
-An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/IEC 26300) ZIP archive containing XML files. It is the native format for LibreOffice, Apache OpenOffice, Collabora, OnlyOffice, and is supported by Google Docs and Microsoft Office.
+An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/IEC 26300) ZIP archive containing XML files. It is the native format for LibreOffice, Apache OpenOffice, Collabora, OnlyOffice, and is supported by Google Docs and Microsoft Office. odf-kit works in Node.js and browsers, but in this environment it runs in Node.js.
 
 ## Quick Reference
 
@@ -25,7 +25,7 @@ An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/
 npm install -g odf-kit
 ```
 
-Requires Node.js 22 or later. ESM only.
+Requires Node.js 18 or later. ESM only.
 
 ---
 
@@ -45,20 +45,6 @@ doc.addParagraph("Body text goes here.");
 
 const bytes = await doc.save();
 writeFileSync("output.odt", bytes);
-```
-
-### Headings
-
-```javascript
-// Simple heading (levels 1–6, defaults to 1)
-doc.addHeading("Chapter Title", 1);
-doc.addHeading("Section Title", 2);
-
-// Formatted heading — builder callback (same as addParagraph)
-doc.addHeading((p) => {
-  p.addText("Status: ", { color: "#333333" });
-  p.addText("Approved", { color: "green", bold: true });
-}, 2);
 ```
 
 ### Metadata
@@ -99,13 +85,6 @@ doc.setHeader((h) => {
   h.addText("Confidential", { bold: true, color: "gray" });
   h.addText(" — Page ");
   h.addPageNumber();
-});
-
-// Footer with formatted page number
-doc.setFooter((f) => {
-  f.addText("Page ");
-  f.addPageNumber({ bold: true });
-  f.addText(" — Confidential", { italic: true, color: "gray" });
 });
 ```
 
@@ -165,17 +144,6 @@ doc.addTable((t) => {
     r.addCell("Complete", { color: "green" });
   });
 }, { columnWidths: ["8cm", "4cm"] });
-
-// Rich text inside cells — builder callback for mixed formatting
-doc.addTable((t) => {
-  t.addRow((r) => {
-    r.addCell((c) => {
-      c.addText("Total: ", { bold: true });
-      c.addText("$1,250", { color: "green" });
-    });
-    r.addCell("Complete", { colSpan: 2 });
-  });
-});
 ```
 
 Cell options extend text formatting with:
@@ -315,13 +283,13 @@ Fill existing `.odt` templates created in LibreOffice with dynamic data. Templat
 import { fillTemplate } from "odf-kit";
 import { readFileSync, writeFileSync } from "fs";
 
-const template = readFileSync("template.odt"); // Buffer or Uint8Array
+const template = readFileSync("template.odt");
 const result = fillTemplate(template, {
   name: "Alice",
   company: "Acme Corp",
   date: "2026-03-01",
 });
-writeFileSync("output.odt", result); // result is Uint8Array
+writeFileSync("output.odt", result);
 ```
 
 ### Template Syntax
