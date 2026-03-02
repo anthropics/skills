@@ -1,0 +1,29 @@
+{
+  "skill_name": "casely",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Initialize a new testing project for the 'Payments' feature. I have requirement documents and some previous test case examples.",
+      "expected_output": "Skill creates the standard directory structure under projects/Payments/, checks the environment (venv and libraries), and guides the user on where to place files.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I've uploaded my files and run the parser. Now create a style guide based on my parsed examples in the 'processed' folder.",
+      "expected_output": "Skill analyzes the Markdown tables in the processed folder that originated from examples, extracts column structure and writing style, and generates a comprehensive test_style_guide.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Based on the requirements in the 'processed' folder and use the 'test_style_guide.md', generate a suite of atomic functional test cases.",
+      "expected_output": "Skill identifies features from requirements, applies the style guide formatting, and generates atomic test cases (one scenario per row) in the results directory.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Everything looks good. Export the generated test cases to a formatted Excel file for my TMS.",
+      "expected_output": "Skill executes the export script to convert Markdown tables in the results folder into a professional .xlsx file in the exports folder.",
+      "files": []
+    }
+  ]
+}
