@@ -140,6 +140,7 @@ pip install playwright && playwright install chromium
 - 图片用**相对路径** `./images/<slug>/<filename>`，任何 Markdown 预览均可直接渲染。
 - 视频用**封面图**（同上格式）+ 正文注「演示视频见来源 [n]」+ 索引保留链接。
 - 未获取到的：`（暂无可用配图；详见来源 [n]）`。
+- **体积与版本控制**：B2 截图时尽量固定 viewport（如 1920×1080）、避免整页长图；单张配图建议 ≤ 约 1MB，以免 git push 时 payload 过大触发 HTTP 400。行业实例（如 `ai-for-design.md`）工作流中已约定禁止提交 `node_modules` 并控制报告配图体积。
 
 ---
 

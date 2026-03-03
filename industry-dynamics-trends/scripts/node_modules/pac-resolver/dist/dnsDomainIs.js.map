@@ -1,1 +1,0 @@
-{"version":3,"file":"dnsDomainIs.js","sourceRoot":"","sources":["../src/dnsDomainIs.ts"],"names":[],"mappings":";;AAAA;;;;;;;;;;;;;;;;;;;;GAoBG;AACH,SAAwB,WAAW,CAAC,IAAY,EAAE,MAAc;IAC/D,IAAI,GAAG,MAAM,CAAC,IAAI,CAAC,CAAC;IACpB,MAAM,GAAG,MAAM,CAAC,MAAM,CAAC,CAAC;IACxB,OAAO,IAAI,CAAC,MAAM,CAAC,MAAM,CAAC,MAAM,GAAG,CAAC,CAAC,CAAC,KAAK,MAAM,CAAC;AACnD,CAAC;AAJD,8BAIC"}
