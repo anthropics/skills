@@ -21,7 +21,7 @@ async function captureScreenshot() {
     console.log('等待 3 秒让页面完全加载...');
     await new Promise(resolve => setTimeout(resolve, 3000));
     
-    const outputPath = '/Users/a./Downloads/skills/industry-dynamics-trends/assets/images/2026-03-ai-for-design/09-konva.png';
+    const outputPath = path.join(__dirname, '..', 'assets', 'images', '2026-03-ai-for-design', '07-konva.png');
     const outputDir = path.dirname(outputPath);
     
     // 确保目录存在
