@@ -26,21 +26,21 @@
 - **【最新动态】**：Adobe 在 2026 年 2 月 2 日博客中宣布 Firefly 订阅用户可在应用内享受无限图像与视频生成；2 月 25 日博客再次强调，在 3 月 16 日前注册可在 Firefly 应用内获得最高 2K 分辨率的无限图像与 Firefly 视频生成，支持 Adobe、Google Nano Banana Pro、GPT Image Generation、Runway Gen-4 等模型，适用于 Firefly Pro/Premium 及多档 credit 计划。[3](#ref-3)
 - **【行业风向】**：创意团队在统一入口内可连续探索多方向、多风格，减少因额度中断导致的流程打断，有利于从概念到成片的连贯迭代。
 - **【设计启发点】**：Leader 可借 3 月窗口评估 Firefly 多模型与无限生成对品牌视觉、动效与视频产出的 ROI；一线设计师可在 firefly.adobe.com 试用并纳入日常探索与初稿流程。
-- **【配图/视频】**：![Adobe Firefly 无限生成多模型入口](./images/2026-03-ai-for-design/04-firefly-unlimited.png) [3](#ref-3)
+- **【配图/视频】**：![Adobe Firefly 无限生成多模型入口](./images/2026-03-ai-for-design/03-firefly-unlimited.png) [3](#ref-3)
 
 ### 动态 4：Adobe Firefly Design Intelligence 与 StyleIDs，企业级品牌一致生成
 
 - **【最新动态】**：Adobe 推出 Firefly Design Intelligence 企业方案，通过机器可读的「StyleIDs」承载品牌整体美学与具体设计规则；创意总监可在 Illustrator 等应用内用内置训练面板训练 StyleIDs，内外部团队随后可基于 StyleIDs 生成符合品牌、情境适配的设计，并自动选用已审批资产与版式约束。与可口可乐（Project Fizzion）等合作验证。[4](#ref-4)
 - **【行业风向】**：全球多触点内容规模化时，品牌一致性从人工规范向「AI 增强且不替代设计师决策」的可执行规则演进，设计系统与 AI 的协作形态更清晰。
 - **【设计启发点】**：Leader 可评估 StyleIDs 与现有设计系统、品牌手册的映射关系及合规流程；一线设计师在参与品牌训练时明确色彩、字体与版式等必检维度，便于生成结果可直接进入审批流。
-- **【配图/视频】**：![Adobe Firefly Design Intelligence 与 StyleIDs（Adobe MAX 2025）](./images/2026-03-ai-for-design/05-design-intelligence.png) [4](#ref-4)
+- **【配图/视频】**：![Adobe Firefly Design Intelligence 与 StyleIDs（Adobe MAX 2025）](./images/2026-03-ai-for-design/04-design-intelligence.png) [4](#ref-4)
 
 ### 动态 5：Sivi Gen-3 Agentic 大设计模型，可编辑组件化设计与 2026 设计运维
 
 - **【最新动态】**：Sivi Gen-3 定位为「Agentic Large Design Model」：采用感知—推理（含自检）—原子构建的三段式循环，产出可编辑、符合设计系统与组件库的广告、横幅、社媒与缩略图等多层矢量设计，而非静态位图；支持 72+ 语言、约 11.6 万品牌，官方称 2026 年可支撑设计运维规模化，将大量个性化素材生成从「数天」压缩到「数分钟」。[5](#ref-5)
 - **【行业风向】**：营销与运营侧高 volume、多尺寸、多语言的资产生产从「设计师主产」向「AI 初稿 + 人工策略与质检」倾斜，设计团队需明确可交付标准与品牌边界。
 - **【设计启发点】**：Leader 可将 Gen-3 纳入营销与运营设计工具选型，并设定品牌组件库与审批节点；一线设计师可参与 Prompt/维度规范设计，提升生成结果可用率与一致性。
-- **【配图/视频】**：![Sivi Gen-3 Agentic Large Design Model](./images/2026-03-ai-for-design/08-sivi-gen3.png) [5](#ref-5)
+- **【配图/视频】**：![Sivi Gen-3 Agentic Large Design Model](./images/2026-03-ai-for-design/05-sivi-gen3.png) [5](#ref-5)
 
 ### 动态 6：Figma Make 全量可用，提示到应用与设计库导入（2025 年 7 月 GA，3 月生态延续）
 
@@ -54,7 +54,7 @@
 - **【最新动态】**：Konva 提供自修复 IDE 与生成式 UI/UX 引擎：可从自然语言或导入草图/Figma 文件分析布局意图，生成像素级 React 代码并宣称 100% 类型安全；项目可自动容器化并部署到 Kubernetes。面向从设计到可运行前端的自动化链路。[7](#ref-7)
 - **【行业风向】**：设计稿到代码的转换从「标注+手写」向「结构化生成+工程化部署」延伸，适合有明确设计系统与前端规范的企业。
 - **【设计启发点】**：Leader 可评估 Konva 在设计—前端流水线中的定位及与现有 CI/CD 的集成；一线设计师在交付 Figma 时保持清晰层级与命名，便于布局意图被准确解析。
-- **【配图/视频】**：![Konva 生成式 UI/UX 引擎首页](./images/2026-03-ai-for-design/09-konva.png) [7](#ref-7)
+- **【配图/视频】**：![Konva 生成式 UI/UX 引擎首页](./images/2026-03-ai-for-design/07-konva.png) [7](#ref-7)
 
 ### 动态 8：2026 年 AI UI 设计工具横测（Pixso AI、v0.dev、Framer）
 

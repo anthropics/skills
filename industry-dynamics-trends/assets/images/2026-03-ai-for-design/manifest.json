@@ -12,47 +12,35 @@
     "source_url": "https://www.figma.com/blog/introducing-codex-to-figma/"
   },
   {
-    "filename": "03-claude-code-figma.png",
-    "label": "Claude Code to Figma 并排对比",
-    "image_url": "https://cdn.sanity.io/images/599r6htc/regionalized/1bc14c622ab6b8e2ad11229e6206c07dbad63311-3200x1800.png?w=1200&q=70&fit=max&auto=format",
-    "source_url": "https://www.figma.com/blog/introducing-claude-code-to-figma/"
-  },
-  {
-    "filename": "04-firefly-unlimited.png",
+    "filename": "03-firefly-unlimited.png",
     "label": "Adobe Firefly 无限生成多模型入口",
     "image_url": "https://blog.adobe.com/en/publish/2026/02/02/media_13aab809223b834cc1a1c0ea475aab1abb4d5ccad.png?width=1200&format=pjpg&optimize=medium",
     "source_url": "https://blog.adobe.com/en/publish/2026/02/02/create-unlimited-generations-adobe-firefly-all-in-one-creative-ai-studio"
   },
   {
-    "filename": "05-design-intelligence.png",
+    "filename": "04-design-intelligence.png",
     "label": "Adobe Firefly Design Intelligence 与 StyleIDs",
     "image_url": "https://news.adobe.com/news/downloads/images/2025/10/media_155250ae3fbc48d98113b81a905ba644221e8be00.png",
     "source_url": "https://news.adobe.com/news/2025/10/adobe-max-2025-firefly-foundry"
   },
   {
-    "filename": "06-figma-make.png",
-    "label": "Figma Make 模型选择器与 connectors",
-    "image_url": "https://cdn.sanity.io/images/599r6htc/regionalized/a1f0928acf4128e33ad6f4dd573bdaf3a3e2c893-3840x2160.png?w=1200&q=70&fit=max&auto=format",
-    "source_url": "https://www.figma.com/blog/introducing-figma-make/"
-  },
-  {
-    "filename": "07-figma-mcp.png",
-    "label": "Figma MCP Server + FigJam 生态集成",
-    "image_url": "https://cdn.sanity.io/images/599r6htc/regionalized/bbbd715863ae9596492a6b6eda14af49a9b802de-2400x1260.png?w=1200&q=70&fit=max&auto=format",
-    "source_url": "https://www.figma.com/blog/introducing-figma-mcp-server/"
-  },
-  {
-    "filename": "08-sivi-gen3.png",
+    "filename": "05-sivi-gen3.png",
     "label": "Sivi Gen-3 Agentic Large Design Model",
     "image_url": "https://framerusercontent.com/assets/dNu3paJ5jYYo4MakrCg5sRhZV0.png",
     "source_url": "https://sivi.ai/gen3"
   },
   {
-    "filename": "09-konva.png",
+    "filename": "06-figma-make.png",
+    "label": "Figma Make 提示到应用",
+    "image_url": "https://cdn.sanity.io/images/599r6htc/regionalized/a1f0928acf4128e33ad6f4dd573bdaf3a3e2c893-3840x2160.png?w=1200&q=70&fit=max&auto=format",
+    "source_url": "https://www.figma.com/blog/introducing-figma-make/"
+  },
+  {
+    "filename": "07-konva.png",
     "label": "Konva 生成式 UI/UX 引擎",
     "image_url": null,
     "source_url": "https://konva.app/",
-    "note": "og-image.png 404，使用 browser_screenshot 截图"
+    "note": "og-image.png 404，使用 browser_screenshot 截图（Strategy B2）"
   },
   {
     "filename": "08-pixso.png",
