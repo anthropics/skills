@@ -1,0 +1,1 @@
+{"version":3,"file":"dnsDomainLevels.js","sourceRoot":"","sources":["../src/dnsDomainLevels.ts"],"names":[],"mappings":";;AAAA;;;;;;;;;;;;;;;GAeG;AACH,SAAwB,eAAe,CAAC,IAAY;IACnD,MAAM,KAAK,GAAG,MAAM,CAAC,IAAI,CAAC,CAAC,KAAK,CAAC,KAAK,CAAC,CAAC;IACxC,IAAI,MAAM,GAAG,CAAC,CAAC;IACf,IAAI,KAAK,EAAE;QACV,MAAM,GAAG,KAAK,CAAC,MAAM,CAAC;KACtB;IACD,OAAO,MAAM,CAAC;AACf,CAAC;AAPD,kCAOC"}

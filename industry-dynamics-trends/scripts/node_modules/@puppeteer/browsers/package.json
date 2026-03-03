@@ -1,0 +1,125 @@
+{
+  "name": "@puppeteer/browsers",
+  "version": "2.13.0",
+  "description": "Download and launch browsers",
+  "scripts": {
+    "build:docs": "wireit",
+    "build": "wireit",
+    "build:test": "wireit",
+    "clean": "../../tools/clean.mjs",
+    "test": "wireit"
+  },
+  "type": "commonjs",
+  "bin": "lib/cjs/main-cli.js",
+  "main": "./lib/cjs/main.js",
+  "module": "./lib/esm/main.js",
+  "exports": {
+    "import": "./lib/esm/main.js",
+    "require": "./lib/cjs/main.js"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -b && node --experimental-strip-types ../../tools/chmod.ts 755 lib/cjs/main-cli.js lib/esm/main-cli.js",
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "clean": "if-file-deleted",
+      "output": [
+        "lib/**",
+        "!lib/esm/package.json"
+      ],
+      "dependencies": [
+        "generate:package-json"
+      ]
+    },
+    "generate:package-json": {
+      "command": "node --experimental-strip-types ../../tools/generate_module_package_json.ts lib/esm/package.json",
+      "files": [
+        "../../tools/generate_module_package_json.ts"
+      ],
+      "output": [
+        "lib/esm/package.json"
+      ]
+    },
+    "generate:package-json:test": {
+      "command": "node --experimental-strip-types ../../tools/generate_module_package_json.ts test/build/package.json",
+      "files": [
+        "../../tools/generate_module_package_json.ts"
+      ],
+      "output": [
+        "test/build/package.json"
+      ]
+    },
+    "build:docs": {
+      "command": "api-extractor run --local --config \"./api-extractor.docs.json\"",
+      "files": [
+        "api-extractor.docs.json",
+        "lib/esm/main.d.ts",
+        "tsconfig.json"
+      ],
+      "dependencies": [
+        "build"
+      ]
+    },
+    "build:test": {
+      "command": "tsc -b test/src/tsconfig.json",
+      "files": [
+        "test/**/*.ts",
+        "test/src/tsconfig.json"
+      ],
+      "output": [
+        "test/build/**",
+        "!test/build/package.json"
+      ],
+      "dependencies": [
+        "build",
+        "generate:package-json:test",
+        "../testserver:build"
+      ]
+    },
+    "test": {
+      "command": "node tools/downloadTestBrowsers.mjs && mocha",
+      "files": [
+        ".mocharc.cjs"
+      ],
+      "dependencies": [
+        "build:test"
+      ]
+    }
+  },
+  "keywords": [
+    "puppeteer",
+    "browsers"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/puppeteer/puppeteer/tree/main/packages/browsers"
+  },
+  "author": "The Chromium Authors",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "lib",
+    "src",
+    "!*.tsbuildinfo"
+  ],
+  "dependencies": {
+    "debug": "^4.4.3",
+    "extract-zip": "^2.0.1",
+    "progress": "^2.0.3",
+    "proxy-agent": "^6.5.0",
+    "tar-fs": "^3.1.1",
+    "yargs": "^17.7.2",
+    "semver": "^7.7.4"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.12",
+    "@types/progress": "2.0.7",
+    "@types/tar-fs": "2.0.4",
+    "@types/yargs": "17.0.33",
+    "@types/ws": "8.18.1"
+  }
+}

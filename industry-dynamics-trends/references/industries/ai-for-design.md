@@ -14,7 +14,7 @@
 |--------|------------|
 | **报告标题** | AI for Design 行业前沿洞察（[时间]月刊） |
 | **三条目名称**（每条动态的 3 个子项） | 【最新动态】 / 【行业风向】 / 【设计启发点】 |
-| **配图与多媒体** | 重要；建议每条高价值动态尽量配备 1 张图或 1 段视频引用。采集时可根据已找到的链接**调用浏览器**（如 MCP 或 web browser）打开页面并截图/下载图片；**图片与视频的内容分析**（界面解读、关键帧、演讲结论）应 **handoff 给具备多模态能力的模型**执行，并在报告中注明。格式遵循 `references/output-format.md` 与 `references/multimedia-curation.md`。 |
+| **配图与多媒体** | 重要；建议每条高价值动态尽量配备 1 张图或 1 段视频引用。**必须直接在 Markdown 中可渲染**：配图使用 `![描述](可直连的图片 URL)`，视频使用可嵌入的 `video` 或视频直链/封面图；若暂无可用媒体则该项留空。为得到可渲染 URL，**必须**使用 **browser（如 MCP cursor-ide-browser）或 web fetch（如 mcp_web_fetch / fetch 目标 URL）** 打开来源页，从页面中提取真实的图片 `src` / 视频 `src` 或 og:image 等直链，写入报告；若多次尝试仍无法获取可直连的媒体 URL，则留空并注明「暂无可用配图」。图片/视频内容分析可 handoff 多模态模型。格式遵循 `references/output-format.md` 与 `references/multimedia-curation.md`。 |
 
 ---
 
@@ -84,5 +84,11 @@
 
 1. 接收触发指令后，执行检索与核查协议（见上及 `verification-curation.md`）进行检索。
 2. 提取真实、客观、对企业设计团队有实际生产力价值的核心动态。
-3. 严格按照上述输出格式的 Markdown 结构组织内容，带入内部专家视角进行分析。
-4. 在正文中插入行内引用序号，并在文末生成完整的来源链接索引表。
+3. **同步维护配图 manifest**：撰写每条动态时，同步在 `assets/images/<report_slug>/manifest.json` 中记录该条的 `filename`、`label`、`source_url`；若已通过 `mcp_web_fetch` 或 `browser_snapshot` 提取到 `og:image` 直链，则一并填入 `image_url`，否则填 `null`；报告正文【配图/视频】先写占位相对路径 `./images/<slug>/xx.png`。
+4. **配图采集（三级策略，AI 自主判断）**：报告正文完成后，按 `references/multimedia-acquisition-workflow.md` 决策树执行：
+   - **A0**（已知直链）：`Shell` 执行 `python3 scripts/fetch_report_images.py --report <slug>` 直接下载。
+   - **A1**（只有来源页）：先用 `mcp_web_fetch` 解析 og:image；找到则更新 manifest 后执行 A0。
+   - **B**（JS 渲染/懒加载/防爬）：用 `cursor-ide-browser` 导航 + `browser_snapshot` 提取渲染后 img；仍无则 `browser_screenshot` 截图保存为配图。
+   - **C**（全部失败）：该条改「暂无可用配图」，保留文字来源链接；不死磕单图。
+5. 严格按照上述输出格式的 Markdown 结构组织内容，带入内部专家视角进行分析。
+6. 在正文中插入行内引用序号，并在文末生成完整的来源链接索引表。

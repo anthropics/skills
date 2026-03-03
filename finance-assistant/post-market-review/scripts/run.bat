@@ -8,6 +8,13 @@ echo 盘后复盘 - 一键采集并生成报告
 echo ========================================
 echo.
 
+python -c "import akshare" 2>nul
+if errorlevel 1 (
+    echo 未检测到 akshare，请先安装：pip install -r requirements.txt
+    pause
+    exit /b 1
+)
+
 python fetch_market_data.py
 echo.
 python fetch_fund_flow.py

@@ -1,0 +1,145 @@
+{
+  "name": "puppeteer",
+  "version": "24.37.5",
+  "description": "A high-level API to control headless Chrome over the DevTools Protocol",
+  "keywords": [
+    "puppeteer",
+    "chrome",
+    "headless",
+    "automation"
+  ],
+  "type": "commonjs",
+  "bin": "./lib/cjs/puppeteer/node/cli.js",
+  "main": "./lib/cjs/puppeteer/puppeteer.js",
+  "module": "./lib/esm/puppeteer/puppeteer.js",
+  "types": "./lib/types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types.d.ts",
+      "import": "./lib/esm/puppeteer/puppeteer.js",
+      "require": "./lib/cjs/puppeteer/puppeteer.js"
+    },
+    "./internal/*": {
+      "import": "./lib/esm/puppeteer/*",
+      "require": "./lib/cjs/puppeteer/*"
+    },
+    "./*": {
+      "import": "./*",
+      "require": "./*"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/puppeteer/puppeteer/tree/main/packages/puppeteer"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build:docs": "wireit",
+    "build": "wireit",
+    "clean": "../../tools/clean.mjs",
+    "postinstall": "node install.mjs",
+    "prepack": "wireit"
+  },
+  "wireit": {
+    "prepack": {
+      "command": "node --experimental-strip-types ../../tools/cp.ts ../../README.md README.md",
+      "files": [
+        "../../README.md"
+      ],
+      "output": [
+        "README.md"
+      ]
+    },
+    "build": {
+      "dependencies": [
+        "build:tsc",
+        "build:types",
+        "generate:package-json"
+      ]
+    },
+    "generate:package-json": {
+      "command": "node --experimental-strip-types ../../tools/generate_module_package_json.ts lib/esm/package.json",
+      "files": [
+        "../../tools/generate_module_package_json.ts"
+      ],
+      "dependencies": [
+        "build:tsc"
+      ],
+      "output": [
+        "lib/esm/package.json"
+      ]
+    },
+    "build:docs": {
+      "command": "api-extractor run --local --config \"./api-extractor.docs.json\"",
+      "files": [
+        "api-extractor.docs.json",
+        "lib/esm/puppeteer/puppeteer.docs.d.ts",
+        "tsconfig.json"
+      ],
+      "dependencies": [
+        "build:tsc"
+      ]
+    },
+    "build:tsc": {
+      "command": "tsc -b && node --experimental-strip-types ../../tools/chmod.ts 755 lib/cjs/puppeteer/node/cli.js lib/esm/puppeteer/node/cli.js",
+      "clean": "if-file-deleted",
+      "dependencies": [
+        "../puppeteer-core:build",
+        "../browsers:build"
+      ],
+      "files": [
+        "src/**"
+      ],
+      "output": [
+        "lib/{cjs,esm}/**",
+        "!lib/esm/package.json"
+      ]
+    },
+    "build:types": {
+      "command": "api-extractor run --local && eslint --cache-location .eslintcache --cache --no-ignore --no-config-lookup -c=../../eslint.types.config.mjs --fix lib/types.d.ts",
+      "files": [
+        "../../eslint.types.config.mjs",
+        "api-extractor.json",
+        "lib/esm/puppeteer/types.d.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "lib/types.d.ts"
+      ],
+      "dependencies": [
+        "build:tsc"
+      ]
+    }
+  },
+  "files": [
+    "lib",
+    "src",
+    "install.mjs",
+    "!*.test.ts",
+    "!*.test.js",
+    "!*.test.d.ts",
+    "!*.test.js.map",
+    "!*.test.d.ts.map",
+    "!*.docs.ts",
+    "!*.docs.js",
+    "!*.docs.d.ts",
+    "!*.docs.js.map",
+    "!*.docs.d.ts.map",
+    "!*.tsbuildinfo"
+  ],
+  "author": "The Chromium Authors",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@puppeteer/browsers": "2.13.0",
+    "chromium-bidi": "14.0.0",
+    "cosmiconfig": "^9.0.0",
+    "devtools-protocol": "0.0.1566079",
+    "puppeteer-core": "24.37.5",
+    "typed-query-selector": "^2.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.17.15"
+  }
+}

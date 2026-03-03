@@ -23,6 +23,7 @@
 
 - **浏览器操作**：使用 MCP 浏览器（如 cursor-ide-browser @browser）或其它 Web 自动化能力，打开目标 URL，对页面进行**截图**或**定位并保存/引用页面内的图片**；必要时可执行滚动、点击以展开折叠内容后再截图。
 - **下载与保存**：若页面提供可直链访问的图片/视频 URL，可通过浏览器访问或下载到约定目录，并在报告中引用可追溯的 URL 或本地路径（若报告分发生态支持）。
+- **配图在 Markdown 内直接渲染**：若需在任意预览中稳定显示图片，应采用「拉取至本地 + 相对路径」的稳定路径，并遵守**重试/超时、失败即跳过**，避免单 URL 死磕。详见 [references/multimedia-acquisition-workflow.md](multimedia-acquisition-workflow.md)；脚本见 `scripts/fetch_report_images.py`。
 - 采集过程不改变「仅收录符合时间与信源优先级的内容」这一原则。
 
 ## 图文/视频分析（多模态 Handoff）

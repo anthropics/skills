@@ -69,6 +69,7 @@ description: 行业动态与趋势分析，产出带来源索引与分级的高�
 | 核查与 Curation 细则 | [references/verification-curation.md](references/verification-curation.md) |
 | 信源发现维度 | [references/source-discovery.md](references/source-discovery.md) |
 | 多媒体与证据采集 | [references/multimedia-curation.md](references/multimedia-curation.md) |
+| **配图拉取与可渲染嵌入**（重试/超时、本地路径） | [references/multimedia-acquisition-workflow.md](references/multimedia-acquisition-workflow.md) |
 | 配图/视频采集清单（行业动态报告） | [checklists/asset-collection.md](checklists/asset-collection.md) |
 | 报告结构与格式 | [references/output-format.md](references/output-format.md) |
 | 报告填空模板（默认结构，可被行业覆盖标题与三条目） | [assets/report-template.md](assets/report-template.md) |
