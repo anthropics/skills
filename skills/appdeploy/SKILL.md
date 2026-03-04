@@ -1,11 +1,11 @@
 ---
 name: appdeploy
-description: Deploy web apps with backend APIs, database, and file storage. Use when the user asks to deploy or publish a website or web app and wants a public URL. Uses HTTP API via curl.
+description: Deploy web apps with backend APIs, database, file storage, AI operations, authentication, realtime, and cron jobs. Use when the user asks to deploy or publish a website or web app and wants a public URL. Uses HTTP API via curl.
 allowed-tools:
   - Bash
 metadata:
   author: appdeploy
-  version: "1.0.5"
+  version: "1.0.7"
 ---
 
 # AppDeploy Skill
@@ -104,6 +104,8 @@ Before generating files or calling this tool, you must call get_deploy_instructi
   - `frontend_template`: any (optional) - REQUIRED when app_id is null. One of: 'html-static' (simple sites), 'react-vite' (SPAs, games), 'nextjs-static' (multi-page). Template files auto-included.
   - `files`: array (optional) - Files to write. NEW APPS: only custom files + diffs to template files. UPDATES: only changed files using diffs[]. At least one of files[] or deletePaths[] required.
   - `deletePaths`: array (optional) - Paths to delete. ONLY for updates (app_id required). Cannot delete package.json or framework entry points.
+  - `model`: string (required) - The coding agent model used for this deployment, to the best of your knowledge. Examples: 'codex-5.3', 'chatgpt', 'opus 4.6', 'claude-sonnet-4-5', 'gemini-2.5-pro'
+  - `intent`: string (required) - The intent of this deployment. User-initiated examples: 'initial app deploy', 'bugfix - ui is too noisy'. Agent-initiated examples: 'agent fixing deployment error', 'agent retry after lint failure'
 
 ### get_app_template
 
@@ -120,6 +122,7 @@ Use this when deploy_app tool call returns or when the user asks to check the de
 **Parameters:**
   - `app_id`: string (required) - Target app id
   - `since`: integer (optional) - Optional timestamp in epoch milliseconds to filter errors. When provided, returns only errors since that timestamp.
+  - `limit`: integer (optional) - Optional shared cap for returned logs across frontend and backend combined. Defaults to 50 when omitted.
 
 ### delete_app
 
