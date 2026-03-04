@@ -9,6 +9,29 @@ import re
 import yaml
 from pathlib import Path
 
+
+def _utf8_byte_len(s):
+    """Return the byte length of a string when encoded as UTF-8."""
+    return len(s.encode('utf-8'))
+
+
+def _truncate_utf8_safe(s, max_bytes):
+    """Truncate a string to fit within max_bytes of UTF-8 without splitting multi-byte characters.
+
+    Returns the truncated string by iterating over characters and accumulating
+    their UTF-8 byte lengths, stopping before exceeding the limit.
+    """
+    byte_count = 0
+    end_index = 0
+    for i, ch in enumerate(s):
+        char_bytes = len(ch.encode('utf-8'))
+        if byte_count + char_bytes > max_bytes:
+            break
+        byte_count += char_bytes
+        end_index = i + 1
+    return s[:end_index]
+
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -29,6 +52,32 @@ def validate_skill(skill_path):
         return False, "Invalid frontmatter format"
 
     frontmatter_text = match.group(1)
+
+    # Pre-parse check: detect unquoted values with special YAML characters
+    # that would cause yaml.safe_load() to silently misparse them.
+    YAML_SPECIAL_CHARS = {':', '#', '{', '}', '[', ']'}
+    FIELDS_TO_CHECK = ['description', 'compatibility']
+    for field in FIELDS_TO_CHECK:
+        field_match = re.search(
+            rf'^{re.escape(field)}:\s*(.+)$', frontmatter_text, re.MULTILINE
+        )
+        if field_match:
+            raw_value = field_match.group(1).strip()
+            # Skip values that are already properly quoted
+            if (raw_value.startswith('"') and raw_value.endswith('"')) or \
+               (raw_value.startswith("'") and raw_value.endswith("'")):
+                continue
+            # Check for special YAML characters in the unquoted value
+            found_chars = [ch for ch in YAML_SPECIAL_CHARS if ch in raw_value]
+            if found_chars:
+                chars_display = ', '.join(repr(ch) for ch in sorted(found_chars))
+                return False, (
+                    f"The '{field}' value in SKILL.md frontmatter contains special "
+                    f"YAML characters ({chars_display}) but is not quoted. "
+                    f"This will cause the skill to silently fail to load. "
+                    f"Wrap the value in quotes, e.g.:\n"
+                    f"  {field}: \"your {field} text here\""
+                )
 
     # Parse YAML frontmatter
     try:
@@ -66,9 +115,10 @@ def validate_skill(skill_path):
             return False, f"Name '{name}' should be kebab-case (lowercase letters, digits, and hyphens only)"
         if name.startswith('-') or name.endswith('-') or '--' in name:
             return False, f"Name '{name}' cannot start/end with hyphen or contain consecutive hyphens"
-        # Check name length (max 64 characters per spec)
-        if len(name) > 64:
-            return False, f"Name is too long ({len(name)} characters). Maximum is 64 characters."
+        # Check name length (max 64 bytes in UTF-8 per spec)
+        name_byte_len = _utf8_byte_len(name)
+        if name_byte_len > 64:
+            return False, f"Name is too long ({name_byte_len} bytes in UTF-8). Maximum is 64 bytes."
 
     # Extract and validate description
     description = frontmatter.get('description', '')
@@ -79,17 +129,22 @@ def validate_skill(skill_path):
         # Check for angle brackets
         if '<' in description or '>' in description:
             return False, "Description cannot contain angle brackets (< or >)"
-        # Check description length (max 1024 characters per spec)
-        if len(description) > 1024:
-            return False, f"Description is too long ({len(description)} characters). Maximum is 1024 characters."
+        # Check description length (max 1024 bytes in UTF-8 per spec)
+        # Using byte length prevents downstream Rust panics from slicing
+        # multi-byte UTF-8 characters (e.g., CJK characters, '。') at
+        # invalid byte boundaries.
+        desc_byte_len = _utf8_byte_len(description)
+        if desc_byte_len > 1024:
+            return False, f"Description is too long ({desc_byte_len} bytes in UTF-8). Maximum is 1024 bytes."
 
     # Validate compatibility field if present (optional)
     compatibility = frontmatter.get('compatibility', '')
     if compatibility:
         if not isinstance(compatibility, str):
             return False, f"Compatibility must be a string, got {type(compatibility).__name__}"
-        if len(compatibility) > 500:
-            return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
+        compat_byte_len = _utf8_byte_len(compatibility)
+        if compat_byte_len > 500:
+            return False, f"Compatibility is too long ({compat_byte_len} bytes in UTF-8). Maximum is 500 bytes."
 
     return True, "Skill is valid!"
 
