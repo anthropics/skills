@@ -6,11 +6,16 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Cursor AI](https://img.shields.io/badge/Cursor-AI%20Skill-blue?logo=cursor)](https://cursor.sh)
-[![Platform](https://img.shields.io/badge/Platform-浙商%20%7C%20民生%20积存金-red)](.)
+[![Platform](https://img.shields.io/badge/Platform-浙商%20%7C%20民生%20%7C%20京东金融-red)](.)
 [![Data](https://img.shields.io/badge/Data-实时%20Investing.com-green)](https://www.investing.com/currencies/xau-usd)
 [![Stars](https://img.shields.io/github/stars/yourusername/gold-accumulation-trading?style=social)](.)
 
 [功能演示](#-效果展示) · [快速开始](#-快速开始) · [工作原理](#-工作原理) · [配置指南](#-配置指南) · [示例报告](#-示例报告)
+
+<br>
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-打赏作者-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/bufan666)  
+**作者微信**: `lelouchdbf` · 交流 / 定制 / 合作
 
 </div>
 
