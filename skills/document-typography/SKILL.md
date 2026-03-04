@@ -151,4 +151,5 @@ This skill complements the docx, pptx, and pdf skills. The workflow is:
 
 ---
 
-*Typographic principles in this skill emerged from iterative human-AI collaboration between [@PGTBoos](https://github.com/PGTBoos) and Claude. The M-count formula and the render-check-fix cycle were born from a user who kept pointing out what the AI couldn't see.*
+*Typographic principles in this skill emerged from iterative human-AI collaboration between [@PGTBoos](https://github.com/PGTBoos) and Claude.   
+The M-count formula and the render-check-fix cycle were born from a user who kept pointing out what the AI couldn't see.*
