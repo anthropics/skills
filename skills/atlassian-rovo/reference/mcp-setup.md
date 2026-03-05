@@ -1,6 +1,6 @@
 # Atlassian MCP Server Setup Guide
 
-How to connect Claude Code to Jira + Confluence on a single Atlassian Cloud site via the Rovo MCP Server.
+How to connect your AI coding agent to Jira + Confluence on a single Atlassian Cloud site via the Rovo MCP Server.
 
 ## Prerequisites
 
@@ -9,6 +9,8 @@ How to connect Claude Code to Jira + Confluence on a single Atlassian Cloud site
 - **Site admin access** for first-time OAuth authorization
 
 ## Step 1: Add the MCP Server
+
+### Claude Code
 
 Create `.mcp.json` in your project root:
 
@@ -25,9 +27,52 @@ Create `.mcp.json` in your project root:
 
 > **Note:** Use the `/mcp` endpoint, not `/sse`. The `/sse` endpoint is deprecated and will be removed after June 30, 2026.
 
-## Step 2: Add Project Config to CLAUDE.md
+### Cursor
 
-Add this to your project's `CLAUDE.md` to avoid unnecessary API calls. Replace the placeholders with your actual values:
+Add to `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/mcp"]
+    }
+  }
+}
+```
+
+### Cline
+
+Add via Cline MCP settings (Settings > MCP Servers > Add):
+- **Name:** atlassian
+- **Command:** `npx -y mcp-remote@latest https://mcp.atlassian.com/v1/mcp`
+
+### Windsurf
+
+Add to `.windsurf/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/mcp"]
+    }
+  }
+}
+```
+
+### Other Agents
+
+The Atlassian MCP server URL is: `https://mcp.atlassian.com/v1/mcp`
+
+Configure your agent's MCP settings to connect using `mcp-remote`:
+```bash
+npx -y mcp-remote@latest "https://mcp.atlassian.com/v1/mcp"
+```
+
+## Step 2: Add Project Config (Optional)
+
+For Claude Code, add to your project's `CLAUDE.md` to avoid unnecessary API calls. For other agents, add equivalent instructions to your agent's system prompt or project config:
 
 ```markdown
 ## Atlassian Rovo MCP
@@ -44,7 +89,7 @@ To find your values:
 
 ## Step 3: Authenticate via OAuth
 
-The first time you start Claude Code after adding the MCP config, `mcp-remote` will try to connect but the OAuth flow needs to complete interactively.
+The first time you start your agent after adding the MCP config, `mcp-remote` will try to connect but the OAuth flow needs to complete interactively.
 
 ### Run mcp-remote manually to trigger the OAuth flow:
 
@@ -72,9 +117,9 @@ This will:
   ```
 - OAuth tokens are cached in `~/.mcp-auth/mcp-remote-*/` — you won't need to re-auth unless tokens expire or are cleared.
 
-## Step 4: Restart Claude Code
+## Step 4: Restart Your Agent
 
-After OAuth completes, restart Claude Code. The MCP server will connect automatically using the cached tokens. Verify with `/mcp` or by running a test query.
+After OAuth completes, restart your agent. The MCP server will connect automatically using the cached tokens.
 
 ## Verifying the Connection
 

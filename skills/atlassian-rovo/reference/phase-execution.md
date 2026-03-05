@@ -36,15 +36,15 @@ You are a teammate in an agent team managed by an orchestrator.
 
 ## Transition Protocol
 ALWAYS follow this two-step process to change ticket status:
-1. Call `mcp__atlassian__getTransitionsForJiraIssue` to get available transitions and their IDs
-2. Call `mcp__atlassian__transitionJiraIssue` with the correct transition ID
+1. Call `atlassian:getTransitionsForJiraIssue` to get available transitions and their IDs
+2. Call `atlassian:transitionJiraIssue` with the correct transition ID
 NEVER hardcode transition IDs -- they vary by project and workflow.
 
 ## Starting Work
 When you begin working on your ticket:
 1. Claim your task: `TaskUpdate` with status = in_progress
 2. Assign the Jira ticket to the current user so Jira tracks ownership:
-   `mcp__atlassian__editJiraIssue` with:
+   `atlassian:editJiraIssue` with:
    - cloudId: {cloudId}
    - issueIdOrKey: "{projectKey}-{N}"
    - fields: {"assignee": {"accountId": "{currentUserAccountId}"}}
@@ -53,7 +53,7 @@ When you begin working on your ticket:
 ## Publishing Findings
 When your work is complete, publish findings as a **child page** of the project plan:
 1. Create a Confluence page with your findings:
-   `mcp__atlassian__createConfluencePage` with:
+   `atlassian:createConfluencePage` with:
    - cloudId: {cloudId}
    - spaceId: {spaceId}
    - parentId: "{confluence-page-id}"   <-- this makes it a CHILD of the plan page
@@ -86,7 +86,7 @@ Monitor teammate messages and coordinate:
 
 After each significant event, update the Confluence page:
 ```
-mcp__atlassian__updateConfluencePage:
+atlassian:updateConfluencePage:
   cloudId: "{cloudId}"
   pageId: "{page-id}"
   contentFormat: "markdown"
@@ -99,7 +99,7 @@ mcp__atlassian__updateConfluencePage:
 ### Updating Epic Description
 
 ```
-mcp__atlassian__editJiraIssue:
+atlassian:editJiraIssue:
   cloudId: "{cloudId}"
   issueIdOrKey: "{projectKey}-{N}"
   fields:

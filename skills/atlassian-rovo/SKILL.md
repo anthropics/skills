@@ -22,7 +22,7 @@ Before starting any workflow, gather these from the user or discover via MCP too
 | **Jira Project Key** | Ask user, or `getVisibleJiraProjects` | `{projectKey}` |
 | **Confluence Space** | Ask user, or `getConfluenceSpaces` | `{spaceId}` |
 | **Parent Page** | Ask user, or use space root | `{parentId}` |
-| **User Account ID** | `mcp__atlassian__atlassianUserInfo` | `{currentUserAccountId}` |
+| **User Account ID** | `atlassian:atlassianUserInfo` | `{currentUserAccountId}` |
 
 Always ask the user which project/space to use. Never assume defaults.
 Use `maxResults: 10` or `limit: 10` for all search operations.
@@ -33,7 +33,7 @@ Use `maxResults: 10` or `limit: 10` for all search operations.
 
 For full setup, OAuth flow, and troubleshooting, see [mcp-setup.md](reference/mcp-setup.md).
 
-Quick config — single `.mcp.json` entry covers both Jira and Confluence:
+Quick config for Claude Code — single `.mcp.json` entry covers both Jira and Confluence:
 
 ```json
 {
@@ -46,18 +46,25 @@ Quick config — single `.mcp.json` entry covers both Jira and Confluence:
 }
 ```
 
-Use `/mcp` endpoint (not `/sse` — deprecated after June 2026).
+For other agents (Cursor, Cline, Windsurf, etc.), see the agent-specific instructions in [mcp-setup.md](reference/mcp-setup.md).
 
 ---
 
 ## Agentic Project Management Workflow
 
-Full lifecycle project management using Agent Teams + Jira + Confluence.
+Full lifecycle project management using Jira + Confluence.
+
+### Execution Modes
+
+This workflow supports two modes:
+
+- **Multi-Agent Mode** (Claude Code with Agent Teams): Parallel execution with TeamCreate/TaskCreate orchestration. Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `~/.claude/settings.json`.
+- **Single-Agent Mode** (all agents): Sequential execution — one workstream at a time. Same Jira tracking and Confluence updates, no multi-agent dependencies.
 
 ### Prerequisites
 
-- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `~/.claude/settings.json`
 - Atlassian MCP connected with both Jira and Confluence tools
+- For multi-agent mode: Claude Code with `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
 ### The 4-Phase Cycle
 
@@ -76,23 +83,29 @@ See [phase-planning.md](reference/phase-planning.md) for step-by-step details an
 
 ### Phase 2: Execution
 
-Create agent team, map tickets to tasks with dependency tracking, spawn teammates with standard prompt. Orchestrator monitors progress and updates Confluence plan page.
-
+**Multi-agent mode:** Create agent team, map tickets to tasks with dependency tracking, spawn teammates with standard prompt. Orchestrator monitors progress and updates Confluence plan page.
 See [phase-execution.md](reference/phase-execution.md) for teammate prompt template and orchestrator duties.
+
+**Single-agent mode:** Work each ticket sequentially, respecting dependency order. Track progress via Jira transitions and Confluence updates.
+See [phase-execution-single.md](reference/phase-execution-single.md) for the sequential workflow.
 
 ### Phase 3: Resume
 
-Auto-detect open `[AI-PM]` Epics, read Confluence plan, query incomplete tickets, classify state, spin up right-sized team for remaining work. No user confirmation required.
+Auto-detect open `[AI-PM]` Epics, read Confluence plan, query incomplete tickets, classify state.
 
+**Multi-agent mode:** Spin up right-sized team for remaining work.
 See [phase-resume.md](reference/phase-resume.md) for JQL patterns and resume protocol.
+
+**Single-agent mode:** Pick up the next incomplete ticket and continue sequentially.
+See [phase-resume-single.md](reference/phase-resume-single.md) for the sequential resume protocol.
 
 ### Phase 4: Completion
 
-Update Confluence page status, transition Epic to Done, add final summary comment, shutdown teammates, report deliverables to user.
+Update Confluence page status, transition Epic to Done, add final summary comment, report deliverables to user.
 
 See [phase-completion.md](reference/phase-completion.md) for completion checklist.
 
-### Team Sizing
+### Team Sizing (Multi-Agent Mode)
 
 | Request Type | Team Size | Roles |
 |-------------|-----------|-------|

@@ -8,7 +8,7 @@
 - [ ] Step 3: Update Epic description summary
 - [ ] Step 4: Transition Epic to Done (two-step: getTransitions -> transition)
 - [ ] Step 5: Add final summary comment to Epic
-- [ ] Step 6: Shutdown teammates
+- [ ] Step 6: Shutdown teammates (multi-agent mode only)
 - [ ] Step 7: Report to user
 ```
 
@@ -18,13 +18,13 @@
 
 Set status to COMPLETED and add deliverables section:
 ```
-mcp__atlassian__getConfluencePage:
+atlassian:getConfluencePage:
   cloudId: "{cloudId}"
   pageId: "{page-id}"
 ```
 Then update with completed status and deliverables:
 ```
-mcp__atlassian__updateConfluencePage:
+atlassian:updateConfluencePage:
   cloudId: "{cloudId}"
   pageId: "{page-id}"
   contentFormat: "markdown"
@@ -35,7 +35,7 @@ mcp__atlassian__updateConfluencePage:
 ### 2. Update Epic Description
 
 ```
-mcp__atlassian__editJiraIssue:
+atlassian:editJiraIssue:
   cloudId: "{cloudId}"
   issueIdOrKey: "{projectKey}-{N}"
   fields:
@@ -46,13 +46,13 @@ mcp__atlassian__editJiraIssue:
 
 Two-step — always discover transition ID first:
 ```
-mcp__atlassian__getTransitionsForJiraIssue:
+atlassian:getTransitionsForJiraIssue:
   cloudId: "{cloudId}"
   issueIdOrKey: "{projectKey}-{N}"
 ```
 Then transition:
 ```
-mcp__atlassian__transitionJiraIssue:
+atlassian:transitionJiraIssue:
   cloudId: "{cloudId}"
   issueIdOrKey: "{projectKey}-{N}"
   transitionId: "{done-transition-id}"
@@ -61,7 +61,7 @@ mcp__atlassian__transitionJiraIssue:
 ### 4. Add Final Summary Comment
 
 ```
-mcp__atlassian__addCommentToJiraIssue:
+atlassian:addCommentToJiraIssue:
   cloudId: "{cloudId}"
   issueIdOrKey: "{projectKey}-{N}"
   commentBody: |
@@ -73,9 +73,10 @@ mcp__atlassian__addCommentToJiraIssue:
     {Brief narrative}
 ```
 
-### 5. Shutdown Teammates
+### 5. Shutdown Teammates (Multi-Agent Mode Only)
 
-`SendMessage` type `shutdown_request` to all active teammates.
+If running in multi-agent mode, send shutdown to all active teammates.
+In single-agent mode, skip this step.
 
 ### 6. Report to User
 

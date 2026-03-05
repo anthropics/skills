@@ -8,7 +8,7 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 
 2. **Create Confluence plan page:**
    ```
-   mcp__atlassian__createConfluencePage:
+   atlassian:createConfluencePage:
      cloudId: "{cloudId}"
      spaceId: "{spaceId}"
      parentId: "{parentId}"       # optional
@@ -20,7 +20,7 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 
 3. **Create Jira Epic** with `[AI-PM]` prefix and link to Confluence page:
    ```
-   mcp__atlassian__createJiraIssue:
+   atlassian:createJiraIssue:
      cloudId: "{cloudId}"
      projectKey: "{projectKey}"
      issueTypeName: "Epic"
@@ -95,14 +95,14 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 
 ### Find user's Jira project
 ```
-mcp__atlassian__getVisibleJiraProjects:
+atlassian:getVisibleJiraProjects:
   cloudId: "{cloudId}"
 ```
 Present the list and ask the user to pick one.
 
 ### Find user's Confluence space
 ```
-mcp__atlassian__getConfluenceSpaces:
+atlassian:getConfluenceSpaces:
   cloudId: "{cloudId}"
   limit: 10
 ```
@@ -110,6 +110,6 @@ Present the list and ask the user to pick one. The response includes `id` (space
 
 ### Find pages in a space (to offer as parent page)
 ```
-mcp__atlassian__search:
+atlassian:search:
   query: "space:{spaceKey} type:page"
 ```
