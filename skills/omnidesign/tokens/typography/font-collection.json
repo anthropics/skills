@@ -1,0 +1,221 @@
+{
+  "families": {
+    "sans": {
+      "geist": {
+        "$type": "fontFamily",
+        "$value": "'Geist Sans', system-ui, sans-serif",
+        "$description": "Vercel's Geist Sans - modern geometric sans-serif, clean and technical"
+      },
+      "inter": {
+        "$type": "fontFamily",
+        "$value": "'Inter', system-ui, sans-serif",
+        "$description": "Inter - highly legible, great for UI and data"
+      },
+      "satoshi": {
+        "$type": "fontFamily",
+        "$value": "'Satoshi', 'Inter', sans-serif",
+        "$description": "Satoshi - contemporary geometric sans, modern alternative"
+      },
+      "manrope": {
+        "$type": "fontFamily",
+        "$value": "'Manrope', sans-serif",
+        "$description": "Manrope - versatile geometric with personality"
+      },
+      "outfit": {
+        "$type": "fontFamily",
+        "$value": "'Outfit', sans-serif",
+        "$description": "Outfit - geometric with slight quirk, great for headlines"
+      },
+      "poppins": {
+        "$type": "fontFamily",
+        "$value": "'Poppins', sans-serif",
+        "$description": "Poppins - geometric, excellent for modern web apps"
+      },
+      "plus-jakarta-sans": {
+        "$type": "fontFamily",
+        "$value": "'Plus Jakarta Sans', sans-serif",
+        "$description": "Plus Jakarta Sans - humanist geometric, warm yet modern"
+      }
+    },
+    "serif": {
+      "merriweather": {
+        "$type": "fontFamily",
+        "$value": "'Merriweather', Georgia, serif",
+        "$description": "Merriweather - readable serif, great for long-form text"
+      },
+      "dm-serif-display": {
+        "$type": "fontFamily",
+        "$value": "'DM Serif Display', Georgia, serif",
+        "$description": "DM Serif Display - elegant display serif for headings"
+      },
+      "lora": {
+        "$type": "fontFamily",
+        "$value": "'Lora', Georgia, serif",
+        "$description": "Lora - modern calligraphic serif for body text"
+      },
+      "source-serif": {
+        "$type": "fontFamily",
+        "$value": "'Source Serif 4', Georgia, serif",
+        "$description": "Source Serif 4 - optimized for screen reading"
+      },
+      "literata": {
+        "$type": "fontFamily",
+        "$value": "'Literata', Georgia, serif",
+        "$description": "Literata - distinctive serif, great for editorial"
+      }
+    },
+    "mono": {
+      "geist-mono": {
+        "$type": "fontFamily",
+        "$value": "'Geist Mono', 'SF Mono', Monaco, monospace",
+        "$description": "Vercel's Geist Mono - clean technical monospace"
+      },
+      "jetbrains-mono": {
+        "$type": "fontFamily",
+        "$value": "'JetBrains Mono', 'Fira Code', monospace",
+        "$description": "JetBrains Mono - developer-focused with ligatures"
+      },
+      "fira-code": {
+        "$type": "fontFamily",
+        "$value": "'Fira Code', 'Fira Mono', monospace",
+        "$description": "Fira Code - popular coding font with ligatures"
+      },
+      "cascadia-code": {
+        "$type": "fontFamily",
+        "$value": "'Cascadia Code', 'Consolas', monospace",
+        "$description": "Cascadia Code - Microsoft's modern coding font"
+      },
+      "sf-mono": {
+        "$type": "fontFamily",
+        "$value": "'SF Mono', 'Monaco', 'Menlo', monospace",
+        "$description": "SF Mono - Apple's system monospace font"
+      },
+      "ibm-plex-mono": {
+        "$type": "fontFamily",
+        "$value": "'IBM Plex Mono', 'Courier New', monospace",
+        "$description": "IBM Plex Mono - classic technical monospace"
+      }
+    },
+    "nerd": {
+      "nerd-symbols": {
+        "$type": "fontFamily",
+        "$value": "'Symbols Nerd Font', monospace",
+        "$description": "Nerd Font symbols - thousands of icons and glyphs"
+      },
+      "nerd-mono": {
+        "$type": "fontFamily",
+        "$value": "'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace",
+        "$description": "JetBrains Mono with Nerd Font glyphs"
+      },
+      "nerd-fira": {
+        "$type": "fontFamily",
+        "$value": "'FiraCode Nerd Font', 'Fira Code', monospace",
+        "$description": "Fira Code with Nerd Font glyphs"
+      },
+      "nerd-hack": {
+        "$type": "fontFamily",
+        "$value": "'Hack Nerd Font', 'Hack', monospace",
+        "$description": "Hack font with Nerd Font glyphs"
+      },
+      "nerd-cascadia": {
+        "$type": "fontFamily",
+        "$value": "'CaskaydiaCove Nerd Font', 'Cascadia Code', monospace",
+        "$description": "Cascadia Code with Nerd Font glyphs (CaskaydiaCove)"
+      }
+    },
+    "display": {
+      "clash-display": {
+        "$type": "fontFamily",
+        "$value": "'Clash Display', sans-serif",
+        "$description": "Clash Display - bold geometric display font"
+      },
+      "space-grotesk": {
+        "$type": "fontFamily",
+        "$value": "'Space Grotesk', sans-serif",
+        "$description": "Space Grotesk - quirky geometric with personality"
+      },
+      "bungee": {
+        "$type": "fontFamily",
+        "$value": "'Bungee', sans-serif",
+        "$description": "Bungee - bold, attention-grabbing display font"
+      },
+      "archivo-black": {
+        "$type": "fontFamily",
+        "$value": "'Archivo Black', sans-serif",
+        "$description": "Archivo Black - heavy sans for headlines"
+      },
+      "syne": {
+        "$type": "fontFamily",
+        "$value": "'Syne', sans-serif",
+        "$description": "Syne - experimental sans, great for creative sites"
+      }
+    }
+  },
+  "sizes": {
+    "2xs": {
+      "$type": "fontSize",
+      "$value": "0.625rem",
+      "$description": "10px - smallest text, timestamps"
+    },
+    "xs": { "$type": "fontSize", "$value": "0.75rem", "$description": "12px - captions, badges" },
+    "sm": {
+      "$type": "fontSize",
+      "$value": "0.875rem",
+      "$description": "14px - small body, buttons"
+    },
+    "base": { "$type": "fontSize", "$value": "1rem", "$description": "16px - default body text" },
+    "lg": { "$type": "fontSize", "$value": "1.125rem", "$description": "18px - lead paragraphs" },
+    "xl": { "$type": "fontSize", "$value": "1.25rem", "$description": "20px - small headings" },
+    "2xl": { "$type": "fontSize", "$value": "1.5rem", "$description": "24px - H4" },
+    "3xl": { "$type": "fontSize", "$value": "1.875rem", "$description": "30px - H3" },
+    "4xl": { "$type": "fontSize", "$value": "2.25rem", "$description": "36px - H2" },
+    "5xl": { "$type": "fontSize", "$value": "3rem", "$description": "48px - H1" },
+    "6xl": { "$type": "fontSize", "$value": "3.75rem", "$description": "60px - display headings" },
+    "7xl": { "$type": "fontSize", "$value": "4.5rem", "$description": "72px - hero headings" },
+    "8xl": { "$type": "fontSize", "$value": "6rem", "$description": "96px - mega headings" },
+    "9xl": { "$type": "fontSize", "$value": "8rem", "$description": "128px - extreme display" }
+  },
+  "weights": {
+    "thin": { "$type": "fontWeight", "$value": 100, "$description": "Ultra light - display only" },
+    "extralight": { "$type": "fontWeight", "$value": 200, "$description": "Extra light" },
+    "light": { "$type": "fontWeight", "$value": 300, "$description": "Light weight" },
+    "normal": { "$type": "fontWeight", "$value": 400, "$description": "Normal/regular weight" },
+    "medium": {
+      "$type": "fontWeight",
+      "$value": 500,
+      "$description": "Medium weight - UI emphasis"
+    },
+    "semibold": { "$type": "fontWeight", "$value": 600, "$description": "Semi-bold - headings" },
+    "bold": { "$type": "fontWeight", "$value": 700, "$description": "Bold - strong emphasis" },
+    "extrabold": { "$type": "fontWeight", "$value": 800, "$description": "Extra bold - display" },
+    "black": { "$type": "fontWeight", "$value": 900, "$description": "Black - maximum weight" }
+  },
+  "lineHeights": {
+    "none": { "$type": "lineHeight", "$value": 1, "$description": "No leading - headings" },
+    "tight": { "$type": "lineHeight", "$value": 1.25, "$description": "Tight - display text" },
+    "snug": { "$type": "lineHeight", "$value": 1.375, "$description": "Snug - small text" },
+    "normal": { "$type": "lineHeight", "$value": 1.5, "$description": "Normal - body text" },
+    "relaxed": {
+      "$type": "lineHeight",
+      "$value": 1.625,
+      "$description": "Relaxed - comfortable reading"
+    },
+    "loose": { "$type": "lineHeight", "$value": 2, "$description": "Loose - editorial" }
+  },
+  "letterSpacing": {
+    "tighter": {
+      "$type": "letterSpacing",
+      "$value": "-0.05em",
+      "$description": "Extra tight - large headings"
+    },
+    "tight": { "$type": "letterSpacing", "$value": "-0.025em", "$description": "Tight - headings" },
+    "normal": { "$type": "letterSpacing", "$value": "0", "$description": "No tracking" },
+    "wide": { "$type": "letterSpacing", "$value": "0.025em", "$description": "Slight tracking" },
+    "wider": { "$type": "letterSpacing", "$value": "0.05em", "$description": "Medium tracking" },
+    "widest": {
+      "$type": "letterSpacing",
+      "$value": "0.1em",
+      "$description": "Wide tracking - labels"
+    }
+  }
+}

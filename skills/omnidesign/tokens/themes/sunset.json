@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "sunset",
+    "$description": "Warm sunset gradient theme with vibrant orange and pink tones - energetic and modern like Lovable's Harvest"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#1A1A2E",
+        "$description": "Primary text - deep indigo for contrast on warm surfaces"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#5C5C7A",
+        "$description": "Secondary text - muted purple-gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FFF5EB",
+        "$description": "Text on light surfaces - cream with warm undertone"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#FF6B35",
+        "$description": "Link text - vibrant sunset orange"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#FF8C61",
+        "$description": "Link on hover - brighter sunset coral"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFF5EB",
+        "$description": "Default surface - warm cream with sunset undertones"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Elevated surface - pure white for cards and modals"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#FFE8D6",
+        "$description": "Depressed surface - softer peach for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(255, 107, 53, 0.15)",
+        "$description": "Overlay - warm orange tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFB088",
+        "$description": "Default border - warm peach-orange"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#FFD4C2",
+        "$description": "Subtle border - very faint peach"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#FF8C61",
+        "$description": "Strong border - visible sunset coral"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#FF6B35",
+        "$description": "Primary action - vibrant sunset orange"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#FF8C61",
+        "$description": "Primary hover - brighter coral orange"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#D63384",
+        "$description": "Secondary action - magenta-pink for contrast"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#FF8C61",
+        "$description": "Focus ring - warm coral glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#10B981",
+        "$description": "Success - emerald green with warmth"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#F59E0B",
+        "$description": "Warning - amber orange"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#EF4444",
+        "$description": "Error - vibrant red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Info - bright blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(255, 107, 53, 0.12), 0 2px 4px -2px rgba(255, 107, 53, 0.08)",
+      "$description": "Card shadow - warm orange-tinted elevation"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(255, 107, 53, 0.15), 0 4px 6px -4px rgba(255, 107, 53, 0.1)",
+      "$description": "Dropdown shadow - sunset-tinted depth"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(255, 107, 53, 0.2), 0 8px 10px -6px rgba(255, 107, 53, 0.15)",
+      "$description": "Modal shadow - warm-tinted prominence"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(255, 140, 97, 0.4)",
+      "$description": "Focus glow - soft coral ring"
+    }
+  }
+}

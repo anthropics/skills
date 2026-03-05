@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "brutalist",
+    "$description": "Stark black/white/yellow - inspired by Lovable's Brutalist theme for bold interfaces"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Primary text on brutalist - pure white"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#808080",
+        "$description": "Secondary text - gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Text color for light surfaces - pure black"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#FFD700",
+        "$description": "Link text color - pure yellow"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#FFED4A",
+        "$description": "Link text color on hover - lighter yellow"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Default surface background - pure black"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#000000",
+        "$description": "Elevated surface background - pure black with border"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Depressed surface background - pure white for inputs (inverted)"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(0, 0, 0, 0.95)",
+        "$description": "Overlay background for modals - near-opaque black"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Default border color - stark white border"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#404040",
+        "$description": "Subtle border for dividers - gray"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Stronger border for emphasis - bold white"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#FFD700",
+        "$description": "Primary interactive element color - pure yellow"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#FFED4A",
+        "$description": "Primary interactive color on hover - lighter yellow"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Secondary interactive element color - pure white"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#FFD700",
+        "$description": "Focus ring outline color - yellow outline"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#00FF00",
+        "$description": "Success state color - pure neon green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FFD700",
+        "$description": "Warning state color - pure yellow"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#FF0000",
+        "$description": "Error state color - pure red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Info state color - pure white"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(255, 215, 0, 0.3), 0 2px 4px -2px rgba(255, 255, 255, 0.2)",
+      "$description": "Card elevation shadow - yellow-tinted harsh shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(255, 255, 255, 0.3), 0 4px 6px -4px rgba(255, 215, 0, 0.2)",
+      "$description": "Dropdown menu elevation shadow - stark white shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(255, 255, 255, 0.4), 0 8px 10px -6px rgba(255, 215, 0, 0.3)",
+      "$description": "Modal dialog elevation shadow - prominent white/yellow shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(255, 215, 0, 0.8)",
+      "$description": "Focus ring glow shadow - solid yellow glow"
+    }
+  }
+}

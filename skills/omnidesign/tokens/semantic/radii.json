@@ -1,0 +1,29 @@
+{
+  "radius": {
+    "button": {
+      "$type": "dimension",
+      "$value": "{radii.md}",
+      "$description": "Button corner radius"
+    },
+    "input": {
+      "$type": "dimension",
+      "$value": "{radii.md}",
+      "$description": "Form input corner radius"
+    },
+    "card": {
+      "$type": "dimension",
+      "$value": "{radii.lg}",
+      "$description": "Card container corner radius"
+    },
+    "modal": {
+      "$type": "dimension",
+      "$value": "{radii.xl}",
+      "$description": "Modal container corner radius"
+    },
+    "badge": {
+      "$type": "dimension",
+      "$value": "{radii.full}",
+      "$description": "Pill badge corner radius"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "0": {
+    "$type": "dimension",
+    "$value": "0px",
+    "$description": "No spacing"
+  },
+  "1": {
+    "$type": "dimension",
+    "$value": "4px",
+    "$description": "4px spacing (1x baseline)"
+  },
+  "2": {
+    "$type": "dimension",
+    "$value": "8px",
+    "$description": "8px spacing (2x baseline)"
+  },
+  "3": {
+    "$type": "dimension",
+    "$value": "12px",
+    "$description": "12px spacing (3x baseline)"
+  },
+  "4": {
+    "$type": "dimension",
+    "$value": "16px",
+    "$description": "16px spacing (4x baseline)"
+  },
+  "5": {
+    "$type": "dimension",
+    "$value": "20px",
+    "$description": "20px spacing (5x baseline)"
+  },
+  "6": {
+    "$type": "dimension",
+    "$value": "24px",
+    "$description": "24px spacing (6x baseline)"
+  },
+  "8": {
+    "$type": "dimension",
+    "$value": "32px",
+    "$description": "32px spacing (8x baseline)"
+  },
+  "10": {
+    "$type": "dimension",
+    "$value": "40px",
+    "$description": "40px spacing (10x baseline)"
+  },
+  "12": {
+    "$type": "dimension",
+    "$value": "48px",
+    "$description": "48px spacing (12x baseline)"
+  },
+  "16": {
+    "$type": "dimension",
+    "$value": "64px",
+    "$description": "64px spacing (16x baseline)"
+  },
+  "20": {
+    "$type": "dimension",
+    "$value": "80px",
+    "$description": "80px spacing (20x baseline)"
+  },
+  "24": {
+    "$type": "dimension",
+    "$value": "96px",
+    "$description": "96px spacing (24x baseline)"
+  }
+}

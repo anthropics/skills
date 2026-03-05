@@ -1,0 +1,37 @@
+{
+  "none": {
+    "$type": "dimension",
+    "$value": "0px",
+    "$description": "No border radius"
+  },
+  "sm": {
+    "$type": "dimension",
+    "$value": "4px",
+    "$description": "Small border radius"
+  },
+  "md": {
+    "$type": "dimension",
+    "$value": "8px",
+    "$description": "Medium border radius"
+  },
+  "lg": {
+    "$type": "dimension",
+    "$value": "12px",
+    "$description": "Large border radius"
+  },
+  "xl": {
+    "$type": "dimension",
+    "$value": "16px",
+    "$description": "Extra large border radius"
+  },
+  "2xl": {
+    "$type": "dimension",
+    "$value": "24px",
+    "$description": "2x extra large border radius"
+  },
+  "full": {
+    "$type": "dimension",
+    "$value": "9999px",
+    "$description": "Full border radius (pill shape)"
+  }
+}

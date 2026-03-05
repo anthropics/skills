@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "midnight",
+    "$description": "True midnight black with subtle blue undertones for late-night coding sessions"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#F1F5F9",
+        "$description": "Primary text on midnight - cool white with blue hint"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#64748B",
+        "$description": "Secondary text - muted gray-blue"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#0A0A0F",
+        "$description": "Text color for light surfaces - deep midnight"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Link text color - sky blue glow"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#7DD3FC",
+        "$description": "Link text color on hover - brighter sky blue"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#0A0A0F",
+        "$description": "Default surface background - true midnight black"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#111116",
+        "$description": "Elevated surface background - slight lighter midnight"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#050508",
+        "$description": "Depressed surface background - deepest midnight for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(10, 10, 15, 0.85)",
+        "$description": "Overlay background for modals - semi-transparent midnight"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#1C1C24",
+        "$description": "Default border color - subtle midnight border"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#0F0F15",
+        "$description": "Subtle border for dividers - almost invisible"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#2A2A33",
+        "$description": "Stronger border for emphasis - visible midnight border"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Primary interactive element color - midnight blue glow"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#7DD3FC",
+        "$description": "Primary interactive color on hover - brighter sky blue"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#1E293B",
+        "$description": "Secondary interactive element color - lighter midnight"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Focus ring outline color - sky blue glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#22D3EE",
+        "$description": "Success state color - cyan for midnight"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Warning state color - amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#F87171",
+        "$description": "Error state color - coral red adjusted for midnight"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Info state color - sky blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(56, 189, 248, 0.15), 0 2px 4px -2px rgba(56, 189, 248, 0.1)",
+      "$description": "Card elevation shadow - subtle blue-tinted glow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3)",
+      "$description": "Dropdown menu elevation shadow - deep black shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4)",
+      "$description": "Modal dialog elevation shadow - most prominent midnight shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(56, 189, 248, 0.5)",
+      "$description": "Focus ring glow shadow - sky blue glow ring"
+    }
+  }
+}

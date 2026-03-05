@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "mint",
+    "$description": "Fresh mint theme with soft greens and pastel tones - refreshing and clean"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#1A3C34",
+        "$description": "Primary text - deep green for contrast on pastel surfaces"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#5A7268",
+        "$description": "Secondary text - soft sage gray"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#F0FDF4",
+        "$description": "Text on light surfaces - pale mint white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#34D399",
+        "$description": "Link text - fresh mint green"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#6EE7B7",
+        "$description": "Link on hover - lighter mint"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#F0FDF4",
+        "$description": "Default surface - pale mint cream"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Elevated surface - pure white"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#DCFCE7",
+        "$description": "Depressed surface - soft mint for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(52, 211, 153, 0.1)",
+        "$description": "Overlay - mint-tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#A7F3D0",
+        "$description": "Default border - soft purple-mint"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#D8B4FE",
+        "$description": "Subtle border - very faint purple"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#6EE7B7",
+        "$description": "Strong border - visible mint green"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#34D399",
+        "$description": "Primary action - fresh mint green"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#6EE7B7",
+        "$description": "Primary hover - lighter mint"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#8B5CF6",
+        "$description": "Secondary action - lavender purple for contrast"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#6EE7B7",
+        "$description": "Focus ring - soft mint glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#059669",
+        "$description": "Success - deep emerald green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#D97706",
+        "$description": "Warning - warm amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error - bold red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#0891B2",
+        "$description": "Info - teal cyan"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(52, 211, 153, 0.12), 0 2px 4px -2px rgba(52, 211, 153, 0.08)",
+      "$description": "Card shadow - mint-tinted elevation"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(52, 211, 153, 0.1)",
+      "$description": "Dropdown shadow - soft mint depth"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(52, 211, 153, 0.12)",
+      "$description": "Modal shadow - gentle mint-tinted"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(110, 231, 183, 0.35)",
+      "$description": "Focus glow - soft mint ring"
+    }
+  }
+}

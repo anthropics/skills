@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "graphite",
+    "$description": "Monochrome gray minimalist theme - clean, neutral, and focused theme for content-first applications"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#171717",
+        "$description": "Primary text on light surfaces - near black graphite"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#737373",
+        "$description": "Secondary text - neutral gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#FAFAFA",
+        "$description": "Text color for dark surfaces - near white"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#262626",
+        "$description": "Link text color - dark gray (subtle)"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#404040",
+        "$description": "Link text color on hover - lighter dark gray"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Default surface background - pure white"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#F5F5F5",
+        "$description": "Elevated surface background - light gray for cards"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#E5E5E5",
+        "$description": "Depressed surface background - medium gray for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(23, 23, 23, 0.75)",
+        "$description": "Overlay background for modals - semi-transparent graphite"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#E5E5E5",
+        "$description": "Default border color - light gray"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#F5F5F5",
+        "$description": "Subtle border for dividers - very faint gray"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#D4D4D4",
+        "$description": "Stronger border for emphasis - visible gray"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#262626",
+        "$description": "Primary interactive element color - dark graphite"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#404040",
+        "$description": "Primary interactive color on hover - lighter graphite"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#525252",
+        "$description": "Secondary interactive element color - medium gray"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#262626",
+        "$description": "Focus ring outline color - dark graphite glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#16A34A",
+        "$description": "Success state color - green monochrome"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#CA8A04",
+        "$description": "Warning state color - muted yellow"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#DC2626",
+        "$description": "Error state color - red for visibility"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#2563EB",
+        "$description": "Info state color - blue (only accent color)"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 1px 2px rgba(23, 23, 23, 0.1), 0 1px 3px rgba(23, 23, 23, 0.08)",
+      "$description": "Card elevation shadow - subtle gray shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(23, 23, 23, 0.15), 0 2px 4px -1px rgba(23, 23, 23, 0.1)",
+      "$description": "Dropdown menu elevation shadow - moderate gray shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(23, 23, 23, 0.15), 0 8px 10px -6px rgba(23, 23, 23, 0.1)",
+      "$description": "Modal dialog elevation shadow - prominent gray shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 2px rgba(38, 38, 38, 0.4)",
+      "$description": "Focus ring glow shadow - dark graphite ring"
+    }
+  }
+}

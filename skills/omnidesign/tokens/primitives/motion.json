@@ -1,0 +1,56 @@
+{
+  "duration": {
+    "instant": {
+      "$type": "duration",
+      "$value": "0ms",
+      "$description": "Instant transition (no animation)"
+    },
+    "fast": {
+      "$type": "duration",
+      "$value": "150ms",
+      "$description": "Fast transition for micro-interactions"
+    },
+    "normal": {
+      "$type": "duration",
+      "$value": "300ms",
+      "$description": "Normal transition duration"
+    },
+    "slow": {
+      "$type": "duration",
+      "$value": "500ms",
+      "$description": "Slow transition for emphasis"
+    },
+    "slower": {
+      "$type": "duration",
+      "$value": "700ms",
+      "$description": "Slower transition for dramatic effects"
+    }
+  },
+  "easing": {
+    "linear": {
+      "$type": "cubicBezier",
+      "$value": [0, 0, 1, 1],
+      "$description": "Linear easing (constant speed)"
+    },
+    "easeIn": {
+      "$type": "cubicBezier",
+      "$value": [0.4, 0, 1, 1],
+      "$description": "Ease in (accelerate)"
+    },
+    "easeOut": {
+      "$type": "cubicBezier",
+      "$value": [0, 0, 0.2, 1],
+      "$description": "Ease out (decelerate)"
+    },
+    "easeInOut": {
+      "$type": "cubicBezier",
+      "$value": [0.4, 0, 0.2, 1],
+      "$description": "Ease in-out (accelerate then decelerate)"
+    },
+    "spring": {
+      "$type": "cubicBezier",
+      "$value": [0.34, 1.56, 0.64, 1],
+      "$description": "Spring easing (overshoot effect)"
+    }
+  }
+}

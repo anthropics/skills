@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "ocean",
+    "$description": "Deep ocean theme with rich blues and cyan accents - immersive and mysterious"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#E0F2FE",
+        "$description": "Primary text - light cyan-blue for contrast on deep surfaces"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#94A3B8",
+        "$description": "Secondary text - slate gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#082F49",
+        "$description": "Text on light surfaces - deep ocean blue"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#22D3EE",
+        "$description": "Link text - vibrant cyan accent"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#67E8F9",
+        "$description": "Link on hover - bright cyan"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#0C4A6E",
+        "$description": "Default surface - deep ocean blue"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#075985",
+        "$description": "Elevated surface - slightly lighter deep blue"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#083344",
+        "$description": "Depressed surface - darker blue-black for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(8, 47, 73, 0.85)",
+        "$description": "Overlay - deep blue-tinted backdrop"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#0369A1",
+        "$description": "Default border - ocean blue"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#0E7490",
+        "$description": "Subtle border - faint cyan-blue"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#0EA5E9",
+        "$description": "Strong border - bright ocean cyan"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#22D3EE",
+        "$description": "Primary action - vibrant cyan"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#67E8F9",
+        "$description": "Primary hover - bright cyan"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Secondary action - sky blue"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#22D3EE",
+        "$description": "Focus ring - cyan glow like bioluminescence"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#34D399",
+        "$description": "Success - seafoam green"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Warning - warm amber"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#FB7185",
+        "$description": "Error - rose pink"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#38BDF8",
+        "$description": "Info - sky blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(34, 211, 238, 0.15), 0 2px 4px -2px rgba(34, 211, 238, 0.1)",
+      "$description": "Card shadow - cyan-tinted ocean depth"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(34, 211, 238, 0.15)",
+      "$description": "Dropdown shadow - deep ocean darkness"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(34, 211, 238, 0.2)",
+      "$description": "Modal shadow - profound depth"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(34, 211, 238, 0.4)",
+      "$description": "Focus glow - bioluminescent cyan"
+    }
+  }
+}

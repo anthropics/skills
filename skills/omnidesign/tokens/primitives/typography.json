@@ -1,0 +1,127 @@
+{
+  "fontFamily": {
+    "sans": {
+      "$type": "fontFamily",
+      "$value": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+      "$description": "System font stack for body text"
+    },
+    "mono": {
+      "$type": "fontFamily",
+      "$value": "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+      "$description": "Monospace font stack for code"
+    }
+  },
+  "fontSize": {
+    "xs": {
+      "$type": "dimension",
+      "$value": "12px",
+      "$description": "Extra small font size"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "14px",
+      "$description": "Small font size"
+    },
+    "base": {
+      "$type": "dimension",
+      "$value": "16px",
+      "$description": "Base font size"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "18px",
+      "$description": "Large font size"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "20px",
+      "$description": "Extra large font size"
+    },
+    "2xl": {
+      "$type": "dimension",
+      "$value": "24px",
+      "$description": "2x extra large font size"
+    },
+    "3xl": {
+      "$type": "dimension",
+      "$value": "30px",
+      "$description": "3x extra large font size"
+    },
+    "4xl": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "4x extra large font size"
+    },
+    "5xl": {
+      "$type": "dimension",
+      "$value": "48px",
+      "$description": "5x extra large font size"
+    },
+    "6xl": {
+      "$type": "dimension",
+      "$value": "60px",
+      "$description": "6x extra large font size"
+    }
+  },
+  "fontWeight": {
+    "normal": {
+      "$type": "fontWeight",
+      "$value": 400,
+      "$description": "Normal font weight"
+    },
+    "medium": {
+      "$type": "fontWeight",
+      "$value": 500,
+      "$description": "Medium font weight"
+    },
+    "semibold": {
+      "$type": "fontWeight",
+      "$value": 600,
+      "$description": "Semibold font weight"
+    },
+    "bold": {
+      "$type": "fontWeight",
+      "$value": 700,
+      "$description": "Bold font weight"
+    }
+  },
+  "lineHeight": {
+    "tight": {
+      "$type": "number",
+      "$value": 1.25,
+      "$description": "Tight line height"
+    },
+    "snug": {
+      "$type": "number",
+      "$value": 1.375,
+      "$description": "Snug line height"
+    },
+    "normal": {
+      "$type": "number",
+      "$value": 1.5,
+      "$description": "Normal line height"
+    },
+    "relaxed": {
+      "$type": "number",
+      "$value": 1.625,
+      "$description": "Relaxed line height"
+    }
+  },
+  "letterSpacing": {
+    "tight": {
+      "$type": "dimension",
+      "$value": "-0.025em",
+      "$description": "Tight letter spacing"
+    },
+    "normal": {
+      "$type": "dimension",
+      "$value": "0em",
+      "$description": "Normal letter spacing"
+    },
+    "wide": {
+      "$type": "dimension",
+      "$value": "0.025em",
+      "$description": "Wide letter spacing"
+    }
+  }
+}

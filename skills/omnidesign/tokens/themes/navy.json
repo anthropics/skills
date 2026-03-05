@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "navy",
+    "$description": "Deep navy blue with gold accents - premium, authoritative, and trustworthy theme for enterprise applications"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#F1F5F9",
+        "$description": "Primary text on dark surfaces - near white for readability"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#94A3B8",
+        "$description": "Secondary text - cool gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#0A1628",
+        "$description": "Text color for light surfaces - deep navy"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Link text color - gold accent"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#F59E0B",
+        "$description": "Link text color on hover - amber gold"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#0F172A",
+        "$description": "Default surface background - deep navy (near black)"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#1E293B",
+        "$description": "Elevated surface background - lighter navy for cards"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#020617",
+        "$description": "Depressed surface background - even darker navy for inputs"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(10, 22, 40, 0.85)",
+        "$description": "Overlay background for modals and backdrops - semi-transparent navy"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#1E3A5F",
+        "$description": "Default border color - muted navy"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#1E293B",
+        "$description": "Subtle border for dividers - faint navy"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#334155",
+        "$description": "Stronger border for emphasis - visible navy-gray"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#D4AF37",
+        "$description": "Primary interactive element color - metallic gold"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#EAC054",
+        "$description": "Primary interactive color on hover - lighter gold"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#475569",
+        "$description": "Secondary interactive element color - slate gray"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#D4AF37",
+        "$description": "Focus ring outline color - gold glow"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#34D399",
+        "$description": "Success state color - emerald green for dark theme"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Warning state color - amber gold"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#F87171",
+        "$description": "Error state color - soft coral red"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#60A5FA",
+        "$description": "Info state color - light blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(212, 175, 55, 0.15), 0 2px 4px -1px rgba(212, 175, 55, 0.1)",
+      "$description": "Card elevation shadow - gold-tinted shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3)",
+      "$description": "Dropdown menu elevation shadow - deep shadow for dark theme"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 12px 24px -4px rgba(0, 0, 0, 0.4)",
+      "$description": "Modal dialog elevation shadow - most prominent"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(212, 175, 55, 0.4)",
+      "$description": "Focus ring glow shadow - gold glow ring"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "{shadow.md}",
+      "$description": "Card elevation shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "{shadow.lg}",
+      "$description": "Dropdown menu elevation shadow"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "{shadow.xl}",
+      "$description": "Modal dialog elevation shadow"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "{shadow.glow.blue}",
+      "$description": "Focus ring glow shadow"
+    }
+  }
+}

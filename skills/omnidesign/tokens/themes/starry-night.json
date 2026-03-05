@@ -1,0 +1,143 @@
+{
+  "theme": {
+    "$type": "theme",
+    "$value": "starry-night",
+    "$description": "Cold blue and deep violet theme for enterprise SPAs with dark mode focus"
+  },
+  "color": {
+    "text": {
+      "default": {
+        "$type": "color",
+        "$value": "#F1F5F9",
+        "$description": "Primary text on dark surfaces - near white"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#94A3B8",
+        "$description": "Secondary text - medium gray for less important content"
+      },
+      "inverted": {
+        "$type": "color",
+        "$value": "#0F172A",
+        "$description": "Text color for light surfaces - dark blue-gray"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#60A5FA",
+        "$description": "Link text color - cold blue accent"
+      },
+      "link.hover": {
+        "$type": "color",
+        "$value": "#93C5FD",
+        "$description": "Link text color on hover - brighter cold blue"
+      }
+    },
+    "surface": {
+      "default": {
+        "$type": "color",
+        "$value": "#0F172A",
+        "$description": "Default surface background - very dark blue-gray (near black)"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#1E293B",
+        "$description": "Elevated surface background - slightly lighter dark surface for cards"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#020617",
+        "$description": "Depressed surface background - even darker for inputs and wells"
+      },
+      "overlay": {
+        "$type": "color",
+        "$value": "rgba(15, 23, 42, 0.8)",
+        "$description": "Overlay background for modals and backdrops - semi-transparent dark"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#334155",
+        "$description": "Default border color - subtle blue-gray"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#1E293B",
+        "$description": "Subtle border for dividers - very faint"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#475569",
+        "$description": "Stronger border for emphasis - visible but not harsh"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "$type": "color",
+        "$value": "#2563EB",
+        "$description": "Primary interactive element color - cold blue"
+      },
+      "primary.hover": {
+        "$type": "color",
+        "$value": "#3B82F6",
+        "$description": "Primary interactive color on hover - lighter cold blue"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#6D28D9",
+        "$description": "Secondary interactive element color - deep violet accent"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#7C3AED",
+        "$description": "Focus ring outline color - purple glow for starry accent"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#2DD4BF",
+        "$description": "Success state color - teal-green adjusted for dark theme"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#FBBF24",
+        "$description": "Warning state color - amber adjusted for dark theme"
+      },
+      "error": {
+        "$type": "color",
+        "$value": "#F87171",
+        "$description": "Error state color - coral-red adjusted for dark theme"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#60A5FA",
+        "$description": "Info state color - light blue"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "$type": "shadow",
+      "$value": "0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -2px rgba(37, 99, 235, 0.1)",
+      "$description": "Card elevation shadow - subtle blue-tinted shadow"
+    },
+    "dropdown": {
+      "$type": "shadow",
+      "$value": "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2)",
+      "$description": "Dropdown menu elevation shadow - deeper shadow for dark theme"
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": "0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3)",
+      "$description": "Modal dialog elevation shadow - most prominent for dark theme"
+    },
+    "focus": {
+      "$type": "shadow",
+      "$value": "0 0 0 3px rgba(109, 40, 217, 0.5)",
+      "$description": "Focus ring glow shadow - purple glow ring for starry feel"
+    }
+  }
+}
