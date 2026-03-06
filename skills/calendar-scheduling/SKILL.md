@@ -1,7 +1,9 @@
+<!-- DO NOT EDIT — generated from skills/temporal-cortex/SKILL.md by scripts/generate-alias.sh -->
 ---
-name: temporal-cortex
+name: calendar-scheduling
 description: |-
   Schedule meetings, check availability, and manage calendars across Google, Outlook, and CalDAV. Routes to focused sub-skills for datetime resolution and calendar scheduling.
+  Previously published as calendar-scheduling, now maintained as temporal-cortex — this listing is kept for backward compatibility.
 license: MIT
 compatibility: |-
   Requires npx (Node.js 18+) or Docker to install the MCP server binary. python3 optional (configure/status scripts). Stores OAuth credentials at ~/.config/temporal-cortex/. Works with Claude Code, Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.
@@ -25,6 +27,8 @@ metadata:
 ---
 
 # Temporal Cortex — Calendar Scheduling Router
+
+> **Renamed:** This skill was previously published as `calendar-scheduling`. It is now maintained as [`temporal-cortex`](https://github.com/temporal-cortex/skills/blob/main/skills/temporal-cortex/SKILL.md). Both slugs install the same MCP server and provide identical functionality.
 
 This is the router skill for Temporal Cortex calendar operations. It routes your task to the right sub-skill based on intent.
 
@@ -135,4 +139,4 @@ Layer 1 tools work immediately with zero configuration. Calendar tools require a
 
 ## Additional References
 
-- [Security Model](references/SECURITY-MODEL.md) — Content sanitization, filesystem containment, network scope, tool annotations
+- [Security Model](https://github.com/temporal-cortex/skills/blob/main/skills/temporal-cortex/references/SECURITY-MODEL.md) — Content sanitization, filesystem containment, network scope, tool annotations
