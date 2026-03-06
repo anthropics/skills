@@ -3,6 +3,7 @@ Validator for Word document XML files against XSD schemas.
 """
 
 import random
+import os
 import re
 import tempfile
 import zipfile
@@ -11,6 +12,20 @@ import defusedxml.minidom
 import lxml.etree
 
 from .base import BaseSchemaValidator
+
+
+def _safe_extractall(zf, target_dir):
+    """Extract zip contents safely, preventing Zip Slip path traversal."""
+    target = os.path.realpath(target_dir)
+    for info in zf.infolist():
+        member_path = os.path.realpath(os.path.join(target, info.filename))
+        if not member_path.startswith(target + os.sep) and member_path != target:
+            raise ValueError(
+                f"Zip entry {info.filename!r} would escape target directory"
+            )
+    _safe_extractall(zf, target_dir)
+
+
 
 
 class DOCXSchemaValidator(BaseSchemaValidator):
@@ -186,7 +201,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         try:
             with tempfile.TemporaryDirectory() as temp_dir:
                 with zipfile.ZipFile(original, "r") as zip_ref:
-                    zip_ref.extractall(temp_dir)
+                    _safe_extractall(zip_ref, temp_dir)
 
                 doc_xml_path = temp_dir + "/word/document.xml"
                 root = lxml.etree.parse(doc_xml_path).getroot()

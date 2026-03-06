@@ -3,10 +3,25 @@ Base validator with common validation logic for document files.
 """
 
 import re
+import os
 from pathlib import Path
 
 import defusedxml.minidom
 import lxml.etree
+
+
+def _safe_extractall(zf, target_dir):
+    """Extract zip contents safely, preventing Zip Slip path traversal."""
+    target = os.path.realpath(target_dir)
+    for info in zf.infolist():
+        member_path = os.path.realpath(os.path.join(target, info.filename))
+        if not member_path.startswith(target + os.sep) and member_path != target:
+            raise ValueError(
+                f"Zip entry {info.filename!r} would escape target directory"
+            )
+    _safe_extractall(zf, target_dir)
+
+
 
 
 class BaseSchemaValidator:
@@ -799,7 +814,7 @@ class BaseSchemaValidator:
             temp_path = Path(temp_dir)
 
             with zipfile.ZipFile(self.original_file, "r") as zip_ref:
-                zip_ref.extractall(temp_path)
+                _safe_extractall(zip_ref, temp_path)
 
             original_xml_file = temp_path / relative_path
 
