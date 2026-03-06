@@ -14,13 +14,34 @@ User says "resume {projectKey}-{N}" or auto-detect open `[AI-PM]` Epics.
    ```
    parent = {projectKey}-{N} AND statusCategory != Done ORDER BY rank ASC
    ```
-4. **Inspect each ticket** — `getJiraIssue` for details + check comments for prior work
-5. **Classify state:**
+4. **Inspect each ticket** — `getJiraIssue` for details + check Jira comments for prior work
+
+5. **Read Confluence plan page comments** for additional context:
+   ```
+   getConfluencePageFooterComments:
+     cloudId: "{cloudId}"
+     pageId: "{planPageId}"
+     limit: 10
+     sort: "-created-date"
+   ```
+   Footer comments may contain orchestrator progress notes from the previous session.
+
+   Also check for inline review feedback on deliverable child pages:
+   ```
+   getConfluencePageInlineComments:
+     cloudId: "{cloudId}"
+     pageId: "{childPageId}"
+     limit: 10
+     resolutionStatus: "open"
+   ```
+   Open inline comments indicate unaddressed review feedback.
+
+6. **Classify state:**
    - **To Do** = no prior work -> assign fresh agent
-   - **In Progress** = has comments with partial work -> agent continues from last comment
-6. **Spin up right-sized team** for remaining work only
-7. **Add comment to Epic:** "Session resumed. N tickets remaining."
-8. **Update Confluence progress log** with resume entry
+   - **In Progress** = has Jira comments or Confluence comments with partial work -> agent continues from last comment
+7. **Spin up right-sized team** for remaining work only
+8. **Add comment to Epic:** "Session resumed. N tickets remaining."
+9. **Update Confluence progress log** with resume entry
 
 ## JQL Patterns
 

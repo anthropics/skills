@@ -17,17 +17,37 @@ User says "resume {projectKey}-{N}" or auto-detect open `[AI-PM]` Epics.
    parent = {projectKey}-{N} AND statusCategory != Done ORDER BY rank ASC
    ```
 
-4. **Inspect each ticket** — `atlassian:getJiraIssue` for details + check comments for prior work
+4. **Inspect each ticket** — `atlassian:getJiraIssue` for details + check Jira comments for prior work
 
-5. **Classify state:**
+5. **Read Confluence plan page comments** for additional context:
+   ```
+   atlassian:getConfluencePageFooterComments:
+     cloudId: "{cloudId}"
+     pageId: "{planPageId}"
+     limit: 10
+     sort: "-created-date"
+   ```
+   Footer comments may contain progress notes from the previous session.
+
+   Also check for inline review feedback on deliverable child pages:
+   ```
+   atlassian:getConfluencePageInlineComments:
+     cloudId: "{cloudId}"
+     pageId: "{childPageId}"
+     limit: 10
+     resolutionStatus: "open"
+   ```
+   Open inline comments indicate unaddressed review feedback.
+
+6. **Classify state:**
    - **To Do** = no prior work -> start fresh
-   - **In Progress** = has comments with partial work -> continue from where it left off
+   - **In Progress** = has Jira comments or Confluence comments with partial work -> continue from where it left off
 
-6. **Pick up the first actionable ticket** (respecting dependency order) and continue with the single-agent execution workflow. See [phase-execution-single.md](phase-execution-single.md).
+7. **Pick up the first actionable ticket** (respecting dependency order) and continue with the single-agent execution workflow. See [phase-execution-single.md](phase-execution-single.md).
 
-7. **Add comment to Epic:** "Session resumed. N tickets remaining."
+8. **Add comment to Epic:** "Session resumed. N tickets remaining."
 
-8. **Update Confluence progress log** with resume entry
+9. **Update Confluence progress log** with resume entry
 
 ## JQL Patterns
 
