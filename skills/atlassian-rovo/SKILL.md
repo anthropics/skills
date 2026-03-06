@@ -38,8 +38,14 @@ Full lifecycle project management using Jira + Confluence.
 
 ### Execution Modes
 
-- **Multi-Agent Mode** (Claude Code with Agent Teams): Parallel execution with TeamCreate/TaskCreate orchestration. Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `~/.claude/settings.json`.
+- **Multi-Agent Mode** (Claude Code with Agent Teams): Parallel execution with TeamCreate/TaskCreate orchestration.
 - **Single-Agent Mode** (all agents): Sequential execution — one workstream at a time. Same Jira tracking and Confluence updates, no multi-agent dependencies.
+
+**Mode detection:** Use multi-agent mode when ALL of these are true:
+1. The `TeamCreate` tool is available (test by checking tool list)
+2. There are 2+ independent workstreams that can run in parallel
+
+If `TeamCreate` is not available, or there's only 1 workstream, use single-agent mode. Never ask the user which mode to use — detect automatically and proceed.
 
 ### The 4-Phase Cycle
 
