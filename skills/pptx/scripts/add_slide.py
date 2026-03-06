@@ -15,7 +15,8 @@ Examples:
 
 To see available layouts: ls unpacked/ppt/slideLayouts/
 
-Prints the <p:sldId> element to add to presentation.xml.
+The new slide is appended to the end of <p:sldIdLst> in presentation.xml.
+To reorder slides, edit presentation.xml directly after running this script.
 """
 
 import re
@@ -81,15 +82,17 @@ def create_slide_from_layout(unpacked_dir: Path, layout_file: str) -> None:
 
     rid = _add_to_presentation_rels(unpacked_dir, dest)
 
-    next_slide_id = _get_next_slide_id(unpacked_dir)
+    next_slide_id = _add_to_presentation_sldidlst(unpacked_dir, rid)
 
-    print(f"Created {dest} from {layout_file}")
-    print(f'Add to presentation.xml <p:sldIdLst>: <p:sldId id="{next_slide_id}" r:id="{rid}"/>')
+    print(f"Created {dest} from {layout_file} (sldId={next_slide_id}, {rid})")
 
 
 def duplicate_slide(unpacked_dir: Path, source: str) -> None:
     slides_dir = unpacked_dir / "ppt" / "slides"
     rels_dir = slides_dir / "_rels"
+
+    # Accept bare filename, relative path, or absolute path — use only the filename.
+    source = Path(source).name
 
     source_slide = slides_dir / source
 
@@ -121,10 +124,9 @@ def duplicate_slide(unpacked_dir: Path, source: str) -> None:
 
     rid = _add_to_presentation_rels(unpacked_dir, dest)
 
-    next_slide_id = _get_next_slide_id(unpacked_dir)
+    next_slide_id = _add_to_presentation_sldidlst(unpacked_dir, rid)
 
-    print(f"Created {dest} from {source}")
-    print(f'Add to presentation.xml <p:sldIdLst>: <p:sldId id="{next_slide_id}" r:id="{rid}"/>')
+    print(f"Created {dest} from {source} (sldId={next_slide_id}, {rid})")
 
 
 def _add_to_content_types(unpacked_dir: Path, dest: str) -> None:
@@ -160,6 +162,23 @@ def _get_next_slide_id(unpacked_dir: Path) -> int:
     pres_content = pres_path.read_text(encoding="utf-8")
     slide_ids = [int(m) for m in re.findall(r'<p:sldId[^>]*id="(\d+)"', pres_content)]
     return max(slide_ids) + 1 if slide_ids else 256
+
+
+def _add_to_presentation_sldidlst(unpacked_dir: Path, rid: str) -> int:
+    """Append a <p:sldId> to <p:sldIdLst> in presentation.xml.
+
+    Writing directly ensures consecutive calls produce unique slide IDs.
+    Returns the assigned slide id.
+    """
+    next_id = _get_next_slide_id(unpacked_dir)
+    pres_path = unpacked_dir / "ppt" / "presentation.xml"
+    pres_content = pres_path.read_text(encoding="utf-8")
+    new_entry = f'    <p:sldId id="{next_id}" r:id="{rid}"/>'
+    pres_content = pres_content.replace(
+        "</p:sldIdLst>", f"{new_entry}\n  </p:sldIdLst>"
+    )
+    pres_path.write_text(pres_content, encoding="utf-8")
+    return next_id
 
 
 def parse_source(source: str) -> tuple[str, str | None]:
