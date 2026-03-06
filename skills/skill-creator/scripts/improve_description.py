@@ -2,22 +2,94 @@
 """Improve a skill description based on eval results.
 
 Takes eval results (from run_eval.py) and generates an improved description
-using Claude with extended thinking.
+using Claude with extended thinking. Falls back to ``claude -p`` CLI when
+the Anthropic Python SDK is not available (no ANTHROPIC_API_KEY).
 """
 
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
-import anthropic
+try:
+    import anthropic
+
+    _HAS_SDK = bool(os.environ.get("ANTHROPIC_API_KEY"))
+except ImportError:
+    anthropic = None  # type: ignore[assignment]
+    _HAS_SDK = False
 
 from scripts.utils import parse_skill_md
 
+# Environment variables that prevent nested claude -p invocations.
+_NESTING_GUARD_VARS = ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT")
+
+
+def _improve_via_cli(
+    prompt: str,
+    model: str,
+    log_dir: Path | None = None,
+    iteration: int | None = None,
+) -> str:
+    """Fallback: use ``claude -p`` CLI when the Anthropic SDK is unavailable.
+
+    This allows the description optimizer to work for users who are
+    authenticated to Claude Code via SSO/enterprise but do not have a
+    standalone ``ANTHROPIC_API_KEY``.
+    """
+    env = {k: v for k, v in os.environ.items() if k not in _NESTING_GUARD_VARS}
+
+    cmd = ["claude", "-p", prompt, "--output-format", "text"]
+    if model:
+        cmd.extend(["--model", model])
+
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, timeout=120, env=env,
+    )
+
+    text = result.stdout.strip()
+
+    # Parse <new_description> tags from the response
+    match = re.search(r"<new_description>(.*?)</new_description>", text, re.DOTALL)
+    description = match.group(1).strip().strip('"') if match else text.strip().strip('"')
+
+    # If over 1024 chars, ask the model to shorten it
+    if len(description) > 1024:
+        shorten_prompt = (
+            f"Your description is {len(description)} characters, which exceeds the "
+            f"hard 1024 character limit. Please rewrite it to be under 1024 characters "
+            f"while preserving the most important trigger words and intent coverage. "
+            f"Respond with only the new description in <new_description> tags."
+        )
+        # Combine original prompt + response + shorten request as a single follow-up
+        combined = f"{prompt}\n\nYour previous response:\n{text}\n\n{shorten_prompt}"
+        shorten_result = subprocess.run(
+            ["claude", "-p", combined, "--output-format", "text"] + (["--model", model] if model else []),
+            capture_output=True, text=True, timeout=120, env=env,
+        )
+        shorten_text = shorten_result.stdout.strip()
+        match = re.search(r"<new_description>(.*?)</new_description>", shorten_text, re.DOTALL)
+        description = match.group(1).strip().strip('"') if match else shorten_text.strip().strip('"')
+
+    if log_dir:
+        log_dir.mkdir(parents=True, exist_ok=True)
+        log_file = log_dir / f"improve_iter_{iteration or 'unknown'}.json"
+        log_file.write_text(json.dumps({
+            "iteration": iteration,
+            "prompt": prompt,
+            "response": text,
+            "final_description": description,
+            "backend": "claude-cli",
+        }, indent=2))
+
+    return description
+
 
 def improve_description(
-    client: anthropic.Anthropic,
+    client: "anthropic.Anthropic | None",
     skill_name: str,
     skill_content: str,
     current_description: str,
@@ -110,6 +182,10 @@ Here are some tips that we've found to work well in writing these descriptions:
 I'd encourage you to be creative and mix up the style in different iterations since you'll have multiple opportunities to try different approaches and we'll just grab the highest-scoring one at the end. 
 
 Please respond with only the new description text in <new_description> tags, nothing else."""
+
+    # Route to CLI fallback if no SDK client available
+    if client is None:
+        return _improve_via_cli(prompt, model, log_dir=log_dir, iteration=iteration)
 
     response = client.messages.create(
         model=model,
@@ -216,7 +292,7 @@ def main():
         print(f"Current: {current_description}", file=sys.stderr)
         print(f"Score: {eval_results['summary']['passed']}/{eval_results['summary']['total']}", file=sys.stderr)
 
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic() if _HAS_SDK else None
     new_description = improve_description(
         client=client,
         skill_name=name,

@@ -6,6 +6,7 @@ for a set of queries. Outputs results as JSON.
 """
 
 import argparse
+import contextlib
 import json
 import os
 import select
@@ -17,6 +18,12 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
+
+
+# Environment variables that prevent nested claude -p invocations.
+# These must be stripped when spawning subprocess calls, but we must
+# preserve all other CLAUDE* vars (auth tokens, config, etc.).
+_NESTING_GUARD_VARS = ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT")
 
 
 def find_project_root() -> Path:
@@ -69,6 +76,7 @@ def run_single_query(
 
         cmd = [
             "claude",
+            "--setting-sources", "project,local",
             "-p", query,
             "--output-format", "stream-json",
             "--verbose",
@@ -77,10 +85,11 @@ def run_single_query(
         if model:
             cmd.extend(["--model", model])
 
-        # Remove CLAUDECODE env var to allow nesting claude -p inside a
-        # Claude Code session. The guard is for interactive terminal conflicts;
-        # programmatic subprocess usage is safe.
-        env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+        # Remove nesting-guard env vars to allow running claude -p inside a
+        # Claude Code session. Only strip the specific guards — preserve all
+        # other CLAUDE* vars (auth tokens, config paths, etc.) so the
+        # subprocess can authenticate.
+        env = {k: v for k, v in os.environ.items() if k not in _NESTING_GUARD_VARS}
 
         process = subprocess.Popen(
             cmd,
@@ -181,6 +190,36 @@ def run_single_query(
             command_file.unlink()
 
 
+@contextlib.contextmanager
+def _hide_skills(project_root: Path):
+    """Temporarily hide SKILL.md files so they don't compete with eval commands.
+
+    During trigger evaluation, the test command file must be the only skill
+    visible to Claude. If real SKILL.md files are present, they may match
+    the test query and cause Claude to invoke them instead of (or in addition
+    to) the eval command, producing false negatives.
+
+    This context manager renames SKILL.md -> SKILL.md.eval-backup and
+    restores them on exit (including on exceptions).
+    """
+    skills_dir = project_root / ".claude" / "skills"
+    hidden: list[tuple[Path, Path]] = []
+    try:
+        if skills_dir.exists():
+            for skill_dir in skills_dir.iterdir():
+                if skill_dir.is_dir():
+                    skill_md = skill_dir / "SKILL.md"
+                    backup = skill_dir / "SKILL.md.eval-backup"
+                    if skill_md.exists():
+                        skill_md.rename(backup)
+                        hidden.append((skill_md, backup))
+        yield
+    finally:
+        for original, backup in hidden:
+            if backup.exists():
+                backup.rename(original)
+
+
 def run_eval(
     eval_set: list[dict],
     skill_name: str,
@@ -191,38 +230,48 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    hide_skills: bool = True,
 ) -> dict:
-    """Run the full eval set and return results."""
+    """Run the full eval set and return results.
+
+    Args:
+        hide_skills: If True (default), temporarily hide SKILL.md files during
+            evaluation to prevent them from competing with eval command files.
+    """
     results = []
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        future_to_info = {}
-        for item in eval_set:
-            for run_idx in range(runs_per_query):
-                future = executor.submit(
-                    run_single_query,
-                    item["query"],
-                    skill_name,
-                    description,
-                    timeout,
-                    str(project_root),
-                    model,
-                )
-                future_to_info[future] = (item, run_idx)
+    with contextlib.ExitStack() as stack:
+        if hide_skills:
+            stack.enter_context(_hide_skills(project_root))
 
-        query_triggers: dict[str, list[bool]] = {}
-        query_items: dict[str, dict] = {}
-        for future in as_completed(future_to_info):
-            item, _ = future_to_info[future]
-            query = item["query"]
-            query_items[query] = item
-            if query not in query_triggers:
-                query_triggers[query] = []
-            try:
-                query_triggers[query].append(future.result())
-            except Exception as e:
-                print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_info = {}
+            for item in eval_set:
+                for run_idx in range(runs_per_query):
+                    future = executor.submit(
+                        run_single_query,
+                        item["query"],
+                        skill_name,
+                        description,
+                        timeout,
+                        str(project_root),
+                        model,
+                    )
+                    future_to_info[future] = (item, run_idx)
+
+            query_triggers: dict[str, list[bool]] = {}
+            query_items: dict[str, dict] = {}
+            for future in as_completed(future_to_info):
+                item, _ = future_to_info[future]
+                query = item["query"]
+                query_items[query] = item
+                if query not in query_triggers:
+                    query_triggers[query] = []
+                try:
+                    query_triggers[query].append(future.result())
+                except Exception as e:
+                    print(f"Warning: query failed: {e}", file=sys.stderr)
+                    query_triggers[query].append(False)
 
     for query, triggers in query_triggers.items():
         item = query_items[query]

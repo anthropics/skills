@@ -15,10 +15,13 @@ import time
 import webbrowser
 from pathlib import Path
 
-import anthropic
+try:
+    import anthropic
+except ImportError:
+    anthropic = None  # type: ignore[assignment]
 
 from scripts.generate_report import generate_html
-from scripts.improve_description import improve_description
+from scripts.improve_description import _HAS_SDK, improve_description
 from scripts.run_eval import find_project_root, run_eval
 from scripts.utils import parse_skill_md
 
@@ -75,7 +78,10 @@ def run_loop(
         train_set = eval_set
         test_set = []
 
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic() if _HAS_SDK else None
+    if client is None:
+        if verbose:
+            print("No ANTHROPIC_API_KEY found — using claude -p CLI fallback for improvement steps", file=sys.stderr)
     history = []
     exit_reason = "unknown"
 
