@@ -2,22 +2,52 @@
 """Improve a skill description based on eval results.
 
 Takes eval results (from run_eval.py) and generates an improved description
-using Claude with extended thinking.
+by calling `claude -p` as a subprocess (same auth pattern as run_eval.py —
+uses the session's Claude Code auth, no separate ANTHROPIC_API_KEY needed).
 """
 
 import argparse
 import json
+import os
 import re
+import subprocess
 import sys
 from pathlib import Path
-
-import anthropic
 
 from scripts.utils import parse_skill_md
 
 
+def _call_claude(prompt: str, model: str | None, timeout: int = 300) -> str:
+    """Run `claude -p` with the prompt on stdin and return the text response.
+
+    Prompt goes over stdin (not argv) because it embeds the full SKILL.md
+    body and can easily exceed comfortable argv length.
+    """
+    cmd = ["claude", "-p", "--output-format", "text"]
+    if model:
+        cmd.extend(["--model", model])
+
+    # Remove CLAUDECODE env var to allow nesting claude -p inside a
+    # Claude Code session. The guard is for interactive terminal conflicts;
+    # programmatic subprocess usage is safe. Same pattern as run_eval.py.
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+
+    result = subprocess.run(
+        cmd,
+        input=prompt,
+        capture_output=True,
+        text=True,
+        env=env,
+        timeout=timeout,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"claude -p exited {result.returncode}\nstderr: {result.stderr}"
+        )
+    return result.stdout
+
+
 def improve_description(
-    client: anthropic.Anthropic,
     skill_name: str,
     skill_content: str,
     current_description: str,
@@ -99,7 +129,7 @@ Based on the failures, write a new and improved description that is more likely 
 1. Avoid overfitting
 2. The list might get loooong and it's injected into ALL queries and there might be a lot of skills, so we don't want to blow too much space on any given description.
 
-Concretely, your description should not be more than about 100-200 words, even if that comes at the cost of accuracy.
+Concretely, your description should not be more than about 100-200 words, even if that comes at the cost of accuracy. There is a hard limit of 1024 characters — descriptions over that will be truncated, so stay comfortably under it.
 
 Here are some tips that we've found to work well in writing these descriptions:
 - The skill should be phrased in the imperative -- "Use this skill for" rather than "this skill does"
@@ -111,70 +141,41 @@ I'd encourage you to be creative and mix up the style in different iterations si
 
 Please respond with only the new description text in <new_description> tags, nothing else."""
 
-    response = client.messages.create(
-        model=model,
-        max_tokens=16000,
-        thinking={
-            "type": "enabled",
-            "budget_tokens": 10000,
-        },
-        messages=[{"role": "user", "content": prompt}],
-    )
+    text = _call_claude(prompt, model)
 
-    # Extract thinking and text from response
-    thinking_text = ""
-    text = ""
-    for block in response.content:
-        if block.type == "thinking":
-            thinking_text = block.thinking
-        elif block.type == "text":
-            text = block.text
-
-    # Parse out the <new_description> tags
     match = re.search(r"<new_description>(.*?)</new_description>", text, re.DOTALL)
     description = match.group(1).strip().strip('"') if match else text.strip().strip('"')
 
-    # Log the transcript
     transcript: dict = {
         "iteration": iteration,
         "prompt": prompt,
-        "thinking": thinking_text,
         "response": text,
         "parsed_description": description,
         "char_count": len(description),
         "over_limit": len(description) > 1024,
     }
 
-    # If over 1024 chars, ask the model to shorten it
+    # Safety net: the prompt already states the 1024-char hard limit, but if
+    # the model blew past it anyway, make one fresh single-turn call that
+    # quotes the too-long version and asks for a shorter rewrite. (The old
+    # SDK path did this as a true multi-turn; `claude -p` is one-shot, so we
+    # inline the prior output into the new prompt instead.)
     if len(description) > 1024:
-        shorten_prompt = f"Your description is {len(description)} characters, which exceeds the hard 1024 character limit. Please rewrite it to be under 1024 characters while preserving the most important trigger words and intent coverage. Respond with only the new description in <new_description> tags."
-        shorten_response = client.messages.create(
-            model=model,
-            max_tokens=16000,
-            thinking={
-                "type": "enabled",
-                "budget_tokens": 10000,
-            },
-            messages=[
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": text},
-                {"role": "user", "content": shorten_prompt},
-            ],
+        shorten_prompt = (
+            f"{prompt}\n\n"
+            f"---\n\n"
+            f"A previous attempt produced this description, which at "
+            f"{len(description)} characters is over the 1024-character hard limit:\n\n"
+            f'"{description}"\n\n'
+            f"Rewrite it to be under 1024 characters while keeping the most "
+            f"important trigger words and intent coverage. Respond with only "
+            f"the new description in <new_description> tags."
         )
-
-        shorten_thinking = ""
-        shorten_text = ""
-        for block in shorten_response.content:
-            if block.type == "thinking":
-                shorten_thinking = block.thinking
-            elif block.type == "text":
-                shorten_text = block.text
-
+        shorten_text = _call_claude(shorten_prompt, model)
         match = re.search(r"<new_description>(.*?)</new_description>", shorten_text, re.DOTALL)
         shortened = match.group(1).strip().strip('"') if match else shorten_text.strip().strip('"')
 
         transcript["rewrite_prompt"] = shorten_prompt
-        transcript["rewrite_thinking"] = shorten_thinking
         transcript["rewrite_response"] = shorten_text
         transcript["rewrite_description"] = shortened
         transcript["rewrite_char_count"] = len(shortened)
@@ -216,9 +217,7 @@ def main():
         print(f"Current: {current_description}", file=sys.stderr)
         print(f"Score: {eval_results['summary']['passed']}/{eval_results['summary']['total']}", file=sys.stderr)
 
-    client = anthropic.Anthropic()
     new_description = improve_description(
-        client=client,
         skill_name=name,
         skill_content=content,
         current_description=current_description,
