@@ -30,6 +30,7 @@ Before starting any workflow, gather these from the user or discover via MCP too
 | **Email** | `.env` file (`CONFLUENCE_EMAIL`) or ask user. Required for image upload (Basic Auth). | `{email}` |
 
 For image upload configuration details, see [image-upload.md](reference/image-upload.md). The `{cloudId}` doubles as `CONFLUENCE_BASE_URL`.
+For git branch integration (GitHub/Bitbucket), see [git-integration.md](reference/git-integration.md).
 
 Always ask the user which project/space to use. Never assume defaults.
 Use `maxResults: 10` or `limit: 10` for all search operations.

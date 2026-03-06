@@ -108,9 +108,9 @@ Reference: [Connect Jira to Bitbucket](https://support.atlassian.com/jira-cloud-
 
 ---
 
-## Reading Development Links via MCP
+## Reading Development Links
 
-### `getJiraIssueRemoteIssueLinks`
+### Via MCP: `getJiraIssueRemoteIssueLinks`
 
 Returns **web links** (manually added), NOT Development panel data:
 ```
@@ -119,11 +119,27 @@ getJiraIssueRemoteIssueLinks:
   issueIdOrKey: "{issueKey}"
 ```
 
-Returns `[]` if no remote links exist.
+Returns `[]` if no remote links exist. The `getTeamworkGraphContext` tool (mentioned in `getJiraIssue` description) is not available in the current MCP tool set.
 
-### Limitation
+### Via REST API: Dev-Status Endpoint
 
-Development panel data (branches, PRs, commits) is **not accessible** via the current MCP tool set. The `getTeamworkGraphContext` tool (mentioned in `getJiraIssue` description) is not available.
+The Jira dev-status REST API can read Development panel data (branches, PRs, commits):
+
+**Summary** (counts only):
+```bash
+curl -u "{email}:{apiToken}" \
+  "https://{site}.atlassian.net/rest/dev-status/1.0/issue/summary?issueId={issueId}"
+```
+
+**Detail** (full branch/PR/commit info):
+```bash
+curl -u "{email}:{apiToken}" \
+  "https://{site}.atlassian.net/rest/dev-status/1.0/issue/detail?issueId={issueId}&applicationType=GitHub&dataType=branch"
+```
+
+`applicationType` options: `GitHub`, `Bitbucket`. `dataType` options: `branch`, `pullrequest`, `repository`.
+
+**Note:** This endpoint uses the internal issue **ID** (numeric), not the issue key. Get the ID from `getJiraIssue` response.
 
 ---
 
