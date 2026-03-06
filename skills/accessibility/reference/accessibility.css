@@ -1,0 +1,273 @@
+/**
+ * Accessibility CSS Utilities
+ *
+ * Production-ready CSS for WCAG 2.1 AA compliance.
+ * Drop this into any project for immediate accessibility improvements.
+ *
+ * Sections:
+ *   1. Focus Management
+ *   2. Skip Links
+ *   3. Screen Reader Utilities
+ *   4. Touch Targets
+ *   5. Reduced Motion
+ *   6. Forced Colors (Windows High Contrast)
+ *   7. Dyslexia-Friendly Text
+ *   8. Disabled & Busy States
+ *   9. RTL Support
+ *  10. Print Accessibility
+ *  11. Mobile Accessibility
+ */
+
+
+/* ==========================================================================
+   1. FOCUS MANAGEMENT
+   Visible focus indicators for keyboard and switch access users.
+   WCAG 2.4.7: Focus Visible (Level AA) — 3:1 contrast minimum.
+   ========================================================================== */
+
+:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   2. SKIP LINKS
+   First focusable element on the page. Lets keyboard/switch users bypass
+   repeated navigation blocks. WCAG 2.4.1: Bypass Blocks (Level A).
+   ========================================================================== */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  padding: 12px 24px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+
+/* ==========================================================================
+   3. SCREEN READER UTILITIES
+   Hide content visually while keeping it accessible to assistive technology.
+   Never use display:none or visibility:hidden for SR-only content.
+   ========================================================================== */
+
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Restore visibility when focused — used for skip links */
+.sr-only:focus,
+.sr-only:active,
+.visually-hidden:focus,
+.visually-hidden:active {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focusable variant — hidden until focused or within focus */
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+
+/* ==========================================================================
+   4. TOUCH TARGETS
+   Minimum 44x44px per WCAG 2.5.5 (Level AAA) and 2.5.8 (Level AA).
+   48px on mobile for finger precision.
+   ========================================================================== */
+
+button,
+a,
+input[type="checkbox"],
+input[type="radio"],
+select,
+[role="button"],
+[role="link"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ==========================================================================
+   5. REDUCED MOTION
+   Respect the user's OS-level motion preference.
+   WCAG 2.3.3: Animation from Interactions (Level AAA).
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ==========================================================================
+   6. FORCED COLORS (WINDOWS HIGH CONTRAST)
+   Ensure borders, outlines, and focus indicators remain visible when the
+   OS overrides all colors.
+   ========================================================================== */
+
+@media (forced-colors: active) {
+  * {
+    border-color: currentColor !important;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    border: 2px solid currentColor !important;
+  }
+
+  :focus-visible {
+    outline: 3px solid currentColor !important;
+    outline-offset: 2px !important;
+  }
+}
+
+
+/* ==========================================================================
+   7. DYSLEXIA-FRIENDLY TEXT
+   Increased spacing and weight improve readability for people with dyslexia.
+   Apply this class to the body or a content container.
+   ========================================================================== */
+
+.dyslexia-friendly {
+  letter-spacing: 0.12em;
+  word-spacing: 0.16em;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+
+/* ==========================================================================
+   8. DISABLED & BUSY STATES
+   Consistent styling that maintains WCAG contrast. Use aria-disabled="true"
+   over the HTML disabled attribute when you need the element to remain in
+   the tab order (e.g., for screen reader discoverability).
+   ========================================================================== */
+
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+[aria-busy="true"] {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+
+/* ==========================================================================
+   9. RTL (RIGHT-TO-LEFT) SUPPORT
+   ========================================================================== */
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+
+/* ==========================================================================
+   10. PRINT ACCESSIBILITY
+   Show link URLs and abbreviation expansions when printing.
+   ========================================================================== */
+
+@media print {
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.875em;
+    font-weight: normal;
+  }
+
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+}
+
+
+/* ==========================================================================
+   11. MOBILE ACCESSIBILITY
+   Larger targets and text for touch interfaces.
+   ========================================================================== */
+
+@media (max-width: 48em) {
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  body {
+    font-size: 110%;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+}
