@@ -5,6 +5,7 @@ description: >
   MCP setup, OAuth authentication, and troubleshooting. Runs agentic
   project management: Confluence plans, Jira Epics with child tickets,
   agent team coordination, and resuming interrupted work from Jira state.
+  Supports uploading images/attachments to Confluence pages via REST API.
   Use when working with Atlassian, planning projects, managing Jira tasks,
   or running agent team workflows.
 argument-hint: "[describe project | resume PROJ-123 | setup | troubleshoot]"
@@ -77,7 +78,7 @@ Phase 4: COMPLETE -> All tickets Done -> Epic closed -> summary delivered
 
 ### Phase 1: Intake & Planning
 
-Classify the request, create Confluence plan page, Jira Epic with `[AI-PM]` prefix, child tickets per workstream, link dependencies, then present plan to user for confirmation.
+Classify the request, create Confluence plan page as a draft, then **present to user for review before creating any Jira tickets**. Only after approval: create Jira Epic with `[AI-PM]` prefix, child tickets per workstream, and link dependencies.
 
 See [phase-planning.md](reference/phase-planning.md) for step-by-step details and templates.
 
@@ -123,6 +124,8 @@ One ticket per teammate. Lead coordinates only (no workstream tasks). Min team =
 - **`[AI-PM]` prefix** on all managed Epics for auto-detection during resume
 - **One writer per resource** — only one agent updates a given page/issue at a time
 - **maxResults: 10** on all JQL/CQL searches
-- Teammates MUST transition to **In Progress** when starting (not just Done at end)
+- **ALL tickets MUST be transitioned to In Progress when work starts** — whether done by teammates or the orchestrator directly. Use two-step protocol: `getTransitionsForJiraIssue` then `transitionJiraIssue`.
+- **ALL tickets MUST be assigned** to the current user (`editJiraIssue` with `{"assignee": {"accountId": "{currentUserAccountId}"}}`) when moving to In Progress.
 - Teammates MUST publish findings as **child pages** of the plan page (using `parentId`)
+- **Epic linking:** `createJiraIssue` with `parentKey` may silently fail to set the Epic parent. Always verify with `getJiraIssue`, and if missing, fix with `editJiraIssue` using `{"parent": {"key": "{epicKey}"}}`.
 - `updateConfluencePage` replaces the entire body — always `getConfluencePage` first, then append
