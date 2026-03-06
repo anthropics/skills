@@ -24,7 +24,10 @@ Before starting any workflow, gather these from the user or discover via MCP too
 | **Confluence Space** | Ask user, or `getConfluenceSpaces` | `{spaceId}` |
 | **Parent Page** | Ask user, or use space root | `{parentId}` |
 | **User Account ID** | `atlassian:atlassianUserInfo` | `{currentUserAccountId}` |
-| **API Token** | `.env` file (`CONFLUENCE_API_TOKEN`) or ask user. Required only for image upload — see [image-upload.md](reference/image-upload.md) | `{apiToken}` |
+| **API Token** | `.env` file (`CONFLUENCE_API_TOKEN`) or ask user. Required for image upload. | `{apiToken}` |
+| **Email** | `.env` file (`CONFLUENCE_EMAIL`) or ask user. Required for image upload (Basic Auth). | `{email}` |
+
+For image upload configuration details, see [image-upload.md](reference/image-upload.md). The `{cloudId}` doubles as `CONFLUENCE_BASE_URL`.
 
 Always ask the user which project/space to use. Never assume defaults.
 Use `maxResults: 10` or `limit: 10` for all search operations.

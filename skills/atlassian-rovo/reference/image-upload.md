@@ -122,7 +122,13 @@ uploader.update_page_body(page_id, "Page Title", body, page["version"]["number"]
 ## Auth Setup
 
 1. Generate API token at https://id.atlassian.com/manage-profile/security/api-tokens
-2. Pass as environment variable (never commit tokens to files)
+2. Add to `.env` file (never commit tokens to source control):
+   ```
+   CONFLUENCE_API_TOKEN=<your-api-token>
+   CONFLUENCE_EMAIL=<your-atlassian-email>
+   CONFLUENCE_BASE_URL=https://<your-site>.atlassian.net
+   ```
+3. Load in Python: `os.environ["CONFLUENCE_API_TOKEN"]` (or use `python-dotenv`)
 
 ## Limitations
 
