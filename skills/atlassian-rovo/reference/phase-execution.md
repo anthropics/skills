@@ -49,6 +49,13 @@ When you begin working on your ticket:
    - issueIdOrKey: "{projectKey}-{N}"
    - fields: {"assignee": {"accountId": "{currentUserAccountId}"}}
 3. Transition your Jira ticket to **In Progress** (using two-step transition protocol above)
+4. If the project has a git repo, create a branch for your ticket:
+   ```bash
+   git checkout -b feature/{projectKey}-{N}-{slug}
+   git push -u origin feature/{projectKey}-{N}-{slug}
+   ```
+   Then add a Jira comment noting the branch name and repo link.
+   The issue key in the branch name auto-links it to Jira's Development panel.
 
 ## Publishing Findings
 When your work is complete, publish findings as a **child page** of the project plan:

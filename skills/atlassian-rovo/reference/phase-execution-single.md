@@ -34,11 +34,34 @@ atlassian:transitionJiraIssue
   transitionId: "{in-progress-transition-id}"
 ```
 
-### 2. Do the Work
+### 2. Create a Branch (Optional)
+
+If the project has a git repository, create a branch for this ticket:
+```bash
+# Detect remote type
+git remote get-url origin
+# github.com → GitHub, bitbucket.org → Bitbucket
+
+# Create and push branch with issue key in the name
+git checkout -b feature/{projectKey}-{N}-{slug}
+git push -u origin feature/{projectKey}-{N}-{slug}
+```
+
+Add a Jira comment noting the branch:
+```
+atlassian:addCommentToJiraIssue
+  cloudId: "{cloudId}"
+  issueIdOrKey: "{projectKey}-{N}"
+  commentBody: "Branch created: `feature/{projectKey}-{N}-{slug}` on {github.com|bitbucket.org}/{org}/{repo}"
+```
+
+The issue key in the branch name auto-links it to Jira's Development panel (requires GitHub for Jira app or Bitbucket integration).
+
+### 3. Do the Work
 
 Execute the workstream as described in the ticket.
 
-### 3. Publish Findings
+### 4. Publish Findings
 
 Create a Confluence child page under the plan page:
 ```
@@ -51,7 +74,7 @@ atlassian:createConfluencePage
   body: <findings in markdown>
 ```
 
-### 4. Complete the Ticket
+### 5. Complete the Ticket
 
 Add a comment with summary + link to Confluence child page:
 ```
@@ -75,7 +98,7 @@ atlassian:transitionJiraIssue
   transitionId: "{done-transition-id}"
 ```
 
-### 5. Update Progress
+### 6. Update Progress
 
 Update the Confluence plan page — change the ticket's status in the workstreams table, add a progress log entry:
 ```
@@ -93,9 +116,9 @@ atlassian:updateConfluencePage
   versionMessage: "{projectKey}-{N} completed"
 ```
 
-### 6. Next Ticket
+### 7. Next Ticket
 
-Move to the next ticket in dependency order. Repeat steps 1-5.
+Move to the next ticket in dependency order. Repeat steps 1-6.
 
 ## Dependency Ordering
 

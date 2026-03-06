@@ -7,6 +7,7 @@ description: >
   agent team coordination, and resuming interrupted work from Jira state.
   Supports uploading images/attachments to Confluence pages via REST API.
   Reads and writes Confluence page comments (footer, inline, reply threads).
+  Creates git branches linked to Jira tickets (GitHub and Bitbucket).
   Use when working with Atlassian, planning projects, managing Jira tasks,
   or running agent team workflows.
 argument-hint: "[describe project | resume PROJ-123 | setup | troubleshoot]"
