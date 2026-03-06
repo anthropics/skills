@@ -1,5 +1,16 @@
 # Git Branch Integration — Reference
 
+## Contents
+- [Overview](#overview)
+- [Branch Naming Convention](#branch-naming-convention)
+- [Creating a Branch](#creating-a-branch)
+- [Detecting Remote Type](#detecting-remote-type)
+- [How Jira Auto-Linking Works](#how-jira-auto-linking-works)
+- [Setup Requirements](#setup-requirements)
+- [Reading Development Links](#reading-development-links)
+- [Workflow Integration](#workflow-integration)
+- [Gotchas](#gotchas)
+
 ## Overview
 
 Create git branches linked to Jira tickets. Jira's Development panel auto-detects branches, commits, and PRs when the issue key appears in the branch name.
@@ -65,7 +76,7 @@ git remote get-url origin
 Jira's Development panel is populated by integration apps, not API calls:
 
 - **GitHub:** The "GitHub for Jira" app (Atlassian Marketplace) scans branches, commits, and PRs for issue keys
-- **Bitbucket:** Native integration (both Atlassian products) — configure in Project settings → Development tools
+- **Bitbucket:** Native integration (both Atlassian products) — configure in Project settings > Development tools
 
 Once the integration is set up, any branch/commit/PR containing a Jira issue key automatically appears in the issue's Development panel.
 
@@ -93,11 +104,11 @@ Reference: [Connect GitHub Cloud to Jira](https://support.atlassian.com/jira-clo
 
 ### Bitbucket
 
-1. In Jira project → Project settings → Development tools
+1. In Jira project > Project settings > Development tools
 2. Click "Link Bitbucket Repository"
 3. Choose repository and configure branch tracking
 
-**Bitbucket authentication for CLI:** Bitbucket uses **app passwords** (not Atlassian API tokens). Create one at [Bitbucket Account Settings](https://bitbucket.org/account/settings/) → App passwords. Use your Bitbucket **username** (found at the same settings page), not your email.
+**Bitbucket authentication for CLI:** Bitbucket uses **app passwords** (not Atlassian API tokens). Create one at [Bitbucket Account Settings](https://bitbucket.org/account/settings/) > App passwords. Use your Bitbucket **username** (found at the same settings page), not your email.
 
 Bitbucket also supports **smart commits**:
 - `AW1-25 #done` — transitions the issue to Done

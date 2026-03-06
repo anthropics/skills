@@ -1,6 +1,8 @@
-# Phase 2: Execution — Detailed Reference
+# Phase 2: Execution (Multi-Agent Mode) — Detailed Reference
 
 All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, `{parentId}`, and `{currentUserAccountId}` as placeholders.
+
+For shared protocols (transitions, branch creation, publishing, completing tickets), see [common-patterns.md](common-patterns.md).
 
 ## Steps
 
@@ -91,17 +93,8 @@ Monitor teammate messages and coordinate:
 
 ### Updating Confluence Progress Log
 
-After each significant event, update the Confluence page:
-```
-atlassian:updateConfluencePage:
-  cloudId: "{cloudId}"
-  pageId: "{page-id}"
-  contentFormat: "markdown"
-  body: <full page content with new progress log entry appended>
-  versionMessage: "{brief description of update}"
-```
-
-**Important:** `updateConfluencePage` replaces the entire body. Always `getConfluencePage` first, append the new log entry, then update.
+After each significant event, update the Confluence plan page.
+See [common-patterns.md](common-patterns.md#updating-the-confluence-plan-page) for the read-then-update protocol.
 
 ### Updating Epic Description
 

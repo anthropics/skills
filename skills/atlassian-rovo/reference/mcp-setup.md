@@ -2,6 +2,53 @@
 
 How to connect your AI coding agent to Jira + Confluence on a single Atlassian Cloud site via the Rovo MCP Server.
 
+## Contents
+- [Configuration Discovery](#configuration-discovery)
+- [Prerequisites](#prerequisites)
+- [Step 1: Add the MCP Server](#step-1-add-the-mcp-server)
+- [Step 2: Add Project Config](#step-2-add-project-config-optional)
+- [Step 3: Authenticate via OAuth](#step-3-authenticate-via-oauth)
+- [Step 4: Restart Your Agent](#step-4-restart-your-agent)
+- [Verifying the Connection](#verifying-the-connection)
+- [Troubleshooting](#troubleshooting)
+
+## Configuration Discovery
+
+Before starting any workflow, gather these from the user or discover via MCP tools:
+
+| Setting | How to get it | Store as |
+|---------|--------------|----------|
+| **Cloud Site** | Ask user for `*.atlassian.net` URL | `{cloudId}` |
+| **Jira Project Key** | Ask user, or `getVisibleJiraProjects` | `{projectKey}` |
+| **Confluence Space** | Ask user, or `getConfluenceSpaces` | `{spaceId}` |
+| **Parent Page** | Ask user, or use space root | `{parentId}` |
+| **User Account ID** | `atlassian:atlassianUserInfo` | `{currentUserAccountId}` |
+| **API Token** | `.env` file (`CONFLUENCE_API_TOKEN`) or ask user. Required for image upload. | `{apiToken}` |
+| **Email** | `.env` file (`CONFLUENCE_EMAIL`) or ask user. Required for image upload (Basic Auth). | `{email}` |
+
+The `{cloudId}` doubles as `CONFLUENCE_BASE_URL`.
+
+### Find user's Jira project
+```
+atlassian:getVisibleJiraProjects:
+  cloudId: "{cloudId}"
+```
+Present the list and ask the user to pick one.
+
+### Find user's Confluence space
+```
+atlassian:getConfluenceSpaces:
+  cloudId: "{cloudId}"
+  limit: 10
+```
+Present the list and ask the user to pick one. The response includes `id` (spaceId) and `key`.
+
+### Find pages in a space (to offer as parent page)
+```
+atlassian:search:
+  query: "space:{spaceKey} type:page"
+```
+
 ## Prerequisites
 
 - **Atlassian Cloud site** with both Jira and Confluence (e.g., `https://yoursite.atlassian.net`)

@@ -2,12 +2,33 @@
 
 ## Overview
 
-The Atlassian MCP server does NOT have an attachment upload tool. To upload images to Confluence pages, use the **Confluence REST API v1** directly via Python/curl.
+The Atlassian MCP server does NOT have an attachment upload tool. To upload images to Confluence pages, use the **Confluence REST API v1** directly via the bundled script or curl.
 
 ## Two-Step Process
 
 1. **Upload** the image as an attachment to a page
 2. **Update** the page body to embed the image at the desired location
+
+## Bundled Script
+
+Use `scripts/confluence_upload.py` for a ready-made Python utility:
+
+```python
+from confluence_upload import ConfluenceUploader, image_tag
+
+uploader = ConfluenceUploader(base_url, email, api_token)
+
+# Upload image
+uploader.upload_attachment(page_id, "/path/to/chart.png")
+
+# Build page body with embedded image
+tag = image_tag("chart.png", width=700)
+page = uploader.get_page(page_id)
+body = page["body"]["storage"]["value"] + tag
+uploader.update_page_body(page_id, page["title"], body, page["version"]["number"] + 1)
+```
+
+Requires `requests` package. Load credentials from `.env` or environment variables.
 
 ## API Details
 
@@ -51,72 +72,6 @@ Content-Type: application/json
     }
   }
 }
-```
-
-## Python Utility Example
-
-```python
-import os
-import requests
-
-class ConfluenceUploader:
-    def __init__(self, base_url, email, api_token):
-        self.base_url = base_url.rstrip("/")
-        self.auth = (email, api_token)
-
-    def upload_attachment(self, page_id, file_path):
-        url = f"{self.base_url}/wiki/rest/api/content/{page_id}/child/attachment"
-        headers = {"X-Atlassian-Token": "nocheck"}
-        with open(file_path, "rb") as f:
-            files = {"file": (os.path.basename(file_path), f)}
-            data = {"minorEdit": "true"}
-            resp = requests.put(url, auth=self.auth, headers=headers, files=files, data=data)
-        resp.raise_for_status()
-        result = resp.json()
-        return result["results"][0] if "results" in result else result
-
-    def get_page(self, page_id):
-        url = f"{self.base_url}/wiki/rest/api/content/{page_id}"
-        resp = requests.get(url, auth=self.auth, params={"expand": "version,body.storage"})
-        resp.raise_for_status()
-        return resp.json()
-
-    def update_page_body(self, page_id, title, body_storage, version):
-        url = f"{self.base_url}/wiki/rest/api/content/{page_id}"
-        payload = {
-            "version": {"number": version},
-            "title": title,
-            "type": "page",
-            "body": {"storage": {"value": body_storage, "representation": "storage"}},
-        }
-        resp = requests.put(url, auth=self.auth, json=payload)
-        resp.raise_for_status()
-        return resp.json()
-
-
-def image_tag(filename, width=600, align="center"):
-    return (
-        f'<ac:image ac:width="{width}" ac:align="{align}" ac:layout="{align}">'
-        f'<ri:attachment ri:filename="{filename}" />'
-        f"</ac:image>"
-    )
-```
-
-## Usage
-
-```python
-uploader = ConfluenceUploader(base_url, email, api_token)
-
-# Upload image
-uploader.upload_attachment(page_id, "/path/to/chart.png")
-
-# Build page body with embedded image
-tag = image_tag("chart.png", width=700)
-body = f"<h2>Chart</h2>{tag}"
-
-# Update page
-page = uploader.get_page(page_id)
-uploader.update_page_body(page_id, "Page Title", body, page["version"]["number"] + 1)
 ```
 
 ## Auth Setup
