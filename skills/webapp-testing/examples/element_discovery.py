@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["playwright"]
+# ///
+
 from playwright.sync_api import sync_playwright
 
 # Example: Discovering buttons and other elements on a page

@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["pyyaml"]
+# ///
+
 #!/usr/bin/env python3
 """
 Quick validation script for skills - minimal version

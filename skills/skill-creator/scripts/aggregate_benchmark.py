@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
+
 #!/usr/bin/env python3
 """
 Aggregate individual run results into benchmark summary statistics.

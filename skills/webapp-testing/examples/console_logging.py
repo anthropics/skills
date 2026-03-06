@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["playwright"]
+# ///
+
 from playwright.sync_api import sync_playwright
 
 # Example: Capturing console logs during browser automation

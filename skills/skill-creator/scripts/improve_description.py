@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["anthropic", "scripts"]
+# ///
+
 #!/usr/bin/env python3
 """Improve a skill description based on eval results.
 
