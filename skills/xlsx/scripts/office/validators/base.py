@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["defusedxml", "lxml"]
+# ///
+
 """
 Base validator with common validation logic for document files.
 """

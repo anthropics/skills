@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["pypdf"]
+# ///
+
 import json
 import sys
 

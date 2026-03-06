@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["anthropic", "scripts"]
+# ///
+
 #!/usr/bin/env python3
 """Run the eval + improve loop until all pass or max iterations reached.
 

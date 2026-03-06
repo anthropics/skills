@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
+
 """Shared utilities for skill-creator scripts."""
 
 from pathlib import Path

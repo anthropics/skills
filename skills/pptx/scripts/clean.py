@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["defusedxml"]
+# ///
+
 """Remove unreferenced files from an unpacked PPTX directory.
 
 Usage: python clean.py <unpacked_dir>

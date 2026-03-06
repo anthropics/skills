@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["defusedxml"]
+# ///
+
 """Merge adjacent runs with identical formatting in DOCX.
 
 Merges adjacent <w:r> elements that have identical <w:rPr> properties.
