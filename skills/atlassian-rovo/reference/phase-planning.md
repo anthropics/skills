@@ -34,9 +34,10 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
      issueTypeName: "Epic"
      summary: "[AI-PM] {Request Title}"
      description: <use Epic Description Template below>
+     assignee_account_id: "{currentUserAccountId}"
    ```
 
-5. **Create child tickets** (one Task per workstream) with `parent: "{projectKey}-{epic-number}"`.
+5. **Create child tickets** (one Task per workstream) with `parent: "{projectKey}-{epic-number}"` and `assignee_account_id: "{currentUserAccountId}"`.
 
 6. **Link dependencies** via `jiraWrite` action `createIssueLink` type `Blocks`.
 

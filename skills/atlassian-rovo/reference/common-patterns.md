@@ -84,26 +84,63 @@ This keeps all deliverables organized under the plan page in Confluence.
 
 2. **Transition to Done** using the two-step transition protocol.
 
+3. **Update the Epic description** — change the ticket's status in the workstreams table from "In Progress" to "Done":
+   ```
+   atlassian:getJiraIssue
+     cloudId: "{cloudId}"
+     issueIdOrKey: "{epicKey}"
+   ```
+   Read the current description, update the workstream status, then:
+   ```
+   atlassian:editJiraIssue
+     cloudId: "{cloudId}"
+     issueIdOrKey: "{epicKey}"
+     fields: {"description": "<updated description with new status>"}
+   ```
+   This keeps the Epic's workstream table in sync with actual ticket states.
+
 ---
 
 ## Updating the Confluence Plan Page
 
-`updateConfluencePage` replaces the entire body. Always read first, then append:
+`updateConfluencePage` replaces the entire body. Before ANY update, read the page AND its comments — the user may have left inline review feedback:
 
-```
-atlassian:getConfluencePage
-  cloudId: "{cloudId}"
-  pageId: "{plan-page-id}"
-```
-Then:
-```
-atlassian:updateConfluencePage
-  cloudId: "{cloudId}"
-  pageId: "{plan-page-id}"
-  contentFormat: "markdown"
-  body: <full updated page content>
-  versionMessage: "{brief description of update}"
-```
+1. **Read the page body:**
+   ```
+   atlassian:getConfluencePage
+     cloudId: "{cloudId}"
+     pageId: "{plan-page-id}"
+   ```
+
+2. **Read inline comments** (review feedback on highlighted text):
+   ```
+   atlassian:getConfluencePageInlineComments
+     cloudId: "{cloudId}"
+     pageId: "{plan-page-id}"
+     limit: 50
+     resolutionStatus: "open"
+   ```
+
+3. **Read footer comments** (general discussion):
+   ```
+   atlassian:getConfluencePageFooterComments
+     cloudId: "{cloudId}"
+     pageId: "{plan-page-id}"
+     limit: 50
+     sort: "-created-date"
+   ```
+
+4. **Address any open comments** before updating — incorporate feedback into the page content.
+
+5. **Update the page:**
+   ```
+   atlassian:updateConfluencePage
+     cloudId: "{cloudId}"
+     pageId: "{plan-page-id}"
+     contentFormat: "markdown"
+     body: <full updated page content>
+     versionMessage: "{brief description of update}"
+   ```
 
 ---
 
