@@ -1,10 +1,10 @@
 ---
-name: pyxel-mcp
+name: pyxel
 description: "Create retro games with Pyxel using the pyxel-mcp MCP server. TRIGGER when: user wants to make retro/pixel-art/8-bit games, mentions Pyxel game engine, or asks to create simple 2D games with chiptune audio. DO NOT TRIGGER when: user is building non-game applications, using other game engines (Pygame, Godot, Unity), or doing general Python programming."
 license: MIT
 ---
 
-# Pyxel Game Development with pyxel-mcp
+# Pyxel Game Development
 
 ## What is Pyxel?
 
