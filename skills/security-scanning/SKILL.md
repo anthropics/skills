@@ -207,3 +207,16 @@ findings = scanner.scan(content, filename="requirements.txt")
 - GitHub: https://github.com/MaxwellCalkin/sentinel-ai
 - Live Demo: https://maxwellcalkin.github.io/sentinel-ai/
 - PyPI: `pip install sentinel-guardrails`
+
+### MCP Tool Schema Validation
+```bash
+sentinel mcp-validate --file tools.json
+```
+
+Validates MCP tool definitions for injection vectors in descriptions, suspicious parameter defaults, hidden content (HTML comments, zero-width chars), and authority impersonation.
+
+```python
+from sentinel.mcp_schema_validator import validate_mcp_tools
+report = validate_mcp_tools(tools)
+print(report.safe)  # True/False
+```
