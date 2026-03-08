@@ -5,7 +5,7 @@ description: >
   find latent patterns across notes. Use when the user wants to explore their
   thinking, draw connections, or search their vault by concept rather than keyword.
 license: MIT
-compatibility: Requires the enzyme CLI (brew install jshph/enzyme/enzyme-cli). Designed for agents with shell access.
+compatibility: Requires the enzyme CLI (curl -fsSL enzyme.garden/install.sh | bash). Designed for agents with shell access.
 allowed-tools: Bash Read Glob Grep
 metadata:
   author: jshph
@@ -32,10 +32,10 @@ Content retrieval works by **resonance with catalyst questions**, not keyword ma
 Install the `enzyme` CLI:
 
 ```bash
-brew install jshph/enzyme/enzyme-cli
+curl -fsSL enzyme.garden/install.sh | bash
 ```
 
-Or download from [GitHub releases](https://github.com/jshph/enzyme/releases). For a self-contained version with bundled binary and model, see [enzyme-skill](https://github.com/jshph/enzyme-skill).
+Or via Homebrew (`brew install jshph/enzyme/enzyme-cli`) or [GitHub releases](https://github.com/jshph/enzyme/releases). For a self-contained version with bundled binary and model, see [enzyme-skill](https://github.com/jshph/enzyme-skill).
 
 Enzyme resolves the vault path in this order: `-p` flag > `ENZYME_VAULT_ROOT` env var > current directory. If `ENZYME_VAULT_ROOT` is set (check with `echo $ENZYME_VAULT_ROOT`), all commands automatically target the right vault.
 
