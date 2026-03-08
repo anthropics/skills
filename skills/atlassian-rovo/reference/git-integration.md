@@ -121,20 +121,23 @@ Reference: [Connect Jira to Bitbucket](https://support.atlassian.com/jira-cloud-
 
 ## Reading Development Links
 
-### Via MCP: `getJiraIssueRemoteIssueLinks`
+### Via MCP: Limited
 
-Returns **web links** (manually added), NOT Development panel data:
-```
-getJiraIssueRemoteIssueLinks:
-  cloudId: "{cloudId}"
-  issueIdOrKey: "{issueKey}"
-```
+- `getJiraIssueRemoteIssueLinks` — returns **web links only** (manually added), NOT Development panel data
+- `getTeamworkGraphContext` — mentioned in `getJiraIssue` tool description but **not available** in the current MCP server
+- No MCP tool exists for reading branches, PRs, or commits from the Development panel
 
-Returns `[]` if no remote links exist. The `getTeamworkGraphContext` tool (mentioned in `getJiraIssue` description) is not available in the current MCP tool set.
+### Via REST API: Dev-Status (Internal/Unsupported)
 
-### Via REST API: Dev-Status Endpoint
+> **Warning:** This is an internal Jira API that is **not officially supported**.
+> It can change between Jira versions without notice. It also requires an API
+> token with Jira `BROWSE_PROJECTS` permission, which may not be available
+> if your org has API token access policies restricting Jira access.
+>
+> Writing to the Development panel (DevInfo API) requires a registered
+> Atlassian Connect or Forge app — it is not available via Basic Auth.
 
-The Jira dev-status REST API can read Development panel data (branches, PRs, commits):
+If you have a Jira-permissioned API token, the dev-status endpoint can read Development panel data:
 
 **Summary** (counts only):
 ```bash
@@ -151,6 +154,10 @@ curl -u "{email}:{apiToken}" \
 `applicationType` options: `GitHub`, `Bitbucket`. `dataType` options: `branch`, `pullrequest`, `repository`.
 
 **Note:** This endpoint uses the internal issue **ID** (numeric), not the issue key. Get the ID from `getJiraIssue` response.
+
+### Practical Alternative
+
+Since reading the Development panel programmatically is unreliable, verify development links visually in the Jira UI, or trust that the GitHub for Atlassian app is syncing correctly when issue keys appear in branch names, commits, and PR titles.
 
 ---
 
