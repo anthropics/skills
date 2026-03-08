@@ -5,7 +5,7 @@ description: >
   find latent patterns across notes. Use when the user wants to explore their
   thinking, draw connections, or search their vault by concept rather than keyword.
 license: MIT
-compatibility: Requires the enzyme CLI (brew install jshph/tap/enzyme). Designed for agents with shell access.
+compatibility: Requires the enzyme CLI (brew install jshph/enzyme/enzyme-cli). Designed for agents with shell access.
 allowed-tools: Bash Read Glob Grep
 metadata:
   author: jshph
@@ -32,7 +32,7 @@ Content retrieval works by **resonance with catalyst questions**, not keyword ma
 Install the `enzyme` CLI:
 
 ```bash
-brew install jshph/tap/enzyme
+brew install jshph/enzyme/enzyme-cli
 ```
 
 Or download from [GitHub releases](https://github.com/jshph/enzyme/releases). For a self-contained version with bundled binary and model, see [enzyme-skill](https://github.com/jshph/enzyme-skill).
