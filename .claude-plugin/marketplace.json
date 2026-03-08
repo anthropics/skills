@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "langgraph",
+      "description": "LangGraph skill for building multi-agent AI applications with StateGraph, ToolNode, conditional edges, and checkpointers",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/langgraph"
+      ]
     }
   ]
 }
