@@ -82,7 +82,7 @@ Any [OpenRouter model ID](https://openrouter.ai/models) works in the `model` fie
 ## GitHub Actions integration
 
 ```yaml
-- uses: celesteimnskirakira/polyflow@v1
+- uses: celesteimnskirakira/polyflow-ai@v1
   with:
     workflow: code-review-multi-model
     input: ${{ steps.diff.outputs.content }}
