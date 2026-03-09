@@ -24,6 +24,10 @@ polyflow run cross-validate -i "your design or problem statement"
 # Run headlessly — no prompts, auto-approve all checkpoints
 polyflow run <workflow> --ci -i "..."
 
+# Generate a custom workflow from natural language
+polyflow new "three models review my API design, vote on findings" -o api-review.yaml
+polyflow new "claude and gemini cross-validate my code, diff mode"
+
 # Browse 22 built-in workflows
 polyflow list
 polyflow list --tag security
