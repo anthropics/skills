@@ -1,6 +1,7 @@
 ---
 name: webpilot
 description: Skill for LLM agents to drive a real browser through the Webpilot CLI and shared WebSocket runtime.
+license: LICENSE.txt
 ---
 
 # Webpilot Skill
