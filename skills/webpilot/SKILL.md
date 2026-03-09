@@ -1,7 +1,7 @@
 ---
 name: webpilot
 description: Skill for LLM agents to drive a real browser through the Webpilot CLI and shared WebSocket runtime.
-license: LICENSE.txt
+license: Complete terms in LICENSE.txt
 ---
 
 # Webpilot Skill
@@ -12,14 +12,6 @@ It gives you a local browser runtime, a CLI, and a WebSocket command surface. Yo
 
 **Do not default to screenshots.** Webpilot exposes the live DOM directly. Screenshots are slow, expensive, and unnecessary for most tasks. Use `html`, `discover`, and `q` to read page state. Reserve `ss` for cases where layout or visual rendering is the actual question.
 
-Start every session by running:
-
-```bash
-npx h17-webpilot -c '.help'
-```
-
-This lists all available commands. Use it to orient before acting.
-
 ## Runtime
 
 ```bash
@@ -28,6 +20,12 @@ npx h17-webpilot start -d
 ```
 
 If the runtime is already running, use `npx h17-webpilot -c '...'` directly.
+
+Once the runtime is running, list all available commands:
+
+```bash
+npx h17-webpilot -c '.help'
+```
 
 Use `npx h17-webpilot start -d` when you want an append-only session log.
 
