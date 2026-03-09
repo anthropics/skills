@@ -15,6 +15,27 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash
 
 Maintain plans and task progress across Claude Code sessions so that work can be resumed without losing context.
 
+## Session Start (New Sessions Only)
+
+On new session start (not resume), check for incomplete work:
+
+- **Git-tracked mode**: Read `.claude/tasks/readme.md` for incomplete plans
+- **Issue-centric mode**: Check assigned issues (e.g., `gh issue list --assignee=@me`) for open tasks
+
+On progress update, also update the issue tracker (comments, checklists) if applicable.
+
+## Progress Update Triggers
+
+- **Explicit**: User says "progress update" or equivalent → execute immediately
+- **Implicit**: User signals a break or completion (e.g., "thanks", "taking a break", "that's it for today") → suggest "Shall I update progress?" before proceeding
+- **Milestone**: A significant chunk of work is completed → suggest "Shall I update progress?"
+
+Progress update procedure:
+1. Check related issues (`gh issue list`)
+2. Post a progress comment (completed work, next steps, related work)
+3. Update issue checklists if applicable
+4. Commit and push if there are pending changes
+
 ## Setup
 
 Copy the template files to `.claude/tasks/`:
