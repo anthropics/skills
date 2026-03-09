@@ -9,6 +9,16 @@ Use Webpilot as a browser tool.
 
 It gives you a local browser runtime, a CLI, and a WebSocket command surface. Your job is not to guess. Your job is to inspect page state, choose a safe action, run it, and verify the result.
 
+**Do not default to screenshots.** Webpilot exposes the live DOM directly. Screenshots are slow, expensive, and unnecessary for most tasks. Use `html`, `discover`, and `q` to read page state. Reserve `ss` for cases where layout or visual rendering is the actual question.
+
+Start every session by running:
+
+```bash
+npx h17-webpilot -c '.help'
+```
+
+This lists all available commands. Use it to orient before acting.
+
 ## Runtime
 
 ```bash
@@ -37,24 +47,24 @@ Do not skip the inspect step unless you already have fresh page state from the i
 
 Use these first:
 
-- `npx webpilot -c 'html'`: read the current page DOM, title, and URL
-- `npx webpilot -c 'discover'`: list interactive elements and their handles
-- `npx webpilot -c 'q <selector>'`: query specific elements
-- `npx webpilot -c 'wait <selector>'`: wait for a known state change
-- `npx webpilot -c 'ss'`: take a screenshot when visual context matters
+- `npx h17-webpilot -c 'html'`: read the current page DOM, title, and URL
+- `npx h17-webpilot -c 'discover'`: list interactive elements and their handles
+- `npx h17-webpilot -c 'q <selector>'`: query specific elements
+- `npx h17-webpilot -c 'wait <selector>'`: wait for a known state change
+- `npx h17-webpilot -c 'ss'`: last resort — only when layout or visual rendering is the actual question, not DOM structure
 
 ## Act
 
 Use the safest matching action:
 
-- `npx webpilot -c 'click <selector|handleId>'`
-- `npx webpilot -c 'type [selector] <text>'`
-- `npx webpilot -c 'clear <selector>'`
-- `npx webpilot -c 'key <name>'`
-- `npx webpilot -c 'sd [px] [selector]'`
-- `npx webpilot -c 'su [px] [selector]'`
-- `npx webpilot -c 'go <url>'`
-- `npx webpilot -c 'cookies load ./cookies.json'` when the task requires restoring an existing session
+- `npx h17-webpilot -c 'click <selector|handleId>'`
+- `npx h17-webpilot -c 'type [selector] <text>'`
+- `npx h17-webpilot -c 'clear <selector>'`
+- `npx h17-webpilot -c 'key <name>'`
+- `npx h17-webpilot -c 'sd [px] [selector]'`
+- `npx h17-webpilot -c 'su [px] [selector]'`
+- `npx h17-webpilot -c 'go <url>'`
+- `npx h17-webpilot -c 'cookies load ./cookies.json'` when the task requires restoring an existing session
 
 `click` goes through the human action pipeline. If the runtime refuses the action, respect the refusal and re-inspect the page.
 
@@ -62,11 +72,11 @@ Use the safest matching action:
 
 After navigation or interaction, confirm the new state:
 
-- `npx webpilot -c 'wait <selector>'`
-- `npx webpilot -c 'url'`
-- `npx webpilot -c 'title'`
-- `npx webpilot -c 'html'`
-- `npx webpilot -c 'q <selector>'`
+- `npx h17-webpilot -c 'wait <selector>'`
+- `npx h17-webpilot -c 'url'`
+- `npx h17-webpilot -c 'title'`
+- `npx h17-webpilot -c 'html'`
+- `npx h17-webpilot -c 'q <selector>'`
 
 ## Safe Usage Rules
 
@@ -81,15 +91,15 @@ After navigation or interaction, confirm the new state:
 If you need a protocol action that the shorthand CLI does not expose directly, send it through raw mode:
 
 ```bash
-npx webpilot -c 'dom.queryAllInfo {"selector": "a[href]"}'
-npx webpilot -c 'human.scroll {"selector": ".feed", "direction": "down"}'
-npx webpilot -c 'framework.getConfig {}'
+npx h17-webpilot -c 'dom.queryAllInfo {"selector": "a[href]"}'
+npx h17-webpilot -c 'human.scroll {"selector": ".feed", "direction": "down"}'
+npx h17-webpilot -c 'framework.getConfig {}'
 ```
 
 You can also send a full JSON message:
 
 ```bash
-npx webpilot -c '{"action": "tabs.navigate", "params": {"url": "https://example.com"}}'
+npx h17-webpilot -c '{"action": "tabs.navigate", "params": {"url": "https://example.com"}}'
 ```
 
 ## Strategy Notes
@@ -117,7 +127,7 @@ Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_conf
 }
 ```
 
-The MCP server connects to the same WebSocket runtime (`ws://localhost:7331`). Start the runtime first with `npx webpilot start`, then the MCP tools become available in the host application automatically.
+The MCP server connects to the same WebSocket runtime (`ws://localhost:7331`). Start the runtime first with `npx h17-webpilot start`, then the MCP tools become available in the host application automatically.
 
 ## Limits
 
