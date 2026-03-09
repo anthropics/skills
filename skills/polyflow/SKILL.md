@@ -3,7 +3,7 @@ name: polyflow
 description: Use when running parallel multi-model AI workflows — code review, security audit, cross-validation, or any task where consensus across models is more reliable than a single model's answer. Invoke when the user says "run polyflow", "multi-model review", "parallel AI analysis", "compare models", or wants multiple AI perspectives on the same input.
 ---
 
-Run parallel multi-model AI workflows using the `polyflow` CLI. Three models check the same thing simultaneously — consensus findings are more reliable than any single model's output. Describe what you want in plain English, or use one of 22 built-in workflows.
+Run parallel multi-model AI workflows using the `polyflow` CLI. Multiple models check the same thing simultaneously — consensus findings are more reliable than any single model's output. Describe what you want in plain English, or use one of 22 built-in workflows.
 
 ## Setup
 
@@ -17,7 +17,7 @@ polyflow doctor                        # verify setup
 
 ```bash
 # Describe what you want — Polyflow generates the workflow
-polyflow new "three models audit my API for security issues, vote on findings" -o audit.yaml
+polyflow new "multiple models audit my API for security issues, vote on findings" -o audit.yaml
 polyflow run ./audit.yaml -i "$(cat src/api.py)"
 
 # Or use a built-in workflow directly
@@ -84,11 +84,11 @@ steps:
         model: gpt-4
         prompt: "Review this and list issues: {{input}}"
     aggregate:
-      mode: vote            # high-confidence: all three agree
+      mode: vote            # high-confidence: all models agree
       model: claude         # Claude synthesizes the final report
       prompt: |
-        Three models independently reviewed this.
-        Synthesize findings. Mark items all three flagged as HIGH CONFIDENCE.
+        Multiple models independently reviewed this.
+        Synthesize findings. Mark items all models flagged as HIGH CONFIDENCE.
         {{aggregated}}
 
 output:
@@ -100,7 +100,7 @@ Run it: `polyflow run ./my-consensus-review.yaml -i "your input"`
 
 ## GitHub Actions integration
 
-Add three-model consensus to any repo:
+Add multi-model consensus to any repo:
 
 ```yaml
 - uses: celesteimnskirakira/polyflow@main
