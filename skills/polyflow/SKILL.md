@@ -1,6 +1,6 @@
 ---
 name: polyflow
-description: Use when running multi-model AI workflows where Claude, Gemini, and GPT-4 should analyze the same task in parallel — code review, security audit, cross-validation, or any task where consensus across models is more reliable than a single model's answer. Invoke when the user says "run polyflow", "multi-model review", "parallel AI analysis", "compare models", or wants multiple AI perspectives on the same input.
+description: Use when running parallel multi-model AI workflows — code review, security audit, cross-validation, or any task where consensus across models is more reliable than a single model's answer. Invoke when the user says "run polyflow", "multi-model review", "parallel AI analysis", "compare models", or wants multiple AI perspectives on the same input.
 ---
 
 Run parallel multi-model AI workflows using the `polyflow` CLI. Three models check the same thing simultaneously — consensus findings are more reliable than any single model's output. Describe what you want in plain English, or use one of 22 built-in workflows.
