@@ -33,6 +33,8 @@
 | 07 | [模型监控](07-model-monitoring.md) | 三维监控、数据漂移检测、告警 | ⭐⭐⭐⭐ |
 | 08 | [LLMOps](08-llmops.md) | Prompt 管理、RAG 运维、LLM 评估、成本优化 | ⭐⭐⭐⭐ |
 | 09 | [工具生态](09-tool-ecosystem.md) | 工具全景、选型建议、最佳实践 | ⭐⭐⭐ |
+| 10 | [数据管理与质量](10-data-management.md) | 数据清洗/去重、标注平台、版本管理、合规 | ⭐⭐⭐ |
+| 11 | [AI Safety 与 Guardrails](11-ai-safety-guardrails.md) | 安全对齐、Guardrails、Prompt Injection 防护、红队测试 | ⭐⭐⭐⭐ |
 
 ## 🗺️ 知识地图
 

@@ -100,7 +100,7 @@ Tensor Core 是 NVIDIA GPU 上专门用于矩阵乘加运算的硬件单元。
 - 比 CUDA Core 快 8-16x
 
 使用方法：
-- PyTorch: `model.half()` + `torch.cuda.amp`
+- PyTorch: `model.half()` + `torch.amp`
 - CUDA: `wmma` API 或 cuBLAS
 
 ### Q5: 比较 NVLink 和 PCIe

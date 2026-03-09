@@ -18,6 +18,8 @@
 > | Tensor Core 详解 | [06-tensor-core.md](./01-gpu-hardware/06-tensor-core.md) |
 > | 多卡互联技术 | [07-multi-gpu-interconnect.md](./01-gpu-hardware/07-multi-gpu-interconnect.md) |
 > | 硬件选型指南 | [08-hardware-selection.md](./01-gpu-hardware/08-hardware-selection.md) |
+> | 非 NVIDIA AI 加速器 | [09-non-nvidia-accelerators.md](./01-gpu-hardware/09-non-nvidia-accelerators.md) |
+> | GPU 虚拟化技术 | [10-gpu-virtualization.md](./01-gpu-hardware/10-gpu-virtualization.md) |
 
 ---
 
@@ -86,7 +88,7 @@
    │
 2022 ──── Hopper (H100) ────────── 第四代 Tensor Core，Transformer Engine
    │
-2024 ──── Blackwell (B100/B200) ── 第五代，FP4 支持，更强 NVLink
+2024 ──── Blackwell (B200) ─────── 第五代，FP4 支持，更强 NVLink
 ```
 
 ### 关键规格对比
@@ -128,7 +130,7 @@
 │  │   │       ├── Load/Store Units                                  │
 │  │   │       ├── Special Function Units (SFU)                      │
 │  │   │       ├── Warp Scheduler                                    │
-│  │   │       ├── Register File (64KB per SM)                       │
+│  │   │       ├── Register File (256KB per SM)                      │
 │  │   │       └── Shared Memory / L1 Cache (configurable)           │
 │  │   └── Raster Engine                                             │
 │  ├── L2 Cache (shared across all SMs)                              │
@@ -436,8 +438,8 @@ import torch
 # PyTorch 自动使用 Tensor Core（当满足条件时）
 # 条件: 1) CUDA GPU  2) 矩阵维度是 8 的倍数  3) 使用支持的数据类型
 
-# 方式 1: 使用 torch.cuda.amp 自动混合精度
-with torch.cuda.amp.autocast():
+# 方式 1: 使用 torch.amp 自动混合精度
+with torch.amp.autocast(device_type="cuda"):
     output = model(input)  # 自动选择 FP16 运算
 
 # 方式 2: 手动指定数据类型

@@ -283,12 +283,11 @@ def promote_model(model_name: str, version: str):
     if tags.get("validation_status") != "approved":
         raise ValueError("Model not approved")
     
-    # 3. 转换到生产
-    client.transition_model_version_stage(
+    # 3. 设置别名为生产（MLflow 2.9+ Alias API）
+    client.set_registered_model_alias(
         name=model_name,
+        alias="production",
         version=version,
-        stage="Production",
-        archive_existing_versions=True
     )
     
     # 4. 记录审计日志

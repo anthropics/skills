@@ -20,6 +20,9 @@
 > | 服务框架详解 | [08-serving-frameworks.md](./03-inference-serving/08-serving-frameworks.md) |
 > | 部署架构模式 | [09-deployment-architecture.md](./03-inference-serving/09-deployment-architecture.md) |
 > | 性能调优 | [10-performance-tuning.md](./03-inference-serving/10-performance-tuning.md) |
+> | Speculative Decoding 深入 | [11-speculative-decoding.md](./03-inference-serving/11-speculative-decoding.md) |
+> | 多模态推理 | [12-multimodal-inference.md](./03-inference-serving/12-multimodal-inference.md) |
+> | 端侧与边缘推理 | [13-edge-inference.md](./03-inference-serving/13-edge-inference.md) |
 
 ---
 
@@ -690,14 +693,53 @@ instance_group [
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 分离 Prefill 和 Decode
+### 分离 Prefill 和 Decode（PD 分离）
+
+#### 为什么要分离？——两种截然不同的工作模式
+
+LLM 推理有两个阶段，它们的计算特性**完全相反**：
+
+| 特性 | Prefill（首次填充） | Decode（逐 token 生成） |
+|------|-------------------|----------------------|
+| **做什么** | 一次性处理整个 prompt | 每步生成 1 个 token |
+| **计算量** | 巨大（处理数百~数千 token） | 极小（只算 1 个新 token） |
+| **瓶颈** | **计算密集**（GPU 算力） | **内存密集**（显存带宽） |
+| **GPU 利用率** | 高（80-95%） | 低（10-30%） |
+| **耗时占比** | 短（一次完成） | 长（token 数 × 单步延迟） |
+| **对应指标** | TTFT（首 token 延迟） | TPS（生成速度） |
+
+> **生活类比**：想象一个餐厅——Prefill 是"后厨备菜"（集中、计算密集、一次性搞定），Decode 是"服务员一道道上菜"（反复跑，每次就端一盘，瓶颈在走路而非做菜）。把后厨和传菜分开管理，效率才最高。
+
+#### 混合部署的问题
+
+在传统架构中，Prefill 和 Decode 在同一块 GPU 上交替执行。问题是：
+
+```
+同一 GPU 上的 Prefill-Decode 冲突:
+
+时间线 ──────────────────────────────────────────────────────────→
+
+GPU 0: [==Prefill(Req-A)==][.Decode(A).][.Decode(A).][==Prefill(Req-B)==][.Decode(B).]
+                                                      ↑
+                                                新请求的 Prefill
+                                                "插队"打断了 A 的 Decode
+                                                → Req-A 的生成延迟突然飙升！
+
+问题 1: Prefill 是大块计算，会抢占 GPU，导致正在 Decode 的请求延迟波动
+问题 2: Decode 阶段 GPU 利用率很低（~20%），但 GPU 不能分给别人
+问题 3: Prefill 需要大算力，Decode 需要大显存带宽——同一 GPU 无法同时优化
+```
+
+> **量化说明**：一个 4K token prompt 的 Prefill 耗时约 200ms（在 A100 上），期间会占满 GPU 算力。如果此时有 10 个请求在 Decode 阶段，它们全部被"暂停"等待，每个请求的 TPS 骤降——这就是 P99 延迟恶化的根源。
+
+#### PD 分离架构
+
+核心思想：让**不同硬件**做**各自擅长的事**。
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    高级架构：Prefill-Decode 分离                         │
+│                    Prefill-Decode 分离架构                               │
 ├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│   Prefill (计算密集) 和 Decode (内存密集) 特性不同，分开调度更高效          │
 │                                                                         │
 │   ┌─────────┐      ┌─────────────────────────────────────────────┐      │
 │   │ Client  │ ──→  │              Router                         │      │
@@ -707,16 +749,102 @@ instance_group [
 │                    │                                       │           │
 │                    ▼                                       ▼           │
 │   ┌───────────────────────────────┐     ┌───────────────────────────┐  │
-│   │      Prefill Cluster          │     │      Decode Cluster       │  │
-│   │   (高计算/低显存 GPU)          │     │   (低计算/高显存 GPU)      │  │
-│   │   处理 prompt，生成 KV Cache   │ ──→ │   基于 KV Cache 生成      │  │
+│   │      Prefill Workers          │     │      Decode Workers       │  │
+│   │   高算力 GPU (H100 SXM)       │     │   高显存带宽 GPU           │  │
+│   │                               │     │                           │  │
+│   │   输入: prompt tokens          │     │   输入: KV Cache + 上下文  │  │
+│   │   输出: KV Cache + 第 1 token  │ ──→ │   输出: 后续 tokens       │  │
+│   │                               │     │                           │  │
+│   │   特点: 短时高算力任务          │     │   特点: 长时低算力任务     │  │
+│   │   GPU 利用率: 80-95%          │     │   显存带宽利用率: 高       │  │
 │   └───────────────────────────────┘     └───────────────────────────┘  │
-│                                                                         │
-│   KV Cache 通过高速网络传输（如 NVLink over fabric）                      │
-│   优势: 更好的资源利用率，更高吞吐                                        │
+│                           │                                            │
+│                    KV Cache 传输                                       │
+│                (高速网络: RDMA / NVLink-over-Fabric)                    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+#### 请求生命周期
+
+```
+一次请求的完整旅程:
+
+1. 请求到达 Router
+   "请帮我写一首关于春天的诗"
+        │
+        ▼
+2. Router → Prefill Worker (选一个空闲的)
+   Prefill Worker 处理 prompt:
+   - 一次性计算所有 prompt token 的 attention
+   - 生成完整的 KV Cache (大小 ∝ prompt长度 × 层数 × 隐藏维度)
+   - 输出第一个 token: "春"
+   - 耗时: ~100-500ms (取决于 prompt 长度)
+        │
+        ▼
+3. KV Cache 通过高速网络传输到 Decode Worker
+   传输量: 7B 模型, 4K prompt → KV Cache ≈ 2GB
+   RDMA 传输: ~10-50ms (100Gbps 网络)
+        │
+        ▼
+4. Decode Worker 接管，逐 token 生成
+   "春" → "风" → "拂" → "面" → "花" → "开" → ...
+   每个 token 耗时: ~20-50ms
+   持续: 数百 ms 到数秒
+        │
+        ▼
+5. 流式返回给 Client
+```
+
+#### KV Cache 传输：PD 分离的关键挑战
+
+PD 分离能否成功，取决于 KV Cache 传输速度能否足够快：
+
+```
+KV Cache 大小估算:
+
+  KV Cache = 2 × num_layers × hidden_dim × seq_len × dtype_size
+
+  LLaMA-7B (32层, hidden=4096, FP16):
+    prompt 2K tokens → KV Cache ≈ 1GB
+    prompt 4K tokens → KV Cache ≈ 2GB
+    prompt 8K tokens → KV Cache ≈ 4GB
+
+  LLaMA-70B (80层, hidden=8192, FP16):
+    prompt 4K tokens → KV Cache ≈ 20GB!
+
+传输时间:
+  ┌────────────────────────────────────────────────────────┐
+  │  网络类型        带宽       传输 2GB KV Cache 耗时       │
+  │  ─────────     ──────     ─────────────────────        │
+  │  25Gbps TCP    ~2 GB/s    ~1000ms  ← 太慢，不可用      │
+  │  100Gbps RDMA  ~12 GB/s   ~170ms   ← 勉强可用          │
+  │  200Gbps RDMA  ~24 GB/s   ~85ms    ← 推荐              │
+  │  400Gbps RDMA  ~48 GB/s   ~42ms    ← 理想              │
+  │  NVLink(节点内) ~600 GB/s  ~3ms     ← 最优              │
+  └────────────────────────────────────────────────────────┘
+```
+
+> **结论**：PD 分离需要至少 100Gbps RDMA 网络才实用。如果用普通 TCP 网络，KV Cache 传输延迟就超过了 Prefill 本身的耗时，分离反而更慢。
+
+#### 什么时候该用 PD 分离？
+
+| 场景 | 是否适合 | 原因 |
+|------|---------|------|
+| **长 prompt + 短输出**（RAG/总结） | ✅ 最适合 | Prefill 重、Decode 轻，分离收益大 |
+| **高并发在线服务** | ✅ 适合 | 消除 Prefill 对 Decode 的干扰，P99 显著改善 |
+| **短 prompt + 长输出**（创作） | ⚠️ 收益有限 | Prefill 本身就很快，分离的额外传输成本不划算 |
+| **单用户低并发** | ❌ 不适合 | 无互相干扰问题，增加传输延迟反而更慢 |
+| **无 RDMA 网络** | ❌ 不可用 | KV Cache 传输太慢 |
+
+#### 代表系统
+
+| 系统 | 特点 |
+|------|------|
+| **Splitwise** (微软) | 首个提出 PD 分离的论文，证明吞吐提升 1.4× |
+| **DistServe** (北大) | 优化了 KV Cache 传输调度，支持异构 GPU |
+| **Mooncake** (月之暗面) | Kimi 的生产系统，用 KVCache-centric 分离架构 |
+| **TensorRT-LLM** | NVIDIA 方案，支持通过配置开启 PD 分离模式 |
 
 ---
 

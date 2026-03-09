@@ -28,6 +28,8 @@
 | 06 | [多租户管理](06-multi-tenancy.md) | 架构模式、RBAC 配置 | ⭐⭐⭐⭐ |
 | 07 | [成本优化策略](07-cost-optimization.md) | Spot 实例、自动伸缩、利用率优化 | ⭐⭐⭐ |
 | 08 | [GPU 监控与可观测性](08-gpu-monitoring.md) | DCGM Exporter、Prometheus、Grafana | ⭐⭐⭐ |
+| 09 | [AI 存储系统](09-storage-systems.md) | 分布式文件系统、Checkpoint 存储加速、对象存储 | ⭐⭐⭐ |
+| 10 | [网络基础设施](10-network-infrastructure.md) | 数据中心网络、RDMA 配置、交换机选型、故障排查 | ⭐⭐⭐⭐ |
 
 ## 🗺️ 知识地图
 

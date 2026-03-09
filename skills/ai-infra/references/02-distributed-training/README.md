@@ -39,6 +39,9 @@
 | 11 | [专家并行与 MoE](11-expert-parallelism-moe.md) | MoE 原理、Expert Parallelism、负载均衡 | 35 分钟 |
 | 12 | [混合精度训练](12-mixed-precision-training.md) | FP16/BF16/FP8、Loss Scaling、Transformer Engine | 30 分钟 |
 | 13 | [AdamW 优化器深入讲解](13-adamw-optimizer.md) | SGD→Adam→AdamW 演化、解耦权重衰减、显存开销 | 25 分钟 |
+| 14 | [激活重计算](14-activation-checkpointing.md) | 用计算换显存、全量/选择性/分段策略、FSDP/DeepSpeed 集成 | 25 分钟 |
+| 15 | [大规模训练网络架构](15-network-architecture.md) | RoCE vs InfiniBand、RDMA 原理、网络拓扑设计、GPUDirect、带宽规划 | 35 分钟 |
+| 16 | [分布式数据加载与预处理](16-data-loading-pipeline.md) | DataLoader 优化、WebDataset、Mosaic Streaming、NVIDIA DALI | 30 分钟 |
 
 ---
 
@@ -66,6 +69,7 @@
                    │  │ 序列并行 │
                    │  │ MoE/EP  │
                    │  │ 混合精度 │
+                   │  │ 激活重计算│
                    │  └─────────┘
 ```
 
@@ -97,6 +101,7 @@
 - **超长序列**：[10-序列并行](10-sequence-parallelism.md)
 - **MoE 模型**：[11-专家并行](11-expert-parallelism-moe.md)
 - **精度优化**：[12-混合精度](12-mixed-precision-training.md)
+- **显存优化**：[14-激活重计算](14-activation-checkpointing.md)
 - **框架选型**：[07-训练框架](07-training-frameworks.md)
 
 ---

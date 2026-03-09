@@ -30,6 +30,9 @@
 | 08 | [服务框架详解](08-serving-frameworks.md) | vLLM、SGLang、TGI、Triton 对比 | 30 分钟 |
 | 09 | [部署架构模式](09-deployment-architecture.md) | 单实例、负载均衡、Prefill-Decode 分离 | 25 分钟 |
 | 10 | [性能调优](10-performance-tuning.md) | TTFT/TPS 指标、调优 Checklist | 25 分钟 |
+| 11 | [Speculative Decoding 深入](11-speculative-decoding.md) | Draft-Verify 范式、Medusa、Eagle、Tree-based SD | 30 分钟 |
+| 12 | [多模态推理](12-multimodal-inference.md) | VLM 推理、扩散模型优化、语音模型、多模态服务架构 | 25 分钟 |
+| 13 | [端侧与边缘推理](13-edge-inference.md) | llama.cpp/Ollama/MLC-LLM、GGUF 格式、端侧硬件 | 25 分钟 |
 
 ---
 

@@ -38,8 +38,10 @@
 | 09 | [NCCL 与 GPU 通信科普](09-nccl-communication.md) | NCCL 是什么、集合通信原语、GPU 通信拓扑 | 20 分钟 |
 | 10 | [Transformer 架构深入讲解](10-transformer-architecture.md) | Self-Attention、Q/K/V、多头注意力、FFN、残差连接 | 30 分钟 |
 | 11 | [训练 vs 推理深度对比](11-training-vs-inference.md) | 计算模式、显存占用、瓶颈分析、Prefill/Decode、量化 | 25 分钟 |
+| 12 | [大数据特征工程](12-feature-engineering.md) | 特征类型、Spark/Flink 技术栈、电商推荐/金融风控案例、AI 使用特征的四种范式 | 35 分钟 |
+| 13 | [梯度累积与评估指标](13-gradient-accumulation.md) | 梯度累积原理与实现、DDP 集成、Accuracy/F1/PPL/BLEU/ROUGE 等评估指标 | 25 分钟 |
 
-**总阅读时间**：约 4.5 小时
+**总阅读时间**：约 5.5 小时
 
 ---
 
@@ -87,6 +89,16 @@
                         │ 11 训练 vs 推理     │
                         │ (对比/瓶颈/量化)   │
                         └────────────────────┘
+
+                        ┌────────────────────┐
+                        │ 12 大数据特征工程   │
+                        │ (Spark/Flink/案例) │
+                        └────────────────────┘
+
+                        ┌────────────────────┐
+                        │ 13 梯度累积与       │
+                        │ 评估指标            │
+                        └────────────────────┘
 ```
 
 ---
@@ -99,9 +111,9 @@
 2. [什么是神经网络](02-neural-network-basics.md) — 理解基本组件
 3. [反向传播详解](05-backpropagation.md) — 掌握核心机制
 
-### 路径 B：完整学习（4 小时）
+### 路径 B：完整学习（5 小时）
 
-按顺序阅读所有 11 篇文档，重点关注：
+按顺序阅读所有 13 篇文档，重点关注：
 - 每篇的生活类比和直觉解释
 - 完整数值计算例子
 - PyTorch 代码示例
@@ -119,6 +131,8 @@
 - **不懂 NCCL/GPU 通信**：[09-NCCL 与 GPU 通信科普](09-nccl-communication.md)
 - **不懂 Transformer 架构**：[10-Transformer 架构深入讲解](10-transformer-architecture.md)
 - **不懂训练和推理的区别**：[11-训练 vs 推理深度对比](11-training-vs-inference.md)
+- **想学特征工程**：[12-大数据特征工程](12-feature-engineering.md)
+- **想了解梯度累积/评估指标**：[13-梯度累积与评估指标](13-gradient-accumulation.md)
 
 ---
 

@@ -112,7 +112,7 @@ if result['metrics'][0]['result']['dataset_drift']:
 ```python
 # drift_monitor.py
 from evidently import Report
-from evidently.metrics import DataDriftPreset
+from evidently.metric_preset import DataDriftPreset
 import schedule
 import time
 

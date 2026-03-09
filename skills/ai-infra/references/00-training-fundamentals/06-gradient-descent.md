@@ -500,9 +500,10 @@ LLM 预训练通常不等到完全收敛:
 ### LLM 预训练的典型配置
 
 ```python
+import math
 import torch
 from torch.optim import AdamW
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim.lr_scheduler import LambdaLR
 
 model = MyTransformer()
 
@@ -515,24 +516,21 @@ optimizer = AdamW(
     weight_decay=0.1,    # 权重衰减
 )
 
-# ─── 学习率调度 ───
+# ─── 学习率调度（Warmup + Cosine Decay） ───
 warmup_steps = 2000
 total_steps = 1000000
+min_lr = 3e-5
 
-scheduler = CosineAnnealingLR(
-    optimizer,
-    T_max=total_steps - warmup_steps,
-    eta_min=3e-5,       # 最小学习率
-)
+def lr_lambda(step):
+    if step < warmup_steps:
+        return step / warmup_steps  # 线性 warmup
+    progress = (step - warmup_steps) / (total_steps - warmup_steps)
+    return max(min_lr / 3e-4, 0.5 * (1 + math.cos(math.pi * progress)))
+
+scheduler = LambdaLR(optimizer, lr_lambda)
 
 # ─── 训练循环 ───
 for step, batch in enumerate(dataloader):
-    # Warmup 阶段手动设置 lr
-    if step < warmup_steps:
-        lr = 3e-4 * (step / warmup_steps)
-        for param_group in optimizer.param_groups:
-            param_group['lr'] = lr
-    
     optimizer.zero_grad()
     
     loss = model(batch)
@@ -542,9 +540,7 @@ for step, batch in enumerate(dataloader):
     torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
     
     optimizer.step()
-    
-    if step >= warmup_steps:
-        scheduler.step()
+    scheduler.step()
     
     if step % 100 == 0:
         print(f"Step {step}: loss={loss.item():.4f}, lr={optimizer.param_groups[0]['lr']:.6f}")

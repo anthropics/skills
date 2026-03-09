@@ -19,6 +19,8 @@
 > | 模型监控与可观测性 | [07-model-monitoring.md](./04-mlops-llmops/07-model-monitoring.md) |
 > | LLMOps 特殊考量 | [08-llmops.md](./04-mlops-llmops/08-llmops.md) |
 > | 工具生态 | [09-tool-ecosystem.md](./04-mlops-llmops/09-tool-ecosystem.md) |
+> | 数据管理与质量 | [10-data-management.md](./04-mlops-llmops/10-data-management.md) |
+> | AI Safety 与 Guardrails | [11-ai-safety-guardrails.md](./04-mlops-llmops/11-ai-safety-guardrails.md) |
 
 ---
 
@@ -306,15 +308,15 @@ client = MlflowClient()
 model_uri = f"runs:/{run_id}/model"
 mlflow.register_model(model_uri, "llama-chat")
 
-# 获取模型版本
-model_version = client.get_latest_versions("llama-chat", stages=["Production"])
+# 获取模型版本（使用 Alias API，MLflow 2.9+）
+client.set_registered_model_alias("llama-chat", "production", "2")
+model_version = client.get_model_version_by_alias("llama-chat", "production")
 
-# 转换阶段
-client.transition_model_version_stage(
+# 设置别名（推荐，MLflow 2.9+ Alias API）
+client.set_registered_model_alias(
     name="llama-chat",
+    alias="production",
     version="2",
-    stage="Production",
-    archive_existing_versions=True  # 自动归档旧版本
 )
 
 # 加载生产模型
@@ -425,7 +427,7 @@ model = AutoModelForCausalLM.from_pretrained("myorg/llama-finetuned")
 ### Feast 示例
 
 ```python
-from feast import FeatureStore, Entity, Feature, FeatureView, FileSource
+from feast import FeatureStore, Entity, Field, FeatureView, FileSource
 from feast.types import Float32, Int64
 from datetime import timedelta
 
@@ -443,10 +445,10 @@ user_features_view = FeatureView(
     name="user_features",
     entities=["user_id"],
     ttl=timedelta(days=1),
-    features=[
-        Feature(name="total_purchases", dtype=Int64),
-        Feature(name="avg_purchase_value", dtype=Float32),
-        Feature(name="days_since_last_purchase", dtype=Int64),
+    schema=[
+        Field(name="total_purchases", dtype=Int64),
+        Field(name="avg_purchase_value", dtype=Float32),
+        Field(name="days_since_last_purchase", dtype=Int64),
     ],
     source=user_features_source,
 )

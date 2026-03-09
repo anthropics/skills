@@ -18,6 +18,8 @@
 > | 多租户管理 | [06-multi-tenancy.md](./05-cluster-scheduling/06-multi-tenancy.md) |
 > | 成本优化策略 | [07-cost-optimization.md](./05-cluster-scheduling/07-cost-optimization.md) |
 > | GPU 监控与可观测性 | [08-gpu-monitoring.md](./05-cluster-scheduling/08-gpu-monitoring.md) |
+> | AI 存储系统 | [09-storage-systems.md](./05-cluster-scheduling/09-storage-systems.md) |
+> | 网络基础设施 | [10-network-infrastructure.md](./05-cluster-scheduling/10-network-infrastructure.md) |
 
 ---
 

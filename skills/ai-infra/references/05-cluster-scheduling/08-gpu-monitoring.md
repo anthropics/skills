@@ -247,7 +247,7 @@ avg_over_time(DCGM_FI_DEV_GPU_UTIL[30m]) < 5
 avg by (gpu, Hostname) (DCGM_FI_PROF_PIPE_TENSOR_ACTIVE) * 100
 
 # 8. 按命名空间的 GPU 使用量
-count by (namespace) (kube_pod_resource_limit{resource="nvidia.com/gpu"})
+count by (namespace) (kube_pod_container_resource_limits{resource="nvidia_com_gpu"})
 
 # 9. GPU 功耗
 avg by (Hostname, gpu) (DCGM_FI_DEV_POWER_USAGE)
@@ -430,7 +430,7 @@ spec:
     
     # GPU 降频
     - alert: GPUThrottling
-      expr: DCGM_FI_DEV_SM_CLOCK < DCGM_FI_DEV_SM_CLOCK offset 10m * 0.8
+      expr: DCGM_FI_DEV_SM_CLOCK < (DCGM_FI_DEV_SM_CLOCK offset 10m) * 0.8
       for: 10m
       labels:
         severity: warning
