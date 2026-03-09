@@ -92,3 +92,44 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+
+# Community Tooling
+
+The open-source [`ai-agent-skills`](https://github.com/skillcreatorai/Ai-Agent-Skills) CLI provides a unified way to install and manage Agent Skills across multiple coding environments. It adheres to the Agent Skills specification and is compatible with the skills in this repository.
+
+This tooling may be useful for developers who want to prototype or deploy skills across different environments while maintaining consistency with the Agent Skills specification.
+
+## Key Features
+
+- Install skills without manual folder setup or platform-specific configuration
+- Works with Claude Code (default), VS Code, Cursor, Amp, Goose, and OpenCode
+- Supports both individual and batch skill installation
+- Enables consistent skill workflows across different agents
+
+## Quick Start
+
+```bash
+# Install a skill for Claude Code (default)
+npx ai-agent-skills install pdf
+```
+
+## Additional Examples
+
+```bash
+# List available skills
+npx ai-agent-skills list
+
+# Install for VS Code
+npx ai-agent-skills install pdf --agent vscode
+
+# Install for Cursor
+npx ai-agent-skills install pdf --agent cursor
+
+# Install multiple skills
+npx ai-agent-skills install pdf docx pptx xlsx
+```
+
+## Additional Resources
+
+- CLI repository: https://github.com/skillcreatorai/Ai-Agent-Skills
+- Community-curated skills: https://github.com/skillcreatorai/Awesome-Agent-Skills
