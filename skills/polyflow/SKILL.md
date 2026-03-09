@@ -3,7 +3,7 @@ name: polyflow
 description: Use when running multi-model AI workflows where Claude, Gemini, and GPT-4 should analyze the same task in parallel — code review, security audit, cross-validation, or any task where consensus across models is more reliable than a single model's answer. Invoke when the user says "run polyflow", "multi-model review", "parallel AI analysis", "compare models", or wants multiple AI perspectives on the same input.
 ---
 
-Run parallel multi-model AI workflows using the `polyflow` CLI. Three models check the same thing simultaneously — consensus findings are more reliable than any single model's output.
+Run parallel multi-model AI workflows using the `polyflow` CLI. Three models check the same thing simultaneously — consensus findings are more reliable than any single model's output. Describe what you want in plain English, or use one of 22 built-in workflows.
 
 ## Setup
 
@@ -16,17 +16,17 @@ polyflow doctor                        # verify setup
 ## Key commands
 
 ```bash
-# Run a built-in workflow
+# Describe what you want — Polyflow generates the workflow
+polyflow new "three models audit my API for security issues, vote on findings" -o audit.yaml
+polyflow run ./audit.yaml -i "$(cat src/api.py)"
+
+# Or use a built-in workflow directly
 polyflow run code-review-multi-model -i "$(git diff HEAD~1)"
 polyflow run security-audit -i "$(cat src/auth.py)"
 polyflow run cross-validate -i "your design or problem statement"
 
 # Run headlessly — no prompts, auto-approve all checkpoints
 polyflow run <workflow> --ci -i "..."
-
-# Generate a custom workflow from natural language
-polyflow new "three models review my API design, vote on findings" -o api-review.yaml
-polyflow new "claude and gemini cross-validate my code, diff mode"
 
 # Browse 22 built-in workflows
 polyflow list
@@ -59,6 +59,14 @@ Each `type: parallel` step sends the same prompt to multiple models at the same 
 This is not about humans being smarter than AI. It's about models checking each other — the same principle behind ensemble methods in ML.
 
 ## Write a custom consensus workflow
+
+**From natural language (recommended):**
+
+```bash
+polyflow new "claude and gemini cross-validate my code logic, diff mode" -o review.yaml
+```
+
+**Or write YAML directly:**
 
 ```yaml
 name: my-consensus-review
