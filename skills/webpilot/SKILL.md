@@ -12,14 +12,13 @@ It gives you a local browser runtime, a CLI, and a WebSocket command surface. Yo
 ## Runtime
 
 ```bash
-npm install -g h17-webpilot
-npx webpilot start
-npx webpilot start -d
+npx h17-webpilot start
+npx h17-webpilot start -d
 ```
 
-If the runtime is already running, use `npx webpilot -c '...'` directly.
+If the runtime is already running, use `npx h17-webpilot -c '...'` directly.
 
-Use `npx webpilot start -d` when you want an append-only session log.
+Use `npx h17-webpilot start -d` when you want an append-only session log.
 
 - default path: `~/h17-webpilot/webpilot.log`
 - config override: `framework.debug.sessionLogPath`
@@ -104,12 +103,6 @@ npx webpilot -c '{"action": "tabs.navigate", "params": {"url": "https://example.
 ## MCP Server
 
 An MCP adapter is available for environments that support the Model Context Protocol (e.g. Claude Desktop, Cursor, Windsurf).
-
-Install:
-
-```bash
-npm install -g webpilot-mcp
-```
 
 Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
