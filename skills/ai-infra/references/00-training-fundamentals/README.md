@@ -40,8 +40,9 @@
 | 11 | [训练 vs 推理深度对比](11-training-vs-inference.md) | 计算模式、显存占用、瓶颈分析、Prefill/Decode、量化 | 25 分钟 |
 | 12 | [大数据特征工程](12-feature-engineering.md) | 特征类型、Spark/Flink 技术栈、电商推荐/金融风控案例、AI 使用特征的四种范式 | 35 分钟 |
 | 13 | [梯度累积与评估指标](13-gradient-accumulation.md) | 梯度累积原理与实现、DDP 集成、Accuracy/F1/PPL/BLEU/ROUGE 等评估指标 | 25 分钟 |
+| 14 | [激活函数深入讲解](14-activation-functions-deep-dive.md) | ReLU 革命、Dead Neuron 问题、Leaky/PReLU/ELU 变体、GELU/SiLU/SwiGLU 现代选择 | 30 分钟 |
 
-**总阅读时间**：约 5.5 小时
+**总阅读时间**：约 6 小时
 
 ---
 
@@ -99,6 +100,11 @@
                         │ 13 梯度累积与       │
                         │ 评估指标            │
                         └────────────────────┘
+
+                        ┌────────────────────┐
+                        │ 14 激活函数深入     │
+                        │ (ReLU/GELU/SwiGLU) │
+                        └────────────────────┘
 ```
 
 ---
@@ -133,6 +139,7 @@
 - **不懂训练和推理的区别**：[11-训练 vs 推理深度对比](11-training-vs-inference.md)
 - **想学特征工程**：[12-大数据特征工程](12-feature-engineering.md)
 - **想了解梯度累积/评估指标**：[13-梯度累积与评估指标](13-gradient-accumulation.md)
+- **想深入理解 ReLU/激活函数**：[14-激活函数深入讲解](14-activation-functions-deep-dive.md)
 
 ---
 
