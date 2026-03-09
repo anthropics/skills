@@ -50,8 +50,16 @@ Follow this cycle for every Pyxel project:
 |------|---------|
 | `run_and_capture` | Run a script and screenshot after N frames |
 | `capture_frames` | Screenshots at multiple frame points (animation) |
+| `play_and_capture` | Simulate key/mouse input and capture screenshots |
 | `inspect_sprite` | Read pixel data from image banks |
 | `inspect_layout` | Analyze text positioning and screen balance |
+| `inspect_state` | Read game object attributes for debugging |
+| `inspect_palette` | Analyze color usage and contrast |
+| `inspect_tilemap` | Verify tilemap content and layout |
+| `inspect_bank` | Visualize full image bank contents |
+| `inspect_screen` | Capture screen as compact color grid |
+| `compare_frames` | Diff pixels between two frames |
+| `validate_script` | Check syntax and anti-patterns before running |
 | `render_audio` | Render a sound slot to WAV and analyze notes |
 | `pyxel_info` | Get Pyxel install paths, API stubs, examples |
 
@@ -100,7 +108,16 @@ Based on analysis of 140+ community games:
 
 ## Testing Input-Dependent Logic
 
-Replace input conditions with frame-based triggers for automated testing:
+Use `play_and_capture` to simulate key/mouse input directly:
+
+```python
+# Simulate SPACE press at frame 30, capture at frames 29 and 31
+play_and_capture("game.py",
+    inputs='[{"frame":30,"keys":["KEY_SPACE"]}]',
+    frames="29,31")
+```
+
+For simpler cases, replace input conditions with frame-based triggers:
 
 ```python
 # Original:  if pyxel.btnp(pyxel.KEY_SPACE): jump()
