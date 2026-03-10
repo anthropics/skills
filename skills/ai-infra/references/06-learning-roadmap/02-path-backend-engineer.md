@@ -732,3 +732,16 @@ python -m vllm.entrypoints.openai.api_server \
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Deep Learning Institute (DLI) Courses.*  
+   https://www.nvidia.com/en-us/training/
+
+2. **HuggingFace.** *NLP Course.*  
+   https://huggingface.co/learn/nlp-course/
+
+3. **Kubernetes Documentation.** *AI/ML Workloads Guide.*  
+   https://kubernetes.io/docs/

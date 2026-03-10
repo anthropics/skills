@@ -501,3 +501,22 @@ Tensor Core 核心知识：
 ---
 
 *下一篇：[07-multi-gpu-interconnect.md](07-multi-gpu-interconnect.md) - 多卡互联技术*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Tensor Core Programming.* — Tensor Core 编程接口  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#wmma
+
+2. **Markidis, S., et al. (2018).** *NVIDIA Tensor Core Programmability, Performance & Precision.* — Tensor Core 性能分析  
+   https://arxiv.org/abs/1803.04014
+
+3. **Micikevicius, P., et al. (2018).** *Mixed Precision Training.* ICLR 2018. — 混合精度训练与 Tensor Core  
+   https://arxiv.org/abs/1710.03740
+
+4. **NVIDIA.** *H100 Tensor Core GPU Architecture — FP8 Training.*  
+   https://resources.nvidia.com/en-us-tensor-core
+
+5. **NVIDIA.** *cuDNN Library.* — 深度学习原语库 (使用 Tensor Core)  
+   https://developer.nvidia.com/cudnn

@@ -331,3 +331,19 @@ model = AutoModelForCausalLM.from_pretrained(
 ---
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Fedus, W., Zoph, B., & Shazeer, N. (2022).** *Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity.* JMLR. — Switch Transformer  
+   https://arxiv.org/abs/2101.03961
+
+2. **Lepikhin, D., et al. (2021).** *GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding.* ICLR 2021. — GShard 专家并行  
+   https://arxiv.org/abs/2006.16668
+
+3. **Jiang, A. Q., et al. (2024).** *Mixtral of Experts.* — Mixtral MoE 模型  
+   https://arxiv.org/abs/2401.04088
+
+4. **Zoph, B., et al. (2022).** *ST-MoE: Designing Stable and Transferable Sparse Expert Models.*  
+   https://arxiv.org/abs/2202.08906

@@ -566,3 +566,31 @@
 
 - **上一篇**：[07-群山中找最低点](07-mountain-valley-training.md)
 - **下一篇**：[09-NCCL 与 GPU 通信科普](09-nccl-communication.md)
+
+---
+
+## 参考资料与引用
+
+1. **3Blue1Brown.** *Neural Networks (Playlist).* — 最佳神经网络可视化讲解  
+   https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
+
+2. **Karpathy, A.** *Neural Networks: Zero to Hero (Playlist).* — 从零构建神经网络  
+   https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ
+
+3. **Alammar, J.** *The Illustrated Transformer.* — Transformer 最佳图解  
+   https://jalammar.github.io/illustrated-transformer/
+
+4. **Olah, C.** *Understanding LSTM Networks.* — RNN/LSTM 可视化讲解  
+   https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+
+5. **Stanford CS231n.** *Convolutional Neural Networks for Visual Recognition.* — 经典深度学习课程  
+   https://cs231n.stanford.edu/
+
+6. **d2l.ai.** *Dive into Deep Learning.* — 交互式深度学习教材  
+   https://d2l.ai/
+
+7. **Karpathy, A.** *nanoGPT.* — 最简 GPT 训练代码  
+   https://github.com/karpathy/nanoGPT
+
+8. **Shoeybi, M., et al. (2020).** *Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism.* — 大模型分布式训练  
+   https://arxiv.org/abs/1909.08053

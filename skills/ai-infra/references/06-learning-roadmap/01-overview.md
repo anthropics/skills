@@ -318,3 +318,16 @@ C. 学生/转行者/新人 → 继续问题 2C
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **d2l.ai.** *Dive into Deep Learning.* — 交互式深度学习教材  
+   https://d2l.ai/
+
+2. **Stanford CS229.** *Machine Learning Course.*  
+   https://cs229.stanford.edu/
+
+3. **fast.ai.** *Practical Deep Learning for Coders.*  
+   https://www.fast.ai/

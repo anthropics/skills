@@ -239,12 +239,15 @@ class QualityScorer:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [CCNet: Extracting High Quality Data from Common Crawl](https://github.com/facebookresearch/cc_net)
-- [FineWeb: Curating High Quality Data](https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1)
-- [datasketch: MinHash LSH](https://ekzhu.com/datasketch/)
-- 论文: *Deduplicating Training Data Makes Language Models Better* (Lee et al., 2022)
+1. Lee, K., et al. (2022). *Deduplicating Training Data Makes Language Models Better*. arXiv:2107.06499. https://arxiv.org/abs/2107.06499
+2. Wenzek, G., et al. (2020). *CCNet: Extracting High Quality Monolingual Datasets from Web Crawl Data*. arXiv:1911.00359. https://arxiv.org/abs/1911.00359
+3. Penedo, G., et al. (2024). *The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale*. arXiv:2406.17557. https://arxiv.org/abs/2406.17557
+4. CCNet GitHub Repository. Meta Research. https://github.com/facebookresearch/cc_net
+5. FineWeb Blog Post. HuggingFace. https://huggingface.co/spaces/HuggingFaceFW/blogpost-fineweb-v1
+6. datasketch: MinHash LSH Implementation. https://ekzhu.com/datasketch/
+7. Raffel, C., et al. (2020). *Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer* (C4 Dataset). arXiv:1910.10683. https://arxiv.org/abs/1910.10683
 
 ---
 

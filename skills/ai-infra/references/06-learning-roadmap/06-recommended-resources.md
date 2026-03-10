@@ -289,3 +289,19 @@ RESOURCE_PRIORITY = {
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Goodfellow, I., Bengio, Y., & Courville, A.** *Deep Learning.* MIT Press.  
+   https://www.deeplearningbook.org/
+
+2. **d2l.ai.** *Dive into Deep Learning.*  
+   https://d2l.ai/
+
+3. **HuggingFace.** *Open-Source ML Community.*  
+   https://huggingface.co/
+
+4. **Papers with Code.** *Machine Learning Papers with Implementation.*  
+   https://paperswithcode.com/

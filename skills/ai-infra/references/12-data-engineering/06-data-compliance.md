@@ -178,13 +178,15 @@ AI 数据合规实践清单:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [GDPR and AI Training](https://gdpr.eu/)
-- [CCPA Official Resources](https://oag.ca.gov/privacy/ccpa)
-- [Creative Commons License Chooser](https://creativecommons.org/choose/)
-- [AI and Copyright: Congressional Research Service](https://crsreports.congress.gov/)
-- [Presidio: PII Detection by Microsoft](https://github.com/microsoft/presidio)
+1. GDPR (General Data Protection Regulation) - Official Text. https://gdpr.eu/
+2. CCPA (California Consumer Privacy Act) - Official Resources. https://oag.ca.gov/privacy/ccpa
+3. Creative Commons License Chooser. https://creativecommons.org/choose/
+4. Congressional Research Service - AI and Copyright. https://crsreports.congress.gov/
+5. Microsoft Presidio - PII Detection and Anonymization. https://github.com/microsoft/presidio
+6. Henderson, P., et al. (2023). *Foundation Models and Fair Use*. arXiv:2303.15715. https://arxiv.org/abs/2303.15715
+7. Min, S., et al. (2023). *SILO Language Models: Isolating Legal Risk In a Nonparametric Datastore*. arXiv:2308.04430. https://arxiv.org/abs/2308.04430
 
 ---
 

@@ -381,3 +381,16 @@ def estimate_memory(params_billion, batch_size, seq_len, hidden_size):
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Chip Huyen.** *Machine Learning Interviews Book.*  
+   https://huyenchip.com/ml-interviews-book/
+
+2. **LeetCode.** *Machine Learning Interview Questions.*  
+   https://leetcode.com/
+
+3. **Educative.** *Grokking the Machine Learning Interview.*  
+   https://www.educative.io/courses/grokking-the-machine-learning-interview

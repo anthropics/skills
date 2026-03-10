@@ -699,3 +699,22 @@ GPU 虚拟化核心要点:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Multi-Instance GPU (MIG) User Guide.*  
+   https://docs.nvidia.com/datacenter/tesla/mig-user-guide/
+
+2. **NVIDIA.** *NVIDIA Virtual GPU (vGPU) Software.*  
+   https://www.nvidia.com/en-us/data-center/virtual-solutions/
+
+3. **NVIDIA.** *GPU Time-Slicing (MPS - Multi-Process Service).*  
+   https://docs.nvidia.com/deploy/mps/
+
+4. **Kubernetes.** *Device Plugins — NVIDIA GPU.*  
+   https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/
+
+5. **NVIDIA.** *NVIDIA GPU Operator for Kubernetes.*  
+   https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/

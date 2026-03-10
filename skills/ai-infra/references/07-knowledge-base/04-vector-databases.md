@@ -471,3 +471,19 @@ for idx_config in indexes:
 *下一篇：[05-从零构建知识库](05-build-from-scratch.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Milvus.** *Milvus Documentation.*  
+   https://milvus.io/docs/
+
+2. **Pinecone.** *Vector Database Docs.*  
+   https://docs.pinecone.io/
+
+3. **Weaviate.** *Vector Search Engine.*  
+   https://weaviate.io/
+
+4. **Johnson, J., Douze, M., & Jégou, H. (2019).** *Billion-scale similarity search with GPUs (FAISS).* IEEE Trans. Big Data.  
+   https://arxiv.org/abs/1702.08734

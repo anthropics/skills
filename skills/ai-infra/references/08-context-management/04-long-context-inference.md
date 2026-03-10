@@ -597,3 +597,19 @@ for depth in [0.0, 0.25, 0.5, 0.75, 1.0]:
 *下一篇：[05-chunked-prefill.md](05-chunked-prefill.md) — Chunked Prefill*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Chen, S., et al. (2023).** *Extending Context Window of Large Language Models via Positional Interpolation (PI).*  
+   https://arxiv.org/abs/2306.15595
+
+2. **bloc97.** *NTK-Aware Scaled RoPE.*  
+   https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/
+
+3. **Peng, B., et al. (2023).** *YaRN: Efficient Context Window Extension of Large Language Models.*  
+   https://arxiv.org/abs/2309.00071
+
+4. **Su, J., et al. (2021).** *RoFormer: Enhanced Transformer with Rotary Position Embedding.*  
+   https://arxiv.org/abs/2104.09864

@@ -214,3 +214,19 @@ spec:
 ---
 
 *下一篇：[10-performance-tuning.md](10-performance-tuning.md) - 性能调优*
+
+---
+
+## 参考资料与引用
+
+1. **Kubernetes Documentation.** *Kubernetes for AI/ML Workloads.*  
+   https://kubernetes.io/docs/concepts/
+
+2. **NVIDIA.** *Triton Inference Server Architecture.*  
+   https://docs.nvidia.com/deeplearning/triton-inference-server/
+
+3. **AWS.** *Best Practices for Deploying ML Models.*  
+   https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model.html
+
+4. **KServe.** *KServe: Serverless Inference on Kubernetes.*  
+   https://kserve.github.io/website/

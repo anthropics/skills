@@ -158,3 +158,19 @@ model = FSDP(
 ---
 
 *下一篇：[09-checkpoint-fault-tolerance.md](09-checkpoint-fault-tolerance.md) - Checkpoint 与容错*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NCCL Documentation.* — GPU 集合通信库  
+   https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/
+
+2. **Patarasuk, P., & Yuan, X. (2009).** *Bandwidth Optimal All-reduce Algorithms.* — Ring AllReduce 算法理论  
+   https://www.sciencedirect.com/science/article/pii/S0743731508002128
+
+3. **Zhang, H., et al. (2017).** *Poseidon: An Efficient Communication Architecture for Distributed Deep Learning.* — 通信计算重叠  
+   https://arxiv.org/abs/1706.03292
+
+4. **Wang, G., et al. (2023).** *Overlap Communication with Dependent Computation via Decomposition in Large Deep Learning Models.* — 通信优化  
+   https://arxiv.org/abs/2304.06948

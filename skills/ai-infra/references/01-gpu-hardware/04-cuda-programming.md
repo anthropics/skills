@@ -590,3 +590,22 @@ CUDA 编程核心知识：
 ---
 
 *下一篇：[05-memory-hierarchy.md](05-memory-hierarchy.md) - 内存层次结构*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *CUDA C++ Programming Guide.*  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/
+
+2. **NVIDIA.** *CUDA Toolkit Documentation.*  
+   https://docs.nvidia.com/cuda/
+
+3. **Kirk, D. B., & Hwu, W. (2016).** *Programming Massively Parallel Processors.* 3rd Edition, Morgan Kaufmann. — CUDA 编程权威教材  
+   https://www.elsevier.com/books/programming-massively-parallel-processors/kirk/978-0-12-811986-0
+
+4. **NVIDIA.** *cuBLAS Library.* — GPU 矩阵运算库  
+   https://docs.nvidia.com/cuda/cublas/
+
+5. **NVIDIA.** *CUDA Best Practices Guide.*  
+   https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/

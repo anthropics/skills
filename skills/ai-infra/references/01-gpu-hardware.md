@@ -710,24 +710,25 @@ matmul_benchmark(dtype=torch.bfloat16)
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 官方文档
 
-- [CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/)
-- [NVIDIA GPU Architecture Whitepapers](https://www.nvidia.com/en-us/data-center/resources/)
-- [PyTorch CUDA Semantics](https://pytorch.org/docs/stable/notes/cuda.html)
+- [CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/). NVIDIA.
+- [NVIDIA GPU Architecture Whitepapers](https://www.nvidia.com/en-us/data-center/resources/). NVIDIA.
+- [PyTorch CUDA Semantics](https://pytorch.org/docs/stable/notes/cuda.html). PyTorch.
 
 ### 推荐书籍
 
-- *Programming Massively Parallel Processors* - CUDA 编程圣经
-- *CUDA by Example* - 入门实践指南
+- Kirk, D. & Hwu, W. (2016). *Programming Massively Parallel Processors: A Hands-on Approach*. 3rd Edition. Morgan Kaufmann.
+- Sanders, J. & Kandrot, E. (2010). *CUDA by Example: An Introduction to General-Purpose GPU Programming*. Addison-Wesley.
 
-### 必读论文
+### 必读论文与白皮书
 
-- [NVIDIA Tesla V100 GPU Architecture](https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf)
-- [NVIDIA A100 Tensor Core GPU Architecture](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia-ampere-architecture-whitepaper.pdf)
-- [NVIDIA H100 Tensor Core GPU Architecture](https://resources.nvidia.com/en-us-tensor-core)
+1. NVIDIA (2017). *NVIDIA Tesla V100 GPU Architecture Whitepaper*. https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf
+2. NVIDIA (2020). *NVIDIA A100 Tensor Core GPU Architecture Whitepaper*. https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia-ampere-architecture-whitepaper.pdf
+3. NVIDIA (2022). *NVIDIA H100 Tensor Core GPU Architecture Whitepaper*. https://resources.nvidia.com/en-us-tensor-core
+4. Jia, Z., et al. (2018). *Dissecting the NVIDIA Volta GPU Architecture via Microbenchmarking*. arXiv:1804.06826. https://arxiv.org/abs/1804.06826
 
 ---
 

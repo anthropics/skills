@@ -248,3 +248,13 @@ Dragonfly 拓扑:
 *上一篇：[02-rdma-deep-dive.md](02-rdma-deep-dive.md)* | *下一篇：[04-gpudirect-technologies.md](04-gpudirect-technologies.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Al-Fares, M., et al. (2008).** *A Scalable, Commodity Data Center Network Architecture (Fat-tree).* ACM SIGCOMM.  
+   https://dl.acm.org/doi/10.1145/1402958.1402967
+
+2. **NVIDIA.** *Rail-Optimized Network Topology.*  
+   https://developer.nvidia.com/blog/rail-optimized-topology-for-ai-training/

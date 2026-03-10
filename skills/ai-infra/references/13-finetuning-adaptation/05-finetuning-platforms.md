@@ -472,14 +472,14 @@ output = together.Complete.create(
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Axolotl GitHub](https://github.com/OpenAccess-AI-Collective/axolotl) - 配置化微调框架
-- [LLaMA-Factory GitHub](https://github.com/hiyouga/LLaMA-Factory) - 一站式微调平台
-- [Unsloth GitHub](https://github.com/unslothai/unsloth) - 2x 加速微调
-- [torchtune GitHub](https://github.com/pytorch/torchtune) - PyTorch 官方微调工具
-- [AutoTrain Documentation](https://huggingface.co/docs/autotrain) - 零代码微调
-- [Together AI Fine-tuning](https://docs.together.ai/docs/fine-tuning) - API 微调服务
+1. Axolotl - Configuration-Driven Fine-tuning Framework. https://github.com/OpenAccess-AI-Collective/axolotl
+2. LLaMA-Factory - Unified Fine-tuning Platform. https://github.com/hiyouga/LLaMA-Factory
+3. Unsloth - 2x Faster Fine-tuning. https://github.com/unslothai/unsloth
+4. torchtune - PyTorch Official Fine-tuning Toolkit. https://github.com/pytorch/torchtune
+5. AutoTrain - No-Code Fine-tuning. HuggingFace. https://huggingface.co/docs/autotrain
+6. Together AI Fine-tuning API Documentation. https://docs.together.ai/docs/fine-tuning
 
 ---
 

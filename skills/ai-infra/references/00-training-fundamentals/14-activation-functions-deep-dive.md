@@ -978,3 +978,25 @@ Sigmoid/Tanh → ReLU 提出 → AlexNet 用 ReLU → GELU 提出 → SiLU/Swish
 - **相关章节**：[02-什么是神经网络](02-neural-network-basics.md) — 激活函数初步
 - **相关章节**：[05-反向传播详解](05-backpropagation.md) — 梯度如何通过激活函数传播
 - **相关章节**：[10-Transformer 架构深入讲解](10-transformer-architecture.md) — GELU/SwiGLU 在 Transformer 中的应用
+
+---
+
+## 参考资料与引用
+
+1. **Nair, V., & Hinton, G. E. (2010).** *Rectified Linear Units Improve Restricted Boltzmann Machines.* ICML 2010. — ReLU 原论文  
+   https://www.cs.toronto.edu/~fritz/absps/reluICML.pdf
+
+2. **Hendrycks, D., & Gimpel, K. (2016).** *Gaussian Error Linear Units (GELUs).* — GELU 激活函数  
+   https://arxiv.org/abs/1606.08415
+
+3. **Ramachandran, P., Zoph, B., & Le, Q. V. (2017).** *Searching for Activation Functions.* — Swish/SiLU 激活函数  
+   https://arxiv.org/abs/1710.05941
+
+4. **Shazeer, N. (2020).** *GLU Variants Improve Transformer.* — SwiGLU 及其他 GLU 变体  
+   https://arxiv.org/abs/2002.05202
+
+5. **Dauphin, Y., et al. (2017).** *Language Modeling with Gated Convolutional Networks.* ICML 2017. — 门控线性单元 (GLU) 原论文  
+   https://arxiv.org/abs/1612.08083
+
+6. **He, K., et al. (2015).** *Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification.* — PReLU  
+   https://arxiv.org/abs/1502.01852

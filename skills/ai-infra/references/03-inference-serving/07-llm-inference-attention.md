@@ -203,3 +203,22 @@ outputs = llm.generate(["Explain quantum computing"],
 ---
 
 *下一篇：[08-serving-frameworks.md](08-serving-frameworks.md) - 服务框架详解*
+
+---
+
+## 参考资料与引用
+
+1. **Dao, T., et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* NeurIPS 2022.  
+   https://arxiv.org/abs/2205.14135
+
+2. **Dao, T. (2023).** *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning.*  
+   https://arxiv.org/abs/2307.08691
+
+3. **Shazeer, N. (2019).** *Fast Transformer Decoding: One Write-Head is All You Need.* — Multi-Query Attention  
+   https://arxiv.org/abs/1911.02150
+
+4. **Ainslie, J., et al. (2023).** *GQA: Training Generalized Multi-Query Transformer Models.* — Grouped-Query Attention  
+   https://arxiv.org/abs/2305.13245
+
+5. **Shah, J., et al. (2024).** *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision.*  
+   https://arxiv.org/abs/2407.08608

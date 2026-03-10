@@ -424,3 +424,19 @@ def ask_llm(question: str):
 *下一篇：[09-工具生态](09-tool-ecosystem.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **LangChain.** *LangChain Documentation.* — LLM 应用开发框架  
+   https://docs.langchain.com/
+
+2. **LangSmith.** *LLMOps Platform by LangChain.*  
+   https://www.langchain.com/langsmith
+
+3. **Weights & Biases.** *LLM Monitoring and Evaluation.*  
+   https://wandb.ai/site/solutions/llmops
+
+4. **a]16z.** *Emerging Architectures for LLM Applications.*  
+   https://a16z.com/emerging-architectures-for-llm-applications/

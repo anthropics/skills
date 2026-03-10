@@ -708,3 +708,16 @@ context = manager.build_context(
 *上一篇：[06-disaggregated-serving.md](06-disaggregated-serving.md) — Prefill/Decode 分离架构*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Jiang, H., et al. (2023).** *LLMLingua: Compressing Prompts for Accelerated Inference of Large Language Models.*  
+   https://arxiv.org/abs/2310.05736
+
+2. **Jiang, H., et al. (2024).** *LongLLMLingua: Accelerating and Enhancing LLMs in Long Context Scenarios via Prompt Compression.*  
+   https://arxiv.org/abs/2310.06839
+
+3. **Mu, J., et al. (2024).** *Learning to Compress Prompts with Gist Tokens.*  
+   https://arxiv.org/abs/2304.08467

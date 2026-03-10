@@ -464,3 +464,22 @@ loss
 
 - **上一篇**：[03-前向传播详解](03-forward-propagation.md)
 - **下一篇**：[05-反向传播详解](05-backpropagation.md) — 训练中最核心的一步
+
+---
+
+## 参考资料与引用
+
+1. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 6.2: Cost Functions. MIT Press.  
+   https://www.deeplearningbook.org/contents/mlp.html
+
+2. **Radford, A., et al. (2019).** *Language Models are Unsupervised Multitask Learners (GPT-2).* — LLM 使用 next-token cross-entropy loss  
+   https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf
+
+3. **Zhang, Z., & Sabuncu, M. R. (2018).** *Generalized Cross Entropy Loss for Training Deep Neural Networks with Noisy Labels.* NeurIPS 2018.  
+   https://arxiv.org/abs/1805.07836
+
+4. **PyTorch Documentation.** *torch.nn.CrossEntropyLoss.*  
+   https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
+
+5. **Lin, T.-Y., et al. (2017).** *Focal Loss for Dense Object Detection.* ICCV 2017. — 类别不均衡下的损失函数设计  
+   https://arxiv.org/abs/1708.02002

@@ -210,3 +210,16 @@ AI 存储核心要点:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Lustre.** *Lustre Filesystem Documentation.*  
+   https://www.lustre.org/
+
+2. **JuiceFS.** *JuiceFS: A POSIX-compatible Distributed File System.*  
+   https://juicefs.com/
+
+3. **NVIDIA.** *GPUDirect Storage.*  
+   https://developer.nvidia.com/gpudirect-storage

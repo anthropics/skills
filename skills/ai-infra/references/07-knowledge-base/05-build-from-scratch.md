@@ -546,3 +546,13 @@ for q in test_queries:
 *下一篇：[06-RAG 基础](06-rag-fundamentals.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **LangChain.** *How to Build a RAG System.*  
+   https://docs.langchain.com/
+
+2. **LlamaIndex.** *Building a RAG Pipeline.*  
+   https://docs.llamaindex.ai/

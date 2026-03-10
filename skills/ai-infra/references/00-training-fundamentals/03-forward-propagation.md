@@ -537,3 +537,25 @@ print(f"最终输出 ŷ = {y.item():.2f}")
 
 - **上一篇**：[02-什么是神经网络](02-neural-network-basics.md)
 - **下一篇**：[04-损失函数详解](04-loss-function.md) — 如何衡量预测有多差
+
+---
+
+## 参考资料与引用
+
+1. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 6.3: Forward Propagation. MIT Press.  
+   https://www.deeplearningbook.org/contents/mlp.html
+
+2. **PyTorch Documentation.** *torch.nn.Linear* — 线性层实现参考  
+   https://pytorch.org/docs/stable/generated/torch.nn.Linear.html
+
+3. **Kaplan, J., et al. (2020).** *Scaling Laws for Neural Language Models.* — 前向传播计算量 (FLOPs ≈ 2×参数量/token) 的理论依据  
+   https://arxiv.org/abs/2001.08361
+
+4. **Korthikanti, V., et al. (2022).** *Reducing Activation Recomputation in Large Transformer Models.* — 激活值显存分析与 Activation Checkpointing  
+   https://arxiv.org/abs/2205.05198
+
+5. **NVIDIA (2023).** *A100 Tensor Core GPU Architecture.* — A100 算力 312 TFLOPS (FP16) 参考  
+   https://www.nvidia.com/en-us/data-center/a100/
+
+6. **Chen, T., et al. (2016).** *Training Deep Nets with Sublinear Memory Cost.* — 激活值重算 (Gradient Checkpointing) 原论文  
+   https://arxiv.org/abs/1604.06174

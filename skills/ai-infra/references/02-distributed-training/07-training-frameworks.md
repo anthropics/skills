@@ -330,3 +330,22 @@ torchrun \
 ---
 
 *下一篇：[08-communication-optimization.md](08-communication-optimization.md) - 通信优化*
+
+---
+
+## 参考资料与引用
+
+1. **Rasley, J., et al. (2020).** *DeepSpeed: System Optimizations Enable Training Deep Learning Models with Over 100 Billion Parameters.* KDD 2020.  
+   https://arxiv.org/abs/2207.00032
+
+2. **NVIDIA.** *Megatron-LM.* — NVIDIA 大模型训练框架  
+   https://github.com/NVIDIA/Megatron-LM
+
+3. **PyTorch.** *Fully Sharded Data Parallel (FSDP).*  
+   https://pytorch.org/docs/stable/fsdp.html
+
+4. **HuggingFace.** *Accelerate Library.* — 多框架抽象层  
+   https://huggingface.co/docs/accelerate/
+
+5. **Zhao, Y., et al. (2023).** *PyTorch FSDP: Experiences on Scaling Fully Sharded Data Parallel.*  
+   https://arxiv.org/abs/2304.11277

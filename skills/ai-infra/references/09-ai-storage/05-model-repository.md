@@ -429,3 +429,16 @@ print(f"pytorch_bin 加载: {time.time() - start:.3f}s")
 *上一篇：[04-object-storage.md](04-object-storage.md)* | *下一篇：[06-storage-architecture.md](06-storage-architecture.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **HuggingFace.** *Hugging Face Hub Documentation.*  
+   https://huggingface.co/docs/hub/
+
+2. **MLflow.** *MLflow Model Registry.*  
+   https://mlflow.org/docs/latest/model-registry.html
+
+3. **DVC.** *Data Version Control.*  
+   https://dvc.org/

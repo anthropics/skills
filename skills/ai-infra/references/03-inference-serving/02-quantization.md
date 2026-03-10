@@ -671,3 +671,22 @@ def evaluate_quantization(model, tokenizer, dataset):
 ---
 
 *下一篇：[03-pruning-distillation.md](03-pruning-distillation.md) - 剪枝与蒸馏*
+
+---
+
+## 参考资料与引用
+
+1. **Dettmers, T., et al. (2022).** *LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale.* NeurIPS 2022.  
+   https://arxiv.org/abs/2208.07339
+
+2. **Frantar, E., et al. (2023).** *GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers.*  
+   https://arxiv.org/abs/2210.17323
+
+3. **Lin, J., et al. (2024).** *AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration.* MLSys 2024.  
+   https://arxiv.org/abs/2306.00978
+
+4. **Dettmers, T., et al. (2024).** *QLoRA: Efficient Finetuning of Quantized Large Language Models.* NeurIPS 2023.  
+   https://arxiv.org/abs/2305.14314
+
+5. **NVIDIA.** *FP8 Formats for Deep Learning.*  
+   https://arxiv.org/abs/2209.05433

@@ -413,3 +413,22 @@ gpu_evaluation()
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Data Center GPU Product Comparison.* — GPU 产品线对比  
+   https://www.nvidia.com/en-us/data-center/gpu-cloud-computing/
+
+2. **Lambda Labs.** *GPU Benchmarks for Deep Learning.* — 各 GPU 深度学习基准测试  
+   https://lambdalabs.com/gpu-benchmarks
+
+3. **Epoch AI.** *Trends in Machine Learning Hardware.* — AI 硬件趋势分析  
+   https://epochai.org/
+
+4. **NVIDIA.** *NVIDIA A100 vs H100 Comparison.*  
+   https://www.nvidia.com/en-us/data-center/h100/
+
+5. **CoreWeave / Cloud Provider Pricing.** — GPU 云服务价格参考  
+   https://www.coreweave.com/pricing

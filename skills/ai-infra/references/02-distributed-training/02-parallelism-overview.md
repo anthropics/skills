@@ -191,3 +191,19 @@ data_parallel_size = 2            # DP (自动计算: 64/8/4=2)
 ---
 
 *下一篇：[03-data-parallelism.md](03-data-parallelism.md) - 数据并行详解*
+
+---
+
+## 参考资料与引用
+
+1. **Narayanan, D., et al. (2021).** *Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM.* — 3D 并行策略总览  
+   https://arxiv.org/abs/2104.04473
+
+2. **Ben-Nun, T., & Hoefler, T. (2019).** *Demystifying Parallel and Distributed Deep Learning: An In-Depth Concurrency Analysis.* ACM Computing Surveys. — 并行策略分类学  
+   https://arxiv.org/abs/1802.09941
+
+3. **Rajbhandari, S., et al. (2020).** *ZeRO: Memory Optimizations Toward Training Trillion Parameter Models.* — ZeRO 分阶段优化  
+   https://arxiv.org/abs/1910.02054
+
+4. **HuggingFace.** *Model Parallelism Documentation.*  
+   https://huggingface.co/docs/transformers/parallelism

@@ -1109,26 +1109,26 @@ ml_pipeline(config={"lr": 1e-5, "epochs": 3})
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 推荐书籍
 
-- *Designing Machine Learning Systems* - Chip Huyen
-- *Machine Learning Engineering* - Andriy Burkov
-- *Building Machine Learning Pipelines* - O'Reilly
+- Huyen, C. (2022). *Designing Machine Learning Systems*. O'Reilly Media.
+- Burkov, A. (2020). *Machine Learning Engineering*. True Positive Inc.
+- Hapke, H. & Nelson, C. (2020). *Building Machine Learning Pipelines*. O'Reilly Media.
 
 ### 推荐课程
 
-- [Full Stack Deep Learning](https://fullstackdeeplearning.com/)
-- [Made With ML](https://madewithml.com/)
-- [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp)
+- [Full Stack Deep Learning](https://fullstackdeeplearning.com/). UC Berkeley.
+- [Made With ML - MLOps Course](https://madewithml.com/). Goku Mohandas.
+- [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp). DataTalks.Club.
 
 ### 官方文档
 
-- [MLflow Documentation](https://mlflow.org/docs/latest/)
-- [Kubeflow Documentation](https://www.kubeflow.org/docs/)
-- [Weights & Biases Docs](https://docs.wandb.ai/)
-- [LangSmith Documentation](https://docs.smith.langchain.com/)
+- [MLflow Documentation](https://mlflow.org/docs/latest/). Databricks.
+- [Kubeflow Documentation](https://www.kubeflow.org/docs/). Google.
+- [Weights & Biases Documentation](https://docs.wandb.ai/). W&B.
+- [LangSmith Documentation](https://docs.smith.langchain.com/). LangChain.
 
 ---
 

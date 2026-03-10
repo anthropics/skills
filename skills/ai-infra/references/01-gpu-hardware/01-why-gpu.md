@@ -697,3 +697,22 @@ batch_size_experiment()
 ---
 
 *下一篇：[02-architecture-evolution.md](02-architecture-evolution.md) - GPU 架构演进*
+
+---
+
+## 参考资料与引用
+
+1. **Hennessy, J. L., & Patterson, D. A. (2019).** *Computer Architecture: A Quantitative Approach*, 6th Edition. — CPU vs GPU 架构对比  
+   https://www.elsevier.com/books/computer-architecture/hennessy/978-0-12-811905-1
+
+2. **NVIDIA.** *CUDA C++ Programming Guide.* — CUDA 并行编程模型  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/
+
+3. **Jouppi, N. P., et al. (2017).** *In-Datacenter Performance Analysis of a Tensor Processing Unit.* ISCA 2017. — TPU vs GPU 对比  
+   https://arxiv.org/abs/1704.04760
+
+4. **NVIDIA.** *A100 Tensor Core GPU Architecture Whitepaper.*  
+   https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia-ampere-architecture-whitepaper.pdf
+
+5. **Raina, R., Madhavan, A., & Ng, A. Y. (2009).** *Large-scale Deep Unsupervised Learning using Graphics Processors.* ICML 2009. — GPU 深度学习先驱工作  
+   https://dl.acm.org/doi/10.1145/1553374.1553486

@@ -668,3 +668,16 @@ estimate_storage_capacity()
 *下一篇：[02-distributed-filesystems.md](02-distributed-filesystems.md) - 分布式文件系统*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **SNIA.** *Storage Performance Definitions (IOPS, Throughput, Latency).*  
+   https://www.snia.org/
+
+2. **NVIDIA.** *GPUDirect Storage.*  
+   https://developer.nvidia.com/gpudirect-storage
+
+3. **NVMe Specification.** *NVM Express.*  
+   https://nvmexpress.org/

@@ -670,3 +670,31 @@ Tensor（张量）= 多维数组 = 数据的容器
 - **下一篇**：[03-前向传播详解](03-forward-propagation.md) — 数据如何流过网络
 - **推荐视频**：[3Blue1Brown: But what is a neural network?](https://www.youtube.com/watch?v=aircAruvnKk) — 最佳可视化讲解
 - **动手实践**：[PyTorch 60分钟入门](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html)
+
+---
+
+## 参考资料与引用
+
+1. **3Blue1Brown (2017).** *But what is a neural network? | Chapter 1, Deep learning.* — 神经网络可视化讲解  
+   https://www.youtube.com/watch?v=aircAruvnKk
+
+2. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 6: Deep Feedforward Networks. MIT Press.  
+   https://www.deeplearningbook.org/contents/mlp.html
+
+3. **Vaswani, A., et al. (2017).** *Attention Is All You Need.* NeurIPS 2017. — Transformer 架构原论文  
+   https://arxiv.org/abs/1706.03762
+
+4. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — LLaMA-7B 架构参数 (32层/4096维/32头)  
+   https://arxiv.org/abs/2302.13971
+
+5. **PyTorch Documentation.** *Deep Learning with PyTorch: A 60 Minute Blitz.*  
+   https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html
+
+6. **Nielsen, M. (2015).** *Neural Networks and Deep Learning.* — 免费在线教材，神经元与权重概念讲解  
+   http://neuralnetworksanddeeplearning.com/
+
+7. **Nair, V., & Hinton, G. E. (2010).** *Rectified Linear Units Improve Restricted Boltzmann Machines.* ICML 2010. — ReLU 激活函数原论文  
+   https://www.cs.toronto.edu/~fritz/absps/reluICML.pdf
+
+8. **Hendrycks, D., & Gimpel, K. (2016).** *Gaussian Error Linear Units (GELUs).* — GELU 激活函数原论文  
+   https://arxiv.org/abs/1606.08415

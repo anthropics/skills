@@ -565,3 +565,16 @@ for doc in results[:5]:
 *下一篇：[08-消除幻觉与质量提升](08-eliminate-hallucination.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Gao, Y., et al. (2024).** *Retrieval-Augmented Generation for Large Language Models: A Survey.*  
+   https://arxiv.org/abs/2312.10997
+
+2. **Ma, X., et al. (2023).** *Query Rewriting for Retrieval-Augmented Large Language Models.*  
+   https://arxiv.org/abs/2305.14283
+
+3. **Asai, A., et al. (2024).** *Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection.*  
+   https://arxiv.org/abs/2310.11511

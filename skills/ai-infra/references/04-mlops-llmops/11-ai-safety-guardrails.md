@@ -313,3 +313,19 @@ AI Safety 核心要点:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NeMo Guardrails.* — LLM 安全护栏框架  
+   https://github.com/NVIDIA/NeMo-Guardrails
+
+2. **Meta.** *Llama Guard.* — LLM 输入/输出安全分类  
+   https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/
+
+3. **Guardrails AI.** *Guardrails Framework.*  
+   https://github.com/guardrails-ai/guardrails
+
+4. **OWASP.** *OWASP Top 10 for LLM Applications.*  
+   https://owasp.org/www-project-top-10-for-large-language-model-applications/

@@ -281,3 +281,19 @@
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **HuggingFace.** *Community and Forums.*  
+   https://discuss.huggingface.co/
+
+2. **Reddit r/MachineLearning.** *ML Research Community.*  
+   https://www.reddit.com/r/MachineLearning/
+
+3. **arXiv.** *Machine Learning Preprints.*  
+   https://arxiv.org/list/cs.LG/recent
+
+4. **AI conferences.** *NeurIPS, ICML, ICLR, ACL.*  
+   https://neurips.cc/ / https://icml.cc/

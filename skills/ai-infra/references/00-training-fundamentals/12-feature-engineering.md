@@ -860,3 +860,25 @@ auto_feature_prompt = """
 *上一篇：[11-训练 vs 推理深度对比](11-training-vs-inference.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Zheng, A., & Casari, A. (2018).** *Feature Engineering for Machine Learning.* O'Reilly. — 特征工程经典教材  
+   https://www.oreilly.com/library/view/feature-engineering-for/9781491953235/
+
+2. **Mikolov, T., et al. (2013).** *Efficient Estimation of Word Representations in Vector Space.* — Word2Vec 嵌入原论文  
+   https://arxiv.org/abs/1301.3781
+
+3. **Feast Documentation.** *Feast: Feature Store for Machine Learning.* — 特征存储平台  
+   https://feast.dev/
+
+4. **Apache Spark Documentation.** *MLlib: Feature Extraction and Transformation.*  
+   https://spark.apache.org/docs/latest/ml-features.html
+
+5. **Apache Flink Documentation.** *Streaming Feature Engineering.*  
+   https://flink.apache.org/
+
+6. **Devlin, J., et al. (2019).** *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.* — 深度学习自动特征提取  
+   https://arxiv.org/abs/1810.04805

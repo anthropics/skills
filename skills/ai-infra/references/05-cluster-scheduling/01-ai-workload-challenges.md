@@ -182,3 +182,13 @@
 *下一篇：[02-Kubernetes 基础](02-kubernetes-basics.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Weng, Q., et al. (2022).** *MLaaS in the Wild: Workload Analysis and Scheduling in Large-Scale Heterogeneous GPU Clusters.* NSDI 2022.  
+   https://www.usenix.org/conference/nsdi22/presentation/weng
+
+2. **Jeon, M., et al. (2019).** *Analysis of Large-Scale Multi-Tenant GPU Clusters for DNN Training Workloads.* ATC 2019.  
+   https://www.usenix.org/conference/atc19/presentation/jeon

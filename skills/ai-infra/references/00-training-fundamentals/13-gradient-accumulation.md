@@ -209,3 +209,22 @@ print(f"Perplexity: {ppl:.2f}")
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Ott, M., et al. (2018).** *Scaling Neural Machine Translation.* — 大 batch 训练与梯度累积策略  
+   https://arxiv.org/abs/1806.00187
+
+2. **Goyal, P., et al. (2017).** *Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour.* — 大 batch 训练技巧  
+   https://arxiv.org/abs/1706.02677
+
+3. **PyTorch Documentation.** *gradient accumulation.* — PyTorch 梯度累积最佳实践  
+   https://pytorch.org/docs/stable/notes/amp_examples.html
+
+4. **HuggingFace Documentation.** *Training with gradient accumulation.* — Transformers 库梯度累积  
+   https://huggingface.co/docs/transformers/perf_train_gpu_one
+
+5. **Merity, S., Keskar, N. S., & Socher, R. (2018).** *An Analysis of Neural Language Modeling at Multiple Scales.* — Perplexity 评估指标  
+   https://arxiv.org/abs/1803.08240

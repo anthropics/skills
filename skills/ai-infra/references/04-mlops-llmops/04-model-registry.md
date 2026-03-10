@@ -312,3 +312,16 @@ def promote_model(model_name: str, version: str):
 *下一篇：[05-特征工程平台](05-feature-store.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **MLflow.** *MLflow Model Registry.*  
+   https://mlflow.org/docs/latest/model-registry.html
+
+2. **HuggingFace.** *Hugging Face Hub.*  
+   https://huggingface.co/docs/hub/
+
+3. **DVC.** *Data Version Control — Model Registry.*  
+   https://dvc.org/doc/use-cases/model-registry

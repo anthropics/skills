@@ -773,3 +773,13 @@ class CostTracker:
 *下一篇：[11-Milvus 深度解析](11-milvus-deep-dive.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Jiang, H., et al. (2023).** *LLMLingua: Compressing Prompts for Accelerated Inference of Large Language Models.*  
+   https://arxiv.org/abs/2310.05736
+
+2. **OpenAI.** *Tokenizer and Pricing.*  
+   https://platform.openai.com/tokenizer

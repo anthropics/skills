@@ -279,3 +279,16 @@ def validate_features(store: FeatureStore, feature_view: str):
 *下一篇：[06-CI/CD for ML](06-cicd-for-ml.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Feast Documentation.** *Feast: Open Source Feature Store.*  
+   https://feast.dev/
+
+2. **Tecton.** *What is a Feature Store?*  
+   https://www.tecton.ai/feature-store/
+
+3. **Hopsworks.** *Feature Store for ML.*  
+   https://www.hopsworks.ai/feature-store

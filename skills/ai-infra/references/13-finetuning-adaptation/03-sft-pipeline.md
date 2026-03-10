@@ -542,13 +542,14 @@ Loss ↑
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [LIMA: Less Is More for Alignment](https://arxiv.org/abs/2305.11206) - 数据质量的重要性
-- [TRL Documentation](https://huggingface.co/docs/trl) - SFTTrainer 完整文档
-- [LLM Training Recipes](https://github.com/huggingface/alignment-handbook) - HuggingFace 微调指南
-- [Deita: Data-Efficient Instruction Tuning](https://arxiv.org/abs/2312.15685) - 数据高效微调
-- [OpenAssistant Dataset](https://huggingface.co/datasets/OpenAssistant/oasst2) - 开源对话数据
+1. Zhou, C., et al. (2023). *LIMA: Less Is More for Alignment*. arXiv:2305.11206. https://arxiv.org/abs/2305.11206
+2. Liu, W., et al. (2023). *Deita: What Makes Good Data for Alignment: A Comprehensive Study of Automatic Data Selection in Instruction Tuning*. arXiv:2312.15685. https://arxiv.org/abs/2312.15685
+3. Köpf, A., et al. (2023). *OpenAssistant Conversations - Democratizing Large Language Model Alignment*. arXiv:2304.07327. https://arxiv.org/abs/2304.07327
+4. TRL (Transformer Reinforcement Learning) - SFTTrainer Documentation. HuggingFace. https://huggingface.co/docs/trl
+5. Alignment Handbook - LLM Training Recipes. HuggingFace. https://github.com/huggingface/alignment-handbook
+6. OpenAssistant Dataset (oasst2). https://huggingface.co/datasets/OpenAssistant/oasst2
 
 ---
 

@@ -120,13 +120,15 @@ Scaling Laws 告诉我们数据量很重要:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- 论文: *Scaling Data-Constrained Language Models* (2023)
-- 论文: *Textbooks Are All You Need* (Phi-1, 2023)
-- 论文: *Scaling Laws for Neural Language Models* (Kaplan et al., 2020)
-- [Common Crawl](https://commoncrawl.org/)
-- [HuggingFace Datasets](https://huggingface.co/datasets)
+1. Muennighoff, N., et al. (2023). *Scaling Data-Constrained Language Models*. arXiv:2305.16264. https://arxiv.org/abs/2305.16264
+2. Gunasekar, S., et al. (2023). *Textbooks Are All You Need*. arXiv:2306.11644. https://arxiv.org/abs/2306.11644
+3. Kaplan, J., et al. (2020). *Scaling Laws for Neural Language Models*. arXiv:2001.08361. https://arxiv.org/abs/2001.08361
+4. Hoffmann, J., et al. (2022). *Training Compute-Optimal Large Language Models* (Chinchilla). arXiv:2203.15556. https://arxiv.org/abs/2203.15556
+5. Common Crawl Foundation. https://commoncrawl.org/
+6. HuggingFace Datasets Hub. https://huggingface.co/datasets
+7. Penedo, G., et al. (2024). *The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale*. arXiv:2406.17557. https://arxiv.org/abs/2406.17557
 
 ---
 

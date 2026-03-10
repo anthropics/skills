@@ -551,3 +551,19 @@ mpirun -np 16 --hostfile hosts \
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Al-Fares, M., et al. (2008).** *A Scalable, Commodity Data Center Network Architecture (Fat-tree).* ACM SIGCOMM 2008.  
+   https://dl.acm.org/doi/10.1145/1402958.1402967
+
+2. **NVIDIA.** *DGX SuperPOD Reference Architecture.*  
+   https://docs.nvidia.com/dgx-superpod/
+
+3. **NVIDIA.** *Rail-Optimized Network Topology.* — GPU 集群网络拓扑优化  
+   https://developer.nvidia.com/blog/rail-optimized-topology-for-ai-training/
+
+4. **Mellanox/NVIDIA.** *InfiniBand HDR/NDR.*  
+   https://www.nvidia.com/en-us/networking/infiniband/

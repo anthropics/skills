@@ -796,18 +796,18 @@ print(f"  KV Cache = {result_fp8['total_gb']:.1f} GB  (节省 {(1-result_fp8['to
 
 ---
 
-## 📚 延伸阅读
+## 📚 参考资料与引用
 
 ### 必读论文
 
-- [Efficient Memory Management for LLM Serving with PagedAttention](https://arxiv.org/abs/2309.06180) — vLLM/PagedAttention
-- [FlashAttention-2](https://arxiv.org/abs/2307.08691) — IO-Aware Attention
-- [Efficient Streaming Language Models with Attention Sinks](https://arxiv.org/abs/2309.17453) — StreamingLLM
-- [H2O: Heavy-Hitter Oracle for Efficient LLM Inference](https://arxiv.org/abs/2306.14048) — KV Cache 淘汰
-- [YaRN: Efficient Context Window Extension](https://arxiv.org/abs/2309.00071) — RoPE 扩展
-- [DistServe: Disaggregating Prefill and Decoding](https://arxiv.org/abs/2401.09670) — PD 分离
-- [Mooncake: A KVCache-centric Disaggregated Architecture](https://arxiv.org/abs/2407.00079) — 月之暗面
-- [SGLang: Efficient Execution of Structured Language Model Programs](https://arxiv.org/abs/2312.07104) — RadixAttention
-- [LLMLingua: Compressing Prompts for Accelerated Inference](https://arxiv.org/abs/2310.05736) — Prompt 压缩
-- [Lost in the Middle](https://arxiv.org/abs/2307.03172) — 长上下文能力评估
-- [Sarathi-Serve: Chunked-Prefills for SLO-compliant LLM Serving](https://arxiv.org/abs/2403.02310) — Chunked Prefill
+1. Kwon, W., et al. (2023). *Efficient Memory Management for Large Language Model Serving with PagedAttention*. SOSP 2023. arXiv:2309.06180. https://arxiv.org/abs/2309.06180
+2. Dao, T. (2023). *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning*. arXiv:2307.08691. https://arxiv.org/abs/2307.08691
+3. Xiao, G., et al. (2023). *Efficient Streaming Language Models with Attention Sinks*. arXiv:2309.17453. https://arxiv.org/abs/2309.17453
+4. Zhang, Z., et al. (2023). *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models*. arXiv:2306.14048. https://arxiv.org/abs/2306.14048
+5. Peng, B., et al. (2023). *YaRN: Efficient Context Window Extension of Large Language Models*. arXiv:2309.00071. https://arxiv.org/abs/2309.00071
+6. Zhong, Y., et al. (2024). *DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving*. arXiv:2401.09670. https://arxiv.org/abs/2401.09670
+7. Qin, R., et al. (2024). *Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving*. arXiv:2407.00079. https://arxiv.org/abs/2407.00079
+8. Zheng, L., et al. (2023). *SGLang: Efficient Execution of Structured Language Model Programs*. arXiv:2312.07104. https://arxiv.org/abs/2312.07104
+9. Jiang, H., et al. (2023). *LLMLingua: Compressing Prompts for Accelerated Inference of Large Language Models*. arXiv:2310.05736. https://arxiv.org/abs/2310.05736
+10. Liu, N., et al. (2023). *Lost in the Middle: How Language Models Use Long Contexts*. arXiv:2307.03172. https://arxiv.org/abs/2307.03172
+11. Agrawal, A., et al. (2024). *Sarathi-Serve: Chunked-Prefills for SLO-compliant LLM Serving*. arXiv:2403.02310. https://arxiv.org/abs/2403.02310

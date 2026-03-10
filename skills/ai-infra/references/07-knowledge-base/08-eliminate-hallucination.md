@@ -559,3 +559,13 @@ for i, score in enumerate(result.scores):
 *下一篇：[09-实时知识获取](09-realtime-knowledge.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Huang, L., et al. (2023).** *A Survey on Hallucination in Large Language Models.*  
+   https://arxiv.org/abs/2311.05232
+
+2. **Min, S., et al. (2023).** *FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation.*  
+   https://arxiv.org/abs/2305.14251

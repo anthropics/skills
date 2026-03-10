@@ -479,3 +479,16 @@ PD 分离 vs 混合部署 决策：
 *下一篇：[07-context-engineering.md](07-context-engineering.md) — 上下文工程与压缩*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Zhong, Y., et al. (2024).** *DistServe: Disaggregating Prefill and Decoding for Goodput-optimized Large Language Model Serving.* OSDI 2024.  
+   https://arxiv.org/abs/2401.09670
+
+2. **Patel, P., et al. (2024).** *Splitwise: Efficient Generative LLM Inference Using Phase Splitting.*  
+   https://arxiv.org/abs/2311.18677
+
+3. **Qin, R., et al. (2024).** *Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving.*  
+   https://arxiv.org/abs/2407.00079

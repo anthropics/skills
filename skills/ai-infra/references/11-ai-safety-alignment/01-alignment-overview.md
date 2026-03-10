@@ -180,12 +180,15 @@ AI 对齐就像培训一个超级聪明但没有常识的新员工:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- 论文: *Training language models to follow instructions with human feedback* (InstructGPT, 2022)
-- 论文: *Constitutional AI: Harmlessness from AI Feedback* (Anthropic, 2022)
-- [Anthropic's Core Views on AI Safety](https://www.anthropic.com/research)
-- [OpenAI's Approach to AI Safety](https://openai.com/safety)
+1. Ouyang, L., et al. (2022). *Training language models to follow instructions with human feedback* (InstructGPT). arXiv:2203.02155. https://arxiv.org/abs/2203.02155
+2. Bai, Y., et al. (2022). *Constitutional AI: Harmlessness from AI Feedback*. Anthropic. arXiv:2212.08073. https://arxiv.org/abs/2212.08073
+3. Amodei, D., et al. (2016). *Concrete Problems in AI Safety*. arXiv:1606.06565. https://arxiv.org/abs/1606.06565
+4. Ngo, R., et al. (2022). *The Alignment Problem from a Deep Learning Perspective*. arXiv:2209.00626. https://arxiv.org/abs/2209.00626
+5. Anthropic's Core Views on AI Safety. https://www.anthropic.com/research
+6. OpenAI's Approach to AI Safety. https://openai.com/safety
+7. DeepMind Safety Research. https://deepmind.google/discover/blog/?category=Safety
 
 ---
 

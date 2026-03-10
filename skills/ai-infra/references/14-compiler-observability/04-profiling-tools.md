@@ -499,14 +499,14 @@ def quick_diagnose(model, dataloader, num_steps=10):
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [PyTorch Profiler Documentation](https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html)
-- [NVIDIA Nsight Systems User Guide](https://docs.nvidia.com/nsight-systems/)
-- [NVIDIA Nsight Compute User Guide](https://docs.nvidia.com/nsight-compute/)
-- [Roofline Model Introduction](https://docs.nersc.gov/tools/performance/roofline/)
-- [PyTorch Memory Visualization](https://pytorch.org/blog/understanding-gpu-memory-1/)
-- [Efficient PyTorch: A Tutorial on Optimizing PyTorch](https://github.com/pytorch/pytorch/wiki/Efficient-PyTorch)
+1. PyTorch Profiler Tutorial. https://pytorch.org/tutorials/recipes/recipes/profiler_recipe.html
+2. NVIDIA Nsight Systems User Guide. https://docs.nvidia.com/nsight-systems/
+3. NVIDIA Nsight Compute User Guide. https://docs.nvidia.com/nsight-compute/
+4. Williams, S., et al. (2009). *Roofline: An Insightful Visual Performance Model for Multicore Architectures*. Communications of the ACM, 52(4). https://docs.nersc.gov/tools/performance/roofline/
+5. Understanding GPU Memory - PyTorch Blog. https://pytorch.org/blog/understanding-gpu-memory-1/
+6. Efficient PyTorch Wiki. https://github.com/pytorch/pytorch/wiki/Efficient-PyTorch
 
 ---
 

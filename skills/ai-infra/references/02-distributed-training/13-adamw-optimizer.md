@@ -381,3 +381,19 @@ for step, batch in enumerate(dataloader):
 ---
 
 > **一句话总结**：AdamW = Adam 的自适应学习率 + 正确解耦的权重衰减。它能让每个参数"按需调速"，同时均匀地防止参数膨胀，代价是每个参数需要额外 12 字节显存来存储动量和方差。
+
+---
+
+## 参考资料与引用
+
+1. **Kingma, D. P., & Ba, J. (2015).** *Adam: A Method for Stochastic Optimization.* ICLR 2015. — Adam 优化器原论文  
+   https://arxiv.org/abs/1412.6980
+
+2. **Loshchilov, I., & Hutter, F. (2019).** *Decoupled Weight Decay Regularization.* ICLR 2019. — AdamW 原论文  
+   https://arxiv.org/abs/1711.05101
+
+3. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — LLaMA AdamW 超参配置  
+   https://arxiv.org/abs/2302.13971
+
+4. **You, Y., et al. (2020).** *Large Batch Optimization for Deep Learning: Training BERT in 76 minutes (LAMB).* ICLR 2020. — LAMB 优化器对比  
+   https://arxiv.org/abs/1904.00962

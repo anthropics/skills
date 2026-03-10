@@ -605,3 +605,19 @@ def validate_checkpoint(path):
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Maeng, K., et al. (2021).** *Understanding and Improving Failure Tolerant Training for Deep Learning Recommendation with Partial Recovery.*  
+   https://arxiv.org/abs/2011.02999
+
+2. **Mohan, J., et al. (2021).** *CheckFreq: Frequent, Fine-Grained DNN Checkpointing.* FAST 2021.  
+   https://www.usenix.org/conference/fast21/presentation/mohan
+
+3. **PyTorch Documentation.** *Distributed Checkpoint (DCP).*  
+   https://pytorch.org/docs/stable/distributed.checkpoint.html
+
+4. **DeepSpeed Documentation.** *Checkpoint Configuration.*  
+   https://www.deepspeed.ai/docs/config-json/#checkpoint-options

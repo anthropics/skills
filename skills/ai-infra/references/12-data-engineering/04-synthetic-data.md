@@ -199,12 +199,14 @@ def generate_domain_data(
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- 论文: *Self-Instruct: Aligning Language Models with Self-Generated Instructions* (2022)
-- 论文: *WizardLM: Empowering Large Language Models to Follow Complex Instructions* (2023)
-- 论文: *Textbooks Are All You Need* (Phi-1, 2023)
-- [Alpaca Data Generation](https://github.com/tatsu-lab/stanford_alpaca)
+1. Wang, Y., et al. (2022). *Self-Instruct: Aligning Language Models with Self-Generated Instructions*. arXiv:2212.10560. https://arxiv.org/abs/2212.10560
+2. Xu, C., et al. (2023). *WizardLM: Empowering Large Language Models to Follow Complex Instructions*. arXiv:2304.12244. https://arxiv.org/abs/2304.12244
+3. Gunasekar, S., et al. (2023). *Textbooks Are All You Need* (Phi-1). arXiv:2306.11644. https://arxiv.org/abs/2306.11644
+4. Taori, R., et al. (2023). *Stanford Alpaca: An Instruction-following LLaMA Model*. https://github.com/tatsu-lab/stanford_alpaca
+5. Xu, C., et al. (2023). *Baize: An Open-Source Chat Model with Parameter-Efficient Tuning on Self-Chat Data*. arXiv:2304.01196. https://arxiv.org/abs/2304.01196
+6. Peng, B., et al. (2023). *Instruction Tuning with GPT-4*. arXiv:2304.03277. https://arxiv.org/abs/2304.03277
 
 ---
 

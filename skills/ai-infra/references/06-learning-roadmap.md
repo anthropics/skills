@@ -699,6 +699,18 @@ Q5: 如何优化 GPU 集群的利用率？
 
 ---
 
+## 参考资料与引用
+
+1. Zhang, A., et al. (2023). *Dive into Deep Learning*. Cambridge University Press. https://d2l.ai/
+2. Howard, J. & Gugger, S. (2022). *Deep Learning for Coders with fastai and PyTorch*. O'Reilly. https://course.fast.ai/
+3. Karpathy, A. (2022). *nanoGPT: The Simplest, Fastest Repository for Training GPTs*. https://github.com/karpathy/nanoGPT
+4. Stanford CS231n: Deep Learning for Computer Vision. https://cs231n.stanford.edu/
+5. Stanford CS224n: Natural Language Processing with Deep Learning. https://web.stanford.edu/class/cs224n/
+6. HuggingFace NLP Course. https://huggingface.co/learn/nlp-course
+7. Full Stack Deep Learning Course. https://fullstackdeeplearning.com/
+
+---
+
 ## 结语
 
 AI Infra 是一个快速发展的领域，技术迭代速度快。保持好奇心，持续学习，在实践中成长。

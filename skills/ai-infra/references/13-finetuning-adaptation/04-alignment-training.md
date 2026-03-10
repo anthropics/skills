@@ -548,14 +548,14 @@ PPO 超参数:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Training Language Models to Follow Instructions with Human Feedback](https://arxiv.org/abs/2203.02155) - InstructGPT / RLHF 原论文
-- [Direct Preference Optimization](https://arxiv.org/abs/2305.18290) - DPO 原论文
-- [OpenRLHF Documentation](https://github.com/OpenRLHF/OpenRLHF)
-- [TRL PPO Trainer](https://huggingface.co/docs/trl/ppo_trainer)
-- [Scaling Laws for Reward Model Overoptimization](https://arxiv.org/abs/2210.10760) - RM 过优化分析
-- [RLHF Workflow: From Reward Modeling to Online RLHF](https://arxiv.org/abs/2405.07863)
+1. Ouyang, L., et al. (2022). *Training Language Models to Follow Instructions with Human Feedback* (InstructGPT). arXiv:2203.02155. https://arxiv.org/abs/2203.02155
+2. Rafailov, R., et al. (2023). *Direct Preference Optimization: Your Language Model is Secretly a Reward Model*. arXiv:2305.18290. https://arxiv.org/abs/2305.18290
+3. Gao, L., et al. (2022). *Scaling Laws for Reward Model Overoptimization*. arXiv:2210.10760. https://arxiv.org/abs/2210.10760
+4. Dong, H., et al. (2024). *RLHF Workflow: From Reward Modeling to Online RLHF*. arXiv:2405.07863. https://arxiv.org/abs/2405.07863
+5. OpenRLHF - Open-Source RLHF Framework. https://github.com/OpenRLHF/OpenRLHF
+6. TRL PPO Trainer Documentation. HuggingFace. https://huggingface.co/docs/trl/ppo_trainer
 
 ---
 

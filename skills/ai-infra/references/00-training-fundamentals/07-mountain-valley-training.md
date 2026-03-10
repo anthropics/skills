@@ -798,3 +798,19 @@
 - **相关文档**：[08-学习资源推荐](08-learning-resources.md) — 优秀的博客、视频、课程推荐
 - **相关文档**：[09-NCCL 与 GPU 通信科普](09-nccl-communication.md) — 理解分布式训练中的通信基础
 - **下一步**：[为什么需要分布式训练](../02-distributed-training/01-why-distributed.md) — 深入了解分布式训练
+
+---
+
+## 参考资料与引用
+
+1. **Li, H., et al. (2018).** *Visualizing the Loss Landscape of Neural Nets.* NeurIPS 2018. — 损失函数景观的可视化研究  
+   https://arxiv.org/abs/1712.09913
+
+2. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 8: Optimization for Training Deep Models.  
+   https://www.deeplearningbook.org/contents/optimization.html
+
+3. **Dauphin, Y., et al. (2014).** *Identifying and attacking the saddle point problem in high-dimensional non-convex optimization.* NeurIPS 2014. — 高维空间中鞍点问题  
+   https://arxiv.org/abs/1406.2572
+
+4. **Ruder, S. (2016).** *An overview of gradient descent optimization algorithms.* — 优化器综述  
+   https://arxiv.org/abs/1609.04747

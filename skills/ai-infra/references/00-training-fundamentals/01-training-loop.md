@@ -314,3 +314,25 @@
 ---
 
 > **一句话总结**：AI 训练 = 不断循环"试错→评分→反馈→调整"，就像厨师学徒通过反复做菜、被师傅点评、逐步改进手法，最终成为大厨。
+
+---
+
+## 参考资料与引用
+
+1. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning.* MIT Press. — 深度学习训练循环的经典教材  
+   https://www.deeplearningbook.org/
+
+2. **Karpathy, A. (2023).** *Let's build GPT: from scratch, in code, spelled out.* — 从零构建 GPT 训练循环的实战教程  
+   https://www.youtube.com/watch?v=kCc8FmEb1nY
+
+3. **PyTorch Documentation.** *Training a Classifier.* — PyTorch 官方训练循环教程  
+   https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
+
+4. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — LLaMA 训练配置参考 (7B 参数、AdamW 显存计算)  
+   https://arxiv.org/abs/2302.13971
+
+5. **Loshchilov, I., & Hutter, F. (2019).** *Decoupled Weight Decay Regularization (AdamW).* ICLR 2019. — AdamW 优化器原论文  
+   https://arxiv.org/abs/1711.05101
+
+6. **Ruder, S. (2016).** *An overview of gradient descent optimization algorithms.* — 梯度下降与优化器综述  
+   https://arxiv.org/abs/1609.04747

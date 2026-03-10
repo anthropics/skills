@@ -524,3 +524,16 @@ Checkpoint 分层存储:
 *上一篇：[02-distributed-filesystems.md](02-distributed-filesystems.md)* | *下一篇：[04-object-storage.md](04-object-storage.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **PyTorch.** *Distributed Checkpoint (DCP).*  
+   https://pytorch.org/docs/stable/distributed.checkpoint.html
+
+2. **NVIDIA.** *GPUDirect Storage for Checkpoint.*  
+   https://developer.nvidia.com/gpudirect-storage
+
+3. **Mohan, J., et al. (2021).** *CheckFreq: Frequent, Fine-Grained DNN Checkpointing.* FAST 2021.  
+   https://www.usenix.org/conference/fast21/presentation/mohan

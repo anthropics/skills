@@ -427,3 +427,16 @@ spec:
 *下一篇：[06-多租户管理](06-multi-tenancy.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Kubernetes.** *Resource Quotas.*  
+   https://kubernetes.io/docs/concepts/policy/resource-quotas/
+
+2. **Kubernetes.** *Limit Ranges.*  
+   https://kubernetes.io/docs/concepts/policy/limit-range/
+
+3. **NVIDIA.** *MIG for Resource Isolation.*  
+   https://docs.nvidia.com/datacenter/tesla/mig-user-guide/

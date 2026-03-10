@@ -207,3 +207,19 @@ estimate_training_time(
 ---
 
 *下一篇：[02-parallelism-overview.md](02-parallelism-overview.md) - 并行策略总览*
+
+---
+
+## 参考资料与引用
+
+1. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — 7B~65B 模型训练的显存/计算需求  
+   https://arxiv.org/abs/2302.13971
+
+2. **Rajbhandari, S., et al. (2020).** *ZeRO: Memory Optimizations Toward Training Trillion Parameter Models.* SC 2020. — 分布式显存优化  
+   https://arxiv.org/abs/1910.02054
+
+3. **Narayanan, D., et al. (2021).** *Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM.* SC 2021.  
+   https://arxiv.org/abs/2104.04473
+
+4. **Brown, T., et al. (2020).** *Language Models are Few-Shot Learners (GPT-3).* NeurIPS 2020. — 175B 模型训练规模  
+   https://arxiv.org/abs/2005.14165

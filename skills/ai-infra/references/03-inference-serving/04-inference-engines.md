@@ -477,3 +477,19 @@ torch.onnx.export(
 ---
 
 *下一篇：[05-llm-inference-kv-cache.md](05-llm-inference-kv-cache.md) - KV Cache 详解*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *TensorRT Documentation.*  
+   https://developer.nvidia.com/tensorrt
+
+2. **ONNX Runtime.** *ONNX Runtime for Inference.*  
+   https://onnxruntime.ai/
+
+3. **NVIDIA.** *TensorRT-LLM.* — LLM 推理优化引擎  
+   https://github.com/NVIDIA/TensorRT-LLM
+
+4. **llama.cpp.** *CPU/GPU 混合推理引擎.*  
+   https://github.com/ggerganov/llama.cpp

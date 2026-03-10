@@ -270,3 +270,16 @@ MLOps: 2 → 目标 3
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **PyTorch.** *PyTorch Tutorials.*  
+   https://pytorch.org/tutorials/
+
+2. **NVIDIA.** *CUDA Programming Guide.*  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/
+
+3. **Linux Foundation.** *Kubernetes Certification (CKA/CKAD).*  
+   https://training.linuxfoundation.org/

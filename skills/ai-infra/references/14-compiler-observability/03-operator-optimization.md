@@ -486,14 +486,14 @@ print(f"Speedup:  {standard_time/flash_time:.1f}x")
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [FlashAttention: Fast and Memory-Efficient Exact Attention](https://arxiv.org/abs/2205.14135) - Dao et al., 2022
-- [FlashAttention-2: Faster Attention with Better Parallelism](https://arxiv.org/abs/2307.08691) - Dao, 2023
-- [FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision](https://arxiv.org/abs/2407.08608) - Shah et al., 2024
-- [Triton Tutorials](https://triton-lang.org/main/getting-started/tutorials/)
-- [CUTLASS: CUDA Templates for Linear Algebra](https://github.com/NVIDIA/cutlass)
-- [How to Optimize a CUDA Matmul Kernel](https://siboehm.com/articles/22/CUDA-MMM)
+1. Dao, T., et al. (2022). *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness*. arXiv:2205.14135. https://arxiv.org/abs/2205.14135
+2. Dao, T. (2023). *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning*. arXiv:2307.08691. https://arxiv.org/abs/2307.08691
+3. Shah, J., et al. (2024). *FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision*. arXiv:2407.08608. https://arxiv.org/abs/2407.08608
+4. Triton Tutorials - GPU Programming in Python. https://triton-lang.org/main/getting-started/tutorials/
+5. CUTLASS: CUDA Templates for Linear Algebra Subroutines. NVIDIA. https://github.com/NVIDIA/cutlass
+6. Boehm, S. (2022). *How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance*. https://siboehm.com/articles/22/CUDA-MMM
 
 ---
 

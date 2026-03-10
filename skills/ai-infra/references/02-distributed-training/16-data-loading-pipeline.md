@@ -624,3 +624,19 @@ def diagnose_dataloader(dataloader, num_batches=50):
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **PyTorch Documentation.** *torch.utils.data.DataLoader.*  
+   https://pytorch.org/docs/stable/data.html
+
+2. **NVIDIA.** *DALI (Data Loading Library).* — GPU 加速数据预处理  
+   https://docs.nvidia.com/deeplearning/dali/
+
+3. **HuggingFace.** *Datasets Library.* — 高效数据集加载  
+   https://huggingface.co/docs/datasets/
+
+4. **MosaicML.** *StreamingDataset.* — 分布式流式数据加载  
+   https://github.com/mosaicml/streaming

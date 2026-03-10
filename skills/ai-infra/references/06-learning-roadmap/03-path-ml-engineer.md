@@ -302,3 +302,16 @@ spec:
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Stanford CS231n.** *Convolutional Neural Networks for Visual Recognition.*  
+   https://cs231n.stanford.edu/
+
+2. **Stanford CS224n.** *Natural Language Processing with Deep Learning.*  
+   https://web.stanford.edu/class/cs224n/
+
+3. **Chip Huyen.** *Designing Machine Learning Systems.* O'Reilly 2022.  
+   https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/

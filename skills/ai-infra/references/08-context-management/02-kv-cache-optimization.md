@@ -539,3 +539,16 @@ MLA：
 *下一篇：[03-prefix-caching.md](03-prefix-caching.md) — Prefix Caching 技术*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Zhang, Z., et al. (2023).** *H2O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models.*  
+   https://arxiv.org/abs/2306.14048
+
+2. **Xiao, G., et al. (2023).** *Efficient Streaming Language Models with Attention Sinks (StreamingLLM).*  
+   https://arxiv.org/abs/2309.17453
+
+3. **Liu, Z., et al. (2023).** *Scissorhands: Exploiting the Persistence of Importance Hypothesis for LLM KV Cache Compression.*  
+   https://arxiv.org/abs/2305.17118

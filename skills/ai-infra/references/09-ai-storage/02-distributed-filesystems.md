@@ -379,3 +379,22 @@ fio --name=rand_read --directory=/lustre/bench \
 *上一篇：[01-storage-fundamentals.md](01-storage-fundamentals.md)* | *下一篇：[03-checkpoint-storage.md](03-checkpoint-storage.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Lustre.** *Lustre Wiki and Documentation.*  
+   https://wiki.lustre.org/
+
+2. **IBM.** *IBM Spectrum Scale (GPFS).*  
+   https://www.ibm.com/products/storage-scale
+
+3. **BeeGFS.** *BeeGFS Parallel File System.*  
+   https://www.beegfs.io/
+
+4. **JuiceFS.** *JuiceFS: Cloud-Native Distributed File System.*  
+   https://juicefs.com/
+
+5. **Ceph.** *CephFS Documentation.*  
+   https://docs.ceph.com/en/latest/cephfs/

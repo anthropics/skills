@@ -347,13 +347,14 @@ NVIDIA 官方                      ┌──────────────
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [The Deep Learning Compiler: A Comprehensive Survey](https://arxiv.org/abs/2002.03794)
-- [torch.compile: Understanding PyTorch 2.0](https://pytorch.org/get-started/pytorch-2.0/)
-- [Triton: An Intermediate Language and Compiler](https://triton-lang.org/)
-- [TVM: An Automated End-to-End Optimizing Compiler](https://tvm.apache.org/)
-- [XLA: Optimizing Compiler for Machine Learning](https://www.tensorflow.org/xla)
+1. Li, M., et al. (2020). *The Deep Learning Compiler: A Comprehensive Survey*. arXiv:2002.03794. https://arxiv.org/abs/2002.03794
+2. PyTorch 2.0 - torch.compile Documentation. https://pytorch.org/get-started/pytorch-2.0/
+3. Tillet, P., et al. (2019). *Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations*. MAPL 2019. https://triton-lang.org/
+4. Chen, T., et al. (2018). *TVM: An Automated End-to-End Optimizing Compiler for Deep Learning*. OSDI 2018. https://tvm.apache.org/
+5. XLA: Optimizing Compiler for Machine Learning. TensorFlow. https://www.tensorflow.org/xla
+6. Ansel, J., et al. (2024). *PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation*. ASPLOS 2024. https://pytorch.org/assets/pytorch2-2.pdf
 
 ---
 

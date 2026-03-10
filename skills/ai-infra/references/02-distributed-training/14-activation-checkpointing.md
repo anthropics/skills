@@ -279,3 +279,19 @@ model = FSDP(
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Chen, T., et al. (2016).** *Training Deep Nets with Sublinear Memory Cost.* — Gradient/Activation Checkpointing 原论文  
+   https://arxiv.org/abs/1604.06174
+
+2. **Korthikanti, V., et al. (2022).** *Reducing Activation Recomputation in Large Transformer Models.* — Selective Checkpointing  
+   https://arxiv.org/abs/2205.05198
+
+3. **PyTorch Documentation.** *torch.utils.checkpoint.*  
+   https://pytorch.org/docs/stable/checkpoint.html
+
+4. **DeepSpeed Documentation.** *Activation Checkpointing.*  
+   https://www.deepspeed.ai/tutorials/activation-checkpointing/

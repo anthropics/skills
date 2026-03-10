@@ -247,3 +247,19 @@ class KVCache:
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Karpathy, A.** *nanoGPT.* — 从零构建 GPT  
+   https://github.com/karpathy/nanoGPT
+
+2. **Karpathy, A.** *micrograd.* — 从零构建自动微分引擎  
+   https://github.com/karpathy/micrograd
+
+3. **LangChain.** *Build LLM Applications.*  
+   https://docs.langchain.com/
+
+4. **Kaggle.** *Machine Learning Competitions.*  
+   https://www.kaggle.com/

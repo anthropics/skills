@@ -1116,26 +1116,26 @@ for batch in dataloader:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 必读论文
 
-- [Megatron-LM](https://arxiv.org/abs/1909.08053) - 模型并行经典
-- [ZeRO](https://arxiv.org/abs/1910.02054) - 内存优化革命
-- [GPipe](https://arxiv.org/abs/1811.06965) - 流水线并行
-- [1-bit Adam](https://arxiv.org/abs/2102.02888) - 通信压缩
+1. Shoeybi, M., et al. (2019). *Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism*. arXiv:1909.08053. https://arxiv.org/abs/1909.08053
+2. Rajbhandari, S., et al. (2020). *ZeRO: Memory Optimizations Toward Training Trillion Parameter Models*. arXiv:1910.02054. https://arxiv.org/abs/1910.02054
+3. Huang, Y., et al. (2019). *GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism*. arXiv:1811.06965. https://arxiv.org/abs/1811.06965
+4. Tang, H., et al. (2021). *1-bit Adam: Communication Efficient Large-Scale Training with Adam's Convergence Speed*. arXiv:2102.02888. https://arxiv.org/abs/2102.02888
 
 ### 官方文档
 
-- [PyTorch Distributed](https://pytorch.org/docs/stable/distributed.html)
-- [DeepSpeed Documentation](https://www.deepspeed.ai/)
-- [Megatron-LM GitHub](https://github.com/NVIDIA/Megatron-LM)
-- [ColossalAI Documentation](https://colossalai.org/)
+- [PyTorch Distributed Communication Package](https://pytorch.org/docs/stable/distributed.html). PyTorch.
+- [DeepSpeed Documentation](https://www.deepspeed.ai/). Microsoft.
+- [Megatron-LM GitHub Repository](https://github.com/NVIDIA/Megatron-LM). NVIDIA.
+- [ColossalAI Documentation](https://colossalai.org/). HPC-AI Tech.
 
 ### 推荐博客
 
-- [Hugging Face: Model Parallelism](https://huggingface.co/docs/transformers/parallelism)
-- [NVIDIA: Large Language Model Training](https://developer.nvidia.com/blog/scaling-language-model-training/)
+- [Model Parallelism Guide](https://huggingface.co/docs/transformers/parallelism). HuggingFace.
+- [Scaling Language Model Training to Trillions of Parameters](https://developer.nvidia.com/blog/scaling-language-model-training/). NVIDIA Developer Blog.
 
 ---
 

@@ -403,3 +403,13 @@ runtime = sgl.Runtime(
 *下一篇：[06-disaggregated-serving.md](06-disaggregated-serving.md) — Prefill/Decode 分离架构*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Agrawal, A., et al. (2024).** *Sarathi: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills.*  
+   https://arxiv.org/abs/2308.16369
+
+2. **Agrawal, A., et al. (2024).** *Taming Throughput-Latency Tradeoff in LLM Inference with Sarathi-Serve.*  
+   https://arxiv.org/abs/2403.02310

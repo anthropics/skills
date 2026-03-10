@@ -157,3 +157,16 @@ outputs = llm.generate(prompts, sampling_params)
 ---
 
 *下一篇：[07-llm-inference-attention.md](07-llm-inference-attention.md) - Attention 优化*
+
+---
+
+## 参考资料与引用
+
+1. **Yu, G., et al. (2022).** *Orca: A Distributed Serving System for Transformer-Based Generative Models.* OSDI 2022. — Continuous Batching / Iteration-level Scheduling  
+   https://www.usenix.org/conference/osdi22/presentation/yu
+
+2. **Kwon, W., et al. (2023).** *Efficient Memory Management for Large Language Model Serving with PagedAttention.* — vLLM continuous batching 实现  
+   https://arxiv.org/abs/2309.06180
+
+3. **Agrawal, A., et al. (2024).** *Sarathi: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills.*  
+   https://arxiv.org/abs/2308.16369

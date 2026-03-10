@@ -289,12 +289,14 @@ Guardrails 生产部署清单:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [NeMo Guardrails](https://github.com/NVIDIA/NeMo-Guardrails)
-- [Llama Guard](https://ai.meta.com/research/publications/llama-guard-llm-based-input-output-safeguard-for-human-ai-conversations/)
-- [Guardrails AI](https://www.guardrailsai.com/)
-- [OpenAI Moderation API](https://platform.openai.com/docs/guides/moderation)
+1. Rebedea, T., et al. (2023). *NeMo Guardrails: A Toolkit for Controllable and Safe LLM Applications with Programmable Rails*. arXiv:2310.10501. https://arxiv.org/abs/2310.10501
+2. Inan, H., et al. (2023). *Llama Guard: LLM-based Input-Output Safeguard for Human-AI Conversations*. arXiv:2312.06674. https://arxiv.org/abs/2312.06674
+3. NeMo Guardrails GitHub. NVIDIA. https://github.com/NVIDIA/NeMo-Guardrails
+4. Guardrails AI - ML Model Validation Framework. https://www.guardrailsai.com/
+5. OpenAI Moderation API Documentation. https://platform.openai.com/docs/guides/moderation
+6. Dong, Y., et al. (2024). *Building Guardrails for Large Language Models*. arXiv:2402.01822. https://arxiv.org/abs/2402.01822
 
 ---
 

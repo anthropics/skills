@@ -252,3 +252,13 @@ AI 训练中的网络延迟组成:
 *下一篇：[02-rdma-deep-dive.md](02-rdma-deep-dive.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Peterson, L. L., & Davie, B. S. (2012).** *Computer Networks: A Systems Approach.*  
+   https://book.systemsapproach.org/
+
+2. **NVIDIA.** *Data Center Networking for AI.*  
+   https://www.nvidia.com/en-us/networking/

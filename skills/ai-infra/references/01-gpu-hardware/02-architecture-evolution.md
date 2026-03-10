@@ -385,3 +385,22 @@ NVLink 5.0 (B200):  1.8 TB/s，支持 72 GPU 互联！
 ---
 
 *下一篇：[03-nvidia-architecture.md](03-nvidia-architecture.md) - NVIDIA GPU 架构详解*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Tesla V100 GPU Architecture Whitepaper (Volta).* — V100 架构  
+   https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf
+
+2. **NVIDIA.** *A100 Tensor Core GPU Architecture Whitepaper (Ampere).*  
+   https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/nvidia-ampere-architecture-whitepaper.pdf
+
+3. **NVIDIA.** *H100 Tensor Core GPU Architecture Whitepaper (Hopper).*  
+   https://resources.nvidia.com/en-us-tensor-core
+
+4. **NVIDIA.** *Blackwell Architecture Whitepaper (B200).*  
+   https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/
+
+5. **Jia, Z., et al. (2019).** *Dissecting the NVIDIA Volta GPU Architecture via Microbenchmarking.* — GPU 微基准测试  
+   https://arxiv.org/abs/1804.06826

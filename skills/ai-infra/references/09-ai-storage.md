@@ -107,4 +107,16 @@
 
 ---
 
+## 参考资料与引用
+
+> 详细引用请参见各子文件。以下为本章核心参考：
+
+1. Lustre File System Documentation. https://doc.lustre.org/
+2. IBM Spectrum Scale (GPFS) Documentation. https://www.ibm.com/docs/en/spectrum-scale
+3. JuiceFS Documentation. https://juicefs.com/docs/
+4. NVIDIA GPUDirect Storage. https://developer.nvidia.com/gpudirect-storage
+5. Amazon S3 Documentation. https://docs.aws.amazon.com/s3/
+
+---
+
 *上一篇：[08-cost-optimization.md](08-cost-optimization.md)* | *下一篇：[10-ai-networking.md](10-ai-networking.md)*

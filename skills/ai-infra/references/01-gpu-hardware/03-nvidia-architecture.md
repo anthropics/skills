@@ -472,3 +472,19 @@ GPU 架构核心知识点：
 ---
 
 *下一篇：[04-cuda-programming.md](04-cuda-programming.md) - CUDA 编程模型*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NVIDIA GPU Architecture Whitepapers.* — 各代架构白皮书合集  
+   https://developer.nvidia.com/cuda-toolkit-archive
+
+2. **NVIDIA.** *Streaming Multiprocessor (SM) Architecture.*  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#hardware-implementation
+
+3. **Jia, Z., et al. (2019).** *Dissecting the NVIDIA Volta GPU Architecture via Microbenchmarking.* — SM 内部结构分析  
+   https://arxiv.org/abs/1804.06826
+
+4. **NVIDIA.** *A100 GPU Product Specifications.*  
+   https://www.nvidia.com/en-us/data-center/a100/

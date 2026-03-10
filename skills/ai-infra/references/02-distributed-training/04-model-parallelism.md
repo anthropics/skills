@@ -182,3 +182,19 @@ ds_config = {
 ---
 
 *下一篇：[05-pipeline-parallelism.md](05-pipeline-parallelism.md) - 流水线并行详解*
+
+---
+
+## 参考资料与引用
+
+1. **Shoeybi, M., et al. (2020).** *Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism.* — 张量并行原论文  
+   https://arxiv.org/abs/1909.08053
+
+2. **Narayanan, D., et al. (2021).** *Efficient Large-Scale Language Model Training on GPU Clusters.* — Megatron-LM 张量并行实践  
+   https://arxiv.org/abs/2104.04473
+
+3. **NVIDIA.** *Megatron-LM GitHub Repository.*  
+   https://github.com/NVIDIA/Megatron-LM
+
+4. **Dean, J., et al. (2012).** *Large Scale Distributed Deep Networks.* NeurIPS 2012. — 模型并行先驱工作  
+   https://papers.nips.cc/paper/2012/hash/6aca97005c68f1206823815f66102863-Abstract.html

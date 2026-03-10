@@ -312,3 +312,16 @@ RDMA 性能调优 Top 10:
 *上一篇：[01-networking-fundamentals.md](01-networking-fundamentals.md)* | *下一篇：[03-network-topology.md](03-network-topology.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA/Mellanox.** *InfiniBand Documentation.*  
+   https://www.nvidia.com/en-us/networking/infiniband/
+
+2. **IBTA.** *InfiniBand Trade Association Specifications.*  
+   https://www.infinibandta.org/
+
+3. **Guo, C., et al. (2016).** *RDMA over Commodity Ethernet at Scale.* SIGCOMM 2016.  
+   https://dl.acm.org/doi/10.1145/2934872.2934908

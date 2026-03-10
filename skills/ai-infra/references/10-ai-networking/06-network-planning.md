@@ -230,3 +230,13 @@ AI 集群网络分阶段建设:
 *上一篇：[05-network-troubleshooting.md](05-network-troubleshooting.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *DGX SuperPOD Reference Architecture.*  
+   https://docs.nvidia.com/dgx-superpod/
+
+2. **NVIDIA.** *Spectrum-X Ethernet for AI.*  
+   https://www.nvidia.com/en-us/networking/spectrumx/

@@ -441,3 +441,22 @@ GPUDirect RDMA（快）：
 ---
 
 *下一篇：[08-hardware-selection.md](08-hardware-selection.md) - 硬件选型指南*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NVLink and NVSwitch.*  
+   https://www.nvidia.com/en-us/data-center/nvlink/
+
+2. **NVIDIA.** *DGX A100 System Architecture.* — DGX 系统中的 NVSwitch 拓扑  
+   https://www.nvidia.com/en-us/data-center/dgx-a100/
+
+3. **Li, S., et al. (2020).** *Evaluating Modern GPU Interconnect: PCIe, NVLink, NV-SLI, NVSwitch and GPUDirect.* — GPU 互联技术性能对比  
+   https://arxiv.org/abs/1903.04611
+
+4. **NVIDIA.** *GPUDirect RDMA.* — GPU 直接远程内存访问  
+   https://docs.nvidia.com/cuda/gpudirect-rdma/
+
+5. **Mellanox/NVIDIA.** *InfiniBand Overview.*  
+   https://www.nvidia.com/en-us/networking/infiniband/

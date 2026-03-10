@@ -330,3 +330,19 @@ image = pipe(
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Liu, H., et al. (2024).** *Visual Instruction Tuning (LLaVA).* NeurIPS 2023.  
+   https://arxiv.org/abs/2304.08485
+
+2. **Radford, A., et al. (2021).** *Learning Transferable Visual Models From Natural Language Supervision (CLIP).* ICML 2021.  
+   https://arxiv.org/abs/2103.00020
+
+3. **OpenAI.** *GPT-4V(ision) System Card.*  
+   https://openai.com/research/gpt-4v-system-card
+
+4. **Zhu, D., et al. (2023).** *MiniGPT-4: Enhancing Vision-Language Understanding with Advanced Large Language Models.*  
+   https://arxiv.org/abs/2304.10592

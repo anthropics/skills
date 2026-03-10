@@ -282,3 +282,13 @@ def assess_maturity(answers: dict) -> int:
 *下一篇：[03-实验跟踪](03-experiment-tracking.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Microsoft.** *MLOps maturity model.*  
+   https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/mlops-maturity-model
+
+2. **Google.** *MLOps Levels 0-2.*  
+   https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning

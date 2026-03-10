@@ -804,3 +804,16 @@ def get_recommendations(level: int) -> list:
 *下一篇：[02-成熟度模型](02-maturity-model.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Sculley, D., et al. (2015).** *Hidden Technical Debt in Machine Learning Systems.* NeurIPS 2015. — MLOps 问题的经典论文  
+   https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html
+
+2. **Google.** *MLOps: Continuous delivery and automation pipelines in machine learning.*  
+   https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning
+
+3. **Microsoft.** *Machine Learning Operations (MLOps) Framework.*  
+   https://learn.microsoft.com/en-us/azure/machine-learning/concept-model-management-and-deployment

@@ -401,3 +401,22 @@ ONNX Runtime: 微软的跨平台推理引擎
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Apple.** *Core ML Documentation.* — Apple 设备端推理  
+   https://developer.apple.com/documentation/coreml
+
+2. **Google.** *TensorFlow Lite.* — 移动端/嵌入式推理  
+   https://www.tensorflow.org/lite
+
+3. **Qualcomm.** *Qualcomm AI Engine.* — 手机端 AI 推理  
+   https://www.qualcomm.com/products/technology/artificial-intelligence
+
+4. **NVIDIA.** *Jetson Platform.* — 边缘 AI 计算  
+   https://developer.nvidia.com/embedded-computing
+
+5. **llama.cpp.** *CPU-efficient LLM inference.*  
+   https://github.com/ggerganov/llama.cpp

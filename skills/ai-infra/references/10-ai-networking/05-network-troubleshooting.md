@@ -283,3 +283,13 @@ export NCCL_DEBUG_FILE=/tmp/nccl_%h_%p.log  # 日志文件
 *上一篇：[04-gpudirect-technologies.md](04-gpudirect-technologies.md)* | *下一篇：[06-network-planning.md](06-network-planning.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NCCL Tests.*  
+   https://github.com/NVIDIA/nccl-tests
+
+2. **NVIDIA.** *Nsight Systems for Network Profiling.*  
+   https://developer.nvidia.com/nsight-systems

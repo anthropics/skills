@@ -493,3 +493,16 @@ FlashAttention 的 Tiling 策略：
 *下一篇：[02-kv-cache-optimization.md](02-kv-cache-optimization.md) — KV Cache 深度优化*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Vaswani, A., et al. (2017).** *Attention Is All You Need.* — Self-attention 机制与上下文窗口  
+   https://arxiv.org/abs/1706.03762
+
+2. **Anthropic.** *Long Context Window Research.*  
+   https://www.anthropic.com/research
+
+3. **Liu, N. F., et al. (2024).** *Lost in the Middle: How Language Models Use Long Contexts.*  
+   https://arxiv.org/abs/2307.03172

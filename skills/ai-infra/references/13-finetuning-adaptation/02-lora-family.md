@@ -501,15 +501,15 @@ class LoRAManager:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685) - Hu et al., 2021
-- [QLoRA: Efficient Finetuning of Quantized LLMs](https://arxiv.org/abs/2305.14314) - Dettmers et al., 2023
-- [DoRA: Weight-Decomposed Low-Rank Adaptation](https://arxiv.org/abs/2402.09353) - Liu et al., 2024
-- [LoRA+: Efficient Low Rank Adaptation of Large Models](https://arxiv.org/abs/2402.12354) - Hayou et al., 2024
-- [TIES-Merging](https://arxiv.org/abs/2306.01708) - Yadav et al., 2023
-- [DARE](https://arxiv.org/abs/2311.03099) - Yu et al., 2023
-- [PEFT Library Source Code](https://github.com/huggingface/peft)
+1. Hu, E. J., et al. (2021). *LoRA: Low-Rank Adaptation of Large Language Models*. arXiv:2106.09685. https://arxiv.org/abs/2106.09685
+2. Dettmers, T., et al. (2023). *QLoRA: Efficient Finetuning of Quantized LLMs*. arXiv:2305.14314. https://arxiv.org/abs/2305.14314
+3. Liu, S., et al. (2024). *DoRA: Weight-Decomposed Low-Rank Adaptation*. arXiv:2402.09353. https://arxiv.org/abs/2402.09353
+4. Hayou, S., et al. (2024). *LoRA+: Efficient Low Rank Adaptation of Large Models*. arXiv:2402.12354. https://arxiv.org/abs/2402.12354
+5. Yadav, P., et al. (2023). *TIES-Merging: Resolving Interference When Merging Models*. arXiv:2306.01708. https://arxiv.org/abs/2306.01708
+6. Yu, L., et al. (2023). *Language Model is a Superlativeq Evaluator via DARE*. arXiv:2311.03099. https://arxiv.org/abs/2311.03099
+7. PEFT Library Source Code. HuggingFace. https://github.com/huggingface/peft
 
 ---
 

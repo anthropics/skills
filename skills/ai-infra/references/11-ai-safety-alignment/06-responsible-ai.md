@@ -222,14 +222,15 @@ EU AI Act 对高风险 AI 的要求:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [EU AI Act](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)
-- [NIST AI Risk Management Framework](https://www.nist.gov/artificial-intelligence)
-- [Google AI Principles](https://ai.google/responsibility/principles/)
-- [Microsoft Responsible AI](https://www.microsoft.com/en-us/ai/responsible-ai)
-- [Model Cards for Model Reporting](https://arxiv.org/abs/1810.03993)
-- [Datasheets for Datasets](https://arxiv.org/abs/1803.09010)
+1. Mitchell, M., et al. (2019). *Model Cards for Model Reporting*. arXiv:1810.03993. https://arxiv.org/abs/1810.03993
+2. Gebru, T., et al. (2021). *Datasheets for Datasets*. arXiv:1803.09010. https://arxiv.org/abs/1803.09010
+3. EU AI Act (Regulation 2024/1689). https://eur-lex.europa.eu/eli/reg/2024/1689/oj
+4. NIST AI Risk Management Framework (AI RMF 1.0). https://www.nist.gov/artificial-intelligence
+5. Google AI Principles. https://ai.google/responsibility/principles/
+6. Microsoft Responsible AI Standard v2. https://www.microsoft.com/en-us/ai/responsible-ai
+7. Bommasani, R., et al. (2022). *On the Opportunities and Risks of Foundation Models*. arXiv:2108.07258. https://arxiv.org/abs/2108.07258
 
 ---
 

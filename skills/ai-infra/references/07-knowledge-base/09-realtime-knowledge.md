@@ -1158,3 +1158,13 @@ class DataTieringManager:
 *下一篇：[10-Token 节省策略](10-token-optimization.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Nakano, R., et al. (2021).** *WebGPT: Browser-assisted question-answering with human feedback.* — LLM 实时信息获取  
+   https://arxiv.org/abs/2112.09332
+
+2. **Schick, T., et al. (2023).** *Toolformer: Language Models Can Teach Themselves to Use Tools.*  
+   https://arxiv.org/abs/2302.04761

@@ -436,3 +436,19 @@ Speculative Decoding 核心要点:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **Leviathan, Y., Kalman, M., & Matias, Y. (2023).** *Fast Inference from Transformers via Speculative Decoding.* ICML 2023.  
+   https://arxiv.org/abs/2211.17192
+
+2. **Chen, C., et al. (2023).** *Accelerating Large Language Model Decoding with Speculative Sampling.*  
+   https://arxiv.org/abs/2302.01318
+
+3. **Cai, T., et al. (2024).** *Medusa: Simple LLM Inference Acceleration Framework with Multiple Decoding Heads.*  
+   https://arxiv.org/abs/2401.10774
+
+4. **Li, Y., et al. (2024).** *EAGLE: Speculative Sampling Requires Rethinking Feature Uncertainty.*  
+   https://arxiv.org/abs/2401.15077

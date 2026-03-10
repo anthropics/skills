@@ -653,3 +653,28 @@ print(f"裁剪后梯度范数: {total_norm_after:.4f}")  # ≤ 1.0
 
 - **上一篇**：[04-损失函数详解](04-loss-function.md)
 - **下一篇**：[06-梯度下降与参数更新](06-gradient-descent.md) — 有了梯度，怎么更新参数
+
+---
+
+## 参考资料与引用
+
+1. **Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986).** *Learning representations by back-propagating errors.* Nature, 323(6088), 533-536. — 反向传播算法经典论文  
+   https://www.nature.com/articles/323533a0
+
+2. **Olah, C. (2015).** *Calculus on Computational Graphs: Backpropagation.* — 可视化理解反向传播  
+   https://colah.github.io/posts/2015-08-Backprop/
+
+3. **Karpathy, A. (2022).** *micrograd — A tiny autograd engine.* — 从零手写自动微分  
+   https://github.com/karpathy/micrograd
+
+4. **Paszke, A., et al. (2017).** *Automatic differentiation in PyTorch.* NeurIPS Workshop. — PyTorch 自动微分系统  
+   https://openreview.net/forum?id=BJJsrmfCZ
+
+5. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 6.5: Back-Propagation. MIT Press.  
+   https://www.deeplearningbook.org/contents/mlp.html
+
+6. **He, K., et al. (2016).** *Deep Residual Learning for Image Recognition.* CVPR 2016. — 残差连接解决梯度消失  
+   https://arxiv.org/abs/1512.03385
+
+7. **Pascanu, R., Mikolov, T., & Bengio, Y. (2013).** *On the difficulty of training recurrent neural networks.* ICML 2013. — 梯度消失/爆炸与梯度裁剪  
+   https://arxiv.org/abs/1211.5063

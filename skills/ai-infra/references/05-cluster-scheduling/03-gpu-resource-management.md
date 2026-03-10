@@ -378,3 +378,16 @@ spec:
 *下一篇：[04-批调度器详解](04-batch-schedulers.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NVIDIA Device Plugin for Kubernetes.*  
+   https://github.com/NVIDIA/k8s-device-plugin
+
+2. **NVIDIA.** *Multi-Instance GPU (MIG) User Guide.*  
+   https://docs.nvidia.com/datacenter/tesla/mig-user-guide/
+
+3. **Kubernetes.** *Extended Resources / Device Plugins.*  
+   https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/device-plugins/

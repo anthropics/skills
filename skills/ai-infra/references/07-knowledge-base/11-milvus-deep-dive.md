@@ -895,3 +895,16 @@ helm install milvus milvus/milvus -f milvus-values.yaml -n milvus --create-names
 *上一篇：[10-Token 节省策略](10-token-optimization.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Milvus.** *Milvus Documentation.*  
+   https://milvus.io/docs/
+
+2. **Wang, J., et al. (2021).** *Milvus: A Purpose-Built Vector Data Management System.* SIGMOD 2021.  
+   https://dl.acm.org/doi/10.1145/3448016.3457550
+
+3. **Zilliz.** *Zilliz Cloud (Managed Milvus).*  
+   https://zilliz.com/

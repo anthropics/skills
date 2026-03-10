@@ -423,3 +423,16 @@ AI 存储容灾设计:
 *上一篇：[05-model-repository.md](05-model-repository.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *DGX SuperPOD Storage Reference Architecture.*  
+   https://docs.nvidia.com/dgx-superpod/
+
+2. **Weil, S. A., et al. (2006).** *Ceph: A Scalable, High-Performance Distributed File System.* OSDI 2006.  
+   https://dl.acm.org/doi/10.5555/1298455.1298485
+
+3. **VAST Data.** *VAST Data Universal Storage.* — AI 优化存储平台  
+   https://vastdata.com/

@@ -171,3 +171,19 @@ print(f"bs=1,  seq=4096 (GQA-8): {kv_cache_memory(1, 4096, 80, 8, 128):.1f} GB")
 ---
 
 *下一篇：[06-llm-inference-batching.md](06-llm-inference-batching.md) - Batching 优化*
+
+---
+
+## 参考资料与引用
+
+1. **Kwon, W., et al. (2023).** *Efficient Memory Management for Large Language Model Serving with PagedAttention.* SOSP 2023. — PagedAttention / vLLM  
+   https://arxiv.org/abs/2309.06180
+
+2. **Pope, R., et al. (2023).** *Efficiently Scaling Transformer Inference.* MLSys 2023. — KV Cache 显存分析  
+   https://arxiv.org/abs/2211.05102
+
+3. **Shazeer, N. (2019).** *Fast Transformer Decoding: One Write-Head is All You Need.* — Multi-Query Attention 减少 KV Cache  
+   https://arxiv.org/abs/1911.02150
+
+4. **Ainslie, J., et al. (2023).** *GQA: Training Generalized Multi-Query Transformer Models.* — Grouped-Query Attention  
+   https://arxiv.org/abs/2305.13245

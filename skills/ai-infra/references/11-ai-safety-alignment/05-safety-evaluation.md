@@ -208,13 +208,14 @@ class SafetyEvaluator:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [TruthfulQA](https://github.com/sylinrl/TruthfulQA)
-- [BBQ: A Hand-Built Bias Benchmark](https://github.com/nyu-mll/BBQ)
-- [HarmBench](https://github.com/centerforaisafety/HarmBench)
-- [DecodingTrust](https://decodingtrust.github.io/) - 全面的可信度评估
-- [NIST AI Risk Management Framework](https://www.nist.gov/artificial-intelligence)
+1. Lin, S., et al. (2022). *TruthfulQA: Measuring How Models Mimic Human Falsehoods*. arXiv:2109.07958. https://arxiv.org/abs/2109.07958
+2. Parrish, A., et al. (2022). *BBQ: A Hand-Built Bias Benchmark for Question Answering*. arXiv:2110.08193. https://arxiv.org/abs/2110.08193
+3. Mazeika, M., et al. (2024). *HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal*. arXiv:2402.04249. https://arxiv.org/abs/2402.04249
+4. Wang, B., et al. (2023). *DecodingTrust: A Comprehensive Assessment of Trustworthiness in GPT Models*. arXiv:2306.11698. https://arxiv.org/abs/2306.11698
+5. NIST AI Risk Management Framework (AI RMF 1.0). https://www.nist.gov/artificial-intelligence
+6. Gehman, S., et al. (2020). *RealToxicityPrompts: Evaluating Neural Toxic Degeneration in Language Models*. arXiv:2009.11462. https://arxiv.org/abs/2009.11462
 
 ---
 

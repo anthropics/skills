@@ -533,14 +533,14 @@ def distributed_health_check():
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [PyTorch Debugging Guide](https://pytorch.org/docs/stable/notes/faq.html)
-- [NCCL Debugging Tips](https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting.html)
-- [Common Training Pitfalls](https://karpathy.github.io/2019/04/25/recipe/)
-- [A Recipe for Training Neural Networks](https://karpathy.github.io/2019/04/25/recipe/) - Andrej Karpathy
-- [Debugging Deep Learning Models](https://fullstackdeeplearning.com/course/2022/lecture-7-troubleshooting-testing/)
-- [PyTorch Distributed Debugging](https://pytorch.org/tutorials/intermediate/dist_tuto.html)
+1. Karpathy, A. (2019). *A Recipe for Training Neural Networks*. https://karpathy.github.io/2019/04/25/recipe/
+2. PyTorch Debugging Guide - FAQ. https://pytorch.org/docs/stable/notes/faq.html
+3. NCCL Troubleshooting Guide. NVIDIA. https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/troubleshooting.html
+4. Full Stack Deep Learning - Troubleshooting & Testing (Lecture 7). https://fullstackdeeplearning.com/course/2022/lecture-7-troubleshooting-testing/
+5. PyTorch Distributed Communication Tutorial. https://pytorch.org/tutorials/intermediate/dist_tuto.html
+6. Zhang, S., et al. (2022). *OPT: Open Pre-trained Transformer Language Models*. arXiv:2205.01068. https://arxiv.org/abs/2205.01068 (训练日志与调试经验)
 
 ---
 

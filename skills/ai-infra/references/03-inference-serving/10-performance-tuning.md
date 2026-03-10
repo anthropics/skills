@@ -228,3 +228,19 @@ def benchmark_llm(model, prompts, num_runs=100):
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *Deep Learning Performance Guide.* — GPU 推理性能调优  
+   https://docs.nvidia.com/deeplearning/performance/
+
+2. **vLLM Documentation.** *Performance Tuning.*  
+   https://docs.vllm.ai/en/latest/
+
+3. **Aminabadi, R. Y., et al. (2022).** *DeepSpeed-Inference: Enabling Efficient Inference of Transformer Models at Unprecedented Scale.*  
+   https://arxiv.org/abs/2207.00032
+
+4. **NVIDIA.** *Nsight Systems Profiler.* — GPU 性能分析工具  
+   https://developer.nvidia.com/nsight-systems

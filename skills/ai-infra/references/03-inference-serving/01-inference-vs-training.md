@@ -169,3 +169,16 @@ def analyze_arithmetic_intensity():
 ---
 
 *下一篇：[02-quantization.md](02-quantization.md) - 量化技术详解*
+
+---
+
+## 参考资料与引用
+
+1. **Patterson, D., et al. (2021).** *Carbon Emissions and Large Neural Network Training.* — 训练 vs 推理资源消耗对比  
+   https://arxiv.org/abs/2104.10350
+
+2. **NVIDIA.** *Inference vs Training: Understanding the Differences.*  
+   https://developer.nvidia.com/blog/inference-vs-training/
+
+3. **Kaplan, J., et al. (2020).** *Scaling Laws for Neural Language Models.* — 计算量与模型性能关系  
+   https://arxiv.org/abs/2001.08361

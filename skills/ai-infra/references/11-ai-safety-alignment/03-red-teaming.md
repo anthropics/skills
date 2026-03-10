@@ -266,12 +266,14 @@ class AutoRedTeam:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Garak - LLM Vulnerability Scanner](https://github.com/leondz/garak)
-- [Microsoft PyRIT](https://github.com/Azure/PyRIT)
-- 论文: *Universal and Transferable Adversarial Attacks on Aligned Language Models* (GCG, 2023)
-- 论文: *Red Teaming Language Models with Language Models* (Perez et al., 2022)
+1. Zou, A., et al. (2023). *Universal and Transferable Adversarial Attacks on Aligned Language Models* (GCG). arXiv:2307.15043. https://arxiv.org/abs/2307.15043
+2. Perez, E., et al. (2022). *Red Teaming Language Models with Language Models*. arXiv:2202.03286. https://arxiv.org/abs/2202.03286
+3. Wei, A., et al. (2023). *Jailbroken: How Does LLM Safety Training Fail?*. arXiv:2307.02483. https://arxiv.org/abs/2307.02483
+4. Garak - LLM Vulnerability Scanner. https://github.com/leondz/garak
+5. Microsoft PyRIT (Python Risk Identification Toolkit). https://github.com/Azure/PyRIT
+6. OWASP Top 10 for LLM Applications. https://owasp.org/www-project-top-10-for-large-language-model-applications/
 
 ---
 

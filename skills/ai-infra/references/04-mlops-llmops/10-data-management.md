@@ -354,3 +354,19 @@ LLM 训练数据特有指标:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **DVC.** *Data Version Control Documentation.*  
+   https://dvc.org/doc
+
+2. **LakeFS.** *Git-like Version Control for Data Lakes.*  
+   https://lakefs.io/
+
+3. **Great Expectations.** *Data Quality and Validation.*  
+   https://greatexpectations.io/
+
+4. **Delta Lake.** *Open-source Storage Layer for Data Lakes.*  
+   https://delta.io/

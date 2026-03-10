@@ -366,13 +366,14 @@ for method in ["full", "lora", "qlora"]:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Scaling Data-Constrained Language Models](https://arxiv.org/abs/2305.16264) - 数据受限下的微调策略
-- [LIMA: Less Is More for Alignment](https://arxiv.org/abs/2305.11206) - 1000 条数据即可有效微调
-- [The False Promise of Imitating Proprietary LLMs](https://arxiv.org/abs/2305.15717) - 微调的局限性分析
-- [HuggingFace PEFT Documentation](https://huggingface.co/docs/peft)
-- [Fine-tuning Guide by Sebastian Raschka](https://magazine.sebastianraschka.com/p/practical-tips-for-finetuning-llms)
+1. Muennighoff, N., et al. (2023). *Scaling Data-Constrained Language Models*. arXiv:2305.16264. https://arxiv.org/abs/2305.16264
+2. Zhou, C., et al. (2023). *LIMA: Less Is More for Alignment*. arXiv:2305.11206. https://arxiv.org/abs/2305.11206
+3. Gudibande, A., et al. (2023). *The False Promise of Imitating Proprietary LLMs*. arXiv:2305.15717. https://arxiv.org/abs/2305.15717
+4. Hu, E. J., et al. (2021). *LoRA: Low-Rank Adaptation of Large Language Models*. arXiv:2106.09685. https://arxiv.org/abs/2106.09685
+5. HuggingFace PEFT Documentation. https://huggingface.co/docs/peft
+6. Raschka, S. (2023). *Practical Tips for Finetuning LLMs*. https://magazine.sebastianraschka.com/p/practical-tips-for-finetuning-llms
 
 ---
 

@@ -953,3 +953,25 @@ $ nvidia-smi topo -m
 - **上一篇**：[08-学习资源推荐](08-learning-resources.md)
 - **深入了解**：[02-分布式训练/08-通信优化](../02-distributed-training/08-communication-optimization.md) — 更深入的通信优化技术
 - **下一步**：[为什么需要分布式训练](../02-distributed-training/01-why-distributed.md) — 理解分布式训练的全貌
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *NCCL (NVIDIA Collective Communications Library) Documentation.*  
+   https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/index.html
+
+2. **NVIDIA.** *NCCL GitHub Repository.*  
+   https://github.com/NVIDIA/nccl
+
+3. **Patarasuk, P., & Yuan, X. (2009).** *Bandwidth Optimal All-reduce Algorithms for Clusters of Workstations.* — Ring AllReduce 算法理论  
+   https://www.sciencedirect.com/science/article/pii/S0743731508002128
+
+4. **NVIDIA.** *NVLink and NVSwitch.* — GPU 间高速互联技术  
+   https://www.nvidia.com/en-us/data-center/nvlink/
+
+5. **NVIDIA.** *NCCL Performance.* — NCCL 通信性能基准与优化  
+   https://developer.nvidia.com/blog/massively-scale-deep-learning-training-nccl-2-4/
+
+6. **Thakur, R., Rabenseifner, R., & Gropp, W. (2005).** *Optimization of Collective Communication Operations in MPICH.* — 集合通信操作优化  
+   https://journals.sagepub.com/doi/10.1177/1094342005051521

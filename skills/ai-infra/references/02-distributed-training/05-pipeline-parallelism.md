@@ -359,3 +359,19 @@ megatron_config = {
 ---
 
 *下一篇：[06-3d-parallelism.md](06-3d-parallelism.md) - 3D 并行实践*
+
+---
+
+## 参考资料与引用
+
+1. **Huang, Y., et al. (2019).** *GPipe: Efficient Training of Giant Neural Networks using Pipeline Parallelism.* NeurIPS 2019.  
+   https://arxiv.org/abs/1811.06965
+
+2. **Narayanan, D., et al. (2019).** *PipeDream: Generalized Pipeline Parallelism for DNN Training.* SOSP 2019.  
+   https://arxiv.org/abs/1806.03377
+
+3. **Narayanan, D., et al. (2021).** *Memory-Efficient Pipeline-Parallel DNN Training (1F1B schedule).*  
+   https://arxiv.org/abs/2104.04473
+
+4. **Qi, H., et al. (2023).** *Zero Bubble Pipeline Parallelism.* — 零气泡流水线并行  
+   https://arxiv.org/abs/2401.10241

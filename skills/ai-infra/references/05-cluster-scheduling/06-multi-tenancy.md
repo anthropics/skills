@@ -419,3 +419,13 @@ sum by (namespace) (
 *下一篇：[07-成本优化策略](07-cost-optimization.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Kubernetes.** *Multi-tenancy in Kubernetes.*  
+   https://kubernetes.io/docs/concepts/security/multi-tenancy/
+
+2. **CNCF.** *Multi-Tenancy Working Group.*  
+   https://github.com/kubernetes-sigs/multi-tenancy

@@ -451,14 +451,15 @@ AI 编译器选型决策树
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [PyTorch 2.0: torch.compile](https://pytorch.org/get-started/pytorch-2.0/)
-- [Triton Tutorial](https://triton-lang.org/main/getting-started/tutorials/)
-- [XLA Architecture](https://www.tensorflow.org/xla/architecture)
-- [TVM Documentation](https://tvm.apache.org/docs/)
-- [TensorRT-LLM GitHub](https://github.com/NVIDIA/TensorRT-LLM)
-- [FlashAttention: Triton Implementation](https://github.com/Dao-AILab/flash-attention)
+1. PyTorch 2.0: torch.compile Documentation. https://pytorch.org/get-started/pytorch-2.0/
+2. Triton Tutorial - Getting Started. https://triton-lang.org/main/getting-started/tutorials/
+3. XLA Architecture Documentation. TensorFlow. https://www.tensorflow.org/xla/architecture
+4. TVM Documentation and Tutorials. https://tvm.apache.org/docs/
+5. TensorRT-LLM - High-Performance LLM Inference. NVIDIA. https://github.com/NVIDIA/TensorRT-LLM
+6. FlashAttention Triton Implementation. Dao-AILab. https://github.com/Dao-AILab/flash-attention
+7. Chen, T., et al. (2018). *TVM: An Automated End-to-End Optimizing Compiler for Deep Learning*. OSDI 2018. https://arxiv.org/abs/1802.04799
 
 ---
 

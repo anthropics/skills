@@ -1486,28 +1486,28 @@ result = cache.get("RAG 是什么意思？")  # Cache HIT
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 推荐论文
 
-- [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks](https://arxiv.org/abs/2005.11401) - RAG 原始论文
-- [Self-RAG: Learning to Retrieve, Generate, and Critique](https://arxiv.org/abs/2310.11511) - Self-RAG
-- [Corrective Retrieval Augmented Generation](https://arxiv.org/abs/2401.15884) - CRAG
-- [RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval](https://arxiv.org/abs/2401.18059) - 层次化检索
-- [From Local to Global: A Graph RAG Approach](https://arxiv.org/abs/2404.16130) - Graph RAG
+1. Lewis, P., et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*. NeurIPS 2020. arXiv:2005.11401. https://arxiv.org/abs/2005.11401
+2. Asai, A., et al. (2023). *Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection*. arXiv:2310.11511. https://arxiv.org/abs/2310.11511
+3. Yan, S., et al. (2024). *Corrective Retrieval Augmented Generation*. arXiv:2401.15884. https://arxiv.org/abs/2401.15884
+4. Sarthi, P., et al. (2024). *RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval*. arXiv:2401.18059. https://arxiv.org/abs/2401.18059
+5. Edge, D., et al. (2024). *From Local to Global: A Graph RAG Approach to Query-Focused Summarization*. arXiv:2404.16130. https://arxiv.org/abs/2404.16130
 
 ### 推荐资源
 
-- [LangChain Documentation](https://python.langchain.com/docs/)
-- [LlamaIndex Documentation](https://docs.llamaindex.ai/)
-- [Milvus Documentation](https://milvus.io/docs)
-- [RAGAS Evaluation Framework](https://docs.ragas.io/)
-- [Awesome RAG](https://github.com/frutik/Awesome-RAG)
+- [LangChain Documentation](https://python.langchain.com/docs/). LangChain.
+- [LlamaIndex Documentation](https://docs.llamaindex.ai/). LlamaIndex.
+- [Milvus Vector Database Documentation](https://milvus.io/docs). Zilliz.
+- [RAGAS Evaluation Framework](https://docs.ragas.io/).
+- [Awesome RAG - Curated List](https://github.com/frutik/Awesome-RAG).
 
 ### 推荐课程
 
-- [LangChain & LlamaIndex RAG Course](https://www.deeplearning.ai/short-courses/) - DeepLearning.AI
-- [Building RAG Agents with LLMs](https://learn.nvidia.com/) - NVIDIA DLI
+- [LangChain & LlamaIndex RAG Courses](https://www.deeplearning.ai/short-courses/). DeepLearning.AI.
+- [Building RAG Agents with LLMs](https://learn.nvidia.com/). NVIDIA DLI.
 
 ---
 

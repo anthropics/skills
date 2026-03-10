@@ -374,3 +374,16 @@ spec:
 *下一篇：[05-资源隔离与配额](05-resource-isolation.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Volcano.** *Volcano: Cloud Native Batch System.*  
+   https://volcano.sh/
+
+2. **Kubernetes SIG Scheduling.** *Kueue: Job Queueing for Kubernetes.*  
+   https://kueue.sigs.k8s.io/
+
+3. **Run:ai.** *GPU Orchestration Platform.*  
+   https://www.run.ai/

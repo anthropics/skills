@@ -922,24 +922,25 @@ kubectl get vcjob gang-demo -o yaml
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 官方文档
 
-- [Kubernetes GPU Support](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/)
-- [NVIDIA Device Plugin](https://github.com/NVIDIA/k8s-device-plugin)
-- [Volcano Documentation](https://volcano.sh/en/docs/)
-- [Yunikorn Documentation](https://yunikorn.apache.org/docs/)
+- [Kubernetes GPU Scheduling](https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/). Kubernetes.
+- [NVIDIA Device Plugin for Kubernetes](https://github.com/NVIDIA/k8s-device-plugin). NVIDIA.
+- [Volcano - Cloud Native Batch System](https://volcano.sh/en/docs/). CNCF.
+- [Apache YuniKorn Documentation](https://yunikorn.apache.org/docs/). Apache.
 
 ### 推荐博客
 
-- [NVIDIA Blog: GPU Scheduling in Kubernetes](https://developer.nvidia.com/blog/)
-- [Google Cloud: Best practices for running GPU workloads](https://cloud.google.com/architecture/best-practices-for-running-gpu-workloads-on-kubernetes)
+- [GPU Scheduling in Kubernetes](https://developer.nvidia.com/blog/). NVIDIA Developer Blog.
+- [Best Practices for Running GPU Workloads on Kubernetes](https://cloud.google.com/architecture/best-practices-for-running-gpu-workloads-on-kubernetes). Google Cloud.
 
 ### 必读论文
 
-- [Gandiva: Introspective Cluster Scheduling for Deep Learning](https://www.usenix.org/conference/osdi18/presentation/xiao)
-- [Tiresias: A GPU Cluster Manager for Distributed Deep Learning](https://www.usenix.org/conference/nsdi19/presentation/gu)
+1. Xiao, W., et al. (2018). *Gandiva: Introspective Cluster Scheduling for Deep Learning*. OSDI 2018. https://www.usenix.org/conference/osdi18/presentation/xiao
+2. Gu, J., et al. (2019). *Tiresias: A GPU Cluster Manager for Distributed Deep Learning*. NSDI 2019. https://www.usenix.org/conference/nsdi19/presentation/gu
+3. Zhao, H., et al. (2022). *Multi-resource Interleaving for Deep Learning Training*. SIGCOMM 2022. https://doi.org/10.1145/3544216.3544224
 
 ---
 

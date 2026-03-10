@@ -340,3 +340,16 @@ AI 数据的温度分层:
 *上一篇：[03-checkpoint-storage.md](03-checkpoint-storage.md)* | *下一篇：[05-model-repository.md](05-model-repository.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **AWS.** *Amazon S3 Documentation.*  
+   https://docs.aws.amazon.com/s3/
+
+2. **MinIO.** *MinIO: High-Performance Object Storage.*  
+   https://min.io/
+
+3. **Delta Lake.** *Open-source Storage Layer.*  
+   https://delta.io/

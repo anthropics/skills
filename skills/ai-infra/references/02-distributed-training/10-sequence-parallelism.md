@@ -328,3 +328,16 @@ def ring_attention(q_local, k_local, v_local, ring_group):
 ---
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Korthikanti, V., et al. (2022).** *Reducing Activation Recomputation in Large Transformer Models.* — Megatron-LM 序列并行  
+   https://arxiv.org/abs/2205.05198
+
+2. **Li, D., et al. (2023).** *Sequence Parallelism: Long Sequence Training from System Perspective.* — DeepSpeed Ulysses  
+   https://arxiv.org/abs/2309.10509
+
+3. **Liu, H., et al. (2023).** *Ring Attention with Blockwise Transformers for Near-Infinite Context.* — Ring Attention  
+   https://arxiv.org/abs/2310.01889

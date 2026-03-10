@@ -389,3 +389,13 @@ while True:
 *下一篇：[07-高级 RAG 技术](07-advanced-rag.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Lewis, P., et al. (2020).** *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.* NeurIPS 2020.  
+   https://arxiv.org/abs/2005.11401
+
+2. **Gao, Y., et al. (2024).** *Retrieval-Augmented Generation for Large Language Models: A Survey.*  
+   https://arxiv.org/abs/2312.10997

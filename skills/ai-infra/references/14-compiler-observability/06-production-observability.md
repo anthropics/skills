@@ -547,14 +547,14 @@ AI 推理服务可观测性检查清单
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Google SRE Book: Service Level Objectives](https://sre.google/sre-book/service-level-objectives/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/)
-- [vLLM Metrics Guide](https://docs.vllm.ai/en/latest/serving/metrics.html)
-- [Grafana Dashboard Best Practices](https://grafana.com/docs/grafana/latest/best-practices/)
-- [The Art of SLOs](https://sre.google/resources/practices-and-processes/art-of-slos/)
+1. Beyer, B., et al. (2016). *Site Reliability Engineering* - Chapter 4: Service Level Objectives. Google. https://sre.google/sre-book/service-level-objectives/
+2. OpenTelemetry Documentation - Observability Framework. https://opentelemetry.io/docs/
+3. Prometheus Monitoring - Best Practices. https://prometheus.io/docs/practices/
+4. vLLM Metrics Guide - Inference Monitoring. https://docs.vllm.ai/en/latest/serving/metrics.html
+5. Grafana Dashboard Best Practices. https://grafana.com/docs/grafana/latest/best-practices/
+6. The Art of SLOs - Google SRE. https://sre.google/resources/practices-and-processes/art-of-slos/
 
 ---
 

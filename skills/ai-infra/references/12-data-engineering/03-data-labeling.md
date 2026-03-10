@@ -150,12 +150,14 @@ AI 辅助标注 — 降低成本，提升效率:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [Label Studio](https://labelstud.io/)
-- [Argilla](https://argilla.io/)
-- [Prodigy](https://prodi.gy/)
-- 论文: *RLAIF: Scaling Reinforcement Learning from Human Feedback with AI Feedback* (2023)
+1. Lee, H., et al. (2023). *RLAIF: Scaling Reinforcement Learning from Human Feedback with AI Feedback*. arXiv:2309.00267. https://arxiv.org/abs/2309.00267
+2. Zheng, L., et al. (2023). *Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena*. arXiv:2306.05685. https://arxiv.org/abs/2306.05685
+3. Label Studio - Open Source Data Labeling Tool. https://labelstud.io/
+4. Argilla - Data Curation for AI. https://argilla.io/
+5. Prodigy - Annotation Tool by Explosion AI. https://prodi.gy/
+6. Honovich, O., et al. (2023). *Unnatural Instructions: Tuning Language Models with (Almost) No Human Labor*. arXiv:2212.09689. https://arxiv.org/abs/2212.09689
 
 ---
 

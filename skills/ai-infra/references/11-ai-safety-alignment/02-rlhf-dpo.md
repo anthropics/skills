@@ -299,13 +299,15 @@ trainer.train()
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- 论文: *Training language models to follow instructions with human feedback* (InstructGPT, 2022)
-- 论文: *Direct Preference Optimization: Your Language Model is Secretly a Reward Model* (DPO, 2023)
-- 论文: *KTO: Model Alignment as Prospect Theoretic Optimization* (KTO, 2024)
-- [TRL Documentation](https://huggingface.co/docs/trl)
-- [OpenRLHF](https://github.com/OpenRLHF/OpenRLHF)
+1. Ouyang, L., et al. (2022). *Training language models to follow instructions with human feedback* (InstructGPT). arXiv:2203.02155. https://arxiv.org/abs/2203.02155
+2. Rafailov, R., et al. (2023). *Direct Preference Optimization: Your Language Model is Secretly a Reward Model*. arXiv:2305.18290. https://arxiv.org/abs/2305.18290
+3. Ethayarajh, K., et al. (2024). *KTO: Model Alignment as Prospect Theoretic Optimization*. arXiv:2402.01306. https://arxiv.org/abs/2402.01306
+4. Schulman, J., et al. (2017). *Proximal Policy Optimization Algorithms*. arXiv:1707.06347. https://arxiv.org/abs/1707.06347
+5. Christiano, P., et al. (2017). *Deep Reinforcement Learning from Human Preferences*. arXiv:1706.03741. https://arxiv.org/abs/1706.03741
+6. TRL (Transformer Reinforcement Learning) Documentation. HuggingFace. https://huggingface.co/docs/trl
+7. OpenRLHF: Open-Source RLHF Framework. https://github.com/OpenRLHF/OpenRLHF
 
 ---
 

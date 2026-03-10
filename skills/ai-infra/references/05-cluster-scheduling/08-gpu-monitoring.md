@@ -508,3 +508,19 @@ kubectl port-forward svc/kube-prometheus-grafana -n monitoring 3000:80
 ---
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *DCGM (Data Center GPU Manager).*  
+   https://developer.nvidia.com/dcgm
+
+2. **NVIDIA.** *nvidia-smi Documentation.*  
+   https://developer.nvidia.com/nvidia-system-management-interface
+
+3. **Prometheus.** *GPU Metrics Exporter.*  
+   https://github.com/NVIDIA/dcgm-exporter
+
+4. **Grafana.** *GPU Monitoring Dashboards.*  
+   https://grafana.com/grafana/dashboards/

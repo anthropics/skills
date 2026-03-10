@@ -371,3 +371,16 @@ wandb.finish()
 *下一篇：[04-模型版本管理](04-model-registry.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **MLflow Documentation.** *MLflow Tracking.*  
+   https://mlflow.org/docs/latest/tracking.html
+
+2. **Weights & Biases.** *W&B Experiment Tracking.*  
+   https://wandb.ai/site/experiment-tracking
+
+3. **Neptune.ai.** *Experiment Tracking for ML.*  
+   https://neptune.ai/

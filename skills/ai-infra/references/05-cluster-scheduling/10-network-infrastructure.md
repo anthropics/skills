@@ -206,3 +206,16 @@ AI 集群网络安全:
 ---
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *InfiniBand for AI Data Centers.*  
+   https://www.nvidia.com/en-us/networking/infiniband/
+
+2. **NVIDIA.** *Spectrum-X Ethernet for AI.*  
+   https://www.nvidia.com/en-us/networking/spectrumx/
+
+3. **Al-Fares, M., et al. (2008).** *A Scalable, Commodity Data Center Network Architecture.* ACM SIGCOMM.  
+   https://dl.acm.org/doi/10.1145/1402958.1402967

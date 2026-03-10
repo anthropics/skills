@@ -1039,28 +1039,28 @@ if __name__ == "__main__":
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
 ### 必读论文
 
-- [vLLM/PagedAttention](https://arxiv.org/abs/2309.06180) - 显存管理革命
-- [FlashAttention](https://arxiv.org/abs/2205.14135) - Attention 优化
-- [FlashAttention-2](https://arxiv.org/abs/2307.08691) - 进一步优化
-- [Speculative Decoding](https://arxiv.org/abs/2211.17192) - 草稿验证加速
-- [GPTQ](https://arxiv.org/abs/2210.17323) - 权重量化
-- [AWQ](https://arxiv.org/abs/2306.00978) - 激活感知量化
+1. Kwon, W., et al. (2023). *Efficient Memory Management for Large Language Model Serving with PagedAttention*. SOSP 2023. arXiv:2309.06180. https://arxiv.org/abs/2309.06180
+2. Dao, T., et al. (2022). *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness*. arXiv:2205.14135. https://arxiv.org/abs/2205.14135
+3. Dao, T. (2023). *FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning*. arXiv:2307.08691. https://arxiv.org/abs/2307.08691
+4. Leviathan, Y., et al. (2022). *Fast Inference from Transformers via Speculative Decoding*. arXiv:2211.17192. https://arxiv.org/abs/2211.17192
+5. Frantar, E., et al. (2022). *GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers*. arXiv:2210.17323. https://arxiv.org/abs/2210.17323
+6. Lin, J., et al. (2023). *AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration*. arXiv:2306.00978. https://arxiv.org/abs/2306.00978
 
 ### 官方文档
 
-- [vLLM Documentation](https://docs.vllm.ai/)
-- [TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM)
-- [Text Generation Inference](https://huggingface.co/docs/text-generation-inference)
-- [Triton Inference Server](https://docs.nvidia.com/deeplearning/triton-inference-server/)
+- [vLLM Documentation](https://docs.vllm.ai/). UC Berkeley.
+- [TensorRT-LLM GitHub](https://github.com/NVIDIA/TensorRT-LLM). NVIDIA.
+- [Text Generation Inference (TGI)](https://huggingface.co/docs/text-generation-inference). HuggingFace.
+- [Triton Inference Server Documentation](https://docs.nvidia.com/deeplearning/triton-inference-server/). NVIDIA.
 
 ### 推荐博客
 
-- [vLLM Blog](https://blog.vllm.ai/)
-- [Hugging Face: Optimizing LLM Inference](https://huggingface.co/blog/optimize-llm)
+- [vLLM Blog](https://blog.vllm.ai/).
+- [Optimizing LLM Inference](https://huggingface.co/blog/optimize-llm). HuggingFace.
 
 ---
 

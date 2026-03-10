@@ -237,3 +237,22 @@ curl localhost:8080/generate \
 ---
 
 *下一篇：[09-deployment-architecture.md](09-deployment-architecture.md) - 部署架构模式*
+
+---
+
+## 参考资料与引用
+
+1. **vLLM.** *vLLM: Easy, Fast, and Cheap LLM Serving.*  
+   https://github.com/vllm-project/vllm
+
+2. **HuggingFace.** *Text Generation Inference (TGI).*  
+   https://github.com/huggingface/text-generation-inference
+
+3. **NVIDIA.** *Triton Inference Server.*  
+   https://developer.nvidia.com/triton-inference-server
+
+4. **BentoML.** *BentoML: Unified Model Serving Framework.*  
+   https://github.com/bentoml/BentoML
+
+5. **LiteLLM.** *LiteLLM: Call 100+ LLM APIs using the OpenAI format.*  
+   https://github.com/BerriAI/litellm

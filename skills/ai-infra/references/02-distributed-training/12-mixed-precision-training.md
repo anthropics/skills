@@ -388,3 +388,22 @@ model = FSDP(model, mixed_precision=mp_policy)
 ---
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Micikevicius, P., et al. (2018).** *Mixed Precision Training.* ICLR 2018. — 混合精度训练原论文  
+   https://arxiv.org/abs/1710.03740
+
+2. **NVIDIA.** *Automatic Mixed Precision (AMP) Documentation.*  
+   https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/
+
+3. **PyTorch Documentation.** *Automatic Mixed Precision (torch.cuda.amp).*  
+   https://pytorch.org/docs/stable/amp.html
+
+4. **NVIDIA.** *FP8 Formats for Deep Learning.* — H100 FP8 训练  
+   https://arxiv.org/abs/2209.05433
+
+5. **Dettmers, T., et al. (2022).** *LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale.* — INT8 量化训练  
+   https://arxiv.org/abs/2208.07339

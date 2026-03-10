@@ -444,3 +444,13 @@ print(needs)
 *下一篇：[02-技术栈详解](02-tech-stack.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Lewis, P., et al. (2020).** *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.* NeurIPS 2020. — RAG 原论文  
+   https://arxiv.org/abs/2005.11401
+
+2. **LangChain.** *Building Knowledge-Grounded LLM Applications.*  
+   https://docs.langchain.com/

@@ -239,12 +239,14 @@ class ReproducibleTrainingConfig:
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [DVC Documentation](https://dvc.org/doc)
-- [LakeFS Documentation](https://docs.lakefs.io/)
-- [MLflow Data Tracking](https://mlflow.org/docs/latest/tracking.html)
-- [Weights & Biases Artifacts](https://docs.wandb.ai/guides/artifacts)
+1. DVC (Data Version Control) Documentation. https://dvc.org/doc
+2. LakeFS Documentation - Git-like Version Control for Data. https://docs.lakefs.io/
+3. MLflow Tracking Documentation. https://mlflow.org/docs/latest/tracking.html
+4. Weights & Biases Artifacts Documentation. https://docs.wandb.ai/guides/artifacts
+5. Polyzotis, N., et al. (2019). *Data Lifecycle Challenges in Production Machine Learning: A Survey*. ACM SIGMOD Record, 47(2). https://doi.org/10.1145/3299887.3299891
+6. Sculley, D., et al. (2015). *Hidden Technical Debt in Machine Learning Systems*. NeurIPS 2015. https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html
 
 ---
 

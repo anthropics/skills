@@ -476,3 +476,19 @@ def distillation_loss(student_logits, teacher_logits, labels, alpha=0.5, T=2.0):
 ---
 
 *下一篇：[04-inference-engines.md](04-inference-engines.md) - 推理引擎详解*
+
+---
+
+## 参考资料与引用
+
+1. **Hinton, G., Vinyals, O., & Dean, J. (2015).** *Distilling the Knowledge in a Neural Network.* — 知识蒸馏原论文  
+   https://arxiv.org/abs/1503.02531
+
+2. **Han, S., Pool, J., Tran, J., & Dally, W. J. (2015).** *Learning both Weights and Connections for Efficient Neural Networks.* NeurIPS 2015. — 权重剪枝  
+   https://arxiv.org/abs/1506.02626
+
+3. **Frantar, E., & Alistarh, D. (2023).** *SparseGPT: Massive Language Models Can Be Accurately Pruned in One-Shot.* ICML 2023.  
+   https://arxiv.org/abs/2301.00774
+
+4. **Sun, M., et al. (2024).** *A Simple and Effective Pruning Approach for Large Language Models (Wanda).*  
+   https://arxiv.org/abs/2306.11695

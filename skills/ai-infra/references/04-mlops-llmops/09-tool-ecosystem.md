@@ -276,3 +276,22 @@
 *上一篇：[08-LLMOps](08-llmops.md)*
 
 *下一章：[05-集群调度](../05-cluster-scheduling/README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **MLflow.** *Open Source MLOps Platform.*  
+   https://mlflow.org/
+
+2. **Kubeflow.** *ML Toolkit for Kubernetes.*  
+   https://www.kubeflow.org/
+
+3. **Weights & Biases.** *ML Developer Platform.*  
+   https://wandb.ai/
+
+4. **DVC.** *Data Version Control.*  
+   https://dvc.org/
+
+5. **Prefect / Airflow.** *Workflow Orchestration for ML.*  
+   https://www.prefect.io/ / https://airflow.apache.org/

@@ -261,3 +261,16 @@ lspci | grep -E "NVIDIA|Mellanox|ConnectX"
 *上一篇：[03-network-topology.md](03-network-topology.md)* | *下一篇：[05-network-troubleshooting.md](05-network-troubleshooting.md)*
 
 *返回：[README.md](README.md) - 章节索引*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *GPUDirect RDMA.*  
+   https://docs.nvidia.com/cuda/gpudirect-rdma/
+
+2. **NVIDIA.** *GPUDirect Storage.*  
+   https://developer.nvidia.com/gpudirect-storage
+
+3. **NVIDIA.** *GPUDirect Peer-to-Peer.*  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#peer-to-peer-memory-access

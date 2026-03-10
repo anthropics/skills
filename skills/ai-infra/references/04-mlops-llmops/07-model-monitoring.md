@@ -405,3 +405,16 @@ if monitor.should_retrain():
 *下一篇：[08-LLMOps](08-llmops.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Evidently AI.** *ML Model Monitoring.* — 开源模型监控工具  
+   https://www.evidentlyai.com/
+
+2. **WhyLabs.** *AI Observability Platform.*  
+   https://whylabs.ai/
+
+3. **Arize AI.** *ML Observability.*  
+   https://arize.com/

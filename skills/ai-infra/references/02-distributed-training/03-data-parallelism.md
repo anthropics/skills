@@ -586,3 +586,22 @@ HYBRID_SHARD:
 ---
 
 *下一篇：[04-model-parallelism.md](04-model-parallelism.md) - 模型并行详解*
+
+---
+
+## 参考资料与引用
+
+1. **Li, S., et al. (2020).** *PyTorch Distributed: Experiences on Accelerating Data Parallel Training.* VLDB 2020.  
+   https://arxiv.org/abs/2006.15704
+
+2. **Rajbhandari, S., et al. (2020).** *ZeRO: Memory Optimizations Toward Training Trillion Parameter Models.* — ZeRO-DP  
+   https://arxiv.org/abs/1910.02054
+
+3. **Goyal, P., et al. (2017).** *Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour.* — 大 batch 数据并行训练  
+   https://arxiv.org/abs/1706.02677
+
+4. **PyTorch Documentation.** *DistributedDataParallel.*  
+   https://pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html
+
+5. **DeepSpeed Documentation.** *ZeRO Optimization Stages.*  
+   https://www.deepspeed.ai/tutorials/zero/

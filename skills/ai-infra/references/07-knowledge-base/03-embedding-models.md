@@ -519,3 +519,16 @@ plt.savefig("embedding_viz.png", dpi=150, bbox_inches='tight')
 *下一篇：[04-向量数据库](04-vector-databases.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Reimers, N., & Gurevych, I. (2019).** *Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks.* EMNLP 2019.  
+   https://arxiv.org/abs/1908.10084
+
+2. **OpenAI.** *Embeddings API.*  
+   https://platform.openai.com/docs/guides/embeddings
+
+3. **MTEB Leaderboard.** *Massive Text Embedding Benchmark.*  
+   https://huggingface.co/spaces/mteb/leaderboard

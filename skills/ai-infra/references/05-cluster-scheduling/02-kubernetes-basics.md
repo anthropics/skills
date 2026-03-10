@@ -352,3 +352,16 @@ kubectl logs <pod-name> -n ml-training | grep -i "cuda\|gpu\|nccl\|error"
 *下一篇：[03-GPU 资源管理](03-gpu-resource-management.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Kubernetes Documentation.** *Kubernetes Official Docs.*  
+   https://kubernetes.io/docs/
+
+2. **NVIDIA.** *GPU Operator for Kubernetes.*  
+   https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/
+
+3. **CNCF.** *Cloud Native Computing Foundation.*  
+   https://www.cncf.io/

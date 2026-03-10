@@ -164,3 +164,16 @@ for batch in dataloader:
 ---
 
 *下一篇：[07-training-frameworks.md](07-training-frameworks.md) - 训练框架对比*
+
+---
+
+## 参考资料与引用
+
+1. **Narayanan, D., et al. (2021).** *Efficient Large-Scale Language Model Training on GPU Clusters Using Megatron-LM.* — 3D 并行完整方案  
+   https://arxiv.org/abs/2104.04473
+
+2. **Smith, S., et al. (2022).** *Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B.* — 530B 模型的 3D 并行实践  
+   https://arxiv.org/abs/2201.11990
+
+3. **Jiang, A. Q., et al. (2023).** *Mistral 7B.* — 高效训练配置参考  
+   https://arxiv.org/abs/2310.06825

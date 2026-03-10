@@ -403,3 +403,16 @@ compiler.Compiler().compile(training_pipeline, "pipeline.yaml")
 *下一篇：[07-模型监控](07-model-monitoring.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Sato, D., Wider, A., & Windheuser, C. (2019).** *Continuous Delivery for Machine Learning.* ThoughtWorks.  
+   https://martinfowler.com/articles/cd4ml.html
+
+2. **GitHub Actions.** *ML Workflow Automation.*  
+   https://github.com/features/actions
+
+3. **CML (Continuous Machine Learning).** *CI/CD for ML Projects.*  
+   https://cml.dev/

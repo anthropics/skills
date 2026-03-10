@@ -634,3 +634,16 @@ groups:
 *上一篇：[06-多租户管理](06-multi-tenancy.md)*
 
 *下一章：[06-学习路线图](../06-learning-roadmap/README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Patterson, D., et al. (2021).** *Carbon Emissions and Large Neural Network Training.*  
+   https://arxiv.org/abs/2104.10350
+
+2. **NVIDIA.** *GPU Cloud Pricing Comparison.*  
+   https://www.nvidia.com/en-us/data-center/gpu-cloud-computing/
+
+3. **Epoch AI.** *Trends in the Dollar Training Cost of Machine Learning Systems.*  
+   https://epochai.org/

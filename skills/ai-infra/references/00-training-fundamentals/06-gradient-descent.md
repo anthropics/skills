@@ -622,3 +622,31 @@ for step, batch in enumerate(dataloader):
 - **上一篇**：[05-反向传播详解](05-backpropagation.md)
 - **深入优化器**：[AdamW 优化器详解](../02-distributed-training/13-adamw-optimizer.md) — LLM 训练标配优化器的完整解析
 - **下一步**：[为什么需要分布式训练](../02-distributed-training/01-why-distributed.md) — 单卡装不下时怎么办
+
+---
+
+## 参考资料与引用
+
+1. **Ruder, S. (2016).** *An overview of gradient descent optimization algorithms.* — SGD/Momentum/Adam 等优化器综述  
+   https://arxiv.org/abs/1609.04747
+
+2. **Kingma, D. P., & Ba, J. (2015).** *Adam: A Method for Stochastic Optimization.* ICLR 2015. — Adam 优化器原论文  
+   https://arxiv.org/abs/1412.6980
+
+3. **Loshchilov, I., & Hutter, F. (2019).** *Decoupled Weight Decay Regularization.* ICLR 2019. — AdamW 与权重衰减  
+   https://arxiv.org/abs/1711.05101
+
+4. **Loshchilov, I., & Hutter, F. (2017).** *SGDR: Stochastic Gradient Descent with Warm Restarts.* — Cosine Annealing 学习率调度  
+   https://arxiv.org/abs/1608.03983
+
+5. **Hoffmann, J., et al. (2022).** *Training Compute-Optimal Large Language Models (Chinchilla).* — Chinchilla Scaling Law  
+   https://arxiv.org/abs/2203.15556
+
+6. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — LLaMA 训练超参数配置参考  
+   https://arxiv.org/abs/2302.13971
+
+7. **Srivastava, N., et al. (2014).** *Dropout: A Simple Way to Prevent Neural Networks from Overfitting.* JMLR. — Dropout 正则化原论文  
+   https://jmlr.org/papers/v15/srivastava14a.html
+
+8. **Goodfellow, I., Bengio, Y., & Courville, A. (2016).** *Deep Learning*, Chapter 8: Optimization. MIT Press.  
+   https://www.deeplearningbook.org/contents/optimization.html

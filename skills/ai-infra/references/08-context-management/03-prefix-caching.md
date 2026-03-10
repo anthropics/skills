@@ -618,3 +618,13 @@ vllm:prefix_cache_utilization        # 缓存利用率
 *下一篇：[04-long-context-inference.md](04-long-context-inference.md) — 长上下文推理*
 
 *返回目录：[README.md](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Zheng, L., et al. (2024).** *SGLang: Efficient Execution of Structured Language Model Programs (RadixAttention).*  
+   https://arxiv.org/abs/2312.07104
+
+2. **vLLM Documentation.** *Automatic Prefix Caching (APC).*  
+   https://docs.vllm.ai/en/latest/

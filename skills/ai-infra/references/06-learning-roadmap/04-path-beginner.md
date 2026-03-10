@@ -425,3 +425,16 @@ spec:
 ---
 
 *返回章节：[学习路线图](./README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **fast.ai.** *Practical Deep Learning for Coders.*  
+   https://www.fast.ai/
+
+2. **3Blue1Brown.** *Neural Networks Series.*  
+   https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi
+
+3. **Google.** *Machine Learning Crash Course.*  
+   https://developers.google.com/machine-learning/crash-course

@@ -539,14 +539,14 @@ Phase 5: 部署准备 ✓
 
 ---
 
-## 延伸阅读
+## 参考资料与引用
 
-- [LIMA: Less Is More for Alignment](https://arxiv.org/abs/2305.11206) - 数据质量的重要性
-- [LoRA Land: 310 Fine-tuned LLMs](https://arxiv.org/abs/2405.00732) - 大规模 LoRA 微调实验
-- [Practical Tips for Finetuning LLMs](https://magazine.sebastianraschka.com/p/practical-tips-for-finetuning-llms) - Sebastian Raschka
-- [The Novice's LLM Training Guide](https://rentry.org/llm-training) - 社区微调指南
-- [LLM Fine-tuning Handbook](https://github.com/huggingface/alignment-handbook) - HuggingFace 对齐手册
-- [Catastrophic Forgetting in LLMs](https://arxiv.org/abs/2308.08747) - 遗忘研究
+1. Zhou, C., et al. (2023). *LIMA: Less Is More for Alignment*. arXiv:2305.11206. https://arxiv.org/abs/2305.11206
+2. Zhao, J., et al. (2024). *LoRA Land: 310 Fine-tuned LLMs that Rival GPT-4, A Technical Report*. arXiv:2405.00732. https://arxiv.org/abs/2405.00732
+3. Luo, Y., et al. (2023). *An Empirical Study of Catastrophic Forgetting in Large Language Models During Continual Fine-tuning*. arXiv:2308.08747. https://arxiv.org/abs/2308.08747
+4. Raschka, S. (2023). *Practical Tips for Finetuning LLMs*. https://magazine.sebastianraschka.com/p/practical-tips-for-finetuning-llms
+5. The Novice's LLM Training Guide (Community). https://rentry.org/llm-training
+6. Alignment Handbook - HuggingFace. https://github.com/huggingface/alignment-handbook
 
 ---
 

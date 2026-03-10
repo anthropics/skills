@@ -455,3 +455,16 @@ query = np.random.randn(1, dim).astype(np.float32)
 *下一篇：[03-Embedding 模型](03-embedding-models.md)*
 
 *返回目录：[README](README.md)*
+
+---
+
+## 参考资料与引用
+
+1. **Pinecone.** *Vector Database for AI.*  
+   https://www.pinecone.io/
+
+2. **Milvus.** *Open Source Vector Database.*  
+   https://milvus.io/
+
+3. **LlamaIndex.** *Data Framework for LLM Applications.*  
+   https://www.llamaindex.ai/

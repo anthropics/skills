@@ -65,4 +65,15 @@
 
 ---
 
+## 参考资料与引用
+
+> 详细引用请参见各子文件。以下为本章核心参考：
+
+1. InfiniBand Trade Association (IBTA). *InfiniBand Architecture Specification*. https://www.infinibandta.org/
+2. NVIDIA Networking Documentation. https://docs.nvidia.com/networking/
+3. NCCL Documentation. NVIDIA. https://docs.nvidia.com/deeplearning/nccl/
+4. Al-Fares, M., et al. (2008). *A Scalable, Commodity Data Center Network Architecture*. SIGCOMM 2008. https://doi.org/10.1145/1402958.1402967
+
+---
+
 *上一篇：[09-ai-storage.md](09-ai-storage.md)* | *下一篇：[11-ai-safety-alignment.md](11-ai-safety-alignment.md)*

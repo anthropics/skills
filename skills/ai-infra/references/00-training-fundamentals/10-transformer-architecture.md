@@ -880,3 +880,31 @@ LLaMA-7B 的完整结构:
 - **相关**：[03-前向传播详解](03-forward-propagation.md) — 数据如何流过网络
 - **相关**：[05-反向传播详解](05-backpropagation.md) — 梯度如何反向传播
 - **后续**：[分布式训练中的张量并行](../02-distributed-training.md) — 如何把一层 Transformer 切分到多块 GPU
+
+---
+
+## 参考资料与引用
+
+1. **Vaswani, A., et al. (2017).** *Attention Is All You Need.* NeurIPS 2017. — Transformer 架构原论文  
+   https://arxiv.org/abs/1706.03762
+
+2. **Alammar, J. (2018).** *The Illustrated Transformer.* — Transformer 最佳可视化讲解  
+   https://jalammar.github.io/illustrated-transformer/
+
+3. **Touvron, H., et al. (2023).** *LLaMA: Open and Efficient Foundation Language Models.* — LLaMA 架构参数 (RMSNorm, SwiGLU, RoPE)  
+   https://arxiv.org/abs/2302.13971
+
+4. **Su, J., et al. (2021).** *RoFormer: Enhanced Transformer with Rotary Position Embedding.* — RoPE 旋转位置编码  
+   https://arxiv.org/abs/2104.09864
+
+5. **Shazeer, N. (2020).** *GLU Variants Improve Transformer.* — SwiGLU 激活函数  
+   https://arxiv.org/abs/2002.05202
+
+6. **Zhang, B., & Sennrich, R. (2019).** *Root Mean Square Layer Normalization.* — RMSNorm  
+   https://arxiv.org/abs/1910.07467
+
+7. **Shazeer, N. (2019).** *Fast Transformer Decoding: One Write-Head is All You Need.* — Multi-Query Attention  
+   https://arxiv.org/abs/1911.02150
+
+8. **Ainslie, J., et al. (2023).** *GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints.* — Grouped-Query Attention  
+   https://arxiv.org/abs/2305.13245

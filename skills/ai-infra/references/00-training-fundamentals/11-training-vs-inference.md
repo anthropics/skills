@@ -841,3 +841,22 @@ Arithmetic Intensity (算术强度) = 计算量 / 数据访问量
 - **进阶阅读**：
   - [02-distributed-training](../02-distributed-training/) — 分布式训练的各种并行策略
   - [01-gpu-hardware](../01-gpu-hardware.md) — GPU 硬件特性、算力与带宽
+
+---
+
+## 参考资料与引用
+
+1. **Kaplan, J., et al. (2020).** *Scaling Laws for Neural Language Models.* — 训练计算量与模型性能关系  
+   https://arxiv.org/abs/2001.08361
+
+2. **Kwon, W., et al. (2023).** *Efficient Memory Management for Large Language Model Serving with PagedAttention.* SOSP 2023. — PagedAttention 推理优化  
+   https://arxiv.org/abs/2309.06180
+
+3. **Leviathan, Y., Kalman, M., & Matias, Y. (2023).** *Fast Inference from Transformers via Speculative Decoding.* ICML 2023. — 投机解码  
+   https://arxiv.org/abs/2211.17192
+
+4. **NVIDIA.** *TensorRT-LLM.* — NVIDIA 推理优化引擎  
+   https://github.com/NVIDIA/TensorRT-LLM
+
+5. **Dao, T., et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* NeurIPS 2022. — FlashAttention 推理加速  
+   https://arxiv.org/abs/2205.14135

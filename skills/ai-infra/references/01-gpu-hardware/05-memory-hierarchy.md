@@ -466,3 +466,22 @@ GPU 内存层次核心知识：
 ---
 
 *下一篇：[06-tensor-core.md](06-tensor-core.md) - Tensor Core 详解*
+
+---
+
+## 参考资料与引用
+
+1. **NVIDIA.** *CUDA C++ Programming Guide — Memory Hierarchy.*  
+   https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#memory-hierarchy
+
+2. **NVIDIA.** *GPU Memory: HBM vs GDDR.*  
+   https://www.nvidia.com/en-us/data-center/hbm/
+
+3. **Jia, Z., et al. (2018).** *Dissecting the NVidia Turing T4 GPU via Microbenchmarking.* — GPU 内存层次性能测量  
+   https://arxiv.org/abs/1804.06826
+
+4. **Dao, T., et al. (2022).** *FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness.* — HBM 带宽瓶颈与 IO-aware 算法  
+   https://arxiv.org/abs/2205.14135
+
+5. **NVIDIA.** *Shared Memory and Caches.* — 共享内存与 L1/L2 缓存详解  
+   https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#shared-memory
