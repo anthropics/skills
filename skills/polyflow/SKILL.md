@@ -28,21 +28,17 @@ polyflow run cross-validate -i "your design or problem statement"
 # Run headlessly in CI/CD
 polyflow run <workflow> --ci -i "..."
 
-# Browse 22 built-in workflows
+# Browse built-in workflows
 polyflow list
-polyflow list --tag security
 ```
 
-## Workflow selection
+## Built-in workflows
 
 | Task | Workflow |
 |---|---|
 | Code review | `code-review-multi-model` |
 | Security scan | `security-audit` |
 | Cross-validate a plan | `cross-validate` |
-| Bug triage | `bug-triage` |
-| Generate tests | `test-generation` |
-| PR description | `pr-description` |
 
 ## How consensus works
 
