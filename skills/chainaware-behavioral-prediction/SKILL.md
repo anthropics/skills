@@ -1,35 +1,8 @@
 ---
 name: chainaware-behavioral-prediction
-version: 1.2.0
 license: MIT
-description: >
-  Use this skill whenever a user asks about wallet safety, fraud risk, rug pull detection,
-  wallet behavior analysis, DeFi personalization, on-chain reputation scoring, AML checks,
-  token ranking by holder quality, airdrop screening, lending risk, token launch auditing,
-  or AI agent trust scoring. Triggers on questions like:
-  "is this wallet safe?", "will this pool rug pull?", "what will this address do next?",
-  "score this wallet", "detect fraud for address", "personalize my DeFi agent",
-  "rank this token", "top AI tokens", "best holders of this token",
-  "check this contract", "is this token safe?", "profile this wallet",
-  "KYC this address", "pre-screen this user", "AML check this wallet",
-  "is this address suspicious?", "screen this wallet before onboarding",
-  "what is the risk score of this address?", "analyze on-chain behavior",
-  "is this LP safe to deposit?", "will this contract rug?",
-  "what DeFi products suit this wallet?", "segment this user",
-  "what is this wallet's experience level?", "find strong token holders",
-  "which token has the best community?", "rank tokens by holder quality",
-  "should we list this token?", "audit this launch", "is this deployer trustworthy?",
-  "vet this IDO", "launch safety check", "screen this airdrop list", "filter bots from airdrop",
-  "rank these wallets for token distribution", "fair airdrop allocation",
-  "assess this borrower", "what collateral ratio for this wallet?", "lending risk for 0x...",
-  "what interest rate for this borrower?", "should I lend to this wallet?",
-  "screen this AI agent", "is this agent wallet safe?", "agent trust score for 0x...",
-  "check the feeder wallet for this agent", "can I trust this agent?",
-  "route this wallet to onboarding", "is this user a beginner?", "skip onboarding for this wallet?",
-  or any request to analyze a blockchain wallet address, smart contract, token, or AI agent
-  for risk, behavior, intent, community strength, or trustworthiness.
-  Also use when integrating the ChainAware MCP server into Claude Code, Cursor,
-  ChatGPT, or any MCP-compatible AI agent framework.
+description: "Use this skill whenever a user asks about wallet safety, fraud risk, rug pull detection,  wallet behavior analysis, DeFi personalization, on-chain reputation scoring, AML checks,  token ranking by holder quality, airdrop screening, lending risk, token launch auditing,  or AI agent trust scoring. Triggers on questions like: is this wallet safe?, will this pool rug pull?, what will this address do next?,  score this wallet, detect fraud for address, personalize my DeFi agent,  rank this token, top AI tokens, best holders of this token,  check this contract, is this token safe?, profile this wallet,  KYC this address, pre-screen this user, AML check this wallet,  is this address suspicious?, screen this wallet before onboarding,  what is the risk score of this address?, analyze on-chain behavior,  is this LP safe to deposit?, will this contract rug?,  what DeFi products suit this wallet?, segment this user,  what is this wallet's experience level?, find strong token holders,  which token has the best community?, rank tokens by holder quality,  should we list this token?, audit this launch, is this deployer trustworthy?,  vet this IDO, launch safety check, screen this airdrop list, filter bots from airdrop,  rank these wallets for token distribution, fair airdrop allocation,  assess this borrower, what collateral ratio for this wallet?, lending risk for 0x...,  what interest rate for this borrower?, should I lend to this wallet?,  screen this AI agent, is this agent wallet safe?, agent trust score for 0x...,  check the feeder wallet for this agent, can I trust this agent?,  route this wallet to onboarding, is this user a beginner?, skip onboarding for this wallet?,  or any request to analyze a blockchain wallet address, smart contract, token, or AI agent  for risk, behavior, intent, community strength, or trustworthiness.  Also use when integrating the ChainAware MCP server into Claude Code, Cursor,  ChatGPT, or any MCP-compatible AI agent framework.
+
 metadata:
   openclaw:
     requires:
