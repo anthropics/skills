@@ -1,6 +1,6 @@
 ---
 name: claude-api-live
-description: Grounds Claude API advice in live documentation. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. Fetches current model IDs and relevant docs from platform.claude.com before advising, so stale training data never causes bugs. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks."
+description: "Grounds Claude API advice in live documentation. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. Fetches current model IDs and relevant docs from platform.claude.com before advising, so stale training data never causes bugs. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks."
 license: Complete terms in LICENSE.txt
 ---
 
