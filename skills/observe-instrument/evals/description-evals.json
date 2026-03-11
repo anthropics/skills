@@ -1,0 +1,20 @@
+[
+  { "query": "instrument my LangGraph agent with the observe SDK", "should_trigger": true },
+  { "query": "add observability to my LlamaIndex agent", "should_trigger": true },
+  { "query": "add tracing to my Python AI agent", "should_trigger": true },
+  { "query": "integrate ioa-observe-sdk into my agent", "should_trigger": true },
+  { "query": "make my agent observable", "should_trigger": true },
+  { "query": "add @tool and @agent decorators from ioa_observe to my code", "should_trigger": true },
+  { "query": "instrument my agent so I can see traces", "should_trigger": true },
+  { "query": "add the observe SDK to my multi-agent workflow", "should_trigger": true },
+  { "query": "I want to monitor my LangGraph agent with OpenTelemetry using the observe SDK", "should_trigger": true },
+  { "query": "add @graph and @agent decorators to my workflow class", "should_trigger": true },
+  { "query": "add logging to my Python script", "should_trigger": false },
+  { "query": "how do I use OpenTelemetry directly without any SDK?", "should_trigger": false },
+  { "query": "add monitoring to my Kubernetes cluster", "should_trigger": false },
+  { "query": "how do I debug my LangGraph agent?", "should_trigger": false },
+  { "query": "add type hints to my Python functions", "should_trigger": false },
+  { "query": "instrument my FastAPI app with Prometheus", "should_trigger": false },
+  { "query": "add error handling to my agent", "should_trigger": false },
+  { "query": "how do I write a LangGraph agent from scratch?", "should_trigger": false }
+]
