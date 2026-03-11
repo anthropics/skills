@@ -1,10 +1,10 @@
 ---
 name: claude-api-live
-description: "Build apps with the Claude API or Anthropic SDK — with live documentation grounding on every invocation. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. Fetches current model IDs and relevant docs from platform.claude.com before advising, so stale training data never causes bugs. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks."
+description: Grounds Claude API advice in live documentation. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. Fetches current model IDs and relevant docs from platform.claude.com before advising, so stale training data never causes bugs. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks."
 license: Complete terms in LICENSE.txt
 ---
 
-# Claude API — Live Documentation Grounding
+# Claude API Live Documentation Grounding
 
 Claude's training data has a cutoff. Model IDs get renamed, parameters get deprecated,
 new features launch behind beta headers, APIs get replaced. The gap between what Claude
@@ -18,7 +18,7 @@ that gap before it becomes tech debt.
 
 ## Step 1: Identify what the user is doing
 
-Before fetching, determine the task type — this controls which docs to fetch in Step 2:
+Before fetching, determine the task type. This controls which docs to fetch in Step 2:
 
 | Task type | Examples |
 |-----------|---------|
@@ -35,8 +35,7 @@ Before fetching, determine the task type — this controls which docs to fetch i
 users copy whatever appears in example code, and a wrong model ID produces a confusing
 "model not found" error far from where the mistake was made.
 
-Then fetch **up to two additional pages** based on the task. Three parallel fetches is the
-right ceiling — don't flood context with docs the user doesn't need.
+Then fetch **up to two additional pages** based on the task. Three parallel fetches is the ceiling — don't flood context with docs the user doesn't need.
 
 ### Always fetch
 
