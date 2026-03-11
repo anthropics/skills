@@ -12,22 +12,36 @@ It gives you a local browser runtime, a CLI, and a WebSocket command surface. Yo
 
 **Do not default to screenshots.** Webpilot exposes the live DOM directly. Screenshots are slow, expensive, and unnecessary for most tasks. Use `html`, `discover`, and `q` to read page state. Reserve `ss` for cases where layout or visual rendering is the actual question.
 
+## Setup
+
+Verify the package is installed before doing anything else:
+
+```bash
+webpilot --help
+```
+
+If `webpilot` is not found, install it first:
+
+```bash
+npm install -g h17-webpilot
+```
+
+Then run `.help` to list all available commands:
+
+```bash
+webpilot -c '.help'
+```
+
 ## Runtime
 
 ```bash
-npx h17-webpilot start
-npx h17-webpilot start -d
+webpilot start
+webpilot start -d
 ```
 
-If the runtime is already running, use `npx h17-webpilot -c '...'` directly.
+If the runtime is already running, use `webpilot -c '...'` directly.
 
-Once the runtime is running, list all available commands:
-
-```bash
-npx h17-webpilot -c '.help'
-```
-
-Use `npx h17-webpilot start -d` when you want an append-only session log.
+Use `webpilot start -d` when you want an append-only session log.
 
 - default path: `~/h17-webpilot/webpilot.log`
 - config override: `framework.debug.sessionLogPath`
@@ -46,24 +60,24 @@ Do not skip the inspect step unless you already have fresh page state from the i
 
 Use these first:
 
-- `npx h17-webpilot -c 'html'`: read the current page DOM, title, and URL
-- `npx h17-webpilot -c 'discover'`: list interactive elements and their handles
-- `npx h17-webpilot -c 'q <selector>'`: query specific elements
-- `npx h17-webpilot -c 'wait <selector>'`: wait for a known state change
-- `npx h17-webpilot -c 'ss'`: last resort — only when layout or visual rendering is the actual question, not DOM structure
+- `webpilot -c 'html'`: read the current page DOM, title, and URL
+- `webpilot -c 'discover'`: list interactive elements and their handles
+- `webpilot -c 'q <selector>'`: query specific elements
+- `webpilot -c 'wait <selector>'`: wait for a known state change
+- `webpilot -c 'ss'`: last resort — only when layout or visual rendering is the actual question, not DOM structure
 
 ## Act
 
 Use the safest matching action:
 
-- `npx h17-webpilot -c 'click <selector|handleId>'`
-- `npx h17-webpilot -c 'type [selector] <text>'`
-- `npx h17-webpilot -c 'clear <selector>'`
-- `npx h17-webpilot -c 'key <name>'`
-- `npx h17-webpilot -c 'sd [px] [selector]'`
-- `npx h17-webpilot -c 'su [px] [selector]'`
-- `npx h17-webpilot -c 'go <url>'`
-- `npx h17-webpilot -c 'cookies load ./cookies.json'` when the task requires restoring an existing session
+- `webpilot -c 'click <selector|handleId>'`
+- `webpilot -c 'type [selector] <text>'`
+- `webpilot -c 'clear <selector>'`
+- `webpilot -c 'key <name>'`
+- `webpilot -c 'sd [px] [selector]'`
+- `webpilot -c 'su [px] [selector]'`
+- `webpilot -c 'go <url>'`
+- `webpilot -c 'cookies load ./cookies.json'` when the task requires restoring an existing session
 
 `click` goes through the human action pipeline. If the runtime refuses the action, respect the refusal and re-inspect the page.
 
@@ -71,11 +85,11 @@ Use the safest matching action:
 
 After navigation or interaction, confirm the new state:
 
-- `npx h17-webpilot -c 'wait <selector>'`
-- `npx h17-webpilot -c 'url'`
-- `npx h17-webpilot -c 'title'`
-- `npx h17-webpilot -c 'html'`
-- `npx h17-webpilot -c 'q <selector>'`
+- `webpilot -c 'wait <selector>'`
+- `webpilot -c 'url'`
+- `webpilot -c 'title'`
+- `webpilot -c 'html'`
+- `webpilot -c 'q <selector>'`
 
 ## Safe Usage Rules
 
@@ -90,15 +104,15 @@ After navigation or interaction, confirm the new state:
 If you need a protocol action that the shorthand CLI does not expose directly, send it through raw mode:
 
 ```bash
-npx h17-webpilot -c 'dom.queryAllInfo {"selector": "a[href]"}'
-npx h17-webpilot -c 'human.scroll {"selector": ".feed", "direction": "down"}'
-npx h17-webpilot -c 'framework.getConfig {}'
+webpilot -c 'dom.queryAllInfo {"selector": "a[href]"}'
+webpilot -c 'human.scroll {"selector": ".feed", "direction": "down"}'
+webpilot -c 'framework.getConfig {}'
 ```
 
 You can also send a full JSON message:
 
 ```bash
-npx h17-webpilot -c '{"action": "tabs.navigate", "params": {"url": "https://example.com"}}'
+webpilot -c '{"action": "tabs.navigate", "params": {"url": "https://example.com"}}'
 ```
 
 ## Strategy Notes
@@ -126,7 +140,7 @@ Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_conf
 }
 ```
 
-The MCP server connects to the same WebSocket runtime (`ws://localhost:7331`). Start the runtime first with `npx h17-webpilot start`, then the MCP tools become available in the host application automatically.
+The MCP server connects to the same WebSocket runtime (`ws://localhost:7331`). Start the runtime first with `webpilot start`, then the MCP tools become available in the host application automatically.
 
 ## Limits
 
