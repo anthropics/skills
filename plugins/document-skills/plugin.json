@@ -1,11 +1,11 @@
 {
     "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
     "name": "document-skills",
-    "source": "./",
+    "source": "../../skills",
     "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
+        "./xlsx",
+        "./docx",
+        "./pptx",
+        "./pdf"
     ]
 }
