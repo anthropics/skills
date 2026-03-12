@@ -2,7 +2,6 @@
 name: figma
 description: Figma design bridge for Claude Code. Browse files, extract components, download assets, extract design tokens, and generate code for Tailwind, React, Vue, Svelte, React Native, Flutter, and CSS. Use when user mentions Figma, design tokens, Figma-to-code, or wants to convert designs to components.
 argument-hint: "[figma-url-or-file-key]"
-license: Complete terms in LICENSE.txt
 allowed-tools:
   - Bash
   - Read
@@ -225,24 +224,157 @@ Combine all workflows for a complete Figma-to-code pipeline:
 
 ---
 
-## Workflow 6: Discover Figma Community Resources
+## Workflow 6: Smart Figma Community Discovery & Retrieval
 
-When the user needs design inspiration, templates, or UI kits from Figma Community:
+This workflow turns Claude into an expert design sourcer. Instead of just searching, Claude must deeply understand the user's project, run multiple targeted searches, evaluate results against specific criteria, and then retrieve the actual design data.
 
-1. **Search Figma Community** — Use web search to find relevant community files:
-   - Search for: `site:figma.com/community "<topic> UI kit"` or `site:figma.com/community "<topic> design system"`
-   - Look for files with high duplication counts and recent updates
-2. **Evaluate results** — Check that the community file matches the user's framework, style, and project needs
-3. **Extract the file key** — From the community file URL: `https://www.figma.com/community/file/<FILE_KEY>/...`
-4. **Note**: Community files must be duplicated to the user's Figma account before they can be accessed via the API. Instruct the user to click "Open in Figma" / "Duplicate" on the community page first.
-5. **Then proceed** with Workflow 1 to browse and extract from the duplicated file
+### Step 1: Build a Project Profile
 
-**Example searches by project type:**
-- Dashboard: `"dashboard UI kit" OR "admin panel" site:figma.com/community`
-- E-commerce: `"e-commerce" OR "shopping" UI kit site:figma.com/community`
-- Mobile app: `"mobile app" OR "iOS" OR "Android" UI kit site:figma.com/community`
-- Landing page: `"landing page" OR "marketing" template site:figma.com/community`
-- Design system: `"design system" OR "component library" site:figma.com/community`
+Before searching, gather or infer these details from the conversation context and the user's codebase:
+
+| Signal | How to Detect |
+|--------|--------------|
+| **Project type** | Read package.json, existing routes, folder structure, or ask: dashboard, e-commerce, SaaS, mobile app, landing page, blog, portfolio, social platform, admin panel, etc. |
+| **Framework** | Check package.json for react/vue/svelte/next/nuxt/flutter, or existing component files |
+| **Style direction** | Check existing CSS/Tailwind config for colors, fonts, border-radius patterns: minimal, bold, corporate, playful, glassmorphism, brutalist, dark mode, etc. |
+| **Components needed** | Infer from the task: navbar, hero, pricing table, dashboard charts, cards, forms, modals, sidebars, footers, onboarding flows, etc. |
+| **Color palette** | Extract from existing tailwind.config, CSS variables, or brand assets in the project |
+| **Typography** | Check existing font imports, Google Fonts links, or Tailwind font config |
+| **Responsive needs** | Mobile-first? Desktop dashboard? Both? Check existing breakpoints |
+| **Industry/domain** | Finance, health, food, travel, education, fitness, real estate, etc. — affects visual language |
+
+Summarize the profile internally before searching. Example:
+> "Building a SaaS dashboard in React + Tailwind. Dark theme, Inter font, blue/purple palette. Needs: sidebar nav, data tables, chart cards, user settings page. Finance domain."
+
+### Step 2: Multi-Strategy Search
+
+Run **at least 3 different searches** to cast a wide net. Tailor queries to the profile:
+
+**Search A — By project type + quality signals:**
+```
+site:figma.com/community/file "<project-type> UI kit" OR "<project-type> design system"
+```
+
+**Search B — By specific components needed:**
+```
+site:figma.com/community/file "<component-1>" "<component-2>" UI kit
+```
+
+**Search C — By style/aesthetic + industry:**
+```
+site:figma.com/community/file "<style>" "<industry>" dashboard OR app template
+```
+
+**Search D (optional) — By design system / framework match:**
+```
+site:figma.com/community/file "<framework>" components OR "design system" 2024 OR 2025 OR 2026
+```
+
+**Category-specific search patterns:**
+
+| Project Type | Search Queries |
+|-------------|---------------|
+| SaaS Dashboard | `"admin dashboard" UI kit`, `"analytics dashboard" components`, `"SaaS" "design system"` |
+| E-commerce | `"e-commerce" UI kit`, `"product page" "shopping cart" template`, `"online store" design system` |
+| Mobile App | `"mobile app" UI kit`, `"iOS" OR "Android" app template`, `"mobile" "design system"` |
+| Landing Page | `"landing page" template`, `"marketing" "hero section"`, `"startup" landing page` |
+| Blog/Content | `"blog" template`, `"content" "editorial" design`, `"magazine" layout` |
+| Social Platform | `"social media" app UI`, `"chat" "messaging" UI kit`, `"feed" "stories" template` |
+| Finance/Fintech | `"fintech" UI kit`, `"banking" "finance" dashboard`, `"crypto" "trading" UI` |
+| Health/Wellness | `"health" "medical" UI kit`, `"fitness" app template`, `"wellness" dashboard` |
+| Real Estate | `"real estate" "property" UI kit`, `"listing" template` |
+| Education | `"e-learning" "education" UI kit`, `"LMS" "course" template` |
+| Restaurant/Food | `"food delivery" UI kit`, `"restaurant" app template` |
+
+### Step 3: Deep Evaluation
+
+For each promising result, use `WebFetch` to load the Figma Community page and extract:
+
+1. **File description** — Does it mention the components/features the user needs?
+2. **Likes and duplicates count** — Higher = more trusted (prefer 1K+ duplicates for UI kits)
+3. **Last updated date** — Prefer files updated within the last 12 months
+4. **Preview screenshots** — Do they show the components the user needs?
+5. **Creator credibility** — Established design teams, agencies, or prolific creators
+6. **Completeness** — Full design system vs. single-page template
+7. **Responsiveness** — Does it include mobile + desktop variants?
+8. **Component coverage** — Score against the user's specific needs
+
+**Scoring criteria (rank each 1-5):**
+
+| Criteria | Weight | What to Check |
+|----------|--------|---------------|
+| Component match | High | Has the specific components the user needs |
+| Style match | High | Visual direction matches the project profile |
+| Completeness | Medium | Full system vs. partial template |
+| Recency | Medium | Updated recently, uses modern patterns |
+| Popularity | Low | Duplicate/like count (social proof) |
+| Responsiveness | Medium | Includes mobile + desktop variants |
+
+### Step 4: Present Top Recommendations
+
+Present the **top 3** options to the user with clear reasoning:
+
+For each recommendation, show:
+- **Name and link** to the Community page
+- **Why it's a good match** — specific components it has that the user needs
+- **What's included** — pages, components, design tokens
+- **Style assessment** — how well the visual direction matches
+- **Any gaps** — what's missing that would need to be built manually
+- **Duplicate count** — social proof
+
+Example format:
+> **1. [Dashboard UI Kit Pro](community-url)** — 12K duplicates
+> Best match for your dark-theme SaaS dashboard. Includes sidebar navigation, data tables, chart cards, and settings page — all in dark mode with a blue accent palette. Missing: finance-specific chart types. You'd need to adapt the generic charts.
+
+### Step 5: Duplicate & Retrieve
+
+Once the user picks a file:
+
+1. **Provide the direct Community link** and tell them:
+   > "Open this link, click **'Open in Figma'** (or **'Get a copy'**), and it will be duplicated to your drafts. Once it's in your account, give me the URL of the duplicated file."
+
+2. **Extract the file key** from the duplicated file URL:
+   ```
+   https://www.figma.com/design/<FILE_KEY>/...
+   ```
+
+3. **Browse the full file** to map its structure:
+   ```
+   mcp__figma__get_figma_data(fileKey: "<FILE_KEY>", depth: 2)
+   ```
+
+4. **Identify the most relevant frames** — Match pages/frames to the user's component needs. List them:
+   > "Found these relevant frames:
+   > - `Sidebar Navigation` (node 123:456)
+   > - `Data Table` (node 234:567)
+   > - `Chart Card` (node 345:678)"
+
+5. **Extract design tokens** from the full file:
+   ```bash
+   python3 ${CLAUDE_SKILL_DIR}/scripts/extract_tokens.py --input figma-data.json --format <user-format> --output tokens.<ext>
+   ```
+
+6. **Generate code** for each relevant component the user needs:
+   ```bash
+   python3 ${CLAUDE_SKILL_DIR}/scripts/figma_to_code.py --input <node>.json --framework <user-framework> --name <ComponentName>
+   ```
+
+7. **Download assets** (icons, images, illustrations) from the design:
+   ```
+   mcp__figma__download_figma_images(fileKey, nodes, localPath)
+   ```
+
+8. **Integrate into the user's project** — Place tokens in their config, components in their component directory, assets in their assets folder. Adapt the generated code to use the user's existing patterns and naming conventions.
+
+### Step 6: Adapt to Project Conventions
+
+After retrieving design data, do NOT just dump raw generated code. Adapt it:
+
+- **Match naming conventions** — If the user's project uses `kebab-case` filenames and `PascalCase` components, follow that
+- **Use existing tokens** — If the project already has a color system, map the Figma colors to existing tokens instead of adding new ones
+- **Follow project structure** — Put components where the project's other components live
+- **Merge design tokens** — Don't overwrite existing tokens; merge new ones in, flagging conflicts
+- **Preserve existing patterns** — If the project uses a specific state management, router, or styling approach, integrate with that
 
 ---
 
@@ -320,3 +452,5 @@ When the user needs design inspiration, templates, or UI kits from Figma Communi
 6. **Component names matter** — Use `--name` flag with the code generator for clean component names
 7. **Pipe for speed** — Both scripts accept stdin: `cat data.json | python3 ${CLAUDE_SKILL_DIR}/scripts/extract_tokens.py -f css`
 8. **Iterate** — Generated code is a starting point; refine layout, add interactivity, and connect to your state management
+9. **Community discovery is context-first** — Always build a project profile before searching Figma Community. A generic search yields generic results; a targeted search finds exactly what the user needs.
+10. **Adapt, don't dump** — When pulling from Community files, adapt code to the user's existing project conventions, token system, and file structure. Never blindly overwrite existing design tokens or patterns.
