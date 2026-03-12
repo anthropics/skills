@@ -1,0 +1,202 @@
+{
+  "expectations": [
+    {
+      "eval_id": 7,
+      "text": "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "passed": true,
+      "evidence": "Observe.init(app_name=\"research_writing_crew\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\")) at module level after load_dotenv()"
+    },
+    {
+      "eval_id": 7,
+      "text": "from ioa_observe.sdk import Observe is present in imports",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk import Observe is present in the imports section"
+    },
+    {
+      "eval_id": 7,
+      "text": "from ioa_observe.sdk.decorators imports include tool and workflow (or agent)",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk.decorators import tool as observe_tool, workflow is present"
+    },
+    {
+      "eval_id": 7,
+      "text": "from ioa_observe.sdk.tracing import session_start is present",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk.tracing import session_start is present in the imports section"
+    },
+    {
+      "eval_id": 7,
+      "text": "@tool decorator from ioa_observe is applied to search_topic",
+      "passed": true,
+      "evidence": "@observe_tool(name=\"search_topic\") is applied to search_topic (below the crewai @tool decorator)"
+    },
+    {
+      "eval_id": 7,
+      "text": "@tool decorator from ioa_observe is applied to summarize_findings",
+      "passed": true,
+      "evidence": "@observe_tool(name=\"summarize_findings\") is applied to summarize_findings (below the crewai @tool decorator)"
+    },
+    {
+      "eval_id": 7,
+      "text": "@workflow or @agent decorator is applied to run_crew function",
+      "passed": true,
+      "evidence": "@workflow(name=\"run_crew\") is applied to the run_crew function"
+    },
+    {
+      "eval_id": 7,
+      "text": "session_start() is called in main() before run_crew()",
+      "passed": true,
+      "evidence": "session_start() appears at the top of main(), before topic = input(...) and run_crew(topic)"
+    },
+    {
+      "eval_id": 7,
+      "text": "The file remains functionally equivalent - all original logic is preserved",
+      "passed": true,
+      "evidence": "All original code is preserved; only imports, Observe.init(), decorators, and session_start() were added"
+    },
+    {
+      "eval_id": 8,
+      "text": "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "passed": true,
+      "evidence": "Observe.init(app_name=\"research_writing_crew\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\"))"
+    },
+    {
+      "eval_id": 8,
+      "text": "ioa_observe SDK imports are added",
+      "passed": true,
+      "evidence": "Imports for Observe, observe_tool/workflow, and session_start are all present"
+    },
+    {
+      "eval_id": 8,
+      "text": "search_topic has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "@observe_tool(name=\"search_topic\") stacked below crewai's @tool(\"search_topic\")"
+    },
+    {
+      "eval_id": 8,
+      "text": "summarize_findings has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "@observe_tool(name=\"summarize_findings\") stacked below crewai's @tool(\"summarize_findings\")"
+    },
+    {
+      "eval_id": 8,
+      "text": "run_crew function is decorated with @workflow or @agent",
+      "passed": true,
+      "evidence": "@workflow(name=\"run_crew\") decorator applied to run_crew function"
+    },
+    {
+      "eval_id": 8,
+      "text": "session_start() is called in main() before run_crew()",
+      "passed": true,
+      "evidence": "session_start() is the first call in main(), before the input() and run_crew() calls"
+    },
+    {
+      "eval_id": 8,
+      "text": "No existing code is removed or broken - only additions are made",
+      "passed": true,
+      "evidence": "All original code retained; only additive changes (imports, Observe.init(), decorators, session_start()) made"
+    },
+    {
+      "eval_id": 9,
+      "text": "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "passed": true,
+      "evidence": "Observe.init(app_name=\"customer_support_agent\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\")) at module level after load_dotenv()"
+    },
+    {
+      "eval_id": 9,
+      "text": "from ioa_observe.sdk import Observe is present in imports",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk import Observe is present in the imports section"
+    },
+    {
+      "eval_id": 9,
+      "text": "from ioa_observe.sdk.decorators imports include tool and agent",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk.decorators import agent, tool is present"
+    },
+    {
+      "eval_id": 9,
+      "text": "from ioa_observe.sdk.tracing import session_start is present",
+      "passed": true,
+      "evidence": "from ioa_observe.sdk.tracing import session_start is present in the imports section"
+    },
+    {
+      "eval_id": 9,
+      "text": "@tool decorator from ioa_observe is applied to get_order_status",
+      "passed": true,
+      "evidence": "@tool(name=\"get_order_status\") decorator applied to get_order_status function"
+    },
+    {
+      "eval_id": 9,
+      "text": "@tool decorator from ioa_observe is applied to process_refund",
+      "passed": true,
+      "evidence": "@tool(name=\"process_refund\") decorator applied to process_refund function"
+    },
+    {
+      "eval_id": 9,
+      "text": "@agent decorator is applied to run_support_agent function",
+      "passed": true,
+      "evidence": "@agent(name=\"run_support_agent\") decorator applied to run_support_agent function"
+    },
+    {
+      "eval_id": 9,
+      "text": "session_start() is called in main() before the agent invocation loop",
+      "passed": true,
+      "evidence": "session_start() is called in main() before the while True loop that calls run_support_agent"
+    },
+    {
+      "eval_id": 9,
+      "text": "The file remains functionally equivalent - all original logic is preserved",
+      "passed": true,
+      "evidence": "All original code preserved; only imports, Observe.init(), decorators, and session_start() were added"
+    },
+    {
+      "eval_id": 10,
+      "text": "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "passed": true,
+      "evidence": "Observe.init(app_name=\"customer_support_agent\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\"))"
+    },
+    {
+      "eval_id": 10,
+      "text": "ioa_observe SDK imports are added",
+      "passed": true,
+      "evidence": "Imports for Observe, agent/tool, and session_start are all present"
+    },
+    {
+      "eval_id": 10,
+      "text": "get_order_status has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "@tool(name=\"get_order_status\") applied to get_order_status"
+    },
+    {
+      "eval_id": 10,
+      "text": "process_refund has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "@tool(name=\"process_refund\") applied to process_refund"
+    },
+    {
+      "eval_id": 10,
+      "text": "run_support_agent is decorated with @agent",
+      "passed": true,
+      "evidence": "@agent(name=\"run_support_agent\") applied to run_support_agent"
+    },
+    {
+      "eval_id": 10,
+      "text": "session_start() is called in main() before the while loop",
+      "passed": true,
+      "evidence": "session_start() appears in main() immediately before the while True loop"
+    },
+    {
+      "eval_id": 10,
+      "text": "No existing code is removed or broken - only additions are made",
+      "passed": true,
+      "evidence": "All original code retained; only additive changes made"
+    }
+  ],
+  "summary": {
+    "passed": 32,
+    "failed": 0,
+    "total": 32,
+    "pass_rate": 1.0
+  }
+}
