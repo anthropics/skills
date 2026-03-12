@@ -46,21 +46,11 @@ cp -r quality-guard/SKILL.md ~/.cursor/skills/quality-guard/SKILL.md
 
 ## Usage
 
-### First run — initialize project map
-
 ```
-/quality-guard init
+/quality-guard
 ```
 
-Scans your project and generates `.quality-guard/project.md` with the system architecture.
-
-### Run on a scope
-
-```
-/quality-guard checkout
-```
-
-The skill automatically detects which phase to enter:
+Just run `/quality-guard` — the skill automatically detects which phase to enter based on existing artifacts:
 
 1. **Phase 0: Scope Selection** — helps you pick the right area to focus on
 2. **Phase 1: Behavior Mapping** — reads code, maps behaviors, asks you to confirm
