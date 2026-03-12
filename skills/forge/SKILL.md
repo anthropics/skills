@@ -1,9 +1,6 @@
 ---
 name: forge
 description: "Use this skill whenever the user has a complex task that needs to be done right — not just executed once, but iteratively hammered into shape until it passes quality checks. This includes writing production code, drafting technical documents, designing system architectures, building configuration files, creating test suites, or any deliverable where 'good enough on first try' is unlikely. Trigger when the user says 'forge this', 'do this properly', 'iterate until done', 'use forge', or presents a task that clearly benefits from multiple revision passes. The skill works by dynamically generating two sub-skills: an executor (step-by-step action plan informed by best practices) and an evaluator (measurable pass/fail quality checklist), then running an execute-evaluate-fix loop until every criterion passes. Do NOT use for trivial one-line fixes, simple lookups, or real-time pair programming."
-metadata:
-  author: openclaw
-  version: "1.0"
 ---
 
 # Forge — Execute, Evaluate, Repeat Until Done
@@ -46,8 +43,6 @@ Break any complex task into an **executor** (action plan) and an **evaluator** (
 ---
 name: executor-{TASK_ID}
 description: Auto-generated action plan for {task}.
-metadata:
-  iteration: "1"
 ---
 # Action Plan: {Task Title}
 
@@ -75,8 +70,6 @@ metadata:
 ---
 name: evaluator-{TASK_ID}
 description: Auto-generated quality gate for {task}.
-metadata:
-  iteration: "1"
 ---
 # Quality Gate: {Task Title}
 
