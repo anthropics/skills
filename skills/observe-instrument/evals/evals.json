@@ -142,5 +142,71 @@
       "session_start() is called in main() before the while loop",
       "No existing code is removed or broken - only additions are made"
     ]
+  },
+  {
+    "id": 11,
+    "prompt": "Add Observe SDK instrumentation to this LangGraph multi-agent system: evals/fixtures/langgraph-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, graph, workflow and tool (or observe_tool alias)",
+      "session_start is imported and called once in main() before the agent loop",
+      "@observe_tool decorator is applied to search_web stacked below @langchain_tool",
+      "@observe_tool decorator is applied to format_article stacked below @langchain_tool",
+      "@agent decorator is applied to supervisor_node",
+      "@agent decorator is applied to research_node",
+      "@agent decorator is applied to write_node",
+      "@graph decorator is applied to build_graph",
+      "session_start() is NOT called inside individual agent node functions",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 12,
+    "prompt": "Add Observe SDK instrumentation to this LlamaIndex multi-agent pipeline: evals/fixtures/llama-index-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, graph, workflow and session_start",
+      "@graph and @agent decorators are stacked on ResearchAgent class (@graph above @agent)",
+      "@graph and @agent decorators are stacked on WritingAgent class (@graph above @agent)",
+      "get_workflow() method is added to ResearchAgent if not present",
+      "get_workflow() method is added to WritingAgent if not present",
+      "@workflow decorator is applied to run_pipeline function",
+      "session_start() is called once in main() before run_pipeline()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 13,
+    "prompt": "Add Observe SDK instrumentation to this CrewAI multi-crew pipeline: evals/fixtures/crewai-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including tool, workflow and session_start",
+      "@tool decorator from ioa_observe is applied to search_web (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to analyze_data (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to edit_content (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to format_for_publish (stacked below @crewai_tool)",
+      "@workflow decorator is applied to run_research_crew",
+      "@workflow decorator is applied to run_publishing_crew",
+      "@workflow decorator is applied to run_pipeline",
+      "session_start() is called once in main() before run_pipeline()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 14,
+    "prompt": "Add Observe SDK instrumentation to this OpenAI SDK multi-agent pipeline: evals/fixtures/openai-sdk-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, tool, workflow and session_start",
+      "@tool decorator is applied to search_web",
+      "@tool decorator is applied to summarize_text",
+      "@tool decorator is applied to draft_article",
+      "@tool decorator is applied to polish_draft",
+      "@agent decorator is applied to run_research_agent",
+      "@agent decorator is applied to run_writing_agent",
+      "@workflow decorator is applied to run_orchestrator",
+      "session_start() is called once in main() before run_orchestrator()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
   }
 ]

@@ -315,6 +315,108 @@ def main():
 
 **Note**: CrewAI's internal agent execution is auto-instrumented by `Observe.init()`. Apply `@workflow` to the function that kicks off the crew, and `@tool` to custom tool functions.
 
+### Multi-Agent Systems
+
+Multi-agent systems have multiple cooperating agents. The key rules:
+
+- Each agent node/function gets its own `@agent` decorator
+- The top-level orchestrator/supervisor gets `@workflow`
+- `session_start()` is called **once** at the entry point — all agents share the same `TraceId`
+- `@graph` goes on the graph builder (LangGraph)
+- Do NOT call `session_start()` inside individual agent functions
+
+**LangGraph supervisor pattern:**
+```python
+from ioa_observe.sdk.decorators import agent, graph, workflow
+from ioa_observe.sdk.decorators import tool as observe_tool
+
+@observe_tool(name="search_web")
+@langchain_tool
+def search_web(query: str) -> str: ...
+
+@agent(name="supervisor")
+def supervisor_node(state): ...
+
+@agent(name="researcher")
+def research_node(state): ...
+
+@agent(name="writer")
+def write_node(state): ...
+
+@graph(name="multi_agent_graph")
+def build_graph(): ...
+
+def main():
+    session_start()
+    build_graph().stream({"messages": [...]})
+```
+
+**LlamaIndex multi-agent:**
+```python
+from ioa_observe.sdk.decorators import agent, graph, workflow
+
+@graph(name="research_agent_graph")
+@agent(name="research_agent")
+class ResearchAgent:
+    def get_workflow(self): return self.workflow
+
+@graph(name="writing_agent_graph")
+@agent(name="writing_agent")
+class WritingAgent:
+    def get_workflow(self): return self.workflow
+
+@workflow(name="multi_agent_pipeline")
+async def run_pipeline(topic: str) -> str: ...
+
+async def main():
+    session_start()
+    await run_pipeline("...")
+```
+
+**CrewAI multi-crew pipeline:**
+```python
+from ioa_observe.sdk.decorators import tool, workflow
+
+@workflow(name="research_crew")
+def run_research_crew(topic: str) -> str:
+    crew = Crew(agents=[researcher, analyst], ...)
+    return crew.kickoff()
+
+@workflow(name="publishing_crew")
+def run_publishing_crew(research: str) -> str:
+    crew = Crew(agents=[editor, publisher], ...)
+    return crew.kickoff()
+
+@workflow(name="pipeline")
+def run_pipeline(topic: str) -> str:
+    research = run_research_crew(topic)
+    return run_publishing_crew(str(research))
+
+def main():
+    session_start()
+    run_pipeline("...")
+```
+
+**OpenAI SDK multi-agent:**
+```python
+from ioa_observe.sdk.decorators import agent, tool, workflow
+
+@agent(name="research_agent")
+def run_research_agent(topic: str) -> str: ...
+
+@agent(name="writing_agent")
+def run_writing_agent(research: str) -> str: ...
+
+@workflow(name="orchestrator")
+def run_orchestrator(topic: str) -> str:
+    research = run_research_agent(topic)
+    return run_writing_agent(research)
+
+def main():
+    session_start()
+    run_orchestrator("...")
+```
+
 ---
 
 ## What NOT to Do
