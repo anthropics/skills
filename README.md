@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **TechWolf AI-First Toolkit** - [AI-First Toolkit Skills](https://github.com/techwolf-ai/ai-first-toolkit) - Two skills for AI-first software design: `ai-firstify` (audit, re-engineer, and bootstrap codebases for AI-first design principles) and `content-studio` (thought leadership content pipeline)
