@@ -6,7 +6,6 @@ metadata:
   author: masonry-ai
   version: "1.0"
 compatibility: Requires masonry CLI installed (curl -sSL https://media.masonry.so/cli/install.sh | sh)
-allowed-tools: Bash(masonry:*)
 ---
 
 # Masonry CLI
@@ -28,33 +27,33 @@ Use this skill when the user wants to:
 If the masonry command is not available, install it:
 
 ```bash
-curl -sSL https://media.masonry.so/cli/install.sh | sh
+npm i -g @masonryai/cli
 ```
 
 Then authenticate:
 
 ```bash
-masonry login
+npx @masonryai/cli  login
 ```
 
 ## Quick Commands
 
 ```bash
 # Generate image
-masonry image "your prompt here" --aspect 16:9
+npx @masonryai/cli  image "your prompt here" --aspect 16:9
 
 # Generate video
-masonry video "your prompt here" --duration 4
+npx @masonryai/cli  video "your prompt here" --duration 4
 
 # Check job status
-masonry job status <job-id>
+npx @masonryai/cli  job status <job-id>
 
 # Download result
-masonry job download <job-id> -o ./output.png
+npx @masonryai/cli  job download <job-id> -o ./output.png
 
 # List available models
-masonry models list --type image
-masonry models list --type video
+npx @masonryai/cli  models list --type image
+npx @masonryai/cli  models list --type video
 ```
 
 ## Detailed Workflows
@@ -63,10 +62,10 @@ masonry models list --type video
 
 ```bash
 # Basic generation
-masonry image "a sunset over mountains, photorealistic"
+npx @masonryai/cli  image "a sunset over mountains, photorealistic"
 
 # With options
-masonry image "cyberpunk cityscape" --aspect 16:9 --model imagen-3.0-generate-002
+npx @masonryai/cli  image "cyberpunk cityscape" --aspect 16:9 --model imagen-3.0-generate-002
 
 # Available flags
 #   --aspect, -a     Aspect ratio (16:9, 9:16, 1:1)
@@ -81,10 +80,10 @@ masonry image "cyberpunk cityscape" --aspect 16:9 --model imagen-3.0-generate-00
 
 ```bash
 # Basic generation
-masonry video "ocean waves crashing on rocks"
+npx @masonryai/cli  video "ocean waves crashing on rocks"
 
 # With options
-masonry video "drone shot of forest" --duration 6 --aspect 16:9
+npx @masonryai/cli  video "drone shot of forest" --duration 6 --aspect 16:9
 
 # Available flags
 #   --duration       Length in seconds (4, 6, 8)
@@ -98,30 +97,30 @@ masonry video "drone shot of forest" --duration 6 --aspect 16:9
 
 ```bash
 # List recent jobs
-masonry job list
+npx @masonryai/cli  job list
 
 # Check specific job
-masonry job status <job-id>
+npx @masonryai/cli  job status <job-id>
 
 # Wait for completion and download
-masonry job wait <job-id> --download -o ./result.png
+npx @masonryai/cli  job wait <job-id> --download -o ./result.png
 
 # View local history
-masonry history list
-masonry history pending --sync
+npx @masonryai/cli  history list
+npx @masonryai/cli  history pending --sync
 ```
 
 ### Model Discovery
 
 ```bash
 # List all models
-masonry models list
+npx @masonryai/cli  models list
 
 # Filter by type
-masonry models list --type video
+npx @masonryai/cli  models list --type video
 
 # Get model parameters
-masonry models params veo-3.1-fast-generate-preview
+npx @masonryai/cli  models params veo-3.1-fast-generate-preview
 ```
 
 ## Response Format
@@ -143,6 +142,6 @@ All commands return JSON:
 If commands fail with auth errors:
 
 ```bash
-masonry login
+npx @masonryai/cli login
 ```
 
