@@ -12,7 +12,7 @@
     {
       "name": "document-skills",
       "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "source": "./",
+      "source": "./plugins/document-skills",
       "strict": false,
       "skills": [
         "./skills/xlsx",
@@ -24,7 +24,7 @@
     {
       "name": "example-skills",
       "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
-      "source": "./",
+      "source": "./plugins/example-skills",
       "strict": false,
       "skills": [
         "./skills/algorithmic-art",
@@ -40,16 +40,13 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
-      "source": "./",
+      "source": "./plugins/claude-api",
       "strict": false,
-      "skills": [
-        "./skills/claude-api"
-      ]
+      "skills": ["./skills/claude-api"]
     }
   ]
 }
