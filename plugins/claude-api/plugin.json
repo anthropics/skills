@@ -1,0 +1,8 @@
+{
+  "description": "Claude API and SDK documentation skill for building LLM-powered applications",
+  "name": "claude-api",
+  "source": "./",
+  "skills": [
+    "./skills/claude-api"
+  ]
+}
