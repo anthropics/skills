@@ -2,15 +2,20 @@
 #
 # What it does
 # ────────────
-# 1. Runs `ruff check --fix` + `ruff format` to auto-fix lint / style issues.
-# 2. Runs `mypy` to report type errors (mypy cannot safely auto-fix these,
-#    so they are surfaced as annotations in the workflow summary instead).
-# 3. If ruff produced any changes it commits them back to the target branch.
-#    Before pushing, it rebases on top of any commits that landed while the
+# 1. Python – runs `ruff check --fix` + `ruff format` to auto-fix lint/style.
+# 2. Markdown – runs `mdformat` (with mdformat-tables) to normalise table
+#    alignment and general formatting, then `markdownlint --fix` to patch
+#    auto-fixable structural issues (blank lines, trailing spaces, …).
+# 3. Commits all auto-fixes back to main in a single commit.
+#    Before pushing it rebases on top of any commits that landed while the
 #    job was running so that concurrent changes are preserved correctly.
-#    If the rebase produces a conflict (i.e. a developer edited the exact
-#    same lines the linter changed) the job fails loudly so a human can
-#    resolve it — no silent data loss.
+#    A genuine conflict (developer and linter touched the same lines) fails
+#    the job loudly — no silent data loss.
+# 4. Runs `mypy` and `markdownlint` (report-only) and surfaces the results
+#    in the GitHub Actions job summary.
+#
+# Markdown linting config: .markdownlint.json
+#   – MD013 line-length is NOT enforced inside tables (tables: false).
 #
 # Permissions required
 # ────────────────────

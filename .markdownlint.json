@@ -1,0 +1,6 @@
+{
+  "default": true,
+  "MD013": {
+    "tables": false
+  }
+}
