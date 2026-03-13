@@ -160,7 +160,13 @@ Launch a Review Agent to check:
    ```
    For Chinese language, add `jieba` for search segmentation and set `lang: [zh, en]`.
 
-3. **Create `tutorial/index.md`** homepage: project intro + module index table + quick start links
+3. **Create `tutorial/index.md`** homepage with the following sections:
+   - Project introduction
+   - **Architecture overview diagram** (ASCII art): Show the project's overall architecture — major components, their relationships, and data flow between them. This gives readers an immediate big-picture understanding.
+   - **Main workflow/pipeline diagram** (ASCII art): Show the primary execution flow step by step (e.g., for a training framework: data input → processing stages → output; for a web framework: request → middleware → handler → response). Number each step.
+   - **Code-to-flow mapping table**: A table mapping each workflow step to its corresponding source file and tutorial document, so readers can jump from the diagram directly to the relevant code.
+   - Module index table with doc counts and descriptions
+   - Quick start reading links
 
 4. **Create `tutorial/.pages`** for navigation ordering
 
@@ -229,3 +235,4 @@ Launch a Review Agent to check:
 5. **Self-review**: Always review your own output before declaring done. Check for missing files, empty docs, and quality issues.
 6. **Consistent title format**: All doc titles must follow `` `filename.ext` — short description `` format for clean sidebar navigation.
 7. **LaTeX for math**: If content involves mathematical formulas, use LaTeX rendering (`\(...\)` inline, `$$...$$` display), never plain-text code blocks.
+8. **Architecture & flow diagrams on homepage**: The tutorial homepage (`index.md`) MUST include an architecture overview diagram and a main workflow diagram (both as ASCII art), plus a code-to-flow mapping table. Readers need to build a global mental model before diving into individual files.
