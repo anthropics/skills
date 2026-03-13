@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Atlassian MCP server does NOT have an attachment upload tool. To upload images to Confluence pages, use the **Confluence REST API v1** directly via the bundled script or curl.
+Upload images to Confluence pages using the **Confluence REST API v1** via the bundled script or curl.
 
 ## Two-Step Process
 

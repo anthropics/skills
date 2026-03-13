@@ -67,7 +67,7 @@ Deliver:
 - Confirm Epic status is "Done": `acli jira workitem view {projectKey}-{N} --json`
 - Confirm all child tickets are "Done":
   ```
-  acli jira workitem search --jql "parent = {projectKey}-{N} AND statusCategory != Done" --json --limit 10
+  acli jira workitem search --jql "parent = {projectKey}-{N} AND statusCategory NOT IN (Done)" --json --limit 10
   ```
   Should return 0 results.
 - Confirm Confluence page shows COMPLETED status
