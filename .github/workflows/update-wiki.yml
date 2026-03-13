@@ -1,0 +1,63 @@
+name: Update Wiki
+
+# Re-generate and publish the GitHub Wiki whenever:
+#   • a skill is added or modified (skills/**)
+#   • the static wiki source pages change (wiki/**)
+#   • the generator script itself changes
+#   • or a maintainer triggers the workflow manually
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "wiki/**"
+      - "scripts/generate_wiki.py"
+      - ".claude-plugin/marketplace.json"
+  workflow_dispatch:
+
+# The GITHUB_TOKEN needs write access to push to the wiki git repository.
+permissions:
+  contents: write
+
+jobs:
+  update-wiki:
+    name: Generate and publish wiki
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # generate_wiki.py uses only the Python standard library.
+      - name: Generate wiki pages
+        run: python scripts/generate_wiki.py
+
+      # Push the generated output to the repo's GitHub Wiki.
+      # The wiki is a separate git repository at <repo>.wiki.git.
+      # We force-push a fresh commit so the wiki always reflects
+      # the current state of the source files exactly.
+      #
+      # NOTE: GitHub Wiki must be enabled in repository Settings → Features
+      # before this step can succeed. Enable it once; subsequent pushes are
+      # handled automatically by this workflow.
+      - name: Deploy to GitHub Wiki
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WIKI_DIR="$(mktemp -d)"
+          cp -r wiki_output/. "$WIKI_DIR/"
+
+          cd "$WIKI_DIR"
+          git init -b master
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: auto-update wiki from ${GITHUB_SHA::7} [skip ci]"
+          git push --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git" \
+            master
