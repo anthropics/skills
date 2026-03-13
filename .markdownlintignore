@@ -1,0 +1,7 @@
+# Files that markdownlint should not check.
+# Each line is a glob pattern relative to the repository root.
+
+# Auto-generated third-party licence attribution — the format (long URLs,
+# ordered-list numbering, etc.) is defined by upstream packages and must
+# not be changed by automated tooling.
+THIRD_PARTY_NOTICES.md
