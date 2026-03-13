@@ -165,7 +165,7 @@ Tell Claude to use the template as a starting point rather than generating from 
 
 ---
 
-## Step 5 — Add a Licence File
+## Step 5 — Add a License File
 
 If your skill contains proprietary content, add a `LICENSE.txt` to the skill folder and reference it in the frontmatter:
 
@@ -262,7 +262,7 @@ Before submitting, verify:
 - [ ] Any scripts are referenced by relative path from the skill folder.
 - [ ] The skill works end-to-end in at least one Claude interface.
 - [ ] Outputs meet a professional quality bar (not just functional — polished).
-- [ ] Licence information is correct (`LICENSE.txt` present if proprietary).
+- [ ] License information is correct (`LICENSE.txt` present if proprietary).
 - [ ] `.claude-plugin/marketplace.json` updated if applicable.
 
 ---

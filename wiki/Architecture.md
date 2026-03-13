@@ -104,7 +104,7 @@ Detailed instructions that Claude will follow when this skill is active.
 |-------|----------|---------|
 | `name` | ✅ Yes | Unique identifier (lowercase, hyphens for spaces) |
 | `description` | ✅ Yes | Trigger description — Claude uses this to decide when to activate the skill |
-| `license` | ❌ No | Human-readable licence reference. Omit for Apache 2.0. |
+| `license` | ❌ No | Human-readable license reference. Omit for Apache 2.0. |
 
 ### Writing a good description
 
@@ -281,9 +281,9 @@ Edit any file in the `wiki/` directory and push. The workflow copies the updated
 
 ---
 
-## Licence Overview
+## License Overview
 
-| Skill group | Licence |
+| Skill group | License |
 |---|---|
 | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `claude-api`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | Apache 2.0 |
 | `docx`, `pdf`, `pptx`, `xlsx` | Proprietary (source-available) — see `LICENSE.txt` in each folder |

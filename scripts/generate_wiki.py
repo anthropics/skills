@@ -284,7 +284,7 @@ def generate_home(skills: list[Skill], timestamp: str) -> str:
         "",
         "| Page | Description |",
         "|------|-------------|",
-        "| [Skills Overview](Skills-Overview) | Full table of every skill with descriptions and licence info |",
+        "| [Skills Overview](Skills-Overview) | Full table of every skill with descriptions and license info |",
         "| [Getting Started](Getting-Started) | How to install and activate skills in Claude Code, Claude.ai, and the API |",
         "| [Architecture](Architecture) | How skills work, `SKILL.md` format, script conventions, and plugin groups |",
         "| [Contributing](Contributing) | Step-by-step guide to authoring and submitting new skills |",
@@ -383,7 +383,7 @@ def generate_skills_overview(skills: list[Skill], timestamp: str) -> str:
         lines += [
             f"## {icon} {cat}",
             "",
-            "| Skill | Description | Licence | Source |",
+            "| Skill | Description | License | Source |",
             "|-------|-------------|---------|--------|",
         ]
         for s in cat_skills:
@@ -431,7 +431,7 @@ def generate_skill_page(skill: Skill) -> str:
         f"> **Folder:** [`skills/{skill.folder}`]({SKILLS_URL}/{skill.folder})",
     ]
     if skill.license:
-        lines.append(f"> **Licence:** {skill.license}")
+        lines.append(f"> **License:** {skill.license}")
     lines += ["", "---", ""]
 
     # When to use
