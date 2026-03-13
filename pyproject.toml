@@ -1,0 +1,48 @@
+[tool.ruff]
+# Target Python 3.10+ since the codebase uses modern syntax (match statements, etc.)
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+# Enable a sensible set of rules:
+#   E/W  – pycodestyle errors and warnings
+#   F    – Pyflakes (undefined names, unused imports, etc.)
+#   I    – isort (import sorting)
+#   UP   – pyupgrade (modernise Python syntax)
+#   B    – flake8-bugbear (common bug patterns)
+select = ["E", "W", "F", "I", "UP", "B"]
+
+# Rules that are too noisy or require manual fixes to keep safe
+ignore = [
+    "E501",   # line too long – handled by formatter
+    "B008",   # do not perform function calls in default arguments
+    "B904",   # raise from within except (can be a style choice)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["skills"]
+
+[tool.ruff.format]
+# Black-compatible formatting
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+# Each skill lives in its own sub-directory; using explicit package bases
+# prevents "duplicate module" errors when multiple skills share the same
+# sub-package name (e.g. `scripts`).
+explicit_package_bases = true
+# Warn about things that are clearly wrong but don't block the CI
+warn_unused_ignores = false
+warn_return_any = false
+# Start lenient – tighten these as the codebase gains type annotations
+disallow_untyped_defs = false
+check_untyped_defs = true
+# Exclude generated or vendored directories
+exclude = [
+    "^template/",
+]

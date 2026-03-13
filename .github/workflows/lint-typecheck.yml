@@ -1,0 +1,161 @@
+# Daily lint and type-check workflow
+#
+# What it does
+# ────────────
+# 1. Runs `ruff check --fix` + `ruff format` to auto-fix lint / style issues.
+# 2. Runs `mypy` to report type errors (mypy cannot safely auto-fix these,
+#    so they are surfaced as annotations in the workflow summary instead).
+# 3. If ruff produced any changes it commits them back to the target branch.
+#    Before pushing, it rebases on top of any commits that landed while the
+#    job was running so that concurrent changes are preserved correctly.
+#    If the rebase produces a conflict (i.e. a developer edited the exact
+#    same lines the linter changed) the job fails loudly so a human can
+#    resolve it — no silent data loss.
+#
+# Permissions required
+# ────────────────────
+# The workflow uses GITHUB_TOKEN with `contents: write` so it can push the
+# auto-fix commit. Enable "Allow GitHub Actions to create and approve pull
+# requests" in Settings → Actions → General if you also want the fallback
+# PR path to work.
+
+name: Daily Lint & Type Check
+
+on:
+  schedule:
+    # Run at 06:00 UTC every day
+    - cron: "0 6 * * *"
+  # Allow a one-off run from the Actions tab at any time
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to push the auto-fix commit back
+
+jobs:
+  lint-and-typecheck:
+    name: Lint (ruff) & Type-check (mypy)
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Check out the full history so rebase works correctly ───────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Always operate on the repository's default branch so the daily
+          # fixes land where developers work.
+          ref: main
+          fetch-depth: 0          # full history required for git rebase
+
+      # ── 2. Python setup ───────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # Use the latest stable Python to run the linting tools themselves.
+          # The tools are configured (in pyproject.toml) to lint for Python 3.10+
+          # compatibility, so the tool runtime version and the target version are
+          # intentionally different.
+          python-version: "3.12"
+
+      # ── 3. Install linting / type-checking tools ─────────────────────────
+      - name: Install tools
+        run: |
+          pip install --quiet ruff mypy
+
+      # ── 4. Auto-fix lint & formatting issues ─────────────────────────────
+      #
+      # `ruff check --fix`  – fixes safe lint violations automatically.
+      # `ruff format`        – reformats all Python files (Black-compatible).
+      #
+      # Both commands exit 0 even when they make changes, so the step always
+      # succeeds. The commit step below detects whether anything changed.
+      - name: Run ruff auto-fix
+        run: |
+          ruff check --fix --exit-zero .
+          ruff format .
+
+      # ── 5. Commit auto-fixes (if any) ─────────────────────────────────────
+      - name: Commit lint fixes
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "No lint changes – nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git add -A
+            git commit -m "chore: auto-fix lint issues [skip ci]"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 6. Push (with rebase to handle concurrent commits) ────────────────
+      #
+      # Strategy:
+      #   a) Try a fast-forward push first.
+      #   b) If it is rejected (someone committed while we were running),
+      #      rebase our fix-commit on top of those new commits and retry.
+      #   c) If the rebase itself fails (genuine conflict between the
+      #      developer's edit and the linter's edit), abort and fail the job
+      #      so a human can resolve it.  No data is lost.
+      - name: Push auto-fix commit
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          push_with_rebase() {
+            # Attempt a direct push first
+            if git push origin main; then
+              echo "Push succeeded."
+              return 0
+            fi
+
+            echo "Push rejected – rebasing on top of new commits …"
+            if ! git pull --rebase origin main; then
+              echo "::error::Rebase failed due to a conflict between the linter's " \
+                   "changes and a concurrent commit. Please resolve manually."
+              git rebase --abort 2>/dev/null || true
+              return 1
+            fi
+
+            # Retry after successful rebase
+            if git push origin main; then
+              echo "Push succeeded after rebase."
+              return 0
+            fi
+
+            echo "::error::Push failed even after rebase. " \
+                 "Another commit may have landed during the rebase."
+            return 1
+          }
+
+          push_with_rebase
+
+      # ── 7. Run mypy type-check (report only – no auto-fix) ────────────────
+      #
+      # Type errors require developer attention; we surface them in the job
+      # summary rather than failing the push step.
+      - name: Run mypy type-check
+        id: mypy
+        run: |
+          mypy . 2>&1 | tee mypy-report.txt
+          EXIT=${PIPESTATUS[0]}
+
+          # Write a collapsible summary to the GitHub Actions job summary
+          {
+            echo "## mypy type-check report"
+            echo ""
+            if [ "$EXIT" -eq 0 ]; then
+              echo "✅ No type errors found."
+            else
+              echo "⚠️ Type errors detected – manual fixes required."
+              echo ""
+              echo "\`\`\`"
+              cat mypy-report.txt
+              echo "\`\`\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Exit with the real mypy exit code so the job status reflects
+          # whether type errors exist.  Set continue-on-error: true below
+          # if you want a green badge even when type errors are present.
+          exit "$EXIT"
+        continue-on-error: true   # type errors are reported but don't fail CI
