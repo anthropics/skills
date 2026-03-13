@@ -39,6 +39,8 @@ ATLASSIAN_API_TOKEN="your-api-token-here"
 ATLASSIAN_SITE="https://yoursite.atlassian.net"
 ```
 
+> **Variable names:** The skill expects exactly these three variable names. If your project's `.env` uses different names (e.g., `ATLASSIAN_BASE_URL`), either rename them or add aliases so both work.
+
 For Claude Code, source this file before running commands. Other agents can set these as environment variables in their own configuration.
 
 ## Step 4: Authenticate ACLI
@@ -47,8 +49,11 @@ Source your `.env` and log in:
 
 ```bash
 source .env
+# ACLI expects the bare domain (e.g., mysite.atlassian.net), not the full URL.
+# Strip the https:// prefix if your ATLASSIAN_SITE includes it:
+ACLI_SITE="${ATLASSIAN_SITE#https://}"
 acli jira auth login \
-  --site "$ATLASSIAN_SITE" \
+  --site "$ACLI_SITE" \
   --email "$ATLASSIAN_EMAIL" \
   --token < <(echo "$ATLASSIAN_API_TOKEN")
 ```
@@ -61,7 +66,7 @@ acli jira auth login \
 
 ```bash
 # List recent issues in your project
-acli jira workitem list --project "YOUR_PROJECT_KEY" --limit 5
+acli jira workitem search --jql "project = YOUR_PROJECT_KEY ORDER BY created DESC" --limit 5
 ```
 
 ### Test Confluence
@@ -123,3 +128,4 @@ Your API token may lack the necessary scopes. Ensure the Atlassian account has r
 - **Claude Code**: Source `.env` in your shell or add `source .env` to your workflow scripts. Claude Code can read `.env` files directly.
 - **Cursor / Cline / Windsurf**: Set `ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`, and `ATLASSIAN_SITE` as environment variables in your agent's configuration.
 - **CI/CD**: Store credentials as pipeline secrets and export them as environment variables.
+- **Subshell environments**: In agentic contexts where each shell command runs in a new subprocess, credentials from `source .env` don't persist. Combine sourcing and execution in one command: `bash -c 'set -a; source .env; set +a; <your command>'`.

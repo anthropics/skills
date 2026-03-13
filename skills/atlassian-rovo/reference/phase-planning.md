@@ -98,12 +98,21 @@ acli jira project list --json
 ```
 Present the list and ask the user to pick one.
 
-### Find user's Confluence space
+### Find user's Confluence space and numeric spaceId
 ```
 curl -s "https://{site}/wiki/api/v2/spaces?limit=10" \
   -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
 ```
-Present the list and ask the user to pick one. The response includes `id` (spaceId) and `key`.
+Present the list and ask the user to pick one. The response includes both:
+- `id` (numeric, e.g., `229380`) — this is the **spaceId** used in page creation (`POST /pages`)
+- `key` (string, e.g., `SD`) — this is the **spaceKey** used in CQL search queries
+
+To quickly map a known space key to its numeric ID:
+```bash
+curl -s "https://{site}/wiki/api/v2/spaces?keys=SD&limit=1" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+  | python3 -c "import json,sys; r=json.load(sys.stdin)['results']; print(r[0]['id']) if r else print('Not found')"
+```
 
 ### Find pages in a space (to offer as parent page)
 ```

@@ -5,6 +5,8 @@ Shared protocols used by both multi-agent and single-agent execution modes.
 All examples use `{site}`, `{projectKey}` as placeholders.
 Credentials are sourced from environment: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API_TOKEN`.
 
+**Confluence API versions:** Use v2 (`/wiki/api/v2/`) for page CRUD (create, read, update) and comments. Use v1 (`/wiki/rest/api/`) for CQL search and comment replies — the v2 equivalents have different behavior or return errors. See [confluence-comments.md](confluence-comments.md) for details on comment threading.
+
 ---
 
 ## Transition Protocol
@@ -27,6 +29,7 @@ acli jira workitem transition --key {projectKey}-{N} --status "Done" --yes
    ```bash
    acli jira workitem edit --key {projectKey}-{N} --assignee "@me"
    ```
+   > **Note:** The `edit` response may show `null` for assignee even when assignment succeeded. Verify with `acli jira workitem view {projectKey}-{N} --json` if needed.
 
 2. **Transition to In Progress:**
    ```bash
@@ -65,6 +68,19 @@ curl -s -X POST "https://{site}/wiki/api/v2/pages" \
 ```
 
 This keeps all deliverables organized under the plan page in Confluence.
+
+> **Shell escaping note:** When building curl payloads with shell variables containing HTML or special characters, use Python to safely JSON-encode the body:
+> ```bash
+> BODY_JSON=$(python3 -c "import json,sys; print(json.dumps(sys.stdin.read()))" <<'HTMLEOF'
+> <h2>Findings</h2><p>Your HTML content here</p>
+> HTMLEOF
+> )
+> curl -s -X POST "https://{site}/wiki/api/v2/pages" \
+>   -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+>   -H "Content-Type: application/json" \
+>   -d "{\"spaceId\": \"...\", \"parentId\": \"...\", \"status\": \"current\", \"title\": \"...\", \"body\": {\"representation\": \"storage\", \"value\": $BODY_JSON}}"
+> ```
+> Alternatively, use the `confluence_create_page` helper from `atlassian-helpers.sh`, which handles JSON encoding automatically.
 
 ---
 
