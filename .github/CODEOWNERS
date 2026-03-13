@@ -1,0 +1,5 @@
+# CODEOWNERS
+# Ensures the repo maintainer is automatically requested for review on all PRs.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+* @d33disc

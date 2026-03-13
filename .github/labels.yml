@@ -1,0 +1,32 @@
+# GitHub Labels
+# Consumed by the label-pr and sync-upstream workflows.
+# Apply with: gh label create --force ...  (or via a labels-sync action)
+
+labels:
+  - name: upstream-sync
+    color: "0075ca"
+    description: "Automated PR syncing changes from anthropics/skills"
+
+  - name: skills
+    color: "e4e669"
+    description: "Changes to one or more skills"
+
+  - name: spec
+    color: "d93f0b"
+    description: "Changes to the Agent Skills specification"
+
+  - name: template
+    color: "bfd4f2"
+    description: "Changes to the skill template"
+
+  - name: documentation
+    color: "0052cc"
+    description: "Documentation improvements"
+
+  - name: conflicts
+    color: "e11d48"
+    description: "Sync PR has merge conflicts that must be resolved manually"
+
+  - name: github-actions
+    color: "f9d0c4"
+    description: "Changes to GitHub Actions workflows or configuration"
