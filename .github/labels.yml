@@ -23,6 +23,10 @@ labels:
     color: "0052cc"
     description: "Documentation improvements"
 
+  - name: conflicts
+    color: "e11d48"
+    description: "Sync PR has merge conflicts that must be resolved manually"
+
   - name: github-actions
     color: "f9d0c4"
     description: "Changes to GitHub Actions workflows or configuration"

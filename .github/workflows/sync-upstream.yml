@@ -63,6 +63,48 @@ jobs:
         run: echo "Fork is already up-to-date. Exiting."
 
       # ------------------------------------------------------------------ #
+      # Collect the diff summary (commits + files) before any merge.        #
+      # These outputs are used in PR bodies for both the fast-forward and   #
+      # the conflict-PR paths.                                               #
+      # ------------------------------------------------------------------ #
+      - name: Build diff summary
+        if: steps.status.outputs.in_sync == 'false'
+        id: diff
+        run: |
+          # --- New commits coming in from upstream ---
+          COMMIT_LOG=$(git log \
+            --oneline \
+            --no-merges \
+            "origin/main..upstream/main" \
+            | head -50 \
+            | sed 's/^/  - /')
+
+          # --- Files changed between our main and upstream/main ---
+          CHANGED_FILES=$(git diff \
+            --name-status \
+            "origin/main" "upstream/main" \
+            | head -100 \
+            | awk '
+              /^A/ { printf "  - ➕ `%s`\n", $2 }
+              /^D/ { printf "  - ➖ `%s`\n", $2 }
+              /^M/ { printf "  - ✏️  `%s`\n", $2 }
+              /^R/ { printf "  - 🔀 `%s` → `%s`\n", $2, $3 }
+            ')
+
+          # GitHub Actions multiline outputs require a unique delimiter
+          {
+            echo "commit_log<<EOF_COMMIT_LOG"
+            echo "$COMMIT_LOG"
+            echo "EOF_COMMIT_LOG"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "changed_files<<EOF_CHANGED_FILES"
+            echo "$CHANGED_FILES"
+            echo "EOF_CHANGED_FILES"
+          } >> "$GITHUB_OUTPUT"
+
+      # ------------------------------------------------------------------ #
       # Happy path: upstream is a strict ancestor of our local HEAD → just  #
       # fast-forward merge and push directly to main.                       #
       # ------------------------------------------------------------------ #
@@ -89,7 +131,7 @@ jobs:
 
       # ------------------------------------------------------------------ #
       # Fallback: histories have diverged → create a PR so the maintainer  #
-      # can review conflicts and decide what to keep.                       #
+      # can review diffs and resolve any conflicts.                         #
       # ------------------------------------------------------------------ #
       - name: Check for existing sync PR
         if: |
@@ -123,39 +165,91 @@ jobs:
           BRANCH="sync/upstream-$(date +%Y%m%d-%H%M%S)"
           git checkout -b "$BRANCH"
 
-          # Attempt a regular merge; capture conflicts without aborting the job
+          # ---- Attempt the merge ----------------------------------------
+          HAS_CONFLICTS=false
           if git merge upstream/main \
                --no-edit \
                -m "chore: sync with upstream anthropics/skills"; then
-            CONFLICT_NOTE=""
+            echo "✅ Merge succeeded with no conflicts."
           else
-            # Stage everything (including conflict markers) so the PR is visible
+            HAS_CONFLICTS=true
+            echo "⚠️  Merge conflicts detected. Staging conflict markers."
+
+            # Collect the list of conflicting files before we stage them
+            CONFLICT_FILES=$(git diff --name-only --diff-filter=U | sed 's/^/  - `/' | sed 's/$/`/')
+            CONFLICT_FILE_COUNT=$(git diff --name-only --diff-filter=U | wc -l | tr -d ' ')
+
+            # Stage everything (including conflict markers) so the diff is visible in the PR
             git add -A
-            git commit -m "chore: sync with upstream (conflict markers included)"
-            CONFLICT_NOTE="> ⚠️ **Merge conflicts were detected.** Please resolve them before merging this PR."
+            git commit -m "chore: sync with upstream (conflict markers included — resolve before merging)"
           fi
 
           git push origin "$BRANCH"
 
-          gh pr create \
-            --title "chore: sync with upstream anthropics/skills" \
-            --body "## 🔄 Automated Upstream Sync
+          # ---- Build the PR labels list ---------------------------------
+          LABELS="upstream-sync"
+          if [ "$HAS_CONFLICTS" = "true" ]; then
+            LABELS="upstream-sync,conflicts"
+          fi
+
+          # ---- Build the conflict section (only shown when relevant) ----
+          if [ "$HAS_CONFLICTS" = "true" ]; then
+            CONFLICT_SECTION="## ⚠️ Merge Conflicts
+
+          The following **${CONFLICT_FILE_COUNT}** file(s) have conflict markers that must be resolved before merging:
+
+          ${CONFLICT_FILES}
+
+          **How to resolve:**
+          \`\`\`bash
+          git fetch origin
+          git checkout ${BRANCH}
+          # open each file above, find <<<<<<< / ======= / >>>>>>> markers, edit, then:
+          git add <file>
+          git commit
+          git push
+          \`\`\`
+
+          "
+          else
+            CONFLICT_SECTION=""
+          fi
+
+          # ---- Build the PR body ----------------------------------------
+          PR_BODY="## 🔄 Automated Upstream Sync
 
           This PR brings in **${{ steps.status.outputs.commits_behind }} new commit(s)** from \
-          [anthropics/skills](https://github.com/anthropics/skills/commits/main) \
-          (upstream SHA: \`${{ steps.status.outputs.upstream_sha }}\`).
+          [anthropics/skills](https://github.com/anthropics/skills/commits/main).
 
-          ${CONFLICT_NOTE}
+          | | |
+          |---|---|
+          | **Upstream SHA** | \`${{ steps.status.outputs.upstream_sha }}\` |
+          | **Local SHA** | \`${{ steps.status.outputs.local_sha }}\` |
+          | **Commits behind** | ${{ steps.status.outputs.commits_behind }} |
 
-          **What to do:**
-          1. Review the diff below.
-          2. Resolve any conflicts if flagged above.
-          3. Merge when ready.
+          ${CONFLICT_SECTION}
+          ## 📋 New Commits
 
-          > _This PR was opened automatically by the [Sync with Upstream](${{ github.server_url }}/${{ github.repository }}/actions/workflows/sync-upstream.yml) workflow._" \
+          ${{ steps.diff.outputs.commit_log }}
+
+          ## 📂 Files Changed
+
+          ${{ steps.diff.outputs.changed_files }}
+
+          ## ✅ What to do
+
+          1. Review the commits and file diffs listed above (and in the **Files changed** tab).
+          2. If conflicts are flagged, resolve them using the instructions above.
+          3. Merge when satisfied.
+
+          > _Opened automatically by the [Sync with Upstream](${{ github.server_url }}/${{ github.repository }}/actions/workflows/sync-upstream.yml) workflow._"
+
+          gh pr create \
+            --title "chore: sync with upstream anthropics/skills" \
+            --body "$PR_BODY" \
             --base main \
             --head "$BRANCH" \
-            --label "upstream-sync"
+            --label "$LABELS"
 
       # ------------------------------------------------------------------ #
       # Dry-run summary                                                     #
@@ -164,7 +258,13 @@ jobs:
         if: inputs.dry_run == true
         run: |
           echo "=== DRY RUN SUMMARY ==="
-          echo "Upstream SHA : ${{ steps.status.outputs.upstream_sha }}"
-          echo "Local SHA    : ${{ steps.status.outputs.local_sha }}"
-          echo "In sync      : ${{ steps.status.outputs.in_sync }}"
+          echo "Upstream SHA  : ${{ steps.status.outputs.upstream_sha }}"
+          echo "Local SHA     : ${{ steps.status.outputs.local_sha }}"
+          echo "In sync       : ${{ steps.status.outputs.in_sync }}"
           echo "Commits behind: ${{ steps.status.outputs.commits_behind }}"
+          echo ""
+          echo "=== INCOMING COMMITS ==="
+          echo "${{ steps.diff.outputs.commit_log }}"
+          echo ""
+          echo "=== CHANGED FILES ==="
+          echo "${{ steps.diff.outputs.changed_files }}"
