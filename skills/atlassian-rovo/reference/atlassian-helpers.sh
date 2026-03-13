@@ -31,12 +31,21 @@ _confluence_api() {
   # Base curl wrapper for Confluence REST API v2
   local method="$1" endpoint="$2"
   shift 2
-  curl -sf \
+  local response http_code
+  response=$(curl -s -w "\n%{http_code}" \
     -X "$method" \
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
     -H "Content-Type: application/json" \
     "$@" \
-    "https://${ATLASSIAN_SITE}/wiki/api/v2${endpoint}"
+    "https://${ATLASSIAN_SITE}/wiki/api/v2${endpoint}")
+  http_code=$(echo "$response" | tail -1)
+  response=$(echo "$response" | sed '$d')
+  if [[ "$http_code" -ge 400 ]]; then
+    echo "ERROR: HTTP $http_code from $method /wiki/api/v2${endpoint}" >&2
+    echo "$response" >&2
+    return 1
+  fi
+  echo "$response"
 }
 
 # ── Jira (ACLI) ───────────────────────────────────────────────────────────────
@@ -210,12 +219,21 @@ print(json.dumps({
 }))
 " "$page_id" "$parent_id" "$body")
 
-  curl -sf \
+  local response http_code
+  response=$(curl -s -w "\n%{http_code}" \
     -X POST \
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
     -H "Content-Type: application/json" \
     -d "$payload" \
-    "https://${ATLASSIAN_SITE}/wiki/rest/api/content"
+    "https://${ATLASSIAN_SITE}/wiki/rest/api/content")
+  http_code=$(echo "$response" | tail -1)
+  response=$(echo "$response" | sed '$d')
+  if [[ "$http_code" -ge 400 ]]; then
+    echo "ERROR: HTTP $http_code from POST /wiki/rest/api/content" >&2
+    echo "$response" >&2
+    return 1
+  fi
+  echo "$response"
 }
 
 confluence_list_spaces() {
@@ -234,7 +252,16 @@ confluence_search() {
 
   local encoded_cql
   encoded_cql=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$cql")
-  curl -sf \
+  local response http_code
+  response=$(curl -s -w "\n%{http_code}" \
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
-    "https://${ATLASSIAN_SITE}/wiki/rest/api/content/search?cql=${encoded_cql}&limit=${limit}"
+    "https://${ATLASSIAN_SITE}/wiki/rest/api/content/search?cql=${encoded_cql}&limit=${limit}")
+  http_code=$(echo "$response" | tail -1)
+  response=$(echo "$response" | sed '$d')
+  if [[ "$http_code" -ge 400 ]]; then
+    echo "ERROR: HTTP $http_code from CQL search" >&2
+    echo "$response" >&2
+    return 1
+  fi
+  echo "$response"
 }

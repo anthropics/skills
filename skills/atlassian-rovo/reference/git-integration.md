@@ -47,11 +47,8 @@ git push -u origin feature/{issueKey}-{slug}
 ```
 
 After creating the branch, add a Jira comment:
-```
-addCommentToJiraIssue:
-  cloudId: "{cloudId}"
-  issueIdOrKey: "{issueKey}"
-  commentBody: "Branch created: `feature/{issueKey}-{slug}` on {repoUrl}"
+```bash
+acli jira workitem comment create --key {issueKey} --body "Branch created: \`feature/{issueKey}-{slug}\` on {repoUrl}"
 ```
 
 ---
@@ -121,12 +118,6 @@ Reference: [Connect Jira to Bitbucket](https://support.atlassian.com/jira-cloud-
 
 ## Reading Development Links
 
-### Via MCP: Limited
-
-- `getJiraIssueRemoteIssueLinks` — returns **web links only** (manually added), NOT Development panel data
-- `getTeamworkGraphContext` — mentioned in `getJiraIssue` tool description but **not available** in the current MCP server
-- No MCP tool exists for reading branches, PRs, or commits from the Development panel
-
 ### Via REST API: Dev-Status (Internal/Unsupported)
 
 > **Warning:** This is an internal Jira API that is **not officially supported**.
@@ -153,7 +144,7 @@ curl -u "{email}:{apiToken}" \
 
 `applicationType` options: `GitHub`, `Bitbucket`. `dataType` options: `branch`, `pullrequest`, `repository`.
 
-**Note:** This endpoint uses the internal issue **ID** (numeric), not the issue key. Get the ID from `getJiraIssue` response.
+**Note:** This endpoint uses the internal issue **ID** (numeric), not the issue key. Get the ID from `acli jira workitem view {issueKey} --json`.
 
 ### Practical Alternative
 

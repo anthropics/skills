@@ -26,7 +26,10 @@ Credentials come from environment variables: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API
    acli jira workitem create --project {projectKey} --type Task --summary "{workstream title}" --parent {projectKey}-{epic-number} --json
    ```
 
-5. **Link dependencies** via `jiraWrite` action `createIssueLink` type `Blocks`.
+5. **Link dependencies** between tickets:
+   ```
+   acli jira workitem link create --out {projectKey}-{blocker} --in {projectKey}-{blocked} --type Blocks
+   ```
 
 6. **Update Confluence page** — replace "(pending)" placeholders with actual ticket keys and links, update Epic link in header, set status to IN PROGRESS, add progress log entries for ticket creation.
    Verify: `curl -s "https://{site}/wiki/api/v2/pages/{pageId}?body-format=storage" -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"` — confirm ticket keys appear in the workstreams table.
