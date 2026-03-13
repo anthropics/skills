@@ -1,0 +1,114 @@
+# Agent Skills spec validation
+#
+# Validates every skills/*/SKILL.md against the official Agent Skills
+# specification (https://agentskills.io/specification).
+#
+# Rules enforced by Flash-Brew-Digital/validate-skill:
+#   • 'name'        – required, 1-64 chars, lowercase alphanumeric + hyphens,
+#                     no leading/trailing/consecutive hyphens,
+#                     must match the parent directory name
+#   • 'description' – required, 1-1024 chars, non-empty
+#   • 'license'     – optional, must be a string if present
+#   • 'compatibility'– optional, 1-500 chars if present
+#   • 'metadata'    – optional, key-value mapping with string values
+#   • 'allowed-tools'– optional, space-delimited string
+#   • Warnings for: short description (<50 chars), empty body,
+#     body >500 lines, unknown frontmatter fields
+#   • File references in SKILL.md are verified to exist on disk
+#
+# The action is pinned to a specific commit SHA (39c9da973b7c…) rather
+# than a mutable version tag for supply-chain security.
+
+name: Validate Agent Skills
+
+on:
+  push:
+    paths:
+      - "skills/**/SKILL.md"
+  pull_request:
+    paths:
+      - "skills/**/SKILL.md"
+  schedule:
+    # Runs daily alongside the main lint workflow (06:00 UTC)
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read   # read-only; this workflow never pushes back
+
+jobs:
+  # ── Step 1: discover all skill directories dynamically ─────────────────────
+  # This means newly added skills are validated automatically without any
+  # workflow change.
+  discover:
+    name: Discover skills
+    runs-on: ubuntu-latest
+    outputs:
+      skills: ${{ steps.find.outputs.skills }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find skill directories
+        id: find
+        run: |
+          # Produce a JSON array of relative paths, e.g. ["skills/pdf","skills/xlsx",…]
+          skills=$(find skills -maxdepth 1 -mindepth 1 -type d | sort \
+                   | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "skills=$skills" >> "$GITHUB_OUTPUT"
+          echo "Found skills: $skills"
+
+  # ── Step 2: validate each skill in parallel ────────────────────────────────
+  validate:
+    name: "${{ matrix.skill }}"
+    needs: discover
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false   # validate all skills even if one fails
+      matrix:
+        skill: ${{ fromJson(needs.discover.outputs.skills) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate SKILL.md against Agent Skills spec
+        id: validate
+        # Pinned to commit SHA for supply-chain security.
+        # SHA corresponds to: Flash-Brew-Digital/validate-skill@v1.0.0
+        uses: Flash-Brew-Digital/validate-skill@39c9da973b7ce3fd4d9632672a0c355bdd733d89
+        with:
+          path: ${{ matrix.skill }}
+          validate-references: "true"   # verify that file references exist on disk
+          fail-on-warning: "false"      # warnings are surfaced but do not fail the job
+
+      - name: Write job summary
+        if: always()
+        env:
+          SKILL: ${{ matrix.skill }}
+          VALID: ${{ steps.validate.outputs.valid }}
+          ERRORS: ${{ steps.validate.outputs.errors }}
+          WARNINGS: ${{ steps.validate.outputs.warnings }}
+        run: |
+          {
+            echo "## \`$SKILL\`"
+            echo ""
+            if [ "$VALID" = "true" ]; then
+              echo "✅ **Valid** – passes all Agent Skills spec rules."
+            else
+              echo "❌ **Invalid** – spec violations found:"
+              echo ""
+              echo "\`\`\`json"
+              echo "$ERRORS" | python3 -m json.tool 2>/dev/null || echo "$ERRORS"
+              echo "\`\`\`"
+            fi
+
+            if [ "$WARNINGS" != "[]" ] && [ -n "$WARNINGS" ]; then
+              echo ""
+              echo "⚠️ **Warnings** (non-blocking):"
+              echo "\`\`\`json"
+              echo "$WARNINGS" | python3 -m json.tool 2>/dev/null || echo "$WARNINGS"
+              echo "\`\`\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -17,6 +17,9 @@
 # Markdown linting config: .markdownlint.json
 #   – MD013 line-length is NOT enforced inside tables (tables: false).
 #
+# Agent Skills spec validation runs in a separate workflow:
+#   .github/workflows/validate-skills.yml
+#
 # Permissions required
 # ────────────────────
 # The workflow uses GITHUB_TOKEN with `contents: write` so it can push the
@@ -62,23 +65,45 @@ jobs:
           python-version: "3.12"
 
       # ── 3. Install linting / type-checking tools ─────────────────────────
-      - name: Install tools
+      - name: Install Python tools
         run: |
-          pip install --quiet ruff mypy
+          pip install --quiet ruff mypy mdformat mdformat-tables
 
-      # ── 4. Auto-fix lint & formatting issues ─────────────────────────────
+      - name: Install Node tools
+        run: |
+          npm install -g --silent markdownlint-cli
+
+      # ── 4. Auto-fix Python lint & formatting issues ───────────────────────
       #
       # `ruff check --fix`  – fixes safe lint violations automatically.
       # `ruff format`        – reformats all Python files (Black-compatible).
       #
       # Both commands exit 0 even when they make changes, so the step always
       # succeeds. The commit step below detects whether anything changed.
-      - name: Run ruff auto-fix
+      - name: Run ruff auto-fix (Python)
         run: |
           ruff check --fix --exit-zero .
           ruff format .
 
-      # ── 5. Commit auto-fixes (if any) ─────────────────────────────────────
+      # ── 5. Auto-fix Markdown formatting & table alignment ─────────────────
+      #
+      # `mdformat` (with mdformat-tables plugin) reformats every Markdown
+      # file and realigns pipe-table columns so every table is consistently
+      # padded.
+      #
+      # `markdownlint --fix` then patches any remaining auto-fixable
+      # structural issues (trailing spaces, blank lines around headings/
+      # fences/lists, etc.).  Rules are configured in .markdownlint.json;
+      # notably MD013 line-length is NOT enforced inside tables.
+      - name: Run mdformat (Markdown table alignment + formatting)
+        run: |
+          mdformat .
+
+      - name: Run markdownlint auto-fix (Markdown structural issues)
+        run: |
+          markdownlint --fix --config .markdownlint.json "**/*.md" || true
+
+      # ── 6. Commit all auto-fixes (Python + Markdown) in one commit ────────
       - name: Commit lint fixes
         id: commit
         run: |
@@ -94,7 +119,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # ── 6. Push (with rebase to handle concurrent commits) ────────────────
+      # ── 7. Push (with rebase to handle concurrent commits) ────────────────
       #
       # Strategy:
       #   a) Try a fast-forward push first.
@@ -134,7 +159,7 @@ jobs:
 
           push_with_rebase
 
-      # ── 7. Run mypy type-check (report only – no auto-fix) ────────────────
+      # ── 8. Run mypy type-check (report only – no auto-fix) ────────────────
       #
       # Type errors require developer attention; we surface them in the job
       # summary rather than failing the push step.
@@ -164,3 +189,32 @@ jobs:
           # if you want a green badge even when type errors are present.
           exit "$EXIT"
         continue-on-error: true   # type errors are reported but don't fail CI
+
+      # ── 9. Run markdownlint (report remaining issues – no auto-fix) ───────
+      #
+      # Auto-fixable issues were already patched in step 5.  This step
+      # reports anything that requires manual attention (e.g. missing code
+      # fence language tags, structural problems mdformat can't infer).
+      # MD013 line-length is disabled in tables via .markdownlint.json.
+      - name: Run markdownlint (report only)
+        run: |
+          markdownlint --config .markdownlint.json "**/*.md" 2>&1 | tee md-lint-report.txt
+          EXIT=${PIPESTATUS[0]}
+
+          {
+            echo "## markdownlint report"
+            echo ""
+            if [ "$EXIT" -eq 0 ]; then
+              echo "✅ No Markdown lint issues found."
+            else
+              ISSUE_COUNT=$(wc -l < md-lint-report.txt)
+              echo "⚠️ ${ISSUE_COUNT} Markdown lint issue(s) detected – manual fixes required."
+              echo ""
+              echo "\`\`\`"
+              cat md-lint-report.txt
+              echo "\`\`\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit "$EXIT"
+        continue-on-error: true   # lint issues are reported but don't fail CI
