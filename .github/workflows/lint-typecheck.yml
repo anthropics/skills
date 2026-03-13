@@ -1,0 +1,220 @@
+# Daily lint and type-check workflow
+#
+# What it does
+# ────────────
+# 1. Python – runs `ruff check --fix` + `ruff format` to auto-fix lint/style.
+# 2. Markdown – runs `mdformat` (with mdformat-tables) to normalise table
+#    alignment and general formatting, then `markdownlint --fix` to patch
+#    auto-fixable structural issues (blank lines, trailing spaces, …).
+# 3. Commits all auto-fixes back to main in a single commit.
+#    Before pushing it rebases on top of any commits that landed while the
+#    job was running so that concurrent changes are preserved correctly.
+#    A genuine conflict (developer and linter touched the same lines) fails
+#    the job loudly — no silent data loss.
+# 4. Runs `mypy` and `markdownlint` (report-only) and surfaces the results
+#    in the GitHub Actions job summary.
+#
+# Markdown linting config: .markdownlint.json
+#   – MD013 line-length is NOT enforced inside tables (tables: false).
+#
+# Agent Skills spec validation runs in a separate workflow:
+#   .github/workflows/validate-skills.yml
+#
+# Permissions required
+# ────────────────────
+# The workflow uses GITHUB_TOKEN with `contents: write` so it can push the
+# auto-fix commit. Enable "Allow GitHub Actions to create and approve pull
+# requests" in Settings → Actions → General if you also want the fallback
+# PR path to work.
+
+name: Daily Lint & Type Check
+
+on:
+  schedule:
+    # Run at 06:00 UTC every day
+    - cron: "0 6 * * *"
+  # Allow a one-off run from the Actions tab at any time
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to push the auto-fix commit back
+
+jobs:
+  lint-and-typecheck:
+    name: Lint (ruff) & Type-check (mypy)
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Check out the full history so rebase works correctly ───────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Always operate on the repository's default branch so the daily
+          # fixes land where developers work.
+          ref: main
+          fetch-depth: 0          # full history required for git rebase
+
+      # ── 2. Python setup ───────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # Use the latest stable Python to run the linting tools themselves.
+          # The tools are configured (in pyproject.toml) to lint for Python 3.10+
+          # compatibility, so the tool runtime version and the target version are
+          # intentionally different.
+          python-version: "3.12"
+
+      # ── 3. Install linting / type-checking tools ─────────────────────────
+      - name: Install Python tools
+        run: |
+          pip install --quiet ruff mypy mdformat mdformat-tables
+
+      - name: Install Node tools
+        run: |
+          npm install -g --silent markdownlint-cli
+
+      # ── 4. Auto-fix Python lint & formatting issues ───────────────────────
+      #
+      # `ruff check --fix`  – fixes safe lint violations automatically.
+      # `ruff format`        – reformats all Python files (Black-compatible).
+      #
+      # Both commands exit 0 even when they make changes, so the step always
+      # succeeds. The commit step below detects whether anything changed.
+      - name: Run ruff auto-fix (Python)
+        run: |
+          ruff check --fix --exit-zero .
+          ruff format .
+
+      # ── 5. Auto-fix Markdown formatting & table alignment ─────────────────
+      #
+      # `mdformat` (with mdformat-tables plugin) reformats every Markdown
+      # file and realigns pipe-table columns so every table is consistently
+      # padded.
+      #
+      # `markdownlint --fix` then patches any remaining auto-fixable
+      # structural issues (trailing spaces, blank lines around headings/
+      # fences/lists, etc.).  Rules are configured in .markdownlint.json;
+      # notably MD013 line-length is NOT enforced inside tables.
+      - name: Run mdformat (Markdown table alignment + formatting)
+        run: |
+          mdformat .
+
+      - name: Run markdownlint auto-fix (Markdown structural issues)
+        run: |
+          markdownlint --fix --config .markdownlint.json "**/*.md" || true
+
+      # ── 6. Commit all auto-fixes (Python + Markdown) in one commit ────────
+      - name: Commit lint fixes
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet; then
+            echo "No lint changes – nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git add -A
+            git commit -m "chore: auto-fix lint issues [skip ci]"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 7. Push (with rebase to handle concurrent commits) ────────────────
+      #
+      # Strategy:
+      #   a) Try a fast-forward push first.
+      #   b) If it is rejected (someone committed while we were running),
+      #      rebase our fix-commit on top of those new commits and retry.
+      #   c) If the rebase itself fails (genuine conflict between the
+      #      developer's edit and the linter's edit), abort and fail the job
+      #      so a human can resolve it.  No data is lost.
+      - name: Push auto-fix commit
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          push_with_rebase() {
+            # Attempt a direct push first
+            if git push origin main; then
+              echo "Push succeeded."
+              return 0
+            fi
+
+            echo "Push rejected – rebasing on top of new commits …"
+            if ! git pull --rebase origin main; then
+              echo "::error::Rebase failed due to a conflict between the linter's " \
+                   "changes and a concurrent commit. Please resolve manually."
+              git rebase --abort 2>/dev/null || true
+              return 1
+            fi
+
+            # Retry after successful rebase
+            if git push origin main; then
+              echo "Push succeeded after rebase."
+              return 0
+            fi
+
+            echo "::error::Push failed even after rebase. " \
+                 "Another commit may have landed during the rebase."
+            return 1
+          }
+
+          push_with_rebase
+
+      # ── 8. Run mypy type-check (report only – no auto-fix) ────────────────
+      #
+      # Type errors require developer attention; we surface them in the job
+      # summary rather than failing the push step.
+      - name: Run mypy type-check
+        id: mypy
+        run: |
+          mypy . 2>&1 | tee mypy-report.txt
+          EXIT=${PIPESTATUS[0]}
+
+          # Write a collapsible summary to the GitHub Actions job summary
+          {
+            echo "## mypy type-check report"
+            echo ""
+            if [ "$EXIT" -eq 0 ]; then
+              echo "✅ No type errors found."
+            else
+              echo "⚠️ Type errors detected – manual fixes required."
+              echo ""
+              echo "\`\`\`"
+              cat mypy-report.txt
+              echo "\`\`\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Exit with the real mypy exit code so the job status reflects
+          # whether type errors exist.  Set continue-on-error: true below
+          # if you want a green badge even when type errors are present.
+          exit "$EXIT"
+        continue-on-error: true   # type errors are reported but don't fail CI
+
+      # ── 9. Run markdownlint (report remaining issues – no auto-fix) ───────
+      #
+      # Auto-fixable issues were already patched in step 5.  This step
+      # reports anything that requires manual attention (e.g. missing code
+      # fence language tags, structural problems mdformat can't infer).
+      # MD013 line-length is disabled in tables via .markdownlint.json.
+      - name: Run markdownlint (report only)
+        run: |
+          markdownlint --config .markdownlint.json "**/*.md" 2>&1 | tee md-lint-report.txt
+          EXIT=${PIPESTATUS[0]}
+
+          {
+            echo "## markdownlint report"
+            echo ""
+            if [ "$EXIT" -eq 0 ]; then
+              echo "✅ No Markdown lint issues found."
+            else
+              ISSUE_COUNT=$(wc -l < md-lint-report.txt)
+              echo "⚠️ ${ISSUE_COUNT} Markdown lint issue(s) detected – manual fixes required."
+              echo ""
+              echo "\`\`\`"
+              cat md-lint-report.txt
+              echo "\`\`\`"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit "$EXIT"
+        continue-on-error: true   # lint issues are reported but don't fail CI
