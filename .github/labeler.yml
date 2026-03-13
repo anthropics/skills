@@ -1,0 +1,24 @@
+# Path-based label configuration for actions/labeler@v5
+# https://github.com/actions/labeler
+
+"skills":
+  - changed-files:
+    - any-glob-to-any-file: "skills/**"
+
+"spec":
+  - changed-files:
+    - any-glob-to-any-file: "spec/**"
+
+"template":
+  - changed-files:
+    - any-glob-to-any-file: "template/**"
+
+"documentation":
+  - changed-files:
+    - any-glob-to-any-file:
+      - "*.md"
+      - "**/*.md"
+
+"github-actions":
+  - changed-files:
+    - any-glob-to-any-file: ".github/**"
