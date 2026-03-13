@@ -1,0 +1,170 @@
+name: Sync with Upstream
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (check only, do not push)'
+        required: false
+        default: 'false'
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-upstream:
+    name: Sync anthropics/skills → main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          # Full history is required so we can compare with upstream
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote and fetch
+        run: |
+          git remote add upstream https://github.com/anthropics/skills.git
+          git fetch upstream main --no-tags
+
+      - name: Determine sync status
+        id: status
+        run: |
+          UPSTREAM_SHA=$(git rev-parse upstream/main)
+          LOCAL_SHA=$(git rev-parse origin/main)
+
+          echo "upstream_sha=$UPSTREAM_SHA" >> "$GITHUB_OUTPUT"
+          echo "local_sha=$LOCAL_SHA"       >> "$GITHUB_OUTPUT"
+
+          if [ "$UPSTREAM_SHA" = "$LOCAL_SHA" ]; then
+            echo "in_sync=true"  >> "$GITHUB_OUTPUT"
+            echo "✅ Already in sync with upstream (${UPSTREAM_SHA:0:7})"
+          else
+            echo "in_sync=false" >> "$GITHUB_OUTPUT"
+            BEHIND=$(git rev-list --count "origin/main..upstream/main")
+            echo "commits_behind=$BEHIND" >> "$GITHUB_OUTPUT"
+            echo "🔄 Fork is ${BEHIND} commit(s) behind upstream"
+          fi
+
+      - name: Nothing to do
+        if: steps.status.outputs.in_sync == 'true'
+        run: echo "Fork is already up-to-date. Exiting."
+
+      # ------------------------------------------------------------------ #
+      # Happy path: upstream is a strict ancestor of our local HEAD → just  #
+      # fast-forward merge and push directly to main.                       #
+      # ------------------------------------------------------------------ #
+      - name: Fast-forward merge (no conflicts)
+        if: steps.status.outputs.in_sync == 'false' && inputs.dry_run != true
+        id: ff_merge
+        run: |
+          git checkout main
+
+          if git merge --ff-only upstream/main 2>/dev/null; then
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+            echo "✅ Fast-forward successful"
+          else
+            echo "merged=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️  Fast-forward not possible — diverged history. Will open a PR."
+          fi
+
+      - name: Push fast-forward merge to main
+        if: |
+          steps.status.outputs.in_sync == 'false' &&
+          steps.ff_merge.outputs.merged == 'true'  &&
+          inputs.dry_run != true
+        run: git push origin main
+
+      # ------------------------------------------------------------------ #
+      # Fallback: histories have diverged → create a PR so the maintainer  #
+      # can review conflicts and decide what to keep.                       #
+      # ------------------------------------------------------------------ #
+      - name: Check for existing sync PR
+        if: |
+          steps.status.outputs.in_sync == 'false' &&
+          steps.ff_merge.outputs.merged == 'false' &&
+          inputs.dry_run != true
+        id: existing_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OPEN=$(gh pr list \
+            --base main \
+            --label upstream-sync \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+          echo "pr_number=${OPEN}" >> "$GITHUB_OUTPUT"
+          if [ -n "$OPEN" ]; then
+            echo "ℹ️  Existing sync PR #${OPEN} already open — skipping creation."
+          fi
+
+      - name: Create sync branch and open PR
+        if: |
+          steps.status.outputs.in_sync == 'false' &&
+          steps.ff_merge.outputs.merged == 'false' &&
+          steps.existing_pr.outputs.pr_number == '' &&
+          inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="sync/upstream-$(date +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH"
+
+          # Attempt a regular merge; capture conflicts without aborting the job
+          if git merge upstream/main \
+               --no-edit \
+               -m "chore: sync with upstream anthropics/skills"; then
+            CONFLICT_NOTE=""
+          else
+            # Stage everything (including conflict markers) so the PR is visible
+            git add -A
+            git commit -m "chore: sync with upstream (conflict markers included)"
+            CONFLICT_NOTE="> ⚠️ **Merge conflicts were detected.** Please resolve them before merging this PR."
+          fi
+
+          git push origin "$BRANCH"
+
+          gh pr create \
+            --title "chore: sync with upstream anthropics/skills" \
+            --body "## 🔄 Automated Upstream Sync
+
+          This PR brings in **${{ steps.status.outputs.commits_behind }} new commit(s)** from \
+          [anthropics/skills](https://github.com/anthropics/skills/commits/main) \
+          (upstream SHA: \`${{ steps.status.outputs.upstream_sha }}\`).
+
+          ${CONFLICT_NOTE}
+
+          **What to do:**
+          1. Review the diff below.
+          2. Resolve any conflicts if flagged above.
+          3. Merge when ready.
+
+          > _This PR was opened automatically by the [Sync with Upstream](${{ github.server_url }}/${{ github.repository }}/actions/workflows/sync-upstream.yml) workflow._" \
+            --base main \
+            --head "$BRANCH" \
+            --label "upstream-sync"
+
+      # ------------------------------------------------------------------ #
+      # Dry-run summary                                                     #
+      # ------------------------------------------------------------------ #
+      - name: Dry-run summary
+        if: inputs.dry_run == true
+        run: |
+          echo "=== DRY RUN SUMMARY ==="
+          echo "Upstream SHA : ${{ steps.status.outputs.upstream_sha }}"
+          echo "Local SHA    : ${{ steps.status.outputs.local_sha }}"
+          echo "In sync      : ${{ steps.status.outputs.in_sync }}"
+          echo "Commits behind: ${{ steps.status.outputs.commits_behind }}"
