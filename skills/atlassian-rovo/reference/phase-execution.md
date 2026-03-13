@@ -1,8 +1,7 @@
-# Phase 2: Execution (Multi-Agent Mode) — Detailed Reference
+# Phase 2: Execution — Detailed Reference
 
-All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, `{parentId}`, and `{currentUserAccountId}` as placeholders.
-
-For shared protocols (transitions, branch creation, publishing, completing tickets), see [common-patterns.md](common-patterns.md).
+All examples use `{site}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as placeholders.
+Credentials come from environment variables: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API_TOKEN`.
 
 ## Steps
 
@@ -30,51 +29,52 @@ You are a teammate in an agent team managed by an orchestrator.
 - **Confluence Plan Page ID:** {confluence-page-id}
 
 ## Atlassian Configuration
-- **cloudId:** {cloudId}
+- **Site:** {site}
 - **Project Key:** {projectKey}
 - **Confluence Space ID:** {spaceId}
-- **User Account ID:** {currentUserAccountId}
+- **Credentials:** `$ATLASSIAN_EMAIL` / `$ATLASSIAN_API_TOKEN` (from environment)
 - **maxResults:** 10 (for all JQL searches)
 
 ## Transition Protocol
-ALWAYS follow this two-step process to change ticket status:
-1. Call `atlassian:getTransitionsForJiraIssue` to get available transitions and their IDs
-2. Call `atlassian:transitionJiraIssue` with the correct transition ID
-NEVER hardcode transition IDs -- they vary by project and workflow.
+Use `acli jira workitem transition` to change ticket status. It takes the status name directly:
+```
+acli jira workitem transition --key {projectKey}-{N} --status "In Progress" --yes
+```
+No need to look up transition IDs — ACLI resolves the status name automatically.
 
 ## Starting Work
 When you begin working on your ticket:
 1. Claim your task: `TaskUpdate` with status = in_progress
-2. Assign the Jira ticket to the current user so Jira tracks ownership:
-   `atlassian:editJiraIssue` with:
-   - cloudId: {cloudId}
-   - issueIdOrKey: "{projectKey}-{N}"
-   - fields: {"assignee": {"accountId": "{currentUserAccountId}"}}
-3. Transition your Jira ticket to **In Progress** (using two-step transition protocol above)
-4. If the project has a git repo, create a branch for your ticket:
-   ```bash
-   git checkout -b feature/{projectKey}-{N}-{slug}
-   git push -u origin feature/{projectKey}-{N}-{slug}
+2. Assign the Jira ticket to yourself:
    ```
-   Then add a Jira comment noting the branch name and repo link.
-   The issue key in the branch name auto-links it to Jira's Development panel.
+   acli jira workitem edit --key {projectKey}-{N} --assignee "@me" --json
+   ```
+3. Transition your Jira ticket to In Progress:
+   ```
+   acli jira workitem transition --key {projectKey}-{N} --status "In Progress" --yes
+   ```
 
 ## Publishing Findings
 When your work is complete, publish findings as a **child page** of the project plan:
 1. Create a Confluence page with your findings:
-   `atlassian:createConfluencePage` with:
-   - cloudId: {cloudId}
-   - spaceId: {spaceId}
-   - parentId: "{confluence-page-id}"   <-- this makes it a CHILD of the plan page
-   - title: "{projectKey}-{N}: {your workstream title}"
-   - contentFormat: "markdown"
-   - body: <your full findings in markdown>
+   ```
+   curl -s -X POST "https://{site}/wiki/api/v2/pages" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"spaceId": "{spaceId}", "parentId": "{confluence-page-id}", "status": "current", "title": "{projectKey}-{N}: {your workstream title}", "body": {"representation": "storage", "value": "<your full findings in HTML storage format>"}}'
+   ```
    This keeps all deliverables organized under the plan page in Confluence.
 
 ## Reporting Protocol
 After publishing your findings page:
-1. Add a comment to your Jira ticket with a brief summary + link to the Confluence child page
-2. Transition your ticket to Done (using two-step transition protocol above)
+1. Add a comment to your Jira ticket with a brief summary + link to the Confluence child page:
+   ```
+   acli jira workitem comment create --key {projectKey}-{N} --body "## Summary\n{brief summary}\n\nFindings: {confluence-child-page-url}"
+   ```
+2. Transition your ticket to Done:
+   ```
+   acli jira workitem transition --key {projectKey}-{N} --status "Done" --yes
+   ```
 3. Send a message to the orchestrator:
    `SendMessage` to orchestrator with: ticket key, brief summary, Confluence page link
 4. Update your task: `TaskUpdate` with status = completed
@@ -82,7 +82,10 @@ After publishing your findings page:
 
 ## If Blocked
 - Do NOT silently stall. Immediately:
-  1. Add a comment to your Jira ticket explaining the blocker
+  1. Add a comment to your Jira ticket explaining the blocker:
+     ```
+     acli jira workitem comment create --key {projectKey}-{N} --body "BLOCKED: {description of blocker}"
+     ```
   2. SendMessage to orchestrator describing the blocker
   3. Check TaskList for other unclaimed tasks you can work on meanwhile
 ```
@@ -93,17 +96,25 @@ Monitor teammate messages and coordinate:
 
 ### Updating Confluence Progress Log
 
-After each significant event, update the Confluence plan page.
-See [common-patterns.md](common-patterns.md#updating-the-confluence-plan-page) for the read-then-update protocol.
+After each significant event, read then update the Confluence page:
+```
+curl -s "https://{site}/wiki/api/v2/pages/{page-id}?body-format=storage" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
+```
+Then update with the new progress log entry appended:
+```
+curl -s -X PUT "https://{site}/wiki/api/v2/pages/{page-id}" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"id": "{page-id}", "status": "current", "title": "...", "body": {"representation": "storage", "value": "<full page content with new progress log entry>"}, "version": {"number": N, "message": "{brief description of update}"}}'
+```
+
+**Important:** The update replaces the entire body. Always read the page first, append the new log entry, then update.
 
 ### Updating Epic Description
 
 ```
-atlassian:editJiraIssue:
-  cloudId: "{cloudId}"
-  issueIdOrKey: "{projectKey}-{N}"
-  fields:
-    description: <updated Markdown with new status/progress>
+acli jira workitem edit --key {projectKey}-{N} --description "<updated Markdown with new status/progress>" --json
 ```
 
 ### Handling Blockers

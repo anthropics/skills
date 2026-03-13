@@ -1,48 +1,37 @@
 # Phase 1: Intake & Planning — Detailed Reference
 
-All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as placeholders.
+All examples use `{site}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as placeholders.
+Credentials come from environment variables: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API_TOKEN`.
 
 ## Steps
 
 1. **Classify** the request (feature, research, content, refactor, multi-component)
 
-2. **Create Confluence plan page** (draft for review):
+2. **Create Confluence plan page:**
    ```
-   atlassian:createConfluencePage:
-     cloudId: "{cloudId}"
-     spaceId: "{spaceId}"
-     parentId: "{parentId}"       # optional
-     title: "Project Plan: {Request Title}"
-     contentFormat: "markdown"
-     body: <use Confluence Plan Page Template below>
+   curl -s -X POST "https://{site}/wiki/api/v2/pages" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"spaceId": "{spaceId}", "parentId": "{parentId}", "status": "current", "title": "Project Plan: {Request Title}", "body": {"representation": "storage", "value": "<use Confluence Plan Page Template below>"}}'
    ```
-   Use "(pending)" placeholders for Epic and ticket keys — these don't exist yet.
-   Verify: `getConfluencePage` with returned pageId — confirm title and content match.
+   Verify: `curl -s "https://{site}/wiki/api/v2/pages/{pageId}?body-format=storage" -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"` — confirm title and content match.
 
-3. **Present plan to user for review** — share the Confluence page link and summarize:
-   - Objective and workstreams
-   - Proposed team sizing
-   - Dependencies
-   - Ask for approval, changes, or additions
-   **STOP HERE and wait for user approval before creating any Jira tickets.**
-
-4. **After approval — Create Jira Epic** with `[AI-PM]` prefix and link to Confluence page:
+3. **Create Jira Epic** with `[AI-PM]` prefix and link to Confluence page:
    ```
-   atlassian:createJiraIssue:
-     cloudId: "{cloudId}"
-     projectKey: "{projectKey}"
-     issueTypeName: "Epic"
-     summary: "[AI-PM] {Request Title}"
-     description: <use Epic Description Template below>
-     assignee_account_id: "{currentUserAccountId}"
+   acli jira workitem create --project {projectKey} --type Epic --summary "[AI-PM] {Request Title}" --description "<use Epic Description Template below>" --json
    ```
 
-5. **Create child tickets** (one Task per workstream) with `parent: "{projectKey}-{epic-number}"` and `assignee_account_id: "{currentUserAccountId}"`.
+4. **Create child tickets** (one Task per workstream):
+   ```
+   acli jira workitem create --project {projectKey} --type Task --summary "{workstream title}" --parent {projectKey}-{epic-number} --json
+   ```
 
-6. **Link dependencies** via `jiraWrite` action `createIssueLink` type `Blocks`.
+5. **Link dependencies** via `jiraWrite` action `createIssueLink` type `Blocks`.
 
-7. **Update Confluence page** — replace "(pending)" placeholders with actual ticket keys and links, update Epic link in header, set status to IN PROGRESS, add progress log entries for ticket creation.
-   Verify: `getConfluencePage` — confirm ticket keys appear in the workstreams table.
+6. **Update Confluence page** — replace "(pending)" placeholders with actual ticket keys and links, update Epic link in header, set status to IN PROGRESS, add progress log entries for ticket creation.
+   Verify: `curl -s "https://{site}/wiki/api/v2/pages/{pageId}?body-format=storage" -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"` — confirm ticket keys appear in the workstreams table.
+
+7. **Present plan to user** — Confluence page link + Epic key. This is the **only mandatory confirmation point**.
 
 ## Confluence Plan Page Template
 
@@ -52,7 +41,7 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 ## Status: PLANNING | IN PROGRESS | REVIEW | COMPLETED
 **Created:** {date}
 **Last Updated:** {date}
-**Epic:** [{projectKey}-{N}]({cloudId}/browse/{projectKey}-{N})
+**Epic:** [{projectKey}-{N}](https://{site}/browse/{projectKey}-{N})
 **Request:** {original user request, verbatim}
 
 ## Team Composition
@@ -64,7 +53,7 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 ## Workstreams & Jira Tickets
 | # | Workstream | Jira Ticket | Status | Agent |
 |---|-----------|-------------|--------|-------|
-| 1 | {description} | [{projectKey}-XX]({cloudId}/browse/{projectKey}-XX) | To Do | {agent} |
+| 1 | {description} | [{projectKey}-XX](https://{site}/browse/{projectKey}-XX) | To Do | {agent} |
 
 ## Architecture / Approach
 {High-level approach, key decisions, constraints}
@@ -102,21 +91,19 @@ All examples use `{cloudId}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as p
 
 ### Find user's Jira project
 ```
-atlassian:getVisibleJiraProjects:
-  cloudId: "{cloudId}"
+acli jira project list --json
 ```
 Present the list and ask the user to pick one.
 
 ### Find user's Confluence space
 ```
-atlassian:getConfluenceSpaces:
-  cloudId: "{cloudId}"
-  limit: 10
+curl -s "https://{site}/wiki/api/v2/spaces?limit=10" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
 ```
 Present the list and ask the user to pick one. The response includes `id` (spaceId) and `key`.
 
 ### Find pages in a space (to offer as parent page)
 ```
-atlassian:search:
-  query: "space:{spaceKey} type:page"
+curl -s "https://{site}/wiki/rest/api/content/search?cql=space={spaceKey}+AND+type=page" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
 ```

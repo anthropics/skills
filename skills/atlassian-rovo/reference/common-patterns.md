@@ -2,25 +2,21 @@
 
 Shared protocols used by both multi-agent and single-agent execution modes.
 
-All examples use `{cloudId}`, `{projectKey}`, `{currentUserAccountId}` as placeholders.
+All examples use `{site}`, `{projectKey}` as placeholders.
+Credentials are sourced from environment: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API_TOKEN`.
 
 ---
 
 ## Transition Protocol
 
-Jira transition IDs vary by project and workflow — never hardcode them. Always use this two-step process:
+ACLI resolves transitions by status name — no need to look up transition IDs:
 
+```bash
+acli jira workitem transition --key {projectKey}-{N} --status "In Progress" --yes
 ```
-atlassian:getTransitionsForJiraIssue
-  cloudId: "{cloudId}"
-  issueIdOrKey: "{projectKey}-{N}"
-```
-Then:
-```
-atlassian:transitionJiraIssue
-  cloudId: "{cloudId}"
-  issueIdOrKey: "{projectKey}-{N}"
-  transitionId: "{transition-id-from-step-1}"
+
+```bash
+acli jira workitem transition --key {projectKey}-{N} --status "Done" --yes
 ```
 
 ---
@@ -28,14 +24,14 @@ atlassian:transitionJiraIssue
 ## Starting a Ticket
 
 1. **Assign** the ticket so Jira tracks ownership:
-   ```
-   atlassian:editJiraIssue
-     cloudId: "{cloudId}"
-     issueIdOrKey: "{projectKey}-{N}"
-     fields: {"assignee": {"accountId": "{currentUserAccountId}"}}
+   ```bash
+   acli jira workitem edit --key {projectKey}-{N} --assignee "@me"
    ```
 
-2. **Transition to In Progress** using the two-step transition protocol above.
+2. **Transition to In Progress:**
+   ```bash
+   acli jira workitem transition --key {projectKey}-{N} --status "In Progress" --yes
+   ```
 
 3. **Create a branch** (optional, if the project has a git repo):
    ```bash
@@ -44,11 +40,8 @@ atlassian:transitionJiraIssue
    git push -u origin feature/{projectKey}-{N}-{slug}
    ```
    Add a Jira comment noting the branch:
-   ```
-   atlassian:addCommentToJiraIssue
-     cloudId: "{cloudId}"
-     issueIdOrKey: "{projectKey}-{N}"
-     commentBody: "Branch created: `feature/{projectKey}-{N}-{slug}` on {repoUrl}"
+   ```bash
+   acli jira workitem comment create --key {projectKey}-{N} --body "Branch created: \`feature/{projectKey}-{N}-{slug}\` on {repoUrl}"
    ```
    The issue key in the branch name auto-links it to Jira's Development panel.
    See [git-integration.md](git-integration.md) for naming conventions and setup details.
@@ -58,14 +51,17 @@ atlassian:transitionJiraIssue
 ## Publishing Findings
 
 Create a Confluence child page under the plan page:
-```
-atlassian:createConfluencePage
-  cloudId: "{cloudId}"
-  spaceId: "{spaceId}"
-  parentId: "{confluence-page-id}"
-  title: "{projectKey}-{N}: {workstream title}"
-  contentFormat: "markdown"
-  body: <findings in markdown>
+```bash
+curl -s -X POST "https://{site}/wiki/api/v2/pages" \
+  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "spaceId": "{spaceId}",
+    "parentId": "{confluence-page-id}",
+    "status": "current",
+    "title": "{projectKey}-{N}: {workstream title}",
+    "body": {"representation": "storage", "value": "<findings in HTML>"}
+  }'
 ```
 
 This keeps all deliverables organized under the plan page in Confluence.
@@ -75,71 +71,65 @@ This keeps all deliverables organized under the plan page in Confluence.
 ## Completing a Ticket
 
 1. **Add a comment** with summary + link to Confluence child page:
-   ```
-   atlassian:addCommentToJiraIssue
-     cloudId: "{cloudId}"
-     issueIdOrKey: "{projectKey}-{N}"
-     commentBody: "## Summary\n{brief summary}\n\nFindings: {confluence-child-page-url}"
+   ```bash
+   acli jira workitem comment create --key {projectKey}-{N} --body "## Summary
+   {brief summary}
+
+   Findings: {confluence-child-page-url}"
    ```
 
-2. **Transition to Done** using the two-step transition protocol.
-
-3. **Update the Epic description** — change the ticket's status in the workstreams table from "In Progress" to "Done":
+2. **Transition to Done:**
+   ```bash
+   acli jira workitem transition --key {projectKey}-{N} --status "Done" --yes
    ```
-   atlassian:getJiraIssue
-     cloudId: "{cloudId}"
-     issueIdOrKey: "{epicKey}"
+
+3. **Update the Epic description** — change the ticket's status in the workstreams table:
+   ```bash
+   acli jira workitem view {epicKey} --json --fields "description"
    ```
    Read the current description, update the workstream status, then:
+   ```bash
+   acli jira workitem edit --key {epicKey} --description "<updated description>"
    ```
-   atlassian:editJiraIssue
-     cloudId: "{cloudId}"
-     issueIdOrKey: "{epicKey}"
-     fields: {"description": "<updated description with new status>"}
-   ```
-   This keeps the Epic's workstream table in sync with actual ticket states.
 
 ---
 
 ## Updating the Confluence Plan Page
 
-`updateConfluencePage` replaces the entire body. Before ANY update, read the page AND its comments — the user may have left inline review feedback:
+The REST API PUT replaces the entire body. Before ANY update, read the page AND its comments:
 
 1. **Read the page body:**
-   ```
-   atlassian:getConfluencePage
-     cloudId: "{cloudId}"
-     pageId: "{plan-page-id}"
+   ```bash
+   curl -s "https://{site}/wiki/api/v2/pages/{pageId}?body-format=storage" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
    ```
 
 2. **Read inline comments** (review feedback on highlighted text):
-   ```
-   atlassian:getConfluencePageInlineComments
-     cloudId: "{cloudId}"
-     pageId: "{plan-page-id}"
-     limit: 50
-     resolutionStatus: "open"
+   ```bash
+   curl -s "https://{site}/wiki/api/v2/pages/{pageId}/inline-comments?body-format=storage" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
    ```
 
 3. **Read footer comments** (general discussion):
-   ```
-   atlassian:getConfluencePageFooterComments
-     cloudId: "{cloudId}"
-     pageId: "{plan-page-id}"
-     limit: 50
-     sort: "-created-date"
+   ```bash
+   curl -s "https://{site}/wiki/api/v2/pages/{pageId}/footer-comments?body-format=storage" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
    ```
 
 4. **Address any open comments** before updating — incorporate feedback into the page content.
 
-5. **Update the page:**
-   ```
-   atlassian:updateConfluencePage
-     cloudId: "{cloudId}"
-     pageId: "{plan-page-id}"
-     contentFormat: "markdown"
-     body: <full updated page content>
-     versionMessage: "{brief description of update}"
+5. **Update the page** (increment version number):
+   ```bash
+   curl -s -X PUT "https://{site}/wiki/api/v2/pages/{pageId}" \
+     -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "id": "{pageId}",
+       "status": "current",
+       "title": "{title}",
+       "body": {"representation": "storage", "value": "<full updated content>"},
+       "version": {"number": {currentVersion + 1}, "message": "{description}"}
+     }'
    ```
 
 ---
@@ -147,8 +137,8 @@ This keeps all deliverables organized under the plan page in Confluence.
 ## Dependency Ordering
 
 Query all child tickets and sort by dependencies:
-```
-parent = {projectKey}-{N} ORDER BY rank ASC
+```bash
+acli jira workitem search --jql "parent = {projectKey}-{N} ORDER BY rank ASC" --json --limit 10
 ```
 
 Work tickets in this order:
@@ -161,16 +151,18 @@ Work tickets in this order:
 ## JQL Patterns
 
 **Find open AI-managed Epics:**
-```
-project = {projectKey} AND issuetype = Epic AND summary ~ '[AI-PM]' AND statusCategory != Done ORDER BY updated DESC
+```bash
+acli jira workitem search --jql "project = {projectKey} AND issuetype = Epic AND summary ~ '[AI-PM]' AND statusCategory NOT IN (Done) ORDER BY updated DESC" --json --limit 10
 ```
 
 **Find incomplete child tickets for an Epic:**
-```
-parent = {projectKey}-{N} AND statusCategory != Done ORDER BY rank ASC
+```bash
+acli jira workitem search --jql "parent = {projectKey}-{N} AND statusCategory NOT IN (Done) ORDER BY rank ASC" --json --limit 10
 ```
 
 **Find all tickets for an Epic (including done):**
+```bash
+acli jira workitem search --jql "parent = {projectKey}-{N} ORDER BY rank ASC" --json --limit 10
 ```
-parent = {projectKey}-{N} ORDER BY rank ASC
-```
+
+> **Note:** Use `NOT IN (Done)` instead of `!= Done` — ACLI escapes the `!` character which breaks the query.
