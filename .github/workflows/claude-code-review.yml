@@ -2,6 +2,11 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize]
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+  id-token: write
 jobs:
   claude-review:
     uses: belumume/.github/.github/workflows/claude-review-shared.yml@main

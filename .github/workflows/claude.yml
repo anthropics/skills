@@ -8,6 +8,12 @@ on:
     types: [opened, assigned]
   pull_request_review:
     types: [submitted]
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
 jobs:
   claude:
     uses: belumume/.github/.github/workflows/claude-shared.yml@main
