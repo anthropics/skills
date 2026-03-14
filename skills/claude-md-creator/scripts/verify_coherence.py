@@ -14,6 +14,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -249,11 +250,76 @@ def verify_command(claim: dict, project_root: Path, project_info: dict) -> dict:
     }
 
 
+def _resolve_alias_path(path_str: str, project_root: Path) -> Path | None:
+    """Resolve @/ alias paths by checking tsconfig.json and common source dirs."""
+    if not path_str.startswith("@/"):
+        return None
+
+    relative = path_str[2:]  # strip @/
+
+    # Try common source directories for @/ alias
+    candidates = ["src", ".", "app", "lib"]
+    seen_candidates = set(candidates)
+
+    # Also try to read tsconfig.json for paths configuration
+    for tsconfig_name in ("tsconfig.json", "tsconfig.app.json"):
+        tsconfig_path = project_root / tsconfig_name
+        if tsconfig_path.exists():
+            try:
+                # Strip comments for JSON parsing
+                text = tsconfig_path.read_text(encoding="utf-8")
+                text = re.sub(r"//.*$", "", text, flags=re.MULTILINE)
+                text = re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
+                config = json.loads(text)
+                paths = config.get("compilerOptions", {}).get("paths", {})
+                for alias_pattern, target_patterns in paths.items():
+                    if alias_pattern.startswith("@/"):
+                        for target in target_patterns:
+                            base = target.replace("/*", "").replace("*", "")
+                            if base and base not in seen_candidates:
+                                seen_candidates.add(base)
+                                candidates.insert(0, base)
+            except (json.JSONDecodeError, OSError):
+                pass
+
+    for base_dir in candidates:
+        resolved = project_root / base_dir / relative
+        if resolved.exists():
+            return resolved
+        # Try with common extensions
+        for ext in (".ts", ".tsx", ".js", ".jsx"):
+            if (project_root / base_dir / (relative + ext)).exists():
+                return project_root / base_dir / (relative + ext)
+            if (project_root / base_dir / relative / ("index" + ext)).exists():
+                return project_root / base_dir / relative / ("index" + ext)
+
+    return None
+
+
 def verify_path(claim: dict, project_root: Path, project_info: dict) -> dict:
     """Verify that a file/directory path exists."""
     path_str = claim["extracted"]["path"]
     # Remove leading ./ and trailing glob patterns
     clean_path = re.sub(r"[*{}\[\]]+.*$", "", path_str.lstrip("./"))
+
+    # Handle @/ alias paths
+    if clean_path.startswith("@/"):
+        resolved = _resolve_alias_path(clean_path, project_root)
+        if resolved and resolved.exists():
+            if resolved.is_dir():
+                file_count = sum(1 for _ in resolved.iterdir())
+                return {
+                    "status": "verified",
+                    "evidence": f"Alias path resolved: {resolved.relative_to(project_root)} ({file_count} entries)",
+                    "confidence": 1.0,
+                }
+            else:
+                return {
+                    "status": "verified",
+                    "evidence": f"Alias path resolved: {resolved.relative_to(project_root)} ({resolved.stat().st_size} bytes)",
+                    "confidence": 1.0,
+                }
+
     full_path = project_root / clean_path
 
     if full_path.exists():
@@ -270,6 +336,31 @@ def verify_path(claim: dict, project_root: Path, project_info: dict) -> dict:
                 "evidence": f"File exists ({full_path.stat().st_size} bytes)",
                 "confidence": 1.0,
             }
+
+    # For short relative paths (e.g., _common/StatusBar.tsx, entity/),
+    # try finding them anywhere in the project tree
+    if not clean_path.startswith("/") and ".." not in clean_path and len(Path(clean_path).parts) <= 3:
+        search_name = clean_path.rstrip("/")
+        # Use -name for simple names, -path for multi-segment paths
+        if "/" in search_name:
+            find_args = ["-path", f"*/{search_name}"]
+        else:
+            find_args = ["-name", search_name]
+        try:
+            result = subprocess.run(
+                ["find", str(project_root), "-maxdepth", "8"] + find_args,
+                capture_output=True, text=True, timeout=5,
+            )
+            matches = [l for l in result.stdout.strip().splitlines() if l]
+            if matches:
+                rel = Path(matches[0]).relative_to(project_root)
+                return {
+                    "status": "verified",
+                    "evidence": f"Found at {rel}" + (f" (+{len(matches)-1} more)" if len(matches) > 1 else ""),
+                    "confidence": 0.8,
+                }
+        except (subprocess.TimeoutExpired, OSError):
+            pass
 
     # Try to find similar paths
     parent = full_path.parent
