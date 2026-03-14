@@ -1,0 +1,8 @@
+name: Claude Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  claude-review:
+    uses: belumume/.github/.github/workflows/claude-review-shared.yml@main
+    secrets: inherit
