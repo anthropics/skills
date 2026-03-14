@@ -179,7 +179,7 @@ Work tickets in this order:
 
 **Find open AI-managed Epics:**
 ```bash
-acli jira workitem search --jql "project = {projectKey} AND issuetype = Epic AND summary ~ '[AI-PM]' AND statusCategory NOT IN (Done) ORDER BY updated DESC" --json --limit 10
+acli jira workitem search --jql "project = {projectKey} AND issuetype = Epic AND summary ~ "\\[AI-PM\\]" AND statusCategory NOT IN (Done) ORDER BY updated DESC" --json --limit 10
 ```
 
 **Find incomplete child tickets for an Epic:**
@@ -193,3 +193,5 @@ acli jira workitem search --jql "parent = {projectKey}-{N} ORDER BY rank ASC" --
 ```
 
 > **Note:** Use `NOT IN (Done)` instead of `!= Done` — ACLI escapes the `!` character which breaks the query.
+
+> **Note:** Square brackets `[` `]` are JQL range-query operators. In `summary ~` queries, escape them as `\[AI-PM\]`. Unescaped `[AI-PM]` causes a parse error.

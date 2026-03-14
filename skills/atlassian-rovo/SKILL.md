@@ -53,8 +53,10 @@ Install ACLI and authenticate:
 ```bash
 brew tap atlassian/homebrew-acli && brew install acli
 source .env
+# ACLI expects the bare domain, not the full URL — strip the https:// prefix
+ACLI_SITE="${ATLASSIAN_SITE#https://}"
 acli jira auth login \
-  --site "$ATLASSIAN_SITE" \
+  --site "$ACLI_SITE" \
   --email "$ATLASSIAN_EMAIL" \
   --token < <(echo "$ATLASSIAN_API_TOKEN")
 ```
@@ -144,7 +146,7 @@ One ticket per teammate. Lead coordinates only (no workstream tasks). Min team =
 
 ### Key Constraints
 
-- **`[AI-PM]` prefix** on all managed Epics — the resume phase uses JQL `summary ~ '[AI-PM]'` to auto-detect managed Epics.
+- **`[AI-PM]` prefix** on all managed Epics — the resume phase uses JQL `summary ~ "\\[AI-PM\\]"` to auto-detect managed Epics.
 - **One writer per resource** — Confluence uses optimistic locking with version numbers. Concurrent writes cause version conflicts and data loss. Only one agent should update a given page/issue at a time.
 - **`--limit 10`** on all Jira list operations; `limit=10` on all Confluence REST calls — larger result sets consume excessive tokens.
 - **Transition to In Progress when work starts** — this signals to other agents (and the resume phase) that a ticket is actively being worked.
@@ -152,5 +154,6 @@ One ticket per teammate. Lead coordinates only (no workstream tasks). Min team =
 - **Publish findings as child pages** of the plan page (using `parentId`) — keeps all deliverables organized under one parent.
 - **GET before PUT for Confluence** — the REST API PUT replaces the entire body. Always read the current version first, then PUT with incremented version number. Also check for inline/footer comments before updating — users leave review feedback as comments.
 - **JQL `!=` workaround** — ACLI escapes `!` in JQL. Use `NOT IN (Done)` instead of `!= Done`.
+- **JQL `[` / `]` escaping** — square brackets are JQL range-query operators. Use `\[AI-PM\]` (escaped) in `summary ~` queries, not `[AI-PM]`.
 - **Confluence search uses v1 API** — CQL search for pages must use `/wiki/rest/api/content/search`, not v2 `/search`.
 - **Comment replies use v1 API** — creating threaded replies requires `POST /wiki/rest/api/content` with `ancestors` array. The v2 children endpoint returns 405. See [confluence-comments.md](reference/confluence-comments.md).

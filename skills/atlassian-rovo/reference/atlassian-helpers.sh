@@ -6,7 +6,7 @@
 # Prerequisites:
 #   - acli installed and authenticated (brew install acli && acli jira auth login)
 #   - ATLASSIAN_EMAIL and ATLASSIAN_API_TOKEN in .env or environment
-#   - ATLASSIAN_SITE set (e.g., "mysite.atlassian.net")
+#   - ATLASSIAN_SITE set (e.g., "https://mysite.atlassian.net")
 
 set -euo pipefail
 
@@ -24,7 +24,7 @@ _atlassian_load_env() {
 
   : "${ATLASSIAN_EMAIL:?ATLASSIAN_EMAIL not set}"
   : "${ATLASSIAN_API_TOKEN:?ATLASSIAN_API_TOKEN not set}"
-  : "${ATLASSIAN_SITE:?ATLASSIAN_SITE not set (e.g. mysite.atlassian.net)}"
+  : "${ATLASSIAN_SITE:?ATLASSIAN_SITE not set (e.g. https://mysite.atlassian.net)}"
 }
 
 _confluence_api() {
@@ -37,7 +37,7 @@ _confluence_api() {
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
     -H "Content-Type: application/json" \
     "$@" \
-    "https://${ATLASSIAN_SITE}/wiki/api/v2${endpoint}")
+    "${ATLASSIAN_SITE}/wiki/api/v2${endpoint}")
   http_code=$(echo "$response" | tail -1)
   response=$(echo "$response" | sed '$d')
   if [[ "$http_code" -ge 400 ]]; then
@@ -225,7 +225,7 @@ print(json.dumps({
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
     -H "Content-Type: application/json" \
     -d "$payload" \
-    "https://${ATLASSIAN_SITE}/wiki/rest/api/content")
+    "${ATLASSIAN_SITE}/wiki/rest/api/content")
   http_code=$(echo "$response" | tail -1)
   response=$(echo "$response" | sed '$d')
   if [[ "$http_code" -ge 400 ]]; then
@@ -255,7 +255,7 @@ confluence_search() {
   local response http_code
   response=$(curl -s -w "\n%{http_code}" \
     -u "${ATLASSIAN_EMAIL}:${ATLASSIAN_API_TOKEN}" \
-    "https://${ATLASSIAN_SITE}/wiki/rest/api/content/search?cql=${encoded_cql}&limit=${limit}")
+    "${ATLASSIAN_SITE}/wiki/rest/api/content/search?cql=${encoded_cql}&limit=${limit}")
   http_code=$(echo "$response" | tail -1)
   response=$(echo "$response" | sed '$d')
   if [[ "$http_code" -ge 400 ]]; then

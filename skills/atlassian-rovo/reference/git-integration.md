@@ -162,7 +162,7 @@ Branch creation is an **optional step** in the execution phase. It fits between 
 4. Publish findings
 5. Complete the ticket
 
-See [phase-execution-single.md](phase-execution-single.md) and [phase-execution.md](phase-execution.md) for full workflow.
+See [phase-execution.md](phase-execution.md) for full workflow (covers both single-agent and multi-agent modes).
 
 ---
 

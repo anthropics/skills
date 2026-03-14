@@ -68,5 +68,3 @@ After steps 1-7 above:
 - **Check comments on In Progress tickets** — previous agents may have left partial work or blockers
 - **Respect dependency order** — don't start a blocked ticket until its blocker is Done
 - **Update the plan page** after completing each ticket (same as Phase 2)
-
-> **Note:** Use `NOT IN (Done)` instead of `!= Done` — ACLI escapes the `!` character which breaks the query.

@@ -39,7 +39,10 @@ ATLASSIAN_API_TOKEN="your-api-token-here"
 ATLASSIAN_SITE="https://yoursite.atlassian.net"
 ```
 
-> **Variable names:** The skill expects exactly these three variable names. If your project's `.env` uses different names (e.g., `ATLASSIAN_BASE_URL`), either rename them or add aliases so both work.
+> **Variable names:** The skill expects exactly these three variable names. If your project's `.env` uses different names (e.g., `ATLASSIAN_BASE_URL`), add aliases:
+> ```bash
+> export ATLASSIAN_SITE="${ATLASSIAN_BASE_URL}"
+> ```
 
 For Claude Code, source this file before running commands. Other agents can set these as environment variables in their own configuration.
 
