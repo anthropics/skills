@@ -79,11 +79,13 @@ Content-Type: application/json
 1. Generate API token at https://id.atlassian.com/manage-profile/security/api-tokens
 2. Add to `.env` file (never commit tokens to source control):
    ```
-   CONFLUENCE_API_TOKEN=<your-api-token>
-   CONFLUENCE_EMAIL=<your-atlassian-email>
-   CONFLUENCE_BASE_URL=https://<your-site>.atlassian.net
+   ATLASSIAN_API_TOKEN=<your-api-token>
+   ATLASSIAN_EMAIL=<your-atlassian-email>
+   ATLASSIAN_SITE=https://<your-site>.atlassian.net
    ```
-3. Load in Python: `os.environ["CONFLUENCE_API_TOKEN"]` (or use `python-dotenv`)
+3. Load in Python: `os.environ["ATLASSIAN_API_TOKEN"]` (or use `python-dotenv`)
+
+See [setup.md](setup.md) for full setup instructions.
 
 ## Limitations
 

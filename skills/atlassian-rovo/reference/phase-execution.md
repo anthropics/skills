@@ -3,7 +3,15 @@
 All examples use `{site}`, `{projectKey}`, `{spaceId}`, and `{parentId}` as placeholders.
 Credentials come from environment variables: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API_TOKEN`.
 
-## Steps
+For shared protocols (starting a ticket, publishing findings, completing a ticket, dependency ordering), see [common-patterns.md](common-patterns.md).
+
+---
+
+## Multi-Agent Mode
+
+Parallel execution using Claude Code Agent Teams.
+
+### Steps
 
 1. **Create agent team:**
    `TeamCreate` with name `{projectKey-lowercase}-{epic-number}` (e.g., `aw1-42`)
@@ -13,7 +21,7 @@ Credentials come from environment variables: `$ATLASSIAN_EMAIL`, `$ATLASSIAN_API
 
 3. **Spawn teammates** with the Teammate Prompt Template below, one per workstream ticket.
 
-## Teammate Prompt Template
+### Teammate Prompt Template
 
 Embed this in every spawned teammate's prompt. Replace all `{placeholders}` with actual values.
 
@@ -90,37 +98,62 @@ After publishing your findings page:
   3. Check TaskList for other unclaimed tasks you can work on meanwhile
 ```
 
-## Orchestrator Duties
+### Orchestrator Duties
 
 Monitor teammate messages and coordinate:
 
-### Updating Confluence Progress Log
+#### Updating Confluence Progress Log
 
-After each significant event, read then update the Confluence page:
-```
-curl -s "https://{site}/wiki/api/v2/pages/{page-id}?body-format=storage" \
-  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN"
-```
-Then update with the new progress log entry appended:
-```
-curl -s -X PUT "https://{site}/wiki/api/v2/pages/{page-id}" \
-  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"id": "{page-id}", "status": "current", "title": "...", "body": {"representation": "storage", "value": "<full page content with new progress log entry>"}, "version": {"number": N, "message": "{brief description of update}"}}'
-```
+After each significant event, read then update the Confluence page.
+See [common-patterns.md — Updating the Confluence Plan Page](common-patterns.md#updating-the-confluence-plan-page) for the read-then-update protocol.
 
-**Important:** The update replaces the entire body. Always read the page first, append the new log entry, then update.
-
-### Updating Epic Description
+#### Updating Epic Description
 
 ```
 acli jira workitem edit --key {projectKey}-{N} --description "<updated Markdown with new status/progress>" --json
 ```
 
-### Handling Blockers
+#### Handling Blockers
 
 When a teammate reports a blocker:
 1. Assess if another teammate can unblock
 2. Re-assign or re-prioritize tasks as needed
 3. Update Confluence progress log with blocker details
 4. If cross-cutting work needed, coordinate between teammates via `SendMessage`
+
+---
+
+## Single-Agent Mode
+
+Sequential execution for agents without multi-agent orchestration (Cursor, Cline, Windsurf, etc.).
+Same Jira tracking and Confluence updates as multi-agent mode, but one ticket at a time.
+
+### Workflow
+
+Work each child ticket sequentially, respecting dependency order (blocked tickets last).
+See [common-patterns.md — Dependency Ordering](common-patterns.md#dependency-ordering) for how to sort tickets.
+
+For each ticket:
+
+1. **Start the ticket** — assign and transition to In Progress.
+   See [common-patterns.md — Starting a Ticket](common-patterns.md#starting-a-ticket).
+
+2. **Do the work** — execute the workstream as described in the ticket.
+
+3. **Publish findings** — create a Confluence child page under the plan page.
+   See [common-patterns.md — Publishing Findings](common-patterns.md#publishing-findings).
+
+4. **Complete the ticket** — add summary comment, transition to Done, update Epic.
+   See [common-patterns.md — Completing a Ticket](common-patterns.md#completing-a-ticket).
+
+5. **Update the plan page** — mark ticket Done in the workstreams table, add progress log entry.
+   See [common-patterns.md — Updating the Confluence Plan Page](common-patterns.md#updating-the-confluence-plan-page).
+
+6. **Next ticket** — move to the next ticket in dependency order. Repeat steps 1-5.
+
+### Key Rules
+
+- **Always transition to In Progress** before starting work (not just Done at the end)
+- **Always publish findings as child pages** of the plan page
+- **Always update the plan page** after completing each ticket
+- **Respect dependency order** — don't start a blocked ticket until its blocker is Done

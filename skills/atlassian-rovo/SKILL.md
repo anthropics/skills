@@ -109,23 +109,20 @@ See [phase-planning.md](reference/phase-planning.md) for step-by-step details an
 ### Phase 2: Execution
 
 **Multi-agent mode:** Create agent team, map tickets to tasks with dependency tracking, spawn teammates with standard prompt. Orchestrator monitors progress and updates Confluence plan page.
-See [phase-execution.md](reference/phase-execution.md) for teammate prompt template and orchestrator duties.
 
 **Single-agent mode:** Work each ticket sequentially, respecting dependency order. Track progress via Jira transitions and Confluence updates.
-See [phase-execution-single.md](reference/phase-execution-single.md) for the sequential workflow.
 
-Both modes share common protocols for transitions, branch creation, and publishing.
-See [common-patterns.md](reference/common-patterns.md) for these shared procedures.
+See [phase-execution.md](reference/phase-execution.md) for both modes (multi-agent and single-agent workflows).
+Both modes share common protocols for transitions, branch creation, and publishing — see [common-patterns.md](reference/common-patterns.md).
 
 ### Phase 3: Resume
 
 Auto-detect open `[AI-PM]` Epics, read Confluence plan, query incomplete tickets, classify state.
 
 **Multi-agent mode:** Spin up right-sized team for remaining work.
-See [phase-resume.md](reference/phase-resume.md) for JQL patterns and resume protocol.
-
 **Single-agent mode:** Pick up the next incomplete ticket and continue sequentially.
-See [phase-resume-single.md](reference/phase-resume-single.md) for the sequential resume protocol.
+
+See [phase-resume.md](reference/phase-resume.md) for both modes (resume protocol and JQL patterns).
 
 ### Phase 4: Completion
 
