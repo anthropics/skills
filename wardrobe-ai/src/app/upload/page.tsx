@@ -79,9 +79,9 @@ export default function UploadPage() {
       const { removeBackground: removeBg } = await import('@imgly/background-removal');
 
       const resultBlob = await removeBg(originalFile, {
-        publicPath: '/_next/static/chunks/',
+        // No publicPath — library fetches WASM/models from its own CDN
         progress: () => {},
-        model: 'isnet_fp16', // fast, accurate model
+        model: 'isnet_fp16',
       });
 
       const url = URL.createObjectURL(resultBlob);
