@@ -8,7 +8,7 @@ Use these examples when the user needs raw HTTP requests or is working in a lang
 export ANTHROPIC_API_KEY="your-api-key"
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -26,7 +26,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
----
+______________________________________________________________________
 
 ## Streaming (SSE)
 
@@ -65,7 +65,7 @@ event: message_stop
 data: {"type":"message_stop"}
 ```
 
----
+______________________________________________________________________
 
 ## Tool Use
 
@@ -126,7 +126,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
----
+______________________________________________________________________
 
 ## Extended Thinking
 
@@ -152,7 +152,7 @@ curl https://api.anthropic.com/v1/messages \
   }'
 ```
 
----
+______________________________________________________________________
 
 ## Required Headers
 

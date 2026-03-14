@@ -14,7 +14,6 @@ from .base import BaseSchemaValidator
 
 
 class DOCXSchemaValidator(BaseSchemaValidator):
-
     WORD_2006_NAMESPACE = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
     W14_NAMESPACE = "http://schemas.microsoft.com/office/word/2010/wordml"
     W16CID_NAMESPACE = "http://schemas.microsoft.com/office/word/2016/wordml/cid"
@@ -76,18 +75,14 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                 for elem in root.iter(f"{{{self.WORD_2006_NAMESPACE}}}t"):
                     if elem.text:
                         text = elem.text
-                        if re.search(r"^[ \t\n\r]", text) or re.search(
-                            r"[ \t\n\r]$", text
-                        ):
+                        if re.search(r"^[ \t\n\r]", text) or re.search(r"[ \t\n\r]$", text):
                             xml_space_attr = f"{{{self.XML_NAMESPACE}}}space"
                             if (
                                 xml_space_attr not in elem.attrib
                                 or elem.attrib[xml_space_attr] != "preserve"
                             ):
                                 text_preview = (
-                                    repr(text)[:50] + "..."
-                                    if len(repr(text)) > 50
-                                    else repr(text)
+                                    repr(text)[:50] + "..." if len(repr(text)) > 50 else repr(text)
                                 )
                                 errors.append(
                                     f"  {xml_file.relative_to(self.unpacked_dir)}: "
@@ -95,9 +90,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                                 )
 
             except (lxml.etree.XMLSyntaxError, Exception) as e:
-                errors.append(
-                    f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}"
-                )
+                errors.append(f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}")
 
         if errors:
             print(f"FAILED - Found {len(errors)} whitespace preservation violations:")
@@ -132,9 +125,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                             f"Line {t_elem.sourceline}: <w:t> found within <w:del>: {text_preview}"
                         )
 
-                for instr_elem in root.xpath(
-                    ".//w:del//w:instrText", namespaces=namespaces
-                ):
+                for instr_elem in root.xpath(".//w:del//w:instrText", namespaces=namespaces):
                     text_preview = (
                         repr(instr_elem.text or "")[:50] + "..."
                         if len(repr(instr_elem.text or "")) > 50
@@ -146,9 +137,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                     )
 
             except (lxml.etree.XMLSyntaxError, Exception) as e:
-                errors.append(
-                    f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}"
-                )
+                errors.append(f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}")
 
         if errors:
             print(f"FAILED - Found {len(errors)} deletion validation violations:")
@@ -226,9 +215,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                     )
 
             except (lxml.etree.XMLSyntaxError, Exception) as e:
-                errors.append(
-                    f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}"
-                )
+                errors.append(f"  {xml_file.relative_to(self.unpacked_dir)}: Error: {e}")
 
         if errors:
             print(f"FAILED - Found {len(errors)} insertion validation violations:")
@@ -317,21 +304,15 @@ class DOCXSchemaValidator(BaseSchemaValidator):
 
             range_starts = {
                 elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
-                for elem in doc_root.xpath(
-                    ".//w:commentRangeStart", namespaces=namespaces
-                )
+                for elem in doc_root.xpath(".//w:commentRangeStart", namespaces=namespaces)
             }
             range_ends = {
                 elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
-                for elem in doc_root.xpath(
-                    ".//w:commentRangeEnd", namespaces=namespaces
-                )
+                for elem in doc_root.xpath(".//w:commentRangeEnd", namespaces=namespaces)
             }
             references = {
                 elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
-                for elem in doc_root.xpath(
-                    ".//w:commentReference", namespaces=namespaces
-                )
+                for elem in doc_root.xpath(".//w:commentReference", namespaces=namespaces)
             }
 
             orphaned_ends = range_ends - range_starts
@@ -355,9 +336,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                 comments_root = lxml.etree.parse(str(comments_xml)).getroot()
                 comment_ids = {
                     elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
-                    for elem in comments_root.xpath(
-                        ".//w:comment", namespaces=namespaces
-                    )
+                    for elem in comments_root.xpath(".//w:comment", namespaces=namespaces)
                 }
 
                 marker_ids = range_starts | range_ends | references
@@ -365,7 +344,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                 for comment_id in sorted(
                     invalid_refs, key=lambda x: int(x) if x and x.isdigit() else 0
                 ):
-                    if comment_id:  
+                    if comment_id:
                         errors.append(
                             f'  document.xml: marker id="{comment_id}" references non-existent comment'
                         )
@@ -406,30 +385,24 @@ class DOCXSchemaValidator(BaseSchemaValidator):
 
                     if xml_file.name == "numbering.xml":
                         try:
-                            needs_repair = (
-                                self._parse_id_value(durable_id, base=10) >= 0x7FFFFFFF
-                            )
+                            needs_repair = self._parse_id_value(durable_id, base=10) >= 0x7FFFFFFF
                         except ValueError:
                             needs_repair = True
                     else:
                         try:
-                            needs_repair = (
-                                self._parse_id_value(durable_id, base=16) >= 0x7FFFFFFF
-                            )
+                            needs_repair = self._parse_id_value(durable_id, base=16) >= 0x7FFFFFFF
                         except ValueError:
                             needs_repair = True
 
                     if needs_repair:
                         value = random.randint(1, 0x7FFFFFFE)
                         if xml_file.name == "numbering.xml":
-                            new_id = str(value)  
+                            new_id = str(value)
                         else:
-                            new_id = f"{value:08X}"  
+                            new_id = f"{value:08X}"
 
                         elem.setAttribute("w16cid:durableId", new_id)
-                        print(
-                            f"  Repaired: {xml_file.name}: durableId {durable_id} → {new_id}"
-                        )
+                        print(f"  Repaired: {xml_file.name}: durableId {durable_id} → {new_id}")
                         repairs += 1
                         modified = True
 

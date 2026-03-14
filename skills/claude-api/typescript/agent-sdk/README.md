@@ -8,7 +8,7 @@ The Claude Agent SDK provides a higher-level interface for building AI agents wi
 npm install @anthropic-ai/claude-agent-sdk
 ```
 
----
+______________________________________________________________________
 
 ## Quick Start
 
@@ -25,24 +25,24 @@ for await (const message of query({
 }
 ```
 
----
+______________________________________________________________________
 
 ## Built-in Tools
 
-| Tool      | Description                          |
-| --------- | ------------------------------------ |
-| Read      | Read files in the workspace          |
-| Write     | Create new files                     |
-| Edit      | Make precise edits to existing files |
-| Bash      | Execute shell commands               |
-| Glob      | Find files by pattern                |
-| Grep      | Search files by content              |
-| WebSearch | Search the web for information       |
+| Tool            | Description                          |
+| --------------- | ------------------------------------ |
+| Read            | Read files in the workspace          |
+| Write           | Create new files                     |
+| Edit            | Make precise edits to existing files |
+| Bash            | Execute shell commands               |
+| Glob            | Find files by pattern                |
+| Grep            | Search files by content              |
+| WebSearch       | Search the web for information       |
 | WebFetch        | Fetch and analyze web pages          |
-| AskUserQuestion | Ask user clarifying questions         |
+| AskUserQuestion | Ask user clarifying questions        |
 | Agent           | Spawn subagents                      |
 
----
+______________________________________________________________________
 
 ## Permission System
 
@@ -66,7 +66,7 @@ Permission modes:
 - `"dontAsk"`: Don't prompt (useful for CI/CD)
 - `"bypassPermissions"`: Skip all prompts (requires `allowDangerouslySkipPermissions: true` in options)
 
----
+______________________________________________________________________
 
 ## MCP (Model Context Protocol) Support
 
@@ -106,7 +106,7 @@ for await (const message of query({
 }
 ```
 
----
+______________________________________________________________________
 
 ## Hooks
 
@@ -139,7 +139,7 @@ for await (const message of query({
 
 Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Notification`, `UserPromptSubmit`, `SessionStart`, `SessionEnd`, `Stop`, `SubagentStart`, `SubagentStop`, `PreCompact`, `PermissionRequest`, `Setup`, `TeammateIdle`, `TaskCompleted`, `ConfigChange`
 
----
+______________________________________________________________________
 
 ## Common Options
 
@@ -149,28 +149,28 @@ Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Notif
 query({ prompt: "...", options: { ... } })
 ```
 
-| Option                              | Type   | Description                                                                |
-| ----------------------------------- | ------ | -------------------------------------------------------------------------- |
-| `cwd`                               | string | Working directory for file operations                                      |
-| `allowedTools`                      | array  | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                |
-| `tools`                             | array  | Built-in tools to make available (restricts the default set)               |
-| `disallowedTools`                   | array  | Tools to explicitly disallow                                               |
-| `permissionMode`                    | string | How to handle permission prompts                                           |
-| `allowDangerouslySkipPermissions`   | bool   | Must be `true` to use `permissionMode: "bypassPermissions"`                |
-| `mcpServers`                        | object | MCP servers to connect to                                                  |
-| `hooks`                             | object | Hooks for customizing behavior                                             |
-| `systemPrompt`                      | string | Custom system prompt                                                       |
-| `maxTurns`                          | number | Maximum agent turns before stopping                                        |
-| `maxBudgetUsd`                      | number | Maximum budget in USD for the query                                        |
-| `model`                             | string | Model ID (default: determined by CLI)                                      |
-| `agents`                            | object | Subagent definitions (`Record<string, AgentDefinition>`)                   |
-| `outputFormat`                      | object | Structured output schema                                                   |
-| `thinking`                          | object | Thinking/reasoning control                                                 |
-| `betas`                             | array  | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)               |
-| `settingSources`                    | array  | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
-| `env`                               | object | Environment variables to set for the session                               |
+| Option                            | Type   | Description                                                                |
+| --------------------------------- | ------ | -------------------------------------------------------------------------- |
+| `cwd`                             | string | Working directory for file operations                                      |
+| `allowedTools`                    | array  | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                 |
+| `tools`                           | array  | Built-in tools to make available (restricts the default set)               |
+| `disallowedTools`                 | array  | Tools to explicitly disallow                                               |
+| `permissionMode`                  | string | How to handle permission prompts                                           |
+| `allowDangerouslySkipPermissions` | bool   | Must be `true` to use `permissionMode: "bypassPermissions"`                |
+| `mcpServers`                      | object | MCP servers to connect to                                                  |
+| `hooks`                           | object | Hooks for customizing behavior                                             |
+| `systemPrompt`                    | string | Custom system prompt                                                       |
+| `maxTurns`                        | number | Maximum agent turns before stopping                                        |
+| `maxBudgetUsd`                    | number | Maximum budget in USD for the query                                        |
+| `model`                           | string | Model ID (default: determined by CLI)                                      |
+| `agents`                          | object | Subagent definitions (`Record<string, AgentDefinition>`)                   |
+| `outputFormat`                    | object | Structured output schema                                                   |
+| `thinking`                        | object | Thinking/reasoning control                                                 |
+| `betas`                           | array  | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)                |
+| `settingSources`                  | array  | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
+| `env`                             | object | Environment variables to set for the session                               |
 
----
+______________________________________________________________________
 
 ## Subagents
 
@@ -192,7 +192,7 @@ for await (const message of query({
 }
 ```
 
----
+______________________________________________________________________
 
 ## Message Types
 
@@ -209,12 +209,12 @@ for await (const message of query({
 }
 ```
 
----
+______________________________________________________________________
 
 ## Best Practices
 
 1. **Always specify allowedTools** — Explicitly list which tools the agent can use
-2. **Set working directory** — Always specify `cwd` for file operations
-3. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
-4. **Handle all message types** — Check for `result` property to get agent output
-5. **Limit maxTurns** — Prevent runaway agents with reasonable limits
+1. **Set working directory** — Always specify `cwd` for file operations
+1. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
+1. **Handle all message types** — Check for `result` property to get agent output
+1. **Limit maxTurns** — Prevent runaway agents with reasonable limits

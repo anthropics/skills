@@ -19,12 +19,13 @@ pres.writeFile({ fileName: "Presentation.pptx" });
 ## Layout Dimensions
 
 Slide dimensions (coordinates in inches):
+
 - `LAYOUT_16x9`: 10" × 5.625" (default)
 - `LAYOUT_16x10`: 10" × 6.25"
 - `LAYOUT_4x3`: 10" × 7.5"
 - `LAYOUT_WIDE`: 13.3" × 7.5"
 
----
+______________________________________________________________________
 
 ## Text & Formatting
 
@@ -60,7 +61,7 @@ slide.addText("Title", {
 
 **Tip:** Text boxes have internal margin by default. Set `margin: 0` when you need text to align precisely with shapes, lines, or icons at the same x-position.
 
----
+______________________________________________________________________
 
 ## Lists & Bullets
 
@@ -80,7 +81,7 @@ slide.addText("• First item", { ... });  // Creates double bullets
 { text: "First", options: { bullet: { type: "number" }, breakLine: true } }
 ```
 
----
+______________________________________________________________________
 
 ## Shapes
 
@@ -119,20 +120,20 @@ slide.addShape(pres.shapes.RECTANGLE, {
 
 Shadow options:
 
-| Property | Type | Range | Notes |
-|----------|------|-------|-------|
-| `type` | string | `"outer"`, `"inner"` | |
-| `color` | string | 6-char hex (e.g. `"000000"`) | No `#` prefix, no 8-char hex — see Common Pitfalls |
-| `blur` | number | 0-100 pt | |
-| `offset` | number | 0-200 pt | **Must be non-negative** — negative values corrupt the file |
-| `angle` | number | 0-359 degrees | Direction the shadow falls (135 = bottom-right, 270 = upward) |
-| `opacity` | number | 0.0-1.0 | Use this for transparency, never encode in color string |
+| Property  | Type   | Range                        | Notes                                                         |
+| --------- | ------ | ---------------------------- | ------------------------------------------------------------- |
+| `type`    | string | `"outer"`, `"inner"`         |                                                               |
+| `color`   | string | 6-char hex (e.g. `"000000"`) | No `#` prefix, no 8-char hex — see Common Pitfalls            |
+| `blur`    | number | 0-100 pt                     |                                                               |
+| `offset`  | number | 0-200 pt                     | **Must be non-negative** — negative values corrupt the file   |
+| `angle`   | number | 0-359 degrees                | Direction the shadow falls (135 = bottom-right, 270 = upward) |
+| `opacity` | number | 0.0-1.0                      | Use this for transparency, never encode in color string       |
 
 To cast a shadow upward (e.g. on a footer bar), use `angle: 270` with a positive offset — do **not** use a negative offset.
 
 **Note**: Gradient fills are not natively supported. Use a gradient image as a background instead.
 
----
+______________________________________________________________________
 
 ## Images
 
@@ -193,7 +194,7 @@ slide.addImage({ path: "image.png", x: centerX, y: 1.2, w: calcWidth, h: maxHeig
 - **Standard**: PNG, JPG, GIF (animated GIFs work in Microsoft 365)
 - **SVG**: Works in modern PowerPoint/Microsoft 365
 
----
+______________________________________________________________________
 
 ## Icons
 
@@ -238,12 +239,13 @@ slide.addImage({
 Install: `npm install -g react-icons react react-dom sharp`
 
 Popular icon sets in react-icons:
+
 - `react-icons/fa` - Font Awesome
 - `react-icons/md` - Material Design
 - `react-icons/hi` - Heroicons
 - `react-icons/bi` - Bootstrap Icons
 
----
+______________________________________________________________________
 
 ## Slide Backgrounds
 
@@ -261,7 +263,7 @@ slide.background = { path: "https://example.com/bg.jpg" };
 slide.background = { data: "image/png;base64,iVBORw0KGgo..." };
 ```
 
----
+______________________________________________________________________
 
 ## Tables
 
@@ -282,7 +284,7 @@ let tableData = [
 slide.addTable(tableData, { x: 1, y: 3.5, w: 8, colW: [4, 4] });
 ```
 
----
+______________________________________________________________________
 
 ## Charts
 
@@ -339,13 +341,14 @@ slide.addChart(pres.charts.BAR, chartData, {
 ```
 
 **Key styling options:**
+
 - `chartColors: [...]` - hex colors for series/segments
 - `chartArea: { fill, border, roundedCorners }` - chart background
 - `catGridLine/valGridLine: { color, style, size }` - grid lines (`style: "none"` to hide)
 - `lineSmooth: true` - curved lines (line charts)
 - `legendPos: "r"` - legend position: "b", "t", "l", "r", "tr"
 
----
+______________________________________________________________________
 
 ## Slide Masters
 
@@ -361,33 +364,36 @@ let titleSlide = pres.addSlide({ masterName: "TITLE_SLIDE" });
 titleSlide.addText("My Title", { placeholder: "title" });
 ```
 
----
+______________________________________________________________________
 
 ## Common Pitfalls
 
 ⚠️ These issues cause file corruption, visual bugs, or broken output. Avoid them.
 
 1. **NEVER use "#" with hex colors** - causes file corruption
+
    ```javascript
    color: "FF0000"      // ✅ CORRECT
    color: "#FF0000"     // ❌ WRONG
    ```
 
-2. **NEVER encode opacity in hex color strings** - 8-char colors (e.g., `"00000020"`) corrupt the file. Use the `opacity` property instead.
+1. **NEVER encode opacity in hex color strings** - 8-char colors (e.g., `"00000020"`) corrupt the file. Use the `opacity` property instead.
+
    ```javascript
    shadow: { type: "outer", blur: 6, offset: 2, color: "00000020" }          // ❌ CORRUPTS FILE
    shadow: { type: "outer", blur: 6, offset: 2, color: "000000", opacity: 0.12 }  // ✅ CORRECT
    ```
 
-3. **Use `bullet: true`** - NEVER unicode symbols like "•" (creates double bullets)
+1. **Use `bullet: true`** - NEVER unicode symbols like "•" (creates double bullets)
 
-4. **Use `breakLine: true`** between array items or text runs together
+1. **Use `breakLine: true`** between array items or text runs together
 
-5. **Avoid `lineSpacing` with bullets** - causes excessive gaps; use `paraSpaceAfter` instead
+1. **Avoid `lineSpacing` with bullets** - causes excessive gaps; use `paraSpaceAfter` instead
 
-6. **Each presentation needs fresh instance** - don't reuse `pptxgen()` objects
+1. **Each presentation needs fresh instance** - don't reuse `pptxgen()` objects
 
-7. **NEVER reuse option objects across calls** - PptxGenJS mutates objects in-place (e.g. converting shadow values to EMU). Sharing one object between multiple calls corrupts the second shape.
+1. **NEVER reuse option objects across calls** - PptxGenJS mutates objects in-place (e.g. converting shadow values to EMU). Sharing one object between multiple calls corrupts the second shape.
+
    ```javascript
    const shadow = { type: "outer", blur: 6, offset: 2, color: "000000", opacity: 0.15 };
    slide.addShape(pres.shapes.RECTANGLE, { shadow, ... });  // ❌ second call gets already-converted values
@@ -398,7 +404,8 @@ titleSlide.addText("My Title", { placeholder: "title" });
    slide.addShape(pres.shapes.RECTANGLE, { shadow: makeShadow(), ... });
    ```
 
-8. **Don't use `ROUNDED_RECTANGLE` with accent borders** - rectangular overlay bars won't cover rounded corners. Use `RECTANGLE` instead.
+1. **Don't use `ROUNDED_RECTANGLE` with accent borders** - rectangular overlay bars won't cover rounded corners. Use `RECTANGLE` instead.
+
    ```javascript
    // ❌ WRONG: Accent bar doesn't cover rounded corners
    slide.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 1, y: 1, w: 3, h: 1.5, fill: { color: "FFFFFF" } });
@@ -409,7 +416,7 @@ titleSlide.addText("My Title", { placeholder: "title" });
    slide.addShape(pres.shapes.RECTANGLE, { x: 1, y: 1, w: 0.08, h: 1.5, fill: { color: "0891B2" } });
    ```
 
----
+______________________________________________________________________
 
 ## Quick Reference
 

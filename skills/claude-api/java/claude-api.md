@@ -35,7 +35,7 @@ AnthropicClient client = AnthropicOkHttpClient.builder()
     .build();
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -56,7 +56,7 @@ response.content().stream()
     .forEach(textBlock -> System.out.println(textBlock.text()));
 ```
 
----
+______________________________________________________________________
 
 ## Streaming
 
@@ -78,7 +78,7 @@ try (StreamResponse<RawMessageStreamEvent> streamResponse = client.messages().cr
 }
 ```
 
----
+______________________________________________________________________
 
 ## Tool Use (Beta)
 

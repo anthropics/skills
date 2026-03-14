@@ -2,7 +2,7 @@
 
 This page walks you through creating a new skill, testing it, and submitting it to the repository.
 
----
+______________________________________________________________________
 
 ## Overview
 
@@ -15,7 +15,7 @@ skills/my-skill/
 
 More capable skills also include scripts, templates, or reference documents — but those are optional.
 
----
+______________________________________________________________________
 
 ## Step 1 — Copy the Template
 
@@ -37,7 +37,7 @@ mkdir skills/my-skill
 cp template/SKILL.md skills/my-skill/SKILL.md
 ```
 
----
+______________________________________________________________________
 
 ## Step 2 — Write the Frontmatter
 
@@ -75,11 +75,12 @@ description: >
 ```
 
 **Tips:**
+
 - Be specific about trigger keywords so the skill does not fire accidentally.
 - List exclusions explicitly — they are as important as inclusions.
 - Keep the description under 500 characters if possible; longer descriptions still work but may affect routing accuracy.
 
----
+______________________________________________________________________
 
 ## Step 3 — Write the Instructions
 
@@ -113,16 +114,16 @@ Worked examples are very helpful.
 
 ### Instruction writing tips
 
-| Do | Don't |
-|----|-------|
-| Use numbered steps for sequential workflows | Leave the workflow implicit |
-| Define the expected output format explicitly | Assume Claude knows the format |
-| Include worked examples | Skip examples to save space |
-| Reference script paths as `scripts/my_script.py` | Use absolute paths |
-| Describe error handling (`if the script fails…`) | Ignore error cases |
-| Use headings and tables for scannability | Write dense paragraphs |
+| Do                                               | Don't                          |
+| ------------------------------------------------ | ------------------------------ |
+| Use numbered steps for sequential workflows      | Leave the workflow implicit    |
+| Define the expected output format explicitly     | Assume Claude knows the format |
+| Include worked examples                          | Skip examples to save space    |
+| Reference script paths as `scripts/my_script.py` | Use absolute paths             |
+| Describe error handling (`if the script fails…`) | Ignore error cases             |
+| Use headings and tables for scannability         | Write dense paragraphs         |
 
----
+______________________________________________________________________
 
 ## Step 4 — Add Supporting Files (Optional)
 
@@ -163,7 +164,7 @@ skills/my-skill/
 
 Tell Claude to use the template as a starting point rather than generating from scratch.
 
----
+______________________________________________________________________
 
 ## Step 5 — Add a License File
 
@@ -175,7 +176,7 @@ license: Proprietary. LICENSE.txt has complete terms.
 
 If your skill is open source (Apache 2.0), you can omit the `license` field — Apache 2.0 is the repository default.
 
----
+______________________________________________________________________
 
 ## Step 6 — Register in the Plugin Marketplace (Optional)
 
@@ -197,7 +198,7 @@ To make your skill installable via `/plugin install`, add it to `.claude-plugin/
 
 Choose the existing group that best fits your skill (`document-skills`, `example-skills`, or `claude-api`), or propose a new group in your pull request.
 
----
+______________________________________________________________________
 
 ## Step 7 — Test Your Skill
 
@@ -213,8 +214,8 @@ Choose the existing group that best fits your skill (`document-skills`, `example
 ### Manual testing in Claude.ai
 
 1. Go to a project → Skills → + Add skill.
-2. Upload your `SKILL.md` (zip the folder if you have supporting files).
-3. Enable the skill and test with a few prompts.
+1. Upload your `SKILL.md` (zip the folder if you have supporting files).
+1. Enable the skill and test with a few prompts.
 
 ### Scripted evaluation (skill-creator pattern)
 
@@ -236,21 +237,21 @@ python skills/skill-creator/scripts/aggregate_benchmark.py \
   --eval skills/my-skill/evaluation.xml
 ```
 
----
+______________________________________________________________________
 
 ## Step 8 — Submit a Pull Request
 
 1. Fork the repository and create a branch: `git checkout -b add-my-skill`.
-2. Add your skill folder under `skills/`.
-3. Update `.claude-plugin/marketplace.json` if you want the skill to be installable as a plugin.
-4. Open a pull request against `main` with:
+1. Add your skill folder under `skills/`.
+1. Update `.claude-plugin/marketplace.json` if you want the skill to be installable as a plugin.
+1. Open a pull request against `main` with:
    - A description of what the skill does.
    - Example inputs and expected outputs.
    - Notes on any dependencies (system packages, Python libraries).
 
 The wiki will update automatically once your PR is merged — no wiki edits needed.
 
----
+______________________________________________________________________
 
 ## Skill Quality Checklist
 
@@ -265,7 +266,7 @@ Before submitting, verify:
 - [ ] License information is correct (`LICENSE.txt` present if proprietary).
 - [ ] `.claude-plugin/marketplace.json` updated if applicable.
 
----
+______________________________________________________________________
 
 ## Design Principles
 
@@ -281,7 +282,7 @@ The skills in this repository follow these principles:
 
 **Actionable errors** — When scripts fail, the error message should tell the user (or Claude) what to do next.
 
----
+______________________________________________________________________
 
 ## Getting Help
 
@@ -289,6 +290,6 @@ The skills in this repository follow these principles:
 - Look at an existing skill that is similar to what you want to build.
 - Open a GitHub issue if you have questions or want feedback before building.
 
----
+______________________________________________________________________
 
 *See also: [Architecture](Architecture) · [Getting Started](Getting-Started) · [Skills Overview](Skills-Overview)*

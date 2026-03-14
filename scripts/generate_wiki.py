@@ -88,17 +88,19 @@ CATEGORY_ORDER: list[str] = [
 
 # ── Data model ────────────────────────────────────────────────────────────────
 
+
 class Skill(NamedTuple):
-    folder: str       # e.g. "algorithmic-art"
-    name: str         # from frontmatter
+    folder: str  # e.g. "algorithmic-art"
+    name: str  # from frontmatter
     description: str  # from frontmatter
-    license: str      # from frontmatter
-    body: str         # full markdown body of SKILL.md
+    license: str  # from frontmatter
+    body: str  # full markdown body of SKILL.md
     files: list[str]  # relative paths of every file inside the skill folder
     category: str
 
 
 # ── SKILL.md parsing ──────────────────────────────────────────────────────────
+
 
 def _extract_yaml_field(fm_text: str, field: str) -> str:
     """Return the value of *field* from a block of YAML-like text."""
@@ -139,7 +141,7 @@ def parse_frontmatter(content: str) -> tuple[dict[str, str], str]:
         return {}, content
 
     fm_text = rest[:close_idx]
-    body = rest[close_idx + 4:].lstrip("\n")
+    body = rest[close_idx + 4 :].lstrip("\n")
 
     return {
         "name": _extract_yaml_field(fm_text, "name"),
@@ -150,13 +152,10 @@ def parse_frontmatter(content: str) -> tuple[dict[str, str], str]:
 
 # ── File discovery ────────────────────────────────────────────────────────────
 
+
 def list_skill_files(skill_dir: Path) -> list[str]:
     """Return a sorted list of all file paths relative to *skill_dir*."""
-    return sorted(
-        str(p.relative_to(skill_dir))
-        for p in skill_dir.rglob("*")
-        if p.is_file()
-    )
+    return sorted(str(p.relative_to(skill_dir)) for p in skill_dir.rglob("*") if p.is_file())
 
 
 # ── File-description heuristics ───────────────────────────────────────────────
@@ -204,6 +203,7 @@ def describe_file(rel_path: str) -> str:
 
 # ── Skill loading ─────────────────────────────────────────────────────────────
 
+
 def load_skills() -> list[Skill]:
     """Discover, parse, and return all skills found under ``SKILLS_DIR``."""
     skills: list[Skill] = []
@@ -233,6 +233,7 @@ def load_skills() -> list[Skill]:
 
 
 # ── Page generators ───────────────────────────────────────────────────────────
+
 
 def _skill_wiki_link(skill: Skill) -> str:
     """Return a GitHub-wiki markdown link to a skill's dedicated page."""
@@ -328,7 +329,7 @@ def generate_home(skills: list[Skill], timestamp: str) -> str:
         "```",
         "",
         "Once installed, simply ask Claude to use a skill by mentioning it — e.g. "
-        "*\"Use the PDF skill to extract the form fields from my-file.pdf\"*.",
+        '*"Use the PDF skill to extract the form fields from my-file.pdf"*.',
         "",
         "### Claude.ai",
         "",
@@ -515,14 +516,11 @@ def generate_sidebar(skills: list[Skill]) -> str:
 
 def generate_footer(timestamp: str) -> str:
     """Generate ``_Footer.md`` — GitHub wiki footer."""
-    return (
-        f"---\n\n"
-        f"*Wiki auto-generated from [{REPO_URL}]({REPO_URL}). "
-        f"Last updated: {timestamp}.*"
-    )
+    return f"---\n\n*Wiki auto-generated from [{REPO_URL}]({REPO_URL}). Last updated: {timestamp}.*"
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -557,7 +555,8 @@ def main() -> None:
                 print(f"  copied    : {src.name}")
 
     total_pages = len(dynamic_pages) + sum(
-        1 for f in STATIC_WIKI_DIR.iterdir()
+        1
+        for f in STATIC_WIKI_DIR.iterdir()
         if STATIC_WIKI_DIR.exists() and f.is_file() and f.suffix == ".md"
     )
     print(f"\n✅  Done — {total_pages} wiki pages written to {OUTPUT_DIR}")

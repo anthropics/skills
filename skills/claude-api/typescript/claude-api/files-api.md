@@ -12,7 +12,7 @@ The Files API uploads files for use in Messages API requests. Reference files vi
 - File operations (upload, list, delete) are free; content used in messages is billed as input tokens
 - Not available on Amazon Bedrock or Google Vertex AI
 
----
+______________________________________________________________________
 
 ## Upload a File
 
@@ -33,7 +33,7 @@ console.log(`File ID: ${uploaded.id}`);
 console.log(`Size: ${uploaded.size_bytes} bytes`);
 ```
 
----
+______________________________________________________________________
 
 ## Use a File in Messages
 
@@ -63,7 +63,7 @@ const response = await client.beta.messages.create({
 console.log(response.content[0].text);
 ```
 
----
+______________________________________________________________________
 
 ## Manage Files
 

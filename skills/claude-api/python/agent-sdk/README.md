@@ -8,7 +8,7 @@ The Claude Agent SDK provides a higher-level interface for building AI agents wi
 pip install claude-agent-sdk
 ```
 
----
+______________________________________________________________________
 
 ## Quick Start
 
@@ -27,24 +27,24 @@ async def main():
 anyio.run(main)
 ```
 
----
+______________________________________________________________________
 
 ## Built-in Tools
 
-| Tool      | Description                          |
-| --------- | ------------------------------------ |
-| Read      | Read files in the workspace          |
-| Write     | Create new files                     |
-| Edit      | Make precise edits to existing files |
-| Bash      | Execute shell commands               |
-| Glob      | Find files by pattern                |
-| Grep      | Search files by content              |
-| WebSearch | Search the web for information       |
+| Tool            | Description                          |
+| --------------- | ------------------------------------ |
+| Read            | Read files in the workspace          |
+| Write           | Create new files                     |
+| Edit            | Make precise edits to existing files |
+| Bash            | Execute shell commands               |
+| Glob            | Find files by pattern                |
+| Grep            | Search files by content              |
+| WebSearch       | Search the web for information       |
 | WebFetch        | Fetch and analyze web pages          |
-| AskUserQuestion | Ask user clarifying questions         |
+| AskUserQuestion | Ask user clarifying questions        |
 | Agent           | Spawn subagents                      |
 
----
+______________________________________________________________________
 
 ## Primary Interfaces
 
@@ -92,7 +92,7 @@ anyio.run(main)
 - **`interrupt()`** to stop agent execution mid-task
 - **Required for custom tools** (via SDK MCP servers)
 
----
+______________________________________________________________________
 
 ## Permission System
 
@@ -118,7 +118,7 @@ Permission modes:
 - `"dontAsk"`: Don't prompt (useful for CI/CD)
 - `"bypassPermissions"`: Skip all prompts (requires `allow_dangerously_skip_permissions=True` in options)
 
----
+______________________________________________________________________
 
 ## MCP (Model Context Protocol) Support
 
@@ -137,7 +137,7 @@ async for message in query(
         print(message.result)
 ```
 
----
+______________________________________________________________________
 
 ## Hooks
 
@@ -166,7 +166,7 @@ async for message in query(
 
 Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Notification`, `UserPromptSubmit`, `SessionStart`, `SessionEnd`, `Stop`, `SubagentStart`, `SubagentStop`, `PreCompact`, `PermissionRequest`, `Setup`, `TeammateIdle`, `TaskCompleted`, `ConfigChange`
 
----
+______________________________________________________________________
 
 ## Common Options
 
@@ -176,28 +176,28 @@ Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Notif
 async for message in query(prompt="...", options=ClaudeAgentOptions(...)):
 ```
 
-| Option                              | Type   | Description                                                                |
-| ----------------------------------- | ------ | -------------------------------------------------------------------------- |
-| `cwd`                               | string | Working directory for file operations                                      |
-| `allowed_tools`                     | list   | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                |
-| `tools`                             | list   | Built-in tools to make available (restricts the default set)               |
-| `disallowed_tools`                  | list   | Tools to explicitly disallow                                               |
-| `permission_mode`                   | string | How to handle permission prompts                                           |
-| `allow_dangerously_skip_permissions`| bool   | Must be `True` to use `permission_mode="bypassPermissions"`                |
-| `mcp_servers`                       | dict   | MCP servers to connect to                                                  |
-| `hooks`                             | dict   | Hooks for customizing behavior                                             |
-| `system_prompt`                     | string | Custom system prompt                                                       |
-| `max_turns`                         | int    | Maximum agent turns before stopping                                        |
-| `max_budget_usd`                    | float  | Maximum budget in USD for the query                                        |
-| `model`                             | string | Model ID (default: determined by CLI)                                      |
-| `agents`                            | dict   | Subagent definitions (`dict[str, AgentDefinition]`)                        |
-| `output_format`                     | dict   | Structured output schema                                                   |
-| `thinking`                          | dict   | Thinking/reasoning control                                                 |
-| `betas`                             | list   | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)               |
-| `setting_sources`                   | list   | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
-| `env`                               | dict   | Environment variables to set for the session                               |
+| Option                               | Type   | Description                                                                |
+| ------------------------------------ | ------ | -------------------------------------------------------------------------- |
+| `cwd`                                | string | Working directory for file operations                                      |
+| `allowed_tools`                      | list   | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                 |
+| `tools`                              | list   | Built-in tools to make available (restricts the default set)               |
+| `disallowed_tools`                   | list   | Tools to explicitly disallow                                               |
+| `permission_mode`                    | string | How to handle permission prompts                                           |
+| `allow_dangerously_skip_permissions` | bool   | Must be `True` to use `permission_mode="bypassPermissions"`                |
+| `mcp_servers`                        | dict   | MCP servers to connect to                                                  |
+| `hooks`                              | dict   | Hooks for customizing behavior                                             |
+| `system_prompt`                      | string | Custom system prompt                                                       |
+| `max_turns`                          | int    | Maximum agent turns before stopping                                        |
+| `max_budget_usd`                     | float  | Maximum budget in USD for the query                                        |
+| `model`                              | string | Model ID (default: determined by CLI)                                      |
+| `agents`                             | dict   | Subagent definitions (`dict[str, AgentDefinition]`)                        |
+| `output_format`                      | dict   | Structured output schema                                                   |
+| `thinking`                           | dict   | Thinking/reasoning control                                                 |
+| `betas`                              | list   | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)                |
+| `setting_sources`                    | list   | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
+| `env`                                | dict   | Environment variables to set for the session                               |
 
----
+______________________________________________________________________
 
 ## Message Types
 
@@ -214,7 +214,7 @@ async for message in query(
         session_id = message.session_id  # Capture for resuming later
 ```
 
----
+______________________________________________________________________
 
 ## Subagents
 
@@ -238,7 +238,7 @@ async for message in query(
         print(message.result)
 ```
 
----
+______________________________________________________________________
 
 ## Error Handling
 
@@ -258,12 +258,12 @@ except CLIConnectionError as e:
     print(f"Connection error: {e}")
 ```
 
----
+______________________________________________________________________
 
 ## Best Practices
 
 1. **Always specify allowed_tools** — Explicitly list which tools the agent can use
-2. **Set working directory** — Always specify `cwd` for file operations
-3. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
-4. **Handle all message types** — Check for `ResultMessage` to get agent output
-5. **Limit max_turns** — Prevent runaway agents with reasonable limits
+1. **Set working directory** — Always specify `cwd` for file operations
+1. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
+1. **Handle all message types** — Check for `ResultMessage` to get agent output
+1. **Limit max_turns** — Prevent runaway agents with reasonable limits

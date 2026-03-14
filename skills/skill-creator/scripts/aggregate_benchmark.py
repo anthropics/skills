@@ -60,7 +60,7 @@ def calculate_stats(values: list[float]) -> dict:
         "mean": round(mean, 4),
         "stddev": round(stddev, 4),
         "min": round(min(values), 4),
-        "max": round(max(values), 4)
+        "max": round(max(values), 4),
     }
 
 
@@ -157,7 +157,9 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 raw_expectations = grading.get("expectations", [])
                 for exp in raw_expectations:
                     if "text" not in exp or "passed" not in exp:
-                        print(f"Warning: expectation in {grading_file} missing required fields (text, passed, evidence): {exp}")
+                        print(
+                            f"Warning: expectation in {grading_file} missing required fields (text, passed, evidence): {exp}"
+                        )
                 result["expectations"] = raw_expectations
 
                 # Extract notes from user_notes_summary
@@ -189,7 +191,7 @@ def aggregate_results(results: dict) -> dict:
             run_summary[config] = {
                 "pass_rate": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0},
                 "time_seconds": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0},
-                "tokens": {"mean": 0, "stddev": 0, "min": 0, "max": 0}
+                "tokens": {"mean": 0, "stddev": 0, "min": 0, "max": 0},
             }
             continue
 
@@ -200,7 +202,7 @@ def aggregate_results(results: dict) -> dict:
         run_summary[config] = {
             "pass_rate": calculate_stats(pass_rates),
             "time_seconds": calculate_stats(times),
-            "tokens": calculate_stats(tokens)
+            "tokens": calculate_stats(tokens),
         }
 
     # Calculate delta between the first two configs (if two exist)
@@ -211,14 +213,20 @@ def aggregate_results(results: dict) -> dict:
         primary = run_summary.get(configs[0], {}) if configs else {}
         baseline = {}
 
-    delta_pass_rate = primary.get("pass_rate", {}).get("mean", 0) - baseline.get("pass_rate", {}).get("mean", 0)
-    delta_time = primary.get("time_seconds", {}).get("mean", 0) - baseline.get("time_seconds", {}).get("mean", 0)
-    delta_tokens = primary.get("tokens", {}).get("mean", 0) - baseline.get("tokens", {}).get("mean", 0)
+    delta_pass_rate = primary.get("pass_rate", {}).get("mean", 0) - baseline.get(
+        "pass_rate", {}
+    ).get("mean", 0)
+    delta_time = primary.get("time_seconds", {}).get("mean", 0) - baseline.get(
+        "time_seconds", {}
+    ).get("mean", 0)
+    delta_tokens = primary.get("tokens", {}).get("mean", 0) - baseline.get("tokens", {}).get(
+        "mean", 0
+    )
 
     run_summary["delta"] = {
         "pass_rate": f"{delta_pass_rate:+.2f}",
         "time_seconds": f"{delta_time:+.1f}",
-        "tokens": f"{delta_tokens:+.0f}"
+        "tokens": f"{delta_tokens:+.0f}",
     }
 
     return run_summary
@@ -235,30 +243,28 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
     runs = []
     for config in results:
         for result in results[config]:
-            runs.append({
-                "eval_id": result["eval_id"],
-                "configuration": config,
-                "run_number": result["run_number"],
-                "result": {
-                    "pass_rate": result["pass_rate"],
-                    "passed": result["passed"],
-                    "failed": result["failed"],
-                    "total": result["total"],
-                    "time_seconds": result["time_seconds"],
-                    "tokens": result.get("tokens", 0),
-                    "tool_calls": result.get("tool_calls", 0),
-                    "errors": result.get("errors", 0)
-                },
-                "expectations": result["expectations"],
-                "notes": result["notes"]
-            })
+            runs.append(
+                {
+                    "eval_id": result["eval_id"],
+                    "configuration": config,
+                    "run_number": result["run_number"],
+                    "result": {
+                        "pass_rate": result["pass_rate"],
+                        "passed": result["passed"],
+                        "failed": result["failed"],
+                        "total": result["total"],
+                        "time_seconds": result["time_seconds"],
+                        "tokens": result.get("tokens", 0),
+                        "tool_calls": result.get("tool_calls", 0),
+                        "errors": result.get("errors", 0),
+                    },
+                    "expectations": result["expectations"],
+                    "notes": result["notes"],
+                }
+            )
 
     # Determine eval IDs from results
-    eval_ids = sorted(set(
-        r["eval_id"]
-        for config in results.values()
-        for r in config
-    ))
+    eval_ids = sorted(set(r["eval_id"] for config in results.values() for r in config))
 
     benchmark = {
         "metadata": {
@@ -268,11 +274,11 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             "analyzer_model": "<model-name>",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": eval_ids,
-            "runs_per_configuration": 3
+            "runs_per_configuration": 3,
         },
         "runs": runs,
         "run_summary": run_summary,
-        "notes": []  # To be filled by analyzer
+        "notes": [],  # To be filled by analyzer
     }
 
     return benchmark
@@ -310,25 +316,27 @@ def generate_markdown(benchmark: dict) -> str:
     # Format pass rate
     a_pr = a_summary.get("pass_rate", {})
     b_pr = b_summary.get("pass_rate", {})
-    lines.append(f"| Pass Rate | {a_pr.get('mean', 0)*100:.0f}% ± {a_pr.get('stddev', 0)*100:.0f}% | {b_pr.get('mean', 0)*100:.0f}% ± {b_pr.get('stddev', 0)*100:.0f}% | {delta.get('pass_rate', '—')} |")
+    lines.append(
+        f"| Pass Rate | {a_pr.get('mean', 0) * 100:.0f}% ± {a_pr.get('stddev', 0) * 100:.0f}% | {b_pr.get('mean', 0) * 100:.0f}% ± {b_pr.get('stddev', 0) * 100:.0f}% | {delta.get('pass_rate', '—')} |"
+    )
 
     # Format time
     a_time = a_summary.get("time_seconds", {})
     b_time = b_summary.get("time_seconds", {})
-    lines.append(f"| Time | {a_time.get('mean', 0):.1f}s ± {a_time.get('stddev', 0):.1f}s | {b_time.get('mean', 0):.1f}s ± {b_time.get('stddev', 0):.1f}s | {delta.get('time_seconds', '—')}s |")
+    lines.append(
+        f"| Time | {a_time.get('mean', 0):.1f}s ± {a_time.get('stddev', 0):.1f}s | {b_time.get('mean', 0):.1f}s ± {b_time.get('stddev', 0):.1f}s | {delta.get('time_seconds', '—')}s |"
+    )
 
     # Format tokens
     a_tokens = a_summary.get("tokens", {})
     b_tokens = b_summary.get("tokens", {})
-    lines.append(f"| Tokens | {a_tokens.get('mean', 0):.0f} ± {a_tokens.get('stddev', 0):.0f} | {b_tokens.get('mean', 0):.0f} ± {b_tokens.get('stddev', 0):.0f} | {delta.get('tokens', '—')} |")
+    lines.append(
+        f"| Tokens | {a_tokens.get('mean', 0):.0f} ± {a_tokens.get('stddev', 0):.0f} | {b_tokens.get('mean', 0):.0f} ± {b_tokens.get('stddev', 0):.0f} | {delta.get('tokens', '—')} |"
+    )
 
     # Notes section
     if benchmark.get("notes"):
-        lines.extend([
-            "",
-            "## Notes",
-            ""
-        ])
+        lines.extend(["", "## Notes", ""])
         for note in benchmark["notes"]:
             lines.append(f"- {note}")
 
@@ -339,25 +347,14 @@ def main():
     parser = argparse.ArgumentParser(
         description="Aggregate benchmark run results into summary statistics"
     )
+    parser.add_argument("benchmark_dir", type=Path, help="Path to the benchmark directory")
+    parser.add_argument("--skill-name", default="", help="Name of the skill being benchmarked")
+    parser.add_argument("--skill-path", default="", help="Path to the skill being benchmarked")
     parser.add_argument(
-        "benchmark_dir",
+        "--output",
+        "-o",
         type=Path,
-        help="Path to the benchmark directory"
-    )
-    parser.add_argument(
-        "--skill-name",
-        default="",
-        help="Name of the skill being benchmarked"
-    )
-    parser.add_argument(
-        "--skill-path",
-        default="",
-        help="Path to the skill being benchmarked"
-    )
-    parser.add_argument(
-        "--output", "-o",
-        type=Path,
-        help="Output path for benchmark.json (default: <benchmark_dir>/benchmark.json)"
+        help="Output path for benchmark.json (default: <benchmark_dir>/benchmark.json)",
     )
 
     args = parser.parse_args()
@@ -389,11 +386,11 @@ def main():
     configs = [k for k in run_summary if k != "delta"]
     delta = run_summary.get("delta", {})
 
-    print(f"\nSummary:")
+    print("\nSummary:")
     for config in configs:
         pr = run_summary[config]["pass_rate"]["mean"]
         label = config.replace("_", " ").title()
-        print(f"  {label}: {pr*100:.1f}% pass rate")
+        print(f"  {label}: {pr * 100:.1f}% pass rate")
     print(f"  Delta:         {delta.get('pass_rate', '—')}")
 
 

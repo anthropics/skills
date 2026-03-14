@@ -10,7 +10,7 @@ The Batches API (`POST /v1/messages/batches`) processes Messages API requests as
 - 50% cost reduction on all token usage
 - All Messages API features supported (vision, tools, caching, etc.)
 
----
+______________________________________________________________________
 
 ## Create a Batch
 
@@ -46,7 +46,7 @@ print(f"Batch ID: {message_batch.id}")
 print(f"Status: {message_batch.processing_status}")
 ```
 
----
+______________________________________________________________________
 
 ## Poll for Completion
 
@@ -65,7 +65,7 @@ print(f"Succeeded: {batch.request_counts.succeeded}")
 print(f"Errored: {batch.request_counts.errored}")
 ```
 
----
+______________________________________________________________________
 
 ## Retrieve Results
 
@@ -87,7 +87,7 @@ for result in client.messages.batches.results(message_batch.id):
             print(f"[{result.custom_id}] Expired - resubmit")
 ```
 
----
+______________________________________________________________________
 
 ## Cancel a Batch
 
@@ -96,7 +96,7 @@ cancelled = client.messages.batches.cancel(message_batch.id)
 print(f"Status: {cancelled.processing_status}")  # "canceling"
 ```
 
----
+______________________________________________________________________
 
 ## Batch with Prompt Caching
 
@@ -126,7 +126,7 @@ message_batch = client.messages.batches.create(
 )
 ```
 
----
+______________________________________________________________________
 
 ## Full End-to-End Example
 

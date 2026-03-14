@@ -1,31 +1,33 @@
----
-name: algorithmic-art
-description: Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.
-license: Complete terms in LICENSE.txt
----
+______________________________________________________________________
+
+## name: algorithmic-art description: Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations. license: Complete terms in LICENSE.txt
 
 Algorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).
 
 This happens in two steps:
+
 1. Algorithmic Philosophy Creation (.md file)
-2. Express by creating p5.js generative art (.html + .js files)
+1. Express by creating p5.js generative art (.html + .js files)
 
 First, undertake this task:
 
 ## ALGORITHMIC PHILOSOPHY CREATION
 
 To begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that will be interpreted through:
+
 - Computational processes, emergent behavior, mathematical beauty
 - Seeded randomness, noise fields, organic systems
 - Particles, flows, fields, forces
 - Parametric variation and controlled chaos
 
 ### THE CRITICAL UNDERSTANDING
+
 - What is received: Some subtle input or instructions by the user to take into account, but use as a foundation; it should not constrain creative freedom.
 - What is created: An algorithmic philosophy/generative aesthetic movement.
 - What happens next: The same version receives the philosophy and EXPRESSES IT IN CODE - creating p5.js sketches that are 90% algorithmic generation, 10% essential parameters.
 
 Consider this approach:
+
 - Write a manifesto for a generative art movement
 - The next phase involves writing the algorithm that brings it to life
 
@@ -38,6 +40,7 @@ The philosophy must emphasize: Algorithmic expression. Emergent behavior. Comput
 **Articulate the philosophy** (4-6 paragraphs - concise but complete):
 
 To capture the ALGORITHMIC essence, express how this philosophy manifests through:
+
 - Computational processes and mathematical relationships?
 - Noise functions and randomness patterns?
 - Particle behaviors and field dynamics?
@@ -45,6 +48,7 @@ To capture the ALGORITHMIC essence, express how this philosophy manifests throug
 - Parametric variation and emergent complexity?
 
 **CRITICAL GUIDELINES:**
+
 - **Avoid redundancy**: Each algorithmic aspect should be mentioned once. Avoid repeating concepts about noise theory, particle dynamics, or mathematical principles unless adding new depth.
 - **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final algorithm should appear as though it took countless hours to develop, was refined with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like "meticulously crafted algorithm," "the product of deep computational expertise," "painstaking optimization," "master-level implementation."
 - **Leave creative space**: Be specific about the algorithmic direction, but concise enough that the next Claude has room to make interpretive implementation choices at an extremely high level of craftsmanship.
@@ -76,6 +80,7 @@ Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start
 *These are condensed examples. The actual algorithmic philosophy should be 4-6 substantial paragraphs.*
 
 ### ESSENTIAL PRINCIPLES
+
 - **ALGORITHMIC PHILOSOPHY**: Creating a computational worldview to be expressed through code
 - **PROCESS OVER PRODUCT**: Always emphasize that beauty emerges from the algorithm's execution - each run is unique
 - **PARAMETRIC EXPRESSION**: Ideas communicate through mathematical relationships, forces, behaviors - not static composition
@@ -85,7 +90,7 @@ Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start
 
 **The algorithmic philosophy should be 4-6 paragraphs long.** Fill it with poetic computational philosophy that brings together the intended vision. Avoid repeating the same points. Output this algorithmic philosophy as a .md file.
 
----
+______________________________________________________________________
 
 ## DEDUCING THE CONCEPTUAL SEED
 
@@ -96,7 +101,7 @@ The concept is a **subtle, niche reference embedded within the algorithm itself*
 
 This is **VERY IMPORTANT**: The reference must be so refined that it enhances the work's depth without announcing itself. Think like a jazz musician quoting another song through algorithmic harmony - only those who know will catch it, but everyone appreciates the generative beauty.
 
----
+______________________________________________________________________
 
 ## P5.JS IMPLEMENTATION
 
@@ -107,18 +112,20 @@ With the philosophy AND conceptual framework established, express it through cod
 **CRITICAL: BEFORE writing any HTML:**
 
 1. **Read** `templates/viewer.html` using the Read tool
-2. **Study** the exact structure, styling, and Anthropic branding
-3. **Use that file as the LITERAL STARTING POINT** - not just inspiration
-4. **Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)
-5. **Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)
+1. **Study** the exact structure, styling, and Anthropic branding
+1. **Use that file as the LITERAL STARTING POINT** - not just inspiration
+1. **Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)
+1. **Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)
 
 **Avoid:**
+
 - ❌ Creating HTML from scratch
 - ❌ Inventing custom styling or color schemes
 - ❌ Using system fonts or dark themes
 - ❌ Changing the sidebar structure
 
 **Follow these practices:**
+
 - ✅ Copy the template's exact HTML structure
 - ✅ Keep Anthropic branding (Poppins/Lora fonts, light colors, gradient backdrop)
 - ✅ Maintain the sidebar layout (Seed → Parameters → Colors? → Actions)
@@ -126,13 +133,14 @@ With the philosophy AND conceptual framework established, express it through cod
 
 The template is the foundation. Build on it, don't rebuild it.
 
----
+______________________________________________________________________
 
 To create gallery-quality computational art that lives and breathes, use the algorithmic philosophy as the foundation.
 
 ### TECHNICAL REQUIREMENTS
 
 **Seeded Randomness (Art Blocks Pattern)**:
+
 ```javascript
 // ALWAYS use a seed for reproducibility
 let seed = 12345; // or hash from user input
@@ -167,16 +175,19 @@ let params = {
 To express the philosophy through code, avoid thinking "which pattern should I use?" and instead think "how to express this philosophy through code?"
 
 If the philosophy is about **organic emergence**, consider using:
+
 - Elements that accumulate or grow over time
 - Random processes constrained by natural rules
 - Feedback loops and interactions
 
 If the philosophy is about **mathematical beauty**, consider using:
+
 - Geometric relationships and ratios
 - Trigonometric functions and harmonics
 - Precise calculations creating unexpected patterns
 
 If the philosophy is about **controlled chaos**, consider using:
+
 - Random variation within strict boundaries
 - Bifurcation and phase transitions
 - Order emerging from disorder
@@ -186,6 +197,7 @@ If the philosophy is about **controlled chaos**, consider using:
 To guide the implementation, let the conceptual essence inform creative and original choices. Build something that expresses the vision for this particular request.
 
 **Canvas Setup**: Standard p5.js structure:
+
 ```javascript
 function setup() {
   createCanvas(1200, 1200);
@@ -211,12 +223,13 @@ function draw() {
 ### OUTPUT FORMAT
 
 Output:
+
 1. **Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic
-2. **Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)
+1. **Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)
 
 The HTML artifact contains everything: p5.js (from CDN), the algorithm, parameter controls, and UI - all in one file that works immediately in claude.ai artifacts or any browser. Start from the template file, not from scratch.
 
----
+______________________________________________________________________
 
 ## INTERACTIVE ARTIFACT CREATION
 
@@ -229,6 +242,7 @@ To allow exploration of the generative art, create a single, self-contained HTML
 The `templates/viewer.html` file is the foundation. It contains the exact structure and styling needed.
 
 **FIXED (always include exactly as shown):**
+
 - Layout structure (header, sidebar, main canvas area)
 - Anthropic branding (UI colors, fonts, gradients)
 - Seed section in sidebar:
@@ -241,6 +255,7 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
   - Reset button
 
 **VARIABLE (customize for each artwork):**
+
 - The entire p5.js algorithm (setup/draw/classes)
 - The parameters object (define what the art needs)
 - The Parameters section in sidebar:
@@ -259,12 +274,14 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
 ### REQUIRED FEATURES
 
 **1. Parameter Controls**
+
 - Sliders for numeric parameters (particle count, noise scale, speed, etc.)
 - Color pickers for palette colors
 - Real-time updates when parameters change
 - Reset button to restore defaults
 
 **2. Seed Navigation**
+
 - Display current seed number
 - "Previous" and "Next" buttons to cycle through seeds
 - "Random" button for random seed
@@ -272,6 +289,7 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
 - Generate 100 variations when requested (seeds 1-100)
 
 **3. Single Artifact Structure**
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -306,10 +324,12 @@ The `templates/viewer.html` file is the foundation. It contains the exact struct
 The sidebar structure:
 
 **1. Seed (FIXED)** - Always include exactly as shown:
+
 - Seed display
 - Prev/Next/Random/Jump buttons
 
 **2. Parameters (VARIABLE)** - Create controls for the art:
+
 ```html
 <div class="control-group">
     <label>Parameter Name</label>
@@ -317,19 +337,23 @@ The sidebar structure:
     <span class="value-display" id="param-value">...</span>
 </div>
 ```
+
 Add as many control-group divs as there are parameters.
 
 **3. Colors (OPTIONAL/VARIABLE)** - Include if the art needs adjustable colors:
+
 - Add color pickers if users should control palette
 - Skip this section if the art uses fixed colors
 - Skip if the art is monochrome
 
 **4. Actions (FIXED)** - Always include exactly as shown:
+
 - Regenerate button
 - Reset button
 - Download PNG button
 
 **Requirements**:
+
 - Seed controls must work (prev/next/random/jump/display)
 - All parameters must have UI controls
 - Regenerate, Reset, Download buttons must work
@@ -338,11 +362,12 @@ Add as many control-group divs as there are parameters.
 ### USING THE ARTIFACT
 
 The HTML artifact works immediately:
-1. **In claude.ai**: Displayed as an interactive artifact - runs instantly
-2. **As a file**: Save and open in any browser - no server needed
-3. **Sharing**: Send the HTML file - it's completely self-contained
 
----
+1. **In claude.ai**: Displayed as an interactive artifact - runs instantly
+1. **As a file**: Save and open in any browser - no server needed
+1. **Sharing**: Send the HTML file - it's completely self-contained
+
+______________________________________________________________________
 
 ## VARIATIONS & EXPLORATION
 
@@ -354,7 +379,7 @@ The artifact includes seed navigation by default (prev/next/random buttons), all
 
 This is like creating a series of prints from the same plate - the algorithm is consistent, but each seed reveals different facets of its potential. The interactive nature means users discover their own favorites by exploring the seed space.
 
----
+______________________________________________________________________
 
 ## THE CREATIVE PROCESS
 
@@ -363,17 +388,19 @@ This is like creating a series of prints from the same plate - the algorithm is 
 Each request is unique. The process involves:
 
 1. **Interpret the user's intent** - What aesthetic is being sought?
-2. **Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach
-3. **Implement it in code** - Build the algorithm that expresses this philosophy
-4. **Design appropriate parameters** - What should be tunable?
-5. **Build matching UI controls** - Sliders/inputs for those parameters
+1. **Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach
+1. **Implement it in code** - Build the algorithm that expresses this philosophy
+1. **Design appropriate parameters** - What should be tunable?
+1. **Build matching UI controls** - Sliders/inputs for those parameters
 
 **The constants**:
+
 - Anthropic branding (colors, fonts, layout)
 - Seed navigation (always present)
 - Self-contained HTML artifact
 
 **Everything else is variable**:
+
 - The algorithm itself
 - The parameters
 - The UI controls
@@ -381,24 +408,27 @@ Each request is unique. The process involves:
 
 To achieve the best results, trust creativity and let the philosophy guide the implementation.
 
----
+______________________________________________________________________
 
 ## RESOURCES
 
 This skill includes helpful templates and documentation:
 
 - **templates/viewer.html**: REQUIRED STARTING POINT for all HTML artifacts.
+
   - This is the foundation - contains the exact structure and Anthropic branding
   - **Keep unchanged**: Layout structure, sidebar organization, Anthropic colors/fonts, seed controls, action buttons
   - **Replace**: The p5.js algorithm, parameter definitions, and UI controls in Parameters section
   - The extensive comments in the file mark exactly what to keep vs replace
 
 - **templates/generator_template.js**: Reference for p5.js best practices and code structure principles.
+
   - Shows how to organize parameters, use seeded randomness, structure classes
   - NOT a pattern menu - use these principles to build unique algorithms
   - Embed algorithms inline in the HTML artifact (don't create separate .js files)
 
 **Critical reminder**:
+
 - The **template is the STARTING POINT**, not inspiration
 - The **algorithm is where to create** something unique
 - Don't copy the flow field example - build what the philosophy demands

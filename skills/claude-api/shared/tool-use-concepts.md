@@ -40,7 +40,7 @@ Each tool requires a name, description, and JSON Schema for its inputs:
 - Use `enum` for parameters with a fixed set of values
 - Mark truly required parameters in `required`; make others optional with defaults
 
----
+______________________________________________________________________
 
 ### Tool Choice Options
 
@@ -55,7 +55,7 @@ Control when Claude uses tools:
 
 Any `tool_choice` value can also include `"disable_parallel_tool_use": true` to force Claude to use at most one tool per response. By default, Claude may request multiple tool calls in a single response.
 
----
+______________________________________________________________________
 
 ### Tool Runner vs Manual Loop
 
@@ -82,21 +82,21 @@ Set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the ful
 
 > **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs within your tool functions and consider requiring confirmation for destructive operations. Use the manual agentic loop if you need human-in-the-loop approval before each tool execution.
 
----
+______________________________________________________________________
 
 ### Handling Tool Results
 
 When Claude uses a tool, the response contains a `tool_use` block. You must:
 
 1. Execute the tool with the provided input
-2. Send the result back in a `tool_result` message
-3. Continue the conversation
+1. Send the result back in a `tool_result` message
+1. Continue the conversation
 
 **Error handling in tool results:** When a tool execution fails, set `"is_error": true` and provide an informative error message. Claude will typically acknowledge the error and either try a different approach or ask for clarification.
 
 **Multiple tool calls:** Claude can request multiple tools in a single response. Handle them all before continuing — send all results back in a single `user` message.
 
----
+______________________________________________________________________
 
 ## Server-Side Tools: Code Execution
 
@@ -156,7 +156,7 @@ The response contains interleaved text and tool result blocks:
 
 > **Security:** Always sanitize filenames with `os.path.basename()` / `path.basename()` before writing downloaded files to disk to prevent path traversal attacks. Write files to a dedicated output directory.
 
----
+______________________________________________________________________
 
 ## Server-Side Tools: Web Search and Web Fetch
 
@@ -188,7 +188,7 @@ Without dynamic filtering, the previous `web_search_20250305` version is also av
 
 > **Note:** Only include the standalone `code_execution` tool when your application needs code execution for its own purposes (data analysis, file processing, visualization) independent of web search. Including it alongside `_20260209` web tools creates a second execution environment that can confuse the model.
 
----
+______________________________________________________________________
 
 ## Server-Side Tools: Programmatic Tool Calling
 
@@ -198,7 +198,7 @@ For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling`
 
----
+______________________________________________________________________
 
 ## Server-Side Tools: Tool Search
 
@@ -208,7 +208,7 @@ For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool`
 
----
+______________________________________________________________________
 
 ## Tool Use Examples
 
@@ -218,7 +218,7 @@ For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/implement-tool-use`
 
----
+______________________________________________________________________
 
 ## Server-Side Tools: Computer Use
 
@@ -228,7 +228,7 @@ For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview`
 
----
+______________________________________________________________________
 
 ## Client-Side Tools: Memory
 
@@ -247,7 +247,7 @@ For full implementation examples, use WebFetch:
 
 - Docs: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md`
 
----
+______________________________________________________________________
 
 ## Structured Outputs
 
@@ -289,16 +289,16 @@ The Python and TypeScript SDKs automatically handle unsupported constraints by r
 - **Incompatible with**: Citations (returns 400 error), message prefilling.
 - **Works with**: Batches API, streaming, token counting, extended thinking.
 
----
+______________________________________________________________________
 
 ## Tips for Effective Tool Use
 
 1. **Provide detailed descriptions**: Claude relies heavily on descriptions to understand when and how to use tools
-2. **Use specific tool names**: `get_current_weather` is better than `weather`
-3. **Validate inputs**: Always validate tool inputs before execution
-4. **Handle errors gracefully**: Return informative error messages so Claude can adapt
-5. **Limit tool count**: Too many tools can confuse the model — keep the set focused
-6. **Test tool interactions**: Verify Claude uses tools correctly in various scenarios
+1. **Use specific tool names**: `get_current_weather` is better than `weather`
+1. **Validate inputs**: Always validate tool inputs before execution
+1. **Handle errors gracefully**: Return informative error messages so Claude can adapt
+1. **Limit tool count**: Too many tools can confuse the model — keep the set focused
+1. **Test tool interactions**: Verify Claude uses tools correctly in various scenarios
 
 For detailed tool use documentation, use WebFetch:
 

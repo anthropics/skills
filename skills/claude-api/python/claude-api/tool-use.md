@@ -47,7 +47,7 @@ For async usage, use `@beta_async_tool` with `async def` functions.
 - Tool schemas are generated automatically from function signatures
 - Iteration stops automatically when Claude has no more tool calls
 
----
+______________________________________________________________________
 
 ## MCP Tool Conversion Helpers
 
@@ -125,7 +125,7 @@ uploaded = await client.beta.files.upload(file=mcp_resource_to_file(resource))
 
 Conversion functions raise `UnsupportedMCPValueError` if an MCP value cannot be converted (e.g., unsupported content types like audio, unsupported MIME types).
 
----
+______________________________________________________________________
 
 ## Manual Agentic Loop
 
@@ -182,7 +182,7 @@ while True:
 final_text = next(b.text for b in response.content if b.type == "text")
 ```
 
----
+______________________________________________________________________
 
 ## Handling Tool Results
 
@@ -221,7 +221,7 @@ for block in response.content:
         )
 ```
 
----
+______________________________________________________________________
 
 ## Multiple Tool Calls
 
@@ -251,7 +251,7 @@ if tool_results:
     )
 ```
 
----
+______________________________________________________________________
 
 ## Error Handling in Tool Results
 
@@ -264,7 +264,7 @@ tool_result = {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Tool Choice
 
@@ -278,7 +278,7 @@ response = client.messages.create(
 )
 ```
 
----
+______________________________________________________________________
 
 ## Code Execution
 
@@ -403,7 +403,7 @@ for block in response.content:
         print(f"File operation: {block.content}")
 ```
 
----
+______________________________________________________________________
 
 ## Memory Tool
 
@@ -455,7 +455,7 @@ For full implementation examples, use WebFetch:
 
 - `https://github.com/anthropics/anthropic-sdk-python/blob/main/examples/memory/basic.py`
 
----
+______________________________________________________________________
 
 ## Structured Outputs
 

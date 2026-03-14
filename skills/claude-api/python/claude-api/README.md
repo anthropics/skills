@@ -21,7 +21,7 @@ client = anthropic.Anthropic(api_key="your-api-key")
 async_client = anthropic.AsyncAnthropic()
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -36,7 +36,7 @@ response = client.messages.create(
 print(response.content[0].text)
 ```
 
----
+______________________________________________________________________
 
 ## System Prompts
 
@@ -49,7 +49,7 @@ response = client.messages.create(
 )
 ```
 
----
+______________________________________________________________________
 
 ## Vision (Images)
 
@@ -103,7 +103,7 @@ response = client.messages.create(
 )
 ```
 
----
+______________________________________________________________________
 
 ## Prompt Caching
 
@@ -152,7 +152,7 @@ response = client.messages.create(
 )
 ```
 
----
+______________________________________________________________________
 
 ## Extended Thinking
 
@@ -177,7 +177,7 @@ for block in response.content:
         print(f"Response: {block.text}")
 ```
 
----
+______________________________________________________________________
 
 ## Error Handling
 
@@ -206,7 +206,7 @@ except anthropic.APIConnectionError:
     print("Network error. Check internet connection.")
 ```
 
----
+______________________________________________________________________
 
 ## Multi-Turn Conversations
 
@@ -255,7 +255,7 @@ response2 = conversation.send("What's my name?")  # Claude remembers "Alice"
 - Messages must alternate between `user` and `assistant`
 - First message must be `user`
 
----
+______________________________________________________________________
 
 ### Compaction (long conversations)
 
@@ -291,22 +291,22 @@ print(chat("Add support for JavaScript-rendered pages"))
 print(chat("Now add rate limiting and error handling"))
 ```
 
----
+______________________________________________________________________
 
 ## Stop Reasons
 
 The `stop_reason` field in the response indicates why the model stopped generating:
 
-| Value | Meaning |
-|-------|---------|
-| `end_turn` | Claude finished its response naturally |
-| `max_tokens` | Hit the `max_tokens` limit — increase it or use streaming |
-| `stop_sequence` | Hit a custom stop sequence |
-| `tool_use` | Claude wants to call a tool — execute it and continue |
-| `pause_turn` | Model paused and can be resumed (agentic flows) |
-| `refusal` | Claude refused for safety reasons — output may not match your schema |
+| Value           | Meaning                                                              |
+| --------------- | -------------------------------------------------------------------- |
+| `end_turn`      | Claude finished its response naturally                               |
+| `max_tokens`    | Hit the `max_tokens` limit — increase it or use streaming            |
+| `stop_sequence` | Hit a custom stop sequence                                           |
+| `tool_use`      | Claude wants to call a tool — execute it and continue                |
+| `pause_turn`    | Model paused and can be resumed (agentic flows)                      |
+| `refusal`       | Claude refused for safety reasons — output may not match your schema |
 
----
+______________________________________________________________________
 
 ## Cost Optimization Strategies
 
@@ -364,7 +364,7 @@ estimated_input_cost = count_response.input_tokens * 0.000005  # $5/1M tokens
 print(f"Estimated input cost: ${estimated_input_cost:.4f}")
 ```
 
----
+______________________________________________________________________
 
 ## Retry with Exponential Backoff
 

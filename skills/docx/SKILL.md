@@ -1,8 +1,6 @@
----
-name: docx
-description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."
-license: Proprietary. LICENSE.txt has complete terms
----
+______________________________________________________________________
+
+## name: docx description: "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation." license: Proprietary. LICENSE.txt has complete terms
 
 # DOCX creation, editing, and analysis
 
@@ -12,10 +10,10 @@ A .docx file is a ZIP archive containing XML files.
 
 ## Quick Reference
 
-| Task | Approach |
-|------|----------|
-| Read/analyze content | `pandoc` or unpack for raw XML |
-| Create new document | Use `docx-js` - see Creating New Documents below |
+| Task                   | Approach                                                          |
+| ---------------------- | ----------------------------------------------------------------- |
+| Read/analyze content   | `pandoc` or unpack for raw XML                                    |
+| Create new document    | Use `docx-js` - see Creating New Documents below                  |
 | Edit existing document | Unpack → edit XML → repack - see Editing Existing Documents below |
 
 ### Converting .doc to .docx
@@ -51,13 +49,14 @@ To produce a clean document with all tracked changes accepted (requires LibreOff
 python scripts/accept_changes.py input.docx output.docx
 ```
 
----
+______________________________________________________________________
 
 ## Creating New Documents
 
 Generate .docx files with JavaScript, then validate. Install: `npm install -g docx`
 
 ### Setup
+
 ```javascript
 const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun,
         Header, Footer, AlignmentType, PageOrientation, LevelFormat, ExternalHyperlink,
@@ -72,7 +71,9 @@ Packer.toBuffer(doc).then(buffer => fs.writeFileSync("doc.docx", buffer));
 ```
 
 ### Validation
+
 After creating the file, validate it. If validation fails, unpack, fix the XML, and repack.
+
 ```bash
 python scripts/office/validate.py doc.docx
 ```
@@ -98,12 +99,13 @@ sections: [{
 
 **Common page sizes (DXA units, 1440 DXA = 1 inch):**
 
-| Paper | Width | Height | Content Width (1" margins) |
-|-------|-------|--------|---------------------------|
-| US Letter | 12,240 | 15,840 | 9,360 |
-| A4 (default) | 11,906 | 16,838 | 9,026 |
+| Paper        | Width  | Height | Content Width (1" margins) |
+| ------------ | ------ | ------ | -------------------------- |
+| US Letter    | 12,240 | 15,840 | 9,360                      |
+| A4 (default) | 11,906 | 16,838 | 9,026                      |
 
 **Landscape orientation:** docx-js swaps width/height internally, so pass portrait dimensions and let it handle the swap:
+
 ```javascript
 size: {
   width: 12240,   // Pass SHORT edge as width
@@ -214,6 +216,7 @@ columnWidths: [7000, 2360]  // Must sum to table width
 ```
 
 **Width rules:**
+
 - **Always use `WidthType.DXA`** — never `WidthType.PERCENTAGE` (incompatible with Google Docs)
 - Table width must equal the sum of `columnWidths`
 - Cell `width` must match corresponding `columnWidth`
@@ -393,16 +396,18 @@ sections: [{
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
 
----
+______________________________________________________________________
 
 ## Editing Existing Documents
 
 **Follow all 3 steps in order.**
 
 ### Step 1: Unpack
+
 ```bash
 python scripts/office/unpack.py document.docx unpacked/
 ```
+
 Extracts XML, pretty-prints, merges adjacent runs, and converts smart quotes to XML entities (`&#x201C;` etc.) so they survive editing. Use `--merge-runs false` to skip run merging.
 
 ### Step 2: Edit XML
@@ -414,36 +419,44 @@ Edit files in `unpacked/word/`. See XML Reference below for patterns.
 **Use the Edit tool directly for string replacement. Do not write Python scripts.** Scripts introduce unnecessary complexity. The Edit tool shows exactly what is being replaced.
 
 **CRITICAL: Use smart quotes for new content.** When adding text with apostrophes or quotes, use XML entities to produce smart quotes:
+
 ```xml
 <!-- Use these entities for professional typography -->
 <w:t>Here&#x2019;s a quote: &#x201C;Hello&#x201D;</w:t>
 ```
-| Entity | Character |
-|--------|-----------|
-| `&#x2018;` | ‘ (left single) |
+
+| Entity     | Character                     |
+| ---------- | ----------------------------- |
+| `&#x2018;` | ‘ (left single)               |
 | `&#x2019;` | ’ (right single / apostrophe) |
-| `&#x201C;` | “ (left double) |
-| `&#x201D;` | ” (right double) |
+| `&#x201C;` | “ (left double)               |
+| `&#x201D;` | ” (right double)              |
 
 **Adding comments:** Use `comment.py` to handle boilerplate across multiple XML files (text must be pre-escaped XML):
+
 ```bash
 python scripts/comment.py unpacked/ 0 "Comment text with &amp; and &#x2019;"
 python scripts/comment.py unpacked/ 1 "Reply text" --parent 0  # reply to comment 0
 python scripts/comment.py unpacked/ 0 "Text" --author "Custom Author"  # custom author name
 ```
+
 Then add markers to document.xml (see Comments in XML Reference).
 
 ### Step 3: Pack
+
 ```bash
 python scripts/office/pack.py unpacked/ output.docx --original document.docx
 ```
+
 Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate false` to skip.
 
 **Auto-repair will fix:**
+
 - `durableId` >= 0x7FFFFFFF (regenerates valid ID)
 - Missing `xml:space="preserve"` on `<w:t>` with whitespace
 
 **Auto-repair won't fix:**
+
 - Malformed XML, invalid element nesting, missing relationships, schema violations
 
 ### Common Pitfalls
@@ -451,7 +464,7 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 - **Replace entire `<w:r>` elements**: When adding tracked changes, replace the whole `<w:r>...</w:r>` block with `<w:del>...<w:ins>...` as siblings. Don't inject tracked change tags inside a run.
 - **Preserve `<w:rPr>` formatting**: Copy the original run's `<w:rPr>` block into your tracked change runs to maintain bold, font size, etc.
 
----
+______________________________________________________________________
 
 ## XML Reference
 
@@ -464,6 +477,7 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 ### Tracked Changes
 
 **Insertion:**
+
 ```xml
 <w:ins w:id="1" w:author="Claude" w:date="2025-01-01T00:00:00Z">
   <w:r><w:t>inserted text</w:t></w:r>
@@ -471,6 +485,7 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 ```
 
 **Deletion:**
+
 ```xml
 <w:del w:id="2" w:author="Claude" w:date="2025-01-01T00:00:00Z">
   <w:r><w:delText>deleted text</w:delText></w:r>
@@ -480,6 +495,7 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 **Inside `<w:del>`**: Use `<w:delText>` instead of `<w:t>`, and `<w:delInstrText>` instead of `<w:instrText>`.
 
 **Minimal edits** - only mark what changes:
+
 ```xml
 <!-- Change "30 days" to "60 days" -->
 <w:r><w:t>The term is </w:t></w:r>
@@ -493,6 +509,7 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 ```
 
 **Deleting entire paragraphs/list items** - when removing ALL content from a paragraph, also mark the paragraph mark as deleted so it merges with the next paragraph. Add `<w:del/>` inside `<w:pPr><w:rPr>`:
+
 ```xml
 <w:p>
   <w:pPr>
@@ -506,9 +523,11 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
   </w:del>
 </w:p>
 ```
+
 Without the `<w:del/>` in `<w:pPr><w:rPr>`, accepting changes leaves an empty paragraph/list item.
 
 **Rejecting another author's insertion** - nest deletion inside their insertion:
+
 ```xml
 <w:ins w:author="Jane" w:id="5">
   <w:del w:author="Claude" w:id="10">
@@ -518,6 +537,7 @@ Without the `<w:del/>` in `<w:pPr><w:rPr>`, accepting changes leaves an empty pa
 ```
 
 **Restoring another author's deletion** - add insertion after (don't modify their deletion):
+
 ```xml
 <w:del w:author="Jane" w:id="5">
   <w:r><w:delText>deleted text</w:delText></w:r>
@@ -556,15 +576,20 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
 ### Images
 
 1. Add image file to `word/media/`
-2. Add relationship to `word/_rels/document.xml.rels`:
+1. Add relationship to `word/_rels/document.xml.rels`:
+
 ```xml
 <Relationship Id="rId5" Type=".../image" Target="media/image1.png"/>
 ```
-3. Add content type to `[Content_Types].xml`:
+
+1. Add content type to `[Content_Types].xml`:
+
 ```xml
 <Default Extension="png" ContentType="image/png"/>
 ```
-4. Reference in document.xml:
+
+1. Reference in document.xml:
+
 ```xml
 <w:drawing>
   <wp:inline>
@@ -580,7 +605,7 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
 </w:drawing>
 ```
 
----
+______________________________________________________________________
 
 ## Dependencies
 

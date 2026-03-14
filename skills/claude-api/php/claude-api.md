@@ -48,7 +48,7 @@ $client = new FoundryClient(
 );
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -63,7 +63,7 @@ $message = $client->messages->create(
 echo $message->content[0]->text;
 ```
 
----
+______________________________________________________________________
 
 ## Streaming
 
@@ -81,7 +81,7 @@ foreach ($stream as $event) {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Tool Use (Manual Loop)
 

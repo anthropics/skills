@@ -38,9 +38,7 @@ LABEL_PADDING_RATIO = 0.4
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Create thumbnail grids from PowerPoint slides."
-    )
+    parser = argparse.ArgumentParser(description="Create thumbnail grids from PowerPoint slides.")
     parser.add_argument("input", help="Input PowerPoint file (.pptx)")
     parser.add_argument(
         "output_prefix",
@@ -249,9 +247,7 @@ def create_grid(
     for i, (img_path, slide_name) in enumerate(slides):
         row, col = i // cols, i % cols
         x = col * width + (col + 1) * GRID_PADDING
-        y_base = (
-            row * (height + font_size + label_padding * 2) + (row + 1) * GRID_PADDING
-        )
+        y_base = row * (height + font_size + label_padding * 2) + (row + 1) * GRID_PADDING
 
         label = slide_name
         bbox = draw.textbbox((0, 0), label, font=font)

@@ -46,7 +46,7 @@ console.log(finalMessage.content);
 - Tool schemas are generated automatically from Zod definitions
 - Iteration stops automatically when Claude has no more tool calls
 
----
+______________________________________________________________________
 
 ## Manual Agentic Loop
 
@@ -163,7 +163,7 @@ while (true) {
 
 > **SDK types:** Use `Anthropic.MessageParam`, `Anthropic.Tool`, `Anthropic.ToolUseBlock`, `Anthropic.ToolResultBlockParam`, `Anthropic.Message`, etc. for all API-related data structures. Don't redefine equivalent interfaces.
 
----
+______________________________________________________________________
 
 ## Handling Tool Results
 
@@ -198,7 +198,7 @@ for (const block of response.content) {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Tool Choice
 
@@ -212,7 +212,7 @@ const response = await client.messages.create({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Code Execution
 
@@ -345,7 +345,7 @@ const response2 = await client.messages.create({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Memory Tool
 
@@ -402,7 +402,7 @@ For full implementation examples, use WebFetch:
 
 - `https://github.com/anthropics/anthropic-sdk-typescript/blob/main/examples/tools-helpers-memory.ts`
 
----
+______________________________________________________________________
 
 ## Structured Outputs
 

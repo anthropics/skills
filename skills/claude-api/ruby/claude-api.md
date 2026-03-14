@@ -20,7 +20,7 @@ client = Anthropic::Client.new
 client = Anthropic::Client.new(api_key: "your-api-key")
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -35,7 +35,7 @@ message = client.messages.create(
 puts message.content.first.text
 ```
 
----
+______________________________________________________________________
 
 ## Streaming
 
@@ -49,7 +49,7 @@ stream = client.messages.stream(
 stream.text.each { |text| print(text) }
 ```
 
----
+______________________________________________________________________
 
 ## Tool Use
 

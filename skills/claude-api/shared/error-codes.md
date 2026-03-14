@@ -45,7 +45,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 - `max_tokens` is a positive integer
 - `messages` array is non-empty and alternates correctly
 
----
+______________________________________________________________________
 
 ### 401 Unauthorized
 
@@ -57,7 +57,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 
 **Fix:** Ensure `ANTHROPIC_API_KEY` environment variable is set correctly.
 
----
+______________________________________________________________________
 
 ### 403 Forbidden
 
@@ -69,7 +69,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 
 **Fix:** Check your API key permissions in the Console. You may need a different API key or to request access to specific features.
 
----
+______________________________________________________________________
 
 ### 404 Not Found
 
@@ -81,7 +81,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 
 **Fix:** Use exact model IDs from the models documentation. You can use aliases (e.g., `claude-opus-4-6`).
 
----
+______________________________________________________________________
 
 ### 413 Request Too Large
 
@@ -93,7 +93,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 
 **Fix:** Reduce input size — truncate conversation history, compress/resize images, or split large documents into chunks.
 
----
+______________________________________________________________________
 
 ### 400 Validation Errors
 
@@ -114,7 +114,7 @@ thinking: budget_tokens=10000, max_tokens=1000  → Error!
 thinking: budget_tokens=10000, max_tokens=16000
 ```
 
----
+______________________________________________________________________
 
 ### 429 Rate Limited
 
@@ -132,7 +132,7 @@ thinking: budget_tokens=10000, max_tokens=16000
 
 **Fix:** The Anthropic SDKs automatically retry 429 and 5xx errors with exponential backoff (default: `max_retries=2`). For custom retry behavior, see the language-specific error handling examples.
 
----
+______________________________________________________________________
 
 ### 500 Internal Server Error
 
@@ -143,7 +143,7 @@ thinking: budget_tokens=10000, max_tokens=16000
 
 **Fix:** Retry with exponential backoff. If persistent, check [status.anthropic.com](https://status.anthropic.com).
 
----
+______________________________________________________________________
 
 ### 529 Overloaded
 
@@ -154,7 +154,7 @@ thinking: budget_tokens=10000, max_tokens=16000
 
 **Fix:** Retry with exponential backoff. Consider using a different model (Haiku is often less loaded), spreading requests over time, or implementing request queuing.
 
----
+______________________________________________________________________
 
 ## Common Mistakes and Fixes
 

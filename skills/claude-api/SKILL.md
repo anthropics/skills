@@ -1,8 +1,6 @@
----
-name: claude-api
-description: "Build apps with the Claude API or Anthropic SDK. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks."
-license: Complete terms in LICENSE.txt
----
+______________________________________________________________________
+
+## name: claude-api description: "Build apps with the Claude API or Anthropic SDK. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks." license: Complete terms in LICENSE.txt
 
 # Building LLM-Powered Applications with Claude
 
@@ -14,7 +12,7 @@ Unless the user requests otherwise:
 
 For the Claude model version, please use Claude Opus 4.6, which you can access via the exact model string `claude-opus-4-6`. Please default to using adaptive thinking (`thinking: {type: "adaptive"}`) for anything remotely complicated. And finally, please default to streaming for any request that may involve long input, long output, or high `max_tokens` — it prevents hitting request timeouts. Use the SDK's `.get_final_message()` / `.finalMessage()` helper to get the complete response if you don't need to handle individual stream events
 
----
+______________________________________________________________________
 
 ## Language Detection
 
@@ -33,22 +31,22 @@ Before reading code examples, determine which language the user is working in:
    - `*.cs`, `*.csproj` → **C#** — read from `csharp/`
    - `*.php`, `composer.json` → **PHP** — read from `php/`
 
-2. **If multiple languages detected** (e.g., both Python and TypeScript files):
+1. **If multiple languages detected** (e.g., both Python and TypeScript files):
 
    - Check which language the user's current file or question relates to
    - If still ambiguous, ask: "I detected both Python and TypeScript files. Which language are you using for the Claude API integration?"
 
-3. **If language can't be inferred** (empty project, no source files, or unsupported language):
+1. **If language can't be inferred** (empty project, no source files, or unsupported language):
 
    - Use AskUserQuestion with options: Python, TypeScript, Java, Go, Ruby, cURL/raw HTTP, C#, PHP
    - If AskUserQuestion is unavailable, default to Python examples and note: "Showing Python examples. Let me know if you need a different language."
 
-4. **If unsupported language detected** (Rust, Swift, C++, Elixir, etc.):
+1. **If unsupported language detected** (Rust, Swift, C++, Elixir, etc.):
 
    - Suggest cURL/raw HTTP examples from `curl/` and note that community SDKs may exist
    - Offer to show Python or TypeScript examples as reference implementations
 
-5. **If user needs cURL/raw HTTP examples**, read from `curl/`.
+1. **If user needs cURL/raw HTTP examples**, read from `curl/`.
 
 ### Language-Specific Feature Support
 
@@ -63,7 +61,7 @@ Before reading code examples, determine which language the user is working in:
 | C#         | No          | No        | Official SDK                          |
 | PHP        | No          | No        | Official SDK                          |
 
----
+______________________________________________________________________
 
 ## Which Surface Should I Use?
 
@@ -114,7 +112,7 @@ Before choosing the agent tier, check all four criteria:
 
 If the answer is "no" to any of these, stay at a simpler tier (single call or workflow).
 
----
+______________________________________________________________________
 
 ## Architecture
 
@@ -128,7 +126,7 @@ Everything goes through `POST /v1/messages`. Tools and output constraints are fe
 
 **Supporting endpoints** — Batches (`POST /v1/messages/batches`), Files (`POST /v1/files`), and Token Counting feed into or support Messages API requests.
 
----
+______________________________________________________________________
 
 ## Current Models (cached: 2026-02-17)
 
@@ -144,7 +142,7 @@ Everything goes through `POST /v1/messages`. Tools and output constraints are fe
 
 A note: if any of the model strings above look unfamiliar to you, that's to be expected — that just means they were released after your training data cutoff. Rest assured they are real models; we wouldn't mess with you like that.
 
----
+______________________________________________________________________
 
 ## Thinking & Effort (Quick Reference)
 
@@ -156,7 +154,7 @@ A note: if any of the model strings above look unfamiliar to you, that's to be e
 
 **Older models (only if explicitly requested):** If the user specifically asks for Sonnet 4.5 or another older model, use `thinking: {type: "enabled", budget_tokens: N}`. `budget_tokens` must be less than `max_tokens` (minimum 1024). Never choose an older model just because the user mentions `budget_tokens` — use Opus 4.6 with adaptive thinking instead.
 
----
+______________________________________________________________________
 
 ## Compaction (Quick Reference)
 
@@ -166,7 +164,7 @@ A note: if any of the model strings above look unfamiliar to you, that's to be e
 
 See `{lang}/claude-api/README.md` (Compaction section) for code examples. Full docs via WebFetch in `shared/live-sources.md`.
 
----
+______________________________________________________________________
 
 ## Reading Guide
 
@@ -200,13 +198,13 @@ After detecting the language, read the relevant files based on what the user nee
 Read the **language-specific Claude API folder** (`{language}/claude-api/`):
 
 1. **`{language}/claude-api/README.md`** — **Read this first.** Installation, quick start, common patterns, error handling.
-2. **`shared/tool-use-concepts.md`** — Read when the user needs function calling, code execution, memory, or structured outputs. Covers conceptual foundations.
-3. **`{language}/claude-api/tool-use.md`** — Read for language-specific tool use code examples (tool runner, manual loop, code execution, memory, structured outputs).
-4. **`{language}/claude-api/streaming.md`** — Read when building chat UIs or interfaces that display responses incrementally.
-5. **`{language}/claude-api/batches.md`** — Read when processing many requests offline (not latency-sensitive). Runs asynchronously at 50% cost.
-6. **`{language}/claude-api/files-api.md`** — Read when sending the same file across multiple requests without re-uploading.
-7. **`shared/error-codes.md`** — Read when debugging HTTP errors or implementing error handling.
-8. **`shared/live-sources.md`** — WebFetch URLs for fetching the latest official documentation.
+1. **`shared/tool-use-concepts.md`** — Read when the user needs function calling, code execution, memory, or structured outputs. Covers conceptual foundations.
+1. **`{language}/claude-api/tool-use.md`** — Read for language-specific tool use code examples (tool runner, manual loop, code execution, memory, structured outputs).
+1. **`{language}/claude-api/streaming.md`** — Read when building chat UIs or interfaces that display responses incrementally.
+1. **`{language}/claude-api/batches.md`** — Read when processing many requests offline (not latency-sensitive). Runs asynchronously at 50% cost.
+1. **`{language}/claude-api/files-api.md`** — Read when sending the same file across multiple requests without re-uploading.
+1. **`shared/error-codes.md`** — Read when debugging HTTP errors or implementing error handling.
+1. **`shared/live-sources.md`** — WebFetch URLs for fetching the latest official documentation.
 
 > **Note:** For Java, Go, Ruby, C#, PHP, and cURL — these have a single file each covering all basics. Read that file plus `shared/tool-use-concepts.md` and `shared/error-codes.md` as needed.
 
@@ -215,10 +213,10 @@ Read the **language-specific Claude API folder** (`{language}/claude-api/`):
 Read the **language-specific Agent SDK folder** (`{language}/agent-sdk/`). Agent SDK is available for **Python and TypeScript only**.
 
 1. **`{language}/agent-sdk/README.md`** — Installation, quick start, built-in tools, permissions, MCP, hooks.
-2. **`{language}/agent-sdk/patterns.md`** — Custom tools, hooks, subagents, MCP integration, session resumption.
-3. **`shared/live-sources.md`** — WebFetch URLs for current Agent SDK docs.
+1. **`{language}/agent-sdk/patterns.md`** — Custom tools, hooks, subagents, MCP integration, session resumption.
+1. **`shared/live-sources.md`** — WebFetch URLs for current Agent SDK docs.
 
----
+______________________________________________________________________
 
 ## When to Use WebFetch
 

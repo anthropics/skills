@@ -2,7 +2,7 @@
 
 This page describes how the repository is structured, how Claude loads skills, and the conventions that every skill follows.
 
----
+______________________________________________________________________
 
 ## Repository Layout
 
@@ -45,14 +45,14 @@ upstream_skills/
 └── THIRD_PARTY_NOTICES.md
 ```
 
----
+______________________________________________________________________
 
 ## What Is a Skill?
 
 A **skill** is a folder that Claude reads before responding to a task. It contains:
 
 1. A **`SKILL.md`** file — the required entry point with YAML frontmatter and instructions.
-2. Optional **supporting files** — scripts, templates, fonts, reference docs, examples.
+1. Optional **supporting files** — scripts, templates, fonts, reference docs, examples.
 
 Claude matches a skill to a user request based on the `description` field in the frontmatter, then follows the instructions in `SKILL.md` for that request.
 
@@ -74,7 +74,7 @@ calling scripts or reading templates as needed
 
 Skills are **self-contained**: each folder is independently usable and makes no assumptions about other skills being present.
 
----
+______________________________________________________________________
 
 ## SKILL.md Format
 
@@ -100,11 +100,11 @@ Detailed instructions that Claude will follow when this skill is active.
 
 ### Frontmatter fields
 
-| Field | Required | Purpose |
-|-------|----------|---------|
-| `name` | ✅ Yes | Unique identifier (lowercase, hyphens for spaces) |
-| `description` | ✅ Yes | Trigger description — Claude uses this to decide when to activate the skill |
-| `license` | ❌ No | Human-readable license reference. Omit for Apache 2.0. |
+| Field         | Required | Purpose                                                                     |
+| ------------- | -------- | --------------------------------------------------------------------------- |
+| `name`        | ✅ Yes   | Unique identifier (lowercase, hyphens for spaces)                           |
+| `description` | ✅ Yes   | Trigger description — Claude uses this to decide when to activate the skill |
+| `license`     | ❌ No    | Human-readable license reference. Omit for Apache 2.0.                      |
 
 ### Writing a good description
 
@@ -118,7 +118,7 @@ Example (docx skill):
 
 > *"Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', or requests to produce professional documents with formatting… Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation."*
 
----
+______________________________________________________________________
 
 ## Skill Patterns
 
@@ -139,6 +139,7 @@ Scripts handle deterministic operations (file format manipulation, formula recal
 **Examples:** `docx`, `pdf`, `pptx`, `xlsx`
 
 **Typical directory layout:**
+
 ```
 my-skill/
 ├── SKILL.md
@@ -152,9 +153,10 @@ my-skill/
 ```
 
 **Pattern:**
+
 1. Claude calls the unpack script to expose raw XML.
-2. Claude edits the XML directly.
-3. Claude calls the pack/validate script to produce a clean output file.
+1. Claude edits the XML directly.
+1. Claude calls the pack/validate script to produce a clean output file.
 
 ### 3 — Reference-Heavy
 
@@ -163,6 +165,7 @@ Rich reference documentation (API specs, protocol guides, best-practice document
 **Examples:** `mcp-builder`, `skill-creator`, `claude-api`
 
 **Typical directory layout:**
+
 ```
 my-skill/
 ├── SKILL.md
@@ -179,6 +182,7 @@ Reusable HTML, JS, or Markdown templates that Claude fills in based on user inpu
 **Examples:** `algorithmic-art`, `canvas-design`, `theme-factory`
 
 **Typical directory layout:**
+
 ```
 my-skill/
 ├── SKILL.md
@@ -193,7 +197,7 @@ A Python or JavaScript library is packaged with the skill and called by Claude t
 
 **Examples:** `slack-gif-creator`, `web-artifacts-builder`, `webapp-testing`
 
----
+______________________________________________________________________
 
 ## Plugin Groups
 
@@ -225,24 +229,24 @@ The file `.claude-plugin/marketplace.json` registers the repository as a Claude 
 
 When you add a new skill to `skills/`, add an entry to the appropriate plugin's `skills` array so it can be installed via `/plugin install`.
 
----
+______________________________________________________________________
 
 ## Supporting File Conventions
 
-| Path pattern | Convention |
-|---|---|
+| Path pattern      | Convention                                              |
+| ----------------- | ------------------------------------------------------- |
 | `scripts/office/` | Shared LibreOffice utilities (used by docx, pptx, xlsx) |
-| `scripts/*.py` | Python utility called by Claude during task execution |
-| `scripts/*.sh` | Shell script (setup, bundling) |
-| `reference/*.md` | Documentation Claude reads for context |
-| `examples/` | Worked examples and templates |
-| `templates/` | Reusable HTML / JS / Markdown templates |
-| `themes/` | Pre-defined colour/font palette files |
-| `core/` | Python library module bundled with the skill |
-| `assets/` | Images, PDFs, other binary assets |
-| `*-fonts/` | Font files (TTF/OTF) |
+| `scripts/*.py`    | Python utility called by Claude during task execution   |
+| `scripts/*.sh`    | Shell script (setup, bundling)                          |
+| `reference/*.md`  | Documentation Claude reads for context                  |
+| `examples/`       | Worked examples and templates                           |
+| `templates/`      | Reusable HTML / JS / Markdown templates                 |
+| `themes/`         | Pre-defined colour/font palette files                   |
+| `core/`           | Python library module bundled with the skill            |
+| `assets/`         | Images, PDFs, other binary assets                       |
+| `*-fonts/`        | Font files (TTF/OTF)                                    |
 
----
+______________________________________________________________________
 
 ## Wiki Auto-Update System
 
@@ -279,15 +283,15 @@ No manual wiki edits are required.
 
 Edit any file in the `wiki/` directory and push. The workflow copies the updated file into the wiki on the next run.
 
----
+______________________________________________________________________
 
 ## License Overview
 
-| Skill group | License |
-|---|---|
-| `algorithmic-art`, `brand-guidelines`, `canvas-design`, `claude-api`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | Apache 2.0 |
-| `docx`, `pdf`, `pptx`, `xlsx` | Proprietary (source-available) — see `LICENSE.txt` in each folder |
+| Skill group                                                                                                                                                                                                                                   | License                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `algorithmic-art`, `brand-guidelines`, `canvas-design`, `claude-api`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | Apache 2.0                                                        |
+| `docx`, `pdf`, `pptx`, `xlsx`                                                                                                                                                                                                                 | Proprietary (source-available) — see `LICENSE.txt` in each folder |
 
----
+______________________________________________________________________
 
 *See also: [Getting Started](Getting-Started) · [Contributing](Contributing) · [Skills Overview](Skills-Overview)*

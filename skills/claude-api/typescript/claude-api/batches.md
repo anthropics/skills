@@ -10,7 +10,7 @@ The Batches API (`POST /v1/messages/batches`) processes Messages API requests as
 - 50% cost reduction on all token usage
 - All Messages API features supported (vision, tools, caching, etc.)
 
----
+______________________________________________________________________
 
 ## Create a Batch
 
@@ -48,7 +48,7 @@ console.log(`Batch ID: ${messageBatch.id}`);
 console.log(`Status: ${messageBatch.processing_status}`);
 ```
 
----
+______________________________________________________________________
 
 ## Poll for Completion
 
@@ -68,7 +68,7 @@ console.log(`Succeeded: ${batch.request_counts.succeeded}`);
 console.log(`Errored: ${batch.request_counts.errored}`);
 ```
 
----
+______________________________________________________________________
 
 ## Retrieve Results
 
@@ -96,7 +96,7 @@ for await (const result of await client.messages.batches.results(
 }
 ```
 
----
+______________________________________________________________________
 
 ## Cancel a Batch
 

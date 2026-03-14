@@ -69,8 +69,10 @@ def run_single_query(
 
         cmd = [
             "claude",
-            "-p", query,
-            "--output-format", "stream-json",
+            "-p",
+            query,
+            "--output-format",
+            "stream-json",
             "--verbose",
             "--include-partial-messages",
         ]
@@ -163,7 +165,9 @@ def run_single_query(
                             tool_input = content_item.get("input", {})
                             if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
                                 triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            elif tool_name == "Read" and clean_name in tool_input.get(
+                                "file_path", ""
+                            ):
                                 triggered = True
                             return triggered
 
@@ -232,14 +236,16 @@ def run_eval(
             did_pass = trigger_rate >= trigger_threshold
         else:
             did_pass = trigger_rate < trigger_threshold
-        results.append({
-            "query": query,
-            "should_trigger": should_trigger,
-            "trigger_rate": trigger_rate,
-            "triggers": sum(triggers),
-            "runs": len(triggers),
-            "pass": did_pass,
-        })
+        results.append(
+            {
+                "query": query,
+                "should_trigger": should_trigger,
+                "trigger_rate": trigger_rate,
+                "triggers": sum(triggers),
+                "runs": len(triggers),
+                "pass": did_pass,
+            }
+        )
 
     passed = sum(1 for r in results if r["pass"])
     total = len(results)
@@ -264,8 +270,14 @@ def main():
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
     parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
-    parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
-    parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
+    parser.add_argument(
+        "--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold"
+    )
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Model to use for claude -p (default: user's configured model)",
+    )
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
@@ -301,7 +313,10 @@ def main():
         for r in output["results"]:
             status = "PASS" if r["pass"] else "FAIL"
             rate_str = f"{r['triggers']}/{r['runs']}"
-            print(f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:70]}", file=sys.stderr)
+            print(
+                f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:70]}",
+                file=sys.stderr,
+            )
 
     print(json.dumps(output, indent=2))
 

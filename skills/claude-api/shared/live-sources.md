@@ -23,8 +23,8 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic             | URL                                                                          | Extraction Prompt                                                                      |
 | ----------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | Extended Thinking | `https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md` | "Extract extended thinking parameters, budget_tokens requirements, and usage examples" |
-| Adaptive Thinking | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md` | "Extract adaptive thinking setup, effort levels, and Claude Opus 4.6 usage examples"         |
-| Effort Parameter  | `https://platform.claude.com/docs/en/build-with-claude/effort.md`            | "Extract effort levels, cost-quality tradeoffs, and interaction with thinking"        |
+| Adaptive Thinking | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md` | "Extract adaptive thinking setup, effort levels, and Claude Opus 4.6 usage examples"   |
+| Effort Parameter  | `https://platform.claude.com/docs/en/build-with-claude/effort.md`            | "Extract effort levels, cost-quality tradeoffs, and interaction with thinking"         |
 | Tool Use          | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview.md`  | "Extract tool definition schema, tool_choice options, and handling tool results"       |
 | Streaming         | `https://platform.claude.com/docs/en/build-with-claude/streaming.md`         | "Extract streaming event types, SDK examples, and best practices"                      |
 | Prompt Caching    | `https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md`    | "Extract cache_control usage, pricing benefits, and implementation examples"           |
@@ -55,19 +55,19 @@ This file contains WebFetch URLs for fetching current information from platform.
 
 ### Advanced Features
 
-| Topic              | URL                                                                           | Extraction Prompt                                   |
-| ------------------ | ----------------------------------------------------------------------------- | --------------------------------------------------- |
-| Structured Outputs | `https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md` | "Extract output_config.format usage and schema enforcement"                           |
-| Compaction         | `https://platform.claude.com/docs/en/build-with-claude/compaction.md`         | "Extract compaction setup, trigger config, and streaming with compaction"             |
-| Citations          | `https://platform.claude.com/docs/en/build-with-claude/citations.md`          | "Extract citation format and implementation"        |
-| Context Windows    | `https://platform.claude.com/docs/en/build-with-claude/context-windows.md`    | "Extract context window sizes and token management" |
+| Topic              | URL                                                                           | Extraction Prompt                                                         |
+| ------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Structured Outputs | `https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md` | "Extract output_config.format usage and schema enforcement"               |
+| Compaction         | `https://platform.claude.com/docs/en/build-with-claude/compaction.md`         | "Extract compaction setup, trigger config, and streaming with compaction" |
+| Citations          | `https://platform.claude.com/docs/en/build-with-claude/citations.md`          | "Extract citation format and implementation"                              |
+| Context Windows    | `https://platform.claude.com/docs/en/build-with-claude/context-windows.md`    | "Extract context window sizes and token management"                       |
 
----
+______________________________________________________________________
 
 ## Claude API SDK Repositories
 
-| SDK        | URL                                                       | Description                    |
-| ---------- | --------------------------------------------------------- | ------------------------------ |
+| SDK        | URL                                                      | Description                    |
+| ---------- | -------------------------------------------------------- | ------------------------------ |
 | Python     | `https://github.com/anthropics/anthropic-sdk-python`     | `anthropic` pip package source |
 | TypeScript | `https://github.com/anthropics/anthropic-sdk-typescript` | `@anthropic-ai/sdk` npm source |
 | Java       | `https://github.com/anthropics/anthropic-sdk-java`       | `anthropic-java` Maven source  |
@@ -76,7 +76,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | C#         | `https://github.com/anthropics/anthropic-sdk-csharp`     | NuGet package source           |
 | PHP        | `https://github.com/anthropics/anthropic-sdk-php`        | Composer package source        |
 
----
+______________________________________________________________________
 
 ## Agent SDK Documentation URLs
 
@@ -110,12 +110,12 @@ This file contains WebFetch URLs for fetching current information from platform.
 | TypeScript SDK | `https://github.com/anthropics/claude-agent-sdk-typescript` | TypeScript/Node.js package source   |
 | MCP Servers    | `https://github.com/modelcontextprotocol`                   | Official MCP server implementations |
 
----
+______________________________________________________________________
 
 ## Fallback Strategy
 
 If WebFetch fails (network issues, URL changed):
 
 1. Use cached content from the language-specific files (note the cache date)
-2. Inform user the data may be outdated
-3. Suggest they check platform.claude.com or the GitHub repos directly
+1. Inform user the data may be outdated
+1. Suggest they check platform.claude.com or the GitHub repos directly

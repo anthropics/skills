@@ -18,7 +18,7 @@ const client = new Anthropic();
 const client = new Anthropic({ apiKey: "your-api-key" });
 ```
 
----
+______________________________________________________________________
 
 ## Basic Message Request
 
@@ -31,7 +31,7 @@ const response = await client.messages.create({
 console.log(response.content[0].text);
 ```
 
----
+______________________________________________________________________
 
 ## System Prompts
 
@@ -45,7 +45,7 @@ const response = await client.messages.create({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Vision (Images)
 
@@ -95,7 +95,7 @@ const response = await client.messages.create({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Prompt Caching
 
@@ -146,7 +146,7 @@ const response2 = await client.messages.create({
 });
 ```
 
----
+______________________________________________________________________
 
 ## Extended Thinking
 
@@ -174,7 +174,7 @@ for (const block of response.content) {
 }
 ```
 
----
+______________________________________________________________________
 
 ## Error Handling
 
@@ -200,7 +200,7 @@ try {
 
 All classes extend `Anthropic.APIError` with a typed `status` field. Check from most specific to least specific. See [shared/error-codes.md](../../shared/error-codes.md) for the full error code reference.
 
----
+______________________________________________________________________
 
 ## Multi-Turn Conversations
 
@@ -226,7 +226,7 @@ const response = await client.messages.create({
 - First message must be `user`
 - Use SDK types (`Anthropic.MessageParam`, `Anthropic.Message`, `Anthropic.Tool`, etc.) for all API data structures — don't redefine equivalent interfaces
 
----
+______________________________________________________________________
 
 ### Compaction (long conversations)
 
@@ -264,7 +264,7 @@ console.log(await chat("Add support for JavaScript-rendered pages"));
 console.log(await chat("Now add rate limiting and error handling"));
 ```
 
----
+______________________________________________________________________
 
 ## Stop Reasons
 
@@ -279,7 +279,7 @@ The `stop_reason` field in the response indicates why the model stopped generati
 | `pause_turn`    | Model paused and can be resumed (agentic flows)                 |
 | `refusal`       | Claude refused for safety reasons — output may not match schema |
 
----
+______________________________________________________________________
 
 ## Cost Optimization Strategies
 

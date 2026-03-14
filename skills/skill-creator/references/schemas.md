@@ -2,7 +2,7 @@
 
 This document defines the JSON schemas used by skill-creator.
 
----
+______________________________________________________________________
 
 ## evals.json
 
@@ -27,6 +27,7 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
 ```
 
 **Fields:**
+
 - `skill_name`: Name matching the skill's frontmatter
 - `evals[].id`: Unique integer identifier
 - `evals[].prompt`: The task to execute
@@ -34,7 +35,7 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
 - `evals[].files`: Optional list of input file paths (relative to skill root)
 - `evals[].expectations`: List of verifiable statements
 
----
+______________________________________________________________________
 
 ## history.json
 
@@ -72,6 +73,7 @@ Tracks version progression in Improve mode. Located at workspace root.
 ```
 
 **Fields:**
+
 - `started_at`: ISO timestamp of when improvement started
 - `skill_name`: Name of the skill being improved
 - `current_best`: Version identifier of the best performer
@@ -81,7 +83,7 @@ Tracks version progression in Improve mode. Located at workspace root.
 - `iterations[].grading_result`: "baseline", "won", "lost", or "tie"
 - `iterations[].is_current_best`: Whether this is the current best version
 
----
+______________________________________________________________________
 
 ## grading.json
 
@@ -150,6 +152,7 @@ Output from the grader agent. Located at `<run-dir>/grading.json`.
 ```
 
 **Fields:**
+
 - `expectations[]`: Graded expectations with evidence
 - `summary`: Aggregate pass/fail counts
 - `execution_metrics`: Tool usage and output size (from executor's metrics.json)
@@ -158,7 +161,7 @@ Output from the grader agent. Located at `<run-dir>/grading.json`.
 - `user_notes_summary`: Issues flagged by the executor
 - `eval_feedback`: (optional) Improvement suggestions for the evals, only present when the grader identifies issues worth raising
 
----
+______________________________________________________________________
 
 ## metrics.json
 
@@ -184,6 +187,7 @@ Output from the executor agent. Located at `<run-dir>/outputs/metrics.json`.
 ```
 
 **Fields:**
+
 - `tool_calls`: Count per tool type
 - `total_tool_calls`: Sum of all tool calls
 - `total_steps`: Number of major execution steps
@@ -192,7 +196,7 @@ Output from the executor agent. Located at `<run-dir>/outputs/metrics.json`.
 - `output_chars`: Total character count of output files
 - `transcript_chars`: Character count of transcript
 
----
+______________________________________________________________________
 
 ## timing.json
 
@@ -214,7 +218,7 @@ Wall clock timing for a run. Located at `<run-dir>/timing.json`.
 }
 ```
 
----
+______________________________________________________________________
 
 ## benchmark.json
 
@@ -286,6 +290,7 @@ Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
 ```
 
 **Fields:**
+
 - `metadata`: Information about the benchmark run
   - `skill_name`: Name of the skill
   - `timestamp`: When the benchmark was run
@@ -304,7 +309,7 @@ Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
 
 **Important:** The viewer reads these field names exactly. Using `config` instead of `configuration`, or putting `pass_rate` at the top level of a run instead of nested under `result`, will cause the viewer to show empty/zero values. Always reference this schema when generating benchmark.json manually.
 
----
+______________________________________________________________________
 
 ## comparison.json
 
@@ -379,7 +384,7 @@ Output from blind comparator. Located at `<grading-dir>/comparison-N.json`.
 }
 ```
 
----
+______________________________________________________________________
 
 ## analysis.json
 

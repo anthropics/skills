@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Any
 
 from anthropic import Anthropic
-
 from connections import create_connection
 
 EVALUATION_PROMPT = """You are an AI assistant with access to tools.
@@ -65,10 +64,12 @@ def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
             answer_elem = qa_pair.find("answer")
 
             if question_elem is not None and answer_elem is not None:
-                evaluations.append({
-                    "question": (question_elem.text or "").strip(),
-                    "answer": (answer_elem.text or "").strip(),
-                })
+                evaluations.append(
+                    {
+                        "question": (question_elem.text or "").strip(),
+                        "answer": (answer_elem.text or "").strip(),
+                    }
+                )
 
         return evaluations
     except Exception as e:
@@ -114,7 +115,11 @@ async def agent_loop(
         tool_start_ts = time.time()
         try:
             tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            tool_response = (
+                json.dumps(tool_result)
+                if isinstance(tool_result, (dict, list))
+                else str(tool_result)
+            )
         except Exception as e:
             tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
             tool_response += traceback.format_exc()
@@ -125,14 +130,18 @@ async def agent_loop(
         tool_metrics[tool_name]["count"] += 1
         tool_metrics[tool_name]["durations"].append(tool_duration)
 
-        messages.append({
-            "role": "user",
-            "content": [{
-                "type": "tool_result",
-                "tool_use_id": tool_use.id,
-                "content": tool_response,
-            }]
-        })
+        messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": tool_use.id,
+                        "content": tool_response,
+                    }
+                ],
+            }
+        )
 
         response = await asyncio.to_thread(
             client.messages.create,
@@ -254,20 +263,22 @@ async def run_evaluation(
         total_tool_calls=total_tool_calls,
     )
 
-    report += "".join([
-        TASK_TEMPLATE.format(
-            task_num=i + 1,
-            question=qa_pair["question"],
-            expected_answer=qa_pair["answer"],
-            actual_answer=result["actual"] or "N/A",
-            correct_indicator="✅" if result["score"] else "❌",
-            total_duration=result["total_duration"],
-            tool_calls=json.dumps(result["tool_calls"], indent=2),
-            summary=result["summary"] or "N/A",
-            feedback=result["feedback"] or "N/A",
-        )
-        for i, (qa_pair, result) in enumerate(zip(qa_pairs, results))
-    ])
+    report += "".join(
+        [
+            TASK_TEMPLATE.format(
+                task_num=i + 1,
+                question=qa_pair["question"],
+                expected_answer=qa_pair["answer"],
+                actual_answer=result["actual"] or "N/A",
+                correct_indicator="✅" if result["score"] else "❌",
+                total_duration=result["total_duration"],
+                tool_calls=json.dumps(result["tool_calls"], indent=2),
+                summary=result["summary"] or "N/A",
+                feedback=result["feedback"] or "N/A",
+            )
+            for i, (qa_pair, result) in enumerate(zip(qa_pairs, results))
+        ]
+    )
 
     return report
 
@@ -320,19 +331,42 @@ Examples:
     )
 
     parser.add_argument("eval_file", type=Path, help="Path to evaluation XML file")
-    parser.add_argument("-t", "--transport", choices=["stdio", "sse", "http"], default="stdio", help="Transport type (default: stdio)")
-    parser.add_argument("-m", "--model", default="claude-3-7-sonnet-20250219", help="Claude model to use (default: claude-3-7-sonnet-20250219)")
+    parser.add_argument(
+        "-t",
+        "--transport",
+        choices=["stdio", "sse", "http"],
+        default="stdio",
+        help="Transport type (default: stdio)",
+    )
+    parser.add_argument(
+        "-m",
+        "--model",
+        default="claude-3-7-sonnet-20250219",
+        help="Claude model to use (default: claude-3-7-sonnet-20250219)",
+    )
 
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
-    stdio_group.add_argument("-a", "--args", nargs="+", help="Arguments for the command (stdio only)")
-    stdio_group.add_argument("-e", "--env", nargs="+", help="Environment variables in KEY=VALUE format (stdio only)")
+    stdio_group.add_argument(
+        "-a", "--args", nargs="+", help="Arguments for the command (stdio only)"
+    )
+    stdio_group.add_argument(
+        "-e", "--env", nargs="+", help="Environment variables in KEY=VALUE format (stdio only)"
+    )
 
     remote_group = parser.add_argument_group("sse/http options")
     remote_group.add_argument("-u", "--url", help="MCP server URL (sse/http only)")
-    remote_group.add_argument("-H", "--header", nargs="+", dest="headers", help="HTTP headers in 'Key: Value' format (sse/http only)")
+    remote_group.add_argument(
+        "-H",
+        "--header",
+        nargs="+",
+        dest="headers",
+        help="HTTP headers in 'Key: Value' format (sse/http only)",
+    )
 
-    parser.add_argument("-o", "--output", type=Path, help="Output file for evaluation report (default: stdout)")
+    parser.add_argument(
+        "-o", "--output", type=Path, help="Output file for evaluation report (default: stdout)"
+    )
 
     args = parser.parse_args()
 

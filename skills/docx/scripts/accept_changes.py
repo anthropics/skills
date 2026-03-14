@@ -119,13 +119,9 @@ def _setup_libreoffice_macro() -> bool:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Accept all tracked changes in a DOCX file"
-    )
+    parser = argparse.ArgumentParser(description="Accept all tracked changes in a DOCX file")
     parser.add_argument("input_file", help="Input DOCX file with tracked changes")
-    parser.add_argument(
-        "output_file", help="Output DOCX file (clean, no tracked changes)"
-    )
+    parser.add_argument("output_file", help="Output DOCX file (clean, no tracked changes)")
     args = parser.parse_args()
 
     _, message = accept_changes(args.input_file, args.output_file)

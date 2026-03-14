@@ -24,7 +24,7 @@ async with async_client.messages.stream(
         print(text, end="", flush=True)
 ```
 
----
+______________________________________________________________________
 
 ## Handling Different Content Types
 
@@ -53,7 +53,7 @@ with client.messages.stream(
                 print(event.delta.text, end="", flush=True)
 ```
 
----
+______________________________________________________________________
 
 ## Streaming with Tool Use
 
@@ -73,7 +73,7 @@ with client.messages.stream(
     # Continue with tool execution if response.stop_reason == "tool_use"
 ```
 
----
+______________________________________________________________________
 
 ## Getting the Final Message
 
@@ -91,7 +91,7 @@ with client.messages.stream(
     print(f"\n\nTokens used: {final_message.usage.output_tokens}")
 ```
 
----
+______________________________________________________________________
 
 ## Streaming with Progress Updates
 
@@ -119,7 +119,7 @@ def stream_with_progress(client, **kwargs):
     return "".join(content_parts)
 ```
 
----
+______________________________________________________________________
 
 ## Error Handling in Streams
 
@@ -140,7 +140,7 @@ except anthropic.APIStatusError as e:
     print(f"\nAPI error: {e.status_code}")
 ```
 
----
+______________________________________________________________________
 
 ## Stream Event Types
 
@@ -156,7 +156,7 @@ except anthropic.APIStatusError as e:
 ## Best Practices
 
 1. **Always flush output** — Use `flush=True` to show tokens immediately
-2. **Handle partial responses** — If the stream is interrupted, you may have incomplete content
-3. **Track token usage** — The `message_delta` event contains usage information
-4. **Use timeouts** — Set appropriate timeouts for your application
-5. **Default to streaming** — Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events
+1. **Handle partial responses** — If the stream is interrupted, you may have incomplete content
+1. **Track token usage** — The `message_delta` event contains usage information
+1. **Use timeouts** — Set appropriate timeouts for your application
+1. **Default to streaming** — Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events

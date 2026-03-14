@@ -2,24 +2,24 @@
 
 This page explains how to install and use skills from this repository in every Claude interface.
 
----
+______________________________________________________________________
 
 ## Prerequisites
 
 No prerequisites are needed to use skills that are **pure instructions** (no scripts). For skills that include Python or shell scripts you will need:
 
-| Dependency | Required by | Install |
-|------------|-------------|---------|
-| Python 3.8+ | docx, pdf, pptx, xlsx, skill-creator, webapp-testing, slack-gif-creator | System package manager |
-| Node.js & npm | web-artifacts-builder, docx (JS library) | https://nodejs.org |
-| LibreOffice | docx, pptx, xlsx (format conversion) | `sudo apt install libreoffice` |
-| Poppler utils | pdf, pptx (PDF → image) | `sudo apt install poppler-utils` |
-| Playwright | webapp-testing | `pip install playwright && playwright install chromium` |
-| Tesseract OCR | pdf (OCR mode) | `sudo apt install tesseract-ocr` |
+| Dependency    | Required by                                                             | Install                                                 |
+| ------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
+| Python 3.8+   | docx, pdf, pptx, xlsx, skill-creator, webapp-testing, slack-gif-creator | System package manager                                  |
+| Node.js & npm | web-artifacts-builder, docx (JS library)                                | <https://nodejs.org>                                      |
+| LibreOffice   | docx, pptx, xlsx (format conversion)                                    | `sudo apt install libreoffice`                          |
+| Poppler utils | pdf, pptx (PDF → image)                                                 | `sudo apt install poppler-utils`                        |
+| Playwright    | webapp-testing                                                          | `pip install playwright && playwright install chromium` |
+| Tesseract OCR | pdf (OCR mode)                                                          | `sudo apt install tesseract-ocr`                        |
 
 Most users only need Python 3.8+; install extra dependencies only for the skills you intend to run scripts from.
 
----
+______________________________________________________________________
 
 ## Claude Code
 
@@ -39,11 +39,11 @@ Claude Code is the recommended environment for local development workflows that 
 /plugin install claude-api@anthropic-agent-skills
 ```
 
-| Plugin group | Skills included |
-|---|---|
-| `document-skills` | docx, pdf, pptx, xlsx |
-| `example-skills` | algorithmic-art, brand-guidelines, canvas-design, doc-coauthoring, frontend-design, internal-comms, mcp-builder, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing |
-| `claude-api` | claude-api |
+| Plugin group      | Skills included                                                                                                                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `document-skills` | docx, pdf, pptx, xlsx                                                                                                                                                                                   |
+| `example-skills`  | algorithmic-art, brand-guidelines, canvas-design, doc-coauthoring, frontend-design, internal-comms, mcp-builder, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing |
+| `claude-api`      | claude-api                                                                                                                                                                                              |
 
 ### 3 — Use a skill
 
@@ -71,7 +71,7 @@ Then in Claude Code:
 /skill load ./upstream_skills/skills/mcp-builder
 ```
 
----
+______________________________________________________________________
 
 ## Claude.ai
 
@@ -80,13 +80,13 @@ All skills in this repository are already **built into paid Claude.ai plans** �
 To upload your own custom skill or to activate a specific skill:
 
 1. Open a conversation in Claude.ai.
-2. Click **Skills** in the left sidebar.
-3. Click **+ Add skill** and upload your `SKILL.md` (and optional supporting files).
-4. Enable the skill for the current project.
+1. Click **Skills** in the left sidebar.
+1. Click **+ Add skill** and upload your `SKILL.md` (and optional supporting files).
+1. Enable the skill for the current project.
 
 See the official guide: [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude).
 
----
+______________________________________________________________________
 
 ## Claude API
 
@@ -120,7 +120,7 @@ print(response.content[0].text)
 
 > **Note:** API feature flags and endpoint paths may change. Always consult the [official API docs](https://docs.anthropic.com) for the latest.
 
----
+______________________________________________________________________
 
 ## Running Skill Scripts Locally
 
@@ -191,19 +191,19 @@ for i in range(12):
 builder.save("output.gif", num_colors=48, optimize_for_emoji=True)
 ```
 
----
+______________________________________________________________________
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Fix |
-|---------|-------------|-----|
-| `ModuleNotFoundError: No module named 'pypdf'` | Python dependency missing | `pip install pypdf` |
-| `soffice: command not found` | LibreOffice not installed | `sudo apt install libreoffice` |
-| `pdftoppm: command not found` | Poppler not installed | `sudo apt install poppler-utils` |
-| Script exits with LibreOffice lock error | Previous LibreOffice instance still running | `pkill soffice` |
-| Claude does not trigger the skill | Skill not installed / not enabled | Re-install or enable in the Skills panel |
-| Generated file fails validation | XML structure error | Run `validate.py`, inspect the diff |
+| Symptom                                        | Likely cause                                | Fix                                      |
+| ---------------------------------------------- | ------------------------------------------- | ---------------------------------------- |
+| `ModuleNotFoundError: No module named 'pypdf'` | Python dependency missing                   | `pip install pypdf`                      |
+| `soffice: command not found`                   | LibreOffice not installed                   | `sudo apt install libreoffice`           |
+| `pdftoppm: command not found`                  | Poppler not installed                       | `sudo apt install poppler-utils`         |
+| Script exits with LibreOffice lock error       | Previous LibreOffice instance still running | `pkill soffice`                          |
+| Claude does not trigger the skill              | Skill not installed / not enabled           | Re-install or enable in the Skills panel |
+| Generated file fails validation                | XML structure error                         | Run `validate.py`, inspect the diff      |
 
----
+______________________________________________________________________
 
 *See also: [Architecture](Architecture) · [Contributing](Contributing) · [Skills Overview](Skills-Overview)*

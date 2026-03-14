@@ -70,10 +70,10 @@ def _generate_hex_id() -> str:
 
 
 SMART_QUOTE_ENTITIES = {
-    "\u201c": "&#x201C;",  
-    "\u201d": "&#x201D;",  
-    "\u2018": "&#x2018;",  
-    "\u2019": "&#x2019;",  
+    "\u201c": "&#x201C;",
+    "\u201d": "&#x201D;",
+    "\u2018": "&#x2018;",
+    "\u2019": "&#x2019;",
 }
 
 
@@ -88,7 +88,7 @@ def _append_xml(xml_path: Path, root_tag: str, content: str) -> None:
     root = dom.getElementsByTagName(root_tag)[0]
     ns_attrs = " ".join(f'xmlns:{k}="{v}"' for k, v in NS.items())
     wrapper_dom = defusedxml.minidom.parseString(f"<root {ns_attrs}>{content}</root>")
-    for child in wrapper_dom.documentElement.childNodes:  
+    for child in wrapper_dom.documentElement.childNodes:
         if child.nodeType == child.ELEMENT_NODE:
             root.appendChild(dom.importNode(child, True))
     output = _encode_smart_quotes(dom.toxml(encoding="UTF-8").decode("utf-8"))
@@ -140,7 +140,7 @@ def _ensure_comment_relationships(unpacked_dir: Path) -> None:
         return
 
     if _has_relationship(rels_path, "comments.xml"):
-        return  
+        return
 
     dom = defusedxml.minidom.parseString(rels_path.read_text(encoding="utf-8"))
     root = dom.documentElement
@@ -170,7 +170,7 @@ def _ensure_comment_relationships(unpacked_dir: Path) -> None:
         rel.setAttribute("Id", f"rId{next_rid}")
         rel.setAttribute("Type", rel_type)
         rel.setAttribute("Target", target)
-        root.appendChild(rel)  
+        root.appendChild(rel)
         next_rid += 1
 
     rels_path.write_bytes(dom.toxml(encoding="UTF-8"))
@@ -182,7 +182,7 @@ def _ensure_comment_content_types(unpacked_dir: Path) -> None:
         return
 
     if _has_content_type(ct_path, "/word/comments.xml"):
-        return  
+        return
 
     dom = defusedxml.minidom.parseString(ct_path.read_text(encoding="utf-8"))
     root = dom.documentElement
@@ -210,7 +210,7 @@ def _ensure_comment_content_types(unpacked_dir: Path) -> None:
         override = dom.createElement("Override")
         override.setAttribute("PartName", part_name)
         override.setAttribute("ContentType", content_type)
-        root.appendChild(override)  
+        root.appendChild(override)
 
     ct_path.write_bytes(dom.toxml(encoding="UTF-8"))
 
@@ -245,7 +245,7 @@ def add_comment(
             date=ts,
             initials=initials,
             para_id=para_id,
-            text=text,  
+            text=text,
         ),
     )
 
