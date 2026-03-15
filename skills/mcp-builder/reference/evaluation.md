@@ -116,18 +116,18 @@ Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DE
 
 1. **Questions must be designed so the answer DOES NOT CHANGE**
 
-    - Do not ask questions that rely on "current state" which is dynamic
-    - For example, do not count:
-      - Number of reactions to a post
-      - Number of replies to a thread
-      - Number of members in a channel
+   - Do not ask questions that rely on "current state" which is dynamic
+   - For example, do not count:
+     - Number of reactions to a post
+     - Number of replies to a thread
+     - Number of members in a channel
 
-01. **DO NOT let the MCP server RESTRICT the kinds of questions you create**
+1. **DO NOT let the MCP server RESTRICT the kinds of questions you create**
 
-    - Create challenging and complex questions
-    - Some may not be solvable with the available MCP server tools
-    - Questions may require specific output formats (datetime vs. epoch time, JSON vs. MARKDOWN)
-    - Questions may require dozens of tool calls to complete
+   - Create challenging and complex questions
+   - Some may not be solvable with the available MCP server tools
+   - Questions may require specific output formats (datetime vs. epoch time, JSON vs. MARKDOWN)
+   - Questions may require dozens of tool calls to complete
 
 ## Answer Guidelines
 

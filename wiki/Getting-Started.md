@@ -11,7 +11,7 @@ No prerequisites are needed to use skills that are **pure instructions** (no scr
 | Dependency    | Required by                                                             | Install                                                 |
 | ------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
 | Python 3.8+   | docx, pdf, pptx, xlsx, skill-creator, webapp-testing, slack-gif-creator | System package manager                                  |
-| Node.js & npm | web-artifacts-builder, docx (JS library)                                | <https://nodejs.org>                                      |
+| Node.js & npm | web-artifacts-builder, docx (JS library)                                | <https://nodejs.org>                                    |
 | LibreOffice   | docx, pptx, xlsx (format conversion)                                    | `sudo apt install libreoffice`                          |
 | Poppler utils | pdf, pptx (PDF → image)                                                 | `sudo apt install poppler-utils`                        |
 | Playwright    | webapp-testing                                                          | `pip install playwright && playwright install chromium` |
