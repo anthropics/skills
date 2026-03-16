@@ -100,9 +100,9 @@ def improve_description(
     else:
         scores_summary = f"Train: {train_score}"
 
-    prompt = f"""You are optimizing a skill description for an Agent Skills skill called "{skill_name}". A skill has progressive disclosure: the name and description are visible in available_skills, and the full body is loaded only if the skill is selected.
+    prompt = f"""You are optimizing a skill description for a Claude Code skill called "{skill_name}". A "skill" is sort of like a prompt, but with progressive disclosure -- there's a title and description that Claude sees when deciding whether to use the skill, and then if it does use the skill, it reads the .md file which has lots more details and potentially links to other resources in the skill folder like helper files and scripts and additional documentation or examples.
 
-The description appears in the agent's available_skills list. When a user sends a query, the agent decides whether to invoke the skill based on the name and description. Your goal is to write a description that triggers for relevant queries and does not trigger for irrelevant ones.
+The description appears in Claude's "available_skills" list. When a user sends a query, Claude decides whether to invoke the skill based solely on the title and on this description. Your goal is to write a description that triggers for relevant queries, and doesn't trigger for irrelevant ones.
 
 Here's the current description:
 <current_description>

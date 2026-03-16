@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Create new skills, improve existing skills, and measure skill quality in OpenCode and Agent Skills environments. Use when users want to draft a skill from scratch, iterate via evals and human review, benchmark with and without the skill, or optimize skill descriptions for better triggering.
+description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 ---
 
 # Skill Creator
@@ -395,7 +395,7 @@ This handles the full optimization loop automatically. It splits the eval set in
 
 ### How skill triggering works
 
-Understanding the triggering mechanism helps design better eval queries. Skills appear in the agent's `available_skills` list with their name + description, and the agent decides whether to consult a skill based on that description. The important thing to know is that the agent only consults skills for tasks it cannot easily handle on its own — simple, one-step queries like "read this PDF" may not trigger a skill even if the description matches perfectly, because basic tools are enough. Complex, multi-step, or specialized queries reliably trigger skills when the description matches.
+Understanding the triggering mechanism helps design better eval queries. Skills appear in the agent's `available_skills` list with their name + description, and the agent decides whether to consult a skill based on that description. The important thing to know is that the agent only consults skills for tasks it can't easily handle on its own — simple, one-step queries like "read this PDF" may not trigger a skill even if the description matches perfectly, because basic tools are enough. Complex, multi-step, or specialized queries reliably trigger skills when the description matches.
 
 This means your eval queries should be substantive enough that the agent would actually benefit from consulting a skill. Simple queries like "read file X" are poor test cases — they won't trigger skills regardless of description quality.
 
