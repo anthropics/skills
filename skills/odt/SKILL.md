@@ -1,14 +1,14 @@
 ---
 name: odt
-description: "Use this skill whenever the user wants to create, fill, or manipulate OpenDocument Format text files (.odt files). Triggers include: any mention of 'ODT', 'ODF', 'OpenDocument', 'LibreOffice document', or requests to produce documents in open-source or ISO standard formats. Also use when the user asks for a document and specifies LibreOffice compatibility, when filling ODT templates with data, or when creating formal documents like resolutions, reports, letters, contracts, or memos as .odt files. Use this skill instead of the docx skill when the user explicitly requests .odt output or mentions LibreOffice/OpenOffice as their target application. Do NOT use for .docx files (use the docx skill), PDFs, spreadsheets, presentations, or general coding tasks unrelated to document generation."
+description: "Use this skill whenever the user wants to create, fill, read, convert, or export OpenDocument Format text files (.odt files). Triggers include: any mention of 'ODT', 'ODF', 'OpenDocument', 'LibreOffice document', or requests to produce documents in open-source or ISO standard formats. Also use when filling ODT templates with data, reading or parsing .odt files, converting .odt to HTML, exporting .odt to Typst for PDF generation, or creating formal documents like resolutions, reports, letters, contracts, or memos as .odt files. Use this skill instead of the docx skill when the user explicitly requests .odt output or mentions LibreOffice/OpenOffice as their target application. Do NOT use for .docx files (use the docx skill), spreadsheets, presentations, or general coding tasks unrelated to document generation."
 license: Apache-2.0
 ---
 
-# ODT creation and template filling
+# ODT creation, template filling, reading, and conversion
 
 ## Overview
 
-An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/IEC 26300) ZIP archive containing XML files. It is the native format for LibreOffice, Apache OpenOffice, Collabora, OnlyOffice, and is supported by Google Docs and Microsoft Office. odf-kit works in Node.js and browsers, but in this environment it runs in Node.js.
+An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/IEC 26300) ZIP archive containing XML files. It is the native format for LibreOffice, Apache OpenOffice, Collabora, OnlyOffice, and is supported by Google Docs and Microsoft Office.
 
 ## Quick Reference
 
@@ -16,8 +16,9 @@ An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/
 |------|----------|
 | Create new document | Use `odf-kit` — see Creating New Documents below |
 | Fill existing template | Use `odf-kit` `fillTemplate()` — see Template Filling below |
-| Read/extract content | Unzip and parse `content.xml` |
-| Convert to PDF | `libreoffice --headless --convert-to pdf document.odt` |
+| Read / convert to HTML | Use `odf-kit/reader` `odtToHtml()` — see Reading .odt Files below |
+| Export to Typst for PDF | Use `odf-kit/typst` `odtToTypst()` — see Exporting to Typst below |
+| Convert to PDF (LibreOffice) | `libreoffice --headless --convert-to pdf document.odt` |
 
 ### Dependencies
 
@@ -25,7 +26,7 @@ An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/
 npm install -g odf-kit
 ```
 
-Requires Node.js 18 or later. ESM only.
+Requires Node.js 22 or later. ESM only.
 
 ---
 
@@ -344,6 +345,168 @@ LibreOffice often fragments `{placeholder}` text across multiple XML elements du
 
 ---
 
+## Reading .odt Files
+
+Parse existing `.odt` files into a structured document model or convert directly to HTML. Import from `odf-kit/reader`.
+
+### Convert to HTML
+
+```javascript
+import { odtToHtml } from "odf-kit/reader";
+import { readFileSync, writeFileSync } from "node:fs";
+
+const bytes = new Uint8Array(readFileSync("document.odt"));
+
+// Full HTML document
+const html = odtToHtml(bytes);
+writeFileSync("document.html", html);
+
+// Inner fragment only (for embedding in an existing page)
+const fragment = odtToHtml(bytes, { fragment: true });
+```
+
+### Parse to Document Model
+
+```javascript
+import { readOdt } from "odf-kit/reader";
+
+const bytes = new Uint8Array(readFileSync("document.odt"));
+const doc = readOdt(bytes);
+
+// Metadata
+console.log(doc.metadata.title);
+console.log(doc.metadata.creator);
+
+// Page geometry
+console.log(doc.pageLayout?.orientation);  // "portrait" | "landscape"
+console.log(doc.pageLayout?.width);        // "21cm"
+
+// Walk the body
+for (const node of doc.body) {
+  if (node.kind === "heading")   console.log(`h${node.level}:`, node.spans[0].text);
+  if (node.kind === "paragraph") console.log(node.spans.map(s => s.text).join(""));
+  if (node.kind === "table")     console.log(`table: ${node.rows.length} rows`);
+  if (node.kind === "list")      console.log(`list: ${node.items.length} items`);
+  if (node.kind === "section")   console.log(`section: ${node.name}`);
+}
+```
+
+### BodyNode types
+
+| `kind` | Description |
+|--------|-------------|
+| `"paragraph"` | Text paragraph with `spans: InlineNode[]` |
+| `"heading"` | Heading with `level: 1–6` and `spans` |
+| `"list"` | Ordered or unordered list with `items` |
+| `"table"` | Table with `rows` → `cells` → `spans` |
+| `"section"` | Named document section with nested `body` |
+| `"tracked-change"` | Tracked change with `changeType`, `author`, `date`, `body` |
+
+### Inline node types
+
+Each `spans` array contains `InlineNode` values. Narrow by `"kind"`:
+
+```javascript
+for (const span of node.spans) {
+  if ("kind" in span) {
+    if (span.kind === "image")    // ImageNode — span.data is base64
+    if (span.kind === "note")     // NoteNode — footnote/endnote
+    if (span.kind === "bookmark") // BookmarkNode
+    if (span.kind === "field")    // FieldNode — page number, date, etc.
+  } else {
+    // TextSpan — span.text, span.bold, span.italic, span.href, span.style
+  }
+}
+```
+
+### Tracked changes
+
+```javascript
+import { readOdt, odtToHtml } from "odf-kit/reader";
+
+// "final" (default) — show document as if all changes accepted
+const doc = readOdt(bytes);
+
+// "original" — show document as if all changes rejected
+const doc = readOdt(bytes, { trackedChanges: "original" });
+
+// "changes" — expose TrackedChangeNode values in the body
+const doc = readOdt(bytes, { trackedChanges: "changes" });
+const html = doc.toHtml({ trackedChanges: "changes" });
+// insertions → <ins>, deletions → <del>
+```
+
+---
+
+## Exporting to Typst for PDF
+
+Convert `.odt` files to [Typst](https://typst.app/) markup, then compile to PDF with the Typst CLI. Import from `odf-kit/typst`. Zero new dependencies — works in Node.js, browsers, and any JavaScript environment.
+
+### Basic usage
+
+```javascript
+import { odtToTypst } from "odf-kit/typst";
+import { readFileSync, writeFileSync } from "node:fs";
+import { execSync } from "node:child_process";
+
+const bytes = new Uint8Array(readFileSync("document.odt"));
+
+// Convert to Typst markup
+const typ = odtToTypst(bytes);
+writeFileSync("document.typ", typ);
+
+// Compile to PDF (requires Typst CLI installed separately)
+execSync("typst compile document.typ document.pdf");
+```
+
+### Parse once, emit to multiple formats
+
+Use `modelToTypst()` when you already have a parsed model — avoids re-reading the file:
+
+```javascript
+import { readOdt } from "odf-kit/reader";
+import { modelToTypst } from "odf-kit/typst";
+
+const bytes = new Uint8Array(readFileSync("document.odt"));
+const model = readOdt(bytes);
+
+const html  = model.toHtml({ fragment: true });  // HTML
+const typst = modelToTypst(model);               // Typst markup
+```
+
+### Installing the Typst CLI
+
+```bash
+# macOS
+brew install typst
+
+# Windows
+winget install --id Typst.Typst
+
+# Linux / via npm
+npm install -g typst
+```
+
+### Typst coverage
+
+Headings, paragraphs (with text-align via `#align()`), bold, italic, underline, strikethrough, superscript, subscript, hyperlinks via `#link()`, footnotes via `#footnote[]`, bookmarks as Typst labels, text fields (page number → `#counter(page).display()`), unordered and ordered lists with nesting, tables with column widths, named sections, tracked changes (final/original/changes modes), page geometry via `#set page()`, and character styles (color, font size, font family, highlight).
+
+**Images** are emitted as comment placeholders — Typst does not support inline base64 without filesystem access:
+
+```typst
+/* [image: logo.png 10cm × 6cm] */
+```
+
+To include images in the PDF, extract `ImageNode.data` (base64) from the model, write files alongside the `.typ`, then substitute placeholders with `#image("logo.png")`.
+
+### TypstEmitOptions
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `trackedChanges` | `"final"` \| `"original"` \| `"changes"` | `"final"` | How tracked changes are emitted in Typst output |
+
+---
+
 ## Validation
 
 After creating a file, verify it opens correctly:
@@ -352,9 +515,8 @@ After creating a file, verify it opens correctly:
 # Convert to PDF as a validation step
 libreoffice --headless --convert-to pdf output.odt
 
-# Or convert to images for visual inspection
-libreoffice --headless --convert-to pdf output.odt
-pdftoppm -jpeg -r 150 output.pdf preview
+# Or use the Typst path (no LibreOffice needed)
+# See Exporting to Typst above
 ```
 
 ---
@@ -369,6 +531,7 @@ pdftoppm -jpeg -r 150 output.pdf preview
 - **Template `fillTemplate` is synchronous** — returns `Uint8Array` directly (no await needed)
 - **`###` in header/footer strings** is replaced with page numbers automatically
 - **A4 is the default page size** — set explicit dimensions for US Letter (`8.5in` × `11in`)
+- **Reader and Typst are separate sub-exports** — import from `odf-kit/reader` and `odf-kit/typst`, not from `odf-kit`
 
 ---
 
@@ -438,5 +601,6 @@ createReport();
 
 ## Dependencies
 
-- **odf-kit**: `npm install -g odf-kit` (document creation and template filling)
-- **LibreOffice**: PDF conversion and validation (`libreoffice --headless`)
+- **odf-kit**: `npm install -g odf-kit` — document creation, template filling, reading, and Typst export
+- **Typst CLI** (optional): PDF compilation only — `npm install -g typst` or via system package manager
+- **LibreOffice** (optional): alternative PDF conversion — `libreoffice --headless`
