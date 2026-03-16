@@ -2,49 +2,73 @@
 """Improve a skill description based on eval results.
 
 Takes eval results (from run_eval.py) and generates an improved description
-by calling `claude -p` as a subprocess (same auth pattern as run_eval.py —
-uses the session's Claude Code auth, no separate ANTHROPIC_API_KEY needed).
+by calling `opencode run` as a subprocess.
 """
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
 
 
-def _call_claude(prompt: str, model: str | None, timeout: int = 300) -> str:
-    """Run `claude -p` with the prompt on stdin and return the text response.
-
-    Prompt goes over stdin (not argv) because it embeds the full SKILL.md
-    body and can easily exceed comfortable argv length.
-    """
-    cmd = ["claude", "-p", "--output-format", "text"]
+def _call_opencode(prompt: str, model: str | None, timeout: int = 300) -> str:
+    """Run `opencode run` and return the text response."""
+    cmd = ["opencode", "run", "--format", "json"]
     if model:
-        cmd.extend(["--model", model])
+        cmd.extend(["-m", model])
+    cmd.append(prompt)
 
-    # Remove CLAUDECODE env var to allow nesting claude -p inside a
-    # Claude Code session. The guard is for interactive terminal conflicts;
-    # programmatic subprocess usage is safe. Same pattern as run_eval.py.
-    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
-
-    result = subprocess.run(
+    process = subprocess.Popen(
         cmd,
-        input=prompt,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         text=True,
-        env=env,
-        timeout=timeout,
     )
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"claude -p exited {result.returncode}\nstderr: {result.stderr}"
-        )
-    return result.stdout
+    if process.stdout is None:
+        raise RuntimeError("Failed to capture opencode stdout")
+
+    text_parts: list[str] = []
+    start = time.time()
+
+    try:
+        while True:
+            if time.time() - start > timeout:
+                raise TimeoutError("opencode run timed out")
+
+            line = process.stdout.readline()
+            if not line:
+                if process.poll() is not None:
+                    break
+                continue
+
+            line = line.strip()
+            if not line:
+                continue
+
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            if event.get("type") == "text":
+                text = (event.get("part") or {}).get("text", "")
+                if text:
+                    text_parts.append(text)
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+
+    if process.returncode not in (0, None):
+        stderr = process.stderr.read() if process.stderr else ""
+        raise RuntimeError(f"opencode run exited {process.returncode}\nstderr: {stderr}")
+
+    return "\n".join(text_parts).strip()
 
 
 def improve_description(
@@ -58,7 +82,7 @@ def improve_description(
     log_dir: Path | None = None,
     iteration: int | None = None,
 ) -> str:
-    """Call Claude to improve the description based on eval results."""
+    """Call OpenCode to improve the description based on eval results."""
     failed_triggers = [
         r for r in eval_results["results"]
         if r["should_trigger"] and not r["pass"]
@@ -76,9 +100,9 @@ def improve_description(
     else:
         scores_summary = f"Train: {train_score}"
 
-    prompt = f"""You are optimizing a skill description for a Claude Code skill called "{skill_name}". A "skill" is sort of like a prompt, but with progressive disclosure -- there's a title and description that Claude sees when deciding whether to use the skill, and then if it does use the skill, it reads the .md file which has lots more details and potentially links to other resources in the skill folder like helper files and scripts and additional documentation or examples.
+    prompt = f"""You are optimizing a skill description for an Agent Skills skill called "{skill_name}". A skill has progressive disclosure: the name and description are visible in available_skills, and the full body is loaded only if the skill is selected.
 
-The description appears in Claude's "available_skills" list. When a user sends a query, Claude decides whether to invoke the skill based solely on the title and on this description. Your goal is to write a description that triggers for relevant queries, and doesn't trigger for irrelevant ones.
+The description appears in the agent's available_skills list. When a user sends a query, the agent decides whether to invoke the skill based on the name and description. Your goal is to write a description that triggers for relevant queries and does not trigger for irrelevant ones.
 
 Here's the current description:
 <current_description>
@@ -134,14 +158,14 @@ Concretely, your description should not be more than about 100-200 words, even i
 Here are some tips that we've found to work well in writing these descriptions:
 - The skill should be phrased in the imperative -- "Use this skill for" rather than "this skill does"
 - The skill description should focus on the user's intent, what they are trying to achieve, vs. the implementation details of how the skill works.
-- The description competes with other skills for Claude's attention — make it distinctive and immediately recognizable.
+- The description competes with other skills for the agent's attention — make it distinctive and immediately recognizable.
 - If you're getting lots of failures after repeated attempts, change things up. Try different sentence structures or wordings.
 
 I'd encourage you to be creative and mix up the style in different iterations since you'll have multiple opportunities to try different approaches and we'll just grab the highest-scoring one at the end. 
 
 Please respond with only the new description text in <new_description> tags, nothing else."""
 
-    text = _call_claude(prompt, model)
+    text = _call_opencode(prompt, model)
 
     match = re.search(r"<new_description>(.*?)</new_description>", text, re.DOTALL)
     description = match.group(1).strip().strip('"') if match else text.strip().strip('"')
@@ -155,11 +179,8 @@ Please respond with only the new description text in <new_description> tags, not
         "over_limit": len(description) > 1024,
     }
 
-    # Safety net: the prompt already states the 1024-char hard limit, but if
-    # the model blew past it anyway, make one fresh single-turn call that
-    # quotes the too-long version and asks for a shorter rewrite. (The old
-    # SDK path did this as a true multi-turn; `claude -p` is one-shot, so we
-    # inline the prior output into the new prompt instead.)
+    # Safety net: if the model exceeds the 1024-char hard limit, ask for a
+    # shorter rewrite in a fresh call.
     if len(description) > 1024:
         shorten_prompt = (
             f"{prompt}\n\n"
@@ -171,7 +192,7 @@ Please respond with only the new description text in <new_description> tags, not
             f"important trigger words and intent coverage. Respond with only "
             f"the new description in <new_description> tags."
         )
-        shorten_text = _call_claude(shorten_prompt, model)
+        shorten_text = _call_opencode(shorten_prompt, model)
         match = re.search(r"<new_description>(.*?)</new_description>", shorten_text, re.DOTALL)
         shortened = match.group(1).strip().strip('"') if match else shorten_text.strip().strip('"')
 
