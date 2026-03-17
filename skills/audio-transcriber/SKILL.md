@@ -1,6 +1,7 @@
 ---
 name: audio-transcriber
 description: "Transcribes audio/video/YouTube to professional Markdown with speaker diarization. Accepts local files (MP3, MP4, WAV, M4A, etc.) or YouTube links. For YouTube, uses MCP youtube-transcript for instant captions; if unavailable, downloads audio with yt-dlp. For local files, uses MLX Whisper (Apple Silicon GPU) + SpeechBrain for lightweight diarization. Supports model selection (tiny/base/small/medium). Automatically generates meeting minutes."
+license: Complete terms in LICENSE.txt
 ---
 
 ## Purpose
