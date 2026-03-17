@@ -1,74 +1,94 @@
 ---
 name: google-maps
-description: Geospatial query capabilities — geocoding, nearby search, routing, place details, elevation. Trigger when the user mentions locations, addresses, coordinates, navigation, "what's nearby", "how to get there", distance/duration, or any question involving geographic information.
+description: Geospatial query capabilities — geocoding, nearby search, routing, place details, elevation, weather, air quality, and map visualization. Trigger when the user mentions locations, addresses, coordinates, navigation, "what's nearby", "how to get there", distance/duration, or any question that inherently involves geographic information — even if they don't explicitly say "map".
 license: Complete terms in LICENSE.txt
 ---
 
 # Google Maps - Geospatial Query Capabilities
 
+## Overview
+
 Gives an AI Agent the ability to reason about physical space — understand locations, distances, routes, and elevation, and naturally weave that information into conversation.
 
-## Prerequisites
+Without this Skill, the agent can only guess or refuse when asked "how do I get from Taipei 101 to the National Palace Museum?". With it, the agent returns exact coordinates, step-by-step routes, and travel times.
 
-```bash
-npm install -g @cablate/mcp-google-map
-```
+---
 
-Set `GOOGLE_MAPS_API_KEY` environment variable (get one at https://console.cloud.google.com).
+## Core Principles
+
+| Principle | Explanation |
+|-----------|-------------|
+| Chain over single-shot | Most geo questions require 2-5 tool calls chained together. See Scenario Recipes in references/tools-api.md for the full patterns. |
+| Match recipe to intent | Map the user's question to a recipe (Trip Planning, Local Discovery, Route Comparison, Neighborhood Analysis, Multi-Stop, Place Comparison, Along the Route) before calling any tool. |
+| Precise input saves trouble | Use coordinates over address strings when available. Use place_id over name search. More precise input = more reliable output. |
+| Output is structured | Every tool returns JSON. Use it directly for downstream computation or comparison — no extra parsing needed. |
+| Present as tables | Users prefer comparison tables and scorecards over raw JSON. Format results for readability. |
+
+---
 
 ## Tool Map
 
-8 tools in three categories — pick by scenario:
+17 tools in five categories — pick by scenario:
 
 ### Place Discovery
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `geocode` | Have an address/landmark, need coordinates | "Coordinates of Tokyo Tower?" |
+| `geocode` | Have an address/landmark, need coordinates | "What are the coordinates of Tokyo Tower?" |
 | `reverse-geocode` | Have coordinates, need an address | "What's at 35.65, 139.74?" |
 | `search-nearby` | Know a location, find nearby places by type | "Coffee shops near my hotel" |
 | `search-places` | Natural language place search | "Best ramen in Tokyo" |
-| `place-details` | Have a place_id, need full info | "Opening hours for this restaurant?" |
+| `place-details` | Have a place_id, need full info | "Opening hours and reviews for this restaurant?" |
+| `batch-geocode` | Geocode multiple addresses at once (max 50) | "Get coordinates for all these offices" |
 
 ### Routing & Distance
 | Tool | When to use | Example |
 |------|-------------|---------|
 | `directions` | How to get from A to B | "Route from Taipei Main Station to the airport" |
-| `distance-matrix` | Compare distances across multiple points | "Which hotel is closest to the airport?" |
+| `distance-matrix` | Compare distances across multiple points | "Which of these 3 hotels is closest to the airport?" |
+| `search-along-route` | Find places along a route (meals, stops) ranked by detour time | "Restaurants between Fushimi Inari and Kiyomizu-dera" |
 
-### Terrain
+### Environment
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `elevation` | Query altitude | "Elevation along this hiking trail" |
+| `elevation` | Query altitude | "Elevation profile along this hiking trail" |
+| `timezone` | Need local time at a destination | "What time is it in Tokyo?" |
+| `weather` | Weather at a location (current or forecast) | "What's the weather in Paris?" |
+| `air-quality` | AQI, pollutants, health recommendations | "Is the air safe for jogging?" |
+
+### Visualization
+| Tool | When to use | Example |
+|------|-------------|---------|
+| `static-map` | Show locations/routes on a map image | "Show me these places on a map" |
+
+### Composite (one-call shortcuts)
+| Tool | When to use | Example |
+|------|-------------|---------|
+| `explore-area` | Overview of a neighborhood | "What's around Tokyo Tower?" |
+| `plan-route` | Multi-stop optimized itinerary | "Visit these 5 places efficiently" |
+| `compare-places` | Side-by-side comparison | "Which ramen shop near Shibuya?" |
+
+---
 
 ## Invocation
 
 ```bash
-# As MCP server (stdio)
-npx @cablate/mcp-google-map --stdio
-
-# Standalone CLI
-npx @cablate/mcp-google-map exec geocode '{"address":"Tokyo Tower"}'
-npx @cablate/mcp-google-map exec search-places '{"query":"ramen in Tokyo"}'
+npx @cablate/mcp-google-map exec <tool> '<json_params>' [-k API_KEY]
 ```
 
-## Common Chaining Patterns
+- **API Key**: `-k` flag or `GOOGLE_MAPS_API_KEY` environment variable
+- **Output**: JSON to stdout, errors to stderr
+- **Stateless**: each call is independent
 
-Most geo questions need 2-5 tool calls chained together:
+---
 
-**Search then Details** — find places, then get full info:
-```
-search-places → place-details (use place_id from results)
-```
+## Reference
 
-**Geocode then Explore** — turn address into coordinates, then search nearby:
-```
-geocode → search-nearby (use coordinates from geocode)
-```
+| File | Content | When to read |
+|------|---------|--------------|
+| `references/tools-api.md` | Full parameter specs, response formats, 7 scenario recipes, and decision guide | When you need exact parameters, response shapes, or multi-tool workflow patterns |
+| `references/travel-planning.md` | Travel planning methodology — 6-layer model, Search Along Route, anti-patterns | When planning multi-day trips — **read before Recipe 1** |
 
-**Multi-point Comparison** — compare travel options:
-```
-geocode (all points) → distance-matrix → directions (for best route)
-```
+---
 
 ## Source
 
