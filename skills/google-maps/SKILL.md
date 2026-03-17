@@ -33,39 +33,49 @@ Without this Skill, the agent can only guess or refuse when asked "how do I get 
 ### Place Discovery
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `geocode` | Have an address/landmark, need coordinates | "What are the coordinates of Tokyo Tower?" |
-| `reverse-geocode` | Have coordinates, need an address | "What's at 35.65, 139.74?" |
-| `search-nearby` | Know a location, find nearby places by type | "Coffee shops near my hotel" |
-| `search-places` | Natural language place search | "Best ramen in Tokyo" |
-| `place-details` | Have a place_id, need full info | "Opening hours and reviews for this restaurant?" |
-| `batch-geocode` | Geocode multiple addresses at once (max 50) | "Get coordinates for all these offices" |
+| `maps_geocode` | Have an address/landmark, need coordinates | "What are the coordinates of Tokyo Tower?" |
+| `maps_reverse_geocode` | Have coordinates, need an address | "What's at 35.65, 139.74?" |
+| `maps_search_nearby` | Know a location, find nearby places by type | "Coffee shops near my hotel" |
+| `maps_search_places` | Natural language place search | "Best ramen in Tokyo" |
+| `maps_place_details` | Have a place_id, need full info | "Opening hours and reviews for this restaurant?" |
+| `maps_batch_geocode` | Geocode multiple addresses at once (max 50) | "Get coordinates for all these offices" |
 
 ### Routing & Distance
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `directions` | How to get from A to B | "Route from Taipei Main Station to the airport" |
-| `distance-matrix` | Compare distances across multiple points | "Which of these 3 hotels is closest to the airport?" |
-| `search-along-route` | Find places along a route (meals, stops) ranked by detour time | "Restaurants between Fushimi Inari and Kiyomizu-dera" |
+| `maps_directions` | How to get from A to B | "Route from Taipei Main Station to the airport" |
+| `maps_distance_matrix` | Compare distances across multiple points | "Which of these 3 hotels is closest to the airport?" |
+| `maps_search_along_route` | Find places along a route (meals, stops) ranked by detour time | "Restaurants between Fushimi Inari and Kiyomizu-dera" |
 
 ### Environment
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `elevation` | Query altitude | "Elevation profile along this hiking trail" |
-| `timezone` | Need local time at a destination | "What time is it in Tokyo?" |
-| `weather` | Weather at a location (current or forecast) | "What's the weather in Paris?" |
-| `air-quality` | AQI, pollutants, health recommendations | "Is the air safe for jogging?" |
+| `maps_elevation` | Query altitude | "Elevation profile along this hiking trail" |
+| `maps_timezone` | Need local time at a destination | "What time is it in Tokyo?" |
+| `maps_weather` | Weather at a location (current or forecast) | "What's the weather in Paris?" |
+| `maps_air_quality` | AQI, pollutants, health recommendations | "Is the air safe for jogging?" |
 
 ### Visualization
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `static-map` | Show locations/routes on a map image | "Show me these places on a map" |
+| `maps_static_map` | Show locations/routes on a map image | "Show me these places on a map" |
 
 ### Composite (one-call shortcuts)
 | Tool | When to use | Example |
 |------|-------------|---------|
-| `explore-area` | Overview of a neighborhood | "What's around Tokyo Tower?" |
-| `plan-route` | Multi-stop optimized itinerary | "Visit these 5 places efficiently" |
-| `compare-places` | Side-by-side comparison | "Which ramen shop near Shibuya?" |
+| `maps_explore_area` | Overview of a neighborhood | "What's around Tokyo Tower?" |
+| `maps_plan_route` | Multi-stop optimized itinerary | "Visit these 5 places efficiently" |
+| `maps_compare_places` | Side-by-side comparison | "Which ramen shop near Shibuya?" |
+
+---
+
+## Known API Limitations
+
+| Tool | Limitation | Workaround |
+|------|-----------|------------|
+| `maps_weather` | Unsupported regions: Japan, China, South Korea, Cuba, Iran, North Korea, Syria | Use web search for weather in these regions |
+| `maps_distance_matrix` | Transit mode returns null in some regions (notably Japan) | Fall back to `driving` or `walking` mode |
+| `maps_air_quality` | Works globally including Japan (unlike weather) | — |
 
 ---
 
@@ -78,6 +88,7 @@ npx @cablate/mcp-google-map exec <tool> '<json_params>' [-k API_KEY]
 - **API Key**: `-k` flag or `GOOGLE_MAPS_API_KEY` environment variable
 - **Output**: JSON to stdout, errors to stderr
 - **Stateless**: each call is independent
+- **Tool names**: CLI accepts both `maps_geocode` and `geocode` short forms
 
 ---
 

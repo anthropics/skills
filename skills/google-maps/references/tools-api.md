@@ -1,11 +1,11 @@
 # Google Maps Tools - Parameter & Response Reference
 
-## geocode
+## maps_geocode
 
 Convert an address or landmark name to GPS coordinates.
 
 ```bash
-exec geocode '{"address": "Tokyo Tower"}'
+exec maps_geocode '{"address": "Tokyo Tower"}'
 ```
 
 | Param | Type | Required | Description |
@@ -26,12 +26,12 @@ Response:
 
 ---
 
-## batch-geocode
+## maps_batch_geocode
 
 Geocode multiple addresses in one call (max 50).
 
 ```bash
-exec batch-geocode-tool '{"addresses": ["Tokyo Tower", "Eiffel Tower", "Statue of Liberty"]}'
+exec maps_batch_geocode '{"addresses": ["Tokyo Tower", "Eiffel Tower", "Statue of Liberty"]}'
 ```
 
 | Param | Type | Required | Description |
@@ -53,12 +53,12 @@ Response:
 
 ---
 
-## reverse-geocode
+## maps_reverse_geocode
 
 Convert GPS coordinates to a street address.
 
 ```bash
-exec reverse-geocode '{"latitude": 35.6586, "longitude": 139.7454}'
+exec maps_reverse_geocode '{"latitude": 35.6586, "longitude": 139.7454}'
 ```
 
 | Param | Type | Required | Description |
@@ -80,12 +80,12 @@ Response:
 
 ---
 
-## search-nearby
+## maps_search_nearby
 
 Find places near a location by type.
 
 ```bash
-exec search-nearby '{"center": {"value": "35.6586,139.7454", "isCoordinates": true}, "keyword": "restaurant", "radius": 500}'
+exec maps_search_nearby '{"center": {"value": "35.6586,139.7454", "isCoordinates": true}, "keyword": "restaurant", "radius": 500}'
 ```
 
 | Param | Type | Required | Description |
@@ -100,12 +100,12 @@ Response: `{ success, location, data: [{ name, place_id, formatted_address, geom
 
 ---
 
-## search-places
+## maps_search_places
 
-Free-text place search. More flexible than search-nearby.
+Free-text place search. More flexible than maps_search_nearby.
 
 ```bash
-exec search-places '{"query": "ramen in Tokyo"}'
+exec maps_search_places '{"query": "ramen in Tokyo"}'
 ```
 
 | Param | Type | Required | Description |
@@ -120,12 +120,12 @@ Response: `{ success, data: [{ name, place_id, address, location, rating, total_
 
 ---
 
-## place-details
+## maps_place_details
 
 Get full details for a place by its place_id (from search results). Returns reviews, phone, website, hours, photos.
 
 ```bash
-exec place-details '{"placeId": "ChIJCewJkL2LGGAR3Qmk0vCTGkg"}'
+exec maps_place_details '{"placeId": "ChIJCewJkL2LGGAR3Qmk0vCTGkg"}'
 ```
 
 | Param | Type | Required | Description |
@@ -134,12 +134,12 @@ exec place-details '{"placeId": "ChIJCewJkL2LGGAR3Qmk0vCTGkg"}'
 
 ---
 
-## directions
+## maps_directions
 
 Get step-by-step navigation between two points.
 
 ```bash
-exec directions '{"origin": "Tokyo Tower", "destination": "Shibuya Station", "mode": "transit"}'
+exec maps_directions '{"origin": "Tokyo Tower", "destination": "Shibuya Station", "mode": "transit"}'
 ```
 
 | Param | Type | Required | Description |
@@ -152,12 +152,14 @@ exec directions '{"origin": "Tokyo Tower", "destination": "Shibuya Station", "mo
 
 ---
 
-## distance-matrix
+## maps_distance_matrix
 
 Calculate travel distances and times between multiple origins and destinations.
 
+> **Known limitation:** Transit mode returns null in some regions (notably Japan). Fall back to `driving` or `walking` mode if transit returns no results.
+
 ```bash
-exec distance-matrix '{"origins": ["Tokyo Tower"], "destinations": ["Shibuya Station", "Shinjuku Station"], "mode": "driving"}'
+exec maps_distance_matrix '{"origins": ["Tokyo Tower"], "destinations": ["Shibuya Station", "Shinjuku Station"], "mode": "driving"}'
 ```
 
 | Param | Type | Required | Description |
@@ -168,12 +170,12 @@ exec distance-matrix '{"origins": ["Tokyo Tower"], "destinations": ["Shibuya Sta
 
 ---
 
-## elevation
+## maps_elevation
 
 Get elevation data for geographic coordinates.
 
 ```bash
-exec elevation '{"locations": [{"latitude": 35.6586, "longitude": 139.7454}]}'
+exec maps_elevation '{"locations": [{"latitude": 35.6586, "longitude": 139.7454}]}'
 ```
 
 | Param | Type | Required | Description |
@@ -187,12 +189,12 @@ Response:
 
 ---
 
-## timezone
+## maps_timezone
 
 Get timezone and local time for coordinates.
 
 ```bash
-exec timezone '{"latitude": 35.6586, "longitude": 139.7454}'
+exec maps_timezone '{"latitude": 35.6586, "longitude": 139.7454}'
 ```
 
 | Param | Type | Required | Description |
@@ -208,13 +210,15 @@ Response:
 
 ---
 
-## weather
+## maps_weather
 
-Get current weather or forecast. Coverage: most regions, but China, Japan, South Korea, Cuba, Iran, North Korea, Syria are unsupported.
+Get current weather or forecast.
+
+> **Known limitation:** Unsupported regions: China, Japan, South Korea, Cuba, Iran, North Korea, Syria. For these regions, use web search as fallback. `maps_air_quality` works in these regions (different API).
 
 ```bash
-exec weather '{"latitude": 37.4220, "longitude": -122.0841}'
-exec weather '{"latitude": 37.4220, "longitude": -122.0841, "type": "forecast_daily", "forecastDays": 3}'
+exec maps_weather '{"latitude": 37.4220, "longitude": -122.0841}'
+exec maps_weather '{"latitude": 37.4220, "longitude": -122.0841, "type": "forecast_daily", "forecastDays": 3}'
 ```
 
 | Param | Type | Required | Description |
@@ -227,13 +231,13 @@ exec weather '{"latitude": 37.4220, "longitude": -122.0841, "type": "forecast_da
 
 ---
 
-## air-quality
+## maps_air_quality
 
 Get air quality index, pollutant concentrations, and health recommendations for a location.
 
 ```bash
-exec air-quality '{"latitude": 35.6762, "longitude": 139.6503}'
-exec air-quality '{"latitude": 35.6762, "longitude": 139.6503, "includePollutants": true}'
+exec maps_air_quality '{"latitude": 35.6762, "longitude": 139.6503}'
+exec maps_air_quality '{"latitude": 35.6762, "longitude": 139.6503, "includePollutants": true}'
 ```
 
 | Param | Type | Required | Description |
@@ -261,18 +265,18 @@ Response:
 }
 ```
 
-Chaining: `geocode` → `air-quality` when the user gives an address instead of coordinates.
+Chaining: `maps_geocode` → `maps_air_quality` when the user gives an address instead of coordinates.
 
 ---
 
-## static-map
+## maps_static_map
 
 Generate a map image with markers, paths, or routes. Returns an inline PNG image.
 
 ```bash
-exec static-map '{"center": "Tokyo Tower", "zoom": 14}'
-exec static-map '{"markers": ["color:red|label:A|35.6586,139.7454", "color:blue|label:B|35.6595,139.7006"]}'
-exec static-map '{"markers": ["color:red|35.6586,139.7454"], "maptype": "satellite", "zoom": 16}'
+exec maps_static_map '{"center": "Tokyo Tower", "zoom": 14}'
+exec maps_static_map '{"markers": ["color:red|label:A|35.6586,139.7454", "color:blue|label:B|35.6595,139.7006"]}'
+exec maps_static_map '{"markers": ["color:red|35.6586,139.7454"], "maptype": "satellite", "zoom": 16}'
 ```
 
 | Param | Type | Required | Description |
@@ -287,19 +291,19 @@ exec static-map '{"markers": ["color:red|35.6586,139.7454"], "maptype": "satelli
 Response: MCP image content (inline PNG) + size metadata.
 
 Chaining patterns:
-- `search-nearby` → `static-map` (mark found places on map)
-- `plan-route` / `directions` → `static-map` (draw the route with path + markers)
-- `explore-area` → `static-map` (visualize neighborhood search results)
-- `compare-places` → `static-map` (show compared places side by side)
+- `maps_search_nearby` → `maps_static_map` (mark found places on map)
+- `maps_plan_route` / `maps_directions` → `maps_static_map` (draw the route with path + markers)
+- `maps_explore_area` → `maps_static_map` (visualize neighborhood search results)
+- `maps_compare_places` → `maps_static_map` (show compared places side by side)
 
 ---
 
-## search-along-route
+## maps_search_along_route
 
 Search for places along a route between two points. Results ranked by minimal detour time — perfect for finding meals, cafes, or attractions "on the way" between landmarks.
 
 ```bash
-exec search-along-route '{"textQuery": "restaurant", "origin": "Fushimi Inari, Kyoto", "destination": "Kiyomizu-dera, Kyoto", "mode": "walking"}'
+exec maps_search_along_route '{"textQuery": "restaurant", "origin": "Fushimi Inari, Kyoto", "destination": "Kiyomizu-dera, Kyoto", "mode": "walking"}'
 ```
 
 | Param | Type | Required | Description |
@@ -324,12 +328,12 @@ Key for trip planning: use this between consecutive anchors to find **along-the-
 
 ---
 
-## explore-area (composite)
+## maps_explore_area (composite)
 
 Explore a neighborhood in one call. Internally chains geocode → search-nearby (per type) → place-details (top N).
 
 ```bash
-exec explore-area '{"location": "Tokyo Tower", "types": ["restaurant", "cafe"], "topN": 2}'
+exec maps_explore_area '{"location": "Tokyo Tower", "types": ["restaurant", "cafe"], "topN": 2}'
 ```
 
 | Param | Type | Required | Description |
@@ -341,12 +345,12 @@ exec explore-area '{"location": "Tokyo Tower", "types": ["restaurant", "cafe"], 
 
 ---
 
-## plan-route (composite)
+## maps_plan_route (composite)
 
 Plan an optimized multi-stop route. Internally chains geocode → distance-matrix → nearest-neighbor → directions.
 
 ```bash
-exec plan-route '{"stops": ["Tokyo Tower", "Shibuya Station", "Shinjuku Station", "Ueno Park"], "mode": "driving"}'
+exec maps_plan_route '{"stops": ["Tokyo Tower", "Shibuya Station", "Shinjuku Station", "Ueno Park"], "mode": "driving"}'
 ```
 
 | Param | Type | Required | Description |
@@ -357,12 +361,12 @@ exec plan-route '{"stops": ["Tokyo Tower", "Shibuya Station", "Shinjuku Station"
 
 ---
 
-## compare-places (composite)
+## maps_compare_places (composite)
 
 Compare places side-by-side. Internally chains search-places → place-details → distance-matrix.
 
 ```bash
-exec compare-places '{"query": "ramen near Shibuya", "limit": 3}'
+exec maps_compare_places '{"query": "ramen near Shibuya", "limit": 3}'
 ```
 
 | Param | Type | Required | Description |
@@ -379,37 +383,37 @@ exec compare-places '{"query": "ramen near Shibuya", "limit": 3}'
 
 **Search → Details** — Find places, then get full info on the best ones.
 ```
-search-places {"query":"Michelin restaurants in Taipei"}
-place-details {"placeId":"ChIJ..."}  ← use place_id from results
+maps_search_places {"query":"Michelin restaurants in Taipei"}
+maps_place_details {"placeId":"ChIJ..."}  ← use place_id from results
 ```
 
 **Geocode → Nearby** — Turn a landmark into coordinates, then explore the area.
 ```
-geocode {"address":"Taipei 101"}
-search-nearby {"center":{"value":"25.033,121.564","isCoordinates":true},"keyword":"cafe","radius":500}
+maps_geocode {"address":"Taipei 101"}
+maps_search_nearby {"center":{"value":"25.033,121.564","isCoordinates":true},"keyword":"cafe","radius":500}
 ```
 
 **Multi-point Comparison** — Compare distances across multiple origins and destinations in one call.
 ```
-distance-matrix {"origins":["Taipei Main Station","Banqiao Station"],"destinations":["Taoyuan Airport","Songshan Airport"],"mode":"driving"}
+maps_distance_matrix {"origins":["Taipei Main Station","Banqiao Station"],"destinations":["Taoyuan Airport","Songshan Airport"],"mode":"driving"}
 ```
 
 **Geocode → Air Quality** — Check air quality at a named location.
 ```
-geocode {"address":"Tokyo"}
-air-quality {"latitude":35.6762,"longitude":139.6503}
+maps_geocode {"address":"Tokyo"}
+maps_air_quality {"latitude":35.6762,"longitude":139.6503}
 ```
 
 **Search → Map** — Find places, then show them on a map.
 ```
-search-nearby {"center":{"value":"35.6586,139.7454","isCoordinates":true},"keyword":"cafe","radius":500}
-static-map {"markers":["color:red|label:1|lat1,lng1","color:red|label:2|lat2,lng2"]}
+maps_search_nearby {"center":{"value":"35.6586,139.7454","isCoordinates":true},"keyword":"cafe","radius":500}
+maps_static_map {"markers":["color:red|label:1|lat1,lng1","color:red|label:2|lat2,lng2"]}
 ```
 
 **Directions → Map** — Get a route, then visualize it.
 ```
-directions {"origin":"Tokyo Tower","destination":"Shibuya Station","mode":"walking"}
-static-map {"path":["color:0x4285F4|weight:4|lat1,lng1|lat2,lng2|..."],"markers":["color:green|label:A|origin","color:red|label:B|dest"]}
+maps_directions {"origin":"Tokyo Tower","destination":"Shibuya Station","mode":"walking"}
+maps_static_map {"path":["color:0x4285F4|weight:4|lat1,lng1|lat2,lng2|..."],"markers":["color:green|label:A|origin","color:red|label:B|dest"]}
 ```
 
 ---
@@ -425,16 +429,16 @@ This is the most common complex scenario. The goal is a time-ordered itinerary w
 > **Read `references/travel-planning.md` first** — it contains the full methodology, anti-patterns, and time budget guidelines.
 
 **Steps:**
-1. `search-places` — Search "top attractions in {city}" → geographically diverse **anchor points**
+1. `maps_search_places` — Search "top attractions in {city}" → geographically diverse **anchor points**
 2. **Design arcs** — Group nearby anchors into same-day arcs. One direction per day (south→north).
-3. `search-along-route` — Between each pair of anchors, find restaurants/cafes **along the walking route** (ranked by minimal detour)
-4. `place-details` — Get ratings, hours for top candidates
-5. `plan-route` — Validate each day's route. Use `optimize: false` (you already know the geographic order).
-6. `weather` + `air-quality` — Adjust for conditions
-7. `static-map` — **Always** visualize each day with numbered markers + path
+3. `maps_search_along_route` — Between each pair of anchors, find restaurants/cafes **along the walking route** (ranked by minimal detour)
+4. `maps_place_details` — Get ratings, hours for top candidates
+5. `maps_plan_route` — Validate each day's route. Use `optimize: false` (you already know the geographic order).
+6. `maps_weather` + `maps_air_quality` — Adjust for conditions. **Note:** `maps_weather` is unavailable in Japan/China/Korea — use web search fallback.
+7. `maps_static_map` — **Always** visualize each day with numbered markers + path
 
 **Key decisions:**
-- **Use `search-along-route` for meals and breaks** — not explore_area or search_nearby. Along-route results are on the path, not random nearby points.
+- **Use `maps_search_along_route` for meals and breaks** — not maps_explore_area or maps_search_nearby. Along-route results are on the path, not random nearby points.
 - **Never backtrack**: stops progress in one direction per day.
 - Alternate activity types: temple → food → walk → shrine → cafe.
 - Budget 5-7 stops per day max. Major temples = 90-120 min.
@@ -443,20 +447,20 @@ This is the most common complex scenario. The goal is a time-ordered itinerary w
 
 **Example flow (Kyoto 2-day):**
 ```
-search_places("top attractions in Kyoto")
+maps_search_places("top attractions in Kyoto")
 → Fushimi Inari(south), Kiyomizu(east), Kinkaku-ji(north), Arashiyama(west)
 
 Day 1 arc: south→center — Fushimi → Kiyomizu → Gion → Pontocho
 Day 2 arc: center→west — Nishiki → Nijo Castle → Arashiyama
 
-search_along_route("restaurant", "Fushimi Inari", "Kiyomizu-dera", "walking")
+maps_search_along_route("restaurant", "Fushimi Inari", "Kiyomizu-dera", "walking")
 → finds lunch options ALONG the 4km route (not at endpoints)
 
-search_along_route("kaiseki restaurant", "Gion, Kyoto", "Arashiyama, Kyoto")
+maps_search_along_route("kaiseki restaurant", "Gion, Kyoto", "Arashiyama, Kyoto")
 → finds dinner along the afternoon route
 
-plan_route(Day 1 stops, optimize:false) → static_map(Day 1)
-plan_route(Day 2 stops, optimize:false) → static_map(Day 2)
+maps_plan_route(Day 1 stops, optimize:false) → maps_static_map(Day 1)
+maps_plan_route(Day 2 stops, optimize:false) → maps_static_map(Day 2)
 ```
 
 **Example output:**
@@ -478,9 +482,9 @@ Day 1: South → Center arc
 User asks about places around a location. May or may not specify what type.
 
 **Steps:**
-1. `geocode` — Resolve the location (skip if user gave coordinates)
-2. `search-nearby` — Search with keyword + radius. Use `openNow: true` if the user implies "right now"
-3. `place-details` — Get details for the top 3-5 results (ratings, reviews, hours)
+1. `maps_geocode` — Resolve the location (skip if user gave coordinates)
+2. `maps_search_nearby` — Search with keyword + radius. Use `openNow: true` if the user implies "right now"
+3. `maps_place_details` — Get details for the top 3-5 results (ratings, reviews, hours)
 
 **Key decisions:**
 - If no keyword specified, search multiple types: restaurant, cafe, attraction
@@ -494,9 +498,9 @@ User asks about places around a location. May or may not specify what type.
 User wants to compare travel options between two points.
 
 **Steps:**
-1. `directions` with `mode: "driving"` — Get driving route
-2. `directions` with `mode: "transit"` — Get transit route
-3. `directions` with `mode: "walking"` — Get walking route (if distance < 5 km)
+1. `maps_directions` with `mode: "driving"` — Get driving route
+2. `maps_directions` with `mode: "transit"` — Get transit route
+3. `maps_directions` with `mode: "walking"` — Get walking route (if distance < 5 km)
 
 **Present as comparison table:**
 ```
@@ -514,15 +518,15 @@ User wants to compare travel options between two points.
 User wants to evaluate a location for living, working, or investing.
 
 **Steps:**
-1. `geocode` — Resolve the address
-2. `search-nearby` — Run multiple searches from the same center:
+1. `maps_geocode` — Resolve the address
+2. `maps_search_nearby` — Run multiple searches from the same center:
    - `keyword: "school"` radius 2000
    - `keyword: "hospital"` radius 3000
    - `keyword: "supermarket"` radius 1000
    - `keyword: "restaurant"` radius 500
    - `keyword: "park"` radius 1000
-3. `distance-matrix` — Calculate commute time to important locations (office, airport, city center)
-4. `elevation` — Check if the area is in a low-elevation flood zone
+3. `maps_distance_matrix` — Calculate commute time to important locations (office, airport, city center)
+4. `maps_elevation` — Check if the area is in a low-elevation flood zone
 
 **Present as scorecard:**
 ```
@@ -541,14 +545,14 @@ Elevation: 45m (not a flood risk)
 User has a list of places and wants the optimal visit order.
 
 **Steps:**
-1. `geocode` — Resolve all addresses to coordinates
-2. `distance-matrix` — Calculate NxN matrix (all origins × all destinations)
+1. `maps_geocode` — Resolve all addresses to coordinates
+2. `maps_distance_matrix` — Calculate NxN matrix (all origins × all destinations)
 3. Use the matrix to determine the nearest-neighbor route order
-4. `directions` — Generate route for the final order (chain waypoints)
+4. `maps_directions` — Generate route for the final order (chain waypoints)
 
 **Key decisions:**
 - For ≤ 5 stops, nearest-neighbor heuristic is good enough
-- For the `directions` call, set origin = first stop, destination = last stop, and mention intermediate stops in conversation
+- For the `maps_directions` call, set origin = first stop, destination = last stop, and mention intermediate stops in conversation
 - If the user says "return to start", plan a round trip
 
 ---
@@ -558,9 +562,9 @@ User has a list of places and wants the optimal visit order.
 User is choosing between specific places.
 
 **Steps:**
-1. `search-places` — Find each place (or use place_id if already known)
-2. `place-details` — Get full details for each candidate
-3. `distance-matrix` — Calculate distance from user's location to each candidate
+1. `maps_search_places` — Find each place (or use place_id if already known)
+2. `maps_place_details` — Get full details for each candidate
+3. `maps_distance_matrix` — Calculate distance from user's location to each candidate
 
 **Present as comparison:**
 ```
@@ -578,13 +582,17 @@ User is choosing between specific places.
 User wants to find things along a route (gas stations, rest stops, food).
 
 **Steps:**
-1. `directions` — Get the route first, extract key waypoints from the steps
-2. `search-nearby` — Search near 2-3 midpoints along the route
-3. `place-details` — Get details for top results at each midpoint
+1. `maps_search_along_route` — Search directly along the route (preferred — results ranked by minimal detour time)
+2. `maps_place_details` — Get details for top results
+
+**Fallback** (if maps_search_along_route is unavailable):
+1. `maps_directions` — Get the route first, extract key waypoints from the steps
+2. `maps_search_nearby` — Search near 2-3 midpoints along the route
+3. `maps_place_details` — Get details for top results at each midpoint
 
 **Key decisions:**
-- Extract waypoints at roughly equal intervals along the route
-- Use the `start_location` of route steps at ~1/3 and ~2/3 of the total distance
+- Prefer `maps_search_along_route` — it uses Google's Routes API to rank results by actual detour time, not just proximity
+- If using the fallback, extract waypoints at roughly equal intervals along the route
 - Set `radius` based on road type: 1000m for highways, 500m for city streets
 
 ---
@@ -593,12 +601,10 @@ User wants to find things along a route (gas stations, rest stops, food).
 
 | User says... | Recipe | First tool |
 |-------------|--------|------------|
-| "Plan a trip / itinerary / day in X" | Trip Planning | `geocode` |
-| "What's near X / around X" | Local Discovery | `geocode` → `search-nearby` |
-| "How do I get to X" / "route from A to B" | Route Comparison | `directions` |
-| "Is X a good neighborhood" / "analyze this area" | Neighborhood Analysis | `geocode` |
-| "Visit A, B, C, D efficiently" | Multi-Stop Route | `geocode` → `distance-matrix` |
-| "Which X should I pick" / "compare these" | Place Comparison | `search-places` |
-| "Find gas stations on the way to X" | Along the Route | `directions` → `search-nearby` |
-
----
+| "Plan a trip / itinerary / day in X" | Trip Planning | `maps_search_places` |
+| "What's near X / around X" | Local Discovery | `maps_geocode` → `maps_search_nearby` |
+| "How do I get to X" / "route from A to B" | Route Comparison | `maps_directions` |
+| "Is X a good neighborhood" / "analyze this area" | Neighborhood Analysis | `maps_geocode` |
+| "Visit A, B, C, D efficiently" | Multi-Stop Route | `maps_geocode` → `maps_distance_matrix` |
+| "Which X should I pick" / "compare these" | Place Comparison | `maps_search_places` |
+| "Find gas stations on the way to X" | Along the Route | `maps_search_along_route` |

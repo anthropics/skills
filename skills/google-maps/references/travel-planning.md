@@ -18,13 +18,15 @@ Human travel planners think in layers. Each layer constrains the next.
 
 ### Layer 1: Anchor Discovery
 **What:** Find 4-6 must-visit landmarks spread across the city.
-**Tool:** `search_places("top attractions in {city}")`
+**Tool:** `maps_search_places("top attractions in {city}")`
 **Why it works:** Google's algorithm returns geographically diverse results. Kyoto → Fushimi(south), Kiyomizu(east), Kinkaku-ji(north), Arashiyama(west) — natural 8km×10km spread.
 
 ### Layer 2: Arc Design
 **What:** Connect anchors into one-directional arcs per day. Edge landmarks go at start/end of a day.
-**Tool:** `distance_matrix` between anchors to understand spatial relationships.
+**Tool:** `maps_distance_matrix` between anchors to understand spatial relationships.
 **Rule:** Never backtrack. Each day sweeps one direction (south→north, east→west).
+
+> **Known limitation:** `maps_distance_matrix` with transit mode returns null in some regions (notably Japan). Use `driving` or `walking` mode instead, or reason from coordinates directly.
 
 Example:
 ```
@@ -44,11 +46,11 @@ Day 2: Nishiki(center) → Nijo Castle → train → Arashiyama(west)     [cente
 
 ### Layer 4: Along-Route Filling
 **What:** Between two anchors, find what's **on the way** — not at the destination.
-**Tool:** `search_along_route(textQuery, origin, destination)`
+**Tool:** `maps_search_along_route(textQuery, origin, destination)`
 **This is the key differentiator.** Results are ranked by minimal detour time, not proximity to a point.
 
 ```
-search_along_route("restaurant", "Fushimi Inari, Kyoto", "Kiyomizu-dera, Kyoto", "walking")
+maps_search_along_route("restaurant", "Fushimi Inari, Kyoto", "Kiyomizu-dera, Kyoto", "walking")
 → Finds restaurants ALONG the 4km walking route, not clustered at either end
 ```
 
@@ -56,22 +58,24 @@ search_along_route("restaurant", "Fushimi Inari, Kyoto", "Kiyomizu-dera, Kyoto",
 **What:** Meals appear where the traveler **will be** at mealtime, not where the "best restaurant" is.
 **Logic:**
 1. Estimate what time the traveler reaches each arc segment
-2. Lunch (~12:00) → search_along_route("lunch restaurant", previous_stop, next_stop)
-3. Dinner (~18:00) → search_nearby at the day's final area (no rush)
+2. Lunch (~12:00) → `maps_search_along_route("lunch restaurant", previous_stop, next_stop)`
+3. Dinner (~18:00) → `maps_search_nearby` at the day's final area (no rush)
 
 **Anti-pattern:** "I searched for the best restaurant in the whole city" → it's 3km off the route.
 **Correct:** "You'll be near Gion around noon — here are options along the way."
 
 ### Layer 6: Rhythm Validation
 **What:** Check the itinerary feels human, not robotic.
-**Tool:** `plan_route(stops, optimize: false)` to get actual times, `weather` for conditions.
+**Tool:** `maps_plan_route(stops, optimize: false)` to get actual times, `maps_weather` for conditions.
 **Checklist:**
 - [ ] Not 5 temples in a row (alternate: temple → food → walk → shrine → cafe)
 - [ ] Major temples get 90-120 min, not 30 min
 - [ ] Walking per day < 10km (suggest transit for >2km gaps)
 - [ ] Lunch 11:30-13:00, dinner 17:30-19:30
 - [ ] 5-7 stops per day max (including meals)
-- [ ] Final stop: call `static_map` with markers + path to visualize
+- [ ] Final stop: call `maps_static_map` with markers + path to visualize
+
+> **Known limitation:** `maps_weather` is unsupported in Japan, China, South Korea, and several other regions. Use web search as fallback for weather in these areas. `maps_air_quality` works globally including Japan.
 
 ---
 
@@ -79,20 +83,20 @@ search_along_route("restaurant", "Fushimi Inari, Kyoto", "Kiyomizu-dera, Kyoto",
 
 ```
 Phase 1 — Skeleton (2-3 calls)
-  search_places("top attractions in {city}")        → anchors
-  distance_matrix(all anchors)                       → spatial relationships
+  maps_search_places("top attractions in {city}")        → anchors
+  maps_distance_matrix(all anchors)                       → spatial relationships
 
 Phase 2 — Arc + Fill (2-4 calls per day)
-  search_along_route("restaurant", stop_A, stop_B)  → along-route meals
-  search_along_route("cafe", stop_B, stop_C)         → along-route breaks
+  maps_search_along_route("restaurant", stop_A, stop_B)  → along-route meals
+  maps_search_along_route("cafe", stop_B, stop_C)         → along-route breaks
 
 Phase 3 — Environment (2 calls)
-  weather(city coords)                               → rain → move indoor activities
-  air_quality(city coords)                           → bad AQI → reduce outdoor time
+  maps_weather(city coords)                               → rain → move indoor activities
+  maps_air_quality(city coords)                           → bad AQI → reduce outdoor time
 
 Phase 4 — Validate + Visualize (2 calls per day)
-  plan_route(day_stops, optimize: false)             → verify times/distances
-  static_map(markers + path)                         → map for each day
+  maps_plan_route(day_stops, optimize: false)             → verify times/distances
+  maps_static_map(markers + path)                         → map for each day
 
 Total: ~12-16 calls for a 2-day trip
 ```
@@ -103,11 +107,11 @@ Total: ~12-16 calls for a 2-day trip
 
 | Anti-Pattern | Symptom | Fix |
 |-------------|---------|-----|
-| Single-point explosion | `explore_area("Kyoto")` → all within 1km | search_places for anchors first |
+| Single-point explosion | `maps_explore_area("Kyoto")` → all within 1km | `maps_search_places` for anchors first |
 | Backtracking | east→west→east→west | One direction per day |
-| No along-route search | Meals at endpoints only | `search_along_route` between stops |
+| No along-route search | Meals at endpoints only | `maps_search_along_route` between stops |
 | Distance-optimal ordering | Ignores time-of-day quality | AI assigns time slots before routing |
-| No map output | Text/JSON only | Always `static_map` after each day's route |
+| No map output | Text/JSON only | Always `maps_static_map` after each day's route |
 | Over-scheduling | 12 stops in one day | Max 5-7 stops including meals |
 | Same-type clustering | 5 temples consecutively | Alternate activity types |
 
