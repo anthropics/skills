@@ -49,7 +49,7 @@ def generate_launch_description():
 | `Node` | Launch a ROS 2 node | `Node(package='...', executable='...')` |
 | `LifecycleNode` | Launch a lifecycle-managed node | Same as Node but exposes lifecycle events |
 | `ComposableNodeContainer` | Launch a component container | Holds composable nodes |
-| `ExecuteProcess` | Run any shell command | `ExecuteProcess(cmd=['ros2', 'bag', 'record'])` |
+| `ExecuteProcess` | Run any external process | `ExecuteProcess(cmd=['ros2', 'bag', 'record'])` |
 | `IncludeLaunchDescription` | Include another launch file | Compose launch files hierarchically |
 | `GroupAction` | Group actions with shared namespace/conditions | Namespace isolation |
 | `DeclareLaunchArgument` | Declare a user-facing argument | CLI-configurable parameters |
@@ -238,9 +238,9 @@ shutdown_handler = RegisterEventHandler(
 
 ```python
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
@@ -356,13 +356,15 @@ def generate_launch_description():
     )
 
     # Controller Manager
+    # Humble: pass robot_description as parameter
+    # Jazzy+: CM subscribes to /robot_description topic (published by RSP above)
+    #         — do NOT pass robot_description as parameter
+    cm_params = [{'robot_description': robot_description}, controller_config]  # Humble
+    # cm_params = [controller_config]  # Jazzy / Kilted / Rolling
     control_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
-        parameters=[
-            {'robot_description': robot_description},
-            controller_config,
-        ],
+        parameters=cm_params,
         output='screen',
     )
 
@@ -491,8 +493,8 @@ class TestDriverShutdown(unittest.TestCase):
 # Via colcon
 colcon test --packages-select my_robot_driver
 
-# Directly with launch_testing
-ros2 launch launch_testing test/test_driver.launch.py
+# Directly with launch_test
+launch_test test/test_driver.launch.py
 ```
 
 ## 10. Common failures and fixes

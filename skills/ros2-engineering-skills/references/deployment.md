@@ -7,9 +7,10 @@
 4. Fleet management and OTA updates
 5. systemd service configuration
 6. Environment variable management
-7. Security (SROS2, DDS security)
+7. Security (SROS2)
 8. Monitoring and health checks
-9. Common failures and fixes
+9. Graceful shutdown
+10. Common failures and fixes
 
 ---
 
@@ -67,6 +68,12 @@ CMD ["ros2", "launch", "my_robot_bringup", "robot.launch.py"]
 #!/bin/bash
 # docker/entrypoint.sh
 set -e
+
+# Validate ROS 2 installation exists before sourcing
+if [ ! -f /opt/ros/jazzy/setup.bash ]; then
+  echo "ERROR: /opt/ros/jazzy/setup.bash not found. Check base image." >&2
+  exit 1
+fi
 
 # Source ROS 2 and workspace
 source /opt/ros/jazzy/setup.bash
@@ -131,6 +138,58 @@ RUN --mount=type=cache,target=/ros2_ws/build \
     --mount=type=cache,target=/ros2_ws/log \
     . /opt/ros/jazzy/setup.sh && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+
+### Docker networking for DDS
+
+```yaml
+# docker-compose.yml — host networking (simplest, recommended for single-machine)
+services:
+  robot:
+    network_mode: host
+    # DDS uses host networking directly — no port mapping needed
+```
+
+For multi-container on the same host without host networking:
+```yaml
+services:
+  robot_a:
+    networks:
+      - ros_net
+    environment:
+      - CYCLONEDDS_URI=file:///config/cyclonedds_docker.xml
+  robot_b:
+    networks:
+      - ros_net
+    environment:
+      - CYCLONEDDS_URI=file:///config/cyclonedds_docker.xml
+
+networks:
+  ros_net:
+    driver: bridge
+```
+
+```xml
+<!-- cyclonedds_docker.xml — unicast for Docker bridge network -->
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain>
+    <General>
+      <AllowMulticast>false</AllowMulticast>
+    </General>
+    <Discovery>
+      <Peers>
+        <Peer address="robot_a"/>
+        <Peer address="robot_b"/>
+      </Peers>
+    </Discovery>
+  </Domain>
+</CycloneDDS>
+```
+
+For shared memory transport inside Docker:
+```bash
+# Required for iceoryx/CycloneDDS shared memory
+docker run --ipc=host ...
 ```
 
 ## 2. Cross-compilation (aarch64, armhf)
@@ -201,8 +260,8 @@ sudo apt install ros-jazzy-ros-base  # No desktop on headless Pi
 colcon build --parallel-workers 2 \
   --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-# Reduce DDS overhead
-export ROS_LOCALHOST_ONLY=1  # If single-machine
+# Reduce DDS overhead (Jazzy+: use ROS_AUTOMATIC_DISCOVERY_RANGE instead of ROS_LOCALHOST_ONLY)
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST  # If single-machine
 export CYCLONEDDS_URI='<CycloneDDS><Domain><Internal><MinimumSocketReceiveBufferSize>64KB</MinimumSocketReceiveBufferSize></Internal></Domain></CycloneDDS>'
 ```
 
@@ -239,12 +298,34 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><Internal><MinimumSocketReceiveBuffer
 docker build -t registry.example.com/my_robot:v2.1.0 .
 docker push registry.example.com/my_robot:v2.1.0
 
-# On each robot — pull and restart (via agent or SSH)
-docker pull registry.example.com/my_robot:v2.1.0
-docker-compose up -d --force-recreate
+# On each robot — pull with integrity verification and health check
+#!/bin/bash
+set -e
+NEW_TAG="v2.1.0"
+OLD_TAG=$(docker inspect --format='{{.Config.Image}}' my_robot_driver 2>/dev/null || echo "none")
 
-# Rollback if needed (set IMAGE_TAG in .env or docker-compose.yml)
-IMAGE_TAG=v2.0.0 docker-compose up -d --force-recreate
+# 1. Pull new image
+docker pull "registry.example.com/my_robot:${NEW_TAG}"
+
+# 2. Pre-flight: verify the image can at least start and pass a health check
+# Note: docker run has no --timeout flag; use coreutils timeout instead
+timeout 30 docker run --rm "registry.example.com/my_robot:${NEW_TAG}" \
+  ros2 doctor --report > /dev/null 2>&1 || {
+    echo "ERROR: New image failed pre-flight check. Aborting OTA." >&2
+    exit 1
+  }
+
+# 3. Deploy
+IMAGE_TAG="${NEW_TAG}" docker-compose up -d --force-recreate
+
+# 4. Post-deploy health check (wait for ROS nodes to come up)
+sleep 15
+if ! docker exec my_robot_driver ros2 topic list > /dev/null 2>&1; then
+  echo "WARN: Post-deploy health check failed. Rolling back to ${OLD_TAG}" >&2
+  IMAGE_TAG="${OLD_TAG}" docker-compose up -d --force-recreate
+  exit 1
+fi
+echo "OTA update to ${NEW_TAG} successful."
 ```
 
 ### Version management
@@ -333,17 +414,16 @@ WatchdogSec=30  # systemd kills service if no heartbeat in 30s
 ```
 
 ```cpp
-// In your main node — send heartbeat to systemd
+// In your lifecycle node — send heartbeat to systemd
 #include <systemd/sd-daemon.h>
+#include <chrono>
+using namespace std::chrono_literals;
 
-void heartbeat_callback()
-{
-  sd_notify(0, "WATCHDOG=1");
-}
-// Create timer at half the WatchdogSec interval
-timer_ = create_wall_timer(15s, heartbeat_callback);
+// In on_activate():
+watchdog_timer_ = create_wall_timer(15s,
+  [this]() { sd_notify(0, "WATCHDOG=1"); });
 
-// Notify systemd when fully started
+// In on_activate() after all setup:
 sd_notify(0, "READY=1");
 ```
 
@@ -371,54 +451,56 @@ export ROBOT_TYPE="diff_drive"
 export SERIAL_PORT="/dev/ttyUSB0"
 ```
 
-## 7. Security (SROS2, DDS security)
+### Discovery range control (Jazzy+)
 
-### SROS2 setup
+Jazzy introduced `ROS_AUTOMATIC_DISCOVERY_RANGE` as a more flexible replacement for `ROS_LOCALHOST_ONLY`:
 
 ```bash
-# Create a security keystore
-ros2 security create_keystore /opt/robot/keystore
+# Restrict discovery to localhost (replaces ROS_LOCALHOST_ONLY=1)
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 
-# Generate keys for each node
-ros2 security create_enclave /opt/robot/keystore /my_robot/driver
-ros2 security create_enclave /opt/robot/keystore /my_robot/navigation
+# Allow discovery within the subnet (default behavior)
+export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
 
-# Enable security
-export ROS_SECURITY_KEYSTORE=/opt/robot/keystore
+# Disable automatic discovery entirely (manual peer configuration only)
+export ROS_AUTOMATIC_DISCOVERY_RANGE=OFF
+
+# Use system default (no restriction)
+export ROS_AUTOMATIC_DISCOVERY_RANGE=SYSTEM_DEFAULT
+```
+
+**Note:** `ROS_LOCALHOST_ONLY` is deprecated in Jazzy+ but still works. Prefer `ROS_AUTOMATIC_DISCOVERY_RANGE` for new deployments.
+
+### ROS 2 Daemon behavior
+
+The ROS 2 daemon (`ros2 daemon`) caches discovery information to speed up CLI tools (`ros2 topic list`, `ros2 node list`). It can become stale:
+
+```bash
+# If ros2 CLI shows stale/missing topics:
+ros2 daemon stop
+ros2 daemon start
+
+# Check daemon status
+ros2 daemon status
+```
+
+The daemon runs as a background process. It connects to the DDS network independently of your nodes. If you change `ROS_DOMAIN_ID` or `RMW_IMPLEMENTATION` after the daemon starts, CLI commands will show data from the old configuration until the daemon is restarted.
+
+## 7. Security (SROS2)
+
+For production deployments, enable DDS security via SROS2. This provides mutual TLS authentication,
+topic-level access control, and message encryption. See `references/security.md` for the complete
+SROS2 workflow including keystore setup, governance/permissions authoring, certificate management,
+supply chain hardening, and performance impact analysis.
+
+Quick start for testing:
+```bash
+ros2 security create_keystore ~/sros2_keystore
+ros2 security create_enclave ~/sros2_keystore /my_robot/driver
+export ROS_SECURITY_KEYSTORE=~/sros2_keystore
 export ROS_SECURITY_ENABLE=true
-export ROS_SECURITY_STRATEGY=Enforce  # or "Permissive" for testing
+export ROS_SECURITY_STRATEGY=Permissive  # Use Enforce in production
 ```
-
-### Access control policies
-
-```xml
-<!-- permissions.xml — define what each node can access -->
-<permissions>
-  <grant name="/my_robot/driver">
-    <allow_rule>
-      <publish>
-        <topics><topic>rt/joint_states</topic></topics>
-      </publish>
-      <subscribe>
-        <topics><topic>rt/joint_commands</topic></topics>
-      </subscribe>
-    </allow_rule>
-    <deny_rule>
-      <publish>
-        <topics><topic>*</topic></topics>
-      </publish>
-    </deny_rule>
-  </grant>
-</permissions>
-```
-
-### Security best practices
-
-- **Encrypt all inter-machine DDS traffic** — default DDS is unencrypted
-- **Use SROS2 in production** — prevents unauthorized nodes from joining
-- **Restrict device permissions** — use udev rules for serial/CAN devices
-- **Don't run as root** — use dedicated `robot` user with minimal privileges
-- **Rotate keys** — regenerate SROS2 keys periodically
 
 ## 8. Monitoring and health checks
 
@@ -467,7 +549,72 @@ error_count = Counter('ros2_errors_total', 'Total error count', ['node', 'type']
 start_http_server(9090)
 ```
 
-## 9. Common failures and fixes
+## 9. Graceful shutdown
+
+### The problem
+
+When systemd restarts a ROS 2 service (`systemctl restart ros2-robot`), it sends
+`SIGTERM` and waits `TimeoutStopSec` (default 90s) before `SIGKILL`. Lifecycle
+nodes need time to transition through `deactivate → cleanup → shutdown`. If the
+shutdown is too slow, `SIGKILL` leaves hardware in an unsafe state (motors running,
+grippers open, sensor streams active).
+
+### systemd configuration
+
+```ini
+# Add to [Service] section
+TimeoutStopSec=15          # Give ROS 15s to shut down gracefully
+KillSignal=SIGINT          # SIGINT triggers rclcpp::shutdown() cleanly
+SendSIGKILL=yes            # Force-kill after TimeoutStopSec if still alive
+```
+
+### Signal handling in launch files
+
+```python
+import signal
+from launch import LaunchDescription
+from launch.actions import RegisterEventHandler, Shutdown
+from launch.event_handlers import OnProcessExit
+
+def generate_launch_description():
+    # Ensure all nodes shut down when the main process exits
+    return LaunchDescription([
+        # ... your nodes ...,
+        RegisterEventHandler(
+            OnProcessExit(
+                target_action=driver_node,
+                on_exit=[Shutdown(reason='Driver exited')],
+            )
+        ),
+    ])
+```
+
+### Hardware safety on shutdown
+
+For lifecycle nodes that control hardware, the `on_deactivate` callback must:
+1. Send a safe command (zero velocity, disable torque, close gripper to safe position)
+2. Wait for acknowledgement from hardware (with timeout)
+3. Close communication channels
+
+```cpp
+CallbackReturn on_deactivate(const rclcpp_lifecycle::State &) override {
+  // 1. Safe the hardware BEFORE closing the connection
+  if (serial_.is_open()) {
+    send_zero_velocity(serial_);
+    // 2. Brief wait for hardware to acknowledge
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+  }
+  // 3. Close
+  serial_.close();
+  return CallbackReturn::SUCCESS;
+}
+```
+
+**Anti-pattern:** Not sending a safe command in `on_deactivate`. If the last `write()`
+command was `velocity=1.0` and the node shuts down, the motor may continue at that
+velocity until hardware watchdog times out (if one exists).
+
+## 10. Common failures and fixes
 
 | Symptom | Cause | Fix |
 |---|---|---|

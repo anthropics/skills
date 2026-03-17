@@ -9,7 +9,9 @@
 6. tf → tf2 migration
 7. Parameter server changes
 8. Build system migration (catkin → ament)
-9. Common failures and fixes
+9. Rosbag format migration
+10. dynamic_reconfigure migration
+11. Common failures and fixes
 
 ---
 
@@ -55,6 +57,8 @@ with good test coverage. High risk, not recommended for production systems.
 | Timeline | Weeks/months | Days |
 
 ## 2. ros1_bridge setup and configuration
+
+**Important:** `ros1_bridge` is available only for Humble. It was NOT ported to Jazzy or later. If migrating to Jazzy, use Humble as an intermediate step or build the bridge from source.
 
 ### Installation
 
@@ -113,15 +117,19 @@ services:
 ### Docker-based bridge setup
 
 ```dockerfile
-# Dockerfile.bridge
-FROM ros:noetic AS ros1
-FROM ros:humble AS ros2
+# Dockerfile.bridge — multi-stage: build bridge in Focal (Noetic+Humble coexist)
+# NOTE: Noetic packages only exist for Ubuntu 20.04 (Focal), NOT 22.04 (Jammy).
+# The recommended approach is to build ros1_bridge from source in a Focal container
+# that has both Noetic and Humble installed from source or mixed repos.
+FROM ros:noetic AS ros1_stage
 
-FROM ros2
-# Install ROS 1 alongside ROS 2
+# Use Focal-based image where both Noetic (binary) and Humble (source) coexist
+FROM ubuntu:20.04 AS bridge
 RUN apt-get update && apt-get install -y \
-    ros-noetic-ros-base \
-    ros-humble-ros1-bridge
+    ros-noetic-ros-base && \
+    rm -rf /var/lib/apt/lists/*
+# Build Humble and ros1_bridge from source in this container
+# See: https://github.com/ros2/ros1_bridge for detailed build instructions
 
 COPY bridge_entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
@@ -259,7 +267,8 @@ def generate_launch_description():
             'baud_rate': 115200,
         }],
         remappings=[
-            ('joint_states', ['/robot/', LaunchConfiguration('robot_name'), '/joint_states']),
+            # Note: namespace already prefixes topics, so typically just remap the base name
+            ('joint_states', 'joint_states'),  # or use absolute: /my_robot/joint_states
         ],
         output='screen',
     )
@@ -473,7 +482,39 @@ ament_package()
 | `source devel/setup.bash` | `source install/setup.bash` |
 | `catkin_make run_tests` | `colcon test` |
 
-## 9. Common failures and fixes
+## 9. Rosbag format migration
+
+```bash
+# Convert ROS 1 bag to ROS 2 format
+# Option 1: Use rosbags (pure Python, no ROS installation needed)
+pip install rosbags
+rosbags-convert ros1_recording.bag --dst ros2_recording/
+
+# Option 2: Use ros1_bridge replay (requires Humble + ROS 1 sourced)
+# Play ROS 1 bag → bridge → record as ROS 2 bag
+```
+
+## 10. dynamic_reconfigure migration
+
+ROS 1's `dynamic_reconfigure` is replaced by ROS 2's native parameter system:
+
+```python
+# ROS 1: dynamic_reconfigure callback
+def reconfigure_callback(config, level):
+    self.kp = config['kp']
+    return config
+
+# ROS 2: parameter callback (equivalent)
+def parameter_callback(self, params):
+    for param in params:
+        if param.name == 'kp':
+            self.kp = param.value
+    return SetParametersResult(successful=True)
+
+self.add_on_set_parameters_callback(parameter_callback)
+```
+
+## 11. Common failures and fixes
 
 | Symptom | Cause | Fix |
 |---|---|---|

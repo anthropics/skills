@@ -24,16 +24,16 @@ relate to each other.
 ```
 map                          ← global fixed frame (SLAM/localization)
  └── odom                   ← odometry frame (continuous, drifts)
-      └── base_link         ← robot body center
-           ├── base_footprint  ← ground projection of base_link
-           ├── laser_link   ← LiDAR sensor
-           ├── camera_link  ← camera housing
-           │    └── camera_optical_frame  ← optical axis (Z forward)
-           ├── imu_link     ← IMU sensor
-           └── arm_base_link ← manipulator base
-                ├── link_1
-                ├── link_2
-                └── ...
+      └── base_footprint    ← ground projection (z=0, per REP-105)
+           └── base_link      ← robot body center (offset up from footprint)
+                ├── laser_link   ← LiDAR sensor
+                ├── camera_link  ← camera housing
+                │    └── camera_optical_frame  ← optical axis (Z forward)
+                ├── imu_link     ← IMU sensor
+                └── arm_base_link ← manipulator base
+                     ├── link_1
+                     ├── link_2
+                     └── ...
 ```
 
 **Key conventions (REP-105):**
@@ -96,7 +96,11 @@ transform immediately. They are published once and latched.
 Use for transforms that change over time (odometry, joint states).
 
 ```cpp
+#include <rclcpp/rclcpp.hpp>
 #include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
 
 class OdometryPublisher : public rclcpp::Node
 {
@@ -250,7 +254,7 @@ auto t = tf_buffer_->lookupTransform(
 // Get the transform from frame A at time t1 to frame B at time t2
 // (e.g., where was the robot relative to a map feature 2 seconds ago?)
 auto t_advanced = tf_buffer_->lookupTransform(
-  "map", rclcpp::Time(0),        // Target frame at latest time
+  "map", this->now(),            // Target frame at current time
   "base_link", past_time,        // Source frame at past time
   "map",                         // Fixed frame
   tf2::durationFromSec(0.1));

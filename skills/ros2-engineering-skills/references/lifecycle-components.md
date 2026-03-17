@@ -17,7 +17,7 @@
 ## 1. Lifecycle node state machine
 
 Lifecycle (managed) nodes follow the ROS 2 managed node state machine defined
-in [REP-2007](https://www.ros.org/reps/rep-2007.html). Every node that owns
+in the [Managed Nodes design article](https://design.ros2.org/articles/node_lifecycle.html). Every node that owns
 resources (hardware drivers, sensor pipelines, planners, controllers) should
 be a lifecycle node.
 
@@ -65,6 +65,7 @@ be a lifecycle node.
 ```cpp
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
+#include <lifecycle_msgs/msg/state.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
 
 namespace my_robot_perception
@@ -197,16 +198,17 @@ after deactivation.
 // This publisher only works when the node is Active
 auto pub = create_publisher<Msg>("topic", qos);  // LifecyclePublisher
 
-// Standard publisher (always works) — use only for diagnostics/heartbeats
-auto diag_pub = rclcpp::Node::create_publisher<Msg>("diagnostics", qos);
+// Note: In a lifecycle node, ALL publishers from create_publisher() are
+// LifecyclePublishers that are silenced outside Active state.
+// For always-active publishing (diagnostics, heartbeats), use a separate
+// rclcpp::Node dedicated to diagnostics running in the same process.
 ```
 
 ## 3. Implementing lifecycle transitions (rclpy)
 
 ```python
 import rclpy
-from rclpy.lifecycle import LifecycleNode, LifecycleState, TransitionCallbackReturn
-from rclpy.lifecycle import LifecyclePublisher
+from rclpy.lifecycle import LifecycleNode, State, TransitionCallbackReturn
 from sensor_msgs.msg import LaserScan
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 
@@ -219,7 +221,7 @@ class LidarProcessor(LifecycleNode):
         self._scan_pub = None
         self._scan_sub = None
 
-    def on_configure(self, state: LifecycleState) -> TransitionCallbackReturn:
+    def on_configure(self, state: State) -> TransitionCallbackReturn:
         self.get_logger().info('Configuring...')
         self._min_range = self.get_parameter('min_range').value
         self._max_range = self.get_parameter('max_range').value
@@ -231,15 +233,15 @@ class LidarProcessor(LifecycleNode):
 
         return TransitionCallbackReturn.SUCCESS
 
-    def on_activate(self, state: LifecycleState) -> TransitionCallbackReturn:
+    def on_activate(self, state: State) -> TransitionCallbackReturn:
         self.get_logger().info('Activating...')
         return super().on_activate(state)
 
-    def on_deactivate(self, state: LifecycleState) -> TransitionCallbackReturn:
+    def on_deactivate(self, state: State) -> TransitionCallbackReturn:
         self.get_logger().info('Deactivating...')
         return super().on_deactivate(state)
 
-    def on_cleanup(self, state: LifecycleState) -> TransitionCallbackReturn:
+    def on_cleanup(self, state: State) -> TransitionCallbackReturn:
         self.get_logger().info('Cleaning up...')
         self.destroy_publisher(self._scan_pub)
         self.destroy_subscription(self._scan_sub)
@@ -247,7 +249,7 @@ class LidarProcessor(LifecycleNode):
         self._scan_sub = None
         return TransitionCallbackReturn.SUCCESS
 
-    def on_shutdown(self, state: LifecycleState) -> TransitionCallbackReturn:
+    def on_shutdown(self, state: State) -> TransitionCallbackReturn:
         self.get_logger().info(f'Shutting down from {state.label}')
         if self._scan_pub:
             self.destroy_publisher(self._scan_pub)
@@ -290,6 +292,9 @@ def main(args=None):
 
 Components are C++ nodes that can be loaded into a shared-memory container
 process at launch or runtime, enabling zero-copy intra-process communication.
+
+**Note:** Python nodes cannot be loaded as components via pluginlib. They must run as
+separate processes. Use launch files to colocate Python and C++ nodes.
 
 ### CMakeLists.txt registration
 
@@ -406,6 +411,33 @@ ros2 component unload /my_container 1
   must not block others (e.g., ML inference alongside control)
 - Use `component_container` only for trivial pipelines with lightweight callbacks
 
+### `component_container_isolated` launch example
+
+```python
+container = ComposableNodeContainer(
+    name='isolated_container',
+    namespace='',
+    package='rclcpp_components',
+    executable='component_container_isolated',
+    # Each component gets its own SingleThreadedExecutor
+    composable_node_descriptions=[
+        ComposableNode(
+            package='my_robot_perception',
+            plugin='my_robot_perception::LidarProcessor',
+            name='lidar_processor',
+            extra_arguments=[{'use_intra_process_comms': True}],
+        ),
+        ComposableNode(
+            package='my_robot_perception',
+            plugin='my_robot_perception::MLInference',
+            name='ml_inference',
+            extra_arguments=[{'use_intra_process_comms': True}],
+        ),
+    ],
+    output='screen',
+)
+```
+
 ## 7. Lifecycle orchestration from launch files
 
 ### Using lifecycle node manager events
@@ -521,6 +553,20 @@ private:
     }
 
     auto future = client->async_send_request(request);
+    // WARNING: spin_until_future_complete(shared_from_this(), future) will deadlock if
+    // this function is called from within an executor callback. The executor cannot deliver
+    // the service response while the calling callback occupies it. Only call from main()
+    // or a dedicated thread. For lifecycle transitions from within callbacks, use async
+    // patterns:
+    //
+    //   auto future = client->async_send_request(request,
+    //     [this](rclcpp::Client<lifecycle_msgs::srv::ChangeState>::SharedFuture result) {
+    //       auto response = result.get();
+    //       if (response->success) {
+    //         RCLCPP_INFO(get_logger(), "Transition succeeded");
+    //       }
+    //     });
+    //
     if (rclcpp::spin_until_future_complete(shared_from_this(), future,
         std::chrono::seconds(10)) != rclcpp::FutureReturnCode::SUCCESS)
     {
@@ -535,8 +581,11 @@ private:
 
 ## 8. Composition with intra-process communication
 
-When components are loaded in the same container with intra-process enabled,
-messages bypass DDS entirely — zero serialization, zero copy.
+When nodes run in the same process with intra-process enabled, messages bypass
+DDS entirely — zero serialization, zero copy. This works for any nodes sharing
+a process (composable components in a container, or nodes manually instantiated
+in the same `main()`). Composition is the most common approach, but not the
+only one.
 
 ### Enabling intra-process in launch
 
@@ -571,7 +620,7 @@ void callback(const sensor_msgs::msg::Image::ConstSharedPtr msg)
 
 ### Requirements for zero-copy
 
-1. Both publisher and subscriber in the same `ComposableNodeContainer`
+1. Both publisher and subscriber in the same process (e.g., same `ComposableNodeContainer` or same `main()`)
 2. Both have `use_intra_process_comms: true`
 3. Publisher uses `std::unique_ptr` with `publish(std::move(msg))`
 4. QoS uses `KEEP_LAST` (not `KEEP_ALL`)

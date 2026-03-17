@@ -169,6 +169,41 @@ def image_callback(msg):
     publisher.publish(out_msg)
 ```
 
+### Type adapters for perception (zero-copy cv::Mat)
+
+Instead of using `cv_bridge::toCvCopy()` which copies the entire image, use a type adapter
+(Humble+) to work natively with `cv::Mat` and let ROS handle serialization:
+
+```cpp
+#include <rclcpp/type_adapter.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <cv_bridge/cv_bridge.hpp>
+
+template<>
+struct rclcpp::TypeAdapter<cv::Mat, sensor_msgs::msg::Image>
+{
+  using is_specialized = std::true_type;
+  using custom_type = cv::Mat;
+  using ros_message_type = sensor_msgs::msg::Image;
+
+  static void convert_to_ros_message(const cv::Mat & source, sensor_msgs::msg::Image & destination) {
+    cv_bridge::CvImage(std_msgs::msg::Header(), "bgr8", source).toImageMsg(destination);
+  }
+  static void convert_to_custom(const sensor_msgs::msg::Image & source, cv::Mat & destination) {
+    destination = cv_bridge::toCvCopy(source, "bgr8")->image;
+  }
+};
+
+// Define a convenient alias for the adapted type
+using CvMatImage = rclcpp::TypeAdapter<cv::Mat, sensor_msgs::msg::Image>;
+
+// Now publish cv::Mat directly — zero-copy when intra-process is enabled
+auto pub = node->create_publisher<CvMatImage>("image", 10);
+pub->publish(my_cv_mat);
+```
+
+Combined with intra-process communication, this eliminates ALL copies in an image processing pipeline.
+
 ## 3. Point cloud processing with PCL
 
 ### Subscribing to point clouds
@@ -510,6 +545,16 @@ class YOLODetector(Node):
 - Use `image_transport` with compression to reduce bandwidth to inference node
 - Consider running the model as a service (request/response) for non-real-time use cases
 - Pre-warm the model in `on_configure` to avoid first-inference latency
+
+### Isaac ROS for GPU-accelerated perception (Jetson)
+
+NVIDIA Isaac ROS provides GPU-accelerated perception packages for Jetson platforms:
+- `isaac_ros_visual_slam`: GPU-accelerated visual SLAM
+- `isaac_ros_object_detection`: DNN-based detection (SSD, YOLO)
+- `isaac_ros_apriltag`: GPU-accelerated AprilTag detection
+- `isaac_ros_depth_segmentation`: Depth-based segmentation
+
+These use NITROS for zero-copy GPU memory transfer between nodes. Install via Isaac ROS apt repository, not standard ROS 2 repos.
 
 ## 9. Common failures and fixes
 

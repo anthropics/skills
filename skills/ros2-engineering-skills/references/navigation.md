@@ -45,7 +45,7 @@
 - `bt_navigator` — orchestrates navigation tasks via behavior trees
 - `planner_server` — computes global paths
 - `controller_server` — generates velocity commands to follow paths
-- `recoveries_server` — handles stuck situations (spin, back up, wait)
+- `behavior_server` (Jazzy+, renamed from `recoveries_server` in Humble) -- handles stuck situations (spin, back up, wait)
 - `smoother_server` — smooths planned paths (optional)
 - `waypoint_follower` — executes multi-waypoint missions
 - `velocity_smoother` — smooths `cmd_vel` output (optional)
@@ -134,6 +134,41 @@ ros2 run nav2_map_server map_server --ros-args \
   -p use_sim_time:=true
 ```
 
+### AMCL localization (known maps)
+
+AMCL (Adaptive Monte Carlo Localization) is the standard particle filter localization for navigating in pre-built maps:
+
+```yaml
+amcl:
+  ros__parameters:
+    use_sim_time: true
+    alpha1: 0.2   # rotation noise from rotation
+    alpha2: 0.2   # rotation noise from translation
+    alpha3: 0.2   # translation noise from translation
+    alpha4: 0.2   # translation noise from rotation
+    base_frame_id: "base_link"
+    global_frame_id: "map"
+    odom_frame_id: "odom"
+    max_particles: 2000
+    min_particles: 500
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    scan_topic: scan
+    tf_broadcast: true
+    set_initial_pose: true
+    initial_pose:
+      x: 0.0
+      y: 0.0
+      yaw: 0.0
+```
+
+When to use AMCL vs SLAM:
+| Scenario | Use |
+|---|---|
+| Known, static environment | AMCL with pre-built map |
+| Unknown environment | slam_toolbox (online SLAM) |
+| Semi-dynamic environment | slam_toolbox in localization mode |
+| Outdoor with GPS | robot_localization EKF + NavSat |
+
 ## 3. Costmap configuration
 
 ### Global vs local costmap
@@ -182,8 +217,23 @@ global_costmap:
 
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0     # Higher = cost drops faster with distance
+        cost_scaling_factor: 3.0     # Higher = cost drops faster (exponential decay)
         inflation_radius: 0.55       # Must be > robot_radius
+
+# Inflation cost formula (exponential decay):
+#   cost(d) = INSCRIBED_INFLATED_OBSTACLE * e^(-cost_scaling_factor * (d - inscribed_radius))
+#
+# where d = distance from obstacle, inscribed_radius = robot_radius
+#
+# Key insight: doubling cost_scaling_factor does NOT double the safe zone.
+# It makes the cost DROP FASTER, meaning the robot navigates CLOSER to obstacles.
+#   cost_scaling_factor=1.0 → gradual falloff, robot stays far from walls
+#   cost_scaling_factor=5.0 → steep falloff, robot cuts close to obstacles
+#   cost_scaling_factor=10.0 → almost binary (lethal vs free), robot hugs walls
+#
+# Tune inflation_radius first (sets the maximum inflation range), then
+# adjust cost_scaling_factor to control how aggressively cost decays within
+# that range.
 
 local_costmap:
   local_costmap:
@@ -343,6 +393,18 @@ controller_server:
 ## 6. Recovery behaviors
 
 ```yaml
+# Jazzy+: behavior_server (renamed from recoveries_server)
+behavior_server:
+  ros__parameters:
+    behavior_plugins: ["spin", "backup", "wait"]
+    spin:
+      plugin: "nav2_behaviors/Spin"
+    backup:
+      plugin: "nav2_behaviors/BackUp"
+    wait:
+      plugin: "nav2_behaviors/Wait"
+
+# Humble: recoveries_server
 recoveries_server:
   ros__parameters:
     recovery_plugins: ["spin", "backup", "wait"]
@@ -360,6 +422,62 @@ recoveries_server:
 3. Spin 180° (look for alternative paths)
 4. Back up 0.3 m (escape tight spaces)
 5. Replan
+
+### Dynamic obstacle handling
+
+Nav2's costmap handles static and semi-static obstacles well, but fast-moving
+obstacles (humans walking at 1.5 m/s, forklifts) require additional strategies:
+
+| Strategy | When to use | Implementation |
+|---|---|---|
+| **Higher costmap update rate** | Moderate dynamics (warehouse) | `local_costmap.update_frequency: 10-20` Hz |
+| **Collision monitor** | Last-line safety (see below) | Separate node, geometry-based |
+| **MPPI controller** | Predictive avoidance | `MPPIController` with obstacle cost critic |
+| **Costmap filters** | Known dynamic zones | `KeepoutFilter` for exclusion zones |
+| **People tracking** | Dense crowds | External tracker → costmap layer via plugin |
+
+**Limitation:** The standard `ObstacleLayer` uses a clearing/marking model that
+assumes obstacles are static between scans. Fast-moving objects can leave "ghost
+trails" in the costmap. For populated environments, consider:
+1. Reducing `obstacle_max_range` to limit stale markings
+2. Using the `VoxelLayer` with 3D clearing
+3. Adding a people-tracking costmap layer
+
+### Nav2 Collision Monitor
+
+The collision monitor (Jazzy+) is an independent safety node that monitors sensor
+data and **directly overrides `cmd_vel`** — it is NOT just a warning system. When
+an obstacle enters the stop polygon, the monitor publishes zero velocity regardless
+of what the controller commands. This provides a last-line-of-defense safety layer
+independent of the costmap and controller.
+
+```yaml
+collision_monitor:
+  ros__parameters:
+    base_frame_id: "base_link"
+    odom_frame_id: "odom"
+    transform_tolerance: 0.5
+    source_timeout: 2.0
+    stop_pub_timeout: 2.0
+    polygons: ["PolygonStop", "PolygonSlow"]
+    PolygonStop:
+      type: "polygon"
+      points: [0.4, 0.3, 0.4, -0.3, -0.1, -0.3, -0.1, 0.3]
+      action_type: "stop"
+      max_points: 3
+      visualize: true
+    PolygonSlow:
+      type: "circle"
+      radius: 0.7
+      action_type: "slowdown"
+      max_points: 3
+      slowdown_ratio: 0.5
+    observation_sources: ["scan"]
+    scan:
+      source_timeout: 2.0
+      type: "scan"
+      topic: "/scan"
+```
 
 ## 7. Waypoint following
 
@@ -445,6 +563,18 @@ for robot_id in ['robot_1', 'robot_2']:
 - Localization must publish `map → robot_N/odom` (not shared `odom`)
 - Consider a central task allocator for waypoint assignment
 
+### Outdoor navigation with GPS
+
+For outdoor robots, combine GPS with Nav2 using `robot_localization` EKF:
+
+```bash
+sudo apt install ros-jazzy-robot-localization ros-jazzy-nav2-waypoint-follower
+```
+
+The key is fusing GPS (lat/lon) into the Nav2 coordinate system via `robot_localization`'s `navsat_transform_node`, which converts GPS fixes to odometry in the map frame.
+
+For multi-robot navigation patterns including fleet management and Open-RMF integration, see `references/multi-robot.md`.
+
 ## 9. Parameter tuning methodology
 
 ### Step-by-step tuning workflow
@@ -465,6 +595,22 @@ for robot_id in ['robot_1', 'robot_2']:
 4. **Recovery:** Handle edge cases
    - Test in narrow passages, dead ends, dynamic obstacles
    - Tune spin distance and backup distance for your robot
+
+### Goal tolerance and oscillation
+
+A common production issue: the robot oscillates near the goal. This happens when
+`xy_goal_tolerance` is too tight relative to the controller frequency and robot
+inertia. The robot overshoots, replans, overshoots in the opposite direction, and
+loops.
+
+**Rules:**
+- `xy_goal_tolerance` should be ≥ `max_vel_x / controller_frequency` (minimum
+  stopping distance at max speed). E.g., 0.5 m/s at 20 Hz → tolerance ≥ 0.025 m.
+- If using `RegulatedPurePursuitController`, its `regulated_linear_scaling_min_speed`
+  reduces speed near goals, allowing tighter tolerances.
+- Set `yaw_goal_tolerance` generously (0.1–0.3 rad) unless orientation matters.
+- If the robot stops, rotates, overshoots, repeats — increase tolerances or reduce
+  `max_vel_theta`.
 
 ### Key parameters to tune first
 
@@ -488,3 +634,6 @@ for robot_id in ['robot_1', 'robot_2']:
 | Costmap shows phantom obstacles | Stale sensor data or wrong TF | Check sensor topic rate, verify TF timestamps |
 | Robot takes very long paths | Costmap inflation too high | Reduce `cost_scaling_factor` (higher value = cost drops faster) |
 | Recovery spin doesn't complete | Insufficient space to rotate | Reduce `spin_dist`, or add `BackUp` before `Spin` in BT |
+| Robot oscillates at goal | Goal tolerance too tight for speed/inertia | Increase `xy_goal_tolerance`, reduce `max_vel_theta` near goal |
+| Ghost obstacles in costmap | Fast-moving people/objects leave stale marks | Reduce `obstacle_max_range`, increase `update_frequency`, use VoxelLayer |
+| Collision monitor stops robot unexpectedly | Stop polygon too large for robot | Shrink `PolygonStop` points to match actual footprint + small margin |

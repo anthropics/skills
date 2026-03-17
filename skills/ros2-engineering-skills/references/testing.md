@@ -407,8 +407,12 @@ def generate_test_description():
 class TestControllerLoading(unittest.TestCase):
     def test_joint_state_broadcaster_active(self):
         """Verify joint_state_broadcaster loads and activates."""
-        # Check via ros2 control CLI or service call
-        pass
+        import subprocess
+        result = subprocess.run(
+            ['ros2', 'control', 'list_controllers'],
+            capture_output=True, text=True, timeout=10)
+        self.assertIn('joint_state_broadcaster', result.stdout)
+        self.assertIn('active', result.stdout)
 ```
 
 ## 5. Test fixtures and helpers
@@ -540,7 +544,7 @@ jobs:
         run: |
           source /opt/ros/jazzy/setup.bash
           colcon build --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-            -Wall -Wextra -Wpedantic
+            -DCMAKE_CXX_FLAGS="-Wall -Wextra -Wpedantic"
 
       - name: Test
         run: |
@@ -548,6 +552,48 @@ jobs:
           source install/setup.bash
           colcon test --event-handlers console_cohesion+
           colcon test-result --verbose
+```
+
+### industrial_ci (de facto standard)
+
+`industrial_ci` from ROS-Industrial is the most widely used CI tool for ROS packages.
+It handles multi-distro builds, linting, and testing in a single Docker-based workflow:
+
+```yaml
+# .github/workflows/industrial_ci.yml
+name: Industrial CI
+on: [push, pull_request]
+
+jobs:
+  industrial_ci:
+    strategy:
+      matrix:
+        ROS_DISTRO: [humble, jazzy]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ros-industrial/industrial_ci@master
+        env:
+          ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
+          # Optional: run specific tests
+          # AFTER_INSTALL_TARGET_DEPENDENCIES: 'apt-get install -y ros-$ROS_DISTRO-nav2-bringup'
+```
+
+### Simulation-in-the-loop testing
+
+Run Gazebo headless in CI for physics-based integration tests:
+
+```yaml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ros-industrial/industrial_ci@master
+        env:
+          ROS_DISTRO: jazzy
+          DOCKER_RUN_OPTS: '-e DISPLAY=:99'
+          BEFORE_INSTALL_TARGET_DEPENDENCIES: |
+            apt-get update && apt-get install -y xvfb
+            Xvfb :99 -screen 0 1024x768x24 &
+          ADDITIONAL_DEBS: 'ros-jazzy-ros-gz'
 ```
 
 ### Key CI practices
@@ -559,6 +605,20 @@ jobs:
 - **Matrix builds:** Test across Humble + Jazzy if supporting both
 
 ## 8. Rosbag-based regression testing
+
+### Rosbag regression testing
+
+Record expected outputs as MCAP bags, then replay inputs and diff outputs:
+
+```bash
+# Record baseline
+ros2 bag record /output_topic -o baseline_bag --compression-mode file --compression-format zstd
+
+# In CI: replay input, record output, compare
+ros2 bag play input_bag --clock &
+ros2 bag record /output_topic -o test_output --max-duration 30 &
+# Compare with baseline using custom diff tool
+```
 
 ### Recording test data
 

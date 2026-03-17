@@ -87,6 +87,19 @@ missing `package.xml` dependencies, but simplifies Docker `PATH`/`LD_LIBRARY_PAT
 colcon build --merge-install
 ```
 
+### Dependency inspection
+
+```bash
+# Visualize package dependency graph
+colcon graph --dot | dot -Tpng -o deps.png
+
+# Show detailed info about a package
+colcon info my_package
+
+# List packages in topological build order
+colcon list --topological-order
+```
+
 ## 3. ament_cmake in depth
 
 ### Minimal CMakeLists.txt for a library + node
@@ -116,15 +129,19 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
-ament_target_dependencies(${PROJECT_NAME}_lib
-  rclcpp rclcpp_lifecycle sensor_msgs my_robot_interfaces
+# Modern CMake (Jazzy+ primary, forward-compatible with Kilted)
+# Use target_link_libraries with imported CMake targets
+target_link_libraries(${PROJECT_NAME}_lib PUBLIC
+  rclcpp::rclcpp
+  rclcpp_lifecycle::rclcpp_lifecycle
+  ${sensor_msgs_TARGETS}
+  ${my_robot_interfaces_TARGETS}
 )
-# NOTE: ament_target_dependencies() is deprecated starting from Kilted (May 2025).
-# For forward compatibility, prefer target_link_libraries() with modern CMake targets:
-#   target_link_libraries(${PROJECT_NAME}_lib PUBLIC
-#     rclcpp::rclcpp rclcpp_lifecycle::rclcpp_lifecycle
-#     ${sensor_msgs_TARGETS} ${my_robot_interfaces_TARGETS}
-#   )
+
+# Humble compatibility note: ament_target_dependencies() still works in Humble and
+# Jazzy but is deprecated starting from Kilted. Use target_link_libraries with
+# imported CMake targets everywhere — it works on all distros (Humble+).
+# Only use ament_target_dependencies() for deps that lack CMake target exports (rare).
 
 # Executable (thin wrapper around library)
 add_executable(driver_node src/driver_node_main.cpp)
@@ -156,6 +173,8 @@ ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp rclcpp_lifecycle sensor_msgs my_robot_interfaces)
 ament_package()
 ```
+
+**Note**: For message packages, use `${package_TARGETS}` (e.g., `${sensor_msgs_TARGETS}`) which expands to the correct CMake target names. For non-message packages, use the `package::package` syntax (e.g., `rclcpp::rclcpp`).
 
 ### Component registration (for composition)
 
@@ -344,6 +363,40 @@ CHANGED_PKGS=$(colcon list -n --base-paths $CHANGED_DIRS 2>/dev/null | tr '\n' '
 if [ -n "$CHANGED_PKGS" ]; then
   colcon build --packages-above $CHANGED_PKGS
 fi
+```
+
+### 7.4 Performance Benchmarking Tools
+
+When optimizing a ROS 2 workspace, guessing where the bottlenecks are is a mistake. Use proper benchmarking tools.
+
+**1. `performance_test` (Apex.AI)**
+The standard tool for profiling DDS middleware latency, jitter, and throughput. It tests the raw transport layer without your application logic.
+
+```bash
+# Build the tool
+sudo apt install ros-jazzy-performance-test
+# Run a 10-minute test: 1 publisher, 1 subscriber, 1KB message at 1000Hz using CycloneDDS
+ros2 run performance_test perf_test -c CycloneDDS -m Array1k -r 1000 -p 1 -s 1 --max_runtime 600
+```
+*Metrics to watch:* Look at the `T_lat` (latency) and `jitter` columns. If your $99.99^{th}$ percentile latency is high, your network stack or CPU governor needs tuning.
+
+**2. `ros2_tracing` (LTTng)**
+The ultimate tool for pipeline latency. It profiles the exact microseconds it takes for your message to go from the UDP socket into your callback.
+
+```bash
+sudo apt install ros-jazzy-ros2trace ros-jazzy-tracetools-launch
+# Start tracing with full ROS 2 instrumentation
+ros2 trace start my_trace -e ros2:*
+# Run your nodes...
+ros2 trace stop
+```
+*Analysis:* Use the `tracetools_analysis` Jupyter notebooks to generate flame graphs and callback duration histograms.
+
+**3. `ros2 topic delay` and `ros2 topic hz`**
+Quick CLI checks for end-to-end latency and frequency drops.
+```bash
+# Requires the publisher to populate the std_msgs/Header.stamp field!
+ros2 topic delay /camera/image_raw
 ```
 
 ## 8. Dependency management

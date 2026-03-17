@@ -28,6 +28,8 @@ ros2 doctor
 ros2 doctor --report --include-network
 ```
 
+`ros2 wtf` is an alias for `ros2 doctor` -- both commands are equivalent.
+
 ### What ros2 doctor checks
 - ROS 2 distribution and middleware configuration
 - Network interfaces and multicast capability
@@ -191,12 +193,13 @@ sudo usermod -aG tracing $USER
 
 ```bash
 # Start tracing
-ros2 trace start my_trace -e ros2:callback_start ros2:callback_end
+# Start tracing (all ROS 2 tracepoints enabled by default)
+ros2 trace start my_trace
 
 # Run your system
 ros2 launch my_robot_bringup robot.launch.py
 
-# Stop tracing
+# Stop tracing (Iron+; on Humble, use Ctrl+C on the interactive `ros2 trace`)
 ros2 trace stop my_trace
 
 # Traces are stored in ~/.ros/tracing/my_trace/
@@ -205,7 +208,9 @@ ros2 trace stop my_trace
 ### Analyzing traces
 
 ```python
-# Using tracetools_analysis
+# Using tracetools_analysis (API is illustrative — verify against
+# your distro's tracetools_analysis source; the internal data model
+# may use different attribute names across versions)
 from tracetools_analysis.loading import load_file
 from tracetools_analysis.processor.ros2 import Ros2Handler
 
@@ -291,6 +296,40 @@ private:
 };
 ```
 
+### TF buffer memory growth
+
+The default `tf2_ros::Buffer` stores transform history with a 10-second window. If transforms are published at high frequency (e.g., 100 Hz for 50 frames), the buffer can grow significantly. Control with `cache_time`:
+
+```cpp
+// Limit TF buffer to 5 seconds of history (default is 10s)
+auto tf_buffer = std::make_shared<tf2_ros::Buffer>(
+  this->get_clock(),
+  tf2::Duration(std::chrono::seconds(5)));
+```
+
+```python
+# Python equivalent
+from tf2_ros import Buffer
+tf_buffer = Buffer(cache_time=rclpy.duration.Duration(seconds=5))
+```
+
+### rclpy reference cycle debugging
+
+Python nodes that create circular references between callbacks and node state can cause memory leaks that the garbage collector delays collecting:
+
+```python
+import gc
+import sys
+gc.set_debug(gc.DEBUG_SAVEALL)  # Track uncollectable objects
+
+# After a period of operation:
+gc.collect()
+for obj in gc.garbage:
+    print(type(obj), sys.getrefcount(obj))
+```
+
+Common rclpy leak: storing `self` references in lambda callbacks that are stored as node members, creating `Node -> callback -> Node` cycles. Use `weakref` or explicit cleanup in `destroy_node()`.
+
 ## 5. rosbag2 recording and playback
 
 ### Recording
@@ -363,7 +402,9 @@ from rclpy.serialization import deserialize_message
 from sensor_msgs.msg import LaserScan
 
 reader = SequentialReader()
-storage_options = StorageOptions(uri='my_bag', storage_id='sqlite3')
+storage_options = StorageOptions(
+    uri='my_bag',
+    storage_id='mcap')  # MCAP is the default format since Jazzy; use 'sqlite3' for Humble compatibility
 converter_options = ConverterOptions(
     input_serialization_format='cdr',
     output_serialization_format='cdr')
@@ -374,6 +415,52 @@ while reader.has_next():
     if topic == '/scan':
         msg = deserialize_message(data, LaserScan)
         print(f't={timestamp/1e9:.3f}s, ranges={len(msg.ranges)} points')
+```
+
+### MCAP format features (Iron+)
+
+MCAP became the default bag format in Iron (and continues in Jazzy/Kilted/Rolling), replacing SQLite3. It offers faster writes, better compression, and indexed random access.
+
+```bash
+# Record with MCAP (default in Jazzy+)
+ros2 bag record -a -o my_bag
+
+# Record with compression (recommended for production)
+ros2 bag record -a -o my_bag --compression-mode file --compression-format zstd
+
+# Inspect MCAP file
+ros2 bag info my_bag
+
+# Convert SQLite3 bag to MCAP (requires a YAML config file)
+# 1. Create convert_config.yaml:
+#    output_bags:
+#      - uri: new_bag
+#        storage_id: mcap
+#        all: true
+# 2. Run:
+ros2 bag convert -i old_bag -o convert_config.yaml
+```
+
+Compression comparison:
+| Format | Speed | Ratio | Best for |
+|---|---|---|---|
+| zstd | Fast write, fast read | ~3-5x | Production recording (default choice) |
+| lz4 | Very fast write | ~2-3x | Real-time recording with CPU constraints |
+| None | Fastest | 1x | Short recordings, maximum write throughput |
+
+### Foxglove Studio
+
+Foxglove Studio is a modern alternative to rqt for visualization and debugging. It can:
+- Open MCAP files directly for offline analysis
+- Connect to live ROS 2 systems via Foxglove WebSocket bridge
+- Render 3D scenes, plots, images, and diagnostics in a web-based UI
+- Share dashboards across teams
+
+```bash
+# Install Foxglove bridge for live connection
+sudo apt install ros-jazzy-foxglove-bridge
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+# Open https://app.foxglove.dev and connect to ws://localhost:8765
 ```
 
 ## 6. GDB debugging for C++ nodes
@@ -461,7 +548,10 @@ export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterfac
 
 ```bash
 # Isolate from other ROS 2 systems
-export ROS_LOCALHOST_ONLY=1
+# Jazzy+ (preferred):
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+# Humble (or Jazzy backward-compatible):
+# export ROS_LOCALHOST_ONLY=1  # Deprecated in Jazzy+
 export ROS_DOMAIN_ID=42
 ```
 

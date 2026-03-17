@@ -330,6 +330,68 @@ void pick(moveit::planning_interface::MoveGroupInterface & arm,
 }
 ```
 
+### MoveIt Task Constructor (MTC)
+
+MTC provides a structured approach to multi-stage manipulation tasks like pick-and-place,
+bin picking, and assembly. Each task is composed of stages (compute IK, approach, grasp,
+retreat, place) that can be configured independently.
+
+```cpp
+#include <moveit/task_constructor/task.h>
+#include <moveit/task_constructor/stages.h>
+#include <moveit/task_constructor/solvers.h>
+
+auto task = std::make_unique<moveit::task_constructor::Task>();
+// Load robot model via RobotModelLoader (node->getRobotModel() does not exist)
+auto robot_model_loader = std::make_shared<robot_model_loader::RobotModelLoader>(node);
+task->setRobotModel(robot_model_loader->getModel());
+
+// Pipeline planner for free-space motion
+auto pipeline = std::make_shared<moveit::task_constructor::solvers::PipelinePlanner>(node);
+
+// Cartesian planner for approach/retreat
+auto cartesian = std::make_shared<moveit::task_constructor::solvers::CartesianPath>();
+cartesian->setMaxVelocityScalingFactor(0.1);
+
+// Stage 1: Current state
+task->add(std::make_unique<moveit::task_constructor::stages::CurrentState>("current"));
+
+// Stage 2: Open gripper
+auto open = std::make_unique<moveit::task_constructor::stages::MoveTo>("open_gripper", pipeline);
+open->setGroup("gripper");
+open->setGoal("open");
+task->add(std::move(open));
+
+// Stage 3: Move to pick approach
+auto approach = std::make_unique<moveit::task_constructor::stages::MoveRelative>("approach", cartesian);
+approach->setGroup("arm");
+geometry_msgs::msg::Vector3Stamped direction;
+direction.header.frame_id = "world";
+direction.vector.z = -0.1;  // Approach downward
+approach->setDirection(direction);
+task->add(std::move(approach));
+
+// ... more stages: close gripper, retreat, move to place, open gripper
+```
+
+Install: `sudo apt install ros-jazzy-moveit-task-constructor-core`
+
+### pick_ik solver
+
+pick_ik is a modern inverse kinematics solver that uses gradient descent optimization.
+It often finds solutions faster than KDL for complex kinematic chains and handles
+singularities better.
+
+```yaml
+# kinematics.yaml — planning group name at top level
+arm:
+  kinematics_solver: pick_ik/PickIkPlugin
+  kinematics_solver_timeout: 0.05
+  position_threshold: 0.001
+```
+
+Install: `sudo apt install ros-jazzy-pick-ik`
+
 ## 6. MoveIt Servo (real-time jogging)
 
 MoveIt Servo enables real-time Cartesian and joint-space velocity control,
@@ -338,32 +400,33 @@ useful for teleoperation, visual servoing, and force-guided motions.
 ### Configuration
 
 ```yaml
-# servo_params.yaml
+# servo_params.yaml — Humble (Servo API changed significantly in Jazzy)
+# Jazzy+ uses a redesigned parameter structure; check the MoveIt Servo
+# migration guide when upgrading.
 moveit_servo:
   ros__parameters:
+    ## Humble parameters:
     use_gazebo: false
     planning_frame: "base_link"
     ee_frame_name: "tool0"
     robot_link_command_frame: "base_link"
-
-    # Incoming command type
     command_in_type: "speed_units"  # or "unitless"
     scale:
       linear: 0.3      # m/s per unit
       rotational: 0.5   # rad/s per unit
       joint: 0.5        # rad/s per unit
-
-    # Publishing rate
     publish_period: 0.01  # 100 Hz
-
-    # Safety
     check_collisions: true
     collision_check_rate: 50.0
     self_collision_proximity_threshold: 0.01
     scene_collision_proximity_threshold: 0.02
-
-    # Joint limits
     joint_limit_margin: 0.1  # radians from limit
+
+    ## Jazzy+ key differences:
+    #  - `use_gazebo` removed
+    #  - `publish_period` → `publish_frequency: 100.0`
+    #  - `command_in_type` removed; use topic type directly
+    #  - See moveit2/moveit_servo/config/ for current defaults
 ```
 
 ### Sending Servo commands
@@ -447,8 +510,8 @@ ros2 launch moveit_setup_assistant setup_assistant.launch.py
 
 ### Adding obstacles from sensor data
 
-```cpp
-// Octomap integration — build 3D collision map from depth camera
+```yaml
+# Octomap integration — build 3D collision map from depth camera
 move_group_node:
   ros__parameters:
     octomap_resolution: 0.05
