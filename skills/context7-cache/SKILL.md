@@ -1,15 +1,7 @@
 ---
 name: context7-cache
-description: |
-  Local documentation cache for coding tasks. Caches library docs in SQLite+FTS5, serving them via CLI instead of MCP round-trips. Use when the user asks about library APIs, needs code examples, or is implementing features that require documentation lookup. Triggers on: "how do I use [library]", "show me [library] examples", dependency questions, API reference lookups, or when planning implementation that involves external libraries. Replaces Context7 MCP with faster cached lookups. Requires: npm, Node.js 18+.
-license: MIT
-compatibility: Requires Node.js 18+ and npm. Designed for Claude Code and similar terminal-based agents.
-metadata:
-  author: m2015agg
-  version: "0.1.2"
-  npm: "@m2015agg/context7-skill"
-  repository: "https://github.com/m2015agg/context7-skill"
-allowed-tools: Bash(context7-skill:*) Bash(ctx7:*) Read
+description: "Local documentation cache for coding tasks. Caches library docs in SQLite+FTS5, serving them via CLI instead of MCP round-trips. TRIGGER when: user asks about library APIs, needs code examples, or is implementing features that require documentation lookup. Requires: npm package @m2015agg/context7-skill, Node.js 18+."
+license: Complete terms in LICENSE.txt
 ---
 
 # Context7 Cache — Local Documentation for AI Agents
