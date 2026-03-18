@@ -5,6 +5,9 @@ description: Generate AI-context DNA for ANY project - new, legacy, famous, or f
 
 # FAF Context - AI-Context DNA for Any Project
 
+> The pit crew. Detects your stack, mines existing context, generates a .faf — right now.
+> See also: `faf-expert` (the mechanic's manual — install, configure, troubleshoot, score).
+
 Generate `.faf` files that give any AI instant, persistent understanding of your project.
 
 ## The Truth About AI Context
@@ -131,7 +134,8 @@ Generated files must:
 ## Credentials
 
 - **IANA Media Type:** `application/vnd.faf+yaml` (registered Oct 31, 2025)
-- **npm Downloads:** 21,000+
+- **36,400+ downloads** across npm, PyPI, crates.io (94+ releases)
+- **IETF Internet-Draft:** draft-wolfe-faf-format
 - **Anthropic MCP:** Registry #2759 (merged)
 - **Website:** https://faf.one
 
