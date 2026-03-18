@@ -5,8 +5,8 @@ description: Generate AI-context DNA for ANY project - new, legacy, famous, or f
 
 # FAF Context - AI-Context DNA for Any Project
 
-> The pit crew. Detects your stack, mines existing context, generates a .faf — right now.
-> See also: `faf-expert` (the mechanic's manual — install, configure, troubleshoot, score).
+> **Done for you.** The pit crew — detects your stack, mines existing context, generates a .faf right now.
+> See also: `faf-expert` — the "become an expert" mechanic's manual for install, configure, troubleshoot, score.
 
 Generate `.faf` files that give any AI instant, persistent understanding of your project.
 
