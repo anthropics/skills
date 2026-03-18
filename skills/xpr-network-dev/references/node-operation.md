@@ -221,7 +221,7 @@ p2p-peer-address = proton-p2p-testnet.neftyblocks.com:19876
 ### Requirements
 
 1. **Business Entity** - Must operate as a registered business
-2. **KYC Verification** - Complete identity verification at https://identity.metalx.com
+2. **KYC Verification** - Complete identity verification at https://identity.metallicus.com
 3. **Testnet Performance** - 14 consecutive days of block signing without interruption
 4. **Performance Score** - Achieve < 0.35ms block production time
 5. **Code of Conduct** - Sign the BP Code of Conduct

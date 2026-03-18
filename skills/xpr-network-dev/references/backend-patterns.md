@@ -711,7 +711,7 @@ XPR_CHAIN_ID=384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0
 # XPR_CHAIN_ID=71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd
 
 # Optional: AtomicAssets
-ATOMIC_API=https://proton.api.atomicassets.io
+ATOMIC_API=https://xpr.api.atomicassets.io
 
 # Optional: Rate limiting
 MAX_TPS=10
@@ -743,7 +743,7 @@ function loadConfig(): Config {
     account: process.env.XPR_ACCOUNT!,
     rpcEndpoint: process.env.XPR_RPC_ENDPOINT || 'https://proton.eosusa.io',
     chainId: process.env.XPR_CHAIN_ID || '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0',
-    atomicApi: process.env.ATOMIC_API || 'https://proton.api.atomicassets.io',
+    atomicApi: process.env.ATOMIC_API || 'https://xpr.api.atomicassets.io',
     maxTps: parseInt(process.env.MAX_TPS || '10')
   };
 }

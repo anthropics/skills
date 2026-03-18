@@ -39,7 +39,7 @@ When you supply assets, you receive L-tokens representing your share of the pool
 | XETH | LETH | 8 | `shares.loan` |
 | XMD | LXMD | 6 | `shares.loan` |
 | XUSDT | LUSDT | 6 | `shares.loan` |
-| METAL | LXMT | 8 | `shares.loan` |
+| XMT (METAL) | LXMT | 8 | `shares.loan` |
 | XRP | LXRP | 6 | `shares.loan` |
 | DOGE | LDOGE | 6 | `shares.loan` |
 | HBAR | LHBAR | 6 | `shares.loan` |
@@ -70,10 +70,19 @@ Maximum borrowing power as percentage of collateral:
 
 | Asset | Collateral Factor |
 |-------|-------------------|
-| XPR | 75% |
-| XUSDC | 85% |
-| XBTC | 75% |
-| XETH | 75% |
+| XPR | 40% |
+| XUSDC | 80% |
+| XBTC | 70% |
+| XETH | 70% |
+| XMD | 90% |
+| XMT (Metal) | 50% |
+| XDOGE | 60% |
+| XADA | 60% |
+| XLTC | 60% |
+| XSOL | 60% |
+| XXLM | 60% |
+| XXRP | 60% |
+| XHBAR | 60% |
 
 ---
 
@@ -85,7 +94,7 @@ Before supplying, you must enter the markets for the assets you want to use:
 
 ```bash
 # Enter XPR and XUSDC markets
-proton action lending.loan entermarkets '{"account":"myaccount","markets":["4,LXPR","6,LUSDC"]}' myaccount
+proton action lending.loan entermarkets '{"payer":"myaccount","user":"myaccount","markets":["LXPR","LUSDC"]}' myaccount
 ```
 
 ### Step 2: Deposit (Mint)
@@ -162,6 +171,36 @@ The `value` field is the raw integer. Divide by `10^precision` to get the human-
 - LXPR value `390334875` with precision 4 = `39033.4875 LXPR`
 - LUSDC value `71479562` with precision 6 = `71.479562 LUSDC`
 
+### Exit Markets
+
+To remove assets from your entered markets (e.g., when you no longer want them used as collateral):
+
+```bash
+# Exit XPR and XUSDC markets
+proton action lending.loan exitmarkets '{"user":"myaccount","markets":["LXPR","LUSDC"]}' myaccount
+```
+
+```typescript
+async function exitMarkets(
+  session: any,
+  markets: string[]  // e.g. ['LXPR', 'LUSDC']
+): Promise<any> {
+  return session.transact({
+    actions: [{
+      account: 'lending.loan',
+      name: 'exitmarkets',
+      authorization: [session.auth],
+      data: {
+        user: session.auth.actor,
+        markets: markets
+      }
+    }]
+  }, { broadcast: true });
+}
+```
+
+> **Note:** You cannot exit a market if you have outstanding borrows against that collateral.
+
 ---
 
 ## Redeem (Withdraw Supplied Assets)
@@ -221,7 +260,8 @@ The redeem action will:
 ```typescript
 async function borrow(
   session: any,
-  quantity: string
+  quantity: string,
+  tokenContract: string  // 'eosio.token' for XPR, 'xtokens' for wrapped tokens
 ): Promise<any> {
   const position = await getUserPosition(session.auth.actor);
 
@@ -235,8 +275,12 @@ async function borrow(
       name: 'borrow',
       authorization: [session.auth],
       data: {
-        account: session.auth.actor,
-        quantity: quantity
+        borrower: session.auth.actor,
+        underlying: {
+          quantity: quantity,
+          contract: tokenContract
+        },
+        use_stable_rate: false
       }
     }]
   }, { broadcast: true });
@@ -245,7 +289,7 @@ async function borrow(
 
 ```bash
 # Borrow 500 XPR against collateral
-proton action lending.loan borrow '{"account":"myaccount","quantity":"500.0000 XPR"}' myaccount
+proton action lending.loan borrow '{"borrower":"myaccount","underlying":{"quantity":"500.0000 XPR","contract":"eosio.token"},"use_stable_rate":false}' myaccount
 ```
 
 ---
@@ -269,10 +313,10 @@ proton action eosio.token transfer '{"from":"myaccount","to":"lending.loan","qua
 LOAN tokens are distributed as rewards for supplying and borrowing:
 
 ```bash
-proton action lending.loan claimrewards '{"claimer":"myaccount","markets":["4,LXPR","6,LUSDC"]}' myaccount
+proton action lending.loan claimrewards '{"claimer":"myaccount","markets":["LXPR","LUSDC"]}' myaccount
 ```
 
-> **Note:** Use the L-token symbol format (e.g., `4,LXPR` not `4,XPR`) for the markets parameter. You can only claim for markets you have active positions in.
+> **Note:** Use the L-token symbol_code format (e.g., `LXPR` not `4,LXPR`) for the markets parameter. You can only claim for markets you have active positions in.
 
 ---
 
@@ -324,17 +368,17 @@ async function getMarkets(): Promise<any[]> {
 
 ## Liquidations
 
-### Check Liquidatable Positions
+### Check Liquidatable Borrows
 
 ```typescript
-async function getLiquidatablePositions(): Promise<any[]> {
+async function getLiquidatableBorrows(): Promise<any[]> {
   const response = await fetch('https://proton.eosusa.io/v1/chain/get_table_rows', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       code: 'lending.loan',
       scope: 'lending.loan',
-      table: 'positions',
+      table: 'borrows',
       limit: 1000,
       json: true
     })
@@ -375,15 +419,7 @@ proton action xtokens transfer '{"from":"myaccount","to":"lending.loan","quantit
 
 ### Staking LOAN
 
-```bash
-proton action loan.token transfer '{"from":"myaccount","to":"loan.staking","quantity":"1000.0000 LOAN","memo":"stake"}' myaccount
-```
-
-### Query Staking Rewards
-
-```bash
-proton table loan.staking stakers --lower myaccount --upper myaccount
-```
+> **Note:** LOAN staking may not be active on mainnet. The `loan.staking` contract does not appear to exist as of March 2026. Check on-chain before attempting staking operations.
 
 ---
 
@@ -400,14 +436,21 @@ curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
 
 Known oracle feed indices:
 
-| Feed | Asset |
-|------|-------|
-| 1 | BTC |
-| 2 | ETH |
-| 3 | XPR |
-| 4 | METAL |
-| 5 | USDC |
-| 6 | USDT |
+| Index | Asset |
+|-------|-------|
+| 3 | XPR/USD |
+| 4 | BTC/USD |
+| 5 | USDC/USD |
+| 6 | MTL/USD (XMT) |
+| 7 | ETH/USD |
+| 8 | DOGE/USD |
+| 9 | USDT/USD |
+| 16 | LTC/USD |
+| 18 | XRP/USD |
+| 19 | SOL/USD |
+| 21 | HBAR/USD |
+| 22 | ADA/USD |
+| 23 | XLM/USD |
 
 ---
 
@@ -431,7 +474,10 @@ curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
 
 ```bash
 # Enter markets (required before first supply)
-proton action lending.loan entermarkets '{"account":"alice","markets":["4,LXPR","6,LUSDC"]}' alice
+proton action lending.loan entermarkets '{"payer":"alice","user":"alice","markets":["LXPR","LUSDC"]}' alice
+
+# Exit markets (remove collateral eligibility)
+proton action lending.loan exitmarkets '{"user":"alice","markets":["LXPR","LUSDC"]}' alice
 
 # Supply XPR (mint L-tokens)
 proton action eosio.token transfer '{"from":"alice","to":"lending.loan","quantity":"1000.0000 XPR","memo":"mint"}' alice
@@ -446,13 +492,13 @@ proton action lending.loan redeem '{"redeemer":"alice","token":{"quantity":"975.
 proton action lending.loan redeem '{"redeemer":"alice","token":{"quantity":"71.479562 LUSDC","contract":"shares.loan"}}' alice
 
 # Borrow
-proton action lending.loan borrow '{"account":"alice","quantity":"500.0000 XPR"}' alice
+proton action lending.loan borrow '{"borrower":"alice","underlying":{"quantity":"500.0000 XPR","contract":"eosio.token"},"use_stable_rate":false}' alice
 
 # Repay
 proton action xtokens transfer '{"from":"alice","to":"lending.loan","quantity":"500.000000 XUSDC","memo":"repay"}' alice
 
 # Claim LOAN rewards
-proton action lending.loan claimrewards '{"claimer":"alice","markets":["4,LXPR","6,LUSDC"]}' alice
+proton action lending.loan claimrewards '{"claimer":"alice","markets":["LXPR","LUSDC"]}' alice
 
 # Check shares
 # Use RPC: code=lending.loan, scope=lending.loan, table=shares, lower_bound=alice, upper_bound=alice
@@ -464,10 +510,9 @@ proton action lending.loan claimrewards '{"claimer":"alice","markets":["4,LXPR",
 |----------|-------|-------|-------------|
 | `lending.loan` | `shares` | `lending.loan` | User L-token share balances |
 | `lending.loan` | `markets` | `lending.loan` | Market stats, APYs, reserve ratios |
-| `lending.loan` | `positions` | `lending.loan` | User borrow positions, health factors |
+| `lending.loan` | `borrows` | `lending.loan` | User borrow positions, health factors |
 | `lending.loan` | `whitelist` | `lending.loan` | Whitelisted accounts |
 | `loan.token` | (standard token tables) | | LOAN governance token |
-| `loan.staking` | `stakers` | `loan.staking` | LOAN staking positions |
 | `oracles` | `data` | `oracles` | Price feeds |
 
 ### RPC Endpoints

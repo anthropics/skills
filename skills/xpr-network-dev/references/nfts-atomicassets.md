@@ -81,16 +81,16 @@ The actual NFTs owned by users.
 
 | Network | Endpoint | Provider |
 |---------|----------|----------|
-| Mainnet | `https://proton.api.atomicassets.io` | Pink.gg |
+| Mainnet | `https://xpr.api.atomicassets.io` | Pink.gg |
 | Mainnet | `https://aa-xprnetwork-main.saltant.io` | Saltant |
-| Testnet | `https://test.proton.api.atomicassets.io` | Pink.gg |
+| Testnet | `https://test.xpr.api.atomicassets.io` | Pink.gg |
 | Testnet | `https://aa-xprnetwork-test.saltant.io` | Saltant |
 
 ### AtomicMarket API (Marketplace)
 
 | Network | Endpoint |
 |---------|----------|
-| Mainnet | `https://proton.api.atomicassets.io` |
+| Mainnet | `https://xpr.api.atomicassets.io` |
 
 ---
 
@@ -112,7 +112,7 @@ async function getOwnedAssets(owner: string, collection?: string) {
   }
 
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/assets?${params}`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/assets?${params}`
   );
   const { data } = await response.json();
   return data;
@@ -124,7 +124,7 @@ async function getOwnedAssets(owner: string, collection?: string) {
 ```typescript
 async function getCollection(collectionName: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/collections/${collectionName}`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/collections/${collectionName}`
   );
   const { data } = await response.json();
   return data;
@@ -136,7 +136,7 @@ async function getCollection(collectionName: string) {
 ```typescript
 async function getTemplates(collectionName: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/templates?collection_name=${collectionName}&limit=100`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/templates?collection_name=${collectionName}&limit=100`
   );
   const { data } = await response.json();
   return data;
@@ -148,7 +148,7 @@ async function getTemplates(collectionName: string) {
 ```typescript
 async function getSchemas(collectionName: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/schemas?collection_name=${collectionName}`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/schemas?collection_name=${collectionName}`
   );
   const { data } = await response.json();
   return data;
@@ -160,7 +160,7 @@ async function getSchemas(collectionName: string) {
 ```typescript
 async function getAsset(assetId: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/assets/${assetId}`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/assets/${assetId}`
   );
   const { data } = await response.json();
   return data;
@@ -187,7 +187,7 @@ async function getSales(collection?: string) {
   }
 
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicmarket/v1/sales?${params}`
+    `https://xpr.api.atomicassets.io/atomicmarket/v1/sales?${params}`
   );
   const { data } = await response.json();
   return data;
@@ -199,7 +199,7 @@ async function getSales(collection?: string) {
 ```typescript
 async function getTemplateFloorPrice(templateId: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicmarket/v1/sales?` +
+    `https://xpr.api.atomicassets.io/atomicmarket/v1/sales?` +
     `template_id=${templateId}&state=1&limit=1&order=asc&sort=price`
   );
   const { data } = await response.json();
@@ -212,7 +212,7 @@ async function getTemplateFloorPrice(templateId: string) {
 ```typescript
 async function getSalesHistory(assetId: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicmarket/v1/sales?` +
+    `https://xpr.api.atomicassets.io/atomicmarket/v1/sales?` +
     `asset_id=${assetId}&state=3&limit=10`  // state 3 = sold
   );
   const { data } = await response.json();
@@ -497,7 +497,7 @@ const data = [
 ```typescript
 async function userOwnsAsset(owner: string, assetId: string): Promise<boolean> {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/assets/${assetId}`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/assets/${assetId}`
   );
   const { data } = await response.json();
   return data?.owner === owner;
@@ -509,7 +509,7 @@ async function userOwnsAsset(owner: string, assetId: string): Promise<boolean> {
 ```typescript
 async function getAssetsWithMetadata(owner: string) {
   const response = await fetch(
-    `https://proton.api.atomicassets.io/atomicassets/v1/assets?owner=${owner}&limit=100`
+    `https://xpr.api.atomicassets.io/atomicassets/v1/assets?owner=${owner}&limit=100`
   );
   const { data } = await response.json();
 
@@ -587,7 +587,6 @@ async function uploadToIPFS(file: File): Promise<string> {
 | Gateway | URL Pattern |
 |---------|-------------|
 | Pinata | `https://gateway.pinata.cloud/ipfs/{hash}` |
-| Cloudflare | `https://cloudflare-ipfs.com/ipfs/{hash}` |
 | IPFS.io | `https://ipfs.io/ipfs/{hash}` |
 
 ---
@@ -617,5 +616,160 @@ RAM is paid by the minter/creator, not the recipient.
 
 - **AtomicAssets Docs**: https://github.com/pinknetworkx/atomicassets-contract
 - **AtomicMarket Docs**: https://github.com/pinknetworkx/atomicmarket-contract
-- **API Documentation**: https://proton.api.atomicassets.io/docs
+- **API Documentation**: https://xpr.api.atomicassets.io/docs
 - **XPR Market Reference**: https://github.com/XPRNetwork/xpr-market
+
+## Practical Learnings (Real-World Gotchas)
+
+These are hard-won lessons from building an NFT marketplace and minting 500+ NFTs on XPR Network mainnet.
+
+### Registering Your Own Marketplace
+
+Register to earn maker/taker fees (1% each by default) on sales through your marketplace:
+
+```bash
+proton action atomicmarket regmarket '{"creator":"youraccount","marketplace_name":"youraccount"}' youraccount
+```
+
+Then use your marketplace name in `announcesale` (maker_marketplace) and `purchasesale` (taker_marketplace) to earn fees.
+
+### Listing For Sale — Two Actions, One Transaction
+
+`announcesale` and `createoffer` MUST be in the same transaction. If done separately, the API can get out of sync — the sale record exists but the asset never moves to escrow.
+
+```typescript
+const actions = [
+  {
+    account: 'atomicmarket',
+    name: 'announcesale',
+    authorization: [{ actor: seller, permission: 'active' }],
+    data: {
+      seller,
+      asset_ids: [assetId],
+      listing_price: '100.0000 XPR',  // Exactly 4 decimal places for XPR
+      settlement_symbol: '4,XPR',
+      maker_marketplace: 'youraccount',
+    },
+  },
+  {
+    account: 'atomicassets',
+    name: 'createoffer',
+    authorization: [{ actor: seller, permission: 'active' }],
+    data: {
+      sender: seller,
+      recipient: 'atomicmarket',
+      sender_asset_ids: [assetId],
+      recipient_asset_ids: [],
+      memo: 'sale',
+    },
+  },
+];
+// Submit BOTH actions in a single transact() call
+```
+
+### Price Formatting — API Returns Raw Integers
+
+The AtomicMarket API returns `listing_price` as a raw integer string, NOT a formatted asset string:
+
+```
+API returns:  "listing_price": "100000"  (raw)
+This means:   10.0000 XPR  (divide by 10^precision)
+XPR precision: 4  →  divide by 10000
+XUSDC precision: 6  →  divide by 1000000
+```
+
+For buy transactions, format back as asset string: `"10.0000 XPR"`
+
+### Getting Template ID After Creation
+
+Do NOT query the API immediately after `createtempl` — there's an indexing delay. Instead, extract the template ID from the transaction's inline `lognewtempl` trace:
+
+```typescript
+const result = await session.transact({ actions: [createTemplAction] });
+// Find lognewtempl in inline traces
+const trace = result.processed.action_traces[0];
+for (const inline of trace.inline_traces || []) {
+  if (inline.act.name === 'lognewtempl') {
+    const templateId = inline.act.data.template_id;
+    // Use this templateId for minting — it's guaranteed correct
+  }
+}
+```
+
+### Batch Minting — RAM Management
+
+When minting many NFTs in sequence, you'll hit RAM limits. Buy RAM proactively:
+
+```bash
+proton action eosio buyram '{"payer":"youraccount","receiver":"youraccount","quant":"500.0000 XPR"}' youraccount
+```
+
+Each NFT asset costs ~151 bytes. For 500 NFTs, budget ~75,000 bytes of RAM.
+
+If a mint fails with "has X bytes has Y bytes", buy more RAM and retry. Don't retry the failed mint without buying RAM first.
+
+### Airdrop Patterns
+
+**Mint directly to recipients** (most efficient):
+```typescript
+// Mint NFT directly to the recipient's wallet
+const action = {
+  account: 'atomicassets',
+  name: 'mintasset',
+  data: {
+    authorized_minter: 'youraccount',
+    collection_name: 'yourcollect1',
+    schema_name: 'myschema',
+    template_id: templateId,
+    new_asset_owner: recipientAccount,  // Goes directly to them
+    immutable_data: [],
+    mutable_data: [],
+    tokens_to_back: [],
+  },
+};
+```
+
+**Token holder airdrop** — query asset owners from AtomicAssets API:
+```
+GET https://xpr.api.atomicassets.io/atomicassets/v1/accounts?collection_name=COLLECTION
+```
+Returns unique account names that own assets in the collection. To get owners of a specific template:
+```
+GET https://xpr.api.atomicassets.io/atomicassets/v1/assets?template_id=TEMPLATE_ID&limit=100
+```
+Extract unique `owner` fields, then mint to each.
+
+### IPFS Gateway Selection
+
+- **Upload**: Use Pinata API (`api.pinata.cloud/pinning/pinFileToIPFS`) with JWT
+- **Display**: Use `ipfs.io/ipfs/{hash}` — works for ALL content, not just yours
+- **Don't use** private gateways (e.g. `agent.mypinata.cloud`) for display — returns 403 for content not pinned on your account
+- Store ONLY the IPFS hash in NFT data, not the full gateway URL
+
+### Collection Market Fee
+
+Set `market_fee` when creating collections. This fee is taken from EVERY sale on ANY marketplace:
+
+```bash
+# 5% collection fee (0.05)
+proton action atomicassets createcol '{"author":"you","collection_name":"yourcollect1",...,"market_fee":0.05,...}' you
+```
+
+The fee goes to the collection author. Combined with marketplace fees (1% maker + 1% taker), a sale through your marketplace earns: collection_fee + maker_fee + taker_fee.
+
+### Rich NFT Attributes
+
+Use schemas to define typed attributes that are searchable and filterable:
+
+```typescript
+const schemaFormat = [
+  { name: 'name', type: 'string' },
+  { name: 'img', type: 'string' },        // IPFS hash
+  { name: 'description', type: 'string' },
+  { name: 'rarity', type: 'string' },      // "legendary", "rare", etc
+  { name: 'score', type: 'uint32' },        // Numeric attributes
+  { name: 'generation_date', type: 'string' },
+];
+```
+
+Store data-rich attributes in templates (immutable) for NFTs that tell a story. The more attributes, the more interesting the NFT becomes for collectors and tools.

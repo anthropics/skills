@@ -87,7 +87,7 @@ Unstaking takes **24 hours** to complete. This is a security feature:
 proton action eosio unstakexpr '{"from":"myaccount","receiver":"myaccount","unstake_xpr_quantity":"500.0000 XPR"}' myaccount
 
 # After 24 hours, claim refund (usually automatic)
-proton action eosio.proton refund '{"owner":"myaccount"}' myaccount
+proton action eosio refundxpr '{"owner":"myaccount"}' myaccount
 ```
 
 #### Via Code
@@ -113,7 +113,7 @@ async function claimRefund(session: any): Promise<any> {
   return session.transact({
     actions: [{
       account: 'eosio',
-      name: 'refund',
+      name: 'refundxpr',
       authorization: [session.auth],
       data: {
         owner: session.auth.actor
@@ -238,7 +238,7 @@ const activeProducers = producers.slice(0, 21);
 #### Via CLI
 
 ```bash
-proton action eosio.proton claimrewards '{"owner":"myaccount"}' myaccount
+proton action eosio claimrewards '{"owner":"myaccount"}' myaccount
 ```
 
 #### Via Code
@@ -339,7 +339,7 @@ async function buyResourcePlan(
       data: {
         account: session.auth.actor,
         plan_index: planIndex,
-        quantity: quantity
+        plan_quantity: quantity
       }
     }]
   }, { broadcast: true });
@@ -361,7 +361,7 @@ RAM is used to store data on-chain (table rows, NFTs, tokens, etc.). Unlike CPU/
 
 | Item | Cost |
 |------|------|
-| RAM Storage | **0.0022 XPR per byte** |
+| RAM Storage | **Dynamic (Bancor algorithm), ~0.000252 XPR per byte** |
 | Free RAM (WebAuth) | **12,000 unsellable bytes** per account |
 | Maximum Purchase | **6 MB** |
 
@@ -493,10 +493,10 @@ proton action eosio stakexpr '{"from":"ACCOUNT","receiver":"ACCOUNT","stake_xpr_
 proton action eosio unstakexpr '{"from":"ACCOUNT","receiver":"ACCOUNT","unstake_xpr_quantity":"500.0000 XPR"}' ACCOUNT
 
 # Claim refund (after 24h)
-proton action eosio.proton refund '{"owner":"ACCOUNT"}' ACCOUNT
+proton action eosio refundxpr '{"owner":"ACCOUNT"}' ACCOUNT
 
 # Claim rewards
-proton action eosio.proton claimrewards '{"owner":"ACCOUNT"}' ACCOUNT
+proton action eosio claimrewards '{"owner":"ACCOUNT"}' ACCOUNT
 
 # Vote for BPs (minimum 4)
 proton action eosio voteproducer '{"voter":"ACCOUNT","proxy":"","producers":["bp1","bp2","bp3","bp4"]}' ACCOUNT

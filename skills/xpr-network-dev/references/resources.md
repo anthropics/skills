@@ -133,13 +133,13 @@ https://explorer.xprnetwork.org/account/CONTRACT_NAME?tab=contract
 | [XPRNetwork/ts-smart-contracts](https://github.com/XPRNetwork/ts-smart-contracts) | Contract SDK (proton-tsc) |
 | [XPRNetwork/proton-web-sdk](https://github.com/XPRNetwork/proton-web-sdk) | Frontend wallet integration |
 | [XPRNetwork/proton-cli](https://github.com/XPRNetwork/proton-cli) | Command-line tools |
-| [XPRNetwork/protonjs](https://github.com/XPRNetwork/protonjs) | JavaScript RPC library |
+| [XPRNetwork/proton-web-sdk](https://github.com/XPRNetwork/proton-web-sdk) | JavaScript RPC library |
 
 ### Example Contracts
 
 | Repository | Description |
 |------------|-------------|
-| [XPRNetwork/proton-ts-sc-examples](https://github.com/XPRNetwork/proton-ts-sc-examples) | Official example contracts |
+| [XPRNetwork/developer-examples](https://github.com/XPRNetwork/developer-examples) | Official example contracts |
 
 ### Node Infrastructure
 
@@ -180,7 +180,7 @@ https://resources.xprnetwork.org
 
 | Resource | Cost |
 |----------|------|
-| RAM Storage | 0.0022 XPR per byte |
+| RAM Storage | Dynamic (Bancor algorithm), ~0.000252 XPR per byte |
 | Free RAM (WebAuth) | 12,000 bytes per account |
 | CPU/NET Basic | 100 XPR/month (~500 tx/day) |
 | CPU/NET Plus | 1,000 XPR/month (~5,000 tx/day) |
@@ -202,6 +202,8 @@ https://resources.xprnetwork.org
 | XUSDT | `xtokens` | 6 |
 | XUSDC | `xtokens` | 6 |
 | FOOBAR | `xtokens` | 6 |
+| XBTC | `xtokens` | 8 |
+| XETH | `xtokens` | 8 |
 | LOAN | `loan.token` | 4 |
 
 ---
@@ -251,9 +253,11 @@ https://resources.xprnetwork.org
 
 | Index | Pair | Description |
 |-------|------|-------------|
+| 3 | XPR/USD | XPR price |
 | 4 | BTC/USD | Bitcoin price |
-| 5 | ETH/USD | Ethereum price |
-| 13 | XPR/USD | XPR price |
+| 5 | USDC/USD | USD Coin price |
+| 7 | ETH/USD | Ethereum price |
+| 13 | BUSD/USD | Binance USD price |
 
 ### Query Oracle
 
@@ -278,7 +282,7 @@ curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
 |----------|-----|-------------|
 | **Governance Portal** | https://gov.xprnetwork.org | Proposals and voting |
 | **Resources Portal** | https://resources.xprnetwork.org | Buy RAM, manage resources |
-| **Identity Verification** | https://identity.metalx.com | KYC verification |
+| **Identity Verification** | https://identity.metallicus.com | KYC verification |
 | **Help Desk** | https://help.xprnetwork.org | Support and FAQs |
 
 ---
@@ -289,7 +293,7 @@ curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
 |----------|------|
 | **Discord** | https://discord.gg/xprnetwork |
 | **Telegram** | https://t.me/XPRNetwork |
-| **Twitter/X** | https://twitter.com/XPRNetwork |
+| **Twitter/X** | https://x.com/XPRNetwork |
 
 ---
 

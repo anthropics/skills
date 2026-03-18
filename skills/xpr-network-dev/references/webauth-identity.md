@@ -32,9 +32,12 @@ interface UserInfo {
   name: string;          // Display name
   avatar: string;        // Avatar URL or base64
   verified: boolean;     // Blue checkmark
-  verifiedon: number;    // Verification timestamp
   date: number;          // Registration date
-  fullname: string;      // Full legal name (if KYC)
+  verifiedon: number;    // Verification timestamp
+  verifier: string;      // Account that verified
+  raccs: string[];       // Recovery accounts
+  aacts: string[];       // Authorized apps/accounts
+  ac: object[];          // Account containers
   kyc: KYCProvider[];    // KYC verifications
 }
 
@@ -67,9 +70,12 @@ async function getUserProfile(account: string) {
   "name": "Alice",
   "avatar": "https://gateway.pinata.cloud/ipfs/Qm...",
   "verified": true,
-  "verifiedon": 1705123456,
   "date": 1704567890,
-  "fullname": "",
+  "verifiedon": 1705123456,
+  "verifier": "eosio.proton",
+  "raccs": [],
+  "aacts": [],
+  "ac": [],
   "kyc": [
     {
       "kyc_provider": "eosio.proton",
@@ -117,6 +123,12 @@ async function getKYCLevel(account: string): Promise<number> {
 
 ## Update User Profile
 
+The `eosio.proton` contract uses two separate actions for updating profile fields:
+- `setusername` to update the display name
+- `setuserava` to update the avatar
+
+Both can be submitted in a single transaction:
+
 ```typescript
 async function updateProfile(
   session: any,
@@ -124,16 +136,26 @@ async function updateProfile(
   avatar: string
 ) {
   return session.transact({
-    actions: [{
-      account: 'eosio.proton',
-      name: 'updateuser',
-      authorization: [session.auth],
-      data: {
-        acc: session.auth.actor,
-        name: name,
-        avatar: avatar
+    actions: [
+      {
+        account: 'eosio.proton',
+        name: 'setusername',
+        authorization: [session.auth],
+        data: {
+          acc: session.auth.actor,
+          name: name
+        }
+      },
+      {
+        account: 'eosio.proton',
+        name: 'setuserava',
+        authorization: [session.auth],
+        data: {
+          acc: session.auth.actor,
+          ava: avatar
+        }
       }
-    }]
+    ]
   }, { broadcast: true });
 }
 ```
@@ -332,7 +354,7 @@ kycRequiredAction(user: Name): void {
 // Only request what you need
 const profile = await getUserProfile(account);
 
-// Don't store fullname or KYC details
+// Don't store KYC details
 const publicProfile = {
   account: profile.acc,
   displayName: profile.name,

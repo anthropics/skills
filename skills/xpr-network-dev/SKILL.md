@@ -60,10 +60,10 @@ Load specialized modules based on your task:
 | Module | Read When | Key Topics |
 |--------|-----------|------------|
 | `smart-contracts.md` | Building contracts | Tables, actions, auth, build/deploy |
-| `cli-reference.md` | Using CLI tools | Network, keys, deploy, queries |
-| `web-sdk.md` | Building dApps | Wallet connect, transactions, sessions |
+| `cli-reference.md` | Using CLI tools | Network, keys, deploy, queries, transfers |
+| `web-sdk.md` | Building dApps | Wallet connect, transactions, sessions, transfers |
 | `backend-patterns.md` | Server-side dev | Programmatic signing, bots, security |
-| `rpc-queries.md` | Reading chain data | RPC, Hyperion API, Light API, pagination |
+| `rpc-queries.md` | Reading chain data | RPC, Hyperion API, Light API, pagination, token balances |
 | `testing-debugging.md` | Testing contracts | Unit tests, testnet, debugging, logs |
 | `accounts-permissions.md` | Account management | Create accounts, permissions, multisig |
 | `staking-governance.md` | Staking & voting | XPR staking, BPs, DPoS, resource model |
@@ -80,8 +80,8 @@ Load specialized modules based on your task:
 
 | Module | Read When | Key Topics |
 |--------|-----------|------------|
-| `metalx-dex.md` | DEX integration | Complete MetalX API, orders, swaps |
-| `defi-trading.md` | Trading bots/DeFi | Grid bots, market makers, perps architecture |
+| `metalx-dex.md` | DEX integration | MetalX DEX API reference, order format, error codes |
+| `defi-trading.md` | Trading bots/DeFi | Trading bot patterns, swap pools, DeFi strategies |
 | `loan-protocol.md` | Lending protocol | LOAN protocol, supply, borrow, liquidations |
 | `oracles-randomness.md` | Price feeds & RNG | Oracle prices, verifiable random numbers |
 
@@ -143,7 +143,7 @@ proton contract:set ACCOUNT ./assembly/target
 ### Common RPC Query
 
 ```javascript
-const { JsonRpc } = require('@proton/js');
+import { JsonRpc } from '@proton/js';
 const rpc = new JsonRpc('https://proton.eosusa.io');
 
 const { rows } = await rpc.get_table_rows({
@@ -157,7 +157,7 @@ const { rows } = await rpc.get_table_rows({
 ### Basic Contract Structure
 
 ```typescript
-import { Contract, Table, TableStore, Name } from 'proton-tsc';
+import { Contract, Table, TableStore, Name, requireAuth } from 'proton-tsc';
 
 @table("mydata")
 class MyData extends Table {
@@ -187,6 +187,7 @@ class MyContract extends Contract {
 ### Basic Frontend Login
 
 ```typescript
+import '@proton/link';  // Required for mobile wallet support
 import ProtonWebSDK from '@proton/web-sdk';
 
 const { link, session } = await ProtonWebSDK({
@@ -229,3 +230,5 @@ const { link, session } = await ProtonWebSDK({
 3. **Verify the target account** before deploying - wrong account = overwrite existing contract
 4. **Back up ABIs** before deploying changes
 5. **Use new tables** for new features instead of modifying existing ones
+6. **DEX deposits MUST use empty memo** (`""`) — any other memo (e.g. `"deposit"`) causes permanent, irrecoverable fund loss. See `metalx-dex.md`.
+7. **All-numeric account names** (e.g. `333555`) cause silent data loss in `get_table_rows` — see `rpc-queries.md` for workarounds.

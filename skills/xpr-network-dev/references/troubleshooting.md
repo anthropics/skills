@@ -92,12 +92,11 @@ data: {
 proton account myaccount
 
 # Stake more CPU (requires XPR)
-proton action eosio delegatebw '{
-  "from": "myaccount",
-  "receiver": "myaccount",
-  "stake_net_quantity": "1.0000 XPR",
-  "stake_cpu_quantity": "10.0000 XPR",
-  "transfer": false
+# NOTE: XPR Network uses stakexpr/unstakexpr for staking, NOT delegatebw.
+# The delegatebw action exists on EOSIO but is not the correct method on XPR Network.
+proton action eosio stakexpr '{
+  "owner": "myaccount",
+  "quantity": "10.0000 XPR"
 }' myaccount
 ```
 
@@ -459,7 +458,7 @@ proton action eosio updateauth '{
 **Solutions**:
 ```bash
 # Check collection exists
-curl "https://proton.api.atomicassets.io/atomicassets/v1/collections/COLLECTION_NAME"
+curl "https://xpr.api.atomicassets.io/atomicassets/v1/collections/COLLECTION_NAME"
 ```
 
 ### "Not authorized to mint"

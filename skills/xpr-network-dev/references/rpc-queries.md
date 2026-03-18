@@ -395,9 +395,11 @@ const btcPrice = parseFloat(rows[0].aggregate.d_double);
 
 | Index | Pair |
 |-------|------|
+| 3 | XPR/USD |
 | 4 | BTC/USD |
-| 5 | ETH/USD |
-| 13 | XPR/USD |
+| 5 | USDC/USD |
+| 7 | ETH/USD |
+| 13 | BUSD/USD |
 
 ### Singleton Tables
 

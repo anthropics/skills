@@ -464,7 +464,7 @@ const actions = [
     authorization: [{ actor: account, permission: 'active' }],
     data: {
       from: account,
-      to: 'swap.mtl',
+      to: 'proton.swaps',
       quantity: '10000.0000 XPR',
       memo: 'addliq:MYTKN'
     }
@@ -475,7 +475,7 @@ const actions = [
     authorization: [{ actor: account, permission: 'active' }],
     data: {
       from: account,
-      to: 'swap.mtl',
+      to: 'proton.swaps',
       quantity: '1000000.0000 MYTKN',
       memo: 'addliq:XPR'
     }

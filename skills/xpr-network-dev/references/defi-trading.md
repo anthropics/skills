@@ -113,24 +113,30 @@ async function getDexBalances(account: string) {
 ```typescript
 async function placeLimitOrder(
   account: string,
-  marketId: string,
-  side: 'buy' | 'sell',
+  marketId: number,
+  orderSide: 'buy' | 'sell',
   price: string,
-  quantity: string
+  quantity: string,
+  bidSymbol: { sym: string; contract: string },
+  askSymbol: { sym: string; contract: string },
+  fillType: number = 0  // 0=GTC, 1=IOC, 2=POST_ONLY
 ) {
   const actions = [{
     account: 'dex',
     name: 'placeorder',
     authorization: [{ actor: account, permission: 'active' }],
     data: {
-      account,
       market_id: marketId,
-      side: side === 'buy' ? 1 : 2,
-      type: 1,  // 1 = limit
-      price,
+      account,
+      order_type: 1,       // 1 = limit (only valid type; use trigger_price for stop loss / take profit)
+      order_side: orderSide === 'buy' ? 1 : 2,  // 1=buy, 2=sell
       quantity,
-      post_only: false,
-      client_order_id: Date.now()  // Optional tracking ID
+      price,
+      bid_symbol: bidSymbol,   // extended_symbol e.g. {"sym":"4,XPR","contract":"eosio.token"}
+      ask_symbol: askSymbol,   // extended_symbol e.g. {"sym":"6,XUSDC","contract":"xtokens"}
+      trigger_price: 0,        // optional: set non-zero for stop-loss / take-profit orders
+      fill_type: fillType,     // 0=GTC, 1=IOC, 2=POST_ONLY
+      referrer: ''             // optional: referrer account name
     }
   }];
 
@@ -138,28 +144,40 @@ async function placeLimitOrder(
 }
 ```
 
-### Place Market Order
+### Simulate Market Order
+
+> **Note:** There is no market order type on the DEX. `order_type` only supports `1` (limit).
+> To simulate a market order, place a limit order with `fill_type: 1` (IOC — Immediate or Cancel)
+> at an aggressive price that will match immediately. Any unfilled remainder is cancelled.
 
 ```typescript
 async function placeMarketOrder(
   account: string,
-  marketId: string,
-  side: 'buy' | 'sell',
-  quantity: string
+  marketId: number,
+  orderSide: 'buy' | 'sell',
+  quantity: string,
+  bidSymbol: { sym: string; contract: string },
+  askSymbol: { sym: string; contract: string }
 ) {
+  // Use a very high price for buys or very low price for sells to ensure fill
+  const aggressivePrice = orderSide === 'buy' ? '999999999' : '1';
+
   const actions = [{
     account: 'dex',
     name: 'placeorder',
     authorization: [{ actor: account, permission: 'active' }],
     data: {
-      account,
       market_id: marketId,
-      side: side === 'buy' ? 1 : 2,
-      type: 2,  // 2 = market
-      price: '0',  // Ignored for market orders
+      account,
+      order_type: 1,       // 1 = limit (the only valid order type)
+      order_side: orderSide === 'buy' ? 1 : 2,
       quantity,
-      post_only: false,
-      client_order_id: Date.now()
+      price: aggressivePrice,
+      bid_symbol: bidSymbol,
+      ask_symbol: askSymbol,
+      trigger_price: 0,
+      fill_type: 1,        // 1 = IOC (Immediate or Cancel) — unfilled portion is cancelled
+      referrer: ''
     }
   }];
 
@@ -185,19 +203,29 @@ async function cancelOrder(account: string, orderId: string) {
 }
 ```
 
-### Cancel All Orders
+### Cancel Multiple Orders
+
+> **Note:** There is no `cancelall` action on the DEX contract. You must cancel orders
+> individually using `cancelorder(account, order_id)`. To cancel all open orders, fetch
+> them first via the API and then cancel each one.
 
 ```typescript
 async function cancelAllOrders(account: string, marketId?: string) {
-  const actions = [{
+  // 1. Fetch all open orders for this account
+  const openOrders = await getOpenOrders(account, marketId);
+
+  // 2. Cancel each order individually
+  const actions = openOrders.map((order: any) => ({
     account: 'dex',
-    name: 'cancelall',
+    name: 'cancelorder',
     authorization: [{ actor: account, permission: 'active' }],
     data: {
       account,
-      market_id: marketId || ''  // Empty = all markets
+      order_id: order.order_id
     }
-  }];
+  }));
+
+  if (actions.length === 0) return;
 
   return session.transact({ actions }, { broadcast: true });
 }
@@ -215,7 +243,9 @@ async function depositToDex(account: string, quantity: string, tokenContract: st
       from: account,
       to: 'dex',
       quantity,
-      memo: 'deposit'
+      // WARNING: memo MUST be empty string. Using 'deposit' or other non-empty
+      // memo will cause the transfer to be treated as a regular transfer, not a DEX deposit.
+      memo: ''
     }
   }];
 
@@ -225,15 +255,42 @@ async function depositToDex(account: string, quantity: string, tokenContract: st
 
 ### Withdraw from DEX
 
+There are two withdraw options:
+
+- **`withdrawall(account)`** — withdraws all balances at once.
+- **`withdraw(account, balance)`** — withdraws a specific amount, where `balance` is an `extended_asset`.
+
 ```typescript
-async function withdrawFromDex(account: string, quantity: string) {
+// Withdraw all DEX balances
+async function withdrawAllFromDex(account: string) {
+  const actions = [{
+    account: 'dex',
+    name: 'withdrawall',
+    authorization: [{ actor: account, permission: 'active' }],
+    data: {
+      account
+    }
+  }];
+
+  return session.transact({ actions }, { broadcast: true });
+}
+
+// Withdraw a specific amount (balance is an extended_asset)
+async function withdrawFromDex(
+  account: string,
+  quantity: string,       // e.g. "100.0000 XPR"
+  tokenContract: string   // e.g. "eosio.token"
+) {
   const actions = [{
     account: 'dex',
     name: 'withdraw',
     authorization: [{ actor: account, permission: 'active' }],
     data: {
       account,
-      quantity
+      balance: {
+        quantity,
+        contract: tokenContract
+      }
     }
   }];
 
@@ -888,19 +945,30 @@ function calculateSwapOutput(
 
 ### Add Liquidity
 
+The action name is `liquidityadd` (not `addliquidity`). Parameters:
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `owner` | name | Your account |
+| `lt_symbol` | symbol | LP token symbol, e.g. `"8,XPRUSDC"` |
+| `add_token1` | extended_asset | Amount of token A to add |
+| `add_token2` | extended_asset | Amount of token B to add |
+| `add_token1_min` | extended_asset | Minimum token A (slippage protection) |
+| `add_token2_min` | extended_asset | Minimum token B (slippage protection) |
+
 ```bash
 # Add liquidity to XPR/XUSDC pool (must add both sides proportionally)
-proton action proton.swaps addliquidity \
-  '{"owner":"myaccount","pool1":{"quantity":"1000.0000 XPR","contract":"eosio.token"},"pool2":{"quantity":"2.200000 XUSDC","contract":"xtokens"},"lt_symbol":"8,XPRUSDC","max_slippage":100}' \
+proton action proton.swaps liquidityadd \
+  '{"owner":"myaccount","lt_symbol":"8,XPRUSDC","add_token1":{"quantity":"1000.0000 XPR","contract":"eosio.token"},"add_token2":{"quantity":"2.200000 XUSDC","contract":"xtokens"},"add_token1_min":{"quantity":"990.0000 XPR","contract":"eosio.token"},"add_token2_min":{"quantity":"2.178000 XUSDC","contract":"xtokens"}}' \
   myaccount
 ```
 
 ### Remove Liquidity
 
 ```bash
-# Remove liquidity
+# Remove liquidity — params are {owner, lt} where lt is an asset (the LP tokens to redeem)
 proton action proton.swaps liquidityrmv \
-  '{"owner":"myaccount","lt_symbol":"8,XPRUSDC","lt_amount":"1000.00000000 XPRUSDC"}' \
+  '{"owner":"myaccount","lt":"1000.00000000 XPRUSDC"}' \
   myaccount
 
 # Withdraw returned tokens

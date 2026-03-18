@@ -880,7 +880,7 @@ npm run bot
 - Minimum order: $1 or 1 XMD
 - Bot auto-replaces filled orders
 - Keep private key secure
-- Verify identity at https://identity.metalx.com if needed
+- Verify identity at https://identity.metallicus.com if needed
 
 ---
 
@@ -939,5 +939,5 @@ npm run bot
 - **WebAuth Wallet:** https://webauth.com/
 - **DEX Bot:** https://github.com/XPRNetwork/dex-bot
 - **LOAN Protocol:** https://lending.docs.metalx.com
-- **Identity Verification:** https://identity.metalx.com
+- **Identity Verification:** https://identity.metallicus.com
 - **Support:** https://help.xprnetwork.org/

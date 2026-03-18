@@ -8,14 +8,23 @@ XPR Network provides on-chain price feeds through the `oracles` contract for DeF
 
 ### Available Price Feeds
 
-| Index | Pair | Description |
-|-------|------|-------------|
-| 1 | XPR/USD | XPR Network token |
-| 4 | BTC/USD | Bitcoin |
-| 5 | ETH/USD | Ethereum |
-| 6 | USDC/USD | USD Coin |
-| 7 | USDT/USD | Tether |
-| 13 | XPR/USD | XPR (alternate index) |
+| Index | Pair |
+|-------|------|
+| 3 | XPR/USD |
+| 4 | BTC/USD |
+| 5 | USDC/USD |
+| 6 | MTL/USD |
+| 7 | ETH/USD |
+| 8 | DOGE/USD |
+| 9 | USDT/USD |
+| 12 | XMD/USD |
+| 13 | BUSD/USD |
+| 16 | LTC/USD |
+| 18 | XRP/USD |
+| 19 | SOL/USD |
+| 21 | HBAR/USD |
+| 22 | ADA/USD |
+| 23 | XLM/USD |
 
 ### Query Oracle Price
 
@@ -55,8 +64,8 @@ async function getOraclePrice(feedIndex: number): Promise<number> {
 
 // Examples
 const btcPrice = await getOraclePrice(4);   // BTC/USD
-const ethPrice = await getOraclePrice(5);   // ETH/USD
-const xprPrice = await getOraclePrice(1);   // XPR/USD
+const ethPrice = await getOraclePrice(7);   // ETH/USD
+const xprPrice = await getOraclePrice(3);   // XPR/USD
 ```
 
 ### Use Oracle in Smart Contract
@@ -122,7 +131,7 @@ function calculateValue(amount: number, price: number): number {
 }
 
 // Example: Value of 1000 XPR
-const xprPrice = await getOraclePrice(1);  // e.g., 0.00087
+const xprPrice = await getOraclePrice(3);  // e.g., 0.00087
 const xprValue = calculateValue(1000, xprPrice);  // $0.87
 ```
 
