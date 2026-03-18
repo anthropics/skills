@@ -1,0 +1,110 @@
+%% example-onepager.tex
+%% ---------------------------------------------------------------------------
+%% An executive briefing — NOT a resume — proving the toolkit is
+%% document-agnostic. The agent defines its own semantic macros from the
+%% tufte-swiss primitives.
+%% ---------------------------------------------------------------------------
+
+\documentclass[10pt]{article}
+\usepackage{tufte-swiss}
+
+%% --- Page geometry (agent's choice, not the toolkit's) ---
+\geometry{
+  paper=letterpaper,
+  top=24mm,
+  bottom=24mm,
+  left=22mm,
+  right=22mm,
+  heightrounded,
+}
+
+%% --- Semantic macros built from toolkit primitives ---
+
+\newcommand{\BriefTitle}[1]{%
+  \begingroup\TSTitle\TSBlack
+  #1\par
+  \endgroup
+  \vspace{\TSHalf}%
+  \TSRule[TSStrong]{\linewidth}{0.6pt}\par
+  \vspace{\TSGrid}%
+}
+
+\newcommand{\BriefSubtitle}[1]{%
+  \begingroup\TSMicro\TSSemiBold\color{TSMuted}%
+  \TSTrack{#1}\par
+  \endgroup
+  \vspace{3pt}%
+}
+
+\newcommand{\BriefSection}[1]{%
+  \vspace{\TSGrid}%
+  \begingroup\TSMicro\TSSemiBold\color{TSMuted}%
+  \TSTrack{#1}\par
+  \endgroup
+  \vspace{\TSHalf}%
+  \TSRule{\linewidth}{0.2pt}\par
+  \vspace{\TSHalf}%
+}
+
+\newcommand{\BriefMeta}[2]{%
+  \noindent
+  \makebox[28mm][l]{%
+    \begingroup\TSMicro\TSLabelFont\color{TSMuted}#1\endgroup
+  }%
+  #2\par
+  \vspace{2pt}%
+}
+
+%% --- Document ---
+
+\begin{document}
+
+\BriefTitle{Q3 Pipeline Assessment}
+\BriefSubtitle{CONFIDENTIAL --- EXECUTIVE SUMMARY}
+
+\BriefMeta{PREPARED FOR}{Board of Directors}
+\BriefMeta{DATE}{March 18, 2026}
+\BriefMeta{CLASSIFICATION}{Internal Use Only}
+
+\BriefSection{SITUATION}
+
+The oncology pipeline entered Q3 with three Phase~II assets and one
+Phase~III registrational study. Enrollment velocity for the lead asset
+(RVN-4012) exceeded projections by 18\%, driven by site activation in
+the EU-5. The competitive landscape shifted when Vertex disclosed
+positive interim data in the same indication, compressing our window
+for differentiation from 24 to approximately 14 months.
+
+\BriefSection{KEY FINDINGS}
+
+\begin{itemize}[
+  label=\textcolor{TSMuted}{--},
+  leftmargin=12pt,
+  itemsep=4pt,
+  topsep=\TSHalf,
+  parsep=0pt,
+]
+\item RVN-4012 Phase~III enrollment at 73\% (target: 65\%). Data readout
+  remains on track for Q1 2027.
+\item RVN-5108 Phase~II futility analysis passed all pre-specified
+  thresholds. Recommend expansion cohort activation.
+\item RVN-3201 showed dose-limiting toxicity at the 400\,mg level. Protocol
+  amendment to add a 300\,mg arm is in preparation.
+\item Regulatory pre-submission meeting with FDA scheduled for October 2026.
+  Breakthrough Therapy Designation request under internal review.
+\end{itemize}
+
+\BriefSection{RECOMMENDATION}
+
+Accelerate the RVN-4012 regulatory timeline by six weeks. The Vertex
+disclosure changes the competitive calculus: first-to-file advantage in
+the EU is now worth an estimated \$180M in peak-year revenue. This
+requires committing the reserve CMC budget (\$4.2M) to parallel-track
+the commercial-scale manufacturing validation that would otherwise
+begin in Q4.
+
+The risk is bounded: if the Phase~III misses its primary endpoint,
+the CMC investment is recoverable through contract manufacturing
+partnerships already in negotiation.
+
+\end{document}
