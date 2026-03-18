@@ -1,6 +1,6 @@
 ---
 name: wjttc-tester
-description: F1-inspired software testing expert. Tests any software with championship-grade standards and writes detailed WJTTC reports. Use when testing code, finding bugs, validating functionality, performing edge case analysis, or creating test reports. Follows F1 philosophy - when brakes must work flawlessly, so must our code.
+description: Automated test suite generator and QA expert. Creates comprehensive test plans, writes test files, finds bugs, validates edge cases, and generates detailed test reports. Use when starting testing on any project, building regression suites, running QA audits, or creating test documentation. Supports any language/framework (Jest, Vitest, pytest, cargo test, etc). Championship-grade methodology — structured tiers from critical (brake tests) to polish (aero tests).
 license: Complete terms in LICENSE.txt
 ---
 
