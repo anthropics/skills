@@ -23,10 +23,9 @@ MetalX is the primary decentralized exchange on XPR Network - a peer-to-peer mar
 
 If the primary RPC is unavailable, use these alternatives for chain queries:
 
-1. `https://proton.greymass.com` (recommended)
-2. `https://proton.eosusa.io`
-3. `https://proton.protonuk.io`
-4. `https://proton.eoscommunity.org` (occasionally unreliable)
+1. `https://proton.eosusa.io` (recommended)
+2. `https://proton.protonuk.io`
+3. `https://proton.cryptolions.io`
 
 > ⚠️ **CRITICAL: DEX Token Deposits**
 >

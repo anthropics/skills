@@ -134,7 +134,7 @@ await supply(session, '10000.0000 XPR', 'eosio.token');
 
 ```bash
 # Check your L-token shares
-curl -s -X POST https://proton.greymass.com/v1/chain/get_table_rows \
+curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
   -H 'Content-Type: application/json' \
   -d '{"code":"lending.loan","scope":"lending.loan","table":"shares","lower_bound":"myaccount","upper_bound":"myaccount","limit":1,"json":true}'
 ```
@@ -282,7 +282,7 @@ proton action lending.loan claimrewards '{"claimer":"myaccount","markets":["4,LX
 
 ```typescript
 async function getUserShares(account: string): Promise<any> {
-  const response = await fetch('https://proton.greymass.com/v1/chain/get_table_rows', {
+  const response = await fetch('https://proton.eosusa.io/v1/chain/get_table_rows', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -304,7 +304,7 @@ async function getUserShares(account: string): Promise<any> {
 
 ```typescript
 async function getMarkets(): Promise<any[]> {
-  const response = await fetch('https://proton.greymass.com/v1/chain/get_table_rows', {
+  const response = await fetch('https://proton.eosusa.io/v1/chain/get_table_rows', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -328,7 +328,7 @@ async function getMarkets(): Promise<any[]> {
 
 ```typescript
 async function getLiquidatablePositions(): Promise<any[]> {
-  const response = await fetch('https://proton.greymass.com/v1/chain/get_table_rows', {
+  const response = await fetch('https://proton.eosusa.io/v1/chain/get_table_rows', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -393,7 +393,7 @@ proton table loan.staking stakers --lower myaccount --upper myaccount
 
 ```bash
 # XPR price (feed index 3)
-curl -s -X POST https://proton.greymass.com/v1/chain/get_table_rows \
+curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
   -H 'Content-Type: application/json' \
   -d '{"code":"oracles","scope":"oracles","table":"data","lower_bound":3,"upper_bound":3,"limit":1,"json":true}'
 ```
@@ -418,7 +418,7 @@ The LOAN protocol has a whitelist (`updatewl` action) that controls which accoun
 To check the whitelist:
 
 ```bash
-curl -s -X POST https://proton.greymass.com/v1/chain/get_table_rows \
+curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
   -H 'Content-Type: application/json' \
   -d '{"code":"lending.loan","scope":"lending.loan","table":"whitelist","limit":100,"json":true}'
 ```
@@ -474,10 +474,9 @@ proton action lending.loan claimrewards '{"claimer":"alice","markets":["4,LXPR",
 
 Use these endpoints for querying tables (in order of reliability):
 
-1. `https://proton.greymass.com` (recommended)
-2. `https://proton.eosusa.io`
-3. `https://proton.protonuk.io`
-4. `https://proton.eoscommunity.org` (occasionally unreliable)
+1. `https://proton.eosusa.io` (recommended)
+2. `https://proton.protonuk.io`
+3. `https://proton.cryptolions.io`
 
 ### Important Notes
 

@@ -807,7 +807,7 @@ placeOrder(...): void {
 ### Query All Pools
 
 ```bash
-curl -s -X POST https://proton.greymass.com/v1/chain/get_table_rows \
+curl -s -X POST https://proton.eosusa.io/v1/chain/get_table_rows \
   -H 'Content-Type: application/json' \
   -d '{"code":"proton.swaps","scope":"proton.swaps","table":"pools","limit":100,"json":true}'
 ```
@@ -935,4 +935,4 @@ Each hop incurs the pool's exchange fee, making multi-hop trades more expensive.
 - **Oracle Feeds**: `oracles` contract on XPR Network
 - **Perpetual Protocol Concepts**: https://docs.perp.com (reference for perps design)
 - **Proton Swaps**: AMM pools at `proton.swaps` contract
-- **RPC Endpoints**: `proton.greymass.com` (primary), `proton.eosusa.io`, `proton.protonuk.io` (fallbacks)
+- **RPC Endpoints**: `proton.eosusa.io` (primary), `proton.protonuk.io`, `proton.cryptolions.io` (fallbacks)
