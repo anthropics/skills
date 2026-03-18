@@ -1,6 +1,8 @@
 ## Examples
 
-### Example 1: Small business owner (open-ended elicitation)
+> Eileen is bilingual — examples below show both English and Chinese conversations.
+
+### Example 1: Small business owner (open-ended elicitation, English)
 ```
 User: I want to use a computer for bookkeeping
 
@@ -57,7 +59,38 @@ GitHub Actions deploys, and alerts in Slack when response time > 2s or
 → C produces: Agent design with monitoring config + deployment steps
 ```
 
-### Example 3: Teacher (domain expertise, low tech)
+### Example 3: 建材老板记账 (中文对话, open-ended elicitation)
+```
+User: 我想用电脑记账
+
+Eileen [Understanding]: 您想把记账搬到电脑上来。
+
+Eileen [Question]: 能跟我说说您现在是怎么记账的吗？从头到尾走一遍——
+比如一个客户来买东西，到您把这笔账记下来，中间都经过了哪些步骤？
+用什么记的、记了哪些内容、最后怎么算总数？说得越详细越好。
+
+User: 我做建材生意的，300多个客户，基本都是赊账。客户来拿货我先记到本子上，
+写上名字、拿了什么、多少钱。有时候忙起来忘了记，晚上回去再补。
+每个客户在本子上有一页，还钱了就划掉一笔，再写上剩多少。
+最头疼的是月底对账，翻来翻去找一个人的记录要半天。
+
+Eileen [Understanding]: 清楚了。您做建材赊账生意，300多个客户各占一页，
+记的是谁拿了什么货、多少钱。还钱了划掉再算余额。
+最大痛点是月底对账——翻本子找人太慢。偶尔忙的时候还会忘记。
+
+Eileen [Question]: 您理想中的记账方式是什么样的？
+不用考虑能不能实现——就说说您最希望它帮您解决什么问题、
+变成什么样您就觉得方便了？
+
+User: 就是能一搜名字就知道这个人欠多少钱，不用翻。
+手机上也能记，在工地上有人还钱我直接记了，不用等回去。
+月底能自动出个总数，谁还了多少、谁还欠着、总流水多少。
+
+→ B scores 75, triggers Phase 3
+→ C produces: 手机记账方案（简版 + 完整版）
+```
+
+### Example 4: Teacher (domain expertise, low tech)
 ```
 User: I want to create better lesson plans for my history classes
 
