@@ -794,9 +794,145 @@ placeOrder(...): void {
 
 ---
 
+## Proton Swaps (AMM Liquidity Pools)
+
+`proton.swaps` provides automated market maker (AMM) swap pools — an alternative to the DEX order book for instant trades.
+
+### Key Contract
+
+| Contract | Purpose |
+|----------|---------|
+| `proton.swaps` | AMM swap pools, liquidity provision |
+
+### Query All Pools
+
+```bash
+curl -s -X POST https://proton.greymass.com/v1/chain/get_table_rows \
+  -H 'Content-Type: application/json' \
+  -d '{"code":"proton.swaps","scope":"proton.swaps","table":"pools","limit":100,"json":true}'
+```
+
+Pool row structure:
+
+| Field | Description |
+|-------|-------------|
+| `lt_symbol` | LP token symbol (e.g., `XPRUSDC`) |
+| `creator` | Pool creator account |
+| `memo` | Pool identifier string |
+| `pool1` | Reserve of token A (extended_asset) |
+| `pool2` | Reserve of token B (extended_asset) |
+| `hash` | Pool hash |
+| `fee` | Exchange fee object |
+
+### Exchange Fees
+
+The `fee` field contains `exchange_fee` as an integer where:
+- `20` = 0.20% fee (most pools)
+- `5` = 0.05% fee (stablecoin pools like XUSDT/XUSDC)
+
+### Active Pools (as of Feb 2026)
+
+| Pool | Fee | Notes |
+|------|-----|-------|
+| XPR/XUSDC | 0.20% | Highest volume, primary XPR trading pair |
+| XPR/LOAN | 0.20% | LOAN governance token pair |
+| METAL/XPR | 0.20% | Metal token pair |
+| XPR/XMT | 0.20% | Metal X token pair |
+| SNIPS/XPR | 0.20% | Community token |
+| XUSDT/XUSDC | 0.05% | Stablecoin pool |
+| XPR/XBTC | 0.20% | Bitcoin pair |
+| XPR/XETH | 0.20% | Ethereum pair |
+
+### Execute a Swap
+
+Swaps are done via token transfer to `proton.swaps` with a memo specifying the output token:
+
+```bash
+# Swap 1000 XPR → XUSDC (minimum 1 XUSDC out)
+proton action eosio.token transfer \
+  '{"from":"myaccount","to":"proton.swaps","quantity":"1000.0000 XPR","memo":"XPRUSDC,1"}' \
+  myaccount
+
+# Swap 10 XUSDC → XPR (minimum 1 XPR out)
+proton action xtokens transfer \
+  '{"from":"myaccount","to":"proton.swaps","quantity":"10.000000 XUSDC","memo":"XPRUSDC,1"}' \
+  myaccount
+```
+
+**Memo format:** `<POOL_LT_SYMBOL>,<MIN_OUTPUT>`
+
+- `POOL_LT_SYMBOL`: The LP token symbol (e.g., `XPRUSDC`)
+- `MIN_OUTPUT`: Minimum amount to receive (slippage protection, use `1` for no minimum)
+
+The contract automatically determines direction based on which token you send.
+
+### Calculate Expected Output
+
+For a constant-product AMM (x × y = k):
+
+```
+output = (input_amount × (10000 - exchange_fee) × output_reserve) / (input_reserve × 10000 + input_amount × (10000 - exchange_fee))
+```
+
+```typescript
+function calculateSwapOutput(
+  inputAmount: number,
+  inputReserve: number,
+  outputReserve: number,
+  exchangeFee: number  // e.g., 20 for 0.2%
+): number {
+  const inputWithFee = inputAmount * (10000 - exchangeFee);
+  return (inputWithFee * outputReserve) / (inputReserve * 10000 + inputWithFee);
+}
+```
+
+### Add Liquidity
+
+```bash
+# Add liquidity to XPR/XUSDC pool (must add both sides proportionally)
+proton action proton.swaps addliquidity \
+  '{"owner":"myaccount","pool1":{"quantity":"1000.0000 XPR","contract":"eosio.token"},"pool2":{"quantity":"2.200000 XUSDC","contract":"xtokens"},"lt_symbol":"8,XPRUSDC","max_slippage":100}' \
+  myaccount
+```
+
+### Remove Liquidity
+
+```bash
+# Remove liquidity
+proton action proton.swaps liquidityrmv \
+  '{"owner":"myaccount","lt_symbol":"8,XPRUSDC","lt_amount":"1000.00000000 XPRUSDC"}' \
+  myaccount
+
+# Withdraw returned tokens
+proton action proton.swaps withdrawall '{"owner":"myaccount"}' myaccount
+```
+
+> ⚠️ Always call `withdrawall` after removing liquidity to receive your tokens back.
+
+### Multi-Hop Swaps
+
+For tokens without a direct pool (e.g., METAL → XUSDC), you need multiple swaps:
+
+```
+METAL → XPR (via METAL/XPR pool) → XUSDC (via XPR/XUSDC pool)
+```
+
+Each hop incurs the pool's exchange fee, making multi-hop trades more expensive.
+
+### Arbitrage Considerations
+
+- **Fees eat spread:** With 0.2% per hop, a round-trip (buy + sell) costs ~0.4%. Arbitrage only works if price discrepancy exceeds this.
+- **Triangular routes:** 3-hop routes cost ~0.6% minimum in fees. In practice, pools on XPR Network are efficient enough that profitable cycles are rare.
+- **Pool imbalances:** Large swaps can temporarily move pool prices. Watch for whale trades creating imbalances that revert over time.
+- **DEX vs Swap divergence:** The order book (MetalX DEX) and AMM pools can diverge in price. Check both before trading.
+
+---
+
 ## Resources
 
 - **MetalX DEX**: https://metalx.com
 - **XPR DEX Bot**: https://github.com/XPRNetwork/dex-bot
 - **Oracle Feeds**: `oracles` contract on XPR Network
 - **Perpetual Protocol Concepts**: https://docs.perp.com (reference for perps design)
+- **Proton Swaps**: AMM pools at `proton.swaps` contract
+- **RPC Endpoints**: `proton.greymass.com` (primary), `proton.eosusa.io`, `proton.protonuk.io` (fallbacks)

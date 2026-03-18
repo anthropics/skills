@@ -18,6 +18,29 @@ MetalX is the primary decentralized exchange on XPR Network - a peer-to-peer mar
 | Environment | API Base URL | RPC URL |
 |-------------|--------------|---------|
 | **Mainnet** | `https://dex.api.mainnet.metalx.com` | `https://rpc.api.mainnet.metalx.com` |
+
+### RPC Fallback Endpoints
+
+If the primary RPC is unavailable, use these alternatives for chain queries:
+
+1. `https://proton.greymass.com` (recommended)
+2. `https://proton.eosusa.io`
+3. `https://proton.protonuk.io`
+4. `https://proton.eoscommunity.org` (occasionally unreliable)
+
+> ⚠️ **CRITICAL: DEX Token Deposits**
+>
+> When transferring tokens to the `dex` contract for order placement, the memo **MUST be an empty string** (`""`).
+> Using any other memo (e.g., `"deposit"`) will result in tokens being **permanently stuck** in the contract with no way to recover them.
+> The `withdrawall` action will NOT return tokens deposited with a wrong memo.
+>
+> ```bash
+> # ✅ CORRECT — empty memo
+> proton action eosio.token transfer '{"from":"myaccount","to":"dex","quantity":"1000.0000 XPR","memo":""}' myaccount
+>
+> # ❌ WRONG — tokens will be lost forever
+> proton action eosio.token transfer '{"from":"myaccount","to":"dex","quantity":"1000.0000 XPR","memo":"deposit"}' myaccount
+> ```
 | **Testnet** | `https://dex.api.testnet.metalx.com` | `https://rpc.api.testnet.metalx.com` |
 
 ---

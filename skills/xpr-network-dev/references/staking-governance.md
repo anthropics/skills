@@ -37,7 +37,7 @@ Key differences from other EOSIO chains:
 
 ```bash
 # Stake XPR
-proton action eosio.proton stake '{"owner":"myaccount","amount":"1000.0000 XPR"}' myaccount
+proton action eosio stakexpr '{"from":"myaccount","receiver":"myaccount","stake_xpr_quantity":"1000.0000 XPR"}' myaccount
 ```
 
 #### Via Code
@@ -46,12 +46,13 @@ proton action eosio.proton stake '{"owner":"myaccount","amount":"1000.0000 XPR"}
 async function stakeXPR(session: any, amount: string): Promise<any> {
   return session.transact({
     actions: [{
-      account: 'eosio.proton',
-      name: 'stake',
+      account: 'eosio',
+      name: 'stakexpr',
       authorization: [session.auth],
       data: {
-        owner: session.auth.actor,
-        amount: amount  // e.g., "1000.0000 XPR"
+        from: session.auth.actor.toString(),
+        receiver: session.auth.actor.toString(),
+        stake_xpr_quantity: amount  // e.g., "1000.0000 XPR"
       }
     }]
   }, { broadcast: true });
@@ -83,7 +84,7 @@ Unstaking takes **24 hours** to complete. This is a security feature:
 
 ```bash
 # Start unstaking
-proton action eosio.proton unstake '{"owner":"myaccount","amount":"500.0000 XPR"}' myaccount
+proton action eosio unstakexpr '{"from":"myaccount","receiver":"myaccount","unstake_xpr_quantity":"500.0000 XPR"}' myaccount
 
 # After 24 hours, claim refund (usually automatic)
 proton action eosio.proton refund '{"owner":"myaccount"}' myaccount
@@ -95,12 +96,13 @@ proton action eosio.proton refund '{"owner":"myaccount"}' myaccount
 async function unstakeXPR(session: any, amount: string): Promise<any> {
   return session.transact({
     actions: [{
-      account: 'eosio.proton',
-      name: 'unstake',
+      account: 'eosio',
+      name: 'unstakexpr',
       authorization: [session.auth],
       data: {
-        owner: session.auth.actor,
-        amount: amount
+        from: session.auth.actor.toString(),
+        receiver: session.auth.actor.toString(),
+        unstake_xpr_quantity: amount
       }
     }]
   }, { broadcast: true });
@@ -110,7 +112,7 @@ async function unstakeXPR(session: any, amount: string): Promise<any> {
 async function claimRefund(session: any): Promise<any> {
   return session.transact({
     actions: [{
-      account: 'eosio.proton',
+      account: 'eosio',
       name: 'refund',
       authorization: [session.auth],
       data: {
@@ -245,7 +247,7 @@ proton action eosio.proton claimrewards '{"owner":"myaccount"}' myaccount
 async function claimStakingRewards(session: any): Promise<any> {
   return session.transact({
     actions: [{
-      account: 'eosio.proton',
+      account: 'eosio',
       name: 'claimrewards',
       authorization: [session.auth],
       data: {
@@ -485,10 +487,10 @@ Features:
 
 ```bash
 # Stake XPR
-proton action eosio.proton stake '{"owner":"ACCOUNT","amount":"1000.0000 XPR"}' ACCOUNT
+proton action eosio stakexpr '{"from":"ACCOUNT","receiver":"ACCOUNT","stake_xpr_quantity":"1000.0000 XPR"}' ACCOUNT
 
 # Unstake XPR
-proton action eosio.proton unstake '{"owner":"ACCOUNT","amount":"500.0000 XPR"}' ACCOUNT
+proton action eosio unstakexpr '{"from":"ACCOUNT","receiver":"ACCOUNT","unstake_xpr_quantity":"500.0000 XPR"}' ACCOUNT
 
 # Claim refund (after 24h)
 proton action eosio.proton refund '{"owner":"ACCOUNT"}' ACCOUNT

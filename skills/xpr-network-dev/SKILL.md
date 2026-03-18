@@ -1,20 +1,48 @@
 ---
 name: xpr-network-dev
-description: Comprehensive knowledge for XPR Network blockchain development. Use this skill when users ask about XPR Network (formerly Proton), including smart contracts with proton-tsc/AssemblyScript, @proton/cli commands, @proton/web-sdk wallet integration, RPC/Hyperion API queries, MetalX DEX trading, LOAN protocol DeFi, AtomicAssets NFTs, node operation, or Block Producer setup. Triggers on mentions of XPR, Proton blockchain, WebAuth wallet, proton-tsc, or XPR Network ecosystem tools.
-license: MIT
-metadata:
-  author: XPRNetwork
-  version: "1.0.0"
-  repository: https://github.com/XPRNetwork/xpr-network-dev-skill
+description: Comprehensive knowledge for XPR Network blockchain development - smart contracts, CLI, web SDK, DeFi, NFTs, and infrastructure
+version: 1.0.0
+author: XPR Network Community
+repository: https://github.com/XPRNetwork/xpr-network-dev-skill
 ---
 
 # XPR Network Developer Skill
 
-Build on XPR Network - a fast, gas-free blockchain with 0.5s blocks, WebAuthn wallet support, and human-readable account names.
+This skill provides comprehensive knowledge for developing on XPR Network, a fast, gas-free blockchain with WebAuthn wallet support.
 
-> **IMPORTANT**: AI-generated smart contract code should always be reviewed by experienced developers before mainnet deployment. Test thoroughly on testnet, understand the code, and consider professional audits for contracts handling significant value.
+> **IMPORTANT DISCLAIMER: AI-Generated Smart Contract Code**
+>
+> Smart contracts handle real assets and are immutable once deployed. AI-generated code, including code produced with this skill, should **always be reviewed by an experienced developer** before deployment to mainnet.
+>
+> - **Test thoroughly on testnet** before any mainnet deployment
+> - **Have code reviewed** by someone familiar with XPR Network/EOSIO smart contracts
+> - **Audit critical contracts** - consider professional security audits for contracts handling significant value
+> - **Understand the code** - don't deploy code you don't fully understand
+>
+> Claude can accelerate development and help with patterns, but it does not replace proper code review, testing, and auditing practices.
 
-## Quick Reference
+## XPR Network Overview
+
+XPR Network is an EOS-based blockchain optimized for payments and identity:
+
+| Feature | Description |
+|---------|-------------|
+| **Speed** | 0.5 second block times, 4000+ TPS |
+| **Fees** | Zero gas fees for end users |
+| **Accounts** | Human-readable names (1-12 chars, a-z, 1-5) |
+| **Wallets** | WebAuthn support (Face ID, fingerprint, security keys) |
+| **Contracts** | AssemblyScript/TypeScript with @proton/ts-contracts |
+| **Storage** | On-chain tables with RAM-based pricing |
+
+### Name Change: Proton → XPR Network
+
+The blockchain was rebranded from **Proton** to **XPR Network** in 2024. You may see legacy references to "Proton" in:
+- Package names (`@proton/cli`, `@proton/web-sdk`, `proton-tsc`)
+- GitHub organization (`XPRNetwork`, formerly `ProtonProtocol`)
+- Documentation and code comments
+- Explorer (now `explorer.xprnetwork.org`, formerly `protonscan.io` and `proton.bloks.io`)
+
+The token symbol remains **XPR** and all functionality is unchanged.
 
 ### Chain IDs
 
@@ -23,10 +51,76 @@ Build on XPR Network - a fast, gas-free blockchain with 0.5s blocks, WebAuthn wa
 | Mainnet | `384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0` |
 | Testnet | `71ee83bcf52142d61019d95f9cc5427ba6a0d7ff8accd9e2088ae2abeaf3d3dd` |
 
-### CLI Commands
+## Progressive Disclosure
+
+Load specialized modules based on your task:
+
+### Core Development
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `smart-contracts.md` | Building contracts | Tables, actions, auth, build/deploy |
+| `cli-reference.md` | Using CLI tools | Network, keys, deploy, queries |
+| `web-sdk.md` | Building dApps | Wallet connect, transactions, sessions |
+| `backend-patterns.md` | Server-side dev | Programmatic signing, bots, security |
+| `rpc-queries.md` | Reading chain data | RPC, Hyperion API, Light API, pagination |
+| `testing-debugging.md` | Testing contracts | Unit tests, testnet, debugging, logs |
+| `accounts-permissions.md` | Account management | Create accounts, permissions, multisig |
+| `staking-governance.md` | Staking & voting | XPR staking, BPs, DPoS, resource model |
+
+### Token & Identity
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `token-creation.md` | Creating tokens | Fungible tokens, issuance, vesting |
+| `webauth-identity.md` | User identity | WebAuth wallets, KYC, profiles, trust |
+| `nfts-atomicassets.md` | NFT development | Collections, schemas, minting, marketplace |
+
+### DeFi & Trading
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `metalx-dex.md` | DEX integration | Complete MetalX API, orders, swaps |
+| `defi-trading.md` | Trading bots/DeFi | Grid bots, market makers, perps architecture |
+| `loan-protocol.md` | Lending protocol | LOAN protocol, supply, borrow, liquidations |
+| `oracles-randomness.md` | Price feeds & RNG | Oracle prices, verifiable random numbers |
+
+### Integration Patterns
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `real-time-events.md` | Live updates | Hyperion streaming, WebSockets, notifications |
+| `payment-patterns.md` | Commerce/payments | Payment links, invoicing, POS, subscriptions |
+
+### Infrastructure
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `node-operation.md` | Running nodes | API nodes, Block Producers, validators |
+
+### Safety & Reference
+
+| Module | Read When | Key Topics |
+|--------|-----------|------------|
+| `safety-guidelines.md` | **BEFORE modifying contracts** | Table rules, deployment safety, recovery |
+| `troubleshooting.md` | Debugging errors | Common errors, solutions, diagnostics |
+| `examples.md` | Learning patterns | PriceBattle, ProtonWall, ProtonRating |
+| `resources.md` | Finding endpoints | RPC URLs, docs, explorers, community |
+
+### CRITICAL: Before Modifying Contracts
+**Read: `safety-guidelines.md`**
+- **NEVER modify existing table structures with data**
+- Pre-deployment checklist
+- Recovery procedures
+
+---
+
+## Quick Reference
+
+### Common CLI Commands
 
 ```bash
-# Install
+# Install CLI
 npm i -g @proton/cli
 
 # Set network
@@ -46,7 +140,7 @@ proton action CONTRACT ACTION 'JSON_DATA' AUTHORIZATION
 proton contract:set ACCOUNT ./assembly/target
 ```
 
-### RPC Query
+### Common RPC Query
 
 ```javascript
 const { JsonRpc } = require('@proton/js');
@@ -60,10 +154,10 @@ const { rows } = await rpc.get_table_rows({
 });
 ```
 
-### Basic Contract
+### Basic Contract Structure
 
 ```typescript
-import { Contract, Table, TableStore, Name, requireAuth } from 'proton-tsc';
+import { Contract, Table, TableStore, Name } from 'proton-tsc';
 
 @table("mydata")
 class MyData extends Table {
@@ -90,7 +184,7 @@ class MyContract extends Contract {
 }
 ```
 
-### Frontend Wallet Login
+### Basic Frontend Login
 
 ```typescript
 import ProtonWebSDK from '@proton/web-sdk';
@@ -107,78 +201,31 @@ const { link, session } = await ProtonWebSDK({
 // Use session.transact() for transactions
 ```
 
+---
+
 ## Key Packages
 
-| Package | Purpose |
-|---------|---------|
-| `@proton/cli` | CLI tools (`npm i -g @proton/cli`) |
-| `proton-tsc` | Contract SDK (`npm i proton-tsc`) |
-| `@proton/web-sdk` | Frontend wallet (`npm i @proton/web-sdk`) |
-| `@proton/js` | RPC queries (`npm i @proton/js`) |
+| Package | Purpose | Install |
+|---------|---------|---------|
+| `@proton/cli` | Command-line tools | `npm i -g @proton/cli` |
+| `proton-tsc` | Contract development | `npm i proton-tsc` |
+| `@proton/web-sdk` | Frontend wallet integration | `npm i @proton/web-sdk` |
+| `@proton/link` | Mobile wallet transport (required with web-sdk) | `npm i @proton/link` |
+| `@proton/js` | RPC queries | `npm i @proton/js` |
 
-## RPC Endpoints
+## Official Resources
 
-| Network | Endpoint |
-|---------|----------|
-| Mainnet | `https://proton.eosusa.io` |
-| Mainnet | `https://api.protonnz.com` |
-| Testnet | `https://tn1.protonnz.com` |
-
-## Detailed Reference Guides
-
-Load these references based on the task:
-
-### Core Development
-- **[smart-contracts.md](references/smart-contracts.md)** - Tables, actions, auth, inline actions, build/deploy
-- **[cli-reference.md](references/cli-reference.md)** - Full CLI command reference
-- **[web-sdk.md](references/web-sdk.md)** - Frontend wallet integration, sessions, transactions
-- **[rpc-queries.md](references/rpc-queries.md)** - RPC API, Hyperion history, pagination
-- **[backend-patterns.md](references/backend-patterns.md)** - Server-side signing, bots, security
-- **[testing-debugging.md](references/testing-debugging.md)** - Unit tests, testnet testing, debugging
-
-### Accounts & Identity
-- **[accounts-permissions.md](references/accounts-permissions.md)** - Account creation, permissions, multisig
-- **[webauth-identity.md](references/webauth-identity.md)** - WebAuth wallets, KYC, user profiles
-
-### Tokens & NFTs
-- **[token-creation.md](references/token-creation.md)** - Fungible tokens, issuance, vesting
-- **[nfts-atomicassets.md](references/nfts-atomicassets.md)** - Collections, schemas, minting, marketplace
-
-### DeFi & Trading
-- **[metalx-dex.md](references/metalx-dex.md)** - Complete MetalX DEX API, order book, swaps
-- **[defi-trading.md](references/defi-trading.md)** - Trading bots, grid strategies, market making
-- **[loan-protocol.md](references/loan-protocol.md)** - LOAN lending protocol, supply, borrow, liquidations
-- **[oracles-randomness.md](references/oracles-randomness.md)** - Price feeds, verifiable random numbers
-
-### Integration
-- **[real-time-events.md](references/real-time-events.md)** - Hyperion streaming, WebSockets
-- **[payment-patterns.md](references/payment-patterns.md)** - Payment links, invoicing, subscriptions
-
-### Infrastructure
-- **[node-operation.md](references/node-operation.md)** - Running nodes, Block Producer setup
-
-### Safety & Troubleshooting
-- **[safety-guidelines.md](references/safety-guidelines.md)** - CRITICAL: Read before modifying contracts
-- **[troubleshooting.md](references/troubleshooting.md)** - Common errors and solutions
-- **[resources.md](references/resources.md)** - Endpoints, explorers, community links
-
-## Critical Safety Rules
-
-**NEVER modify existing table structures** once deployed with data - this breaks deserialization and makes data unreadable. Always create NEW tables for new features.
-
-Before deploying contract updates:
-1. Check if tables have data
-2. Back up current ABI
-3. Test on testnet first
-4. Verify target account twice
-
-## Name Change Note
-
-XPR Network was rebranded from "Proton" in 2024. Legacy package names (`@proton/*`, `proton-tsc`) remain unchanged. The token symbol is XPR.
-
-## Resources
-
-- **Docs**: https://docs.xprnetwork.org
-- **Explorer**: https://explorer.xprnetwork.org
+- **Documentation**: https://docs.xprnetwork.org
 - **GitHub**: https://github.com/XPRNetwork
-- **Testnet Faucet**: https://resources.xprnetwork.org/faucet
+- **Block Explorer**: https://explorer.xprnetwork.org
+- **Resources Portal**: https://resources.xprnetwork.org (buy RAM, etc.)
+
+---
+
+## Safety Reminders
+
+1. **NEVER modify existing table structures** once deployed with data - this breaks deserialization
+2. **Always test on testnet** before mainnet deployment
+3. **Verify the target account** before deploying - wrong account = overwrite existing contract
+4. **Back up ABIs** before deploying changes
+5. **Use new tables** for new features instead of modifying existing ones

@@ -108,6 +108,143 @@ const { rows } = await rpc.get_table_rows({
 | `key_type` | string | Key type: `i64`, `i128`, `name`, `float64`, etc. |
 | `reverse` | boolean | Reverse order |
 
+### CRITICAL: All-Numeric Account Names (e.g. `333555`, `111111`)
+
+XPR Network allows account names using only digits 1-5 (e.g. `333555`, `111111`, `12345`). These cause a **silent data loss bug** in `get_table_rows` because the RPC interprets all-numeric strings as raw `u64` integer values instead of EOSIO name-encoded values.
+
+**The problem:** EOSIO names are base32-encoded into u64 using charset `.12345abcdefghijklmnopqrstuvwxyz`. The name `"333555"` encodes to u64 `1785205097907617792`, but the RPC sees `"333555"` and treats it as the raw integer `333555` — a completely different value. Queries return empty results with no error.
+
+**Fix depends on which parameter is numeric:**
+
+| Parameter | Fix | Example |
+|-----------|-----|---------|
+| `scope` | Convert name to u64 encoding | `scope: "1785205097907617792"` |
+| `lower_bound` / `upper_bound` | Append `"."` to force name parsing | `lower_bound: "333555."` |
+
+**The `"."` trick does NOT work for `scope`** — it throws a `chain_type_exception`. You must compute the u64 name encoding.
+
+#### Name-to-u64 Encoding Function
+
+```typescript
+/**
+ * Convert an EOSIO account name to its u64 string representation.
+ * Required for all-numeric names used as scope in get_table_rows.
+ */
+function nameToU64(name: string): string {
+  const charset = '.12345abcdefghijklmnopqrstuvwxyz';
+  let value = BigInt(0);
+  const len = Math.min(name.length, 12);
+  for (let i = 0; i < len; i++) {
+    const idx = charset.indexOf(name[i]);
+    if (idx < 0) return name; // not a valid EOSIO name char
+    value |= BigInt(idx) << BigInt(64 - 5 * (i + 1));
+  }
+  if (name.length === 13) {
+    const idx = charset.indexOf(name[12]);
+    if (idx >= 0) value |= BigInt(idx & 0xf);
+  }
+  return value.toString();
+}
+
+/** Fix scope parameter for all-numeric account names */
+function safeScopeName(name: string): string {
+  if (/^\d+$/.test(name)) return nameToU64(name);
+  return name;
+}
+
+/** Fix lower_bound/upper_bound for all-numeric account names */
+function safeBoundsName(name: string): string {
+  if (/^\d+$/.test(name)) return name + '.';
+  return name;
+}
+```
+
+#### Example: Querying a Scoped Table for Account `333555`
+
+```typescript
+// BAD — returns empty rows (scope interpreted as raw integer 333555)
+const { rows } = await rpc.get_table_rows({
+  code: 'eosio.token',
+  scope: '333555',        // ← WRONG: interpreted as u64 333555
+  table: 'accounts',
+  json: true, limit: 100
+});
+// rows = []  ← silent failure!
+
+// BAD — throws chain_type_exception
+const { rows } = await rpc.get_table_rows({
+  code: 'eosio.token',
+  scope: '333555.',       // ← WRONG: "." trick doesn't work for scope
+  table: 'accounts',
+  json: true, limit: 100
+});
+// Error: Could not convert scope string '333555.'
+
+// GOOD — use u64 name encoding
+const { rows } = await rpc.get_table_rows({
+  code: 'eosio.token',
+  scope: safeScopeName('333555'),  // → "1785205097907617792"
+  table: 'accounts',
+  json: true, limit: 100
+});
+// rows = [{ balance: "1000.0000 XPR" }]  ← correct!
+```
+
+#### Example: Querying by Account Name in Bounds
+
+```typescript
+// BAD — returns wrong row (lower_bound interpreted as integer 333555)
+const { rows } = await rpc.get_table_rows({
+  code: 'eosio.proton',
+  scope: 'eosio.proton',
+  table: 'usersinfo',
+  lower_bound: '333555',   // ← interpreted as row index, not name
+  upper_bound: '333555',
+  limit: 1
+});
+
+// GOOD — append "." to force name parsing
+const { rows } = await rpc.get_table_rows({
+  code: 'eosio.proton',
+  scope: 'eosio.proton',
+  table: 'usersinfo',
+  lower_bound: safeBoundsName('333555'),  // → "333555."
+  upper_bound: safeBoundsName('333555'),
+  limit: 1
+});
+```
+
+#### Alternative: Use `get_currency_balance` for Token Balances
+
+For token balances specifically, `get_currency_balance` handles numeric names correctly without any workaround:
+
+```typescript
+// Works correctly for all account names including numeric ones
+const balances = await fetch(endpoint + '/v1/chain/get_currency_balance', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ code: 'eosio.token', account: '333555' })
+}).then(r => r.json());
+// ["1000.0000 XPR"]
+```
+
+#### Which APIs Are Affected?
+
+| API | Affected? | Notes |
+|-----|-----------|-------|
+| `get_table_rows` scope | YES | Must use u64 encoding |
+| `get_table_rows` lower/upper_bound | YES | Append `"."` |
+| `get_table_by_scope` | NO | Handles names correctly |
+| `get_currency_balance` | NO | Handles names correctly |
+| Hyperion APIs | NO | Use string account names |
+| Light API | NO | Use string account names |
+
+#### `get_table_by_scope` Is Safe
+
+If you use `get_table_by_scope` to enumerate scopes and then query each scope with `get_table_rows`, note that the scope values returned are already string names — but passing them back as scope in `get_table_rows` still triggers the bug for numeric names. Always apply `safeScopeName()`.
+
+---
+
 ### Exact Match Query
 
 ```typescript
@@ -935,7 +1072,7 @@ const rating = await safeQuery(
 ```typescript
 const ENDPOINTS = [
   'https://proton.eosusa.io',
-  'https://proton.greymass.com'
+  'https://proton.protonuk.io'
 ];
 
 async function queryWithFallback(query: (rpc: JsonRpc) => Promise<any>) {

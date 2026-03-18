@@ -60,12 +60,14 @@ const result = await session.transact({
 | `storagePrefix` | `string` | No | Prefix for storage keys (default: `proton-storage`) |
 | `restoreSession` | `boolean` | No | Restore previous session without wallet selector |
 
-### transportOptions (optional)
+### transportOptions (required for mobile)
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `requestAccount` | `string` | Account name requesting transaction (shown in wallet) |
+| `requestAccount` | `string` | **Required for mobile.** Your dApp's account name - used for deep link callbacks so mobile app knows where to return after signing |
 | `backButton` | `boolean` | Show back button in modal (default: true) |
+
+> **Important**: Without `requestAccount`, the WebAuth mobile app will sign transactions but won't return to your browser. Always set this to your contract or dApp account name.
 
 ### selectorOptions (optional)
 
@@ -84,7 +86,7 @@ const result = await session.transact({
 import ProtonWebSDK from '@proton/web-sdk';
 
 const CHAIN_ID = '384da888112027f0321850a169f737c33e53b388aad48b5adace4bab97f437e0';
-const ENDPOINTS = ['https://proton.eosusa.io', 'https://proton.greymass.com'];
+const ENDPOINTS = ['https://proton.eosusa.io', 'https://proton.protonuk.io'];
 
 class ProtonService {
   private link: any = null;
@@ -497,28 +499,76 @@ import '@proton/link'; // Required - enables mobile deep linking transport
 
 **Note**: The `@proton/link` import doesn't expose any API you need to call directly. Simply importing it registers the transport handlers needed for mobile wallet communication.
 
-### Dynamic Import Pattern (SSR/Next.js)
+### Dynamic Import Pattern (Required for Mobile)
 
-For server-side rendering frameworks:
+**Important**: Static imports often fail for mobile wallet support. Use dynamic imports with `Promise.all` to ensure `@proton/link` is fully loaded before any wallet operations:
 
 ```typescript
+let ConnectWallet: any;
+let sdkReady: Promise<void> | null = null;
+
 if (typeof window !== 'undefined') {
-  const sdkReady = Promise.all([
+  sdkReady = Promise.all([
     import('@proton/web-sdk').then((mod) => {
-      ProtonWebSDK = mod.default;
+      ConnectWallet = mod.default;
     }),
-    import('@proton/link')  // Critical for mobile
+    import('@proton/link')  // Critical for mobile deep linking
   ]).then(() => {});
+}
+
+// Helper to ensure SDK is loaded before use
+const waitForSdk = async () => {
+  if (sdkReady) await sdkReady;
+};
+
+// Always await before using ConnectWallet
+async function login() {
+  await waitForSdk();
+  const { link, session } = await ConnectWallet({
+    // ... options
+  });
 }
 ```
 
-### Symptoms of Missing @proton/link
+This pattern ensures both packages are fully loaded and transport handlers are registered before any wallet connection attempts.
 
-If you forget to install/import `@proton/link`:
-- Desktop signing works normally
-- Mobile browser shows "processing" indefinitely
-- WebAuth mobile app never opens for authorization
-- May show "unknown requestor" error
+### Critical Settings Checklist for Mobile
+
+For mobile wallet to work correctly, ensure ALL of these:
+
+1. **Install both packages**: `npm install @proton/web-sdk @proton/link`
+
+2. **Use dynamic imports with Promise.all** (not static imports):
+   ```typescript
+   sdkReady = Promise.all([
+     import('@proton/web-sdk').then((mod) => { ConnectWallet = mod.default; }),
+     import('@proton/link')
+   ]).then(() => {});
+   ```
+
+3. **Set `requestAccount`** to your dApp/contract name:
+   ```typescript
+   transportOptions: {
+     requestAccount: 'mycontract',  // Required for mobile callback
+   }
+   ```
+
+4. **Enable wallet types** explicitly:
+   ```typescript
+   selectorOptions: {
+     appName: 'My dApp',
+     enabledWalletTypes: ['webauth', 'proton'],
+   }
+   ```
+
+### Symptoms and Causes
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Mobile stuck on "Processing..." | Missing `@proton/link` or static import | Use dynamic import pattern |
+| App signs but doesn't return to browser | `requestAccount` empty or missing | Set to your contract name |
+| Only browser wallet shown | `enabledWalletTypes` missing `proton` | Add `['webauth', 'proton']` |
+| "Unknown requestor" error | Missing `@proton/link` | Install and import the package |
 
 ### Safari iOS Popup Blocker
 

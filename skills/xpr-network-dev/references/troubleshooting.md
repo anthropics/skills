@@ -2,6 +2,23 @@
 
 Common issues and solutions for XPR Network development.
 
+## RPC Query Bugs
+
+### `get_table_rows` Returns Empty for All-Numeric Account Names
+
+**Cause**: EOSIO RPC interprets all-numeric strings (e.g. `"333555"`, `"111111"`) as raw u64 values instead of name-encoded values. This silently returns empty/wrong results with no error.
+
+**Affected**: Any account name using only digits 1-5 (valid EOSIO name characters). Affects `scope`, `lower_bound`, and `upper_bound` parameters.
+
+**Fix**:
+- **scope**: Convert to u64 name encoding (the `"."` append trick does NOT work for scope — it throws `chain_type_exception`)
+- **lower_bound/upper_bound**: Append `"."` to force name parsing (e.g. `"333555."`)
+- **Alternative for balances**: Use `get_currency_balance` instead, which handles numeric names correctly
+
+See [RPC Queries — All-Numeric Account Names](rpc-queries.md#critical-all-numeric-account-names-eg-333555-111111) for full details, helper functions, and code examples.
+
+---
+
 ## Transaction Errors
 
 ### "missing authority of X"
@@ -165,7 +182,7 @@ const { rows } = await rpc.get_table_rows({
 // Use multiple endpoints with fallback
 const ENDPOINTS = [
   'https://proton.eosusa.io',
-  'https://proton.greymass.com',
+  'https://proton.protonuk.io',
   'https://proton.cryptolions.io'
 ];
 
