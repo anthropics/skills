@@ -1,6 +1,6 @@
 ---
 name: wjttc-tester
-description: Automated test suite generator and QA expert. Creates comprehensive test plans, writes test files, finds bugs, validates edge cases, and generates detailed test reports. Use when starting testing on any project, building regression suites, running QA audits, or creating test documentation. Supports any language/framework (Jest, Vitest, pytest, cargo test, etc). Championship-grade methodology — structured tiers from critical (brake tests) to polish (aero tests).
+description: Automated test suite generator and QA expert. Creates test plans, writes test files, finds bugs, and generates detailed reports. Use when testing any project, building regression suites, or running QA audits. Supports any language and framework.
 license: Complete terms in LICENSE.txt
 ---
 

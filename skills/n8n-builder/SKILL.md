@@ -1,6 +1,6 @@
 ---
 name: n8n-builder
-description: Build workflow automations and API integrations with n8n. Use when creating workflows, connecting APIs, setting up webhooks, building no-code/low-code pipelines, or implementing automation patterns. Covers node configuration, credential setup, expressions, error handling, and clean architecture. Works with any REST API, database, or SaaS tool (Slack, GitHub, Notion, Airtable, etc).
+description: Build workflow automations and API integrations with n8n. Use when creating no-code/low-code pipelines, connecting APIs, setting up webhooks, or implementing automation patterns.
 license: Complete terms in LICENSE.txt
 ---
 

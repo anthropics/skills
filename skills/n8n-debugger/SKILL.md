@@ -1,6 +1,6 @@
 ---
 name: n8n-debugger
-description: Fix broken workflow automations and debug n8n issues. Use when troubleshooting workflow errors, failed executions, expression bugs, HTTP request failures, credential problems, or slow automations. Diagnoses from error messages, execution logs, and node output. Covers webhook issues, data transformation errors, API auth failures, and integration debugging.
+description: Fix broken workflow automations and debug n8n issues. Use when troubleshooting workflow errors, failed executions, expression bugs, credential problems, or slow automations.
 license: Complete terms in LICENSE.txt
 ---
 
