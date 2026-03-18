@@ -6,6 +6,9 @@ license: MIT
 
 # FAF Expert - Project DNA Specialist
 
+> The mechanic's manual. Everything about FAF — install, configure, troubleshoot, score.
+> See also: `faf-context` (the pit crew — generates .faf files for any project).
+
 ## What is .faf?
 
 **The package.json for Context.**
