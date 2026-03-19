@@ -1,17 +1,14 @@
----
-name: tdd
-description: >
-  Red-Green-Refactor TDD workflow. Use when writing tests, implementing
-  features test-first, or when the user asks for TDD discipline.
----
+______________________________________________________________________
+
+## name: tdd description: > Red-Green-Refactor TDD workflow. Use when writing tests, implementing features test-first, or when the user asks for TDD discipline
 
 # TDD Workflow
 
 Always use Red-Green-Refactor:
 
 1. **Red** — Write a failing test first. Run it. See it fail.
-2. **Green** — Write minimum code to pass the test.
-3. **Refactor** — Clean up while keeping tests green.
+1. **Green** — Write minimum code to pass the test.
+1. **Refactor** — Clean up while keeping tests green.
 
 ```bash
 pytest tests/test_feature.py -v       # RED - must fail
