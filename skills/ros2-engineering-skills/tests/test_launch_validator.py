@@ -119,6 +119,30 @@ def generate_launch_description():
     ])
 """
 
+HARDCODED_EXECUTABLE = """from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        Node(
+            package='my_robot',
+            executable='/usr/bin/listener',
+            name='my_node',
+            output='screen',
+        ),
+    ])
+"""
+
+DUPLICATE_NODES_DEPRECATED = """from launch import LaunchDescription
+from launch_ros.actions import Node
+
+def generate_launch_description():
+    return LaunchDescription([
+        Node(package='a', node_executable='talker', node_name='my_node'),
+        Node(package='b', executable='listener', name='my_node'),
+    ])
+"""
+
 COMPOSABLE_MISSING_PLUGIN = """from launch import LaunchDescription
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
@@ -207,6 +231,21 @@ class TestValidateFile:
         warnings = [i for i in issues if i.severity == "warning"]
         assert any("Hardcoded" in i.message for i in warnings)
 
+    def test_hardcoded_executable_path_warned(self, tmp_path):
+        path = write_launch_file(tmp_path, "exec.launch.py",
+                                 HARDCODED_EXECUTABLE)
+        issues = validate_file(path)
+        warnings = [i for i in issues if i.severity == "warning"]
+        assert any("Hardcoded" in i.message and "executable" in i.message.lower()
+                   for i in warnings)
+
+    def test_duplicate_nodes_with_deprecated_name(self, tmp_path):
+        path = write_launch_file(tmp_path, "dup_dep.launch.py",
+                                 DUPLICATE_NODES_DEPRECATED)
+        issues = validate_file(path)
+        errors = [i for i in issues if i.severity == "error"]
+        assert any("Duplicate" in i.message for i in errors)
+
     def test_sleep_warned(self, tmp_path):
         path = write_launch_file(tmp_path, "sleep.launch.py", WITH_SLEEP)
         issues = validate_file(path)
@@ -278,6 +317,11 @@ class TestCheckRawPatterns:
         source = "subprocess.run(['ros2', 'run'])"
         issues = check_raw_patterns("test.py", source)
         assert any("Shell command" in i.message for i in issues)
+
+    def test_detects_hardcoded_executable_path(self):
+        source = "            executable='/usr/bin/my_node',"
+        issues = check_raw_patterns("test.py", source)
+        assert any("executable" in i.message.lower() for i in issues)
 
     def test_suppression_in_raw_patterns(self):
         source = "os.system('something')  # noqa"

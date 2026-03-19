@@ -128,8 +128,36 @@ PRESETS = {
 }
 
 
+# Shorthand mappings: single keyword → full default QoS profile string
+QOS_SHORTHANDS = {
+    "reliable": "reliable,volatile,keep_last,10",
+    "best_effort": "best_effort,volatile,keep_last,10",
+    "transient_local": "reliable,transient_local,keep_last,1",
+    "volatile": "reliable,volatile,keep_last,10",
+    "keep_all": "reliable,volatile,keep_all,0",
+    "keep_last": "reliable,volatile,keep_last,10",
+}
+
+
+def _expand_qos_shorthand(qos_str: str) -> str:
+    """Expand single-keyword QoS shorthand to full profile string.
+
+    Supports keywords like 'reliable', 'best_effort', 'transient_local', etc.
+    Returns the original string unchanged if it's not a recognized shorthand.
+    """
+    normalized = qos_str.strip().lower().replace("-", "_")
+    if normalized in QOS_SHORTHANDS:
+        return QOS_SHORTHANDS[normalized]
+    return qos_str
+
+
 def parse_qos_string(qos_str: str, label: str = "") -> QoSProfile:
-    """Parse a QoS string like 'reliable,volatile,keep_last,10[,...]'."""
+    """Parse a QoS string like 'reliable,volatile,keep_last,10[,...]'.
+
+    Also accepts single-keyword shorthands like 'reliable' or 'best_effort'
+    which expand to sensible default profiles.
+    """
+    qos_str = _expand_qos_shorthand(qos_str)
     parts = [p.strip().lower() for p in qos_str.split(",")]
     if len(parts) not in (4, 8):
         print("Error: QoS profile must have 4 or 8 comma-separated values: "
@@ -540,11 +568,13 @@ Presets: sensor, command, map, diagnostics, parameter_events, action_feedback, s
     parser.add_argument(
         "--pub",
         help="Publisher QoS: reliability,durability,history,depth"
-             "[,deadline_ms,lifespan_ms,liveliness,liveliness_lease_ms]")
+             "[,deadline_ms,lifespan_ms,liveliness,liveliness_lease_ms] "
+             "or shorthand: reliable, best_effort, transient_local, volatile")
     parser.add_argument(
         "--sub",
         help="Subscriber QoS: reliability,durability,history,depth"
-             "[,deadline_ms,lifespan_ms,liveliness,liveliness_lease_ms]")
+             "[,deadline_ms,lifespan_ms,liveliness,liveliness_lease_ms] "
+             "or shorthand: reliable, best_effort, transient_local, volatile")
     parser.add_argument("--preset", choices=PRESETS.keys(),
                         help="Use a predefined QoS preset")
     parser.add_argument("--json", action="store_true", default=False,

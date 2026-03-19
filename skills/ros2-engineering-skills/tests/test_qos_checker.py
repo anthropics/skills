@@ -21,7 +21,8 @@ def run_script(*args: str) -> subprocess.CompletedProcess:
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 from qos_checker import (
     QoSProfile, Reliability, Durability, History, Liveliness,
-    check_compatibility, parse_qos_string, PRESETS,
+    check_compatibility, parse_qos_string, _expand_qos_shorthand,
+    QOS_SHORTHANDS, PRESETS,
 )
 
 
@@ -55,6 +56,48 @@ class TestQoSProfileParsing:
     def test_negative_depth_exits(self):
         with pytest.raises(SystemExit):
             parse_qos_string("reliable,volatile,keep_last,-1", "test")
+
+
+class TestQoSShorthands:
+    def test_reliable_shorthand(self):
+        p = parse_qos_string("reliable", "test")
+        assert p.reliability == Reliability.RELIABLE
+        assert p.durability == Durability.VOLATILE
+        assert p.depth == 10
+
+    def test_best_effort_shorthand(self):
+        p = parse_qos_string("best_effort", "test")
+        assert p.reliability == Reliability.BEST_EFFORT
+
+    def test_transient_local_shorthand(self):
+        p = parse_qos_string("transient_local", "test")
+        assert p.durability == Durability.TRANSIENT_LOCAL
+        assert p.reliability == Reliability.RELIABLE
+
+    def test_volatile_shorthand(self):
+        p = parse_qos_string("volatile", "test")
+        assert p.durability == Durability.VOLATILE
+
+    def test_keep_all_shorthand(self):
+        p = parse_qos_string("keep_all", "test")
+        assert p.history == History.KEEP_ALL
+
+    def test_expand_unknown_returns_unchanged(self):
+        result = _expand_qos_shorthand("reliable,volatile,keep_last,5")
+        assert result == "reliable,volatile,keep_last,5"
+
+    def test_all_shorthands_registered(self):
+        assert len(QOS_SHORTHANDS) >= 6
+
+    def test_shorthand_cli(self):
+        result = run_script("--pub", "reliable", "--sub", "best_effort")
+        assert result.returncode == 0
+        assert "COMPATIBLE" in result.stdout
+
+    def test_shorthand_incompatible_cli(self):
+        result = run_script("--pub", "best_effort", "--sub", "reliable")
+        assert result.returncode != 0
+        assert "INCOMPATIBLE" in result.stdout
 
 
 class TestCompatibilityChecks:

@@ -160,9 +160,21 @@ class LaunchFileVisitor(ast.NodeVisitor):
                       f"{func_name}() has no 'output' argument. "
                       f"Add output='screen' to see node logs in terminal.")
 
+        # Check for hardcoded absolute path in executable
+        if exec_node is not None:
+            exec_str = self._get_string_value(exec_node)
+            if exec_str is not None and os.path.isabs(exec_str):
+                self._add(node, "warning",
+                          f"Hardcoded absolute path '{exec_str}' in 'executable'. "
+                          f"Use just the executable name and let the package "
+                          f"resolve the path.")
+
         # Track node names for duplicate detection
+        # Also consider deprecated 'node_name' for duplicate tracking
         # Skip duplicate check if namespace is dynamic (LaunchConfiguration etc.)
-        name_str = self._get_string_value(name_node) if name_node else None
+        deprecated_name_node = self._get_keyword_value(node, "node_name")
+        effective_name_node = name_node or deprecated_name_node
+        name_str = self._get_string_value(effective_name_node) if effective_name_node else None
         ns_str = self._get_string_value(ns_node) if ns_node else ""
         ns_is_dynamic = ns_node is not None and ns_str is None
         if name_str and not ns_is_dynamic:
@@ -383,13 +395,20 @@ def check_raw_patterns(filepath: str, source: str) -> list[Issue]:
         if "# noqa" in line or "# launch-validator: disable" in line:
             continue
 
-        # Check for hardcoded paths
+        # Check for hardcoded file paths (config/urdf/xacro/rviz)
         if re.search(r'["\'][/~][\w/\-\.]+\.(yaml|urdf|xacro|rviz)', line):
             if "FindPackageShare" not in line and "PathJoinSubstitution" not in line:
                 issues.append(Issue(
                     filepath, i, "warning",
                     "Hardcoded file path detected. Use FindPackageShare + "
                     "PathJoinSubstitution for portable paths."))
+
+        # Check for hardcoded absolute executable/binary paths
+        if re.search(r'executable\s*=\s*["\']\/[\w/\-\.]+["\']', line):
+            issues.append(Issue(
+                filepath, i, "warning",
+                "Hardcoded absolute executable path detected. "
+                "Use just the executable name and let the package resolve it."))
 
         # Check for sleep/time.sleep in launch files
         if re.search(r'\btime\.sleep\b', line):

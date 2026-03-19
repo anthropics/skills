@@ -320,3 +320,22 @@ class TestCLI:
         )
         assert result.returncode == 0
         assert "0.1.0" in result.stdout
+
+    def test_shorthand_subscriber_qos(self, tmp_path):
+        """Test that --sub accepts shorthand like 'reliable'."""
+        path = _write_yaml(tmp_path, "metadata.yaml", SAMPLE_METADATA)
+        result = subprocess.run(
+            [sys.executable, SCRIPT, path, "--sub", "reliable"],
+            capture_output=True, text=True,
+        )
+        # /scan is best_effort, sub=reliable → incompatible
+        assert result.returncode != 0
+
+    def test_shorthand_best_effort_compatible(self, tmp_path):
+        """Test that --sub best_effort is compatible with best_effort recorded."""
+        path = _write_yaml(tmp_path, "metadata.yaml", METADATA_NUMERIC_QOS)
+        result = subprocess.run(
+            [sys.executable, SCRIPT, path, "--sub", "reliable"],
+            capture_output=True, text=True,
+        )
+        assert result.returncode == 0

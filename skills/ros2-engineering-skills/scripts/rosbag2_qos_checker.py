@@ -274,7 +274,8 @@ Examples:
     parser.add_argument(
         "--sub",
         help="Subscriber QoS to check against: "
-             "reliability,durability,history,depth")
+             "reliability,durability,history,depth "
+             "or shorthand: reliable, best_effort, transient_local, volatile")
     parser.add_argument("--json", action="store_true", default=False,
                         help="Output results as JSON")
     args = parser.parse_args()

@@ -12,6 +12,63 @@ description: >
   involving rclcpp, rclpy, colcon, ament, rosbag2, ros2 CLI tools, Gazebo/Isaac Sim,
   micro-ROS, SROS2, or multi-robot coordination. Also trigger for ROS 1 to ROS 2 migration,
   cross-compilation, Docker-based ROS 2 workflows, and CI/CD for robotics.
+context: fork
+classification: capability
+version: 1.0.0
+deprecation-risk: medium
+hooks:
+  Stop:
+    - type: command
+      command: "python3 ${SKILL_ROOT}/scripts/skill_stop_hook.py"
+      timeout: 15000
+  PreToolUse:
+    - type: command
+      command: "python3 ${SKILL_ROOT}/scripts/skill_validate_hook.py"
+      timeout: 10000
+evals:
+  - name: qos-compatibility-analysis
+    prompt: evals/prompts/qos-compatibility.md
+    expected: evals/expected/qos-compatibility.md
+    criteria:
+      - "Must correctly identify QoS incompatibility between BEST_EFFORT publisher and RELIABLE subscriber"
+      - "Must explain DDS RxO (Request-vs-Offered) semantics"
+      - "Must suggest switching subscriber to BEST_EFFORT or publisher to RELIABLE"
+    timeout: 60000
+  - name: package-scaffolding
+    prompt: evals/prompts/package-creation.md
+    expected: evals/expected/package-creation.md
+    criteria:
+      - "Must generate valid ROS 2 package with correct directory structure"
+      - "Must follow snake_case naming conventions"
+      - "Must include lifecycle node support for C++ packages"
+      - "Must declare all dependencies in package.xml"
+    timeout: 60000
+  - name: launch-file-review
+    prompt: evals/prompts/launch-validation.md
+    expected: evals/expected/launch-validation.md
+    criteria:
+      - "Must detect missing generate_launch_description function"
+      - "Must flag deprecated keywords (node_executable, node_name)"
+      - "Must warn about hardcoded paths"
+      - "Must identify duplicate node names"
+    timeout: 60000
+  - name: lifecycle-node-design
+    prompt: evals/prompts/lifecycle-design.md
+    expected: evals/expected/lifecycle-design.md
+    criteria:
+      - "Must recommend lifecycle node for hardware driver"
+      - "Must describe state transitions (unconfigured → inactive → active)"
+      - "Must include error handling with on_error callback"
+      - "Must implement safe shutdown in on_deactivate"
+    timeout: 60000
+  - name: rosbag2-playback-qos
+    prompt: evals/prompts/rosbag2-playback.md
+    expected: evals/expected/rosbag2-playback.md
+    criteria:
+      - "Must parse rosbag2 metadata for QoS profiles"
+      - "Must identify TRANSIENT_LOCAL playback issues"
+      - "Must recommend --read-ahead-queue-size for large bags"
+    timeout: 60000
 ---
 
 # ROS 2 Engineering Skills
