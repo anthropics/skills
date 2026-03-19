@@ -1001,6 +1001,6 @@ Each hop incurs the pool's exchange fee, making multi-hop trades more expensive.
 - **MetalX DEX**: https://metalx.com
 - **XPR DEX Bot**: https://github.com/XPRNetwork/dex-bot
 - **Oracle Feeds**: `oracles` contract on XPR Network
-- **Perpetual Protocol Concepts**: https://docs.perp.com (reference for perps design)
 - **Proton Swaps**: AMM pools at `proton.swaps` contract
+- **SimpleDEX**: Token launch + AMM at `simpledex` / `simplelaunch` — see `simpledex.md`
 - **RPC Endpoints**: `proton.eosusa.io` (primary), `proton.protonuk.io`, `proton.cryptolions.io` (fallbacks)

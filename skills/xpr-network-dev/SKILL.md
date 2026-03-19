@@ -82,6 +82,7 @@ Load specialized modules based on your task:
 |--------|-----------|------------|
 | `metalx-dex.md` | DEX integration | MetalX DEX API reference, order format, error codes |
 | `defi-trading.md` | Trading bots/DeFi | Trading bot patterns, swap pools, DeFi strategies |
+| `simpledex.md` | Token launch & AMM | SimpleDEX swaps, bonding curves, token creation, graduation |
 | `loan-protocol.md` | Lending protocol | LOAN protocol, supply, borrow, liquidations |
 | `oracles-randomness.md` | Price feeds & RNG | Oracle prices, verifiable random numbers |
 
