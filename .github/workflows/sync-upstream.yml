@@ -3,13 +3,13 @@ name: Sync with Upstream
 on:
   schedule:
     # Runs daily at 06:00 UTC
-    - cron: '0 6 * * *'
+    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Dry run (check only, do not push)'
+        description: "Dry run (check only, do not push)"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
 
 permissions:
@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout fork
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Full history is required so we can compare with upstream
           fetch-depth: 0

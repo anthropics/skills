@@ -37,7 +37,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # needed to push the auto-fix commit back
+  contents: write # needed to push the auto-fix commit back
 
 jobs:
   lint-and-typecheck:
@@ -47,16 +47,16 @@ jobs:
     steps:
       # ── 1. Check out the full history so rebase works correctly ───────────
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Always operate on the repository's default branch so the daily
           # fixes land where developers work.
           ref: main
-          fetch-depth: 0          # full history required for git rebase
+          fetch-depth: 0 # full history required for git rebase
 
       # ── 2. Python setup ───────────────────────────────────────────────────
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           # Use the latest stable Python to run the linting tools themselves.
           # The tools are configured (in pyproject.toml) to lint for Python 3.10+
@@ -188,7 +188,7 @@ jobs:
           # whether type errors exist.  Set continue-on-error: true below
           # if you want a green badge even when type errors are present.
           exit "$EXIT"
-        continue-on-error: true   # type errors are reported but don't fail CI
+        continue-on-error: true # type errors are reported but don't fail CI
 
       # ── 9. Run markdownlint (report remaining issues – no auto-fix) ───────
       #
@@ -217,4 +217,4 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           exit "$EXIT"
-        continue-on-error: true   # lint issues are reported but don't fail CI
+        continue-on-error: true # lint issues are reported but don't fail CI

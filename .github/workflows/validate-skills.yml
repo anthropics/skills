@@ -34,7 +34,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read   # read-only; this workflow never pushes back
+  contents: read # read-only; this workflow never pushes back
 
 jobs:
   # ── Step 1: discover all skill directories dynamically ─────────────────────
@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Find skill directories
         id: find
@@ -65,13 +65,13 @@ jobs:
     needs: discover
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false   # validate all skills even if one fails
+      fail-fast: false # validate all skills even if one fails
       matrix:
         skill: ${{ fromJson(needs.discover.outputs.skills) }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Validate SKILL.md against Agent Skills spec
         id: validate
@@ -80,8 +80,8 @@ jobs:
         uses: Flash-Brew-Digital/validate-skill@39c9da973b7ce3fd4d9632672a0c355bdd733d89
         with:
           path: ${{ matrix.skill }}
-          validate-references: "true"   # verify that file references exist on disk
-          fail-on-warning: "false"      # warnings are surfaced but do not fail the job
+          validate-references: "true" # verify that file references exist on disk
+          fail-on-warning: "false" # warnings are surfaced but do not fail the job
 
       - name: Write job summary
         if: always()

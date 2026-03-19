@@ -26,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -58,6 +58,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "chore: auto-update wiki from ${GITHUB_SHA::7} [skip ci]"
-          git push --force \
-            "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git" \
-            master
+
+          WIKI_URL="https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git"
+          if ! git push --force "$WIKI_URL" master 2>&1; then
+            echo "::warning::Wiki push failed. Create the first wiki page manually at ${{ github.server_url }}/${{ github.repository }}/wiki/_new to initialize the wiki repository."
+          fi
