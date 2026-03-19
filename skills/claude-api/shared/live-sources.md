@@ -16,7 +16,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic           | URL                                                                   | Extraction Prompt                                                               |
 | --------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Models Overview | `https://platform.claude.com/docs/en/about-claude/models/overview.md` | "Extract current model IDs, context windows, and pricing for all Claude models" |
-| Pricing         | `https://platform.claude.com/docs/en/pricing.md`                      | "Extract current pricing per million tokens for input and output"               |
+| Pricing         | `https://platform.claude.com/docs/en/about-claude/pricing.md`         | "Extract current pricing per million tokens for input and output"               |
 
 ### Core Features
 
@@ -51,7 +51,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic          | URL                                                                                    | Extraction Prompt                                                                        |
 | -------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Code Execution | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md` | "Extract code execution tool setup, file upload, container reuse, and response handling" |
-| Computer Use   | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use.md`        | "Extract computer use tool setup, capabilities, and implementation examples"             |
+| Computer Use   | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md`   | "Extract computer use tool setup, capabilities, and implementation examples"             |
 
 ### Advanced Features
 
@@ -84,7 +84,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 
 | Topic                | URL                                                         | Extraction Prompt                                               |
 | -------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- |
-| Agent SDK Overview   | `https://platform.claude.com/docs/en/agent-sdk.md`          | "Extract the Agent SDK overview, key features, and use cases"   |
+| Agent SDK Overview   | `https://platform.claude.com/docs/en/agent-sdk/overview.md` | "Extract the Agent SDK overview, key features, and use cases"   |
 | Agent SDK Python     | `https://github.com/anthropics/claude-agent-sdk-python`     | "Extract Python SDK installation, imports, and basic usage"     |
 | Agent SDK TypeScript | `https://github.com/anthropics/claude-agent-sdk-typescript` | "Extract TypeScript SDK installation, imports, and basic usage" |
 
