@@ -1,6 +1,6 @@
 ---
 name: apiclaw-analysis
-version: 1.1.4
+version: 1.1.5
 description: >
   Finds winning Amazon products with 14 battle-tested selection strategies
   & 6-dimension risk assessment. Backed by 200M+ product database.
