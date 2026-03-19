@@ -19,6 +19,7 @@ from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
 from scripts.run_eval import find_project_root, run_eval
 from scripts.utils import parse_skill_md
+from scripts.llm_backend import detect_backend
 
 
 def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tuple[list[dict], list[dict]]:
@@ -58,8 +59,11 @@ def run_loop(
     verbose: bool,
     live_report_path: Path | None = None,
     log_dir: Path | None = None,
+    backend: str | None = None,
 ) -> dict:
     """Run the eval + improvement loop."""
+    if backend is None:
+        backend = detect_backend()
     project_root = find_project_root()
     name, original_description, content = parse_skill_md(skill_path)
     current_description = description_override or original_description
@@ -96,6 +100,7 @@ def run_loop(
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
+            backend=backend,
         )
         eval_elapsed = time.time() - t0
 
@@ -205,6 +210,7 @@ def run_loop(
             model=model,
             log_dir=log_dir,
             iteration=iteration,
+            backend=backend,
         )
         improve_elapsed = time.time() - t0
 
@@ -253,6 +259,8 @@ def main():
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--holdout", type=float, default=0.4, help="Fraction of eval set to hold out for testing (0 to disable)")
     parser.add_argument("--model", required=True, help="Model for improvement")
+    parser.add_argument("--backend", default=None, choices=["claude_cli", "anthropic_api", "github_models"],
+                        help="LLM backend (default: auto-detect)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     parser.add_argument("--report", default="auto", help="Generate HTML report at this path (default: 'auto' for temp file, 'none' to disable)")
     parser.add_argument("--results-dir", default=None, help="Save all outputs (results.json, report.html, log.txt) to a timestamped subdirectory here")
@@ -304,6 +312,7 @@ def main():
         verbose=args.verbose,
         live_report_path=live_report_path,
         log_dir=log_dir,
+        backend=args.backend,
     )
 
     # Save JSON output

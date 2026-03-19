@@ -3,12 +3,18 @@
 
 Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
+
+Supports multiple backends:
+- claude CLI (original behavior, requires Claude Code)
+- Anthropic API (requires ANTHROPIC_API_KEY)
+- GitHub Models API (requires `gh auth login`)
 """
 
 import argparse
 import json
 import os
 import select
+import shutil
 import subprocess
 import sys
 import time
@@ -17,6 +23,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
+from scripts.llm_backend import detect_backend, test_trigger
 
 
 def find_project_root() -> Path:
@@ -181,6 +188,34 @@ def run_single_query(
             command_file.unlink()
 
 
+def run_single_query_api(
+    query: str,
+    skill_name: str,
+    skill_description: str,
+    timeout: int,
+    backend: str,
+    model: str | None = None,
+) -> bool:
+    """Run a single query using the API backend (no claude CLI needed).
+
+    Uses llm_backend.test_trigger() which constructs a system prompt with
+    available_skills and a mock use_skill tool, then checks if the model
+    calls the tool for the target skill.
+    """
+    try:
+        return test_trigger(
+            query=query,
+            skill_name=skill_name,
+            skill_description=skill_description,
+            model=model,
+            backend=backend,
+            timeout=timeout,
+        )
+    except Exception as e:
+        print(f"Warning: query failed: {e}", file=sys.stderr)
+        return False
+
+
 def run_eval(
     eval_set: list[dict],
     skill_name: str,
@@ -191,23 +226,41 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    backend: str | None = None,
 ) -> dict:
-    """Run the full eval set and return results."""
-    results = []
+    """Run the full eval set and return results.
+
+    Automatically selects the best available backend if not specified.
+    """
+    if backend is None:
+        backend = detect_backend()
+
+    use_api = backend != "claude_cli"
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         future_to_info = {}
         for item in eval_set:
             for run_idx in range(runs_per_query):
-                future = executor.submit(
-                    run_single_query,
-                    item["query"],
-                    skill_name,
-                    description,
-                    timeout,
-                    str(project_root),
-                    model,
-                )
+                if use_api:
+                    future = executor.submit(
+                        run_single_query_api,
+                        item["query"],
+                        skill_name,
+                        description,
+                        timeout,
+                        backend,
+                        model,
+                    )
+                else:
+                    future = executor.submit(
+                        run_single_query,
+                        item["query"],
+                        skill_name,
+                        description,
+                        timeout,
+                        str(project_root),
+                        model,
+                    )
                 future_to_info[future] = (item, run_idx)
 
         query_triggers: dict[str, list[bool]] = {}
@@ -224,6 +277,7 @@ def run_eval(
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
 
+    results = []
     for query, triggers in query_triggers.items():
         item = query_items[query]
         trigger_rate = sum(triggers) / len(triggers)
@@ -265,7 +319,9 @@ def main():
     parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
-    parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
+    parser.add_argument("--model", default=None, help="Model to use (default: auto-detect based on backend)")
+    parser.add_argument("--backend", default=None, choices=["claude_cli", "anthropic_api", "github_models"],
+                        help="LLM backend (default: auto-detect)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
@@ -280,7 +336,10 @@ def main():
     description = args.description or original_description
     project_root = find_project_root()
 
+    backend = args.backend or detect_backend()
+
     if args.verbose:
+        print(f"Backend: {backend}", file=sys.stderr)
         print(f"Evaluating: {description}", file=sys.stderr)
 
     output = run_eval(
@@ -293,6 +352,7 @@ def main():
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        backend=backend,
     )
 
     if args.verbose:
