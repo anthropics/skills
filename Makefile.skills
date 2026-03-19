@@ -1,0 +1,52 @@
+# Makefile for Claude Skills management
+# Location: ~/.claude/skills/Makefile
+
+SKILLS_DIR := $(HOME)/.claude/skills
+OUTPUT_DIR := $(HOME)/Downloads
+
+# List all skill directories (exclude hidden files and Makefile)
+SKILLS := $(shell find $(SKILLS_DIR) -mindepth 1 -maxdepth 1 -type d -not -name '.*')
+
+.PHONY: list package package-all clean help
+
+help:
+	@echo "Claude Skills Management"
+	@echo "========================"
+	@echo ""
+	@echo "Commands:"
+	@echo "  make list              - List all skills"
+	@echo "  make package SKILL=x   - Package specific skill for claude.ai upload"
+	@echo "  make package-all       - Package all skills"
+	@echo "  make clean             - Remove packaged .skill files"
+	@echo ""
+	@echo "After packaging, upload .skill files from ~/Downloads to:"
+	@echo "  https://claude.ai/settings → Skills → Upload skill"
+
+list:
+	@echo "Available skills:"
+	@for skill in $(SKILLS); do echo "  - $$(basename $$skill)"; done
+
+package:
+ifndef SKILL
+	$(error SKILL is not set. Usage: make package SKILL=tufte-swiss-typography)
+endif
+	@echo "Packaging $(SKILL)..."
+	@cd $(SKILLS_DIR) && zip -r $(OUTPUT_DIR)/$(SKILL).skill $(SKILL)/
+	@echo "✓ Created: $(OUTPUT_DIR)/$(SKILL).skill"
+	@echo ""
+	@echo "Next: Upload to https://claude.ai/settings → Skills"
+
+package-all:
+	@for skill in $(SKILLS); do \
+		name=$$(basename $$skill); \
+		echo "Packaging $$name..."; \
+		cd $(SKILLS_DIR) && zip -r $(OUTPUT_DIR)/$$name.skill $$name/; \
+		echo "✓ Created: $(OUTPUT_DIR)/$$name.skill"; \
+	done
+	@echo ""
+	@echo "All skills packaged in ~/Downloads"
+	@echo "Upload to: https://claude.ai/settings → Skills"
+
+clean:
+	@rm -f $(OUTPUT_DIR)/*.skill
+	@echo "Cleaned .skill files from ~/Downloads"
