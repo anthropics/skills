@@ -1,0 +1,193 @@
+%% tufte-swiss.sty
+%% ---------------------------------------------------------------------------
+%% Portable LuaLaTeX typography toolkit.
+%% Provides five systems (type scale, baseline grid, colors, fonts, paragraph
+%% builder) and two structural primitives (\TSRule, \TSTrack).
+%%
+%% No document-specific macros. No geometry configuration. No headers/footers.
+%% The agent composes documents from these primitives.
+%%
+%% Requires: LuaLaTeX (LuaHBTeX 1.18+), fontspec, microtype
+%% Default font: Aktiv Grotesk (installed in ~/Library/Fonts/)
+%% ---------------------------------------------------------------------------
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tufte-swiss}[2026/03/18 Tufte-Swiss typography toolkit]
+
+%% ---------------------------------------------------------------------------
+%% REQUIRED PACKAGES
+%% ---------------------------------------------------------------------------
+
+\RequirePackage{fontspec}
+\RequirePackage{geometry}
+\RequirePackage{microtype}
+\RequirePackage{xcolor}
+\RequirePackage{enumitem}
+\RequirePackage{ragged2e}
+\RequirePackage{xparse}
+\RequirePackage{etoolbox}
+\RequirePackage{hyperref}
+
+%% Hyperref — clean PDF links, no colored boxes
+\hypersetup{
+  colorlinks=true,
+  linkcolor=TSText,
+  urlcolor=TSText,
+  pdfborder={0 0 0},
+  bookmarks=false,
+}
+
+%% ---------------------------------------------------------------------------
+%% 1. TYPE SCALE — Perfect Fourth (4:3)
+%% ---------------------------------------------------------------------------
+%% Base: 9pt. Ratio: 4:3. Scale: 7 — 9 — 12 — 16 — 21.
+%% Named commands set both size and leading in one call.
+%% The agent calls \TSBody, not \fontsize{9}{12}\selectfont.
+
+\newcommand{\TSMicro}{\fontsize{7}{12}\selectfont}    % labels, fine print
+\newcommand{\TSBody}{\fontsize{9}{12}\selectfont}     % primary reading
+\newcommand{\TSStep}{\fontsize{12}{12}\selectfont}    % subheads, role titles
+\newcommand{\TSLarge}{\fontsize{16}{18}\selectfont}   % display, cover names
+\newcommand{\TSTitle}{\fontsize{21}{24}\selectfont}   % titles, resume names
+
+%% ---------------------------------------------------------------------------
+%% 2. BASELINE GRID — 12pt
+%% ---------------------------------------------------------------------------
+%% The grid is the body text rhythm: 9pt type on 12pt leading.
+%% All vertical spacing should be multiples of \TSGrid or \TSHalf.
+
+\newlength{\TSGrid}\setlength{\TSGrid}{12pt}
+\newlength{\TSHalf}\setlength{\TSHalf}{6pt}
+
+%% Zero out parindent and parskip — the agent adds space explicitly.
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+%% ---------------------------------------------------------------------------
+%% 3. COLOR PALETTE — 4 grays
+%% ---------------------------------------------------------------------------
+%% Pure black (#000000) vibrates against white paper. Near-black (#111111)
+%% is quieter and more professional. Four levels provide clear hierarchy
+%% without near-indistinguishable steps.
+
+\definecolor{TSText}{HTML}{111111}       % primary text — near-black
+\definecolor{TSMuted}{HTML}{5D5D5D}      % secondary text — quiet gray
+\definecolor{TSRuleColor}{HTML}{C8C8C8}  % rules, dividers — light gray
+\definecolor{TSStrong}{HTML}{202020}      % emphasis rules — dark gray
+
+\color{TSText}
+
+%% ---------------------------------------------------------------------------
+%% 4. FONT SETUP — Aktiv Grotesk via fontspec
+%% ---------------------------------------------------------------------------
+%% Default: Aktiv Grotesk, a Helvetica descendant with better ink traps and
+%% open counters at small sizes. Installed in ~/Library/Fonts/ so fontspec
+%% finds it by name. Override with \setmainfont for other families.
+
+\setmainfont{Aktiv Grotesk}[
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+]
+
+%% Extended weight families — available via \TSMedium, \TSSemiBold, etc.
+\newfontfamily\TSLight{Aktiv Grotesk Light}[
+  UprightFont    = AktivGrotesk-Light,
+  ItalicFont     = AktivGrotesk-LightItalic,
+]
+\newfontfamily\TSMedium{Aktiv Grotesk Medium}[
+  UprightFont    = AktivGrotesk-Medium,
+  ItalicFont     = AktivGrotesk-MediumItalic,
+]
+\newfontfamily\TSSemiBold{Aktiv Grotesk SemiBold}[
+  UprightFont    = AktivGrotesk-SemiBold,
+  ItalicFont     = AktivGrotesk-SemiBoldItalic,
+]
+\newfontfamily\TSBlack{Aktiv Grotesk Black}[
+  UprightFont    = AktivGrotesk-Black,
+  ItalicFont     = AktivGrotesk-BlackItalic,
+]
+
+%% Label font — pre-configured with letter-spacing for tracked labels
+\newfontfamily\TSLabelFont{Aktiv Grotesk Medium}[
+  UprightFont    = AktivGrotesk-Medium,
+  LetterSpace    = 4,
+]
+
+%% ---------------------------------------------------------------------------
+%% 5. PARAGRAPH BUILDER
+%% ---------------------------------------------------------------------------
+%% These parameters control TeX's paragraph-breaking algorithm globally.
+%% They are proven values from a production document system.
+%%
+%% Penalties: widow/orphan prevention is absolute (10000).
+%% Tolerance: pretolerance=100 handles most paragraphs cheaply;
+%%   tolerance=400 catches the rest. emergencystretch=6pt is the safety valve.
+%% Hyphenation: low penalties allow good breaks; demerits prevent ugly patterns
+%%   (consecutive hyphens, final-line hyphens).
+%% Microtype: protrusion hangs punctuation into margins for optical alignment;
+%%   expansion adjusts glyph widths up to 2% for tighter spacing.
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+\pretolerance=100
+\tolerance=400
+\emergencystretch=6pt
+
+\hyphenpenalty=50
+\exhyphenpenalty=50
+\doublehyphendemerits=10000
+\finalhyphendemerits=5000
+\adjdemerits=10000
+\linepenalty=10
+
+\adjustspacing=2
+\protrudechars=2
+
+\microtypesetup{
+  protrusion=true,
+  expansion=true,
+  tracking=false,
+  stretch=20,
+  shrink=20,
+  step=1,
+}
+
+%% ---------------------------------------------------------------------------
+%% 6. PRIMITIVES
+%% ---------------------------------------------------------------------------
+
+%% \TSRule[color]{width}{weight}
+%% Horizontal rule. Default color: TSRuleColor.
+%% Width and weight are mandatory. The agent decides where rules go.
+\NewDocumentCommand{\TSRule}{O{TSRuleColor} m m}{%
+  {\color{#1}\rule{#2}{#3}}%
+}
+
+%% \TSTrack[amount]{text}
+%% Letter-spaced text via microtype \textls.
+%% Default tracking: 100 (units of 1/1000 em). Good for uppercase labels.
+\NewDocumentCommand{\TSTrack}{O{100} m}{%
+  \textls[#1]{#2}%
+}
+
+%% ---------------------------------------------------------------------------
+%% LUA CALLBACKS (observational only)
+%% ---------------------------------------------------------------------------
+%% Load the companion Lua module for hpack_quality logging and page counting.
+%% The Lua module is purely observational — it counts and reports, never mutates.
+
+\directlua{
+  tsgrid = require("tufte-swiss-grid")
+  tsgrid.register()
+}
+
+%% ---------------------------------------------------------------------------
+%% BODY DEFAULTS
+%% ---------------------------------------------------------------------------
+%% Set body text size at document start. The agent can override per-element.
+
+\AtBeginDocument{\TSBody}
