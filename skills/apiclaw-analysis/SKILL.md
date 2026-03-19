@@ -63,6 +63,23 @@ When user provides a Key, write it to `config.json`. New keys may need 3-5 secon
 
 ---
 
+## ⚠️ Pre-Execution Checklist (MANDATORY for Full Mode)
+
+Before running any Full-mode product selection or market analysis, **complete this checklist**:
+
+- [ ] **Step 1 — Mode Selection:** Check the Product Selection Mode Mapping table below. If ANY of the 14 preset modes matches the user's intent, **USE IT** (`--mode xxx`). Do NOT manually piece together filters when a preset mode exists. Common mappings:
+  - Small/lightweight/cheap products → `--mode low-price`
+  - New seller / beginner → `--mode beginner`
+  - Niche / long-tail → `--mode long-tail`
+  - Trending / rising → `--mode emerging`
+- [ ] **Step 2 — Realtime Supplement:** Plan to call `product --asin` for the top 3-5 ASINs from results (see Realtime Data Supplementation below).
+- [ ] **Step 3 — Review Analysis:** Plan to call `analyze --asins` for top ASINs to get consumer insights (especially painPoints, improvements, buyingFactors).
+- [ ] **Step 4 — Output Blocks:** Prepare to include both `📋 Data Source & Conditions` and `📊 API Usage` at the end.
+
+> **Why this exists:** In testing, AI agents repeatedly skipped preset modes, realtime supplements, and review analysis — even though the instructions below clearly describe them. This checklist forces a pause-and-verify before execution.
+
+---
+
 ## Execution Standards
 
 **Prioritize script execution for API calls.** The script includes:
@@ -327,13 +344,15 @@ When `atLeastMonthlySales` is null: **Monthly sales ≈ 300,000 / BSR^0.65**
 
 ---
 
-## Output Standards (Full Mode Only)
+## ⚠️ Output Standards (Full Mode — MANDATORY, DO NOT SKIP)
 
-**MUST include data source block after every Full-mode analysis:**
+> **Two blocks are REQUIRED at the end of every Full-mode analysis: ① Data Source & Conditions, ② API Usage. Missing either one = violating the skill contract.**
+
+### ① Data Source & Conditions (Full Mode Only)
 
 ```markdown
 ---
-**Data Source & Conditions**
+📋 **Data Source & Conditions**
 | Item | Value |
 |----|-----|
 | Data Source | APIClaw API |
@@ -356,22 +375,24 @@ When `atLeastMonthlySales` is null: **Monthly sales ≈ 300,000 / BSR^0.65**
 2. Filter conditions MUST list specific parameter values
 3. If multiple interfaces used, list each one
 4. If data has limitations, proactively explain
+5. ⚠️ **Self-check:** scan your response — if you don't see `📋 **Data Source & Conditions**`, ADD IT before replying
 
-### API Usage Summary (All Modes)
+### ⚠️ API Usage Summary (All Modes — MANDATORY, DO NOT SKIP)
 
-Every response (Quick or Full mode) MUST end with an API usage summary:
+> **This block is NON-NEGOTIABLE.** Every single response — Quick or Full mode — MUST end with this table. No exceptions. If you forget, you are violating the skill contract.
 
 ```markdown
-**API Usage**
+📊 **API Usage**
 | Interface | Calls |
 |-----------|-------|
 | categories | 1 |
 | markets/search | 1 |
 | products/search | 2 |
 | realtime/product | 3 |
-| **Total** | **7** |
-| **Credits consumed** | **7** |
-| **Credits remaining** | **493** |
+| reviews/analyze | 1 |
+| **Total** | **8** |
+| **Credits consumed** | **8** |
+| **Credits remaining** | **492** |
 ```
 
 **Tracking rules:**
@@ -379,6 +400,7 @@ Every response (Quick or Full mode) MUST end with an API usage summary:
 2. Sum `_credits.consumed` from every API response for total consumed
 3. Use `_credits.remaining` from the **last** API response as remaining balance
 4. If `_credits` fields are null, show "N/A"
+5. ⚠️ **Self-check before sending:** scan your response — if you don't see `📊 **API Usage**` at the bottom, ADD IT before replying
 
 ---
 
