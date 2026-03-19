@@ -6,13 +6,13 @@ Deep reference for the tufte-swiss LuaLaTeX toolkit.
 
 **System**: Perfect fourth (4:3 ratio) from a 9pt base.
 
-| Step | Size | Leading | Command    | Use                     |
-|------|------|---------|------------|-------------------------|
-| -1   | 7pt  | 12pt    | `\TSMicro` | Labels, fine print      |
-| 0    | 9pt  | 12pt    | `\TSBody`  | Primary reading text    |
-| +1   | 12pt | 12pt    | `\TSStep`  | Subheads, role titles   |
-| +2   | 16pt | 18pt    | `\TSLarge` | Display, cover names    |
-| +3   | 21pt | 24pt    | `\TSTitle` | Titles, resume names    |
+| Step | Size | Leading | Command    | Use                   |
+| ---- | ---- | ------- | ---------- | --------------------- |
+| -1   | 7pt  | 12pt    | `\TSMicro` | Labels, fine print    |
+| 0    | 9pt  | 12pt    | `\TSBody`  | Primary reading text  |
+| +1   | 12pt | 12pt    | `\TSStep`  | Subheads, role titles |
+| +2   | 16pt | 18pt    | `\TSLarge` | Display, cover names  |
+| +3   | 21pt | 24pt    | `\TSTitle` | Titles, resume names  |
 
 **Why perfect fourth**: The 4:3 ratio produces steps that are distinct enough
 to signal hierarchy but close enough to feel cohesive. Larger ratios (golden
@@ -49,12 +49,12 @@ but is fiction in practice because most spacing values are not multiples of 4.
 
 ## Color Palette
 
-| Name           | Hex       | Use                       |
-|----------------|-----------|---------------------------|
-| `TSText`       | `#111111` | Primary text (near-black) |
-| `TSMuted`      | `#5D5D5D` | Secondary text, labels    |
-| `TSRuleColor`  | `#C8C8C8` | Rules, dividers           |
-| `TSStrong`     | `#202020` | Emphasis rules            |
+| Name          | Hex       | Use                       |
+| ------------- | --------- | ------------------------- |
+| `TSText`      | `#111111` | Primary text (near-black) |
+| `TSMuted`     | `#5D5D5D` | Secondary text, labels    |
+| `TSRuleColor` | `#C8C8C8` | Rules, dividers           |
+| `TSStrong`    | `#202020` | Emphasis rules            |
 
 **Why near-black, not pure black**: Pure black (#000000) on white paper creates
 maximum contrast. That sounds desirable but is actually harsh — the text
@@ -75,16 +75,16 @@ structural dividers, and emphasis dividers.
 A contemporary grotesque with Helvetica's proportions but better ink traps,
 open counters, and hinting at small sizes. The full weight range is available:
 
-| Command        | Weight    | Use                          |
-|----------------|-----------|------------------------------|
-| (default)      | Regular   | Body text                    |
-| `\bfseries`    | Bold      | Inline emphasis              |
-| `\itshape`     | Italic    | Titles, citations            |
-| `\TSLight`     | Light     | Delicate display text        |
-| `\TSMedium`    | Medium    | Labels, meta values          |
-| `\TSSemiBold`  | SemiBold  | Section heads, subheads      |
-| `\TSBlack`     | Black     | Names, titles                |
-| `\TSLabelFont` | Medium+LS | Pre-tracked label text       |
+| Command        | Weight    | Use                     |
+| -------------- | --------- | ----------------------- |
+| (default)      | Regular   | Body text               |
+| `\bfseries`    | Bold      | Inline emphasis         |
+| `\itshape`     | Italic    | Titles, citations       |
+| `\TSLight`     | Light     | Delicate display text   |
+| `\TSMedium`    | Medium    | Labels, meta values     |
+| `\TSSemiBold`  | SemiBold  | Section heads, subheads |
+| `\TSBlack`     | Black     | Names, titles           |
+| `\TSLabelFont` | Medium+LS | Pre-tracked label text  |
 
 **Override**: Call `\setmainfont{...}` after loading `tufte-swiss` to replace
 the entire family. The scale commands, grid, colors, and paragraph builder
@@ -96,16 +96,16 @@ The paragraph builder controls how TeX breaks text into lines.
 
 ### Penalties
 
-| Parameter              | Value | Effect                          |
-|------------------------|-------|---------------------------------|
-| `\clubpenalty`         | 10000 | Forbid orphans (page bottom)    |
-| `\widowpenalty`        | 10000 | Forbid widows (page top)        |
-| `\displaywidowpenalty` | 10000 | Same for display math           |
+| Parameter              | Value | Effect                       |
+| ---------------------- | ----- | ---------------------------- |
+| `\clubpenalty`         | 10000 | Forbid orphans (page bottom) |
+| `\widowpenalty`        | 10000 | Forbid widows (page top)     |
+| `\displaywidowpenalty` | 10000 | Same for display math        |
 
 ### Tolerances
 
 | Parameter           | Value | Effect                                |
-|---------------------|-------|---------------------------------------|
+| ------------------- | ----- | ------------------------------------- |
 | `\pretolerance`     | 100   | First pass (no hyphen) badness cap    |
 | `\tolerance`        | 400   | Second pass (with hyphen) badness cap |
 | `\emergencystretch` | 6pt   | Third pass stretch to avoid overfull  |
@@ -117,14 +117,14 @@ of invisible stretch (emergencystretch) to avoid overfull boxes.
 
 ### Hyphenation
 
-| Parameter                | Value | Effect                                   |
-|--------------------------|-------|------------------------------------------|
-| `\hyphenpenalty`         | 50    | Cost of a hyphen break                   |
-| `\exhyphenpenalty`       | 50    | Cost of breaking at an explicit hyphen   |
-| `\doublehyphendemerits`  | 10000 | Penalty for consecutive hyphenated lines |
-| `\finalhyphendemerits`   | 5000  | Penalty for hyphen on second-to-last line|
-| `\adjdemerits`           | 10000 | Penalty for adjacent incompatible lines  |
-| `\linepenalty`           | 10    | Per-line cost (favors fewer lines)       |
+| Parameter               | Value | Effect                                    |
+| ----------------------- | ----- | ----------------------------------------- |
+| `\hyphenpenalty`        | 50    | Cost of a hyphen break                    |
+| `\exhyphenpenalty`      | 50    | Cost of breaking at an explicit hyphen    |
+| `\doublehyphendemerits` | 10000 | Penalty for consecutive hyphenated lines  |
+| `\finalhyphendemerits`  | 5000  | Penalty for hyphen on second-to-last line |
+| `\adjdemerits`          | 10000 | Penalty for adjacent incompatible lines   |
+| `\linepenalty`          | 10    | Per-line cost (favors fewer lines)        |
 
 **What demerits mean**: Demerits are squared penalties. TeX minimizes total
 demerits across the paragraph, not individual line badness. High
@@ -135,7 +135,7 @@ adjacent lines with very different tightness.
 ### Microtype
 
 | Parameter    | Value | Effect                              |
-|--------------|-------|-------------------------------------|
+| ------------ | ----- | ----------------------------------- |
 | `protrusion` | true  | Hang punctuation into margins       |
 | `expansion`  | true  | Adjust glyph widths for spacing     |
 | `tracking`   | false | No global tracking (use `\TSTrack`) |

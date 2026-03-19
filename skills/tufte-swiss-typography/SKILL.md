@@ -1,14 +1,6 @@
----
-name: tufte-swiss-typography
-description: >
-  Generate PDFs with Tufte-grade Swiss micro-typography featuring LuaLaTeX
-  precision. Implements 12pt baseline grid, perfect fourth type scale
-  (9/12/16/21pt), four-gray hierarchy, microtype paragraph building with
-  hanging punctuation and glyph expansion. Use for professional documents,
-  resumes, reports, proposals, or any PDF requiring typographic precision.
-  Triggers: elegant PDFs, Swiss style design, Tufte aesthetics, justified
-  text blocks, baseline grids, LuaLaTeX documents.
----
+______________________________________________________________________
+
+## name: tufte-swiss-typography description: > Generate PDFs with Tufte-grade Swiss micro-typography featuring LuaLaTeX precision. Implements 12pt baseline grid, perfect fourth type scale (9/12/16/21pt), four-gray hierarchy, microtype paragraph building with hanging punctuation and glyph expansion. Use for professional documents, resumes, reports, proposals, or any PDF requiring typographic precision. Triggers: elegant PDFs, Swiss style design, Tufte aesthetics, justified text blocks, baseline grids, LuaLaTeX documents
 
 # Tufte-Swiss Typography Toolkit
 
@@ -20,10 +12,10 @@ respect. Five systems, two primitives, zero document-specific opinions.
 A portable `.sty` package that provides:
 
 1. **Type scale** — five named sizes on a perfect fourth progression
-2. **Baseline grid** — 12pt grid with 6pt half-grid
-3. **Color palette** — four grays for hierarchy without decoration
-4. **Font setup** — Aktiv Grotesk via fontspec with eight weight commands
-5. **Paragraph builder** — microtype protrusion + expansion, tuned penalties
+1. **Baseline grid** — 12pt grid with 6pt half-grid
+1. **Color palette** — four grays for hierarchy without decoration
+1. **Font setup** — Aktiv Grotesk via fontspec with eight weight commands
+1. **Paragraph builder** — microtype protrusion + expansion, tuned penalties
 
 Plus two structural primitives: `\TSRule` and `\TSTrack`.
 
@@ -83,13 +75,13 @@ bash tufte-swiss-typography/scripts/smoke_test.sh
 
 Perfect fourth (4:3) from a 9pt base. Each command sets size AND leading.
 
-| Command    | Size/Lead | Use                     |
-|------------|-----------|-------------------------|
-| `\TSMicro` | 7/12      | Labels, fine print      |
-| `\TSBody`  | 9/12      | Primary reading text    |
-| `\TSStep`  | 12/12     | Subheads, role titles   |
-| `\TSLarge` | 16/18     | Display, cover names    |
-| `\TSTitle` | 21/24     | Titles, resume names    |
+| Command    | Size/Lead | Use                   |
+| ---------- | --------- | --------------------- |
+| `\TSMicro` | 7/12      | Labels, fine print    |
+| `\TSBody`  | 9/12      | Primary reading text  |
+| `\TSStep`  | 12/12     | Subheads, role titles |
+| `\TSLarge` | 16/18     | Display, cover names  |
+| `\TSTitle` | 21/24     | Titles, resume names  |
 
 WHY these sizes: The steps are distinct enough to signal hierarchy but
 close enough to feel like one family. 9pt body is dense but readable.
@@ -97,10 +89,10 @@ close enough to feel like one family. 9pt body is dense but readable.
 
 ### 2. Baseline Grid
 
-| Length    | Value | Use                 |
-|-----------|-------|---------------------|
-| `\TSGrid` | 12pt  | Standard spacing    |
-| `\TSHalf` | 6pt   | Fine spacing        |
+| Length    | Value | Use              |
+| --------- | ----- | ---------------- |
+| `\TSGrid` | 12pt  | Standard spacing |
+| `\TSHalf` | 6pt   | Fine spacing     |
 
 WHY 12pt: The grid equals the body leading. Every line of body text sits
 on a grid line. Columns align. The page feels architecturally solid.
@@ -115,12 +107,12 @@ Snap all vertical spacing to multiples of `\TSGrid` or `\TSHalf`:
 
 ### 3. Color Palette
 
-| Color          | Hex       | Use                  |
-|----------------|-----------|----------------------|
-| `TSText`       | `#111111` | Primary text         |
-| `TSMuted`      | `#5D5D5D` | Secondary, labels    |
-| `TSRuleColor`  | `#C8C8C8` | Rules, dividers      |
-| `TSStrong`     | `#202020` | Emphasis rules       |
+| Color         | Hex       | Use               |
+| ------------- | --------- | ----------------- |
+| `TSText`      | `#111111` | Primary text      |
+| `TSMuted`     | `#5D5D5D` | Secondary, labels |
+| `TSRuleColor` | `#C8C8C8` | Rules, dividers   |
+| `TSStrong`    | `#202020` | Emphasis rules    |
 
 WHY near-black: Pure black vibrates against white paper. `#111111` is
 perceptually identical but quieter. Use color for hierarchy, not decoration.
@@ -130,7 +122,7 @@ perceptually identical but quieter. Use color for hierarchy, not decoration.
 Default: Aktiv Grotesk (must be in ~/Library/Fonts/ or system fonts).
 
 | Command        | Weight                  |
-|----------------|-------------------------|
+| -------------- | ----------------------- |
 | (default)      | Regular                 |
 | `\bfseries`    | Bold                    |
 | `\itshape`     | Italic                  |
