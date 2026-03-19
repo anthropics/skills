@@ -63,15 +63,16 @@ jobs:
           # compatibility, so the tool runtime version and the target version are
           # intentionally different.
           python-version: "3.12"
+          cache: pip
 
       # ── 3. Install linting / type-checking tools ─────────────────────────
       - name: Install Python tools
         run: |
-          pip install --quiet ruff mypy mdformat mdformat-tables
+          pip install --quiet ruff==0.15.6 mypy==1.19.1 mdformat==0.7.22 mdformat-tables==1.0.0
 
       - name: Install Node tools
         run: |
-          npm install -g --silent markdownlint-cli
+          npm install -g --silent markdownlint-cli@0.48.0
 
       # ── 4. Auto-fix Python lint & formatting issues ───────────────────────
       #
@@ -97,11 +98,11 @@ jobs:
       # notably MD013 line-length is NOT enforced inside tables.
       - name: Run mdformat (Markdown table alignment + formatting)
         run: |
-          mdformat .
+          find . -name "*.md" ! -name "SKILL.md" -print0 | xargs -0 mdformat
 
       - name: Run markdownlint auto-fix (Markdown structural issues)
         run: |
-          markdownlint --fix --config .markdownlint.json "**/*.md" || true
+          markdownlint --fix --config .markdownlint.json --ignore-path .markdownlintignore "**/*.md" || true
 
       # ── 6. Commit all auto-fixes (Python + Markdown) in one commit ────────
       - name: Commit lint fixes
@@ -198,7 +199,7 @@ jobs:
       # MD013 line-length is disabled in tables via .markdownlint.json.
       - name: Run markdownlint (report only)
         run: |
-          markdownlint --config .markdownlint.json "**/*.md" 2>&1 | tee md-lint-report.txt
+          markdownlint --config .markdownlint.json --ignore-path .markdownlintignore "**/*.md" 2>&1 | tee md-lint-report.txt
           EXIT=${PIPESTATUS[0]}
 
           {

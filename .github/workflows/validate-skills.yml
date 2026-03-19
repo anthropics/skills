@@ -25,9 +25,15 @@ on:
   push:
     paths:
       - "skills/**/SKILL.md"
+      - "scripts/**"
+      - "references/**"
+      - "assets/**"
   pull_request:
     paths:
       - "skills/**/SKILL.md"
+      - "scripts/**"
+      - "references/**"
+      - "assets/**"
   schedule:
     # Runs daily alongside the main lint workflow (06:00 UTC)
     - cron: "0 6 * * *"
