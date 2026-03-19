@@ -1,0 +1,14 @@
+{
+  "id": "minimal",
+  "label_en": "Minimal",
+  "label_zh": "极简版",
+  "description_en": "Single-line preset that keeps only the essentials visible.",
+  "description_zh": "单行极简预设，只保留最关键的信息。",
+  "lines": 1,
+  "modules": {
+    "1": ["model", "version", "active", "cost"],
+    "2": [],
+    "3": []
+  },
+  "is_default": false
+}
