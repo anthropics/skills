@@ -59,7 +59,7 @@ docs/retros/*-PROJECT-HISTORY-ANALYSIS.md
 
 **If prior retro found:**
 1. Read it fully — it contains the synthesized analysis of previously-analyzed sessions.
-2. Extract the session range it covers (from the `**Sessions:** S1-S11` header line).
+2. Extract the session range it covers (from the `**Sessions:** <range>` header line).
 3. Determine which exports are NEW (not covered by the prior retro's session range).
 4. If zero new exports exist since the prior retro, report "nothing new to analyze" and stop.
 
@@ -86,7 +86,7 @@ Agent(
 
 **Why opus:** Exports are 50-200KB (30-65K tokens). Opus handles deep extraction from large documents. Haiku/sonnet miss nuance.
 
-**Why NOT TeamCreate:** Race conditions with member registration (battle-tested failure in session 4).
+**Why NOT TeamCreate:** Race conditions with member registration.
 **Why NOT TaskCreate:** Tasks track progress. The `Agent` tool dispatches work.
 
 ### Historian Extraction Template
