@@ -47,7 +47,7 @@ Research the best approaches for the [DOMAIN AREA] requirements above.
 3. Rank approaches by quality-of-fit for THESE specific requirements
 4. Note any requirements that NO current tool fully addresses
 
-Verify all claims via web search. Do not rely on training data for version numbers,
+Verify non-library claims via web search. Do not rely on training data for version numbers,
 benchmarks, or feature availability. If you cannot verify a claim, mark it as UNVERIFIED.
 
 Do NOT recommend tools because they are popular. Recommend them because they are
@@ -176,9 +176,9 @@ Use when an agent reports "X doesn't exist" or "X is not available." NEVER accep
 **Do NOT dispatch another agent.** Verify locally:
 
 ```bash
-# Model existence
-pip index versions <package-name>
-# or: HuggingFace API query
+# Model existence (HuggingFace models, not PyPI packages)
+# HuggingFace API: curl -s https://huggingface.co/api/models/<org>/<model> | head
+# or: huggingface-cli search <model-name>
 
 # Package existence
 pip index versions <package-name>

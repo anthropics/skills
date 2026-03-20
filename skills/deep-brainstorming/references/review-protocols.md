@@ -147,7 +147,7 @@ For each finding:
 
 ## "Objectively Best?" Final Gate
 
-After all three review phases pass, apply this final quality gate.
+After all required review phases for your selected intensity pass, apply this final quality gate.
 
 ### Protocol
 

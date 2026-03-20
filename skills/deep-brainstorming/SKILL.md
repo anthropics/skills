@@ -173,7 +173,7 @@ This protects against context compaction losing approved work.
 
 ## Phase 7: Three-Phase Review
 
-After assembling the spec, run three sequential review phases. Each phase is a separate agent with NO context from prior phases.
+After assembling the spec, run the review phases required by your selected intensity level. Each phase is a separate agent with NO context from prior phases.
 
 **Phase R1 — Verify-fix:** Standard review for consistency, completeness, formatting. Fix issues, verify fixes are clean.
 
