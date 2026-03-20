@@ -1,0 +1,57 @@
+{
+  "skill_name": "fullstack-website-designer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build me a recipe sharing website. Users should be able to post recipes with ingredients and steps, browse recipes by category, and save their favorites. Use React and Node.js.",
+      "expected_output": "A complete full-stack recipe sharing app with: (1) React frontend with distinct visual design, recipe cards, category filters, and favorite/save UI; (2) Node.js/Express backend with REST API endpoints for CRUD on recipes, user auth, and favorites; (3) PostgreSQL schema with users, recipes, ingredients, categories, and favorites tables; (4) JWT authentication; (5) .env.example and README with setup instructions.",
+      "files": [],
+      "assertions": [
+        "The response includes a stack choice with brief rationale",
+        "A visual/aesthetic direction is stated before code (e.g. 'editorial', 'warm', 'minimal')",
+        "Frontend code includes at least one CSS custom property color system (--color-bg, --color-accent, etc.)",
+        "Font choice is specified and avoids Inter, Roboto, Arial, or system-ui as display font",
+        "API endpoints are listed or documented (GET /api/recipes, POST /api/recipes, etc.)",
+        "A database schema is provided for recipes, users, and favorites",
+        "Auth endpoints are included (register, login, refresh or similar)",
+        "Input validation is present on at least one API handler",
+        "A .env.example file or equivalent environment variable list is provided",
+        "Setup/run instructions are included"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need a SaaS landing page for a project management tool called 'Orbit'. It should have a hero section, features grid, pricing table (3 tiers), testimonials, and a waitlist signup form. Make it look premium and modern. No backend needed, just store signups in Supabase.",
+      "expected_output": "A polished single-page landing site with: (1) clear aesthetic direction (not generic purple gradients); (2) hero, features, pricing (3 tiers with toggle monthly/annual), testimonials, and waitlist form sections; (3) Supabase integration for form submission; (4) fully responsive CSS; (5) distinctive typography pairing; (6) animations or micro-interactions; (7) complete HTML/CSS/JS or React code.",
+      "files": [],
+      "assertions": [
+        "All five sections are implemented: hero, features, pricing, testimonials, waitlist/signup",
+        "Pricing section has at least 3 tiers with feature lists",
+        "An aesthetic direction is named or clearly evident (not generic purple gradient on white)",
+        "Two distinct fonts are used (display and body)",
+        "The form submission connects to Supabase or equivalent (code shown, not just described)",
+        "Layout is responsive (uses media queries or CSS grid/flexbox with mobile consideration)",
+        "At least one animation or transition effect is included",
+        "The response does not use Inter or Roboto as the primary display typeface"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a full-stack expense tracker app. Users log in, add expenses with categories and amounts, and see a monthly breakdown chart. I want to use Next.js with a PostgreSQL database.",
+      "expected_output": "A full Next.js App Router application with: (1) auth (login/register pages); (2) dashboard with expense list and a chart (e.g. Chart.js or Recharts); (3) add/edit expense form with category selection; (4) Prisma schema with users, expenses, and categories; (5) Server Actions or API routes for data operations; (6) monthly aggregation query; (7) .env.example and setup instructions.",
+      "files": [],
+      "assertions": [
+        "Stack is Next.js with App Router (not Pages Router)",
+        "Prisma schema is provided with users and expenses tables",
+        "Auth is implemented (login and register pages/routes)",
+        "A dashboard page shows expense list",
+        "A chart or visualization for monthly breakdown is included (library specified)",
+        "Server Actions or API route handlers are shown for creating expenses",
+        "Monthly aggregation logic is present (groupBy month or equivalent)",
+        "Password hashing is used (bcrypt or argon2, never plaintext)",
+        ".env.example includes DATABASE_URL and auth secret",
+        "The UI has a stated aesthetic direction distinct from generic dashboard styles"
+      ]
+    }
+  ]
+}
