@@ -178,7 +178,7 @@ Use when an agent reports "X doesn't exist" or "X is not available." NEVER accep
 ```bash
 # Model existence (HuggingFace models, not PyPI packages)
 # HuggingFace API: curl -s https://huggingface.co/api/models/<org>/<model> | head
-# or: huggingface-cli search <model-name>
+# or: hf models info <model-name>
 
 # Package existence
 pip index versions <package-name>
