@@ -84,7 +84,7 @@ Agent(
 )
 ```
 
-**Why opus:** Exports are 50-200KB (30-65K tokens). Opus handles deep extraction from large documents. Haiku/sonnet miss nuance.
+**Why opus:** Exports are 50-200KB (30-65K tokens). Opus handles deep extraction from large documents. Haiku/sonnet miss nuance. If opus is unavailable, use the best model accessible — expect lower extraction quality from large exports.
 
 **Why NOT TeamCreate:** Race conditions with member registration.
 **Why NOT TaskCreate:** Tasks track progress. The `Agent` tool dispatches work.
