@@ -67,7 +67,7 @@ Extract the client brief into a clean requirements document. This is the anchor 
 **Prompt rules:**
 - Zero vendor/tool names — only functional requirements + vision doc
 - "What's the best way to achieve Y?" not "Is X good for Y?"
-- Include: "Verify via web search. Do not rely on training data."
+- Include: "Verify non-library claims via web search. Do not rely on training data."
 - Attach the sanitized vision document to every prompt
 
 **Agent discipline (mandatory for ALL researcher agents):**
@@ -124,7 +124,7 @@ Do not trust agent output for factual claims. The orchestrator verifies directly
 
 **Negative claims ("X doesn't exist") — NEVER accept from a single agent:**
 - Agent searches can miss things. "X doesn't exist" requires LOCAL verification:
-  - Model existence → HuggingFace API query or `pip index versions X`
+  - Model existence → HuggingFace API query (not pip — pip checks packages, not model registries)
   - Package existence → `pip index versions X` or PyPI search
   - Import path → `python -c "from X import Y"`
   - Version → `pip show X` or official docs

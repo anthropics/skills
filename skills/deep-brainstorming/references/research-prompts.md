@@ -94,7 +94,7 @@ Without assuming any prior research has been done:
 3. What would you recommend if cost were no object? What about for a constrained budget?
 4. What's the biggest risk with the most popular option in this space?
 
-Verify via web search. Mark anything you cannot independently confirm as UNVERIFIED.
+Verify non-library claims via web search. Mark anything you cannot independently confirm as UNVERIFIED.
 ```
 
 ### Comparing Round 1 and Round 2
