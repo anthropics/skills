@@ -155,11 +155,12 @@ were changes justified or accidental?
 | Session | Decision | Rationale | Status (held/reversed/superseded) |
 
 ## 4. Mistakes and Corrections
-Pattern mistakes by type:
+Pattern mistakes by type. Common Claude behavioral patterns to seed:
 - Deferral disguised as process (effort avoidance)
 - Overconfidence without verification (asserting not checking)
 - Not following own rules (loaded but not consulted)
 - Fabricated/unverified claims (training data biases)
+Also surface any project-specific patterns beyond these.
 Count instances per pattern — reveals systemic issues.
 
 ## 5. User Teaching Moments
