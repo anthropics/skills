@@ -135,6 +135,8 @@ After ALL historians complete, combine reports into a single analysis. The orche
 
 **Full mode** uses the Full Synthesis Template. **Incremental mode** uses the Incremental Synthesis Template.
 
+**Incremental mode input:** The synthesizer needs BOTH the new historian reports AND the prior retro content (read in Phase 1.5). If delegating synthesis to a subagent, include the prior retro text in its prompt — the subagent doesn't have Phase 1.5 context.
+
 ### Full Synthesis Template
 
 ```markdown
@@ -201,8 +203,9 @@ Carry forward the prior retro's correction patterns. For each pattern:
 Lessons from new sessions only. Note which are genuinely new vs
 reinforcement of prior patterns.
 
-## 5. Current State
+## 5. Current State & New Deliverables
 Updated inventory: what's on main, what's pending, what changed.
+List files created/modified, PRs merged, documents produced in new sessions.
 
 ## 6. Recommended Next Step
 Justified from cumulative history (prior retro + new sessions).
