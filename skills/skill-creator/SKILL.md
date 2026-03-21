@@ -2,7 +2,6 @@
 name: skill-creator
 description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 ---
-
 # Skill Creator
 
 A skill for creating new skills and iteratively improving them.
@@ -107,6 +106,53 @@ cloud-deploy/
     └── azure.md
 ```
 Claude reads only the relevant reference file.
+
+#### Principle of Framework Independence
+
+**A skill must never own a framework. It may only reference one.**
+
+Frameworks are independent, versioned, public assets that live in their own
+GitHub repositories. They include: scoring models, taxonomies, standards
+(SFIA, OWASP, etc.), API specs, brand registries, vocabulary maps,
+classification systems — any logic reusable across more than one skill.
+
+**Rules:**
+1. If logic could apply to more than one skill → it is a framework, not skill content
+2. Frameworks live in their own public GitHub repo — not inside any skill folder
+3. Skills reference frameworks by GitHub URL, not by file path
+4. A skill fetches a framework at runtime — it never copies framework content inline
+5. Frameworks are versioned independently via Git tags — skills pin a version or track `main`
+6. Any skill, by anyone, can reference any public framework
+7. No skill "owns" a framework — the GitHub repo owner maintains it
+
+**How to reference a framework in a skill:**
+```markdown
+> **Framework:** https://github.com/opensaasapps/frameworks/tree/main/sfia
+> Read this before proceeding. Do not copy its content into this skill.
+```
+
+Or pinned to a version:
+```markdown
+> **Framework:** https://github.com/opensaasapps/frameworks/tree/v1.0/sfia
+```
+
+**What belongs in a skill vs a framework:**
+
+| Belongs in SKILL.md | Belongs in a framework repo |
+|---|---|
+| Workflow steps | Scoring rubrics |
+| Trigger conditions | Taxonomies and classifications |
+| Input/output format | External API specs |
+| Which framework to use | Brand/vendor registries |
+| How to apply results | Standards (SFIA, OWASP, ISO) |
+| Error handling | Vocabulary and category maps |
+
+**When creating a skill that uses any classification, scoring model, or standard:**
+check if a public framework repo already exists for it. If yes, reference it
+by URL. If no, create it as a new public GitHub repo first, then reference it.
+Never inline it into the skill.
+
+---
 
 #### Principle of Lack of Surprise
 
