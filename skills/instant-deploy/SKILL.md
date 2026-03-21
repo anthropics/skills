@@ -1,140 +1,147 @@
-# instant-deploy skill
+# MCP Tool Spec — instant-deploy
 
-## Trigger
-Activate this skill when the user asks to:
-- "create a website / page / landing page"
-- "deploy / publish / go live"
-- "make a page for X"
-- "build a site from this content"
-- Any variation of turning content into a live URL
+## Overview
+Add a new server-side MCP tool `instant-deploy` to the existing `/api/mcp/call` endpoint.
 
----
+This enables Claude Code skills to deploy HTML pages to Cloudflare Pages without exposing the CF token to users. The server handles all Cloudflare operations internally.
 
-## Workflow
-
-### Step 1 — Gather content
-If content is already present in conversation context (copy, spec, research, pitch deck, deal page, etc.), use it directly.
-Otherwise ask:
-> "מה תוכן הדף? שלח טקסט, נקודות, או כל חומר גלם."
-> ("What's the page content? Send text, bullet points, or raw material.")
+Auth: existing `x-api-key` (`jsai_...`) pipeline — no changes needed.
 
 ---
 
-### Step 2 — Choose template
-| Content type | Template |
-|---|---|
-| Research / article / report / study / deep-dive | `dark-teal` |
-| Product / service / SaaS / landing / pitch | `landing` |
-| Portfolio / bio / minimal blog / statement | `minimal` |
+## Tool Definition
 
-When in doubt, default to `dark-teal`.
+Add to the tools array in `/api/mcp/tools` response:
 
----
-
-### Step 3 — Generate the HTML
-
-Rules:
-1. **Language**: Hebrew RTL by default (`dir="rtl"` on `<html>`, `direction: rtl` in CSS). Switch to LTR only if content is explicitly English.
-2. **Fonts**: Always load from Google Fonts:
-   - Hebrew: `Heebo` (body) + `Frank Ruhl Libre` (headings/display)
-   - English: `DM Mono` or `Syne` (headings) + `Lora` (body)
-3. **Theme**: Dark background, accent per template palette (see below).
-4. **Grain overlay**: Always include CSS noise texture on `body::before` using `filter: url(#noise)` or SVG base64 data URI.
-5. **Animations**: Intersection Observer fade-up on all `.animate` elements. CSS transition + `opacity/translateY`.
-6. **Responsive**: Mobile-first, max-width 1100px container, fluid type with `clamp()`.
-7. **Self-contained**: Single HTML file, zero external JS dependencies beyond Google Fonts.
-
-Inject the user's content into the chosen template structure. Map content semantically:
-- Long body text → section paragraphs
-- Short bullets → card grid or stat bar
-- Numbers/metrics → hero stats
-- Steps/process → timeline
-- Pros/cons or comparisons → comparison table
-- Call to action phrase → CTA section
-
-Save final file to:
-```
-/home/claude/deploy-output/index.html
+```json
+{
+  "name": "instant-deploy",
+  "description": "Deploy a complete HTML page to a live Cloudflare Pages URL. Accepts raw HTML, slugifies the title, creates or reuses the CF Pages project, deploys, and returns the live URL.",
+  "cost": 100,
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "html": {
+        "type": "string",
+        "description": "Complete HTML document to deploy (full page with <!DOCTYPE html>)"
+      },
+      "title": {
+        "type": "string",
+        "description": "Page title used to generate the Cloudflare Pages project slug (English, kebab-case friendly)"
+      }
+    },
+    "required": ["html", "title"]
+  }
+}
 ```
 
 ---
 
-### Step 4 — Deploy
+## Server Implementation
 
-Run:
+### Location
+Add handler in the existing MCP tool executor (wherever `generate_csv_site`, `create_site` etc. are handled).
+
+### Logic
+
+```typescript
+case 'instant-deploy': {
+  const { html, title } = params
+
+  // 1. Slugify title
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9 _-]/g, '')
+    .replace(/[ _]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 50) || 'instant-page'
+
+  // 2. Write HTML to temp dir
+  const tmpDir = `/tmp/instant-deploy-${slug}-${Date.now()}`
+  fs.mkdirSync(tmpDir, { recursive: true })
+  fs.writeFileSync(`${tmpDir}/index.html`, html)
+
+  // 3. Check/create CF Pages project
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
+  const cfToken = process.env.CLOUDFLARE_API_TOKEN
+
+  const projectCheck = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${slug}`,
+    { headers: { Authorization: `Bearer ${cfToken}` } }
+  )
+
+  if (projectCheck.status !== 200) {
+    await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${cfToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: slug, production_branch: 'main' })
+      }
+    )
+  }
+
+  // 4. Deploy via wrangler (child_process)
+  const { execSync } = require('child_process')
+  execSync(
+    `wrangler pages deploy ${tmpDir} --project-name ${slug} --branch main --commit-dirty=true`,
+    { env: { ...process.env, CLOUDFLARE_API_TOKEN: cfToken } }
+  )
+
+  // 5. Cleanup
+  fs.rmSync(tmpDir, { recursive: true })
+
+  return {
+    success: true,
+    result: {
+      url: `https://${slug}.pages.dev`,
+      slug
+    },
+    cost: 100
+  }
+}
+```
+
+### Environment variables needed (server-side only, never exposed)
+```
+CLOUDFLARE_API_TOKEN=...   # existing if already used for other deploys
+CLOUDFLARE_ACCOUNT_ID=...  # your CF account ID
+```
+
+---
+
+## Cost
+100 tokens per deploy — covers CF API calls + wrangler execution time. Adjust as needed.
+
+---
+
+## Notes
+- `wrangler` must be installed on the server (`npm i -g wrangler`)
+- Multiple users can deploy simultaneously — each gets a unique `slug` derived from their title
+- If two users deploy the same slug, the second deploy updates the existing project (fine)
+- HTML size limit: suggest 5MB max (enforce in validation before exec)
+- No user Cloudflare account needed — all deploys go to your CF account
+
+---
+
+## Testing
+
 ```bash
-bash /path/to/instant-deploy/scripts/deploy.sh "<page-title-in-english>"
-```
+curl -X POST https://www.jamstackai.com/api/mcp/call \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: jsai_your_test_key" \
+  -d '{
+    "tool": "instant-deploy",
+    "params": {
+      "html": "<!DOCTYPE html><html><body><h1>Test</h1></body></html>",
+      "title": "test-page"
+    }
+  }'
 
-The script will:
-- Slugify the title → Cloudflare Pages project name
-- Run `wrangler pages deploy /home/claude/deploy-output --project-name <slug>`
-- Print the live URL
-
----
-
-### Step 5 — Return URL
-
-Reply with:
-```
-✅ הדף עלה לאוויר:
-https://<slug>.pages.dev
-```
-
----
-
-## Template Palettes
-
-### dark-teal
-```
---bg:       #0a0f0f
---surface:  #111a1a
---border:   #1e3030
---accent:   #00e5c8
---accent2:  #007a6a
---text:     #e8f4f2
---muted:    #6b9e98
-```
-Components: numbered sections with oversized section numbers, animated fade-up, hero with stat bar, card grid (3-col), comparison table, callout boxes with left border accent, timeline with connector line, CTA section with radial glow behind button.
-
-### landing
-```
---bg:       #080810
---surface:  #0f0f1e
---border:   #1e1e3a
---accent:   #7c6af7
---accent2:  #4a3fc7
---text:     #f0eeff
---muted:    #7070a0
-```
-Components: split hero (text left, visual right), feature list with icons, pricing tiers, testimonial strip, sticky nav, footer with links.
-
-### minimal
-```
---bg:       #f7f5f0
---surface:  #ffffff
---border:   #e8e4dc
---accent:   #1a1a1a
---accent2:  #555555
---text:     #1a1a1a
---muted:    #888888
-```
-Light theme. Components: large typographic hero, single-column article layout, pullquotes, footnotes, minimal nav.
-
----
-
-## File locations (after plugin install)
-```
-~/.claude/plugins/instant-deploy/
-  skills/instant-deploy/SKILL.md    ← this file
-  templates/dark-teal.html
-  templates/landing.html
-  templates/minimal.html
-  scripts/deploy.sh
-  .claude-plugin/marketplace.json
-```
-
-Output always goes to:
-```
-/home/claude/deploy-output/index.html
+# Expected response:
+# { "success": true, "result": { "url": "https://test-page.pages.dev", "slug": "test-page" }, "cost": 100 }
 ```
