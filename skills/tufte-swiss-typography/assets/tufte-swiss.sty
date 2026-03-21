@@ -9,10 +9,19 @@
 %%
 %% Requires: LuaLaTeX (LuaHBTeX 1.18+), fontspec, microtype
 %% Default font: Aktiv Grotesk (installed in ~/Library/Fonts/)
+%%
+%% Options:
+%%   nofonts — skip all font declarations; agent provides its own via
+%%             \setmainfont and \newfontfamily. See SKILL.md § Font Selection.
 %% ---------------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{tufte-swiss}[2026/03/18 Tufte-Swiss typography toolkit]
+\ProvidesPackage{tufte-swiss}[2026/03/21 Tufte-Swiss typography toolkit]
+
+%% Package option: nofonts
+\newif\ifTS@nofonts
+\DeclareOption{nofonts}{\TS@nofontstrue}
+\ProcessOptions\relax
 
 %% ---------------------------------------------------------------------------
 %% REQUIRED PACKAGES
@@ -78,42 +87,71 @@
 \color{TSText}
 
 %% ---------------------------------------------------------------------------
-%% 4. FONT SETUP — Aktiv Grotesk via fontspec
+%% 4. FONT SETUP
 %% ---------------------------------------------------------------------------
-%% Default: Aktiv Grotesk, a Helvetica descendant with better ink traps and
-%% open counters at small sizes. Installed in ~/Library/Fonts/ so fontspec
-%% finds it by name. Override with \setmainfont for other families.
+%% Default: Aktiv Grotesk. With `nofonts` option: nothing loaded.
+%%
+%% Under `nofonts`, the agent calls \setmainfont and optionally defines
+%% \TSLight..\TSBlack in the document preamble. The weight commands are
+%% provided as no-ops so documents compile even if the agent omits them.
+%%
+%% FOUR-FACE RULE: Every \newfontfamily MUST declare UprightFont, ItalicFont,
+%% BoldFont, and BoldItalicFont. For single-weight families with no bold,
+%% set BoldFont = UprightFont (self-reference suppresses fontspec probing).
+%% See SKILL.md § Font Selection for details.
+%% ---------------------------------------------------------------------------
 
-\setmainfont{Aktiv Grotesk}[
-  UprightFont    = *-Regular,
-  BoldFont       = *-Bold,
-  ItalicFont     = *-Italic,
-  BoldItalicFont = *-BoldItalic,
-]
+\ifTS@nofonts
+  %% No fonts loaded. Provide no-op weight commands.
+  \newcommand{\TSLight}{}
+  \newcommand{\TSMedium}{\bfseries}
+  \newcommand{\TSSemiBold}{\bfseries}
+  \newcommand{\TSBlack}{\bfseries}
+  \newcommand{\TSLabelFont}{}
+\else
+  %% ── Aktiv Grotesk (default) ──
+  \setmainfont{Aktiv Grotesk}[
+    UprightFont    = *-Regular,
+    BoldFont       = *-Bold,
+    ItalicFont     = *-Italic,
+    BoldItalicFont = *-BoldItalic,
+  ]
 
-%% Extended weight families — available via \TSMedium, \TSSemiBold, etc.
-\newfontfamily\TSLight{Aktiv Grotesk Light}[
-  UprightFont    = AktivGrotesk-Light,
-  ItalicFont     = AktivGrotesk-LightItalic,
-]
-\newfontfamily\TSMedium{Aktiv Grotesk Medium}[
-  UprightFont    = AktivGrotesk-Medium,
-  ItalicFont     = AktivGrotesk-MediumItalic,
-]
-\newfontfamily\TSSemiBold{Aktiv Grotesk SemiBold}[
-  UprightFont    = AktivGrotesk-SemiBold,
-  ItalicFont     = AktivGrotesk-SemiBoldItalic,
-]
-\newfontfamily\TSBlack{Aktiv Grotesk Black}[
-  UprightFont    = AktivGrotesk-Black,
-  ItalicFont     = AktivGrotesk-BlackItalic,
-]
+  %% Extended weights — all four faces declared per the four-face rule.
+  \newfontfamily\TSLight{Aktiv Grotesk Light}[
+    UprightFont    = AktivGrotesk-Light,
+    ItalicFont     = AktivGrotesk-LightItalic,
+    BoldFont       = AktivGrotesk-Regular,
+    BoldItalicFont = AktivGrotesk-Italic,
+  ]
+  \newfontfamily\TSMedium{Aktiv Grotesk Medium}[
+    UprightFont    = AktivGrotesk-Medium,
+    ItalicFont     = AktivGrotesk-MediumItalic,
+    BoldFont       = AktivGrotesk-SemiBold,
+    BoldItalicFont = AktivGrotesk-SemiBoldItalic,
+  ]
+  \newfontfamily\TSSemiBold{Aktiv Grotesk SemiBold}[
+    UprightFont    = AktivGrotesk-SemiBold,
+    ItalicFont     = AktivGrotesk-SemiBoldItalic,
+    BoldFont       = AktivGrotesk-Bold,
+    BoldItalicFont = AktivGrotesk-BoldItalic,
+  ]
+  \newfontfamily\TSBlack{Aktiv Grotesk Black}[
+    UprightFont    = AktivGrotesk-Black,
+    ItalicFont     = AktivGrotesk-BlackItalic,
+    BoldFont       = AktivGrotesk-XBold,
+    BoldItalicFont = AktivGrotesk-XBold,
+  ]
 
-%% Label font — pre-configured with letter-spacing for tracked labels
-\newfontfamily\TSLabelFont{Aktiv Grotesk Medium}[
-  UprightFont    = AktivGrotesk-Medium,
-  LetterSpace    = 4,
-]
+  %% Label font — medium weight with letter-spacing for tracked labels
+  \newfontfamily\TSLabelFont{Aktiv Grotesk Medium}[
+    UprightFont    = AktivGrotesk-Medium,
+    ItalicFont     = AktivGrotesk-MediumItalic,
+    BoldFont       = AktivGrotesk-SemiBold,
+    BoldItalicFont = AktivGrotesk-SemiBoldItalic,
+    LetterSpace    = 4,
+  ]
+\fi
 
 %% ---------------------------------------------------------------------------
 %% 5. PARAGRAPH BUILDER

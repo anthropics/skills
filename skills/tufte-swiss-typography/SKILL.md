@@ -1,111 +1,78 @@
-______________________________________________________________________
-
-## name: tufte-swiss-typography description: > Generate PDFs with Tufte-grade Swiss micro-typography featuring LuaLaTeX precision. Implements 12pt baseline grid, perfect fourth type scale (9/12/16/21pt), four-gray hierarchy, microtype paragraph building with hanging punctuation and glyph expansion. Use for professional documents, resumes, reports, proposals, or any PDF requiring typographic precision. Triggers: elegant PDFs, Swiss style design, Tufte aesthetics, justified text blocks, baseline grids, LuaLaTeX documents
+---
+name: tufte-swiss-typography
+description: >
+  Generate PDFs with Tufte-grade Swiss micro-typography using LuaLaTeX.
+  12pt baseline grid, perfect fourth type scale (9/12/16/21pt), four-gray
+  hierarchy, microtype paragraph building with hanging punctuation and glyph
+  expansion. Supports any OTF font via nofonts option with fc-list discovery.
+  Use for professional documents, resumes, reports, proposals, academic papers,
+  or any PDF requiring typographic precision. Triggers: elegant PDFs, Swiss
+  style design, Tufte aesthetics, justified text blocks, baseline grids,
+  LuaLaTeX documents, beautiful typography, professional formatting.
+---
 
 # Tufte-Swiss Typography Toolkit
 
-A LuaLaTeX system for documents that Tufte and a Swiss typographer would
-respect. Five systems, two primitives, zero document-specific opinions.
+Five systems, two primitives, zero document-specific opinions.
 
-## What This Is
-
-A portable `.sty` package that provides:
-
-1. **Type scale** — five named sizes on a perfect fourth progression
-1. **Baseline grid** — 12pt grid with 6pt half-grid
-1. **Color palette** — four grays for hierarchy without decoration
-1. **Font setup** — Aktiv Grotesk via fontspec with eight weight commands
-1. **Paragraph builder** — microtype protrusion + expansion, tuned penalties
-
-Plus two structural primitives: `\TSRule` and `\TSTrack`.
-
-You define the document's semantic macros. The toolkit provides the vocabulary.
-
-## Files
-
-```text
-tufte-swiss-typography/
-├── SKILL.md                          ← You are here
-├── assets/
-│   ├── tufte-swiss.sty               ← The toolkit (load with \usepackage)
-│   ├── tufte-swiss-grid.lua          ← Observational callbacks
-│   └── example-onepager.tex          ← Executive briefing demo
-├── scripts/
-│   └── smoke_test.sh                 ← Compile + verify
-└── references/
-    └── TYPOGRAPHY_SPEC.md            ← Deep parameter reference
+```
+assets/tufte-swiss.sty         ← The package. \usepackage{tufte-swiss}
+assets/tufte-swiss-grid.lua    ← Lua callbacks (must accompany .sty at compile time)
+assets/example-onepager.tex    ← Working demo
+scripts/smoke_test.sh          ← Compile + verify after any .sty change
+references/FONT_REFERENCE.md   ← Font discovery, fontspec, pairing (read for custom fonts)
+references/TYPOGRAPHY_SPEC.md  ← Deep parameter reference (read when tuning)
 ```
 
-## How to Use
+## Compilation
 
-### Minimal Document
+Always LuaLaTeX. Never pdflatex or xelatex. Copy both `.sty` and `.lua`
+to the build directory before compiling.
+
+```bash
+cp ~/.claude/skills/tufte-swiss-typography/assets/tufte-swiss.sty ./
+cp ~/.claude/skills/tufte-swiss-typography/assets/tufte-swiss-grid.lua ./
+lualatex --interaction=nonstopmode document.tex
+```
+
+Check the log after every compile — target zero overfull boxes:
+
+```bash
+grep "tufte-swiss:" document.log
+```
+
+## Minimal Document
 
 ```latex
 \documentclass[10pt]{article}
 \usepackage{tufte-swiss}
-
 \geometry{paper=letterpaper, margin=20mm, heightrounded}
 
 \begin{document}
 \TSTitle\TSBlack Title Here\par
 \vspace{\TSGrid}
-\TSBody Body text in 9/12 Aktiv Grotesk on a 12pt grid.
+\TSBody Body text in 9/12 on a 12pt grid.
 \end{document}
-```
-
-### Compilation
-
-Both `.sty` and `.lua` must be in the same directory as the `.tex` file
-(or on the TEXINPUTS path).
-
-```bash
-cd tufte-swiss-typography/assets
-/Library/TeX/texbin/lualatex -interaction=nonstopmode your-document.tex
-```
-
-Or use the smoke test:
-
-```bash
-bash tufte-swiss-typography/scripts/smoke_test.sh
 ```
 
 ## The Five Systems
 
-### 1. Type Scale
+### 1. Type Scale — perfect fourth (4:3)
 
-Perfect fourth (4:3) from a 9pt base. Each command sets size AND leading.
-
-| Command    | Size/Lead | Use                   |
-| ---------- | --------- | --------------------- |
-| `\TSMicro` | 7/12      | Labels, fine print    |
-| `\TSBody`  | 9/12      | Primary reading text  |
-| `\TSStep`  | 12/12     | Subheads, role titles |
-| `\TSLarge` | 16/18     | Display, cover names  |
-| `\TSTitle` | 21/24     | Titles, resume names  |
-
-WHY these sizes: The steps are distinct enough to signal hierarchy but
-close enough to feel like one family. 9pt body is dense but readable.
-12pt leading is the grid unit. Everything locks together.
+| Command    | Size/Lead | Use                |
+| ---------- | --------- | ------------------ |
+| `\TSMicro` | 7/12      | Labels, fine print |
+| `\TSBody`  | 9/12      | Body text          |
+| `\TSStep`  | 12/12     | Subheads           |
+| `\TSLarge` | 16/18     | Display            |
+| `\TSTitle` | 21/24     | Titles             |
 
 ### 2. Baseline Grid
 
-| Length    | Value | Use              |
-| --------- | ----- | ---------------- |
-| `\TSGrid` | 12pt  | Standard spacing |
-| `\TSHalf` | 6pt   | Fine spacing     |
+`\TSGrid` = 12pt (one grid unit). `\TSHalf` = 6pt. Snap all vertical
+spacing to multiples of these. The grid equals body leading — columns align.
 
-WHY 12pt: The grid equals the body leading. Every line of body text sits
-on a grid line. Columns align. The page feels architecturally solid.
-
-Snap all vertical spacing to multiples of `\TSGrid` or `\TSHalf`:
-
-```latex
-\vspace{\TSGrid}               % 12pt — one grid unit
-\vspace{2\TSGrid}              % 24pt — before sections
-\vspace{\TSHalf}               % 6pt  — tight gaps
-```
-
-### 3. Color Palette
+### 3. Color Palette — four grays
 
 | Color         | Hex       | Use               |
 | ------------- | --------- | ----------------- |
@@ -114,103 +81,53 @@ Snap all vertical spacing to multiples of `\TSGrid` or `\TSHalf`:
 | `TSRuleColor` | `#C8C8C8` | Rules, dividers   |
 | `TSStrong`    | `#202020` | Emphasis rules    |
 
-WHY near-black: Pure black vibrates against white paper. `#111111` is
-perceptually identical but quieter. Use color for hierarchy, not decoration.
+Use color for hierarchy, not decoration. One accent color max per document.
 
 ### 4. Fonts
 
-Default: Aktiv Grotesk (must be in ~/Library/Fonts/ or system fonts).
+**Default mode** (`\usepackage{tufte-swiss}`): Aktiv Grotesk loaded with
+eight weight commands (`\TSLight` through `\TSBlack`).
 
-| Command        | Weight                  |
-| -------------- | ----------------------- |
-| (default)      | Regular                 |
-| `\bfseries`    | Bold                    |
-| `\itshape`     | Italic                  |
-| `\TSLight`     | Light                   |
-| `\TSMedium`    | Medium                  |
-| `\TSSemiBold`  | SemiBold                |
-| `\TSBlack`     | Black                   |
-| `\TSLabelFont` | Medium + letter-spacing |
+**Custom mode** (`\usepackage[nofonts]{tufte-swiss}`): No fonts loaded.
+You call `\setmainfont` and optionally define weight commands.
 
-Override: `\setmainfont{Other Font}[...]` after `\usepackage{tufte-swiss}`.
+To use custom fonts, read `references/FONT_REFERENCE.md` — it covers
+`fc-list` discovery, the four-face rule, font pairing, and troubleshooting.
+
+**The four-face rule** (critical): Every `\setmainfont` and `\newfontfamily`
+must declare `UprightFont`, `ItalicFont`, `BoldFont`, `BoldItalicFont`. For
+single-weight families, set `BoldFont` = `UprightFont` (self-reference
+suppresses fontspec auto-probing).
 
 ### 5. Paragraph Builder
 
-Enabled automatically. You get:
-
-- Protrusion (hanging punctuation for optical margin alignment)
-- Expansion (up to 2% glyph width adjustment for tighter lines)
-- Widow/orphan prevention (absolute)
-- Tuned hyphenation (no consecutive hyphens, no final-line hyphens)
-
-No configuration needed. See `references/TYPOGRAPHY_SPEC.md` for parameter
-details and tuning guidance.
+Enabled automatically. Protrusion (hanging punctuation), expansion (up to
+2% glyph width), absolute widow/orphan prevention, tuned hyphenation. See
+`references/TYPOGRAPHY_SPEC.md` for parameter details.
 
 ## The Two Primitives
 
-### `\TSRule[color]{width}{weight}`
+`\TSRule[color]{width}{weight}` — horizontal rule. Default: `TSRuleColor`.
 
-Horizontal rule. Default color: `TSRuleColor`.
-
-```latex
-\TSRule{\linewidth}{0.2pt}                 % light full-width divider
-\TSRule[TSStrong]{\linewidth}{0.6pt}       % heavy emphasis rule
-\TSRule{0.5\linewidth}{0.2pt}             % half-width
-```
-
-### `\TSTrack[amount]{text}`
-
-Letter-spaced text. Default tracking: 100 (1/1000 em).
+`\TSTrack[amount]{text}` — letter-spaced text. Default: 100 (1/1000 em).
 
 ```latex
-\TSTrack{EXPERIENCE}                       % section label
-\TSTrack[60]{Sub-label}                    % lighter tracking
+\TSRule{\linewidth}{0.2pt}              % light divider
+\TSRule[TSStrong]{\linewidth}{0.6pt}    % heavy rule
+\TSTrack{SECTION LABEL}                 % tracked uppercase
 ```
 
-Also: `\TSLabelFont` for blocks that need persistent tracking.
+## Composition Principles
 
-## Principles for Document Composition
-
-These are guidelines, not rules. The toolkit provides vocabulary; you write
-the prose.
-
-**Set your own geometry.** Different documents need different margins. Call
-`\geometry{...}` per document. The toolkit loads geometry but does not
-configure it.
-
-**Define your own macros.** Build `\SectionHead`, `\RoleEntry`, `\MetaLine`
-from the toolkit primitives. The example document shows how.
-
-**Snap spacing to the grid.** Use `\TSGrid` and `\TSHalf` for all vertical
-space. This keeps lines aligned and the page composed.
-
-**Use color for hierarchy, not decoration.** `TSText` for primary content.
-`TSMuted` for secondary. `TSRuleColor` for structural lines. `TSStrong`
-for emphasis lines. That's it.
-
-**Let TeX break paragraphs.** The paragraph builder is tuned. Set justified
-text and trust the algorithm. For ragged-right, use `\RaggedRight` (from
-ragged2e) — it still hyphenates, unlike `\raggedright`.
-
-**Headers and footers are your job.** Load `fancyhdr` if you need them.
-The toolkit doesn't assume page furniture.
-
-## Callbacks
-
-The Lua module (`tufte-swiss-grid.lua`) registers three observational
-callbacks:
-
-- `hpack_quality` — counts overfull/underfull boxes
-- `start_page_number` — tracks page count
-- `stop_run` — prints summary: `tufte-swiss: N overfull, M underfull. P page(s).`
-
-Check the log for the summary line after every compile. Zero overfull boxes
-is the target.
+- Set geometry per document. The toolkit loads geometry but does not configure it.
+- Define your own semantic macros from the toolkit primitives.
+- Snap spacing to `\TSGrid` / `\TSHalf`.
+- Color for hierarchy only — `TSText`, `TSMuted`, `TSRuleColor`, `TSStrong`.
+- Trust the paragraph builder. Use `\RaggedRight` (ragged2e) for ragged-right.
+- Headers/footers are your job — load `fancyhdr` if needed.
 
 ## Smoke Test
 
 ```bash
-bash scripts/smoke_test.sh
+bash ~/.claude/skills/tufte-swiss-typography/scripts/smoke_test.sh
 ```
-
-Verifies: exit code 0, `tufte-swiss:` summary in log, PDF exists.
