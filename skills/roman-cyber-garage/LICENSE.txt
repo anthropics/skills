@@ -1,0 +1,20 @@
+Roman Cyber Garage - Proprietary License
+
+Copyright (c) 2025-2026 Roman Antonov. All rights reserved.
+
+Author: Roman Antonov
+Email: romwtb@gmail.com
+GitHub: https://github.com/roman-rr
+Website: https://roman-rr.github.io/
+
+PAID LICENSE - NOT FREE SOFTWARE.
+
+This skill, its design tokens, component patterns, and all associated
+intellectual property are proprietary. Any usage - personal, commercial,
+or derivative - requires a paid license and royalty payments to
+Roman Antonov.
+
+Unauthorized use, redistribution, or reproduction without explicit
+written permission and a valid license agreement is strictly prohibited.
+
+For licensing inquiries contact: romwtb@gmail.com
