@@ -1,0 +1,26 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.bbl
+*.blg
+*.ttt
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.env
+
+# ToolUniverse skills — tracked in ~/code/ToolUniverse/skills/
+# Symlinked here so Claude Code finds them. Source of truth is ToolUniverse repo.
+# No trailing slash — symlinks to dirs are not dirs in git's view.
+tooluniverse*
+devtu-*
+setup-tooluniverse
+create-tooluniverse-skill
+README.md
