@@ -27,7 +27,7 @@ message_batch = client.messages.batches.create(
             custom_id="request-1",
             params=MessageCreateParamsNonStreaming(
                 model="claude-opus-4-6",
-                max_tokens=1024,
+                max_tokens=16000,
                 messages=[{"role": "user", "content": "Summarize climate change impacts"}]
             )
         ),
@@ -35,7 +35,7 @@ message_batch = client.messages.batches.create(
             custom_id="request-2",
             params=MessageCreateParamsNonStreaming(
                 model="claude-opus-4-6",
-                max_tokens=1024,
+                max_tokens=16000,
                 messages=[{"role": "user", "content": "Explain quantum computing basics"}]
             )
         ),
@@ -75,7 +75,9 @@ print(f"Errored: {batch.request_counts.errored}")
 for result in client.messages.batches.results(message_batch.id):
     match result.result.type:
         case "succeeded":
-            print(f"[{result.custom_id}] {result.result.message.content[0].text[:100]}")
+            msg = result.result.message
+            text = next((b.text for b in msg.content if b.type == "text"), "")
+            print(f"[{result.custom_id}] {text[:100]}")
         case "errored":
             if result.result.error.type == "invalid_request":
                 print(f"[{result.custom_id}] Validation error - fix request and retry")
@@ -116,7 +118,7 @@ message_batch = client.messages.batches.create(
             custom_id=f"analysis-{i}",
             params=MessageCreateParamsNonStreaming(
                 model="claude-opus-4-6",
-                max_tokens=1024,
+                max_tokens=16000,
                 system=shared_system,
                 messages=[{"role": "user", "content": question}]
             )
@@ -175,7 +177,8 @@ while True:
 results = {}
 for result in client.messages.batches.results(batch.id):
     if result.result.type == "succeeded":
-        results[result.custom_id] = result.result.message.content[0].text
+        msg = result.result.message
+        results[result.custom_id] = next((b.text for b in msg.content if b.type == "text"), "")
 
 for custom_id, classification in sorted(results.items()):
     print(f"{custom_id}: {classification}")

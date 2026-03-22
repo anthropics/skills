@@ -5,7 +5,7 @@
 ```python
 with client.messages.stream(
     model="claude-opus-4-6",
-    max_tokens=1024,
+    max_tokens=64000,
     messages=[{"role": "user", "content": "Write a story"}]
 ) as stream:
     for text in stream.text_stream:
@@ -17,7 +17,7 @@ with client.messages.stream(
 ```python
 async with async_client.messages.stream(
     model="claude-opus-4-6",
-    max_tokens=1024,
+    max_tokens=64000,
     messages=[{"role": "user", "content": "Write a story"}]
 ) as stream:
     async for text in stream.text_stream:
@@ -35,7 +35,7 @@ Claude may return text, thinking blocks, or tool use. Handle each appropriately:
 ```python
 with client.messages.stream(
     model="claude-opus-4-6",
-    max_tokens=16000,
+    max_tokens=64000,
     thinking={"type": "adaptive"},
     messages=[{"role": "user", "content": "Analyze this problem"}]
 ) as stream:
@@ -62,7 +62,7 @@ The Python tool runner currently returns complete messages. Use streaming for in
 ```python
 with client.messages.stream(
     model="claude-opus-4-6",
-    max_tokens=4096,
+    max_tokens=64000,
     tools=tools,
     messages=messages
 ) as stream:
@@ -80,7 +80,7 @@ with client.messages.stream(
 ```python
 with client.messages.stream(
     model="claude-opus-4-6",
-    max_tokens=1024,
+    max_tokens=64000,
     messages=[{"role": "user", "content": "Hello"}]
 ) as stream:
     for text in stream.text_stream:
@@ -127,7 +127,7 @@ def stream_with_progress(client, **kwargs):
 try:
     with client.messages.stream(
         model="claude-opus-4-6",
-        max_tokens=1024,
+        max_tokens=64000,
         messages=[{"role": "user", "content": "Write a story"}]
     ) as stream:
         for text in stream.text_stream:

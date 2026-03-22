@@ -35,7 +35,8 @@ This file documents HTTP error codes returned by the Claude API, their common ca
   "error": {
     "type": "invalid_request_error",
     "message": "messages: roles must alternate between \"user\" and \"assistant\""
-  }
+  },
+  "request_id": "req_011CSHoEeqs5C35K2UUqR7Fy"
 }
 ```
 
