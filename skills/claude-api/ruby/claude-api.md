@@ -27,12 +27,17 @@ client = Anthropic::Client.new(api_key: "your-api-key")
 ```ruby
 message = client.messages.create(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 16000,
   messages: [
     { role: "user", content: "What is the capital of France?" }
   ]
 )
-puts message.content.first.text
+# content is an array of polymorphic block objects (TextBlock, ThinkingBlock,
+# ToolUseBlock, ...). .type is a Symbol — compare with :text, not "text".
+# .text raises NoMethodError on non-TextBlock entries.
+message.content.each do |block|
+  puts block.text if block.type == :text
+end
 ```
 
 ---
@@ -42,7 +47,7 @@ puts message.content.first.text
 ```ruby
 stream = client.messages.stream(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 64000,
   messages: [{ role: "user", content: "Write a haiku" }]
 )
 
@@ -74,7 +79,7 @@ end
 
 client.beta.messages.tool_runner(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 16000,
   tools: [GetWeather.new],
   messages: [{ role: "user", content: "What's the weather in San Francisco?" }]
 ).each_message do |message|
