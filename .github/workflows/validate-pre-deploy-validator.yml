@@ -1,0 +1,94 @@
+name: Validate Pre-Deploy Validator
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'pre-deploy-validator/**'
+      - '.github/workflows/validate-pre-deploy-validator.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'pre-deploy-validator/**'
+
+jobs:
+  validate-validator:
+    runs-on: ubuntu-latest
+    name: Lint and Type Check
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'pre-deploy-validator/package.json'
+
+      - name: Install dependencies
+        working-directory: pre-deploy-validator
+        run: npm ci
+
+      - name: Lint code
+        working-directory: pre-deploy-validator
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Type check
+        working-directory: pre-deploy-validator
+        run: npm run type-check
+        continue-on-error: true
+
+      - name: Validate config files
+        run: |
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+
+          config_files = [
+              'pre-deploy-validator/examples/.pdv.json',
+              'pre-deploy-validator/examples/.pdv.advanced.json',
+              'pre-deploy-validator/examples/monorepo.json'
+          ]
+
+          for config_file in config_files:
+              try:
+                  with open(config_file) as f:
+                      config = json.load(f)
+                  print(f"✓ {config_file} is valid JSON")
+              except json.JSONDecodeError as e:
+                  print(f"❌ {config_file} is invalid JSON: {e}")
+                  exit(1)
+
+          print('\n✅ All config files are valid!')
+          EOF
+
+  test-validator:
+    runs-on: ubuntu-latest
+    name: Test Pre-Deploy Validator
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'pre-deploy-validator/package.json'
+
+      - name: Install dependencies
+        working-directory: pre-deploy-validator
+        run: npm ci
+
+      - name: Run tests
+        working-directory: pre-deploy-validator
+        run: npm test
+        continue-on-error: true
+
+      - name: Build
+        working-directory: pre-deploy-validator
+        run: npm run build
+        continue-on-error: true
