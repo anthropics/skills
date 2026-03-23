@@ -1,0 +1,76 @@
+{
+  "skill_name": "mobile-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a user profile screen for a React Native + Expo app. It should show the user's avatar, name, bio, a stats row (posts, followers, following), and a list of their recent posts. Use NativeWind for styling.",
+      "expected_output": "A complete, working React Native screen component using NativeWind classes. Should include: SafeAreaView root, avatar image with rounded-full, stats row with three columns, FlatList for posts. Must handle loading, empty, and error states. All interactive elements have accessibilityRole and accessibilityLabel. No hardcoded colors.",
+      "expectations": [
+        "Uses FlatList (not ScrollView + map) for the posts list",
+        "Includes a loading state (skeleton or ActivityIndicator)",
+        "Includes an empty state when the user has no posts",
+        "All Pressable/TouchableOpacity elements have accessibilityRole and accessibilityLabel",
+        "No hardcoded hex colors — uses semantic tokens or NativeWind classes",
+        "Avatar uses rounded-full class",
+        "SafeAreaView wraps the root",
+        "Component exports a named function"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a reusable NotificationBadge component for React Native + Expo. It should show a count on top of an icon, support a dot-only variant (no number), and disappear when count is zero. Use NativeWind.",
+      "expected_output": "A typed React Native component with props for count, variant ('count' | 'dot'), and optional children. Handles zero/undefined count by hiding the badge. Uses absolute positioning to overlay on the icon. Accessible with proper labels.",
+      "expectations": [
+        "Defines a TypeScript props interface",
+        "Badge is hidden when count is 0 or undefined",
+        "Supports both 'count' and 'dot' variants",
+        "Uses absolute positioning for the badge overlay",
+        "Badge has accessibilityLabel describing the count",
+        "Uses NativeWind classes for styling (no StyleSheet for non-animated styles)",
+        "Count truncates at 99+ for large numbers"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Design the navigation flow for a checkout feature in a React Native + Expo app using Expo Router. The flow has three steps: cart review, address entry, and payment. Show the route structure, screen transitions, param passing, and how to handle the back button on the payment screen.",
+      "expected_output": "A complete navigation design including: Expo Router file paths for all three screens, typed params for each route, appropriate presentation mode, back-stack behavior, and a guard on the payment screen warning the user before navigating away. Includes code snippets for each screen's navigation calls.",
+      "expectations": [
+        "Provides Expo Router file paths following the app/ directory convention",
+        "Shows typed useLocalSearchParams usage for passing data between screens",
+        "Payment screen has a back/dismiss guard (warns on unsaved state)",
+        "Uses router.push for forward navigation and router.back() or router.dismiss() for back",
+        "Explains when to use router.replace vs router.push",
+        "Includes a Stack.Screen options snippet for at least one screen"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Audit this React Native screen for issues:\n\n```tsx\nexport default function FeedScreen() {\n  const [items, setItems] = React.useState([]);\n  const [loading, setLoading] = React.useState(false);\n\n  return (\n    <ScrollView style={{ flex: 1, backgroundColor: '#ffffff' }}>\n      {loading && <ActivityIndicator />}\n      {items.map(item => (\n        <TouchableOpacity\n          key={item.id}\n          style={{ padding: 12, borderBottomWidth: 1, borderColor: '#e5e5e5' }}\n          onPress={() => navigation.navigate('Detail', { id: item.id })}\n        >\n          <Text style={{ fontSize: 16, color: '#111111' }}>{item.title}</Text>\n          <Text style={{ fontSize: 13, color: '#888888' }}>{item.subtitle}</Text>\n        </TouchableOpacity>\n      ))}\n    </ScrollView>\n  );\n}\n```",
+      "expected_output": "A detailed audit identifying all issues and a corrected version of the screen. Issues should include: ScrollView + map anti-pattern, hardcoded colors, missing empty state, missing error state, missing accessibilityRole/accessibilityLabel.",
+      "expectations": [
+        "Identifies ScrollView + map as a performance anti-pattern and recommends FlatList",
+        "Flags all hardcoded hex colors and recommends semantic tokens",
+        "Identifies missing empty state",
+        "Identifies missing error state",
+        "Flags TouchableOpacity missing accessibilityRole and accessibilityLabel",
+        "Provides a corrected version of the screen",
+        "Corrected version uses FlatList with keyExtractor",
+        "Corrected version includes empty, loading, and error states"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Design a spring animation for a like button in React Native. When tapped, it should scale up to 1.3x then spring back to 1.0, play a haptic, and toggle a filled/outline heart icon. Use react-native-reanimated.",
+      "expected_output": "A complete LikeButton component using react-native-reanimated with useSharedValue and useAnimatedStyle. The animation uses withSpring for the bounce effect. Haptic feedback is triggered on press. The icon toggles between filled and outline states.",
+      "expectations": [
+        "Uses useSharedValue and useAnimatedStyle from react-native-reanimated",
+        "Uses withSpring for the scale animation (not withTiming)",
+        "Scale goes above 1.0 (e.g. 1.3) before returning to 1.0",
+        "Haptic feedback is included (e.g. Haptics.impactAsync or Haptics.selectionAsync)",
+        "Icon state toggle uses useState (separate from animation state)",
+        "No StyleSheet used for the animated style — uses useAnimatedStyle",
+        "Component has accessibilityRole='button' and accessibilityLabel that reflects current state"
+      ]
+    }
+  ]
+}
