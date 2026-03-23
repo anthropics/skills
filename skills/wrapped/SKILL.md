@@ -1,6 +1,7 @@
 ---
 name: wrapped
 description: Launch Claude Code Wrapped — an interactive Spotify Wrapped-style slideshow of your Claude Code usage stats in a new terminal window.
+license: MIT
 disable-model-invocation: true
 argument-hint: ""
 allowed-tools: Bash
