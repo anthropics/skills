@@ -13,6 +13,7 @@ Key commands used in orchestration:
 ```
 cmux new-workspace --cwd <path>                        # create workspace, returns "OK workspace:N"
 cmux new-surface --workspace <ref>                     # create surface, returns "OK surface:N pane:N workspace:N"
+cmux list-pane-surfaces --workspace <ref>              # list surfaces in workspace
 cmux rename-workspace --workspace <ref> <title>        # name the workspace
 cmux rename-tab --workspace <ref> --surface <ref> <name>  # name the tab
 cmux send --workspace <ref> --surface <ref> <text>     # send text to surface
@@ -22,6 +23,24 @@ cmux close-workspace --workspace <ref>                 # tear down workspace
 ```
 
 Extract refs from output with: `grep -o 'workspace:[0-9]*' | head -1`
+
+## Browser Panes
+
+cmux supports browser panes alongside terminal surfaces. To open or control a browser:
+
+```
+cmux browser open [url] [--workspace <ref>]           # open browser split, returns "OK surface=surface:N pane=pane:N"
+cmux browser <surface> goto <url>                     # navigate to URL
+cmux browser <surface> snapshot                       # read page as accessibility tree (preferred over screenshot for content)
+cmux browser <surface> screenshot [--out <path>]      # take screenshot
+cmux browser <surface> url                            # get current URL
+cmux browser <surface> get text [--selector <css>]    # extract text from page
+cmux browser <surface> eval <js>                      # run JavaScript in page context
+cmux browser <surface> click <css>                    # click an element
+cmux browser <surface> type <css> <text>              # type into an input
+```
+
+Extract surface ref from `browser open` output: `grep -o 'surface:[0-9]*' | head -1`
 
 ## When to Use cmux
 
