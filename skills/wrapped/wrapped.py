@@ -127,7 +127,7 @@ def _save_derived_cache(tool_counts, file_counts, slash_counts, avg_prompt_len):
             "file_stats":   dict(file_counts),
             "slash_stats":  dict(slash_counts),
             "avg_prompt_len": avg_prompt_len,
-        }))
+        }), encoding="utf-8")
     except Exception:
         pass
 
