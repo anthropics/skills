@@ -145,7 +145,7 @@ def _list_jsonl_files():
                 try:
                     with os.scandir(proj.path) as fit:
                         for f in fit:
-                            if f.name.endswith(".jsonl") and f.is_file():
+                            if f.name.endswith(".jsonl") and f.is_file(follow_symlinks=False):
                                 files.append(Path(f.path))
                 except Exception:
                     pass
