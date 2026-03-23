@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BKRL Pump Design - 9:16</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #1a1a2e;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .canvas {
+    width: 1080px;
+    height: 1920px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #0a0e1a 0%, #0d1b2a 30%, #1b2d45 60%, #0a0e1a 100%);
+  }
+
+  /* Animated background mesh */
+  .bg-mesh {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 15%, rgba(0, 136, 255, 0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 500px at 80% 70%, rgba(0, 200, 255, 0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 300px at 50% 90%, rgba(0, 100, 200, 0.1) 0%, transparent 70%);
+  }
+
+  /* Grid pattern overlay */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 150, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 150, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Top bar accent */
+  .top-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #0088ff, #00c8ff, #0088ff);
+  }
+
+  /* Header section */
+  .header {
+    position: absolute;
+    top: 60px;
+    left: 70px;
+    right: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #0088ff, #00c8ff);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 136, 255, 0.3);
+  }
+
+  .logo-icon svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+  }
+
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: 8px;
+    color: #ffffff;
+  }
+
+  .header-tag {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 200, 255, 0.7);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* Hero headline */
+  .hero {
+    position: absolute;
+    top: 180px;
+    left: 70px;
+    right: 70px;
+  }
+
+  .hero-label {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #00c8ff;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, #0088ff, #00c8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 20px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  /* Product image area */
+  .product-section {
+    position: absolute;
+    top: 520px;
+    left: 0;
+    right: 0;
+    height: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 136, 255, 0.15) 0%, rgba(0, 136, 255, 0.05) 40%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .product-frame {
+    position: relative;
+    width: 480px;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-frame::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(0, 136, 255, 0.4), rgba(0, 200, 255, 0.1), rgba(0, 136, 255, 0.4));
+    z-index: 0;
+  }
+
+  .product-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(13, 27, 42, 0.95), rgba(10, 14, 26, 0.98));
+    z-index: 1;
+  }
+
+  .product-image-container {
+    position: relative;
+    z-index: 2;
+    width: 420px;
+    height: 500px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(20, 35, 55, 0.8), rgba(10, 14, 26, 0.9));
+  }
+
+  .product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    color: rgba(0, 200, 255, 0.5);
+  }
+
+  .product-placeholder svg {
+    width: 120px;
+    height: 120px;
+    opacity: 0.4;
+  }
+
+  .product-placeholder-text {
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Floating tech badges */
+  .tech-badge {
+    position: absolute;
+    z-index: 5;
+    background: rgba(0, 136, 255, 0.1);
+    border: 1px solid rgba(0, 136, 255, 0.25);
+    border-radius: 12px;
+    padding: 12px 20px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .tech-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00c8ff;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+  }
+
+  .tech-badge .label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+  }
+
+  .badge-1 { left: 60px; top: 620px; }
+  .badge-2 { right: 60px; top: 720px; }
+  .badge-3 { left: 80px; top: 960px; }
+
+  /* Stats section */
+  .stats {
+    position: absolute;
+    top: 1180px;
+    left: 70px;
+    right: 70px;
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .stat-card {
+    flex: 1;
+    background: rgba(0, 136, 255, 0.06);
+    border: 1px solid rgba(0, 136, 255, 0.15);
+    border-radius: 20px;
+    padding: 32px 28px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #00c8ff;
+    margin-bottom: 8px;
+  }
+
+  .stat-unit {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(0, 200, 255, 0.6);
+  }
+
+  .stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* Features section */
+  .features {
+    position: absolute;
+    top: 1400px;
+    left: 70px;
+    right: 70px;
+  }
+
+  .features-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #00c8ff;
+    margin-bottom: 30px;
+  }
+
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .feature-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 136, 255, 0.15), rgba(0, 200, 255, 0.05));
+    border: 1px solid rgba(0, 136, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: #00c8ff;
+  }
+
+  .feature-text h3 {
+    font-size: 19px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 4px;
+  }
+
+  .feature-text p {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* CTA section */
+  .cta {
+    position: absolute;
+    bottom: 120px;
+    left: 70px;
+    right: 70px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 48px;
+    background: linear-gradient(135deg, #0088ff, #0066cc);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 0 8px 32px rgba(0, 136, 255, 0.35);
+  }
+
+  .cta-button svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+  }
+
+  .cta-secondary {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 50px;
+    left: 70px;
+    right: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .bottom-bar span {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.25);
+    letter-spacing: 1px;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 16px;
+  }
+
+  .social-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .social-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Decorative elements */
+  .deco-line {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, rgba(0, 136, 255, 0.2), transparent);
+  }
+
+  .deco-line-1 {
+    left: 40px;
+    top: 300px;
+    height: 200px;
+  }
+
+  .deco-line-2 {
+    right: 40px;
+    top: 1100px;
+    height: 300px;
+  }
+
+  .corner-mark {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: rgba(0, 136, 255, 0.2);
+    border-style: solid;
+  }
+
+  .corner-tl {
+    top: 45px;
+    left: 45px;
+    border-width: 2px 0 0 2px;
+  }
+
+  .corner-br {
+    bottom: 35px;
+    right: 45px;
+    border-width: 0 2px 2px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+  <!-- Background layers -->
+  <div class="bg-mesh"></div>
+  <div class="grid-overlay"></div>
+  <div class="top-accent"></div>
+
+  <!-- Decorative elements -->
+  <div class="deco-line deco-line-1"></div>
+  <div class="deco-line deco-line-2"></div>
+  <div class="corner-mark corner-tl"></div>
+  <div class="corner-mark corner-br"></div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      </div>
+      <span class="logo-text">BKRL</span>
+    </div>
+    <span class="header-tag">Engineering</span>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">Next-Gen Liquid Dosing</div>
+    <h1>Precision<br><span>Pump Systems</span></h1>
+    <p class="hero-sub">Automated liquid dosing technology engineered for maximum accuracy, reliability, and throughput.</p>
+  </div>
+
+  <!-- Product showcase -->
+  <div class="product-section">
+    <div class="product-glow"></div>
+    <div class="product-frame">
+      <div class="product-image-container">
+        <div class="product-placeholder">
+          <!-- Pump illustration -->
+          <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Machine body -->
+            <rect x="15" y="20" width="90" height="120" rx="6" stroke="currentColor" stroke-width="2" fill="rgba(0,136,255,0.05)"/>
+            <!-- Top frame -->
+            <rect x="10" y="10" width="100" height="16" rx="4" stroke="currentColor" stroke-width="2" fill="rgba(0,136,255,0.08)"/>
+            <!-- Bottom base -->
+            <rect x="10" y="134" width="100" height="16" rx="4" stroke="currentColor" stroke-width="2" fill="rgba(0,136,255,0.08)"/>
+            <!-- Glass panel -->
+            <rect x="25" y="35" width="70" height="75" rx="3" stroke="rgba(0,200,255,0.6)" stroke-width="1.5" fill="rgba(0,200,255,0.03)"/>
+            <!-- Internal components -->
+            <rect x="35" y="50" width="20" height="30" rx="2" stroke="rgba(0,200,255,0.4)" stroke-width="1" fill="rgba(0,136,255,0.08)"/>
+            <rect x="65" y="45" width="20" height="40" rx="2" stroke="rgba(0,200,255,0.4)" stroke-width="1" fill="rgba(0,136,255,0.08)"/>
+            <circle cx="45" cy="95" r="6" stroke="rgba(0,200,255,0.4)" stroke-width="1" fill="rgba(0,136,255,0.08)"/>
+            <circle cx="75" cy="95" r="6" stroke="rgba(0,200,255,0.4)" stroke-width="1" fill="rgba(0,136,255,0.08)"/>
+            <!-- Tubing lines -->
+            <path d="M45 44 L45 35 L60 35 L60 28" stroke="rgba(0,200,255,0.5)" stroke-width="1.5" fill="none"/>
+            <path d="M75 44 L75 35 L85 35 L85 28" stroke="rgba(0,200,255,0.5)" stroke-width="1.5" fill="none"/>
+            <!-- Wheels -->
+            <circle cx="25" cy="153" r="4" stroke="currentColor" stroke-width="1.5" fill="rgba(0,136,255,0.1)"/>
+            <circle cx="95" cy="153" r="4" stroke="currentColor" stroke-width="1.5" fill="rgba(0,136,255,0.1)"/>
+            <!-- Display -->
+            <rect x="30" y="115" width="24" height="12" rx="2" stroke="rgba(0,200,255,0.5)" stroke-width="1" fill="rgba(0,200,255,0.1)"/>
+          </svg>
+          <span class="product-placeholder-text">BKRL Flex Liquidose</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech badges -->
+  <div class="tech-badge badge-1">
+    <span class="dot"></span>
+    <span class="label">Smart Dosing</span>
+  </div>
+  <div class="tech-badge badge-2">
+    <span class="dot"></span>
+    <span class="label">Auto-Calibrate</span>
+  </div>
+  <div class="tech-badge badge-3">
+    <span class="dot"></span>
+    <span class="label">IoT Enabled</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-value">99.8<span class="stat-unit">%</span></div>
+      <div class="stat-label">Accuracy</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">24<span class="stat-unit">/7</span></div>
+      <div class="stat-label">Operation</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">50<span class="stat-unit">+</span></div>
+      <div class="stat-label">Protocols</div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features">
+    <div class="features-title">Key Features</div>
+    <div class="feature-list">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Precision Liquid Handling</h3>
+          <p>Sub-microliter accuracy with gravimetric feedback</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Fully Automated Workflow</h3>
+          <p>Unattended operation with smart scheduling</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Industrial Grade Build</h3>
+          <p>Stainless steel construction, chemical resistant</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <a class="cta-button" href="#">
+      Learn More
+      <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+    </a>
+    <span class="cta-secondary">www.bkrl.com</span>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <span>&copy; 2026 BKRL Engineering. All rights reserved.</span>
+    <div class="social-icons">
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+      </div>
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+      </div>
+      <div class="social-icon">
+        <svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
