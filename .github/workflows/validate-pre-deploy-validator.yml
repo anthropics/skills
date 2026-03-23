@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'pre-deploy-validator/package-lock.json'
+          cache-dependency-path: 'pre-deploy-validator/package.json'
 
       - name: Install dependencies
         working-directory: pre-deploy-validator
@@ -77,7 +77,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'pre-deploy-validator/package-lock.json'
+          cache-dependency-path: 'pre-deploy-validator/package.json'
 
       - name: Install dependencies
         working-directory: pre-deploy-validator
