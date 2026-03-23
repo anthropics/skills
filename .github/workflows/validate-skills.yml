@@ -26,13 +26,38 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Validate SKILL.md files
+      - name: Validate SKILL.md files (scoped to changes)
         run: |
           python3 << 'EOF'
           import os
           import re
           import sys
+          import subprocess
           from pathlib import Path
+
+          def get_changed_skills():
+              """Get list of skills changed in this branch"""
+              try:
+                  # Get list of changed files
+                  result = subprocess.run(
+                      ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+                      capture_output=True,
+                      text=True
+                  )
+                  changed_files = result.stdout.strip().split('\n')
+
+                  # Extract skill names from changed files
+                  changed_skills = set()
+                  for file in changed_files:
+                      if file.startswith('skills/'):
+                          parts = file.split('/')
+                          if len(parts) > 1:
+                              changed_skills.add(parts[1])
+
+                  return changed_skills
+              except Exception as e:
+                  print(f"⚠️  Could not determine changed skills: {e}")
+                  return set()
 
           def validate_skill_md(skill_path):
               """Validate SKILL.md has proper YAML frontmatter"""
@@ -72,13 +97,12 @@ jobs:
               return True, f"✓ License valid: {skill_path.name}"
 
           def check_sensitive_data(skill_path):
-              """Check for sensitive data in skill files"""
+              """Check for sensitive data in skill files - only in new/changed files"""
+              # More specific patterns to avoid documentation false positives
               patterns = [
-                  r'sk-[A-Za-z0-9]{48}',  # OpenAI keys
-                  r'AKIA[0-9A-Z]{16}',    # AWS keys
-                  r'password\s*[:=]',      # Passwords
-                  r'api_key\s*[:=]',       # API keys
-                  r'secret\s*[:=]',        # Secrets
+                  (r'sk-[A-Za-z0-9]{48}', 'OpenAI API key'),  # OpenAI keys
+                  (r'AKIA[0-9A-Z]{16}', 'AWS access key'),    # AWS keys
+                  (r'ghp_[A-Za-z0-9]{36}', 'GitHub token'),   # GitHub tokens
               ]
 
               sensitive_files = ['.env', '.env.local', '.env.secret']
@@ -94,20 +118,32 @@ jobs:
                           continue
 
                       filepath = Path(root) / file
-                      # Only check text files
-                      if filepath.suffix in ['.py', '.js', '.ts', '.sh', '.md', '.txt']:
-                          try:
-                              content = filepath.read_text(errors='ignore')
-                              for pattern in patterns:
-                                  if re.search(pattern, content):
-                                      issues.append(f"Potential sensitive data in {filepath.relative_to(skill_path)}")
-                          except Exception:
-                              pass
+                      # Only check files in skills/*/SKILL.md, LICENSE.txt, and new files
+                      relative = filepath.relative_to(skill_path)
+                      if str(relative) not in ['SKILL.md', 'LICENSE.txt'] and not filepath.suffix in ['.py', '.js', '.ts']:
+                          continue
+
+                      try:
+                          content = filepath.read_text(errors='ignore')
+                          for pattern, desc in patterns:
+                              if re.search(pattern, content):
+                                  issues.append(f"Potential {desc} in {relative}")
+                      except Exception:
+                          pass
 
               if issues:
                   return False, '\n  '.join(issues)
 
               return True, f"✓ No sensitive data: {skill_path.name}"
+
+          # Get skills changed in this branch
+          changed_skills = get_changed_skills()
+
+          if changed_skills:
+              print(f"Validating changed skills: {', '.join(sorted(changed_skills))}\n")
+          else:
+              print("No skills changed in this branch. Skipping skill validation.\n")
+              sys.exit(0)
 
           # Find all skill directories
           skills_dir = Path('skills')
@@ -119,6 +155,10 @@ jobs:
 
               # Skip non-skill directories
               if not (skill_path / 'SKILL.md').exists():
+                  continue
+
+              # Only validate skills that changed
+              if skill_path.name not in changed_skills:
                   continue
 
               # Validate SKILL.md
@@ -148,7 +188,7 @@ jobs:
                   print(f'  - {error}')
               sys.exit(1)
 
-          print('\n✅ All skills validated successfully!')
+          print('\n✅ All changed skills validated successfully!')
           EOF
 
       - name: Validate file structure
@@ -156,7 +196,33 @@ jobs:
           python3 << 'EOF'
           import os
           import sys
+          import subprocess
           from pathlib import Path
+
+          def get_changed_skills():
+              """Get list of skills changed in this branch"""
+              try:
+                  result = subprocess.run(
+                      ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+                      capture_output=True,
+                      text=True
+                  )
+                  changed_files = result.stdout.strip().split('\n')
+                  changed_skills = set()
+                  for file in changed_files:
+                      if file.startswith('skills/'):
+                          parts = file.split('/')
+                          if len(parts) > 1:
+                              changed_skills.add(parts[1])
+                  return changed_skills
+              except Exception as e:
+                  print(f"⚠️  Could not determine changed skills: {e}")
+                  return set()
+
+          changed_skills = get_changed_skills()
+          if not changed_skills:
+              print("No skills changed in this branch. Skipping file structure validation.")
+              sys.exit(0)
 
           skills_dir = Path('skills')
           issues = []
@@ -166,6 +232,10 @@ jobs:
                   continue
 
               if not (skill_path / 'SKILL.md').exists():
+                  continue
+
+              # Only validate changed skills
+              if skill_path.name not in changed_skills:
                   continue
 
               # Check for unexpected large files

@@ -7,7 +7,7 @@
   },
   "rules": {
     "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/explicit-function-return-types": "warn",
+    "@typescript-eslint/no-unused-vars": "error",
     "no-console": "off"
   },
   "ignorePatterns": ["dist", "node_modules", "coverage", "__tests__"]

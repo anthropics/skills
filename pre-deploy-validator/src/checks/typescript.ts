@@ -8,7 +8,7 @@ export async function runTypeScriptCheck(
   const startTime = Date.now();
 
   try {
-    const result = await execaCommand(command, {
+    await execaCommand(command, {
       timeout: timeoutMs,
       stdio: 'pipe',
     });
