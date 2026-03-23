@@ -36,11 +36,32 @@ cmux browser <surface> screenshot [--out <path>]      # take screenshot
 cmux browser <surface> url                            # get current URL
 cmux browser <surface> get text [--selector <css>]    # extract text from page
 cmux browser <surface> eval <js>                      # run JavaScript in page context
-cmux browser <surface> click <css>                    # click an element
-cmux browser <surface> type <css> <text>              # type into an input
+cmux browser <surface> click [--selector <css>]       # click an element by CSS selector
+cmux browser <surface> type [--selector <css>] [--text <text>]  # type into an input
+cmux browser <surface> find text <text>               # find element by visible text
 ```
 
 Extract surface ref from `browser open` output: `grep -o 'surface:[0-9]*' | head -1`
+
+### Clicking Elements
+
+The `click` command takes **CSS selectors only** — do NOT use Playwright locator syntax like `button:has-text('text')` (that will throw a JS error).
+
+**Preferred approach — click by ref:**
+1. Run `snapshot` to get the accessibility tree. Elements appear as `[ref=eN]`.
+2. Click using the ref as a CSS attribute selector:
+   ```
+   cmux browser <surface> click "[ref=e5]"
+   ```
+
+**Alternative — click by standard CSS:**
+```
+cmux browser <surface> click "button.submit"
+cmux browser <surface> click "[data-testid=answer-true]"
+cmux browser <surface> click "[aria-label='True']"
+```
+
+Add `--snapshot-after` to any click/type command to confirm the action took effect.
 
 ## When to Use cmux
 
