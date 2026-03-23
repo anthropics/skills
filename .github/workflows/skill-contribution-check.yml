@@ -11,6 +11,9 @@ jobs:
   check-contribution:
     runs-on: ubuntu-latest
     name: Check Skill Contribution Quality
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v5
