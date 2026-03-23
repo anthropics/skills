@@ -1,12 +1,10 @@
 import { execaCommand } from 'execa';
-import { CheckResult, PreDeployConfig, ValidationResult } from './types.js';
+import { CheckResult, PreDeployConfig, ValidationResult, CheckConfig } from './types.js';
 import { runLintCheck } from './checks/lint.js';
 import { runTypeScriptCheck } from './checks/typescript.js';
 import { runTestsCheck } from './checks/tests.js';
 import { runSecurityAuditCheck } from './checks/security-audit.js';
 import { runBuildCheck } from './checks/builds.js';
-import { formatConsoleReport } from './reporters/console.js';
-import { formatJsonReport } from './reporters/json.js';
 
 export class PreDeployValidator {
   private config: PreDeployConfig;
@@ -77,35 +75,35 @@ export class PreDeployValidator {
 
   private async runCheck(
     name: string,
-    config: Record<string, unknown>
+    config: CheckConfig
   ): Promise<CheckResult> {
     switch (name) {
       case 'lint':
         return runLintCheck(
-          (config.command as string) || 'npm run lint',
-          (config.timeoutMs as number) || 30000
+          config.command || 'npm run lint',
+          config.timeoutMs || 30000
         );
       case 'typescript':
         return runTypeScriptCheck(
-          (config.command as string) || 'tsc --noEmit',
-          (config.timeoutMs as number) || 60000
+          config.command || 'tsc --noEmit',
+          config.timeoutMs || 60000
         );
       case 'tests':
         return runTestsCheck(
-          (config.command as string) || 'npm test',
-          (config.timeoutMs as number) || 120000,
-          config.coverageThreshold as { lines: number; functions: number; branches: number }
+          config.command || 'npm test',
+          config.timeoutMs || 120000,
+          config.coverageThreshold
         );
       case 'security-audit':
         return runSecurityAuditCheck(
-          (config.command as string) || 'npm audit --audit-level=moderate',
-          (config.timeoutMs as number) || 45000
+          config.command || 'npm audit --audit-level=moderate',
+          config.timeoutMs || 45000
         );
       case 'build':
         return runBuildCheck(
-          (config.command as string) || 'npm run build',
-          (config.projects as string[]) || ['.'],
-          (config.timeoutMs as number) || 180000
+          config.command || 'npm run build',
+          config.projects || ['.'],
+          config.timeoutMs || 180000
         );
       default:
         return {
