@@ -55,7 +55,10 @@ def _vis_len(s):
 # ── Interactive detection ─────────────────────────────────────────────────────
 def _is_interactive():
     """True only when attached to a real user-facing terminal."""
-    if not sys.stdout.isatty():
+    # Require both stdout and stdin to be real TTYs before enabling interactive mode.
+    if not (hasattr(sys.stdout, "isatty") and sys.stdout.isatty()):
+        return False
+    if not (hasattr(sys.stdin, "isatty") and sys.stdin.isatty()):
         return False
     if os.name == "nt":
         try:
