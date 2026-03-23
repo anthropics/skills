@@ -27,6 +27,7 @@
       "source": "./",
       "strict": false,
       "skills": [
+        "./skills/ascii",
         "./skills/algorithmic-art",
         "./skills/brand-guidelines",
         "./skills/canvas-design",
