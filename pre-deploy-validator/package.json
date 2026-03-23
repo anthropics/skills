@@ -56,7 +56,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/anthropic-skills-fork",
-    "directory": "skills/pre-deploy-validator"
+    "url": "https://github.com/TrystPilot/skills",
+    "directory": "pre-deploy-validator"
   }
 }

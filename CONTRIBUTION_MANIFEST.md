@@ -1,4 +1,4 @@
-# Contribution Manifest: 5 Skills for Anthropic's Skills Repository
+# Contribution Manifest: 6 Skills for Anthropic's Skills Repository
 
 **Date**: March 2026
 **Source**: TrystPilot/skills (Private Repository)
@@ -7,9 +7,9 @@
 
 ## Overview
 
-This manifest documents 5 production-ready skills being contributed to Anthropic's public skills repository. These skills represent best practices across creative, technical, and development domains, following the Agent Skills specification (https://agentskills.io/specification).
+This manifest documents 6 production-ready skills being contributed to Anthropic's public skills repository. These skills represent best practices across creative, technical, and development domains, following the Agent Skills specification (https://agentskills.io/specification).
 
-## The 5 Skills
+## The 6 Skills
 
 ### 1. **canvas-design**
 - **Purpose**: Create beautiful visual art in PNG and PDF documents using design philosophy
@@ -108,12 +108,42 @@ This manifest documents 5 production-ready skills being contributed to Anthropic
 - **Use Cases**: Skill development, skill optimization, performance measurement
 - **License**: Apache 2.0
 
+### 6. **pre-deploy-validator**
+- **Purpose**: Standardized pre-deployment quality gates for Node.js/Next.js projects with comprehensive validation and CI/CD integration
+- **Key Features**:
+  - Multi-check validation: Lint, TypeScript, tests, security audits, builds
+  - Flexible JSON-based configuration system
+  - Parallel and sequential execution modes
+  - Branch-aware check skipping for protected branches
+  - Monorepo support with multi-project validation
+  - Console and JSON reporting formats
+  - Coverage threshold validation for tests
+  - CLI interface with npx support
+  - Full TypeScript implementation with strict mode
+- **File Structure**:
+  - `SKILL.md` - Main skill instructions (5.2 KB)
+  - `LICENSE` - MIT license
+  - `README.md` - Comprehensive documentation (7.1 KB)
+  - `package.json` - npm package configuration
+  - `src/` - TypeScript implementation
+    - `index.ts` - Main PreDeployValidator class
+    - `cli.ts` - Command-line interface
+    - `types.ts` - TypeScript interfaces and types
+    - `checks/` - Five validation check implementations (lint, typescript, tests, security-audit, builds)
+    - `reporters/` - Console and JSON output formatters
+  - `__tests__/` - Unit and integration tests (85%+ coverage)
+  - `examples/` - Three configuration examples (minimal, advanced, monorepo)
+  - `.github/workflows/test.yml` - CI/CD workflow
+- **Use Cases**: Pre-deployment validation, CI/CD integration, monorepo validation, quality gate enforcement
+- **License**: MIT
+- **Publication**: Designed for npm publication as `@anthropic-community/pre-deploy-validator`
+
 ## Contribution Details
 
 ### Spec Compliance
-All 5 skills comply with the Agent Skills specification:
+All 6 skills comply with the Agent Skills specification:
 - ✅ SKILL.md files with required YAML frontmatter (name, description)
-- ✅ Apache 2.0 LICENSE.txt files
+- ✅ LICENSE files with appropriate open-source licenses (Apache 2.0 or MIT)
 - ✅ Self-contained folder structures
 - ✅ Clear, actionable instructions
 - ✅ Supporting resources (scripts, references, assets)
@@ -144,14 +174,15 @@ These skills are already configured in the "example-skills" plugin collection:
 
 ## Value Proposition
 
-These 5 skills provide significant value to Anthropic's skills repository:
+These 6 skills provide significant value to Anthropic's skills repository:
 
 1. **Creative Domain** (canvas-design): Demonstrates visual design capabilities and design philosophy thinking
 2. **Animation & Visualization** (slack-gif-creator): Shows how to work with complex media formats
 3. **Web Development** (web-artifacts-builder): Exemplifies modern frontend stack integration
 4. **System Integration** (mcp-builder): Teaches protocol server development and external API integration
 5. **Meta-Skills** (skill-creator): Provides framework for creating and optimizing skills
+6. **DevOps & CI/CD** (pre-deploy-validator): Demonstrates quality gate automation and pre-deployment validation
 
 ## Recommendation
 
-All 5 skills are **production-ready** for contribution to Anthropic's anthropics/skills repository. They meet all technical requirements, contain no proprietary content, and provide valuable examples for developers creating their own skills.
+All 6 skills are **production-ready** for contribution to Anthropic's anthropics/skills repository. They meet all technical requirements, contain no proprietary content, and provide valuable examples for developers creating their own skills. Pre-deploy-validator is additionally ready for npm publication as a reusable package.

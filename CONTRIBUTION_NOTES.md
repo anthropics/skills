@@ -3,17 +3,17 @@
 **From**: TrystPilot/skills Repository
 **To**: anthropics/skills Repository
 **Date**: March 2026
-**Skills Count**: 5 production-ready skills
+**Skills Count**: 6 production-ready skills
 
 ## Overview
 
-This document provides integration notes for the 5 skills being contributed to Anthropic's public skills repository. These skills are ready for immediate integration.
+This document provides integration notes for the 6 skills being contributed to Anthropic's public skills repository. These skills are ready for immediate integration. Pre-deploy-validator is also ready for npm publication.
 
 ## Integration Instructions
 
 ### 1. Verify Marketplace Configuration
 
-The skills are already configured in `.claude-plugin/marketplace.json` under the "example-skills" plugin:
+The first 5 skills are already configured in `.claude-plugin/marketplace.json` under the "example-skills" plugin:
 
 ```json
 {
@@ -30,7 +30,18 @@ The skills are already configured in `.claude-plugin/marketplace.json` under the
 }
 ```
 
-**Action**: These configurations can be used as-is for the public repository.
+**Action**: These configurations can be used as-is for the public repository. Pre-deploy-validator can be published to npm independently.
+
+### 1b. npm Publication for pre-deploy-validator
+
+Pre-deploy-validator can be published to npm:
+
+```bash
+cd skills/pre-deploy-validator
+npm publish --access public
+```
+
+This will publish `@anthropic-community/pre-deploy-validator` to npm for general use.
 
 ### 2. Skill Extraction
 
@@ -80,11 +91,58 @@ If Anthropic maintains a skills registry or documentation, these entries should 
   description: Create and optimize new skills with evaluation
   license: Apache 2.0
   dependencies: []
+
+- name: pre-deploy-validator
+  category: devops
+  description: Standardized pre-deployment quality gates for Node.js/Next.js projects
+  license: MIT
+  dependencies: [node]
+  npmPackage: "@anthropic-community/pre-deploy-validator"
 ```
 
 ## Special Considerations
 
-### 1. canvas-design
+### 1. pre-deploy-validator
+
+**Package Details**:
+- Published as npm package: `@anthropic-community/pre-deploy-validator`
+- Published under MIT license
+- Node.js 18+ required
+- Can be used as CLI or programmatically
+
+**CLI Usage**:
+```bash
+npx @anthropic-community/pre-deploy-validator
+npx @anthropic-community/pre-deploy-validator --config=.pdv.json
+```
+
+**Programmatic Usage**:
+```typescript
+import { PreDeployValidator } from '@anthropic-community/pre-deploy-validator';
+const validator = new PreDeployValidator(config);
+const result = await validator.runChecks();
+```
+
+**Configuration Files**:
+- Three example configurations included (minimal, advanced, monorepo)
+- JSON-based configuration system with full IDE support
+- Coverage threshold validation for tests
+- Branch-aware check skipping
+
+**Integration Points**:
+- Works with GitHub Actions
+- Compatible with pre-commit hooks
+- Supports monorepo workspaces
+- Parallel and sequential execution modes
+
+**Publication Steps**:
+1. Update version in `package.json`
+2. Update `CHANGELOG.md`
+3. Run tests and linting: `npm run test && npm run lint`
+4. Build: `npm run build`
+5. Publish: `npm publish --access public`
+
+### 3. canvas-design
 
 **Font Files**:
 - 50+ professional fonts included in `canvas-fonts/` directory
@@ -99,7 +157,7 @@ If Anthropic maintains a skills registry or documentation, these entries should 
 - Instructions emphasize original design work without copying existing artists
 - May need to highlight in documentation to ensure proper usage
 
-### 2. slack-gif-creator
+### 4. slack-gif-creator
 
 **Python Dependencies**:
 ```
@@ -117,7 +175,7 @@ Pillow (PIL)
 - `core/easing.py` - Animation easing functions
 - `core/validators.py` - Slack-specific constraint validation
 
-### 3. web-artifacts-builder
+### 5. web-artifacts-builder
 
 **Node.js Stack**:
 - Node 18+ required (auto-detected by bundler)
@@ -139,7 +197,7 @@ Pillow (PIL)
 - Includes explicit guidance on avoiding "AI slop" patterns
 - Recommends avoiding: excessive centering, purple gradients, uniform rounded corners, Inter font
 
-### 4. mcp-builder
+### 6. mcp-builder
 
 **Framework Support**:
 - Python: FastMCP library
@@ -161,7 +219,7 @@ Pillow (PIL)
 - Expected to be used during development, not as a library
 - References external documentation (modelcontextprotocol.io)
 
-### 5. skill-creator
+### 7. skill-creator
 
 **Meta-Skill Nature**:
 - This is a skill for creating skills
@@ -210,6 +268,16 @@ Pillow (PIL)
 
 ### Test Cases by Skill
 
+**pre-deploy-validator**:
+- Create a `.pdv.json` config file
+- Run validation checks (lint, test, security)
+- Verify parallel and sequential execution modes
+- Test JSON and console output formats
+- Validate monorepo configuration
+- Test branch-aware check skipping
+- Verify timeout handling
+- Test CLI with various flag combinations
+
 **canvas-design**:
 - Create a poster using a specific design philosophy
 - Verify PDF/PNG output quality
@@ -254,14 +322,16 @@ Pillow (PIL)
 
 ## Handoff Checklist
 
-- [x] All 5 skills validated and ready
-- [x] CONTRIBUTION_MANIFEST.md created
-- [x] QA_CHECKLIST.md with full verification
+- [x] All 6 skills validated and ready
+- [x] SKILL.md created for pre-deploy-validator
+- [x] CONTRIBUTION_MANIFEST.md updated with pre-deploy-validator
+- [x] QA_CHECKLIST.md updated with pre-deploy-validator validation
 - [x] CONTRIBUTION_NOTES.md (this document) completed
 - [x] All files properly formatted and documented
 - [x] No sensitive data present
 - [x] Marketplace configuration verified
 - [x] Integration paths documented
+- [x] npm publication path documented for pre-deploy-validator
 
 ## Questions or Issues?
 
@@ -274,4 +344,4 @@ If you have questions about these skills or encounter any issues during integrat
 
 ---
 
-**Status**: Ready for immediate integration into anthropics/skills repository.
+**Status**: Ready for immediate integration into anthropics/skills repository. Pre-deploy-validator is also ready for npm publication.
