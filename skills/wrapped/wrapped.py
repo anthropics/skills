@@ -6,7 +6,6 @@ import os
 import sys
 import collections
 import datetime
-import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
