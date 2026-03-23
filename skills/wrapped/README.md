@@ -54,16 +54,18 @@ Each section is its own slide. Press `SPACE` to advance, `Q` to quit.
 
 ## Installation
 
-**1. Clone and copy the skill:**
+**1. Copy the skill from this repo:**
 
 ```bash
-git clone https://github.com/natedemoss/Claude-Code-Wrapped-Skill.git
+# From the root of this repository:
 
 # macOS / Linux
-cp -r Claude-Code-Wrapped-Skill ~/.claude/skills/wrapped
+mkdir -p ~/.claude/skills
+cp -r skills/wrapped ~/.claude/skills/wrapped
 
 # Windows (PowerShell)
-Copy-Item -Recurse Claude-Code-Wrapped-Skill "$env:USERPROFILE\.claude\skills\wrapped"
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.claude\skills" | Out-Null
+Copy-Item -Recurse "skills\wrapped" "$env:USERPROFILE\.claude\skills\wrapped"
 ```
 
 **2. That's it.** No dependencies beyond Python 3.8+. No API keys. No setup.
