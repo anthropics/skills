@@ -15,7 +15,7 @@ export async function runBuildCheck(
         ? command
         : `${command} -w ${project === '.' ? 'root' : project}`;
 
-      const result = await execaCommand(fullCommand, {
+      await execaCommand(fullCommand, {
         timeout: timeoutMs,
         stdio: 'pipe',
         cwd: project === '.' ? undefined : project,
