@@ -315,7 +315,7 @@ Verify all project paths in `projects` array are correct and relative to the cur
 
 ## Contributing
 
-Contributions are welcome! Please open issues and PRs on [GitHub](https://github.com/anthropics/anthropic-skills-fork).
+Contributions are welcome! Please open issues and PRs on [GitHub](https://github.com/TrystPilot/skills).
 
 ## License
 
