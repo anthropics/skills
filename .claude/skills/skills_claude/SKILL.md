@@ -1,6 +1,6 @@
 ---
 name: skills-claude-conventions
-description: Development conventions and patterns for skills_claude. Python project with freeform commits.
+description: Development conventions and patterns for skills_claude. Python project with mixed commits.
 ---
 
 # Skills Claude Conventions
@@ -27,13 +27,18 @@ Activate this skill when:
 
 ## Commit Conventions
 
-Follow these commit message conventions based on 19 analyzed commits.
+Follow these commit message conventions based on 42 analyzed commits.
 
-### Commit Style: Free-form Messages
+### Commit Style: Mixed Style
+
+### Prefixes Used
+
+- `feat`
+- `chore`
 
 ### Message Guidelines
 
-- Average message length: ~46 characters
+- Average message length: ~56 characters
 - Keep first line concise and descriptive
 - Use imperative mood ("Add feature" not "Added feature")
 
@@ -41,49 +46,49 @@ Follow these commit message conventions based on 19 analyzed commits.
 *Commit message example*
 
 ```text
-Package 8 skills as distributable .skill files for upload
+feat: add skills_claude ECC bundle (.claude/commands/update-or-export-example-skills.md)
 ```
 
 *Commit message example*
 
 ```text
-Add 8 new skills: foundation, standards, and development series
+chore: update claude-api skill [auto-sync] (#729)
 ```
 
 *Commit message example*
 
 ```text
-Add link to Agent Skills specification website (#160)
+Merge branch 'anthropics:main' into claude/skills-brainstorm-Nd4vz
 ```
 
 *Commit message example*
 
 ```text
-Fix links in agent skills specification (#159)
+Merge pull request #2 from Eaprime1/ecc-tools/skills_claude-1774393541560
 ```
 
 *Commit message example*
 
 ```text
-Split agent-skills-spec into separate authoring and client integration guides (#148)
+feat: add skills_claude ECC bundle (.claude/commands/add-new-skill.md)
 ```
 
 *Commit message example*
 
 ```text
-Add doc-coauthoring skill and update example skills (#134)
+feat: add skills_claude ECC bundle (.claude/commands/feature-development.md)
 ```
 
 *Commit message example*
 
 ```text
-Move example skills into dedicated folder and create minimal top-level folder structure (#129)
+feat: add skills_claude ECC bundle (.codex/agents/docs-researcher.toml)
 ```
 
 *Commit message example*
 
 ```text
-Update example skills and rename 'artifacts-builder' (#112)
+feat: add skills_claude ECC bundle (.codex/agents/reviewer.toml)
 ```
 
 ## Architecture
@@ -132,23 +137,6 @@ export const TAX_RATE = 0.1
 export interface Order { ... }
 ```
 
-## Error Handling
-
-### Error Handling Style: Try-Catch Blocks
-
-
-*Standard error handling pattern*
-
-```typescript
-try {
-  const result = await riskyOperation()
-  return result
-} catch (error) {
-  console.error('Operation failed:', error)
-  throw new Error('User-friendly message')
-}
-```
-
 ## Common Workflows
 
 These workflows were detected from analyzing commit patterns.
@@ -157,7 +145,7 @@ These workflows were detected from analyzing commit patterns.
 
 Standard feature implementation workflow
 
-**Frequency**: ~13 times per month
+**Frequency**: ~19 times per month
 
 **Steps**:
 1. Add feature implementation
@@ -166,6 +154,7 @@ Standard feature implementation workflow
 
 **Files typically involved**:
 - `**/*.test.*`
+- `**/api/**`
 
 **Example commit sequence**:
 ```
@@ -174,110 +163,160 @@ Add initial Agent Skills Spec (#2)
 Small tweak to blog link (#7)
 ```
 
-### Add New Skill
+### Refactoring
 
-Adds a new skill to the repository, including its SKILL.md and any supporting files.
+Code refactoring and cleanup workflow
 
-**Frequency**: ~1 times per month
+**Frequency**: ~2 times per month
 
 **Steps**:
-1. Create a new folder under skills/ (or previously examples/, document-skills/, office-examples/).
-2. Add SKILL.md to the new skill folder.
-3. Optionally add LICENSE.txt, scripts/, templates/, examples/, or reference/ subfolders and files as needed.
-4. Update skills/README.md or .claude-plugin/marketplace.json if necessary.
+1. Ensure tests pass before refactor
+2. Refactor code structure
+3. Verify tests still pass
+
+**Files typically involved**:
+- `src/**/*`
+
+**Example commit sequence**:
+```
+Reorganize the example skills (#1)
+Adding more details to README (#3)
+Add 3rd Party notices (#4)
+```
+
+### Add Or Update Skill
+
+Adds a new skill or updates an existing skill, including its SKILL.md and related scripts/assets.
+
+**Frequency**: ~2 times per month
+
+**Steps**:
+1. Create or update SKILL.md in skills/<skill-name>/
+2. Add or update supporting scripts, templates, or assets in the skill's folder
+3. If applicable, update marketplace or index files (e.g., .claude-plugin/marketplace.json)
+4. Optionally, add language-specific guides or reference files
 
 **Files typically involved**:
 - `skills/*/SKILL.md`
-- `skills/*/LICENSE.txt`
-- `skills/*/scripts/*`
+- `skills/*/scripts/*.py`
 - `skills/*/templates/*`
-- `skills/*/examples/*`
 - `skills/*/reference/*`
-- `skills/README.md`
 - `.claude-plugin/marketplace.json`
 
 **Example commit sequence**:
 ```
-Create a new folder under skills/ (or previously examples/, document-skills/, office-examples/).
-Add SKILL.md to the new skill folder.
-Optionally add LICENSE.txt, scripts/, templates/, examples/, or reference/ subfolders and files as needed.
-Update skills/README.md or .claude-plugin/marketplace.json if necessary.
+Create or update SKILL.md in skills/<skill-name>/
+Add or update supporting scripts, templates, or assets in the skill's folder
+If applicable, update marketplace or index files (e.g., .claude-plugin/marketplace.json)
+Optionally, add language-specific guides or reference files
 ```
 
-### Update Or Export Example Skills
+### Export Or Bundle Skills
 
-Bulk updates or exports of example skills, often including renaming, reorganizing, or synchronizing multiple skill folders and their contents.
+Exports multiple skills as distributable bundles or updates the exported set of skills.
 
 **Frequency**: ~1 times per month
 
 **Steps**:
-1. Modify, move, or rename multiple skill folders (e.g., from examples/ to skills/, or document-skills/).
-2. Update SKILL.md and supporting files for each skill.
-3. Update marketplace.json or skills/README.md as needed.
-
-**Files typically involved**:
-- `skills/*/SKILL.md`
-- `skills/*/LICENSE.txt`
-- `skills/*/scripts/*`
-- `skills/*/templates/*`
-- `skills/*/examples/*`
-- `skills/*/reference/*`
-- `.claude-plugin/marketplace.json`
-- `skills/README.md`
-
-**Example commit sequence**:
-```
-Modify, move, or rename multiple skill folders (e.g., from examples/ to skills/, or document-skills/).
-Update SKILL.md and supporting files for each skill.
-Update marketplace.json or skills/README.md as needed.
-```
-
-### Package Skills For Distribution
-
-Packages one or more skills into distributable .skill (zip) files for upload or API use.
-
-**Frequency**: ~1 times per month
-
-**Steps**:
-1. Run packaging scripts or commands.
-2. Generate .skill files in the dist/ directory.
-3. Ensure SKILL.md and all necessary assets are included in each .skill file.
+1. Aggregate or update SKILL.md and related files for all relevant skills
+2. Generate distributable bundles (e.g., .skill files in dist/)
+3. Update index/marketplace files if needed
 
 **Files typically involved**:
 - `dist/*.skill`
 - `skills/*/SKILL.md`
-- `skills/*/scripts/*`
-- `skills/*/templates/*`
+- `.claude-plugin/marketplace.json`
 
 **Example commit sequence**:
 ```
-Run packaging scripts or commands.
-Generate .skill files in the dist/ directory.
-Ensure SKILL.md and all necessary assets are included in each .skill file.
+Aggregate or update SKILL.md and related files for all relevant skills
+Generate distributable bundles (e.g., .skill files in dist/)
+Update index/marketplace files if needed
 ```
 
-### Update Spec Or Documentation
+### Office Skill Shared Module Update
 
-Updates to specification or documentation files, such as splitting, fixing links, or adding references.
+Updates or reorganizes shared Office document processing modules (docx, pptx, xlsx) and their schemas/scripts.
 
 **Frequency**: ~1 times per month
 
 **Steps**:
-1. Edit spec/agent-skills-spec.md or related spec/*.md files.
-2. Optionally split or merge documentation files.
-3. Update README.md with new links or notes.
+1. Update or reorganize scripts in skills/{docx,pptx,xlsx}/scripts/office/
+2. Update or add schemas in skills/{docx,pptx,xlsx}/scripts/office/schemas/
+3. Update pack/unpack/validate scripts for each Office skill
+4. Optionally, update SKILL.md or documentation for each skill
 
 **Files typically involved**:
-- `spec/agent-skills-spec.md`
-- `spec/skill-authoring.md`
-- `spec/skill-client-integration.md`
-- `README.md`
+- `skills/docx/scripts/office/**/*`
+- `skills/pptx/scripts/office/**/*`
+- `skills/xlsx/scripts/office/**/*`
+- `skills/docx/scripts/office/schemas/**/*`
+- `skills/pptx/scripts/office/schemas/**/*`
+- `skills/xlsx/scripts/office/schemas/**/*`
+- `skills/docx/scripts/office/pack.py`
+- `skills/pptx/scripts/office/pack.py`
+- `skills/xlsx/scripts/office/pack.py`
+- `skills/docx/SKILL.md`
+- `skills/pptx/SKILL.md`
+- `skills/xlsx/SKILL.md`
 
 **Example commit sequence**:
 ```
-Edit spec/agent-skills-spec.md or related spec/*.md files.
-Optionally split or merge documentation files.
-Update README.md with new links or notes.
+Update or reorganize scripts in skills/{docx,pptx,xlsx}/scripts/office/
+Update or add schemas in skills/{docx,pptx,xlsx}/scripts/office/schemas/
+Update pack/unpack/validate scripts for each Office skill
+Optionally, update SKILL.md or documentation for each skill
+```
+
+### Skill Creator Tooling Update
+
+Updates scripts, references, or documentation in the skill-creator tool, including validation, packaging, and optimization scripts.
+
+**Frequency**: ~1 times per month
+
+**Steps**:
+1. Update or add scripts in skills/skill-creator/scripts/
+2. Update references or documentation in skills/skill-creator/references/
+3. Update SKILL.md for skill-creator if needed
+
+**Files typically involved**:
+- `skills/skill-creator/scripts/*.py`
+- `skills/skill-creator/references/*.md`
+- `skills/skill-creator/SKILL.md`
+
+**Example commit sequence**:
+```
+Update or add scripts in skills/skill-creator/scripts/
+Update references or documentation in skills/skill-creator/references/
+Update SKILL.md for skill-creator if needed
+```
+
+### Add Or Update Claude Api Skill
+
+Adds or updates the claude-api documentation skill, including language-specific guides and shared references.
+
+**Frequency**: ~1 times per month
+
+**Steps**:
+1. Add or update skills/claude-api/SKILL.md
+2. Add or update language guides in skills/claude-api/{python,typescript,java,go,ruby,csharp,php,curl}/
+3. Update shared documentation in skills/claude-api/shared/
+4. Update marketplace or index if needed
+
+**Files typically involved**:
+- `skills/claude-api/SKILL.md`
+- `skills/claude-api/*/claude-api.md`
+- `skills/claude-api/*/README.md`
+- `skills/claude-api/*/*.md`
+- `skills/claude-api/shared/*.md`
+- `.claude-plugin/marketplace.json`
+
+**Example commit sequence**:
+```
+Add or update skills/claude-api/SKILL.md
+Add or update language guides in skills/claude-api/{python,typescript,java,go,ruby,csharp,php,curl}/
+Update shared documentation in skills/claude-api/shared/
+Update marketplace or index if needed
 ```
 
 

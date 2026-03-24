@@ -1,21 +1,20 @@
 ---
-name: feature-development
-description: Workflow command scaffold for feature-development in skills_claude.
+name: refactoring
+description: Workflow command scaffold for refactoring in skills_claude.
 allowed_tools: ["Bash", "Read", "Write", "Grep", "Glob"]
 ---
 
-# /feature-development
+# /refactoring
 
-Use this workflow when working on **feature-development** in `skills_claude`.
+Use this workflow when working on **refactoring** in `skills_claude`.
 
 ## Goal
 
-Standard feature implementation workflow
+Code refactoring and cleanup workflow
 
 ## Common Files
 
-- `**/*.test.*`
-- `**/api/**`
+- `src/**/*`
 
 ## Suggested Sequence
 
@@ -26,9 +25,9 @@ Standard feature implementation workflow
 
 ## Typical Commit Signals
 
-- Add feature implementation
-- Add tests for feature
-- Update documentation
+- Ensure tests pass before refactor
+- Refactor code structure
+- Verify tests still pass
 
 ## Notes
 
