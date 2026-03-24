@@ -1,69 +1,69 @@
-# 角色 × Skill 推荐目录
+# Role × Skill Recommendation Catalog
 
-根据用户角色推荐适合的 Claude Code Skill。覆盖 11 大类 42 个职业角色。
+Recommended Claude Code Skills organized by user role. Covers 11 categories and 42 professional roles.
 
-## 推荐原则
+## Recommendation Principles
 
-1. **精不贪多**：每个角色推荐 5-10 个专属 Skill（不含继承的通用/大类 Skill）
-2. **说清为什么**：每条推荐附一句话说明为什么这个角色需要它
-3. **继承模型**：通用 → 大类 → 专属，展示时只列专属，继承声明不重复
-4. **区分来源**：外部 = skills.sh 安装 / 官方 = Anthropic example-skills
+1. **Quality over quantity**: 5–10 role-specific Skills per role (excluding inherited universal/category-level Skills)
+2. **Justify every pick**: Each recommendation includes a one-liner explaining why this role needs it
+3. **Inheritance model**: Universal → Category → Role-specific. Only role-specific Skills are listed; inherited Skills are declared once, not repeated
+4. **Source distinction**: External = installed via skills.sh / Official = Anthropic example-skills
 
-## 来源图例
+## Source Legend
 
-| 标记 | 含义 | 安装方式 |
-|------|------|---------|
-| 🅰️ 官方 | Anthropic example-skills | Claude Code 自带 |
-| 📦 外部 | skills.sh 社区 Skill | `npx skills add <包名>` |
-
----
-
-## Level 0：通用 Skill（所有角色自动继承）
-
-| Skill | 来源 | 为什么所有人都需要 |
-|-------|------|-------------------|
-| brainstorming | 📦 sickn33/antigravity-awesome-skills | 任何创造性工作的起点——头脑风暴、需求探索 |
-| planner | 📦 am-will/codex-skills | 任何非平凡任务都需要方案设计和任务拆解 |
-| baoyu-image-gen | 📦 jimliu/baoyu-skills | AI 生图，支持 OpenAI/Google/DashScope 多 API（13.3K 安装） |
-| baoyu-infographic | 📦 jimliu/baoyu-skills | 专业信息图生成，20 种布局 × 17 种风格（11.2K 安装） |
-| find-skills | 📦 vercel-labs/skills | 发现和安装新的 Claude Code Skill |
+| Badge | Meaning | How to Install |
+|-------|---------|----------------|
+| 🅰️ Official | Anthropic example-skills | Bundled with Claude Code |
+| 📦 External | Community Skill (GitHub / agentskills.sh) | `npx skills add <package-name>` |
 
 ---
 
-## A. 工程技术类
+## Level 0: Universal Skills (auto-inherited by all roles)
 
-### Level 1：工程通用（所有工程角色自动继承）
-
-| Skill | 来源 | 为什么工程师都需要 |
-|-------|------|-------------------|
-| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | 写代码前先写测试，工程纪律基础 |
-| systematic-debugging | 📦 obra/superpowers | 结构化排查 bug，不靠直觉 |
-| verification-before-completion | 📦 sickn33/antigravity-awesome-skills | 完工前跑验证，防止遗漏 |
-| code-reviewer | 📦 alirezarezvani/claude-skills | 主动请求代码审查，提升代码质量 |
-| pr-review-expert | 📦 alirezarezvani/claude-skills | 收到 review 后的处理流程 |
-| conventional-commit | 📦 github/awesome-copilot | 规范化 Git 提交 |
-| api-documentation-generator | 📦 sickn33/antigravity-awesome-skills | 自动生成 API 文档 |
-| github-search | 📦 parcadei/continuous-claude-v3 | GitHub 代码搜索 |
-| changelog-maintenance | 📦 supercent-io/skills-template | 自动维护 CHANGELOG，10.9K 安装 |
+| Skill | Source | Why everyone needs this |
+|-------|--------|------------------------|
+| brainstorming | 📦 sickn33/antigravity-awesome-skills | The starting point for any creative work — ideation, requirement exploration |
+| planner | 📦 am-will/codex-skills | Any non-trivial task needs a plan and task breakdown |
+| baoyu-image-gen | 📦 jimliu/baoyu-skills | AI image generation supporting OpenAI/Google/DashScope APIs (13.3K installs) |
+| baoyu-infographic | 📦 jimliu/baoyu-skills | Professional infographic generation with 20 layouts × 17 styles (11.2K installs) |
+| find-skills | 📦 vercel-labs/skills | Discover and install new Claude Code Skills |
 
 ---
 
-### A1. 后端工程师（Backend Engineer）
+## A. Engineering & Technology
 
-> 继承：Level 0 + Level 1（工程通用）
+### Level 1: Engineering Universal (auto-inherited by all engineering roles)
 
-| Skill | 来源 | 为什么适合后端 |
-|-------|------|--------------|
-| jenkins-deploy | 📦 abcfed/claude-marketplace | Jenkins 测试环境发布管理 |
-| performance-profiling | 📦 sickn33/antigravity-awesome-skills | 服务端性能分析和优化（424 安装） |
-| postgresql-database-engineering | 📦 manutej/luxor-claude-marketplace | PostgreSQL 工程实践（442 安装） |
-| microservices-architect | 📦 jeffallan/claude-skills | 微服务架构设计指南（977 安装） |
-| docker | 📦 bobmatnyc/claude-mpm-skills | Docker 容器化最佳实践（456 安装） |
+| Skill | Source | Why every engineer needs this |
+|-------|--------|------------------------------|
+| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | Write tests before code — foundational engineering discipline |
+| systematic-debugging | 📦 obra/superpowers | Structured bug investigation, no guesswork |
+| verification-before-completion | 📦 sickn33/antigravity-awesome-skills | Run verification before declaring done to catch gaps |
+| code-reviewer | 📦 alirezarezvani/claude-skills | Proactively request code reviews to raise code quality |
+| pr-review-expert | 📦 alirezarezvani/claude-skills | Process incoming reviews effectively |
+| conventional-commit | 📦 github/awesome-copilot | Standardized Git commit messages |
+| api-documentation-generator | 📦 sickn33/antigravity-awesome-skills | Auto-generate API documentation |
+| github-search | 📦 parcadei/continuous-claude-v3 | Search code on GitHub |
+| changelog-maintenance | 📦 supercent-io/skills-template | Automated CHANGELOG maintenance (10.9K installs) |
 
-**按技术栈可选**：
+---
 
-| 技术栈 | Skill | 来源 | 安装量 |
-|--------|-------|------|--------|
+### A1. Backend Engineer
+
+> Inherits: Level 0 + Level 1 (Engineering Universal)
+
+| Skill | Source | Why for backend |
+|-------|--------|----------------|
+| jenkins-deploy | 📦 abcfed/claude-marketplace | Manage Jenkins test environment deployments |
+| performance-profiling | 📦 sickn33/antigravity-awesome-skills | Server-side performance analysis and optimization (424 installs) |
+| postgresql-database-engineering | 📦 manutej/luxor-claude-marketplace | PostgreSQL engineering best practices (442 installs) |
+| microservices-architect | 📦 jeffallan/claude-skills | Microservices architecture design guide (977 installs) |
+| docker | 📦 bobmatnyc/claude-mpm-skills | Docker containerization best practices (456 installs) |
+
+**Stack-specific options**:
+
+| Stack | Skill | Source | Installs |
+|-------|-------|--------|----------|
 | Java / Spring | java-springboot | 📦 github/awesome-copilot | 9.1K |
 | Python / Django | django-cloud-sql-postgres | 📦 jezweb/claude-skills | 277 |
 | Python / Flask | flask | 📦 bobmatnyc/claude-mpm-skills | 129 |
@@ -72,706 +72,686 @@
 
 ---
 
-### A2. 前端工程师（Frontend Engineer）
+### A2. Frontend Engineer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合前端 |
-|-------|------|--------------|
-| frontend-design | 🅰️ Anthropic 官方 | 高质量 UI 组件生成，避免 AI 审美 |
-| webapp-testing | 🅰️ Anthropic 官方 | Playwright 自动化测试本地 Web 应用 |
-| web-artifacts-builder | 🅰️ Anthropic 官方 | 复杂多组件 Web Artifact 构建 |
-| theme-factory | 🅰️ Anthropic 官方 | 主题/风格系统，10 个预设主题 |
-| seo | 📦 addyosmani/web-quality-skills | Google 工程师出品的 SEO 审计（4.2K 安装） |
-| accessibility | 📦 addyosmani/web-quality-skills | WCAG 无障碍合规审计（3.9K 安装） |
-| nextjs-react-typescript | 📦 mindrally/skills | Next.js + React + TS 最佳实践（1.2K 安装） |
-| playwright-testing | 📦 alinaqi/claude-bootstrap | Playwright E2E 测试框架（415 安装） |
-
----
-
-### A3. 全栈工程师（Full-Stack Engineer）
-
-> 继承：A1（后端）+ A2（前端）全部
-
-全栈工程师是后端和前端的并集，无额外专属 Skill。根据实际技术栈从 A1 和 A2 中选择。
+| Skill | Source | Why for frontend |
+|-------|--------|----------------|
+| frontend-design | 🅰️ Anthropic Official | High-quality UI component generation, avoids generic AI aesthetics |
+| webapp-testing | 🅰️ Anthropic Official | Playwright automation testing for local web apps |
+| web-artifacts-builder | 🅰️ Anthropic Official | Build complex multi-component Web Artifacts |
+| theme-factory | 🅰️ Anthropic Official | Theme and style systems with 10 preset themes |
+| seo | 📦 addyosmani/web-quality-skills | SEO audit by a Google engineer (4.2K installs) |
+| accessibility | 📦 addyosmani/web-quality-skills | WCAG accessibility compliance audit (3.9K installs) |
+| nextjs-react-typescript | 📦 mindrally/skills | Next.js + React + TypeScript best practices (1.2K installs) |
+| playwright-testing | 📦 alinaqi/claude-bootstrap | Playwright E2E testing framework (415 installs) |
 
 ---
 
-### A4. 移动端工程师（Mobile Developer）
+### A3. Full-Stack Engineer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: everything from A1 (Backend) + A2 (Frontend)
 
-| Skill | 来源 | 为什么适合移动端 |
-|-------|------|----------------|
-| react-native | 📦 alinaqi/claude-bootstrap | React Native 流式内容块渲染 |
-| frontend-design | 🅰️ Anthropic 官方 | 移动端 UI 组件设计 |
-| senior-mobile | 📦 borghei/claude-skills | 移动端高级开发实践（270 安装） |
+A full-stack engineer is the union of backend and frontend — no additional role-specific Skills. Pick from A1 and A2 based on your actual tech stack.
 
 ---
 
-### A5. AI/ML 工程师（AI/ML Engineer）
+### A4. Mobile Developer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合 AI/ML |
-|-------|------|-----------------|
-| senior-prompt-engineer | 📦 davila7/claude-code-templates | Claude API / Anthropic SDK 开发 |
-| mcp-builder | 🅰️ Anthropic 官方 | 构建 MCP 服务器，集成外部服务 |
-| mcp-builder（社区版） | 📦 mcp-use/skills | MCP 服务器构建（299 安装） |
-| ml-model-training | 📦 aj-geddes/useful-ai-prompts | ML 模型训练指南（135 安装） |
-| ai-ml-data-science | 📦 vasilyu1983/ai-agents-public | AI/ML/数据科学全栈指南（120 安装） |
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | AI 资讯日报，追踪最新论文和模型 |
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 总结 AI 论文/讲座/播客 |
-| xlsx | 🅰️ Anthropic 官方 | 数据处理和实验结果分析 |
+| Skill | Source | Why for mobile |
+|-------|--------|---------------|
+| react-native | 📦 alinaqi/claude-bootstrap | React Native streaming content block rendering |
+| frontend-design | 🅰️ Anthropic Official | Mobile UI component design |
+| senior-mobile | 📦 borghei/claude-skills | Senior-level mobile development practices (270 installs) |
 
 ---
 
-### A6. 数据工程师（Data Engineer）
+### A5. AI/ML Engineer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合数据工程 |
-|-------|------|------------------|
-| postgresql-database-engineering | 📦 manutej/luxor-claude-marketplace | PostgreSQL 工程实践（442 安装） |
-| sqlite-database-expert | 📦 martinholovsky/claude-skills-generator | SQLite 数据库专家（673 安装） |
-| xlsx | 🅰️ Anthropic 官方 | 数据处理和转换 |
-| pdf | 🅰️ Anthropic 官方 | PDF 数据提取 |
-| ci-cd-best-practices | 📦 mindrally/skills | 数据管道 CI/CD 实践（341 安装） |
-
----
-
-### A7. 测试工程师（QA Engineer）
-
-> 继承：Level 0 + Level 1（工程通用）
-
-| Skill | 来源 | 为什么适合测试 |
-|-------|------|--------------|
-| webapp-testing | 🅰️ Anthropic 官方 | Playwright 自动化测试 |
-| playwright-testing | 📦 alinaqi/claude-bootstrap | Playwright E2E 测试（415 安装） |
-| performance-profiling | 📦 sickn33/antigravity-awesome-skills | 性能测试和分析（424 安装） |
-| docx | 🅰️ Anthropic 官方 | 测试报告撰写 |
-| accessibility | 📦 addyosmani/web-quality-skills | 无障碍测试（3.9K 安装） |
+| Skill | Source | Why for AI/ML |
+|-------|--------|--------------|
+| senior-prompt-engineer | 📦 davila7/claude-code-templates | Claude API / Anthropic SDK development |
+| mcp-builder | 🅰️ Anthropic Official | Build MCP servers to integrate external services |
+| mcp-builder (community) | 📦 mcp-use/skills | MCP server building (299 installs) |
+| ml-model-training | 📦 aj-geddes/useful-ai-prompts | ML model training guide (135 installs) |
+| ai-ml-data-science | 📦 vasilyu1983/ai-agents-public | Full-stack AI/ML/data science guide (120 installs) |
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Daily AI digest tracking the latest papers and models |
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize AI papers, lectures, and podcasts |
+| xlsx | 🅰️ Anthropic Official | Data processing and experiment result analysis |
 
 ---
 
-### A8. 安全工程师（Security Engineer）
+### A6. Data Engineer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合安全 |
-|-------|------|--------------|
-| dependency-vulnerability-checker | 📦 jeremylongshore/claude-code-plugins-plus-skills | 依赖漏洞检查（41 安装） |
-| docx | 🅰️ Anthropic 官方 | 安全审计报告撰写 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 安全策略文档协作 |
-| the-fool | 📦 jeffallan/claude-skills | 威胁建模的多角度分析 |
+| Skill | Source | Why for data engineering |
+|-------|--------|------------------------|
+| postgresql-database-engineering | 📦 manutej/luxor-claude-marketplace | PostgreSQL engineering best practices (442 installs) |
+| sqlite-database-expert | 📦 martinholovsky/claude-skills-generator | SQLite database expert (673 installs) |
+| xlsx | 🅰️ Anthropic Official | Data processing and transformation |
+| pdf | 🅰️ Anthropic Official | PDF data extraction |
+| ci-cd-best-practices | 📦 mindrally/skills | CI/CD practices for data pipelines (341 installs) |
+
+---
+
+### A7. QA Engineer
+
+> Inherits: Level 0 + Level 1 (Engineering Universal)
+
+| Skill | Source | Why for QA |
+|-------|--------|-----------|
+| webapp-testing | 🅰️ Anthropic Official | Playwright automation testing |
+| playwright-testing | 📦 alinaqi/claude-bootstrap | Playwright E2E testing (415 installs) |
+| performance-profiling | 📦 sickn33/antigravity-awesome-skills | Performance testing and analysis (424 installs) |
+| docx | 🅰️ Anthropic Official | Writing test reports |
+| accessibility | 📦 addyosmani/web-quality-skills | Accessibility testing (3.9K installs) |
+
+---
+
+### A8. Security Engineer
+
+> Inherits: Level 0 + Level 1 (Engineering Universal)
+
+| Skill | Source | Why for security |
+|-------|--------|----------------|
+| dependency-vulnerability-checker | 📦 jeremylongshore/claude-code-plugins-plus-skills | Dependency vulnerability scanning (41 installs) |
+| docx | 🅰️ Anthropic Official | Writing security audit reports |
+| doc-coauthoring | 🅰️ Anthropic Official | Collaborating on security policy documents |
+| the-fool | 📦 jeffallan/claude-skills | Multi-angle adversarial analysis for threat modeling |
 
 ---
 
 ### A9. DevOps / SRE
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合 DevOps |
-|-------|------|-----------------|
-| jenkins-deploy | 📦 abcfed/claude-marketplace | Jenkins 测试环境发布管理 |
-| terraform-module-library | 📦 wshobson/agents | Terraform IaC 模块库（5.1K 安装） |
-| docker | 📦 bobmatnyc/claude-mpm-skills | Docker 最佳实践（456 安装） |
-| ci-cd-best-practices | 📦 mindrally/skills | CI/CD 最佳实践（341 安装） |
-| container-orchestration | 📦 0xdarkmatter/claude-mods | 容器编排（66 安装） |
-
----
-
-### A10. 嵌入式工程师（Embedded Engineer）
-
-> 继承：Level 0 + Level 1（工程通用）
-
-| Skill | 来源 | 为什么适合嵌入式 |
-|-------|------|----------------|
-| embedded-systems | 📦 404kidwiz/claude-supercode-skills | 嵌入式系统开发指南（125 安装） |
-| rust-pro | 📦 sickn33/antigravity-awesome-skills | Rust 系统编程（187 安装） |
-| firmware-analyst | 📦 sickn33/antigravity-awesome-skills | 固件分析（118 安装） |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 硬件接口文档协作 |
+| Skill | Source | Why for DevOps |
+|-------|--------|---------------|
+| jenkins-deploy | 📦 abcfed/claude-marketplace | Manage Jenkins test environment deployments |
+| terraform-module-library | 📦 wshobson/agents | Terraform IaC module library (5.1K installs) |
+| docker | 📦 bobmatnyc/claude-mpm-skills | Docker best practices (456 installs) |
+| ci-cd-best-practices | 📦 mindrally/skills | CI/CD best practices (341 installs) |
+| container-orchestration | 📦 0xdarkmatter/claude-mods | Container orchestration (66 installs) |
 
 ---
 
-### A11. 游戏开发者（Game Developer）
+### A10. Embedded Engineer
 
-> 继承：Level 0 + Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合游戏开发 |
-|-------|------|-----------------|
-| game-developer | 📦 jeffallan/claude-skills | 游戏开发最佳实践（999 安装） |
-| algorithmic-art | 🅰️ Anthropic 官方 | 算法艺术，生成式图形创作 |
-| performance-profiling | 📦 sickn33/antigravity-awesome-skills | 游戏性能优化（424 安装） |
-| canvas-design | 🅰️ Anthropic 官方 | 视觉设计和艺术创作 |
-
----
-
-### A12. 区块链/Web3 开发者（Blockchain/Web3 Dev）
-
-> 继承：Level 0 + Level 1（工程通用）
-
-| Skill | 来源 | 为什么适合 Web3 |
-|-------|------|---------------|
-| web3-testing | 📦 wshobson/agents | Web3 测试框架（3.3K 安装） |
-| solidity-security-audit | 📦 mariano-aguero/solidity-security-audit-skill | Solidity 安全审计（23 安装） |
-| frontend-design | 🅰️ Anthropic 官方 | DApp 前端开发 |
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Web3 社区动态追踪 |
-| x-research | 📦 rohunvora/x-research-skill | Crypto/Web3 社区讨论搜索 |
+| Skill | Source | Why for embedded |
+|-------|--------|----------------|
+| embedded-systems | 📦 404kidwiz/claude-supercode-skills | Embedded systems development guide (125 installs) |
+| rust-pro | 📦 sickn33/antigravity-awesome-skills | Rust systems programming (187 installs) |
+| firmware-analyst | 📦 sickn33/antigravity-awesome-skills | Firmware analysis (118 installs) |
+| doc-coauthoring | 🅰️ Anthropic Official | Collaborating on hardware interface documentation |
 
 ---
 
-## B. 架构与技术管理类
+### A11. Game Developer
 
-### Level 1：技术管理通用
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么技术管理都需要 |
-|-------|------|-------------------|
-| planner | 📦 am-will/codex-skills | 技术方案设计和任务拆解 |
-| the-fool | 📦 jeffallan/claude-skills | 重大技术决策的对抗性分析 |
-| weekly-report | 📦 claude-office-skills/skills | 团队周报自动汇总 |
-| meeting-minutes | 📦 github/awesome-copilot | 会议纪要自动生成 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 技术文档协作 |
-| internal-comms | 🅰️ Anthropic 官方 | 内部沟通模板 |
-| pptx | 🅰️ Anthropic 官方 | 演示文稿制作 |
+| Skill | Source | Why for game development |
+|-------|--------|------------------------|
+| game-developer | 📦 jeffallan/claude-skills | Game development best practices (999 installs) |
+| algorithmic-art | 🅰️ Anthropic Official | Algorithmic art and generative graphics |
+| performance-profiling | 📦 sickn33/antigravity-awesome-skills | Game performance optimization (424 installs) |
+| canvas-design | 🅰️ Anthropic Official | Visual design and artistic creation |
 
 ---
 
-### B1. 架构师（Software Architect）
+### A12. Blockchain / Web3 Developer
 
-> 继承：Level 0 + B 管理通用 + A Level 1（工程通用）
+> Inherits: Level 0 + Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合架构师 |
-|-------|------|----------------|
-| microservices-architect | 📦 jeffallan/claude-skills | 微服务架构设计（977 安装） |
-| standup-meeting | 📦 supercent-io/skills-template | 架构评审和站会记录（10.5K 安装） |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 架构演示 PPT（1.3K 安装） |
-
----
-
-### B2. 技术主管 / CTO（Tech Lead / CTO）
-
-> 继承：Level 0 + B 管理通用 + B1（架构师）
-
-| Skill | 来源 | 为什么适合 CTO |
-|-------|------|-------------|
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | AI/技术趋势追踪 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 技术品牌和行业影响力 |
-| x-research | 📦 rohunvora/x-research-skill | 技术社区动态搜索 |
+| Skill | Source | Why for Web3 |
+|-------|--------|-------------|
+| web3-testing | 📦 wshobson/agents | Web3 testing framework (3.3K installs) |
+| solidity-security-audit | 📦 mariano-aguero/solidity-security-audit-skill | Solidity security audit (23 installs) |
+| frontend-design | 🅰️ Anthropic Official | DApp frontend development |
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Track Web3 community trends |
+| x-research | 📦 rohunvora/x-research-skill | Search Crypto/Web3 community discussions |
 
 ---
 
-### B3. 工程经理（Engineering Manager）
+## B. Architecture & Technical Leadership
 
-> 继承：Level 0 + B 管理通用
+### Level 1: Technical Leadership Universal
 
-| Skill | 来源 | 为什么适合工程经理 |
-|-------|------|------------------|
-| standup-meeting | 📦 supercent-io/skills-template | 站会笔记自动化（10.5K 安装） |
-| sprint-planner | 📦 eddiebe147/claude-settings | Sprint 规划（47 安装） |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 管理汇报 PPT（1.3K 安装） |
-| xlsx | 🅰️ Anthropic 官方 | 团队数据分析（工时、velocity 等） |
-
----
-
-## C. 产品类
-
-### C1. 产品经理（Product Manager）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合产品经理 |
-|-------|------|------------------|
-| planner | 📦 am-will/codex-skills | 需求拆解和实施方案 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | PRD 和技术文档协作 |
-| meeting-minutes | 📦 github/awesome-copilot | 会议纪要自动生成 |
-| the-fool | 📦 jeffallan/claude-skills | 产品决策的批判性分析 |
-| pptx | 🅰️ Anthropic 官方 | 产品演示文稿 |
-| xlsx | 🅰️ Anthropic 官方 | 数据分析和优先级矩阵 |
-| product-manager | 📦 aj-geddes/claude-code-bmad-skills | 产品经理工作流（115 安装） |
-| last30days | 📦 trailofbits/skills-curated | 用户反馈和竞品分析 |
+| Skill | Source | Why every tech leader needs this |
+|-------|--------|----------------------------------|
+| planner | 📦 am-will/codex-skills | Technical planning and task decomposition |
+| the-fool | 📦 jeffallan/claude-skills | Adversarial analysis for high-stakes technical decisions |
+| weekly-report | 📦 claude-office-skills/skills | Automated team weekly report rollup |
+| meeting-minutes | 📦 github/awesome-copilot | Auto-generated meeting minutes |
+| doc-coauthoring | 🅰️ Anthropic Official | Technical documentation collaboration |
+| internal-comms | 🅰️ Anthropic Official | Internal communication templates |
+| pptx | 🅰️ Anthropic Official | Presentation deck creation |
 
 ---
 
-### C2. 项目经理（Project Manager）
+### B1. Software Architect
 
-> 继承：Level 0
+> Inherits: Level 0 + B Leadership Universal + A Level 1 (Engineering Universal)
 
-| Skill | 来源 | 为什么适合项目经理 |
-|-------|------|------------------|
-| planner | 📦 am-will/codex-skills | 项目计划和里程碑 |
-| weekly-report | 📦 claude-office-skills/skills | 周报自动汇总 |
-| meeting-minutes | 📦 github/awesome-copilot | 会议纪要 |
-| standup-meeting | 📦 supercent-io/skills-template | 站会笔记（10.5K 安装） |
-| sprint-planner | 📦 eddiebe147/claude-settings | Sprint 规划（47 安装） |
-| the-fool | 📦 jeffallan/claude-skills | 风险评估和决策分析 |
-| pptx | 🅰️ Anthropic 官方 | 项目汇报 |
-| docx | 🅰️ Anthropic 官方 | 项目文档 |
+| Skill | Source | Why for architects |
+|-------|--------|------------------|
+| microservices-architect | 📦 jeffallan/claude-skills | Microservices architecture design (977 installs) |
+| standup-meeting | 📦 supercent-io/skills-template | Architecture review and standup notes (10.5K installs) |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | Architecture presentation decks (1.3K installs) |
 
 ---
 
-## D. 设计类
+### B2. Tech Lead / CTO
 
-### D1. UX/产品设计师（UX / Product Designer）
+> Inherits: Level 0 + B Leadership Universal + B1 (Software Architect)
 
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合 UX 设计 |
-|-------|------|------------------|
-| frontend-design | 🅰️ Anthropic 官方 | 高质量 UI 原型生成 |
-| webapp-testing | 🅰️ Anthropic 官方 | 可用性测试验证 |
-| theme-factory | 🅰️ Anthropic 官方 | 设计系统和主题管理 |
-| ui-design-review | 📦 mastepanoski/claude-skills | UI 设计审查（266 安装） |
-| figma-design | 📦 manutej/luxor-claude-marketplace | Figma 设计协作（103 安装） |
-| accessibility | 📦 addyosmani/web-quality-skills | 无障碍设计审计（3.9K 安装） |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 用户研究报告协作 |
+| Skill | Source | Why for CTOs |
+|-------|--------|-------------|
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Track AI and technology trends |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Build technical brand and industry influence |
+| x-research | 📦 rohunvora/x-research-skill | Search tech community discussions |
 
 ---
 
-### D2. UI/视觉设计师（UI / Visual Designer）
+### B3. Engineering Manager
 
-> 继承：Level 0
+> Inherits: Level 0 + B Leadership Universal
 
-| Skill | 来源 | 为什么适合 UI/视觉 |
-|-------|------|------------------|
-| canvas-design | 🅰️ Anthropic 官方 | 视觉艺术创作 |
-| theme-factory | 🅰️ Anthropic 官方 | 主题和品牌视觉系统 |
-| frontend-design | 🅰️ Anthropic 官方 | 设计转前端代码 |
-| algorithmic-art | 🅰️ Anthropic 官方 | 生成式算法艺术 |
-| ui-design-review | 📦 mastepanoski/claude-skills | UI 设计审查（266 安装） |
-| slack-gif-creator | 🅰️ Anthropic 官方 | 动效 GIF 创作 |
+| Skill | Source | Why for engineering managers |
+|-------|--------|------------------------------|
+| standup-meeting | 📦 supercent-io/skills-template | Automated standup notes (10.5K installs) |
+| sprint-planner | 📦 eddiebe147/claude-settings | Sprint planning (47 installs) |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | Management reporting decks (1.3K installs) |
+| xlsx | 🅰️ Anthropic Official | Team data analysis (hours, velocity, etc.) |
 
 ---
 
-## E. 数据类
+## C. Product
 
-### E1. 数据分析师（Data Analyst）
+### C1. Product Manager
 
-> 继承：Level 0
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合数据分析 |
-|-------|------|------------------|
-| xlsx | 🅰️ Anthropic 官方 | Excel 数据处理和公式 |
-| pdf | 🅰️ Anthropic 官方 | PDF 数据提取 |
-| planner | 📦 am-will/codex-skills | 分析方案设计 |
-| pptx | 🅰️ Anthropic 官方 | 分析结果演示 |
-| data-visualization | 📦 smithery.ai | 数据可视化（55 安装） |
-| recharts-patterns | 📦 yonatangross/orchestkit | 图表组件模式（82 安装） |
-
----
-
-### E2. 数据科学家（Data Scientist）
-
-> 继承：Level 0 + E1（数据分析师）
-
-| Skill | 来源 | 为什么适合数据科学 |
-|-------|------|------------------|
-| ml-model-training | 📦 aj-geddes/useful-ai-prompts | ML 模型训练指南（135 安装） |
-| ai-ml-data-science | 📦 vasilyu1983/ai-agents-public | AI/ML 全栈指南（120 安装） |
-| systematic-debugging | 📦 obra/superpowers | 模型调试和数据管道排查 |
-| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | 数据管道测试 |
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 论文和讲座总结 |
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | AI/ML 资讯追踪 |
+| Skill | Source | Why for product managers |
+|-------|--------|------------------------|
+| planner | 📦 am-will/codex-skills | Requirement decomposition and implementation planning |
+| doc-coauthoring | 🅰️ Anthropic Official | PRD and technical document collaboration |
+| meeting-minutes | 📦 github/awesome-copilot | Auto-generated meeting minutes |
+| the-fool | 📦 jeffallan/claude-skills | Critical analysis for product decisions |
+| pptx | 🅰️ Anthropic Official | Product presentation decks |
+| xlsx | 🅰️ Anthropic Official | Data analysis and prioritization matrices |
+| product-manager | 📦 aj-geddes/claude-code-bmad-skills | Product manager workflow (115 installs) |
+| last30days | 📦 trailofbits/skills-curated | User feedback and competitive analysis |
 
 ---
 
-## F. 内容与创作类
+### C2. Project Manager
 
-### F1. 技术写作（Technical Writer）
+> Inherits: Level 0
 
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合技术写作 |
-|-------|------|------------------|
-| api-documentation-generator | 📦 sickn33/antigravity-awesome-skills | 自动生成 API 文档 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 长文档协作和迭代 |
-| docx | 🅰️ Anthropic 官方 | 专业文档格式处理 |
-| changelog-maintenance | 📦 supercent-io/skills-template | CHANGELOG 维护（10.9K 安装） |
-| readme-updater | 📦 ovachiever/droid-tings | README 自动更新（57 安装） |
-
----
-
-### F2. 内容创作者（Content Creator）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合内容创作 |
-|-------|------|------------------|
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 播客/视频逐字稿总结 |
-| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | 下载视频/音频，提取逐字稿 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 长文协作 |
-| i18n-localization | 📦 sickn33/antigravity-awesome-skills | 中译英 Reddit 风格 |
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | AI 资讯日报 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 推特运营策略 |
-| content-creation | 📦 anthropics/knowledge-work-plugins | Anthropic 内容创作指南（877 安装） |
+| Skill | Source | Why for project managers |
+|-------|--------|------------------------|
+| planner | 📦 am-will/codex-skills | Project planning and milestone tracking |
+| weekly-report | 📦 claude-office-skills/skills | Automated weekly report rollup |
+| meeting-minutes | 📦 github/awesome-copilot | Meeting minutes |
+| standup-meeting | 📦 supercent-io/skills-template | Standup notes (10.5K installs) |
+| sprint-planner | 📦 eddiebe147/claude-settings | Sprint planning (47 installs) |
+| the-fool | 📦 jeffallan/claude-skills | Risk assessment and decision analysis |
+| pptx | 🅰️ Anthropic Official | Project status presentations |
+| docx | 🅰️ Anthropic Official | Project documentation |
 
 ---
 
-### F3. 文案（Copywriter）
+## D. Design
 
-> 继承：Level 0
+### D1. UX / Product Designer
 
-| Skill | 来源 | 为什么适合文案 |
-|-------|------|-------------|
-| doc-coauthoring | 🅰️ Anthropic 官方 | 文案协作和迭代 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 社交媒体文案策略 |
-| i18n-localization | 📦 sickn33/antigravity-awesome-skills | 出海翻译 |
-| content-creation | 📦 anthropics/knowledge-work-plugins | 内容创作指南（877 安装） |
-| email-marketing | 📦 claude-office-skills/skills | 邮件营销文案（250 安装） |
+> Inherits: Level 0
 
----
-
-## G. 营销与增长类
-
-### G1. 市场营销（Marketing Manager）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合市场营销 |
-|-------|------|------------------|
-| the-fool | 📦 jeffallan/claude-skills | 营销策略的多角度分析 |
-| last30days | 📦 trailofbits/skills-curated | 市场调研和用户反馈 |
-| pptx | 🅰️ Anthropic 官方 | 营销演示 |
-| internal-comms | 🅰️ Anthropic 官方 | 内部通讯和报告 |
-| canvas-design | 🅰️ Anthropic 官方 | 营销海报和视觉设计 |
-| email-marketing | 📦 claude-office-skills/skills | 邮件营销（250 安装） |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 高质量 PPT（1.3K 安装） |
-| seo | 📦 addyosmani/web-quality-skills | SEO 策略（4.2K 安装） |
+| Skill | Source | Why for UX design |
+|-------|--------|------------------|
+| frontend-design | 🅰️ Anthropic Official | High-quality UI prototype generation |
+| webapp-testing | 🅰️ Anthropic Official | Usability testing validation |
+| theme-factory | 🅰️ Anthropic Official | Design systems and theme management |
+| ui-design-review | 📦 mastepanoski/claude-skills | UI design review (266 installs) |
+| figma-design | 📦 manutej/luxor-claude-marketplace | Figma design collaboration (103 installs) |
+| accessibility | 📦 addyosmani/web-quality-skills | Accessibility design audit (3.9K installs) |
+| doc-coauthoring | 🅰️ Anthropic Official | User research report collaboration |
 
 ---
 
-### G2. 增长 / Growth Hacker
+### D2. UI / Visual Designer
 
-> 继承：Level 0
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合增长 |
-|-------|------|-------------|
-| planner | 📦 am-will/codex-skills | 增长实验方案设计 |
-| xlsx | 🅰️ Anthropic 官方 | 增长数据分析 |
-| last30days | 📦 trailofbits/skills-curated | 用户反馈和社区洞察 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 社交媒体增长策略 |
-| seo | 📦 addyosmani/web-quality-skills | SEO 优化（4.2K 安装） |
-| seo-optimizer | 📦 davila7/claude-code-templates | SEO 优化器（530 安装） |
-| doc-coauthoring | 🅰️ Anthropic 官方 | A/B 测试文档 |
-| n8n-workflow-automation | 📦 aaaaqwq/claude-code-skills | 增长自动化工作流（43 安装） |
+| Skill | Source | Why for UI/visual design |
+|-------|--------|------------------------|
+| canvas-design | 🅰️ Anthropic Official | Visual and artistic creation |
+| theme-factory | 🅰️ Anthropic Official | Theme and brand visual systems |
+| frontend-design | 🅰️ Anthropic Official | Design-to-frontend code conversion |
+| algorithmic-art | 🅰️ Anthropic Official | Generative algorithmic art |
+| ui-design-review | 📦 mastepanoski/claude-skills | UI design review (266 installs) |
+| slack-gif-creator | 🅰️ Anthropic Official | Animated GIF creation |
 
 ---
 
-### G3. SEO 专家（SEO Specialist）
+## E. Data
 
-> 继承：Level 0
+### E1. Data Analyst
 
-| Skill | 来源 | 为什么适合 SEO |
-|-------|------|-------------|
-| seo | 📦 addyosmani/web-quality-skills | Google 工程师出品的 SEO 审计（4.2K 安装） |
-| seo-optimizer | 📦 davila7/claude-code-templates | SEO 优化器（530 安装） |
-| accessibility | 📦 addyosmani/web-quality-skills | 无障碍合规影响 SEO（3.9K 安装） |
-| xlsx | 🅰️ Anthropic 官方 | 关键词和排名数据分析 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | SEO 内容优化 |
-| last30days | 📦 trailofbits/skills-curated | 竞品关键词和用户意图分析 |
-| brave-search | 📦 steipete/agent-scripts | 隐私友好的搜索替代，关键词调研（685 安装） |
+> Inherits: Level 0
 
----
-
-### G4. 社交媒体运营（Social Media Manager）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合社媒运营 |
-|-------|------|------------------|
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 推特运营完整方法论 |
-| x-research | 📦 rohunvora/x-research-skill | X/Twitter 内容搜索和趋势 |
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit 社区浏览和分析 |
-| last30days | 📦 trailofbits/skills-curated | Reddit 讨论深度分析 |
-| canvas-design | 🅰️ Anthropic 官方 | 社媒视觉内容设计 |
+| Skill | Source | Why for data analysis |
+|-------|--------|----------------------|
+| xlsx | 🅰️ Anthropic Official | Excel data processing and formulas |
+| pdf | 🅰️ Anthropic Official | PDF data extraction |
+| planner | 📦 am-will/codex-skills | Analysis plan design |
+| pptx | 🅰️ Anthropic Official | Presenting analysis results |
+| data-visualization | 📦 smithery.ai | Data visualization (55 installs) |
+| recharts-patterns | 📦 yonatangross/orchestkit | Chart component patterns (82 installs) |
 
 ---
 
-### G5. 社区运营（Community Manager）
+### E2. Data Scientist
 
-> 继承：Level 0
+> Inherits: Level 0 + E1 (Data Analyst)
 
-| Skill | 来源 | 为什么适合社区运营 |
-|-------|------|------------------|
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit 社区浏览 |
-| last30days | 📦 trailofbits/skills-curated | 社区讨论分析 |
-| x-research | 📦 rohunvora/x-research-skill | X/Twitter 社区动态 |
-| weekly-report | 📦 claude-office-skills/skills | 社区周报 |
-| community-builder | 📦 ncklrs/startup-os-skills | 社区建设指南（46 安装） |
-| developer-advocacy | 📦 jonathimer/devmarketing-skills | 开发者关系（15 安装） |
-
----
-
-## H. 商业与管理类
-
-### H1. CEO / 创始人（Founder / CEO）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合 CEO |
-|-------|------|-------------|
-| the-fool | 📦 jeffallan/claude-skills | 重大决策的对抗性分析 |
-| planner | 📦 am-will/codex-skills | 战略规划拆解 |
-| weekly-report | 📦 claude-office-skills/skills | 团队周报汇总 |
-| meeting-minutes | 📦 github/awesome-copilot | 会议纪要 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 个人品牌和推特运营 |
-| internal-comms | 🅰️ Anthropic 官方 | 内部沟通模板 |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 投资人/董事会 PPT（1.3K 安装） |
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | 行业趋势追踪 |
-| last30days | 📦 trailofbits/skills-curated | 市场洞察 |
-| alphaear-stock | 📦 rkiding/awesome-finance-skills | 股票和市场数据分析（284 安装） |
+| Skill | Source | Why for data science |
+|-------|--------|---------------------|
+| ml-model-training | 📦 aj-geddes/useful-ai-prompts | ML model training guide (135 installs) |
+| ai-ml-data-science | 📦 vasilyu1983/ai-agents-public | Full-stack AI/ML guide (120 installs) |
+| systematic-debugging | 📦 obra/superpowers | Model debugging and data pipeline troubleshooting |
+| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | Data pipeline testing |
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize papers and lectures |
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Track AI/ML news and research |
 
 ---
 
-### H2. 独立开发者（Indie Hacker）
+## F. Content & Creative
 
-> 继承：Level 0 + A3（全栈工程师）全部
+### F1. Technical Writer
 
-**最全面的角色**——身兼产品、开发、营销、运营。
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合独立开发者 |
-|-------|------|-------------------|
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 推特运营核心——独立开发者获客主渠道 |
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit 推广和用户反馈 |
-| i18n-localization | 📦 sickn33/antigravity-awesome-skills | 出海内容翻译 |
-| frontend-design | 🅰️ Anthropic 官方 | 落地页和产品 UI |
-| seo | 📦 addyosmani/web-quality-skills | 产品 SEO（4.2K 安装） |
-| product-manager | 📦 aj-geddes/claude-code-bmad-skills | 一人当 PM（115 安装） |
-| stripe-payments | 📦 claude-office-skills/skills | 支付集成——独立开发者 SaaS 刚需（219 安装） |
+| Skill | Source | Why for technical writing |
+|-------|--------|--------------------------|
+| api-documentation-generator | 📦 sickn33/antigravity-awesome-skills | Auto-generate API documentation |
+| doc-coauthoring | 🅰️ Anthropic Official | Long-form document collaboration and iteration |
+| docx | 🅰️ Anthropic Official | Professional document formatting |
+| changelog-maintenance | 📦 supercent-io/skills-template | CHANGELOG maintenance (10.9K installs) |
+| readme-updater | 📦 ovachiever/droid-tings | Automated README updates (57 installs) |
 
 ---
 
-### H3. 咨询师 / 顾问（Consultant）
+### F2. Content Creator
 
-> 继承：Level 0
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合咨询 |
-|-------|------|-------------|
-| the-fool | 📦 jeffallan/claude-skills | 咨询分析的多角度框架 |
-| planner | 📦 am-will/codex-skills | 咨询方案设计 |
-| docx | 🅰️ Anthropic 官方 | 咨询报告 |
-| pptx | 🅰️ Anthropic 官方 | 咨询演示 |
-| xlsx | 🅰️ Anthropic 官方 | 数据分析 |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 高端 PPT（1.3K 安装） |
-| last30days | 📦 trailofbits/skills-curated | 行业调研 |
-| email-marketing | 📦 claude-office-skills/skills | 客户沟通邮件（250 安装） |
-
----
-
-### H4. 销售（Sales）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合销售 |
-|-------|------|-------------|
-| pptx | 🅰️ Anthropic 官方 | 客户提案 |
-| docx | 🅰️ Anthropic 官方 | 商务文档 |
-| xlsx | 🅰️ Anthropic 官方 | 销售数据和管道分析 |
-| internal-comms | 🅰️ Anthropic 官方 | 内部汇报 |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 高质量提案 PPT（1.3K 安装） |
-| email-marketing | 📦 claude-office-skills/skills | 客户邮件（250 安装） |
-| x-research | 📦 rohunvora/x-research-skill | 客户洞察搜索 |
+| Skill | Source | Why for content creation |
+|-------|--------|------------------------|
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize podcast/video transcripts |
+| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | Download videos/audio and extract transcripts |
+| doc-coauthoring | 🅰️ Anthropic Official | Long-form content collaboration |
+| i18n-localization | 📦 sickn33/antigravity-awesome-skills | Chinese-to-English localization in Reddit style |
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Daily AI news digest |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Twitter growth strategy |
+| content-creation | 📦 anthropics/knowledge-work-plugins | Anthropic content creation guide (877 installs) |
 
 ---
 
-## K. 支持职能类（Support Functions）
+### F3. Copywriter
 
-### K1. HR / 招聘（HR / Recruiter）
+> Inherits: Level 0
 
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合 HR |
-|-------|------|-------------|
-| doc-coauthoring | 🅰️ Anthropic 官方 | JD 撰写、面试题设计、入职手册 |
-| xlsx | 🅰️ Anthropic 官方 | 招聘数据分析、人才漏斗 |
-| pptx | 🅰️ Anthropic 官方 | 组织汇报、招聘报告 |
-| internal-comms | 🅰️ Anthropic 官方 | 内部公告、组织变更通知 |
-| meeting-minutes | 📦 github/awesome-copilot | 面试记录、团队会议纪要 |
-| the-fool | 📦 jeffallan/claude-skills | 组织决策的多角度分析 |
-| x-research | 📦 rohunvora/x-research-skill | 人才市场趋势搜索 |
-| email-marketing | 📦 claude-office-skills/skills | 招聘邮件和候选人沟通（250 安装） |
+| Skill | Source | Why for copywriting |
+|-------|--------|-------------------|
+| doc-coauthoring | 🅰️ Anthropic Official | Copy collaboration and iteration |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Social media copy strategy |
+| i18n-localization | 📦 sickn33/antigravity-awesome-skills | Localization for international markets |
+| content-creation | 📦 anthropics/knowledge-work-plugins | Content creation guide (877 installs) |
+| email-marketing | 📦 claude-office-skills/skills | Email marketing copy (250 installs) |
 
 ---
 
-### K2. 法务 / 合规（Legal / Compliance）
+## G. Marketing & Growth
 
-> 继承：Level 0
+### G1. Marketing Manager
 
-| Skill | 来源 | 为什么适合法务 |
-|-------|------|-------------|
-| docx | 🅰️ Anthropic 官方 | 合同、法律文书撰写 |
-| pdf | 🅰️ Anthropic 官方 | 法规文档提取和分析 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 政策文档协作 |
-| the-fool | 📦 jeffallan/claude-skills | 合规风险的多角度分析 |
-| xlsx | 🅰️ Anthropic 官方 | 合规审计数据整理 |
-| planner | 📦 am-will/codex-skills | 合规方案设计 |
+> Inherits: Level 0
 
----
-
-### K3. 财务 / 会计（Finance / Accounting）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合财务 |
-|-------|------|-------------|
-| xlsx | 🅰️ Anthropic 官方 | 财务报表、预算管理、数据分析 |
-| pdf | 🅰️ Anthropic 官方 | 发票、合同等 PDF 处理 |
-| docx | 🅰️ Anthropic 官方 | 财务报告 |
-| pptx | 🅰️ Anthropic 官方 | 财务汇报演示 |
-| the-fool | 📦 jeffallan/claude-skills | 投资决策分析 |
-| planner | 📦 am-will/codex-skills | 预算规划 |
-| alphaear-stock | 📦 rkiding/awesome-finance-skills | 股票和财务数据分析（284 安装） |
+| Skill | Source | Why for marketing |
+|-------|--------|-----------------|
+| the-fool | 📦 jeffallan/claude-skills | Multi-angle analysis for marketing strategy |
+| last30days | 📦 trailofbits/skills-curated | Market research and user feedback |
+| pptx | 🅰️ Anthropic Official | Marketing presentations |
+| internal-comms | 🅰️ Anthropic Official | Internal communications and reports |
+| canvas-design | 🅰️ Anthropic Official | Marketing visuals and poster design |
+| email-marketing | 📦 claude-office-skills/skills | Email marketing (250 installs) |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | High-quality presentation decks (1.3K installs) |
+| seo | 📦 addyosmani/web-quality-skills | SEO strategy (4.2K installs) |
 
 ---
 
-### K4. 客服 / 客户支持（Customer Support）
+### G2. Growth Hacker
 
-> 继承：Level 0
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合客服 |
-|-------|------|-------------|
-| doc-coauthoring | 🅰️ Anthropic 官方 | FAQ、帮助文档编写 |
-| internal-comms | 🅰️ Anthropic 官方 | 客户沟通模板 |
-| xlsx | 🅰️ Anthropic 官方 | 工单数据分析、满意度统计 |
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | 社区用户反馈监控 |
-| last30days | 📦 trailofbits/skills-curated | 用户问题趋势分析 |
-
----
-
-## I. 学术与教育类
-
-### I1. 研究员（Researcher）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合研究 |
-|-------|------|-------------|
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 论文/讲座/播客总结 |
-| mentoring-juniors | 📦 github/awesome-copilot | 引导式学习新领域 |
-| the-fool | 📦 jeffallan/claude-skills | 研究方法论批判 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 论文协作 |
-| xlsx | 🅰️ Anthropic 官方 | 研究数据分析 |
-| news-summary | 📦 sundial-org/awesome-openclaw-skills | 领域资讯追踪 |
-| brave-search | 📦 steipete/agent-scripts | 隐私友好的学术搜索（685 安装） |
-| notion-mcp | 📦 dokhacgiakhoa/antigravity-ide | 研究笔记和知识库管理 |
-| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | 学术讲座/会议视频下载 |
+| Skill | Source | Why for growth |
+|-------|--------|--------------|
+| planner | 📦 am-will/codex-skills | Growth experiment design |
+| xlsx | 🅰️ Anthropic Official | Growth data analysis |
+| last30days | 📦 trailofbits/skills-curated | User feedback and community insights |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Social media growth strategy |
+| seo | 📦 addyosmani/web-quality-skills | SEO optimization (4.2K installs) |
+| seo-optimizer | 📦 davila7/claude-code-templates | SEO optimizer (530 installs) |
+| doc-coauthoring | 🅰️ Anthropic Official | A/B test documentation |
+| n8n-workflow-automation | 📦 aaaaqwq/claude-code-skills | Growth automation workflows (43 installs) |
 
 ---
 
-### I2. 教师 / 讲师（Educator）
+### G3. SEO Specialist
 
-> 继承：Level 0
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合教育 |
-|-------|------|-------------|
-| mentoring-juniors | 📦 github/awesome-copilot | 引导式教学设计 |
-| pptx | 🅰️ Anthropic 官方 | 教学课件 |
-| docx | 🅰️ Anthropic 官方 | 教学材料和试卷 |
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 教学视频总结 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 课程设计协作 |
-| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | 高质量教学课件（1.3K 安装） |
-
----
-
-### I3. 学生（Student）
-
-> 继承：Level 0
-
-| Skill | 来源 | 为什么适合学生 |
-|-------|------|-------------|
-| mentoring-juniors | 📦 github/awesome-copilot | 引导式学习新技术 |
-| systematic-debugging | 📦 obra/superpowers | 学习调试方法论 |
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 课程/讲座笔记 |
-| doc-coauthoring | 🅰️ Anthropic 官方 | 论文/报告写作 |
-| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | 通过测试学编程 |
-| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | 下载学习视频，提取字幕 |
+| Skill | Source | Why for SEO |
+|-------|--------|------------|
+| seo | 📦 addyosmani/web-quality-skills | SEO audit by a Google engineer (4.2K installs) |
+| seo-optimizer | 📦 davila7/claude-code-templates | SEO optimizer (530 installs) |
+| accessibility | 📦 addyosmani/web-quality-skills | Accessibility compliance impacts SEO (3.9K installs) |
+| xlsx | 🅰️ Anthropic Official | Keyword and ranking data analysis |
+| doc-coauthoring | 🅰️ Anthropic Official | SEO content optimization |
+| last30days | 📦 trailofbits/skills-curated | Competitor keyword and user intent analysis |
+| brave-search | 📦 steipete/agent-scripts | Privacy-friendly search alternative for keyword research (685 installs) |
 
 ---
 
-## J. 复合 / 自由职业类
+### G4. Social Media Manager
 
-### J1. 自由职业者（Freelancer）
+> Inherits: Level 0
 
-> 继承：Level 0 + 技术 Skill 取决于专业领域
-
-| Skill | 来源 | 为什么适合自由职业 |
-|-------|------|------------------|
-| planner | 📦 am-will/codex-skills | 项目方案和报价 |
-| weekly-report | 📦 claude-office-skills/skills | 客户周报 |
-| docx | 🅰️ Anthropic 官方 | 合同/提案文档 |
-| xlsx | 🅰️ Anthropic 官方 | 发票/财务管理 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 个人品牌建设 |
-| internal-comms | 🅰️ Anthropic 官方 | 客户沟通模板 |
-| frontend-design | 🅰️ Anthropic 官方 | 作品集/个人站 |
-| trello | 📦 membranedev/application-skills | 项目看板管理（36 安装） |
-| stripe-payments | 📦 claude-office-skills/skills | 支付集成（219 安装） |
-| n8n-workflow-automation | 📦 aaaaqwq/claude-code-skills | 自动化工作流（43 安装） |
+| Skill | Source | Why for social media |
+|-------|--------|--------------------|
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Complete Twitter growth methodology |
+| x-research | 📦 rohunvora/x-research-skill | X/Twitter content search and trending topics |
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit community browsing and analysis |
+| last30days | 📦 trailofbits/skills-curated | Deep-dive Reddit discussion analysis |
+| canvas-design | 🅰️ Anthropic Official | Social media visual content design |
 
 ---
 
-### J2. 技术布道师（Developer Advocate）
+### G5. Community Manager
 
-> 继承：Level 0 + A Level 1（工程通用）
+> Inherits: Level 0
 
-| Skill | 来源 | 为什么适合技术布道 |
-|-------|------|------------------|
-| doc-coauthoring | 🅰️ Anthropic 官方 | 技术博客和教程 |
-| pptx | 🅰️ Anthropic 官方 | 技术演讲 |
-| podcast-to-content-suite | 📦 onewave-ai/claude-skills | 会议/播客内容总结 |
-| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | 技术视频素材下载 |
-| x-twitter-growth | 📦 alirezarezvani/claude-skills | 技术内容社交传播 |
-| x-research | 📦 rohunvora/x-research-skill | 技术社区动态 |
-| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | 社区互动 |
-| developer-advocacy | 📦 jonathimer/devmarketing-skills | DevRel 工作指南（15 安装） |
+| Skill | Source | Why for community management |
+|-------|--------|------------------------------|
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit community browsing |
+| last30days | 📦 trailofbits/skills-curated | Community discussion analysis |
+| x-research | 📦 rohunvora/x-research-skill | X/Twitter community pulse |
+| weekly-report | 📦 claude-office-skills/skills | Community weekly digest |
+| community-builder | 📦 ncklrs/startup-os-skills | Community building guide (46 installs) |
+| developer-advocacy | 📦 jonathimer/devmarketing-skills | Developer relations guide (15 installs) |
 
 ---
 
-## 附录：外部 Skill 仓库推荐
+## H. Business & Management
 
-以下仓库包含大量按角色组织的高质量 Skill，可按需引入：
+### H1. Founder / CEO
 
-| 仓库 | Stars | Skill 数 | 特色 |
-|------|-------|---------|------|
-| alirezarezvani/claude-skills | 6,267 | 205 | **按角色分类最全**：工程(56)、营销(43)、C-Level(28)、产品(14)、法规合规(12)、项目管理(6) |
-| anthropics/skills | 99,617 | 16 | **Anthropic 官方**：Creative、Development、Enterprise、Document |
-| VoltAgent/awesome-agent-skills | 12,292 | 500+ | **官方团队发布**：含 Anthropic/Vercel/Stripe/Cloudflare 等 |
-| addyosmani/web-quality-skills | 4,200+ | 2 | **Google 工程师出品**：SEO + Accessibility |
+> Inherits: Level 0
 
-**安装方式**：`npx skills add <owner/repo@skill-name>`
-
-**特别说明**：`alirezarezvani/claude-skills` 仓库中的以下子集对特定角色特别有价值：
-- **营销角色**：marketing-skill/ 下 43 个 Skill 覆盖 SEO、CRO、内容、渠道、增长、情报、销售 7 个 Pod
-- **C-Level 角色**：c-level-advisor/ 下 28 个 Skill 覆盖 CEO/CTO/CFO/CMO/COO/CPO/CRO/CHRO/CISO 9 个 C-Suite 角色
-- **法规合规**：ra-qm-team/ 下 12 个 Skill 覆盖 GDPR、ISO 13485、FDA、MDR 等
-- **产品角色**：product-team/ 下 14 个 Skill 包含竞品拆解、实验设计、路线图沟通等
+| Skill | Source | Why for CEOs |
+|-------|--------|-------------|
+| the-fool | 📦 jeffallan/claude-skills | Adversarial analysis for high-stakes decisions |
+| planner | 📦 am-will/codex-skills | Strategic planning and decomposition |
+| weekly-report | 📦 claude-office-skills/skills | Team weekly report rollup |
+| meeting-minutes | 📦 github/awesome-copilot | Meeting minutes |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Personal brand and Twitter presence |
+| internal-comms | 🅰️ Anthropic Official | Internal communication templates |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | Investor/board presentation decks (1.3K installs) |
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Industry trend tracking |
+| last30days | 📦 trailofbits/skills-curated | Market intelligence |
+| alphaear-stock | 📦 rkiding/awesome-finance-skills | Stock and market data analysis (284 installs) |
 
 ---
 
-## 维护说明
+### H2. Indie Hacker
 
-### 更新流程
+> Inherits: Level 0 + everything from A3 (Full-Stack Engineer)
 
-1. **新增 Skill**：搜索 `npx skills find` → 评估质量 → 添加到对应角色
-2. **Skill 废弃**：及时移除或标注替代品
-3. **新增角色**：在对应大类末尾添加新 section，更新继承关系
-4. **外部 Skill 更新**：定期 `npx skills check` 检查更新
+**The most versatile role** — you wear the hats of product, engineering, marketing, and operations.
 
-### 质量标准
+| Skill | Source | Why for indie hackers |
+|-------|--------|---------------------|
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Core Twitter growth — the primary acquisition channel for indie hackers |
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Reddit promotion and user feedback |
+| i18n-localization | 📦 sickn33/antigravity-awesome-skills | Localization for international markets |
+| frontend-design | 🅰️ Anthropic Official | Landing pages and product UI |
+| seo | 📦 addyosmani/web-quality-skills | Product SEO (4.2K installs) |
+| product-manager | 📦 aj-geddes/claude-code-bmad-skills | Be your own PM (115 installs) |
+| stripe-payments | 📦 claude-office-skills/skills | Payment integration — essential for indie SaaS (219 installs) |
 
-- 外部 Skill 推荐标准：安装量 > 20 或内容质量经过人工验证
-- 每个角色保持 5-10 个专属推荐（不含继承）
-- 同一能力不推荐多个 Skill，选最优的一个
+---
 
-### 统计
+### H3. Consultant
 
-| 指标 | 数量 |
-|------|------|
-| 角色大类 | 11 |
-| 具体角色 | 42 |
-| 内置 Skill | 0 |
-| 官方 Skill | 16 |
-| 外部 Skill（精选） | 30+ |
-| 外部 Skill（附录仓库可引入） | 200+ |
-| 覆盖率 | 100%（每个角色至少 5 条推荐） |
-| 数据来源 | skills.sh（89,592 总量）、GitHub（6 个 awesome-list）、X/Reddit |
-| 角色参考 | agency-agents（110+ 角色，msitarzewski/agency-agents） |
+> Inherits: Level 0
+
+| Skill | Source | Why for consultants |
+|-------|--------|-------------------|
+| the-fool | 📦 jeffallan/claude-skills | Multi-angle analytical frameworks for consulting |
+| planner | 📦 am-will/codex-skills | Consulting proposal design |
+| docx | 🅰️ Anthropic Official | Consulting reports |
+| pptx | 🅰️ Anthropic Official | Consulting presentations |
+| xlsx | 🅰️ Anthropic Official | Data analysis |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | Premium presentation decks (1.3K installs) |
+| last30days | 📦 trailofbits/skills-curated | Industry research |
+| email-marketing | 📦 claude-office-skills/skills | Client communication emails (250 installs) |
+
+---
+
+### H4. Sales
+
+> Inherits: Level 0
+
+| Skill | Source | Why for sales |
+|-------|--------|-------------|
+| pptx | 🅰️ Anthropic Official | Client proposals |
+| docx | 🅰️ Anthropic Official | Business documents |
+| xlsx | 🅰️ Anthropic Official | Sales data and pipeline analysis |
+| internal-comms | 🅰️ Anthropic Official | Internal reporting |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | High-quality proposal decks (1.3K installs) |
+| email-marketing | 📦 claude-office-skills/skills | Client emails (250 installs) |
+| x-research | 📦 rohunvora/x-research-skill | Customer intelligence search |
+
+---
+
+## K. Support Functions
+
+### K1. HR / Recruiter
+
+> Inherits: Level 0
+
+| Skill | Source | Why for HR |
+|-------|--------|-----------|
+| doc-coauthoring | 🅰️ Anthropic Official | Writing JDs, interview questions, and onboarding guides |
+| xlsx | 🅰️ Anthropic Official | Recruiting data analysis and talent funnels |
+| pptx | 🅰️ Anthropic Official | Org reporting and recruiting dashboards |
+| internal-comms | 🅰️ Anthropic Official | Internal announcements and org change notices |
+| meeting-minutes | 📦 github/awesome-copilot | Interview notes and team meeting minutes |
+| the-fool | 📦 jeffallan/claude-skills | Multi-angle analysis for organizational decisions |
+| x-research | 📦 rohunvora/x-research-skill | Talent market trend research |
+| email-marketing | 📦 claude-office-skills/skills | Recruiting emails and candidate outreach (250 installs) |
+
+---
+
+### K2. Legal / Compliance
+
+> Inherits: Level 0
+
+| Skill | Source | Why for legal |
+|-------|--------|-------------|
+| docx | 🅰️ Anthropic Official | Contracts and legal document drafting |
+| pdf | 🅰️ Anthropic Official | Regulatory document extraction and analysis |
+| doc-coauthoring | 🅰️ Anthropic Official | Policy document collaboration |
+| the-fool | 📦 jeffallan/claude-skills | Multi-angle compliance risk analysis |
+| xlsx | 🅰️ Anthropic Official | Compliance audit data organization |
+| planner | 📦 am-will/codex-skills | Compliance program design |
+
+---
+
+### K3. Finance / Accounting
+
+> Inherits: Level 0
+
+| Skill | Source | Why for finance |
+|-------|--------|---------------|
+| xlsx | 🅰️ Anthropic Official | Financial statements, budget management, data analysis |
+| pdf | 🅰️ Anthropic Official | Invoice, contract, and PDF processing |
+| docx | 🅰️ Anthropic Official | Financial reports |
+| pptx | 🅰️ Anthropic Official | Financial review presentations |
+| the-fool | 📦 jeffallan/claude-skills | Investment decision analysis |
+| planner | 📦 am-will/codex-skills | Budget planning |
+| alphaear-stock | 📦 rkiding/awesome-finance-skills | Stock and financial data analysis (284 installs) |
+
+---
+
+### K4. Customer Support
+
+> Inherits: Level 0
+
+| Skill | Source | Why for customer support |
+|-------|--------|------------------------|
+| doc-coauthoring | 🅰️ Anthropic Official | Writing FAQs and help documentation |
+| internal-comms | 🅰️ Anthropic Official | Customer communication templates |
+| xlsx | 🅰️ Anthropic Official | Ticket data analysis and satisfaction metrics |
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Monitor community user feedback |
+| last30days | 📦 trailofbits/skills-curated | User issue trend analysis |
+
+---
+
+## I. Academia & Education
+
+### I1. Researcher
+
+> Inherits: Level 0
+
+| Skill | Source | Why for research |
+|-------|--------|----------------|
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize papers, lectures, and podcasts |
+| mentoring-juniors | 📦 github/awesome-copilot | Guided learning for new domains |
+| the-fool | 📦 jeffallan/claude-skills | Critical analysis of research methodology |
+| doc-coauthoring | 🅰️ Anthropic Official | Paper collaboration |
+| xlsx | 🅰️ Anthropic Official | Research data analysis |
+| news-summary | 📦 sundial-org/awesome-openclaw-skills | Track field-specific news and publications |
+| brave-search | 📦 steipete/agent-scripts | Privacy-friendly academic search (685 installs) |
+| notion-mcp | 📦 dokhacgiakhoa/antigravity-ide | Research notes and knowledge base management |
+| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | Download academic lectures and conference videos |
+
+---
+
+### I2. Educator
+
+> Inherits: Level 0
+
+| Skill | Source | Why for education |
+|-------|--------|-----------------|
+| mentoring-juniors | 📦 github/awesome-copilot | Guided instructional design |
+| pptx | 🅰️ Anthropic Official | Teaching slide decks |
+| docx | 🅰️ Anthropic Official | Teaching materials and exams |
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize educational videos |
+| doc-coauthoring | 🅰️ Anthropic Official | Curriculum design collaboration |
+| elite-powerpoint-designer | 📦 willem4130/claude-code-skills | High-quality teaching decks (1.3K installs) |
+
+---
+
+### I3. Student
+
+> Inherits: Level 0
+
+| Skill | Source | Why for students |
+|-------|--------|----------------|
+| mentoring-juniors | 📦 github/awesome-copilot | Guided learning for new technologies |
+| systematic-debugging | 📦 obra/superpowers | Learning debugging methodology |
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Course and lecture notes |
+| doc-coauthoring | 🅰️ Anthropic Official | Paper and report writing |
+| tdd:test-driven-development | 📦 neolabhq/context-engineering-kit | Learn programming through tests |
+| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | Download educational videos and extract subtitles |
+
+---
+
+## J. Hybrid / Freelance
+
+### J1. Freelancer
+
+> Inherits: Level 0 + technical Skills depending on area of expertise
+
+| Skill | Source | Why for freelancers |
+|-------|--------|-------------------|
+| planner | 📦 am-will/codex-skills | Project scoping and quotes |
+| weekly-report | 📦 claude-office-skills/skills | Client weekly updates |
+| docx | 🅰️ Anthropic Official | Contracts and proposal documents |
+| xlsx | 🅰️ Anthropic Official | Invoicing and financial management |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Personal brand building |
+| internal-comms | 🅰️ Anthropic Official | Client communication templates |
+| frontend-design | 🅰️ Anthropic Official | Portfolio and personal website |
+| trello | 📦 membranedev/application-skills | Project board management (36 installs) |
+| stripe-payments | 📦 claude-office-skills/skills | Payment integration (219 installs) |
+| n8n-workflow-automation | 📦 aaaaqwq/claude-code-skills | Automated workflows (43 installs) |
+
+---
+
+### J2. Developer Advocate
+
+> Inherits: Level 0 + A Level 1 (Engineering Universal)
+
+| Skill | Source | Why for developer advocacy |
+|-------|--------|--------------------------|
+| doc-coauthoring | 🅰️ Anthropic Official | Technical blog posts and tutorials |
+| pptx | 🅰️ Anthropic Official | Conference talks |
+| podcast-to-content-suite | 📦 onewave-ai/claude-skills | Summarize conference and podcast content |
+| baoyu-youtube-transcript | 📦 jimliu/baoyu-skills | Download technical video assets |
+| x-twitter-growth | 📦 alirezarezvani/claude-skills | Amplify technical content on social media |
+| x-research | 📦 rohunvora/x-research-skill | Track tech community discussions |
+| research-by-reddit | 📦 muzhicaomingwang/ai-ideas | Community engagement |
+| developer-advocacy | 📦 jonathimer/devmarketing-skills | DevRel work guide (15 installs) |
+
+---
+
+## Appendix: Recommended External Skill Repositories
+
+The following repositories contain large collections of high-quality, role-organized Skills you can pull in as needed:
+
+| Repository | Stars | Skills | Highlights |
+|------------|-------|--------|------------|
+| alirezarezvani/claude-skills | 6,267 | 205 | **Most comprehensive role coverage**: Engineering (56), Marketing (43), C-Level (28), Product (14), Regulatory Compliance (12), Project Management (6) |
+| anthropics/skills | 99,617 | 16 | **Anthropic Official**: Creative, Development, Enterprise, Document |
+| VoltAgent/awesome-agent-skills | 12,292 | 500+ | **Official team release**: Includes Anthropic/Vercel/Stripe/Cloudflare and more |
+| addyosmani/web-quality-skills | 4,200+ | 2 | **By a Google engineer**: SEO + Accessibility |
+
+**How to install**: `npx skills add <owner/repo@skill-name>`
+
+**Notable highlight**: The `alirezarezvani/claude-skills` repository contains the following subsets that are particularly valuable for specific roles:
+- **Marketing roles**: 43 Skills under `marketing-skill/` covering SEO, CRO, Content, Channels, Growth, Intelligence, and Sales — 7 pods
+- **C-Level roles**: 28 Skills under `c-level-advisor/` covering CEO/CTO/CFO/CMO/COO/CPO/CRO/CHRO/CISO — 9 C-Suite roles
+- **Regulatory compliance**: 12 Skills under `ra-qm-team/` covering GDPR, ISO 13485, FDA, MDR, and more
+- **Product roles**: 14 Skills under `product-team/` including competitive teardowns, experiment design, and roadmap communication
+
+---
+
+## Maintenance Notes
+
+### Update Process
+
+1. **Add a new Skill**: Search with `npx skills find` → evaluate quality → add to the relevant role
+2. **Deprecate a Skill**: Remove promptly or note a replacement
+3. **Add a new role**: Append a new section at the end of the appropriate category, update inheritance relationships
+4. **Update external Skills**: Run `npx skills check` periodically to check for updates
