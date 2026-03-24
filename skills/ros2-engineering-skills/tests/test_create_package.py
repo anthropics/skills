@@ -52,46 +52,48 @@ class TestCppPackage:
 
     def test_cmake_contains_project_name(self, tmp_path):
         run_script("my_robot", "--type", "cpp", "--dest", str(tmp_path))
-        cmake = (tmp_path / "my_robot" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "my_robot" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "project(my_robot)" in cmake
         assert "ament_package()" in cmake
         assert "ament_add_gtest" in cmake
 
     def test_cpp_class_name_camelcase(self, tmp_path):
         run_script("my_cool_robot", "--type", "cpp", "--dest", str(tmp_path))
-        hpp = (tmp_path / "my_cool_robot" / "include" / "my_cool_robot" / "my_cool_robot_node.hpp").read_text()
+        hpp_path = (tmp_path / "my_cool_robot" / "include"
+                    / "my_cool_robot" / "my_cool_robot_node.hpp")
+        hpp = hpp_path.read_text(encoding="utf-8")
         assert "MyCoolRobotNode" in hpp
 
     def test_component_flag(self, tmp_path):
         run_script("my_robot", "--type", "cpp", "--component", "--dest", str(tmp_path))
-        cmake = (tmp_path / "my_robot" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "my_robot" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "rclcpp_components" in cmake
         assert "rclcpp_components_register_node" in cmake
-        cpp = (tmp_path / "my_robot" / "src" / "my_robot_node.cpp").read_text()
+        cpp = (tmp_path / "my_robot" / "src" / "my_robot_node.cpp").read_text(encoding="utf-8")
         assert "RCLCPP_COMPONENTS_REGISTER_NODE" in cpp
 
     def test_lifecycle_launch_file(self, tmp_path):
         run_script("my_robot", "--type", "cpp", "--dest", str(tmp_path))
-        launch = (tmp_path / "my_robot" / "launch" / "bringup.launch.py").read_text()
+        launch = (tmp_path / "my_robot" / "launch" / "bringup.launch.py").read_text(encoding="utf-8")
         assert "LifecycleNode" in launch
         assert "generate_launch_description" in launch
         assert "Copyright" in launch
 
     def test_cpp_files_have_copyright(self, tmp_path):
         run_script("my_robot", "--type", "cpp", "--dest", str(tmp_path))
-        hpp = (tmp_path / "my_robot" / "include" / "my_robot" / "my_robot_node.hpp").read_text()
+        hpp = (tmp_path / "my_robot" / "include" / "my_robot" / "my_robot_node.hpp").read_text(encoding="utf-8")
         assert hpp.startswith("// Copyright")
-        cpp = (tmp_path / "my_robot" / "src" / "my_robot_node.cpp").read_text()
+        cpp = (tmp_path / "my_robot" / "src" / "my_robot_node.cpp").read_text(encoding="utf-8")
         assert cpp.startswith("// Copyright")
-        main = (tmp_path / "my_robot" / "src" / "main.cpp").read_text()
+        main = (tmp_path / "my_robot" / "src" / "main.cpp").read_text(encoding="utf-8")
         assert main.startswith("// Copyright")
-        test = (tmp_path / "my_robot" / "test" / "test_my_robot.cpp").read_text()
+        test = (tmp_path / "my_robot" / "test" / "test_my_robot.cpp").read_text(encoding="utf-8")
         assert test.startswith("// Copyright")
 
     def test_maintainer_args(self, tmp_path):
         run_script("my_robot", "--type", "cpp", "--dest", str(tmp_path),
                    "--maintainer-name", "Test User", "--maintainer-email", "test@example.com")
-        xml = (tmp_path / "my_robot" / "package.xml").read_text()
+        xml = (tmp_path / "my_robot" / "package.xml").read_text(encoding="utf-8")
         assert "Test User" in xml
         assert "test@example.com" in xml
 
@@ -126,28 +128,28 @@ class TestPythonPackage:
 
     def test_entry_point_in_setup(self, tmp_path):
         run_script("my_monitor", "--type", "python", "--dest", str(tmp_path))
-        setup = (tmp_path / "my_monitor" / "setup.py").read_text()
+        setup = (tmp_path / "my_monitor" / "setup.py").read_text(encoding="utf-8")
         assert "my_monitor_node = my_monitor.my_monitor_node:main" in setup
 
     def test_node_class_exists(self, tmp_path):
         run_script("my_monitor", "--type", "python", "--dest", str(tmp_path))
-        node = (tmp_path / "my_monitor" / "my_monitor" / "my_monitor_node.py").read_text()
+        node = (tmp_path / "my_monitor" / "my_monitor" / "my_monitor_node.py").read_text(encoding="utf-8")
         assert "class MyMonitorNode" in node
         assert "def main" in node
         assert "Copyright" in node
 
     def test_python_files_have_copyright(self, tmp_path):
         run_script("my_monitor", "--type", "python", "--dest", str(tmp_path))
-        init = (tmp_path / "my_monitor" / "my_monitor" / "__init__.py").read_text()
+        init = (tmp_path / "my_monitor" / "my_monitor" / "__init__.py").read_text(encoding="utf-8")
         assert "Copyright" in init
-        setup = (tmp_path / "my_monitor" / "setup.py").read_text()
+        setup = (tmp_path / "my_monitor" / "setup.py").read_text(encoding="utf-8")
         assert "Copyright" in setup
-        launch = (tmp_path / "my_monitor" / "launch" / "bringup.launch.py").read_text()
+        launch = (tmp_path / "my_monitor" / "launch" / "bringup.launch.py").read_text(encoding="utf-8")
         assert "Copyright" in launch
 
     def test_standard_launch_file(self, tmp_path):
         run_script("my_monitor", "--type", "python", "--dest", str(tmp_path))
-        launch = (tmp_path / "my_monitor" / "launch" / "bringup.launch.py").read_text()
+        launch = (tmp_path / "my_monitor" / "launch" / "bringup.launch.py").read_text(encoding="utf-8")
         # Python packages use regular Node, not LifecycleNode
         assert "Node(" in launch
         assert "generate_launch_description" in launch
@@ -165,7 +167,7 @@ class TestInterfacesPackage:
 
     def test_cmake_has_rosidl(self, tmp_path):
         run_script("my_interfaces", "--type", "interfaces", "--dest", str(tmp_path))
-        cmake = (tmp_path / "my_interfaces" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "my_interfaces" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "rosidl_generate_interfaces" in cmake
         assert "std_msgs" in cmake
 
@@ -243,9 +245,9 @@ class TestDirectFunctions:
 
     def test_create_cpp_component_direct(self, tmp_path):
         create_cpp_package("test_bot", tmp_path, component=True)
-        cmake = (tmp_path / "test_bot" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "test_bot" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "rclcpp_components_register_node" in cmake
-        cpp = (tmp_path / "test_bot" / "src" / "test_bot_node.cpp").read_text()
+        cpp = (tmp_path / "test_bot" / "src" / "test_bot_node.cpp").read_text(encoding="utf-8")
         assert "RCLCPP_COMPONENTS_REGISTER_NODE" in cpp
 
     def test_create_python_direct(self, tmp_path):
@@ -343,7 +345,7 @@ class TestMainFunction:
              "--maintainer-name", "Bot",
              "--maintainer-email", "bot@test.com"])
         main()
-        xml = (tmp_path / "test_pkg" / "package.xml").read_text()
+        xml = (tmp_path / "test_pkg" / "package.xml").read_text(encoding="utf-8")
         assert "Bot" in xml
         assert "bot@test.com" in xml
 

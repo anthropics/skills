@@ -35,7 +35,7 @@ class TestEvalYamlStructure:
     """Validate eval.yaml structure and completeness."""
 
     def setup_method(self):
-        with open(os.path.join(EVALS_DIR, 'eval.yaml'), 'r') as fh:
+        with open(os.path.join(EVALS_DIR, 'eval.yaml'), 'r', encoding='utf-8') as fh:
             self.config = yaml.safe_load(fh)
 
     def test_has_skill_name(self):
@@ -115,7 +115,7 @@ class TestEvalPromptQuality:
     """Validate that prompt files meet quality standards."""
 
     def setup_method(self):
-        with open(os.path.join(EVALS_DIR, 'eval.yaml'), 'r') as fh:
+        with open(os.path.join(EVALS_DIR, 'eval.yaml'), 'r', encoding='utf-8') as fh:
             self.config = yaml.safe_load(fh)
 
     def test_prompts_have_scenario(self):

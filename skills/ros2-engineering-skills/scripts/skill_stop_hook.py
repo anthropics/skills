@@ -34,7 +34,7 @@ def validate_launch_file_syntax(filepath):
     """Check that a launch file is valid Python and has generate_launch_description."""
     issues = []
     try:
-        with open(filepath, 'r') as fh:
+        with open(filepath, 'r', encoding='utf-8') as fh:
             source = fh.read()
         tree = ast.parse(source, filename=filepath)
         func_names = [
@@ -127,6 +127,27 @@ def main():
             i['severity'] == 'error' for i in all_issues
         ) else 'pass',
     }
+
+    # --- Execution log pattern ---
+    # Append a summary to .skill-runs.log so the next session can see
+    # what was validated and what issues were found last time.
+    log_path = os.path.join(workspace, '.skill-runs.log')
+    try:
+        from datetime import datetime, timezone
+        log_entry = {
+            'timestamp': datetime.now(timezone.utc).isoformat(),
+            'status': result['status'],
+            'issues_count': result['issues_count'],
+            'launch_files_checked': len(find_generated_launch_files(workspace)),
+            'package_xmls_checked': len(find_package_xmls(workspace)),
+            'error_summaries': [
+                i['message'] for i in all_issues if i['severity'] == 'error'
+            ][:5],  # keep log concise
+        }
+        with open(log_path, 'a', encoding='utf-8') as lf:
+            lf.write(json.dumps(log_entry) + '\n')
+    except OSError:
+        pass  # logging is best-effort
 
     print(json.dumps(result, indent=2))
     sys.exit(1 if result['status'] == 'fail' else 0)

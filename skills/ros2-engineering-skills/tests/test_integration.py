@@ -68,7 +68,7 @@ class TestGeneratedPythonCodeValidity:
     def test_python_node_ast_valid(self, tmp_path):
         create_python_package("ast_check", tmp_path)
         node_file = tmp_path / "ast_check" / "ast_check" / "ast_check_node.py"
-        source = node_file.read_text()
+        source = node_file.read_text(encoding="utf-8")
         # Must parse without SyntaxError
         tree = ast.parse(source)
         # Must contain a class definition
@@ -79,7 +79,7 @@ class TestGeneratedPythonCodeValidity:
     def test_python_lifecycle_node_ast_valid(self, tmp_path):
         create_python_package("lc_check", tmp_path, lifecycle=True)
         node_file = tmp_path / "lc_check" / "lc_check" / "lc_check_node.py"
-        source = node_file.read_text()
+        source = node_file.read_text(encoding="utf-8")
         tree = ast.parse(source)
         classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
         assert len(classes) == 1
@@ -95,19 +95,19 @@ class TestGeneratedPythonCodeValidity:
     def test_python_setup_py_valid(self, tmp_path):
         create_python_package("setup_check", tmp_path)
         setup_file = tmp_path / "setup_check" / "setup.py"
-        source = setup_file.read_text()
+        source = setup_file.read_text(encoding="utf-8")
         ast.parse(source)  # Must not raise SyntaxError
 
     def test_python_test_file_valid(self, tmp_path):
         create_python_package("tst_check", tmp_path)
         test_file = tmp_path / "tst_check" / "test" / "test_tst_check.py"
-        source = test_file.read_text()
+        source = test_file.read_text(encoding="utf-8")
         ast.parse(source)
 
     def test_python_lifecycle_test_file_valid(self, tmp_path):
         create_python_package("lc_tst", tmp_path, lifecycle=True)
         test_file = tmp_path / "lc_tst" / "test" / "test_lc_tst.py"
-        source = test_file.read_text()
+        source = test_file.read_text(encoding="utf-8")
         tree = ast.parse(source)
         funcs = [n.name for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
         assert "test_node_creation" in funcs
@@ -120,7 +120,7 @@ class TestGeneratedCppCodePatterns:
 
     def test_cmake_has_required_sections(self, tmp_path):
         create_cpp_package("cpp_check", tmp_path)
-        cmake = (tmp_path / "cpp_check" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "cpp_check" / "CMakeLists.txt").read_text(encoding="utf-8")
         required = [
             "cmake_minimum_required",
             "project(cpp_check)",
@@ -137,7 +137,7 @@ class TestGeneratedCppCodePatterns:
 
     def test_cpp_header_has_lifecycle_interface(self, tmp_path):
         create_cpp_package("lc_cpp", tmp_path)
-        hpp = (tmp_path / "lc_cpp" / "include" / "lc_cpp" / "lc_cpp_node.hpp").read_text()
+        hpp = (tmp_path / "lc_cpp" / "include" / "lc_cpp" / "lc_cpp_node.hpp").read_text(encoding="utf-8")
         assert "LifecycleNode" in hpp
         assert "on_configure" in hpp
         assert "on_activate" in hpp
@@ -147,15 +147,15 @@ class TestGeneratedCppCodePatterns:
 
     def test_cpp_source_passes_node_options(self, tmp_path):
         create_cpp_package("opt_cpp", tmp_path)
-        cpp = (tmp_path / "opt_cpp" / "src" / "opt_cpp_node.cpp").read_text()
+        cpp = (tmp_path / "opt_cpp" / "src" / "opt_cpp_node.cpp").read_text(encoding="utf-8")
         assert 'const rclcpp::NodeOptions & options' in cpp
         assert 'LifecycleNode("opt_cpp", options)' in cpp
 
     def test_cpp_component_has_registration(self, tmp_path):
         create_cpp_package("comp_cpp", tmp_path, component=True)
-        cpp = (tmp_path / "comp_cpp" / "src" / "comp_cpp_node.cpp").read_text()
+        cpp = (tmp_path / "comp_cpp" / "src" / "comp_cpp_node.cpp").read_text(encoding="utf-8")
         assert "RCLCPP_COMPONENTS_REGISTER_NODE" in cpp
-        cmake = (tmp_path / "comp_cpp" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "comp_cpp" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "rclcpp_components_register_node" in cmake
 
     def test_package_xml_structure(self, tmp_path):
@@ -177,7 +177,7 @@ class TestNamespaceRemappingSupport:
 
     def test_python_node_accepts_kwargs(self, tmp_path):
         create_python_package("ns_test", tmp_path)
-        node_source = (tmp_path / "ns_test" / "ns_test" / "ns_test_node.py").read_text()
+        node_source = (tmp_path / "ns_test" / "ns_test" / "ns_test_node.py").read_text(encoding="utf-8")
         # The __init__ must accept **kwargs
         assert "def __init__(self, **kwargs):" in node_source
         # kwargs must be forwarded to super().__init__
@@ -185,7 +185,7 @@ class TestNamespaceRemappingSupport:
 
     def test_lifecycle_python_node_accepts_kwargs(self, tmp_path):
         create_python_package("ns_lc_test", tmp_path, lifecycle=True)
-        node_source = (tmp_path / "ns_lc_test" / "ns_lc_test" / "ns_lc_test_node.py").read_text()
+        node_source = (tmp_path / "ns_lc_test" / "ns_lc_test" / "ns_lc_test_node.py").read_text(encoding="utf-8")
         assert "def __init__(self, **kwargs):" in node_source
         assert "super().__init__('ns_lc_test', **kwargs)" in node_source
 
@@ -207,7 +207,7 @@ class TestPythonLifecyclePackageGeneration:
 
     def test_lifecycle_launch_uses_lifecycle_node(self, tmp_path):
         create_python_package("lc_driver", tmp_path, lifecycle=True)
-        launch = (tmp_path / "lc_driver" / "launch" / "bringup.launch.py").read_text()
+        launch = (tmp_path / "lc_driver" / "launch" / "bringup.launch.py").read_text(encoding="utf-8")
         assert "LifecycleNode" in launch
         assert "ChangeState" in launch
         assert "TRANSITION_CONFIGURE" in launch
@@ -223,7 +223,7 @@ class TestPythonLifecyclePackageGeneration:
 
     def test_lifecycle_node_has_all_callbacks(self, tmp_path):
         create_python_package("lc_driver", tmp_path, lifecycle=True)
-        source = (tmp_path / "lc_driver" / "lc_driver" / "lc_driver_node.py").read_text()
+        source = (tmp_path / "lc_driver" / "lc_driver" / "lc_driver_node.py").read_text(encoding="utf-8")
         for cb in [
             "on_configure", "on_activate", "on_deactivate",
             "on_cleanup", "on_shutdown",
@@ -657,7 +657,7 @@ class TestHardwareInterfacePackage:
 
     def test_cmake_has_hw_interface_deps(self, tmp_path):
         create_hardware_interface_package("hw_test", tmp_path)
-        cmake = (tmp_path / "hw_test" / "CMakeLists.txt").read_text()
+        cmake = (tmp_path / "hw_test" / "CMakeLists.txt").read_text(encoding="utf-8")
         assert "find_package(hardware_interface REQUIRED)" in cmake
         assert "find_package(pluginlib REQUIRED)" in cmake
         assert "pluginlib_export_plugin_description_file" in cmake
@@ -665,7 +665,7 @@ class TestHardwareInterfacePackage:
     def test_header_has_system_interface(self, tmp_path):
         create_hardware_interface_package("hw_test", tmp_path)
         hpp = (tmp_path / "hw_test" / "include" / "hw_test"
-               / "hw_test_hardware.hpp").read_text()
+               / "hw_test_hardware.hpp").read_text(encoding="utf-8")
         assert "SystemInterface" in hpp
         assert "on_init" in hpp
         assert "on_configure" in hpp
@@ -677,7 +677,7 @@ class TestHardwareInterfacePackage:
     def test_source_has_pluginlib_export(self, tmp_path):
         create_hardware_interface_package("hw_test", tmp_path)
         cpp = (tmp_path / "hw_test" / "src"
-               / "hw_test_hardware.cpp").read_text()
+               / "hw_test_hardware.cpp").read_text(encoding="utf-8")
         assert "PLUGINLIB_EXPORT_CLASS" in cpp
         assert "HW_IF_POSITION" in cpp
         assert "HW_IF_VELOCITY" in cpp
@@ -694,7 +694,7 @@ class TestHardwareInterfacePackage:
     def test_xacro_has_plugin(self, tmp_path):
         create_hardware_interface_package("hw_test", tmp_path)
         xacro = (tmp_path / "hw_test" / "config"
-                 / "hw_test.ros2_control.xacro").read_text()
+                 / "hw_test.ros2_control.xacro").read_text(encoding="utf-8")
         assert "ros2_control" in xacro
         assert "hw_test/HwTestHardware" in xacro
 
@@ -751,7 +751,7 @@ class TestFleetLaunchGeneration:
         assert result.returncode == 0
         fleet_launch = tmp_path / "fleet_bot" / "launch" / "fleet.launch.py"
         assert fleet_launch.exists()
-        content = fleet_launch.read_text()
+        content = fleet_launch.read_text(encoding="utf-8")
         assert "robot_1" in content
         assert "robot_2" in content
         assert "robot_3" in content
@@ -814,7 +814,7 @@ class TestSROS2SecurityEnclave:
     def test_readme_has_instructions(self, tmp_path):
         (tmp_path / "my_robot").mkdir()
         _generate_sros2_enclave("my_robot", tmp_path)
-        readme = (tmp_path / "my_robot" / "security" / "README.md").read_text()
+        readme = (tmp_path / "my_robot" / "security" / "README.md").read_text(encoding="utf-8")
         assert "create_keystore" in readme
         assert "create_enclave" in readme
         assert "ROS_SECURITY_ENABLE" in readme
@@ -826,7 +826,7 @@ class TestQoSEventCallbacksInGeneratedCode:
     def test_cpp_header_has_qos_callbacks(self, tmp_path):
         create_cpp_package("qos_node", tmp_path)
         hpp = (tmp_path / "qos_node" / "include" / "qos_node"
-               / "qos_node_node.hpp").read_text()
+               / "qos_node_node.hpp").read_text(encoding="utf-8")
         assert "on_offered_qos_incompatible" in hpp
         assert "on_requested_qos_incompatible" in hpp
         assert "QOSOfferedIncompatibleQoSInfo" in hpp
@@ -834,13 +834,13 @@ class TestQoSEventCallbacksInGeneratedCode:
     def test_cpp_source_has_qos_implementations(self, tmp_path):
         create_cpp_package("qos_node", tmp_path)
         cpp = (tmp_path / "qos_node" / "src"
-               / "qos_node_node.cpp").read_text()
+               / "qos_node_node.cpp").read_text(encoding="utf-8")
         assert "on_offered_qos_incompatible" in cpp
         assert "on_requested_qos_incompatible" in cpp
         assert "last_policy_kind" in cpp
 
     def test_python_node_has_qos_event_handler(self, tmp_path):
         create_python_package("py_qos", tmp_path)
-        src = (tmp_path / "py_qos" / "py_qos" / "py_qos_node.py").read_text()
+        src = (tmp_path / "py_qos" / "py_qos" / "py_qos_node.py").read_text(encoding="utf-8")
         assert "on_qos_event" in src
         assert "QoSEventHandler" in src

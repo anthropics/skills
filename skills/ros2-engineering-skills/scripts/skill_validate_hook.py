@@ -83,7 +83,7 @@ def check_file(filepath):
     if ext not in CHECKABLE_EXTENSIONS:
         return []
     try:
-        with open(filepath, 'r') as fh:
+        with open(filepath, 'r', encoding='utf-8') as fh:
             content = fh.read()
         return check_content(content, filepath)
     except OSError:

@@ -21,7 +21,7 @@ SKILL_MD = os.path.join(SKILL_ROOT, 'SKILL.md')
 
 def _parse_frontmatter(filepath):
     """Extract YAML frontmatter from a markdown file."""
-    with open(filepath, 'r') as fh:
+    with open(filepath, 'r', encoding='utf-8') as fh:
         content = fh.read()
     match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
     assert match is not None, 'SKILL.md must start with YAML frontmatter (---)'
@@ -206,7 +206,7 @@ class TestSkills2FrontmatterEvals:
     def test_eval_prompt_files_are_non_empty(self):
         for ev in self.fm['evals']:
             prompt_path = os.path.join(SKILL_ROOT, ev['prompt'])
-            with open(prompt_path, 'r') as fh:
+            with open(prompt_path, 'r', encoding='utf-8') as fh:
                 content = fh.read().strip()
             assert len(content) > 50, (
                 f'Eval "{ev["name"]}" prompt file is too short '
@@ -216,7 +216,7 @@ class TestSkills2FrontmatterEvals:
     def test_eval_expected_files_are_non_empty(self):
         for ev in self.fm['evals']:
             expected_path = os.path.join(SKILL_ROOT, ev['expected'])
-            with open(expected_path, 'r') as fh:
+            with open(expected_path, 'r', encoding='utf-8') as fh:
                 content = fh.read().strip()
             assert len(content) > 50, (
                 f'Eval "{ev["name"]}" expected file is too short '

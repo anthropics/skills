@@ -39,7 +39,7 @@ def load_eval_config(eval_dir):
         sys.exit(2)
 
     try:
-        with open(config_path, 'r') as fh:
+        with open(config_path, 'r', encoding='utf-8') as fh:
             config = yaml.safe_load(fh)
     except yaml.YAMLError as e:
         print(f'Error: failed to parse eval.yaml: {e}', file=sys.stderr)
@@ -107,7 +107,7 @@ def validate_eval_entry(entry, eval_dir):
 def load_file_content(filepath):
     """Load content from a file, returning empty string on error."""
     try:
-        with open(filepath, 'r') as fh:
+        with open(filepath, 'r', encoding='utf-8') as fh:
             return fh.read()
     except OSError:
         return ''

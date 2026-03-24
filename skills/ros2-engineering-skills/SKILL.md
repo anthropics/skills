@@ -1,19 +1,17 @@
 ---
 name: ros2-engineering-skills
 description: >
-  Comprehensive ROS 2 engineering guide covering workspace setup, node architecture,
-  communication patterns (topics/services/actions with QoS), lifecycle and component nodes,
-  launch composition, tf2/URDF, ros2_control hardware interfaces, real-time constraints,
-  Nav2, MoveIt 2, perception pipelines, simulation (Gazebo/Isaac Sim), security (SROS2/DDS),
-  micro-ROS (MCU/RTOS), multi-robot systems (fleet management/Open-RMF),
-  testing, debugging, deployment, and ROS 1 migration.
-  Trigger whenever the user works on ROS 2 code, packages, launch files, URDF/xacro,
-  DDS configuration, ros2_control, Nav2, MoveIt 2, or any robotics middleware task
-  involving rclcpp, rclpy, colcon, ament, rosbag2, ros2 CLI tools, Gazebo/Isaac Sim,
-  micro-ROS, SROS2, or multi-robot coordination. Also trigger for ROS 1 to ROS 2 migration,
-  cross-compilation, Docker-based ROS 2 workflows, and CI/CD for robotics.
+  TRIGGER when the user: writes or reviews ROS 2 nodes (rclcpp/rclpy), creates packages
+  (colcon/ament), edits launch files (.launch.py), configures QoS or DDS, writes URDF/xacro,
+  implements ros2_control hardware interfaces or controllers, sets up Nav2/MoveIt 2 pipelines,
+  processes sensor data (camera/LiDAR/PCL), works with Gazebo/Isaac Sim, configures SROS2
+  security, develops micro-ROS firmware, manages multi-robot fleets (Open-RMF), debugs with
+  ros2 doctor/rosbag2, deploys via Docker/cross-compilation, or migrates from ROS 1.
+  DO NOT TRIGGER for general C++/Python questions unrelated to ROS 2, non-robotics middleware,
+  or web/mobile development tasks.
 context: fork
 classification: capability
+category: api-reference
 version: 1.0.0
 deprecation-risk: medium
 hooks:
@@ -73,6 +71,11 @@ evals:
 
 # ROS 2 Engineering Skills
 
+> **Single responsibility:** This skill is an **API reference & code template guide**
+> for ROS 2 development. It tells you *how to use ROS 2 APIs correctly* and
+> *what mistakes to avoid*. It does NOT do CI/CD orchestration, incident response,
+> data analysis, or deployment automation — those are separate skill categories.
+
 A progressive-disclosure skill for ROS 2 development — from first workspace to
 production fleet deployment. Each section below gives you the essential decision
 framework; detailed patterns, code templates, and anti-patterns live in the
@@ -80,10 +83,31 @@ framework; detailed patterns, code templates, and anti-patterns live in the
 
 ## How to use this skill
 
-1. Identify what the user is building (see Decision Router below).
-2. Read the matching `references/*.md` file for detailed guidance.
-3. Apply the Core Engineering Principles in every piece of code you generate.
-4. When multiple domains intersect (e.g. Nav2 + ros2_control), read both files.
+**Progressive disclosure — do NOT read everything at once.**
+This skill is structured in layers. Only load what you need for the current task:
+
+1. **This file (SKILL.md)** — always loaded. Contains decision routing, core
+   principles, pitfalls, and anti-patterns. Sufficient for answering quick
+   questions and making architectural decisions.
+2. **`references/*.md`** — load on demand. Use the Decision Router below to
+   pick the 1–2 files relevant to the user's current task. Do NOT read all 20
+   reference files — that wastes context and causes confusion.
+3. **`scripts/`** — run only when the user needs code generation, QoS checking,
+   or launch validation. These are tools, not reading material.
+
+**Steps:**
+1. If `.skill-runs.log` exists in the workspace, read the last few lines to
+   understand what was done and what issues occurred in previous sessions.
+2. Identify what the user is building (see Decision Router below).
+3. Read **only** the matching `references/*.md` file(s) for detailed guidance.
+4. Check the **AI pitfalls** table before generating any code.
+5. Apply the Core Engineering Principles in every artifact you produce.
+6. When multiple domains intersect (e.g. Nav2 + ros2_control), read both files
+   but favor safety > determinism > simplicity when recommendations conflict.
+
+**Execution log:** The Stop hook automatically appends a session summary to
+`.skill-runs.log` in the workspace. This lets you see what was validated last
+time and what issues were found — check it to avoid repeating past mistakes.
 
 ## Decision router
 
@@ -110,14 +134,10 @@ framework; detailed patterns, code templates, and anti-patterns live in the
 | Message types, units, covariance, frame conventions | `references/message-types.md`    |
 | ROS 1 migration, ros1_bridge, hybrid operation    | `references/migration-ros1.md`   |
 
-When a task spans multiple domains, read all relevant files and reconcile
-conflicting recommendations by favoring safety, then determinism, then simplicity.
-
-**Cross-cutting concern — Security:** Security is not isolated to `references/security.md`.
-Every domain should consider its security implications: hardware interfaces need safe
-shutdown on auth failure, DDS topics may need encryption, deployment images need supply
-chain verification, and fleet communication must use TLS. When reviewing code in any
-domain, check whether the data path crosses a trust boundary.
+**Cross-cutting concerns:** Security, error handling, and QoS are not isolated to
+single reference files — apply them whenever the data path crosses a trust boundary,
+a node owns hardware, or communication reliability matters. Use your judgment about
+which cross-cutting concerns apply to the user's specific situation.
 
 ## Core engineering principles
 
@@ -332,6 +352,30 @@ and how it shuts down. It also makes error recovery predictable.
 | No safe command on shutdown | Motors hold last velocity after node exits | Send zero-velocity in `on_deactivate` AND destructor (see `references/hardware-interface.md`) |
 | Dynamic subscriptions with `StaticSingleThreadedExecutor` | New subs are never picked up after `spin()` | Use `SingleThreadedExecutor` or `MultiThreadedExecutor` for dynamic entities |
 | CPU frequency governor left on `powersave`/`ondemand` | 10-100 ms latency spikes in RT path | Set `performance` governor, disable turbo boost (see `references/realtime.md`) |
+
+## AI pitfalls — traps this skill has learned from
+
+These are mistakes AI agents repeatedly make when generating ROS 2 code.
+**Add a new line here every time a failure is discovered in practice.**
+
+| # | Pitfall | What goes wrong | Correct approach |
+|---|---------|----------------|-----------------|
+| 1 | Using `spin_until_future_complete` inside a callback | Deadlocks the executor — the callback blocks waiting for a response that can never be delivered | Use `async_send_request` with a response callback; put the service client in a separate `MutuallyExclusiveCallbackGroup` |
+| 2 | Generating Foxy-era API for Jazzy/Kilted | `node_executable` is deprecated, `export_state_interfaces()` signature changed in ros2_control 4.x | Always check the distro feature matrix above before generating code |
+| 3 | Omitting QoS in publisher/subscriber creation | Defaults silently mismatch — publisher sends but subscriber receives nothing | Always specify QoS explicitly; use the QoS defaults table in Principle 6 |
+| 4 | Creating a `msg/` directory inside a non-interfaces package | Builds locally but fails in CI — interface packages need `rosidl_generate_interfaces` | Put messages in a dedicated `*_interfaces` package |
+| 5 | Hardcoding `/opt/ros/humble/` paths in launch files | Breaks on any other distro or install prefix | Use `FindPackageShare`, `PathJoinSubstitution`, or environment substitutions |
+| 6 | Forgetting `<depend>` tags in `package.xml` | `colcon build` works in overlay but `rosdep install` and Docker builds fail | Declare every `find_package()` / `import` as `<depend>` in package.xml |
+| 7 | Using `time.sleep()` for rate control in rclpy | Blocks the executor thread; timers and subscriptions stop firing | Use `create_timer()` or `Rate` with a `MultiThreadedExecutor` |
+| 8 | Not sending zero-velocity on deactivate/shutdown | Robot holds last commanded velocity when the node crashes | Send zero-command in both `on_deactivate` and the destructor |
+| 9 | Mixing `ament_target_dependencies()` and `target_link_libraries()` | Kilted deprecated `ament_target_dependencies` — mixing causes link errors | Use `target_link_libraries()` with modern CMake targets for Kilted+; `ament_target_dependencies()` for Humble/Jazzy |
+| 10 | Generating `rospy` / `roscpp` code instead of `rclpy` / `rclcpp` | ROS 1 patterns in a ROS 2 context — nothing compiles | This skill is ROS 2 only — always use `rclpy`/`rclcpp` APIs |
+| 11 | Ignoring `use_sim_time` parameter in simulation | Real clock diverges from Gazebo clock — tf lookups fail, controllers drift | Set `use_sim_time:=true` in launch and pass `--clock` to `ros2 bag play` |
+| 12 | Publishing before subscribers connect (no TRANSIENT_LOCAL) | First N messages lost — map, URDF, or initial config never received | Use `TRANSIENT_LOCAL` durability for latched-style data, or publish in `on_activate` with a startup delay |
+
+> **Maintenance rule:** When you encounter a new AI failure pattern while using this
+> skill, append it to this table with the next sequential number. The pitfall list
+> is the single most valuable section for preventing repeated mistakes.
 
 ## Distro-specific migration notes
 

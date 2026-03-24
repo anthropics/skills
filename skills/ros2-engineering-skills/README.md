@@ -4,6 +4,92 @@ Agent skill for production-grade ROS 2 development — from first workspace to f
 
 Works with [Claude Code](https://code.claude.com), [Codex](https://developers.openai.com/codex), [Cursor](https://cursor.sh), [Gemini CLI](https://github.com/google-gemini/gemini-cli), and any agent supporting the [Agent Skills](https://agentskills.io) standard.
 
+## Before / After
+
+> **Prompt:** *"My ROS 2 subscriber isn't receiving any sensor messages. Help me fix it."*
+
+<table>
+<tr>
+<th width="50%">Without this skill</th>
+<th width="50%">With this skill loaded</th>
+</tr>
+<tr>
+<td>
+
+```python
+# "Check your topic name and make sure
+#  the publisher is running"
+sub = node.create_subscription(
+    Image, '/camera/image_raw',
+    callback, 10)
+```
+
+Generic advice — misses the real issue.
+
+</td>
+<td>
+
+```python
+# Diagnoses QoS mismatch (DDS RxO rules):
+# Sensor drivers default to BEST_EFFORT,
+# but queue depth "10" implies RELIABLE.
+from rclpy.qos import qos_profile_sensor_data
+
+sub = node.create_subscription(
+    Image, '/camera/image_raw',
+    callback, qos_profile_sensor_data)
+#          ^^^^^^^^^^^^^^^^^^^^^^
+# BEST_EFFORT + VOLATILE — matches sensor pub
+```
+
+Identifies the root cause, explains DDS Request-vs-Offered semantics, and applies the correct `qos_profile_sensor_data` preset.
+
+</td>
+</tr>
+</table>
+
+> **Prompt:** *"Create a C++ driver package for my LiDAR sensor."*
+
+<table>
+<tr>
+<th width="50%">Without this skill</th>
+<th width="50%">With this skill loaded</th>
+</tr>
+<tr>
+<td>
+
+```
+my_lidar_driver/
+├── src/main.cpp          # rclcpp::Node
+├── CMakeLists.txt
+└── package.xml
+```
+
+Bare `Node`, no lifecycle, no tests, no launch file, `ament_target_dependencies` (deprecated in Kilted).
+
+</td>
+<td>
+
+```
+my_lidar_driver/
+├── include/my_lidar_driver/
+│   └── my_lidar_driver_node.hpp  # LifecycleNode
+├── src/
+│   ├── my_lidar_driver_node.cpp  # on_configure/activate/…
+│   └── main.cpp
+├── launch/bringup.launch.py      # auto-configure + activate
+├── config/params.yaml
+├── test/test_my_lidar_driver.cpp  # gtest
+├── CMakeLists.txt                 # target_link_libraries
+└── package.xml                    # format 3, Apache-2.0
+```
+
+LifecycleNode with managed transitions, launch file with auto-activation, gtest scaffolding, modern CMake (`target_link_libraries` over deprecated `ament_target_dependencies`), and distro-aware defaults.
+
+</td>
+</tr>
+</table>
+
 ## What this is
 
 A `SKILL.md`-based knowledge module that gives AI coding agents deep ROS 2 engineering expertise. Instead of a shallow cheat sheet, it provides:
@@ -101,21 +187,14 @@ ros2-engineering-skills/
 
 ## Current status
 
-**Complete.** All 20 reference files are fully written with production-grade code examples,
-distro-aware guidance (Humble/Jazzy/Kilted/Rolling), anti-pattern documentation, and
-troubleshooting tables. All 3 utility scripts are implemented, tested, and validated.
+**Complete.** 20 reference files, 13,000+ lines of production-grade guidance, 3 utility scripts — all tested and CI-validated.
 
-### Quality metrics
-
-| Metric | Value |
-|--------|-------|
-| Test cases | 137 (unit + property-based + CLI + integration) |
-| Code coverage | 99% (scripts/) |
-| Static analysis | flake8 + mypy clean |
-| Property-based tests | 13 Hypothesis tests verifying DDS RxO invariants |
-| Python versions tested | 3.10, 3.11, 3.12 |
-| ROS 2 distros tested | Humble, Jazzy, Rolling |
-| CI jobs | 4 (lint, unit-tests, ros2-integration, lint-scripts) |
+| | |
+|---|---|
+| **398 tests** | Unit + property-based (Hypothesis) + CLI + integration |
+| **94% coverage** | All scripts verified with flake8 + mypy clean |
+| **3 distros** | Humble, Jazzy, Rolling — tested on Python 3.10 / 3.11 / 3.12 |
+| **4 CI jobs** | Lint, unit-tests, ros2-integration, lint-scripts |
 
 ## Supported ROS 2 distributions
 
