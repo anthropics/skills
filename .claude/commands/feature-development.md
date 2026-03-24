@@ -15,6 +15,7 @@ Standard feature implementation workflow
 ## Common Files
 
 - `**/*.test.*`
+- `**/api/**`
 
 ## Suggested Sequence
 
