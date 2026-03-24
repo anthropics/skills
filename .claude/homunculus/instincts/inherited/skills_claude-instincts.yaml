@@ -1,0 +1,227 @@
+# Instincts generated from https://github.com/Eaprime1/skills_claude
+# Generated: 2026-03-24T23:05:41.152Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: skills_claude-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Commit Length
+
+## Action
+
+Keep commit messages concise (~46 characters)
+
+## Evidence
+
+- Average commit message length: 46 chars
+- Based on 19 commits
+
+---
+id: skills_claude-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Naming Files
+
+## Action
+
+Use kebab-case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: kebab-case
+
+---
+id: skills_claude-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: skills_claude-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: skills_claude-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: skills_claude-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~13x per month
+- Files: **/*.test.*
+
+---
+id: skills_claude-workflow-add-new-skill
+trigger: "when doing add new skill"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Workflow Add New Skill
+
+## Action
+
+Follow the add-new-skill workflow:
+1. Create a new folder under skills/ (or previously examples/, document-skills/, office-examples/).
+2. Add SKILL.md to the new skill folder.
+3. Optionally add LICENSE.txt, scripts/, templates/, examples/, or reference/ subfolders and files as needed.
+4. Update skills/README.md or .claude-plugin/marketplace.json if necessary.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: skills/*/SKILL.md, skills/*/LICENSE.txt, skills/*/scripts/*
+
+---
+id: skills_claude-workflow-update-or-export-example-skills
+trigger: "when doing update or export example skills"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Workflow Update Or Export Example Skills
+
+## Action
+
+Follow the update-or-export-example-skills workflow:
+1. Modify, move, or rename multiple skill folders (e.g., from examples/ to skills/, or document-skills/).
+2. Update SKILL.md and supporting files for each skill.
+3. Update marketplace.json or skills/README.md as needed.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: skills/*/SKILL.md, skills/*/LICENSE.txt, skills/*/scripts/*
+
+---
+id: skills_claude-workflow-package-skills-for-distribution
+trigger: "when doing package skills for distribution"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Workflow Package Skills For Distribution
+
+## Action
+
+Follow the package-skills-for-distribution workflow:
+1. Run packaging scripts or commands.
+2. Generate .skill files in the dist/ directory.
+3. Ensure SKILL.md and all necessary assets are included in each .skill file.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: dist/*.skill, skills/*/SKILL.md, skills/*/scripts/*
+
+---
+id: skills_claude-workflow-update-spec-or-documentation
+trigger: "when doing update spec or documentation"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/Eaprime1/skills_claude
+---
+
+# Skills_claude Workflow Update Spec Or Documentation
+
+## Action
+
+Follow the update-spec-or-documentation workflow:
+1. Edit spec/agent-skills-spec.md or related spec/*.md files.
+2. Optionally split or merge documentation files.
+3. Update README.md with new links or notes.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: spec/agent-skills-spec.md, spec/skill-authoring.md, spec/skill-client-integration.md
+
