@@ -12,6 +12,14 @@ description: |-
   profile me, recommend skills, skills for my role, what skills should I use,
   I'm an engineer, I'm a PM, 了解我, 认识我, 推荐 skill, 用户画像。
 license: MIT
+homepage: https://github.com/eamanc-lab/openclaw-persona-forge
+metadata:
+  author: eamanc
+  version: 2.3.0
+compatibility:
+  platforms:
+    - claude-code
+    - claude-ai
 ---
 
 # OpenClaw User Profiler 🦞🔍
