@@ -1,0 +1,240 @@
+{
+  "version": "1.3",
+  "schemaVersion": "1.0",
+  "generatedBy": "ecc-tools",
+  "generatedAt": "2026-03-24T23:05:29.603Z",
+  "repo": "https://github.com/Eaprime1/skills_claude",
+  "profiles": {
+    "requested": "research",
+    "recommended": "research",
+    "effective": "developer",
+    "requestedAlias": "research",
+    "recommendedAlias": "research",
+    "effectiveAlias": "developer"
+  },
+  "requestedProfile": "research",
+  "profile": "developer",
+  "recommendedProfile": "research",
+  "effectiveProfile": "developer",
+  "tier": "free",
+  "requestedComponents": [
+    "repo-baseline",
+    "workflow-automation",
+    "research-tooling"
+  ],
+  "selectedComponents": [
+    "repo-baseline",
+    "workflow-automation"
+  ],
+  "requestedAddComponents": [],
+  "requestedRemoveComponents": [],
+  "blockedRemovalComponents": [],
+  "tierFilteredComponents": [
+    "research-tooling"
+  ],
+  "requestedRootPackages": [
+    "runtime-core",
+    "workflow-pack",
+    "research-pack"
+  ],
+  "selectedRootPackages": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "requestedPackages": [
+    "runtime-core",
+    "workflow-pack",
+    "research-pack"
+  ],
+  "requestedAddPackages": [],
+  "requestedRemovePackages": [],
+  "selectedPackages": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "packages": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "blockedRemovalPackages": [],
+  "tierFilteredRootPackages": [
+    "research-pack"
+  ],
+  "tierFilteredPackages": [
+    "research-pack"
+  ],
+  "conflictingPackages": [],
+  "dependencyGraph": {
+    "runtime-core": [],
+    "workflow-pack": [
+      "runtime-core"
+    ]
+  },
+  "resolutionOrder": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "requestedModules": [
+    "runtime-core",
+    "workflow-pack",
+    "research-pack"
+  ],
+  "selectedModules": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "modules": [
+    "runtime-core",
+    "workflow-pack"
+  ],
+  "managedFiles": [
+    ".claude/skills/skills_claude/SKILL.md",
+    ".agents/skills/skills_claude/SKILL.md",
+    ".agents/skills/skills_claude/agents/openai.yaml",
+    ".claude/identity.json",
+    ".codex/config.toml",
+    ".codex/AGENTS.md",
+    ".codex/agents/explorer.toml",
+    ".codex/agents/reviewer.toml",
+    ".codex/agents/docs-researcher.toml",
+    ".claude/homunculus/instincts/inherited/skills_claude-instincts.yaml",
+    ".claude/commands/feature-development.md",
+    ".claude/commands/add-new-skill.md",
+    ".claude/commands/update-or-export-example-skills.md"
+  ],
+  "packageFiles": {
+    "runtime-core": [
+      ".claude/skills/skills_claude/SKILL.md",
+      ".agents/skills/skills_claude/SKILL.md",
+      ".agents/skills/skills_claude/agents/openai.yaml",
+      ".claude/identity.json",
+      ".codex/config.toml",
+      ".codex/AGENTS.md",
+      ".codex/agents/explorer.toml",
+      ".codex/agents/reviewer.toml",
+      ".codex/agents/docs-researcher.toml",
+      ".claude/homunculus/instincts/inherited/skills_claude-instincts.yaml"
+    ],
+    "workflow-pack": [
+      ".claude/commands/feature-development.md",
+      ".claude/commands/add-new-skill.md",
+      ".claude/commands/update-or-export-example-skills.md"
+    ]
+  },
+  "moduleFiles": {
+    "runtime-core": [
+      ".claude/skills/skills_claude/SKILL.md",
+      ".agents/skills/skills_claude/SKILL.md",
+      ".agents/skills/skills_claude/agents/openai.yaml",
+      ".claude/identity.json",
+      ".codex/config.toml",
+      ".codex/AGENTS.md",
+      ".codex/agents/explorer.toml",
+      ".codex/agents/reviewer.toml",
+      ".codex/agents/docs-researcher.toml",
+      ".claude/homunculus/instincts/inherited/skills_claude-instincts.yaml"
+    ],
+    "workflow-pack": [
+      ".claude/commands/feature-development.md",
+      ".claude/commands/add-new-skill.md",
+      ".claude/commands/update-or-export-example-skills.md"
+    ]
+  },
+  "files": [
+    {
+      "moduleId": "runtime-core",
+      "path": ".claude/skills/skills_claude/SKILL.md",
+      "description": "Repository-specific Claude Code skill generated from git history."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".agents/skills/skills_claude/SKILL.md",
+      "description": "Codex-facing copy of the generated repository skill."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".agents/skills/skills_claude/agents/openai.yaml",
+      "description": "Codex skill metadata so the repo skill appears cleanly in the skill interface."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".claude/identity.json",
+      "description": "Suggested identity.json baseline derived from repository conventions."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".codex/config.toml",
+      "description": "Repo-local Codex MCP and multi-agent baseline aligned with ECC defaults."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".codex/AGENTS.md",
+      "description": "Codex usage guide that points at the generated repo skill and workflow bundle."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".codex/agents/explorer.toml",
+      "description": "Read-only explorer role config for Codex multi-agent work."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".codex/agents/reviewer.toml",
+      "description": "Read-only reviewer role config focused on correctness and security."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".codex/agents/docs-researcher.toml",
+      "description": "Read-only docs researcher role config for API verification."
+    },
+    {
+      "moduleId": "runtime-core",
+      "path": ".claude/homunculus/instincts/inherited/skills_claude-instincts.yaml",
+      "description": "Continuous-learning instincts derived from repository patterns."
+    },
+    {
+      "moduleId": "workflow-pack",
+      "path": ".claude/commands/feature-development.md",
+      "description": "Workflow command scaffold for feature-development."
+    },
+    {
+      "moduleId": "workflow-pack",
+      "path": ".claude/commands/add-new-skill.md",
+      "description": "Workflow command scaffold for add-new-skill."
+    },
+    {
+      "moduleId": "workflow-pack",
+      "path": ".claude/commands/update-or-export-example-skills.md",
+      "description": "Workflow command scaffold for update-or-export-example-skills."
+    }
+  ],
+  "workflows": [
+    {
+      "command": "feature-development",
+      "path": ".claude/commands/feature-development.md"
+    },
+    {
+      "command": "add-new-skill",
+      "path": ".claude/commands/add-new-skill.md"
+    },
+    {
+      "command": "update-or-export-example-skills",
+      "path": ".claude/commands/update-or-export-example-skills.md"
+    }
+  ],
+  "adapters": {
+    "claudeCode": {
+      "skillPath": ".claude/skills/skills_claude/SKILL.md",
+      "identityPath": ".claude/identity.json",
+      "commandPaths": [
+        ".claude/commands/feature-development.md",
+        ".claude/commands/add-new-skill.md",
+        ".claude/commands/update-or-export-example-skills.md"
+      ]
+    },
+    "codex": {
+      "configPath": ".codex/config.toml",
+      "agentsGuidePath": ".codex/AGENTS.md",
+      "skillPath": ".agents/skills/skills_claude/SKILL.md"
+    }
+  }
+}
