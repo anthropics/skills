@@ -12,6 +12,14 @@ description: |-
   gacha, random lobster, lobster NPC, lobster backstory, lobster persona,
   soul forge, lobster identity, openclaw soul, lobster spirit, lobster profile.
 license: MIT
+homepage: https://github.com/eamanc-lab/openclaw-persona-forge
+metadata:
+  author: eamanc
+  version: 1.0.0
+compatibility:
+  platforms:
+    - claude-code
+    - claude-ai
 ---
 
 # Lobster Soul Forge 🦞🔨
