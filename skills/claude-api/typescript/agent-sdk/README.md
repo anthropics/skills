@@ -187,6 +187,7 @@ for await (const message of query({
         description: "Expert code reviewer for quality and security reviews.",
         prompt: "Analyze code quality and suggest improvements.",
         tools: ["Read", "Glob", "Grep"],
+        // Optional: skills, mcpServers for subagent customization
       },
     },
   },

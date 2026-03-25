@@ -111,7 +111,7 @@ response = client.messages.create(
 
 ## Prompt Caching
 
-Cache large context to reduce costs (up to 90% savings).
+Cache large context to reduce costs (up to 90% savings). **Caching is a prefix match** — any byte change anywhere in the prefix invalidates everything after it. For placement patterns, architectural guidance (frozen system prompt, deterministic tool order, where to put volatile content), and the silent-invalidator audit checklist, read `shared/prompt-caching.md`.
 
 ### Automatic Caching (Recommended)
 
@@ -155,6 +155,16 @@ response = client.messages.create(
     messages=[{"role": "user", "content": "Summarize the key points"}]
 )
 ```
+
+### Verifying Cache Hits
+
+```python
+print(response.usage.cache_creation_input_tokens)  # tokens written to cache (~1.25x cost)
+print(response.usage.cache_read_input_tokens)      # tokens served from cache (~0.1x cost)
+print(response.usage.input_tokens)                 # uncached tokens (full cost)
+```
+
+If `cache_read_input_tokens` is zero across repeated identical-prefix requests, a silent invalidator is at work — `datetime.now()` or a UUID in the system prompt, unsorted `json.dumps()`, or a varying tool set. See `shared/prompt-caching.md` for the full audit table.
 
 ---
 
