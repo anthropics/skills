@@ -230,4 +230,4 @@ cp template/package.json skills/{tool-id}/ # Update package.json with tool-id
 
 ## Support & Questions
 
-See main [README.md](./README.md) for contribution guidelines and support channels.
+See the SKILL.md file for contribution guidelines and support channels.

@@ -577,15 +577,15 @@ status init
 
 ## API Reference
 
-See [API_REFERENCE.md](./API_REFERENCE.md) for detailed API documentation.
+See the SKILL.md file for detailed API documentation.
 
 ## Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md).
+Contributions welcome! Open an issue or pull request.
 
 ## License
 
-MIT - See [LICENSE](./LICENSE) file.
+MIT - See [LICENSE.txt](./LICENSE.txt) file.
 
 ## Attribution
 
