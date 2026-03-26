@@ -5,7 +5,9 @@ description: Use this skill when the user wants to capture, recall, or search pe
 
 # Open Brain — Persistent AI Memory
 
-Open Brain is a self-hosted MCP server that gives AI clients durable, searchable memory using semantic vector search. Thoughts are stored in PostgreSQL with pgvector embeddings, making them retrievable by meaning rather than exact keywords.
+**Source:** https://github.com/NateBJones-Projects/OB1
+
+Open Brain (OB1) is a self-hosted MCP server that gives AI clients durable, searchable memory using semantic vector search. Thoughts are stored in PostgreSQL with pgvector embeddings, making them retrievable by meaning rather than exact keywords.
 
 ## Available Tools
 
