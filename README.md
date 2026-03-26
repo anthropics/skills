@@ -26,6 +26,46 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
 
+## Example Skills
+
+### Creative & Design
+| Skill | Description |
+|---|---|
+| [algorithmic-art](./skills/algorithmic-art) | Generative art using p5.js with seeded randomness, flow fields, and particle systems |
+| [canvas-design](./skills/canvas-design) | Visual design in PNG/PDF — posters, artwork, and static design pieces |
+| [frontend-design](./skills/frontend-design) | Production-grade web UIs: pages, components, dashboards, and HTML artifacts |
+| [slack-gif-creator](./skills/slack-gif-creator) | Animated GIFs optimized for Slack with constraint validation and animation utilities |
+| [theme-factory](./skills/theme-factory) | Apply or generate themes (colors, fonts) across slides, docs, and HTML artifacts |
+
+### Development & Technical
+| Skill | Description |
+|---|---|
+| [mcp-builder](./skills/mcp-builder) | Guide for building MCP servers in Python (FastMCP) or TypeScript to integrate external APIs |
+| [pre-deploy-validator](./skills/pre-deploy-validator) | Pre-deployment flight checks: lint, security scanning, tests, dependency audit, and docs verification |
+| [skill-creator](./skills/skill-creator) | Create, improve, and benchmark skills with evals and description optimization |
+| [web-artifacts-builder](./skills/web-artifacts-builder) | Complex Claude.ai HTML artifacts using React, Tailwind CSS, and shadcn/ui |
+| [webapp-testing](./skills/webapp-testing) | Interact with and test local web apps via Playwright — screenshots, logs, UI verification |
+
+### Enterprise & Communication
+| Skill | Description |
+|---|---|
+| [brand-guidelines](./skills/brand-guidelines) | Apply Anthropic brand colors and typography to any artifact |
+| [doc-coauthoring](./skills/doc-coauthoring) | Structured workflow for co-authoring docs, proposals, specs, and decision documents |
+| [internal-comms](./skills/internal-comms) | Internal communications: status reports, newsletters, FAQs, incident reports, and updates |
+
+## Document Skills
+| Skill | Description |
+|---|---|
+| [docx](./skills/docx) | Create, read, edit, and manipulate Word documents (.docx) |
+| [pdf](./skills/pdf) | Read, combine, split, annotate, fill forms, and create PDF files |
+| [pptx](./skills/pptx) | Create, edit, parse, and manipulate PowerPoint presentations (.pptx) |
+| [xlsx](./skills/xlsx) | Open, edit, create, and convert spreadsheet files (.xlsx, .csv, .tsv) |
+
+## API & SDK Skills
+| Skill | Description |
+|---|---|
+| [claude-api](./skills/claude-api) | Reference docs and patterns for building apps with the Claude API and Anthropic SDKs |
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
