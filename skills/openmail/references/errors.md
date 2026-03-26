@@ -17,7 +17,7 @@ All errors return a consistent JSON structure:
 |--------|------|-------------|------------|
 | 400 | `invalid_mailbox_name` | Mailbox name doesn't meet format requirements | Use lowercase letters, numbers, and hyphens only (e.g. `my-agent`) |
 | 400 | `missing_idempotency_key` | Send endpoint requires `Idempotency-Key` header | Add a UUID header; the CLI does this automatically |
-| 401 | `unauthorized` | Invalid or missing API key | Check `OPENMAIL_API_KEY` is set and starts with `om_live_` or `om_test_` |
+| 401 | `unauthorized` | Invalid or missing API key | Check `OPENMAIL_API_KEY` is set and starts with `om_` |
 | 404 | `not_found` | Resource doesn't exist or doesn't belong to your account | Verify the inbox ID or thread ID is correct for this account |
 | 409 | `address_taken` | Mailbox name or address already in use | Choose a different `--mailbox-name` |
 | 422 | `recipient_suppressed` | Recipient is on the suppression list | The recipient previously unsubscribed or reported spam; do not contact them |
@@ -42,7 +42,7 @@ The API key is invalid or not being loaded. Verify:
 grep OPENMAIL_API_KEY ~/.openclaw/openmail.env
 ```
 
-Re-run setup if the key is wrong or missing.
+The key should start with `om_`. Re-run setup if it is wrong or missing.
 
 ### `cannot read attachment "..."`
 

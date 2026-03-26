@@ -9,7 +9,7 @@
 
 1. Go to [console.openmail.sh](https://console.openmail.sh) and sign up (no credit card required)
 2. Navigate to **Settings > API Keys**
-3. Copy your key — it starts with `om_live_...` (production) or `om_test_...` (testing)
+3. Copy your key — it starts with `om_`
 
 ## Step 2: Install the CLI
 
@@ -26,7 +26,7 @@ openmail --version
 ## Step 3: Run setup
 
 ```bash
-openmail setup --api-key "om_live_..." --mailbox-name "agent" --display-name "My Agent"
+openmail setup --api-key "om_..." --mailbox-name "agent" --display-name "My Agent"
 ```
 
 What setup does:
