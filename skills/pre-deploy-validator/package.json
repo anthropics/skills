@@ -1,0 +1,22 @@
+{
+  "name": "@trystpilot/pre-deploy-validator",
+  "version": "1.0.0",
+  "description": "Pre-deployment flight checks for agent ability verification",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js",
+    "validate": "node index.js"
+  },
+  "keywords": [
+    "deployment",
+    "validation",
+    "agents",
+    "ci-cd",
+    "pre-flight"
+  ],
+  "author": "TrystPilot",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
