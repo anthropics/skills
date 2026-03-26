@@ -6,6 +6,42 @@ author: "TrystPilot Skills"
 tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
 ---
 
+<!--
+  pre-deploy-validator — Pre-Deployment Flight Check Skill
+  =========================================================
+  Runs a suite of automated checks before code is deployed, blocking releases
+  that don't meet quality, security, or completeness standards.
+
+  What it checks (all toggleable via config):
+    • Code Quality    — runs `npm run lint`; flags linting errors
+    • Security        — scans files for hardcoded secrets (API keys, tokens,
+                        passwords) using regex patterns
+    • Tests           — runs `npm test`; fails if the test suite exits non-zero
+    • Dependencies    — runs `npm audit --audit-level=moderate`; warns on
+                        known vulnerabilities
+    • Documentation   — verifies README.md and LICENSE.txt are present
+
+  Output categories:
+    ✅ Passed | ⚠️ Warnings | ❌ Failures | 🔥 Errors
+
+  Exit codes:  0 = all clear  |  1 = failures  |  2 = config error  |  3 = skipped
+
+  Quick start (CLI):
+    node index.js
+
+  Quick start (programmatic):
+    const PreDeployValidator = require('./index');
+    const v = new PreDeployValidator({ failOnWarnings: true });
+    const { success, results } = await v.validate();
+
+  Config file (.pre-deploy-config.json in repo root):
+    { "checks": { "codeQuality": true, "security": true, "tests": true,
+                  "dependencies": true, "documentation": true },
+      "failOn": ["critical", "high"] }
+
+  Requires: Node.js >= 14
+-->
+
 # Pre-Deploy Validator
 
 A comprehensive skill for public agents to conduct pre-deployment flight checks, ensuring code quality, security, and deployment readiness.
