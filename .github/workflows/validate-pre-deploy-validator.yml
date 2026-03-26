@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main, develop ]
     paths:
-      - 'pre-deploy-validator/**'
+      - 'skills/pre-deploy-validator/**'
       - '.github/workflows/validate-pre-deploy-validator.yml'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'pre-deploy-validator/**'
+      - 'skills/pre-deploy-validator/**'
 
 jobs:
   validate-validator:
@@ -24,19 +24,19 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'pre-deploy-validator/package.json'
+          cache-dependency-path: 'skills/pre-deploy-validator/package.json'
 
       - name: Install dependencies
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm ci
 
       - name: Lint code
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm run lint
         continue-on-error: true
 
       - name: Type check
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm run type-check
         continue-on-error: true
 
@@ -47,9 +47,9 @@ jobs:
           from pathlib import Path
 
           config_files = [
-              'pre-deploy-validator/examples/.pdv.json',
-              'pre-deploy-validator/examples/.pdv.advanced.json',
-              'pre-deploy-validator/examples/monorepo.json'
+              'skills/pre-deploy-validator/examples/.pdv.json',
+              'skills/pre-deploy-validator/examples/.pdv.advanced.json',
+              'skills/pre-deploy-validator/examples/monorepo.json'
           ]
 
           for config_file in config_files:
@@ -77,18 +77,18 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'pre-deploy-validator/package.json'
+          cache-dependency-path: 'skills/pre-deploy-validator/package.json'
 
       - name: Install dependencies
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm ci
 
       - name: Run tests
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm test
         continue-on-error: true
 
       - name: Build
-        working-directory: pre-deploy-validator
+        working-directory: skills/pre-deploy-validator
         run: npm run build
         continue-on-error: true
