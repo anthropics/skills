@@ -50,6 +50,62 @@ For each file reviewed:
 - Overall assessment: SHIP IT / FIX FIRST / NEEDS DISCUSSION
 ```
 
+### Phase 2: Regression Tests for Confirmed Bugs
+
+After the code review produces findings, write regression tests that reproduce each BUG finding. This transforms the review from "here are potential bugs" into "here are proven bugs with failing tests."
+
+**Why this matters:** A code review finding without a reproducer is an opinion. A finding with a failing test is a fact. Across multiple codebases (Go, Rust, Python), regression tests written from code review findings have confirmed bugs at a high rate — including data races, cross-tenant data leaks, state machine violations, and silent context loss. The regression tests also serve as the acceptance criteria for fixing the bugs: when the test passes, the bug is fixed.
+
+**How to generate regression tests:**
+
+1. **For each BUG finding**, write a test that:
+   - Targets the exact code path and line numbers from the finding
+   - Fails on the current implementation, confirming the bug exists
+   - Uses mocking/monkeypatching to isolate from external services
+   - Includes the finding description in the test docstring for traceability
+
+2. **Name the test file** `quality/test_regression.*` using the project's language:
+   - Python: `quality/test_regression.py`
+   - Go: `quality/regression_test.go` (or in the relevant package's test directory)
+   - Rust: `quality/regression_tests.rs` or a `tests/regression_*.rs` file in the relevant crate
+   - Java: `quality/RegressionTest.java`
+   - TypeScript: `quality/regression.test.ts`
+
+3. **Each test should document its origin:**
+   ```
+   # Python example
+   def test_webhook_signature_raises_on_malformed_input():
+       """[BUG from 2026-03-26-reviewer.md, line 47]
+       Webhook signature verification raises instead of returning False
+       on malformed signatures, risking 500 instead of clean 401."""
+
+   // Go example
+   func TestRestart_DataRace_DirectFieldAccess(t *testing.T) {
+       // BUG from 2026-03-26-claude.md, line 3707
+       // Restart() writes mutex-protected fields without acquiring the lock
+   }
+   ```
+
+4. **Run the tests and report results** as a confirmation table:
+   ```
+   | Finding | Test | Result | Confirmed? |
+   |---------|------|--------|------------|
+   | Webhook signature raises on malformed input | test_webhook_signature_... | FAILED (expected) | YES — bug confirmed |
+   | Queued messages deleted before processing | test_message_queue_... | FAILED (expected) | YES — bug confirmed |
+   | Thread active check fails open | test_is_thread_active_... | PASSED (unexpected) | NO — needs investigation |
+   ```
+
+5. **If a test passes unexpectedly**, investigate — either the finding was a false positive, or the test doesn't exercise the right code path. Report as NEEDS INVESTIGATION, not as a confirmed bug.
+
+**Language-specific tips:**
+
+- **Go:** Use `go test -race` to confirm data race findings. The race detector is definitive — if it fires, the race is real.
+- **Rust:** Use `#[should_panic]` or assert on specific error conditions. For atomicity bugs, assert on cleanup state after injected failures.
+- **Python:** Use `monkeypatch` or `unittest.mock.patch` to isolate external dependencies. Use `pytest.raises` for exception-path bugs.
+- **Java:** Use Mockito or similar to isolate dependencies. Use `assertThrows` for exception-path bugs.
+
+**Save the regression test output** alongside the code review: if the review is at `quality/code_reviews/2026-03-26-reviewer.md`, the regression tests go in `quality/test_regression.*` and the confirmation results go in the review file as an addendum or in `quality/results/`.
+
 ### Why These Guardrails Matter
 
 These four guardrails often improve AI code review quality by reducing vague and hallucinated findings:
