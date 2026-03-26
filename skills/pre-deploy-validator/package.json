@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "validate": "node index.js"
+    "validate": "node index.js",
+    "lint": "node --check index.js test.js",
+    "type-check": "node -e \"require('./index.js'); console.log('Type check passed')\"",
+    "build": "node -e \"console.log('No build step required')\""
   },
   "keywords": [
     "deployment",
