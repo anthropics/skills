@@ -1,3 +1,11 @@
+---
+name: "pre-deploy-validator"
+description: "Conducts comprehensive pre-deployment flight checks for agent ability verification"
+version: "1.0.0"
+author: "TrystPilot Skills"
+tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
+---
+
 <!--
   pre-deploy-validator — Pre-Deployment Flight Check Skill
   =========================================================
@@ -33,13 +41,6 @@
 
   Requires: Node.js >= 14
 -->
----
-name: "pre-deploy-validator"
-description: "Conducts comprehensive pre-deployment flight checks for agent ability verification"
-version: "1.0.0"
-author: "TrystPilot Skills"
-tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
----
 
 # Pre-Deploy Validator
 
