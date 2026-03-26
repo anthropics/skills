@@ -11,6 +11,9 @@ jobs:
   check-contribution:
     runs-on: ubuntu-latest
     name: Check Skill Contribution Quality
+    permissions:
+      issues: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v5
@@ -32,6 +35,7 @@ jobs:
         run: |
           python3 << 'EOF'
           import json
+          import os
           from pathlib import Path
           import subprocess
 
