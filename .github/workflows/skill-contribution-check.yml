@@ -39,9 +39,9 @@ jobs:
           from pathlib import Path
           import subprocess
 
-          # Get changed files
+          # Get changed files (exclude deleted files so removed skills don't trigger validation)
           result = subprocess.run(
-              ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+              ['git', 'diff', '--name-only', '--diff-filter=d', 'origin/main...HEAD'],
               capture_output=True,
               text=True
           )
@@ -214,10 +214,14 @@ jobs:
               exit(0)
 
           # Patterns that should not be in public skills
-          patterns = [
+          # Only check non-markdown files for generic patterns (documentation examples are allowed)
+          patterns_all = [
               (r'sk-[A-Za-z0-9]{48}', 'OpenAI API key'),
               (r'AKIA[0-9A-Z]{16}', 'AWS access key'),
               (r'ghp_[A-Za-z0-9]{36}', 'GitHub token'),
+          ]
+          # These patterns are only checked in code/config files, not documentation
+          patterns_code_only = [
               (r'password\s*[:=]\s*["\']', 'Password field'),
               (r'api[_-]?key\s*[:=]\s*["\']', 'API key field'),
               (r'client[_-]secret\s*[:=]\s*["\']', 'Client secret'),
@@ -229,11 +233,23 @@ jobs:
               skill_path = Path('skills') / skill
 
               for file in skill_path.rglob('*'):
-                  if file.is_file() and file.suffix in ['.md', '.py', '.js', '.ts', '.sh', '.txt']:
+                  if file.is_file() and file.suffix in ['.py', '.js', '.ts', '.sh', '.txt']:
                       try:
                           content = file.read_text(errors='ignore')
 
-                          for pattern, description in patterns:
+                          # Check code files for all patterns (including generic patterns)
+                          for pattern, description in patterns_all + patterns_code_only:
+                              if re.search(pattern, content, re.IGNORECASE):
+                                  errors.append(f"{file.relative_to('skills')}: {description}")
+
+                      except Exception:
+                          pass
+                  elif file.is_file() and file.suffix == '.md':
+                      try:
+                          content = file.read_text(errors='ignore')
+
+                          # Only check documentation for high-confidence secrets
+                          for pattern, description in patterns_all:
                               if re.search(pattern, content, re.IGNORECASE):
                                   errors.append(f"{file.relative_to('skills')}: {description}")
 

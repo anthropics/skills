@@ -23,21 +23,25 @@
     },
     {
       "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, theme styling, and pre-deployment validation",
+      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, theme styling, pre-deployment validation, ASCII mockups, and developer tools",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/algorithmic-art",
+        "./skills/ascii-mockup",
         "./skills/brand-guidelines",
         "./skills/canvas-design",
         "./skills/doc-coauthoring",
         "./skills/frontend-design",
         "./skills/internal-comms",
         "./skills/mcp-builder",
+        "./skills/mermaid-terminal",
         "./skills/pre-deploy-validator",
+        "./skills/project-status-tool",
         "./skills/skill-creator",
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
+        "./skills/ux-journey-mapper",
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
