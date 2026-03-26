@@ -161,7 +161,7 @@ The first 5 skills are referenced in `.claude-plugin/marketplace.json`:
 }
 ```
 
-Pre-deploy-validator is ready for **npm publication** as `@anthropic-community/pre-deploy-validator` and can be added to marketplace configuration as needed.
+Pre-deploy-validator is included in the `example-skills` marketplace plugin and is additionally ready for **npm publication** as `@anthropic-community/pre-deploy-validator`.
 
 Status: **Ready for extraction and contribution**
 
