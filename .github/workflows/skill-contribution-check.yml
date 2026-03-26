@@ -39,9 +39,9 @@ jobs:
           from pathlib import Path
           import subprocess
 
-          # Get changed files
+          # Get changed files (exclude deleted files so removed skills don't trigger validation)
           result = subprocess.run(
-              ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+              ['git', 'diff', '--name-only', '--diff-filter=d', 'origin/main...HEAD'],
               capture_output=True,
               text=True
           )
