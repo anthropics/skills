@@ -311,7 +311,8 @@ Pillow (PIL)
 - Examples provided for each skill
 
 ### License
-- All skills: Apache 2.0 (identical license files)
+- 5 skills use Apache 2.0 (canvas-design, slack-gif-creator, web-artifacts-builder, mcp-builder, skill-creator)
+- pre-deploy-validator uses MIT (compatible with npm publication)
 - No additional licensing requirements
 - Can be freely distributed with Anthropic's skills
 
