@@ -146,7 +146,7 @@ Inbox object:
 ```json
 {
   "id": "inb_...",
-  "address": "support@example.openmail.sh",
+  "address": "support@openmail.sh",
   "displayName": "Support",
   "createdAt": "2024-01-01T00:00:00.000Z"
 }
