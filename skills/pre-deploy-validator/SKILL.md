@@ -26,6 +26,23 @@ tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
 
   Exit codes:  0 = all clear  |  1 = failures  |  2 = config error  |  3 = skipped
 
+  Deliverable:
+    A structured validation report (console and/or JSON) with:
+      - List of passed checks
+      - List of warnings (non-blocking issues)
+      - List of failures (blocking issues)
+      - List of errors (execution errors)
+      - Overall status: "READY FOR DEPLOYMENT ✅" or "DEPLOYMENT BLOCKED ❌"
+      - Exit code indicating result
+
+  Success metrics:
+    - Zero failures and zero errors in the validation report
+    - All configured checks complete without throwing
+    - Exit code 0 returned by the process
+    - Security scan finds no sensitive patterns in tracked files
+    - Test suite exits 0
+    - No moderate-or-higher vulnerabilities in npm audit
+
   Quick start (CLI):
     node index.js
 
@@ -40,6 +57,38 @@ tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
       "failOn": ["critical", "high"] }
 
   Requires: Node.js >= 14
+
+  ── PR / Merge Checklist ──────────────────────────────────────────────────────
+  Every PR that modifies this skill MUST complete the following before merging:
+
+  Documentation
+    [ ] CHANGELOG.md updated with all changes under the correct version heading
+    [ ] RELEASE_NOTES.md updated if this is a version bump
+    [ ] README.md (skill-level) reflects any new flags, config options, or behaviour
+
+  Versioning
+    [ ] package.json `version` bumped (patch / minor / major per semver)
+    [ ] Version in CHANGELOG.md matches package.json
+
+  Tests
+    [ ] test.js exists and covers all check types (code quality, security,
+        tests, dependencies, documentation)
+    [ ] `npm test` passes with exit code 0
+    [ ] No test files skipped or commented out
+
+  Roadmap / Planning
+    [ ] RELEASE_NOTES.md "What's next" section reviewed and updated
+    [ ] Any completed roadmap items marked done; new items added if applicable
+
+  Marketplace & Integration
+    [ ] .claude-plugin/marketplace.json still references this skill correctly
+    [ ] Root README.md skill table entry is accurate
+
+  Final gate
+    [ ] All items above checked off
+    [ ] PR comment updated to reflect resolved status
+    [ ] No merge until all ❌ items in the PR review comment are cleared
+  ──────────────────────────────────────────────────────────────────────────────
 -->
 
 # Pre-Deploy Validator
