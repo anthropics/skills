@@ -105,6 +105,8 @@ const response = await client.messages.create({
 
 ## Prompt Caching
 
+**Caching is a prefix match** — any byte change anywhere in the prefix invalidates everything after it. For placement patterns, architectural guidance (frozen system prompt, deterministic tool order, where to put volatile content), and the silent-invalidator audit checklist, read `shared/prompt-caching.md`.
+
 ### Automatic Caching (Recommended)
 
 Use top-level `cache_control` to automatically cache the last cacheable block in the request:
@@ -151,6 +153,16 @@ const response2 = await client.messages.create({
   messages: [{ role: "user", content: "Summarize the key points" }],
 });
 ```
+
+### Verifying Cache Hits
+
+```typescript
+console.log(response.usage.cache_creation_input_tokens); // tokens written to cache (~1.25x cost)
+console.log(response.usage.cache_read_input_tokens);     // tokens served from cache (~0.1x cost)
+console.log(response.usage.input_tokens);                // uncached tokens (full cost)
+```
+
+If `cache_read_input_tokens` is zero across repeated identical-prefix requests, a silent invalidator is at work — `Date.now()` or a UUID in the system prompt, non-deterministic key ordering, or a varying tool set. See `shared/prompt-caching.md` for the full audit table.
 
 ---
 
