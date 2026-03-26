@@ -26,6 +26,15 @@ tags: ["deployment", "validation", "agents", "ci-cd", "pre-flight"]
 
   Exit codes:  0 = all clear  |  1 = failures  |  2 = config error  |  3 = skipped
 
+  Deliverable:
+    A structured validation report (console and/or JSON) with:
+      - List of passed checks
+      - List of warnings (non-blocking issues)
+      - List of failures (blocking issues)
+      - List of errors (execution errors)
+      - Overall status: "READY FOR DEPLOYMENT ✅" or "DEPLOYMENT BLOCKED ❌"
+      - Exit code indicating result
+
   Quick start (CLI):
     node index.js
 
