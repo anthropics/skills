@@ -61,7 +61,7 @@ Before reading code examples, determine which language the user is working in:
 | Ruby       | Yes (beta)  | No        | `BaseTool` + `tool_runner` in beta    |
 | cURL       | N/A         | N/A       | Raw HTTP, no SDK features             |
 | C#         | No          | No        | Official SDK                          |
-| PHP        | No          | No        | Official SDK                          |
+| PHP        | Yes (beta)  | No        | `BetaRunnableTool` + `toolRunner()`   |
 
 ---
 
@@ -170,6 +170,18 @@ See `{lang}/claude-api/README.md` (Compaction section) for code examples. Full d
 
 ---
 
+## Prompt Caching (Quick Reference)
+
+**Prefix match.** Any byte change anywhere in the prefix invalidates everything after it. Render order is `tools` → `system` → `messages`. Keep stable content first (frozen system prompt, deterministic tool list), put volatile content (timestamps, per-request IDs, varying questions) after the last `cache_control` breakpoint.
+
+**Top-level auto-caching** (`cache_control: {type: "ephemeral"}` on `messages.create()`) is the simplest option when you don't need fine-grained placement. Max 4 breakpoints per request. Minimum cacheable prefix is ~1024 tokens — shorter prefixes silently won't cache.
+
+**Verify with `usage.cache_read_input_tokens`** — if it's zero across repeated requests, a silent invalidator is at work (`datetime.now()` in system prompt, unsorted JSON, varying tool set).
+
+For placement patterns, architectural guidance, and the silent-invalidator audit checklist: read `shared/prompt-caching.md`. Language-specific syntax: `{lang}/claude-api/README.md` (Prompt Caching section).
+
+---
+
 ## Reading Guide
 
 After detecting the language, read the relevant files based on what the user needs:
@@ -184,6 +196,9 @@ After detecting the language, read the relevant files based on what the user nee
 
 **Long-running conversations (may exceed context window):**
 → Read `{lang}/claude-api/README.md` — see Compaction section
+
+**Prompt caching / optimize caching / "why is my cache hit rate low":**
+→ Read `shared/prompt-caching.md` + `{lang}/claude-api/README.md` (Prompt Caching section)
 
 **Function calling / tool use / agents:**
 → Read `{lang}/claude-api/README.md` + `shared/tool-use-concepts.md` + `{lang}/claude-api/tool-use.md`
@@ -207,8 +222,9 @@ Read the **language-specific Claude API folder** (`{language}/claude-api/`):
 4. **`{language}/claude-api/streaming.md`** — Read when building chat UIs or interfaces that display responses incrementally.
 5. **`{language}/claude-api/batches.md`** — Read when processing many requests offline (not latency-sensitive). Runs asynchronously at 50% cost.
 6. **`{language}/claude-api/files-api.md`** — Read when sending the same file across multiple requests without re-uploading.
-7. **`shared/error-codes.md`** — Read when debugging HTTP errors or implementing error handling.
-8. **`shared/live-sources.md`** — WebFetch URLs for fetching the latest official documentation.
+7. **`shared/prompt-caching.md`** — Read when adding or optimizing prompt caching. Covers prefix-stability design, breakpoint placement, and anti-patterns that silently invalidate cache.
+8. **`shared/error-codes.md`** — Read when debugging HTTP errors or implementing error handling.
+9. **`shared/live-sources.md`** — WebFetch URLs for fetching the latest official documentation.
 
 > **Note:** For Java, Go, Ruby, C#, PHP, and cURL — these have a single file each covering all basics. Read that file plus `shared/tool-use-concepts.md` and `shared/error-codes.md` as needed.
 
