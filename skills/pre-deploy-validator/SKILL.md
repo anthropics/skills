@@ -1,5 +1,5 @@
 ---
-name: "Pre-Deploy Validator"
+name: "pre-deploy-validator"
 description: "Conducts comprehensive pre-deployment flight checks for agent ability verification"
 version: "1.0.0"
 author: "TrystPilot Skills"
