@@ -161,7 +161,7 @@ The first 5 skills are referenced in `.claude-plugin/marketplace.json`:
 }
 ```
 
-Pre-deploy-validator is ready for **npm publication** as `@anthropic-community/pre-deploy-validator` and can be added to marketplace configuration as needed.
+Pre-deploy-validator is included in the `example-skills` marketplace plugin and is additionally ready for **npm publication** as `@anthropic-community/pre-deploy-validator`.
 
 Status: **Ready for extraction and contribution**
 
@@ -202,3 +202,40 @@ All 6 skills have passed comprehensive quality assurance checks:
 7. Code quality: High (including tests and linting)
 
 **Recommendation**: All 6 skills are approved for contribution to the anthropics/skills repository. Pre-deploy-validator is additionally approved for npm publication as `@anthropic-community/pre-deploy-validator`.
+
+---
+
+## Addendum: tools-roadmap Additions (March 26, 2026)
+
+### New Skills Validated
+
+| Skill | SKILL.md | LICENSE | Supporting Files | Status |
+|-------|----------|---------|------------------|--------|
+| mermaid-terminal | ✅ | ✅ MIT | README.md, package.json | **PASS** |
+| project-status-tool | ✅ | ✅ MIT | README.md, package.json | **PASS** |
+| ux-journey-mapper | ✅ | ✅ MIT | README.md, package.json | **PASS** |
+
+### YAML Frontmatter Validation
+
+| Skill | name | description | license | Status |
+|-------|------|-------------|---------|--------|
+| mermaid-terminal | ✅ | ✅ | ✅ | **PASS** |
+| project-status-tool | ✅ | ✅ | ✅ | **PASS** |
+| ux-journey-mapper | ✅ | ✅ | ✅ | **PASS** |
+
+### CI Fix: File Relocation (PR #37)
+
+**Issue**: `RESEARCH_FINDINGS.md` and `TOOL_SCAFFOLD.md` were placed directly in `skills/`, causing the `Check Skill Contribution Quality` CI job to treat them as skill directories and fail with missing `SKILL.md` / `LICENSE.txt` errors.
+
+**Resolution**: Both files relocated to `spec/` where project-level documentation belongs.
+
+| File | Before | After | CI Impact |
+|------|--------|-------|-----------|
+| RESEARCH_FINDINGS.md | `skills/` | `spec/` | ✅ Unblocked |
+| TOOL_SCAFFOLD.md | `skills/` | `spec/` | ✅ Unblocked |
+
+### Updated Summary
+
+**Total skills**: 9 (6 original + 3 new)
+**CI status**: All checks green after file relocation fix
+**Overall Status**: ✅ **READY FOR CONTRIBUTION**
