@@ -315,6 +315,23 @@ To disable: `anthropic.ThinkingConfigParamUnion{OfDisabled: &anthropic.ThinkingC
 
 ---
 
+## Prompt Caching
+
+`System` is `[]TextBlockParam`; set `CacheControl` on the last block to cache tools + system together. For placement patterns and the silent-invalidator audit checklist, see `shared/prompt-caching.md`.
+
+```go
+System: []anthropic.TextBlockParam{{
+    Text:         longSystemPrompt,
+    CacheControl: anthropic.NewCacheControlEphemeralParam(), // default 5m TTL
+}},
+```
+
+For 1-hour TTL: `anthropic.CacheControlEphemeralParam{TTL: anthropic.CacheControlEphemeralTTLTTL1h}`. There's also a top-level `CacheControl` on `MessageNewParams` that auto-places on the last cacheable block.
+
+Verify hits via `resp.Usage.CacheCreationInputTokens` / `resp.Usage.CacheReadInputTokens`.
+
+---
+
 ## Server-Side Tools
 
 Version-suffixed struct names with `Param` suffix. `Name`/`Type` are `constant.*` types — zero value marshals correctly, so `{}` works. Wrap in `ToolUnionParam` with the matching `Of*` field.
