@@ -2,9 +2,12 @@
 name: synthesis-codebase-review
 description: "Enterprise-scale codebase audit methodology with tiered review system (Essential through Mission-Critical). Use when asked to: codebase review, code audit, code review, review codebase, architecture review, security audit, full code review, enterprise review, codebase health check."
 license: "CC0-1.0"
+depends_on: []
 metadata:
   author: "Rajiv Pant"
   version: "1.0.0"
+  source_repo: "github.com/rajivpant/synthesis-skills"
+  source_type: "public"
 ---
 
 # Enterprise-Grade Codebase Review
