@@ -2,9 +2,12 @@
 name: synthesis-pr-review
 description: "Delta review methodology for pull requests in synthesis-coded projects, covering regression risk assessment, root cause analysis, and integration with the adopt-and-adapt workflow. Use when asked to: PR review, pull request, code review, review PR, delta review, review pull request, check PR, evaluate PR."
 license: "CC0-1.0"
+depends_on: ["synthesis-code-integration", "synthesis-codebase-review"]
 metadata:
   author: "Rajiv Pant"
-  version: "1.0.0"
+  version: "1.1.0"
+  source_repo: "github.com/rajivpant/synthesis-skills"
+  source_type: "public"
 ---
 
 # Synthesis PR Review
@@ -48,8 +51,19 @@ A PR review is a delta review — you are evaluating a change against the curren
 - [ ] PR does one thing (not multiple unrelated fixes bundled together)
 - [ ] PR description accurately describes the change and its motivation
 - [ ] If the PR bundles fixes, each fix is clearly identified and could stand alone
+- [ ] Actual code changes match the stated scope in the PR title and ticket
+- [ ] Any expansion beyond the title scope is explicitly justified in the description
+- [ ] Editorial or business decisions embedded in code have stakeholder sign-off
+- [ ] All test files test the feature being implemented, not unrelated features
+- [ ] Test files covering different functionality are flagged for separation into their own PR
 
 **Red flag:** A PR titled "fix X" that also quietly changes Y.
+
+**Red flag:** A PR titled "fix X for component Y" that quietly changes components A through Z. Compare the PR title and ticket scope against the actual file list — discrepancies indicate scope creep.
+
+**Red flag:** Large test additions where test class names or test descriptions do not match the feature being implemented. Test files covering unrelated functionality should move to a separate PR.
+
+**How to catch scope drift:** Compare the PR title and linked ticket against the list of changed files. Every changed file should have a clear connection to the stated scope. If you cannot draw that line, ask the author to explain or split the PR.
 
 ### 2. Root Cause Analysis
 
@@ -123,6 +137,16 @@ When someone presents a root cause analysis — whether from an AI tool, a contr
 
 The synthesis engineer's role is to verify conclusions against system-level understanding. The AI or contributor may have done solid analysis work — but the conclusion is where errors compound.
 
+### When You Use AI to Help Review
+
+If you use an AI coding agent to assist with your own review, apply verification before posting any findings:
+
+- **Verify every "Must fix" finding against the actual code before posting it.** AI agents confidently cite issues that do not exist in the diff. Open the file, read the line, confirm the problem is real.
+- **Check import statements yourself.** AI agents frequently misread imports across branches, reporting missing imports that exist or present imports that were removed. Verify against the branch being reviewed.
+- **Validate scope claims against the diff file list.** If the AI says "this PR changes the authentication flow," confirm that authentication-related files actually appear in the diff.
+- **Run the agent's suggested test scenario mentally.** Walk through the code path the AI describes. If the scenario requires a condition that cannot occur given the actual code, the finding is invalid.
+- **Standard before posting AI-assisted findings:** "I have verified this against the actual code." If you cannot honestly say that, do not post the finding.
+
 ---
 
 ## The Review Process
@@ -157,6 +181,76 @@ In addition to everything above, evaluate:
   - **Consider** — suggestion for improvement, not blocking
   - **Nit** — style or preference, take it or leave it
 - **Acknowledge what is good.** Name specific things done well. This reinforces patterns you want to see again.
+
+### Review Comment Format
+
+Use a structured format for lead integration reviews. This makes it clear what blocks merge, what is advisory, and gives contributors numbered labels for threaded discussion.
+
+```
+## Lead Integration Review
+
+**Verdict:** Approve / Request Changes
+
+### Must Fix
+- [M1] Description of blocking issue with file and line reference
+- [M2] ...
+
+### Should Fix
+- [S1] Description of non-blocking issue that should be addressed soon
+- [S2] ...
+
+### Consider
+- [C1] Suggestion for improvement
+- [C2] ...
+
+### Nit
+- [N1] Style or minor preference
+- [N2] ...
+
+### What's Good
+- Specific thing done well and why it matters
+- ...
+```
+
+**Why this structure matters:**
+
+- **Verdict at top** — the contributor immediately knows the overall status without reading every comment first.
+- **Numbered labels** (M1, S1, C1, N1) — enable precise threaded discussion. "Regarding M2, here is why I chose that approach" is clearer than "regarding your second comment."
+- **Severity tiers** — contributors know exactly what blocks merge and what is advisory. This reduces back-and-forth and prevents important issues from getting lost among nits.
+
+Not every review needs every section. Omit empty sections. For small, clean PRs, a short "Approve — looks good, one nit" is fine. Reserve the full template for substantive reviews.
+
+---
+
+## Project-Specific Extension Points
+
+Every project has conventions that go beyond language syntax and framework patterns. A PR review that only checks generic code quality will miss violations that matter to the project.
+
+### Checking for Project-Level Conventions
+
+Before starting a review, check whether the project has:
+
+1. **A project-level CLAUDE.md or equivalent configuration** — These files often encode naming rules, terminology requirements, deployment constraints, and other conventions that are not enforced by linters.
+2. **Project-level review skills or checklists** — Some projects define their own review criteria that supplement this skill.
+3. **Convention debt patterns** — Recurring violations that the project is actively trying to eliminate.
+
+### The Convention Violation Cascade
+
+Convention violations rarely appear in isolation. One violation often signals others:
+
+- **UI text conventions** — If a PR uses the wrong product name in one place, check every user-facing string in the diff. Projects with white-labeling, multi-tenant branding, or specific terminology rules are especially vulnerable.
+- **API and client conventions** — If a PR introduces an API endpoint that does not follow the project's naming scheme, check whether the corresponding client code, error messages, and documentation also diverge.
+- **Framework conventions** — If a PR handles state management differently from the rest of the codebase, check whether error handling, data fetching, and component structure also diverge in the same PR.
+- **Messaging rules** — If the project has rules about how errors, notifications, or status messages are worded, check every new string in the diff against those rules.
+
+### Convention Review Checklist
+
+- [ ] Checked for project-level CLAUDE.md or equivalent convention files
+- [ ] Checked for project-specific review skills or checklists
+- [ ] All user-facing text follows project terminology and branding rules
+- [ ] API naming follows the project's established conventions
+- [ ] New patterns are consistent with the project's framework usage
+- [ ] If one convention violation was found, checked the full diff for related violations
 
 ---
 
@@ -203,6 +297,18 @@ When a PR passes review and is ready for integration:
 3. **If the PR needs follow-up work** — merge what is ready, create tickets for the remaining work, and document the dependency
 
 The review findings feed directly into the integration plan.
+
+### Post-Merge Verification
+
+PR review is a prevention mechanism — it catches issues before they reach the main branch. Post-merge verification is a detection mechanism — it confirms the integrated result actually works as expected.
+
+After merging a PR (especially one that required adaptation):
+
+- **Check whether the project has a post-merge verification protocol.** Many synthesis-coded projects define verification steps that run after integration — build checks, smoke tests, deployment validation, or manual verification checklists.
+- **Flag overlapping files proactively.** If the PR touched files that other in-flight PRs also modify, alert the team so post-merge verification covers the interaction.
+- **Remind the integrator to run the post-merge protocol.** It is easy to forget verification after a clean merge. Build the habit of treating merge as "step 1 of 2" — merge, then verify.
+
+Prevention and detection are complementary. A thorough PR review reduces the chance of post-merge issues. A thorough post-merge verification catches what review missed — especially integration effects that only manifest when the change combines with the rest of the codebase.
 
 ---
 
