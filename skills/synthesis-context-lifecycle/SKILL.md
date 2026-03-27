@@ -2,9 +2,12 @@
 name: synthesis-context-lifecycle
 description: "Three-tier context architecture for managing AI working memory across long-running projects. Use when asked to: manage context, project context, session management, context lifecycle, working memory, archival, archive sessions, context maintenance, garbage collection for context, tiered context."
 license: "CC0-1.0"
+depends_on: []
 metadata:
   author: "Rajiv Pant"
   version: "1.0.0"
+  source_repo: "github.com/rajivpant/synthesis-skills"
+  source_type: "public"
 ---
 
 # Context Lifecycle Management
