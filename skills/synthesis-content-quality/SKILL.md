@@ -1,19 +1,24 @@
 ---
 name: synthesis-content-quality
 description: >
-  A 27-point quality framework for evaluating and improving AI-assisted content.
+  A 32-point quality framework for evaluating and improving AI-assisted content.
+  Covers AI slop detection, hyperbolic patterns, scenario fingerprinting in
+  anonymized examples, and operational confidentiality exposure.
   Use for content quality, AI content, quality check, writing quality, editorial
   review, content review, AI slop detection, content improvement, and publishing
   standards.
 license: CC0-1.0
+depends_on: ["synthesis-fact-checking"]
 metadata:
   author: Rajiv Pant
-  version: 1.0.0
+  version: 2.0.0
+  source_repo: "github.com/rajivpant/synthesis-skills"
+  source_type: "public"
 ---
 
 # Content Quality
 
-A systematic methodology for developing high-quality AI-assisted content and identifying content that falls short. This framework defines 27 criteria organized into confidence tiers for evaluating whether AI-assisted content meets professional publishing standards.
+A systematic methodology for developing high-quality AI-assisted content and identifying content that falls short. This framework defines 32 criteria organized into confidence tiers for evaluating whether AI-assisted content meets professional publishing standards.
 
 ## When to Use This Skill
 
@@ -101,6 +106,20 @@ Each criterion is tagged with its confidence tier: **[HIGH]**, **[MED]**, or **[
 
 27. **Superficial Depth Without Expertise** [MED] -- Covering topics broadly without demonstrating actual understanding. Restating common knowledge, using technical terms superficially, avoiding nuance, lacking case studies.
 
+### Hyperbolic and Dramatic Patterns
+
+28. **Hyperbolic Subheadings and Section Titles** [MED] -- Subheadings that inflate significance: "The word that changed everything," "A game-changing approach," "The revolutionary insight." Fix: subheadings should describe what the section contains, not advertise it. Use specific, factual titles.
+
+29. **Dramatic Fragment Construction** [MED] -- Short dramatic sentences or fragments used for artificial emphasis: "And it was a disaster." "Everything changed." "The results were stunning." Fix: let the content create impact through specificity and evidence, not through theatrical sentence structure. One or two per article for genuine rhetorical effect is fine; a pattern of them is AI-style pacing.
+
+30. **Borrowed Canonical Examples** [MED] -- Using the same illustrative examples that appear in every article on a topic: "A jet engine is complicated; a market is complex" (Cynefin), "the bus route that nobody rides" (design thinking), "the restaurant with great food but no customers" (systems thinking). These signal that the writer is summarizing a field rather than working in it. Fix: use examples from your own experience or construct novel ones.
+
+### Confidentiality and Exposure Risks
+
+31. **Scenario Fingerprinting in "Anonymized" Examples** [HIGH] -- Removing company names while keeping the scenario, specific numbers, stakeholder dynamics, vocabulary, and industry context. The scenario IS the identifier — names are the least important part. A story about "a content platform used by journalists" where you "changed fourteen components" from "generate" to "draft" is identifiable to anyone who knows the author's work. Fix: apply the four-test protocol: (1) Outsider test — could a stranger narrow this to a small set of companies? (2) Insider test — does this confirm something an insider suspected? (3) Adversary test — could a reporter use this as evidence? (4) Irony test — does publishing this undermine the thing the example describes protecting?
+
+32. **Operational Decisions Presented as Teaching Material** [HIGH] -- Internal product strategy decisions, risk mitigation choices, and confidential operational changes described as case studies — even without names. If the decision was made to manage risk, describing it publicly re-creates the risk. Fix: use genuinely universal patterns, publicly known examples from other companies (with attribution), fictional scenarios clearly marked as illustrative, or the author's personal methodology (which is already public).
+
 For detailed explanations, examples, and fix guidance for each criterion, see [references/detailed-criteria.md](references/detailed-criteria.md).
 
 ## Confidence-Based Evaluation Process
@@ -161,6 +180,25 @@ When using AI to assist content creation, revise through these five passes:
 - "not only... but also," "it's not just X, it's Y"
 - "Moreover," "Furthermore," "Additionally," "Nevertheless"
 - "In summary," "In conclusion," "Overall," "In essence"
+
+### High-Risk Subheading Patterns
+
+- "The X that changed everything"
+- "A game-changing approach to..."
+- "The revolutionary/transformative..."
+- "Why X will never be the same"
+- "The surprising truth about..."
+- "What nobody tells you about..."
+
+### Anonymization Checks (Before Publishing)
+
+- [ ] Outsider test: could a stranger narrow this to a small set of companies?
+- [ ] Insider test: does this confirm something an insider suspected?
+- [ ] Adversary test: could a reporter use this as evidence?
+- [ ] Irony test: does publishing this undermine what the example describes protecting?
+- [ ] Are specific numbers (14 components, 6 engineers) identifying?
+- [ ] Are stakeholder dynamics (journalists worried about AI) identifying?
+- [ ] Are vocabulary choices (exact terminology changes) identifying?
 
 ### Structural Checks
 
