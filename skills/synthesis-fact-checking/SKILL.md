@@ -2,9 +2,12 @@
 name: synthesis-fact-checking
 description: "Systematic fact-checking process for verifying claims in articles and blog posts, particularly those synthesized from multiple AI deep-research outputs. Use when asked to: fact-check, verify claims, verify sources, check accuracy, citation verification, review factual accuracy, validate references."
 license: "CC0-1.0"
+depends_on: ["synthesis-content-quality"]
 metadata:
   author: "Rajiv Pant"
   version: "1.0.0"
+  source_repo: "github.com/rajivpant/synthesis-skills"
+  source_type: "public"
 ---
 
 # Fact-Check Process for Blog Post Writing
