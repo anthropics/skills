@@ -1,9 +1,9 @@
 ---
 name: quality-playbook
-description: "Explore any codebase from scratch and generate six quality artifacts: a quality constitution (QUALITY.md), spec-traced functional tests, a code review protocol with regression test generation, an integration testing protocol, a multi-model spec audit (Council of Three), and an AI bootstrap file (AGENTS.md). Works with any language (Python, Java, Scala, TypeScript, Go, Rust, etc.). Use this skill whenever the user asks to set up a quality playbook, generate functional tests from specifications, create a quality constitution, build testing protocols, audit code against specs, or establish a repeatable quality system for a project. Also trigger when the user mentions 'quality playbook', 'spec audit', 'Council of Three', 'fitness-to-purpose', 'coverage theater', or wants to go beyond basic test generation to build a full quality system grounded in their actual codebase."
+description: "Explore any codebase from scratch and generate six quality artifacts: a quality constitution (QUALITY.md), spec-traced functional tests, a code review protocol with regression test generation, an integration testing protocol, a multi-model spec audit (Council of Three), and an AI bootstrap file (AGENTS.md). Includes state machine completeness analysis and missing safeguard detection. Works with any language (Python, Java, Scala, TypeScript, Go, Rust, etc.). Use this skill whenever the user asks to set up a quality playbook, generate functional tests from specifications, create a quality constitution, build testing protocols, audit code against specs, or establish a repeatable quality system for a project. Also trigger when the user mentions 'quality playbook', 'spec audit', 'Council of Three', 'fitness-to-purpose', 'coverage theater', or wants to go beyond basic test generation to build a full quality system grounded in their actual codebase."
 license: Complete terms in LICENSE.txt
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   author: Andrew Stellman
   github: https://github.com/andrewstellman/
 ---
@@ -13,7 +13,7 @@ metadata:
 **When this skill starts, display this banner before doing anything else:**
 
 ```
-Quality Playbook v1.1.0 — by Andrew Stellman
+Quality Playbook v1.2.0 — by Andrew Stellman
 https://github.com/andrewstellman/
 ```
 
@@ -158,6 +158,21 @@ This is the most important step. Search for defensive code patterns — each one
 
 Minimum bar: at least 2–3 defensive patterns per core source file. If you find fewer, you're skimming — read function bodies, not just signatures.
 
+### Step 5a: Trace State Machines
+
+If the project has any kind of state management — status fields, lifecycle phases, workflow stages, mode flags — trace the state machine completely. This catches a category of bugs that defensive pattern analysis alone misses: states that exist but aren't handled.
+
+**How to find state machines:** Search for status/state fields in models, enums, or constants (e.g., `status`, `state`, `phase`, `mode`). Search for guards that check status before allowing actions (e.g., `if status == "running"`, `match self.state`). Search for state transitions (assignments to status fields).
+
+**For each state machine you find:**
+
+1. **Enumerate all possible states.** Read the enum, the constants, or grep for every value the field is assigned. List them all.
+2. **For each consumer of state** (UI handlers, API endpoints, control flow guards), check: does it handle every possible state? A `switch`/`match` without a meaningful default, or an `if/elif` chain that doesn't cover all states, is a gap.
+3. **For each state transition**, check: can you reach every state? Are there states you can enter but never leave? Are there states that block operations that should be available?
+4. **Record gaps as findings.** A status guard that allows action X for "running" but not for "stuck" is a real bug if the user needs to perform action X on stuck processes. A process that enters a terminal state but never triggers cleanup is a real bug.
+
+**Why this matters:** State machine gaps produce bugs that are invisible during normal operation but surface under stress or edge conditions — exactly when you need the system to work. A batch processor that can't be killed when it's in "stuck" status, or a watcher that never self-terminates after all work completes, or a UI that refuses to resume a "pending" run, are all symptoms of incomplete state handling. These bugs don't show up in defensive pattern analysis because the code isn't defending against them — it's simply not handling them at all.
+
 ### Step 5b: Map Schema Types
 
 If the project has a validation layer (Pydantic models in Python, JSON Schema, TypeScript interfaces/Zod schemas, Java Bean Validation annotations, Scala case class codecs), read the schema definitions now. For every field you found a defensive pattern for, record what the schema accepts vs. rejects.
@@ -179,6 +194,8 @@ Every project has a different failure profile. This step uses **two sources** �
 - "What produces correct-looking output that is actually wrong?" — This is the most dangerous class of bug: output that passes all checks but is subtly corrupted.
 - "What happens at 10x scale that doesn't happen at 1x?" — Chunk boundaries, rate limits, timeout cascading, memory pressure.
 - "What happens when this process is killed at the worst possible moment?" — Mid-write, mid-transaction, mid-batch-submission.
+- "What information does the user need before committing to an irreversible or expensive operation?" — Pre-run cost estimates, confirmation of scope (especially when fan-out or expansion will multiply the work), resource warnings. If the system can silently commit the user to hours of processing or significant cost without showing them what they're about to do, that's a missing safeguard. Search for operations that start long-running processes, submit batch jobs, or trigger expansion/fan-out — and check whether the user sees a preview, estimate, or confirmation with real numbers before the point of no return.
+- "What happens when a long-running process finishes — does it actually stop?" — Polling loops, watchers, background threads, and daemon processes that run until completion should have explicit termination conditions. If the loop checks "is there more work?" but never checks "is all work done?", it will run forever after completion. This is especially common in batch processors and queue consumers.
 
 Generate realistic failure scenarios from this knowledge. You don't need to have observed these failures — you know from training that they happen to systems of this type. Write them as **architectural vulnerability analyses** with specific quantities and consequences. Frame each as "this architecture permits the following failure mode" — not as a fabricated incident report. Use concrete numbers to make the severity non-negotiable: "If the process crashes mid-write during a 10,000-record batch, `save_state()` without an atomic rename pattern will leave a corrupted state file — the next run gets JSONDecodeError and cannot resume without manual intervention." Then ground them in the actual code you explored: "Read persistence.py line ~340 (save_state): verify temp file + rename pattern."
 

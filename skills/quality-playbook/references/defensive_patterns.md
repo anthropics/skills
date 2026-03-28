@@ -133,8 +133,69 @@ fn test_defensive_pattern_name() {
 }
 ```
 
+## State Machine Patterns
+
+State machines are a special category of defensive pattern. When you find status fields, lifecycle phases, or mode flags, trace the full state machine — see SKILL.md Step 5a for the complete process.
+
+**How to find state machines:**
+
+| Language | Grep pattern |
+|---|---|
+| Python | `status`, `state`, `phase`, `mode`, `== "running"`, `== "pending"` |
+| Java | `enum.*Status`, `enum.*State`, `.getStatus()`, `switch.*status` |
+| Scala | `sealed trait.*State`, `case object`, `status match` |
+| TypeScript | `status:`, `state:`, `Status =`, `switch.*status` |
+| Go | `Status`, `State`, `type.*Phase`, `switch.*status` |
+| Rust | `enum.*State`, `enum.*Status`, `match.*state` |
+
+**For each state machine found:**
+
+1. List every possible state value (read the enum or grep for assignments)
+2. For each handler/consumer that checks state, verify it handles ALL states
+3. Look for states you can enter but never leave (terminal state without cleanup)
+4. Look for operations that should be available in a state but are blocked by an incomplete guard
+
+**Converting state machine gaps to scenarios:**
+
+```markdown
+### Scenario N: [Status] blocks [operation]
+
+**Requirement tag:** [Req: inferred — from handler() status guard]
+
+**What happened:** The [handler] only allows [operation] when status is "[allowed_states]", but the system can enter "[missing_state]" status (e.g., due to [condition]). When this happens, the user cannot [operation] and has no workaround through the interface.
+
+**The requirement:** [operation] must be available in all states where the user would reasonably need it, including [missing_state].
+
+**How to verify:** Set up a [entity] in "[missing_state]" status. Attempt [operation]. Assert it succeeds or provides a clear error with a workaround.
+```
+
+## Missing Safeguard Patterns
+
+Search for operations that commit the user to expensive, irreversible, or long-running work without adequate preview or confirmation:
+
+| Pattern | What to look for |
+|---|---|
+| Pre-commit information gap | Operations that start batch jobs, fan-out expansions, or API calls without showing estimated cost, scope, or duration |
+| Silent expansion | Fan-out or multiplication steps where the final work count isn't known until runtime, with no warning shown |
+| No termination condition | Polling loops, watchers, or daemon processes that check for new work but never check whether all work is done |
+| Retry without backoff | Error handling that retries immediately or on a fixed interval without exponential backoff, risking rate limit floods |
+
+**Converting missing safeguards to scenarios:**
+
+```markdown
+### Scenario N: No [safeguard] before [operation]
+
+**Requirement tag:** [Req: inferred — from init_run()/start_watch() behavior]
+
+**What happened:** [Operation] commits the user to [consequence] without showing [missing information]. In practice, a [example] fanned out from [small number] to [large number] units with no warning, resulting in [cost/time consequence].
+
+**The requirement:** Before committing to [operation], display [safeguard] showing [what the user needs to see].
+
+**How to verify:** Initiate [operation] and assert that [safeguard information] is displayed before the point of no return.
+```
+
 ## Minimum Bar
 
 You should find at least 2–3 defensive patterns per source file in the core logic modules. If you find fewer, read function bodies more carefully — not just signatures and comments.
 
-For a medium-sized project (5–15 source files), expect to find 15–30 defensive patterns total. Each one should produce at least one boundary test.
+For a medium-sized project (5–15 source files), expect to find 15–30 defensive patterns total. Each one should produce at least one boundary test. Additionally, trace at least one state machine if the project has status/state fields, and check at least one long-running operation for missing safeguards.
