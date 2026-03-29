@@ -54,28 +54,32 @@ If the question fits neatly in one domain, use the domain skill. Use deep resear
    - `research_state.json` -- working memory (see [references/research-loop.md](references/research-loop.md))
    - `{topic}_deep_research.md` -- report file initialized with template from Output Format below
 
-### Phase 2: Broad Search
+### Phase 2: Exhaustive Search
 
-Run 5-10 tool calls across complementary databases. Always use the discover-inspect-execute pattern:
+You have 1,900+ tools. Use them. Don't sample -- exhaust the relevant tool space.
+
+**Discovery**: For each entity, run multiple discovery queries to find ALL relevant tools:
 
 ```
-1. grep_tools(pattern="relevant keyword") or find_tools(query="what I need")
-2. get_tool_info(tool_names="discovered_tool")  -- NEVER skip this
-3. execute_tool(tool_name="discovered_tool", arguments={...})
+1. grep_tools(pattern="BRCA1")          -- tools mentioning the entity
+2. grep_tools(pattern="gene")           -- tools for this entity type
+3. find_tools(query="gene function")    -- semantic search
+4. find_tools(query="protein target")   -- related concepts
+5. list_tools(mode="by_category")       -- browse for tools discovery missed
 ```
 
-Typical first-pass tools by entity type:
+**Execution**: For every discovered tool that could have relevant data:
 
-| Entity in query | Start with |
-|----------------|------------|
-| Gene/protein | OpenTargets, STRING, UniProt, PubMed |
-| Drug/compound | ChEMBL, PubChem, ClinicalTrials, FAERS |
-| Disease | OpenTargets, ClinicalTrials, PubMed, HPO |
-| Pathway | KEGG, Reactome, OpenTargets |
-| Company | SEC EDGAR, ClinicalTrials, PubMed, FDA |
-| Variant | ClinVar, CIViC, gnomAD, GWAS Catalog |
+```
+1. get_tool_info(tool_names="tool_name")  -- NEVER skip this
+2. execute_tool(tool_name="tool_name", arguments={...})
+```
 
-After each search: extract new entities, record in research_state.json, update report.
+**Ordering**: Work through tools by evidence tier -- T1 first (regulatory, curated), then T2 (peer-reviewed), then T3/T4. This way the strongest evidence anchors your understanding before you layer in weaker signals.
+
+**Scope**: A thorough investigation of a single gene should hit 20-40 tools. A multi-entity question (gene + drug + disease) should hit 50-100. Don't stop at the first few results -- the 30th tool call might reveal the connection that ties everything together.
+
+After each batch: extract new entities, record in research_state.json, update report. New entities trigger new tool discovery rounds.
 
 ### Phase 3: Deepen and Cross-Reference
 

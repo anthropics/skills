@@ -88,6 +88,11 @@ File: `research_state.json` in the user's output directory (same as report).
     }
   ],
 
+  "tools_discovered": [
+    {"tool": "PubMed_search_articles", "found_via": "grep_tools('pubmed')", "relevant": true, "health": "live"},
+    {"tool": "BrokenTool_xyz", "found_via": "find_tools('gene function')", "relevant": true, "health": "broken", "fallback": "PubMed_search_articles"}
+  ],
+
   "tools_used": [
     {"tool": "PubMed_search_articles", "query": "BRCA1 PARP inhibitor", "result_count": 15, "tier": "T2", "iteration": 1},
     {"tool": "OpenTargets_get_associated_drugs", "query": "ENSG00000012048", "result_count": 8, "tier": "T1", "iteration": 2}
@@ -97,15 +102,17 @@ File: `research_state.json` in the user's output directory (same as report).
 
 ## Iteration Strategy
 
-| Iteration | Focus | Typical tools |
-|-----------|-------|---------------|
-| 1 | Broad search: identify entities, get overview | PubMed, OpenTargets, OpenAlex, find_tools |
-| 2 | Resolve IDs, deepen entity profiles | UniProt, Ensembl, ChEMBL, KEGG, STRING |
-| 3 | Cross-reference: map connections between entities | KEGG_link_entries, ClinicalTrials, FAERS |
-| 4 | Validate hypotheses, fill gaps | ClinVar, CIViC, targeted PubMed, WebSearch |
-| 5+ | Synthesize: grade evidence, write report | No new tool calls; analysis and writing |
+Each iteration exhausts a layer of the tool space, not a fixed count of calls.
 
-Fewer iterations for simple queries. More for complex multi-entity questions.
+| Iteration | Focus | Scope |
+|-----------|-------|-------|
+| 1 | Discover + broad search | Run multiple grep_tools/find_tools queries per entity. Execute ALL relevant tools found. Typical: 20-40 tool calls for a single entity, more for multi-entity questions. |
+| 2 | Resolve IDs, deepen profiles | For every entity discovered in iteration 1, resolve cross-database IDs and query every tool that accepts those IDs. New entities trigger new discovery rounds. |
+| 3 | Cross-reference all entity pairs | For every (entity_A, entity_B) pair, check if a connection exists. Use multi-hop patterns from cross-reference.md. This is combinatorial -- prioritize by evidence tier. |
+| 4 | Validate hypotheses, fill gaps | Targeted searches for each unresolved hypothesis. Try fallback tools for each gap. |
+| 5+ | Synthesize | Grade evidence, write report. Only new tool calls if synthesis reveals contradictions needing resolution. |
+
+The goal is coverage, not speed. A research report backed by 80 tool calls across 15 databases is worth more than one backed by 8 calls across 4.
 
 ## Completion Criteria
 
