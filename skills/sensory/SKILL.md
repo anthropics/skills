@@ -820,8 +820,112 @@ This matters when the text you're typing or setting contains quotes or special c
 - **Use `delay` only when needed:** Some apps (especially Electron/web-based apps) need 0.1-0.3s delays between actions for the UI to catch up. Native apps rarely need delays
 - **Cache process names:** If you'll interact with an app repeatedly, find its process name once and reuse it
 
+## Shortcuts.app Integration
+
+macOS Shortcuts can be triggered from AppleScript, giving you access to powerful pre-built automations and the ability to chain complex workflows.
+
+```applescript
+-- Run a Shortcut by name [Tier 1]
+do shell script "shortcuts run 'My Shortcut Name'"
+
+-- Run a Shortcut with input [Tier 1]
+do shell script "echo 'input text' | shortcuts run 'Process Text'"
+
+-- Run a Shortcut and capture output [Tier 1]
+set result to do shell script "shortcuts run 'Get Weather' | cat"
+
+-- List all available Shortcuts [Tier 1]
+set allShortcuts to do shell script "shortcuts list"
+
+-- Run a Shortcut with a file as input [Tier 1]
+do shell script "shortcuts run 'Convert Image' -i '/path/to/image.png'"
+
+-- Open Shortcuts app to a specific shortcut [Tier 1]
+do shell script "open -a Shortcuts"
+```
+
+**Useful built-in Shortcut actions you can trigger:**
+- Focus modes: `shortcuts run 'Set Focus'`
+- Home automation: `shortcuts run 'Turn Off Lights'`
+- File conversions: pipe files through Shortcuts
+- Multi-step workflows: chain multiple app actions that would take several osascript calls
+
+**Pro tip:** If a user has complex automation needs (e.g., "when I get an email from X, save the attachment to Y and notify me on Z"), suggest they create a Shortcut and trigger it via osascript. It's often cleaner than scripting each step individually.
+
+## Drag and Drop
+
+AppleScript can simulate drag-and-drop operations using click-and-drag actions via System Events. These are Tier 2 (require Accessibility permissions).
+
+```applescript
+-- Drag from one position to another (pixel coordinates)
+tell application "System Events" to tell process "Finder"
+    -- First, get the position of the source element
+    set sourcePos to position of icon 1 of scroll area 1 of window 1
+    set targetPos to position of icon 2 of scroll area 1 of window 1
+
+    -- Drag uses click-hold-move-release pattern
+    -- Note: AppleScript doesn't have a native drag command, use this workaround:
+end tell
+
+-- Alternative: Use the Finder's own move command instead of drag [Tier 1 — preferred]
+tell application "Finder"
+    move file "document.pdf" of desktop to folder "Projects" of home
+end tell
+
+-- For apps that need actual drag simulation, use cliclick (if installed) [Tier 1]
+-- Install: brew install cliclick
+do shell script "cliclick dd:100,200 du:300,400"
+-- dd = drag down (mouse press), du = drag up (mouse release)
+
+-- Reorder items in a list (e.g., drag row 3 above row 1) [Tier 2]
+-- Most apps support keyboard-based reordering instead:
+tell application "System Events" to tell process "Reminders"
+    select row 3 of table 1 of scroll area 1 of window 1
+    -- Use Cmd+Option+Up/Down if the app supports it
+    key code 126 using {command down, option down}  -- move up
+end tell
+```
+
+**Best practice:** Avoid pixel-based drag-and-drop when possible. Most file moves can be done through Finder's API (Tier 1), and most list reordering has keyboard shortcuts. Only use coordinate-based dragging as a last resort.
+
+## Localized Error Messages
+
+macOS returns error messages in the system language. If your Mac is set to a non-English language, errors will look different but mean the same thing. Here are common errors in several languages:
+
+| Error (English) | Dutch | French | German | Spanish |
+|---|---|---|---|---|
+| Not allowed assistive access | Geen toegang voor hulpapparaten | Accès aux fonctions d'assistance non autorisé | Keine Berechtigung für Bedienungshilfen | No se permite el acceso de asistencia |
+| No permission to send keystrokes | Geen toestemming om toetsaanslagen te versturen | Pas autorisé à envoyer des frappes | Keine Berechtigung zum Senden von Tastenanschlägen | Sin permiso para enviar pulsaciones |
+| Can't get window 1 | Kan venster 1 niet ophalen | Impossible d'obtenir la fenêtre 1 | Fenster 1 kann nicht gelesen werden | No se puede obtener la ventana 1 |
+| Application isn't running | Programma is niet actief | L'application n'est pas en cours d'exécution | Programm wird nicht ausgeführt | La aplicación no se está ejecutando |
+
+**How to handle localized errors:**
+```applescript
+-- Use error number instead of message text for reliable error handling
+try
+    tell application "System Events" to tell process "Safari"
+        click button "Save" of window 1
+    end try
+on error errMsg number errNum
+    if errNum is -1719 then
+        -- "Can't get window 1" in any language
+        log "No window found"
+    else if errNum is -25211 then
+        -- Accessibility permission error in any language
+        log "Needs accessibility permissions"
+    end if
+end try
+```
+
+**Common error numbers:**
+- `-1719` — Element doesn't exist (can't get window/button/etc.)
+- `-1728` — Can't get reference
+- `-25211` — Not authorized for assistive access
+- `-10810` — App not launched / can't connect
+- `-1` — General/unknown error (check message text)
+
 ## App-Specific Recipes
 
-See `references/apps.md` for tested, ready-to-use patterns for 14+ popular macOS apps including Finder, Safari, Chrome, Mail, Messages, Notes, Calendar, System Settings, Terminal, VS Code, Slack, Spotify, Preview, and TextEdit.
+See `references/apps.md` for tested, ready-to-use patterns for 18 popular macOS apps including Finder, Safari, Chrome, Arc, Mail, Messages, Notes, Calendar, System Settings, Terminal, VS Code, Slack, Spotify, Preview, TextEdit, Zoom, Discord, and Microsoft Teams.
 
 Read that file when working with any of these apps — each has its own quirks and optimal patterns.

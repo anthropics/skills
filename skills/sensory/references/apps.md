@@ -19,6 +19,10 @@ Tested AppleScript patterns for popular macOS apps. Each section shows the corre
 12. [Spotify](#spotify)
 13. [Preview](#preview)
 14. [TextEdit](#textedit)
+15. [Arc](#arc)
+16. [Zoom](#zoom)
+17. [Discord](#discord)
+18. [Microsoft Teams](#microsoft-teams)
 
 ---
 
@@ -550,4 +554,210 @@ end tell
 tell application "TextEdit"
     set text of document 1 to "New content"
 end tell
+```
+
+---
+
+## Arc
+
+Process name: `Arc`
+
+Arc is Chromium-based, so it supports the same AppleScript dictionary as Chrome.
+
+```applescript
+-- Open a URL [Tier 1]
+tell application "Arc"
+    activate
+    open location "https://example.com"
+end tell
+
+-- Open in new tab [Tier 1]
+tell application "Arc"
+    tell window 1
+        make new tab with properties {URL:"https://example.com"}
+    end tell
+end tell
+
+-- Get current URL [Tier 1]
+tell application "Arc"
+    get URL of active tab of window 1
+end tell
+
+-- Get page title [Tier 1]
+tell application "Arc"
+    get title of active tab of window 1
+end tell
+-- Run JavaScript [Tier 1]
+tell application "Arc"
+    execute active tab of window 1 javascript "document.title"
+end tell
+
+-- Get all tab titles [Tier 1]
+tell application "Arc"
+    get title of every tab of window 1
+end tell
+
+-- Command bar (Arc's Spotlight-like launcher) [Tier 2]
+tell application "Arc" to activate
+tell application "System Events" to tell process "Arc"
+    keystroke "t" using command down  -- New tab / command bar
+    delay 0.3
+    keystroke "search query"
+    keystroke return
+end tell
+
+-- Toggle sidebar [Tier 2]
+tell application "System Events" to tell process "Arc"
+    keystroke "s" using command down
+end tell
+```
+---
+
+## Zoom
+
+Process name: `zoom.us`
+
+Zoom has limited AppleScript support — best controlled via keyboard shortcuts and shell commands.
+
+```applescript
+-- Open Zoom [Tier 1]
+tell application "zoom.us" to activate
+
+-- Join a meeting by URL [Tier 1]
+open location "zoommtg://zoom.us/join?confno=1234567890"
+
+-- Or via shell [Tier 1]
+do shell script "open 'zoommtg://zoom.us/join?confno=1234567890'"
+
+-- Mute/unmute audio [Tier 2]
+tell application "System Events" to tell process "zoom.us"
+    keystroke "a" using {command down, shift down}
+end tell
+
+-- Start/stop video [Tier 2]
+tell application "System Events" to tell process "zoom.us"
+    keystroke "v" using {command down, shift down}
+end tell
+
+-- Share screen [Tier 2]
+tell application "System Events" to tell process "zoom.us"
+    keystroke "s" using {command down, shift down}
+end tell
+-- Open/close chat [Tier 2]
+tell application "System Events" to tell process "zoom.us"
+    keystroke "h" using {command down, shift down}
+end tell
+
+-- Leave meeting [Tier 2]
+tell application "System Events" to tell process "zoom.us"
+    keystroke "w" using command down
+    delay 0.3
+    click button "Leave Meeting" of window 1
+end tell
+
+-- Check if Zoom is in a meeting (check window title)
+tell application "System Events"
+    if exists process "zoom.us" then
+        get name of every window of process "zoom.us"
+    end if
+end tell
+```
+
+---
+
+## Discord
+
+Process name: `Discord`
+
+Discord is an Electron app — keyboard shortcuts through System Events work best.
+
+```applescript
+-- Open Discord [Tier 1]
+tell application "Discord" to activate
+-- Quick switcher (jump to channel/DM) [Tier 2]
+tell application "System Events" to tell process "Discord"
+    keystroke "k" using command down
+    delay 0.3
+    keystroke "general"
+    delay 0.5
+    keystroke return
+end tell
+
+-- Send a message [Tier 2]
+tell application "System Events" to tell process "Discord"
+    keystroke "Hello everyone!"
+    keystroke return
+end tell
+
+-- Toggle mute [Tier 2]
+tell application "System Events" to tell process "Discord"
+    keystroke "m" using {command down, shift down}
+end tell
+
+-- Toggle deafen [Tier 2]
+tell application "System Events" to tell process "Discord"
+    keystroke "d" using {command down, shift down}
+end tell
+
+-- Search [Tier 2]
+tell application "System Events" to tell process "Discord"
+    keystroke "f" using command down
+    delay 0.3
+    keystroke "search query"
+end tell
+-- Navigate servers (Ctrl+Alt+Up/Down on Mac = Ctrl+Option) [Tier 2]
+tell application "System Events" to tell process "Discord"
+    key code 125 using {control down, option down}  -- next server
+    key code 126 using {control down, option down}  -- previous server
+end tell
+```
+
+---
+
+## Microsoft Teams
+
+Process name: `Microsoft Teams`
+
+Teams is also Electron-based. Keyboard shortcuts via System Events.
+
+```applescript
+-- Open Teams [Tier 1]
+tell application "Microsoft Teams" to activate
+
+-- Search / command bar [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "e" using command down
+    delay 0.3
+    keystroke "search query"
+end tell
+
+-- Go to a specific chat [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "1" using command down  -- Activity
+    keystroke "2" using command down  -- Chat
+    keystroke "3" using command down  -- Teams
+end tell
+-- Send a message [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "Hello team!"
+    keystroke return
+end tell
+
+-- Mute/unmute in call [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "m" using {command down, shift down}
+end tell
+
+-- Toggle video in call [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "o" using {command down, shift down}
+end tell
+
+-- Raise hand [Tier 2]
+tell application "System Events" to tell process "Microsoft Teams"
+    keystroke "k" using {command down, shift down}
+end tell
+
+-- Join a meeting via URL [Tier 1]
+open location "msteams://meeting/join?url=https://teams.microsoft.com/l/meetup-join/..."
 ```
