@@ -1,201 +1,119 @@
-# Follow the Data: Direct-Call Playbook
+# Follow the Data
 
-Call tools directly. Don't discover -- execute.
+Search the full 1,900+ tool catalog for every entity. Don't pre-decide which tools matter -- let the catalog tell you.
 
-For every tool call: `get_tool_info` first (parameter schemas vary), then `execute_tool`.
+## How to Search
 
-## Gene Playbook (~25 tools)
+For every entity you encounter, run multiple catalog queries:
 
-When you find a gene, call ALL of these. Requires: gene symbol and/or Ensembl ID.
+```
+grep_tools(pattern="ENTITY_NAME")           -- exact name matches
+grep_tools(pattern="ENTITY_TYPE")           -- type matches (gene, drug, pathway...)
+grep_tools(pattern="SYNONYM")              -- aliases, alternative names
+find_tools(query="what I want to know")     -- semantic search
+list_tools(mode="by_category")             -- browse all categories
+```
 
-**Resolve IDs first**:
+**Multiple queries per entity.** A drug entity should trigger searches for: the drug name, "adverse event", "drug safety", "clinical trial", "drug label", "pharmacology", "drug interaction", "drug approval", "pharmacogenomics", "toxicity", and any related concept the results suggest. Each query surfaces different tools.
 
-- `ensembl_lookup_gene` -- gene symbol -> Ensembl ID
-- `KEGG_convert_ids` -- Ensembl -> KEGG/UniProt
-- `UniProt_id_mapping` -- cross-database ID conversion
+**Batch get_tool_info.** Once you have a list of candidate tools, call `get_tool_info(tool_names=[list])` in batch to get all parameter schemas at once.
 
-**T1 (Regulatory/Curated)**:
+## Entity Search Strategies
 
-- `OpenTargets_get_asso_targ_by_dise_efoI` -- diseases for this gene (needs efoId from disease)
-- `OpenTargets_get_dise_phen_by_targ_ense` -- diseases/phenotypes for gene (ensemblId)
-- `OpenTargets_get_evidence_by_datasource` -- evidence filtered by source type
-- `OpenTargets_get_targ_gene_onto_by_ense` -- GO annotations
-- `OpenTargets_get_targ_safe_prof_by_ense` -- safety liabilities
-- `OpenTargets_get_targ_trac_by_ense` -- tractability (is it druggable?)
-- `OpenTargets_get_targ_inte_by_ense` -- interaction partners
-- `OpenTargets_get_asso_drug_by_targ_ense` -- drugs targeting this gene
-- `OpenTargets_get_biol_mous_mode_by_ense` -- mouse models
-- `OpenTargets_get_targ_homo_by_ense` -- homologs
-- `ClinVar_search_variants` -- pathogenic variants (gene=SYMBOL)
-- `ClinVar_get_clinical_significance` -- per-variant pathogenicity
+For each entity type, these are the search terms and categories to query. The named tools are examples of what you'll find -- the catalog contains many more.
 
-**T2 (Peer-Reviewed)**:
+### Gene
 
-- `PubMed_search_articles` -- literature (query=GENE_SYMBOL)
-- `PubMed_get_related` -- expand from key PMIDs
+Search terms: gene symbol, "gene", "protein", "target", "expression", "variant", "pathway", "interaction", "ontology", "homolog"
 
-**T4 (Computational)**:
+Categories to browse: `opentarget`, `string_network`, `string_ext`, `ppi`, `kegg`, `kegg_ext`, `kegg_conv_link`, `uniprot`, `reactome`, `clinvar`, `ensembl`, `pubmed`
 
-- `STRING_get_network` -- PPI network (identifiers=SYMBOL, species=9606)
-- `STRING_get_interaction_partners` -- ranked partner list
-- `STRING_get_functional_annotations` -- GO/KEGG/Reactome annotations
-- `KEGG_get_gene_pathways` -- all pathways (kegg_id=hsa:NCBI_ID)
-- `KEGG_link_entries` -- link to diseases, drugs, compounds
-- `Reactome_map_uniprot_to_pathways` -- pathways via UniProt accession
-- `Reactome_map_uniprot_to_reactions` -- reactions involving this protein
-- `UniProt_get_function_by_accession` -- protein function
-- `UniProt_get_disease_variants_by_accession` -- disease-associated variants
-- `UniProt_get_subcellular_location_by_accession` -- localization
+Example tools (not exhaustive): OpenTargets_get_dise_phen_by_targ_ense, STRING_get_network, STRING_get_interaction_partners, STRING_get_functional_annotations, KEGG_get_gene_pathways, KEGG_link_entries, UniProt_get_function_by_accession, Reactome_map_uniprot_to_pathways, ClinVar_search_variants, PubMed_search_articles, ensembl_lookup_gene
 
-## Drug Playbook (~30 tools)
+### Drug
 
-When you find a drug, call ALL of these. Requires: drug name, ChEMBL ID, and/or PubChem CID.
+Search terms: drug name, "drug", "adverse event", "FAERS", "safety", "clinical trial", "drug label", "FDA", "approval", "pharmacology", "interaction", "indication", "mechanism", "ChEMBL", "PubChem"
 
-**Resolve IDs first**:
+Categories to browse: `opentarget`, `ChEMBL`, `fda_drug_adverse_event`, `fda_drug_adverse_event_detail`, `fda_drug_label`, `clinical_trials`, `kegg_disease_drug`, `pubchem`, `pubmed`
 
-- `OpenTargets_get_drug_chembId_by_generic_name` -- name -> ChEMBL ID
-- `PubChem_get_CID_by_compound_name` -- name -> PubChem CID
+Example tools (not exhaustive): OpenTargets_get_drug_indications_by_chemblId, ChEMBL_get_molecule, ChEMBL_get_molecule_targets, FAERS_count_reactions_by_drug_event, FAERS_search_adverse_event_reports, FDA_get_adverse_reactions_by_drug_name, ClinicalTrials_search_by_intervention, KEGG_get_drug, PubMed_search_articles
 
-**T1 (Regulatory/Curated)**:
+### Disease
 
-- `OpenTargets_get_drug_indications_by_chemblId` -- approved indications
-- `OpenTargets_get_drug_mech_of_acti_by_chem` -- mechanism of action
-- `OpenTargets_get_asso_targ_by_drug_chem` -- protein targets
-- `OpenTargets_get_asso_dise_by_drug_chem` -- associated diseases
-- `OpenTargets_get_drug_warnings_by_chemblId` -- safety warnings
-- `OpenTargets_get_drug_blac_stat_by_chem_ID` -- black-box/withdrawn status
-- `OpenTargets_get_drug_adve_even_by_chem` -- significant adverse events
-- `OpenTargets_get_drug_appr_stat_by_chem` -- approval status
-- `OpenTargets_drug_pharmacogenomics_data` -- pharmacogenomics
-- `OpenTargets_get_drug_description_by_chemblId` -- year approved, type, phase
-- `OpenTargets_get_drug_names_by_chemblId` -- generic + brand names
-- `ClinicalTrials_search_by_intervention` -- all trials for this drug
-- `ClinicalTrials_search_studies` -- trials by drug + disease
-- `FAERS_count_reactions_by_drug_event` -- all adverse reactions
-- `FAERS_count_seriousness_by_drug_event` -- serious vs non-serious
-- `FAERS_count_outcomes_by_drug_event` -- outcomes (fatal, recovered...)
-- `FAERS_count_death_related_by_drug` -- death-associated events
-- `FAERS_count_patient_age_distribution` -- age distribution of AEs
-- `FDA_get_adverse_reactions_by_drug_name` -- label adverse reactions
-- `FDA_get_dosa_and_stor_info_by_drug_name` -- dosage from label
+Search terms: disease name, "disease", "syndrome", "disorder", "phenotype", "clinical trial", "treatment", "gene association", "epidemiology", "guideline"
 
-**T2 (Peer-Reviewed)**:
+Categories to browse: `opentarget`, `kegg_disease_drug`, `clinical_trials`, `clinvar`, `pubmed`, `guidelines`
 
-- `ChEMBL_get_molecule` -- molecular properties, structure
-- `ChEMBL_get_molecule_targets` -- all targets with activity data
-- `ChEMBL_search_similar_molecules` -- structural analogs
-- `PubMed_search_articles` -- literature (query=DRUG_NAME)
+Example tools (not exhaustive): OpenTargets_get_asso_targ_by_dise_efoI, OpenTargets_get_asso_drug_by_dise_efoI, KEGG_get_disease, KEGG_get_disease_genes, ClinicalTrials_search_studies, ClinVar_search_variants, PubMed_Guidelines_Search
 
-**T4 (Computational)**:
+### Pathway
 
-- `KEGG_get_drug` -- KEGG drug details, targets, pathways
-- `KEGG_get_drug_targets` -- gene targets from KEGG
-- `OpenTargets_get_simi_enti_by_drug_chem` -- similar drugs (PubMed model)
+Search terms: pathway name, "pathway", "signaling", "metabolic", "reaction", "enrichment", "network"
 
-## Disease Playbook (~20 tools)
+Categories to browse: `kegg`, `kegg_ext`, `kegg_network_variant`, `reactome`, `string_ext`, `ppi`
 
-When you find a disease. Requires: disease name and/or EFO ID.
+Example tools: kegg_get_pathway_info, KEGG_get_pathway_genes, Reactome_get_pathway, STRING_functional_enrichment
 
-**Resolve IDs first**:
+### Variant
 
-- `OpenTargets_get_dise_id_desc_by_name` -- name -> EFO ID
-- `OSL_get_efo_id_by_disease_name` -- alternative EFO resolver
-- `KEGG_search_disease` -- name -> KEGG disease ID
+Search terms: rsID, gene symbol + "variant", "mutation", "pathogenic", "clinical significance", "SNP"
 
-**T1 (Regulatory/Curated)**:
+Categories to browse: `clinvar`, `kegg_network_variant`, `opentarget`, `pubmed`
 
-- `OpenTargets_get_asso_targ_by_dise_efoI` -- associated genes (scored)
-- `OpenTargets_get_asso_drug_by_dise_efoI` -- associated drugs
-- `OpenTargets_get_asso_phen_by_dise_efoI` -- HPO phenotypes
-- `OpenTargets_get_disease_description_by_efoId` -- description, cross-refs
-- `OpenTargets_get_dise_ther_area_by_efoI` -- therapeutic area
-- `OpenTargets_get_dise_ance_pare_by_efoI` -- disease hierarchy (parents)
-- `OpenTargets_get_dise_desc_chil_by_efoI` -- disease hierarchy (children)
-- `OpenTargets_get_disease_synonyms_by_efoId` -- synonyms
-- `ClinicalTrials_search_studies` -- trials for this disease
-- `ClinVar_search_variants` -- variants (condition=DISEASE_NAME)
-- `KEGG_get_disease` -- KEGG disease details
-- `KEGG_get_disease_genes` -- genes linked to KEGG disease
+Example tools: ClinVar_search_variants, ClinVar_get_clinical_significance, KEGG_search_variant, KEGG_get_variant
 
-**T2 (Peer-Reviewed)**:
+### Company
 
-- `PubMed_search_articles` -- literature
-- `PubMed_Guidelines_Search` -- clinical guidelines
+Search terms: company name, "SEC", "EDGAR", "filing", "sponsor", "manufacturer", "approval"
 
-**T4 (Computational)**:
+Categories to browse: `sec_edgar`, `clinical_trials`, `fda_drug_label`, `fda_drug_adverse_event`, `pubmed`
 
-- `OpenTargets_get_simi_enti_by_dise_efoI` -- similar diseases (PubMed model)
-- `KEGG_search_network` -- disease signaling networks
+Example tools: SEC_EDGAR_search_filings, SEC_EDGAR_get_company_submissions, ClinicalTrials_search_by_sponsor, OpenFDA_search_drug_approvals
 
-## Pathway Playbook (~15 tools)
+### Publication
 
-When you find a pathway. Requires: KEGG pathway ID and/or Reactome stable ID.
+Search terms: PMID, author name, topic keywords, "citation", "preprint"
 
-- `kegg_get_pathway_info` -- full pathway details
-- `KEGG_get_pathway_genes` -- all member genes
-- `KEGG_link_entries` -- link to drugs, diseases, compounds
-- `kegg_search_pathway` -- find related pathways by keyword
-- `KEGG_search_network` -- disease-associated signaling networks
-- `Reactome_get_pathway` -- Reactome pathway details
-- `Reactome_get_pathway_reactions` -- all reactions in pathway
-- `Reactome_get_participants` -- proteins/molecules involved
-- `Reactome_get_pathway_hierarchy` -- parent pathways
-- `STRING_functional_enrichment` -- enrichment for pathway gene set
-- `STRING_ppi_enrichment` -- are pathway proteins more connected than chance?
+Categories to browse: `pubmed`, `crossref`, `openalex`, `europepmc`, `semantic_scholar`, `biorxiv`
 
-## Variant Playbook (~8 tools)
+Example tools: PubMed_search_articles, PubMed_get_cited_by, openalex_literature_search, Crossref_search_works, EuropePMC_search_articles
 
-When you find a variant. Requires: gene symbol, rsID, or HGVS notation.
+## The Expanding Frontier
 
-- `ClinVar_search_variants` -- search by gene or variant ID
-- `ClinVar_get_variant_details` -- accession, genes, location
-- `ClinVar_get_clinical_significance` -- pathogenicity classification
-- `KEGG_search_variant` -- KEGG variant entries
-- `KEGG_get_variant` -- mutation details, ClinVar/dbSNP cross-refs, drugs
-- `OpenTargets_target_disease_evidence` -- IntOGen somatic driver evidence
-- `PubMed_search_articles` -- literature on this variant
+Every tool call returns data containing new entities. Each new entity triggers its own catalog search:
 
-## Company Playbook (~15 tools)
+```
+Gene query -> returns drug names
+  -> search catalog for those drugs
+    -> drug results mention clinical trials
+      -> search catalog for trial tools
+        -> trial data names a company
+          -> search catalog for SEC/EDGAR tools
+```
 
-When you find a company. Requires: company name.
+This is how you find FDA and EDGAR tools starting from a gene. You don't predict the path -- you follow the data.
 
-- `SEC_EDGAR_search_filings` -- recent SEC filings
-- `SEC_EDGAR_get_company_submissions` -- full filing history, CIK/ticker
-- `ClinicalTrials_search_by_sponsor` -- trials they sponsor
-- `ClinicalTrials_search_studies` -- trials mentioning company
-- `FDA_OrangeBook_search_drug` -- approved drugs (by brand name)
-- `OpenFDA_search_drug_approvals` -- approvals by sponsor name
-- `OpenFDA_search_device_510k` -- device clearances
-- `OpenFDA_search_drug_enforcement` -- recalls/enforcement
-- `FAERS_count_reactions_by_drug_event` -- safety for each of their drugs
-- `PubMed_search_articles` -- publications mentioning company
-- `Wikipedia_search` / `Wikipedia_get_content` -- company profile
-- WebSearch -- leadership, news, competitive landscape
+## Fallback Strategy
 
-## Fallback Chains
+When a tool fails or returns empty:
 
-When a tool is broken or returns no data:
+1. Search the catalog for alternative tools in the same category
+2. Search with synonyms or broader terms
+3. Try a different entity type (e.g., drug name instead of ChEMBL ID)
+4. Document the gap in research_state.json with what you tried
 
-| Entity | Primary | Fallback 1 | Fallback 2 | Last resort |
-|--------|---------|------------|------------|-------------|
-| Gene function | OpenTargets | KEGG gene info | UniProt function | PubMed search |
-| Protein info | UniProt | PDB | AlphaFold | Ensembl |
-| Drug targets | OpenTargets + ChEMBL | KEGG drug targets | DrugBank | PubMed search |
-| Drug safety | FAERS | FDA labels | OpenTargets warnings | PubMed search |
-| Clinical trials | ClinicalTrials | EuropePMC (trial filter) | WebSearch | -- |
-| Disease genes | OpenTargets | ClinVar | KEGG disease genes | GWAS Catalog |
-| Pathways | KEGG | Reactome | WikiPathways | STRING enrichment |
-| PPI network | STRING network | STRING partners | humanbase_ppi | IntAct |
-| Literature | PubMed | OpenAlex | EuropePMC | Semantic Scholar |
-| Variants | ClinVar | KEGG variant | gnomAD | GWAS Catalog |
-| Company data | SEC EDGAR | WebSearch | Wikipedia | -- |
+## ID Resolution
 
-## The Unexpected Path Rule
+Same entity, different IDs across databases. Resolve before cross-referencing:
 
-If a connection leads to a domain not covered above:
+| From | To | Tool |
+|------|----|------|
+| Gene symbol | Ensembl ID | ensembl_lookup_gene |
+| Ensembl ID | KEGG/UniProt | KEGG_convert_ids |
+| Any prefix:ID | Provider URLs | Bioregistry_resolve_reference |
+| Drug name | ChEMBL ID | OpenTargets_get_drug_chembId_by_generic_name |
+| Drug name | PubChem CID | PubChem_get_CID_by_compound_name |
+| Disease name | EFO ID | OpenTargets_get_dise_id_desc_by_name |
+| UniProt acc | Ensembl/NCBI | UniProt_id_mapping |
 
-1. **Then and only then** use `grep_tools` or `find_tools` to discover tools in the new domain
-2. Execute whatever you find
-3. Record the new tools in research_state.json `tools_discovered` for future reference
-
-The playbook above covers the core 150+ tools. The other 1,750 are for edge cases -- microbiome, plant genomics, structural biology, etc. Discovery is for those edges, not the core.
+Store all resolved IDs in the entity's `ids{}` map in research_state.json.

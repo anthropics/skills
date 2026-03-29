@@ -46,44 +46,48 @@ If the question fits neatly in one domain, use the domain skill. Use deep resear
 
 1. **Extract entities** from the user's question: genes, drugs, diseases, pathways, companies, variants
 2. **Classify question type**: treatment landscape, connection mapping, mechanism investigation, competitive analysis, safety review
-3. **Check tool health** for each tool in the entity playbooks:
-   - For each planned tool, check `ToolHealthCache().is_live(tool_name)`
-   - If broken, use fallback from [references/follow-the-data.md](references/follow-the-data.md)
-   - If unknown (no cache entry), try it but have fallback ready
+3. **Check tool health** before calling any tool:
+   - `ToolHealthCache().is_live(tool_name)` -- skip broken tools, note in gaps
+   - If broken, search catalog for alternatives in the same category
+   - If unknown (no cache entry), try it but note the result
 4. **Create output files**:
    - `research_state.json` -- working memory (see [references/research-loop.md](references/research-loop.md))
    - `{topic}_deep_research.md` -- report file initialized with template from Output Format below
 
-### Phase 2: Exhaustive Search
+### Phase 2: Search the Full Tool Ecosystem
 
-Call tools directly. The playbook below tells you which tools to call for each entity type. Don't waste cycles on `grep_tools`/`find_tools` discovery -- you already know what exists.
+You have 1,900+ tools. You cannot predict which ones matter. Search the catalog for every entity, call everything relevant.
 
-**Execution pattern** (every tool call):
+**For each entity, search the catalog exhaustively**:
 
 ```
-1. get_tool_info(tool_names="tool_name")  -- get exact parameter schema
+grep_tools(pattern="ENTITY_NAME")              -- tools mentioning this entity
+grep_tools(pattern="ENTITY_TYPE")              -- tools for this type (gene, drug, disease...)
+grep_tools(pattern="RELATED_CONCEPT")          -- broader concept (safety, pathway, trial...)
+find_tools(query="natural language question")   -- semantic search catches what keywords miss
+list_tools(mode="by_category")                 -- browse categories for tools search missed
+```
+
+Run MULTIPLE searches per entity with different keywords and synonyms. A drug search should hit: the drug name, "drug safety", "adverse event", "clinical trial", "drug label", "pharmacology", "drug interaction", "drug approval", etc. Each search may surface different tools.
+
+**For every tool that comes back relevant**:
+
+```
+1. get_tool_info(tool_names="tool_name")  -- get exact parameter schema (NEVER skip)
 2. execute_tool(tool_name="tool_name", arguments={...})
 ```
 
-**For each entity found, call ALL tools in its playbook** (see [references/follow-the-data.md](references/follow-the-data.md) for the full direct-call playbook). Work T1 first, then T2, then T3/T4:
+**Ordering**: Work T1 tools first (regulatory/curated sources surface in categories like `fda_drug_label`, `clinical_trials`, `opentarget`), then T2 (literature: `pubmed`, `crossref`), then T3/T4.
 
-**Gene** (~25 tools): OpenTargets (8: associations, evidence, GO, safety, tractability, interactions, homologs, mouse models), STRING (3: network, partners, annotations), KEGG (4: gene pathways, link diseases, link drugs, convert IDs), UniProt (4: function, variants, subcellular, search), Reactome (2: pathways, reactions), ClinVar (2: search variants, clinical significance), PubMed (2: search, related)
+**The expanding frontier**: Results from tool calls reveal new entities. Each new entity triggers its own catalog search. A gene query returns drug names -> search the catalog for those drugs -> drug results mention clinical trials -> search for trial tools -> trial data names a company -> search for SEC/FDA tools. This is how you find SEC EDGAR tools when starting from a gene. You don't need to predict the path.
 
-**Drug** (~30 tools): OpenTargets (10: indications, targets, MoA, warnings, adverse events, approval, pharmacogenomics, similar, description, trade names), ChEMBL (5: molecule, targets, activities, similar, assays), FAERS (6: reactions, seriousness, outcomes, death, age distribution, routes), FDA labels (4: adverse reactions, dosage, interactions, contraindications), ClinicalTrials (3: search, by intervention, by sponsor), KEGG (2: drug details, drug targets), PubMed (2: search, related)
+**Scope**: Don't count tool calls. Count coverage. Stop when:
 
-**Disease** (~20 tools): OpenTargets (7: associated targets, associated drugs, phenotypes, similar, description, hierarchy, therapeutic area), KEGG (3: search disease, get disease, disease genes), ClinicalTrials (2: search, field values), ClinVar (1: search by condition), PubMed (2: search, guidelines), HPO/Orphanet via OpenTargets phenotypes
+- Every discovered entity has been searched in the catalog
+- Every relevant tool returned by searches has been called
+- No new entities are emerging from results
 
-**Pathway** (~15 tools): KEGG (5: pathway info, pathway genes, link drugs, link diseases, search), Reactome (5: pathway, reactions, participants, hierarchy, top pathways), STRING (2: enrichment, PPI enrichment), OpenTargets (evidence by datasource for pathway genes)
-
-**Variant** (~8 tools): ClinVar (3: search, details, clinical significance), KEGG (2: search variant, get variant), OpenTargets (target-disease evidence), PubMed (search), CIViC via grep_tools if needed
-
-**Company** (~15 tools): SEC EDGAR (2: search filings, submissions), ClinicalTrials (2: by sponsor, search), FDA/OpenFDA (4: approvals, Orange Book, enforcement, 510k), FAERS (2: reactions, seriousness), PubMed (1: search), WebSearch for leadership/news
-
-**Scope**: A single gene = ~25 tool calls. A multi-entity question (gene + drug + disease) = 50-80. Don't stop early.
-
-After each batch: extract new entities, record in research_state.json, update report. New entities trigger their own playbooks.
-
-**When to use discovery** (`grep_tools`/`find_tools`): ONLY when an entity leads to an unfamiliar domain not covered by the playbook above. For example, if a gene connects to a microbiome pathway, use `find_tools(query="microbiome")` to find tools you don't already know about.
+See [references/follow-the-data.md](references/follow-the-data.md) for the entity exploration table, search strategies per entity type, and fallback chains.
 
 ### Phase 3: Deepen and Cross-Reference
 

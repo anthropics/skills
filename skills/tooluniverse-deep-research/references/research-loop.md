@@ -88,9 +88,10 @@ File: `research_state.json` in the user's output directory (same as report).
     }
   ],
 
-  "tools_discovered": [
-    {"tool": "PubMed_search_articles", "found_via": "grep_tools('pubmed')", "relevant": true, "health": "live"},
-    {"tool": "BrokenTool_xyz", "found_via": "find_tools('gene function')", "relevant": true, "health": "broken", "fallback": "PubMed_search_articles"}
+  "catalog_searches": [
+    {"query": "grep_tools('BRCA1')", "results": 12, "relevant": 8, "iteration": 1},
+    {"query": "find_tools('gene function DNA repair')", "results": 15, "relevant": 6, "iteration": 1},
+    {"query": "grep_tools('FAERS')", "results": 27, "relevant": 5, "iteration": 2}
   ],
 
   "tools_used": [
@@ -102,17 +103,17 @@ File: `research_state.json` in the user's output directory (same as report).
 
 ## Iteration Strategy
 
-Each iteration runs the direct-call playbooks from follow-the-data.md for its entities.
+Each iteration searches the full tool catalog for its entities and calls everything relevant.
 
 | Iteration | Focus | Scope |
 |-----------|-------|-------|
-| 1 | Execute playbooks for seed entities | For each entity in the user's question, run its full playbook (~25 tools/gene, ~30 tools/drug, ~20 tools/disease). Resolve IDs, then call every tool in the playbook. |
-| 2 | Execute playbooks for discovered entities | Iteration 1 results reveal new entities (e.g., querying a disease yields associated genes). Run the gene playbook for each new gene, drug playbook for each new drug, etc. |
-| 3 | Cross-reference all entity pairs | For every (entity_A, entity_B) pair, check connections using multi-hop patterns from cross-reference.md. Use KEGG_link_entries and OpenTargets evidence. |
-| 4 | Validate hypotheses, fill gaps | Targeted tool calls for each unresolved hypothesis. Try fallback chains for each gap. |
-| 5+ | Synthesize | Grade evidence, write report. Only new tool calls if synthesis reveals contradictions needing resolution. |
+| 1 | Search catalog for seed entities | For each entity in the user's question, run multiple grep_tools/find_tools queries with synonyms. Call every relevant tool returned. Resolve entity IDs. |
+| 2 | Search catalog for discovered entities | Iteration 1 results reveal new entities (genes, drugs, trials, companies...). Search the catalog for each new entity. Call everything relevant. The frontier expands. |
+| 3 | Cross-reference all entity pairs | For every (entity_A, entity_B) pair, search for tools that connect them. Use multi-hop patterns from cross-reference.md. Search for relationship-specific tools. |
+| 4 | Validate hypotheses, fill gaps | Targeted catalog searches for each unresolved hypothesis. Search for alternative tools for each gap. |
+| 5+ | Synthesize | Grade evidence, write report. Only new searches if synthesis reveals contradictions. |
 
-A research report backed by 80 tool calls across 15 databases is worth more than one backed by 8 calls across 4.
+Stop when the frontier stops expanding -- no new entities emerging, no unsearched entity types remaining.
 
 ## Completion Criteria
 
