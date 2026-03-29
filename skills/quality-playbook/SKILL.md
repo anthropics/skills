@@ -1,6 +1,6 @@
 ---
 name: quality-playbook
-description: "Explore any codebase from scratch and generate six quality artifacts: a quality constitution (QUALITY.md), spec-traced functional tests, a code review protocol with regression test generation, an integration testing protocol, a multi-model spec audit (Council of Three), and an AI bootstrap file (AGENTS.md). Includes state machine completeness analysis and missing safeguard detection. Works with any language (Python, Java, Scala, TypeScript, Go, Rust, etc.). Use this skill whenever the user asks to set up a quality playbook, generate functional tests from specifications, create a quality constitution, build testing protocols, audit code against specs, or establish a repeatable quality system for a project. Also trigger when the user mentions 'quality playbook', 'spec audit', 'Council of Three', 'fitness-to-purpose', 'coverage theater', or wants to go beyond basic test generation to build a full quality system grounded in their actual codebase."
+description: 'Explore any codebase from scratch and generate six quality artifacts: a quality constitution (QUALITY.md), spec-traced functional tests, a code review protocol with regression test generation, an integration testing protocol, a multi-model spec audit (Council of Three), and an AI bootstrap file (AGENTS.md). Includes state machine completeness analysis and missing safeguard detection. Works with any language (Python, Java, Scala, TypeScript, Go, Rust, etc.). Use this skill whenever the user asks to set up a quality playbook, generate functional tests from specifications, create a quality constitution, build testing protocols, audit code against specs, or establish a repeatable quality system for a project. Also trigger when the user mentions 'quality playbook', 'spec audit', 'Council of Three', 'fitness-to-purpose', 'coverage theater', or wants to go beyond basic test generation to build a full quality system grounded in their actual codebase.'
 license: Complete terms in LICENSE.txt
 metadata:
   version: 1.2.0
@@ -255,7 +255,7 @@ Key sections: bootstrap files, focus areas mapped to architecture, and these man
 - Grep before claiming missing
 - Do NOT suggest style changes — only flag things that are incorrect
 
-**Phase 2: Regression tests.** After the review produces BUG findings, write regression tests in `quality/test_regression.*` that reproduce each bug. Each test should fail on the current implementation, confirming the bug is real. Report results as a confirmation table (BUG CONFIRMED / FALSE POSITIVE / NEEDS INVESTIGATION). See `references/review_protocols.md` for the full regression test protocol.
+**Phase 2: Regression tests.** After the review produces BUG findings, write regression tests using the language-appropriate filenames described in `references/review_protocols.md` (for example, Go: `regression_test.go`, TypeScript: `regression.test.ts`) that reproduce each bug. Each test should fail on the current implementation, confirming the bug is real. Report results as a confirmation table (BUG CONFIRMED / FALSE POSITIVE / NEEDS INVESTIGATION). See `references/review_protocols.md` for the full regression test protocol.
 
 ### File 4: `quality/RUN_INTEGRATION_TESTS.md`
 
