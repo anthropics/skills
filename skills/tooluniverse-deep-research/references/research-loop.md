@@ -14,7 +14,7 @@ Identify gaps: what entities are unresolved? what connections unchecked?
 Plan searches: which tools, which queries? (check health first)
   |
   v
-Execute: run 5-10 tool calls via grep_tools/find_tools -> get_tool_info -> execute_tool
+Execute: run entity playbooks from follow-the-data.md (get_tool_info -> execute_tool for each)
   |
   v
 Analyze: extract entities, identify connections, form hypotheses
@@ -102,17 +102,17 @@ File: `research_state.json` in the user's output directory (same as report).
 
 ## Iteration Strategy
 
-Each iteration exhausts a layer of the tool space, not a fixed count of calls.
+Each iteration runs the direct-call playbooks from follow-the-data.md for its entities.
 
 | Iteration | Focus | Scope |
 |-----------|-------|-------|
-| 1 | Discover + broad search | Run multiple grep_tools/find_tools queries per entity. Execute ALL relevant tools found. Typical: 20-40 tool calls for a single entity, more for multi-entity questions. |
-| 2 | Resolve IDs, deepen profiles | For every entity discovered in iteration 1, resolve cross-database IDs and query every tool that accepts those IDs. New entities trigger new discovery rounds. |
-| 3 | Cross-reference all entity pairs | For every (entity_A, entity_B) pair, check if a connection exists. Use multi-hop patterns from cross-reference.md. This is combinatorial -- prioritize by evidence tier. |
-| 4 | Validate hypotheses, fill gaps | Targeted searches for each unresolved hypothesis. Try fallback tools for each gap. |
+| 1 | Execute playbooks for seed entities | For each entity in the user's question, run its full playbook (~25 tools/gene, ~30 tools/drug, ~20 tools/disease). Resolve IDs, then call every tool in the playbook. |
+| 2 | Execute playbooks for discovered entities | Iteration 1 results reveal new entities (e.g., querying a disease yields associated genes). Run the gene playbook for each new gene, drug playbook for each new drug, etc. |
+| 3 | Cross-reference all entity pairs | For every (entity_A, entity_B) pair, check connections using multi-hop patterns from cross-reference.md. Use KEGG_link_entries and OpenTargets evidence. |
+| 4 | Validate hypotheses, fill gaps | Targeted tool calls for each unresolved hypothesis. Try fallback chains for each gap. |
 | 5+ | Synthesize | Grade evidence, write report. Only new tool calls if synthesis reveals contradictions needing resolution. |
 
-The goal is coverage, not speed. A research report backed by 80 tool calls across 15 databases is worth more than one backed by 8 calls across 4.
+A research report backed by 80 tool calls across 15 databases is worth more than one backed by 8 calls across 4.
 
 ## Completion Criteria
 
