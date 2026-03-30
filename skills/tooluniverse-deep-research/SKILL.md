@@ -50,44 +50,15 @@ If the question fits neatly in one domain, use the domain skill. Use deep resear
    - `ToolHealthCache().is_live(tool_name)` -- skip broken tools, note in gaps
    - If broken, search catalog for alternatives in the same category
    - If unknown (no cache entry), try it but note the result
-4. **Create output files**:
-   - `research_state.json` -- working memory (see [references/research-loop.md](references/research-loop.md))
-   - `{topic}_deep_research.md` -- report file initialized with template from Output Format below
+4. **Create output files**: `research_state.json` (working memory) + `{topic}_deep_research.md` (report)
 
 ### Phase 2: Search the Full Tool Ecosystem
 
-You have 1,900+ tools. You cannot predict which ones matter. Search the catalog for every entity, call everything relevant.
+Search the 1,900+ tool catalog for every entity. Call everything relevant. Don't predict which tools matter -- let the catalog tell you.
 
-**For each entity, search the catalog exhaustively**:
+For each entity: run multiple `grep_tools`/`find_tools` queries with synonyms, then `get_tool_info` + `execute_tool` for every relevant result. Work T1 sources first, then T2, then T3/T4. Results reveal new entities -- each triggers new catalog searches (the expanding frontier). Stop when no new entities are emerging.
 
-```
-grep_tools(pattern="ENTITY_NAME")              -- tools mentioning this entity
-grep_tools(pattern="ENTITY_TYPE")              -- tools for this type (gene, drug, disease...)
-grep_tools(pattern="RELATED_CONCEPT")          -- broader concept (safety, pathway, trial...)
-find_tools(query="natural language question")   -- semantic search catches what keywords miss
-list_tools(mode="by_category")                 -- browse categories for tools search missed
-```
-
-Run MULTIPLE searches per entity with different keywords and synonyms. A drug search should hit: the drug name, "drug safety", "adverse event", "clinical trial", "drug label", "pharmacology", "drug interaction", "drug approval", etc. Each search may surface different tools.
-
-**For every tool that comes back relevant**:
-
-```
-1. get_tool_info(tool_names="tool_name")  -- get exact parameter schema (NEVER skip)
-2. execute_tool(tool_name="tool_name", arguments={...})
-```
-
-**Ordering**: Work T1 tools first (regulatory/curated sources surface in categories like `fda_drug_label`, `clinical_trials`, `opentarget`), then T2 (literature: `pubmed`, `crossref`), then T3/T4.
-
-**The expanding frontier**: Results from tool calls reveal new entities. Each new entity triggers its own catalog search. A gene query returns drug names -> search the catalog for those drugs -> drug results mention clinical trials -> search for trial tools -> trial data names a company -> search for SEC/FDA tools. This is how you find SEC EDGAR tools when starting from a gene. You don't need to predict the path.
-
-**Scope**: Don't count tool calls. Count coverage. Stop when:
-
-- Every discovered entity has been searched in the catalog
-- Every relevant tool returned by searches has been called
-- No new entities are emerging from results
-
-See [references/follow-the-data.md](references/follow-the-data.md) for the entity exploration table, search strategies per entity type, and fallback chains.
+See [references/follow-the-data.md](references/follow-the-data.md) for search strategies per entity type, category browsing, and fallback chains.
 
 ### Phase 3: Deepen and Cross-Reference
 
@@ -111,83 +82,11 @@ Update research_state.json after each sub-step. Update the report progressively.
 
 ---
 
-## Output Format
+## Output
 
-Create `{topic}_deep_research.md` at the start. Populate progressively.
+Report: `{topic}_deep_research.md` — created at start, populated progressively. Sections: Executive Summary, Entity Map, Connections, Key Findings, Hypotheses, Data Gaps, Sources. Every claim cited with evidence tier.
 
-```markdown
-# Deep Research Report: {Topic}
-
-**Generated**: {date}
-**Question**: {original user question}
-**Iterations**: {N}
-
----
-
-## Executive Summary
-
-{3-5 sentences: key findings, major connections discovered, confidence level}
-
----
-
-## Entity Map
-
-| Entity | Type | Key IDs | Evidence | Source |
-|--------|------|---------|----------|--------|
-
----
-
-## Connections
-
-| From | To | Relationship | Via | Tier | Source |
-|------|----|-------------|-----|------|--------|
-
----
-
-## Key Findings
-
-### {Theme 1}
-
-{Findings with inline citations: [T1: tool_name, ID]}
-
-### {Theme 2}
-
-...
-
----
-
-## Hypotheses
-
-| Claim | Status | Evidence For | Evidence Against |
-|-------|--------|-------------|-----------------|
-
----
-
-## Data Gaps
-
-| What | Why | Alternatives Tried |
-|------|-----|--------------------|
-
----
-
-## Sources
-
-| Tool | Query | Items | Tier | Iteration |
-|------|-------|-------|------|-----------|
-```
-
----
-
-## Iteration
-
-This skill describes one research cycle. For complex questions, iterate:
-
-1. Run the skill once -- it performs Phase 1-4
-2. Read research_state.json to see what's been found and what gaps remain
-3. If gaps or unresolved hypotheses remain, continue searching
-4. Each pass adds to the state file and report -- never overwrites
-
-See [references/research-loop.md](references/research-loop.md) for the full protocol, state file schema, and completion criteria.
+State: `research_state.json` — working memory across iterations. See [references/research-loop.md](references/research-loop.md) for schema, iteration strategy, and completion criteria.
 
 ---
 
