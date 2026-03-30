@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "plugin",
+      "description": "Skill for understanding and managing Claude Code plugins and the skill marketplace",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/plugin"
+      ]
     }
   ]
 }
