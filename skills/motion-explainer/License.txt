@@ -1,0 +1,100 @@
+Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media formats.
+
+      "Work" shall mean the work of authorship made available under the
+      License, as indicated by a copyright notice included in or attached
+      to the work.
+
+      "Derivative Works" shall mean any work that is based on the Work
+      for which editorial revisions, annotations, elaborations, or
+      modifications represent, as a whole, an original work of authorship.
+
+      "Contribution" shall mean any work of authorship submitted to the
+      Licensor for inclusion in the Work by the copyright owner.
+
+      "Contributor" shall mean Licensor and any Legal Entity on behalf
+      of whom a Contribution has been received by the Licensor.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      patent license to make, use, offer to sell, sell, import, and
+      otherwise transfer the Work.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, provided that You meet the following conditions:
+
+      (a) You must give any other recipients a copy of this License; and
+      (b) You must cause any modified files to carry prominent notices; and
+      (c) You must retain all copyright, patent, trademark notices; and
+      (d) If the Work includes a "NOTICE" file, you must include it.
+
+   5. Submission of Contributions. Unless explicitly stated otherwise,
+      any Contribution submitted for inclusion shall be under the terms
+      of this License.
+
+   6. Trademarks. This License does not grant permission to use trade
+      names or trademarks of the Licensor.
+
+   7. Disclaimer of Warranty. The Work is provided "AS IS", WITHOUT
+      WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+   8. Limitation of Liability. In no event shall any Contributor be
+      liable for damages arising from this License or use of the Work.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work, You may offer support, warranty, or indemnity obligations
+      only on Your own behalf and sole responsibility.
+
+   END OF TERMS AND CONDITIONS
+
+   Copyright 2026 Anthropic
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
