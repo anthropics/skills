@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<!--
+    MOTION EXPLAINER VIEWER TEMPLATE
+    ══════════════════════════════════════════════════════════════════
+
+    WHAT TO KEEP (always, exactly as shown):
+    ✓ Overall layout (header, sidebar, main canvas area, timeline bar)
+    ✓ Anthropic branding (colors, fonts, layout proportions)
+    ✓ Playback controls (play/pause, prev/next scene, speed, scrubber)
+    ✓ Scene list rendering in sidebar
+    ✓ Self-contained (everything inline)
+
+    WHAT TO CREATIVELY REPLACE:
+    ✗ The title and subtitle in the sidebar header
+    ✗ The scenes array and all scene logic
+    ✗ The p5.js animation code (setup / draw / scene classes)
+    ✗ The params object and any sidebar parameter controls
+
+    Let the explanation narrative drive the implementation.
+    The world is your oyster — make the concept sing.
+    ══════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Explainer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ── Anthropic Brand Colors ── */
+        :root {
+            --anthropic-dark:       #141413;
+            --anthropic-light:      #faf9f5;
+            --anthropic-mid-gray:   #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange:     #d97757;
+            --anthropic-blue:       #6a9bcc;
+            --anthropic-green:      #788c5d;
+            --anthropic-amber:      #f5c89a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f0ede4 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ── Main Content Row ── */
+        .main-row {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(20,20,19,0.08);
+        }
+
+        /* ── Header Card ── */
+        .concept-title {
+            font-family: 'Lora', serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .concept-subtitle {
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            line-height: 1.5;
+        }
+
+        /* ── Scene List ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--anthropic-mid-gray);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .scene-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .scene-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
+        }
+
+        .scene-item:hover {
+            background: var(--anthropic-light);
+            border-color: var(--anthropic-light-gray);
+        }
+
+        .scene-item.active {
+            background: rgba(217,119,87,0.08);
+            border-color: rgba(217,119,87,0.3);
+        }
+
+        .scene-number {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--anthropic-light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--anthropic-mid-gray);
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .scene-item.active .scene-number {
+            background: var(--anthropic-orange);
+            color: white;
+        }
+
+        .scene-item.done .scene-number {
+            background: var(--anthropic-green);
+            color: white;
+        }
+
+        .scene-name {
+            font-size: 13px;
+            color: var(--anthropic-dark);
+            line-height: 1.3;
+        }
+
+        .scene-item.active .scene-name {
+            font-weight: 500;
+        }
+
+        /* ── Playback Controls ── */
+        .playback-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: 1.5px solid var(--anthropic-light-gray);
+            background: var(--anthropic-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            color: var(--anthropic-dark);
+            font-size: 14px;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--anthropic-orange);
+            background: rgba(217,119,87,0.06);
+        }
+
+        .icon-btn.primary {
+            background: var(--anthropic-orange);
+            border-color: var(--anthropic-orange);
+            color: white;
+            width: 44px;
+            height: 44px;
+            font-size: 16px;
+        }
+
+        .icon-btn.primary:hover {
+            background: #c86641;
+        }
+
+        .speed-select {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 6px 8px;
+            border: 1.5px solid var(--anthropic-light-gray);
+            border-radius: 6px;
+            background: var(--anthropic-light);
+            color: var(--anthropic-dark);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .speed-select:focus {
+            border-color: var(--anthropic-orange);
+        }
+
+        .spacer { flex: 1; }
+
+        /* ── Progress ── */
+        .progress-group { display: flex; flex-direction: column; gap: 4px; }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--anthropic-mid-gray);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-track {
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--anthropic-orange);
+            border-radius: 2px;
+            transition: width 0.05s linear;
+            width: 0%;
+        }
+
+        /* ── Action Buttons ── */
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .button:hover { background: #c86641; transform: translateY(-1px); }
+        .button:active { transform: translateY(0); }
+
+        .button.secondary { background: var(--anthropic-blue); }
+        .button.secondary:hover { background: #5a8bb8; }
+
+        /* ── Canvas Area ── */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 48px rgba(20,20,19,0.12);
+            background: #faf9f5;
+            position: relative;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* ── Scene Title Overlay (shown on canvas) ── */
+        .scene-overlay {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(250,249,245,0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(176,174,165,0.3);
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--anthropic-mid-gray);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Responsive */
+        @media (max-width: 720px) {
+            .main-row { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="main-row">
+
+        <!-- ── Sidebar ── -->
+        <div class="sidebar">
+
+            <!-- Concept Header (CUSTOMIZE THIS) -->
+            <div class="sidebar-card">
+                <div class="concept-title" id="concept-title">Concept Title</div>
+                <div class="concept-subtitle" id="concept-subtitle">A step-by-step visual explanation</div>
+            </div>
+
+            <!-- Scene List (auto-generated from scenes array) -->
+            <div class="sidebar-card">
+                <div class="section-label">Scenes</div>
+                <div class="scene-list" id="scene-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="sidebar-card playback-controls">
+                <div class="section-label">Playback</div>
+
+                <!-- Main transport row -->
+                <div class="control-row">
+                    <button class="icon-btn" onclick="prevScene()" title="Previous scene">⏮</button>
+                    <button class="icon-btn primary" id="play-btn" onclick="togglePlay()">▶</button>
+                    <button class="icon-btn" onclick="nextScene()" title="Next scene">⏭</button>
+                    <div class="spacer"></div>
+                    <select class="speed-select" onchange="setSpeed(this.value)" title="Playback speed">
+                        <option value="0.5">0.5×</option>
+                        <option value="1" selected>1×</option>
+                        <option value="2">2×</option>
+                        <option value="4">4×</option>
+                    </select>
+                </div>
+
+                <!-- Scene progress -->
+                <div class="progress-group">
+                    <div class="progress-label">
+                        <span id="scene-label">Scene 1 of 1</span>
+                        <span id="time-label">0%</span>
+                    </div>
+                    <div class="progress-track" onclick="scrubFromClick(event)" id="progress-track">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions (ALWAYS KEEP THIS) -->
+            <div class="sidebar-card">
+                <div class="section-label">Actions</div>
+                <div style="display:flex; gap:8px;">
+                    <button class="button" onclick="restartAll()">↺ Restart</button>
+                    <button class="button secondary" onclick="downloadFrame()">↓ Save</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ── Canvas ── -->
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="scene-overlay" id="scene-overlay">Loading...</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  MOTION EXPLAINER — REPLACE EVERYTHING BELOW WITH YOUR IMPLEMENTATION
+//  Keep the UI control handlers at the bottom (they wire to the manager).
+// ═══════════════════════════════════════════════════════════════════════
+
+// ── Concept Metadata (CUSTOMIZE) ──────────────────────────────────────
+const CONCEPT_TITLE    = "Concept Title";       // e.g. "How Fourier Transforms Work"
+const CONCEPT_SUBTITLE = "Step-by-step visual"; // e.g. "Decomposing signals into sine waves"
+
+// ── Color Palette ─────────────────────────────────────────────────────
+const P = {
+    primary:   '#d97757',
+    secondary: '#6a9bcc',
+    tertiary:  '#788c5d',
+    neutral:   '#b0aea5',
+    dark:      '#141413',
+    light:     '#faf9f5',
+    gray:      '#e8e6dc',
+};
+
+// ── Animation Easing ──────────────────────────────────────────────────
+const Ease = {
+    inOut:  t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2,
+    out:    t => 1 - Math.pow(1-t, 3),
+    gate:   (t, start=0, win=0.3) => {
+        const e = Ease.inOut;
+        return e(Math.max(0, Math.min(1, (t - start) / win)));
+    }
+};
+
+// ── Scene System ───────────────────────────────────────────────────────
+// Each scene: { title, duration (seconds), draw(t) }
+// t goes 0 → 1 over the scene's duration.
+// draw(t) is called every frame while the scene is active.
+
+const scenes = [
+    {
+        title: "Introduction",
+        duration: 4,
+        draw(t) {
+            // ── REPLACE: draw your first scene here ──
+            background(250, 249, 245);
+
+            // Example: fade-in title
+            const alpha = Ease.gate(t, 0, 0.4) * 255;
+            fill(20, 20, 19, alpha);
+            noStroke();
+            textAlign(CENTER);
+            textFont('Lora, serif');
+            textSize(32);
+            text(CONCEPT_TITLE, width/2, height/2 - 20);
+
+            textFont('Poppins, sans-serif');
+            textSize(16);
+            fill(176, 174, 165, alpha);
+            text(CONCEPT_SUBTITLE, width/2, height/2 + 24);
+        }
+    },
+    {
+        title: "Step Two",
+        duration: 5,
+        draw(t) {
+            // ── REPLACE: draw your second scene here ──
+            background(250, 249, 245);
+            fill(20, 20, 19, 200);
+            noStroke();
+            textAlign(CENTER);
+            textFont('Lora, serif');
+            textSize(24);
+            text("Scene Two — replace me", width/2, height/2);
+        }
+    },
+    // Add more scenes as needed...
+    // { title: "...", duration: 6, draw(t) { ... } }
+];
+
+// ── Scene Manager ──────────────────────────────────────────────────────
+let manager = {
+    current: 0,
+    frame: 0,
+    playing: false,
+    speed: 1.0,
+
+    get scene() { return scenes[this.current]; },
+    get t() { return Math.min(this.frame / (this.scene.duration * 60), 1.0); },
+    get done() { return this.t >= 1.0; },
+
+    update() {
+        if (!this.playing) return;
+        const steps = this.speed >= 2 ? Math.round(this.speed) : 1;
+        for (let i = 0; i < steps; i++) {
+            if (!this.done) {
+                this.frame++;
+            } else if (this.current < scenes.length - 1) {
+                this.current++;
+                this.frame = 0;
+                updateSceneList();
+            } else {
+                this.playing = false;
+                updatePlayBtn();
+            }
+        }
+    },
+
+    goTo(index) {
+        if (index < 0 || index >= scenes.length) return;
+        this.current = index;
+        this.frame = 0;
+        updateSceneList();
+    }
+};
+
+// ── p5.js Setup ────────────────────────────────────────────────────────
+function setup() {
+    const canvas = createCanvas(900, 600);
+    canvas.parent('canvas-container');
+    textFont('Poppins, sans-serif');
+    frameRate(60);
+
+    // Init UI
+    document.getElementById('concept-title').textContent    = CONCEPT_TITLE;
+    document.getElementById('concept-subtitle').textContent = CONCEPT_SUBTITLE;
+    buildSceneList();
+    updateSceneList();
+}
+
+function draw() {
+    manager.update();
+
+    // Draw current scene
+    if (manager.scene && manager.scene.draw) {
+        manager.scene.draw(manager.t);
+    }
+
+    // Update UI every few frames (not every frame for perf)
+    if (frameCount % 3 === 0) {
+        updateProgress();
+        document.getElementById('scene-overlay').textContent =
+            `${manager.current + 1} / ${scenes.length}  —  ${manager.scene.title}`;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  UI CONTROL HANDLERS — DO NOT MODIFY THESE
+// ═══════════════════════════════════════════════════════════════════════
+
+function togglePlay() {
+    manager.playing = !manager.playing;
+    updatePlayBtn();
+}
+
+function updatePlayBtn() {
+    document.getElementById('play-btn').textContent = manager.playing ? '⏸' : '▶';
+}
+
+function nextScene() {
+    manager.goTo(manager.current + 1);
+}
+
+function prevScene() {
+    manager.goTo(manager.current - 1);
+}
+
+function setSpeed(v) {
+    manager.speed = parseFloat(v);
+}
+
+function restartAll() {
+    manager.goTo(0);
+    manager.playing = false;
+    updatePlayBtn();
+}
+
+function scrubFromClick(e) {
+    const rect = document.getElementById('progress-track').getBoundingClientRect();
+    const t = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    manager.frame = Math.floor(t * manager.scene.duration * 60);
+    manager.playing = false;
+    updatePlayBtn();
+}
+
+function updateProgress() {
+    const t = manager.t;
+    document.getElementById('progress-fill').style.width = (t * 100) + '%';
+    document.getElementById('scene-label').textContent =
+        `Scene ${manager.current + 1} of ${scenes.length}`;
+    document.getElementById('time-label').textContent = Math.floor(t * 100) + '%';
+}
+
+function buildSceneList() {
+    const list = document.getElementById('scene-list');
+    list.innerHTML = '';
+    scenes.forEach((s, i) => {
+        const item = document.createElement('div');
+        item.className = 'scene-item';
+        item.id = `scene-item-${i}`;
+        item.onclick = () => manager.goTo(i);
+        item.innerHTML = `
+            <div class="scene-number">${i + 1}</div>
+            <div class="scene-name">${s.title}</div>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function updateSceneList() {
+    scenes.forEach((_, i) => {
+        const item = document.getElementById(`scene-item-${i}`);
+        if (!item) return;
+        item.className = 'scene-item' +
+            (i === manager.current ? ' active' : '') +
+            (i < manager.current ? ' done' : '');
+    });
+}
+
+function downloadFrame() {
+    saveCanvas('explainer-frame', 'png');
+}
+
+// Init UI on load
+window.addEventListener('load', () => {
+    updatePlayBtn();
+});
+</script>
+</body>
+</html>
