@@ -16,10 +16,7 @@ __pycache__/
 *.pyc
 .env
 
-# ToolUniverse skills — tracked in ~/code/ToolUniverse/skills/
-# Symlinked here so Claude Code finds them. Source of truth is ToolUniverse repo.
-# No trailing slash — symlinks to dirs are not dirs in git's view.
-tooluniverse*
+# ToolUniverse dev/infra skills — not user-facing, stay in TU repo only
 devtu-*
 setup-tooluniverse
 create-tooluniverse-skill
