@@ -39,23 +39,23 @@ severity: CRITICAL
 
 # AWS
 pattern: AKIA[0-9A-Z]{16}
-pattern: aws_secret_access_key\s*=\s*[A-Za-z0-9+/=]{40}
+pattern: (?i)(aws_secret_access_key|aws_secret)\s*[=:]\s*['"]?[A-Za-z0-9+/=]{20,}
 severity: CRITICAL
 
 # Database URLs with credentials
 pattern: (postgres|mysql|mongodb|redis)://[^:]+:[^@]+@[^\s'"]+
 severity: CRITICAL
 
-# JWT/Bearer tokens (actual tokens, not placeholder references)
-pattern: eyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}
+# JWT/Bearer tokens (3-segment: header.payload.signature)
+pattern: eyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]+
 severity: CRITICAL
 
 # Private keys
 pattern: -----BEGIN\s+(RSA\s+|EC\s+|DSA\s+|OPENSSH\s+)?PRIVATE KEY-----
 severity: CRITICAL
 
-# GitHub tokens
-pattern: gh[ps]_[A-Za-z0-9_]{36}
+# GitHub tokens (personal, server, OAuth, user-to-server)
+pattern: gh[pousr]_[A-Za-z0-9_]{36,}
 pattern: github_pat_[A-Za-z0-9_]{22,}
 severity: CRITICAL
 
@@ -63,6 +63,11 @@ severity: CRITICAL
 pattern: GOCSPX-[A-Za-z0-9_-]+
 severity: CRITICAL
 
+```
+
+### Heuristic Patterns (WARNING — manual review, does NOT auto-fail)
+
+```
 # Generic high-entropy strings (potential secrets)
 # Only in config files, .env, docker-compose
 pattern: ^[A-Z_]+=[A-Za-z0-9+/=_-]{32,}$
@@ -115,7 +120,9 @@ Look for patterns that suggest the project still contains references to its orig
 severity: CRITICAL (should be replaced with your-domain.com)
 
 # Absolute paths to specific user home directories
-pattern: /home/[a-z]+/  (anything other than /home/user/)
+pattern: /home/[a-z][a-z0-9_-]*/  (anything other than /home/user/)
+pattern: /Users/[A-Za-z][A-Za-z0-9_-]*/  (macOS home directories)
+pattern: C:\\Users\\[A-Za-z]  (Windows home directories)
 severity: CRITICAL
 
 # Internal secret file references
@@ -202,7 +209,7 @@ Generate `SANITIZATION_REPORT.md`:
 ## Rules
 
 - **NEVER** display full secret values in the report — truncate to first 4 chars + "..."
-- **NEVER** modify any files — you are READ-ONLY. Report only.
+- **NEVER** modify source files — you only generate reports (SANITIZATION_REPORT.md). Source code is read-only.
 - **ALWAYS** scan every text file, not just known extensions
 - **ALWAYS** check git history, even for fresh repos
 - **BE PARANOID** — false positives are acceptable, false negatives are not

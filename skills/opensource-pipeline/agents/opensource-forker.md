@@ -47,7 +47,8 @@ find SOURCE_DIR -type f | grep -v node_modules | grep -v .git | grep -v __pycach
 # Create clean copy (no .git, no node_modules, no __pycache__)
 mkdir -p TARGET_DIR
 rsync -av --exclude='.git' --exclude='node_modules' --exclude='__pycache__' \
-  --exclude='.env' --exclude='*.pyc' --exclude='.venv' --exclude='venv' \
+  --exclude='.env*' --exclude='*.pyc' --exclude='.venv' --exclude='venv' \
+  --exclude='.claude/' --exclude='.secrets/' --exclude='secrets/' \
   SOURCE_DIR/ TARGET_DIR/
 ```
 
@@ -62,19 +63,19 @@ Scan ALL files for these patterns and extract to .env.example:
 
 # AWS credentials
 AKIA[0-9A-Z]{16}
-aws_secret_access_key\s*=\s*.+
+(?i)(aws_secret_access_key|aws_secret)\s*[=:]\s*['"]?[A-Za-z0-9+/=]{20,}
 
 # Database connection strings
 (postgres|mysql|mongodb|redis):\/\/[^\s'"]+
 
-# JWT tokens
-eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+
+# JWT tokens (3-segment: header.payload.signature)
+eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+
 
 # Private keys
 -----BEGIN (RSA |EC |DSA )?PRIVATE KEY-----
 
-# GitHub tokens
-gh[ps]_[A-Za-z0-9_]{36}
+# GitHub tokens (personal, server, OAuth, user-to-server)
+gh[pousr]_[A-Za-z0-9_]{36,}
 github_pat_[A-Za-z0-9_]{22,}
 
 # Google OAuth
@@ -88,8 +89,9 @@ https://hooks\.slack\.com/services/T[A-Z0-9]+/B[A-Z0-9]+/[A-Za-z0-9]+
 SG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43}
 key-[A-Za-z0-9]{32}
 
-# Generic secrets in env files
-^[A-Z_]+=((?!true|false|yes|no|on|off|\d+$).{8,})$
+# Generic secrets in env files (WARNING — manual review, do NOT auto-strip)
+# Only flag values that are likely secrets, not standard config
+^[A-Z_]+=((?!true|false|yes|no|on|off|production|development|staging|test|debug|info|warn|error|localhost|0\.0\.0\.0|127\.0\.0\.1|\d+$).{16,})$
 ```
 
 ### Files to Always Remove
