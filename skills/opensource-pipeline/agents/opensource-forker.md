@@ -101,6 +101,7 @@ key-[A-Za-z0-9]{32}
 - `.secrets/`, `secrets/`
 - `.claude/settings.json` (may contain internal hook paths)
 - `sessions/` (session state)
+- `*.map` (source maps expose original source structure and file paths)
 
 ### Files to Always Strip Content From
 - `docker-compose.yml` — replace hardcoded env values with `${VAR_NAME}`

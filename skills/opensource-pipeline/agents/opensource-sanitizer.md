@@ -86,7 +86,7 @@ severity: CRITICAL
 **How to scan:**
 ```bash
 # Use Grep tool for each pattern across all files
-# Exclude: node_modules, .git, __pycache__, *.min.js, *.map, binary files
+# Exclude: node_modules, .git, __pycache__, *.min.js, binary files
 # Include: *.py, *.js, *.ts, *.yml, *.yaml, *.json, *.toml, *.cfg, *.ini, *.env*, *.md, *.sh, *.conf, Dockerfile*, Makefile
 ```
 
@@ -144,6 +144,7 @@ credentials.json, service-account*.json
 .secrets/, secrets/
 .claude/settings.json (contains internal hook paths)
 sessions/ (session state)
+*.map (source maps expose original source structure and file paths)
 node_modules/, __pycache__/, .venv/, venv/
 ```
 
