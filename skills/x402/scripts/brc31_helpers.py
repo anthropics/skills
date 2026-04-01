@@ -116,7 +116,7 @@ def main():
         # Auto-detect and process refund in response
         try:
             if isinstance(body_parsed, dict):
-                refund_data = body_parsed.get("refund")
+                refund_data = body_parsed.get("refund") or body_parsed.get("excessRefund")
                 if refund_data and isinstance(refund_data, dict) and not refund_data.get("already_refunded"):
                     from lib.refund import parse_refund, process_refund
                     refund_info = parse_refund(body_parsed)

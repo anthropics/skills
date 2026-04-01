@@ -647,24 +647,25 @@ def paid_request(
             response.status_code, attempt, max_payment_attempts,
         )
 
-        # Auto-detect and internalize refunds in error responses
-        if response.status_code >= 400:
-            try:
-                from lib.refund import parse_refund, process_refund
-                resp_body = response.json()
-                refund = parse_refund(resp_body)
-                if refund:
-                    try:
-                        refund_result = process_refund(refund)
-                        log.info(
-                            "Refund auto-internalized: %d sats, accepted=%s",
-                            refund.satoshis,
-                            refund_result.get("accepted", False),
-                        )
-                    except Exception as re:
-                        log.error("Failed to internalize refund: %s", re)
-            except Exception:
-                pass  # Response not JSON or no refund — that's fine
+        # Auto-detect and internalize refunds in any response.
+        # Async agents (banana, veo, kling) return 200 on /status polls
+        # with refund data for failed predictions — must check all responses.
+        try:
+            from lib.refund import parse_refund, process_refund
+            resp_body = response.json()
+            refund = parse_refund(resp_body)
+            if refund:
+                try:
+                    refund_result = process_refund(refund)
+                    log.info(
+                        "Refund auto-internalized: %d sats, accepted=%s",
+                        refund.satoshis,
+                        refund_result.get("accepted", False),
+                    )
+                except Exception as re:
+                    log.error("Failed to internalize refund: %s", re)
+        except Exception:
+            pass  # Response not JSON or no refund — that's fine
 
         return response
 

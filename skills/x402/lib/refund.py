@@ -24,7 +24,8 @@ class RefundInfo:
 
 def parse_refund(response_body):
     """Extract refund info from a server response body. Returns None if absent."""
-    refund = response_body.get("refund")
+    # Check both "refund" (error refunds) and "excessRefund" (partial token refunds)
+    refund = response_body.get("refund") or response_body.get("excessRefund")
     if not refund or not isinstance(refund, dict):
         return None
     if refund.get("already_refunded"):
