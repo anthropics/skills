@@ -23,7 +23,7 @@ for key in sorted(c):
         print(f"  {item['qualname']}  -- {item['doc']}")
 ```
 
-`ordeal --help` shows all CLI commands.
+`ordeal --help` shows all CLI commands. Full docs at https://docs.byordeal.com/
 
 ## Reading ordeal's output
 
