@@ -67,7 +67,7 @@ argument-hint: "[latest | select]"
 선택된 케이스에 대해:
 1. 해당 케이스의 세션 맥락만 추출 (다른 케이스 내용 혼입 금지)
 2. 리포트 구조에 맞춰 작성
-3. `docs/reports/YYYY-MM-DD-{주제-요약}.md`로 저장
+3. `docs/work-notes/YYYY-MM-DD-{주제-요약}.md`로 저장
 4. 저장 경로와 요약을 사용자에게 알려줌
 
 ## 리포트 구조

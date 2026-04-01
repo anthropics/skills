@@ -90,7 +90,7 @@ deep 모드에서는 지원 파일도 모두 읽는다.
 
 ### Step 4: Juice Note 작성 및 저장
 
-juice note를 `docs/juice-notes/YYYY-MM-DD-{스킬이름}.md`에 저장한다.
+juice note를 `docs/skill-notes/YYYY-MM-DD-{스킬이름}.md`에 저장한다.
 해당 폴더가 없으면 생성한다.
 
 ### Step 5: 세션 출력
