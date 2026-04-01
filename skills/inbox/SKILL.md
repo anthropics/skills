@@ -1,5 +1,5 @@
 ---
-name: executive-email-manager
+name: inbox
 description: >
   Manage your Outlook inbox like a chief of staff: triage emails by priority
   (urgent/respond/delegate/defer/archive), get a morning briefing of your
