@@ -21,19 +21,19 @@ Warm or cold? Playful or serious? What existing products or aesthetics does it
 reference?
 
 ## 2. Color Palette & Roles
-| Token | Hex | Role |
-|---|---|---|
-| surface-primary | #fafaf9 | Page background |
-| surface-secondary | #f5f5f4 | Card/section background |
-| text-primary | #1c1917 | Headings and body text |
-| text-secondary | #57534e | Supporting text, labels |
-| accent | #dc2626 | CTAs, active states, links |
-| accent-hover | #b91c1c | Hover state for accent |
-| accent-subtle | #fef2f2 | Accent-tinted background |
-| border | #e7e5e4 | Default borders |
-| success | #16a34a | Success states |
-| warning | #d97706 | Warning states |
-| error | #dc2626 | Error states |
+| Token | OKLCH | Hex (fallback) | Role |
+|---|---|---|---|
+| surface-primary | oklch(0.985 0.005 80) | #fafaf9 | Page background |
+| surface-secondary | oklch(0.97 0.008 80) | #f5f5f4 | Card/section background |
+| text-primary | oklch(0.15 0.02 60) | #1c1917 | Headings and body text |
+| text-secondary | oklch(0.40 0.02 60) | #57534e | Supporting text, labels |
+| accent | oklch(0.55 0.25 25) | #dc2626 | CTAs, active states, links |
+| accent-hover | oklch(0.48 0.25 25) | #b91c1c | Hover state for accent |
+| accent-subtle | oklch(0.97 0.02 25) | #fef2f2 | Accent-tinted background |
+| border | oklch(0.91 0.01 80) | #e7e5e4 | Default borders |
+| success | oklch(0.55 0.18 145) | #16a34a | Success states |
+| warning | oklch(0.65 0.18 70) | #d97706 | Warning states |
+| error | oklch(0.55 0.22 25) | #dc2626 | Error states |
 
 ## 3. Typography Rules
 | Level | Font | Size | Weight | Line Height | Letter Spacing |
@@ -165,7 +165,7 @@ Cream background, serif headings, generous whitespace. Suited for content-heavy 
 White background, strict grid, no decoration. Suited for professional tools.
 - Surface: oklch(0.99 0.002 0) to oklch(0.95 0.005 0)
 - Accent: oklch(0.50 0.25 250) (blue)
-- Font: Helvetica Neue / Outfit + DM Sans
+- Font: Outfit + DM Sans
 - Radius: 0px
 
 ### Soft Pastel

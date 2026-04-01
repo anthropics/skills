@@ -49,8 +49,8 @@ Invest time in this order. A well-choreographed page load does more than fifty m
 ### Never Use
 - `linear` for UI animations (looks mechanical)
 - `ease` (the CSS default is mediocre)
-- `bounce` / elastic easing (looks dated and gimmicky)
-- Spring animations with visible oscillation (too playful for most UIs)
+- `bounce` / elastic easing with visible oscillation (looks dated and gimmicky). Subtle single-pass overshoot (like `--ease-spring` above) is acceptable.
+- Spring animations with multiple bounces (too playful for most UIs)
 
 ---
 
