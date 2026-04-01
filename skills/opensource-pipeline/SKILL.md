@@ -134,7 +134,7 @@ Project: {STAGING_PATH}
 License: {chosen_license}
 Project name: {PROJECT_NAME}
 Description: {description}
-GitHub repo: {github_repo}
+GitHub repo: {github_org}/{github_repo}
 
 Generate:
 1. CLAUDE.md (commands, architecture, key files)
