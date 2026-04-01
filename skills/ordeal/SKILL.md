@@ -1,14 +1,12 @@
 ---
 name: ordeal
-description: Automated chaos testing for Python — discover properties, inject faults, mutate code, explore state space. TRIGGER when: code imports `ordeal`, user asks to test/audit/fuzz Python code, find bugs, or check test quality.
-license: Complete terms in LICENSE.txt
+description: Test Python code with ordeal — discover properties, inject faults, mutate, explore state space
+user_invocable: true
 ---
 
 # ordeal — automated chaos testing for Python
 
-You have access to `ordeal`, an automated testing toolkit for Python. It discovers properties, injects faults, runs mutation testing, and explores reachable states. Use it when the user asks you to test, audit, or improve test coverage for Python code.
-
-Install: `pip install ordeal` (or `uv add ordeal`)
+You have access to `ordeal`, an automated testing toolkit. Use it when the user asks you to test, audit, or improve test coverage for Python code.
 
 ## When to use ordeal
 
@@ -29,7 +27,7 @@ Install: `pip install ordeal` (or `uv add ordeal`)
 ## Commands
 
 ```
-ordeal init <package>              # zero-to-tests: mine -> generate -> mutate-validate -> explore
+ordeal init <package>              # zero-to-tests: mine → generate → mutate-validate → explore
 ordeal init --dry-run              # preview without writing
 ordeal audit <module>              # mutation score + property coverage + test gaps
 ordeal mutate <target>             # mutation testing (function or module)
@@ -42,13 +40,23 @@ ordeal replay --shrink --ablate <trace.json>  # shrink + find which faults matte
 ordeal benchmark                   # USL scaling analysis
 ```
 
+## Living reference
+
+`catalog()` returns every fault, invariant, strategy, and capability at runtime — always up-to-date even when this skill isn't. When in doubt, call it.
+
+```python
+from ordeal import catalog
+c = catalog()
+for key in sorted(c):
+    print(f"\n{key}:")
+    for item in c[key]:
+        print(f"  {item['qualname']}  -- {item['doc']}")
+```
+
 ## Python API (when you need more control)
 
 ```python
-from ordeal import mutate, catalog
-
-# See everything ordeal can do
-catalog()
+from ordeal import mutate
 
 # Mutation testing — are tests strong enough?
 result = mutate("myapp.scoring.compute")
@@ -75,7 +83,7 @@ state = explore("myapp")  # mine + scan + mutate + chaos in one pass
 
 ## Reading results
 
-- `mutate()` returns a `MutationResult` with `.score` (0.0-1.0), `.survived` (list of gaps), `.summary()`, `.generate_test_stubs()`
+- `mutate()` returns a `MutationResult` with `.score` (0.0–1.0), `.survived` (list of gaps), `.summary()`, `.generate_test_stubs()`
 - `ordeal init` prints JSON to stdout (for you) and a quality report to stderr (for the human)
 - `ordeal audit` prints a structured report with mutation score, property coverage, and specific test gaps
 - `ordeal explore` saves traces to `.ordeal/traces/` and seeds to `.ordeal/seeds/`
