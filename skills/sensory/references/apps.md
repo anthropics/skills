@@ -761,3 +761,397 @@ end tell
 -- Join a meeting via URL [Tier 1]
 open location "msteams://meeting/join?url=https://teams.microsoft.com/l/meetup-join/..."
 ```
+
+---
+
+## Reminders
+
+Process name: `Reminders`
+
+```applescript
+-- Get all reminders in a list [Tier 1]
+tell application "Reminders"
+    get name of every reminder of list "Personal"
+end tell
+
+-- Create a reminder [Tier 1]
+tell application "Reminders"
+    tell list "Personal"
+        make new reminder with properties {name:"Buy groceries", due date:date "2026-04-05 10:00:00"}
+    end tell
+end tell
+
+-- Complete a reminder [Tier 1]
+tell application "Reminders"
+    set completed of reminder "Buy groceries" of list "Personal" to true
+end tell
+
+-- Get incomplete reminders [Tier 1]
+tell application "Reminders"
+    get name of every reminder of list "Personal" whose completed is false
+end tell
+
+-- List all reminder lists [Tier 1]
+tell application "Reminders"
+    get name of every list
+end tell
+```
+
+---
+
+## Music (Apple Music)
+
+Process name: `Music`
+
+```applescript
+-- Play/pause [Tier 1]
+tell application "Music" to playpause
+
+-- Next/previous track [Tier 1]
+tell application "Music" to next track
+tell application "Music" to previous track
+
+-- Get current track info [Tier 1]
+tell application "Music"
+    set trackName to name of current track
+    set trackArtist to artist of current track
+    set trackAlbum to album of current track
+    return trackName & " by " & trackArtist & " on " & trackAlbum
+end tell
+
+-- Set volume (0-100) [Tier 1]
+tell application "Music" to set sound volume to 50
+
+-- Search and play [Tier 1]
+tell application "Music"
+    set results to search playlist "Library" for "artist name"
+    play item 1 of results
+end tell
+
+-- Shuffle toggle [Tier 1]
+tell application "Music" to set shuffle enabled to true
+
+-- Get player state [Tier 1]
+tell application "Music" to get player state  -- playing, paused, stopped
+```
+
+---
+
+## Photos
+
+Process name: `Photos`
+
+```applescript
+-- Get recent photos info [Tier 1]
+tell application "Photos"
+    set recentPhotos to media items 1 thru 5
+    repeat with p in recentPhotos
+        log (name of p) & " — " & (date of p)
+    end repeat
+end tell
+
+-- Export photos [Tier 1]
+tell application "Photos"
+    set selectedPhotos to selection
+    export selectedPhotos to POSIX file "/Users/a/Desktop/exported/"
+end tell
+
+-- Search by keyword [Tier 1]
+tell application "Photos"
+    search for "beach"
+end tell
+
+-- Get album names [Tier 1]
+tell application "Photos"
+    get name of every album
+end tell
+
+-- Create album [Tier 1]
+tell application "Photos"
+    make new album named "Vacation 2026"
+end tell
+```
+
+---
+
+## Contacts
+
+Process name: `Contacts`
+
+```applescript
+-- Search for a contact [Tier 1]
+tell application "Contacts"
+    get name of every person whose name contains "John"
+end tell
+
+-- Get phone number [Tier 1]
+tell application "Contacts"
+    get value of phone 1 of person "John Doe"
+end tell
+
+-- Get email [Tier 1]
+tell application "Contacts"
+    get value of email 1 of person "John Doe"
+end tell
+
+-- Create a contact [Tier 1]
+tell application "Contacts"
+    set newPerson to make new person with properties {first name:"Jane", last name:"Doe"}
+    make new email at end of emails of newPerson with properties {label:"work", value:"jane@example.com"}
+    make new phone at end of phones of newPerson with properties {label:"mobile", value:"+31612345678"}
+    save
+end tell
+```
+
+---
+
+## Keynote
+
+Process name: `Keynote`
+
+```applescript
+-- Open a presentation [Tier 1]
+tell application "Keynote"
+    open POSIX file "/Users/a/Documents/presentation.key"
+end tell
+
+-- Start slideshow [Tier 1]
+tell application "Keynote"
+    start slideshow of front document
+end tell
+
+-- Go to specific slide [Tier 1]
+tell application "Keynote"
+    show slide 5 of front document
+end tell
+
+-- Export to PDF [Tier 1]
+tell application "Keynote"
+    export front document to POSIX file "/Users/a/Desktop/presentation.pdf" as PDF
+end tell
+
+-- Get slide count [Tier 1]
+tell application "Keynote"
+    get count of slides of front document
+end tell
+
+-- Add a new slide [Tier 1]
+tell application "Keynote"
+    tell front document
+        make new slide at end with properties {base slide:master slide "Blank"}
+    end tell
+end tell
+```
+
+---
+
+## Pages
+
+Process name: `Pages`
+
+```applescript
+-- Create new document [Tier 1]
+tell application "Pages"
+    make new document
+end tell
+
+-- Export to PDF [Tier 1]
+tell application "Pages"
+    export front document to POSIX file "/Users/a/Desktop/document.pdf" as PDF
+end tell
+
+-- Export to Word [Tier 1]
+tell application "Pages"
+    export front document to POSIX file "/Users/a/Desktop/document.docx" as Microsoft Word
+end tell
+
+-- Get document text [Tier 1]
+tell application "Pages"
+    get body text of front document
+end tell
+
+-- Set body text [Tier 1]
+tell application "Pages"
+    set body text of front document to "New content here"
+end tell
+```
+
+---
+
+## Numbers
+
+Process name: `Numbers`
+
+```applescript
+-- Open a spreadsheet [Tier 1]
+tell application "Numbers"
+    open POSIX file "/Users/a/Documents/data.numbers"
+end tell
+
+-- Get cell value [Tier 1]
+tell application "Numbers"
+    tell front document
+        tell sheet 1
+            tell table 1
+                get value of cell "A1"
+            end tell
+        end tell
+    end tell
+end tell
+
+-- Set cell value [Tier 1]
+tell application "Numbers"
+    tell front document
+        tell sheet 1
+            tell table 1
+                set value of cell "B2" to 42
+            end tell
+        end tell
+    end tell
+end tell
+
+-- Export to CSV [Tier 1]
+tell application "Numbers"
+    export front document to POSIX file "/Users/a/Desktop/data.csv" as CSV
+end tell
+```
+
+---
+
+## Telegram
+
+Process name: `Telegram`
+
+Telegram's macOS app has limited AppleScript support — mostly Tier 2 via System Events.
+
+```applescript
+-- Open Telegram [Tier 1]
+tell application "Telegram" to activate
+
+-- Search for a chat [Tier 2]
+tell application "System Events" to tell process "Telegram"
+    keystroke "f" using command down
+    delay 0.3
+    keystroke "contact name"
+end tell
+
+-- Send a message (when chat is open) [Tier 2]
+tell application "System Events" to tell process "Telegram"
+    keystroke "Hello!"
+    keystroke return
+end tell
+
+-- Navigate chats [Tier 2]
+tell application "System Events" to tell process "Telegram"
+    key code 125 using option down  -- next chat
+    key code 126 using option down  -- previous chat
+end tell
+
+-- Open Telegram via URL scheme [Tier 1]
+open location "tg://resolve?domain=username"
+open location "tg://msg?text=Hello"
+```
+
+---
+
+## WhatsApp
+
+Process name: `WhatsApp`
+
+Similar to Telegram — limited native scripting, mostly Tier 2.
+
+```applescript
+-- Open WhatsApp [Tier 1]
+tell application "WhatsApp" to activate
+
+-- Search for a chat [Tier 2]
+tell application "System Events" to tell process "WhatsApp"
+    keystroke "f" using command down
+    delay 0.3
+    keystroke "contact name"
+    delay 0.5
+    keystroke return
+end tell
+
+-- Send a message (when chat is open) [Tier 2]
+tell application "System Events" to tell process "WhatsApp"
+    keystroke "Hello!"
+    keystroke return
+end tell
+
+-- Open via URL scheme [Tier 1]
+open location "whatsapp://send?phone=31612345678&text=Hello"
+```
+
+---
+
+## 1Password
+
+Process name: `1Password 7` or `1Password`
+
+```applescript
+-- Open and search [Tier 1]
+tell application "1Password" to activate
+
+-- Quick search [Tier 2]
+tell application "System Events" to tell process "1Password"
+    keystroke "f" using command down
+    delay 0.3
+    keystroke "search term"
+end tell
+
+-- Lock 1Password [Tier 2]
+tell application "System Events" to tell process "1Password"
+    keystroke "l" using {command down, shift down}
+end tell
+
+-- Fill in browser (global shortcut) [Tier 2]
+tell application "System Events"
+    keystroke "\\" using command down  -- default 1Password fill shortcut
+end tell
+```
+
+---
+
+## Xcode
+
+Process name: `Xcode`
+
+```applescript
+-- Open a project [Tier 1]
+do shell script "open /path/to/project.xcodeproj"
+
+-- Build [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "b" using command down
+end tell
+
+-- Run [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "r" using command down
+end tell
+
+-- Stop [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "." using command down
+end tell
+
+-- Clean build folder [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "k" using {command down, shift down}
+end tell
+
+-- Open file quickly [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "o" using {command down, shift down}
+    delay 0.3
+    keystroke "filename"
+end tell
+
+-- Toggle navigator [Tier 2]
+tell application "System Events" to tell process "Xcode"
+    keystroke "0" using command down  -- show/hide navigator
+    keystroke "1" using command down  -- project navigator
+    keystroke "5" using command down  -- search navigator
+end tell
+```

@@ -924,6 +924,79 @@ end try
 - `-10810` — App not launched / can't connect
 - `-1` — General/unknown error (check message text)
 
+## Limitations — When NOT to Use osascript
+
+Be honest about what doesn't work. Don't waste time trying when these apply:
+
+1. **Sandboxed apps that block AppleScript entirely** — Some App Store apps (especially third-party banking, security apps) disable AppleScript completely. No workaround exists.
+2. **Complex canvas/drawing apps** — Figma, Photoshop layers, Illustrator paths. The UI elements exist but are impractical to target (hundreds of unnamed groups). Use their own APIs or plugins instead.
+3. **Web app content inside browsers** — You can control browser tabs and chrome, but NOT interact with web page DOM elements via System Events. Use JavaScript injection instead: `tell application "Safari" to do JavaScript "document.getElementById('btn').click()" in current tab of window 1`
+4. **Games and GPU-rendered UIs** — Metal/OpenGL rendered content has no accessibility tree. Computer use (screenshots) is the only option here.
+5. **Touch Bar** — If the Mac has a Touch Bar, those elements aren't reliably scriptable.
+6. **Universal Control / Sidecar displays** — Scripts run on the local Mac only. Can't interact with iPad Sidecar content.
+7. **FileVault login screen / Lock screen** — No scripting access before the user logs in.
+8. **Notarized app restrictions (macOS 15+)** — Some Apple apps are increasingly restricting AppleScript access. Calendar and Reminders may require explicit user permission prompts.
+
+**When computer use (screenshots) IS better:**
+- Visually identifying content in images, charts, or non-text UI
+- Apps with zero accessibility support
+- Verifying that a visual change actually happened (color changed, image loaded)
+- Complex drag-and-drop between apps where coordinates matter
+
+## Combining osascript with Shell Commands
+
+Many tasks are best solved by mixing AppleScript with shell commands:
+
+```applescript
+-- Get the frontmost app, then use shell to find its preferences file
+set appName to (tell application "System Events" to get name of first application process whose frontmost is true)
+set prefsPath to do shell script "find ~/Library/Preferences -name '*" & appName & "*' -maxdepth 1 2>/dev/null | head -1"
+
+-- Read a plist value
+do shell script "defaults read com.apple.Safari ShowFavoritesBar"
+
+-- Write a plist value (change app behavior)
+do shell script "defaults write com.apple.dock autohide -bool true"
+do shell script "killall Dock"  -- restart to apply
+
+-- Get screen resolution
+do shell script "system_profiler SPDisplaysDataType | grep Resolution"
+
+-- Get connected displays
+do shell script "system_profiler SPDisplaysDataType | grep -A2 'Display Type'"
+
+-- CPU/Memory usage of an app
+do shell script "ps aux | grep -i safari | head -1 | awk '{print $3, $4}'"
+
+-- Check if an app is installed
+do shell script "mdfind 'kMDItemKind == Application' -name 'Slack' | head -1"
+
+-- Get app version
+do shell script "defaults read /Applications/Safari.app/Contents/Info CFBundleShortVersionString"
+```
+
+## Accessibility Inspector — Your Best Friend
+
+When you can't figure out the UI hierarchy, tell the user to use Accessibility Inspector:
+
+1. Open: `/Applications/Xcode.app/Contents/Developer/Applications/Accessibility Inspector.app` (or `open -a "Accessibility Inspector"`)
+2. Click the crosshair button, then hover over any element
+3. It shows the exact element type, name, role, and hierarchy path
+
+This is how you debug "can't get button X" errors — the Inspector shows you what the element is actually called.
+
+Alternative without Xcode: `get entire contents of window 1` in System Events, but this is slower and noisier.
+
+## Security Best Practices
+
+When automating on behalf of the user:
+
+1. **Never store passwords in scripts** — use `do shell script "security find-generic-password -w -s 'service' -a 'account'"` to read from Keychain
+2. **Don't automate admin password entry** — if something needs sudo, ask the user to run it manually
+3. **Be transparent about what you're doing** — before clicking "Delete" or "Send", tell the user what you're about to do
+4. **Check before destructive actions** — `get name of every item of selection` before `delete selection`
+5. **Don't dismiss security dialogs automatically** — if macOS shows a permission/security prompt, let the user handle it
+
 ## App-Specific Recipes
 
 See `references/apps.md` for tested, ready-to-use patterns for 18 popular macOS apps including Finder, Safari, Chrome, Arc, Mail, Messages, Notes, Calendar, System Settings, Terminal, VS Code, Slack, Spotify, Preview, TextEdit, Zoom, Discord, and Microsoft Teams.
