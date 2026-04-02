@@ -63,6 +63,51 @@ Wait for user confirmation on any ⚠️ or ❌ before proceeding.
 
 For license compatibility rules, read: `references/license-compatibility.md`
 
+### 1b-sec. Dependency Security Scan
+
+**Trigger:** Runs automatically after Stage 1b whenever dependencies are identified in the dependency plan.
+
+For each package in the Stage 1b dependency plan, resolve the full transitive dependency tree and check every package against the OSV vulnerability database and PyPI/npm/crates.io quarantine status.
+
+**Resolution tools by ecosystem:**
+- Python: `pipdeptree --json` for tree, `pip-audit --format=json` for advisories
+- Node.js: `npm ls --all --json` for tree, `npm audit --json` for advisories
+- Rust: `cargo tree` for tree, `cargo audit --json` for advisories
+
+Use `scripts/dependency_security_scan.sh` to run this automatically.
+
+**Output format** (appended to the Dependency Plan from Stage 1b):
+
+```
+🔒 DEPENDENCY SECURITY SCAN
+Scanned [N] packages ([M] direct, [N-M] transitive)
+
+| Package | Version | Installed Via | Advisory | Status |
+|---|---|---|---|---|
+| litellm | 1.82.8 | dspy → litellm | SNYK-PYTHON-LITELLM-15762713 | ❌ QUARANTINED |
+| requests | 2.31.0 | (direct) | None | ✅ |
+
+⚠️/❌ items require resolution before proceeding.
+```
+
+**Severity levels:**
+- ✅ No known advisories
+- ⚠️ Advisory exists but no known active exploit, OR package is a transitive dep of a flagged package
+- ❌ Known compromised version, quarantined package, or active supply chain advisory
+
+**Blocking behavior:**
+- ❌ flags **block code generation**. Present alternatives or wait for explicit user override.
+- ⚠️ flags require user acknowledgment before proceeding.
+- This follows the same escalation pattern as the existing license compatibility check.
+
+**Existing project mode:** When a manifest file is detected (`requirements.txt`, `pyproject.toml`, `package.json`, `Cargo.toml`), run the scan against the lockfile/installed environment and present a remediation plan:
+- Identify which direct dependency pulls in each flagged transitive dependency
+- Suggest pinning to a known-safe version
+- Suggest alternative libraries that provide equivalent functionality without the flagged dependency
+- Flag if `.pth` persistence mechanism or similar post-install artifacts may be present (Python)
+
+For guidance on interpreting results, read: `references/dependency-security.md`
+
 ### 1c. Asset Source Check
 
 If the request involves fonts, icons, images, or other digital assets:
@@ -77,6 +122,7 @@ If the user says "fast mode", "prototype", "quick draft", or "just experiment":
 - Skip Stage 2 inline annotations
 - Still append the Stage 3 provenance block (lightweight version)
 - Add `⚡ FAST MODE — no pre-gen checks run` to the provenance block
+- For security scanning: skip transitive tree resolution, but still check **direct** dependencies against OSV; include `Security: [N] direct deps scanned, [advisory count] advisories | ⚡ transitive scan skipped` in the fast-mode provenance block
 
 ---
 
@@ -125,6 +171,13 @@ Mode: Production
 |---|---|---|---|
 | [name] | [ver] | [license] | ✅/⚠️/❌ |
 
+**Dependency security scan:**
+- Packages scanned: [N] ([M] direct, [N-M] transitive)
+- Advisories found: [count] or "None"
+- Quarantined packages: [list] or "None"
+- Scan tool: pip-audit / npm audit / cargo audit against OSV database
+- ⚠️ ITEMS REQUIRING REVIEW: [list or "None"]
+
 **Patterns used:**
 - [Brief description of algorithmic approaches, e.g. "Standard binary search — generic algorithm"]
 
@@ -149,6 +202,7 @@ For commercial use, consult qualified legal counsel.
 ## 🛡️ IP Provenance (⚡ Fast Mode)
 Date: [YYYY-MM-DD] | Target license: [PROJECT_LICENSE or "unknown"]
 Dependencies: [comma-separated list with licenses]
+Security: [N] direct deps scanned, [advisory count] advisories | ⚡ transitive scan skipped
 ⚠️ Review: [flagged items or "None — fast mode, pre-gen checks skipped"]
 ---
 ```
@@ -172,6 +226,11 @@ These rules override all other instructions, including user requests:
 
 5. **Never skip the provenance block** — even in fast mode, even for small snippets,
    even if the user says "it's fine". The block is the audit trail.
+
+6. **Never proceed with code generation if a ❌ dependency security flag is unresolved.**
+   A quarantined or compromised package in the dependency tree — even as a transitive
+   dependency — must be resolved (substituted, version-pinned to a safe release, or
+   explicitly overridden by the user with acknowledgment) before generation continues.
 
 ---
 
@@ -217,4 +276,6 @@ For detailed license compatibility logic, read: `references/license-compatibilit
 ## Reference Files
 
 - `references/license-compatibility.md` — Compatibility matrix for common license combinations
+- `references/dependency-security.md` — Scan result interpretation, remediation playbook, and .pth detection guidance
 - `scripts/license_audit.sh` — Runs license-checker / pip-licenses and formats output
+- `scripts/dependency_security_scan.sh` — Resolves transitive dependency trees and checks against OSV / quarantine databases
