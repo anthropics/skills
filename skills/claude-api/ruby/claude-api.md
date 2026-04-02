@@ -27,12 +27,17 @@ client = Anthropic::Client.new(api_key: "your-api-key")
 ```ruby
 message = client.messages.create(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 16000,
   messages: [
     { role: "user", content: "What is the capital of France?" }
   ]
 )
-puts message.content.first.text
+# content is an array of polymorphic block objects (TextBlock, ThinkingBlock,
+# ToolUseBlock, ...). .type is a Symbol — compare with :text, not "text".
+# .text raises NoMethodError on non-TextBlock entries.
+message.content.each do |block|
+  puts block.text if block.type == :text
+end
 ```
 
 ---
@@ -42,7 +47,7 @@ puts message.content.first.text
 ```ruby
 stream = client.messages.stream(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 64000,
   messages: [{ role: "user", content: "Write a haiku" }]
 )
 
@@ -74,7 +79,7 @@ end
 
 client.beta.messages.tool_runner(
   model: :"claude-opus-4-6",
-  max_tokens: 1024,
+  max_tokens: 16000,
   tools: [GetWeather.new],
   messages: [{ role: "user", content: "What's the weather in San Francisco?" }]
 ).each_message do |message|
@@ -85,3 +90,24 @@ end
 ### Manual Loop
 
 See the [shared tool use concepts](../shared/tool-use-concepts.md) for the tool definition format and agentic loop pattern.
+
+---
+
+## Prompt Caching
+
+`system_:` (trailing underscore — avoids shadowing `Kernel#system`) takes an array of text blocks; set `cache_control` on the last block. Plain hashes work via the `OrHash` type alias. For placement patterns and the silent-invalidator audit checklist, see `shared/prompt-caching.md`.
+
+```ruby
+message = client.messages.create(
+  model: :"claude-opus-4-6",
+  max_tokens: 16000,
+  system_: [
+    { type: "text", text: long_system_prompt, cache_control: { type: "ephemeral" } }
+  ],
+  messages: [{ role: "user", content: "Summarize the key points" }]
+)
+```
+
+For 1-hour TTL: `cache_control: { type: "ephemeral", ttl: "1h" }`. There's also a top-level `cache_control:` on `messages.create` that auto-places on the last cacheable block.
+
+Verify hits via `message.usage.cache_creation_input_tokens` / `message.usage.cache_read_input_tokens`.
