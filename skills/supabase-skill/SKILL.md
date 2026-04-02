@@ -1,16 +1,13 @@
 ---
 name: supabase-skill
-description: Manage Supabase databases, migrations, storage, and edge functions via CLI. Multi-environment support (dev/stage/prod).
-metadata:
-  requires:
-    env:
-      - SUPABASE_ACCESS_TOKEN
-    bins:
-      - supabase
-    primaryEnv: SUPABASE_ACCESS_TOKEN
+description: "Manage Supabase databases, migrations, storage, and edge functions via CLI with local SQLite schema cache. TRIGGER when: user works with Supabase, needs database schema info, writes migrations, or explores table relationships. Requires: supabase CLI + npm package @m2015agg/supabase-skill."
+license: Complete terms in LICENSE.txt
 ---
 
 # supabase-skill
+
+> **Setup:** `npm install -g @m2015agg/supabase-skill && supabase-skill install`
+> Requires: Supabase CLI v2.67+, Node.js 18+
 
 ## supabase-cli (Supabase Database & Infrastructure)
 
