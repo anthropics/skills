@@ -246,7 +246,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
 
         diff = new_count - original_count
         diff_str = f"+{diff}" if diff > 0 else str(diff)
-        print(f"\nParagraphs: {original_count} → {new_count} ({diff_str})")
+        print(f"\nParagraphs: {original_count} -> {new_count} ({diff_str})")
 
     def _parse_id_value(self, val: str, base: int = 16) -> int:
         return int(val, base)
@@ -428,7 +428,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
 
                         elem.setAttribute("w16cid:durableId", new_id)
                         print(
-                            f"  Repaired: {xml_file.name}: durableId {durable_id} → {new_id}"
+                            f"  Repaired: {xml_file.name}: durableId {durable_id} -> {new_id}"
                         )
                         repairs += 1
                         modified = True
