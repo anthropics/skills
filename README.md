@@ -92,3 +92,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **Confluence to Agent Knowledge Base** - [confluence-to-agent-knowledge-base](https://github.com/miningstore/confluence-to-agent-knowledge-base) - Turn any Confluence Cloud instance into a private, searchable AI knowledge base on GitHub with access-tiered repos. Interactive 6-phase walkthrough using the Atlassian MCP connector. Install: `claude skill add miningstore/confluence-to-agent-knowledge-base`
