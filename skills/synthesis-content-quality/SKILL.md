@@ -1,24 +1,24 @@
 ---
 name: synthesis-content-quality
 description: >
-  A 32-point quality framework for evaluating and improving AI-assisted content.
-  Covers AI slop detection, hyperbolic patterns, scenario fingerprinting in
-  anonymized examples, and operational confidentiality exposure.
-  Use for content quality, AI content, quality check, writing quality, editorial
-  review, content review, AI slop detection, content improvement, and publishing
-  standards.
+  A 36-point quality framework for evaluating and improving AI-assisted content.
+  Covers AI slop detection, saturated vocabulary, exhausted metaphors, sycophantic
+  tone, hyperbolic patterns, scenario fingerprinting, and operational confidentiality
+  exposure. Use for content quality, AI content, quality check, writing quality,
+  editorial review, content review, AI slop detection, content improvement, and
+  publishing standards.
 license: CC0-1.0
 depends_on: ["synthesis-fact-checking"]
 metadata:
   author: Rajiv Pant
-  version: 2.0.0
+  version: 3.0.0
   source_repo: "github.com/rajivpant/synthesis-skills"
   source_type: "public"
 ---
 
 # Content Quality
 
-A systematic methodology for developing high-quality AI-assisted content and identifying content that falls short. This framework defines 32 criteria organized into confidence tiers for evaluating whether AI-assisted content meets professional publishing standards.
+A systematic methodology for developing high-quality AI-assisted content and identifying content that falls short. This framework defines 36 criteria organized into confidence tiers for evaluating whether AI-assisted content meets professional publishing standards.
 
 ## When to Use This Skill
 
@@ -38,7 +38,7 @@ AI-assisted content creation is legitimate and valuable. The distinction that ma
 
 The goal is quality assessment, not origin detection. No single indicator proves AI generation definitively. Detection requires pattern recognition across multiple indicators.
 
-## The 27 Quality Criteria
+## The 36 Quality Criteria
 
 Each criterion is tagged with its confidence tier: **[HIGH]**, **[MED]**, or **[LOW]**.
 
@@ -104,7 +104,7 @@ Each criterion is tagged with its confidence tier: **[HIGH]**, **[MED]**, or **[
 
 26. **Lack of Personal Detail or Specificity** [MED] -- Generic descriptions without specific examples, personal anecdotes, or experiential details. Humans who have experienced something provide sensory details and concrete examples.
 
-27. **Superficial Depth Without Expertise** [MED] -- Covering topics broadly without demonstrating actual understanding. Restating common knowledge, using technical terms superficially, avoiding nuance, lacking case studies.
+27. **Superficial Depth Without Expertise** [MED] -- Covering topics broadly without demonstrating actual understanding. Restating common knowledge, using technical terms superficially, avoiding nuance, lacking case studies. A specific sub-pattern: the "balanced hedging" conclusion that refuses to take a definitive stance, ending with "Ultimately, finding a balance between X and Y is crucial" or "Both approaches have merits." If every section ends with equivocation rather than a position, the writer is summarizing a field rather than working in it.
 
 ### Hyperbolic and Dramatic Patterns
 
@@ -120,13 +120,23 @@ Each criterion is tagged with its confidence tier: **[HIGH]**, **[MED]**, or **[
 
 32. **Operational Decisions Presented as Teaching Material** [HIGH] -- Internal product strategy decisions, risk mitigation choices, and confidential operational changes described as case studies — even without names. If the decision was made to manage risk, describing it publicly re-creates the risk. Fix: use genuinely universal patterns, publicly known examples from other companies (with attribution), fictional scenarios clearly marked as illustrative, or the author's personal methodology (which is already public).
 
+### Behavioral and Tonal Patterns
+
+33. **Saturated AI Vocabulary** [MED] -- Clustering of words that appear at disproportionately high frequency in unedited AI output: delve, tapestry, nuanced, robust, foster, beacon, catalyst, synergy, pivotal, overarching, multifaceted, landscape (used abstractly), leverage (as verb), streamline, spearhead, underscore, harness. Any single occurrence is unremarkable — these are legitimate words. The signal is clustering: three or more from this list in a single piece, or repeated use of the same word, suggests unrevised AI output. Fix: replace with specific, concrete alternatives. "Delve into" becomes "examine" or "investigate." "Robust framework" becomes a description of what makes the framework strong.
+
+34. **Exhausted Metaphors as Structural Filler** [MED] -- Dead metaphors used as connective tissue to simulate analytical sophistication: "navigating the complex landscape of," "viewed through the lens of," "a symphony of moving parts," "at the intersection of X and Y," "the fabric of," "a tapestry of," "unpacking the layers of." These function as transitions that add zero meaning — they connect ideas without saying anything about the connection. Fix: state the actual relationship between ideas directly. "Navigating the complex landscape of AI regulation" becomes "AI regulation is fragmented across jurisdictions" — a claim with content instead of a metaphor without any.
+
+35. **Unprompted Moral Cadence** [MED] -- Injecting ethical reminders, aspirational wrap-ups, or "looking toward a brighter future" codas at the end of factual or technical content where the topic does not warrant moral framing. An article about database indexing that ends with "As we build these systems, we must remain mindful of their impact on society" is an AI-typical domain mismatch — the moral register does not match the content's register. Fix: end technical content with technical conclusions. If the topic genuinely raises ethical questions, address them with specificity, not platitudes. The test: does this moral conclusion follow from the preceding analysis, or was it appended because AI defaults to inspirational endings?
+
+36. **The Concierge Tone** [HIGH] -- Sycophantic agreement, sterile professional empathy, and service-register language appearing in content that is not customer service. Manifestations include: excessive validation ("That's a great question!"), hedged positivity that avoids any negative assessment, formulaic empathy ("I understand your concern"), and a pervasive agreeableness that treats every statement as a customer interaction. Distinct from chatbot artifacts (criterion 19), which are structural tells like valedictions and help offers. The concierge tone is a tonal quality that pervades the entire piece — the writer never disagrees, never says something is wrong, never takes a position that might displease. Fix: take positions. Disagree where warranted. State limitations directly. Professional writing has a perspective; service writing has a customer.
+
 For detailed explanations, examples, and fix guidance for each criterion, see [references/detailed-criteria.md](references/detailed-criteria.md).
 
 ## Confidence-Based Evaluation Process
 
 ### Step 1: Scan for High-Confidence Indicators
 
-Check for: hallucinated citations, chatbot artifacts, placeholder text, raw Markdown formatting, broken/fabricated links, multiple indicators clustering together.
+Check for: hallucinated citations, chatbot artifacts, placeholder text, raw Markdown formatting, broken/fabricated links, concierge tone, multiple indicators clustering together.
 
 If any are present: very likely unedited AI output.
 
@@ -180,6 +190,22 @@ When using AI to assist content creation, revise through these five passes:
 - "not only... but also," "it's not just X, it's Y"
 - "Moreover," "Furthermore," "Additionally," "Nevertheless"
 - "In summary," "In conclusion," "Overall," "In essence"
+
+### High-Risk Vocabulary (flag when 3+ cluster in a single piece)
+
+- delve, tapestry, nuanced, robust, foster, beacon, catalyst
+- synergy, pivotal, overarching, multifaceted, landscape (abstract)
+- leverage (verb), streamline, spearhead, underscore, harness
+
+### Exhausted Metaphor Phrases
+
+- "navigating the complex landscape of..."
+- "viewed through the lens of..."
+- "a symphony of moving parts"
+- "at the intersection of X and Y"
+- "the fabric of..." / "a tapestry of..."
+- "unpacking the layers of..."
+- "Ultimately, finding a balance between X and Y is crucial"
 
 ### High-Risk Subheading Patterns
 

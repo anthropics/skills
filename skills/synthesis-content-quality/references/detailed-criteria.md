@@ -1,6 +1,6 @@
 # Detailed Criteria Reference
 
-Full explanations, examples, and fix guidance for each of the 27 AI content quality criteria.
+Full explanations, examples, and fix guidance for each of the 36 AI content quality criteria.
 
 ---
 
@@ -496,3 +496,167 @@ Different domains show characteristic AI patterns:
 - Lacks specific examples, case studies, or detailed analysis
 
 **Why this signals AI:** LLMs are trained on vast data but lack genuine expertise. They excel at sounding knowledgeable while avoiding depth that would reveal limitations.
+
+**Sub-pattern — Balanced Hedging Conclusions:** A specific form of superficial depth where every section or the entire piece ends with equivocation rather than a position. "Ultimately, finding a balance between X and Y is crucial." "Both approaches have their merits and drawbacks." "The answer depends on your specific context." When a writer takes no stance on anything, they are summarizing a field, not working in it. Fix: take a position. State which approach is better and why. If both genuinely have merit in different contexts, name the contexts specifically instead of defaulting to "it depends."
+
+---
+
+## Hyperbolic and Dramatic Patterns
+
+### 28. Hyperbolic Subheadings and Section Titles
+
+**Pattern:** Subheadings that inflate the significance of the section's content rather than describing it.
+
+**Examples:**
+
+- "The word that changed everything"
+- "A game-changing approach to X"
+- "The revolutionary insight"
+- "Why X will never be the same"
+- "The surprising truth about X"
+- "What nobody tells you about X"
+
+**Why this signals AI:** LLMs optimize for engagement by default, producing subheadings that advertise rather than describe. Human writers working in editorial contexts use subheadings as navigation aids, not as marketing hooks for their own sections.
+
+**The fix:** Subheadings should describe what the section contains. "The structural blind spot in test suites" tells you what you'll read. "The gap nobody talks about" tells you nothing except that the writer thinks they've discovered something important.
+
+---
+
+### 29. Dramatic Fragment Construction
+
+**Pattern:** Short dramatic sentences or fragments used for artificial emphasis, creating theatrical pacing.
+
+**Examples:**
+
+- "And it was a disaster."
+- "Everything changed."
+- "The results were stunning."
+- "But there was a problem."
+- "That's when it clicked."
+
+**Detection principle:** One or two dramatic fragments per article is a legitimate rhetorical device. A pattern of them — especially at section boundaries — is AI-style pacing that substitutes theatrics for substance. If every section opens with a short fragment or ends with a dramatic beat, the pacing is mechanical.
+
+**The fix:** Let content create impact through specificity and evidence. "Revenue dropped 40% in six weeks" has more impact than "And then everything changed." Show, don't dramatize.
+
+---
+
+### 30. Borrowed Canonical Examples
+
+**Pattern:** Using the same illustrative examples that appear in every article on a topic.
+
+**Common borrowings:**
+
+- "A jet engine is complicated; a market is complex" (Cynefin framework)
+- "The bus route that nobody rides" (design thinking)
+- "The restaurant with great food but no customers" (marketing/systems thinking)
+- "The boiling frog" (change management)
+- "The Swiss cheese model" (error prevention)
+
+**Why this signals AI:** These examples are over-represented in training data because they appear in thousands of articles. A writer who uses them is summarizing a field. A writer who works in the field has their own examples drawn from their own experience.
+
+**The fix:** Replace borrowed examples with original ones from your own work or construct novel ones that illustrate the same principle without recycling the same illustration everyone else uses.
+
+---
+
+## Confidentiality and Exposure Risks
+
+### 31. Scenario Fingerprinting in "Anonymized" Examples
+
+**Pattern:** Removing company names while keeping the scenario, specific numbers, stakeholder dynamics, vocabulary, and industry context. The scenario IS the identifier — names are the least important part.
+
+**Example of false anonymization:** "A content platform used by journalists" where you "changed fourteen components from 'generate' to 'draft'" is identifiable to anyone who knows the author's work. The scenario, the exact number, the vocabulary change, and the industry context create a fingerprint that survives name removal.
+
+**The four-test protocol before using any real example:**
+
+1. **Outsider test:** Could a stranger narrow this to a small set of companies or situations?
+2. **Insider test:** Does this confirm something an insider suspected but couldn't prove?
+3. **Adversary test:** Could a reporter or competitor use this as evidence or ammunition?
+4. **Irony test:** Does publishing this example undermine the very thing the example describes protecting?
+
+If ANY test fails, the example cannot be used regardless of whether names are removed. Fix: transform the scenario, not just redact the names. Change the industry, the stakeholder type, the numbers, and the vocabulary simultaneously.
+
+---
+
+### 32. Operational Decisions Presented as Teaching Material
+
+**Pattern:** Internal product strategy decisions, risk mitigation choices, and confidential operational changes described as case studies — even without names.
+
+**Why this is dangerous:** If a decision was made to manage risk, describing it publicly re-creates the risk. An article about careful language choices that reveals you made those choices is self-defeating. A case study about restructuring a team to manage internal politics reveals the politics it was designed to manage.
+
+**Fix:** Use genuinely universal patterns, publicly known examples from other companies (with attribution), fictional scenarios clearly marked as illustrative, or the author's personal methodology (which is already public). If the specifics of the decision are what makes the example valuable, the example is too specific to publish safely.
+
+---
+
+## Behavioral and Tonal Patterns
+
+### 33. Saturated AI Vocabulary
+
+**Pattern:** Clustering of words that appear at disproportionately high frequency in unedited AI output.
+
+**The vocabulary list:**
+
+delve, tapestry, nuanced, robust, foster, beacon, catalyst, synergy, pivotal, overarching, multifaceted, landscape (used abstractly), leverage (as verb), streamline, spearhead, underscore, harness, holistic, paradigm, empower, encompass, facilitate
+
+**Detection principle:** Any single occurrence is unremarkable. These are legitimate English words that experts use naturally. The signal is clustering: three or more from this list in a single piece, or repeated use of the same word across sections, suggests unrevised AI output. "Nuanced" appearing once in a policy analysis is normal. "Nuanced" appearing four times alongside "robust," "pivotal," and "holistic" is a fingerprint.
+
+**Why this signals AI:** LLMs over-index on words that are common in their training data's academic, corporate, and editorial registers. These words are individually correct but collectively distinctive because humans vary their vocabulary more.
+
+**The fix:** Replace with concrete alternatives. "Delve into the nuances" becomes "examine the specifics." "A robust and holistic framework" becomes a description of what makes the framework strong and what it covers. "Foster synergy" becomes a description of what the collaboration actually produces.
+
+---
+
+### 34. Exhausted Metaphors as Structural Filler
+
+**Pattern:** Dead metaphors used as connective tissue between ideas, simulating analytical sophistication without adding meaning.
+
+**Common phrases:**
+
+- "Navigating the complex landscape of..."
+- "Viewed through the lens of..."
+- "A symphony of moving parts"
+- "At the intersection of X and Y"
+- "The fabric of..." / "A tapestry of..."
+- "Unpacking the layers of..."
+- "In the ever-evolving world of..."
+- "This opens the door to..."
+- "Paving the way for..."
+
+**Why these fail:** They function as transitions that connect ideas without saying anything about the connection. "Navigating the complex landscape of AI regulation" is a metaphor-shaped placeholder where an actual claim should be. Compare: "AI regulation is fragmented across jurisdictions, with no federal framework and conflicting state laws." The second says something. The first says nothing with more syllables.
+
+**The fix:** State the actual relationship between ideas directly. If you find yourself reaching for a metaphor as a transition, ask: "What am I actually saying about how these ideas connect?" Write that instead.
+
+---
+
+### 35. Unprompted Moral Cadence
+
+**Pattern:** Appending ethical reminders, aspirational statements, or "brighter future" codas to the end of factual, technical, or analytical content where the topic does not warrant moral framing.
+
+**Examples:**
+
+- A database optimization article ending with: "As we build these systems, we must remain mindful of their impact on society and work toward a more equitable technological future."
+- A project management article concluding: "Ultimately, the true measure of success is not efficiency but the human connections we foster along the way."
+- A code review guide finishing with: "By embracing these practices, we can create a more inclusive and compassionate engineering culture."
+
+**Why this signals AI:** LLMs have a strong default toward positive, inclusive, aspirational conclusions regardless of topic. This is a training artifact — models are rewarded for producing content that feels uplifting and responsible. The result is a domain mismatch: the moral register of the conclusion does not match the analytical register of the preceding content.
+
+**The fix:** End technical content with technical conclusions. If the topic genuinely raises ethical questions, address them with specificity and evidence, not platitudes. The test: does this moral conclusion follow from the preceding analysis, or was it appended because the model defaults to inspirational endings?
+
+---
+
+### 36. The Concierge Tone
+
+**Pattern:** Pervasive sycophantic agreement, sterile professional empathy, and service-register language appearing in content that is not customer service.
+
+**Manifestations:**
+
+- **Excessive validation:** "That's a great question!" "What a wonderful observation!" "You're absolutely right to be concerned about this."
+- **Hedged positivity:** Never saying something is wrong, bad, or a mistake. Everything is "an opportunity for improvement" or "an area for growth."
+- **Formulaic empathy:** "I understand your concern." "That must be frustrating." "It's completely natural to feel that way."
+- **Service-register framing:** Treating every reader interaction as a customer encounter. "I'd be happy to help with that." "Let me walk you through this."
+- **Reflexive agreement:** Never disagreeing, never pushing back, never stating that an approach is wrong.
+
+**Distinct from criterion 19 (Chatbot Artifacts):** Chatbot artifacts are structural tells — valedictions, help offers, knowledge disclaimers. The concierge tone is a tonal quality that pervades the entire piece. A writer can strip all chatbot artifacts and still write in concierge tone if the underlying register remains sycophantic.
+
+**Why this signals AI:** Models are trained to be helpful and agreeable. In conversation, this is appropriate. In published content, it produces writing with no perspective, no critical judgment, and no willingness to tell the reader something they might not want to hear. Professional writing has a viewpoint. Service writing has a customer. Published content should not read like a customer service transcript.
+
+**The fix:** Take positions. Disagree where warranted. State that something is wrong when it is wrong, not that it's "an area for potential improvement." Acknowledge limitations directly. The reader wants analysis, not accommodation.
