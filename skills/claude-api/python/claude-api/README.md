@@ -354,14 +354,14 @@ response = client.messages.create(
 
 # Use Sonnet for high-volume production workloads
 standard_response = client.messages.create(
-    model="{{SONNET_ID}}",  # $3.00/$15.00 per 1M tokens
+    model="claude-sonnet-4-6",  # $3.00/$15.00 per 1M tokens
     max_tokens=16000,
     messages=[{"role": "user", "content": "Summarize this document"}]
 )
 
 # Use Haiku only for simple, speed-critical tasks
 simple_response = client.messages.create(
-    model="{{HAIKU_ID}}",  # $1.00/$5.00 per 1M tokens
+    model="claude-haiku-4-5",  # $1.00/$5.00 per 1M tokens
     max_tokens=256,
     messages=[{"role": "user", "content": "Classify this as positive or negative"}]
 )

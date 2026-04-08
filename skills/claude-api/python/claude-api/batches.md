@@ -151,7 +151,7 @@ requests = [
     Request(
         custom_id=f"classify-{i}",
         params=MessageCreateParamsNonStreaming(
-            model="{{HAIKU_ID}}",
+            model="claude-haiku-4-5",
             max_tokens=50,
             messages=[{
                 "role": "user",
