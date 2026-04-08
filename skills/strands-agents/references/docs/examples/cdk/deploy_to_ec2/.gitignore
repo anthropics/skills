@@ -1,0 +1,41 @@
+*.js
+!jest.config.js
+*.d.ts
+node_modules
+.venv/
+output.json
+
+# Installed dependencies for container image
+_dependencies
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+packaging/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
