@@ -151,7 +151,7 @@ Credentials are individual secrets stored inside a vault.
 ```json
 {
   "name": "string (required, 1-256 chars)",
-  "model": "{{OPUS_ID}} (required — bare string, or {id, speed} object)",
+  "model": "claude-opus-4-6 (required — bare string, or {id, speed} object)",
   "description": "string (optional, up to 2048 chars)",
   "system": "string (optional, up to 100,000 chars)",
   "tools": [

@@ -80,7 +80,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 - Using deprecated model ID
 - Invalid API endpoint
 
-**Fix:** Use exact model IDs from the models documentation. You can use aliases (e.g., `{{OPUS_ID}}`).
+**Fix:** Use exact model IDs from the models documentation. You can use aliases (e.g., `claude-opus-4-6`).
 
 ---
 
@@ -162,7 +162,7 @@ thinking: budget_tokens=10000, max_tokens=16000
 | Mistake                         | Error            | Fix                                                     |
 | ------------------------------- | ---------------- | ------------------------------------------------------- |
 | `budget_tokens` >= `max_tokens` | 400              | Ensure `budget_tokens` < `max_tokens`                   |
-| Typo in model ID                | 404              | Use valid model ID like `{{OPUS_ID}}`               |
+| Typo in model ID                | 404              | Use valid model ID like `claude-opus-4-6`               |
 | First message is `assistant`    | 400              | First message must be `user`                            |
 | Consecutive same-role messages  | 400              | Alternate `user` and `assistant`                        |
 | API key in code                 | 401 (leaked key) | Use environment variable                                |

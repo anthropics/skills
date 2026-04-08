@@ -52,7 +52,7 @@ console.log(environment.id); // env_...
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "{{OPUS_ID}}",
+    model: "claude-opus-4-6",
     tools: [{ type: "agent_toolset_20260401", default_config: { enabled: true } }],
   },
 );
@@ -73,7 +73,7 @@ console.log(session.id, session.status);
 const agent = await client.beta.agents.create(
   {
     name: "Code Reviewer",
-    model: "{{OPUS_ID}}",
+    model: "claude-opus-4-6",
     system: "You are a senior code reviewer.",
     tools: [
       { type: "agent_toolset_20260401", default_config: { enabled: true } },
@@ -338,7 +338,7 @@ await client.beta.sessions.archive("sess_abc123");
 // Agent declares MCP server (no auth here — auth goes in a vault)
 const agent = await client.beta.agents.create({
   name: "MCP Agent",
-  model: "{{OPUS_ID}}",
+  model: "claude-opus-4-6",
   mcp_servers: [
     { type: "url", name: "my-tools", url: "https://my-mcp-server.example.com/sse" },
   ],

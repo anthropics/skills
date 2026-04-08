@@ -48,7 +48,7 @@ use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
 // 1. Create the agent (reusable, versioned)
 $agent = $client->beta->agents->create(
     name: 'Coding Assistant',
-    model: '{{OPUS_ID}}',
+    model: 'claude-opus-4-6',
     system: 'You are a helpful coding assistant.',
     tools: [
         BetaManagedAgentsAgentToolset20260401Params::with(
@@ -299,7 +299,7 @@ use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
 // Agent declares MCP server (no auth here — auth goes in a vault)
 $agent = $client->beta->agents->create(
     name: 'GitHub Assistant',
-    model: '{{OPUS_ID}}',
+    model: 'claude-opus-4-6',
     mcpServers: [
         BetaManagedAgentsUrlmcpServerParams::with(
             type: 'url',

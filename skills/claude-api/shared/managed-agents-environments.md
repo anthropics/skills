@@ -126,7 +126,7 @@ Clones a GitHub repository into the session container during initialization, bef
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: '{{OPUS_ID}}',
+    model: 'claude-opus-4-6',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -160,7 +160,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="{{OPUS_ID}}",
+    model="claude-opus-4-6",
     mcp_servers=[{
         "type": "url",
         "name": "github",

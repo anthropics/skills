@@ -74,7 +74,7 @@ if response.stop_reason == "pause_turn":
     ]
     # Make another API request — server resumes automatically
     response = client.messages.create(
-        model="{{OPUS_ID}}", messages=messages, tools=tools
+        model="claude-opus-4-6", messages=messages, tools=tools
     )
 ```
 

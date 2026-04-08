@@ -74,7 +74,7 @@ Emit as `resources: [{type: "file", file_id, mount_path}]`. Max 999 file resourc
 - [ ] Networking: unrestricted internet from the container, or lock egress to specific hosts? (If locked, MCP server domains must be in `allowed_hosts` or tools silently fail.)
 - [ ] Name?
 - [ ] Job (one or two sentences — becomes the system prompt)?
-- [ ] Model? (default `{{OPUS_ID}}`)
+- [ ] Model? (default `claude-opus-4-6`)
 
 ---
 
