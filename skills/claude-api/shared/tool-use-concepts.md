@@ -1,6 +1,6 @@
 # Tool Use Concepts
 
-This file covers the conceptual foundations of tool use with the Claude API. For language-specific code examples, see the `python/`, `typescript/`, or other language folders.
+This file covers the conceptual foundations of tool use with the Claude API. For language-specific code examples, see the `python/`, `typescript/`, or other language folders. For decision heuristics on which tools to expose, how to manage context in long-running agents, and caching strategy, see `agent-design.md`.
 
 ## User-Defined Tools
 
@@ -192,7 +192,9 @@ Without dynamic filtering, the previous `web_search_20250305` version is also av
 
 ## Server-Side Tools: Programmatic Tool Calling
 
-Programmatic tool calling lets Claude execute complex multi-tool workflows in code, keeping intermediate results out of the context window. Claude writes code that calls your tools directly, reducing token usage for multi-step operations.
+With standard tool use, each tool call is a round trip: Claude calls, the result enters Claude's context, Claude reasons, then calls the next tool. Chained calls accumulate latency and tokens — most of that intermediate data is never needed again.
+
+Programmatic tool calling lets Claude compose those calls into a script. The script runs in the code execution container; when it invokes a tool, the container pauses, the call executes, and the result returns to the running code (not to Claude's context). The script processes it with normal control flow. Only the final output returns to Claude. Use it when chaining many tool calls or when intermediate results are large and should be filtered before reaching the context window.
 
 For full documentation, use WebFetch:
 
@@ -202,11 +204,21 @@ For full documentation, use WebFetch:
 
 ## Server-Side Tools: Tool Search
 
-The tool search tool lets Claude dynamically discover tools from large libraries without loading all definitions into the context window. Useful when you have many tools but only a few are relevant to any given query.
+The tool search tool lets Claude dynamically discover tools from large libraries without loading all definitions into the context window. Use it when you have many tools but only a few are relevant to any given request. Discovered tool schemas are appended to the request, not swapped in — this preserves the prompt cache (see `agent-design.md` §Caching for Agents).
 
 For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool`
+
+---
+
+## Skills
+
+Skills package task-specific instructions that Claude loads only when relevant. Each skill is a folder containing a `SKILL.md` file. The skill's short description sits in context by default; Claude reads the full file when the current task calls for it. Use skills to keep specialized instructions out of the base system prompt without losing discoverability.
+
+For full documentation, use WebFetch:
+
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/skills`
 
 ---
 
@@ -227,6 +239,16 @@ Computer use lets Claude interact with a desktop environment (screenshots, mouse
 For full documentation, use WebFetch:
 
 - URL: `https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview`
+
+---
+
+## Context Editing
+
+Context editing clears stale tool results and thinking blocks from the transcript as a long-running agent accumulates turns. Unlike compaction (which summarizes), context editing prunes — the cleared content is removed, not replaced. Use it when old tool outputs are no longer relevant and you want to keep the transcript lean without losing the conversation structure. Thresholds for what to clear are configurable.
+
+For full documentation, use WebFetch:
+
+- URL: `https://platform.claude.com/docs/en/build-with-claude/context-editing`
 
 ---
 
