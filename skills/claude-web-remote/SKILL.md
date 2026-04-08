@@ -50,7 +50,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # --- Authentication ---
 # Generate random credentials for this session
 TTYD_USER="claude"
-TTYD_PASS=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16)
+TTYD_PASS=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 16 || true)
 
 PIDS=()
 cleanup() {
