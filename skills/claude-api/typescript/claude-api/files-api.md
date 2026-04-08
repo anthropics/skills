@@ -41,7 +41,7 @@ console.log(`Size: ${uploaded.size_bytes} bytes`);
 
 ```typescript
 const response = await client.beta.messages.create({
-  model: "claude-opus-4-6",
+  model: "{{OPUS_ID}}",
   max_tokens: 16000,
   messages: [
     {

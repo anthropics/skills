@@ -18,7 +18,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
     "messages": [
       {"role": "user", "content": "What is the capital of France?"}
@@ -38,7 +38,7 @@ response=$(curl -s https://api.anthropic.com/v1/messages \
   -H "Content-Type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
-  -d '{"model":"claude-opus-4-6","max_tokens":16000,"messages":[{"role":"user","content":"Hello"}]}')
+  -d '{"model":"{{OPUS_ID}}","max_tokens":16000,"messages":[{"role":"user","content":"Hello"}]}')
 
 # Print the first text block (-r strips the JSON quotes)
 echo "$response" | jq -r '.content[0].text'
@@ -65,7 +65,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 64000,
     "stream": true,
     "messages": [{"role": "user", "content": "Write a haiku"}]
@@ -104,7 +104,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
     "tools": [{
       "name": "get_weather",
@@ -129,7 +129,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
     "tools": [{
       "name": "get_weather",
@@ -167,7 +167,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
     "system": [
       {"type": "text", "text": "<large shared prompt...>", "cache_control": {"type": "ephemeral"}}
@@ -192,7 +192,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-4-6",
+    "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
     "thinking": {
       "type": "adaptive"
