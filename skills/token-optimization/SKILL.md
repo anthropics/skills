@@ -1,5 +1,5 @@
 ---
-name: claude-code-token-optimization
+name: token-optimization
 description: Use when session costs feel high, context fills quickly, choosing between Haiku/Sonnet/Opus, or wanting to reduce token usage in Claude Code workflows.
 compatibility: Designed for Claude Code
 license: MIT
