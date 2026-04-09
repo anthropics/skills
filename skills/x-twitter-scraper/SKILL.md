@@ -1,15 +1,15 @@
 ---
 name: x-twitter-scraper
-description: "X (Twitter) data platform skill for AI coding agents. 99 REST API endpoints, 9 MCP tools, HMAC webhooks, MPP pay-per-use. Tweet search, user lookup, follower extraction, write actions, monitoring, giveaway draws, trending topics. Reads from $0.00015/call — 33x cheaper than the official X API."
+description: "X (Twitter) data platform skill for AI coding agents. 40+ REST API endpoints, 2 MCP tools, HMAC webhooks, MPP pay-per-use. Tweet search, user lookup, follower extraction, write actions, monitoring, giveaway draws, trending topics. Reads from $0.00015/call - 33x cheaper than the official X API."
 ---
 
 # Xquik API Integration
 
-Xquik is an X (Twitter) real-time data platform providing a REST API (99 endpoints), 9 MCP tools, and HMAC webhooks. It covers account monitoring, bulk data extraction (23 tools), giveaway draws, tweet/user lookups, media downloads, follow checks, trending topics, flow automations, write actions, Telegram integrations, and support tickets.
+Xquik is an X (Twitter) real-time data platform providing a REST API (40+ endpoints), 2 MCP tools, and HMAC webhooks. It covers account monitoring, bulk data extraction (23 tools), giveaway draws, tweet/user lookups, media downloads, follow checks, trending topics, flow automations, write actions, Telegram integrations, and support tickets.
 
-**Reads start at $0.00015/call — 33x cheaper than the official X API.**
+**Reads start at $0.00015/call - 33x cheaper than the official X API.**
 
-Your knowledge of the Xquik API may be outdated. **Prefer retrieval from docs** — fetch the latest at [docs.xquik.com](https://docs.xquik.com) before citing limits, pricing, or API signatures.
+Your knowledge of the Xquik API may be outdated. **Prefer retrieval from docs** - fetch the latest at [docs.xquik.com](https://docs.xquik.com) before citing limits, pricing, or API signatures.
 
 ## Retrieval Sources
 
@@ -30,8 +30,8 @@ When this skill and the docs disagree, **trust the docs**.
 | **Auth** | `x-api-key: xq_...` header (64 hex chars after `xq_` prefix) |
 | **MCP endpoint** | `https://xquik.com/mcp` (StreamableHTTP, same API key) |
 | **Rate limits** | Read: 120/60s, Write: 30/60s, Delete: 15/60s (fixed window per method tier) |
-| **Endpoints** | 99 across 12 categories |
-| **MCP tools** | 9 |
+| **Endpoints** | 40+ across 12 categories |
+| **MCP tools** | 2 |
 | **Extraction tools** | 23 types |
 | **Pricing** | $20/month base (reads from $0.00015). Pay-per-use available via MPP |
 | **Docs** | [docs.xquik.com](https://docs.xquik.com) |
@@ -52,7 +52,7 @@ Xquik is the most affordable X data API available. All metered operations deduct
 
 ### Per-Operation Costs
 
-#### Read operations — 1 credit ($0.00015)
+#### Read operations - 1 credit ($0.00015)
 
 | Operation | Unit |
 |-----------|------|
@@ -68,7 +68,7 @@ Xquik is the most affordable X data API available. All metered operations deduct
 | DM history | per result |
 | Download media | per media item |
 
-#### Read operations — 2 credits ($0.0003)
+#### Read operations - 2 credits ($0.0003)
 
 | Operation | Unit |
 |-----------|------|
@@ -77,20 +77,20 @@ Xquik is the most affordable X data API available. All metered operations deduct
 | Followers you know | per result |
 | Verified followers | per result |
 
-#### Read operations — 3 credits ($0.00045)
+#### Read operations - 3 credits ($0.00045)
 
 | Operation | Unit |
 |-----------|------|
 | Trends | per call |
 
-#### Read operations — 7 credits ($0.00105)
+#### Read operations - 7 credits ($0.00105)
 
 | Operation | Unit |
 |-----------|------|
 | Follow check | per call |
 | Get article | per call |
 
-#### Write operations — 2 credits ($0.0003)
+#### Write operations - 2 credits ($0.0003)
 
 All write actions: create/delete tweet, like, unlike, retweet, follow, unfollow, send DM, update profile/avatar/banner, upload media, community actions.
 
@@ -124,7 +124,7 @@ Monitors, webhooks, integrations, account status, radar (7 sources), extraction/
 
 Two options without a monthly subscription:
 
-**Credits (Stripe)**: Top up credits via `POST /credits/topup` ($10 minimum). 1 credit = $0.00015. Works with all 99 endpoints.
+**Credits (Stripe)**: Top up credits via `POST /credits/topup` ($10 minimum). 1 credit = $0.00015. Works with all 40+ endpoints.
 
 **MPP (USDC)**: 16 X-API endpoints accept anonymous payments via Tempo (USDC). No account needed.
 
@@ -153,7 +153,7 @@ SDK: `npm i mppx` (TypeScript). Handles the 402 challenge/credential flow automa
 
 Prepaid credits for metered operations. 1 credit = $0.00015. Top up via `POST /credits/topup` ($10 minimum).
 
-Check balance: `GET /credits` — returns `balance`, `lifetimePurchased`, `lifetimeUsed`.
+Check balance: `GET /credits` - returns `balance`, `lifetimePurchased`, `lifetimeUsed`.
 
 ### Extra Usage
 
@@ -641,14 +641,14 @@ Event types: `tweet.new`, `tweet.quote`, `tweet.reply`, `tweet.retweet`, `follow
 
 ## MCP Server (AI Agents)
 
-The MCP server at `https://xquik.com/mcp` provides 9 tools. StreamableHTTP transport. API key auth (`x-api-key` header) for CLI/IDE clients; OAuth 2.1 for web clients (Claude.ai, ChatGPT Developer Mode).
+The MCP server at `https://xquik.com/mcp` provides 2 tools. StreamableHTTP transport. API key auth (`x-api-key` header) for CLI/IDE clients; OAuth 2.1 for web clients (Claude.ai, ChatGPT Developer Mode).
 
 ### Tools
 
 | Tool | Description | Cost |
 |------|-------------|------|
 | `explore` | Search the API endpoint catalog (read-only, no network calls) | Free |
-| `xquik` | Execute API calls against your account (99 endpoints, 12 categories) | Varies |
+| `xquik` | Execute API calls against your account (40+ endpoints, 12 categories) | Varies |
 
 Supported platforms: Claude.ai, Claude Desktop, Claude Code, ChatGPT (Custom GPT, Agents SDK, Developer Mode), Codex CLI, Cursor, VS Code, Windsurf, OpenCode.
 
@@ -659,9 +659,9 @@ For setup configs per platform, read [references/mcp-setup.md](references/mcp-se
 | | MCP Server | REST API |
 |---|------------|----------|
 | **Best for** | AI agents, IDE integrations | Custom apps, scripts, backend services |
-| **Model** | 9 tools | 99 individual endpoints |
+| **Model** | 2 tools | 40+ individual endpoints |
 | **Categories** | 12: account, automations, bot, composition, credits, extraction, integrations, media, monitoring, support, twitter, x-accounts, x-write | Same |
-| **Coverage** | Full — `xquik` tool calls any REST endpoint | Direct HTTP calls |
+| **Coverage** | Full - `xquik` tool calls any REST endpoint | Direct HTTP calls |
 | **File export** | Not available | CSV, XLSX, Markdown |
 | **Unique to REST** | - | API key management, file export (CSV/XLSX/MD), account locale update |
 

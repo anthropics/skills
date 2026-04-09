@@ -9,7 +9,7 @@ The MCP server at `https://xquik.com/mcp` uses a code-execution sandbox model wi
 | `explore` | Search the API endpoint catalog (read-only, no network calls) | Free |
 | `xquik` | Execute API calls against your account | Varies by endpoint |
 
-### `explore` — Search the API Spec
+### `explore` - Search the API Spec
 
 The sandbox provides an in-memory `spec.endpoints` array. Filter/search it to find endpoints before calling them.
 
@@ -40,7 +40,7 @@ async () => spec.endpoints.filter(e => e.category === 'x-write');
 async () => spec.endpoints.filter(e => e.summary.toLowerCase().includes('tweet'));
 ```
 
-### `xquik` — Execute API Calls
+### `xquik` - Execute API Calls
 
 The sandbox provides `xquik.request()` with auth injected automatically. Never pass API keys.
 
