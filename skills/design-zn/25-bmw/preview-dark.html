@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: BMW (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #1a1a1a; --black: #e0e0e0; --bmw-blue: #1c69d4; --focus-blue: #0653b6;
+    --meta: #999999; --silver: #666666; --dark: #1a1a1a;
+    --font: 'Inter', Helvetica, Arial, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--black); font-family:var(--font); font-size:16px; font-weight:400; line-height:1.15; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:16px 32px; background:var(--dark); }
+  .nav-brand { font-size:14px; font-weight:400; color:var(--white); text-decoration:none; }
+  .nav-links { display:flex; gap:24px; list-style:none; }
+  .nav-links a { font-size:16px; font-weight:900; color:var(--white); text-decoration:none; line-height:1.30; transition:opacity 0.15s; }
+  .nav-links a:hover { opacity:0.8; }
+  .nav-cta { display:inline-block; background:var(--bmw-blue); color:var(--white); padding:10px 20px; font-size:16px; font-weight:700; text-decoration:none; border-radius:0; }
+
+  .hero { padding:80px 32px; background:var(--dark); text-align:left; color:var(--white); }
+  .hero-inner { max-width:900px; margin:0 auto; }
+  .hero h1 { font-size:56px; font-weight:300; line-height:1.30; text-transform:uppercase; margin-bottom:16px; }
+  .hero p { font-size:16px; font-weight:400; line-height:1.30; color:var(--silver); max-width:550px; margin-bottom:32px; }
+  .hero-buttons { display:flex; gap:12px; }
+  .btn-blue { display:inline-block; background:var(--bmw-blue); color:var(--white); padding:12px 24px; font-family:var(--font); font-size:16px; font-weight:700; text-decoration:none; border:none; cursor:pointer; border-radius:0; }
+  .btn-outline { display:inline-block; background:transparent; color:var(--white); padding:12px 24px; border:1px solid var(--white); font-family:var(--font); font-size:16px; font-weight:400; text-decoration:none; cursor:pointer; border-radius:0; }
+
+  .section { padding:64px 32px; max-width:1100px; margin:0 auto; }
+  .section-label { font-size:12px; font-weight:900; color:var(--meta); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .section-title { font-size:32px; font-weight:400; line-height:1.30; margin-bottom:32px; }
+  .section-divider { border:none; border-top:1px solid #e0e0e0; margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
+  .color-swatch { overflow:hidden; border:1px solid #e0e0e0; }
+  .color-swatch-block { height:72px; width:100%; }
+  .color-swatch-info { padding:10px 12px; }
+  .color-swatch-name { font-size:13px; font-weight:700; margin-bottom:2px; }
+  .color-swatch-hex { font-size:11px; color:var(--meta); font-family:monospace; }
+  .color-swatch-role { font-size:10px; color:var(--meta); margin-top:3px; }
+  .color-group-label { font-size:14px; font-weight:700; color:var(--meta); margin:24px 0 10px; }
+
+  .type-sample { margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid #f0f0f0; }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:11px; color:var(--meta); margin-top:6px; font-family:monospace; }
+
+  .button-row { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:11px; font-weight:700; color:var(--meta); margin-top:8px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:16px; }
+  .card { background:var(--white); border:1px solid #e0e0e0; padding:24px; }
+  .card h3 { font-size:18px; font-weight:700; margin-bottom:8px; line-height:1.30; }
+  .card p { font-size:16px; color:var(--meta); line-height:1.30; }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:14px; font-weight:700; margin-bottom:6px; }
+  .form-input { width:100%; background:var(--white); color:var(--black); border:1px solid var(--silver); padding:10px 12px; font-family:var(--font); font-size:16px; outline:none; border-radius:0; }
+  .form-input:focus { border-color:var(--focus-blue); box-shadow:0 0 0 2px rgba(6,83,182,0.2); }
+  .form-input--focus { border-color:var(--focus-blue); box-shadow:0 0 0 2px rgba(6,83,182,0.2); }
+  .form-input--error { border-color:#c00; box-shadow:0 0 0 2px rgba(204,0,0,0.2); }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--black); border:1px solid var(--silver); padding:10px 12px; font-family:var(--font); font-size:16px; resize:vertical; outline:none; border-radius:0; }
+  .form-state-label { font-size:10px; color:var(--meta); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--bmw-blue); margin-bottom:6px; height:28px; }
+  .spacing-value { font-size:10px; color:var(--meta); font-family:monospace; }
+
+  .radius-row { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:60px; height:60px; background:var(--dark); margin-bottom:6px; }
+  .radius-label { font-size:10px; color:var(--meta); font-family:monospace; }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px; }
+  .elevation-card { background:var(--white); border:1px solid #e0e0e0; padding:20px; text-align:center; }
+  .elevation-label { font-size:14px; font-weight:700; margin-bottom:4px; }
+  .elevation-desc { font-size:10px; color:var(--meta); font-family:monospace; }
+
+  .footer { padding:40px 32px; text-align:center; background:var(--dark); color:var(--silver); font-size:13px; }
+  .footer a { color:var(--bmw-blue); text-decoration:underline; }
+
+  @media (max-width:768px) { .hero h1 { font-size:36px; } .nav-links { display:none; } .section { padding:48px 20px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Explore</a>
+</nav>
+<div style="position:fixed;top:16px;right:16px;z-index:200;background:#1c69d4;color:#ffffff;font-size:11px;font-weight:700;padding:4px 10px;">Dark Mode</div>
+
+<section class="hero"><div class="hero-inner">
+  <h1>Design System<br>Inspired by BMW</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized with sharp precision.</p>
+  <div class="hero-buttons"><a class="btn-blue" href="#">Explore Models</a><a class="btn-outline" href="#">Find Your BMW</a></div>
+</div></section>
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1c69d4"></div><div class="color-swatch-info"><div class="color-swatch-name">BMW Blue</div><div class="color-swatch-hex">#1c69d4</div><div class="color-swatch-role">Highlight accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0653b6"></div><div class="color-swatch-info"><div class="color-swatch-name">Focus Blue</div><div class="color-swatch-hex">#0653b6</div><div class="color-swatch-role">Focus states</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Theme White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Primary surface</div></div></div>
+  </div>
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#262626"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#262626</div><div class="color-swatch-role">Primary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Meta Gray</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bbbbbb"></div><div class="color-swatch-info"><div class="color-swatch-name">Silver</div><div class="color-swatch-hex">#bbbbbb</div><div class="color-swatch-role">Muted text</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-size:56px; font-weight:300; line-height:1.30; text-transform:uppercase;">DISPLAY HERO</div><div class="type-meta">Display — 60px / 300 / 1.30 / uppercase / BMWTypeNextLatin Light</div></div>
+  <div class="type-sample"><div style="font-size:32px; font-weight:400; line-height:1.30;">Section Heading</div><div class="type-meta">Section — 32px / 400 / 1.30 / BMWTypeNextLatin</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:900; line-height:1.30;">Nav Emphasis — SHEER DRIVING PLEASURE</div><div class="type-meta">Nav — 18px / 900 / 1.30 / BMWTypeNextLatin</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.15;">Body — The ultimate driving machine. Precision engineering meets luxury design.</div><div class="type-meta">Body — 16px / 400 / 1.15 / BMWTypeNextLatin</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:700; line-height:1.20;">Button Bold — EXPLORE NOW</div><div class="type-meta">Button — 16px / 700 / 1.20 / BMWTypeNextLatin</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div><h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-blue" href="#">BMW Blue</a><div class="button-label">Primary</div></div>
+    <div class="button-item"><a class="btn-outline" style="color:var(--black); border-color:var(--black);" href="#">Outlined</a><div class="button-label">Secondary</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--dark); color:var(--white); padding:12px 24px; font-size:16px; font-weight:400;">Dark Surface</span><div class="button-label">Dark</div></div>
+  </div>
+  <p style="font-size:12px; color:var(--meta); margin-top:16px;">All buttons use 0px border-radius — sharp corners are non-negotiable.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div><h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card"><h3>BMW iX</h3><p>The future of sustainable mobility. All-electric, all BMW. Sharp corners, minimal borders.</p></div>
+    <div class="card"><h3>BMW M Series</h3><p>Performance without compromise. Track-ready engineering for the road.</p></div>
+    <div class="card" style="background:var(--dark); color:var(--white); border:none;"><h3 style="color:var(--white);">Dark Variant</h3><p style="color:var(--silver);">Cards on dark surfaces. No border, no radius — pure geometry.</p></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div><h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Model</label><input class="form-input" type="text" placeholder="BMW 3 Series"><div class="form-state-label">Default (sharp corners)</div></div>
+  <div class="form-group"><label class="form-label">Location</label><input class="form-input form-input--focus" type="text" value="Munich"><div class="form-state-label">Focus (BMW Focus Blue)</div></div>
+  <div class="form-group"><label class="form-label">VIN</label><input class="form-input form-input--error" type="text" value="invalid"><div class="form-state-label">Error</div></div>
+  <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Your configuration..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:60px"></div><div class="spacing-value">60</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">07 / Radius</div><h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0px"></div><div class="radius-label">0px</div></div>
+  </div>
+  <p style="font-size:12px; color:var(--meta); margin-top:12px;">BMW uses 0px border-radius exclusively. Every element is a sharp rectangle.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Flat</div><div class="elevation-desc">No shadow — default</div></div>
+    <div class="elevation-card" style="background:var(--dark); color:var(--white); border:none;"><div class="elevation-label">Photography</div><div class="elevation-desc">Dark hero sections</div></div>
+    <div class="elevation-card" style="box-shadow:0 0 0 2px var(--focus-blue);"><div class="elevation-label">Focus</div><div class="elevation-desc">BMW Focus Blue ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">Generated from <a href="https://www.bmw.com/">bmw.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

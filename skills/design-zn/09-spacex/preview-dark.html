@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: SpaceX (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000; --spectral: #f0f0fa; --ghost-bg: rgba(240,240,250,0.1);
+    --ghost-border: rgba(240,240,250,0.35); --overlay: rgba(0,0,0,0.5);
+    --font: 'Share Tech', Arial, Verdana, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--black); color:var(--spectral); font-family:var(--font); font-size:16px; line-height:1.50; text-transform:uppercase; letter-spacing:0.5px; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:12px 32px; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); }
+  .nav-brand { font-size:13px; font-weight:700; color:var(--spectral); text-decoration:none; letter-spacing:1.17px; }
+  .nav-links { display:flex; gap:24px; list-style:none; }
+  .nav-links a { font-size:12px; font-weight:400; color:rgba(240,240,250,0.7); text-decoration:none; letter-spacing:1px; transition:color 0.2s; }
+  .nav-links a:hover { color:var(--spectral); }
+  .nav-cta { display:inline-block; background:var(--ghost-bg); color:var(--spectral); padding:8px 18px; border-radius:32px; border:1px solid var(--ghost-border); font-size:12px; font-weight:700; letter-spacing:1.17px; text-decoration:none; }
+
+  .hero { padding:120px 32px 80px; text-align:left; max-width:900px; margin:0 auto; background:linear-gradient(180deg, rgba(0,0,20,0.9) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.9) 100%); min-height:60vh; display:flex; flex-direction:column; justify-content:center; }
+  .hero h1 { font-size:48px; font-weight:700; line-height:1.00; letter-spacing:0.96px; margin-bottom:16px; }
+  .hero p { font-size:16px; font-weight:400; line-height:1.70; letter-spacing:0.5px; color:rgba(240,240,250,0.7); max-width:500px; margin-bottom:32px; text-transform:none; }
+  .hero-buttons { display:flex; gap:12px; }
+  .btn-ghost { display:inline-block; background:var(--ghost-bg); color:var(--spectral); padding:14px 24px; border-radius:32px; border:1px solid var(--ghost-border); font-family:var(--font); font-size:13px; font-weight:700; letter-spacing:1.17px; text-decoration:none; cursor:pointer; transition:background 0.2s; }
+  .btn-ghost:hover { background:rgba(240,240,250,0.2); }
+
+  .section { padding:64px 32px; max-width:900px; margin:0 auto; }
+  .section-label { font-size:10px; font-weight:400; letter-spacing:1px; color:rgba(240,240,250,0.5); margin-bottom:8px; }
+  .section-title { font-size:32px; font-weight:700; line-height:1.00; letter-spacing:0.96px; margin-bottom:32px; }
+  .section-divider { border:none; border-top:1px solid rgba(240,240,250,0.1); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
+  .color-swatch { border-radius:4px; overflow:hidden; border:1px solid rgba(240,240,250,0.15); }
+  .color-swatch-block { height:72px; width:100%; }
+  .color-swatch-info { padding:10px; }
+  .color-swatch-name { font-size:11px; font-weight:700; letter-spacing:0.5px; margin-bottom:2px; }
+  .color-swatch-hex { font-size:10px; color:rgba(240,240,250,0.5); }
+  .color-swatch-role { font-size:9px; color:rgba(240,240,250,0.4); margin-top:3px; text-transform:none; }
+  .color-group-label { font-size:12px; font-weight:700; letter-spacing:1px; color:rgba(240,240,250,0.6); margin:24px 0 10px; }
+
+  .type-sample { margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid rgba(240,240,250,0.08); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:10px; color:rgba(240,240,250,0.4); margin-top:6px; letter-spacing:0.5px; }
+
+  .button-row { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:10px; color:rgba(240,240,250,0.4); margin-top:8px; letter-spacing:0.5px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px; }
+  .card { background:rgba(240,240,250,0.03); border:1px solid rgba(240,240,250,0.1); border-radius:4px; padding:24px; }
+  .card h3 { font-size:16px; font-weight:700; letter-spacing:0.96px; margin-bottom:8px; }
+  .card p { font-size:14px; color:rgba(240,240,250,0.6); line-height:1.50; text-transform:none; letter-spacing:normal; }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:6px; }
+  .form-input { width:100%; background:rgba(240,240,250,0.05); color:var(--spectral); border:1px solid var(--ghost-border); padding:12px 16px; border-radius:4px; font-family:var(--font); font-size:14px; outline:none; text-transform:none; letter-spacing:normal; }
+  .form-input:focus { border-color:var(--spectral); }
+  .form-input--focus { border-color:var(--spectral); }
+  .form-input--error { border-color:#ff4444; }
+  .form-textarea { width:100%; min-height:80px; background:rgba(240,240,250,0.05); color:var(--spectral); border:1px solid var(--ghost-border); padding:12px 16px; border-radius:4px; font-family:var(--font); font-size:14px; resize:vertical; outline:none; text-transform:none; letter-spacing:normal; }
+  .form-state-label { font-size:9px; color:rgba(240,240,250,0.4); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--spectral); opacity:0.2; border-radius:2px; margin-bottom:6px; height:28px; }
+  .spacing-value { font-size:10px; color:rgba(240,240,250,0.4); }
+
+  .radius-row { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:60px; height:60px; border:1px solid rgba(240,240,250,0.2); margin-bottom:6px; }
+  .radius-label { font-size:10px; color:rgba(240,240,250,0.4); }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px; }
+  .elevation-card { border:1px solid rgba(240,240,250,0.08); border-radius:4px; padding:20px; text-align:center; }
+  .elevation-label { font-size:13px; font-weight:700; letter-spacing:0.5px; margin-bottom:4px; }
+  .elevation-desc { font-size:10px; color:rgba(240,240,250,0.4); text-transform:none; letter-spacing:normal; }
+
+  .footer { padding:32px; text-align:center; border-top:1px solid rgba(240,240,250,0.1); font-size:11px; color:rgba(240,240,250,0.4); }
+  .footer a { color:var(--spectral); text-decoration:underline; }
+
+  @media (max-width:600px) {
+    .hero h1 { font-size:32px; }
+    .nav-links { display:none; }
+    .section { padding:48px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Learn More</a>
+</nav>
+<div style="position:fixed;top:16px;right:16px;z-index:200;background:#f0f0fa;color:#000000;font-size:10px;font-weight:700;padding:4px 10px;border-radius:32px;text-transform:uppercase;letter-spacing:1px;">Dark Mode</div>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by SpaceX</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, and spacing value — visualized against the void.</p>
+  <div class="hero-buttons">
+    <a class="btn-ghost" href="#">Explore Tokens</a>
+    <a class="btn-ghost" href="#">View Source</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Space Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0f0fa"></div><div class="color-swatch-info"><div class="color-swatch-name">Spectral White</div><div class="color-swatch-hex">#f0f0fa</div><div class="color-swatch-role">Text, headings</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(240,240,250,0.1); border:1px solid rgba(240,240,250,0.3)"></div><div class="color-swatch-info"><div class="color-swatch-name">Ghost Surface</div><div class="color-swatch-hex">rgba(f0f0fa, 0.1)</div><div class="color-swatch-role">Button background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.5)"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Overlay</div><div class="color-swatch-hex">rgba(0,0,0,0.5)</div><div class="color-swatch-role">Photo overlay</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-size:48px; font-weight:700; line-height:1.00; letter-spacing:0.96px;">MAKING LIFE MULTIPLANETARY</div><div class="type-meta">Display — 48px / bold / 1.00 / +0.96px / D-DIN-Bold / uppercase</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.70; text-transform:none; letter-spacing:normal;">SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded to revolutionize space technology.</div><div class="type-meta">Body — 16px / 400 / 1.70 / D-DIN</div></div>
+  <div class="type-sample"><div style="font-size:13px; font-weight:700; line-height:0.94; letter-spacing:1.17px;">FALCON 9 &middot; STARSHIP &middot; DRAGON</div><div class="type-meta">Nav Bold — 13px / 700 / 0.94 / +1.17px / uppercase</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:400; line-height:1.00; letter-spacing:1px;">MISSION OVERVIEW</div><div class="type-meta">Caption — 12px / 400 / 1.00 / uppercase / +1px</div></div>
+  <div class="type-sample"><div style="font-size:10px; font-weight:400; line-height:0.94; letter-spacing:1px;">LAUNCH DATE: 2026-04-15</div><div class="type-meta">Micro — 10px / 400 / 0.94 / uppercase / +1px</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-ghost" href="#">Learn More</a><div class="button-label">Ghost Button</div></div>
+    <div class="button-item"><a class="btn-ghost" style="background:rgba(240,240,250,0.2);" href="#">Hover State</a><div class="button-label">Ghost Hover</div></div>
+  </div>
+  <p style="font-size:12px; color:rgba(240,240,250,0.4); margin-top:16px; text-transform:none; letter-spacing:normal;">SpaceX uses only one button variant — the ghost button. The absence of variety IS the design.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Content Sections</h2>
+  <div class="card-grid">
+    <div class="card"><h3>Falcon 9</h3><p>The world's first orbital-class reusable rocket. Designed for reliable and safe transport of people and payloads.</p></div>
+    <div class="card"><h3>Starship</h3><p>The most powerful launch vehicle ever developed. Designed to carry crew and cargo to Mars and beyond.</p></div>
+  </div>
+  <p style="font-size:11px; color:rgba(240,240,250,0.3); margin-top:16px; text-transform:none; letter-spacing:normal;">Note: SpaceX does not use traditional cards — all content sits directly on full-viewport photography. These are representational.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Mission Name</label><input class="form-input" type="text" placeholder="STARSHIP MISSION"><div class="form-state-label">Default (ghost border)</div></div>
+  <div class="form-group"><label class="form-label">Launch Site</label><input class="form-input form-input--focus" type="text" value="STARBASE, TEXAS"><div class="form-state-label">Focus (spectral white border)</div></div>
+  <div class="form-group"><label class="form-label">Payload</label><input class="form-input form-input--error" type="text" value="EXCEEDS CAPACITY"><div class="form-state-label">Error</div></div>
+  <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Mission briefing notes..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:3px"></div><div class="spacing-value">3</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:18px"></div><div class="spacing-value">18</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:30px"></div><div class="spacing-value">30</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:32px"></div><div class="radius-label">32px</div></div>
+  </div>
+  <p style="font-size:11px; color:rgba(240,240,250,0.3); margin-top:12px; text-transform:none; letter-spacing:normal;">Minimal radius system — 4px for utility, 32px for buttons.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Photography</div><div class="elevation-desc">Full-viewport imagery</div></div>
+    <div class="elevation-card" style="background:rgba(0,0,0,0.5);"><div class="elevation-label">Overlay</div><div class="elevation-desc">Dark gradient for text</div></div>
+    <div class="elevation-card" style="background:var(--ghost-bg); border-color:var(--ghost-border);"><div class="elevation-label">Ghost</div><div class="elevation-desc">Interactive surface</div></div>
+  </div>
+  <p style="font-size:11px; color:rgba(240,240,250,0.3); margin-top:12px; text-transform:none; letter-spacing:normal;">Zero shadows. Depth from photography only.</p>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://spacex.com/">spacex.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Airbnb (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff; --near-black: #222222; --rausch: #ff385c; --deep-rausch: #e00b41;
+    --secondary: #6a6a6a; --disabled: #929292; --border: #c1c1c1; --surface: #f2f2f2;
+    --luxe: #460479; --plus: #92174d; --legal-blue: #428bff; --error: #c13515;
+    --shadow-card: rgba(0,0,0,0.02) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 2px 6px, rgba(0,0,0,0.1) 0px 4px 8px;
+    --shadow-hover: rgba(0,0,0,0.08) 0px 4px 12px;
+    --font: 'Nunito Sans', -apple-system, system-ui, Roboto, Helvetica Neue, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--near-black); font-family:var(--font); font-size:14px; font-weight:400; line-height:1.43; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; background:var(--white); border-bottom:1px solid #ebebeb; }
+  .nav-brand { font-size:14px; font-weight:600; color:var(--near-black); text-decoration:none; }
+  .nav-links { display:flex; gap:20px; list-style:none; }
+  .nav-links a { font-size:14px; font-weight:500; color:var(--secondary); text-decoration:none; transition:color 0.15s; }
+  .nav-links a:hover { color:var(--near-black); }
+  .nav-cta { display:inline-flex; align-items:center; justify-content:center; background:var(--rausch); color:var(--white); width:40px; height:40px; border-radius:50%; font-size:18px; font-weight:700; text-decoration:none; border:none; }
+
+  .hero { padding:64px 24px; text-align:center; }
+  .hero h1 { font-size:28px; font-weight:700; line-height:1.43; margin-bottom:12px; }
+  .hero h1 span { color:var(--rausch); }
+  .hero p { font-size:16px; font-weight:400; color:var(--secondary); max-width:480px; margin:0 auto 24px; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn-dark { display:inline-block; background:var(--near-black); color:var(--white); padding:12px 24px; border-radius:8px; font-family:var(--font); font-size:16px; font-weight:500; text-decoration:none; border:none; cursor:pointer; }
+  .btn-outline { display:inline-block; background:transparent; color:var(--near-black); padding:12px 24px; border-radius:8px; border:1px solid var(--near-black); font-family:var(--font); font-size:16px; font-weight:500; text-decoration:none; cursor:pointer; }
+  .btn-circle { display:inline-flex; align-items:center; justify-content:center; background:var(--surface); color:var(--near-black); width:36px; height:36px; border-radius:50%; font-size:14px; text-decoration:none; border:none; cursor:pointer; transition:box-shadow 0.2s; }
+  .btn-circle:hover { box-shadow:var(--shadow-hover); }
+
+  .section { padding:48px 24px; max-width:1100px; margin:0 auto; }
+  .section-label { font-size:12px; font-weight:700; color:var(--secondary); text-transform:uppercase; letter-spacing:0.32px; margin-bottom:8px; }
+  .section-title { font-size:22px; font-weight:600; line-height:1.18; letter-spacing:-0.44px; margin-bottom:24px; }
+  .section-divider { border:none; border-top:1px solid #ebebeb; margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(145px,1fr)); gap:10px; margin-bottom:20px; }
+  .color-swatch { border-radius:14px; overflow:hidden; box-shadow:var(--shadow-card); }
+  .color-swatch-block { height:64px; width:100%; }
+  .color-swatch-info { padding:10px; }
+  .color-swatch-name { font-size:12px; font-weight:600; margin-bottom:2px; }
+  .color-swatch-hex { font-size:10px; color:var(--secondary); font-family:monospace; }
+  .color-swatch-role { font-size:9px; color:var(--disabled); margin-top:2px; }
+  .color-group-label { font-size:12px; font-weight:700; color:var(--secondary); margin:20px 0 8px; }
+
+  .type-sample { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #f5f5f5; }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:10px; color:var(--disabled); margin-top:4px; font-family:monospace; }
+
+  .button-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:10px; color:var(--disabled); margin-top:6px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; }
+  .card { background:var(--white); border-radius:20px; overflow:hidden; box-shadow:var(--shadow-card); }
+  .card-img { height:160px; background:var(--surface); display:flex; align-items:center; justify-content:center; color:var(--disabled); font-size:12px; }
+  .card-body { padding:16px; }
+  .card h3 { font-size:16px; font-weight:600; margin-bottom:4px; }
+  .card p { font-size:14px; color:var(--secondary); }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:12px; font-weight:600; margin-bottom:4px; }
+  .form-input { width:100%; background:var(--white); color:var(--near-black); border:1px solid var(--border); padding:12px 16px; border-radius:8px; font-family:var(--font); font-size:16px; outline:none; }
+  .form-input:focus { border-color:var(--near-black); box-shadow:0 0 0 2px var(--near-black); }
+  .form-input--focus { border-color:var(--near-black); box-shadow:0 0 0 2px var(--near-black); }
+  .form-input--error { border-color:var(--error); box-shadow:0 0 0 2px var(--error); }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--near-black); border:1px solid var(--border); padding:12px 16px; border-radius:8px; font-family:var(--font); font-size:16px; resize:vertical; outline:none; }
+  .form-state-label { font-size:9px; color:var(--disabled); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--rausch); border-radius:4px; margin-bottom:4px; height:24px; opacity:0.7; }
+  .spacing-value { font-size:9px; color:var(--disabled); font-family:monospace; }
+
+  .radius-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:56px; height:56px; background:var(--surface); margin-bottom:4px; }
+  .radius-label { font-size:9px; color:var(--disabled); font-family:monospace; }
+  .radius-context { font-size:8px; color:var(--disabled); }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; }
+  .elevation-card { background:var(--white); border-radius:20px; padding:16px; text-align:center; }
+  .elevation-label { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .elevation-desc { font-size:9px; color:var(--disabled); font-family:monospace; }
+
+  .footer { padding:24px; text-align:center; border-top:1px solid #ebebeb; font-size:12px; color:var(--secondary); }
+  .footer a { color:var(--rausch); text-decoration:underline; }
+
+  @media (max-width:744px) { .nav-links { display:none; } .section { padding:32px 16px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">&#x1F50D;</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Inspired by <span>Airbnb</span></h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-dark" href="#">Explore Stays</a>
+    <a class="btn-outline" href="#">Become a Host</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff385c"></div><div class="color-swatch-info"><div class="color-swatch-name">Rausch Red</div><div class="color-swatch-hex">#ff385c</div><div class="color-swatch-role">Primary CTA</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e00b41"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Rausch</div><div class="color-swatch-hex">#e00b41</div><div class="color-swatch-role">Pressed state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#460479"></div><div class="color-swatch-info"><div class="color-swatch-name">Luxe Purple</div><div class="color-swatch-hex">#460479</div><div class="color-swatch-role">Luxe tier</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#92174d"></div><div class="color-swatch-info"><div class="color-swatch-name">Plus Magenta</div><div class="color-swatch-hex">#92174d</div><div class="color-swatch-role">Plus tier</div></div></div>
+  </div>
+  <div class="color-group-label">Text & Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#222222"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#222222</div><div class="color-swatch-role">Primary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6a6a6a"></div><div class="color-swatch-info"><div class="color-swatch-name">Secondary</div><div class="color-swatch-hex">#6a6a6a</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c1c1c1"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#c1c1c1</div><div class="color-swatch-role">Borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f2f2"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#f2f2f2</div><div class="color-swatch-role">Circular buttons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#428bff"></div><div class="color-swatch-info"><div class="color-swatch-name">Legal Blue</div><div class="color-swatch-hex">#428bff</div><div class="color-swatch-role">Legal links</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c13515"></div><div class="color-swatch-info"><div class="color-swatch-name">Error</div><div class="color-swatch-hex">#c13515</div><div class="color-swatch-role">Error text</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-size:28px; font-weight:700; line-height:1.43;">Section Heading</div><div class="type-meta">Section — 28px / 700 / 1.43 / Cereal VF</div></div>
+  <div class="type-sample"><div style="font-size:22px; font-weight:600; line-height:1.18; letter-spacing:-0.44px;">Card Heading</div><div class="type-meta">Card — 22px / 600 / 1.18 / -0.44px</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:600; line-height:1.20; letter-spacing:-0.18px;">Feature Title</div><div class="type-meta">Feature — 20px / 600 / 1.20 / -0.18px</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.25;">UI Medium — Inspiration for future getaways</div><div class="type-meta">UI — 16px / 500 / 1.25</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:1.43; color:var(--secondary);">Body — Istanbul, Turkey. Apartment in Kadikoy. 2 guests, 1 bed, 1 bath.</div><div class="type-meta">Body — 14px / 400 / 1.43</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:700; line-height:1.33;">Tag Bold — $145 night</div><div class="type-meta">Tag Bold — 12px / 700 / 1.33</div></div>
+  <div class="type-sample"><div style="font-size:8px; font-weight:700; line-height:1.25; text-transform:uppercase; letter-spacing:0.32px;">SUPERHOST</div><div class="type-meta">Micro — 8px / 700 / uppercase / +0.32px</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div><h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-dark" href="#">Explore</a><div class="button-label">Primary Dark</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">Host</a><div class="button-label">Outlined</div></div>
+    <div class="button-item"><a class="btn-circle" href="#">&#8592;</a><div class="button-label">Circle Nav</div></div>
+    <div class="button-item"><a class="btn-circle" href="#">&#8594;</a><div class="button-label">Circle Nav</div></div>
+    <div class="button-item"><span style="display:inline-flex; align-items:center; justify-content:center; background:var(--rausch); color:var(--white); width:40px; height:40px; border-radius:50%; font-size:18px;">&#x1F50D;</span><div class="button-label">Search</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div><h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card"><div class="card-img">Photo placeholder</div><div class="card-body"><h3>Istanbul, Turkey</h3><p>Entire apartment. 2 guests, 1 bed. $78 night.</p></div></div>
+    <div class="card"><div class="card-img" style="background:#eee;">Photo placeholder</div><div class="card-body"><h3>Barcelona, Spain</h3><p>Private room. 3 guests, 2 beds. $92 night.</p></div></div>
+    <div class="card"><div class="card-img" style="background:#e8e8e8;">Photo placeholder</div><div class="card-body"><h3>Galveston, TX</h3><p>Entire house. 6 guests, 3 beds. $145 night.</p></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div><h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Where</label><input class="form-input" type="text" placeholder="Search destinations"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Check in</label><input class="form-input form-input--focus" type="text" value="Apr 15, 2026"><div class="form-state-label">Focus (dark ring)</div></div>
+  <div class="form-group"><label class="form-label">Guests</label><input class="form-input form-input--error" type="text" value="0 guests"><div class="form-state-label">Error</div></div>
+  <div class="form-group"><label class="form-label">Message host</label><textarea class="form-textarea" placeholder="Tell your host about your trip..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">07 / Radius</div><h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:14px"></div><div class="radius-label">14px</div><div class="radius-context">Badges</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">20px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:32px"></div><div class="radius-label">32px</div><div class="radius-context">Large</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%; width:56px; height:56px;"></div><div class="radius-label">50%</div><div class="radius-context">Controls</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border:1px solid #ebebeb;"><div class="elevation-label">Flat</div><div class="elevation-desc">No shadow</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-card);"><div class="elevation-label">Card</div><div class="elevation-desc">Three-layer warm</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-hover);"><div class="elevation-label">Hover</div><div class="elevation-desc">Interactive lift</div></div>
+    <div class="elevation-card" style="box-shadow:0 0 0 2px var(--near-black);"><div class="elevation-label">Focus</div><div class="elevation-desc">Dark focus ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">Generated from <a href="https://airbnb.com/">airbnb.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

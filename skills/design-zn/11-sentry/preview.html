@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Sentry (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Primary Brand */
+    --bg-primary: #1f1633;
+    --bg-deeper: #150f23;
+    --border-purple: #362d59;
+    /* Accent */
+    --sentry-purple: #6a5fc1;
+    --muted-purple: #79628c;
+    --deep-violet: #422082;
+    --lime-green: #c2ef4e;
+    --coral: #ffb287;
+    --pink: #fa7faa;
+    --button-border: #584674;
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #e5e7eb;
+    --code-yellow: #dcdcaa;
+    /* Surface */
+    --glass-white: rgba(255, 255, 255, 0.18);
+    --glass-dark: rgba(54, 22, 107, 0.14);
+    --input-bg: #ffffff;
+    --input-border: #cfcfdb;
+    /* Shadows */
+    --shadow-ambient: rgba(22, 15, 36, 0.9) 0px 4px 4px 9px;
+    --shadow-hover: rgba(0, 0, 0, 0.18) 0px 0.5rem 1.5rem;
+    --shadow-card: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px;
+    --shadow-inset: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px inset;
+    --shadow-glass: rgba(0, 0, 0, 0.08) 0px 2px 8px;
+    /* Fonts */
+    --font-ui: 'Rubik', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: Monaco, Menlo, 'Ubuntu Mono', monospace;
+    /* Light mode page */
+    --page-bg: #1f1633;
+    --section-bg: #150f23;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--page-bg);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(31, 22, 51, 0.85);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border-bottom: 1px solid var(--border-purple);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--sentry-purple); }
+  .nav-cta {
+    display: inline-block;
+    background: var(--muted-purple);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 13px;
+    border: 1px solid var(--button-border);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: var(--shadow-inset);
+    transition: box-shadow 0.2s;
+  }
+  .nav-cta:hover { box-shadow: var(--shadow-hover); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 96px 32px 80px;
+    text-align: center;
+    background: var(--bg-primary);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(106, 95, 193, 0.35) 0%, rgba(31, 22, 51, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
+  .hero h1 {
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1.10;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--lime-green); }
+  .hero p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* BUTTONS (reusable) */
+  .btn-primary {
+    display: inline-block;
+    background: #ffffff;
+    color: #1f1633;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-primary:hover { background: var(--sentry-purple); color: #fff; }
+  .btn-secondary {
+    display: inline-block;
+    background: var(--glass-white);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    backdrop-filter: blur(18px) saturate(180%);
+    box-shadow: var(--shadow-glass);
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: var(--glass-dark); }
+  .btn-muted {
+    display: inline-block;
+    background: var(--muted-purple);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 13px;
+    border: 1px solid var(--button-border);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-inset);
+    transition: box-shadow 0.2s;
+  }
+  .btn-muted:hover { box-shadow: var(--shadow-hover); }
+  .btn-violet {
+    display: inline-block;
+    background: var(--deep-violet);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 64px 32px;
+    max-width: 1152px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    color: var(--lime-green);
+    margin-bottom: 8px;
+    line-height: 1.80;
+  }
+  .section-title {
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.20;
+    margin-bottom: 32px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-purple);
+    margin: 0;
+  }
+
+  /* COLOR PALETTE */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .color-swatch {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-purple);
+    background: var(--bg-deeper);
+  }
+  .color-swatch-block {
+    height: 80px;
+    width: 100%;
+  }
+  .color-swatch-info {
+    padding: 10px 12px;
+  }
+  .color-swatch-name {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .color-swatch-hex {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+  .color-swatch-role {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+  .color-group-label {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    color: var(--text-secondary);
+    margin: 32px 0 12px;
+  }
+
+  /* TYPOGRAPHY */
+  .type-sample {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-purple);
+  }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--lime-green);
+    font-family: var(--font-mono);
+    margin-top: 8px;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+  }
+
+  /* BUTTON SHOWCASE */
+  .button-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .button-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    margin-top: 8px;
+  }
+  .button-item { text-align: center; }
+
+  /* CARD EXAMPLES */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: var(--bg-deeper);
+    border: 1px solid var(--border-purple);
+    border-radius: 12px;
+    padding: 24px;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover { box-shadow: var(--shadow-card); }
+  .card-glass {
+    background: var(--glass-white);
+    backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .card p, .card-glass p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.50;
+  }
+  .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    color: var(--lime-green);
+    background: rgba(194, 239, 78, 0.12);
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--input-bg);
+    color: #1f1633;
+    border: 1px solid var(--input-border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    outline: none;
+    transition: box-shadow 0.2s;
+  }
+  .form-input:focus {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 10px inset;
+  }
+  .form-input--focus {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 10px inset;
+    border-color: var(--input-border);
+  }
+  .form-input--error {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 2px rgba(250, 127, 170, 0.3);
+  }
+  .form-textarea {
+    width: 100%;
+    min-height: 100px;
+    background: var(--input-bg);
+    color: #1f1633;
+    border: 1px solid var(--input-border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    resize: vertical;
+    outline: none;
+  }
+  .form-state-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+
+  /* SPACING SCALE */
+  .spacing-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .spacing-item { text-align: center; }
+  .spacing-block {
+    background: var(--sentry-purple);
+    border-radius: 4px;
+    margin-bottom: 6px;
+    height: 32px;
+  }
+  .spacing-value {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+
+  /* RADIUS SCALE */
+  .radius-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 72px;
+    height: 72px;
+    background: var(--muted-purple);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+  .radius-context {
+    font-size: 10px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  /* ELEVATION */
+  .elevation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+  .elevation-card {
+    background: var(--bg-deeper);
+    border: 1px solid var(--border-purple);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+  }
+  .elevation-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .elevation-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px;
+    text-align: center;
+    background: var(--bg-deeper);
+    border-top: 1px solid var(--border-purple);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .footer a {
+    color: var(--lime-green);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 48px; }
+    .nav-links { display: none; }
+    .color-grid { grid-template-columns: repeat(2, 1fr); }
+    .section { padding: 48px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Design System<br>Inspired by <span>Sentry</span></h1>
+    <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="#">Start Building</a>
+      <a class="btn-secondary" href="#">View Tokens</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 1. COLOR PALETTE -->
+<section class="section" id="colors">
+  <div class="section-label">Section 01</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#1f1633"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Deep Purple</div>
+        <div class="color-swatch-hex">#1f1633</div>
+        <div class="color-swatch-role">Primary background</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#150f23"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Darker Purple</div>
+        <div class="color-swatch-hex">#150f23</div>
+        <div class="color-swatch-role">Deeper sections, footer</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#362d59"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Border Purple</div>
+        <div class="color-swatch-hex">#362d59</div>
+        <div class="color-swatch-role">Borders, dividers</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Accent Colors</div>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#6a5fc1"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Sentry Purple</div>
+        <div class="color-swatch-hex">#6a5fc1</div>
+        <div class="color-swatch-role">Links, hover, focus rings</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#79628c"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Muted Purple</div>
+        <div class="color-swatch-hex">#79628c</div>
+        <div class="color-swatch-role">Button backgrounds</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#422082"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Deep Violet</div>
+        <div class="color-swatch-hex">#422082</div>
+        <div class="color-swatch-role">Selects, active states</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#c2ef4e"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Lime Green</div>
+        <div class="color-swatch-hex">#c2ef4e</div>
+        <div class="color-swatch-role">High-visibility accent</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#ffb287"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Coral</div>
+        <div class="color-swatch-hex">#ffb287</div>
+        <div class="color-swatch-role">Focus state backgrounds</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#fa7faa"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Pink</div>
+        <div class="color-swatch-hex">#fa7faa</div>
+        <div class="color-swatch-role">Focus outlines, decor</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Text Colors</div>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#ffffff; border: 1px solid #362d59"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Pure White</div>
+        <div class="color-swatch-hex">#ffffff</div>
+        <div class="color-swatch-role">Primary text on dark</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#e5e7eb"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Light Gray</div>
+        <div class="color-swatch-hex">#e5e7eb</div>
+        <div class="color-swatch-role">Secondary text</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#dcdcaa"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Code Yellow</div>
+        <div class="color-swatch-hex">#dcdcaa</div>
+        <div class="color-swatch-role">Syntax highlighting</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group-label">Surface & Overlay</div>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.1)"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Glass White</div>
+        <div class="color-swatch-hex">rgba(255,255,255,0.18)</div>
+        <div class="color-swatch-role">Frosted glass buttons</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:rgba(54,22,107,0.14)"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Glass Dark</div>
+        <div class="color-swatch-hex">rgba(54,22,107,0.14)</div>
+        <div class="color-swatch-role">Hover overlay</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#cfcfdb"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Input Border</div>
+        <div class="color-swatch-hex">#cfcfdb</div>
+        <div class="color-swatch-role">Form field borders</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 2. TYPOGRAPHY SCALE -->
+<section class="section" id="typography">
+  <div class="section-label">Section 02</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample">
+    <div style="font-size:80px; font-weight:700; line-height:1.10;">Display Hero</div>
+    <div class="type-meta">Display Hero — 88px / 700 / 1.20 / Dammit Sans (approximated)</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:60px; font-weight:500; line-height:1.10;">Display Secondary</div>
+    <div class="type-meta">Display Secondary — 60px / 500 / 1.10 / Dammit Sans (approximated)</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:30px; font-weight:400; line-height:1.20;">Section Heading</div>
+    <div class="type-meta">Section Heading — 30px / 400 / 1.20 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:27px; font-weight:500; line-height:1.25;">Sub-heading</div>
+    <div class="type-meta">Sub-heading — 27px / 500 / 1.25 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:24px; font-weight:500; line-height:1.25;">Card Title</div>
+    <div class="type-meta">Card Title — 24px / 500 / 1.25 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:20px; font-weight:600; line-height:1.25;">Feature Title</div>
+    <div class="type-meta">Feature Title — 20px / 600 / 1.25 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:400; line-height:1.50;">Body text — The quick brown fox jumps over the lazy dog. Sentry helps developers fix bugs faster.</div>
+    <div class="type-meta">Body — 16px / 400 / 1.50 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:16px; font-weight:600; line-height:1.50;">Body Emphasis — The quick brown fox jumps over the lazy dog.</div>
+    <div class="type-meta">Body Emphasis — 16px / 600 / 1.50 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:500; line-height:1.40;">Nav Label</div>
+    <div class="type-meta">Nav Label — 15px / 500 / 1.40 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:15px; font-weight:500; line-height:1.25; text-transform:uppercase;">Uppercase Label</div>
+    <div class="type-meta">Uppercase Label — 15px / 500 / 1.25 / Rubik / uppercase</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:700; line-height:1.14; text-transform:uppercase; letter-spacing:0.2px;">Button Text</div>
+    <div class="type-meta">Button Text — 14px / 700 / 1.14 / Rubik / uppercase / 0.2px spacing</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:14px; font-weight:500; line-height:1.43; text-transform:uppercase; letter-spacing:0.2px;">Caption</div>
+    <div class="type-meta">Caption — 14px / 500 / 1.43 / Rubik / uppercase / 0.2px spacing</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:12px; font-weight:600; line-height:2.00;">Small Caption</div>
+    <div class="type-meta">Small Caption — 12px / 600 / 2.00 / Rubik</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-size:10px; font-weight:600; line-height:1.80; text-transform:uppercase; letter-spacing:0.25px;">Micro Label</div>
+    <div class="type-meta">Micro Label — 10px / 600 / 1.80 / Rubik / uppercase / 0.25px spacing</div>
+  </div>
+  <div class="type-sample">
+    <div style="font-family:Monaco,Menlo,'Ubuntu Mono',monospace; font-size:16px; font-weight:400; line-height:1.50; color:#dcdcaa;">const sentry = require('@sentry/node');</div>
+    <div class="type-meta">Code — 16px / 400 / 1.50 / Monaco</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 3. BUTTON VARIANTS -->
+<section class="section" id="buttons">
+  <div class="section-label">Section 03</div>
+  <h2 class="section-title">Button Variants</h2>
+
+  <div class="button-row">
+    <div class="button-item">
+      <a class="btn-primary" href="#">Start Building</a>
+      <div class="button-label">White Solid</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-muted" href="#">Get Started</a>
+      <div class="button-label">Primary Muted</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-secondary" href="#">View Docs</a>
+      <div class="button-label">Glass White</div>
+    </div>
+    <div class="button-item">
+      <a class="btn-violet" href="#">Select Plan</a>
+      <div class="button-label">Deep Violet</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 4. CARD EXAMPLES -->
+<section class="section" id="cards">
+  <div class="section-label">Section 04</div>
+  <h2 class="section-title">Card Examples</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag">Feature</div>
+      <h3>Error Tracking</h3>
+      <p>Automatically capture and organize errors from your application. Get full stack traces, breadcrumbs, and context for every issue.</p>
+    </div>
+    <div class="card" style="box-shadow: rgba(0,0,0,0.1) 0px 10px 15px -3px;">
+      <div class="card-tag">Elevated</div>
+      <h3>Performance Monitoring</h3>
+      <p>Track transactions and identify slow database queries, API calls, and rendering issues. Card shown with hover elevation.</p>
+    </div>
+    <div class="card-glass">
+      <h3 style="color:#fff;">Glass Card</h3>
+      <p style="color:rgba(255,255,255,0.8);">Frosted glass surface using backdrop-filter blur and white alpha overlay. Used for layered panels on dark backgrounds.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 5. FORM ELEMENTS -->
+<section class="section" id="forms">
+  <div class="section-label">Section 05</div>
+  <h2 class="section-title">Form Elements</h2>
+
+  <div class="form-group">
+    <label class="form-label">Email Address</label>
+    <input class="form-input" type="email" placeholder="you@example.com">
+    <div class="form-state-label">Default state</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Project Name</label>
+    <input class="form-input form-input--focus" type="text" value="my-sentry-project">
+    <div class="form-state-label">Focus state (inset shadow)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">API Key</label>
+    <input class="form-input form-input--error" type="text" value="invalid-key-format">
+    <div class="form-state-label">Error state (pink ring)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Description</label>
+    <textarea class="form-textarea" placeholder="Describe the issue..."></textarea>
+    <div class="form-state-label">Textarea</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 6. SPACING SCALE -->
+<section class="section" id="spacing">
+  <div class="section-label">Section 06</div>
+  <h2 class="section-title">Spacing Scale</h2>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:1px"></div><div class="spacing-value">1</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+  </div>
+  <p style="font-size:13px; color:var(--text-secondary);">Base unit: 8px. Scale: 1, 2, 4, 5, 6, 8, 12, 16, 24, 32, 40, 44, 45, 47px</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- 7. BORDER RADIUS SCALE -->
+<section class="section" id="radius">
+  <div class="section-label">Section 07</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:6px"></div>
+      <div class="radius-label">6px</div>
+      <div class="radius-context">Inputs</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:8px"></div>
+      <div class="radius-label">8px</div>
+      <div class="radius-context">Buttons, cards</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:10px"></div>
+      <div class="radius-label">10px</div>
+      <div class="radius-context">Containers</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:12px"></div>
+      <div class="radius-label">12px</div>
+      <div class="radius-context">Glass panels</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:13px"></div>
+      <div class="radius-label">13px</div>
+      <div class="radius-context">Primary buttons</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:18px"></div>
+      <div class="radius-label">18px</div>
+      <div class="radius-context">Badges, images</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 8. ELEVATION / DEPTH -->
+<section class="section" id="elevation">
+  <div class="section-label">Section 08</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.1) 0px 1px 3px 0px inset;">
+      <div class="elevation-label">Level -1: Sunken</div>
+      <div class="elevation-desc">Inset shadow — tactile pressed buttons</div>
+    </div>
+    <div class="elevation-card">
+      <div class="elevation-label">Level 0: Flat</div>
+      <div class="elevation-desc">No shadow — default surfaces</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.08) 0px 2px 8px;">
+      <div class="elevation-label">Level 1: Surface</div>
+      <div class="elevation-desc">Glass buttons, subtle cards</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.1) 0px 10px 15px -3px;">
+      <div class="elevation-label">Level 2: Elevated</div>
+      <div class="elevation-desc">Cards, floating panels</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.18) 0px 0.5rem 1.5rem;">
+      <div class="elevation-label">Level 3: Prominent</div>
+      <div class="elevation-desc">Hover states, modals</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: rgba(22,15,36,0.9) 0px 4px 4px 9px;">
+      <div class="elevation-label">Level 4: Ambient</div>
+      <div class="elevation-desc">Purple glow around hero</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  Generated from <a href="https://sentry.io/welcome/">sentry.io</a> DESIGN.md &mdash; awesome-design-md
+</footer>
+
+</body>
+</html>

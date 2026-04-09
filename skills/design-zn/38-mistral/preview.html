@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Mistral AI (Light)</title>
+<style>
+  :root {
+    --color-mistral-orange: #fa520f;
+    --color-flame: #fb6424;
+    --color-block-orange: #ff8105;
+    --color-sunshine-900: #ff8a00;
+    --color-sunshine-700: #ffa110;
+    --color-sunshine-500: #ffb83e;
+    --color-sunshine-300: #ffd06a;
+    --color-block-gold: #ffe295;
+    --color-bright-yellow: #ffd900;
+    --color-warm-ivory: #fffaeb;
+    --color-cream: #fff0c2;
+    --color-white: #ffffff;
+    --color-mistral-black: #1f1f1f;
+    --color-black-tint: hsl(0, 0%, 24%);
+    --color-input-border: hsl(240, 5.9%, 90%);
+    --font-primary: Arial, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Light mode */
+    --bg-page: #fffaeb;
+    --bg-card: #fff0c2;
+    --bg-nav: rgba(255, 250, 235, 0.92);
+    --text-primary: #1f1f1f;
+    --text-secondary: hsl(0, 0%, 24%);
+    --text-muted: #7f6315;
+    --border-color: rgba(127, 99, 21, 0.15);
+    --border-subtle: rgba(127, 99, 21, 0.08);
+    --section-label-color: var(--color-mistral-orange);
+    --golden-shadow: -8px 16px 39px rgba(127, 99, 21, 0.12),
+                     -33px 64px 72px rgba(127, 99, 21, 0.10),
+                     -73px 144px 97px rgba(127, 99, 21, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nav-brand {
+    font-family: var(--font-primary);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-brand .mistral-block {
+    display: flex;
+    gap: 2px;
+  }
+  .nav-brand .mistral-block span {
+    width: 6px;
+    height: 18px;
+    display: inline-block;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--color-mistral-orange); }
+  .nav-cta {
+    background: var(--color-mistral-black);
+    color: var(--color-white);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 0;
+    font-size: 14px;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    height: 700px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 161, 16, 0.10) 0%, rgba(250, 82, 15, 0.05) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: var(--font-primary);
+    font-size: 82px;
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -2.05px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero h1 span { color: var(--color-mistral-orange); }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+  /* MISTRAL BLOCK IDENTITY */
+  .block-identity {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .block-identity span {
+    width: 48px;
+    height: 12px;
+    display: inline-block;
+  }
+
+  /* BUTTONS */
+  .btn-dark {
+    background: var(--color-mistral-black);
+    color: var(--color-white);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .btn-cream {
+    background: var(--color-cream);
+    color: var(--color-mistral-black);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-mistral-black);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.6;
+    cursor: pointer;
+  }
+  .btn-text {
+    background: transparent;
+    color: var(--color-mistral-black);
+    padding: 8px 0 0 0;
+    border: none;
+    border-radius: 0;
+    font-size: 16px;
+    font-family: var(--font-primary);
+    font-weight: 400;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-title {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.52px;
+    color: var(--section-label-color);
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: var(--font-primary);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: normal;
+    margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 40px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .color-swatch-block {
+    height: 80px;
+    position: relative;
+  }
+  .color-swatch-info {
+    padding: 12px;
+    background: var(--bg-card);
+  }
+  .color-swatch-name { font-size: 13px; font-weight: 400; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; letter-spacing: 0.5px; }
+  .color-swatch-role { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample-text { margin-bottom: 8px; }
+  .type-sample-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* BUTTONS SECTION */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .button-demo { text-align: center; }
+  .button-demo-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--bg-card);
+    border-radius: 0;
+    padding: 28px;
+  }
+  .card-standard { border: none; }
+  .card-golden {
+    box-shadow: var(--golden-shadow);
+  }
+  .card-white {
+    background: var(--color-white);
+    border: 1px solid var(--border-color);
+  }
+  .card h3 {
+    font-family: var(--font-primary);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--text-secondary); font-size: 15px; line-height: 1.63; }
+  .card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: var(--color-sunshine-700);
+    margin-bottom: 16px;
+  }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { text-align: center; }
+  .spacing-box {
+    background: rgba(250, 82, 15, 0.12);
+    border: 1px solid rgba(250, 82, 15, 0.3);
+    border-radius: 0;
+    margin-bottom: 8px;
+  }
+  .spacing-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .radius-context {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+  .elevation-card {
+    background: var(--bg-card);
+    border-radius: 0;
+    padding: 28px;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .elevation-flat {
+    border: none;
+    background: var(--bg-page);
+    box-shadow: none;
+  }
+  .elevation-golden {
+    box-shadow: -8px 16px 39px rgba(127, 99, 21, 0.12),
+                -33px 64px 72px rgba(127, 99, 21, 0.10),
+                -73px 144px 97px rgba(127, 99, 21, 0.06),
+                -130px 257px 131px rgba(127, 99, 21, 0.02),
+                -203px 400px 143px rgba(127, 99, 21, 0.00);
+  }
+  .elevation-name { font-size: 18px; font-weight: 400; margin-bottom: 8px; }
+  .elevation-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .elevation-level {
+    font-size: 11px;
+    color: var(--color-sunshine-700);
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    margin-top: 16px;
+  }
+
+  /* GRADIENT STRIP */
+  .gradient-strip {
+    height: 64px;
+    margin-top: 48px;
+    background: linear-gradient(to right, #ffd900, #ffe295, #ffa110, #ff8105, #fb6424, #fa520f);
+    border-radius: 0;
+  }
+  .gradient-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-links a:not(.nav-cta-wrapper) { display: none; }
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 48px; letter-spacing: -1px; }
+    .section { padding: 60px 20px; }
+    .section-heading { font-size: 36px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .button-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="mistral-block">
+      <span style="background: #ffd900;"></span>
+      <span style="background: #ffa110;"></span>
+      <span style="background: #ff8105;"></span>
+      <span style="background: #fb6424;"></span>
+      <span style="background: #fa520f;"></span>
+    </div>
+    Mistral AI
+  </div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#elevation">Elevation</a>
+    <button class="nav-cta">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="block-identity">
+    <span style="background: #ffd900;"></span>
+    <span style="background: #ffe295;"></span>
+    <span style="background: #ffa110;"></span>
+    <span style="background: #ff8105;"></span>
+    <span style="background: #fb6424;"></span>
+    <span style="background: #fa520f;"></span>
+  </div>
+  <h1>Design System Preview:<br><span>Mistral AI</span></h1>
+  <p>Warm golden tokens from the sunshine gradient design system</p>
+  <div class="hero-buttons">
+    <button class="btn-dark">Explore Tokens</button>
+    <button class="btn-cream">View Source</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">01 / Color Palette</div>
+  <h2 class="section-heading">Color Palette & Roles</h2>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fa520f;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mistral Orange</div>
+          <div class="color-swatch-hex">#fa520f</div>
+          <div class="color-swatch-role">Core brand color, primary emphasis, signal fire</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fb6424;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mistral Flame</div>
+          <div class="color-swatch-hex">#fb6424</div>
+          <div class="color-swatch-role">Hover states, secondary brand moments</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ff8105;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Block Orange</div>
+          <div class="color-swatch-hex">#ff8105</div>
+          <div class="color-swatch-role">Gradient block system, warm pure orange</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Sunshine Spectrum</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffd900;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Bright Yellow</div>
+          <div class="color-swatch-hex">#ffd900</div>
+          <div class="color-swatch-role">Top of block identity gradient</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffe295;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Block Gold</div>
+          <div class="color-swatch-hex">#ffe295</div>
+          <div class="color-swatch-role">Pale gold, soft background accents</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffd06a;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Sunshine 300</div>
+          <div class="color-swatch-hex">#ffd06a</div>
+          <div class="color-swatch-role">Subtle warm tints, secondary backgrounds</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffb83e;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Sunshine 500</div>
+          <div class="color-swatch-hex">#ffb83e</div>
+          <div class="color-swatch-role">Medium golden, mid-level emphasis</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffa110;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Sunshine 700</div>
+          <div class="color-swatch-hex">#ffa110</div>
+          <div class="color-swatch-role">Core sunshine accent, interactive elements</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ff8a00;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Sunshine 900</div>
+          <div class="color-swatch-hex">#ff8a00</div>
+          <div class="color-swatch-role">Deep golden amber, strong accent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fffaeb; border: 1px solid rgba(127,99,21,0.15);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warm Ivory</div>
+          <div class="color-swatch-hex">#fffaeb</div>
+          <div class="color-swatch-role">Page background, lightest canvas</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fff0c2;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Cream</div>
+          <div class="color-swatch-hex">#fff0c2</div>
+          <div class="color-swatch-role">Primary warm surface, button backgrounds</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffffff; border: 1px solid rgba(127,99,21,0.15);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Maximum contrast, popover surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #1f1f1f;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mistral Black</div>
+          <div class="color-swatch-hex">#1f1f1f</div>
+          <div class="color-swatch-role">Dark buttons, text, dark sections</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #1f1f1f;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mistral Black</div>
+          <div class="color-swatch-hex">#1f1f1f</div>
+          <div class="color-swatch-role">Primary text on light surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: hsl(0, 0%, 24%);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Black Tint</div>
+          <div class="color-swatch-hex">hsl(0, 0%, 24%)</div>
+          <div class="color-swatch-role">Secondary text on light backgrounds</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffffff; border: 1px solid rgba(127,99,21,0.15);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Text on dark surfaces, CTA labels</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gradient Strip -->
+  <div class="gradient-strip"></div>
+  <div class="gradient-label">Mistral Block Gradient: Yellow &rarr; Gold &rarr; Amber &rarr; Orange &rarr; Flame &rarr; Mistral Orange</div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">02 / Typography Scale</div>
+  <h2 class="section-heading">Typography Rules</h2>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 82px; font-weight: 400; line-height: 1.0; letter-spacing: -2.05px;">Display Hero</div>
+    <div class="type-sample-label">Display / Hero &mdash; 82px / 400 / 1.00 / -2.05px &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 56px; font-weight: 400; line-height: 0.95;">Section Heading</div>
+    <div class="type-sample-label">Section Heading &mdash; 56px / 400 / 0.95 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 48px; font-weight: 400; line-height: 0.95;">Sub-heading Large</div>
+    <div class="type-sample-label">Sub-heading Large &mdash; 48px / 400 / 0.95 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 32px; font-weight: 400; line-height: 1.15;">Sub-heading</div>
+    <div class="type-sample-label">Sub-heading &mdash; 32px / 400 / 1.15 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 30px; font-weight: 400; line-height: 1.20;">Card Title</div>
+    <div class="type-sample-label">Card Title &mdash; 30px / 400 / 1.20 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 24px; font-weight: 400; line-height: 1.33;">Feature Title</div>
+    <div class="type-sample-label">Feature Title &mdash; 24px / 400 / 1.33 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 16px; font-weight: 400; line-height: 1.50;">Body text for standard paragraphs, navigation links, and button labels. Arial delivers raw, unadorned clarity across all UI copy.</div>
+    <div class="type-sample-label">Body / Button &mdash; 16px / 400 / 1.50 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 16px; font-weight: 400; line-height: 1.50; text-transform: uppercase; letter-spacing: 0.5px;">UPPERCASE BUTTON LABEL</div>
+    <div class="type-sample-label">Button Uppercase &mdash; 16px / 400 / 1.50 / uppercase &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 14px; font-weight: 400; line-height: 1.43; color: var(--text-secondary);">Caption and metadata text for secondary links</div>
+    <div class="type-sample-label">Caption / Link &mdash; 14px / 400 / 1.43 / normal &mdash; Arial</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-primary); font-size: 14px; font-weight: 400; line-height: 1.43; text-transform: uppercase; letter-spacing: 2.52px; color: var(--color-mistral-orange);">SECTION LABEL TAG</div>
+    <div class="type-sample-label">Section Label &mdash; 14px / 400 / 2.52px / uppercase &mdash; Arial</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">03 / Button Variants</div>
+  <h2 class="section-heading">Buttons</h2>
+
+  <div class="button-row">
+    <div class="button-demo">
+      <button class="btn-dark">GET STARTED</button>
+      <div class="button-demo-label">Dark Solid</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-cream">LEARN MORE</button>
+      <div class="button-demo-label">Cream Surface</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost">SECONDARY</button>
+      <div class="button-demo-label">Ghost / Transparent</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-text">Read Article</button>
+      <div class="button-demo-label">Text / Underline</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-title">04 / Card Examples</div>
+  <h2 class="section-heading">Cards & Containers</h2>
+
+  <div class="card-grid">
+    <div class="card card-standard">
+      <div class="card-label">CREAM SURFACE</div>
+      <h3>Warm Cream Card</h3>
+      <p>Standard content card on cream background with sharp architectural corners. Containers defined by background color, not borders. The warm void breathes naturally.</p>
+    </div>
+    <div class="card card-golden">
+      <div class="card-label">GOLDEN FLOAT</div>
+      <h3>Golden Shadow Card</h3>
+      <p>Elevated card with the signature five-layer warm amber shadow system. The golden hour lighting effect makes content feel bathed in afternoon sunlight.</p>
+    </div>
+    <div class="card card-white">
+      <div class="card-label">WHITE SURFACE</div>
+      <h3>Pure White Card</h3>
+      <p>Maximum contrast card on pure white with subtle golden border. Used for popover surfaces and moments requiring the highest visual clarity.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-title">05 / Spacing Scale</div>
+  <h2 class="section-heading">Spacing System</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Base unit: 8px. Scale builds from 2px to 100px.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-box" style="width: 8px; height: 8px;"></div><div class="spacing-label">2px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 16px; height: 16px;"></div><div class="spacing-label">4px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 32px; height: 32px;"></div><div class="spacing-label">8px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 40px; height: 40px;"></div><div class="spacing-label">10px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 48px; height: 48px;"></div><div class="spacing-label">12px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 64px; height: 64px;"></div><div class="spacing-label">16px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 80px; height: 80px;"></div><div class="spacing-label">20px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 96px; height: 96px;"></div><div class="spacing-label">24px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 128px; height: 128px;"></div><div class="spacing-label">32px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 160px; height: 160px;"></div><div class="spacing-label">40px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 192px; height: 192px;"></div><div class="spacing-label">48px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <div class="section-title">06 / Border Radius Scale</div>
+  <h2 class="section-heading">Border Radius</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Sharp, architectural geometry. Near-zero radius is the signature.</p>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius: 0px;"></div><div class="radius-label">0px</div><div class="radius-context">Sharp (default)</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 0px; background: var(--color-cream); border: 2px solid var(--color-sunshine-700);"></div><div class="radius-label">0px</div><div class="radius-context">Accent sharp</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 0px; box-shadow: var(--golden-shadow);"></div><div class="radius-label">0px</div><div class="radius-context">Elevated sharp</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">07 / Elevation & Depth</div>
+  <h2 class="section-heading">Depth & Elevation</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card elevation-flat">
+      <div>
+        <div class="elevation-name">Flat</div>
+        <div class="elevation-desc">No shadow, no border. Page backgrounds and inline text blocks sitting directly on the warm ivory canvas.</div>
+      </div>
+      <div class="elevation-level">LEVEL 0</div>
+    </div>
+    <div class="elevation-card elevation-golden">
+      <div>
+        <div class="elevation-name">Golden Float</div>
+        <div class="elevation-desc">Five-layer cascading warm shadow with amber-tinted transparency. The signature golden hour lighting effect unique to Mistral.</div>
+      </div>
+      <div class="elevation-level">LEVEL 1</div>
+    </div>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>
