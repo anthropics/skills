@@ -1,144 +1,134 @@
 ---
 name: odt
-description: "Use this skill whenever the user wants to create, fill, read, convert, or export OpenDocument Format text files (.odt files). Triggers include: any mention of 'ODT', 'ODF', 'OpenDocument', 'LibreOffice document', or requests to produce documents in open-source or ISO standard formats. Also use when filling ODT templates with data, reading or parsing .odt files, converting .odt to HTML, exporting .odt to Typst for PDF generation, or creating formal documents like resolutions, reports, letters, contracts, or memos as .odt files. Use this skill instead of the docx skill when the user explicitly requests .odt output or mentions LibreOffice/OpenOffice as their target application. Do NOT use for .docx files (use the docx skill), spreadsheets, presentations, or general coding tasks unrelated to document generation."
+description: "Use this skill whenever the user wants to create, fill, read, or convert OpenDocument Format files (.odt, .ods). Triggers include: any mention of 'ODT', 'ODS', 'ODF', 'OpenDocument', 'LibreOffice document', or requests to produce documents in open-source or ISO standard formats. Also use when converting HTML, Markdown, or TipTap/ProseMirror JSON to ODT, filling ODT templates with data, reading or extracting content from ODT files, generating ODS spreadsheets, or creating formal documents like resolutions, reports, letters, contracts, invoices, or memos as .odt files. Use this skill instead of the docx skill when the user explicitly requests .odt output or mentions LibreOffice/OpenOffice as their target application. Do NOT use for .docx files (use the docx skill), PDFs, presentations, or general coding tasks unrelated to document generation."
 license: Apache-2.0
 ---
 
-# ODT creation, template filling, reading, and conversion
+# ODT and ODS — OpenDocument Format
 
 ## Overview
 
-An `.odt` file is an OpenDocument Format text document — an ISO standard (ISO/IEC 26300) ZIP archive containing XML files. It is the native format for LibreOffice, Apache OpenOffice, Collabora, OnlyOffice, and is supported by Google Docs and Microsoft Office.
+OpenDocument Format (ODF) is the ISO standard (ISO/IEC 26300) for documents. `.odt` is the text document format, `.ods` is the spreadsheet format. Both are the native formats for LibreOffice and are mandatory for many governments and public sector organisations.
 
-## Quick Reference
+**odf-kit** is the JavaScript/TypeScript library for working with ODF files. It covers eight capability modes:
 
-| Task | Approach |
-|------|----------|
-| Create new document | Use `odf-kit` — see Creating New Documents below |
-| Fill existing template | Use `odf-kit` `fillTemplate()` — see Template Filling below |
-| Read / convert to HTML | Use `odf-kit/reader` `odtToHtml()` — see Reading .odt Files below |
-| Export to Typst for PDF | Use `odf-kit/typst` `odtToTypst()` — see Exporting to Typst below |
-| Convert to PDF (LibreOffice) | `libreoffice --headless --convert-to pdf document.odt` |
+| Mode | Function | Description |
+|------|----------|-------------|
+| Build ODT | `OdtDocument` | Generate text documents from scratch |
+| Convert HTML → ODT | `htmlToOdt()` | Convert HTML strings to ODT |
+| Convert Markdown → ODT | `markdownToOdt()` | Convert Markdown to ODT |
+| Convert TipTap → ODT | `tiptapToOdt()` | Convert TipTap/ProseMirror JSON to ODT |
+| Fill template | `fillTemplate()` | Fill existing .odt templates with data |
+| Read ODT | `readOdt()` / `odtToHtml()` | Parse .odt files to model or HTML |
+| Build ODS | `OdsDocument` | Generate spreadsheets from scratch |
+| Convert ODT → Typst | `odtToTypst()` | Convert ODT to Typst for PDF generation |
 
-### Dependencies
+### Installation
 
 ```bash
-npm install -g odf-kit
+npm install odf-kit
 ```
 
-Requires Node.js 22 or later. ESM only.
+Node.js 22+ required. ESM only.
+
+```javascript
+import { OdtDocument, htmlToOdt, markdownToOdt, tiptapToOdt, fillTemplate } from "odf-kit";
+import { OdsDocument } from "odf-kit/ods";
+import { readOdt, odtToHtml } from "odf-kit/reader";
+import { odtToTypst } from "odf-kit/typst";
+import { writeFileSync, readFileSync } from "fs";
+```
 
 ---
 
-## Creating New Documents
+## Build: ODT Documents
 
-Generate .odt files with JavaScript using odf-kit's builder API.
-
-### Setup
+### Basic document
 
 ```javascript
 import { OdtDocument } from "odf-kit";
 import { writeFileSync } from "fs";
 
 const doc = new OdtDocument();
-doc.addHeading("Document Title", 1);
-doc.addParagraph("Body text goes here.");
-
+doc.setMetadata({ title: "Report", creator: "Alice" });
+doc.addHeading("Quarterly Report", 1);
+doc.addParagraph("Revenue exceeded expectations.");
+doc.addTable([
+  ["Division", "Q4 Revenue", "Growth"],
+  ["North", "$2.1M", "+12%"],
+  ["South", "$1.8M", "+8%"],
+]);
 const bytes = await doc.save();
-writeFileSync("output.odt", bytes);
+writeFileSync("report.odt", bytes);
 ```
 
-### Metadata
+### Page layout
 
 ```javascript
-doc.setMetadata({
-  title: "Quarterly Report",
-  creator: "Jane Doe",
-  description: "Q4 2026 financial summary",
-});
+// A4 portrait (default for Europe)
+doc.setPageLayout({ marginTop: "2.5cm", marginBottom: "2.5cm" });
+
+// US Letter
+doc.setPageLayout({ width: "8.5in", height: "11in", marginTop: "1in", marginBottom: "1in" });
+
+// Landscape
+doc.setPageLayout({ orientation: "landscape" });
 ```
 
-### Page Layout
+**Page format presets via `htmlToOdt`/`markdownToOdt`/`tiptapToOdt`:**
+`"A4"` (default), `"letter"`, `"legal"`, `"A3"`, `"A5"`
+
+### Headers and footers
 
 ```javascript
-doc.setPageLayout({
-  orientation: "landscape",       // or "portrait" (default)
-  width: "21cm",                  // default A4
-  height: "29.7cm",
-  marginTop: "2cm",
-  marginBottom: "2cm",
-  marginLeft: "2cm",
-  marginRight: "2cm",
-});
-```
+doc.setHeader("Confidential — Page ###");  // ### = page number
+doc.setFooter("© 2026 Acme Corp");
 
-**For US Letter:** Use `width: "8.5in"` and `height: "11in"`.
-
-### Headers and Footers
-
-```javascript
-// Simple string (### = page number)
-doc.setHeader("Confidential — Page ###");
-doc.setFooter("© 2026 Acme Corp — Page ###");
-
-// Builder for formatted headers
+// Formatted
 doc.setHeader((h) => {
-  h.addText("Confidential", { bold: true, color: "gray" });
+  h.addText("Report", { bold: true });
   h.addText(" — Page ");
   h.addPageNumber();
 });
 ```
 
-### Formatted Text
+### Text formatting
 
 ```javascript
 doc.addParagraph((p) => {
-  p.addText("This is ");
-  p.addText("bold", { bold: true });
-  p.addText(", ");
-  p.addText("italic", { italic: true });
-  p.addText(", and ");
-  p.addText("colored", { color: "#FF0000", fontSize: 14 });
-  p.addText(".");
+  p.addText("Bold", { bold: true });
+  p.addText(", italic", { italic: true });
+  p.addText(", colored", { color: "#FF0000", fontSize: 14 });
+  p.addText(", underlined", { underline: true });
+  p.addText(", highlighted", { highlightColor: "yellow" });
+});
+
+// Superscript/subscript
+doc.addParagraph((p) => {
+  p.addText("H");
+  p.addText("2", { subscript: true });
+  p.addText("O and E = mc");
+  p.addText("2", { superscript: true });
 });
 ```
-
-Available text formatting options:
-
-| Option | Type | Example |
-|--------|------|---------|
-| `bold` | boolean | `true` |
-| `italic` | boolean | `true` |
-| `underline` | boolean | `true` |
-| `strikethrough` | boolean | `true` |
-| `superscript` | boolean | `true` |
-| `subscript` | boolean | `true` |
-| `fontSize` | number or string | `14` or `"14pt"` |
-| `fontFamily` | string | `"Arial"` |
-| `color` | string | `"#FF0000"` or `"red"` |
-| `highlightColor` | string | `"#FFFF00"` or `"yellow"` |
 
 ### Tables
 
 ```javascript
-// Simple — array of arrays
-doc.addTable([
-  ["Name", "Role", "Department"],
-  ["Alice", "Engineer", "R&D"],
-  ["Bob", "Designer", "UX"],
-]);
+// Simple
+doc.addTable([["Name", "Age"], ["Alice", "30"], ["Bob", "25"]]);
 
-// With options
-doc.addTable([
-  ["Item", "Price"],
-  ["Widget", "$9.99"],
-], { columnWidths: ["8cm", "4cm"], border: "0.5pt solid #000000" });
+// With widths and borders
+doc.addTable([["Item", "Price"], ["Widget", "$9.99"]], {
+  columnWidths: ["8cm", "4cm"],
+  border: "0.5pt solid #000000",
+});
 
-// Full control — builder callback
+// Full control
 doc.addTable((t) => {
   t.addRow((r) => {
     r.addCell("Header", { bold: true, backgroundColor: "#DDDDDD" });
-    r.addCell("Value", { bold: true, backgroundColor: "#DDDDDD" });
+    r.addCell("Value",  { bold: true, backgroundColor: "#DDDDDD" });
   });
   t.addRow((r) => {
     r.addCell("Status");
@@ -147,36 +137,17 @@ doc.addTable((t) => {
 }, { columnWidths: ["8cm", "4cm"] });
 ```
 
-Cell options extend text formatting with:
-
-| Option | Type | Example |
-|--------|------|---------|
-| `backgroundColor` | string | `"#EEEEEE"` |
-| `border` | string | `"0.5pt solid #000000"` |
-| `borderTop`, `borderBottom`, `borderLeft`, `borderRight` | string | Per-side borders |
-| `colSpan` | number | `2` |
-| `rowSpan` | number | `3` |
-
 ### Lists
 
 ```javascript
-// Simple bullet list
 doc.addList(["Apples", "Bananas", "Cherries"]);
-
-// Numbered list
 doc.addList(["First", "Second", "Third"], { type: "numbered" });
 
-// Nested with formatting
+// Nested
 doc.addList((l) => {
-  l.addItem((p) => {
-    p.addText("Important: ", { bold: true });
-    p.addText("read the documentation");
-  });
+  l.addItem((p) => { p.addText("Important: ", { bold: true }); p.addText("read the docs"); });
   l.addItem("Main topic");
-  l.addNested((sub) => {
-    sub.addItem("Subtopic A");
-    sub.addItem("Subtopic B");
-  });
+  l.addNested((sub) => { sub.addItem("Subtopic A"); sub.addItem("Subtopic B"); });
 });
 ```
 
@@ -184,80 +155,32 @@ doc.addList((l) => {
 
 ```javascript
 import { readFile } from "fs/promises";
-
 const logo = await readFile("logo.png");
 
-// Standalone
 doc.addImage(logo, { width: "10cm", height: "6cm", mimeType: "image/png" });
 
-// Inline in text
+// Inline
 doc.addParagraph((p) => {
   p.addText("Logo: ");
   p.addImage(logo, { width: "2cm", height: "1cm", mimeType: "image/png" });
 });
 ```
 
-Image options:
-
-| Option | Type | Required | Description |
-|--------|------|----------|-------------|
-| `width` | string | Yes | `"10cm"`, `"4in"` |
-| `height` | string | Yes | `"6cm"`, `"3in"` |
-| `mimeType` | string | Yes | `"image/png"`, `"image/jpeg"` |
-| `anchor` | string | No | `"as-character"` or `"paragraph"` |
-
-### Links and Bookmarks
+### Links and bookmarks
 
 ```javascript
-// Create a bookmark target
 doc.addParagraph((p) => {
-  p.addBookmark("section-one");
-  p.addText("Section 1: Introduction");
+  p.addBookmark("intro");
+  p.addText("Introduction");
 });
-
-// Link to external URL
 doc.addParagraph((p) => {
-  p.addText("Visit ");
   p.addLink("our website", "https://example.com", { bold: true });
-});
-
-// Link to internal bookmark
-doc.addParagraph((p) => {
-  p.addText("Go back to ");
-  p.addLink("Section 1", "#section-one");
+  p.addText(" or go back to the ");
+  p.addLink("intro", "#intro");
 });
 ```
 
-### Tab Stops
-
-```javascript
-doc.addParagraph((p) => {
-  p.addText("Item");
-  p.addTab();
-  p.addText("Qty");
-  p.addTab();
-  p.addText("$100.00");
-}, {
-  tabStops: [
-    { position: "6cm" },
-    { position: "12cm", type: "right" },
-  ],
-});
-```
-
-### Page Breaks
-
-```javascript
-doc.addHeading("Chapter 1", 1);
-doc.addParagraph("First chapter content.");
-doc.addPageBreak();
-doc.addHeading("Chapter 2", 1);
-doc.addParagraph("Second chapter content.");
-```
-
-### Method Chaining
-
-Every method returns the document for chaining:
+### Method chaining
 
 ```javascript
 const bytes = await new OdtDocument()
@@ -267,340 +190,294 @@ const bytes = await new OdtDocument()
   .setFooter("Page ###")
   .addHeading("Summary", 1)
   .addParagraph("All systems operational.")
-  .addTable([["System", "Status"], ["API", "OK"], ["DB", "OK"]])
-  .addList(["No incidents", "No alerts"], { type: "numbered" })
+  .addTable([["System", "Status"], ["API", "OK"]])
   .save();
 ```
 
 ---
 
-## Template Filling
+## Convert: HTML → ODT
 
-Fill existing `.odt` templates created in LibreOffice with dynamic data. Templates use `{placeholder}` syntax in the document text.
+```javascript
+import { htmlToOdt } from "odf-kit";
 
-### Basic Usage
+const html = `
+  <h1>Meeting Notes</h1>
+  <p>Attendees: <strong>Alice</strong>, Bob</p>
+  <ul><li>Project status</li><li>Budget review</li></ul>
+`;
+
+const bytes = await htmlToOdt(html);                               // A4 default
+const bytes2 = await htmlToOdt(html, { pageFormat: "letter" });   // US Letter
+const bytes3 = await htmlToOdt(html, {
+  pageFormat: "A4",
+  orientation: "landscape",
+  marginTop: "1.5cm",
+  metadata: { title: "Meeting Notes", creator: "Alice" },
+});
+writeFileSync("notes.odt", bytes);
+```
+
+Supported: `h1`–`h6`, `p`, `ul`, `ol`, `li` (nested), `table`/`tr`/`td`/`th`, `blockquote`, `pre`, `hr`, `strong`, `em`, `u`, `s`, `sup`, `sub`, `a`, `code`, `mark`, `span` (inline CSS), `br`.
+
+---
+
+## Convert: Markdown → ODT
+
+```javascript
+import { markdownToOdt } from "odf-kit";
+
+const markdown = `# Report\n\n**Date:** 2026-04-10\n\n## Items\n\n- First\n- Second`;
+const bytes = await markdownToOdt(markdown, { pageFormat: "A4" });
+writeFileSync("report.odt", bytes);
+```
+
+Accepts all `htmlToOdt` options. Supports full CommonMark: headings, bold, italic, lists, tables, links, code blocks, blockquotes, horizontal rules.
+
+---
+
+## Convert: TipTap/ProseMirror JSON → ODT
+
+For TipTap-based editors (dDocs, Outline, Novel, BlockNote etc.). No dependency on `@tiptap/core` — walks JSON as plain object. **Conversion runs entirely locally — no document content sent to external services.**
+
+```javascript
+import { tiptapToOdt } from "odf-kit";
+
+// Basic
+const bytes = await tiptapToOdt(editor.getJSON(), { pageFormat: "A4" });
+
+// With pre-fetched images (e.g. from IPFS or S3)
+const images = { [imageUrl]: imageBytes };
+const bytes2 = await tiptapToOdt(editor.getJSON(), { images });
+
+// Custom node handler for app-specific extensions
+const bytes3 = await tiptapToOdt(editor.getJSON(), {
+  unknownNodeHandler: (node, doc) => {
+    if (node.type === "callout") doc.addParagraph(`⚠️ ${node.content?.[0]?.content?.[0]?.text}`);
+  },
+});
+writeFileSync("document.odt", bytes);
+```
+
+Supported nodes: `paragraph`, `heading` (1–6), `bulletList`, `orderedList`, `listItem` (nested), `blockquote`, `codeBlock`, `horizontalRule`, `hardBreak`, `image`, `table`, `tableRow`, `tableCell`, `tableHeader`.
+Supported marks: `bold`, `italic`, `underline`, `strike`, `code`, `link`, `textStyle`, `highlight`, `superscript`, `subscript`.
+
+---
+
+## Fill: ODT Templates
+
+Create a `.odt` template in LibreOffice with `{placeholder}` syntax, then fill it programmatically.
 
 ```javascript
 import { fillTemplate } from "odf-kit";
 import { readFileSync, writeFileSync } from "fs";
 
-const template = readFileSync("template.odt");
+const template = readFileSync("invoice-template.odt");
 const result = fillTemplate(template, {
-  name: "Alice",
-  company: "Acme Corp",
-  date: "2026-03-01",
-});
-writeFileSync("output.odt", result);
-```
-
-### Template Syntax
-
-| Syntax | Description | Example |
-|--------|-------------|---------|
-| `{tag}` | Simple replacement | `Dear {name},` |
-| `{object.property}` | Dot notation for nested data | `{company.address.city}` |
-| `{#tag}...{/tag}` | Loop over array | `{#items}...{/items}` |
-| `{#tag}...{/tag}` | Conditional (truthy/falsy) | `{#showNotes}...{/showNotes}` |
-
-### Loops
-
-In the template document:
-```
-{#items}
-Product: {product} — Qty: {qty} — Price: {price}
-{/items}
-```
-
-In code:
-```javascript
-fillTemplate(template, {
+  customer: "Acme Corp",
+  date: "2026-04-10",
   items: [
     { product: "Widget", qty: 5, price: "$125" },
     { product: "Gadget", qty: 3, price: "$120" },
   ],
+  showNotes: true,
+  notes: "Net 30",
 });
+writeFileSync("invoice.odt", result);
 ```
 
-Loop items inherit parent data. Item properties override parent properties of the same name.
+| Syntax | Description |
+|--------|-------------|
+| `{tag}` | Simple replacement |
+| `{object.property}` | Dot notation |
+| `{#tag}...{/tag}` | Loop (array) or conditional (truthy/falsy) |
 
-### Conditionals
-
-Falsy values (`false`, `null`, `undefined`, `0`, `""`, `[]`) remove the section. Truthy values include it.
-
-```javascript
-fillTemplate(template, {
-  showDiscount: true,
-  discount: "10%",
-  showNotes: false,  // {#showNotes}...{/showNotes} section removed
-});
-```
-
-### Nesting
-
-Loops and conditionals nest freely to any depth.
-
-### Placeholder Healing
-
-LibreOffice often fragments `{placeholder}` text across multiple XML elements due to editing history or spell-check. odf-kit automatically reassembles fragmented placeholders before replacement — no manual XML cleanup needed.
+`fillTemplate` is **synchronous** — no `await` needed. Automatically heals placeholders fragmented by LibreOffice editing.
 
 ---
 
-## Reading .odt Files
-
-Parse existing `.odt` files into a structured document model or convert directly to HTML. Import from `odf-kit/reader`.
-
-### Convert to HTML
-
-```javascript
-import { odtToHtml } from "odf-kit/reader";
-import { readFileSync, writeFileSync } from "node:fs";
-
-const bytes = new Uint8Array(readFileSync("document.odt"));
-
-// Full HTML document
-const html = odtToHtml(bytes);
-writeFileSync("document.html", html);
-
-// Inner fragment only (for embedding in an existing page)
-const fragment = odtToHtml(bytes, { fragment: true });
-```
-
-### Parse to Document Model
-
-```javascript
-import { readOdt } from "odf-kit/reader";
-
-const bytes = new Uint8Array(readFileSync("document.odt"));
-const doc = readOdt(bytes);
-
-// Metadata
-console.log(doc.metadata.title);
-console.log(doc.metadata.creator);
-
-// Page geometry
-console.log(doc.pageLayout?.orientation);  // "portrait" | "landscape"
-console.log(doc.pageLayout?.width);        // "21cm"
-
-// Walk the body
-for (const node of doc.body) {
-  if (node.kind === "heading")   console.log(`h${node.level}:`, node.spans[0].text);
-  if (node.kind === "paragraph") console.log(node.spans.map(s => s.text).join(""));
-  if (node.kind === "table")     console.log(`table: ${node.rows.length} rows`);
-  if (node.kind === "list")      console.log(`list: ${node.items.length} items`);
-  if (node.kind === "section")   console.log(`section: ${node.name}`);
-}
-```
-
-### BodyNode types
-
-| `kind` | Description |
-|--------|-------------|
-| `"paragraph"` | Text paragraph with `spans: InlineNode[]` |
-| `"heading"` | Heading with `level: 1–6` and `spans` |
-| `"list"` | Ordered or unordered list with `items` |
-| `"table"` | Table with `rows` → `cells` → `spans` |
-| `"section"` | Named document section with nested `body` |
-| `"tracked-change"` | Tracked change with `changeType`, `author`, `date`, `body` |
-
-### Inline node types
-
-Each `spans` array contains `InlineNode` values. Narrow by `"kind"`:
-
-```javascript
-for (const span of node.spans) {
-  if ("kind" in span) {
-    if (span.kind === "image")    // ImageNode — span.data is base64
-    if (span.kind === "note")     // NoteNode — footnote/endnote
-    if (span.kind === "bookmark") // BookmarkNode
-    if (span.kind === "field")    // FieldNode — page number, date, etc.
-  } else {
-    // TextSpan — span.text, span.bold, span.italic, span.href, span.style
-  }
-}
-```
-
-### Tracked changes
+## Read: ODT Files
 
 ```javascript
 import { readOdt, odtToHtml } from "odf-kit/reader";
+import { readFileSync } from "fs";
 
-// "final" (default) — show document as if all changes accepted
-const doc = readOdt(bytes);
+const bytes = readFileSync("report.odt");
 
-// "original" — show document as if all changes rejected
-const doc = readOdt(bytes, { trackedChanges: "original" });
+// Structured model
+const model = readOdt(bytes);
+console.log(model.body);        // BodyNode[]
+console.log(model.pageLayout);  // PageLayout
 
-// "changes" — expose TrackedChangeNode values in the body
-const doc = readOdt(bytes, { trackedChanges: "changes" });
-const html = doc.toHtml({ trackedChanges: "changes" });
-// insertions → <ins>, deletions → <del>
+// HTML string
+const html = odtToHtml(bytes);
+
+// Tracked changes
+const final    = odtToHtml(bytes, {}, { trackedChanges: "final" });
+const original = odtToHtml(bytes, {}, { trackedChanges: "original" });
+const marked   = odtToHtml(bytes, {}, { trackedChanges: "changes" });
 ```
 
 ---
 
-## Exporting to Typst for PDF
+## Build: ODS Spreadsheets
 
-Convert `.odt` files to [Typst](https://typst.app/) markup, then compile to PDF with the Typst CLI. Import from `odf-kit/typst`. Zero new dependencies — works in Node.js, browsers, and any JavaScript environment.
+```javascript
+import { OdsDocument } from "odf-kit/ods";
+import { writeFileSync } from "fs";
 
-### Basic usage
+const doc = new OdsDocument();
+doc.setMetadata({ title: "Sales Report" });
+
+const sheet = doc.addSheet("Q1");
+sheet.setTabColor("#4CAF50");
+
+// Header row
+sheet.addRow(["Month", "Revenue", "Growth"], { bold: true, backgroundColor: "#DDDDDD" });
+
+// Data rows
+sheet.addRow(["January", 12500, 0.08]);
+sheet.addRow(["February", 14200, 0.136]);
+
+// Formula
+sheet.addRow(["Total", { value: "=SUM(B2:B3)", type: "formula" }]);
+
+// Number formats
+sheet.addRow([{ value: 1234567, type: "float", numberFormat: "integer" }]);         // 1,234,567
+sheet.addRow([{ value: 0.1234, type: "percentage", numberFormat: "percentage:1" }]);// 12.3%
+sheet.addRow([{ value: 9999.99, type: "currency", numberFormat: "currency:EUR" }]); // €9,999.99
+
+// Merged cell
+sheet.addRow([{ value: "Q1 Summary", type: "string", colSpan: 3, bold: true }]);
+
+// Freeze header row
+sheet.freezeRows(1);
+
+// Column widths
+sheet.setColumnWidth(0, "4cm");
+sheet.setColumnWidth(1, "5cm");
+
+const bytes = await doc.save();
+writeFileSync("sales.ods", bytes);
+```
+
+### Cell types
+
+| JavaScript type | ODS type | Example |
+|-----------------|----------|---------|
+| `number` | float | `42`, `1234.56` |
+| `Date` | date | `new Date("2026-01-15")` |
+| `boolean` | boolean | `true`, `false` |
+| `string` | string | `"Hello"` |
+| `null` / `undefined` | empty | — |
+| `{ value, type: "formula" }` | formula | `{ value: "=SUM(A1:A10)", type: "formula" }` |
+| `{ value, type: "percentage" }` | percentage | `{ value: 0.1234, type: "percentage" }` |
+| `{ value, type: "currency" }` | currency | `{ value: 99.99, type: "currency" }` |
+
+### Number formats
+
+```javascript
+{ value: 9999, type: "float", numberFormat: "integer" }          // 9,999
+{ value: 1234.567, type: "float", numberFormat: "decimal:2" }    // 1,234.57
+{ value: 0.1234, type: "percentage", numberFormat: "percentage" }// 12.34%
+{ value: 0.075, type: "percentage", numberFormat: "percentage:1"}// 7.5%
+{ value: 1234.56, type: "currency", numberFormat: "currency:EUR"}// €1,234.56
+{ value: 99.99, type: "currency", numberFormat: "currency:USD:0"}// $100
+```
+
+### Merged cells
+
+```javascript
+sheet.addRow([{ value: "Q1 Report", type: "string", colSpan: 3, bold: true }]);
+sheet.addRow([{ value: "Region", type: "string", rowSpan: 2 }, "Jan", "Feb"]);
+```
+
+### Hyperlinks in cells
+
+```javascript
+sheet.addRow([{ value: "odf-kit", type: "string", href: "https://github.com/GitHubNewbie0/odf-kit" }]);
+```
+
+### Date formatting
+
+```javascript
+doc.setDateFormat("DD/MM/YYYY");  // document default
+sheet.addRow([{ value: new Date("2026-12-25"), type: "date", dateFormat: "MM/DD/YYYY" }]);
+```
+
+---
+
+## Convert: ODT → Typst → PDF
 
 ```javascript
 import { odtToTypst } from "odf-kit/typst";
-import { readFileSync, writeFileSync } from "node:fs";
-import { execSync } from "node:child_process";
+import { execSync } from "child_process";
+import { readFileSync, writeFileSync } from "fs";
 
-const bytes = new Uint8Array(readFileSync("document.odt"));
-
-// Convert to Typst markup
-const typ = odtToTypst(bytes);
-writeFileSync("document.typ", typ);
-
-// Compile to PDF (requires Typst CLI installed separately)
-execSync("typst compile document.typ document.pdf");
-```
-
-### Parse once, emit to multiple formats
-
-Use `modelToTypst()` when you already have a parsed model — avoids re-reading the file:
-
-```javascript
-import { readOdt } from "odf-kit/reader";
-import { modelToTypst } from "odf-kit/typst";
-
-const bytes = new Uint8Array(readFileSync("document.odt"));
-const model = readOdt(bytes);
-
-const html  = model.toHtml({ fragment: true });  // HTML
-const typst = modelToTypst(model);               // Typst markup
-```
-
-### Installing the Typst CLI
-
-```bash
-# macOS
-brew install typst
-
-# Windows
-winget install --id Typst.Typst
-
-# Linux / via npm
-npm install -g typst
-```
-
-### Typst coverage
-
-Headings, paragraphs (with text-align via `#align()`), bold, italic, underline, strikethrough, superscript, subscript, hyperlinks via `#link()`, footnotes via `#footnote[]`, bookmarks as Typst labels, text fields (page number → `#counter(page).display()`), unordered and ordered lists with nesting, tables with column widths, named sections, tracked changes (final/original/changes modes), page geometry via `#set page()`, and character styles (color, font size, font family, highlight).
-
-**Images** are emitted as comment placeholders — Typst does not support inline base64 without filesystem access:
-
-```typst
-/* [image: logo.png 10cm × 6cm] */
-```
-
-To include images in the PDF, extract `ImageNode.data` (base64) from the model, write files alongside the `.typ`, then substitute placeholders with `#image("logo.png")`.
-
-### TypstEmitOptions
-
-| Option | Values | Default | Description |
-|--------|--------|---------|-------------|
-| `trackedChanges` | `"final"` \| `"original"` \| `"changes"` | `"final"` | How tracked changes are emitted in Typst output |
-
----
-
-## Validation
-
-After creating a file, verify it opens correctly:
-
-```bash
-# Convert to PDF as a validation step
-libreoffice --headless --convert-to pdf output.odt
-
-# Or use the Typst path (no LibreOffice needed)
-# See Exporting to Typst above
+const typst = odtToTypst(readFileSync("letter.odt"));
+writeFileSync("letter.typ", typst);
+execSync("typst compile letter.typ letter.pdf");
 ```
 
 ---
 
-## Critical Rules for odf-kit
+## Critical Rules
 
-- **Always use `await` with `save()`** — it returns a `Promise<Uint8Array>`
-- **ESM only** — use `import`, not `require`. File must use `.mjs` extension or `"type": "module"` in package.json
-- **Use `writeFileSync`** (or `writeFile`) to write the Uint8Array to disk
-- **`fontSize` as number = points** — `14` means 14pt
-- **Images require all three options** — `width`, `height`, and `mimeType` are all required
-- **Template `fillTemplate` is synchronous** — returns `Uint8Array` directly (no await needed)
-- **`###` in header/footer strings** is replaced with page numbers automatically
-- **A4 is the default page size** — set explicit dimensions for US Letter (`8.5in` × `11in`)
-- **Reader and Typst are separate sub-exports** — import from `odf-kit/reader` and `odf-kit/typst`, not from `odf-kit`
+- **Always `await doc.save()`** — returns `Promise<Uint8Array>`
+- **`fillTemplate()` is synchronous** — no await
+- **ESM only** — use `import`, not `require`; `"type": "module"` in package.json
+- **Write with `writeFileSync`** — `writeFileSync("out.odt", bytes)`
+- **`fontSize` as number = points** — `14` means `14pt`
+- **Images require `width`, `height`, and `mimeType`** — all three required
+- **`###` in header/footer** = page number placeholder
+- **A4 is the default page size** — use `pageFormat: "letter"` for US
+- **Formula cells require explicit type** — `{ value: "=SUM(...)", type: "formula" }`
 
 ---
 
-## Complete Example
+## Complete Example — Invoice
 
 ```javascript
 import { OdtDocument } from "odf-kit";
 import { writeFileSync } from "fs";
 
-async function createReport() {
+async function createInvoice() {
   const doc = new OdtDocument();
 
-  doc.setMetadata({ title: "Monthly Report", creator: "Operations Team" });
-  doc.setPageLayout({
-    width: "8.5in",
-    height: "11in",
-    marginTop: "1in",
-    marginBottom: "1in",
-    marginLeft: "1in",
-    marginRight: "1in",
-  });
-  doc.setHeader((h) => {
-    h.addText("Monthly Operations Report", { bold: true });
-    h.addText(" — Page ");
-    h.addPageNumber();
-  });
-  doc.setFooter("© 2026 Acme Corp");
+  doc.setMetadata({ title: "Invoice #1042", creator: "Acme Corp" });
+  doc.setPageLayout({ width: "8.5in", height: "11in", marginTop: "1in", marginBottom: "1in", marginLeft: "1in", marginRight: "1in" });
+  doc.setHeader("Acme Corp — Invoice");
+  doc.setFooter("Page ###");
 
-  doc.addHeading("Executive Summary", 1);
-  doc.addParagraph("All operations performed within expected parameters.");
-
-  doc.addHeading("Key Metrics", 2);
-  doc.addTable([
-    ["Metric", "Target", "Actual", "Status"],
-    ["Uptime", "99.9%", "99.95%", "✓"],
-    ["Response Time", "<200ms", "145ms", "✓"],
-    ["Error Rate", "<0.1%", "0.08%", "✓"],
-  ], {
-    columnWidths: ["5cm", "3cm", "3cm", "2cm"],
-    border: "0.5pt solid #000000",
-  });
-
-  doc.addHeading("Action Items", 2);
-  doc.addList([
-    "Complete infrastructure audit by March 15",
-    "Deploy monitoring upgrade to production",
-    "Review disaster recovery procedures",
-  ], { type: "numbered" });
-
-  doc.addHeading("Notes", 2);
+  doc.addHeading("Invoice #1042", 1);
   doc.addParagraph((p) => {
-    p.addText("Priority: ", { bold: true, color: "red" });
-    p.addText("Database migration scheduled for next maintenance window. ");
-    p.addText("See ", { italic: true });
-    p.addLink("migration plan", "https://docs.example.com/migration");
-    p.addText(" for details.", { italic: true });
+    p.addText("Date: ", { bold: true });
+    p.addText("April 10, 2026");
+  });
+  doc.addParagraph((p) => {
+    p.addText("Bill to: ", { bold: true });
+    p.addText("Globex Corporation");
   });
 
-  const bytes = await doc.save();
-  writeFileSync("report.odt", bytes);
+  doc.addHeading("Items", 2);
+  doc.addTable((t) => {
+    t.addRow((r) => {
+      r.addCell("Description", { bold: true, backgroundColor: "#DDDDDD" });
+      r.addCell("Qty",         { bold: true, backgroundColor: "#DDDDDD" });
+      r.addCell("Unit Price",  { bold: true, backgroundColor: "#DDDDDD" });
+      r.addCell("Total",       { bold: true, backgroundColor: "#DDDDDD" });
+    });
+    t.addRow((r) => { r.addCell("Widget Pro"); r.addCell("5"); r.addCell("$125.00"); r.addCell("$625.00"); });
+    t.addRow((r) => { r.addCell("Gadget Plus"); r.addCell("3"); r.addCell("$120.00"); r.addCell("$360.00"); });
+  }, { columnWidths: ["8cm", "2cm", "3cm", "3cm"], border: "0.5pt solid #000000" });
+
+  doc.addParagraph((p) => {
+    p.addText("Total Due: ", { bold: true, fontSize: 14 });
+    p.addText("$985.00", { bold: true, fontSize: 14, color: "#006600" });
+  });
+
+  writeFileSync("invoice-1042.odt", await doc.save());
 }
 
-createReport();
+createInvoice();
 ```
-
----
-
-## Dependencies
-
-- **odf-kit**: `npm install -g odf-kit` — document creation, template filling, reading, and Typst export
-- **Typst CLI** (optional): PDF compilation only — `npm install -g typst` or via system package manager
-- **LibreOffice** (optional): alternative PDF conversion — `libreoffice --headless`
