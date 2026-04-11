@@ -10,6 +10,58 @@ license: Proprietary. LICENSE.txt has complete terms
 
 This guide covers essential PDF processing operations using Python libraries and command-line tools. For advanced features, JavaScript libraries, and detailed examples, see REFERENCE.md. If you need to fill out a PDF form, read FORMS.md and follow its instructions.
 
+## Critical Portable Output Requirements
+
+Apply these rules whenever the user asks for a generated PDF deliverable:
+
+1. Save the final deliverable as `output.pdf` unless the user explicitly asks for a different filename.
+2. Never rely on machine-local custom fonts (for example fonts available on one Mac only). Cross-platform readers on Windows/Android may substitute or break layout.
+3. For non-ASCII text (Chinese, Japanese, Korean, symbols), use an embeddable TrueType-outline font and embed it in the PDF. Prefer `.ttf`; only use `.otf` when it is known to work with `reportlab`.
+4. Do not put critical content only in viewer-dependent annotation layers when portability matters. Prefer writing text into page content.
+5. Before returning the file, do a quick sanity check for portability risks (missing glyphs, obvious overflow, broken line wraps).
+
+## Preferred PDF Authoring Path
+
+Keep generation simple and deterministic:
+
+1. Use `reportlab` for PDF writing and `pypdf` for merge/edit steps.
+2. Do not switch to `fpdf2` just to work around font issues in this skill flow.
+3. Do not rely on ad-hoc `fonttools` TTC-to-TTF conversion during task execution.
+4. In the AstrBot sandbox (`astrbotdevs/shipyard-neo-ship:latest` running in a macOS Docker environment), do not treat local TTC collections as the default path. Many macOS TTC fonts use PostScript outlines that `reportlab` rejects.
+5. Prefer one stable downloaded or bundled `.ttf` fallback font. If no embeddable font is available and the document only needs Chinese text, `UnicodeCIDFont("STSong-Light")` is an acceptable non-embedded fallback.
+
+## Local CJK Font Discovery Policy
+
+For Linux/sandbox environments, discovering local fonts via `fc-list` is optional. Treat it as a probe, not a guarantee.
+
+```python
+import subprocess
+
+result = subprocess.run(
+    ["fc-list", ":lang=zh", "-f", "%{file}\\n"],
+    capture_output=True,
+    text=True,
+    timeout=4,
+    check=False,
+)
+```
+
+Rules:
+
+1. Use `timeout` and `check=False` to avoid hanging or hard failure.
+2. Treat `fc-list` results as candidates, not guaranteed usable fonts.
+3. Prefer `.ttf` candidates first. Only try `.otf` if `reportlab` can actually load it.
+4. Do not auto-assume `.ttc` is usable in the AstrBot sandbox. An `invalid character '—'` error is a string-quoting bug; `postscript outlines are not supported` is a font-compatibility bug.
+5. If no compatible local font exists, download one fallback font into the working directory and reuse it. If download is impossible and the content is Chinese-only, fall back to `STSong-Light` and mention that it is not embedded.
+
+## Final Response Requirements
+
+When you create or modify a PDF file, your final response must include:
+
+1. A direct downloadable file result (attachment/file output when the platform supports it).
+2. The exact output path for fallback download, including the final `output.pdf` location.
+3. A short note if custom fonts were embedded (or if fallback fonts were used).
+
 ## Quick Start
 
 ```python
@@ -165,6 +217,56 @@ story.append(Paragraph("Content for page 2", styles['Normal']))
 # Build PDF
 doc.build(story)
 ```
+
+#### Python String Safety (Avoid SyntaxError)
+
+Unicode punctuation is usually not the real problem. Errors such as `invalid character '—' (U+2014)` often happen because the string was terminated early by an apostrophe or mismatched quote.
+
+```python
+import json
+from pathlib import Path
+
+# Preferred: load report text from UTF-8 data instead of hand-writing long literals.
+report_data = json.loads(Path("report-data.json").read_text(encoding="utf-8"))
+for line in report_data["lines"]:
+    story.append(Paragraph(line, body_style))
+```
+
+If inline text is unavoidable, use triple double-quoted literals for content that may contain apostrophes:
+
+```python
+title = """Tom's Birthday Plan"""
+story.append(Paragraph(title, title_style))
+```
+
+#### Cross-Platform Font Embedding (Required for Non-ASCII Text)
+
+```python
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+
+# Preferred: use a compatible TrueType-outline font file and embed it.
+pdfmetrics.registerFont(TTFont("PortableUnicode", "./fonts/NotoSansSC-Regular.ttf"))
+
+c = canvas.Canvas("output.pdf")
+c.setFont("PortableUnicode", 12)
+c.drawString(72, 760, "Cross-platform text example")
+c.save()
+```
+
+If the sandbox only exposes unsupported TTC fonts and the document only needs Chinese text, use ReportLab's CID fallback instead of forcing TTC:
+
+```python
+pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
+c = canvas.Canvas("output.pdf")
+c.setFont("STSong-Light", 12)
+c.drawString(72, 760, "中文示例")
+c.save()
+```
+
+Do not recommend `/System/Library/Fonts/PingFang.ttc` or similar macOS TTC files as the primary solution in the AstrBot sandbox. They frequently fail with `postscript outlines are not supported`.
 
 #### Subscripts and Superscripts
 

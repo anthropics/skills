@@ -158,6 +158,17 @@ Create fields.json using `pdf_width` and `pdf_height` (signals PDF coordinates):
 }
 ```
 
+`entry_text` supports optional styling keys:
+- `font`: preferred PDF font name (default: `Helvetica`)
+- `font_size`: numeric text size
+- `font_color`: hex RGB like `000000` or `#1F2937`
+- `font_path`: path to a compatible `.ttf` font, or a known-good `.otf` file. Explicit `.ttc#0` input is supported as a last resort but is not recommended in the AstrBot sandbox.
+- `font_index`: optional integer subfont index, only needed when you intentionally pass a `.ttc` font source
+
+For CJK or other non-ASCII text, provide `font_path` whenever possible so glyphs are embedded and render consistently across macOS, Windows, and Android.
+Prefer one stable downloaded or bundled `.ttf` font. Do not depend on runtime TTC-to-TTF conversion or on sandbox-local macOS TTC fonts.
+If you explicitly pass a TTC source and it fails, treat that as an incompatible font selection and switch to a compatible `.ttf` instead of retrying random TTC indexes.
+
 **Important**: Use `pdf_width`/`pdf_height` and coordinates directly from form_structure.json.
 
 ### A.4: Validate Bounding Boxes
@@ -242,6 +253,8 @@ Create fields.json using `image_width` and `image_height` (signals image coordin
 }
 ```
 
+The same `entry_text` font options (`font`, `font_size`, `font_color`, `font_path`, `font_index`) apply here.
+
 **Important**: Use `image_width`/`image_height` and the refined pixel coordinates from the zoom analysis.
 
 ### B.5: Validate Bounding Boxes
@@ -280,7 +293,7 @@ Fix any reported errors in fields.json before proceeding.
 
 ## Step 3: Fill the Form
 
-The fill script auto-detects the coordinate system and handles conversion:
+The fill script auto-detects the coordinate system and handles conversion. It renders text into PDF page content for better viewer compatibility:
 `python scripts/fill_pdf_form_with_annotations.py <input.pdf> fields.json <output.pdf>`
 
 ## Step 4: Verify Output
