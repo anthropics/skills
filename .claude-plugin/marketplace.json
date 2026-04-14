@@ -12,14 +12,7 @@
     {
       "name": "document-skills",
       "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
-      ]
+      "source": "./plugins/document-skills"
     },
     {
       "name": "example-skills",
@@ -40,16 +33,11 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/claude-api"
-      ]
+      "source": "./plugins/claude-api"
     }
   ]
 }
