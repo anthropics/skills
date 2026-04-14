@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
 Indeed profile updater pre-filled for Akash Poddar.
-Adds education and work experience entries automatically.
+Logs in via Google OAuth (no password needed) then adds education
+and work experience entries automatically.
 
 Usage:
-    # Pass password as argument
-    python run_akash_profile_update.py --password "YourPassword"
-
-    # Or set as environment variable
-    export INDEED_PASSWORD="YourPassword"
     python run_akash_profile_update.py
+
+    # Update only one section
+    python run_akash_profile_update.py --section education
+    python run_akash_profile_update.py --section work
 
 Prerequisites:
     pip install playwright
@@ -181,61 +181,92 @@ def try_select_by_value(page, selectors, value, label):
 
 
 # ---------------------------------------------------------------------------
-# Login
+# Login — Google OAuth
 # ---------------------------------------------------------------------------
 
-def login(page, email, password):
-    print("\n--- LOGIN ---")
+def login(page):
+    """
+    Log in to Indeed via 'Continue with Google'.
+    Opens the Google OAuth popup and waits for the user to complete sign-in.
+    Returns True on success.
+    """
+    print("\n--- LOGIN (Google OAuth) ---")
     page.goto("https://secure.indeed.com/auth")
     page.wait_for_load_state("networkidle")
     pause(page)
+    shot(page, "login_page")
 
-    # Email
-    try_fill(page, [
-        'input[name="__email"]',
-        'input[type="email"]',
-        'input[id*="email"]',
-        'input[autocomplete*="email"]',
-    ], email, "email")
+    # Find and click the "Continue with Google" / "Sign in with Google" button
+    google_btn_selectors = [
+        'a:has-text("Continue with Google")',
+        'button:has-text("Continue with Google")',
+        'a:has-text("Sign in with Google")',
+        'button:has-text("Sign in with Google")',
+        '[data-testid*="google"]',
+        'a[href*="google"]',
+        'button[aria-label*="Google"]',
+    ]
 
-    try_click(page, [
-        'button[type="submit"]',
-        'button:has-text("Continue")',
-        'button:has-text("Next")',
-    ], "continue after email")
-    page.wait_for_load_state("networkidle")
-    pause(page)
+    found = False
+    for sel in google_btn_selectors:
+        try:
+            el = page.locator(sel).first
+            el.wait_for(state="visible", timeout=5000)
+            print(f"  [found] Google login button: {sel}")
+            found = True
 
-    # Password
-    try_fill(page, [
-        'input[name="__password"]',
-        'input[type="password"]',
-    ], password, "password")
+            # Google OAuth opens in a popup — capture it
+            with page.context.expect_page(timeout=10000) as popup_info:
+                el.click()
 
-    try_click(page, [
-        'button[type="submit"]',
-        'button:has-text("Sign in")',
-        'button:has-text("Log in")',
-    ], "sign in")
+            popup = popup_info.value
+            popup.wait_for_load_state("domcontentloaded")
+            print(f"  [popup] Google auth popup opened: {popup.url[:80]}")
+            print()
+            print("  =============================================================")
+            print("  ACTION REQUIRED: Complete Google sign-in in the popup window.")
+            print(f"  Select account: {EMAIL}")
+            print("  =============================================================")
+            print()
+
+            # Wait for the popup to close (user completed auth) — up to 3 minutes
+            popup.wait_for_event("close", timeout=180000)
+            print("  [ok] Google auth popup closed.")
+            break
+
+        except PlaywrightTimeoutError:
+            continue
+        except Exception as e:
+            # Popup may not have fired — button might navigate in-place instead
+            print(f"  [info] Popup handling note: {e}")
+            found = True
+            break
+
+    if not found:
+        shot(page, "login_no_google_btn")
+        print("  [warn] Could not find 'Continue with Google' button.")
+        print("         See /tmp/indeed_login_no_google_btn.png")
+        print("         Please log in manually in the browser window, then press ENTER.")
+        input("  Press ENTER once logged in: ")
+
+    # Wait for Indeed to redirect back after OAuth
     page.wait_for_load_state("networkidle")
     pause(page, 2000)
 
-    # 2FA / CAPTCHA check
-    url = page.url
-    if any(x in url for x in ["challenge", "captcha", "verify", "auth"]):
-        shot(page, "login_check")
-        print("\n  [!] 2FA or CAPTCHA may be required.")
-        print("      Complete it in the browser window, then press ENTER here.")
-        input("  Press ENTER to continue: ")
+    # If Indeed still shows auth page, wait for manual completion
+    if "auth" in page.url or "login" in page.url.lower():
+        shot(page, "login_waiting")
+        print("  [wait] Still on auth page. Please complete login in the browser, then press ENTER.")
+        input("  Press ENTER once you are logged in: ")
         page.wait_for_load_state("networkidle")
         pause(page, 2000)
 
     if "indeed.com" in page.url:
-        print(f"  [ok] Logged in. Current URL: {page.url}")
+        print(f"  [ok] Logged in successfully. URL: {page.url}")
         return True
 
     shot(page, "login_failed")
-    print(f"  [error] Login failed. URL: {page.url}")
+    print(f"  [error] Login may have failed. URL: {page.url}")
     return False
 
 
@@ -473,31 +504,26 @@ def add_work_entry(page, job):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Update Akash Poddar's Indeed profile (education + work experience)."
+        description="Update Akash Poddar's Indeed profile via Google login (education + work experience)."
     )
-    parser.add_argument("--password", default=os.environ.get("INDEED_PASSWORD"),
-                        help="Indeed password (or set INDEED_PASSWORD env var)")
-    parser.add_argument("--headless", action="store_true", default=False,
-                        help="Run in headless mode (default: visible window for 2FA support)")
     parser.add_argument("--section", choices=["education", "work", "all"], default="all",
                         help="Which section(s) to update (default: all)")
     args = parser.parse_args()
 
-    if not args.password:
-        parser.error("--password is required (or set INDEED_PASSWORD env var)")
-
     print("=" * 60)
     print("Indeed Profile Updater — Akash Poddar")
     print("=" * 60)
-    print(f"Email   : {EMAIL}")
+    print(f"Account : {EMAIL}")
+    print(f"Login   : Google OAuth (popup will appear)")
     print(f"Section : {args.section}")
-    print(f"Headless: {args.headless}")
-    if not args.headless:
-        print("NOTE    : Browser window visible. Complete any 2FA manually.")
+    print()
+    print("A browser window will open. When prompted, select:")
+    print(f"  Google account: {EMAIL}")
     print()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=args.headless, slow_mo=60)
+        # Always run with visible window — needed for Google OAuth popup
+        browser = p.chromium.launch(headless=False, slow_mo=60)
         ctx = browser.new_context(
             viewport={"width": 1280, "height": 900},
             user_agent=(
@@ -509,7 +535,7 @@ def main():
         page = ctx.new_page()
 
         try:
-            if not login(page, EMAIL, args.password):
+            if not login(page):
                 print("\nERROR: Login failed. Exiting.")
                 sys.exit(1)
 
