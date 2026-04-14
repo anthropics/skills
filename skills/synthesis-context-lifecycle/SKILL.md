@@ -383,3 +383,13 @@ The three infrastructure layers:
 4. **Compiled** — Context automatically assembled from project state, code, and history (future vision)
 
 Stage 3 is the 80/20 solution that makes long-running AI-assisted projects sustainable. Stage 4 is the long-term vision where context at session start is compiled from live project state rather than manually maintained.
+
+---
+
+## Session-End Commit Requirement
+
+Context files are only useful if they reach the remote repository. Every session that creates or modifies context files (CONTEXT.md, REFERENCE.md, session archives) must commit and push those changes before the session ends.
+
+This is not optional. Context that exists only on one machine is invisible to the next session on a different machine. The entire point of structured context is cross-session continuity — uncommitted context breaks that guarantee.
+
+Use `synthesis-repo-guard` to verify all repos are clean before ending a session. See that skill for integration with AI tool session-end hooks.
