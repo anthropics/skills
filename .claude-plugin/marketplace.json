@@ -59,6 +59,15 @@
       "skills": [
         "./skills/plugin"
       ]
+    },
+    {
+      "name": "indeed-profile",
+      "description": "Automate updating Indeed profile education and work experience sections using Playwright browser automation",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/indeed-profile"
+      ]
     }
   ]
 }
