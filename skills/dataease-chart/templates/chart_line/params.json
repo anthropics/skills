@@ -1,0 +1,28 @@
+{
+  "_comment": "chart_line 模板参数（来源：DataEase 抓包 + 参数化）",
+  "view": {
+    "VIEW_ID":    "7447105738385657856",
+    "CONTENT_ID": "7447106138476122112",
+    "SCENE_ID":   "0"
+  },
+  "dataset": {
+    "DATASOURCE_ID":    "1166370337189924864",
+    "DATASET_TABLE_ID": "7387069976563159040",
+    "DATASET_GROUP_ID": "1178801986976485376"
+  },
+  "fields": {
+    "xAxis": {
+      "XAXIS_FIELD_ID": "1761214724097",
+      "XAXIS_DE_NAME":  "f_3319f6ba3e484e93"
+    },
+    "yAxis": {
+      "YAXIS_FIELD_ID":  "1761214724096",
+      "YAXIS_DE_NAME":   "f_97666027e11d7dc5",
+      "YAXIS_SERIES_ID": "1761214724096-yAxis"
+    },
+    "yAxis2": {
+      "YAXIS2_FIELD_ID": "1761214724100",
+      "YAXIS2_DE_NAME":  "f_c4c3c6a1a3d6688b"
+    }
+  }
+}
