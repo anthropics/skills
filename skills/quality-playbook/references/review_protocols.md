@@ -11,23 +11,16 @@
 
 Before reviewing, read these files for context:
 1. `quality/QUALITY.md` — Quality constitution and fitness-to-purpose scenarios
-2. [Main architectural doc]
-3. [Key design decisions doc]
-4. [Any other essential context]
+2. `quality/REQUIREMENTS.md` — Testable requirements derived during playbook generation
+3. [Main architectural doc]
+4. [Key design decisions doc]
+5. [Any other essential context]
 
-## What to Check
+## Pass 1: Structural Review
 
-### Focus Area 1: [Subsystem/Risk Area Name]
+Read the code and report anything that looks wrong. No requirements, no focus areas — use your own knowledge of code correctness. Look for: race conditions, null pointer hazards, resource leaks, off-by-one errors, type mismatches, error handling gaps, and any code that looks suspicious.
 
-**Where:** [Specific files and functions]
-**What:** [Specific things to look for]
-**Why:** [What goes wrong if this is incorrect]
-
-### Focus Area 2: [Subsystem/Risk Area Name]
-
-[Repeat for 4–6 focus areas, mapped to architecture and risk areas from exploration]
-
-## Guardrails
+### Guardrails
 
 - **Line numbers are mandatory.** If you cannot cite a specific line, do not include the finding.
 - **Read function bodies, not just signatures.** Don't assume a function works correctly based on its name.
@@ -35,20 +28,188 @@ Before reviewing, read these files for context:
 - **Grep before claiming missing.** If you think a feature is absent, search the codebase. If found in a different file, that's a location defect, not a missing feature.
 - **Do NOT suggest style changes, refactors, or improvements.** Only flag things that are incorrect or could cause failures.
 
-## Output Format
-
-Save findings to `quality/code_reviews/YYYY-MM-DD-reviewer.md`
+### Output
 
 For each file reviewed:
 
-### filename.ext
+#### filename.ext
 - **Line NNN:** [BUG / QUESTION / INCOMPLETE] Description. Expected vs. actual. Why it matters.
 
-### Summary
-- Total findings by severity
-- Files with no findings
-- Overall assessment: SHIP IT / FIX FIRST / NEEDS DISCUSSION
+## Pass 2: Requirement Verification
+
+Read `quality/REQUIREMENTS.md`. For each requirement, check whether the code satisfies it. This is a pure verification pass — your only job is "does the code satisfy this requirement?"
+
+Do NOT also do a general code review. Do NOT look for other bugs. Do NOT evaluate code quality. Just check each requirement.
+
+For each requirement, report one of:
+- **SATISFIED**: The code implements this requirement. Quote the specific code.
+- **VIOLATED**: The code does NOT satisfy this requirement. Explain what the code does vs. what the requirement says. Quote the code.
+- **PARTIALLY SATISFIED**: Some aspects implemented, others missing. Explain both.
+- **NOT ASSESSABLE**: Can't be checked from the files under review.
+
+### Output
+
+For each requirement:
+
+#### REQ-N: [requirement text]
+**Status**: SATISFIED / VIOLATED / PARTIALLY SATISFIED / NOT ASSESSABLE
+**Evidence**: [file:line] — [code quote]
+**Analysis**: [explanation]
+[If VIOLATED] **Severity**: [impact description]
+
+## Pass 3: Cross-Requirement Consistency
+
+Compare pairs of requirements from `quality/REQUIREMENTS.md` that reference the same field, constant, range, or security policy. For each pair, check whether their constraints are mutually consistent.
+
+What to look for:
+- **Numeric range vs bit width**: If one requirement says the valid range is [0, N) and another says the field is M bits wide, does N = 2^M?
+- **Security policy propagation**: If one requirement says a CA file is configured, do all requirements about connections that should use it actually reference using it?
+- **Validation bounds vs encoding limits**: Does a validation check in one file agree with the storage capacity in another?
+- **Lifecycle consistency**: If a resource is created by one requirement's code, is it cleaned up by another's?
+
+For each pair that shares a concept, verify consistency against the actual code.
+
+### Output
+
+For each shared concept:
+
+#### Shared Concept: [name]
+**Requirements**: REQ-X, REQ-Y
+**What REQ-X claims**: [summary]
+**What REQ-Y claims**: [summary]
+**Consistency**: CONSISTENT / INCONSISTENT
+**Code evidence**: [quotes from both locations]
+**Analysis**: [explanation]
+[If INCONSISTENT] **Impact**: [what happens when the contradiction is triggered]
+
+## Combined Summary
+
+| Source | Finding | Severity | Status |
+|--------|---------|----------|--------|
+| Pass 1 | [structural finding] | [severity] | BUG / QUESTION |
+| Pass 2, REQ-N | [requirement violation] | [severity] | VIOLATED |
+| Pass 3, REQ-X vs REQ-Y | [consistency issue] | [severity] | INCONSISTENT |
+
+- Total findings by pass and severity
+- Overall assessment: SHIP / FIX BEFORE MERGE / BLOCK
 ```
+
+### Execution requirements
+
+**All three passes are mandatory.** Do not consolidate passes into a single review. Each pass produces distinct findings because it uses a different lens:
+
+- **Pass 1** finds structural bugs (race conditions, null hazards, resource leaks)
+- **Pass 2** finds requirement violations (missing behavior, spec deviations)
+- **Pass 3** finds cross-requirement contradictions (inconsistent ranges, conflicting guarantees)
+
+**Write each pass as a clearly labeled section** in the output file. Use the headers `## Pass 1: Structural Review`, `## Pass 2: Requirement Verification`, `## Pass 3: Cross-Requirement Consistency`, and `## Combined Summary`.
+
+**If a pass has no findings, explain why.** Do not just write "No findings." Write what you checked and why nothing was wrong. For example: "Reviewed 12 functions in lib/response.js for null hazards, resource leaks, and error handling gaps. No confirmed bugs — all error paths either throw or return a well-defined default." A pass with no findings and no explanation is a pass that wasn't done.
+
+**Scoping for large codebases:** If the project has more than 50 requirements, Pass 2 does not need to verify every requirement against every file. Instead, focus Pass 2 on the requirements most relevant to the files being reviewed — check the requirements that reference those files or that govern the behavioral domain those files implement. The goal is depth on the files under review, not breadth across all requirements.
+
+**Self-check before finishing:** After writing all three passes and the combined summary, verify: (1) all three pass sections exist in the output, (2) Pass 2 references specific REQ-NNN numbers with SATISFIED/VIOLATED verdicts, (3) Pass 3 identifies at least one shared concept between requirements (even if consistent), (4) every BUG finding has a corresponding regression test in `quality/test_regression.*` (see Phase 2 below), (5) every regression test exercises the actual code path cited in the finding (see test-finding alignment check below). If any check fails, go back and complete the missing work.
+
+### Adversarial stance when documentation is available
+
+If the playbook was generated with supplemental documentation (docs_gathered/, community docs, user guides, API references), the code review must use that documentation *against* the code, not in its defense. Documentation tells you what the code is supposed to do. Your job is to find where it doesn't.
+
+**Do not let documentation explanations excuse code defects.** If the docs say "the library handles X gracefully" but the code doesn't check for X, that's a bug — the documentation makes it *more* of a bug, not less. A richer understanding of intent should make you *harder* on the code, not softer.
+
+The failure mode this addresses: when models have access to documentation, they build a richer mental model of the software and become more *forgiving* of code that approximately matches that model. The documentation gives the model reasons to believe the code works, which suppresses detections. Fight this by treating documentation as the prosecution's evidence — it defines what the code promised, and your job is to find broken promises.
+
+### Test-finding alignment check
+
+For each regression test that claims to reproduce a specific finding, verify that the test actually exercises the cited code path. A test that targets a different function, a different branch, or a different failure mode than the finding it claims to reproduce is worse than no test — it creates false confidence.
+
+**Verification procedure:** For each regression test:
+1. Read the finding: note the specific file, line number, function, and failure condition
+2. Read the test: identify which function it calls and what condition it asserts
+3. Confirm alignment: the test must call the function cited in the finding, trigger the specific condition the finding describes, and assert on the behavior the finding says is wrong
+
+If the test doesn't exercise the cited code path, either fix the test or mark the finding as UNCONFIRMED. Do not ship a regression test that passes or fails for reasons unrelated to the finding.
+
+### Closure mandate
+
+Every confirmed BUG finding must produce a regression test in `quality/test_regression.*`. The test must be an executable source file in the project's language — not a Markdown file, not prose documentation, not a comment block describing what a test would do. If the project uses Java, write a `.java` file. If Python, a `.py` file. The test must compile (or parse) and be runnable by the project's test framework.
+
+**No language exemptions.** If introducing failing tests before fixes is a concern, use the language's expected-failure mechanism. The guard must be the **earliest syntactic guard for the framework** — a decorator or annotation where idiomatic, otherwise the first executable line in the test body:
+
+- **Python (pytest):** `@pytest.mark.xfail(strict=True, reason="BUG-NNN: [description]")` — decorator above `def test_...():`. When the bug is present: XFAIL (expected). When the bug is fixed but marker not removed: XPASS → strict mode fails, signaling the guard should be removed.
+- **Python (unittest):** `@unittest.expectedFailure` — decorator above the test method.
+- **Go:** `t.Skip("BUG-NNN: [description] — unskip after applying quality/patches/BUG-NNN-fix.patch")` — first line inside the test function. Note: Go's `t.Skip` hides the test (reports SKIP, not FAIL), which is weaker than Python's xfail.
+- **Rust:** `#[ignore]` attribute on the test function — the standard "don't run in default suite" mechanism. Use `#[should_panic]` only for panic-shaped bugs.
+- **Java (JUnit 5):** `@Disabled("BUG-NNN: [description]")` — annotation above the test method.
+- **TypeScript/JavaScript (Jest):** `test.failing("BUG-NNN: [description]", () => { ... })`
+- **TypeScript/JavaScript (Vitest):** `test.fails("BUG-NNN: [description]", () => { ... })`
+- **JavaScript (Mocha):** `it.skip("BUG-NNN: [description]", () => { ... })` or `this.skip()` inside the test body for conditional skipping.
+
+Every guard must reference the bug ID (BUG-NNN format) and the fix patch path so that someone encountering a skipped test knows how to resolve it.
+
+These patterns ensure every bug has an executable test that can be enabled when the fix lands, without polluting CI with expected failures.
+
+**TDD red/green interaction with skip guards.** During TDD verification, the red and green phases must temporarily bypass the skip guard:
+- **Red phase (NEVER SKIPPED):** Remove or disable the guard, run against unpatched code. Must fail. Re-enable guard after recording result. **The red phase is mandatory for every confirmed bug, even when no fix patch exists.** Record `verdict: "confirmed open"` with `red_phase: "fail"` and `green_phase: "skipped"`. Do not use `verdict: "skipped"` — that value is deprecated.
+- **Green phase:** Remove or disable the guard, apply fix patch, run. Must pass. Re-enable guard if fix will be reverted. If no fix patch exists, record `green_phase: "skipped"`.
+- **After successful red→green:** Generate a per-bug writeup at `quality/writeups/BUG-NNN.md` (see SKILL.md File 7, "Bug writeup generation"). Record the path in `tdd-results.json` as `writeup_path`. After writing `tdd-results.json`, reopen it and verify all required fields, enum values, and no extra undocumented root keys (see SKILL.md post-write validation step). Both sidecar JSON files must use `schema_version: "1.1"`.
+- **After TDD cycle:** Guard remains in committed regression test file, removed only when fix is permanently merged.
+
+**The only acceptable exemption** is when a regression test genuinely cannot be written — for example, the bug requires multi-threaded timing that can't be reliably reproduced, or requires an external service not available in the test environment. In that case, write an explicit exemption note in the combined summary explaining why, and include a minimal code sketch showing what you would test if you could.
+
+Findings without either an executable regression test or an explicit exemption note are incomplete. The combined summary must not include unresolved findings — every BUG must have closure.
+
+### Regression test semantic convention
+
+All regression tests must assert **desired correct behavior** and be marked as expected-to-fail on the current code. Do not write tests that assert the current broken behavior and pass. The distinction matters:
+
+- **Correct:** Test says "this input should produce X" → test fails because buggy code produces Y → marked `xfail`/`@Disabled`/`t.Skip` → when bug is fixed, test passes and the skip marker is removed.
+- **Wrong:** Test says "this input produces Y (the buggy output)" → test passes on buggy code → when bug is fixed, test fails silently → stale test that now asserts wrong behavior.
+
+The `xfail(strict=True)` pattern (Python/pytest) is the gold standard: it fails if the bug is present (expected), and also fails if the bug is fixed but the `xfail` marker wasn't removed (strict). Other languages should approximate this with skip + reason.
+
+### Post-review closure verification
+
+After writing all regression tests and the combined summary, run this checklist:
+
+1. **Count BUGs in the combined summary.** This is the expected count.
+2. **Count test functions in `quality/test_regression.*`.** This should equal or exceed the BUG count (some BUGs may need multiple tests).
+3. **For each BUG row in the summary**, verify it has either:
+   - A `REGRESSION TEST:` line citing the test function name, OR
+   - An `EXEMPTION:` line explaining why no test was written
+4. **If any BUG lacks both**, go back and write the test or the exemption before declaring the review complete.
+
+This checklist is the enforcement mechanism for the closure mandate. Without it, the mandate is aspirational — agents document bugs fully in the pass summaries but skip the regression test and move on.
+
+### Post-spec-audit regression tests
+
+The closure mandate applies to spec-audit confirmed code bugs, not just code review bugs. After the spec audit triage categorizes findings, every finding classified as "Real code bug" must get a regression test — using the same conventions as code review regression tests (executable source file, expected-failure marker, test-finding alignment).
+
+**Why this is a separate step:** Code review regression tests are written immediately after the code review, before the spec audit runs. This means spec-audit bugs are systematically orphaned — they appear in the triage report but never enter the regression test file. Across v1.3.4 runs on 8 repos, spec-audit bugs accounted for ~30% of all findings, and only 1 of 8 repos (httpx) wrote regression tests for them.
+
+**Procedure:**
+1. After spec audit triage, read the triage summary for findings classified as "Real code bug."
+2. For each, write a regression test in `quality/test_regression.*` using the same format as code review regression tests. Use the spec audit report as the source citation: `[BUG from spec_audits/YYYY-MM-DD-triage.md]`.
+3. Run the test to confirm it fails (expected) or passes (needs investigation).
+4. Update the cumulative BUG tracker in PROGRESS.md with the test reference.
+
+If the spec audit produced no confirmed code bugs, skip this step — but document that in PROGRESS.md so the audit trail is complete.
+
+### Cleaning up after spec audit reversals
+
+When the spec audit overturns a code review finding (classifies a BUG as a design choice or false positive), the corresponding regression test must be either deleted or moved to a separate file (`quality/design_behavior_tests.*`) that documents intentional behavior. A failing test that points at documented-correct behavior is worse than no test — it creates noise and erodes trust in the regression suite.
+
+After spec audit triage, check: does any test in `quality/test_regression.*` correspond to a finding that was reclassified as non-defect? If so, remove it from the regression file.
+
+### Why Three Passes Instead of Focus Areas
+
+Previous experiments (the QPB NSQ benchmark) showed that focus areas don't reliably improve AI code review. A generic "review for bugs" prompt scored 65.5%, while a playbook with 7 named focus areas scored 48.3% — the focus areas narrowed the model's attention and suppressed detections.
+
+The three-pass pipeline works because each pass does one thing well with no cross-contamination:
+- **Pass 1** lets the model do what it's already good at (structural review, ~65% of defects)
+- **Pass 2** catches individual requirement violations that structural review misses (absence bugs, spec deviations)
+- **Pass 3** catches contradictions between individually-correct pieces of code (cross-file arithmetic bugs, security policy gaps)
+
+Experiments on the NSQ codebase showed this pipeline finding 2 of 3 defects that were invisible to all structural review conditions — with zero knowledge of the specific bugs. The defects found were a cross-file numeric mismatch (validation bound vs bit field width) and a security design gap (configured CA not propagated to outbound auth client).
 
 ### Phase 2: Regression Tests for Confirmed Bugs
 
@@ -228,7 +389,7 @@ After all tests complete, show a summary table and a recommendation:
 
 **Passed:** 7/8 | **Failed:** 1/8
 
-**Recommendation:** FIX FIRST — Rate limit handling needs investigation.
+**Recommendation:** FIX BEFORE MERGE — Rate limit handling needs investigation.
 ```
 
 Then save the detailed results to `quality/results/YYYY-MM-DD-integration.md`.
@@ -246,7 +407,7 @@ Save results to `quality/results/YYYY-MM-DD-integration.md`
 [Specific failures, unexpected behavior, performance observations]
 
 ### Recommendation
-[SHIP IT / FIX FIRST / NEEDS INVESTIGATION]
+[SHIP / FIX BEFORE MERGE / BLOCK]
 ```
 
 ### Tips for Writing Good Integration Checks
@@ -361,6 +522,80 @@ The number of units/records/iterations per integration test run matters:
   - If the project has fan-out/expansion, use a count that produces a non-trivial number of children
 
 Look for `chunk_size`, `batch_size`, or similar configuration in the project to calibrate. When in doubt, 10–30 records is usually the right range for integration testing — enough to catch real issues without burning API budget.
+
+### Integration Testing for Skills and LLM-Automated Tools
+
+When the project under test is an AI skill, CLI tool that wraps LLM calls, or any software whose primary execution path involves invoking an AI model, the integration test protocol must include **LLM-automated integration tests** — tests that run the tool end-to-end via a command-line AI agent and structurally verify the output.
+
+This is distinct from standard integration tests because the system under test doesn't have a deterministic API to call. The "integration" is: install the skill into a test repo, invoke it through a CLI agent (GitHub Copilot CLI, Claude Code, or similar), and verify the output artifacts meet structural and content expectations.
+
+**Why this matters:** Skills and LLM tools cannot be tested by calling functions directly — their execution path goes through an AI agent that interprets instructions, reads files, and produces artifacts. The only way to test whether the skill works is to run it. Manual execution is fine for development, but a quality playbook should encode the test as a repeatable protocol.
+
+**Protocol structure for skill/LLM integration tests:**
+
+```markdown
+## Skill Integration Test Protocol
+
+### Prerequisites
+- CLI agent installed and configured (e.g., `gh copilot`, `claude`, `npx @anthropic-ai/claude-code`)
+- Test repo prepared with skill installed at `.github/skills/SKILL.md` (or equivalent)
+- Clean `quality/` directory (no artifacts from prior runs)
+- Optional: `docs_gathered/` folder for with-docs comparison runs
+
+### Test Matrix
+
+| Test | Method | Pass Criteria |
+|------|--------|---------------|
+| Full execution | Run skill via CLI with "execute" prompt | All expected artifacts exist in `quality/` |
+| PROGRESS.md completeness | Read `quality/PROGRESS.md` | All phases checked complete, BUG tracker populated |
+| Artifact structural check | Verify each expected file | Files are non-empty, contain expected sections |
+| BUG tracker closure | Count BUG entries vs regression tests | Every BUG has a test reference or exemption |
+| Baseline vs with-docs (optional) | Run twice: without and with docs_gathered/ | With-docs run produces >= baseline requirement count |
+
+### Execution
+
+```bash
+# Install skill into test repo
+cp -r path/to/skill/.github test-repo/.github
+
+# Run via CLI agent (adapt command to your agent)
+cd test-repo
+gh copilot -p "Read .github/skills/SKILL.md and its reference files. Execute the quality playbook for this project." \
+    --model gpt-5.4 --yolo > quality_run.output.txt 2>&1
+```
+
+### Structural Verification (automated)
+
+After the run, verify output structurally:
+
+```bash
+# Required artifacts exist and are non-empty
+for f in quality/QUALITY.md quality/REQUIREMENTS.md quality/CONTRACTS.md \
+         quality/COVERAGE_MATRIX.md quality/COMPLETENESS_REPORT.md \
+         quality/PROGRESS.md quality/RUN_CODE_REVIEW.md \
+         quality/RUN_INTEGRATION_TESTS.md quality/RUN_SPEC_AUDIT.md; do
+    [ -s "$f" ] || echo "FAIL: $f missing or empty"
+done
+
+# Functional test file exists (language-appropriate name)
+ls quality/test_functional.* quality/FunctionalSpec.* quality/functional.test.* 2>/dev/null \
+    || echo "FAIL: no functional test file"
+
+# PROGRESS.md has all phases checked
+grep -c '\[x\]' quality/PROGRESS.md  # should equal total phase count
+
+# BUG tracker has entries (if bugs were found)
+grep -c '^| [0-9]' quality/PROGRESS.md
+
+# Code reviews and spec audits produced substantive files
+find quality/code_reviews -name "*.md" -size +500c | wc -l  # should be >= 1
+find quality/spec_audits -name "*triage*" -size +500c | wc -l  # should be >= 1
+```
+```
+
+**Baseline vs with-docs comparison pattern:** Run the skill twice on the same repo — once without supplemental docs, once with a `docs_gathered/` folder containing project history. Compare: requirement count, scenario count, bug count, and pipeline completion. The with-docs run should produce equal or more requirements and equal or more bugs. If the baseline outperforms the with-docs run on bug detection, that's a finding about the docs quality, not a skill failure.
+
+**When to generate this protocol:** Generate a skill integration test section in `RUN_INTEGRATION_TESTS.md` whenever the project being analyzed is a skill, a CLI tool that wraps AI calls, or a framework for building AI-powered tools. Look for: `SKILL.md` files, prompt templates, LLM client configurations, agent orchestration code, or references to AI models in the codebase.
 
 ### Post-Run Verification Depth
 
