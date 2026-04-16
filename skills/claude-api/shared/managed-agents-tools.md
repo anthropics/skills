@@ -188,6 +188,20 @@ This keeps secrets out of reusable agent definitions. Each vault credential is t
 
 **Vaults** store OAuth credentials (access token + refresh token) that Anthropic auto-refreshes on your behalf via standard OAuth 2.0 `refresh_token` grant. This is the only way to authenticate MCP servers in the launch SDK.
 
+#### Credentials and the sandbox
+
+Vaults store credentials; those credentials **never enter the sandbox**. This is a deliberate security boundary — code running in the sandbox (including anything the agent writes) cannot read or exfiltrate a vaulted credential, even under prompt injection. Instead, credentials are injected by Anthropic-side proxies **after** a request leaves the sandbox:
+
+- **MCP tool calls** are routed through an Anthropic-side proxy that fetches the credential from the vault and adds it to the outbound request.
+- **Git operations on attached GitHub repositories** (`git pull`, `git push`, GitHub REST calls) are routed through a git proxy that injects the `github_repository` resource's `authorization_token` the same way.
+
+**Not yet supported:** running other authenticated CLIs (e.g. `aws`, `gcloud`, `stripe`) directly inside the sandbox. There is currently no way to set container environment variables or expose vault credentials to arbitrary processes. If you need one of these today:
+
+- **Prefer an MCP server** for that service if one exists — it gets the same vault-backed injection.
+- **Otherwise, register a custom tool:** the agent emits `agent.custom_tool_use`, your orchestrator (which already holds the credential) executes the call and returns `user.custom_tool_result` over the same authenticated event stream. No public endpoint is exposed; the sandbox never sees the secret. See `shared/managed-agents-client-patterns.md` → Pattern 9.
+
+**Do not put API keys in the system prompt or user messages as a workaround** — they persist in the session's event history.
+
 > Formerly known internally as TATs (Tool/Tenant Access Tokens).
 
 **Flow:**
@@ -254,7 +268,7 @@ Skills are attached to the **agent** definition via `agents.create()`:
 const agent = await client.beta.agents.create(
   {
     name: "Financial Agent",
-    model: "claude-opus-4-6",
+    model: "claude-opus-4-7",
     system: "You are a financial analysis agent.",
     skills: [
       { type: "anthropic", skill_id: "xlsx" },
@@ -269,7 +283,7 @@ Python:
 ```python
 agent = client.beta.agents.create(
     name="Financial Agent",
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     system="You are a financial analysis agent.",
     skills=[
         {"type": "anthropic", "skill_id": "xlsx"},

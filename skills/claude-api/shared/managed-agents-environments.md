@@ -47,7 +47,7 @@ const env = await client.beta.environments.create({
 | Get              | `GET`    | `/v1/environments/{id}`                    | |
 | Update           | `POST`   | `/v1/environments/{id}`                    | Changes apply only to **new** containers; existing sessions keep their original config |
 | Delete           | `DELETE` | `/v1/environments/{id}`                    | Returns 204. |
-| Archive          | `POST`   | `/v1/environments/{id}/archive`            | Read-only. New sessions can't be created; existing ones continue. |
+| Archive          | `POST`   | `/v1/environments/{id}/archive`            | Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive — terminal state. |
 
 ---
 
@@ -84,7 +84,10 @@ The agent can write files to `/mnt/session/outputs/` during a session. These are
 
 ```ts
 // After the turn completes, list output files scoped to this session:
-for await (const f of client.beta.files.list({ scope: session.id })) {
+for await (const f of client.beta.files.list({
+  scope_id: session.id,
+  betas: ["managed-agents-2026-04-01"],
+})) {
   console.log(f.filename, f.size_bytes);
   const resp = await client.beta.files.download(f.id);
   const text = await resp.text();
@@ -94,14 +97,19 @@ for await (const f of client.beta.files.list({ scope: session.id })) {
 **Requirements:**
 - The `write` tool (or `bash`) must be enabled for the agent to create output files.
 - Session-scoped `files.list` / `files.download` captures outputs written to `/mnt/session/outputs/`.
-- `session_id` is a query filter on `files.list` (not yet in SDK types — cast or spread through).
+- The filter parameter is **`scope_id`** (REST query param `?scope_id=<session_id>`). The SDK's files resource auto-adds only the `files-api-2025-04-14` header, so pass `betas: ["managed-agents-2026-04-01"]` explicitly (or both headers on raw HTTP) — without it the API may reject `scope_id` as an unknown field. Requires `@anthropic-ai/sdk` ≥ 0.88.0 / `anthropic` (Python) ≥ 0.92.0 — older versions don't type `scope_id`. The `ant` CLI does **not** expose this flag yet; use the SDK or curl.
+- Pass the session ID returned by `sessions.create()` verbatim (e.g. `sesn_011CZx...`) — the API validates the prefix.
 - There's a brief indexing lag (~1–3s) between `session.status_idle` and output files appearing in `files.list`. Retry once or twice if empty.
+
+> **Fallback when `scope_id` filtering is unavailable** (older SDK, or endpoint returns an error): send a follow-up `user.message` asking the agent to `read` each file under `/mnt/session/outputs/` and return the contents. The agent streams the file bodies back as `agent.message` text. This works for text files only and costs output tokens — use it to unblock, not as the primary path.
 
 This gives you a bidirectional file bridge: upload reference data in, download agent artifacts out.
 
 ### GitHub Repositories
 
-Clones a GitHub repository into the session container during initialization, before the agent begins execution. The agent can read, edit, commit, and push via `bash` (`git`). Multiple repositories per session are supported — add one `resources` entry per repo.
+Clones a GitHub repository into the session container during initialization, before the agent begins execution. The agent can read, edit, commit, and push via `bash` (`git`). Multiple repositories per session are supported — add one `resources` entry per repo. Repositories are cached, so future sessions that use the same repository start faster.
+
+Repositories are attached for the lifetime of the session — to change which repositories are mounted, create a new session. You **can** rotate a repository's `authorization_token` on a running session via `client.beta.sessions.resources.update(resource_id, {session_id, authorization_token})`; the resource `id` is returned at session creation and by `resources.list()`.
 
 **Fields:**
 
@@ -117,7 +125,9 @@ Clones a GitHub repository into the session container during initialization, bef
 - `Contents: Read` — clone only
 - `Contents: Read and write` — push changes and create pull requests
 
-> ‼️ **To generate pull requests** you also need GitHub **MCP server** access — the `github_repository` resource gives filesystem access only. See `shared/managed-agents-tools.md` → MCP Servers. The PR workflow is: edit files in the mounted repo → push branch via `bash` → create PR via MCP `create_pull_request` tool.
+**How auth works:** `authorization_token` is never placed inside the container. `git pull` / `git push` and GitHub REST calls against the attached repository are routed through an Anthropic-side git proxy that injects the token after the request leaves the sandbox. Code running in the container — including anything the agent writes — cannot read or exfiltrate it.
+
+> ‼️ **To generate pull requests** you also need GitHub **MCP server** access — the `github_repository` resource gives filesystem + git access only. See `shared/managed-agents-tools.md` → MCP Servers. The PR workflow is: edit files in the mounted repo → push branch via `bash` (authenticated via the git proxy using `authorization_token`) → create PR via the MCP `create_pull_request` tool (authenticated via the vault).
 
 **TypeScript:**
 
@@ -126,7 +136,7 @@ Clones a GitHub repository into the session container during initialization, bef
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -160,7 +170,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     mcp_servers=[{
         "type": "url",
         "name": "github",
@@ -194,9 +204,9 @@ Upload and manage files for use as session resources, and download files the age
 | Operation        | Method   | Path                                  | SDK |
 | ---------------- | -------- | ------------------------------------- | --- |
 | Upload           | `POST`   | `/v1/files`                           | `client.beta.files.upload({ file })` |
-| List             | `GET`    | `/v1/files?session_id=...`            | `client.beta.files.list({ session_id })` |
+| List             | `GET`    | `/v1/files?scope_id=...`              | `client.beta.files.list({ scope_id, betas: ["managed-agents-2026-04-01"] })` |
 | Get Metadata     | `GET`    | `/v1/files/{id}`                      | `client.beta.files.retrieveMetadata(id)` |
 | Download         | `GET`    | `/v1/files/{id}/content`              | `client.beta.files.download(id)` → `Response` |
 | Delete           | `DELETE` | `/v1/files/{id}`                      | `client.beta.files.delete(id)` |
 
-The `session_id` filter on List scopes the results to files written to `/mnt/session/outputs/` by that session. Without the filter, you get all files uploaded to your account.
+The `scope_id` filter on List scopes the results to files written to `/mnt/session/outputs/` by that session. Without the filter, you get all files uploaded to your account.

@@ -49,7 +49,7 @@ print(environment.id)  # env_...
 # 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
     name="Coding Assistant",
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True}}],
 )
 
@@ -68,7 +68,7 @@ import os
 
 agent = client.beta.agents.create(
     name="Code Reviewer",
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     system="You are a senior code reviewer.",
     tools=[
         {"type": "agent_toolset_20260401"},
@@ -271,7 +271,10 @@ List files the agent wrote to `/mnt/session/outputs/` during a session, then dow
 
 ```python
 # List files associated with a session
-files = client.beta.files.list(session_id=session.id)
+files = client.beta.files.list(
+    scope_id=session.id,
+    betas=["managed-agents-2026-04-01"],
+)
 for f in files.data:
     print(f.filename, f.size_bytes)
     # Download each file and save to disk
@@ -279,7 +282,7 @@ for f in files.data:
     file_content.write_to_file(f.filename)
 ```
 
-> 💡 There's a brief indexing lag (~1–3s) between `session.status_idle` and output files appearing in `files.list` (with `scope=session_id` as a query param). Retry once or twice if the list is empty.
+> 💡 There's a brief indexing lag (~1–3s) between `session.status_idle` and output files appearing in `files.list`. Retry once or twice if the list is empty.
 
 ---
 
@@ -287,17 +290,17 @@ for f in files.data:
 
 ```python
 # Get session details
-session = client.beta.sessions.retrieve(session_id="sess_abc123")
+session = client.beta.sessions.retrieve(session_id="sesn_011CZxAbc123Def456")
 print(session.status, session.usage)
 
 # List sessions
 sessions = client.beta.sessions.list()
 
 # Delete a session
-client.beta.sessions.delete(session_id="sess_abc123")
+client.beta.sessions.delete(session_id="sesn_011CZxAbc123Def456")
 
 # Archive a session
-client.beta.sessions.archive(session_id="sess_abc123")
+client.beta.sessions.archive(session_id="sesn_011CZxAbc123Def456")
 ```
 
 ---
@@ -308,7 +311,7 @@ client.beta.sessions.archive(session_id="sess_abc123")
 # Agent declares MCP server (no auth here — auth goes in a vault)
 agent = client.beta.agents.create(
     name="MCP Agent",
-    model="claude-opus-4-6",
+    model="claude-opus-4-7",
     mcp_servers=[
         {"type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse"},
     ],

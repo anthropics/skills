@@ -63,7 +63,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Coding Assistant",
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-7",
     "tools": [{ "type": "agent_toolset_20260401" }]
   }'
 # → { "id": "agent_abc123", ... }
@@ -85,7 +85,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Code Reviewer",
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-7",
     "system": "You are a senior code reviewer. Be thorough and constructive.",
     "tools": [
       { "type": "agent_toolset_20260401" },
@@ -260,12 +260,16 @@ List files the agent wrote to `/mnt/session/outputs/` during a session, then dow
 
 ```bash
 # List files associated with a session
-curl "https://api.anthropic.com/v1/files?scope=$SESSION_ID" \
-  "${HEADERS[@]}"
+curl "https://api.anthropic.com/v1/files?scope_id=$SESSION_ID" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01"
 
 # Download a specific file
 curl "https://api.anthropic.com/v1/files/$FILE_ID/content" \
-  "${HEADERS[@]}" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01" \
   -o downloaded_file.txt
 ```
 
@@ -288,7 +292,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "MCP Agent",
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-7",
     "mcp_servers": [
       { "type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse" }
     ],
@@ -319,7 +323,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Restricted Agent",
-    "model": "claude-opus-4-6",
+    "model": "claude-opus-4-7",
     "tools": [
       {
         "type": "agent_toolset_20260401",

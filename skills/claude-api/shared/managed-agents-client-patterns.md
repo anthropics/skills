@@ -181,11 +181,11 @@ Delete the original via `files.delete(uploaded.id)`; the session-scoped copy is 
 
 ---
 
-## 9. Keep credentials host-side via custom tools
+## 9. Secrets for non-MCP APIs and CLIs — keep them host-side via custom tools
 
-**Problem:** putting a third-party API key in the agent's vault or environment means the sandbox holds the secret. For keys tied to a human (Linear personal keys, `gh` CLI auth) or keys you'd rather not ship into a container, that's undesirable.
+**Problem:** you want the agent to call a third-party API or run a CLI that needs a secret (API key, token, service-account credential), but there is currently no way to set environment variables inside the session container, and vaults currently hold MCP credentials only — they are not exposed to the container's shell. So `curl`, installed CLIs, or SDK clients running via the `bash` tool have no first-class place to read a secret from.
 
-**Solution:** expose the operation as a custom tool. The agent emits `agent.custom_tool_use`; your orchestrator executes the call with its own credentials and responds with `user.custom_tool_result`. The container never sees the key.
+**Solution:** move the authenticated call to your side. Declare a custom tool on the agent; when the agent emits `agent.custom_tool_use`, your orchestrator (the process reading the SSE stream) executes the call with its own credentials and responds with `user.custom_tool_result`. The container never sees the key.
 
 ```ts
 // Agent template: declare the tool, no credentials
@@ -202,4 +202,8 @@ for await (const event of stream) {
 }
 ```
 
-Same shape works for `gh` CLI, local eval scripts, or anything else that needs host-only auth or binaries.
+Same shape works for `gh` CLI, local eval scripts, or anything else that needs host-side auth or binaries.
+
+**Security note:** this does not expose a public endpoint. `agent.custom_tool_use` arrives on the SSE stream your orchestrator already holds open with your Anthropic API key, and `user.custom_tool_result` goes back via `events.send()` under the same key. Your orchestrator is a client, not a server — nothing unauthenticated is listening.
+
+**Do not embed API keys in the system prompt or user messages as a workaround.** Prompts and messages are stored in the session's event history, returned by `events.list()`, and included in compaction summaries — a secret placed there is durably persisted and readable via the API for the life of the session.
