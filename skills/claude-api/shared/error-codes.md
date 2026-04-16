@@ -80,7 +80,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 - Using deprecated model ID
 - Invalid API endpoint
 
-**Fix:** Use exact model IDs from the models documentation. You can use aliases (e.g., `claude-opus-4-6`).
+**Fix:** Use exact model IDs from the models documentation. You can use aliases (e.g., `claude-opus-4-7`).
 
 ---
 
@@ -105,7 +105,12 @@ Some 400 errors are specifically related to parameter validation:
 - `budget_tokens` >= `max_tokens` in extended thinking
 - Invalid tool definition schema
 
-**Common mistake with extended thinking:**
+**Model-specific 400s on Opus 4.7:**
+
+- `temperature`, `top_p`, `top_k` are removed — sending any of them returns 400. Delete the parameter; see `shared/model-migration.md` → Per-SDK Syntax Reference.
+- `thinking: {type: "enabled", budget_tokens: N}` is removed — sending it returns 400. Use `thinking: {type: "adaptive"}` instead.
+
+**Common mistake with extended thinking on older models (Opus 4.6 and earlier):**
 
 ```
 # Wrong: budget_tokens must be < max_tokens
@@ -161,8 +166,10 @@ thinking: budget_tokens=10000, max_tokens=16000
 
 | Mistake                         | Error            | Fix                                                     |
 | ------------------------------- | ---------------- | ------------------------------------------------------- |
-| `budget_tokens` >= `max_tokens` | 400              | Ensure `budget_tokens` < `max_tokens`                   |
-| Typo in model ID                | 404              | Use valid model ID like `claude-opus-4-6`               |
+| `temperature`/`top_p`/`top_k` on Opus 4.7 | 400    | Remove the parameter (see `shared/model-migration.md`)  |
+| `budget_tokens` on Opus 4.7     | 400              | Use `thinking: {type: "adaptive"}`                      |
+| `budget_tokens` >= `max_tokens` (older models) | 400 | Ensure `budget_tokens` < `max_tokens`                  |
+| Typo in model ID                | 404              | Use valid model ID like `claude-opus-4-7`               |
 | First message is `assistant`    | 400              | First message must be `user`                            |
 | Consecutive same-role messages  | 400              | Alternate `user` and `assistant`                        |
 | API key in code                 | 401 (leaked key) | Use environment variable                                |

@@ -63,7 +63,7 @@ fmt.Println(environment.ID) // env_...
 agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Name: "Coding Assistant",
     Model: anthropic.BetaManagedAgentsModelConfigParams{
-        ID:   "claude-opus-4-6",
+        ID:   "claude-opus-4-7",
         Type: anthropic.BetaManagedAgentsModelConfigParamsTypeModelConfig,
     },
     System: anthropic.String("You are a helpful coding assistant."),
@@ -380,7 +380,7 @@ if err != nil {
 agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
     Name: "GitHub Assistant",
     Model: anthropic.BetaManagedAgentsModelConfigParams{
-        ID:   "claude-opus-4-6",
+        ID:   "claude-opus-4-7",
         Type: anthropic.BetaManagedAgentsModelConfigParamsTypeModelConfig,
     },
     MCPServers: []anthropic.BetaManagedAgentsUrlmcpServerParams{{

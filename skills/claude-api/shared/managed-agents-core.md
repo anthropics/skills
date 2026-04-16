@@ -96,7 +96,7 @@ Key fields returned by the API:
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-4-6",
+    model: "claude-opus-4-7",
     system: "You are a helpful coding agent.",
     tools: [{ type: "agent_toolset_20260401"}],
   },
@@ -195,6 +195,8 @@ Each `POST /v1/agents/{id}` (update) creates a new immutable version (numeric ti
 | Get              | `GET`    | `/v1/agents/{id}`                     |
 | Update           | `POST`   | `/v1/agents/{id}`                     |
 | Archive          | `POST`   | `/v1/agents/{id}/archive`             |
+
+> ⚠️ **Archive is permanent.** Archiving makes the agent read-only: existing sessions continue to run, but **new sessions cannot reference it**, and there is no unarchive. Since agents have no `delete`, this is the terminal lifecycle state. Never archive a production agent as routine cleanup — confirm with the user first.
 
 ### Using an Agent in a Session
 
