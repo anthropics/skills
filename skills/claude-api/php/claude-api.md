@@ -56,7 +56,7 @@ $client = Foundry\Client::withCredentials(
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     messages: [
         ['role' => 'user', 'content' => 'What is the capital of France?'],
@@ -96,7 +96,7 @@ use Anthropic\Messages\RawContentBlockDeltaEvent;
 use Anthropic\Messages\TextDelta;
 
 $stream = $client->messages->createStream(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 64000,
     messages: [
         ['role' => 'user', 'content' => 'Write a haiku'],
@@ -141,7 +141,7 @@ $weatherTool = new BetaRunnableTool(
 $runner = $client->beta->messages->toolRunner(
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'What is the weather in Paris?']],
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     tools: [$weatherTool],
 );
 
@@ -178,7 +178,7 @@ $tools = [
 $messages = [['role' => 'user', 'content' => 'What is the weather in SF?']];
 
 $response = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     tools: $tools,
     messages: $messages,
@@ -205,7 +205,7 @@ while ($response->stopReason === 'tool_use') {  // camelCase property
     $messages[] = ['role' => 'user', 'content' => $toolResults];
 
     $response = $client->messages->create(
-        model: 'claude-opus-4-6',
+        model: 'claude-opus-4-7',
         maxTokens: 16000,
         tools: $tools,
         messages: $messages,
@@ -233,7 +233,7 @@ foreach ($response->content as $block) {
 use Anthropic\Messages\ThinkingBlock;
 
 $message = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     thinking: ['type' => 'adaptive'],
     messages: [
@@ -265,7 +265,7 @@ foreach ($message->content as $block) {
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     system: [
         ['type' => 'text', 'text' => $longSystemPrompt, 'cacheControl' => ['type' => 'ephemeral']],
@@ -304,7 +304,7 @@ class Person implements StructuredOutputModel
 }
 
 $message = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'Generate a profile for Alice, age 30']],
     outputConfig: ['format' => Person::class],
@@ -320,7 +320,7 @@ Types are inferred from PHP type hints. Use `#[Constrained(description: '...')]`
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'Extract: John (john@co.com), Enterprise plan']],
     outputConfig: [
@@ -359,7 +359,7 @@ foreach ($message->content as $block) {
 use Anthropic\Beta\Messages\BetaRequestMCPServerURLDefinition;
 
 $response = $client->beta->messages->create(
-    model: 'claude-opus-4-6',
+    model: 'claude-opus-4-7',
     maxTokens: 16000,
     mcpServers: [
         BetaRequestMCPServerURLDefinition::with(

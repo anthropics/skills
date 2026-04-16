@@ -52,7 +52,7 @@ console.log(environment.id); // env_...
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-4-6",
+    model: "claude-opus-4-7",
     tools: [{ type: "agent_toolset_20260401", default_config: { enabled: true } }],
   },
 );
@@ -73,7 +73,7 @@ console.log(session.id, session.status);
 const agent = await client.beta.agents.create(
   {
     name: "Code Reviewer",
-    model: "claude-opus-4-6",
+    model: "claude-opus-4-7",
     system: "You are a senior code reviewer.",
     tools: [
       { type: "agent_toolset_20260401", default_config: { enabled: true } },
@@ -297,7 +297,8 @@ import fs from "fs";
 
 // List files associated with a session
 const files = await client.beta.files.list({
-  scope: session.id,
+  scope_id: session.id,
+  betas: ["managed-agents-2026-04-01"],
 });
 for (const f of files.data) {
   console.log(f.filename, f.size_bytes);
@@ -317,17 +318,17 @@ for (const f of files.data) {
 
 ```typescript
 // Get session details
-const session = await client.beta.sessions.retrieve("sess_abc123");
+const session = await client.beta.sessions.retrieve("sesn_011CZxAbc123Def456");
 console.log(session.status, session.usage);
 
 // List sessions
 const sessions = await client.beta.sessions.list();
 
 // Delete a session
-await client.beta.sessions.delete("sess_abc123");
+await client.beta.sessions.delete("sesn_011CZxAbc123Def456");
 
 // Archive a session
-await client.beta.sessions.archive("sess_abc123");
+await client.beta.sessions.archive("sesn_011CZxAbc123Def456");
 ```
 
 ---
@@ -338,7 +339,7 @@ await client.beta.sessions.archive("sess_abc123");
 // Agent declares MCP server (no auth here — auth goes in a vault)
 const agent = await client.beta.agents.create({
   name: "MCP Agent",
-  model: "claude-opus-4-6",
+  model: "claude-opus-4-7",
   mcp_servers: [
     { type: "url", name: "my-tools", url: "https://my-mcp-server.example.com/sse" },
   ],
