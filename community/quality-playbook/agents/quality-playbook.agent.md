@@ -14,11 +14,11 @@ You are a quality engineering orchestrator. Your job is to run the Quality Playb
 
 Check that the quality playbook skill is installed. Look for SKILL.md in these locations, in order:
 
-1. `.github/skills/quality-playbook/SKILL.md` (Copilot)
+1. `.claude/skills/quality-playbook/SKILL.md` (Claude Code)
 2. `.github/skills/SKILL.md` (Copilot, flat layout)
-3. `.claude/skills/quality-playbook/SKILL.md` (Claude Code)
+3. `.github/skills/quality-playbook/SKILL.md` (Copilot, nested layout)
 
-Also check for a `references/` directory alongside SKILL.md containing iteration.md, review_protocols.md, spec_audit.md, and verification.md.
+Also check for a `references/` directory alongside SKILL.md. It should contain .md files (the full set includes iteration.md, review_protocols.md, spec_audit.md, verification.md, requirements_pipeline.md, exploration_patterns.md, defensive_patterns.md, schema_mapping.md, constitution.md, functional_tests.md, and others). Verify the directory exists and has at least 6 .md files.
 
 **If the skill is not installed**, tell the user:
 
@@ -26,9 +26,9 @@ Also check for a `references/` directory alongside SKILL.md containing iteration
 >
 > ```bash
 > # For Copilot
-> mkdir -p .github/skills/quality-playbook/references
-> cp SKILL.md .github/skills/quality-playbook/SKILL.md
-> cp references/* .github/skills/quality-playbook/references/
+> mkdir -p .github/skills/references
+> cp SKILL.md .github/skills/SKILL.md
+> cp references/* .github/skills/references/
 >
 > # For Claude Code
 > mkdir -p .claude/skills/quality-playbook/references

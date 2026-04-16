@@ -373,7 +373,7 @@ As each test runs, report a one-line status update. Keep it compact — the user
 
 Use `✓` for pass, `✗` for fail, `⧗` for in-progress. If a test fails, show one line of context (the error message or assertion that failed), not the full stack trace. The user can ask for details if they want them.
 
-### Phase 6: Results
+### Phase 3: Results
 
 After all tests complete, show a summary table and a recommendation:
 
