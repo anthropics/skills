@@ -113,7 +113,7 @@ def validate_gif(
             )
 
         if size_mb > 5.0:
-            print(f"  Note: Large file size - consider fewer frames/colors")
+            print("  Note: Large file size - consider fewer frames/colors")
 
     return dim_pass, results
 
