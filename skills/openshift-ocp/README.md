@@ -173,7 +173,7 @@ ocp-claude-skills/
 
 | Component | Version |
 |---|---|
-| OCP | 4.14 |
+| OCP | 4.18 |
 | Kubernetes | v1.31.11 |
 | FastMCP | 3.2.4 |
 | Python | 3.12 |
