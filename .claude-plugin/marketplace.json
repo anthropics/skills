@@ -54,6 +54,19 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "fused-gaming-skills",
+      "description": "Fused Gaming skill suite: Mermaid diagram CLI, project status dashboard, UX journey mapping, and tooling scaffolds",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/mermaid-terminal",
+        "./skills/project-status-tool",
+        "./skills/ux-journey-mapper",
+        "./skills/research-findings",
+        "./skills/tool-scaffold"
+      ]
     }
   ]
 }

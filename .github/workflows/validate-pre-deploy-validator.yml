@@ -4,11 +4,13 @@ on:
   push:
     branches: [ main, develop ]
     paths:
+      - 'packages/pre-deploy-validator/**'
       - 'skills/pre-deploy-validator/**'
       - '.github/workflows/validate-pre-deploy-validator.yml'
   pull_request:
     branches: [ main, develop ]
     paths:
+      - 'packages/pre-deploy-validator/**'
       - 'skills/pre-deploy-validator/**'
 
 jobs:
@@ -24,32 +26,32 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'skills/pre-deploy-validator/package.json'
+          cache-dependency-path: 'packages/pre-deploy-validator/package-lock.json'
 
       - name: Install dependencies
-        working-directory: skills/pre-deploy-validator
+        working-directory: packages/pre-deploy-validator
         run: npm ci
 
       - name: Lint code
-        working-directory: skills/pre-deploy-validator
+        working-directory: packages/pre-deploy-validator
         run: npm run lint
         continue-on-error: true
 
       - name: Type check
-        working-directory: skills/pre-deploy-validator
-        run: npm run type-check
+        working-directory: packages/pre-deploy-validator
+        run: npx tsc --noEmit
         continue-on-error: true
 
-      - name: Validate config files
+      - name: Validate skill config files
         run: |
           python3 << 'EOF'
           import json
           from pathlib import Path
 
           config_files = [
-              'skills/pre-deploy-validator/examples/.pdv.json',
-              'skills/pre-deploy-validator/examples/.pdv.advanced.json',
-              'skills/pre-deploy-validator/examples/monorepo.json'
+              'packages/pre-deploy-validator/examples/.pdv.json',
+              'packages/pre-deploy-validator/examples/.pdv.advanced.json',
+              'packages/pre-deploy-validator/examples/monorepo.json'
           ]
 
           for config_file in config_files:
@@ -77,18 +79,18 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: 'skills/pre-deploy-validator/package.json'
+          cache-dependency-path: 'packages/pre-deploy-validator/package-lock.json'
 
       - name: Install dependencies
-        working-directory: skills/pre-deploy-validator
+        working-directory: packages/pre-deploy-validator
         run: npm ci
 
       - name: Run tests
-        working-directory: skills/pre-deploy-validator
+        working-directory: packages/pre-deploy-validator
         run: npm test
         continue-on-error: true
 
       - name: Build
-        working-directory: skills/pre-deploy-validator
+        working-directory: packages/pre-deploy-validator
         run: npm run build
         continue-on-error: true
