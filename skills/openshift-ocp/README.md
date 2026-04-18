@@ -3,7 +3,7 @@
 > **First OpenShift skill in the Claude ecosystem** — OpenShift cluster automation via FastMCP + Claude Code.
 
 [![FastMCP](https://img.shields.io/badge/FastMCP-3.2.4-blue)](https://gofastmcp.com)
-[![OCP](https://img.shields.io/badge/OpenShift-4.12%2B-red)](https://www.redhat.com/en/technologies/cloud-computing/openshift)
+[![OCP](https://img.shields.io/badge/OpenShift-4.18%2B-red)](https://www.redhat.com/en/technologies/cloud-computing/openshift)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-green)](https://code.claude.com)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellow)](LICENSE)
 
@@ -73,7 +73,7 @@ Result returned and analyzed by Claude
 - Claude Code installed
 - `oc` CLI installed and in PATH
 - Python 3.8+ (tested on Python 3.12 / RHEL9)
-- Active OCP cluster (tested on OCP 4.14 / Kubernetes v1.31)
+- Active OCP cluster (tested on OCP 4.18 / Kubernetes v1.31)
 - `pip install fastmcp`
 
 ---
