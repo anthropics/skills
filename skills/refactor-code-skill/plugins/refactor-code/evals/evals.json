@@ -1,0 +1,51 @@
+{
+  "skill_name": "refactor-code",
+  "evals": [
+    {
+      "id": 1,
+      "name": "ts-shipping-switch-to-strategy",
+      "prompt": "can you refactor this? I know the switch is ugly but I can't figure out the cleanest way out of it. it's in my checkout service and every time we add a new shipping provider I have to touch this plus like 3 other places — so I want something where adding a carrier is a one-file change. heres the code:\n\n[attached: shipping.ts]",
+      "expected_behaviors": [
+        "Replaces switch on provider with Strategy pattern or polymorphic provider objects",
+        "Carriers isolated so adding one is a one-file-local change (Open/Closed)",
+        "Domestic vs international rates modeled cleanly (not nested ifs per carrier)",
+        "Parameter object for the shipping request (Long Parameter List)",
+        "Magic numbers (markup rates, weight surcharge thresholds) promoted to named constants",
+        "No TS 'any', 'prefer-const' respected, readable output",
+        "Header comment lists applied refactorings, no essay"
+      ],
+      "input_file": "inputs/shipping.ts"
+    },
+    {
+      "id": 2,
+      "name": "py-order-processor-nested-conditionals",
+      "prompt": "this is a legacy function in our order processing system. it works but it's a mess and we keep having bugs in it. refactor please — we're moving to python 3.11 so use whatever modern features make sense.\n\n[attached: order_processor.py]",
+      "expected_behaviors": [
+        "Guard clauses replace the stacked validation if-nots",
+        "Dataclasses introduced for Item, Order, PaymentInfo, etc. (Data Clumps, Primitive Obsession)",
+        "Promo codes become Strategy-style (or an enum + dispatch dict) — not an if-elif chain",
+        "Payment processor detection extracted and no longer uses string-prefix comparisons as control flow",
+        "Magic numbers (tax rate, free-shipping threshold, sale discount) named",
+        "Type hints on public functions",
+        "Error returns look like exceptions or a Result type — not stringly-typed error dicts mixed with success dicts",
+        "Header comment names the refactorings"
+      ],
+      "input_file": "inputs/order_processor.py"
+    },
+    {
+      "id": 3,
+      "name": "react-bloated-profile-card",
+      "prompt": "my coworker wrote this react component and it's huge. can you clean it up? we use this for displaying user profile cards in our directory. we can add more files if it makes sense.\n\n[attached: UserProfileCard.jsx]",
+      "expected_behaviors": [
+        "Data fetching extracted to custom hooks (useUser, useUserPosts, or similar)",
+        "Display subcomponents extracted (ViewMode, EditForm, PostsList, Badges)",
+        "Edit form state collapsed (not two separate useStates when one object works)",
+        "Rules-of-hooks and exhaustive-deps respected",
+        "Error/loading/empty branches use guard returns cleanly",
+        "Per-file header comment listing the refactorings",
+        "Ambitious — multiple output files, not one file with inline everything"
+      ],
+      "input_file": "inputs/UserProfileCard.jsx"
+    }
+  ]
+}
