@@ -16,9 +16,11 @@ Examples:
 """
 
 import argparse
+import glob
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -35,6 +37,8 @@ GRID_PADDING = 20
 BORDER_WIDTH = 2
 FONT_SIZE_RATIO = 0.10
 LABEL_PADDING_RATIO = 0.4
+SOFFICE_MAX_RETRIES = 3
+SOFFICE_TIMEOUT = 120  # seconds
 
 
 def main():
@@ -155,40 +159,103 @@ def create_hidden_placeholder(size: tuple[int, int]) -> Image.Image:
     return img
 
 
+def _cleanup_soffice_lock(temp_dir: Path) -> None:
+    """Remove stale LibreOffice lock files that cause intermittent failures.
+
+    In containerized environments, soffice can leave behind lock files
+    from crashed or timed-out processes.  These prevent subsequent
+    invocations from starting.
+    """
+    for pattern in (".~lock.*", ".~lock.*#"):
+        for lock in glob.glob(str(temp_dir / pattern)):
+            try:
+                Path(lock).unlink()
+            except OSError:
+                pass
+
+    # Also clean the default user profile lock if present
+    profile_lock = Path.home() / ".config" / "libreoffice" / ".~lock*"
+    for lock in glob.glob(str(profile_lock)):
+        try:
+            Path(lock).unlink()
+        except OSError:
+            pass
+
+
 def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
     pdf_path = temp_dir / f"{pptx_path.stem}.pdf"
 
-    result = subprocess.run(
-        [
-            "soffice",
-            "--headless",
-            "--convert-to",
-            "pdf",
-            "--outdir",
-            str(temp_dir),
-            str(pptx_path),
-        ],
-        capture_output=True,
-        text=True,
-        env=get_soffice_env(),
-    )
-    if result.returncode != 0 or not pdf_path.exists():
-        raise RuntimeError("PDF conversion failed")
+    last_stderr = ""
+    for attempt in range(1, SOFFICE_MAX_RETRIES + 1):
+        _cleanup_soffice_lock(temp_dir)
 
-    result = subprocess.run(
-        [
-            "pdftoppm",
-            "-jpeg",
-            "-r",
-            str(CONVERSION_DPI),
-            str(pdf_path),
-            str(temp_dir / "slide"),
-        ],
-        capture_output=True,
-        text=True,
-    )
+        try:
+            result = subprocess.run(
+                [
+                    "soffice",
+                    "--headless",
+                    "--norestore",
+                    "--convert-to",
+                    "pdf",
+                    "--outdir",
+                    str(temp_dir),
+                    str(pptx_path),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=SOFFICE_TIMEOUT,
+                env=get_soffice_env(),
+            )
+        except subprocess.TimeoutExpired:
+            last_stderr = f"soffice timed out after {SOFFICE_TIMEOUT}s"
+            if attempt < SOFFICE_MAX_RETRIES:
+                time.sleep(1)
+                continue
+            break
+
+        if result.returncode == 0 and pdf_path.exists():
+            break
+
+        last_stderr = result.stderr.strip() if result.stderr else ""
+        if attempt < SOFFICE_MAX_RETRIES:
+            time.sleep(1)
+    else:
+        detail = f": {last_stderr}" if last_stderr else ""
+        raise RuntimeError(
+            f"PDF conversion failed after {SOFFICE_MAX_RETRIES} attempts{detail}"
+        )
+
+    # Guard against the break-on-success path where pdf still missing
+    if not pdf_path.exists():
+        detail = f": {last_stderr}" if last_stderr else ""
+        raise RuntimeError(
+            f"PDF conversion failed after {SOFFICE_MAX_RETRIES} attempts{detail}"
+        )
+
+    try:
+        result = subprocess.run(
+            [
+                "pdftoppm",
+                "-jpeg",
+                "-r",
+                str(CONVERSION_DPI),
+                str(pdf_path),
+                str(temp_dir / "slide"),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=SOFFICE_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(
+            f"Image conversion (pdftoppm) timed out after {SOFFICE_TIMEOUT}s"
+        )
+
     if result.returncode != 0:
-        raise RuntimeError("Image conversion failed")
+        detail = result.stderr.strip() if result.stderr else ""
+        raise RuntimeError(
+            f"Image conversion failed{': ' + detail if detail else ''}"
+        )
 
     return sorted(temp_dir.glob("slide-*.jpg"))
 
