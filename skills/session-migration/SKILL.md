@@ -1,16 +1,7 @@
 ---
 name: session-migration
 description: >
-  Pack conversation state into a portable handoff summary so a fresh session can continue where the current
-  one left off. Use this skill whenever the user wants to start a new chat or session, mentions the context
-  is getting long or confused or "dirty", asks to "pack up" current state, says they need to start over or
-  move to a new conversation, or wants a structured summary of progress to continue elsewhere. Also use when
-  the conversation is getting circular or repetitive, the AI seems to be degrading or forgetting earlier
-  instructions, the user has been working for 10+ turns on a focused task, or they explicitly say things like
-  "let's start fresh", "new thread", "continue in a new chat", "migrate", "hand off", or "wrap up for now".
-  Works across all AI tools (ChatGPT, Claude, agents, IDE assistants) and all task types — writing, coding,
-  research, planning, analysis, design. Produces a self-contained handoff document that a fresh AI session
-  can pick up immediately without the user re-explaining anything.
+  Pack conversation state into a structured handoff summary that a fresh AI session picks up immediately — no re-explaining, no repeated dead ends. Use when context degrades, the user wants a new session, or conversation turns circular. Phase-aware extraction with a 6-section template (Goal, Conclusions, Rejected Approaches, Progress, Constraints, Details) and a timing guide for optimal migration points. Works across all AI tools and task types.
 license: Apache-2.0
 ---
 
