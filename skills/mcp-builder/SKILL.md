@@ -1,6 +1,6 @@
 ---
 name: mcp-builder
-description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
+description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services in any language — TypeScript, Python, Go, Java, Kotlin, C#, Rust, Swift, Ruby, or PHP.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -65,6 +65,38 @@ Key pages to review:
 - **Python SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
 - [🐍 Python Guide](./reference/python_mcp_server.md) - Python patterns and examples
 
+**For Go:**
+- **Go SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
+- [🔷 Go Guide](./reference/go_mcp_server.md) - Go patterns and examples
+
+**For Java:**
+- **Java SDK**: `io.modelcontextprotocol.sdk:mcp` (Maven/Gradle)
+- [☕ Java Guide](./reference/java_mcp_server.md) - Reactive streams, Spring Boot integration
+
+**For Kotlin:**
+- **Kotlin SDK**: `io.modelcontextprotocol:kotlin-sdk` (Gradle)
+- [🟠 Kotlin Guide](./reference/kotlin_mcp_server.md) - Coroutines, Ktor SSE transport
+
+**For C#:**
+- **C# SDK**: `ModelContextProtocol` NuGet package
+- [🟣 C# Guide](./reference/csharp_mcp_server.md) - Attribute-based tools, DI, ASP.NET Core
+
+**For Rust:**
+- **Rust SDK**: `rmcp` crate
+- [🦀 Rust Guide](./reference/rust_mcp_server.md) - Macro-based tools, Axum transport
+
+**For Swift:**
+- **Swift SDK**: `modelcontextprotocol/swift-sdk` (SPM)
+- [🍎 Swift Guide](./reference/swift_mcp_server.md) - Actor concurrency, ServiceLifecycle
+
+**For Ruby:**
+- **Ruby SDK**: `gem 'mcp'`
+- [💎 Ruby Guide](./reference/ruby_mcp_server.md) - Class and block-based tools, Rails integration
+
+**For PHP:**
+- **PHP SDK**: `mcp/sdk` (Composer)
+- [🐘 PHP Guide](./reference/php_mcp_server.md) - Attribute discovery, Laravel/Symfony integration
+
 #### 1.4 Plan Your Implementation
 
 **Understand the API:**
@@ -80,8 +112,16 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 #### 2.1 Set Up Project Structure
 
 See language-specific guides for project setup:
-- [⚡ TypeScript Guide](./reference/node_mcp_server.md) - Project structure, package.json, tsconfig.json
+- [⚡ TypeScript Guide](./reference/node_mcp_server.md) - package.json, tsconfig.json
 - [🐍 Python Guide](./reference/python_mcp_server.md) - Module organization, dependencies
+- [🔷 Go Guide](./reference/go_mcp_server.md) - go.mod, package layout
+- [☕ Java Guide](./reference/java_mcp_server.md) - Maven/Gradle, Spring Boot
+- [🟠 Kotlin Guide](./reference/kotlin_mcp_server.md) - build.gradle.kts, multiplatform
+- [🟣 C# Guide](./reference/csharp_mcp_server.md) - .csproj, NuGet, Host builder
+- [🦀 Rust Guide](./reference/rust_mcp_server.md) - Cargo.toml, project layout
+- [🍎 Swift Guide](./reference/swift_mcp_server.md) - Package.swift, SPM
+- [💎 Ruby Guide](./reference/ruby_mcp_server.md) - Gemfile, project layout
+- [🐘 PHP Guide](./reference/php_mcp_server.md) - composer.json, attribute discovery
 
 #### 2.2 Implement Core Infrastructure
 
@@ -96,7 +136,7 @@ Create shared utilities:
 For each tool:
 
 **Input Schema:**
-- Use Zod (TypeScript) or Pydantic (Python)
+- Use the language-appropriate validation: Zod (TypeScript), Pydantic (Python), struct tags (Go), JsonSchema builder (Java), kotlinx.serialization (Kotlin), `[Description]` attributes (C#), schemars derive (Rust), Value type (Swift), hash schemas (Ruby), `#[Schema]` attributes (PHP)
 - Include constraints and clear descriptions
 - Add examples in field descriptions
 
@@ -143,6 +183,43 @@ Review for:
 **Python:**
 - Verify syntax: `python -m py_compile your_server.py`
 - Test with MCP Inspector
+
+**Go:**
+- Build: `go build ./...`
+- Vet: `go vet ./...`
+- Test: `go test ./...`
+- Test with MCP Inspector: `npx @modelcontextprotocol/inspector go run .`
+
+**Java:**
+- Build: `mvn compile` or `gradle build`
+- Test: `mvn test` or `gradle test`
+
+**Kotlin:**
+- Build: `gradle build`
+- Test: `gradle test`
+
+**C#:**
+- Build: `dotnet build`
+- Test: `dotnet test`
+
+**Rust:**
+- Build: `cargo build`
+- Lint: `cargo clippy`
+- Test: `cargo test`
+
+**Swift:**
+- Build: `swift build`
+- Test: `swift test`
+
+**Ruby:**
+- Verify: `ruby server.rb`
+- Test: `bundle exec rake test`
+
+**PHP:**
+- Verify: `php server.php`
+- Test: `vendor/bin/phpunit`
+
+All languages can be tested with MCP Inspector: `npx @modelcontextprotocol/inspector <run command>`
 
 See language-specific guides for detailed testing approaches and quality checklists.
 
@@ -209,8 +286,16 @@ Load these resources as needed during development:
   - Security and error handling standards
 
 ### SDK Documentation (Load During Phase 1/2)
-- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
 - **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
+- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
+- **Go SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md`
+- **Java SDK**: `io.modelcontextprotocol.sdk:mcp` — see [☕ Java Guide](./reference/java_mcp_server.md)
+- **Kotlin SDK**: `io.modelcontextprotocol:kotlin-sdk` — see [🟠 Kotlin Guide](./reference/kotlin_mcp_server.md)
+- **C# SDK**: `ModelContextProtocol` NuGet — see [🟣 C# Guide](./reference/csharp_mcp_server.md)
+- **Rust SDK**: `rmcp` crate — see [🦀 Rust Guide](./reference/rust_mcp_server.md)
+- **Swift SDK**: `modelcontextprotocol/swift-sdk` SPM — see [🍎 Swift Guide](./reference/swift_mcp_server.md)
+- **Ruby SDK**: `mcp` gem — see [💎 Ruby Guide](./reference/ruby_mcp_server.md)
+- **PHP SDK**: `mcp/sdk` Composer — see [🐘 PHP Guide](./reference/php_mcp_server.md)
 
 ### Language-Specific Implementation Guides (Load During Phase 2)
 - [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
@@ -225,6 +310,59 @@ Load these resources as needed during development:
   - Zod schema patterns
   - Tool registration with `server.registerTool`
   - Complete working examples
+  - Quality checklist
+
+- [🔷 Go Implementation Guide](./reference/go_mcp_server.md) - Complete Go guide with:
+  - Project structure and `go.mod` setup
+  - Server initialization (stdio and HTTP)
+  - Tool registration with `mcp.AddTool`
+  - Schema definition with struct tags
+  - Complete working examples
+  - Quality checklist
+
+- [☕ Java Implementation Guide](./reference/java_mcp_server.md) - Complete Java guide with:
+  - Reactive Streams (Project Reactor) handlers
+  - `Tool.builder()` and `JsonSchema` fluent API
+  - Spring Boot starter integration
+  - Synchronous facade for blocking use cases
+  - Quality checklist
+
+- [🟠 Kotlin Implementation Guide](./reference/kotlin_mcp_server.md) - Complete Kotlin guide with:
+  - Coroutine-based tool handlers
+  - `kotlinx.serialization` JSON schema DSL
+  - Ktor SSE transport
+  - Multiplatform support (JVM, Wasm, iOS)
+  - Quality checklist
+
+- [🟣 C# Implementation Guide](./reference/csharp_mcp_server.md) - Complete C# guide with:
+  - `[McpServerToolType]` / `[McpServerTool]` attribute registration
+  - Dependency injection with `Microsoft.Extensions.Hosting`
+  - ASP.NET Core HTTP transport
+  - Sampling (client LLM) integration
+  - Quality checklist
+
+- [🦀 Rust Implementation Guide](./reference/rust_mcp_server.md) - Complete Rust guide with:
+  - `#[tool]` and `#[tool_router]` macro-based registration
+  - `schemars` for automatic JSON Schema derivation
+  - Axum streamable HTTP transport
+  - Quality checklist
+
+- [🍎 Swift Implementation Guide](./reference/swift_mcp_server.md) - Complete Swift guide with:
+  - Actor-based `Server` with `withMethodHandler`
+  - `Value` type for JSON Schema construction
+  - `StdioTransport` and ServiceLifecycle shutdown
+  - Quality checklist
+
+- [💎 Ruby Implementation Guide](./reference/ruby_mcp_server.md) - Complete Ruby guide with:
+  - Class-based and block-based tool definitions
+  - `MCP::Resource` and `MCP::Prompt` patterns
+  - Rails integration
+  - Quality checklist
+
+- [🐘 PHP Implementation Guide](./reference/php_mcp_server.md) - Complete PHP guide with:
+  - `#[McpTool]` attribute-based discovery
+  - `#[Schema]` validation attributes
+  - Laravel/Symfony integration
   - Quality checklist
 
 ### Evaluation Guide (Load During Phase 4)
