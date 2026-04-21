@@ -76,7 +76,7 @@ gh pr list --state merged --search "path:docs/pages/wallet-security"
 
 ## Sync Status File
 
-Maintain a sync status file at `~/.claude/skills/seal-security-skills/.sync-status.json`:
+Maintain a sync status file at `~/.claude/skills/advisors/.sync-status.json`:
 
 ```json
 {

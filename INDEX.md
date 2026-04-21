@@ -4,6 +4,8 @@
 
 ## Trigger Table
 
+**Note:** This table routes to comprehensive root skills (`seal-*` prefix). For quick chatroom guidance, use advisor skills in `/advisors/` directory (e.g., `wallet-security-advisor`).
+
 | Keywords | Skill |
 |---|---|
 | hack, compromised, stolen, breach, drainer | seal-incident-management |

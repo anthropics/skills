@@ -22,7 +22,7 @@ Save as `discover-mapping.sh`:
 #!/bin/bash
 # Discover skill-to-source mapping dynamically
 
-SKILLS_DIR="${1:-$HOME/.claude/skills/seal-security-skills}"
+SKILLS_DIR="${1:-$HOME/.claude/skills/advisors}"
 DOCS_DIR="${2:-docs/pages}"
 
 echo "=== Dynamic Skill-Source Mapping ==="
@@ -181,7 +181,7 @@ Store sync state dynamically:
 #!/bin/bash
 # Record current sync state
 
-SYNC_FILE="$HOME/.claude/skills/seal-security-skills/.sync-status"
+SYNC_FILE="$HOME/.claude/skills/advisors/.sync-status"
 
 echo "last_sync=$(date -I)" > "$SYNC_FILE"
 echo "last_commit=$(git rev-parse HEAD)" >> "$SYNC_FILE"
@@ -197,7 +197,7 @@ Read sync state:
 #!/bin/bash
 # Check time since last sync
 
-SYNC_FILE="$HOME/.claude/skills/seal-security-skills/.sync-status"
+SYNC_FILE="$HOME/.claude/skills/advisors/.sync-status"
 
 if [ -f "$SYNC_FILE" ]; then
     source "$SYNC_FILE"
