@@ -4,27 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This repository contains the **SEAL Security Knowledge Graph** - a collection of 27+ security domain skills for AI agents based on the [Security Alliance Frameworks](https://github.com/security-alliance/frameworks). The repository includes both general-purpose skills (document processing, design, testing) and SEAL security-specific skills (incident response, wallet security, opsec, etc.).
+This repository contains the **SEAL Security Knowledge Graph** - a collection of 27 security domain skills for AI agents based on the [Security Alliance Frameworks](https://github.com/security-alliance/frameworks).
+
+**Focused exclusively on Web3/blockchain security domains:** incident response, wallet security, opsec, infrastructure hardening, threat modeling, and more.
 
 ## Architecture
 
 ### Two Skill Collections
 
-1. **`skills/`** - General-purpose Anthropic example skills:
-   - Document processing: `xlsx`, `docx`, `pptx`, `pdf`
-   - Design & visualization: `canvas-design`, `algorithmic-art`, `theme-factory`, `brand-guidelines`
-   - Development tools: `mcp-builder`, `skill-creator`, `webapp-testing`, `web-artifacts-builder`
-   - Communication: `internal-comms`, `slack-gif-creator`, `doc-coauthoring`
-
-2. **`advisors/`** - SEAL security advisor skills (concise, chat-oriented):
+1. **`advisors/`** - SEAL security advisor skills (concise, chat-oriented):
    - Core advisor skills: `wallet-security-advisor`, `incident-response-advisor`, `infrastructure-security-advisor`, `opsec-advisor`, etc.
    - Special utilities: `seal-coach` (security coaching and assessments), `skill-sync` (track upstream changes)
 
-3. **Root-level security domains** - Comprehensive framework skills (detailed, certification-oriented):
+2. **Root-level security domains** - Comprehensive framework skills (detailed, certification-oriented):
    - `incident-management/`, `wallet-security/`, `multisig-for-protocols/`, `devsecops/`, `certs/`, etc.
    - 27 domains total, each with extensive reference materials
 
-4. **Cross-domain navigation**: `INDEX.md` contains the trigger table that routes security questions to appropriate domain skills
+3. **Cross-domain navigation**: `INDEX.md` contains the trigger table that routes security questions to appropriate domain skills
 
 ### Skill Structure
 
@@ -45,23 +41,6 @@ skill-name/
 
 ## Common Commands
 
-### Skill Creation and Validation
-
-Create a new skill:
-```bash
-python3 skills/skill-creator/scripts/init_skill.py <skill-name> --path <output-directory>
-```
-
-Validate a skill:
-```bash
-python3 skills/skill-creator/scripts/quick_validate.py <path/to/skill-folder>
-```
-
-Package a skill (includes automatic validation):
-```bash
-python3 skills/skill-creator/scripts/package_skill.py <path/to/skill-folder> [output-dir]
-```
-
 ### SEAL Security Skill Synchronization
 
 Check which skills need updating based on upstream framework changes (requires frameworks repo):
@@ -73,25 +52,19 @@ git diff --name-only <last-sync-commit>..HEAD -- docs/pages/ | cut -d'/' -f3 | s
 
 See `advisors/skill-sync/SKILL.md` for complete sync workflow and skill-to-source mapping.
 
-### Testing
+### Optional: Add Anthropic Document Skills
 
-Run Python scripts (most skills with scripts include requirements.txt):
+If you need document generation (Excel, PowerPoint, PDF), install Anthropic's skills separately:
+
 ```bash
-cd skills/<skill-name>
-pip install -r requirements.txt  # if exists
-python3 scripts/<script-name>.py
+# Install SEAL security skills (this repo)
+git clone https://github.com/yourusername/seal-skills ~/.claude/skills/seal
+
+# Optional: Add Anthropic document skills
+git clone https://github.com/anthropics/skills ~/.claude/skills/anthropic
 ```
 
-OOXML validation (docx/pptx):
-```bash
-python3 skills/docx/ooxml/scripts/validate.py <file.docx>
-python3 skills/pptx/ooxml/scripts/validate.py <file.pptx>
-```
-
-Webapp testing with Playwright:
-```bash
-python3 skills/webapp-testing/scripts/with_server.py
-```
+SEAL skills focus purely on security knowledge. Document generation is available from Anthropic's upstream repository.
 
 ## Skill Development Guidelines
 
@@ -147,9 +120,7 @@ The `seal-coach` skill provides Duolingo-style security training:
 - **Important:** Always get explicit approval before creating cron jobs or automations
 
 ### Marketplace Configuration
-`.claude-plugin/marketplace.json` defines skill collections:
-- `document-skills`: xlsx, docx, pptx, pdf
-- `example-skills`: All other skills in `skills/` directory
+`.claude-plugin/marketplace.json` defines SEAL security skill collections for skill marketplaces and discovery platforms.
 
 ### Cross-Domain Navigation
 Security skills are interconnected via the trigger table in `INDEX.md`. When working with SEAL skills:

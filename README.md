@@ -13,9 +13,9 @@ Security knowledge graph for AI agents. 27 domains, 111 certification controls, 
 
 ## What this does
 
-Gives your AI agent (Hermes, Claude, Cursor, etc.) structured security knowledge across 27 domains — from incident response and multisig operations to DPRK worker detection and supply chain security.
+Gives your AI agent (Hermes, Claude, Cursor, etc.) structured Web3/blockchain security knowledge across 27 domains — from incident response and multisig operations to DPRK worker detection and supply chain security.
 
-**Not a PDF.** Not a static checklist. Interactive guidance with gotchas, cross-domain awareness, and context-specific answers.
+**Pure security focus.** Not a general-purpose skill collection. Exclusively SEAL security domains from Security Alliance frameworks.
 
 ## Quick Start
 

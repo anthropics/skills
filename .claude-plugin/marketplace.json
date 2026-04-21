@@ -1,45 +1,13 @@
 {
-  "name": "anthropic-agent-skills",
+  "name": "seal-security-skills",
   "owner": {
-    "name": "Keith Lazuka",
-    "email": "klazuka@anthropic.com"
+    "name": "Security Alliance",
+    "email": "frameworks@securityalliance.org"
   },
   "metadata": {
-    "description": "Anthropic example skills",
-    "version": "1.0.0"
+    "description": "SEAL Security Knowledge Graph - 27 Web3/blockchain security domains from Security Alliance Frameworks",
+    "version": "1.0.0",
+    "upstream": "https://github.com/security-alliance/frameworks"
   },
-  "plugins": [
-    {
-      "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
-      ]
-    },
-    {
-      "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/algorithmic-art",
-        "./skills/brand-guidelines",
-        "./skills/canvas-design",
-        "./skills/doc-coauthoring",
-        "./skills/frontend-design",
-        "./skills/internal-comms",
-        "./skills/mcp-builder",
-        "./skills/skill-creator",
-        "./skills/slack-gif-creator",
-        "./skills/theme-factory",
-        "./skills/web-artifacts-builder",
-        "./skills/webapp-testing"
-      ]
-    }
-  ]
+  "plugins": []
 }
