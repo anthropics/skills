@@ -68,7 +68,7 @@ SEAL skills focus purely on security knowledge. Document generation is available
 
 ## Skill Development Guidelines
 
-When creating or editing skills, follow these principles from `skills/skill-creator/SKILL.md`:
+When creating or editing skills, follow these principles:
 
 ### 1. Concise is Key
 - Default assumption: Claude is already smart. Only add context Claude doesn't have.
