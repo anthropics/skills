@@ -17,25 +17,50 @@ class BaseSchemaValidator:
     ]
 
     UNIQUE_ID_REQUIREMENTS = {
-        "comment": ("id", "file"),  
-        "commentrangestart": ("id", "file"),  
-        "commentrangeend": ("id", "file"),  
-        "bookmarkstart": ("id", "file"),  
-        "bookmarkend": ("id", "file"),  
-        "sldid": ("id", "file"),  
-        "sldmasterid": ("id", "global"),  
-        "sldlayoutid": ("id", "global"),  
-        "cm": ("authorid", "file"),  
-        "sheet": ("sheetid", "file"),  
-        "definedname": ("id", "file"),  
-        "cxnsp": ("id", "file"),  
-        "sp": ("id", "file"),  
-        "pic": ("id", "file"),  
-        "grpsp": ("id", "file"),  
+        "comment": ("id", "file"),
+        "commentrangestart": ("id", "file"),
+        "commentrangeend": ("id", "file"),
+        "bookmarkstart": ("id", "file"),
+        "bookmarkend": ("id", "file"),
+        "ins": ("id", "file"),
+        "del": ("id", "file"),
+        "rprchange": ("id", "file"),
+        "pprchange": ("id", "file"),
+        "sectprchange": ("id", "file"),
+        "tblprchange": ("id", "file"),
+        "tcprchange": ("id", "file"),
+        "trprchange": ("id", "file"),
+        "cellins": ("id", "file"),
+        "celldel": ("id", "file"),
+        "cellmerge": ("id", "file"),
+        "numberingchange": ("id", "file"),
+        "sldid": ("id", "file"),
+        "sldmasterid": ("id", "global"),
+        "sldlayoutid": ("id", "global"),
+        "cm": ("authorid", "file"),
+        "sheet": ("sheetid", "file"),
+        "definedname": ("id", "file"),
+        "cxnsp": ("id", "file"),
+        "sp": ("id", "file"),
+        "pic": ("id", "file"),
+        "grpsp": ("id", "file"),
     }
 
     EXCLUDED_ID_CONTAINERS = {
-        "sectionlst",  
+        "sectionlst",
+    }
+
+    # OOXML elements that share a single w:id space within a file.
+    # Per the spec, w:id must be unique across bookmarks, tracked changes,
+    # comments, and move ranges. Duplicate IDs cause Word to reject the file.
+    SHARED_ID_SPACE_ELEMENTS = {
+        "bookmarkstart", "bookmarkend",
+        "commentrangestart", "commentrangeend",
+        "ins", "del",
+        "rprchange", "pprchange", "sectprchange",
+        "tblprchange", "tcprchange", "trprchange",
+        "cellins", "celldel", "cellmerge",
+        "numberingchange",
     }
 
     ELEMENT_RELATIONSHIP_TYPES = {}
@@ -257,19 +282,25 @@ class BaseSchemaValidator:
                                         tag,
                                     )
                             elif scope == "file":
-                                key = (tag, attr_name)
+                                # Elements in the shared ID space use a
+                                # common key so cross-type duplicates
+                                # (e.g. bookmark vs tracked change) are caught.
+                                if tag in self.SHARED_ID_SPACE_ELEMENTS:
+                                    key = ("__shared_w_id__", attr_name)
+                                else:
+                                    key = (tag, attr_name)
                                 if key not in file_ids:
                                     file_ids[key] = {}
 
                                 if id_value in file_ids[key]:
-                                    prev_line = file_ids[key][id_value]
+                                    prev_line, prev_tag = file_ids[key][id_value]
                                     errors.append(
                                         f"  {xml_file.relative_to(self.unpacked_dir)}: "
                                         f"Line {elem.sourceline}: Duplicate {attr_name}='{id_value}' in <{tag}> "
-                                        f"(first occurrence at line {prev_line})"
+                                        f"(first occurrence at line {prev_line} in <{prev_tag}>)"
                                     )
                                 else:
-                                    file_ids[key][id_value] = elem.sourceline
+                                    file_ids[key][id_value] = (elem.sourceline, tag)
 
             except (lxml.etree.XMLSyntaxError, Exception) as e:
                 errors.append(
