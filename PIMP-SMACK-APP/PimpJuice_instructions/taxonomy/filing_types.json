@@ -1,0 +1,216 @@
+{
+  "_schema_note": "pimp-formatter/filing_types/1.0 (informal, no validation)",
+  "version": "1.0.0",
+  "scope": "federal_civil_baseline",
+  "description": "14 general filing types. Each type has a CONSTRUCT_ORDER (build sequence) and points to HEADING1 groups. No specific motion subtypes - just 'MOTION'.",
+  
+  "filing_types": {
+    
+    "MOTION": {
+      "label": "Motion",
+      "description": "Request for court order. Model fills [MOTION_TYPE] placeholder.",
+      "heading1_groups": ["INTRODUCTION", "BACKGROUND", "LEGAL_STANDARD", "ARGUMENT", "CONCLUSION"],
+      "construct_order": ["Caption", "Header", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": ["Declaration", "Proposed_Order", "Exhibits"]
+    },
+    
+    "BRIEF": {
+      "label": "Brief / Memorandum",
+      "description": "Legal argument document. Used for opposition, reply, trial briefs.",
+      "heading1_groups": ["INTRODUCTION", "BACKGROUND", "LEGAL_STANDARD", "ARGUMENT", "CONCLUSION"],
+      "construct_order": ["Caption", "Header", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": ["Declaration", "Exhibits"]
+    },
+    
+    "APPELLATE_BRIEF": {
+      "label": "Appellate Brief",
+      "description": "Circuit court brief. FRAP 28 structure.",
+      "heading1_groups": ["JURISDICTIONAL_STATEMENT", "ISSUES", "CASE_STATEMENT", "FACTS", "SUMMARY", "STANDARD_OF_REVIEW", "ARGUMENT", "CONCLUSION"],
+      "construct_order": ["Coverpage", "TOC", "TOA", "Body", "Cert_of_Compliance", "Cert_of_Service", "Addendum"],
+      "typical_attachments": ["ER", "SER"]
+    },
+    
+    "COMPLAINT": {
+      "label": "Complaint",
+      "description": "Initiates civil action. States claims.",
+      "heading1_groups": ["PARTIES", "JURISDICTION_VENUE", "FACTS", "CLAIMS", "PRAYER"],
+      "construct_order": ["Caption", "Body", "Jury_Demand", "Signature"],
+      "typical_attachments": ["Exhibits", "Civil_Cover_Sheet"]
+    },
+    
+    "ANSWER": {
+      "label": "Answer",
+      "description": "Response to complaint.",
+      "heading1_groups": ["RESPONSES", "AFFIRMATIVE_DEFENSES", "PRAYER"],
+      "construct_order": ["Caption", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": []
+    },
+    
+    "DECLARATION": {
+      "label": "Declaration",
+      "description": "Sworn statement under 28 USC 1746. Supports other filings.",
+      "heading1_groups": ["DECLARANT_IDENTITY", "FACTS", "ATTESTATION"],
+      "construct_order": ["Caption", "Body", "Signature"],
+      "typical_attachments": ["Exhibits"]
+    },
+    
+    "NOTICE": {
+      "label": "Notice",
+      "description": "Notice filings - NOA, appearance, related cases, etc.",
+      "heading1_groups": ["NOTICE_BODY"],
+      "construct_order": ["Caption", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": []
+    },
+    
+    "ORDER": {
+      "label": "Order / Proposed Order",
+      "description": "Court order or proposed order submitted with motion.",
+      "heading1_groups": ["ORDER_BODY"],
+      "construct_order": ["Caption", "Body", "Judge_Signature_Line"],
+      "typical_attachments": []
+    },
+    
+    "STIPULATION": {
+      "label": "Stipulation",
+      "description": "Agreement between parties.",
+      "heading1_groups": ["STIPULATION_TERMS"],
+      "construct_order": ["Caption", "Body", "Signature_All_Parties"],
+      "typical_attachments": ["Proposed_Order"]
+    },
+    
+    "DISCOVERY": {
+      "label": "Discovery Document",
+      "description": "Interrogatories, RFPs, RFAs, subpoenas.",
+      "heading1_groups": ["DEFINITIONS", "INSTRUCTIONS", "REQUESTS"],
+      "construct_order": ["Caption", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": []
+    },
+    
+    "EXHIBIT": {
+      "label": "Exhibit / Evidence",
+      "description": "Evidence submission, exhibit lists, ER/SER.",
+      "heading1_groups": ["EXHIBIT_LIST"],
+      "construct_order": ["Exhibit_Cover", "Exhibit_Index", "Exhibits"],
+      "typical_attachments": []
+    },
+    
+    "JUDGMENT": {
+      "label": "Judgment",
+      "description": "Final judgment or proposed judgment.",
+      "heading1_groups": ["JUDGMENT_BODY"],
+      "construct_order": ["Caption", "Body", "Judge_Signature_Line"],
+      "typical_attachments": []
+    },
+    
+    "LETTER": {
+      "label": "Letter / Correspondence",
+      "description": "Court correspondence, meet-and-confer letters.",
+      "heading1_groups": ["LETTER_BODY"],
+      "construct_order": ["Letterhead", "Body", "Signature"],
+      "typical_attachments": []
+    },
+    
+    "SUBPOENA": {
+      "label": "Subpoena",
+      "description": "Subpoena for testimony or documents.",
+      "heading1_groups": ["COMMAND", "SCHEDULE"],
+      "construct_order": ["Caption", "Body", "Signature", "Cert_of_Service"],
+      "typical_attachments": ["Schedule_A"]
+    }
+  },
+  
+  "construct_templates": {
+    "_note": "These are the physical document pieces. Each name MUST match a template file exactly.",
+    
+    "Coverpage": {
+      "description": "Cover/title page. Used in appellate briefs.",
+      "template_skill": "coverpage-ninth-circuit",
+      "placeholders": ["{{CASE_NUMBER}}", "{{FILING_NAME}}", "{{PARTIES}}"]
+    },
+    "Caption": {
+      "description": "Case caption block. Goes at top of most filings.",
+      "template_skill": "caption-generator",
+      "placeholders": ["{{COURT}}", "{{CASE_NUMBER}}", "{{PARTIES}}", "{{DOCUMENT_TITLE}}"]
+    },
+    "Header": {
+      "description": "Running header with case number.",
+      "template_skill": "header-template",
+      "placeholders": ["{{CASE_NUMBER}}"]
+    },
+    "Footer": {
+      "description": "Running footer with page numbers.",
+      "template_skill": "footer-template",
+      "placeholders": ["{{PAGE_NUMBER}}"]
+    },
+    "Body": {
+      "description": "Main document body. Headings injected here.",
+      "template_skill": null,
+      "placeholders": ["{{HEADING1_CONTENT}}"]
+    },
+    "Signature": {
+      "description": "Signature block.",
+      "template_skill": "signature-block",
+      "placeholders": ["{{NAME}}", "{{ADDRESS}}", "{{PHONE}}", "{{EMAIL}}", "{{DATE}}"]
+    },
+    "Signature_All_Parties": {
+      "description": "Signature blocks for all parties (stipulations).",
+      "template_skill": "signature-block-multi",
+      "placeholders": ["{{PARTY_SIGNATURES}}"]
+    },
+    "Cert_of_Service": {
+      "description": "Certificate of service.",
+      "template_skill": "cert-of-service",
+      "placeholders": ["{{SERVICE_LIST}}", "{{SERVICE_METHOD}}", "{{DATE}}"]
+    },
+    "Cert_of_Compliance": {
+      "description": "Word count certificate (appellate).",
+      "template_skill": "cert-of-compliance",
+      "placeholders": ["{{WORD_COUNT}}", "{{FONT}}"]
+    },
+    "TOC": {
+      "description": "Table of Contents.",
+      "template_skill": "table-of-contents",
+      "placeholders": ["{{HEADINGS}}", "{{PAGE_NUMBERS}}"]
+    },
+    "TOA": {
+      "description": "Table of Authorities.",
+      "template_skill": "table-of-authorities",
+      "placeholders": ["{{CITATIONS}}", "{{PAGE_NUMBERS}}"]
+    },
+    "Addendum": {
+      "description": "Addendum section (appellate).",
+      "template_skill": "addendum-template",
+      "placeholders": ["{{ADDENDUM_CONTENT}}"]
+    },
+    "Jury_Demand": {
+      "description": "Jury demand section.",
+      "template_skill": null,
+      "placeholders": []
+    },
+    "Judge_Signature_Line": {
+      "description": "Judge signature line for orders.",
+      "template_skill": "judge-signature",
+      "placeholders": ["{{JUDGE_NAME}}"]
+    },
+    "Letterhead": {
+      "description": "Personal letterhead.",
+      "template_skill": "letterhead-template",
+      "placeholders": ["{{NAME}}", "{{ADDRESS}}", "{{DATE}}"]
+    },
+    "Exhibit_Cover": {
+      "description": "Exhibit cover sheet.",
+      "template_skill": "exhibit-cover",
+      "placeholders": ["{{EXHIBIT_ID}}", "{{DESCRIPTION}}"]
+    },
+    "Exhibit_Index": {
+      "description": "Exhibit index/list.",
+      "template_skill": "exhibit-index",
+      "placeholders": ["{{EXHIBITS}}"]
+    },
+    "EVI_CARD": {
+      "description": "Evidence card system. PLACEHOLDER - Tyler has this built.",
+      "template_skill": "evi-card",
+      "placeholders": ["{{EVI_CARD_DATA}}"]
+    }
+  }
+}
