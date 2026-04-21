@@ -1,0 +1,26 @@
+{
+    "skill_name": "bill-of-quantities",
+    "evals": [
+        {
+            "id": 1,
+            "name": "simple-single-storey-building",
+            "prompt": "Generate a Bill of Quantities for a simple single-storey commercial building with these specifications:\n\n- Building dimensions: 50m length × 40m width × 4.5m floor-to-ceiling height\n- Foundation: Concrete strip foundation, 600mm deep, 400mm wide, perimeter 180m\n- Structural slab: 150mm reinforced concrete slab on grade\n- Walls: 200mm concrete block walls throughout, external walls with 110mm brick veneer\n- Roof: Concrete roof slab 150mm thick, same footprint as building\n- Internal finishes: All interior walls plastered and painted, concrete floor finished with ceramic tiles\n- External finishes: Brick veneer on all external walls\n- Windows: 12 standard windows (1.2m × 1.5m each)\n- Doors: 2 external doors (1.2m) + 8 internal doors (0.9m)\n- Electrical: Basic lighting and power distribution throughout\n- Plumbing: 2 toilets, 1 kitchenette with sink\n- HVAC: Basic ventilation system\n\nProvide output as: (1) CSV/Excel format with sections, item descriptions, quantities, and units, (2) Markdown summary table, (3) Assumptions document noting any information you had to infer.",
+            "expected_output": "BoQ with clearly organized sections (Preliminaries, Groundwork, Structures, Finishes, Services, External Works), at least 20+ line items with correct quantities, units (m, m², m³, No.), specifications, and a documented list of assumptions made during extraction.",
+            "files": []
+        },
+        {
+            "id": 2,
+            "name": "medium-complexity-multi-storey",
+            "prompt": "Generate a detailed Bill of Quantities for a 3-storey residential building:\n\n- Ground floor: 60m × 50m footprint\n- Upper floors: 60m × 50m each, same layout\n- Total built area: ~9,000 m²\n- Foundation: Reinforced concrete foundation on grade, 800mm deep for perimeter + internal columns\n- Structural system: Reinforced concrete frame (columns, beams, slabs)\n- Slabs: 200mm thick on ground floor (supports heavier loads), 150mm on upper floors\n- External walls: 200mm brick + cavity + 100mm insulation + 100mm blockwork\n- Internal walls: 100mm blockwork, non-load bearing\n- Roof: 150mm concrete slab with membrane waterproofing\n- Flooring: Ground floor - polished concrete in common areas, ceramic tile in wet areas; Upper floors - wooden laminate in living areas, ceramic in bathrooms\n- Walls: Plastered and painted throughout\n- Internal doors: Approximately 30 doors (mix of bedroom, bathroom, kitchen, utility)\n- External doors: 4 main entrances\n- Windows: 60 windows distributed across three floors\n- Electrical: Full power distribution, lighting, security system\n- Plumbing: 9 bathrooms (3 per floor), 3 kitchens (1 per floor)\n- HVAC: Individual units for each apartment/section\n- Parking: Ground level parking area (~20 spaces)\n\nProvide: (1) Detailed CSV/Excel BoQ organized by RICS sections, (2) Section-wise breakdown summary, (3) Key assumptions and notes on missing specifications, (4) Highlight any items needing clarification from architect/engineer.",
+            "expected_output": "Comprehensive BoQ with 40+ items, organized into 6+ RICS sections, including preliminary items, accurate quantity calculations based on building dimensions, all major structural and finishing elements, MEP systems, and a detailed assumptions document flagging any ambiguities or missing information.",
+            "files": []
+        },
+        {
+            "id": 3,
+            "name": "partial-specs-inference-test",
+            "prompt": "You're given incomplete specifications. Extract and estimate what you can, clearly noting assumptions:\n\n'Small office renovation: Ground floor 30m × 25m. Current walls are damaged brick, need rebuilding. Roof has water ingress, needs repair and waterproofing. All interior needs replastering and painting. Flooring is cracked concrete, needs replacement (use mid-range material). Update electrical system and add LED lighting. Plumbing needs replacement - add 2 toilets, 1 kitchenette. Need storage room for files and supplies (approx 15 m²) and small staff room (approx 20 m²). Budget-conscious project.'\n\nGenerate a BoQ with your best estimates, but clearly separate:\n- Items you can extract directly from the description\n- Items you must estimate (with reasoning)\n- Critical missing information that would affect accuracy\n\nProvide assumptions in a separate section with confidence levels (High/Medium/Low).",
+            "expected_output": "BoQ with 15-25 items, clearly marked with extraction source and confidence level, detailed assumptions section with at least 8-10 assumptions documented and justified, and a 'Missing Information' section listing what would be needed for higher accuracy.",
+            "files": []
+        }
+    ]
+}
