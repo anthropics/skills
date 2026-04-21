@@ -1,0 +1,2563 @@
+{
+    "stations": [
+        {
+            "id": 0,
+            "locales": {
+                "en": "Generator",
+                "ru": "Генератор"
+            },
+            "function": "Provides power for hideout crafting stations",
+            "imgSource": "/img/Generator_Portrait.png"
+        },
+        {
+            "id": 1,
+            "locales": {
+                "en": "Air Filtering Unit",
+                "ru": "Воздушный фильтратор"
+            },
+            "function": "Allows use of absorbers to increase physical skill leveling speed",
+            "imgSource": "/img/Air_Filtering_Unit_Portrait.png"
+        },
+        {
+            "id": 2,
+            "locales": {
+                "en": "Bitcoin farm",
+                "ru": "Биткоин ферма"
+            },
+            "function": "Allows production of Physical bitcoins",
+            "imgSource": "/img/Bitcoin_farm_Portrait.png"
+        },
+        {
+            "id": 3,
+            "locales": {
+                "en": "Booze generator",
+                "ru": "Самогонный аппарат"
+            },
+            "function": "Allows production of moonshine",
+            "imgSource": "/img/Booze_generator_Portrait.png"
+        },
+        {
+            "id": 4,
+            "locales": {
+                "en": "Heating",
+                "ru": "Обогрев"
+            },
+            "function": "Provides passive out-of-raid energy regen for your PMC",
+            "imgSource": "/img/Heating_Portrait.png"
+        },
+        {
+            "id": 5,
+            "locales": {
+                "en": "Illumination",
+                "ru": "Освещение"
+            },
+            "function": "A resource sink that gates other modules, while also providing 3d visibility",
+            "imgSource": "/img/Illumination_Portrait.png"
+        },
+        {
+            "id": 6,
+            "locales": {
+                "en": "Lavatory",
+                "ru": "Санузел"
+            },
+            "function": "Produces various trade items, mainly focused on fluid centric products",
+            "imgSource": "/img/Lavatory_Portrait.png"
+        },
+        {
+            "id": 7,
+            "locales": {
+                "en": "Library",
+                "ru": "Библиотека"
+            },
+            "function": "Provides exp and practical skills boost",
+            "imgSource": "/img/Library_Portrait.png"
+        },
+        {
+            "id": 8,
+            "locales": {
+                "en": "Medstation",
+                "ru": "Медпункт"
+            },
+            "function": "Provides passive healing and produces various healing items",
+            "imgSource": "/img/Medstation_Portrait.png"
+        },
+        {
+            "id": 9,
+            "locales": {
+                "en": "Nutrition Unit",
+                "ru": "Пищеблок"
+            },
+            "function": "Provides passive out-of-raid energy regen and produces various consumables",
+            "imgSource": "/img/Nutrition_unit_Portrait.png"
+        },
+        {
+            "id": 10,
+            "locales": {
+                "en": "Rest space",
+                "ru": "Зона отдыха"
+            },
+            "function": "Provides passive out-of-raid energy regen and healing",
+            "imgSource": "/img/Rest_Space_Portrait.png"
+        },
+        {
+            "id": 11,
+            "locales": {
+                "en": "Scav case",
+                "ru": "Ящик диких"
+            },
+            "function": "Provides passive income in the form of follower missions",
+            "imgSource": "/img/Scav_case_Portrait.png"
+        },
+        {
+            "id": 12,
+            "locales": {
+                "en": "Security",
+                "ru": "Безопастность"
+            },
+            "function": "A resource sink to progress gate other hideout modules",
+            "imgSource": "/img/Security_Portrait.png"
+        },
+        {
+            "id": 13,
+            "locales": {
+                "en": "Shooting range",
+                "ru": "Тир"
+            },
+            "function": "Allows you to test fire your loadout",
+            "imgSource": "/img/Shooting_range_Portrait.png"
+        },
+        {
+            "id": 14,
+            "locales": {
+                "en": "Solar power",
+                "ru": "Солнечная батарея"
+            },
+            "function": "Reduces generator fuel consumption by half",
+            "imgSource": "/img/Solar_power_Portrait.png"
+        },
+        {
+            "id": 15,
+            "locales": {
+                "en": "Stash",
+                "ru": "Склад"
+            },
+            "function": "Provides you with permanent item storage",
+            "imgSource": "/img/Stash_Portrait.png"
+        },
+        {
+            "id": 16,
+            "locales": {
+                "en": "Vents",
+                "ru": "Вентиляция"
+            },
+            "function": "A resource sink to progress gate other hideout modules",
+            "imgSource": "/img/Vents_Portrait.png"
+        },
+        {
+            "id": 17,
+            "locales": {
+                "en": "Water collector",
+                "ru": "Водосборник"
+            },
+            "function": "Provides passive out-of-raid hydration regen",
+            "imgSource": "/img/Water_collector_Portrait.png"
+        },
+        {
+            "id": 18,
+            "locales": {
+                "en": "Workbench",
+                "ru": "Верстак"
+            },
+            "function": "Provides a wide variety of potential item crafts",
+            "imgSource": "/img/Workbench_Portrait.png"
+        },
+        {
+            "id": 19,
+            "locales": {
+                "en": "Christmas Tree",
+                "ru": "Новогодняя ёлка"
+            },
+            "function": "Provides a wide variety of potential item crafts",
+            "imgSource": "/img/Christmas_tree_Portrait.png",
+            "disabled": true
+        },
+        {
+            "id": 20,
+            "locales": {
+                "en": "Intelligence center",
+                "ru": "Разведцентр"
+            },
+            "function": "Provides passive income boosts and produces rare data items",
+            "imgSource": "/img/Intelligence_Center_Portrait.png"
+        }
+    ],
+    "modules": [
+        {
+            "module": "Air Filtering Unit",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 0
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 3,
+                    "id": 1
+                },
+                {
+                    "type": "item",
+                    "name": "5696686a4bdc2da3298b456a",
+                    "quantity": 25000,
+                    "id": 189
+                },
+                {
+                    "type": "item",
+                    "name": "5d0378d486f77420421a5ff4",
+                    "quantity": 5,
+                    "id": 229
+                },
+                {
+                    "type": "item",
+                    "name": "590c595c86f7747884343ad7",
+                    "quantity": 5,
+                    "id": 230
+                },
+                {
+                    "type": "item",
+                    "name": "619cbf476b8a1b37a54eebf8",
+                    "quantity": 3,
+                    "id": 308
+                },
+                {
+                    "type": "trader",
+                    "name": 2,
+                    "quantity": 3,
+                    "id": 275
+                }
+            ],
+            "id": 0,
+            "stationId": 1
+        },
+        {
+            "module": "Bitcoin farm",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Intelligence center",
+                    "quantity": 2,
+                    "id": 2
+                },
+                {
+                    "type": "item",
+                    "name": "5734779624597737e04bf329",
+                    "quantity": 15,
+                    "id": 3
+                },
+                {
+                    "type": "item",
+                    "name": "57347c2e24597744902c94a1",
+                    "quantity": 10,
+                    "id": 4
+                },
+                {
+                    "type": "item",
+                    "name": "59e36c6f86f774176c10a2a7",
+                    "quantity": 10,
+                    "id": 5
+                },
+                {
+                    "type": "item",
+                    "name": "5c05300686f7746dce784e5d",
+                    "quantity": 1,
+                    "id": 6
+                },
+                {
+                    "type": "item",
+                    "name": "57347cd0245977445a2d6ff1",
+                    "quantity": 5,
+                    "id": 307
+                }
+            ],
+            "id": 1,
+            "stationId": 2
+        },
+        {
+            "module": "Bitcoin farm",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 7
+                },
+                {
+                    "type": "module",
+                    "name": "Bitcoin farm",
+                    "quantity": 1,
+                    "id": 8
+                },
+                {
+                    "type": "item",
+                    "name": "5734779624597737e04bf329",
+                    "quantity": 15,
+                    "id": 9
+                },
+                {
+                    "type": "item",
+                    "name": "57347c2e24597744902c94a1",
+                    "quantity": 10,
+                    "id": 10
+                },
+                {
+                    "type": "item",
+                    "name": "590a3b0486f7743954552bdb",
+                    "quantity": 15,
+                    "id": 11
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 5,
+                    "id": 12
+                },
+                {
+                    "type": "item",
+                    "name": "5d0378d486f77420421a5ff4",
+                    "quantity": 2,
+                    "id": 320
+                }
+            ],
+            "id": 2,
+            "stationId": 2
+        },
+        {
+            "module": "Bitcoin farm",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 3,
+                    "id": 13
+                },
+                {
+                    "type": "module",
+                    "name": "Solar power",
+                    "quantity": 1,
+                    "id": 14
+                },
+                {
+                    "type": "module",
+                    "name": "Bitcoin farm",
+                    "quantity": 2,
+                    "id": 15
+                },
+                {
+                    "type": "item",
+                    "name": "5734779624597737e04bf329",
+                    "quantity": 25,
+                    "id": 16
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b39a386f774252339976f",
+                    "quantity": 15,
+                    "id": 17
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 10,
+                    "id": 18
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b327086f7742525194449",
+                    "quantity": 10,
+                    "id": 19
+                },
+                {
+                    "type": "item",
+                    "name": "5d03794386f77420415576f5",
+                    "quantity": 1,
+                    "id": 321
+                }
+            ],
+            "id": 3,
+            "stationId": 2
+        },
+        {
+            "module": "Booze generator",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 3,
+                    "id": 20
+                },
+                {
+                    "type": "module",
+                    "name": "Nutrition unit",
+                    "quantity": 3,
+                    "id": 21
+                },
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 5,
+                    "id": 22
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b39a386f774252339976f",
+                    "quantity": 4,
+                    "id": 23
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b32c186f774252167a530",
+                    "quantity": 2,
+                    "id": 24
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b327086f7742525194449",
+                    "quantity": 2,
+                    "id": 25
+                },
+                {
+                    "type": "item",
+                    "name": "5d1c774f86f7746d6620f8db",
+                    "quantity": 3,
+                    "id": 305
+                },
+                {
+                    "type": "item",
+                    "name": "619cbfccbedcde2f5b3f7bdd",
+                    "quantity": 1,
+                    "id": 306
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7b6302b3924be92fa8c3",
+                    "quantity": 2,
+                    "id": 272
+                }
+            ],
+            "id": 4,
+            "stationId": 3
+        },
+        {
+            "module": "Generator",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 1,
+                    "id": 263
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 100000,
+                    "id": 190
+                },
+                {
+                    "type": "item",
+                    "name": "590a3c0a86f774385a33c450",
+                    "quantity": 1,
+                    "id": 217
+                }
+            ],
+            "id": 6,
+            "stationId": 0
+        },
+        {
+            "module": "Generator",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 1,
+                    "id": 32
+                },
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 2,
+                    "id": 33
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 2,
+                    "id": 34
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 5,
+                    "id": 35
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 1,
+                    "id": 36
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 15,
+                    "id": 37
+                },
+                {
+                    "type": "item",
+                    "name": "619cbfeb6b8a1b37a54eebfa",
+                    "quantity": 1,
+                    "id": 309
+                }
+            ],
+            "id": 7,
+            "stationId": 0
+        },
+        {
+            "module": "Generator",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 38
+                },
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 3,
+                    "id": 39
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 3,
+                    "id": 40
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 6,
+                    "id": 41
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 3,
+                    "id": 42
+                },
+                {
+                    "type": "item",
+                    "name": "590a3c0a86f774385a33c450",
+                    "quantity": 10,
+                    "id": 43
+                },
+                {
+                    "type": "item",
+                    "name": "57347c2e24597744902c94a1",
+                    "quantity": 5,
+                    "id": 44
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7b6302b3924be92fa8c3",
+                    "quantity": 7,
+                    "id": 316
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 3,
+                    "id": 276
+                }
+            ],
+            "id": 8,
+            "stationId": 0
+        },
+        {
+            "module": "Heating",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 25000,
+                    "id": 191
+                },
+                {
+                    "type": "item",
+                    "name": "57347b8b24597737dd42e192",
+                    "quantity": 2,
+                    "id": 231
+                }
+            ],
+            "id": 9,
+            "stationId": 4
+        },
+        {
+            "module": "Heating",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 1,
+                    "id": 45
+                },
+                {
+                    "type": "skill",
+                    "name": "Endurance",
+                    "quantity": 1,
+                    "id": 26
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 50000,
+                    "id": 192
+                },
+                {
+                    "type": "item",
+                    "name": "590a373286f774287540368b",
+                    "quantity": 3,
+                    "id": 232
+                },
+                {
+                    "type": "item",
+                    "name": "5e2af2bc86f7746d3f3c33fc",
+                    "quantity": 2,
+                    "id": 233
+                },
+                {
+                    "type": "item",
+                    "name": "56742c284bdc2d98058b456d",
+                    "quantity": 3,
+                    "id": 311
+                }
+            ],
+            "id": 10,
+            "stationId": 4
+        },
+        {
+            "module": "Heating",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 2,
+                    "id": 46
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 2,
+                    "id": 47
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 48
+                },
+                {
+                    "type": "item",
+                    "name": "5d1c774f86f7746d6620f8db",
+                    "quantity": 8,
+                    "id": 49
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 8,
+                    "id": 50
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 4,
+                    "id": 267
+                },
+                {
+                    "type": "item",
+                    "name": "619cbf476b8a1b37a54eebf8",
+                    "quantity": 2,
+                    "id": 315
+                },
+                {
+                    "type": "trader",
+                    "name": 5,
+                    "quantity": 2,
+                    "id": 277
+                }
+            ],
+            "id": 11,
+            "stationId": 4
+        },
+        {
+            "module": "Illumination",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 10000,
+                    "id": 193
+                },
+                {
+                    "type": "item",
+                    "name": "56742c284bdc2d98058b456d",
+                    "quantity": 1,
+                    "id": 304
+                }
+            ],
+            "id": 12,
+            "stationId": 5
+        },
+        {
+            "module": "Illumination",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 1,
+                    "id": 51
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 1,
+                    "id": 52
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b392c86f77425243e98fe",
+                    "quantity": 14,
+                    "id": 53
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 10,
+                    "id": 54
+                }
+            ],
+            "id": 13,
+            "stationId": 5
+        },
+        {
+            "module": "Illumination",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 2,
+                    "id": 55
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 1,
+                    "id": 234
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 56
+                },
+                {
+                    "type": "item",
+                    "name": "5c06782b86f77426df5407d2",
+                    "quantity": 7,
+                    "id": 58
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 6,
+                    "id": 216
+                },
+                {
+                    "type": "item",
+                    "name": "590a3cd386f77436f20848cb",
+                    "quantity": 12,
+                    "id": 274
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 50000,
+                    "id": 194
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 2,
+                    "id": 278
+                }
+            ],
+            "id": 14,
+            "stationId": 5
+        },
+        {
+            "module": "Intelligence center",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 2,
+                    "id": 59
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 2,
+                    "id": 60
+                },
+                {
+                    "type": "item",
+                    "name": "5c12613b86f7743bbe2c3f76",
+                    "quantity": 1,
+                    "id": 61
+                },
+                {
+                    "type": "item",
+                    "name": "62a0a124de7ac81993580542",
+                    "quantity": 1,
+                    "id": 302
+                },
+                {
+                    "type": "item",
+                    "name": "574eb85c245977648157eec3",
+                    "quantity": 1,
+                    "id": 303
+                }
+            ],
+            "id": 15,
+            "stationId": 20
+        },
+        {
+            "module": "Intelligence center",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Intelligence center",
+                    "quantity": 1,
+                    "id": 62
+                },
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 3,
+                    "id": 63
+                },
+                {
+                    "type": "module",
+                    "name": "Medstation",
+                    "quantity": 3,
+                    "id": 64
+                },
+                {
+                    "type": "module",
+                    "name": "Nutrition unit",
+                    "quantity": 3,
+                    "id": 65
+                },
+                {
+                    "type": "skill",
+                    "name": "Attention",
+                    "quantity": 3,
+                    "id": 27
+                },
+                {
+                    "type": "item",
+                    "name": "5c12613b86f7743bbe2c3f76",
+                    "quantity": 3,
+                    "id": 66
+                },
+                {
+                    "type": "item",
+                    "name": "590c621186f774138d11ea29",
+                    "quantity": 3,
+                    "id": 67
+                },
+                {
+                    "type": "item",
+                    "name": "59e36c6f86f774176c10a2a7",
+                    "quantity": 4,
+                    "id": 68
+                },
+                {
+                    "type": "item",
+                    "name": "590a386e86f77429692b27ab",
+                    "quantity": 4,
+                    "id": 69
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 2,
+                    "id": 279
+                }
+            ],
+            "id": 16,
+            "stationId": 20
+        },
+        {
+            "module": "Intelligence center",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Intelligence center",
+                    "quantity": 2,
+                    "id": 70
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 71
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 3,
+                    "id": 235
+                },
+                {
+                    "type": "item",
+                    "name": "5c052f6886f7746b1e3db148",
+                    "quantity": 2,
+                    "id": 72
+                },
+                {
+                    "type": "item",
+                    "name": "5c05300686f7746dce784e5d",
+                    "quantity": 2,
+                    "id": 73
+                },
+                {
+                    "type": "item",
+                    "name": "62a0a16d0b9d3c46de5b6e97",
+                    "quantity": 5,
+                    "id": 74
+                },
+                {
+                    "type": "item",
+                    "name": "5d0375ff86f774186372f685",
+                    "quantity": 5,
+                    "id": 75
+                },
+                {
+                    "type": "trader",
+                    "name": 0,
+                    "quantity": 3,
+                    "id": 280
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7c024770ee6f9c6b8b53",
+                    "quantity": 2,
+                    "id": 319
+                }
+            ],
+            "id": 17,
+            "stationId": 20
+        },
+        {
+            "module": "Lavatory",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 2000,
+                    "id": 195
+                },
+                {
+                    "type": "item",
+                    "name": "5c13cef886f774072e618e82",
+                    "quantity": 1,
+                    "id": 236
+                },
+                {
+                    "type": "item",
+                    "name": "57347c93245977448d35f6e3",
+                    "quantity": 1,
+                    "id": 253
+                },
+                {
+                    "type": "item",
+                    "name": "5c13cd2486f774072c757944",
+                    "quantity": 1,
+                    "id": 254
+                },
+                {
+                    "type": "item",
+                    "name": "62a0a098de7ac8199358053b",
+                    "quantity": 1,
+                    "id": 323
+                }
+            ],
+            "id": 18,
+            "stationId": 6
+        },
+        {
+            "module": "Lavatory",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Lavatory",
+                    "quantity": 1,
+                    "id": 76
+                },
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 1,
+                    "id": 77
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 1,
+                    "id": 237
+                },
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 3,
+                    "id": 78
+                },
+                {
+                    "type": "item",
+                    "name": "59e35ef086f7741777737012",
+                    "quantity": 5,
+                    "id": 79
+                },
+                {
+                    "type": "item",
+                    "name": "59e35de086f7741778269d84",
+                    "quantity": 1,
+                    "id": 80
+                },
+                {
+                    "type": "item",
+                    "name": "5e2af29386f7746d4159f077",
+                    "quantity": 1,
+                    "id": 238
+                },
+                {
+                    "type": "item",
+                    "name": "61bf83814088ec1a363d7097",
+                    "quantity": 2,
+                    "id": 318
+                }
+            ],
+            "id": 19,
+            "stationId": 6
+        },
+        {
+            "module": "Lavatory",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Lavatory",
+                    "quantity": 2,
+                    "id": 81
+                },
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 2,
+                    "id": 82
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 2,
+                    "id": 239
+                },
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 6,
+                    "id": 83
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b327086f7742525194449",
+                    "quantity": 2,
+                    "id": 84
+                },
+                {
+                    "type": "item",
+                    "name": "590c2e1186f77425357b6124",
+                    "quantity": 1,
+                    "id": 85
+                },
+                {
+                    "type": "item",
+                    "name": "590c346786f77423e50ed342",
+                    "quantity": 3,
+                    "id": 86
+                }
+            ],
+            "id": 20,
+            "stationId": 6
+        },
+        {
+            "module": "Library",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Rest space",
+                    "quantity": 3,
+                    "id": 87
+                },
+                {
+                    "type": "skill",
+                    "name": "Memory",
+                    "quantity": 8,
+                    "id": 28
+                },
+                {
+                    "type": "item",
+                    "name": "62a09e73af34e73a266d932a",
+                    "quantity": 1,
+                    "id": 327
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 400000,
+                    "id": 196
+                },
+                {
+                    "type": "item",
+                    "name": "573474f924597738002c6174",
+                    "quantity": 2,
+                    "id": 240
+                },
+                {
+                    "type": "item",
+                    "name": "573478bc24597738002c6175",
+                    "quantity": 1,
+                    "id": 241
+                },
+                {
+                    "type": "item",
+                    "name": "590c639286f774151567fa95",
+                    "quantity": 5,
+                    "id": 299
+                },
+                {
+                    "type": "item",
+                    "name": "590c645c86f77412b01304d9",
+                    "quantity": 2,
+                    "id": 300
+                },
+                {
+                    "type": "item",
+                    "name": "590c651286f7741e566b6461",
+                    "quantity": 2,
+                    "id": 301
+                }
+            ],
+            "id": 21,
+            "stationId": 7
+        },
+        {
+            "module": "Medstation",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 50000,
+                    "id": 197
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b3f2d86f774253763b735",
+                    "quantity": 1,
+                    "id": 255
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b3a5d86f774252167ba22",
+                    "quantity": 1,
+                    "id": 256
+                },
+                {
+                    "type": "item",
+                    "name": "544fb25a4bdc2dfb738b4567",
+                    "quantity": 2,
+                    "id": 298
+                },
+                {
+                    "type": "item",
+                    "name": "62a0a043cf4a99369e2624a5",
+                    "quantity": 1,
+                    "id": 322
+                }
+            ],
+            "id": 22,
+            "stationId": 8
+        },
+        {
+            "module": "Medstation",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Medstation",
+                    "quantity": 1,
+                    "id": 88
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 1,
+                    "id": 264
+                },
+                {
+                    "type": "skill",
+                    "name": "Health",
+                    "quantity": 2,
+                    "id": 29
+                },
+                {
+                    "type": "item",
+                    "name": "5e831507ea0a7c419c2f9bd9",
+                    "quantity": 5,
+                    "id": 242
+                },
+                {
+                    "type": "item",
+                    "name": "5b4335ba86f7744d2837a264",
+                    "quantity": 2,
+                    "id": 89
+                },
+                {
+                    "type": "item",
+                    "name": "59e3606886f77417674759a5",
+                    "quantity": 3,
+                    "id": 90
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 150000,
+                    "id": 198
+                },
+                {
+                    "type": "item",
+                    "name": "619cc01e0a7c3a1a2731940c",
+                    "quantity": 3,
+                    "id": 314
+                },
+                {
+                    "type": "trader",
+                    "name": 1,
+                    "quantity": 2,
+                    "id": 281
+                }
+            ],
+            "id": 23,
+            "stationId": 8
+        },
+        {
+            "module": "Medstation",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Medstation",
+                    "quantity": 2,
+                    "id": 91
+                },
+                {
+                    "type": "module",
+                    "name": "Lavatory",
+                    "quantity": 2,
+                    "id": 243
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 244
+                },
+                {
+                    "type": "skill",
+                    "name": "Vitality",
+                    "quantity": 3,
+                    "id": 30
+                },
+                {
+                    "type": "item",
+                    "name": "5c0530ee86f774697952d952",
+                    "quantity": 1,
+                    "id": 92
+                },
+                {
+                    "type": "item",
+                    "name": "5af0534a86f7743b6f354284",
+                    "quantity": 1,
+                    "id": 93
+                },
+                {
+                    "type": "item",
+                    "name": "59e3606886f77417674759a5",
+                    "quantity": 4,
+                    "id": 94
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 500000,
+                    "id": 199
+                },
+                {
+                    "type": "trader",
+                    "name": 1,
+                    "quantity": 3,
+                    "id": 282
+                }
+            ],
+            "id": 24,
+            "stationId": 8
+        },
+        {
+            "module": "Nutrition unit",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 1,
+                    "id": 95
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 2,
+                    "id": 96
+                },
+                {
+                    "type": "item",
+                    "name": "59e36c6f86f774176c10a2a7",
+                    "quantity": 1,
+                    "id": 297
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 25000,
+                    "id": 200
+                },
+                {
+                    "type": "item",
+                    "name": "62a09ee4cf4a99369e262453",
+                    "quantity": 1,
+                    "id": 324
+                }
+            ],
+            "id": 25,
+            "stationId": 9
+        },
+        {
+            "module": "Nutrition unit",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Nutrition unit",
+                    "quantity": 1,
+                    "id": 97
+                },
+                {
+                    "type": "module",
+                    "name": "Lavatory",
+                    "quantity": 2,
+                    "id": 98
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b313086f77425227d1678",
+                    "quantity": 1,
+                    "id": 99
+                },
+                {
+                    "type": "item",
+                    "name": "590c311186f77424d1667482",
+                    "quantity": 4,
+                    "id": 100
+                },
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 2,
+                    "id": 101
+                },
+                {
+                    "type": "item",
+                    "name": "59faf98186f774067b6be103",
+                    "quantity": 2,
+                    "id": 102
+                }
+            ],
+            "id": 26,
+            "stationId": 9
+        },
+        {
+            "module": "Nutrition unit",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Nutrition unit",
+                    "quantity": 2,
+                    "id": 103
+                },
+                {
+                    "type": "module",
+                    "name": "Lavatory",
+                    "quantity": 3,
+                    "id": 104
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 105
+                },
+                {
+                    "type": "module",
+                    "name": "Stash",
+                    "quantity": 2,
+                    "id": 106
+                },
+                {
+                    "type": "skill",
+                    "name": "Metabolism",
+                    "quantity": 3,
+                    "id": 31
+                },
+                {
+                    "type": "item",
+                    "name": "5e2af00086f7746d3f3c33f7",
+                    "quantity": 2,
+                    "id": 219
+                },
+                {
+                    "type": "item",
+                    "name": "59e35abd86f7741778269d82",
+                    "quantity": 3,
+                    "id": 107
+                },
+                {
+                    "type": "item",
+                    "name": "5af0484c86f7740f02001f7f",
+                    "quantity": 3,
+                    "id": 108
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 125000,
+                    "id": 201
+                }
+            ],
+            "id": 27,
+            "stationId": 9
+        },
+        {
+            "module": "Rest space",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 1,
+                    "id": 245
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 10000,
+                    "id": 202
+                },
+                {
+                    "type": "item",
+                    "name": "57347c1124597737fb1379e3",
+                    "quantity": 1,
+                    "id": 262
+                },
+                {
+                    "type": "item",
+                    "name": "57347b8b24597737dd42e192",
+                    "quantity": 1,
+                    "id": 296
+                }
+            ],
+            "id": 28,
+            "stationId": 10
+        },
+        {
+            "module": "Rest space",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Rest space",
+                    "quantity": 1,
+                    "id": 109
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 110
+                },
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 2,
+                    "id": 111
+                },
+                {
+                    "type": "item",
+                    "name": "590a391c86f774385a33c404",
+                    "quantity": 1,
+                    "id": 246
+                },
+                {
+                    "type": "item",
+                    "name": "5734781f24597737e04bf32a",
+                    "quantity": 1,
+                    "id": 247
+                },
+                {
+                    "type": "item",
+                    "name": "590a3cd386f77436f20848cb",
+                    "quantity": 3,
+                    "id": 248
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 35000,
+                    "id": 203
+                },
+                {
+                    "type": "trader",
+                    "name": 5,
+                    "quantity": 2,
+                    "id": 283
+                }
+            ],
+            "id": 29,
+            "stationId": 10
+        },
+        {
+            "module": "Rest space",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Rest space",
+                    "quantity": 2,
+                    "id": 112
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 113
+                },
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 3,
+                    "id": 114
+                },
+                {
+                    "type": "item",
+                    "name": "59e36c6f86f774176c10a2a7",
+                    "quantity": 4,
+                    "id": 115
+                },
+                {
+                    "type": "item",
+                    "name": "5c06782b86f77426df5407d2",
+                    "quantity": 5,
+                    "id": 116
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 7,
+                    "id": 117
+                },
+                {
+                    "type": "item",
+                    "name": "5e2aedd986f7746d404f3aa4",
+                    "quantity": 5,
+                    "id": 204
+                },
+                {
+                    "type": "trader",
+                    "name": 2,
+                    "quantity": 3,
+                    "id": 284
+                }
+            ],
+            "id": 30,
+            "stationId": 10
+        },
+        {
+            "module": "Scav case",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "59e3639286f7741777737013",
+                    "quantity": 3,
+                    "id": 118
+                },
+                {
+                    "type": "item",
+                    "name": "5d235a5986f77443f6329bc6",
+                    "quantity": 6,
+                    "id": 119
+                },
+                {
+                    "type": "item",
+                    "name": "5734758f24597738025ee253",
+                    "quantity": 8,
+                    "id": 120
+                },
+                {
+                    "type": "item",
+                    "name": "59faf7ca86f7740dbe19f6c2",
+                    "quantity": 4,
+                    "id": 121
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b376e86f774252519444e",
+                    "quantity": 3,
+                    "id": 266
+                },
+                {
+                    "type": "item",
+                    "name": "5b7c710788a4506dec015957",
+                    "quantity": 1,
+                    "id": 295
+                },
+                {
+                    "type": "module",
+                    "name": "Intelligence center",
+                    "quantity": 2,
+                    "id": 122
+                },
+                {
+                    "type": "item",
+                    "name": "5bc9bc53d4351e00367fbcee",
+                    "quantity": 1,
+                    "id": 325
+                }
+            ],
+            "id": 31,
+            "stationId": 11
+        },
+        {
+            "module": "Security",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 20000,
+                    "id": 205
+                },
+                {
+                    "type": "item",
+                    "name": "590c2c9c86f774245b1f03f2",
+                    "quantity": 1,
+                    "id": 258
+                }
+            ],
+            "id": 32,
+            "stationId": 12
+        },
+        {
+            "module": "Security",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 1,
+                    "id": 123
+                },
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 1,
+                    "id": 259
+                },
+                {
+                    "type": "skill",
+                    "name": "Endurance",
+                    "quantity": 2,
+                    "id": 57
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 45000,
+                    "id": 206
+                },
+                {
+                    "type": "item",
+                    "name": "5af04b6486f774195a3ebb49",
+                    "quantity": 1,
+                    "id": 260
+                },
+                {
+                    "type": "item",
+                    "name": "590c5bbd86f774785762df04",
+                    "quantity": 1,
+                    "id": 261
+                },
+                {
+                    "type": "item",
+                    "name": "60391b0fb847c71012789415",
+                    "quantity": 1,
+                    "id": 310
+                }
+            ],
+            "id": 33,
+            "stationId": 12
+        },
+        {
+            "module": "Security",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 2,
+                    "id": 124
+                },
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 3,
+                    "id": 125
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b304286f774253763a528",
+                    "quantity": 2,
+                    "id": 126
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 4,
+                    "id": 127
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2ffd86f77425243e8d17",
+                    "quantity": 8,
+                    "id": 128
+                },
+                {
+                    "type": "item",
+                    "name": "590c392f86f77444754deb29",
+                    "quantity": 1,
+                    "id": 129
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 2,
+                    "id": 285
+                }
+            ],
+            "id": 34,
+            "stationId": 12
+        },
+        {
+            "module": "Shooting range",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 2,
+                    "id": 130
+                },
+                {
+                    "type": "item",
+                    "name": "590c31c586f774245e3141b2",
+                    "quantity": 4,
+                    "id": 131
+                },
+                {
+                    "type": "item",
+                    "name": "57347c77245977448d35f6e2",
+                    "quantity": 5,
+                    "id": 132
+                },
+                {
+                    "type": "item",
+                    "name": "57347c5b245977448d35f6e1",
+                    "quantity": 5,
+                    "id": 133
+                },
+                {
+                    "type": "item",
+                    "name": "57347c1124597737fb1379e3",
+                    "quantity": 3,
+                    "id": 134
+                },
+                {
+                    "type": "item",
+                    "name": "59e35ef086f7741777737012",
+                    "quantity": 2,
+                    "id": 313
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7b6302b3924be92fa8c3",
+                    "quantity": 2,
+                    "id": 270
+                }
+            ],
+            "id": 35,
+            "stationId": 13
+        },
+        {
+            "module": "Solar power",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 135
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 3,
+                    "id": 136
+                },
+                {
+                    "type": "item",
+                    "name": "5d0375ff86f774186372f685",
+                    "quantity": 10,
+                    "id": 137
+                },
+                {
+                    "type": "item",
+                    "name": "5d03775b86f774203e7e0c4b",
+                    "quantity": 4,
+                    "id": 138
+                },
+                {
+                    "type": "item",
+                    "name": "5d0378d486f77420421a5ff4",
+                    "quantity": 10,
+                    "id": 139
+                },
+                {
+                    "type": "item",
+                    "name": "569668774bdc2da2298b4568",
+                    "quantity": 75000,
+                    "id": 207
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b304286f774253763a528",
+                    "quantity": 3,
+                    "id": 312
+                },
+                {
+                    "type": "trader",
+                    "name": 3,
+                    "quantity": 4,
+                    "id": 286
+                }
+            ],
+            "id": 36,
+            "stationId": 14
+        },
+        {
+            "module": "Stash",
+            "level": 1,
+            "require": [],
+            "id": 37,
+            "stationId": 15
+        },
+        {
+            "module": "Stash",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Stash",
+                    "quantity": 1,
+                    "id": 140
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 1,
+                    "id": 249
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b317c86f7742523398392",
+                    "quantity": 1,
+                    "id": 141
+                },
+                {
+                    "type": "item",
+                    "name": "59e35ef086f7741777737012",
+                    "quantity": 10,
+                    "id": 142
+                },
+                {
+                    "type": "item",
+                    "name": "590c5bbd86f774785762df04",
+                    "quantity": 4,
+                    "id": 143
+                },
+                {
+                    "type": "item",
+                    "name": "590c31c586f774245e3141b2",
+                    "quantity": 5,
+                    "id": 228
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 2500000,
+                    "id": 208
+                }
+            ],
+            "id": 38,
+            "stationId": 15
+        },
+        {
+            "module": "Stash",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Stash",
+                    "quantity": 2,
+                    "id": 144
+                },
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 2,
+                    "id": 145
+                },
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 2,
+                    "id": 146
+                },
+                {
+                    "type": "item",
+                    "name": "59e35de086f7741778269d84",
+                    "quantity": 2,
+                    "id": 147
+                },
+                {
+                    "type": "item",
+                    "name": "59e35ef086f7741777737012",
+                    "quantity": 15,
+                    "id": 148
+                },
+                {
+                    "type": "item",
+                    "name": "590c31c586f774245e3141b2",
+                    "quantity": 7,
+                    "id": 271
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 8500000,
+                    "id": 209
+                },
+                {
+                    "type": "trader",
+                    "name": 0,
+                    "quantity": 3,
+                    "id": 287
+                },
+                {
+                    "type": "trader",
+                    "name": 5,
+                    "quantity": 3,
+                    "id": 288
+                }
+            ],
+            "id": 39,
+            "stationId": 15
+        },
+        {
+            "module": "Stash",
+            "level": 4,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Stash",
+                    "quantity": 3,
+                    "id": 149
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 150
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 3,
+                    "id": 151
+                },
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 3,
+                    "id": 152
+                },
+                {
+                    "type": "module",
+                    "name": "Intelligence center",
+                    "quantity": 2,
+                    "id": 153
+                },
+                {
+                    "type": "item",
+                    "name": "569668774bdc2da2298b4568",
+                    "quantity": 200000,
+                    "id": 210
+                },
+                {
+                    "type": "item",
+                    "name": "57347c77245977448d35f6e2",
+                    "quantity": 10,
+                    "id": 225
+                },
+                {
+                    "type": "item",
+                    "name": "57347c5b245977448d35f6e1",
+                    "quantity": 10,
+                    "id": 226
+                },
+                {
+                    "type": "item",
+                    "name": "590c35a486f774273531c822",
+                    "quantity": 5,
+                    "id": 227
+                },
+                {
+                    "type": "item",
+                    "name": "60391afc25aff57af81f7085",
+                    "quantity": 2,
+                    "id": 257
+                },
+                {
+                    "type": "trader",
+                    "name": 3,
+                    "quantity": 4,
+                    "id": 289
+                },
+                {
+                    "type": "trader",
+                    "name": 5,
+                    "quantity": 4,
+                    "id": 290
+                }
+            ],
+            "id": 40,
+            "stationId": 15
+        },
+        {
+            "module": "Vents",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 25000,
+                    "id": 211
+                }
+            ],
+            "id": 41,
+            "stationId": 16
+        },
+        {
+            "module": "Vents",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 1,
+                    "id": 154
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 1,
+                    "id": 155
+                },
+                {
+                    "type": "item",
+                    "name": "5733279d245977289b77ec24",
+                    "quantity": 1,
+                    "id": 156
+                },
+                {
+                    "type": "item",
+                    "name": "5734779624597737e04bf329",
+                    "quantity": 3,
+                    "id": 218
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7b6302b3924be92fa8c3",
+                    "quantity": 2,
+                    "id": 269
+                }
+            ],
+            "id": 42,
+            "stationId": 16
+        },
+        {
+            "module": "Vents",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Vents",
+                    "quantity": 2,
+                    "id": 157
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 158
+                },
+                {
+                    "type": "skill",
+                    "name": "Strength",
+                    "quantity": 2,
+                    "id": 214
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 4,
+                    "id": 159
+                },
+                {
+                    "type": "item",
+                    "name": "5733279d245977289b77ec24",
+                    "quantity": 4,
+                    "id": 160
+                },
+                {
+                    "type": "item",
+                    "name": "5c06779c86f77426e00dd782",
+                    "quantity": 14,
+                    "id": 161
+                },
+                {
+                    "type": "item",
+                    "name": "590a3b0486f7743954552bdb",
+                    "quantity": 5,
+                    "id": 162
+                },
+                {
+                    "type": "item",
+                    "name": "61bf7b6302b3924be92fa8c3",
+                    "quantity": 5,
+                    "id": 317
+                }
+            ],
+            "id": 43,
+            "stationId": 16
+        },
+        {
+            "module": "Water collector",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 4,
+                    "id": 163
+                },
+                {
+                    "type": "item",
+                    "name": "57347c5b245977448d35f6e1",
+                    "quantity": 5,
+                    "id": 164
+                },
+                {
+                    "type": "item",
+                    "name": "57347c77245977448d35f6e2",
+                    "quantity": 5,
+                    "id": 165
+                },
+                {
+                    "type": "item",
+                    "name": "57347c1124597737fb1379e3",
+                    "quantity": 3,
+                    "id": 166
+                },
+                {
+                    "type": "module",
+                    "name": "Security",
+                    "quantity": 1,
+                    "id": 250
+                }
+            ],
+            "id": 44,
+            "stationId": 17
+        },
+        {
+            "module": "Water collector",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 1,
+                    "id": 167
+                },
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 2,
+                    "id": 168
+                },
+                {
+                    "type": "skill",
+                    "name": "Attention",
+                    "quantity": 3,
+                    "id": 215
+                },
+                {
+                    "type": "item",
+                    "name": "59e35cbb86f7741778269d83",
+                    "quantity": 6,
+                    "id": 169
+                },
+                {
+                    "type": "item",
+                    "name": "5d1b2fa286f77425227d1674",
+                    "quantity": 2,
+                    "id": 170
+                },
+                {
+                    "type": "item",
+                    "name": "590c2e1186f77425357b6124",
+                    "quantity": 2,
+                    "id": 171
+                },
+                {
+                    "type": "item",
+                    "name": "5e2af29386f7746d4159f077",
+                    "quantity": 2,
+                    "id": 251
+                },
+                {
+                    "type": "trader",
+                    "name": 6,
+                    "quantity": 2,
+                    "id": 291
+                }
+            ],
+            "id": 45,
+            "stationId": 17
+        },
+        {
+            "module": "Water collector",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Water collector",
+                    "quantity": 2,
+                    "id": 172
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 3,
+                    "id": 173
+                },
+                {
+                    "type": "module",
+                    "name": "Heating",
+                    "quantity": 3,
+                    "id": 174
+                },
+                {
+                    "type": "item",
+                    "name": "5af04b6486f774195a3ebb49",
+                    "quantity": 2,
+                    "id": 175
+                },
+                {
+                    "type": "item",
+                    "name": "590c35a486f774273531c822",
+                    "quantity": 5,
+                    "id": 176
+                },
+                {
+                    "type": "item",
+                    "name": "60391afc25aff57af81f7085",
+                    "quantity": 1,
+                    "id": 268
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 20000,
+                    "id": 212
+                },
+                {
+                    "type": "trader",
+                    "name": 6,
+                    "quantity": 3,
+                    "id": 292
+                }
+            ],
+            "id": 46,
+            "stationId": 17
+        },
+        {
+            "module": "Workbench",
+            "level": 1,
+            "require": [
+                {
+                    "type": "item",
+                    "name": "57347c77245977448d35f6e2",
+                    "quantity": 2,
+                    "id": 177
+                },
+                {
+                    "type": "item",
+                    "name": "57347c5b245977448d35f6e1",
+                    "quantity": 2,
+                    "id": 178
+                },
+                {
+                    "type": "item",
+                    "name": "544fb5454bdc2df8738b456a",
+                    "quantity": 1,
+                    "id": 179
+                }
+            ],
+            "id": 47,
+            "stationId": 18
+        },
+        {
+            "module": "Workbench",
+            "level": 2,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 1,
+                    "id": 180
+                },
+                {
+                    "type": "module",
+                    "name": "Illumination",
+                    "quantity": 2,
+                    "id": 181
+                },
+                {
+                    "type": "item",
+                    "name": "590c2e1186f77425357b6124",
+                    "quantity": 3,
+                    "id": 182
+                },
+                {
+                    "type": "item",
+                    "name": "59e35de086f7741778269d84",
+                    "quantity": 2,
+                    "id": 183
+                },
+                {
+                    "type": "item",
+                    "name": "57347c5b245977448d35f6e1",
+                    "quantity": 6,
+                    "id": 184
+                },
+                {
+                    "type": "item",
+                    "name": "5d1c819a86f774771b0acd6c",
+                    "quantity": 3,
+                    "id": 265
+                },
+                {
+                    "type": "item",
+                    "name": "62a0a0bb621468534a797ad5",
+                    "quantity": 1,
+                    "id": 326
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 2,
+                    "id": 293
+                }
+            ],
+            "id": 48,
+            "stationId": 18
+        },
+        {
+            "module": "Workbench",
+            "level": 3,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Workbench",
+                    "quantity": 2,
+                    "id": 185
+                },
+                {
+                    "type": "module",
+                    "name": "Stash",
+                    "quantity": 2,
+                    "id": 186
+                },
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 2,
+                    "id": 252
+                },
+                {
+                    "type": "item",
+                    "name": "5af04b6486f774195a3ebb49",
+                    "quantity": 2,
+                    "id": 187
+                },
+                {
+                    "type": "item",
+                    "name": "5bc9b355d4351e6d1509862a",
+                    "quantity": 1,
+                    "id": 188
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 395000,
+                    "id": 213
+                },
+                {
+                    "type": "item",
+                    "name": "60391a8b3364dc22b04d0ce5",
+                    "quantity": 2,
+                    "id": 273
+                },
+                {
+                    "type": "trader",
+                    "name": 4,
+                    "quantity": 3,
+                    "id": 294
+                }
+            ],
+            "id": 49,
+            "stationId": 18
+        },
+        {
+            "module": "Christmas Tree",
+            "level": 1,
+            "require": [
+                {
+                    "type": "module",
+                    "name": "Generator",
+                    "quantity": 1,
+                    "id": 220
+                },
+                {
+                    "type": "item",
+                    "name": "5df8a6a186f77412640e2e80",
+                    "quantity": 1,
+                    "id": 221
+                },
+                {
+                    "type": "item",
+                    "name": "5df8a72c86f77412640e2e83",
+                    "quantity": 1,
+                    "id": 222
+                },
+                {
+                    "type": "item",
+                    "name": "5df8a77486f77412672a1e3f",
+                    "quantity": 1,
+                    "id": 223
+                },
+                {
+                    "type": "item",
+                    "name": "5449016a4bdc2d6f028b456f",
+                    "quantity": 10000,
+                    "id": 224
+                }
+            ],
+            "id": 5,
+            "stationId": 19
+        }
+    ]
+}
