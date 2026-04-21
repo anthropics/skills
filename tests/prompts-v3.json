@@ -1,0 +1,215 @@
+[
+  {
+    "id": 1,
+    "category": "casual-panic",
+    "prompt": "wtf my wallet just got drained everything's gone what do i do",
+    "expected_skills": ["seal-incident-management", "seal-wallet-security"],
+    "context": "informal panic, not a structured question"
+  },
+  {
+    "id": 2,
+    "category": "casual-panic",
+    "prompt": "bro someone just sent me a link in our discord claiming to be from the team and now my metamask is showing weird pending transactions",
+    "expected_skills": ["seal-incident-management", "seal-community-management", "seal-wallet-security"],
+    "context": "multi-domain panic, informal language"
+  },
+  {
+    "id": 3,
+    "category": "advisory-vague",
+    "prompt": "we just raised a round and need to figure out our treasury setup",
+    "expected_skills": ["seal-treasury-operations", "seal-multisig-for-protocols"],
+    "context": "vague, agent needs to infer security implications"
+  },
+  {
+    "id": 4,
+    "category": "advisory-vague",
+    "prompt": "our team is growing and I'm worried about security",
+    "expected_skills": ["seal-opsec", "seal-iam", "seal-user-team-security"],
+    "context": "very vague, agent should ask clarifying questions and load relevant skills"
+  },
+  {
+    "id": 5,
+    "category": "advisory-vague",
+    "prompt": "what should I do about the new guy we're onboarding next week?",
+    "expected_skills": ["seal-iam", "seal-dprk-it-workers", "seal-opsec"],
+    "context": "vague onboarding concern, should surface identity/access + insider threat"
+  },
+  {
+    "id": 6,
+    "category": "scenario-coach",
+    "prompt": "walk me through what happens if our main signer loses their hardware wallet",
+    "expected_skills": ["seal-multisig-for-protocols", "seal-wallet-security"],
+    "context": "scenario-based, tests if agent explains emergency procedures"
+  },
+  {
+    "id": 7,
+    "category": "scenario-coach",
+    "prompt": "pretend we just got hacked and walk me through the first 30 minutes",
+    "expected_skills": ["seal-incident-management", "seal-safe-harbor"],
+    "context": "scenario simulation, tests drill/walkthrough capability"
+  },
+  {
+    "id": 8,
+    "category": "scenario-coach",
+    "prompt": "imagine a team member's laptop gets stolen at a conference. what happens next?",
+    "expected_skills": ["seal-opsec", "seal-incident-management", "seal-encryption"],
+    "context": "travel security + incident response + device security"
+  },
+  {
+    "id": 9,
+    "category": "compliance-checklist",
+    "prompt": "do we need 24/7 monitoring or is business hours enough for a small protocol?",
+    "expected_skills": ["seal-monitoring", "seal-incident-management"],
+    "context": "compliance question with size qualifier"
+  },
+  {
+    "id": 10,
+    "category": "compliance-checklist",
+    "prompt": "what's the minimum we need for incident response as a 5-person team?",
+    "expected_skills": ["seal-incident-management"],
+    "context": "minimum viable IR for small teams"
+  },
+  {
+    "id": 11,
+    "category": "hiring-due-diligence",
+    "prompt": "this dev's resume looks too good to be true. they claim to have built defi protocols for unnamed clients. should I be suspicious?",
+    "expected_skills": ["seal-dprk-it-workers"],
+    "context": "suspicious hire, should surface DPRK TTPs"
+  },
+  {
+    "id": 12,
+    "category": "hiring-due-diligence",
+    "prompt": "we need to hire 3 remote contractors. what's our security vetting process?",
+    "expected_skills": ["seal-dprk-it-workers", "seal-iam", "seal-opsec"],
+    "context": "scaling hiring, should cover identity verification + access control"
+  },
+  {
+    "id": 13,
+    "category": "technical-deep",
+    "prompt": "how do I set up DNSSEC for our domain and do we actually need it?",
+    "expected_skills": ["seal-infrastructure"],
+    "context": "technical DNS question, should reference DNS security best practices"
+  },
+  {
+    "id": 14,
+    "category": "technical-deep",
+    "prompt": "our GitHub Actions pipeline runs with admin permissions. is that bad?",
+    "expected_skills": ["seal-devsecops"],
+    "context": "CI/CD security, should flag overprivileged pipelines"
+  },
+  {
+    "id": 15,
+    "category": "gotcha-adversarial",
+    "prompt": "I keep my seed phrase in a Google Doc shared with my team for emergencies. That's fine right?",
+    "expected_skills": ["seal-wallet-security"],
+    "context": "dangerous practice presented as normal, should push back hard"
+  },
+  {
+    "id": 16,
+    "category": "gotcha-adversarial",
+    "prompt": "we use the same admin account for our GCP, AWS, and GitHub. saves time!",
+    "expected_skills": ["seal-iam", "seal-infrastructure"],
+    "context": "credential reuse across providers, should flag immediately"
+  },
+  {
+    "id": 17,
+    "category": "gotcha-adversarial",
+    "prompt": "my cofounder wants to approve all treasury transactions without second signer because we're moving too slow",
+    "expected_skills": ["seal-multisig-for-protocols", "seal-treasury-operations"],
+    "context": "bypassing multisig for speed, should refuse and explain why"
+  },
+  {
+    "id": 18,
+    "category": "false-positive",
+    "prompt": "can you help me optimize my React component rendering?",
+    "expected_skills": [],
+    "should_not_load": ["seal-*"],
+    "context": "non-security dev question"
+  },
+  {
+    "id": 19,
+    "category": "false-positive",
+    "prompt": "what's the best lunch spot near the office?",
+    "expected_skills": [],
+    "should_not_load": ["seal-*"],
+    "context": "casual non-security"
+  },
+  {
+    "id": 20,
+    "category": "false-positive",
+    "prompt": "explain how Docker networking works",
+    "expected_skills": [],
+    "should_not_load": ["seal-*"],
+    "context": "technical but not security-specific"
+  },
+  {
+    "id": 21,
+    "category": "multi-domain-bridge",
+    "prompt": "we're deploying our protocol to mainnet next week. what security checks do we need?",
+    "expected_skills": ["seal-devsecops", "seal-security-testing", "seal-incident-management", "seal-infrastructure"],
+    "context": "launch security, spans dev, testing, IR, infra"
+  },
+  {
+    "id": 22,
+    "category": "multi-domain-bridge",
+    "prompt": "a contractor just left the team. how do we revoke access and make sure nothing's compromised?",
+    "expected_skills": ["seal-iam", "seal-opsec", "seal-incident-management"],
+    "context": "offboarding security, spans identity, ops, incident prep"
+  },
+  {
+    "id": 23,
+    "category": "multi-domain-bridge",
+    "prompt": "we're considering using a new third-party oracle. how do we evaluate the risk?",
+    "expected_skills": ["seal-supply-chain", "seal-external-security-reviews", "seal-governance"],
+    "context": "vendor risk assessment, spans supply chain, audits, governance"
+  },
+  {
+    "id": 24,
+    "category": "awareness-education",
+    "prompt": "can you explain what a drainer attack is and how to recognize one?",
+    "expected_skills": ["seal-awareness", "seal-wallet-security"],
+    "context": "educational, should explain attack pattern with recognition tips"
+  },
+  {
+    "id": 25,
+    "category": "awareness-education",
+    "prompt": "what are the most common ways people lose their crypto?",
+    "expected_skills": ["seal-awareness", "seal-wallet-security", "seal-privacy"],
+    "context": "broad security awareness question"
+  },
+  {
+    "id": 26,
+    "category": "privacy-concern",
+    "prompt": "I'm going to a conference in a country with strict border controls. how do I protect my devices?",
+    "expected_skills": ["seal-opsec", "seal-privacy", "seal-encryption"],
+    "context": "travel security, device protection, encryption at border"
+  },
+  {
+    "id": 27,
+    "category": "privacy-concern",
+    "prompt": "someone is doxxing our team members. what do we do?",
+    "expected_skills": ["seal-opsec", "seal-privacy", "seal-incident-management"],
+    "context": "personal security threat, spans opsec, privacy, incident response"
+  },
+  {
+    "id": 28,
+    "category": "cert-coach",
+    "prompt": "we want to get SEAL certified for incident response. where do we start?",
+    "expected_skills": ["seal-incident-management", "seal-certs"],
+    "context": "certification readiness question"
+  },
+  {
+    "id": 29,
+    "category": "cert-coach",
+    "prompt": "what's the difference between self-assessment and third-party certification for SEAL?",
+    "expected_skills": ["seal-certs", "seal-governance"],
+    "context": "cert process question"
+  },
+  {
+    "id": 30,
+    "category": "emergency-real-time",
+    "prompt": "URGENT: someone just sent 50 ETH from our treasury to an address we don't recognize. our multisig is showing 3/5 signatures already. what do we do RIGHT NOW",
+    "expected_skills": ["seal-incident-management", "seal-multisig-for-protocols", "seal-safe-harbor"],
+    "context": "real-time emergency with specific details, highest priority"
+  }
+]

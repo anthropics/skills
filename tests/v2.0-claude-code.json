@@ -1,0 +1,38 @@
+{
+  "version": "v2.0",
+  "date": "2026-03-21",
+  "platform": "Claude Code",
+  "model": "claude (API via claude CLI)",
+  "methodology": "20 prompts scored 0-5 on whether the agent loads correct skills and gives useful security advice",
+  "changes_from_v1": "Added cross-domain triggers to descriptions, gotchas sections to all 27 skills",
+  "results": [
+    {"id": 1, "prompt": "What is the best way to store my seed phrase?", "skills_loaded": ["seal-wallet-security"], "score": 5, "notes": "Correct skill, specific answer, caught gotcha"},
+    {"id": 2, "prompt": "How do I respond to a phishing attack on my Discord server?", "skills_loaded": ["seal-community-management"], "score": 5, "notes": "Improved from v1 — description now explicitly mentions Discord scenarios"},
+    {"id": 3, "prompt": "What encryption should I use for our team internal comms?", "skills_loaded": ["seal-encryption"], "score": 5, "notes": "Correct skill, E2E recommendation with gotchas"},
+    {"id": 4, "prompt": "We are hiring a remote Solidity developer - any red flags?", "skills_loaded": ["seal-dprk-it-workers"], "score": 5, "notes": "Correct skill, specific TTPs including non-Asian facilitator anti-pattern"},
+    {"id": 5, "prompt": "How do I set up a multisig for our protocol treasury?", "skills_loaded": ["seal-multisig-for-protocols"], "score": 5, "notes": "Comprehensive multisig setup guidance"},
+    {"id": 6, "prompt": "A whitehat just contacted us about a vulnerability. What are our legal obligations?", "skills_loaded": ["seal-safe-harbor"], "score": 5, "notes": "Improved from v1 — description now mentions vulnerability scenarios explicitly"},
+    {"id": 7, "prompt": "My wallet was drained. What do I do right now and how do I prevent this?", "skills_loaded": ["seal-incident-management", "seal-wallet-security"], "score": 5, "notes": "Both skills loaded, immediate + prevention covered"},
+    {"id": 8, "prompt": "We had a social engineering attack through Telegram. How handle incident + improve?", "skills_loaded": ["seal-incident-management", "seal-community-management"], "score": 5, "notes": "v1=4, v2=5 — cross-domain triggers in description worked"},
+    {"id": 9, "prompt": "Can I just email my seed phrase to my cofounder as backup?", "skills_loaded": ["seal-wallet-security"], "score": 5, "notes": "Correctly flagged as dangerous, caught server-side draft storage gotcha"},
+    {"id": 10, "prompt": "Can you help me write a Python script?", "skills_loaded": [], "score": 5, "notes": "No false positive"},
+    {"id": 11, "prompt": "I need to audit our dev pipeline — code security + supply chain risks?", "skills_loaded": ["seal-devsecops"], "score": 4, "notes": "Missed co-loading seal-supply-chain for dependency-specific concerns"},
+    {"id": 12, "prompt": "We are onboarding a new treasury signer. What security checks?", "skills_loaded": ["seal-multisig-for-protocols", "seal-iam"], "score": 5, "notes": "v1=4, v2=5 — cross-domain description triggered iam co-load"},
+    {"id": 13, "prompt": "Our DDoS protection seems weak. How do I assess and fix this?", "skills_loaded": ["seal-infrastructure"], "score": 5, "notes": "Correct single skill, comprehensive answer"},
+    {"id": 14, "prompt": "Someone on our team clicked a malicious link. What is the risk?", "skills_loaded": ["seal-awareness", "seal-incident-management"], "score": 5, "notes": "Both skills loaded, specific risk categories covered"},
+    {"id": 15, "prompt": "We are storing API keys in our GitHub repo. How bad is this?", "skills_loaded": ["seal-devsecops"], "score": 5, "notes": "Critical severity, caught git history permanence gotcha"},
+    {"id": 16, "prompt": "I want to use the same password for everything in the org.", "skills_loaded": ["seal-iam"], "score": 5, "notes": "Immediate pushback with alternatives (password manager, MFA)"},
+    {"id": 17, "prompt": "Should we use a VPN for our team comms?", "skills_loaded": ["seal-privacy"], "score": 4, "notes": "Missed co-loading seal-encryption for E2E recommendation"},
+    {"id": 18, "prompt": "What does zero trust mean for a small Web3 team?", "skills_loaded": ["seal-infrastructure"], "score": 5, "notes": "Correct skill, practical guidance"},
+    {"id": 19, "prompt": "How do I verify a multisig transaction before signing?", "skills_loaded": ["seal-multisig-for-protocols"], "score": 5, "notes": "Correct skill, mainnet simulation gotcha caught"},
+    {"id": 20, "prompt": "What is the difference between hot and cold wallets?", "skills_loaded": ["seal-wallet-security"], "score": 4, "notes": "Correct skill, slightly surface-level"}
+  ],
+  "summary": {
+    "overall_average": 4.85,
+    "single_domain_avg": 4.83,
+    "multi_domain_avg": 4.75,
+    "gotcha_avg": 5.0,
+    "false_positive_rate": 0.0,
+    "improvement_vs_v1": "+0.10"
+  }
+}

@@ -1,0 +1,166 @@
+[
+  {
+    "id": 1,
+    "category": "single-domain",
+    "prompt": "What's the best way to store my seed phrase?",
+    "expected_skills": ["seal-wallet-security"],
+    "expected_topics": ["seed phrase", "offline storage", "metal backup", "hardware wallet"],
+    "should_not_load": []
+  },
+  {
+    "id": 2,
+    "category": "single-domain",
+    "prompt": "How do I respond to a phishing attack on my Discord server?",
+    "expected_skills": ["seal-community-management", "seal-incident-management"],
+    "expected_topics": ["incident response", "community moderation", "alerting users"],
+    "should_not_load": []
+  },
+  {
+    "id": 3,
+    "category": "single-domain",
+    "prompt": "What encryption should I use for our team's internal comms?",
+    "expected_skills": ["seal-encryption"],
+    "expected_topics": ["end-to-end encryption", "Signal", "encrypted messaging", "PGP"],
+    "should_not_load": []
+  },
+  {
+    "id": 4,
+    "category": "single-domain",
+    "prompt": "We're hiring a remote Solidity developer — any red flags?",
+    "expected_skills": ["seal-dprk-it-workers"],
+    "expected_topics": ["DPRK", "fake identity", "remote worker red flags", "verification"],
+    "should_not_load": []
+  },
+  {
+    "id": 5,
+    "category": "single-domain",
+    "prompt": "How do I set up a multisig for our protocol treasury?",
+    "expected_skills": ["seal-multisig-for-protocols", "seal-treasury-operations"],
+    "expected_topics": ["multisig setup", "signer selection", "threshold", "key management"],
+    "should_not_load": []
+  },
+  {
+    "id": 6,
+    "category": "single-domain",
+    "prompt": "What's the difference between hot and cold wallets?",
+    "expected_skills": ["seal-wallet-security"],
+    "expected_topics": ["hot wallet", "cold wallet", "air-gapped", "trade-offs"],
+    "should_not_load": []
+  },
+  {
+    "id": 7,
+    "category": "single-domain",
+    "prompt": "A whitehat just contacted us about a vulnerability. What are our legal obligations?",
+    "expected_skills": ["seal-safe-harbor", "seal-vulnerability-disclosure"],
+    "expected_topics": ["safe harbor", "whitehat protection", "responsible disclosure", "legal framework"],
+    "should_not_load": []
+  },
+  {
+    "id": 8,
+    "category": "single-domain",
+    "prompt": "How do I verify a multisig transaction before signing?",
+    "expected_skills": ["seal-wallet-security", "seal-multisig-for-protocols"],
+    "expected_topics": ["transaction verification", "signing process", "simulated transaction"],
+    "should_not_load": []
+  },
+  {
+    "id": 9,
+    "category": "single-domain",
+    "prompt": "Should we use a VPN for our team's comms?",
+    "expected_skills": ["seal-privacy", "seal-encryption"],
+    "expected_topics": ["VPN", "encrypted comms", "privacy", "trade-offs"],
+    "should_not_load": []
+  },
+  {
+    "id": 10,
+    "category": "single-domain",
+    "prompt": "What does zero trust mean for a small Web3 team?",
+    "expected_skills": ["seal-infrastructure", "seal-opsec"],
+    "expected_topics": ["zero trust", "least privilege", "network segmentation", "identity verification"],
+    "should_not_load": []
+  },
+  {
+    "id": 11,
+    "category": "multi-domain",
+    "prompt": "My wallet was drained. What do I do right now and how do I prevent this in the future?",
+    "expected_skills": ["seal-incident-management", "seal-wallet-security", "seal-safe-harbor"],
+    "expected_topics": ["containment", "evidence preservation", "incident response", "prevention"],
+    "should_not_load": []
+  },
+  {
+    "id": 12,
+    "category": "multi-domain",
+    "prompt": "We had a social engineering attack through Telegram. How should we handle the incident and improve community security?",
+    "expected_skills": ["seal-incident-management", "seal-community-management", "seal-awareness"],
+    "expected_topics": ["incident handling", "Telegram security", "community defense", "awareness training"],
+    "should_not_load": []
+  },
+  {
+    "id": 13,
+    "category": "multi-domain",
+    "prompt": "I need to audit our dev pipeline — what should I look at for both code security and supply chain risks?",
+    "expected_skills": ["seal-devsecops", "seal-supply-chain", "seal-security-testing"],
+    "expected_topics": ["CI/CD security", "dependency management", "SLSA", "code review"],
+    "should_not_load": []
+  },
+  {
+    "id": 14,
+    "category": "multi-domain",
+    "prompt": "We're onboarding a new treasury signer. What security checks are needed?",
+    "expected_skills": ["seal-multisig-for-protocols", "seal-iam", "seal-treasury-operations"],
+    "expected_topics": ["signer onboarding", "identity verification", "key ceremony", "access control"],
+    "should_not_load": []
+  },
+  {
+    "id": 15,
+    "category": "multi-domain",
+    "prompt": "Our DDoS protection seems weak. How do I assess and fix this?",
+    "expected_skills": ["seal-infrastructure"],
+    "expected_topics": ["DDoS protection", "infrastructure hardening", "monitoring"],
+    "should_not_load": []
+  },
+  {
+    "id": 16,
+    "category": "edge-case",
+    "prompt": "Someone on our team clicked a malicious link. What's the risk?",
+    "expected_skills": ["seal-awareness", "seal-incident-management"],
+    "expected_topics": ["malicious link", "phishing", "risk assessment", "containment"],
+    "should_not_load": []
+  },
+  {
+    "id": 17,
+    "category": "gotcha",
+    "prompt": "Can I just email my seed phrase to my cofounder as backup?",
+    "expected_skills": ["seal-wallet-security"],
+    "expected_topics": ["seed phrase", "NEVER email", "secure backup", "offline storage"],
+    "gotcha": true,
+    "should_not_load": []
+  },
+  {
+    "id": 18,
+    "category": "gotcha",
+    "prompt": "We're storing API keys in our GitHub repo. How bad is this?",
+    "expected_skills": ["seal-devsecops", "seal-secure-software-development"],
+    "expected_topics": ["secret management", "env variables", "git history", "credential rotation"],
+    "gotcha": true,
+    "should_not_load": []
+  },
+  {
+    "id": 19,
+    "category": "gotcha",
+    "prompt": "I want to use the same password for everything in the org.",
+    "expected_skills": ["seal-iam", "seal-opsec"],
+    "expected_topics": ["password reuse", "credential compromise", "password manager", "MFA"],
+    "gotcha": true,
+    "should_not_load": []
+  },
+  {
+    "id": 20,
+    "category": "false-positive",
+    "prompt": "Can you help me write a Python script?",
+    "expected_skills": [],
+    "expected_topics": [],
+    "should_not_load": ["seal-*"],
+    "gotcha": false
+  }
+]

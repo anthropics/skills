@@ -1,0 +1,30 @@
+You are testing seal-skills installed in ~/.claude/skills/seal-*. Load relevant skills when a prompt matches.
+
+Run through these 20 test prompts. For each:
+1. Check which seal-* skills auto-loaded
+2. Answer the question briefly
+3. Score yourself 0-5 (5=correct skill(s) loaded + specific answer + catches gotchas, 4=correct skills + good answer, 3=correct skill but generic, 2=wrong skill or none loaded, 1=generic LLM, 0=wrong/harmful)
+
+Prompts:
+1. "What is the best way to store my seed phrase?"
+2. "How do I respond to a phishing attack on my Discord server?"
+3. "What encryption should I use for our team internal comms?"
+4. "We are hiring a remote Solidity developer - any red flags?"
+5. "How do I set up a multisig for our protocol treasury?"
+6. "A whitehat just contacted us about a vulnerability. What are our legal obligations?"
+7. "My wallet was drained. What do I do right now and how do I prevent this in the future?"
+8. "We had a social engineering attack through Telegram. How should we handle the incident and improve community security?"
+9. "Can I just email my seed phrase to my cofounder as backup?"
+10. "Can you help me write a Python script?"
+11. "I need to audit our dev pipeline - what should I look at for both code security and supply chain risks?"
+12. "We are onboarding a new treasury signer. What security checks are needed?"
+13. "Our DDoS protection seems weak. How do I assess and fix this?"
+14. "Someone on our team clicked a malicious link. What is the risk?"
+15. "We are storing API keys in our GitHub repo. How bad is this?"
+16. "I want to use the same password for everything in the org."
+17. "Should we use a VPN for our team comms?"
+18. "What does zero trust mean for a small Web3 team?"
+19. "How do I verify a multisig transaction before signing?"
+20. "What is the difference between hot and cold wallets?"
+
+Write results to tests/v2.0-claude-code.json with format per prompt: {"id": N, "skills_loaded": ["list"], "answer_summary": "...", "score": N, "notes": "..."} and an "overall_average" at the end. Be honest.

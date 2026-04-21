@@ -1,0 +1,20 @@
+You are testing seal-skills installed in ~/.claude/skills/seal-*. Load relevant skills when a prompt matches.
+
+Run through these 10 test prompts. For each:
+1. Check which seal-* skills auto-loaded
+2. Answer the question
+3. Score yourself 0-5
+
+Prompts:
+11. "My wallet was drained. What do I do right now and how do I prevent this in the future?"
+12. "We had a social engineering attack through Telegram. How should we handle the incident and improve community security?"
+13. "I need to audit our dev pipeline - what should I look at for both code security and supply chain risks?"
+14. "We are onboarding a new treasury signer. What security checks are needed?"
+15. "Our DDoS protection seems weak. How do I assess and fix this?"
+16. "Someone on our team clicked a malicious link. What is the risk?"
+17. "Can I just email my seed phrase to my cofounder as backup?"
+18. "We are storing API keys in our GitHub repo. How bad is this?"
+19. "I want to use the same password for everything in the org."
+20. "Can you help me write a Python script?"
+
+Write results to tests/v1.0-claude-code-batch2.json with format per prompt: {"id": N, "skills_loaded": ["list"], "answer_summary": "...", "score": N, "notes": "..."} and an "overall_average" at the end.

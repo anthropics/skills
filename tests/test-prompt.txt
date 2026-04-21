@@ -1,0 +1,20 @@
+You are testing seal-skills installed in ~/.claude/skills/seal-*. These are security domain skills from the Security Alliance frameworks. Load relevant skills when a prompt matches them.
+
+Run through these 10 test prompts. For each one:
+1. Check if any seal-* skills auto-loaded based on your skill list
+2. Answer the question
+3. Score yourself 0-5 (5=correct skill loaded + specific actionable answer + catches gotchas, 4=correct skill + good answer, 3=correct skill + generic answer, 2=wrong skill or no skill, 1=generic LLM, 0=hallucinated/wrong)
+
+Prompts:
+1. "What is the best way to store my seed phrase?"
+2. "How do I respond to a phishing attack on my Discord server?"
+3. "What encryption should I use for our team internal comms?"
+4. "We are hiring a remote Solidity developer - any red flags?"
+5. "How do I set up a multisig for our protocol treasury?"
+6. "A whitehat just contacted us about a vulnerability. What are our legal obligations?"
+7. "My wallet was drained. What do I do right now and how do I prevent this in the future?"
+8. "We had a social engineering attack through Telegram. How should we handle the incident?"
+9. "Can I just email my seed phrase to my cofounder as backup?"
+10. "Can you help me write a Python script?"
+
+Write results to tests/v1.0-claude-code-baseline.json with format per prompt: {"id": N, "skills_loaded": ["list"], "answer_summary": "...", "score": N, "notes": "..."} and an "overall_average" at the end. Be honest about scoring - penalize yourself if answers are generic without the skill context.

@@ -1,0 +1,94 @@
+{
+  "version": "v1.0",
+  "date": "2026-03-21",
+  "platform": "Claude Code",
+  "model": "claude (API via claude CLI)",
+  "batch": 2,
+  "methodology": "10 prompts scored 0-5",
+  "results": [
+    {
+      "id": 11,
+      "prompt": "My wallet was drained. What do I do right now and how do I prevent this in the future?",
+      "skills_loaded": ["seal-incident-management", "seal-wallet-security"],
+      "answer_summary": "Immediate: revoke approvals, move remaining funds. Investigation: check drain type, preserve evidence. Prevention: hardware wallet, seed storage, no hot wallets for large amounts.",
+      "score": 5,
+      "notes": "Both skills loaded, multi-domain coverage with immediate + prevention"
+    },
+    {
+      "id": 12,
+      "prompt": "We had a social engineering attack through Telegram. How should we handle the incident and improve community security?",
+      "skills_loaded": ["seal-community-management"],
+      "answer_summary": "Incident response, community security improvements. Telegram-specific guidance included.",
+      "score": 4,
+      "notes": "Only loaded community-management. Missed incident-management for IR framework and awareness for training."
+    },
+    {
+      "id": 13,
+      "prompt": "I need to audit our dev pipeline - what should I look at for both code security and supply chain risks?",
+      "skills_loaded": ["seal-devsecops"],
+      "answer_summary": "CI/CD security, code review, dependency management. Good devsecops coverage.",
+      "score": 4,
+      "notes": "Only loaded devsecops. Missed supply-chain for SLSA/dependency analysis and security-testing for testing methodology."
+    },
+    {
+      "id": 14,
+      "prompt": "We are onboarding a new treasury signer. What security checks are needed?",
+      "skills_loaded": ["seal-treasury-operations"],
+      "answer_summary": "Identity verification, key ceremony, access controls, monitoring setup.",
+      "score": 4,
+      "notes": "Only loaded treasury-operations. Missed multisig-for-protocols for signer procedures and iam for identity verification."
+    },
+    {
+      "id": 15,
+      "prompt": "Our DDoS protection seems weak. How do I assess and fix this?",
+      "skills_loaded": ["seal-infrastructure"],
+      "answer_summary": "DDoS protection strategies, assessment methodology, mitigation options.",
+      "score": 5,
+      "notes": "Correct single skill, comprehensive answer for infrastructure-specific question"
+    },
+    {
+      "id": 16,
+      "prompt": "Someone on our team clicked a malicious link. What is the risk?",
+      "skills_loaded": ["seal-awareness", "seal-incident-management"],
+      "answer_summary": "Risk assessment based on link type, immediate containment steps, monitoring for compromise indicators.",
+      "score": 5,
+      "notes": "Both correct skills loaded, specific risk categories covered"
+    },
+    {
+      "id": 17,
+      "prompt": "Can I just email my seed phrase to my cofounder as backup?",
+      "skills_loaded": ["seal-wallet-security"],
+      "answer_summary": "Strong warning against email. Covered server-side storage, draft copies, interception, provider access.",
+      "score": 5,
+      "notes": "Correct skill, correctly identified footgun, specific gotchas caught"
+    },
+    {
+      "id": 18,
+      "prompt": "We are storing API keys in our GitHub repo. How bad is this?",
+      "skills_loaded": ["seal-devsecops", "seal-secure-software-development"],
+      "answer_summary": "Critical severity. Covered git history exposure, secret scanning, env variables, rotation procedures.",
+      "score": 5,
+      "notes": "Both skills loaded, specific severity assessment with remediation"
+    },
+    {
+      "id": 19,
+      "prompt": "I want to use the same password for everything in the org.",
+      "skills_loaded": ["seal-iam", "seal-opsec"],
+      "answer_summary": "Strong pushback. Covered credential stuffing, single point of failure, password managers, MFA.",
+      "score": 5,
+      "notes": "Both skills loaded, immediate pushback with alternatives"
+    },
+    {
+      "id": 20,
+      "prompt": "Can you help me write a Python script?",
+      "skills_loaded": [],
+      "answer_summary": "Helped with script without loading any seal skills.",
+      "score": 5,
+      "notes": "No false positive"
+    }
+  ],
+  "batch_summary": {
+    "batch_avg": 4.7,
+    "notes": "Multi-domain prompts 12-14 under-loaded (4s) - only 1 skill loaded when 2-3 expected"
+  }
+}

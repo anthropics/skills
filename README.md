@@ -1,92 +1,145 @@
-# Skills
-Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks. Skills teach Claude how to complete specific tasks in a repeatable way, whether that's creating documents with your company's brand guidelines, analyzing data using your organization's specific workflows, or automating personal tasks.
+# seal-skills
 
-For more information, check out:
-- [What are skills?](https://support.claude.com/en/articles/12512176-what-are-skills)
-- [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills)
-- [Equipping agents for the real world with Agent Skills](https://anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+Security knowledge graph for AI agents. 27 domains, 111 certification controls, from the [SEAL Frameworks](https://github.com/security-alliance/frameworks).
 
-# About This Repository
-
-This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).
-
-Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
-
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
-
-## Disclaimer
-
-**These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
-
-# Skill Sets
-- [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
-- [./spec](./spec): The Agent Skills specification
-- [./template](./template): Skill template
-
-# Try in Claude Code, Claude.ai, and the API
-
-## Claude Code
-You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
-```
-/plugin marketplace add anthropics/skills
+```bash
+# Ask any security question — the agent finds the right domain automatically
+> My multisig was compromised, what do I do?
+> How do I set up incident response for our protocol?
+> We're hiring remote devs — any DPRK concerns?
 ```
 
-Then, to install a specific set of skills:
-1. Select `Browse and install plugins`
-2. Select `anthropic-agent-skills`
-3. Select `document-skills` or `example-skills`
-4. Select `Install now`
-
-Alternatively, directly install either Plugin via:
-```
-/plugin install document-skills@anthropic-agent-skills
-/plugin install example-skills@anthropic-agent-skills
-```
-
-After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
-
-## Claude.ai
-
-These example skills are all already available to paid plans in Claude.ai. 
-
-To use any skill from this repository or upload custom skills, follow the instructions in [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude#h_a4222fa77b).
-
-## Claude API
-
-You can use Anthropic's pre-built skills, and upload custom skills, via the Claude API. See the [Skills API Quickstart](https://docs.claude.com/en/api/skills-guide#creating-a-skill) for more.
-
-# Creating a Basic Skill
-
-Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
-
-```markdown
----
-name: my-skill-name
-description: A clear description of what this skill does and when to use it
 ---
 
-# My Skill Name
+## What this does
 
-[Add your instructions here that Claude will follow when this skill is active]
+Gives your AI agent (Hermes, Claude, Cursor, etc.) structured security knowledge across 27 domains — from incident response and multisig operations to DPRK worker detection and supply chain security.
 
-## Examples
-- Example usage 1
-- Example usage 2
+**Not a PDF.** Not a static checklist. Interactive guidance with gotchas, cross-domain awareness, and context-specific answers.
 
-## Guidelines
-- Guideline 1
-- Guideline 2
+## Quick Start
+
+```bash
+git clone https://github.com/clanktank/seal-skills.git ~/.hermes/skills/seal
 ```
 
-The frontmatter requires only two fields:
-- `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
-- `description` - A complete description of what the skill does and when to use it
+For private inference (sensitive security data):
 
-The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
+```bash
+hermes config set provider.base_url "https://api.venice.ai/v1"
+hermes config set provider.model "qwen3-5-35b-a3b"
+hermes restart
+```
 
-# Partner Skills
+Verify it works:
 
-Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
+```bash
+hermes chat --toolsets skills -q "What seal skills do you have?"
+```
 
-- **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+## Usage
+
+**Discord:** `@mention` the bot and ask any security question naturally.
+
+**Telegram / CLI:** Say things like:
+- "check my security posture"
+- "help me set up multisig"
+- "we just got hacked, what do I do"
+- "daily security tips" (sets up coach with daily lessons)
+
+The agent matches your question to the right domain and answers using the SEAL frameworks.
+
+## Domains (27)
+
+| Domain | Focus |
+|--------|-------|
+| **incident-management** | Response playbooks, containment, recovery |
+| **multisig-for-protocols** | Signer management, thresholds, backup signing |
+| **treasury-operations** | Fund classification, diversification, controls |
+| **wallet-security** | Seed phrases, hardware wallets, signing verification |
+| **supply-chain** | Dependency auditing, lockfiles, vendoring |
+| **infrastructure** | OS hardening, network security, cloud configuration |
+| **iam** | Access control, least privilege, RBAC |
+| **monitoring** | SIEM, alerting, anomaly detection |
+| **threat-modeling** | Asset identification, attack surface analysis |
+| **dprk-it-workers** | Worker infiltration detection, identity verification |
+| **safe-harbor** | Whitehat protections, scope terms |
+| **vulnerability-disclosure** | Bug bounties, responsible disclosure |
+| **opsec** | Operational security, information classification |
+| **privacy** | Encrypted comms, VPN, metadata protection |
+| **encryption** | At-rest, in-transit, key management |
+| **devsecops** | CI/CD security, code signing, branch protection |
+| **governance** | Compliance, risk assessment, security KPIs |
+| **external-security-reviews** | Audit lifecycle, vendor selection |
+| **front-end-web-app** | CSP, supply chain, XSS prevention |
+| **community-management** | Discord/Telegram security, bot moderation |
+| **secure-software-development** | Code review, secure coding practices |
+| **security-testing** | Penetration testing, fuzzing, red teaming |
+| **security-automation** | As-code, automated scanning, SOAR |
+| **ens** | ENS domain security, record verification |
+| **certs** | SEAL certification frameworks (6 SFCs, 111 controls) |
+| **awareness** | Phishing, social engineering, training |
+| **user-team-security** | Security culture, onboarding, phishing defense |
+
+## Coach Mode
+
+The seal-coach skill provides Duolingo-style security training:
+
+- **Daily tips** — one security lesson per day, relevant to your domain
+- **Readiness assessment** — 8-10 questions to measure your security posture
+- **Hardening plans** — prioritized action items based on assessment
+- **Progress tracking** — streaks, domain scores, completed lessons
+- **Urgency path** — immediate triage for active threats
+
+Start coaching by saying "daily security tips" or "check my readiness."
+
+## How it works
+
+Each domain is a skill with cross-domain triggers and gotchas:
+
+```
+~/.hermes/skills/seal/
+├── INDEX.md                         # Trigger table — routes questions to domains
+├── SEAL-COACH/                      # Coach skill (daily tips, assessments)
+│   ├── SKILL.md
+│   ├── references/
+│   └── templates/
+├── CERTS/                           # 6 SFC certifications (111 controls)
+│   ├── SKILL.md
+│   └── references/
+├── incident-management/             # Response playbooks
+├── multisig-for-protocols/          # Signer ops
+├── wallet-security/                 # Seed phrases, HW wallets
+└── ... (24 more domains)
+```
+
+## Security & Privacy
+
+SEAL skills handle information about an organization's security posture — which controls they fail, weak configurations, incident gaps. **Using these with a cloud LLM sends sensitive security data to a third party.**
+
+### Provider trust
+
+| Provider | What they see | Risk | When to use |
+|----------|--------------|------|-------------|
+| **Local LLM** (Ollama, vLLM) | Nothing leaves the machine | None | Highest security |
+| **Venice.ai** | Queries during inference, no retention | Low | Privacy + quality balance |
+| **Self-hosted** (Modal, Lambda) | You control infra | Low-Medium | Scale + full control |
+| **Anthropic/Claude** | All queries retained | High | Non-sensitive only |
+| **OpenRouter** | Aggregator, varies by provider | Varies | Never for sensitive data |
+
+Venice.ai guarantees no data retention and no training on user data. "No retention" is a policy, not a technical guarantee — treat Venice as lower-risk than Anthropic/OpenAI, but not equivalent to local inference.
+
+### What flows to the LLM
+
+- Your security questions (reveals what you're worried about)
+- Answers to cert controls ("no" = specific gap identified)
+- Incident scenarios (details of breaches)
+- Gotchas discussed (known weaknesses)
+
+**Rule:** Before deploying for any organization, ask: *"Are we comfortable with our inference provider seeing this data?"* If no, use local inference or Venice.ai.
+
+## Source
+
+- Frameworks: https://github.com/security-alliance/frameworks
+- Skill standard: https://agentskills.io
+- Agent: https://github.com/NousResearch/hermes-agent

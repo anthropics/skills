@@ -1,0 +1,68 @@
+{
+  "version": "v1.0",
+  "date": "2026-03-21",
+  "platform": "Hermes + Claude Code",
+  "methodology": "20 prompts scored 0-5 on whether the agent loads correct skills and gives useful security advice",
+  "scoring": {
+    "5": "Correct skill(s) loaded, specific actionable answer, catches gotchas",
+    "4": "Correct skill(s) loaded, good answer, missing gotchas",
+    "3": "Correct skill loaded, generic answer",
+    "2": "Wrong skill or no skill, answer okay",
+    "1": "No skill loaded, generic LLM",
+    "0": "Hallucinated/wrong/harmful advice"
+  },
+  "results": {
+    "hermes": {
+      "prompt_1": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_2": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_3": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_4": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_5": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_6": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_7": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_8": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_9": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_10": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_11": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_12": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_13": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_14": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_15": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_16": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_17": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_18": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_19": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_20": {"score": null, "skills_loaded": [], "notes": ""}
+    },
+    "claude_code": {
+      "prompt_1": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_2": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_3": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_4": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_5": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_6": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_7": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_8": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_9": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_10": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_11": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_12": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_13": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_14": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_15": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_16": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_17": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_18": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_19": {"score": null, "skills_loaded": [], "notes": ""},
+      "prompt_20": {"score": null, "skills_loaded": [], "notes": ""}
+    }
+  },
+  "summary": {
+    "hermes_avg": null,
+    "claude_code_avg": null,
+    "single_domain_avg": null,
+    "multi_domain_avg": null,
+    "gotcha_avg": null,
+    "false_positive_rate": null
+  }
+}

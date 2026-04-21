@@ -1,0 +1,53 @@
+You are testing seal-skills installed in ~/.claude/skills/seal-*. These are security domain skills from the Security Alliance frameworks. Load relevant skills when a prompt matches.
+
+Run through these 30 test prompts. For each one:
+1. Note which seal-* skills auto-loaded based on the description trigger matching
+2. Give a brief answer (2-3 sentences max — we're testing skill loading, not answer quality)
+3. Score yourself 0-5 based ONLY on skill loading accuracy:
+   - 5: All expected skills loaded, no false skills
+   - 4: Most expected skills loaded, maybe missed one
+   - 3: Loaded correct primary skill but missed secondary
+   - 2: Wrong skill loaded or loaded extra unrelated skill
+   - 1: No skill loaded when one should have
+   - 0: False positive (loaded security skill for non-security prompt)
+
+Prompts (these are synthetic scenarios mimicking real user behavior — some are informal, some are vague, some are emergencies):
+
+1. "wtf my wallet just got drained everything's gone what do i do"
+2. "bro someone just sent me a link in our discord claiming to be from the team and now my metamask is showing weird pending transactions"
+3. "we just raised a round and need to figure out our treasury setup"
+4. "our team is growing and I'm worried about security"
+5. "what should I do about the new guy we're onboarding next week?"
+6. "walk me through what happens if our main signer loses their hardware wallet"
+7. "pretend we just got hacked and walk me through the first 30 minutes"
+8. "imagine a team member's laptop gets stolen at a conference. what happens next?"
+9. "do we need 24/7 monitoring or is business hours enough for a small protocol?"
+10. "what's the minimum we need for incident response as a 5-person team?"
+11. "this dev's resume looks too good to be true. they claim to have built defi protocols for unnamed clients. should I be suspicious?"
+12. "we need to hire 3 remote contractors. what's our security vetting process?"
+13. "how do I set up DNSSEC for our domain and do we actually need it?"
+14. "our GitHub Actions pipeline runs with admin permissions. is that bad?"
+15. "I keep my seed phrase in a Google Doc shared with my team for emergencies. That's fine right?"
+16. "we use the same admin account for our GCP, AWS, and GitHub. saves time!"
+17. "my cofounder wants to approve all treasury transactions without second signer because we're moving too slow"
+18. "can you help me optimize my React component rendering?"
+19. "what's the best lunch spot near the office?"
+20. "explain how Docker networking works"
+21. "we're deploying our protocol to mainnet next week. what security checks do we need?"
+22. "a contractor just left the team. how do we revoke access and make sure nothing's compromised?"
+23. "we're considering using a new third-party oracle. how do we evaluate the risk?"
+24. "can you explain what a drainer attack is and how to recognize one?"
+25. "what are the most common ways people lose their crypto?"
+26. "I'm going to a conference in a country with strict border controls. how do I protect my devices?"
+27. "someone is doxxing our team members. what do we do?"
+28. "we want to get SEAL certified for incident response. where do we start?"
+29. "what's the difference between self-assessment and third-party certification for SEAL?"
+30. "URGENT: someone just sent 50 ETH from our treasury to an address we don't recognize. our multisig is showing 3/5 signatures already. what do we do RIGHT NOW"
+
+Write results to tests/v3.0-claude-code.json with format:
+{
+  "version": "v3.0",
+  "date": "2026-03-21",
+  "results": [{"id": N, "skills_loaded": ["list"], "score": N, "notes": "..."}],
+  "summary": {"overall_average": N, "category_breakdown": {...}}
+}

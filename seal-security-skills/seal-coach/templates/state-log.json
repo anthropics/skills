@@ -1,0 +1,19 @@
+{
+  "users": {},
+  "tips_pool_status": {
+    "wallet-security": 0,
+    "incident-management": 0,
+    "iam": 0,
+    "devsecops": 0,
+    "monitoring": 0,
+    "governance": 0,
+    "supply-chain": 0,
+    "awareness": 0,
+    "opsec": 0,
+    "encryption": 0,
+    "threat-modeling": 0,
+    "infrastructure": 0,
+    "community-management": 0,
+    "treasury-operations": 0
+  }
+}

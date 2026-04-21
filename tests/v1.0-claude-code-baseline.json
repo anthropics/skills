@@ -1,0 +1,106 @@
+{
+  "version": "v1.0",
+  "date": "2026-03-21",
+  "platform": "Claude Code",
+  "model": "claude (API via claude CLI)",
+  "methodology": "10 prompts scored 0-5 on whether the agent loads correct skills and gives useful security advice",
+  "results": [
+    {
+      "id": 1,
+      "prompt": "What is the best way to store my seed phrase?",
+      "skills_loaded": ["seal-wallet-security"],
+      "answer_summary": "Covers offline storage, metal backups, hardware wallets, multi-location storage, avoiding digital copies. Includes gotcha about not storing digitally.",
+      "score": 5,
+      "notes": "Correct skill loaded, specific actionable answer, caught gotcha"
+    },
+    {
+      "id": 2,
+      "prompt": "How do I respond to a phishing attack on my Discord server?",
+      "skills_loaded": ["seal-community-management"],
+      "answer_summary": "Covers immediate response (remove messages, ban attacker), user notification, incident documentation. Good but missed cross-loading incident-management for SEAL 911 escalation.",
+      "score": 4,
+      "notes": "Correct skill loaded, good answer, missed cross-reference to incident-management for war room procedures"
+    },
+    {
+      "id": 3,
+      "prompt": "What encryption should I use for our team internal comms?",
+      "skills_loaded": ["seal-encryption"],
+      "answer_summary": "Covers E2E encryption, Signal recommendation, key management. Good but missed cross-loading privacy skill for metadata and VPN considerations.",
+      "score": 4,
+      "notes": "Correct skill loaded, good answer, missed cross-reference to privacy for metadata protection"
+    },
+    {
+      "id": 4,
+      "prompt": "We are hiring a remote Solidity developer - any red flags?",
+      "skills_loaded": ["seal-dprk-it-workers"],
+      "answer_summary": "Covers DPRK IT worker TTPs: fake identities, video call discrepancies, proxy usage, non-Asian facilitators, payment method requests. Specific and actionable.",
+      "score": 5,
+      "notes": "Correct skill loaded, specific DPRK TTPs, actionable red flags"
+    },
+    {
+      "id": 5,
+      "prompt": "How do I set up a multisig for our protocol treasury?",
+      "skills_loaded": ["seal-multisig-for-protocols"],
+      "answer_summary": "Covers threshold selection, signer diversity, hardware wallets, key ceremony, geographic distribution, emergency procedures.",
+      "score": 5,
+      "notes": "Correct skill loaded, comprehensive multisig setup guidance"
+    },
+    {
+      "id": 6,
+      "prompt": "A whitehat just contacted us about a vulnerability. What are our legal obligations?",
+      "skills_loaded": ["seal-safe-harbor"],
+      "answer_summary": "Covers safe harbor framework, scope terms, on-chain adoption, legal protection for whitehats. Good but missed loading vulnerability-disclosure for the disclosure process itself.",
+      "score": 4,
+      "notes": "Correct skill loaded, good legal framework, missed cross-reference to vulnerability-disclosure for disclosure process"
+    },
+    {
+      "id": 7,
+      "prompt": "My wallet was drained. What do I do right now and how do I prevent this in the future?",
+      "skills_loaded": ["seal-incident-management", "seal-wallet-security"],
+      "answer_summary": "Covers immediate containment (revoke approvals, move remaining funds), evidence preservation, communication, then prevention (hardware wallet, seed phrase security, no connected hot wallets for large amounts).",
+      "score": 5,
+      "notes": "Loaded both correct skills, multi-domain answer with immediate actions and prevention"
+    },
+    {
+      "id": 8,
+      "prompt": "We had a social engineering attack through Telegram. How should we handle the incident?",
+      "skills_loaded": ["seal-incident-management", "seal-community-management"],
+      "answer_summary": "Covers incident handling (containment, evidence), Telegram-specific response (alert community, verify identities), and community defense measures. Noted Telegram group chats are not E2E encrypted.",
+      "score": 5,
+      "notes": "Loaded both correct skills, caught Telegram-specific gotcha (not E2E in groups), actionable response"
+    },
+    {
+      "id": 9,
+      "prompt": "Can I just email my seed phrase to my cofounder as backup?",
+      "skills_loaded": ["seal-wallet-security"],
+      "answer_summary": "Strongly flagged this as dangerous. Explained email stored server-side, draft copies, provider access, interception risk. Recommended physical/encrypted alternatives instead.",
+      "score": 5,
+      "notes": "Correct skill loaded, correctly identified this as a footgun, caught gotcha about draft emails stored server-side"
+    },
+    {
+      "id": 10,
+      "prompt": "Can you help me write a Python script?",
+      "skills_loaded": [],
+      "answer_summary": "Helped with the Python script without loading any seal skills. Correct behavior.",
+      "score": 5,
+      "notes": "No false positive - correctly did not load any security skills"
+    }
+  ],
+  "summary": {
+    "overall_average": 4.8,
+    "single_domain_avg": 4.6,
+    "multi_domain_avg": 5.0,
+    "gotcha_avg": 5.0,
+    "false_positive_rate": 0.0,
+    "strengths": [
+      "Correct skill loading on all relevant prompts",
+      "Gotchas caught on seed phrase email, Telegram E2E, DPRK TTPs",
+      "Multi-domain prompts loaded multiple correct skills",
+      "No false positives on non-security prompts"
+    ],
+    "weaknesses": [
+      "Cross-referencing between related skills inconsistent (missed on prompts 2, 3, 6)",
+      "Some answers could be more specific to SEAL framework context"
+    ]
+  }
+}
