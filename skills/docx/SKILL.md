@@ -357,7 +357,9 @@ Force a column break with a new section using `type: SectionType.NEXT_COLUMN`.
 
 ```javascript
 // CRITICAL: Headings must use HeadingLevel ONLY - no custom styles
-// CRITICAL: Pass cachedEntries - Google Docs shows empty TOC without it
+// CRITICAL: Pass cachedEntries - without them the TOC field ships empty and
+//   renders blank until a reader triggers "Update fields"; Google Docs, PDF
+//   export, and other non-interactive consumers render it blank permanently
 new TableOfContents("Table of Contents", {
   hyperlink: true,
   headingStyleRange: "1-3",
@@ -404,7 +406,7 @@ sections: [{
 - **TOC requires HeadingLevel only** - no custom styles on heading paragraphs
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
-- **TOC needs `cachedEntries`** - Google Docs shows empty TOC otherwise; manual refresh breaks links
+- **TOC needs `cachedEntries`** - without them the TOC field ships empty; Word requires "Update fields" to render it, non-interactive consumers (Google Docs, PDF export) render it blank
 - **Use `BookmarkStart`/`BookmarkEnd`, not `Bookmark`** - `Bookmark` emits `w:id="1"` for every bookmark, failing ID-uniqueness. Pass a unique numeric `linkId` to each `BookmarkStart`/`BookmarkEnd` pair
 
 ---
