@@ -353,7 +353,15 @@ Force a column break with a new section using `type: SectionType.NEXT_COLUMN`.
 
 ```javascript
 // CRITICAL: Headings must use HeadingLevel ONLY - no custom styles
-new TableOfContents("Table of Contents", { hyperlink: true, headingStyleRange: "1-3" })
+// CRITICAL: Pass cachedEntries - Google Docs shows empty TOC without it
+new TableOfContents("Table of Contents", {
+  hyperlink: true,
+  headingStyleRange: "1-3",
+  cachedEntries: [
+    { title: "Chapter 1", level: 1, page: 2, href: "chapter1" },
+    // one entry per heading; href must match the Bookmark id on that heading
+  ],
+})
 ```
 
 ### Headers/Footers
@@ -392,6 +400,7 @@ sections: [{
 - **TOC requires HeadingLevel only** - no custom styles on heading paragraphs
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
+- **TOC needs `cachedEntries`** - Google Docs shows empty TOC otherwise; manual refresh breaks links
 
 ---
 
