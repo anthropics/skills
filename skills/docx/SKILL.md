@@ -61,7 +61,7 @@ Generate .docx files with JavaScript, then validate. Install: `npm install -g do
 ```javascript
 const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun,
         Header, Footer, AlignmentType, PageOrientation, LevelFormat, ExternalHyperlink,
-        InternalHyperlink, Bookmark, FootnoteReferenceRun, PositionalTab,
+        InternalHyperlink, BookmarkStart, BookmarkEnd, FootnoteReferenceRun, PositionalTab,
         PositionalTabAlignment, PositionalTabRelativeTo, PositionalTabLeader,
         TabStopType, TabStopPosition, Column, SectionType,
         TableOfContents, HeadingLevel, BorderStyle, WidthType, ShadingType,
@@ -256,9 +256,13 @@ new Paragraph({
 })
 
 // Internal link (bookmark + reference)
-// 1. Create bookmark at destination
+// 1. Create bookmark at destination - use BookmarkStart/BookmarkEnd with a unique
+//    numeric linkId per bookmark. The `Bookmark` convenience class emits
+//    w:id="1" for every bookmark, which fails OOXML ID-uniqueness.
 new Paragraph({ heading: HeadingLevel.HEADING_1, children: [
-  new Bookmark({ id: "chapter1", children: [new TextRun("Chapter 1")] }),
+  new BookmarkStart("chapter1", 1),
+  new TextRun("Chapter 1"),
+  new BookmarkEnd(1),
 ]})
 // 2. Link to it
 new Paragraph({ children: [new InternalHyperlink({
@@ -359,7 +363,7 @@ new TableOfContents("Table of Contents", {
   headingStyleRange: "1-3",
   cachedEntries: [
     { title: "Chapter 1", level: 1, page: 2, href: "chapter1" },
-    // one entry per heading; href must match the Bookmark id on that heading
+    // one entry per heading; href must match the BookmarkStart w:name on that heading
   ],
 })
 ```
@@ -401,6 +405,7 @@ sections: [{
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
 - **TOC needs `cachedEntries`** - Google Docs shows empty TOC otherwise; manual refresh breaks links
+- **Use `BookmarkStart`/`BookmarkEnd`, not `Bookmark`** - `Bookmark` emits `w:id="1"` for every bookmark, failing ID-uniqueness. Pass a unique numeric `linkId` to each `BookmarkStart`/`BookmarkEnd` pair
 
 ---
 
