@@ -1,0 +1,37 @@
+{
+  "name": "aurelion-memory",
+  "display_name": "AURELION Memory — Knowledge Graph & MCP Server",
+  "version": "1.0.0",
+  "description": "A file-based personal knowledge graph that organizes markdown documents into a queryable 5-floor architecture with automatic relationship detection. Available as a Python API, CLI, and MCP server.",
+  "author": {
+    "name": "chase-key",
+    "url": "https://github.com/chase-key"
+  },
+  "license": "MIT",
+  "categories": ["memory", "knowledge-management", "mcp", "tools"],
+  "keywords": ["knowledge-graph", "memory", "mcp", "persistence", "markdown", "aurelion", "5-floor", "python"],
+  "homepage": "https://github.com/chase-key/aurelion-memory-lite",
+  "repository": "https://github.com/chase-key/aurelion-memory-lite",
+  "entrypoint": "SKILL.md",
+  "skill_type": "tool",
+  "mcp_server": {
+    "available": true,
+    "module": "aurelion_memory_mcp",
+    "install": "pip install aurelion-memory-lite",
+    "readme": "mcp/README.md"
+  },
+  "compatibility": {
+    "claude_code": true,
+    "claude_desktop": true,
+    "codex_cli": true,
+    "copilot_chat": true
+  },
+  "requires": ["python>=3.9"],
+  "ecosystem": "aurelion",
+  "ecosystem_url": "https://github.com/chase-key/aurelion-hub",
+  "related_skills": [
+    "aurelion-kernel",
+    "aurelion-advisor",
+    "aurelion-agent"
+  ]
+}

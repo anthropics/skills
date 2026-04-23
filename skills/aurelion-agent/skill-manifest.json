@@ -1,0 +1,31 @@
+{
+  "name": "aurelion-agent",
+  "display_name": "AURELION Agent — AI Collaboration Protocols",
+  "version": "1.0.0",
+  "description": "A set of AI collaboration protocols that transform the assistant from a passive executor into a strategic thinking partner — with defined triggers for when to push back, question assumptions, and challenge the user's direction.",
+  "author": {
+    "name": "chase-key",
+    "url": "https://github.com/chase-key"
+  },
+  "license": "MIT",
+  "categories": ["ai-collaboration", "productivity", "critical-thinking", "protocols"],
+  "keywords": ["ai-collaboration", "protocols", "critical-thinking", "integrity", "session-management", "aurelion", "agent"],
+  "homepage": "https://github.com/chase-key/aurelion-agent-lite",
+  "repository": "https://github.com/chase-key/aurelion-agent-lite",
+  "entrypoint": "SKILL.md",
+  "skill_type": "instructions",
+  "compatibility": {
+    "claude_code": true,
+    "codex_cli": true,
+    "chatgpt": true,
+    "copilot_chat": true
+  },
+  "requires": [],
+  "ecosystem": "aurelion",
+  "ecosystem_url": "https://github.com/chase-key/aurelion-hub",
+  "related_skills": [
+    "aurelion-kernel",
+    "aurelion-advisor",
+    "aurelion-memory"
+  ]
+}
