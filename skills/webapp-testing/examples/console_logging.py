@@ -32,4 +32,4 @@ with open('/mnt/user-data/outputs/console.log', 'w') as f:
     f.write('\n'.join(console_logs))
 
 print(f"\nCaptured {len(console_logs)} console messages")
-print(f"Logs saved to: /mnt/user-data/outputs/console.log")
+print("Logs saved to: /mnt/user-data/outputs/console.log")
