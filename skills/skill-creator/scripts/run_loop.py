@@ -9,16 +9,52 @@ overfitting.
 import argparse
 import json
 import random
+import shutil
 import sys
 import tempfile
 import time
 import webbrowser
+from contextlib import contextmanager
 from pathlib import Path
 
 from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
 from scripts.run_eval import find_project_root, run_eval
 from scripts.utils import parse_skill_md
+
+
+@contextmanager
+def _hide_installed_skill(name: str, verbose: bool):
+    """Temporarily move ~/.claude/skills/<name>/ aside while the eval runs.
+
+    run_eval detects a trigger by writing a command file at
+    .claude/commands/<name>-skill-<uuid>.md and watching tool_input for the
+    UUID. When a skill with the same name is already installed under
+    ~/.claude/skills/, Claude invokes the installed skill by its bare name
+    (no UUID), so the eval records a miss on every run and recall collapses
+    to 0% regardless of description quality. Hiding the installed copy for
+    the duration of the loop removes the shadowing and lets the eval's
+    command file be the only thing Claude can trigger under <name>.
+    """
+    user_skill_dir = Path.home() / ".claude" / "skills" / name
+    skill_backup: Path | None = None
+    if user_skill_dir.exists():
+        backup_root = Path(tempfile.mkdtemp(prefix="skill-creator-shadow-"))
+        skill_backup = backup_root / name
+        shutil.move(str(user_skill_dir), str(skill_backup))
+        if verbose:
+            print(f"Hid installed skill {user_skill_dir} -> {skill_backup}", file=sys.stderr)
+    try:
+        yield
+    finally:
+        if skill_backup is not None and skill_backup.exists():
+            shutil.move(str(skill_backup), str(user_skill_dir))
+            try:
+                skill_backup.parent.rmdir()
+            except OSError:
+                pass
+            if verbose:
+                print(f"Restored installed skill {user_skill_dir}", file=sys.stderr)
 
 
 def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tuple[list[dict], list[dict]]:
@@ -62,183 +98,185 @@ def run_loop(
     """Run the eval + improvement loop."""
     project_root = find_project_root()
     name, original_description, content = parse_skill_md(skill_path)
-    current_description = description_override or original_description
 
-    # Split into train/test if holdout > 0
-    if holdout > 0:
-        train_set, test_set = split_eval_set(eval_set, holdout)
-        if verbose:
-            print(f"Split: {len(train_set)} train, {len(test_set)} test (holdout={holdout})", file=sys.stderr)
-    else:
-        train_set = eval_set
-        test_set = []
+    with _hide_installed_skill(name, verbose):
+        current_description = description_override or original_description
 
-    history = []
-    exit_reason = "unknown"
-
-    for iteration in range(1, max_iterations + 1):
-        if verbose:
-            print(f"\n{'='*60}", file=sys.stderr)
-            print(f"Iteration {iteration}/{max_iterations}", file=sys.stderr)
-            print(f"Description: {current_description}", file=sys.stderr)
-            print(f"{'='*60}", file=sys.stderr)
-
-        # Evaluate train + test together in one batch for parallelism
-        all_queries = train_set + test_set
-        t0 = time.time()
-        all_results = run_eval(
-            eval_set=all_queries,
-            skill_name=name,
-            description=current_description,
-            num_workers=num_workers,
-            timeout=timeout,
-            project_root=project_root,
-            runs_per_query=runs_per_query,
-            trigger_threshold=trigger_threshold,
-            model=model,
-        )
-        eval_elapsed = time.time() - t0
-
-        # Split results back into train/test by matching queries
-        train_queries_set = {q["query"] for q in train_set}
-        train_result_list = [r for r in all_results["results"] if r["query"] in train_queries_set]
-        test_result_list = [r for r in all_results["results"] if r["query"] not in train_queries_set]
-
-        train_passed = sum(1 for r in train_result_list if r["pass"])
-        train_total = len(train_result_list)
-        train_summary = {"passed": train_passed, "failed": train_total - train_passed, "total": train_total}
-        train_results = {"results": train_result_list, "summary": train_summary}
-
-        if test_set:
-            test_passed = sum(1 for r in test_result_list if r["pass"])
-            test_total = len(test_result_list)
-            test_summary = {"passed": test_passed, "failed": test_total - test_passed, "total": test_total}
-            test_results = {"results": test_result_list, "summary": test_summary}
+        # Split into train/test if holdout > 0
+        if holdout > 0:
+            train_set, test_set = split_eval_set(eval_set, holdout)
+            if verbose:
+                print(f"Split: {len(train_set)} train, {len(test_set)} test (holdout={holdout})", file=sys.stderr)
         else:
-            test_results = None
-            test_summary = None
+            train_set = eval_set
+            test_set = []
 
-        history.append({
-            "iteration": iteration,
-            "description": current_description,
-            "train_passed": train_summary["passed"],
-            "train_failed": train_summary["failed"],
-            "train_total": train_summary["total"],
-            "train_results": train_results["results"],
-            "test_passed": test_summary["passed"] if test_summary else None,
-            "test_failed": test_summary["failed"] if test_summary else None,
-            "test_total": test_summary["total"] if test_summary else None,
-            "test_results": test_results["results"] if test_results else None,
-            # For backward compat with report generator
-            "passed": train_summary["passed"],
-            "failed": train_summary["failed"],
-            "total": train_summary["total"],
-            "results": train_results["results"],
-        })
+        history = []
+        exit_reason = "unknown"
 
-        # Write live report if path provided
-        if live_report_path:
-            partial_output = {
-                "original_description": original_description,
-                "best_description": current_description,
-                "best_score": "in progress",
-                "iterations_run": len(history),
-                "holdout": holdout,
-                "train_size": len(train_set),
-                "test_size": len(test_set),
-                "history": history,
-            }
-            live_report_path.write_text(generate_html(partial_output, auto_refresh=True, skill_name=name))
-
-        if verbose:
-            def print_eval_stats(label, results, elapsed):
-                pos = [r for r in results if r["should_trigger"]]
-                neg = [r for r in results if not r["should_trigger"]]
-                tp = sum(r["triggers"] for r in pos)
-                pos_runs = sum(r["runs"] for r in pos)
-                fn = pos_runs - tp
-                fp = sum(r["triggers"] for r in neg)
-                neg_runs = sum(r["runs"] for r in neg)
-                tn = neg_runs - fp
-                total = tp + tn + fp + fn
-                precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
-                recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
-                accuracy = (tp + tn) / total if total > 0 else 0.0
-                print(f"{label}: {tp+tn}/{total} correct, precision={precision:.0%} recall={recall:.0%} accuracy={accuracy:.0%} ({elapsed:.1f}s)", file=sys.stderr)
-                for r in results:
-                    status = "PASS" if r["pass"] else "FAIL"
-                    rate_str = f"{r['triggers']}/{r['runs']}"
-                    print(f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:60]}", file=sys.stderr)
-
-            print_eval_stats("Train", train_results["results"], eval_elapsed)
-            if test_summary:
-                print_eval_stats("Test ", test_results["results"], 0)
-
-        if train_summary["failed"] == 0:
-            exit_reason = f"all_passed (iteration {iteration})"
+        for iteration in range(1, max_iterations + 1):
             if verbose:
-                print(f"\nAll train queries passed on iteration {iteration}!", file=sys.stderr)
-            break
+                print(f"\n{'='*60}", file=sys.stderr)
+                print(f"Iteration {iteration}/{max_iterations}", file=sys.stderr)
+                print(f"Description: {current_description}", file=sys.stderr)
+                print(f"{'='*60}", file=sys.stderr)
 
-        if iteration == max_iterations:
-            exit_reason = f"max_iterations ({max_iterations})"
+            # Evaluate train + test together in one batch for parallelism
+            all_queries = train_set + test_set
+            t0 = time.time()
+            all_results = run_eval(
+                eval_set=all_queries,
+                skill_name=name,
+                description=current_description,
+                num_workers=num_workers,
+                timeout=timeout,
+                project_root=project_root,
+                runs_per_query=runs_per_query,
+                trigger_threshold=trigger_threshold,
+                model=model,
+            )
+            eval_elapsed = time.time() - t0
+
+            # Split results back into train/test by matching queries
+            train_queries_set = {q["query"] for q in train_set}
+            train_result_list = [r for r in all_results["results"] if r["query"] in train_queries_set]
+            test_result_list = [r for r in all_results["results"] if r["query"] not in train_queries_set]
+
+            train_passed = sum(1 for r in train_result_list if r["pass"])
+            train_total = len(train_result_list)
+            train_summary = {"passed": train_passed, "failed": train_total - train_passed, "total": train_total}
+            train_results = {"results": train_result_list, "summary": train_summary}
+
+            if test_set:
+                test_passed = sum(1 for r in test_result_list if r["pass"])
+                test_total = len(test_result_list)
+                test_summary = {"passed": test_passed, "failed": test_total - test_passed, "total": test_total}
+                test_results = {"results": test_result_list, "summary": test_summary}
+            else:
+                test_results = None
+                test_summary = None
+
+            history.append({
+                "iteration": iteration,
+                "description": current_description,
+                "train_passed": train_summary["passed"],
+                "train_failed": train_summary["failed"],
+                "train_total": train_summary["total"],
+                "train_results": train_results["results"],
+                "test_passed": test_summary["passed"] if test_summary else None,
+                "test_failed": test_summary["failed"] if test_summary else None,
+                "test_total": test_summary["total"] if test_summary else None,
+                "test_results": test_results["results"] if test_results else None,
+                # For backward compat with report generator
+                "passed": train_summary["passed"],
+                "failed": train_summary["failed"],
+                "total": train_summary["total"],
+                "results": train_results["results"],
+            })
+
+            # Write live report if path provided
+            if live_report_path:
+                partial_output = {
+                    "original_description": original_description,
+                    "best_description": current_description,
+                    "best_score": "in progress",
+                    "iterations_run": len(history),
+                    "holdout": holdout,
+                    "train_size": len(train_set),
+                    "test_size": len(test_set),
+                    "history": history,
+                }
+                live_report_path.write_text(generate_html(partial_output, auto_refresh=True, skill_name=name))
+
             if verbose:
-                print(f"\nMax iterations reached ({max_iterations}).", file=sys.stderr)
-            break
+                def print_eval_stats(label, results, elapsed):
+                    pos = [r for r in results if r["should_trigger"]]
+                    neg = [r for r in results if not r["should_trigger"]]
+                    tp = sum(r["triggers"] for r in pos)
+                    pos_runs = sum(r["runs"] for r in pos)
+                    fn = pos_runs - tp
+                    fp = sum(r["triggers"] for r in neg)
+                    neg_runs = sum(r["runs"] for r in neg)
+                    tn = neg_runs - fp
+                    total = tp + tn + fp + fn
+                    precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
+                    recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
+                    accuracy = (tp + tn) / total if total > 0 else 0.0
+                    print(f"{label}: {tp+tn}/{total} correct, precision={precision:.0%} recall={recall:.0%} accuracy={accuracy:.0%} ({elapsed:.1f}s)", file=sys.stderr)
+                    for r in results:
+                        status = "PASS" if r["pass"] else "FAIL"
+                        rate_str = f"{r['triggers']}/{r['runs']}"
+                        print(f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:60]}", file=sys.stderr)
 
-        # Improve the description based on train results
+                print_eval_stats("Train", train_results["results"], eval_elapsed)
+                if test_summary:
+                    print_eval_stats("Test ", test_results["results"], 0)
+
+            if train_summary["failed"] == 0:
+                exit_reason = f"all_passed (iteration {iteration})"
+                if verbose:
+                    print(f"\nAll train queries passed on iteration {iteration}!", file=sys.stderr)
+                break
+
+            if iteration == max_iterations:
+                exit_reason = f"max_iterations ({max_iterations})"
+                if verbose:
+                    print(f"\nMax iterations reached ({max_iterations}).", file=sys.stderr)
+                break
+
+            # Improve the description based on train results
+            if verbose:
+                print(f"\nImproving description...", file=sys.stderr)
+
+            t0 = time.time()
+            # Strip test scores from history so improvement model can't see them
+            blinded_history = [
+                {k: v for k, v in h.items() if not k.startswith("test_")}
+                for h in history
+            ]
+            new_description = improve_description(
+                skill_name=name,
+                skill_content=content,
+                current_description=current_description,
+                eval_results=train_results,
+                history=blinded_history,
+                model=model,
+                log_dir=log_dir,
+                iteration=iteration,
+            )
+            improve_elapsed = time.time() - t0
+
+            if verbose:
+                print(f"Proposed ({improve_elapsed:.1f}s): {new_description}", file=sys.stderr)
+
+            current_description = new_description
+
+        # Find the best iteration by TEST score (or train if no test set)
+        if test_set:
+            best = max(history, key=lambda h: h["test_passed"] or 0)
+            best_score = f"{best['test_passed']}/{best['test_total']}"
+        else:
+            best = max(history, key=lambda h: h["train_passed"])
+            best_score = f"{best['train_passed']}/{best['train_total']}"
+
         if verbose:
-            print(f"\nImproving description...", file=sys.stderr)
+            print(f"\nExit reason: {exit_reason}", file=sys.stderr)
+            print(f"Best score: {best_score} (iteration {best['iteration']})", file=sys.stderr)
 
-        t0 = time.time()
-        # Strip test scores from history so improvement model can't see them
-        blinded_history = [
-            {k: v for k, v in h.items() if not k.startswith("test_")}
-            for h in history
-        ]
-        new_description = improve_description(
-            skill_name=name,
-            skill_content=content,
-            current_description=current_description,
-            eval_results=train_results,
-            history=blinded_history,
-            model=model,
-            log_dir=log_dir,
-            iteration=iteration,
-        )
-        improve_elapsed = time.time() - t0
-
-        if verbose:
-            print(f"Proposed ({improve_elapsed:.1f}s): {new_description}", file=sys.stderr)
-
-        current_description = new_description
-
-    # Find the best iteration by TEST score (or train if no test set)
-    if test_set:
-        best = max(history, key=lambda h: h["test_passed"] or 0)
-        best_score = f"{best['test_passed']}/{best['test_total']}"
-    else:
-        best = max(history, key=lambda h: h["train_passed"])
-        best_score = f"{best['train_passed']}/{best['train_total']}"
-
-    if verbose:
-        print(f"\nExit reason: {exit_reason}", file=sys.stderr)
-        print(f"Best score: {best_score} (iteration {best['iteration']})", file=sys.stderr)
-
-    return {
-        "exit_reason": exit_reason,
-        "original_description": original_description,
-        "best_description": best["description"],
-        "best_score": best_score,
-        "best_train_score": f"{best['train_passed']}/{best['train_total']}",
-        "best_test_score": f"{best['test_passed']}/{best['test_total']}" if test_set else None,
-        "final_description": current_description,
-        "iterations_run": len(history),
-        "holdout": holdout,
-        "train_size": len(train_set),
-        "test_size": len(test_set),
-        "history": history,
-    }
+        return {
+            "exit_reason": exit_reason,
+            "original_description": original_description,
+            "best_description": best["description"],
+            "best_score": best_score,
+            "best_train_score": f"{best['train_passed']}/{best['train_total']}",
+            "best_test_score": f"{best['test_passed']}/{best['test_total']}" if test_set else None,
+            "final_description": current_description,
+            "iterations_run": len(history),
+            "holdout": holdout,
+            "train_size": len(train_set),
+            "test_size": len(test_set),
+            "history": history,
+        }
 
 
 def main():
