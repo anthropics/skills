@@ -30,6 +30,21 @@ def validate_skill(skill_path):
 
     frontmatter_text = match.group(1)
 
+    # Warn about unquoted descriptions containing YAML-special characters
+    desc_match = re.search(r'^description:\s*(.+)$', frontmatter_text, re.MULTILINE)
+    if desc_match:
+        desc_value = desc_match.group(1).strip()
+        is_quoted = (
+            (desc_value.startswith('"') and desc_value.endswith('"'))
+            or (desc_value.startswith("'") and desc_value.endswith("'"))
+        )
+        if not is_quoted and re.search(r'[:#\[\]{}]', desc_value):
+            return False, (
+                f"Description contains special YAML characters (: # [ ] {{ }}) but is not quoted. "
+                f"Wrap it in quotes to avoid silent YAML parsing issues, e.g.: "
+                f"description: \"{desc_value}\""
+            )
+
     # Parse YAML frontmatter
     try:
         frontmatter = yaml.safe_load(frontmatter_text)
