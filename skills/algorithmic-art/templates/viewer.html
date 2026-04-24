@@ -273,6 +273,7 @@
         .button-row {
             display: flex;
             gap: 8px;
+            margin-bottom: 8px;
         }
 
         .button-row .button {
@@ -424,8 +425,10 @@
             <div class="control-section">
                 <h3>Actions</h3>
                 <div class="button-row">
+                    <button class="button secondary" onclick="regenerateArtwork()">Regenerate</button>
                     <button class="button" onclick="resetParameters()">Reset</button>
                 </div>
+                <button class="button tertiary" onclick="downloadPNG()">Download PNG</button>
             </div>
         </div>
 
@@ -588,6 +591,14 @@
             
             updateSeedDisplay();
             initializeSystem();
+        }
+
+        function regenerateArtwork() {
+            initializeSystem();
+        }
+
+        function downloadPNG() {
+            saveCanvas('algorithmic-art-' + params.seed, 'png');
         }
 
         // Initialize UI on load
