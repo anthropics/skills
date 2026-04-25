@@ -1,0 +1,23 @@
+{
+  "skill_name": "resume-project",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Help me write a resume for my backend platform work. I built a distributed data pipeline with message queues, handled around 10K RPS, and designed the retry and idempotency logic. Team project, I owned the module end-to-end.",
+      "expected_output": "Triggers Path B (direct description), outputs architecture topology understanding, identifies at least 3 technical depth gaps and asks about Before state and decision rationale before generating any bullets",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Analyze /Users/me/project/myapp and turn my project experience into resume bullets",
+      "expected_output": "Triggers Path A (code repo), runs Step 0 library check → Step 1 project type → Step 1.5 TPE pre-scan → Step 2 EIM+SDA scan, asks about project context and quantitative data before generating content",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My resume currently says 'Responsible for file module development, implemented file CRUD and permission management.' Help me improve it.",
+      "expected_output": "Triggers Path B, Interceptor catches forbidden words like 'Responsible for' and 'implemented', asks about Before state, architectural decision rationale, quantified results, then produces bullets with [topic labels] and decision sentences",
+      "files": []
+    }
+  ]
+}
