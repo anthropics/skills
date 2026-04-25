@@ -41,11 +41,15 @@ Apply style standards at the point of generation. Do not produce content first a
 
 ## Reference
 
-Authoritative style guides supported by this skill:
-- [Microsoft Writing Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
-- [Google Developer Documentation Style Guide](https://developers.google.com/style)
-- [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/)
-- [Plain Language Guidelines — plainlanguage.gov](https://www.plainlanguage.gov/guidelines/)
+Select one style guide based on your industry and domain. Applying multiple guides simultaneously will produce conflicting rules.
+
+| Style Guide | Domain |
+|---|---|
+| [Microsoft Writing Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/) | Software and UI documentation |
+| [Google Developer Documentation Style Guide](https://developers.google.com/style) | Developer and API documentation |
+| [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/) | Aerospace, defense, and safety-critical systems |
+| [Plain Language Guidelines — GSA](https://github.com/gsa/plainlanguage.gov) | U.S. federal and regulated-industry content |
+| [Apple Style Guide](https://developer.apple.com/documentation/styleguide) | iOS, macOS, and Apple platform documentation |
 
 ## What This Skill Does Not Do
 
