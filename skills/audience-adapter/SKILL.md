@@ -40,8 +40,7 @@ Produce adapted content in the same format as the source — topic type and stru
 
 ## Reference
 
-- [Microsoft Writing Style Guide — Audience](https://learn.microsoft.com/en-us/style-guide/audiences)
-- [Plain Language Guidelines — Know Your Audience](https://www.plainlanguage.gov/guidelines/audience/)
+- [Plain Language Guidelines — GSA](https://github.com/gsa/plainlanguage.gov)
 - [ASD-STE100 Simplified Technical English](https://www.asd-ste100.org/) — audience-calibrated writing for technical and regulated industries
 
 ## What This Skill Does Not Do
