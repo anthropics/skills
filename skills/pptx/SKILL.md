@@ -5,7 +5,6 @@ license: Proprietary. LICENSE.txt has complete terms
 ---
 
 # PPTX Skill
-
 ## Quick Reference
 
 | Task | Guide |
@@ -185,9 +184,10 @@ Look for:
 
 For each slide, list issues or areas of concern, even if minor.
 
-Read and analyze these images:
-1. /path/to/slide-01.jpg (Expected: [brief description])
-2. /path/to/slide-02.jpg (Expected: [brief description])
+Read and analyze these images — use the exact filenames from `ls slide-*.jpg` (padding varies: slide-1 vs slide-01):
+1. <slide-N>.jpg — (Expected: [brief description])
+2. <slide-N>.jpg — (Expected: [brief description])
+...
 
 Report ALL issues found, including minor ones.
 ```
@@ -211,9 +211,10 @@ Convert presentations to individual slide images for visual inspection:
 ```bash
 python scripts/office/soffice.py --headless --convert-to pdf output.pptx
 pdftoppm -jpeg -r 150 output.pdf slide
+ls slide-*.jpg
 ```
 
-This creates `slide-01.jpg`, `slide-02.jpg`, etc.
+**Use the paths printed by `ls`.** `pdftoppm` zero-pads based on page count: `slide-1.jpg` for decks under 10 pages, `slide-01.jpg` for 10-99, `slide-001.jpg` for 100+.
 
 To re-render specific slides after fixes:
 
