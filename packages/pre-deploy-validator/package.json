@@ -1,0 +1,62 @@
+{
+  "name": "@anthropic-community/pre-deploy-validator",
+  "version": "1.0.0",
+  "description": "Standardized pre-deployment quality gates for Node.js/Next.js projects",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "pre-deploy-validator": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write 'src/**/*.ts'",
+    "prepublishOnly": "npm run build && npm run test"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.1.0",
+    "execa": "^8.0.1",
+    "globby": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "@vitest/coverage-v8": "^1.1.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "pre-deployment",
+    "validation",
+    "quality-gates",
+    "lint",
+    "typescript",
+    "tests",
+    "security",
+    "monorepo"
+  ],
+  "author": "Anthropic Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TrystPilot/skills",
+    "directory": "pre-deploy-validator"
+  }
+}
