@@ -1,24 +1,36 @@
 ---
 name: style-guide-enforcer
 
-description: Apply documentation style standards to AI-generated content at creation time — not as a post-creation checklist. TRIGGER when: user wants to enforce style guide rules during content generation; user has a style guide or documentation standards document to apply; user wants consistent terminology, voice, and formatting across generated content. SKIP: user has no style guide or standards to apply; user wants freeform prose without style constraints.
+description: Apply documentation style standards to AI-generated content at creation time — not as a post-creation checklist. Use this skill when the user wants to enforce style guide rules during content generation, has a style guide or documentation standards document to apply, or wants consistent terminology, voice, and formatting across generated content.
 
-license: MIT
+license: Complete terms in LICENSE.txt
 ---
 
 # Style Guide Enforcer
 
-Apply documentation style standards during content creation — before validation, not after.
+Apply documentation style standards during content creation — not after.
+
+## When to Use This Skill
+
+Use this skill when the user has a style guide or documentation standards to apply during content generation, wants consistent terminology and formatting across generated content, or needs AI output to comply with a specific style standard.
+
+Do not use this skill when the user has no style guide or standards to apply, or wants freeform prose without style constraints.
 
 ## Inputs Required
 
-1. **Style guide or standards reference** — provide the document, rules, or key standards to apply. Examples: Microsoft Writing Style Guide (software/UI documentation); Google Developer Documentation Style Guide (developer and API documentation); ASD-STE100 Simplified Technical English (aerospace and defense technical documentation); Plain Language Guidelines — plainlanguage.gov (U.S. federal and regulated-industry content)
+1. **Style guide or standards reference** — the specific document, rules, or key standards to apply
 2. **Content to generate or review** — the documentation content in scope
 3. **Product terminology** — confirmed terms for UI elements, features, and workflows
 
-## Application Rules
+## Step-by-Step Workflow
 
-Apply style standards at the point of generation. Do not produce content first and apply style second — this produces inconsistency.
+1. **Identify the style guide** — Confirm which single style guide the user is applying. Do not apply multiple guides simultaneously — they produce conflicting rules. See the Reference table below for domain-matched options.
+2. **Load terminology** — Confirm the product terminology source. If none is provided, ask the user before proceeding.
+3. **Apply standards during generation** — Apply style rules at the point of content creation. Do not produce content first and apply style second — this produces inconsistency.
+4. **Flag unknown terms** — If any term appears in the content that is not in the confirmed terminology source, flag it explicitly. Do not invent synonyms.
+5. **Verify consistency** — After generation, confirm that parallel topics use the same structure, equivalent UI interactions follow the same pattern, and terminology is applied consistently across all content in scope.
+
+## Application Rules
 
 ### Terminology
 - Use only confirmed product terminology from the provided source
@@ -39,6 +51,47 @@ Apply style standards at the point of generation. Do not produce content first a
 - Maintain consistent structure across parallel topics
 - Apply the same pattern for equivalent UI interactions throughout
 
+## Examples
+
+### Before and After — Active Voice
+
+**Before (passive):**
+"The Export button can be selected to generate the report."
+
+**After (active):**
+"Select **Export** to generate the report."
+
+### Before and After — Terminology Enforcement
+
+**Before (inconsistent):**
+"To delete the route, click Remove. If you want to erase the flight plan, press Delete."
+
+**After (consistent terminology):**
+"To remove the route, select **Remove**. To remove the flight plan, select **Delete**."
+
+### Before and After — Heading Hierarchy
+
+**Before (inconsistent levels):**
+```
+# Configuration
+## Settings
+### Display Options
+## Configuring the Map
+```
+
+**After (correct hierarchy):**
+```
+# Configuration
+## Display Options
+## Map Configuration
+```
+
+## Common Edge Cases
+
+- **User provides multiple style guides** — Select one based on the user's domain. Ask which to apply if domain is ambiguous.
+- **Style guide conflicts with product terminology** — Product terminology takes precedence. Flag the conflict for the user.
+- **No product terminology source provided** — Do not proceed without one. Ask the user to supply confirmed terminology before generating content.
+
 ## Reference
 
 Select one style guide based on your industry and domain. Applying multiple guides simultaneously will produce conflicting rules.
@@ -51,6 +104,6 @@ Select one style guide based on your industry and domain. Applying multiple guid
 | [Plain Language Guidelines — GSA](https://github.com/gsa/plainlanguage.gov) | U.S. federal and regulated-industry content |
 | [Apple Style Guide](https://developer.apple.com/documentation/styleguide) | iOS, macOS, and Apple platform documentation |
 
-## What This Skill Does Not Do
+## Validation Requirement
 
-Style compliance does not substitute for behavioral validation. Stylistically correct content can still be operationally insufficient. Stage 3 validation is required regardless of style compliance.
+Style-compliant content must still be tested against actual application behavior before publication. Style compliance does not detect operationally insufficient content — procedures that use correct terminology and formatting but omit prerequisite conditions, misrepresent sequence dependencies, or fail to convey what the user needs to know. The person performing this validation must have direct knowledge of the end user's operational context.
