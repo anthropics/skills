@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import queue
 import sys
 import threading
@@ -49,6 +50,11 @@ from scripts.utils import parse_skill_md  # noqa: E402
 
 SKILLS_DIR = Path.home() / ".claude" / "skills"
 HERE = Path(__file__).resolve().parent
+
+# When SKILL_FILTER is set, the dashboard restricts itself to that one skill.
+# Used by start-for-skill.sh to give each parallel run its own portless
+# subdomain (eval-<skill>.localhost) and a single-skill UI.
+SKILL_FILTER = os.environ.get("SKILL_FILTER", "").strip() or None
 
 app = FastAPI(title="skill-creator eval server")
 
@@ -89,16 +95,28 @@ def index():
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "skills_dir": str(SKILLS_DIR), "skills_exist": SKILLS_DIR.is_dir()}
+    return {
+        "ok": True,
+        "skills_dir": str(SKILLS_DIR),
+        "skills_exist": SKILLS_DIR.is_dir(),
+        "skill_filter": SKILL_FILTER,
+    }
 
 
 @app.get("/api/skills")
 def list_skills():
-    """Enumerate ~/.claude/skills/<name>/SKILL.md entries."""
+    """Enumerate ~/.claude/skills/<name>/SKILL.md entries.
+
+    If SKILL_FILTER env var is set (typically by start-for-skill.sh),
+    the listing is restricted to just that one skill so the dashboard
+    is scoped to a single skill per portless subdomain.
+    """
     if not SKILLS_DIR.is_dir():
         return []
     out = []
     for p in sorted(SKILLS_DIR.iterdir()):
+        if SKILL_FILTER and p.name != SKILL_FILTER:
+            continue
         if not p.is_dir() and not p.is_symlink():
             continue
         try:

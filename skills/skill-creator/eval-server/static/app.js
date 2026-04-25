@@ -45,6 +45,15 @@ function clear(node) {
 // ---- bootstrap ----
 
 async function loadSkills() {
+  // Read scoping hint first — if SKILL_FILTER was set on the server, narrow
+  // the page title to that skill so the tab + URL are unambiguous when
+  // running multiple parallel dashboards.
+  let scopedSkill = null;
+  try {
+    const health = await (await fetch("/api/health")).json();
+    scopedSkill = health.skill_filter || null;
+  } catch {}
+
   const res = await fetch("/api/skills");
   state.skills = await res.json();
   const sel = $("skill-select");
@@ -55,6 +64,16 @@ async function loadSkills() {
       `${s.name}  (${s.description_len} chars)`,
     ]);
     sel.appendChild(opt);
+  }
+
+  if (scopedSkill) {
+    document.title = `${scopedSkill} — skill-creator eval`;
+    const h1 = document.querySelector(".topbar h1");
+    if (h1) h1.textContent = `skill-creator · ${scopedSkill}`;
+    if (state.skills.length === 1) {
+      sel.value = scopedSkill;
+      loadSkillDetail(scopedSkill);
+    }
   }
 }
 
