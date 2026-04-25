@@ -1,0 +1,2 @@
+mcp[cli]>=1.0
+pydantic>=2.0
