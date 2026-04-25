@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "laravel-boost",
+      "description": "Laravel 12.x development skill powered by Laravel Boost MCP for building features, debugging, database work, and testing",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/laravel-boost"
+      ]
     }
   ]
 }
