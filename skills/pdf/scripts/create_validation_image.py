@@ -10,20 +10,20 @@ def create_validation_image(page_number, fields_json_path, input_path, output_pa
     with open(fields_json_path, 'r') as f:
         data = json.load(f)
 
-        img = Image.open(input_path)
-        draw = ImageDraw.Draw(img)
-        num_boxes = 0
-        
-        for field in data["form_fields"]:
-            if field["page_number"] == page_number:
-                entry_box = field['entry_bounding_box']
-                label_box = field['label_bounding_box']
-                draw.rectangle(entry_box, outline='red', width=2)
-                draw.rectangle(label_box, outline='blue', width=2)
-                num_boxes += 2
-        
-        img.save(output_path)
-        print(f"Created validation image at {output_path} with {num_boxes} bounding boxes")
+        with Image.open(input_path) as img:
+            draw = ImageDraw.Draw(img)
+            num_boxes = 0
+
+            for field in data["form_fields"]:
+                if field["page_number"] == page_number:
+                    entry_box = field['entry_bounding_box']
+                    label_box = field['label_bounding_box']
+                    draw.rectangle(entry_box, outline='red', width=2)
+                    draw.rectangle(label_box, outline='blue', width=2)
+                    num_boxes += 2
+
+            img.save(output_path)
+            print(f"Created validation image at {output_path} with {num_boxes} bounding boxes")
 
 
 if __name__ == "__main__":
