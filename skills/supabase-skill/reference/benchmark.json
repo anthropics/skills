@@ -1,0 +1,86 @@
+{
+  "skill": "supabase-skill",
+  "model": "sonnet",
+  "runs_per_eval": 3,
+  "timestamp": "2026-03-18T13:31:19-05:00",
+  "evals": [
+    {
+      "id": "schema_lookup",
+      "task": "What columns does the episodes table have, including types and constraints?",
+      "with_skill": {
+        "avg_ms": 13015,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 15555,
+        "pass_rate": "0/3"
+      },
+      "speedup": 1.19
+    },
+    {
+      "id": "relationship_traversal",
+      "task": "What tables are related to the plans table? Include FK references and name-related tables.",
+      "with_skill": {
+        "avg_ms": 11225,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 18540,
+        "pass_rate": "0/3"
+      },
+      "speedup": 1.65
+    },
+    {
+      "id": "column_search",
+      "task": "Find all columns of type jsonb across the bibleai schema",
+      "with_skill": {
+        "avg_ms": 13733,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 13952,
+        "pass_rate": "1/3"
+      },
+      "speedup": 1.01
+    },
+    {
+      "id": "function_lookup",
+      "task": "What RPC functions are available in the bibleai schema and what parameters do they take?",
+      "with_skill": {
+        "avg_ms": 22554,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 14554,
+        "pass_rate": "0/3"
+      },
+      "speedup": 0.64
+    },
+    {
+      "id": "migration_generation",
+      "task": "Write a migration to add a 'priority' integer column with default 0 to the plan_blocks table",
+      "with_skill": {
+        "avg_ms": 42394,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 36730,
+        "pass_rate": "3/3"
+      },
+      "speedup": 0.86
+    },
+    {
+      "id": "cross_table_query",
+      "task": "How are chat_sessions, chat_messages, and users related? Show the FK chain.",
+      "with_skill": {
+        "avg_ms": 19629,
+        "pass_rate": "3/3"
+      },
+      "without_skill": {
+        "avg_ms": 16217,
+        "pass_rate": "0/3"
+      },
+      "speedup": 0.82
+    }
+  ]
+}
