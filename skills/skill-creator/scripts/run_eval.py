@@ -25,6 +25,12 @@ import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
+try:
+    import fcntl  # POSIX only — used for cross-process flock on SKILL.md
+    _HAS_FCNTL = True
+except ImportError:
+    _HAS_FCNTL = False  # Windows: in-process lock only
+
 from scripts.utils import parse_skill_md
 
 
@@ -90,14 +96,51 @@ def _atomic_write(path: Path, content: str) -> None:
 
 
 _active_swaps: dict[str, str] = {}
+_lock_handles: dict[str, "object"] = {}  # path -> open file handle holding flock
 _swap_lock = threading.Lock()
+
+
+def _acquire_flock(skill_md: Path):
+    """Acquire an exclusive cross-process lock on a sidecar `.swap-lock` file.
+
+    Returns the open file handle (must stay open while the lock is held).
+    Blocks until the lock is available — concurrent invocations against the
+    same SKILL.md serialise here instead of racing on the file.
+
+    On non-POSIX (no fcntl) returns None and falls back to in-process locking
+    only — cross-process safety is best-effort.
+    """
+    if not _HAS_FCNTL:
+        return None
+    lock_path = skill_md.with_suffix(".md.swap-lock")
+    f = open(lock_path, "w")  # noqa: SIM115 — caller owns lifecycle
+    try:
+        fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+    except Exception:
+        f.close()
+        raise
+    return f
+
+
+def _release_flock(handle) -> None:
+    if handle is None:
+        return
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    finally:
+        try:
+            handle.close()
+        except Exception:
+            pass
 
 
 def _restore_all_active_swaps() -> None:
     """atexit/signal handler — restore every SKILL.md still in swap state."""
     with _swap_lock:
         items = list(_active_swaps.items())
+        handles = list(_lock_handles.items())
         _active_swaps.clear()
+        _lock_handles.clear()
     for skill_md_str, original in items:
         try:
             _atomic_write(Path(skill_md_str), original)
@@ -105,6 +148,8 @@ def _restore_all_active_swaps() -> None:
             backup.unlink(missing_ok=True)
         except Exception as e:
             print(f"WARN: failed to restore {skill_md_str}: {e}", file=sys.stderr)
+    for _path, h in handles:
+        _release_flock(h)
 
 
 atexit.register(_restore_all_active_swaps)
@@ -126,32 +171,46 @@ for _sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
 def swap_skill_description(skill_path: Path, new_description: str) -> str:
     """Replace description in real SKILL.md atomically. Return original full content.
 
+    Acquires an exclusive cross-process flock on `<skill>/SKILL.md.swap-lock`
+    before mutating, so concurrent runs against the same skill serialise
+    cleanly instead of racing. The lock is held until `restore_skill_md`
+    is called.
+
     Writes a sibling `.md.swap-backup` first as crash-safety: if the Python
     process dies between swap and restore, the user can manually restore
     from the backup file.
     """
     skill_md = skill_path / "SKILL.md"
-    original = skill_md.read_text()
-    new_content = _replace_description_in_frontmatter(original, new_description)
+    handle = _acquire_flock(skill_md)
+    try:
+        original = skill_md.read_text()
+        new_content = _replace_description_in_frontmatter(original, new_description)
 
-    backup = skill_md.with_suffix(".md.swap-backup")
-    backup.write_text(original)
+        backup = skill_md.with_suffix(".md.swap-backup")
+        backup.write_text(original)
 
-    _atomic_write(skill_md, new_content)
+        _atomic_write(skill_md, new_content)
 
-    with _swap_lock:
-        _active_swaps[str(skill_md)] = original
+        with _swap_lock:
+            _active_swaps[str(skill_md)] = original
+            if handle is not None:
+                _lock_handles[str(skill_md)] = handle
+    except Exception:
+        _release_flock(handle)
+        raise
     return original
 
 
 def restore_skill_md(skill_path: Path, original: str) -> None:
-    """Restore SKILL.md and remove the swap backup file."""
+    """Restore SKILL.md, remove the swap backup file, release the flock."""
     skill_md = skill_path / "SKILL.md"
     _atomic_write(skill_md, original)
     backup = skill_md.with_suffix(".md.swap-backup")
     backup.unlink(missing_ok=True)
     with _swap_lock:
         _active_swaps.pop(str(skill_md), None)
+        handle = _lock_handles.pop(str(skill_md), None)
+    _release_flock(handle)
 
 
 def run_single_query(
