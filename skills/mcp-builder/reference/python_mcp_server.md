@@ -87,7 +87,7 @@ class ServiceToolInput(BaseModel):
 
     param1: str = Field(..., description="First parameter description (e.g., 'user123', 'project-abc')", min_length=1, max_length=100)
     param2: Optional[int] = Field(default=None, description="Optional integer parameter with constraints", ge=0, le=1000)
-    tags: Optional[List[str]] = Field(default_factory=list, description="List of tags to apply", max_items=10)
+    tags: Optional[List[str]] = Field(default_factory=list, description="List of tags to apply", max_length=10)
 
 @mcp.tool(
     name="service_tool_name",
@@ -507,20 +507,27 @@ async def advanced_search(query: str, ctx: Context) -> str:
 async def interactive_tool(resource_id: str, ctx: Context) -> str:
     '''Tool that can request additional input from users.'''
 
-    # Request sensitive information when needed
-    api_key = await ctx.elicit(
-        prompt="Please provide your API key:",
-        input_type="password"
-    )
+    # Request additional input from users; returns an ElicitationResult
+    # with .action ("accept"/"decline"/"cancel") and .data
+    from pydantic import BaseModel
 
-    # Use the provided key
-    return await api_call(resource_id, api_key)
+    class ApiKeyRequest(BaseModel):
+        api_key: str
+
+    result = await ctx.elicit(
+        message="Please provide your API key:",
+        schema=ApiKeyRequest,
+    )
+    if result.action != "accept" or not result.data:
+        raise ValueError("API key not provided")
+
+    return await api_call(resource_id, result.data.api_key)
 ```
 
 **Context capabilities:**
 - `ctx.report_progress(progress, message)` - Report progress for long operations
 - `ctx.log_info(message, data)` / `ctx.log_error()` / `ctx.log_debug()` - Logging
-- `ctx.elicit(prompt, input_type)` - Request input from users
+- `ctx.elicit(message, schema)` - Request structured input; returns `ElicitationResult(action, data)`
 - `ctx.fastmcp.name` - Access server configuration
 - `ctx.read_resource(uri)` - Read MCP resources
 
@@ -594,24 +601,25 @@ Initialize resources that persist across requests:
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
-async def app_lifespan():
+async def app_lifespan(server: FastMCP):
     '''Manage resources that live for the server's lifetime.'''
     # Initialize connections, load config, etc.
     db = await connect_to_database()
     config = load_configuration()
 
-    # Make available to all tools
-    yield {"db": db, "config": config}
-
-    # Cleanup on shutdown
-    await db.close()
+    try:
+        # Make available to all tools
+        yield {"db": db, "config": config}
+    finally:
+        # Cleanup on shutdown
+        await db.close()
 
 mcp = FastMCP("example_mcp", lifespan=app_lifespan)
 
 @mcp.tool()
 async def query_data(query: str, ctx: Context) -> str:
     '''Access lifespan resources through context.'''
-    db = ctx.request_context.lifespan_state["db"]
+    db = ctx.request_context.lifespan_context["db"]
     results = await db.query(query)
     return format_results(results)
 ```
