@@ -12,8 +12,15 @@ def convert(pdf_path, output_dir, max_dim=1000):
     if not pdf_path.is_file():
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
 
+    if max_dim <= 0:
+        raise ValueError(f"max_dim must be positive, got {max_dim}")
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    images = convert_from_path(pdf_path, dpi=200)
+
+    try:
+        images = convert_from_path(pdf_path, dpi=200, thread_count=4)
+    except Exception as e:
+        raise RuntimeError(f"failed to convert PDF: {pdf_path}") from e
 
     for i, image in enumerate(images):
         width, height = image.size
