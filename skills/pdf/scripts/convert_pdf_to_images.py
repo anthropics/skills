@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 from pdf2image import convert_from_path
+from PIL import Image
 
 
 def convert(pdf_path, output_dir, max_dim=1000):
@@ -17,10 +18,9 @@ def convert(pdf_path, output_dir, max_dim=1000):
     for i, image in enumerate(images):
         width, height = image.size
         if width > max_dim or height > max_dim:
-            scale_factor = min(max_dim / width, max_dim / height)
-            new_width = int(width * scale_factor)
-            new_height = int(height * scale_factor)
-            image = image.resize((new_width, new_height))
+            scale_factor = max_dim / max(width, height)
+            new_size = (int(width * scale_factor), int(height * scale_factor))
+            image = image.resize(new_size, Image.LANCZOS)
 
         image_path = output_dir / f"page_{i + 1}.png"
         image.save(image_path)
