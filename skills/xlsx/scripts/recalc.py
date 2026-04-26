@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["office", "openpyxl"]
+# ///
+
 """
 Excel Formula Recalculation Script
 Recalculates all formulas in an Excel file using LibreOffice

@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["scripts"]
+# ///
+
 #!/usr/bin/env python3
 """Run trigger evaluation for a skill description.
 

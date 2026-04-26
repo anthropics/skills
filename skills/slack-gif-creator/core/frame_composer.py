@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["numpy", "pillow"]
+# ///
+
 #!/usr/bin/env python3
 """
 Frame Composer - Utilities for composing visual elements into frames.

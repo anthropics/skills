@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["pillow"]
+# ///
+
 #!/usr/bin/env python3
 """
 Validators - Check if GIFs meet Slack's requirements.

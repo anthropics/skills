@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["lxml"]
+# ///
+
 """
 Validator for PowerPoint presentation XML files against XSD schemas.
 """

@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.10"
+# dependencies = ["defusedxml", "lxml"]
+# ///
+
 """
 Validator for Word document XML files against XSD schemas.
 """
