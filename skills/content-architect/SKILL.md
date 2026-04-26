@@ -46,49 +46,58 @@ Do not use this skill when the user already has a content structure and needs co
 
 ### Topic Map Output
 
-**Input:** User provides scope for a navigation data distribution product serving EFB administrators and flight dispatchers.
+**Input:** User provides scope for an airline operations control platform serving operations controllers and crew schedulers.
 
 **Output:**
 
 ```
-Navigation Data Distribution — Topic Map
+Airline Operations Platform — Help Documentation Map
 
-EFB Administrator Topics
-├── CONCEPT: Navigation Data Overview
-│   └── What navigation data is distributed and how update cycles work
-├── TASK: Configure Navigation Data Sources
-│   └── Add, modify, and remove navigation data providers
-├── TASK: Schedule Data Updates
-│   └── Set automated update schedules for fleet-wide distribution
-└── REFERENCE: Data Source Settings
-    └── Fields, options, and defaults for source configuration
+Operations Controller Topics
+├── CONCEPT: Disruption Management Overview
+│   └── How the platform detects schedule conflicts and proposes recovery options
+│   └── PREREQUISITE: Flight Status Workflow (cross-audience)
+├── TASK: Recover a Disrupted Schedule
+│   └── Review alerts, evaluate re-routing and aircraft swap options, apply recovery
+│   └── RELATED: Modify a Crew Assignment (scheduler) — disruption recovery may require crew changes
+├── TASK: Monitor Operational Compliance
+│   └── Track delay codes, crew duty limits, and maintenance windows across the fleet
+│   └── SEE ALSO: Duty Time Fields (scheduler reference) — crew duty limits are defined there
+└── REFERENCE: Alert Types and Severity
+    └── Delay threshold alerts, crew timeout warnings, maintenance due flags — definitions and required actions
 
-Flight Dispatcher Topics
-├── CONCEPT: Navigation Data in Flight Planning
-│   └── How navigation data affects route calculation and NOTAM processing
-├── TASK: Verify Data Currency
-│   └── Confirm navigation data is current before authorizing a flight release
-└── REFERENCE: Data Cycle Indicators
-    └── Status fields and validity periods for navigation data cycles
+Crew Scheduler Topics
+├── CONCEPT: Crew Assignment Logic
+│   └── How the platform matches crew to flights based on qualifications, duty time, and rest requirements
+│   └── PREREQUISITE: Flight Status Workflow (cross-audience)
+├── TASK: Modify a Crew Assignment
+│   └── Replace a crew member, verify qualification and legality, publish the update
+│   └── RELATED: Recover a Disrupted Schedule (controller) — crew changes may trigger schedule alerts
+├── TASK: Build a Monthly Crew Plan
+│   └── Generate assignments from the schedule, resolve conflicts, and submit for approval
+│   └── PREREQUISITE: Crew Assignment Logic
+└── REFERENCE: Duty Time Fields
+    └── Flight duty period, rest period, cumulative hours — definitions and regulatory limits
+    └── REUSED BY: Monitor Operational Compliance (controller) — same field definitions
 
 Cross-Audience
-├── CONCEPT: Data Update Process
-│   └── Shared topic — covers the update pipeline end to end
-│   └── GAP: operational context differs per audience — needs separate framing
+├── CONCEPT: Flight Status Workflow
+│   └── Shared topic — covers how a flight moves from scheduled to dispatched
+│   └── GAP: controllers need guidance on crew-impact assessment during disruption — scheduler version does not cover this
 ```
 
 ### Coverage Gap Identification
 
-**Input:** User provides existing documentation structure that lists only system-architecture topics.
+**Input:** User provides existing documentation that covers only installation and system configuration.
 
 **Output:**
 
 ```
 Coverage gaps identified:
-- No task topics: existing structure describes system components but not user procedures
-- No audience separation: single topic set for all user groups
-- Missing: data currency verification procedures for dispatchers
-- Missing: source configuration tasks for administrators
+- No task topics: existing docs cover setup but not daily user procedures
+- No audience separation: single topic set for both controllers and schedulers
+- Missing: schedule recovery and compliance monitoring procedures for operations controllers
+- Missing: crew assignment modification and monthly planning procedures for crew schedulers
 ```
 
 ## Common Edge Cases
