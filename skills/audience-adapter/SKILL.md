@@ -56,37 +56,37 @@ Match procedural depth to the audience's workload context. Users operating under
 
 ### Same Feature, Two Audiences
 
-**Source:** Navigation data update pipeline — receives, validates, and distributes navigation data to fleet devices.
+**Source:** Flight disruption alert — the platform detects a schedule conflict and generates an alert with cause, affected flights, and proposed recovery options.
 
-**Adapted for EFB Administrator:**
+**Adapted for Operations Controller:**
 
-> ## Schedule Navigation Data Updates
+> ## Respond to a Schedule Disruption Alert
 >
-> Navigation data updates are distributed to all connected EFB devices on the schedule you configure.
+> When a disruption alert appears in your queue, evaluate the proposed recovery options and apply the best one.
 >
-> 1. Select **Scheduling** from the navigation data dashboard.
-> 2. Select the data cycle to schedule.
-> 3. Set the distribution window start and end times.
-> 4. Select **Save**.
+> 1. Select the alert to view affected flights and proposed recovery options.
+> 2. Compare aircraft swap and re-routing options by delay impact and downstream effect.
+> 3. Select the recovery option and select **Apply**.
+> 4. Verify that downstream flights are updated and no new conflicts are introduced.
 >
-> Updates apply to all devices in the selected fleet group. Verify distribution status on the dashboard after the window closes.
+> If no proposed option is viable, escalate to the operations manager and document the reason.
 
-**Adapted for Flight Dispatcher:**
+**Adapted for Crew Scheduler:**
 
-> ## Verify Navigation Data Currency
+> ## Review Crew Impact from a Disruption
 >
-> Before authorizing a flight release, confirm that the navigation data used for route planning matches the current AIRAC cycle.
+> When a disruption alert affects crewed flights, check whether existing assignments are still legal under duty time limits.
 >
-> The data cycle identifier is displayed in the flight plan header. Compare it against the current NOTAM bulletin for your region.
+> The alert lists all crew members affected by the schedule change. For each crew member, the platform flags whether their revised flight sequence exceeds flight duty period limits or violates rest requirements.
 >
-> If the data cycle does not match: do not authorize the release until updated data is confirmed.
+> If a crew member is flagged: reassign them before the schedule is published. See Modify a Crew Assignment for steps.
 
 ### Audience Collapse (What to Avoid)
 
 **Collapsed output (generic):**
-"Navigation data is updated regularly. Users should check the data cycle to ensure accuracy."
+"When a disruption occurs, the system generates an alert. Users should review the alert and take appropriate action."
 
-This serves neither audience. The administrator needs configuration steps. The dispatcher needs a verification procedure tied to a regulatory obligation.
+This serves neither audience. The controller needs to evaluate and apply recovery options. The scheduler needs to verify crew legality and reassign if necessary.
 
 ## Common Edge Cases
 
