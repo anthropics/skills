@@ -49,48 +49,104 @@ Before generating content, confirm these inputs are available in the session:
 
 ### Task Topic
 
-**Input:** User provides API endpoint documentation and asks for a task topic on authenticating API requests.
+**Input:** User provides airline operations platform UI specs and asks for a task topic on submitting a delay report.
 
 **Output:**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "-//OASIS//DTD DITA 1.3 Task//EN" "task.dtd">
-<task id="api-authentication">
-  <title>Authenticate API Requests</title>
+<task id="submit-delay-report">
+  <title>Submit a Delay Report</title>
   <taskbody>
-    <context>Before calling any API endpoint, you must authenticate your request with a valid API key.</context>
+    <context>When a flight departs late, submit a delay report to record the cause and duration for compliance tracking.</context>
     <steps>
       <step>
-        <cmd>Open your API dashboard and copy your API key.</cmd>
+        <cmd>From the flight list, select the delayed flight.</cmd>
       </step>
       <step>
-        <cmd>Add an <codeph>Authorization</codeph> header to your request with the value <codeph>Bearer {your-api-key}</codeph>.</cmd>
+        <cmd>Select <cmdname>Report Delay</cmdname>.</cmd>
       </step>
       <step>
-        <cmd>Send the request to the API endpoint.</cmd>
+        <cmd>Select the primary delay cause from the drop-down list.</cmd>
+      </step>
+      <step>
+        <cmd>Enter the delay duration in minutes.</cmd>
+      </step>
+      <step>
+        <cmd>Select <cmdname>Submit</cmdname>.</cmd>
       </step>
     </steps>
-    <result>The API validates your key and processes the request.</result>
+    <result>The delay is recorded against the flight and reflected in the daily compliance summary.</result>
   </taskbody>
 </task>
 ```
 
 ### Concept Topic
 
-**Input:** User provides system architecture docs and asks for a concept topic on multi-tenant data isolation.
+**Input:** User provides crew management documentation and asks for a concept topic on flight duty period.
 
 **Output:**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA 1.3 Concept//EN" "concept.dtd">
-<concept id="multi-tenant-isolation">
-  <title>Multi-Tenant Data Isolation</title>
+<concept id="flight-duty-period">
+  <title>Flight Duty Period</title>
   <conbody>
-    <p>Each tenant's data is stored in a logically separated database schema. Queries are scoped to the authenticated tenant, preventing cross-tenant data access.</p>
+    <p>A flight duty period (FDP) is the time from when a crew member reports for duty until the last flight lands and the aircraft is parked. FDP limits vary by regulatory authority and depend on the number of flight segments, departure time, and crew complement.</p>
+    <p>The platform calculates FDP automatically based on the assigned schedule and flags any segment that would exceed the applicable limit.</p>
   </conbody>
 </concept>
+```
+
+### Reference Topic
+
+**Input:** User provides alert configuration specs and asks for a reference topic on alert settings.
+
+**Output:**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA 1.3 Reference//EN" "reference.dtd">
+<reference id="alert-settings">
+  <title>Alert Configuration Settings</title>
+  <refbody>
+    <table>
+      <tgroup cols="3">
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Type</entry>
+            <entry>Default</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>Alert Name</entry>
+            <entry>Text (required)</entry>
+            <entry>—</entry>
+          </row>
+          <row>
+            <entry>Severity</entry>
+            <entry>Drop-down: Low, Medium, High, Critical</entry>
+            <entry>Medium</entry>
+          </row>
+          <row>
+            <entry>Threshold (minutes)</entry>
+            <entry>Integer</entry>
+            <entry>15</entry>
+          </row>
+          <row>
+            <entry>Notification Channel</entry>
+            <entry>Drop-down: Email, SMS, Dashboard</entry>
+            <entry>Dashboard</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </refbody>
+</reference>
 ```
 
 ## Common Edge Cases
