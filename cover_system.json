@@ -1,0 +1,1012 @@
+{
+  "meta": {
+    "project": "Tirisano x DIRCO tender cover system",
+    "format": "A4",
+    "orientation": "portrait",
+    "dimensions_mm": { "width": 210, "height": 297 },
+    "units": "mm",
+    "background_hex": "#FFFFFF",
+    "safe_margin_mm": 14,
+    "bleed_mm": 5,
+    "trim_box_mm": { "width": 210, "height": 297 },
+    "bleed_box_mm": { "width": 220, "height": 307 }
+  },
+  "brand_logic": {
+    "dirco_presence_rule": "Recipient position. Top-left placement within header zone. Maximum height 22mm. Full colour only. Maintains government protocol primacy. No recolouring. Minimum clearspace equal to height of coat of arms shield.",
+    "tirisano_presence_rule": "Bidder position. Lower zone placement. Full logo with wordmark for primary identification. Maximum height 18mm. Logomark used separately only for watermark treatment. Clearspace minimum 8mm all sides.",
+    "hierarchy_order": ["DIRCO (recipient)", "Document classification", "Bid title", "Tender reference", "Closing deadline", "Bidder identity", "Contact details"],
+    "tone_keywords": ["diplomatic", "official", "confidential", "premium African identity", "audit-ready", "protocol-driven", "institutional gravitas"]
+  },
+  "palette": [
+    { "name": "tirisano_navy", "hex": "#1A2B5A", "role": "Primary text, accent lines, authority" },
+    { "name": "tirisano_green", "hex": "#006B3F", "role": "Secondary accent, complements DIRCO green" },
+    { "name": "tirisano_red", "hex": "#D32027", "role": "Tertiary accent, use sparingly" },
+    { "name": "tirisano_gold", "hex": "#F4B223", "role": "Tertiary accent, use sparingly" },
+    { "name": "neutral_dark", "hex": "#2D2D2D", "role": "Body text alternative" },
+    { "name": "neutral_mid", "hex": "#6B6B6B", "role": "Secondary text, labels" },
+    { "name": "neutral_light", "hex": "#E8E8E8", "role": "Keylines, subtle dividers" },
+    { "name": "watermark_tint", "hex": "#F5F5F5", "role": "Monument watermark fill, 3-4% grey" },
+    { "name": "pure_white", "hex": "#FFFFFF", "role": "Background, mandatory" }
+  ],
+  "type_system": {
+    "font_family_primary": "Inter",
+    "font_family_fallbacks": ["Helvetica Neue", "Arial", "sans-serif"],
+    "rationale": "Inter provides excellent legibility at small sizes, has a full weight range, and reads as modern-institutional without being cold. Open-source availability ensures cross-platform consistency.",
+    "styles": [
+      {
+        "style": "doc_label",
+        "purpose": "RFP Response classification",
+        "size_pt": 11,
+        "weight": 600,
+        "tracking": 80,
+        "line_height": 1.2,
+        "transform": "uppercase",
+        "colour": "tirisano_navy"
+      },
+      {
+        "style": "title",
+        "purpose": "Travel Management Services",
+        "size_pt": 28,
+        "weight": 700,
+        "tracking": -10,
+        "line_height": 1.15,
+        "transform": "none",
+        "colour": "tirisano_navy"
+      },
+      {
+        "style": "field_label",
+        "purpose": "Submitted to, Tender Reference, Closing Date, etc.",
+        "size_pt": 8.5,
+        "weight": 500,
+        "tracking": 40,
+        "line_height": 1.3,
+        "transform": "uppercase",
+        "colour": "neutral_mid"
+      },
+      {
+        "style": "field_value",
+        "purpose": "DIRCO name, reference numbers, dates",
+        "size_pt": 10.5,
+        "weight": 500,
+        "tracking": 0,
+        "line_height": 1.4,
+        "transform": "none",
+        "colour": "neutral_dark"
+      },
+      {
+        "style": "bidder_name",
+        "purpose": "Tirisano Travel CC",
+        "size_pt": 12,
+        "weight": 600,
+        "tracking": 0,
+        "line_height": 1.3,
+        "transform": "none",
+        "colour": "tirisano_navy"
+      },
+      {
+        "style": "contact_line",
+        "purpose": "Email and phone",
+        "size_pt": 9,
+        "weight": 400,
+        "tracking": 10,
+        "line_height": 1.4,
+        "transform": "none",
+        "colour": "neutral_mid"
+      },
+      {
+        "style": "footer_small",
+        "purpose": "Registration number, optional address",
+        "size_pt": 7.5,
+        "weight": 400,
+        "tracking": 20,
+        "line_height": 1.3,
+        "transform": "none",
+        "colour": "neutral_mid"
+      }
+    ]
+  },
+  "concepts": [
+    {
+      "concept_id": "C01",
+      "name": "Protocol Anchor",
+      "core_idea": "Asymmetric monument watermark anchored to bottom-right corner creates institutional weight while a single navy keyline at the golden section divides recipient from bidder zones.",
+      "signature_device": "Oversized Tirisano logomark (compass star with ribbon) cropped at 65% visibility, positioned to anchor the bottom-right corner. Rendered at 3% grey (#F7F7F7) to simulate blind emboss. The ribbon curves create organic tension against the rectilinear grid.",
+      "layout": {
+        "grid": {
+          "columns": 12,
+          "gutter_mm": 4,
+          "baseline_mm": 4,
+          "column_width_mm": 13.17
+        },
+        "golden_section_y_mm": 183.5,
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Maintain aspect ratio", "Clearspace: 10mm right, 12mm bottom", "Max height 22mm"]
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 52, "w": 182, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 64, "w": 140, "h": 24 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "keyline_divider",
+            "type": "rule",
+            "placement_mm": { "x": 14, "y": 183.5, "w": 60, "h": 0.5 },
+            "colour": "tirisano_navy",
+            "rule": "Horizontal rule at golden section. 60mm width. Left-aligned."
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 108, "w": 140, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 140, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 100, "y": 140, "w": 80, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 200, "w": 55, "h": 18 },
+            "anchor": "left",
+            "rules": ["Full logo with wordmark", "Max height 18mm", "Clearspace 8mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 226, "w": 120, "h": 30 },
+            "content_lines": [
+              "Tirisano Travel CC",
+              "(2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "footer_small", "contact_line"]
+          },
+          {
+            "id": "monument_watermark",
+            "type": "watermark_placeholder",
+            "placement_mm": { "x": 80, "y": 140, "w": 180, "h": 180 },
+            "anchor": "bottom-right corner, cropped",
+            "treatment": "Tirisano logomark at 3% grey (#F7F7F7). Cropped so approximately 65% visible. Star points extend past trim edge into bleed. Creates emboss illusion without physical emboss.",
+            "z_index": -1,
+            "rules": ["Must not interfere with text legibility", "No stroke, fill only", "Test B&W print at 3% and 4% to confirm visibility"]
+          }
+        ]
+      },
+      "colour_usage": {
+        "navy_keyline": true,
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "watermark": "#F7F7F7"
+      },
+      "why_it_wins": [
+        "Golden section keyline creates classical proportion that reads as 'considered' rather than 'designed'",
+        "Monument watermark establishes Tirisano ownership without competing with content",
+        "Asymmetric balance prevents static/corporate-brochure feel",
+        "Clear recipient/bidder zone separation follows government protocol expectations",
+        "Single accent colour (navy keyline) maintains discipline"
+      ],
+      "failure_modes": [
+        "Watermark too dark: becomes distracting, fails B&W test",
+        "Watermark too light: invisible, loses signature device",
+        "Keyline too long: becomes decorative rather than functional"
+      ]
+    },
+    {
+      "concept_id": "C02",
+      "name": "Ribbon Horizon",
+      "core_idea": "The Tirisano ribbon element abstracted into a single flowing horizon line that spans the full page width at the lower third, creating a natural 'above/below the line' hierarchy.",
+      "signature_device": "A single abstracted ribbon form derived from the Tirisano logomark's flowing banner. Rendered as a subtle gradient from 2% to 4% grey, creating a soft horizon that separates the document information zone above from the bidder identification zone below.",
+      "layout": {
+        "grid": {
+          "columns": 12,
+          "gutter_mm": 4,
+          "baseline_mm": 4,
+          "column_width_mm": 13.17
+        },
+        "horizon_y_mm": 195,
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Maintain aspect ratio", "Max height 22mm"]
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 50, "w": 182, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 62, "w": 160, "h": 24 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 100, "w": 160, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 135, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 160, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "ribbon_horizon",
+            "type": "decorative_element",
+            "placement_mm": { "x": -5, "y": 190, "w": 220, "h": 25 },
+            "treatment": "Abstracted single ribbon wave spanning full bleed width. Gradient fill from #FAFAFA to #F3F3F3. Soft organic curve peaking at approximately 8mm amplitude.",
+            "z_index": -1
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 230, "w": 55, "h": 18 },
+            "anchor": "left",
+            "rules": ["Full logo with wordmark", "Max height 18mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 255, "w": 120, "h": 28 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "contact_line"]
+          }
+        ]
+      },
+      "colour_usage": {
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "ribbon_gradient": ["#FAFAFA", "#F3F3F3"]
+      },
+      "why_it_wins": [
+        "Ribbon is directly derived from Tirisano identity, creating brand connection",
+        "Horizontal flow suggests travel/movement aligned with service offering",
+        "Natural hierarchy division without harsh lines",
+        "Full-bleed element adds production value without colour cost",
+        "Scalable to other documents in the submission"
+      ],
+      "failure_modes": [
+        "Ribbon too pronounced: becomes decorative/marketing",
+        "Ribbon curve too complex: loses institutional feel",
+        "Gradient not visible in print: test at minimum 2% grey"
+      ]
+    },
+    {
+      "concept_id": "C03",
+      "name": "Compass Grid",
+      "core_idea": "The six-pointed compass star from Tirisano's logomark informs an underlying angular grid that creates subtle diagonal alignments, with one star point axis visible as a hairline extending from corner.",
+      "signature_device": "A single hairline (0.25pt, 6% grey) extending from the bottom-left corner at the exact angle of the Tirisano star's lower-left point (approximately 30° from vertical). Creates architectural tension and subtle brand geometry without obvious decoration.",
+      "layout": {
+        "grid": {
+          "columns": 12,
+          "gutter_mm": 4,
+          "baseline_mm": 4,
+          "column_width_mm": 13.17,
+          "diagonal_angle_deg": 30
+        },
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Max height 22mm"]
+          },
+          {
+            "id": "diagonal_hairline",
+            "type": "rule",
+            "placement_mm": { "x": 0, "y": 297, "x2": 85, "y2": 150 },
+            "colour": "#F0F0F0",
+            "weight_pt": 0.25,
+            "rule": "30° diagonal from bottom-left corner. Extends to approximately y=150mm. Stops before intersecting text."
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 52, "w": 182, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 65, "w": 140, "h": 24 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 105, "w": 150, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 138, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 163, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 210, "w": 55, "h": 18 },
+            "anchor": "left",
+            "rules": ["Full logo with wordmark", "Max height 18mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 235, "w": 120, "h": 30 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "contact_line"]
+          },
+          {
+            "id": "monument_watermark",
+            "type": "watermark_placeholder",
+            "placement_mm": { "x": 90, "y": 150, "w": 140, "h": 140 },
+            "anchor": "bottom-right",
+            "treatment": "Tirisano logomark at 2.5% grey. 70% cropped. Positioned so star geometry echoes the diagonal hairline angle.",
+            "z_index": -1
+          }
+        ]
+      },
+      "colour_usage": {
+        "hairline": "#F0F0F0",
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "watermark": "#F9F9F9"
+      },
+      "why_it_wins": [
+        "Geometric rigour reads as architectural/considered",
+        "Diagonal creates dynamic without chaos",
+        "Brand geometry embedded subtly",
+        "Extremely print-safe, no gradients",
+        "Works in pure B&W"
+      ],
+      "failure_modes": [
+        "Diagonal too dark: becomes distracting",
+        "Diagonal intersects text: breaks hierarchy",
+        "Too subtle: invisible, pointless"
+      ]
+    },
+    {
+      "concept_id": "C04",
+      "name": "Diplomatic Margin",
+      "core_idea": "A secondary left margin zone (40mm wide) contains all labels in a structured column, creating a ledger-like reading experience that signals audit-readiness and protocol compliance.",
+      "signature_device": "A 40mm left margin column separated by a single vertical hairline (0.35pt, tirisano_navy at 20% opacity). Labels sit in the margin, values align to the main column. Creates a form-like structure without actual form fields.",
+      "layout": {
+        "grid": {
+          "columns": 2,
+          "column_widths_mm": [40, 142],
+          "gutter_mm": 6,
+          "baseline_mm": 4
+        },
+        "margin_divider_x_mm": 46,
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 52, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top of main column",
+            "rules": ["No recolour", "Max height 22mm"]
+          },
+          {
+            "id": "margin_divider",
+            "type": "rule",
+            "placement_mm": { "x": 46, "y": 50, "w": 0.35, "h": 200 },
+            "colour": "tirisano_navy",
+            "opacity": 0.15,
+            "rule": "Vertical hairline. Starts below DIRCO logo, extends to bidder zone."
+          },
+          {
+            "id": "doc_label_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 55, "w": 30, "h": 8 },
+            "content": "DOCUMENT",
+            "style": "field_label"
+          },
+          {
+            "id": "doc_label_value",
+            "type": "text",
+            "placement_mm": { "x": 52, "y": 52, "w": 140, "h": 12 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "title_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 72, "w": 30, "h": 8 },
+            "content": "BID TITLE",
+            "style": "field_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 52, "y": 68, "w": 140, "h": 28 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 110, "w": 30, "h": 8 },
+            "content": "SUBMITTED TO",
+            "style": "field_label"
+          },
+          {
+            "id": "client_value",
+            "type": "text",
+            "placement_mm": { "x": 52, "y": 108, "w": 140, "h": 20 },
+            "content": "Department of International Relations and Cooperation (DIRCO)",
+            "style": "field_value"
+          },
+          {
+            "id": "reference_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 140, "w": 30, "h": 8 },
+            "content": "REFERENCE",
+            "style": "field_label"
+          },
+          {
+            "id": "reference_value",
+            "type": "text",
+            "placement_mm": { "x": 52, "y": 138, "w": 80, "h": 12 },
+            "content": "DIRCO 08-2025-2026",
+            "style": "field_value"
+          },
+          {
+            "id": "closing_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 160, "w": 30, "h": 8 },
+            "content": "CLOSING",
+            "style": "field_label"
+          },
+          {
+            "id": "closing_value",
+            "type": "text",
+            "placement_mm": { "x": 52, "y": 158, "w": 100, "h": 12 },
+            "content": "30 January 2026 at 11h00",
+            "style": "field_value"
+          },
+          {
+            "id": "bidder_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 210, "w": 30, "h": 8 },
+            "content": "BIDDER",
+            "style": "field_label"
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 52, "y": 200, "w": 55, "h": 18 },
+            "anchor": "main column",
+            "rules": ["Full logo with wordmark", "Max height 18mm"]
+          },
+          {
+            "id": "contact_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 235, "w": 30, "h": 8 },
+            "content": "CONTACT",
+            "style": "field_label"
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 52, "y": 225, "w": 120, "h": 25 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["field_value", "contact_line"]
+          },
+          {
+            "id": "monument_watermark",
+            "type": "watermark_placeholder",
+            "placement_mm": { "x": 100, "y": 180, "w": 130, "h": 130 },
+            "anchor": "bottom-right",
+            "treatment": "Tirisano logomark at 2% grey. Significantly cropped to show only upper portion of star.",
+            "z_index": -1
+          }
+        ]
+      },
+      "colour_usage": {
+        "margin_divider": "tirisano_navy at 15% opacity",
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos"
+      },
+      "why_it_wins": [
+        "Ledger format signals compliance and audit-readiness",
+        "Two-column structure creates natural reading flow",
+        "Labels and values clearly separated",
+        "Extremely scannable for tender evaluation panels",
+        "Vertical rule adds structure without decoration"
+      ],
+      "failure_modes": [
+        "Left margin too narrow: labels truncate",
+        "Vertical rule too dark: becomes dominant feature",
+        "Feels like a form rather than a cover: balance needed"
+      ]
+    },
+    {
+      "concept_id": "C05",
+      "name": "State Document",
+      "core_idea": "Minimal cover that relies entirely on typography hierarchy and whitespace. No decorative elements. DIRCO at top, content in upper-centre, Tirisano anchored at bottom. The absence of decoration is the statement.",
+      "signature_device": "None. Radical restraint. The signature is the absence of signature devices, creating a diplomatic-cable or state-document aesthetic.",
+      "layout": {
+        "grid": {
+          "columns": 1,
+          "margin_mm": 20,
+          "baseline_mm": 4
+        },
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 20, "y": 20, "w": 60, "h": 20 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Max height 20mm"]
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 20, "y": 60, "w": 170, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 20, "y": 75, "w": 170, "h": 28 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 20, "y": 115, "w": 150, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 20, "y": 150, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 20, "y": 175, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 20, "y": 245, "w": 50, "h": 16 },
+            "anchor": "bottom-left",
+            "rules": ["Full logo with wordmark", "Max height 16mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 20, "y": 265, "w": 170, "h": 18 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23) | info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["footer_small"]
+          }
+        ]
+      },
+      "colour_usage": {
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "decorative_elements": "none"
+      },
+      "why_it_wins": [
+        "Maximum credibility through restraint",
+        "Cannot be accused of 'marketing' or overselling",
+        "Pure whitespace reads as confidence",
+        "Fastest to produce, lowest risk of errors",
+        "Universal print compatibility"
+      ],
+      "failure_modes": [
+        "May read as unfinished or generic",
+        "No brand differentiation",
+        "Relies entirely on logo quality",
+        "No signature device for recognition"
+      ]
+    },
+    {
+      "concept_id": "C06",
+      "name": "Vertical Protocol",
+      "core_idea": "A narrow vertical colour bar (6mm wide, tirisano_navy) runs the full height of the left edge inside the safe margin, creating a filing-spine effect that signals 'bound official document'.",
+      "signature_device": "6mm vertical navy bar running from y=0 to y=297 at x=14. Creates a spine/binding reference that reads as 'this document will be bound and filed'. The monument watermark appears opposite, at right.",
+      "layout": {
+        "grid": {
+          "columns": 12,
+          "gutter_mm": 4,
+          "baseline_mm": 4,
+          "content_start_x_mm": 26
+        },
+        "elements": [
+          {
+            "id": "spine_bar",
+            "type": "rectangle",
+            "placement_mm": { "x": 14, "y": 0, "w": 6, "h": 297 },
+            "fill": "tirisano_navy",
+            "rules": ["Full height", "Inside safe margin but at edge"]
+          },
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 26, "y": 16, "w": 65, "h": 22 },
+            "anchor": "top-left after spine",
+            "rules": ["No recolour", "Max height 22mm"]
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 26, "y": 52, "w": 160, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 26, "y": 65, "w": 150, "h": 24 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 26, "y": 105, "w": 150, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 26, "y": 140, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 26, "y": 165, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 26, "y": 215, "w": 55, "h": 18 },
+            "anchor": "left after spine",
+            "rules": ["Full logo with wordmark", "Max height 18mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 26, "y": 240, "w": 120, "h": 28 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "contact_line"]
+          },
+          {
+            "id": "monument_watermark",
+            "type": "watermark_placeholder",
+            "placement_mm": { "x": 100, "y": 165, "w": 130, "h": 130 },
+            "anchor": "right side",
+            "treatment": "Tirisano logomark at 3% grey. Cropped to show star and partial ribbon.",
+            "z_index": -1
+          }
+        ]
+      },
+      "colour_usage": {
+        "spine_bar": "tirisano_navy solid",
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos"
+      },
+      "why_it_wins": [
+        "Filing-spine reference reads as 'official bound document'",
+        "Strong colour statement without overwhelming",
+        "Creates asymmetric visual interest",
+        "Practical: actual binding would hide left 6mm anyway",
+        "Brand colour presence without decoration"
+      ],
+      "failure_modes": [
+        "Bar may look like printing error",
+        "Reduces usable content width",
+        "May feel too 'designed' for some panels"
+      ]
+    },
+    {
+      "concept_id": "C07",
+      "name": "Dual Crest",
+      "core_idea": "Both logos positioned at top with equal visual weight, side by side, establishing the document as a formal communication between two entities. Content flows below in a single centred column.",
+      "signature_device": "A thin horizontal rule (0.5pt, neutral_light) separates the dual-crest header from the document body. This 'letterhead' treatment positions the bid as formal correspondence between institutions.",
+      "layout": {
+        "grid": {
+          "columns": 2,
+          "gutter_mm": 20,
+          "baseline_mm": 4
+        },
+        "header_divider_y_mm": 50,
+        "elements": [
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Max height 22mm"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 141, "y": 14, "w": 55, "h": 18 },
+            "anchor": "top-right",
+            "rules": ["Full logo with wordmark", "Max height 18mm", "Right-aligned to margin"]
+          },
+          {
+            "id": "header_divider",
+            "type": "rule",
+            "placement_mm": { "x": 14, "y": 50, "w": 182, "h": 0.5 },
+            "colour": "neutral_light",
+            "rule": "Full width horizontal rule below logo zone"
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 62, "w": 182, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 75, "w": 182, "h": 28 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 115, "w": 160, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 150, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 175, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 220, "w": 182, "h": 30 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "contact_line"]
+          }
+        ]
+      },
+      "colour_usage": {
+        "header_divider": "neutral_light",
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "decorative_elements": "none"
+      },
+      "why_it_wins": [
+        "Positions Tirisano as institutional peer to DIRCO",
+        "Letterhead format reads as formal correspondence",
+        "Both brands get premium placement",
+        "Clean horizontal structure",
+        "No risk of decorative overreach"
+      ],
+      "failure_modes": [
+        "May imply partnership that doesn't exist",
+        "Protocol breach: government logo should have primacy",
+        "Tirisano logo duplicated (top and implied at bottom)"
+      ]
+    },
+    {
+      "concept_id": "C08",
+      "name": "Corner Anchor",
+      "core_idea": "Monument watermark positioned as a corner anchor at top-right, counterbalancing the DIRCO logo at top-left. Creates diagonal tension across the page with content in the protected centre.",
+      "signature_device": "Oversized Tirisano logomark anchored to top-right corner, heavily cropped (showing only lower-left quadrant of the star). At 4% grey, it creates a subtle counterweight to the DIRCO coat of arms, establishing visual equilibrium.",
+      "layout": {
+        "grid": {
+          "columns": 12,
+          "gutter_mm": 4,
+          "baseline_mm": 4
+        },
+        "elements": [
+          {
+            "id": "monument_watermark",
+            "type": "watermark_placeholder",
+            "placement_mm": { "x": 110, "y": -40, "w": 160, "h": 160 },
+            "anchor": "top-right, extends into bleed",
+            "treatment": "Tirisano logomark at 4% grey. Heavily cropped to show only lower-left portion. Star points extend past page edge.",
+            "z_index": -1
+          },
+          {
+            "id": "dirco_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 14, "w": 65, "h": 22 },
+            "anchor": "top-left",
+            "rules": ["No recolour", "Max height 22mm"]
+          },
+          {
+            "id": "doc_label",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 52, "w": 120, "h": 8 },
+            "content": "RFP Response",
+            "style": "doc_label"
+          },
+          {
+            "id": "bid_title",
+            "type": "text",
+            "placement_mm": { "x": 14, "y": 65, "w": 140, "h": 28 },
+            "content": "Travel Management Services",
+            "style": "title"
+          },
+          {
+            "id": "client_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 110, "w": 150, "h": 24 },
+            "content_label": "SUBMITTED TO",
+            "content_value": "Department of International Relations and Cooperation (DIRCO)",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "reference_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 145, "w": 80, "h": 18 },
+            "content_label": "TENDER REFERENCE",
+            "content_value": "DIRCO 08-2025-2026",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "closing_field",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 170, "w": 100, "h": 18 },
+            "content_label": "CLOSING DATE",
+            "content_value": "30 January 2026 at 11h00",
+            "styles": ["field_label", "field_value"]
+          },
+          {
+            "id": "tirisano_logo",
+            "type": "logo_placeholder",
+            "placement_mm": { "x": 14, "y": 220, "w": 55, "h": 18 },
+            "anchor": "lower-left",
+            "rules": ["Full logo with wordmark", "Max height 18mm"]
+          },
+          {
+            "id": "bidder_details",
+            "type": "text_block",
+            "placement_mm": { "x": 14, "y": 245, "w": 120, "h": 30 },
+            "content_lines": [
+              "Tirisano Travel CC (2002/065229/23)",
+              "info@tirisano-travel.co.za | 010 442 3355"
+            ],
+            "styles": ["bidder_name", "contact_line"]
+          }
+        ]
+      },
+      "colour_usage": {
+        "text_colours": ["tirisano_navy", "neutral_dark", "neutral_mid"],
+        "logo_colours": "full colour both logos",
+        "watermark": "#F5F5F5"
+      },
+      "why_it_wins": [
+        "Diagonal balance creates sophisticated composition",
+        "Top-right watermark doesn't compete with bottom content",
+        "DIRCO and Tirisano in visual dialogue across page",
+        "More dynamic than standard top-down layout",
+        "Watermark visible but non-intrusive"
+      ],
+      "failure_modes": [
+        "Watermark may interfere with any header text",
+        "Diagonal tension may feel unbalanced",
+        "Less conventional, may confuse some readers"
+      ]
+    }
+  ],
+  "shortlist": ["C01", "C04", "C06", "C02"],
+  "final_recommendation": {
+    "concept_id": "C01",
+    "reason": "Protocol Anchor delivers the optimal balance of institutional credibility and brand identity. The golden-section keyline creates classical proportion that reads as intentional design rigour without decoration. The monument watermark—Tirisano's compass star cropped and rendered at 3% grey—establishes ownership and premium positioning without competing with the content hierarchy. The asymmetric layout prevents the static 'corporate brochure' feel while maintaining the strict vertical hierarchy expected by tender evaluation panels. The navy keyline provides a single, disciplined colour accent that reinforces Tirisano's primary brand colour. This concept succeeds in the critical balance: it looks official enough for government protocol, distinctive enough to stand out in a stack of submissions, and professional enough to signal audit-readiness and operational scale."
+  }
+}
