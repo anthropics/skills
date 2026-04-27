@@ -1,0 +1,47 @@
+# 敏感配置文件 (包含 API keys)
+config.json
+feishu_config.json
+*_config.json
+!*_config.example.json
+
+# 个人数据
+*.xlsx
+*.xls
+my_portfolio*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
