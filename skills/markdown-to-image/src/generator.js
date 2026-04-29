@@ -67,6 +67,7 @@ export async function generateCards(options) {
   } finally {
     await browser.close();
   }
+  return generatedFiles;
 }
 
 /**
@@ -82,13 +83,14 @@ async function generateTitleCard(browser, title, theme, outputPath, filenameBase
   const template = await fs.readFile(templatePath, 'utf-8');
   const bg = theme.tokens?.background || '#ffffff';
   const fg = theme.tokens?.textPrimary || '#000000';
-  const fontFamily = theme.typography?.fontCJK || "'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif";
+  const fontFamily = theme.typography?.fontCJK || "'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif";
+  const escapedTitle = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const html = template
     .replace('{{background}}', bg)
     .replace('{{textColor}}', fg)
     .replace('{{fontSize}}', fontSize)
     .replace('{{fontFamily}}', fontFamily)
-    .replace('{{title}}', title);
+    .replace('{{title}}', escapedTitle);
 
   await page.setContent(html, { waitUntil: 'load', timeout: 120000 });
   await page.evaluateHandle('document.fonts.ready');
@@ -177,10 +179,13 @@ export async function generateCardsFromMarkdown(options) {
   await fs.rm(outputPath, { recursive: true, force: true });
   await fs.mkdir(outputPath, { recursive: true });
 
+  const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  const chromeExists = await fs.access(CHROME_PATH).then(() => true).catch(() => false);
+
   console.log('🚀 启动浏览器...');
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    ...(chromeExists ? { executablePath: CHROME_PATH } : {}),
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
@@ -271,7 +276,7 @@ async function paginateBlocks(page, template, blocks, maxHeight, hasMermaid = fa
       mermaid.initialize({
         startOnLoad: false,
         theme: 'neutral',
-        securityLevel: 'loose',
+        securityLevel: 'strict',
         fontSize: 32,
         flowchart: { useMaxWidth: true, htmlLabels: true }
       });
@@ -689,7 +694,7 @@ async function renderMixedContentCard(page, template, blocks, theme, outputPath,
       mermaid.initialize({
         startOnLoad: false,
         theme: 'neutral',
-        securityLevel: 'loose',
+        securityLevel: 'strict',
         fontSize: 32,
         flowchart: { useMaxWidth: true, htmlLabels: true }
       });

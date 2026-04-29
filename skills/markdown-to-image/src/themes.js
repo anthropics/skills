@@ -33,8 +33,8 @@ export const themes = {
       codeBackground: '#2C2C2E',
     },
     typography: {
-      fontCJK: "'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif",
-      fontHeading: "'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif",
+      fontCJK: "'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif",
+      fontHeading: "'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif",
     },
     spacing: { padding: 130, gap: 48 },
     radius: { image: 12, code: 12 },
