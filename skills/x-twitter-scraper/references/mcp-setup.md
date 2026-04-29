@@ -8,31 +8,44 @@ Connect AI agents and IDEs to Xquik via the Model Context Protocol. The MCP serv
 | Endpoint | `https://xquik.com/mcp` |
 | Auth header | `x-api-key` |
 
+> **Security:** Use a scoped, revocable API key - not your primary account key. Where your platform supports environment variable interpolation (e.g., `${XQUIK_API_KEY}`), prefer that over hardcoding. Rotate keys periodically from the [dashboard](https://dashboard.xquik.com/account). Never commit API keys to version control.
+
 ## Claude.ai (Web)
 
 Claude.ai supports MCP connectors natively via OAuth. Add Xquik as a connector from **Settings > Feature Preview > Integrations > Add More > Xquik**. The OAuth 2.1 flow handles authentication automatically. No API key needed.
 
 ## Claude Desktop
 
-Claude Desktop only supports stdio transport. Use `mcp-remote` as a bridge (requires [Node.js](https://nodejs.org)).
+Claude Desktop only supports stdio transport, so it needs a local stdio-to-HTTP bridge. The recommended setup avoids runtime package fetches: **install the bridge globally first, then invoke the pinned binary directly.**
 
-Add to `claude_desktop_config.json`:
+> **About `mcp-remote`:** [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) is an open-source stdio-to-HTTP bridge (MIT license, [source on GitHub](https://github.com/geelen/mcp-remote)) maintained by the MCP ecosystem. It translates stdio to StreamableHTTP - it does not execute arbitrary code, access your filesystem, or modify your system. Always pin the version (`@0.1.38`) and audit the package on npm before installing.
+
+### Step 1: Install the bridge globally (one-time, audited)
+
+```bash
+npm install -g mcp-remote@0.1.38
+```
+
+### Step 2: Add to `claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
     "xquik": {
-      "command": "npx",
+      "command": "mcp-remote",
       "args": [
-        "mcp-remote@latest",
         "https://xquik.com/mcp",
         "--header",
-        "x-api-key:xq_YOUR_KEY_HERE"
+        "x-api-key:${XQUIK_API_KEY}"
       ]
     }
   }
 }
 ```
+
+> Set the `XQUIK_API_KEY` environment variable before launching Claude Desktop, or replace `${XQUIK_API_KEY}` with your actual API key.
+
+> **Prefer a hosted option?** Claude.ai (web) supports Xquik natively via OAuth - see the section above. No local bridge required.
 
 ## Claude Code
 
@@ -162,14 +175,14 @@ Add to `opencode.json`:
 
 ## MCP Server Architecture
 
-The default MCP server (v2) at `https://xquik.com/mcp` uses a **code-execution sandbox model** with 2 tools:
+The MCP server (v2) at `https://xquik.com/mcp` provides 2 structured API tools:
 
 | Tool | Description | Cost |
 |------|-------------|------|
 | `explore` | Search the API endpoint catalog (read-only, no network calls) | Free |
 | `xquik` | Execute API calls against your account | Varies by endpoint |
 
-The agent writes async JavaScript arrow functions that run in a sandboxed environment. Auth is injected automatically. The sandbox covers all 97 REST API endpoints across 12 categories: account, automations, bot, composition, extraction, integrations, media, monitoring, support, twitter, x-accounts, and x-write.
+The agent sends structured API requests through the MCP server, which handles authentication and execution within the same first-party infrastructure as the REST API. All 111 REST API endpoints across 10 categories are accessible: account, composition, credits, extraction, media, monitoring, support, twitter, x-accounts, and x-write.
 
 ## After Setup
 

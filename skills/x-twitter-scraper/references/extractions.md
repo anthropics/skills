@@ -202,7 +202,7 @@ Returns paginated results (up to 1,000 per page). Each result includes:
 GET /extractions/{id}/export?format=csv
 ```
 
-Formats: `csv`, `xlsx`, `md`. 50,000 row limit.
+Formats: `csv`, `json`, `md`, `md-document`, `pdf`, `txt`, `xlsx`. 100,000 row limit (10,000 for PDF).
 
 Exports include enrichment columns not present in the API response.
 

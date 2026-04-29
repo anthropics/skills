@@ -24,8 +24,6 @@ All requests require the `x-api-key` header. All responses are JSON. HTTPS only.
 - [Subscribe](#subscribe)
 - [X Accounts (Connected)](#x-accounts-connected)
 - [X Write](#x-write)
-- [Integrations](#integrations)
-- [Automations](#automations)
 - [Credits](#credits)
 - [Support](#support)
 
@@ -126,7 +124,7 @@ POST /monitors
 }
 ```
 
-Event types: `tweet.new`, `tweet.quote`, `tweet.reply`, `tweet.retweet`, `follower.gained`, `follower.lost`.
+Event types: `tweet.new`, `tweet.quote`, `tweet.reply`, `tweet.retweet`, `webhook.test`.
 
 Returns `409 monitor_already_exists` if the username is already monitored.
 
@@ -358,7 +356,7 @@ Returns full draw details including winners.
 GET /draws/{id}/export?format=csv&type=winners
 ```
 
-Formats: `csv`, `xlsx`, `md`. Types: `winners` (default), `entries`. Entry exports capped at 50,000 rows.
+Formats: `csv`, `json`, `md`, `md-document`, `pdf`, `txt`, `xlsx`. Types: `winners` (default), `entries`. Entry exports capped at 100,000 rows (PDF capped at 10,000).
 
 ---
 
@@ -456,7 +454,7 @@ Returns job details with paginated results (up to 1,000 per page).
 GET /extractions/{id}/export?format=csv
 ```
 
-Formats: `csv`, `xlsx`, `md`. 50,000 row limit. Exports include enrichment columns not in the API response.
+Formats: `csv`, `json`, `md`, `md-document`, `pdf`, `txt`, `xlsx`. 100,000 row limit (PDF 10,000). Exports include enrichment columns not in the API response.
 
 ---
 
@@ -573,6 +571,8 @@ GET /x/bookmarks
 
 Get bookmarked tweets. Requires a connected X account. Metered (1 credit/result).
 
+**Sensitive:** Returns private data. Confirm with user before calling.
+
 ### Get Bookmark Folders
 
 ```
@@ -589,6 +589,8 @@ GET /x/notifications
 
 Get notifications with type filter. Requires a connected X account. Metered (1 credit/result).
 
+**Sensitive:** Returns private data. Confirm with user before calling.
+
 ### Get Home Timeline
 
 ```
@@ -596,6 +598,8 @@ GET /x/timeline
 ```
 
 Get home timeline. Requires a connected X account. Metered (1 credit/result).
+
+**Sensitive:** Returns private data. Confirm with user before calling.
 
 ---
 
@@ -1027,12 +1031,12 @@ Link your X username to your Xquik account. Required for own-account detection i
 POST /subscribe
 ```
 
-Returns a Stripe Checkout URL for subscribing or managing the subscription. If already subscribed, returns the billing portal URL.
+Returns a checkout URL for subscribing or managing the subscription. If already subscribed, returns the billing portal URL.
 
 **Response:**
 ```json
 {
-  "url": "https://checkout.stripe.com/c/pay/..."
+  "url": "https://checkout.xquik.com/..."
 }
 ```
 
@@ -1042,6 +1046,8 @@ Returns a Stripe Checkout URL for subscribing or managing the subscription. If a
 
 Manage connected X accounts for write actions. All endpoints are free (no usage cost).
 
+**Connecting or re-authenticating an X account is done by the user in the Xquik dashboard** at [xquik.com/dashboard/account](https://xquik.com/dashboard/account), not via this skill. The skill never handles X login credentials. The agent should direct the user to the dashboard when a new account needs to be connected or an existing session needs to be refreshed.
+
 ### List X Accounts
 
 ```
@@ -1049,26 +1055,6 @@ GET /x/accounts
 ```
 
 Returns all connected X accounts. Response: `{ accounts: [{ id, username, displayName, isActive, createdAt }] }`.
-
-### Connect X Account
-
-```
-POST /x/accounts
-```
-
-**Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `username` | string | Yes | X username (`@` auto-stripped) |
-| `email` | string | Yes | Email associated with the X account |
-| `password` | string | Yes | Account password (encrypted at rest) |
-| `totp_secret` | string | No | TOTP base32 secret for 2FA accounts |
-| `proxy_country` | string | No | Preferred proxy region (e.g. `"US"`, `"TR"`) |
-
-**Response (201):** `{ id, username, isActive, createdAt }`
-
-**Errors:** `409 account_already_connected`, `422 login_failed`
 
 ### Get X Account
 
@@ -1084,21 +1070,7 @@ Returns `{ id, username, displayName, isActive, createdAt }`.
 DELETE /x/accounts/{id}
 ```
 
-Permanently removes the account and deletes stored credentials. Returns `{ success: true }`.
-
-### Re-authenticate X Account
-
-```
-POST /x/accounts/{id}/reauth
-```
-
-Use when a session expires or X requires re-verification.
-
-**Body:** `{ "password": "...", "totp_secret": "..." }` (password required, totp_secret optional)
-
-**Response:** `{ success: true }`
-
-**Errors:** `422 reauth_failed`
+Permanently removes the account from Xquik. Returns `{ success: true }`. Before calling, confirm with the user.
 
 ---
 
@@ -1203,6 +1175,8 @@ GET /x/dm/{userId}/history
 
 Get DM conversation history with a user. Requires a connected X account. Metered (1 credit/result).
 
+**Sensitive:** Returns private DM conversations. Confirm with user before calling. Do not forward to other tools without consent.
+
 ### Update Profile
 
 ```
@@ -1217,7 +1191,7 @@ PATCH /x/profile
 PATCH /x/profile/avatar
 ```
 
-Update profile avatar. Max 700 KB, GIF/JPEG/PNG. Metered (2 credits).
+Update profile avatar. Max 700 KB, GIF/JPEG/PNG. Metered (10 credits).
 
 **Body:** FormData with `account` (required) and `file` (required, max 700 KB).
 
@@ -1227,7 +1201,7 @@ Update profile avatar. Max 700 KB, GIF/JPEG/PNG. Metered (2 credits).
 PATCH /x/profile/banner
 ```
 
-Update profile banner. Max 2 MB, GIF/JPEG/PNG. Metered (2 credits).
+Update profile banner. Max 2 MB, GIF/JPEG/PNG. Metered (10 credits).
 
 **Body:** FormData with `account` (required) and `file` (required, max 2 MB).
 
@@ -1277,208 +1251,6 @@ DELETE /x/communities/{id}/join
 
 ---
 
-## Integrations
-
-Manage third-party integrations (currently Telegram) that receive monitor event notifications. All endpoints are free (no usage cost).
-
-### Create Integration
-
-```
-POST /integrations
-```
-
-**Body:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | Yes | Integration type: `"telegram"` |
-| `name` | string | Yes | Human-readable name |
-| `config` | object | Yes | Type-specific config. Telegram: `{ chatId: "-1001234567890" }` |
-| `eventTypes` | string[] | Yes | Event types: `tweet.new`, `tweet.quote`, `tweet.reply`, `tweet.retweet`, `draw.completed`, `extraction.completed`, `extraction.failed` |
-
-**Response (201):** `{ id, type, name, config, eventTypes, isActive, createdAt }`
-
-### List Integrations
-
-```
-GET /integrations
-```
-
-Returns all integrations. Response: `{ integrations: [...] }`.
-
-### Get Integration
-
-```
-GET /integrations/{id}
-```
-
-Returns a single integration with full details.
-
-### Update Integration
-
-```
-PATCH /integrations/{id}
-```
-
-**Body:** `{ "name": "...", "eventTypes": [...], "isActive": true|false, "silentPush": false, "scopeAllMonitors": true, "filters": {}, "messageTemplate": {} }` (all optional, at least 1 required)
-
-### Delete Integration
-
-```
-DELETE /integrations/{id}
-```
-
-Permanently removes the integration. Returns `204 No Content`.
-
-### Test Integration
-
-```
-POST /integrations/{id}/test
-```
-
-Sends a test notification. Returns success or failure status.
-
-**Errors:** `502 delivery_failed`
-
-### List Deliveries
-
-```
-GET /integrations/{id}/deliveries
-```
-
-View delivery attempts and statuses. Statuses: `pending`, `delivered`, `failed`, `exhausted`.
-
-**Query:** `limit` (default 50).
-
----
-
-## Automations
-
-Trigger-driven workflow automation. Create flows with triggers (monitor events, schedules, search, inbound webhooks) and action steps.
-
-### List Automations
-
-```
-GET /automations
-```
-
-Returns all flows. Response: `{ items: [{ id, name, slug, triggerType, triggerConfig, isActive, runCount, lastRunAt, minIntervalSeconds, pausedReason, templateSlug, xAccountId, createdAt, updatedAt }] }`.
-
-### Create Automation
-
-```
-POST /automations
-```
-
-**Body:**
-```json
-{
-  "name": "New Follower Welcome",
-  "triggerType": "monitor_event",
-  "triggerConfig": { "eventType": "follower.gained" },
-  "templateSlug": "welcome-dm"
-}
-```
-
-Trigger types: `monitor_event`, `schedule`, `search`, `webhook_inbound`.
-
-**Response (201):** Flow object with `id`, `slug`, `isActive: false`.
-
-Flows are created inactive. Add steps, then activate via `PATCH /automations/{slug}`.
-
-Free: 2 flows. Subscribers: 10 flows.
-
-### Get Automation
-
-```
-GET /automations/{slug}
-```
-
-Returns flow with steps and 20 most recent runs.
-
-### Update Automation
-
-```
-PATCH /automations/{slug}
-```
-
-**Body:** `{ "expectedUpdatedAt": "...", "name": "...", "triggerType": "...", "triggerConfig": {...}, "isActive": true|false }`. `expectedUpdatedAt` required (optimistic concurrency). Returns `409 conflict` if stale.
-
-Activation requires an active subscription and at least 1 action step.
-
-### Delete Automation
-
-```
-DELETE /automations/{slug}
-```
-
-Deletes the flow and all its steps. Returns `{ success: true }`.
-
-### Add Step
-
-```
-POST /automations/{slug}/steps
-```
-
-**Body:**
-```json
-{
-  "stepType": "action",
-  "actionType": "send_dm",
-  "branch": "main",
-  "config": { "message": "Welcome!" },
-  "position": 0
-}
-```
-
-Step types: `action`, `condition`, `extraction`. Max 10 steps per flow.
-
-Action types: `create_tweet`, `follow`, `like`, `reply_tweet`, `retweet`, `send_dm`, `send_email`, `send_telegram`, `unfollow`.
-
-Extraction types: all 23 extraction tool types (kebab-case, e.g. `reply-extractor`). Requires `outputName` for variable reference in later steps.
-
-### Update Step
-
-```
-PATCH /automations/{slug}/steps
-```
-
-**Body:** `{ "stepId": "101", "config": {...}, "positionX": 250, "positionY": 100 }`. `stepId` required.
-
-### Delete Step
-
-```
-DELETE /automations/{slug}/steps
-```
-
-**Body:** `{ "stepId": "101" }`.
-
-### Update Step Positions
-
-```
-PATCH /automations/{slug}/steps/positions
-```
-
-Batch update canvas positions: `{ "positions": [{ "stepId": "101", "positionX": 250, "positionY": 100 }] }`.
-
-### Test Automation
-
-```
-POST /automations/{slug}/test
-```
-
-Not yet implemented. Returns `{ status: "not_implemented" }`.
-
-### Inbound Webhook Trigger
-
-```
-POST /webhooks/inbound/{token}
-```
-
-No auth header required. The URL token identifies the flow. Accepts any JSON body as trigger payload. Rate limited per flow (60/hour) and per user (300/hour).
-
----
-
 ## Credits
 
 ### Get Credit Balance
@@ -1495,7 +1267,7 @@ Get credit balance, lifetime purchased/used, and auto top-up status. Free.
 POST /credits/topup
 ```
 
-Get a Stripe checkout URL to purchase credits ($10 minimum). Free.
+Get a checkout URL to purchase credits ($10 minimum). Free.
 
 ---
 
@@ -1558,7 +1330,7 @@ Add a message to an existing ticket.
 | 400 | `invalid_tweet_id` | Tweet ID is empty or invalid |
 | 400 | `invalid_username` | X username is empty or invalid |
 | 400 | `invalid_tool_type` | Extraction tool type not recognized |
-| 400 | `invalid_format` | Export format not `csv`, `xlsx`, or `md` |
+| 400 | `invalid_format` | Export format not `csv`, `json`, `md`, `md-document`, `pdf`, `txt`, or `xlsx` |
 | 400 | `invalid_params` | Export query parameters are missing or invalid |
 | 400 | `missing_query` | Required query parameter is missing |
 | 400 | `missing_params` | Required query parameters are missing |
@@ -1576,15 +1348,12 @@ Add a message to an existing ticket.
 | 402 | `no_addon` | No monitor addon on subscription |
 | 403 | `monitor_limit_reached` | Plan monitor limit exceeded |
 | 403 | `api_key_limit_reached` | API key limit reached (100 max) |
-| 403 | `flow_limit_reached` | Flow limit reached (free: 2, subscriber: 10) |
-| 403 | `step_limit_reached` | Step limit reached (10 per flow) |
 | 404 | `not_found` | Resource does not exist |
 | 404 | `user_not_found` | X user not found |
 | 404 | `tweet_not_found` | Tweet not found |
 | 404 | `style_not_found` | No cached style found |
 | 404 | `draft_not_found` | Draft not found |
 | 409 | `monitor_already_exists` | Duplicate monitor for same username |
-| 409 | `conflict` | Concurrent edit conflict (automation updates) |
 | 422 | `login_failed` | X credential verification failed |
 | 429 | - | Rate limited. Retry with backoff |
 | 429 | `x_api_rate_limited` | X data source rate limited. Retry |
@@ -1592,4 +1361,3 @@ Add a message to an existing ticket.
 | 502 | `stream_registration_failed` | Stream registration failed. Retry |
 | 502 | `x_api_unavailable` | X data source temporarily unavailable |
 | 502 | `x_api_unauthorized` | X data source authentication failed. Retry |
-| 502 | `delivery_failed` | Integration test delivery failed |

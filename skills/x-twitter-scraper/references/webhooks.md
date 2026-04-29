@@ -35,6 +35,7 @@ The `X-Xquik-Signature` header contains: `sha256=` + HMAC-SHA256(secret, raw JSO
 import express from "express";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
+// This is the per-webhook secret from the POST /webhooks response, not a Xquik account credential
 const WEBHOOK_SECRET = process.env.XQUIK_WEBHOOK_SECRET;
 
 function verifySignature(payload, signature, secret) {
@@ -59,8 +60,8 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
     case "tweet.reply":
       console.log(`Reply from @${event.username}: ${event.data.text}`);
       break;
-    case "follower.gained":
-      console.log(`@${event.username} gained a follower`);
+    case "tweet.retweet":
+      console.log(`@${event.username} retweeted`);
       break;
   }
 
@@ -77,6 +78,7 @@ import os
 from flask import Flask, request
 
 app = Flask(__name__)
+# Per-webhook secret from POST /webhooks response, not a Xquik account credential
 WEBHOOK_SECRET = os.environ["XQUIK_WEBHOOK_SECRET"]
 
 def verify_signature(payload: bytes, signature: str, secret: str) -> bool:
@@ -117,6 +119,7 @@ import (
     "os"
 )
 
+// Per-webhook secret from POST /webhooks response, not a Xquik account credential
 var webhookSecret = os.Getenv("XQUIK_WEBHOOK_SECRET")
 
 func verifySignature(payload []byte, signature, secret string) bool {

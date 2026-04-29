@@ -14,7 +14,6 @@ Copy-pasteable TypeScript types for all Xquik API objects.
 - [Extractions](#extractions)
 - [X API](#x-api)
 - [Trends](#trends)
-- [Automations](#automations)
 - [Support](#support)
 - [Error](#error)
 - [Request Bodies](#request-bodies)
@@ -45,7 +44,7 @@ interface CreditBalance {
 }
 
 interface CreditTopUpResponse {
-  url: string;                  // Stripe checkout URL
+  url: string;                  // Checkout URL
 }
 
 // ─── API Keys ────────────────────────────────────────────
@@ -82,9 +81,7 @@ type EventType =
   | "tweet.new"
   | "tweet.quote"
   | "tweet.reply"
-  | "tweet.retweet"
-  | "follower.gained"
-  | "follower.lost";
+  | "tweet.retweet";
 
 // ─── Events ──────────────────────────────────────────────
 
@@ -118,16 +115,7 @@ interface TweetEventData {
   retweetedUsername?: string;
 }
 
-// Follower events (follower.gained, follower.lost)
-interface FollowerEventData {
-  followerId: string;
-  followerUsername: string;
-  followerName: string;
-  followerFollowersCount: number;
-  followerVerified: boolean;
-}
-
-type EventData = TweetEventData | FollowerEventData;
+type EventData = TweetEventData;
 
 interface EventList {
   events: Event[];
@@ -557,98 +545,6 @@ interface TrendList {
   woeid: number;
 }
 
-// ─── Automations ────────────────────────────────────────
-
-type TriggerType = "monitor_event" | "schedule" | "search" | "webhook_inbound";
-
-type StepType = "action" | "condition" | "extraction";
-
-type ActionType =
-  | "create_tweet"
-  | "follow"
-  | "like"
-  | "reply_tweet"
-  | "retweet"
-  | "send_dm"
-  | "send_email"
-  | "send_telegram"
-  | "unfollow";
-
-interface AutomationFlow {
-  id: string;
-  name: string;
-  slug: string;
-  triggerType: TriggerType;
-  triggerConfig: Record<string, unknown>;
-  isActive: boolean;
-  runCount: string;
-  lastRunAt: string | null;
-  minIntervalSeconds: number;
-  pausedReason: string | null;
-  templateSlug: string | null;
-  xAccountId: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface AutomationStep {
-  id: string;
-  flowId: string;
-  stepType: StepType;
-  actionType: ActionType | null;
-  extractionType: string | null;
-  branch: "main" | "if_true" | "if_false";
-  config: Record<string, unknown>;
-  position: number;
-  positionX: number | null;
-  positionY: number | null;
-  parentStepId: string | null;
-  outputName: string | null;
-  createdAt: string;
-}
-
-interface AutomationRun {
-  id: string;
-  status: string;
-  startedAt: string;
-  completedAt: string | null;
-  errorMessage: string | null;
-  triggeredBy: string;
-}
-
-interface AutomationDetail extends AutomationFlow {
-  steps: AutomationStep[];
-  recentRuns: AutomationRun[];
-}
-
-interface CreateAutomationRequest {
-  name: string;
-  triggerType: TriggerType;
-  triggerConfig: Record<string, unknown>;
-  templateSlug?: string;
-}
-
-interface UpdateAutomationRequest {
-  expectedUpdatedAt: string;
-  name?: string;
-  triggerType?: TriggerType;
-  triggerConfig?: Record<string, unknown>;
-  isActive?: boolean;
-  triggerPositionX?: number | null;
-  triggerPositionY?: number | null;
-}
-
-interface AddStepRequest {
-  stepType: StepType;
-  branch: "main" | "if_true" | "if_false";
-  config: Record<string, unknown>;
-  position?: number;
-  parentStepId?: string;
-  actionType?: ActionType;
-  extractionType?: string;
-  outputName?: string;
-}
-
 // ─── Support ────────────────────────────────────────────
 
 interface SupportTicket {
@@ -993,7 +889,7 @@ interface McpTrends {
 
 interface McpSubscribe {
   status: "already_subscribed" | "checkout_created" | "payment_issue";
-  url: string;                // Stripe Checkout or Customer Portal URL. Open in browser.
+  url: string;                // Checkout or Customer Portal URL. Open in browser.
   message: string;            // Human-readable status message
 }
 
@@ -1058,18 +954,8 @@ interface ConnectedXAccount {
   createdAt: string;          // ISO 8601 timestamp
 }
 
-interface ConnectXAccountRequest {
-  username: string;           // X username (@ auto-stripped)
-  email: string;              // Email associated with X account
-  password: string;           // Password (encrypted at rest)
-  totp_secret?: string;       // TOTP base32 secret for 2FA accounts
-  proxy_country?: string;     // Preferred proxy region (e.g. "US")
-}
-
-interface ReauthXAccountRequest {
-  password: string;           // Current password
-  totp_secret?: string;       // TOTP secret if 2FA enabled
-}
+// Connecting an X account is done by the user in the Xquik dashboard,
+// not through this skill. The skill never handles X login credentials.
 
 // ─── X Write ──────────────────────────────────────────
 
@@ -1107,57 +993,4 @@ interface UpdateProfileRequest {
   url?: string;               // Website URL
 }
 
-// ─── Integrations ─────────────────────────────────────
-
-// Integration event types differ from monitor event types:
-// includes system events (draw/extraction) but NOT follower events
-type IntegrationEventType =
-  | "tweet.new"
-  | "tweet.quote"
-  | "tweet.reply"
-  | "tweet.retweet"
-  | "draw.completed"
-  | "extraction.completed"
-  | "extraction.failed";
-
-interface Integration {
-  id: string;                 // Unique integration ID
-  type: string;               // Integration type ("telegram")
-  name: string;               // Human-readable name
-  config: Record<string, unknown>; // Type-specific config (Telegram: { chatId })
-  eventTypes: IntegrationEventType[]; // Subscribed event types
-  isActive: boolean;          // Whether the integration is active
-  createdAt: string;          // ISO 8601 timestamp
-  updatedAt: string;          // ISO 8601 timestamp
-}
-
-interface CreateIntegrationRequest {
-  type: string;               // "telegram"
-  name: string;               // Human-readable name
-  config: { chatId: string }; // Telegram config
-  eventTypes: IntegrationEventType[]; // Event types to subscribe to
-}
-
-interface UpdateIntegrationRequest {
-  name?: string;              // New name
-  eventTypes?: string[];      // New event types
-  isActive?: boolean;         // Activate/deactivate
-  silentPush?: boolean;       // Silent notifications
-  scopeAllMonitors?: boolean; // Scope to all monitors
-  filters?: Record<string, unknown>; // Filters
-  messageTemplate?: Record<string, unknown>; // Custom message template
-}
-
-interface IntegrationDelivery {
-  id: string;                 // Delivery ID
-  integrationId: string;      // Integration ID
-  sourceType: string;         // "monitor_event" | "extraction" | "draw"
-  sourceId: string;           // Source record ID
-  eventType: string;          // Event type
-  status: string;             // "pending" | "delivered" | "failed" | "exhausted"
-  lastError?: string;         // Last error message
-  attempts: number;           // Delivery attempt count
-  deliveredAt?: string;       // ISO 8601 timestamp
-  createdAt: string;          // ISO 8601 timestamp
-}
 ```

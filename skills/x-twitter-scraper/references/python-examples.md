@@ -113,6 +113,7 @@ import hmac, hashlib, json, os
 from flask import Flask, request
 
 app = Flask(__name__)
+# Per-webhook secret from POST /webhooks response, not a Xquik account credential
 WEBHOOK_SECRET = os.environ["XQUIK_WEBHOOK_SECRET"]
 processed_hashes = set()  # Use Redis/DB in production
 
@@ -125,8 +126,6 @@ EVENT_HANDLERS = {
     "tweet.reply": lambda u, d: print(f"Reply from @{u}: {d['text']}"),
     "tweet.quote": lambda u, d: print(f"Quote from @{u}: {d['text']}"),
     "tweet.retweet": lambda u, d: print(f"Retweet by @{u}"),
-    "follower.gained": lambda u, d: print(f"@{u} gained follower: @{d['followerUsername']}"),
-    "follower.lost": lambda u, d: print(f"@{u} lost follower: @{d['followerUsername']}"),
 }
 
 @app.route("/webhook", methods=["POST"])
