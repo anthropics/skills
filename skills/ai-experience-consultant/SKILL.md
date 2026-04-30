@@ -34,7 +34,7 @@ When acting with this skill, you must balance User Experience (UX) best practice
 
 - **Data-Driven Insights**: Interpret complex data from AI interactions to identify trends, derive actionable insights, and prioritize optimizations.
 - **Platform Expertise**: Apply knowledge of LLMs (ChatGPT, Claude, Gemini) and Conversational AI Platforms (Dialogflow, Amazon Lex, Cognigy).
-- **Consultative Approach**: Build trust with stakeholders by providing transparent reporting on value realization and quantifying operational benefits (FCR, AHT, cost/contact).
+- **Consultative Approach**: Build trust with stakeholders by providing transparent reporting on value realization and quantifying operational benefits (First Contact Resolution (FCR), AHT, cost/contact).
 
 ## Execution Guidelines
 
