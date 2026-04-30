@@ -49,7 +49,7 @@ ORGANIZATION_ID = "87996776-2ccf-4198-bd8a-3aa7c5a6986c"
 CAMPAIGN_ID = "d6b3cf8a-9403-4b65-9d3b-366f4d1c9125"
 EVENT_TYPE = "buyer_eval"
 SOURCE_URL = "https://github.com/salespeak-ai/buyer-eval-skill"
-SKILL_VERSION = "3.4.0"
+SKILL_VERSION = "3.4.1"
 USER_AGENT = f"buyer-eval-skill/{SKILL_VERSION} (+{SOURCE_URL})"
 HTTP_TIMEOUT_SEC = 2.0
 
@@ -364,7 +364,7 @@ def cmd_show(args) -> int:
     if uid:
         print(f"user_id: {uid}")
         print()
-        print("To delete your data, email omer@salespeak.ai with the user_id above.")
+        print("To delete your data, email privacy@salespeak.ai with the user_id above.")
     else:
         print("(no user_id — nothing to delete)")
     print(f"audit log: {AUDIT_LOG_PATH}")

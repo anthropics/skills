@@ -147,7 +147,7 @@ The skill can send anonymized usage data back to Salespeak so the questions it g
      • Local audit log: ~/.salespeak/buyer-eval.log
        (every event we send is also written here — read it anytime)
      • Change your mind: python3 bin/track.py revoke
-     • Delete your data: email omer@salespeak.ai with your user ID
+     • Delete your data: email privacy@salespeak.ai with your user ID
        (run `python3 bin/track.py show` to see it)
    ─────────────────────────────────────────────────────────────
    ```
