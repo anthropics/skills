@@ -111,11 +111,11 @@ Fix by moving the dynamic piece after the last breakpoint, making it determinist
 
 | Model | Minimum |
 |---|---:|
-| Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
+| Opus 4.7, Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
 | Sonnet 4.6, Haiku 3.5, Haiku 3 | 2048 tokens |
 | Sonnet 4.5, Sonnet 4.1, Sonnet 4, Sonnet 3.7 | 1024 tokens |
 
-A 3K-token prompt caches on Sonnet 4.5 but silently won't on Opus 4.6.
+A 3K-token prompt caches on Sonnet 4.5 but silently won't on Opus 4.7.
 
 **Economics:** Cache reads cost ~0.1× base input price. Cache writes cost **1.25× for 5-minute TTL, 2× for 1-hour TTL**. Break-even depends on TTL: with 5-minute TTL, two requests break even (1.25× + 0.1× = 1.35× vs 2× uncached); with 1-hour TTL, you need at least three requests (2× + 0.2× = 2.2× vs 3× uncached). The 1-hour TTL keeps entries alive across gaps in bursty traffic, but the doubled write cost means it needs more reads to pay off.
 

@@ -21,7 +21,7 @@ Agent (config) ───────▶│  (agent loop: Claude + tool calls)  �
 Environment (template) ──▶ Container (tool execution workspace)
                                  │
                          Session ─┤
-                                 ├── Resources (files, repos — mounted at startup)
+                                 ├── Resources (files, repos, memory stores — attached at startup)
                                  ├── Vault IDs (MCP credential references)
                                  └── Conversation (event stream in/out)
 ```
@@ -83,7 +83,7 @@ Key fields returned by the API:
 | `archived_at` | string | ISO 8601 timestamp (nullable) |
 | `environment_id` | string | Environment ID |
 | `agent` | object | Agent configuration |
-| `resources` | array | Attached files and repos |
+| `resources` | array | Attached files, repos, and memory stores |
 | `metadata` | object | User-provided key-value pairs (max 8 keys) |
 | `usage` | object | Token usage statistics |
 
@@ -96,7 +96,7 @@ Key fields returned by the API:
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-4-6",
+    model: "claude-opus-4-7",
     system: "You are a helpful coding agent.",
     tools: [{ type: "agent_toolset_20260401"}],
   },
@@ -119,7 +119,7 @@ const session = await client.beta.sessions.create(
 | `agent`         | string or object | **Yes** | String shorthand `"agent_abc123"` (latest version) or `{type: "agent", id, version}` |
 | `environment_id`| string   | **Yes**  | Environment ID                                 |
 | `title`         | string   | No       | Human-readable name (appears in logs/dashboards) |
-| `resources`     | array    | No       | Files or GitHub repos, mounted to the container at startup |
+| `resources`     | array    | No       | Files, GitHub repos, or memory stores, attached to the container at startup. Memory stores are session-create-only (not addable via `resources.add()`). |
 | `vault_ids`     | array    | No       | Vault IDs (`vlt_*`) — MCP credentials with auto-refresh. See `shared/managed-agents-tools.md` → Vaults. |
 | `metadata`      | object   | No       | User-provided key-value pairs                  |
 
@@ -195,6 +195,8 @@ Each `POST /v1/agents/{id}` (update) creates a new immutable version (numeric ti
 | Get              | `GET`    | `/v1/agents/{id}`                     |
 | Update           | `POST`   | `/v1/agents/{id}`                     |
 | Archive          | `POST`   | `/v1/agents/{id}/archive`             |
+
+> ⚠️ **Archive is permanent.** Archiving makes the agent read-only: existing sessions continue to run, but **new sessions cannot reference it**, and there is no unarchive. Since agents have no `delete`, this is the terminal lifecycle state. Never archive a production agent as routine cleanup — confirm with the user first.
 
 ### Using an Agent in a Session
 

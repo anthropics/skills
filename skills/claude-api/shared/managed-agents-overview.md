@@ -25,11 +25,11 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 
 | Beta Header                    | What it enables                                      |
 | ------------------------------ | ---------------------------------------------------- |
-| `managed-agents-2026-04-01`    | Agents, Environments, Sessions, Events, Session Resources, Vaults, Credentials |
+| `managed-agents-2026-04-01`    | Agents, Environments, Sessions, Events, Session Resources, Vaults, Credentials, Memory Stores |
 | `skills-2025-10-02`            | Skills API (for managing custom skill definitions)   |
 | `files-api-2025-04-14`         | Files API for file uploads                           |
 
-**Note: do not intermix beta headers** — If you need to upload a skill or file via the Skills API or Files API you will need to use the appropriate beta header as listed above. However, you do NOT need to inlude either the Skills or Files beta header when using any of the Managed Agents endpints listed in row 1 above. Do NOT include intermix beta headers and prefer to use the Skills or Files beta headers when using their specific endpoints.
+**Which beta header goes where:** The SDK sets `managed-agents-2026-04-01` automatically on `client.beta.{agents,environments,sessions,vaults,memory_stores}.*` calls, and `files-api-2025-04-14` / `skills-2025-10-02` automatically on `client.beta.files.*` / `client.beta.skills.*` calls. You do NOT need to add the Skills or Files beta header when calling Managed Agents endpoints. **Exception — session-scoped file listing:** `client.beta.files.list({scope_id: session.id})` is a Files endpoint that takes a Managed Agents parameter, so it needs **both** headers. Pass `betas: ["managed-agents-2026-04-01"]` explicitly on that call (the SDK adds the Files header; you add the Managed Agents one). See `shared/managed-agents-environments.md` → Session outputs.
 
 
 ## Reading Guide
@@ -47,7 +47,9 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Stream events / handle tool_use        | `shared/managed-agents-events.md` + language file       |
 | Set up environments                    | `shared/managed-agents-environments.md` + language file |
 | Upload files / attach repos            | `shared/managed-agents-environments.md` (Resources)     |
+| Give agents persistent memory across sessions | `shared/managed-agents-memory.md` — memory stores, `memory_store` session resource, preconditions, versions/redact |
 | Store MCP credentials                  | `shared/managed-agents-tools.md` (Vaults section)       |
+| Call a non-MCP API / CLI that needs a secret | `shared/managed-agents-client-patterns.md` Pattern 9 — no container env vars; vaults are MCP-only; keep the secret host-side via a custom tool |
 
 ## Common Pitfalls
 
@@ -59,3 +61,4 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 - **Don't trust HTTP-library timeouts as wall-clock caps** — `requests` `timeout=(c, r)` and `httpx.Timeout(n)` are *per-chunk* read timeouts; they reset every byte, so a trickling connection can block indefinitely. For a hard deadline on raw-HTTP polling, track `time.monotonic()` at the loop level and bail explicitly. Prefer the SDK's `sessions.events.stream()` / `session.events.list()` over hand-rolled HTTP. See `shared/managed-agents-events.md` → Receiving Events.
 - **Messages queue** — you can send events while the session is `running` or `idle`; they're processed in order. No need to wait for a response before sending the next message.
 - **Cloud environments only** — `config.type: "cloud"` is the only supported environment type.
+- **Archive is permanent on every resource** — archiving an agent, environment, session, vault, credential, or memory store makes it read-only with no unarchive. For agents, environments, and memory stores specifically, archived resources cannot be referenced by new sessions (existing sessions continue). Do not call `.archive()` on a production agent, environment, or memory store as cleanup — **always confirm with the user before archiving**.
