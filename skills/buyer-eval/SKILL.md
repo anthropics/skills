@@ -81,6 +81,90 @@ in live demos, derived from evaluation gaps and unverified claims.
 
 For the highest-confidence output, run in Claude Code or Cowork.
 
+## Telemetry (opt-in, off by default)
+
+The skill can send anonymized usage data back to Salespeak so the questions it generates for vendors can keep getting better. **Nothing is sent without explicit user consent.** Names, emails, companies, and vendor responses are never sent.
+
+### How to use it during a run
+
+1. **At run start**, check telemetry state and generate a session ID:
+
+   ```bash
+   _BEVAL_DIR=""
+   for _D in "$HOME/.claude/skills/buyer-eval" ".claude/skills/buyer-eval"; do
+     [ -d "$_D" ] && _BEVAL_DIR="$_D" && break
+   done
+   echo "TELEMETRY_STATE=$(python3 "$_BEVAL_DIR/bin/track.py" status --machine)"
+   echo "SESSION_ID=$(python3 -c 'import uuid; print(uuid.uuid4())')"
+   ```
+
+   `TELEMETRY_STATE` is one of: `consented`, `unasked`, `declined`, `locked_off`.
+
+2. **Throughout the eval**, fire one of these five events at the right step. Never invent new sub-events.
+
+   | Sub-event | When | Fields |
+   |---|---|---|
+   | `skill_started` | After capturing state | `skill_version` |
+   | `vendor_question` | Each Frontdoor `POST .../chat` in STEP 6 | `vendor`, `dimension`, `question_text` |
+   | `vendor_scored` | Each dimension scored in STEP 8 | `vendor`, `dimension`, `score` |
+   | `eval_completed` | After STEP 9 output is delivered | `vendor_count`, `winner` |
+   | `eval_aborted` | Only if user bails before STEP 9 | `at_step` |
+
+   **Never include**: buyer name, buyer company, buyer email, buyer self-description, vendor responses.
+
+3. **If `consented`**, fire each event live:
+   ```bash
+   python3 "$_BEVAL_DIR/bin/track.py" event vendor_question \
+     --session-id "$SESSION_ID" \
+     --json '{"vendor":"acme.com","dimension":"product_fit","question_text":"..."}'
+   ```
+
+4. **If `unasked`**, accumulate events in your own working memory (don't call `event`). After STEP 9 output is delivered, print the consent block below to the user, then use AskUserQuestion to ask "Help us improve the skill by sharing anonymized usage data from this run?" with options ["Yes, share anonymized data", "No thanks"].
+
+   ```
+   ─────────────────────────────────────────────────────────────
+   ✓ Evaluation complete.
+
+   Before you go — one question, asked only this once.
+
+   Salespeak built this skill to help buyers cut through vendor noise.
+   To make it better, we'd love to learn what real buyers ask vendors.
+   With your permission, we'd send back anonymized data from this run
+   and future runs.
+
+   We'd send:
+     • The questions this skill generated for vendor agents
+     • The scores it gave each vendor
+     • A random ID to group your runs together (not linked to you)
+
+   We will NEVER send:
+     • Your name, email, or company
+     • Anything you typed about yourself
+     • Vendor responses
+
+   Verify it yourself:
+     • Code: bin/track.py (plain Python, no third-party libraries)
+     • Local audit log: ~/.salespeak/buyer-eval.log
+       (every event we send is also written here — read it anytime)
+     • Change your mind: python3 bin/track.py revoke
+     • Delete your data: email omer@salespeak.ai with your user ID
+       (run `python3 bin/track.py show` to see it)
+   ─────────────────────────────────────────────────────────────
+   ```
+
+   On **Yes**: `python3 "$_BEVAL_DIR/bin/track.py" grant --session-id "$SESSION_ID" --events '<JSON array of accumulated events>'`
+   On **No**:  `python3 "$_BEVAL_DIR/bin/track.py" decline`
+
+5. **If `declined` or `locked_off`**, do nothing telemetry-related. Skip the consent prompt entirely.
+
+### Enterprise kill-switch
+
+System administrators can disable telemetry organization-wide regardless of user consent:
+- Set env var `BUYER_EVAL_NO_TELEMETRY=1`, or
+- Deploy `/etc/salespeak/buyer-eval.json` with `{"locked":true,"consent":false}`
+
+Either makes the state `locked_off` — no consent prompt is ever shown and no events are sent.
+
 ## Source Repository
 
 Full source, gallery, and changelog: https://github.com/salespeak-ai/buyer-eval-skill
