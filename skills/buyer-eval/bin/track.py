@@ -49,7 +49,7 @@ ORGANIZATION_ID = "87996776-2ccf-4198-bd8a-3aa7c5a6986c"
 CAMPAIGN_ID = "d6b3cf8a-9403-4b65-9d3b-366f4d1c9125"
 EVENT_TYPE = "buyer_eval"
 SOURCE_URL = "https://github.com/salespeak-ai/buyer-eval-skill"
-SKILL_VERSION = "3.4.1"
+SKILL_VERSION = "3.5.0"
 USER_AGENT = f"buyer-eval-skill/{SKILL_VERSION} (+{SOURCE_URL})"
 HTTP_TIMEOUT_SEC = 2.0
 

@@ -100,23 +100,27 @@ The skill can send anonymized usage data back to Salespeak so the questions it g
 
    `TELEMETRY_STATE` is one of: `consented`, `unasked`, `declined`, `locked_off`.
 
-2. **Throughout the eval**, fire one of these five events at the right step. Never invent new sub-events.
+2. **Throughout the eval**, fire these seven events at the right steps. Never invent new sub-events.
 
    | Sub-event | When | Fields |
    |---|---|---|
    | `skill_started` | After capturing state | `skill_version` |
-   | `vendor_question` | Each Frontdoor `POST .../chat` in STEP 6 | `vendor`, `dimension`, `question_text` |
-   | `vendor_scored` | Each dimension scored in STEP 8 | `vendor`, `dimension`, `score` |
+   | `eval_context` | Once, after STEP 5.1 (or after STEP 6.1 discover so `evaluation_path` is known — preferred) | `category`, `vendor_count`, `vendors` (array of domains), `company_agents_found` (int), `evaluation_path` (`"company_agent_engaged"` \| `"passive_research_only"` \| `"mixed"`) |
+   | `discovery_question_asked` | After buyer answers a discovery question. Fire for STEP 2 (why-now) and each STEP 5.3 domain-expert question. | `step` (`"STEP_2"` \| `"STEP_5_3"`), `category` (or `null` for STEP_2), `topic` (short slug you choose, e.g. `"why_now"`, `"high_touch_vs_low_touch"`), `question_text` (the exact question you asked) |
+   | `vendor_question` | **For every (vendor, dimension) pair**, fire one or more events from the §6.5 question bank — regardless of whether a Company Agent exists. | `vendor`, `category`, `dimension`, `question_text`, `delivery_method` (`"asked_via_company_agent"` \| `"would_have_asked"` \| `"connection_failed"`) |
+   | `vendor_scored` | Each numeric score in STEP 8 | `vendor`, `dimension`, `score` (1-5; do NOT fire for `[GAP]`) |
    | `eval_completed` | After STEP 9 output is delivered | `vendor_count`, `winner` |
    | `eval_aborted` | Only if user bails before STEP 9 | `at_step` |
 
-   **Never include**: buyer name, buyer company, buyer email, buyer self-description, vendor responses.
+   **Never include**: buyer name, buyer company, buyer email, buyer self-description, the buyer's *answers* to discovery questions, vendor response text.
+
+   **Critical change in v3.5**: `vendor_question` no longer depends on Company Agent availability. When all vendors return `enabled: false` from Frontdoor discover, you must still walk the question bank, formulate questions you would have asked, and fire `vendor_question` events with `delivery_method: "would_have_asked"`. The signal is *what buyers want to know*, not *whether the vendor's bot answered*.
 
 3. **If `consented`**, fire each event live:
    ```bash
    python3 "$_BEVAL_DIR/bin/track.py" event vendor_question \
      --session-id "$SESSION_ID" \
-     --json '{"vendor":"acme.com","dimension":"product_fit","question_text":"..."}'
+     --json '{"vendor":"acme.com","category":"customer_success_platform","dimension":"product_fit","question_text":"...","delivery_method":"would_have_asked"}'
    ```
 
 4. **If `unasked`**, accumulate events in your own working memory (don't call `event`). After STEP 9 output is delivered, print the consent block below to the user, then use AskUserQuestion to ask "Help us improve the skill by sharing anonymized usage data from this run?" with options ["Yes, share anonymized data", "No thanks"].
