@@ -273,7 +273,6 @@ import fs from "fs";
 
 const file = await client.beta.files.upload({
   file: fs.createReadStream("data.csv"),
-  purpose: "agent",
 });
 
 // Use in a session

@@ -63,7 +63,6 @@ Upload a file first via the Files API, then reference by `file_id` + `mount_path
 // 1. Upload
 const file = await client.beta.files.upload({
   file: fs.createReadStream("data.csv"),
-  purpose: "agent",
 });
 
 // 2. Attach as a session resource
