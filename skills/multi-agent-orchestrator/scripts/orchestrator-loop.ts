@@ -229,8 +229,55 @@ async function runLoop() {
 
   appendLog(config.logFile, `Starting Orchestrator Loop (Polling every ${config.pollIntervalMs}ms)`);
 
+  // Launch the live dashboard in a new macOS Terminal
+  try {
+    const dashboardPath = path.join(__dirname, "dashboard.ts");
+    const scriptStr = `tell application "Terminal" to do script "cd '${process.cwd()}' && npx ts-node '${dashboardPath}' --coord '${config.coordDir}'"`;
+    execSync(`osascript -e '${scriptStr}'`);
+    appendLog(config.logFile, "Launched dashboard terminal.");
+  } catch (e: any) {
+    appendLog(config.logFile, `Failed to launch dashboard: ${e.message}`);
+  }
+
   while (true) {
     try {
+      if (fs.existsSync(path.join(config.coordDir, "abort.flag"))) {
+        appendLog(config.logFile, "🛑 ABORT SIGNAL RECEIVED from dashboard. Terminating all agents...");
+        const agents = readJSON<Record<string, AgentEntry>>(paths.agents);
+        for (const name in agents) {
+          if (agents[name].status === "running") {
+            killAgentProcess(agents[name].pid, config.logFile);
+            const worktree = agents[name].worktree;
+            if (fs.existsSync(worktree)) {
+              appendLog(config.logFile, `Resetting worktree ${worktree}...`);
+              try { execSync(`git reset --hard HEAD && git clean -fd`, { cwd: worktree }); } catch(e) {}
+            }
+            agents[name].status = "errored";
+            agents[name].task = "ABORTED BY USER";
+          }
+        }
+        writeJSON(paths.agents, agents);
+        appendLog(config.logFile, "All agents terminated and reset. Orchestrator loop aborting.");
+        try { fs.unlinkSync(path.join(config.coordDir, "abort.flag")); } catch (e) {}
+        break;
+      }
+
+      // Check for crashed agents (e.g. network failures)
+      const agentsForCheck = readJSON<Record<string, AgentEntry>>(paths.agents);
+      let agentsChanged = false;
+      for (const name in agentsForCheck) {
+        if (agentsForCheck[name].status === "running") {
+          try {
+            process.kill(agentsForCheck[name].pid, 0); // 0 signal tests if process is alive
+          } catch (e) {
+            agentsForCheck[name].status = "errored";
+            agentsChanged = true;
+            appendLog(config.logFile, `⚠️ Agent ${name} (PID ${agentsForCheck[name].pid}) died unexpectedly!`);
+          }
+        }
+      }
+      if (agentsChanged) writeJSON(paths.agents, agentsForCheck);
+
       const requests = readJSON<Request[]>(paths.requests);
       const pending = requests.filter((p) => p.status === "pending");
 
@@ -320,9 +367,10 @@ async function runLoop() {
                     const promptFile = path.join(require("os").tmpdir(), `prompt-${action.agent}-${Date.now()}.txt`);
                     fs.writeFileSync(promptFile, action.instruction, "utf-8");
                     
-                    appendLog(config.logFile, `Respawning agent ${action.agent}...`);
+                    const cliTool = agents[action.agent].cli || "kilo";
+                    appendLog(config.logFile, `Respawning agent ${action.agent} using ${cliTool}...`);
                     try {
-                      execSync(`npx ts-node ${path.join(__dirname, "spawn-agent.ts")} --agent ${action.agent} --mode ${mode} --prompt-file "${promptFile}" --coord "${path.dirname(paths.agents)}"`);
+                      execSync(`npx ts-node ${path.join(__dirname, "spawn-agent.ts")} --agent ${action.agent} --mode ${mode} --prompt-file "${promptFile}" --coord "${path.dirname(paths.agents)}" --cli ${cliTool}`);
                     } catch (err: any) {
                       appendLog(config.logFile, `Failed to respawn agent: ${err.message}`);
                     }

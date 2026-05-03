@@ -15,6 +15,7 @@ function parseArgs() {
     mode: "coder",
     promptFile: "",
     coordDir: "./coord",
+    cli: "kilo",
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -30,6 +31,9 @@ function parseArgs() {
         break;
       case "--coord":
         config.coordDir = args[++i];
+        break;
+      case "--cli":
+        config.cli = args[++i];
         break;
     }
   }
@@ -55,10 +59,19 @@ function spawnAgent() {
   const logFile = `kilo-${config.agent}.log`;
 
   // Spawn the kilo CLI in the background
-  const out = fs.openSync(logFile, "a");
-  const err = fs.openSync(logFile, "a");
+  // Build command based on selected CLI tool
+  let cmd = "kilo";
+  let cmdArgs = [prompt, "--mode", config.mode, "--auto"];
 
-  const child = spawn("kilo", [prompt, "--mode", config.mode, "--auto"], {
+  if (config.cli === "aider") {
+    cmd = "aider";
+    cmdArgs = ["--message", prompt, "--yes"];
+  } else if (config.cli === "claude") {
+    cmd = "claude";
+    cmdArgs = ["-p", prompt];
+  }
+
+  const child = spawn(cmd, cmdArgs, {
     detached: true,
     stdio: ["ignore", out, err],
     cwd: worktree,
@@ -80,6 +93,7 @@ function spawnAgent() {
     task: "Initial prompt",
     status: "running",
     worktree: worktree,
+    cli: config.cli,
     kilo_mode: config.mode,
     pid: child.pid,
     started_at: new Date().toISOString(),
