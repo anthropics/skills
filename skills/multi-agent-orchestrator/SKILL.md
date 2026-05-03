@@ -13,12 +13,12 @@ This skill defines a COMPLETE, CLI-agnostic multi-agent orchestration system.
 
 ## Prerequisites & Recommendations
 Before using this skill, ensure you have:
-1. **A Headless Worker CLI**: Installed globally. This skill uses `kilo` (Kilo Code) by default, but it can easily orchestrate **Aider**, **Claude Code**, or any other CLI.
+1. **A Headless Worker CLI**: Installed globally. This skill uses `kilo` (Kilo Code) by default, but it can easily orchestrate **Aider**, **Claude Code**, or any other CLI. **Important:** The CLI must be fully configured ahead of time (e.g., signed in, API keys set, default model selected). Because the agents run headlessly in the background, they will crash or hang if they encounter interactive setup prompts.
 2. **TypeScript & TS-Node**: Installed to execute the orchestration scripts.
 3. **Claude Code CLI**: Installed and authenticated, as the background loop relies on `claude -p` for headless execution.
 
 > **Architectural Recommendation:** 
-> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend configuring your **Claude Code CLI** to use a high-tier reasoning model (like Claude 3.7 Opus) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** (Kilo/Aider) default to use API-efficient models (like DeepSeek v4 or Kimi) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
+> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend configuring your **Claude Code CLI** to use a high-tier reasoning model (like Claude Opus 4.7) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** (Kilo/Aider) default to use API-efficient models (like DeepSeek v4 or Kimi) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
 
 ## 🔄 Swapping the Worker CLI (Aider, Claude, etc.)
 By default, `spawn-agent.ts` launches workers using Kilo Code (`kilo <prompt> --auto`). 
@@ -28,7 +28,14 @@ Because the orchestration architecture (worktrees + JSON files) is completely CL
 
 The Orchestrator Loop will remember which CLI tool you spawned the agent with and will automatically use the exact same tool if it needs to respawn the agent after a rollback!
 
-## Phase 1 — Bootstrap
+## Phase 1 — Task Evaluation & Decomposition
+First, evaluate whether the user's overall task is suitable for multi-agent orchestration.
+- **Do not use this skill** if the task is small, trivial, or requires tightly coupled sequential steps. Advise the user to let you handle it normally.
+- **Proceed** if the task is large, complex, and can be safely split into non-overlapping boundaries (e.g., frontend vs backend, database vs UI).
+
+If proceeding, break the work down into non-overlapping agent boundaries and prepare a mapping of agent names to their task descriptions.
+
+## Phase 2 — Bootstrap
 When starting a new orchestrated project, create the `coord/` directory at the project root and initialize these files.
 
 **Important Path Resolution:** The scripts required for this workflow are located in the `scripts/` directory next to this `SKILL.md` file. Before running the commands below, determine the absolute path to this skill folder (e.g., if you are reading this from `~/Desktop/multi-agent-orchestrator/SKILL.md`, the path is `~/Desktop/multi-agent-orchestrator`).
@@ -43,23 +50,20 @@ npx ts-node <ABSOLUTE_PATH_TO_THIS_SKILL_FOLDER>/scripts/bootstrap.ts \
 ### `coord/context.json`
 Because the orchestrator loop runs in a detached Claude CLI session, it has **zero access** to your original chat history. **You must heavily compress all user preferences, architectural nuances, and conversational context into the `chat_context` field.**
 
+You should also include the tasks you generated in Phase 1 under the `"tasks"` key.
+
 ```json
 {
   "project": "<one-line description of the user's task>",
   "chat_context": "<heavily compacted summary of the original conversation and user preferences>",
   "requirements": ["<requirement 1>", "<requirement 2>"],
   "constraints": ["<constraint 1>", "<constraint 2>"],
-  "created_at": "<ISO 8601 timestamp>"
+  "created_at": "<ISO 8601 timestamp>",
+  "tasks": {
+    "agent-name": "description of the boundary"
+  }
 }
 ```
-
-## Phase 2 — Task Decomposition
-First, evaluate whether the user's overall task is suitable for multi-agent orchestration.
-- **Do not use this skill** if the task is small, trivial, or requires tightly coupled sequential steps. Advise the user to let you handle it normally.
-- **Proceed** if the task is large, complex, and can be safely split into non-overlapping boundaries (e.g., frontend vs backend, database vs UI).
-
-If proceeding, analyze the `context.json` and break the work down into non-overlapping agent boundaries.
-Update `coord/context.json` to include a `"tasks"` key mapping agent names to their descriptions.
 
 ## Phase 3 — Prompt Generation
 Use the `references/worker-prompt-template.md` to generate prompts for each agent.
