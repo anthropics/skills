@@ -1,6 +1,6 @@
 ---
 name: Multi-Agent Orchestrator
-description: An autonomous loop that coordinates worker agents (Kilo, Aider, etc). Best used with a powerful Orchestrator and cost-efficient workers.
+description: An autonomous loop that coordinates worker agents (Kilo, Aider, etc) with a dashboard to monitor the agents' activity. Best used with a powerful Orchestrator and cost-efficient workers.
 dependencies:
   - headless-cli-agent (e.g. kilo-cli, aider)
   - typescript
@@ -70,9 +70,9 @@ Use the `references/worker-prompt-template.md` to generate prompts for each agen
 
 ## Phase 4 — Spawning Agents
 For each agent:
-1. Create a git worktree:
+1. Create a git worktree. If you are using Kilo Code, create it in `.kilocode/worktrees/` so it appears in the VS Code UI. If using Aider or another tool, use `.agents/worktrees/`:
    ```bash
-   git worktree add .kilocode/worktrees/<agent-name> -b <agent-name>
+   git worktree add <worktree-path>/<agent-name> -b <agent-name>
    ```
 2. **Launch the agent in the background** using the `spawn-agent.ts` helper:
    ```bash
@@ -81,8 +81,11 @@ For each agent:
      --agent <agent-name> \
      --mode <mode> \
      --prompt-file /tmp/prompt-<agent-name>.txt \
-     --coord ./coord
+     --coord ./coord \
+     --cli <cli-name> # Optional: e.g. aider, claude. Defaults to kilo.
    ```
+
+> **💡 Tip for Kilo Code Users:** Because the agents are physically spawned inside the `.kilocode/worktrees/` directory path by default, they will automatically appear in your **Kilo Code Agent Manager UI** inside VS Code! You can monitor the specific files they are editing in real-time natively in your IDE.
 
 ## Phase 5 — The Orchestrator Loop
 
@@ -108,12 +111,12 @@ When all worker agents finish, the `orchestrator-loop.ts` script will trigger a 
 At this point, the user will return to Claude. They can either use their original chat window, or open a completely new chat window. They will give you a command like *"The agents are done. Please review and integrate their work."*
 
 When you receive this instruction to perform the final integration, you should:
-1. Identify the completed agent worktrees in `.kilocode/worktrees/`.
+1. Identify the completed agent worktrees (look in both `.kilocode/worktrees/` and `.agents/worktrees/`).
 2. Run `git diff main...<agent-name>` for each to review the code.
 3. Provide a summary of the work to the user.
 4. Once the user approves, perform the merge:
    ```bash
    git merge <agent-name>
-   git worktree remove .kilocode/worktrees/<agent-name>
+   git worktree remove <worktree-path>/<agent-name>
    git branch -d <agent-name>
    ```
