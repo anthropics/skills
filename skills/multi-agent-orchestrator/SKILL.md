@@ -17,7 +17,7 @@ Before using this skill, ensure you have:
 2. **TypeScript & TS-Node**: Installed to execute the orchestration scripts.
 
 > **Architectural Recommendation:** 
-> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend using **Claude Code** as the **Orchestrator** with a high-tier reasoning model (like Claude Opus 4.7) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** to use cost-efficient models (like DeepSeek v4 or Kimi) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
+> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend using **Claude Code** as the **Orchestrator** with a high-tier reasoning model (like Claude Opus 4.7) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** to use cost-efficient models (like Claude Sonnet, etc) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
 
 ## 🔄 Swapping the Worker CLI (Aider, Claude, Codex, Gemini, OpenCode, etc.)
 By default, `spawn-agent.ts` launches workers using Kilo Code (`kilo <prompt> --auto`). 
