@@ -110,8 +110,7 @@ A dimension qualifies for the "watch" set if any of:
 - Current `score` < 50.
 - `change` ≤ -5.
 - It's a **risk** dimension (`climate-risk`, `concentration-risk`,
-  `us_china_official`, `us_china_unofficial`) where lower means more risk
-  — even if not yet below 50.
+  `geopolitical`) where lower means more risk — even if not yet below 50.
 
 Cap the list at 3. Pick the most informative — typically the ones with the
 largest negative `change`, breaking ties by lowest current score.

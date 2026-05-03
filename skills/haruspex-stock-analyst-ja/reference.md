@@ -97,9 +97,8 @@ API はキャッシュ済みスコアを返すことがある。`analyzedAt` の
 
 - 現在の `score` < 50
 - `change` ≤ -5
-- **リスク次元** (`climate-risk`, `concentration-risk`,
-  `us_china_official`, `us_china_unofficial`) — 低スコア = 高リスクなので、
-  50 未満でなくても悪化中なら含める
+- **リスク次元** (`climate-risk`, `concentration-risk`, `geopolitical`)
+  — 低スコア = 高リスクなので、50 未満でなくても悪化中なら含める
 
 最大 3 つ。`change` の負の幅が大きい順、同点は現在スコアの低い順。
 

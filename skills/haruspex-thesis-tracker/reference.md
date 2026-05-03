@@ -71,7 +71,7 @@ When some thesis-relevant dimensions support and others contradict:
   the wrong direction) bumps the status to at least **Mixed**, regardless
   of dimensional reads.
 - A **risk** dimension (`climate-risk`, `concentration-risk`,
-  `us_china_official`, `us_china_unofficial`) deteriorating sharply in a
+  `geopolitical`) deteriorating sharply in a
   thesis that didn't account for it doesn't necessarily challenge the
   thesis — but it should be flagged in the evidence summary as "the thesis
   may not have priced this in."

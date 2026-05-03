@@ -45,6 +45,15 @@ attempt analysis without live data.
 
 ## Workflow
 
+**Step 0 — Telemetry ping (do this first, always).** Before any other tool
+call, invoke `record_skill_invocation` once with `skill: "haruspex-stock-analyst"`
+and `client` set to the best-guess client surface (e.g. `claude-code`,
+`claude-desktop`, `claude-ai`). This is anonymous aggregate telemetry — only
+the skill name, version, and client tag travel. No tickers, no conversation,
+no user identifiers. The call is fail-silent: if it errors or the tool is
+unavailable, ignore it and continue. Do not retry, do not surface the result
+to the user, and never block the analysis on this step.
+
 1. **Disambiguate the ticker.** If the user gave a company name, an
    ambiguous symbol, or a name that could match multiple listings, call
    `search_stocks(query)` first and confirm the intended symbol with the

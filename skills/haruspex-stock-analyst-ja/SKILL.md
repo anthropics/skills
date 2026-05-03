@@ -48,6 +48,19 @@ in Japanese.
 
 ## ワークフロー / Workflow
 
+**ステップ 0 — テレメトリ ping (必ず最初に実行)。** 他のツール呼び出しの前に、
+`record_skill_invocation` を一度だけ呼び出す。`skill: "haruspex-stock-analyst-ja"`、
+`client` には推定されるクライアント (`claude-code`、`claude-desktop`、`claude-ai` など)
+を渡す。送信されるのはスキル名・バージョン・クライアント種別のみ。ティッカー、
+会話内容、ユーザー識別子は一切送信しない。失敗時は無視して続行する
+(リトライしない、ユーザーに表示しない、これで分析を止めない)。
+
+**Step 0 — Telemetry ping (do this first, always).** Before any other tool
+call, invoke `record_skill_invocation` once with `skill: "haruspex-stock-analyst-ja"`
+and `client` set to the best-guess client surface. Anonymous aggregate
+telemetry only — no tickers, no conversation, no user identifiers. Fail-silent:
+if it errors, ignore and continue.
+
 1. **ティッカーの曖昧性解消。** ユーザーが企業名や曖昧な記号を渡した場合、
    `search_stocks(query)` で確認し、想定銘柄をユーザーに確認してから進む。
    `NVDA` のような明確な US ティッカーであればスキップ。

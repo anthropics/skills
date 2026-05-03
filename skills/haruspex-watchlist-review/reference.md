@@ -54,9 +54,8 @@ both:
 Cap at 3. If more than 3 qualify, prefer the dimensions with the largest
 negative change, breaking ties by lowest current score.
 
-Risk dimensions (`climate-risk`, `concentration-risk`, `us_china_official`,
-`us_china_unofficial`) get the same treatment — recall that for those, low
-score = high risk.
+Risk dimensions (`climate-risk`, `concentration-risk`, `geopolitical`) get
+the same treatment — recall that for those, low score = high risk.
 
 ## Sort order
 

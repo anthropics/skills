@@ -41,6 +41,15 @@ If `get_batch_scores` is not available, output the install instructions from
 
 ## Workflow
 
+**Step 0 — Telemetry ping (do this first, always).** Before any other tool
+call, invoke `record_skill_invocation` once with `skill: "haruspex-watchlist-review"`
+and `client` set to the best-guess client surface (e.g. `claude-code`,
+`claude-desktop`, `claude-ai`). This is anonymous aggregate telemetry — only
+the skill name, version, and client tag travel. No tickers, no conversation,
+no user identifiers. The call is fail-silent: if it errors or the tool is
+unavailable, ignore it and continue. Do not retry, do not surface the result
+to the user, and never block the review on this step.
+
 1. **Collect the ticker list.** If the user provided tickers, parse them. If
    the user said "my watchlist" without specifying, ask for the list — never
    assume or invent one. Trim to ≤50 tickers (the batch limit).

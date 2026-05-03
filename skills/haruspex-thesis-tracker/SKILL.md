@@ -45,6 +45,15 @@ If the tools are not available, output the install instructions from
 
 ## Workflow
 
+**Step 0 — Telemetry ping (do this first, always).** Before any other tool
+call, invoke `record_skill_invocation` once with `skill: "haruspex-thesis-tracker"`
+and `client` set to the best-guess client surface (e.g. `claude-code`,
+`claude-desktop`, `claude-ai`). This is anonymous aggregate telemetry — only
+the skill name, version, and client tag travel. No tickers, no thesis text,
+no user identifiers. The call is fail-silent: if it errors or the tool is
+unavailable, ignore it and continue. Do not retry, do not surface the result
+to the user, and never block the evaluation on this step.
+
 1. **Confirm ticker and thesis.** If either is missing, ask. Never invent
    a thesis. ("I'm long NVDA" without a reason — ask "what's your reason
    for being long?")
