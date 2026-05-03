@@ -13,21 +13,21 @@ This skill defines a COMPLETE, CLI-agnostic multi-agent orchestration system.
 
 ## Prerequisites & Recommendations
 Before using this skill, ensure you have:
-1. **A Headless Worker CLI**: Installed globally. This skill uses `kilo` (Kilo Code) by default, but it can easily orchestrate **Aider**, **OpenCode**, or any other CLI defined in the `scripts/spawn-agent.ts` file. **Important:** The CLI must be fully configured ahead of time (e.g., signed in, API keys set, default model selected). Because the agents run headlessly in the background, they will crash or hang if they encounter interactive setup prompts. Additionally, ensure your chosen CLI is configured to automatically index/load the project codebase as context, or that it has tools to autonomously search files.
+1. **A Headless Worker CLI**: Installed globally. This skill uses `kilo` (Kilo Code) by default, but it can easily orchestrate **Aider**, **OpenCode**, or any other CLI defined in the `scripts/spawn-agent.ts` file. **Important:** The CLI must be fully configured ahead of time (e.g., signed in, API keys set, model selected, codebase context loaded, etc.). Because the agents run headlessly in the background **non-interactively**, they will crash or hang if they encounter interactive setup prompts.
 2. **TypeScript & TS-Node**: Installed to execute the orchestration scripts.
-3. **Claude Code CLI**: Installed and authenticated, as the background loop relies on `claude -p` for headless execution.
 
 > **Architectural Recommendation:** 
-> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend configuring your **Claude Code CLI** to use a high-tier reasoning model (like Claude Opus 4.7) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** (Kilo/Aider) default to use API-efficient models (like DeepSeek v4 or Kimi) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
+> This skill is highly optimized for cost-efficiency without sacrificing quality. We strongly recommend using **Claude Code** as the **Orchestrator** with a high-tier reasoning model (like Claude Opus 4.7) to act as the "brains" of the orchestrator loop. Meanwhile, you should configure your **Worker CLI** to use cost-efficient models (like DeepSeek v4 or Kimi) for the worker agents. This ensures world-class decision making while keeping the bulk coding loops extremely cheap and fast!
 
 ## 🔄 Swapping the Worker CLI (Aider, Claude, Codex, Gemini, OpenCode, etc.)
 By default, `spawn-agent.ts` launches workers using Kilo Code (`kilo <prompt> --auto`). 
 Because the orchestration architecture (worktrees + JSON files) is completely CLI-agnostic, you can use any other tool by simply appending the `--cli` argument in Phase 4 when you spawn the agent!
+
+*(If the user requests a specific worker CLI, **read the `scripts/spawn-agent.ts` file** to see the full list of supported `--cli` arguments and how they map to bash commands.)*
+
+Example:
 *   **For Aider**: Append `--cli aider` (runs `aider --message <prompt> --yes`)
-*   **For Claude Code**: Append `--cli claude` (runs `claude -p <prompt>`)
-*   **For OpenAI Codex CLI**: Append `--cli codex` (runs `codex --exec <prompt>`)
-*   **For Gemini CLI**: Append `--cli gemini` (runs `gemini --prompt <prompt>`)
-*   **For OpenCode**: Append `--cli opencode` (runs `opencode run <prompt>`)
+*   **For Claude Code**: Append `--cli claude --model claude-sonnet-4-6` (runs `claude -p <prompt> --model claude-sonnet-4-6`)
 
 The Orchestrator Loop will remember which CLI tool you spawned the agent with and will automatically use the exact same tool if it needs to respawn the agent after a rollback!
 
