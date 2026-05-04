@@ -27,15 +27,17 @@ This skill is **complementary** to in-session security skills. They scan the edi
 
 ### 1. Run the Audit
 
-From the repo root:
+From the repo root. The `commitshow` CLI is pinned to a known-good range — bumping the floor is a deliberate decision, not an automatic upgrade — and stderr is split off so it can't corrupt the JSON envelope:
 
 ```bash
-npx commitshow@latest audit . --json > .commitshow/audit.json 2>&1
+npx commitshow@^0.3.23 audit . --json \
+  > .commitshow/audit.json \
+  2> .commitshow/audit.stderr.log
 ```
 
 This also writes a human-readable `.commitshow/audit.md` next to it. Subsequent invocations should diff against the prior `audit.json` if it exists, so you can lead with "+5 since yesterday's audit" instead of just an absolute number.
 
-If the user pointed at a remote URL instead of `.`, swap in the URL: `npx commitshow@latest audit github.com/owner/repo --json`.
+If the user pointed at a remote URL instead of `.`, swap in the URL: `npx commitshow@^0.3.23 audit github.com/owner/repo --json > .commitshow/audit.json 2> .commitshow/audit.stderr.log`.
 
 ### 2. Parse the Envelope
 
@@ -82,7 +84,13 @@ For the chosen concern:
 3. Propose a minimal patch — single-file when possible.
 4. **Don't apply without explicit approval.** Show the diff first. The user is deciding what to ship; you're a lens.
 
-After applying a fix, suggest re-running `npx commitshow audit --refresh` so the next audit reflects the change.
+After applying a fix, suggest re-running the same canonical invocation with `--refresh`, so the next audit reflects the change AND `audit.json` stays the source of truth for delta calculations:
+
+```bash
+npx commitshow@^0.3.23 audit . --json --refresh \
+  > .commitshow/audit.json \
+  2> .commitshow/audit.stderr.log
+```
 
 ## Output Format Expectations
 
@@ -113,9 +121,6 @@ Both lenses miss what the other catches. Run both for serious launches.
 
 ## Reference
 
-- Canonical repo: <https://github.com/commitshow/production-audit> (MIT)
-- Audit engine source: <https://github.com/commitshow/commitshow/blob/main/supabase/functions/analyze-project/index.ts>
-- 14-frame failure framework documented in the engine source above.
-- JSON schema: stable at `schema_version: "1"` · additive-only changes.
-- CLI: <https://github.com/commitshow/cli>
-- skills.sh listing: <https://skills.sh/commitshow/production-audit>
+- Source: `github.com/commitshow/production-audit` · MIT
+- JSON envelope: stable at `schema_version: "1"` · additive-only changes.
+- 14-frame failure framework: documented inside the audit engine. Read the bullets in `concerns[]` — the engine emits them with file paths and concrete remediation cues, no external doc lookup required.
