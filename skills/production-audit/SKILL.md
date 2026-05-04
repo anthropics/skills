@@ -27,9 +27,10 @@ This skill is **complementary** to in-session security skills. They scan the edi
 
 ### 1. Run the Audit
 
-From the repo root. The `commitshow` CLI is pinned to a known-good range — bumping the floor is a deliberate decision, not an automatic upgrade — and stderr is split off so it can't corrupt the JSON envelope:
+From the repo root. The `commitshow` CLI is pinned to a known-good range (bumping the floor is a deliberate decision, not an automatic upgrade), the sidecar dir is created up-front (the redirect would fail on first run otherwise), and stderr is split off so install/deprecation warnings can't corrupt the JSON envelope:
 
 ```bash
+mkdir -p .commitshow
 npx commitshow@^0.3.23 audit . --json \
   > .commitshow/audit.json \
   2> .commitshow/audit.stderr.log
@@ -37,7 +38,14 @@ npx commitshow@^0.3.23 audit . --json \
 
 This also writes a human-readable `.commitshow/audit.md` next to it. Subsequent invocations should diff against the prior `audit.json` if it exists, so you can lead with "+5 since yesterday's audit" instead of just an absolute number.
 
-If the user pointed at a remote URL instead of `.`, swap in the URL: `npx commitshow@^0.3.23 audit github.com/owner/repo --json > .commitshow/audit.json 2> .commitshow/audit.stderr.log`.
+If the user pointed at a remote URL instead of `.`, swap `.` for the URL — keep the same `mkdir -p` + version pin + stderr split:
+
+```bash
+mkdir -p .commitshow
+npx commitshow@^0.3.23 audit github.com/owner/repo --json \
+  > .commitshow/audit.json \
+  2> .commitshow/audit.stderr.log
+```
 
 ### 2. Parse the Envelope
 
@@ -87,6 +95,7 @@ For the chosen concern:
 After applying a fix, suggest re-running the same canonical invocation with `--refresh`, so the next audit reflects the change AND `audit.json` stays the source of truth for delta calculations:
 
 ```bash
+mkdir -p .commitshow
 npx commitshow@^0.3.23 audit . --json --refresh \
   > .commitshow/audit.json \
   2> .commitshow/audit.stderr.log
