@@ -25,7 +25,7 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 
 | Beta Header                    | What it enables                                      |
 | ------------------------------ | ---------------------------------------------------- |
-| `managed-agents-2026-04-01`    | Agents, Environments, Sessions, Events, Session Resources, Vaults, Credentials, Memory Stores |
+| `managed-agents-2026-04-01`    | Agents, Environments, Sessions, Events, Session Resources, Session Threads, Outcomes, Multiagent, Vaults, Credentials, Memory Stores |
 | `skills-2025-10-02`            | Skills API (for managing custom skill definitions)   |
 | `files-api-2025-04-14`         | Files API for file uploads                           |
 
@@ -45,6 +45,9 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Configure tools and permissions        | `shared/managed-agents-tools.md`                        |
 | Set up MCP servers                     | `shared/managed-agents-tools.md` (MCP Servers section)  |
 | Stream events / handle tool_use        | `shared/managed-agents-events.md` + language file       |
+| Get notified of session state changes via webhook (no polling) | `shared/managed-agents-webhooks.md` — Console-registered endpoint, HMAC verify, thin payload + fetch |
+| Define an outcome / rubric-graded iterate loop | `shared/managed-agents-outcomes.md` — `user.define_outcome` event, grader, `span.outcome_evaluation_*` events |
+| Coordinate multiple agents / subagents / threads | `shared/managed-agents-multiagent.md` — `multiagent: {type: "coordinator", agents: [...]}` on the agent, session threads, cross-posted tool confirmations |
 | Set up environments                    | `shared/managed-agents-environments.md` + language file |
 | Upload files / attach repos            | `shared/managed-agents-environments.md` (Resources)     |
 | Give agents persistent memory across sessions | `shared/managed-agents-memory.md` — memory stores, `memory_store` session resource, preconditions, versions/redact |
