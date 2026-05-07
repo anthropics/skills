@@ -1,7 +1,7 @@
 ---
 name: ascii-excalidraw
 description: "Convert ASCII art diagrams to hand-drawn Excalidraw JSON files. Analyzes structure first, then generates incrementally module-by-module."
-version: 1.0.0
+version: 1.1.0
 author: Claude Code
 license: MIT
 dependencies: []
@@ -9,6 +9,51 @@ metadata:
   hermes:
     tags: [ASCII, Excalidraw, Diagrams, Converter, Architecture, Flowchart, Visualization]
     related_skills: [excalidraw]
+---
+
+<details>
+<summary>简体中文</summary>
+
+将 ASCII 字符画转换为精美的手绘风格 Excalidraw JSON 文件。该技能专门用于**解析 ASCII 图**并生成结构化的 `.excalidraw` 文件，可在 [excalidraw.com](https://excalidraw.com) 打开。核心工作流：先分析结构 → 逐模块生成 JSON → 合并输出。
+
+</details>
+
+## Examples / 示例
+
+### Example 1: System Architecture / 系统架构
+
+Input:
+
+```
+┌────────────┐      ┌──────────────┐      ┌──────────┐
+│   Web App  │─────▶│  API Server  │─────▶│ Database │
+└────────────┘      └──────────────┘      ──────────┘
+                           │
+                     ┌─────▼─────┐
+                     │   Cache   │
+                     └───────────┘
+```
+
+Output: run this skill → generates `~/.excalidraw/system_arch.excalidraw`, open at [excalidraw.com](https://excalidraw.com)
+
+### Example 2: PPO Training Loop / PPO 训练循环
+
+Input:
+
+```
+────────────┐    ┌────────────┐    ┌────────────┐
+│  Collect   │───▶│  Compute   │───▶│   Update   │
+│  Traject.  │    │ Advantage  │    │  Policy    │
+└────────────┘    ────────────┘    └─────┬──────┘
+         ▲                                │
+         │         ┌────────────         │
+         ─────────│  Evaluate  │◀────────
+                   │  & Check   │
+                   └────────────┘
+```
+
+Output: run this skill → generates `~/.excalidraw/ppo_loop.excalidraw`, open at [excalidraw.com](https://excalidraw.com)
+
 ---
 
 # ASCII to Excalidraw Converter
@@ -28,6 +73,18 @@ The user provides an ASCII diagram (boxes, arrows, text) and wants a visual Exca
                      │ Database  │
                      └───────────┘
 ```
+
+## Output Directory
+
+**Default output: `~/.excalidraw/`**. All `.excalidraw` files and intermediate module JSONs MUST be saved here. Never use `/tmp/` or the user's home directory root for output.
+
+Before starting, create the directories:
+
+```bash
+mkdir -p ~/.excalidraw/modules
+```
+
+File naming: use a descriptive name derived from the diagram content (e.g., `system_arch.excalidraw`, `ppo_loop.excalidraw`, `memory_consolidation.excalidraw`).
 
 ## Conversion Workflow
 
@@ -121,22 +178,24 @@ For each module:
 
 **Between modules**, maintain consistent coordinate space. Track cursor positions so subsequent modules align properly.
 
-Write each module to a temporary JSON file:
+Write each module to a JSON file under `~/.excalidraw/modules/`:
 ```
-/tmp/excalidraw_modules/module_1.json
-/tmp/excalidraw_modules/module_2.json
+~/.excalidraw/modules/module_1.json
+~/.excalidraw/modules/module_2.json
 ...
 ```
 
+**IMPORTANT**: All `.excalidraw` output files must be saved to `~/.excalidraw/` by default. Never use `/tmp/` for final output.
+
 ### Step 3: Merge All Modules
 
-Use the helper script to assemble all module arrays into the final `.excalidraw` envelope:
+Use the helper script to assemble all module arrays into the final `.excalidraw` file in `~/.excalidraw/`:
 
 ```bash
-python ~/.skills/ascii-excalidraw/scripts/merge_modules.py \
-  -o diagram.excalidraw \
-  /tmp/excalidraw_modules/module_1.json \
-  /tmp/excalidraw_modules/module_2.json \
+python ~/.claude/skills/ascii-excalidraw/scripts/merge_modules.py \
+  -o ~/.excalidraw/diagram.excalidraw \
+  ~/.excalidraw/modules/module_1.json \
+  ~/.excalidraw/modules/module_2.json \
   ...
 ```
 
