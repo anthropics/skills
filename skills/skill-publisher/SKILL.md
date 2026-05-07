@@ -1,7 +1,7 @@
 ---
 name: skill-publisher
 description: "Generic publishing tool for Claude Code skills. Validates, packages, and publishes to ClawHub, Hermes Agent, and anthropics/skills with bilingual README support."
-version: 1.0.0
+version: 1.1.0
 author: Claude Code
 license: MIT
 dependencies: []
@@ -100,9 +100,10 @@ Produces:
 
 #### ClawHub (OpenClaw)
 
+**CRITICAL**: Always pass `--slug <skill-name>` to prevent ClawHub from using the directory name as the slug. Without `--slug`, a publish from `/tmp/publish-my-skill/` would create a duplicate entry named `publish-my-skill` instead of `my-skill`.
+
 ```bash
-cd /tmp/publish-<skill-name>
-clawhub publish .
+clawhub publish /tmp/publish-<skill-name> --version <version> --slug <skill-name>
 ```
 
 If CLI unavailable: install `npm i -g clawhub` or upload via clawhub.ai.
@@ -144,3 +145,4 @@ curl -s "https://clawhub.ai/api/v1/skills?slug=<skill-name>"
 2. **ClawHub rejects hardcoded secrets** — scan scripts/ before publishing
 3. **Hermes requires metadata** — `metadata.hermes.tags` and `related_skills`
 4. **Network issues** — always test connectivity first. If direct HTTPS fails, load proxy from `~/.env` and re-test. If proxy also fails, use SSH (`git@github.com:...`) for git operations and tell user to create PR manually via browser
+5. **ClawHub slug mismatch** — always pass `--slug <skill-name>` when publishing; otherwise the directory name becomes the slug, creating a wrong/duplicate entry (e.g. `publish-my-skill` instead of `my-skill`)
