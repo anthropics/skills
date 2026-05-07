@@ -38,6 +38,7 @@ def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 
+_PRECOMPILED_SHIM = Path("/usr/local/lib/lo_socket_shim.so")
 _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
 
 
@@ -51,6 +52,8 @@ def _needs_shim() -> bool:
 
 
 def _ensure_shim() -> Path:
+    if _PRECOMPILED_SHIM.exists():
+        return _PRECOMPILED_SHIM
     if _SHIM_SO.exists():
         return _SHIM_SO
 
