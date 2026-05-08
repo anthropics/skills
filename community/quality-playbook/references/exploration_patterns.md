@@ -269,6 +269,62 @@ For each parser found:
 
 ---
 
+## Pattern 7: Composition and Mount-Context Awareness
+
+### Definition
+
+When code operates inside a composed context — mounted at a sub-route, nested inside a parent module, scoped to a child container, wrapped by a framework adapter — the framework typically maintains a *canonical* representation of the active state (what the active context says is true right now) alongside the *raw* representation from the outer call site (what the outer caller passed in originally). Code that reads or writes the raw representation when canonical was needed (or vice versa) works correctly at the outer level, where they happen to be identical, but fails silently under composition, where they diverge.
+
+### Bug class
+
+Code is written and tested at the outer level — top-level routes, root module, single-tenant deployment, default scope — where canonical and raw state are identical. When the same code runs inside a composed context, the framework updates the canonical state (mounted child path, scoped logger, transaction-scoped connection, locale-aware comparator) but the raw state still reflects the outer call. The defect manifests in two symmetric directions: a function that *reads* raw state where canonical was needed sees stale data and produces silent drift (never matches, leaks parent context, returns the wrong output); a function that *writes* an outward-facing value from canonical state where raw is needed produces output the consumer can't use (drops the mount prefix, returns a child-relative path the parent's clients can't follow). Either way, the test suite typically exercises the outer level only and never sees the divergence.
+
+### Examples across domains
+
+- **HTTP routing middleware (mount-context):** A middleware comparing the request path against a configured endpoint reads `r.URL.Path`. When mounted at a sub-route, the framework's canonical "active routing path" (e.g., `RoutePath` in chi, `req.url` in Express sub-app) is the child-relative path while `r.URL.Path` remains the full URL path. Bug: middleware never matches inside the mounted child because it reads the wrong path representation.
+- **Database transaction context:** A repository method opens its own connection via the connection pool. When called inside an explicit transaction, the framework's canonical "current transaction" context is the explicit one, but the method reads from the connection pool directly. Bug: the method's writes don't participate in the surrounding transaction; rollback leaves orphan rows.
+- **Logging context propagation:** A library logs via `logging.getLogger(__name__)`. When invoked inside an async task or worker pool that has scoped a contextvar-based correlation ID, the logger doesn't read the contextvar. Bug: the library's log lines lack the correlation ID the framework was propagating, breaking traceability.
+- **Locale-sensitive comparison:** A sort function uses `str.lower()` for case-insensitive comparison. When called inside a locale-aware context (Turkish "i" / "İ" / "ı" semantics), the framework's canonical locale is set but `str.lower()` reads the default locale. Bug: equality comparisons silently differ depending on which locale is canonically active.
+- **Authorization scope inheritance:** An ACL check reads `request.user` (the raw authenticated principal). When invoked inside an impersonation context, the framework's canonical `request.effective_user` is the impersonated principal but the check still reads the original. Bug: privilege escalation — the check authorizes the wrong principal.
+
+### How to apply
+
+Identify every function or component that reads or writes state that *can be canonical-vs-raw under composition*. The check is: does this code path run unchanged when its caller is composed inside a larger context, and if so, does the state it observes (or produces) change accordingly?
+
+**Disambiguation from Pattern 4.** Pattern 4 (Enumeration and Representation Completeness) is about closed sets of values: the bug is "value missing from the recognizer's closed set." Pattern 7 is about choice of state variable: the bug is "function reads or writes the wrong representation of state under composition." If both frames seem to apply, prefer the one whose REQ is more testable. The two patterns rarely overlap on the same defect; when they do, the canonical-vs-raw framing usually points more directly at the fix.
+
+**Budget.** Cap candidates at 3-5 highest-impact composition seams per pass. If more than 10 candidates emerge from this pattern alone, the net is too wide and the pattern is being over-applied — revisit Step 1 with a tighter "what does this framework actually maintain canonically under composition" filter.
+
+For each candidate found:
+
+1. **Identify the canonical and raw representations, both for reads and writes.** What does the framework maintain as "the active state for this concern" under composition? What does the function actually read? Then ask the symmetric question for outputs: when this function constructs a value that flows outward (a redirect target, a derived path, a logged correlation ID, an authorized resource handle), is that value being built from the right representation for its consumer? Read-side and write-side defects are equally common; check both directions.
+2. **Trace the composition seam.** Where does the framework update canonical state? Is the function downstream of that update site? Does it read from the canonical or the raw representation?
+3. **Construct the composition test.** What is the smallest example where this code runs inside a composed parent (mounted router, nested transaction, scoped logger, impersonation context)? Does the function's behavior match the outer-level behavior, or does it silently drift?
+4. **Record what happens.** A function that drifts under composition is a candidate requirement: "function `<X>` MUST read `<canonical_state>` (not `<raw_state>`) [or write `<raw_state>` for outward-facing output] so that behavior remains correct when composed inside `<parent_context>`."
+
+Common composition seams worth checking explicitly:
+
+- **Routing frameworks:** `RoutePath` / `req.url` / `request.path_info` versus the original URL. Each level of mounting updates the canonical path; raw URLs do not.
+- **Transaction managers:** explicit transaction context versus connection pool's auto-commit default. Composed code must read the active transaction.
+- **Logging / tracing:** contextvar-scoped correlation IDs versus thread-local or default loggers. Composed code must read the contextvar.
+- **Authorization / impersonation:** effective principal versus raw user. Composed code must read the effective principal.
+
+### EXPLORATION.md output format
+
+```
+## Composition and Mount-Context Analysis
+
+### [Function/component name] at [file:line]
+- **Composes inside:** [parent context — e.g., "any chi router that calls Mount() to attach this middleware"]
+- **Canonical representation:** [what the framework maintains under composition — e.g., "rctx.RoutePath, the active mounted path"]
+- **Raw representation read by this code:** [what the function actually reads — e.g., "r.URL.Path, the full request URL"]
+- **Drift scenario:** [smallest composition example that exposes the divergence — e.g., "router.Mount("/api", child) where child uses this middleware to serve /ping"]
+- **Observable failure:** [what wrong behavior results — e.g., "404 instead of the expected response"]
+- **Candidate requirements:** REQ-NNN: [function MUST read canonical state under composition]
+```
+
+---
+
 ## Extending This List
 
 These patterns were derived from analyzing 56 confirmed bugs across 11 open-source repositories spanning 7 languages. Each pattern represents a class of requirements that broad architectural summaries consistently miss.

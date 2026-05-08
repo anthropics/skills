@@ -193,7 +193,7 @@ Phase 4 is not complete until a triage file exists at `quality/spec_audits/YYYY-
 
 ### 32. Seed Checks Executed Mechanically (Continuation Mode)
 
-When `previous_runs/` exists and Phase 0 runs, verify that `quality/SEED_CHECKS.md` was generated with one entry per unique bug from prior runs. Each seed must have a mechanical verification result (FAIL = bug still present, PASS = bug fixed) obtained by actually running the assertion — not by reading prose from the prior run. If a seed's regression test exists in a prior run, the assertion must be re-executed against the current source tree. A seed marked FAIL without executing the assertion is non-conformant. This benchmark only applies when continuation mode is active (prior runs exist).
+When `quality/previous_runs/` exists and Phase 0 runs, verify that `quality/SEED_CHECKS.md` was generated with one entry per unique bug from prior runs. Each seed must have a mechanical verification result (FAIL = bug still present, PASS = bug fixed) obtained by actually running the assertion — not by reading prose from the prior run. If a seed's regression test exists in a prior run, the assertion must be re-executed against the current source tree. A seed marked FAIL without executing the assertion is non-conformant. This benchmark only applies when continuation mode is active (prior runs exist).
 
 ### 33. Convergence Status Recorded in PROGRESS.md (Continuation Mode)
 

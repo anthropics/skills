@@ -91,7 +91,7 @@ For each shared concept:
 | Pass 3, REQ-X vs REQ-Y | [consistency issue] | [severity] | INCONSISTENT |
 
 - Total findings by pass and severity
-- Overall assessment: SHIP IT / FIX FIRST / NEEDS DISCUSSION
+- Overall assessment: SHIP / FIX BEFORE MERGE / BLOCK
 ```
 
 ### Execution requirements
@@ -112,7 +112,7 @@ For each shared concept:
 
 ### Adversarial stance when documentation is available
 
-If the playbook was generated with supplemental documentation (docs_gathered/, community docs, user guides, API references), the code review must use that documentation *against* the code, not in its defense. Documentation tells you what the code is supposed to do. Your job is to find where it doesn't.
+If the playbook was generated with supplemental documentation (reference_docs/, community docs, user guides, API references), the code review must use that documentation *against* the code, not in its defense. Documentation tells you what the code is supposed to do. Your job is to find where it doesn't.
 
 **Do not let documentation explanations excuse code defects.** If the docs say "the library handles X gracefully" but the code doesn't check for X, that's a bug — the documentation makes it *more* of a bug, not less. A richer understanding of intent should make you *harder* on the code, not softer.
 
@@ -389,7 +389,7 @@ After all tests complete, show a summary table and a recommendation:
 
 **Passed:** 7/8 | **Failed:** 1/8
 
-**Recommendation:** FIX FIRST — Rate limit handling needs investigation.
+**Recommendation:** FIX BEFORE MERGE — Rate limit handling needs investigation.
 ```
 
 Then save the detailed results to `quality/results/YYYY-MM-DD-integration.md`.
@@ -407,7 +407,7 @@ Save results to `quality/results/YYYY-MM-DD-integration.md`
 [Specific failures, unexpected behavior, performance observations]
 
 ### Recommendation
-[SHIP IT / FIX FIRST / NEEDS INVESTIGATION]
+[SHIP / FIX BEFORE MERGE / BLOCK]
 ```
 
 ### Tips for Writing Good Integration Checks
@@ -540,7 +540,7 @@ This is distinct from standard integration tests because the system under test d
 - CLI agent installed and configured (e.g., `gh copilot`, `claude`, `npx @anthropic-ai/claude-code`)
 - Test repo prepared with skill installed at `.github/skills/SKILL.md` (or equivalent)
 - Clean `quality/` directory (no artifacts from prior runs)
-- Optional: `docs_gathered/` folder for with-docs comparison runs
+- Optional: `reference_docs/` folder for with-docs comparison runs
 
 ### Test Matrix
 
@@ -550,7 +550,7 @@ This is distinct from standard integration tests because the system under test d
 | PROGRESS.md completeness | Read `quality/PROGRESS.md` | All phases checked complete, BUG tracker populated |
 | Artifact structural check | Verify each expected file | Files are non-empty, contain expected sections |
 | BUG tracker closure | Count BUG entries vs regression tests | Every BUG has a test reference or exemption |
-| Baseline vs with-docs (optional) | Run twice: without and with docs_gathered/ | With-docs run produces >= baseline requirement count |
+| Baseline vs with-docs (optional) | Run twice: without and with reference_docs/ | With-docs run produces >= baseline requirement count |
 
 ### Execution
 
@@ -593,7 +593,7 @@ find quality/spec_audits -name "*triage*" -size +500c | wc -l  # should be >= 1
 ```
 ```
 
-**Baseline vs with-docs comparison pattern:** Run the skill twice on the same repo — once without supplemental docs, once with a `docs_gathered/` folder containing project history. Compare: requirement count, scenario count, bug count, and pipeline completion. The with-docs run should produce equal or more requirements and equal or more bugs. If the baseline outperforms the with-docs run on bug detection, that's a finding about the docs quality, not a skill failure.
+**Baseline vs with-docs comparison pattern:** Run the skill twice on the same repo — once without supplemental docs, once with a `reference_docs/` folder containing project history. Compare: requirement count, scenario count, bug count, and pipeline completion. The with-docs run should produce equal or more requirements and equal or more bugs. If the baseline outperforms the with-docs run on bug detection, that's a finding about the docs quality, not a skill failure.
 
 **When to generate this protocol:** Generate a skill integration test section in `RUN_INTEGRATION_TESTS.md` whenever the project being analyzed is a skill, a CLI tool that wraps AI calls, or a framework for building AI-powered tools. Look for: `SKILL.md` files, prompt templates, LLM client configurations, agent orchestration code, or references to AI models in the codebase.
 

@@ -2,7 +2,7 @@
 
 > This file contains the detailed instructions for each iteration strategy.
 > The agent reads this file when running an iteration — all operational detail lives here,
-> not in the prompt or in run_playbook.sh.
+> not in the prompt or in the benchmark runner.
 
 ## Iteration cycle
 
@@ -69,9 +69,10 @@ These rules apply to every iteration strategy:
 
 ## Meta-strategy: `all` — run every strategy in sequence
 
-The `all` strategy is a runner-level convenience that executes gap → unfiltered → parity → adversarial in order, each as a separate agent session. A single agent session cannot run multiple strategies (context budget), so `all` is implemented by the runner (run_playbook.sh) as a loop of `--next-iteration` calls. If any strategy finds zero new bugs, the runner stops early (diminishing returns).
+The `all` strategy is a runner-level convenience that executes gap → unfiltered → parity → adversarial in order, each as a separate agent session. A single agent session cannot run multiple strategies (context budget), so `all` is implemented by the orchestrator agent or benchmark runner as a loop of iteration calls. If any strategy finds zero new bugs, stop early (diminishing returns).
 
-Usage: `./run_playbook.sh --next-iteration --strategy all <repos>`
+Usage (orchestrator agent): "Run all iterations" — the agent runs gap → unfiltered → parity → adversarial sequentially.
+Usage (benchmark runner): `python3 bin/run_playbook.py --next-iteration --strategy all <targets>` (benchmark tooling, not shipped with the skill). `--strategy` also accepts a comma-separated ordered subset, e.g. `--strategy unfiltered,parity,adversarial`.
 
 ---
 
