@@ -49,6 +49,7 @@ python scripts/law_audit.py --input /tmp/frontend-evidence.json --strict --fail-
 4. **Interpret results using two layers**
 - **Layer A: Fast gate** (binary pass/fail checks).
 - **Layer B: Deep law analysis** (cause-based diagnosis per principle).
+- For each failed principle, open its mapped rule file under `rules/`.
 
 5. **Produce fix backlog**
 - Sort by severity and expected impact on completion/conversion.
@@ -85,6 +86,8 @@ If evidence is incomplete, explicitly list missing keys and mark affected laws a
 ## References
 
 Load only what you need:
+- `rules/_sections.md` for full rule index and priority groups
+- `rules/<law>.md` for implementation-level diagnosis and fixes
 - `references/metrics-schema.md` for metric definitions and thresholds
 - `references/theory-playbook.md` for deep principle explanations and fixes
 - `examples/evidence.sample.json` for input format

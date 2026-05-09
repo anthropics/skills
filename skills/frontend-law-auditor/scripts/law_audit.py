@@ -24,6 +24,30 @@ STATUS_POINTS = {
     UNKNOWN: 0.4,
 }
 
+RULE_FILE_MAP = {
+    "fitts": "fitts-law.md",
+    "hick": "hicks-law.md",
+    "gestalt-proximity": "gestalt-proximity.md",
+    "gestalt-similarity": "gestalt-similarity.md",
+    "gestalt-continuity": "gestalt-continuity.md",
+    "gestalt-closure": "gestalt-closure.md",
+    "gestalt-figure-ground": "gestalt-figure-ground.md",
+    "gestalt-common-fate": "gestalt-common-fate.md",
+    "gestalt-focal-point": "gestalt-focal-point.md",
+    "von-restorff": "von-restorff-effect.md",
+    "jakob": "jakobs-law.md",
+    "miller": "millers-law.md",
+    "goal-gradient": "goal-gradient-hypothesis.md",
+    "zeigarnik": "zeigarnik-effect.md",
+    "tesler": "teslers-law.md",
+    "peak-end": "peak-end-rule.md",
+    "postel": "postels-law.md",
+    "doherty": "doherty-threshold.md",
+    "serial-position": "serial-position-effect.md",
+    "occam": "occams-razor.md",
+    "parkinson": "parkinsons-law.md",
+}
+
 
 @dataclass
 class Principle:
@@ -628,6 +652,7 @@ def evaluate_principles(metrics: dict[str, Any], principles: list[Principle]) ->
     results: list[dict[str, Any]] = []
     for principle in principles:
         status, diagnosis = principle.evaluator(metrics)
+        rule_file = RULE_FILE_MAP.get(principle.key, f"{principle.key}.md")
         results.append(
             {
                 "key": principle.key,
@@ -639,6 +664,7 @@ def evaluate_principles(metrics: dict[str, Any], principles: list[Principle]) ->
                 "requirement": principle.requirement,
                 "signal": principle.signal,
                 "fix": principle.fix,
+                "rule_file": f"rules/{rule_file}",
             }
         )
     return results
@@ -728,12 +754,12 @@ def render_report(
     lines.append("")
     lines.append("## Principle Results")
     lines.append("")
-    lines.append("| Priority | Principle | Status | Weight | Diagnosis | Required change |")
-    lines.append("|---|---|---|---:|---|---|")
+    lines.append("| Priority | Principle | Status | Weight | Rule | Diagnosis | Required change |")
+    lines.append("|---|---|---|---:|---|---|---|")
     for result in principle_results:
         priority = classify_priority(result)
         lines.append(
-            f"| {priority} | {result['name']} | {status_emoji(result['status'])} | {result['weight']} | {result['diagnosis']} | {result['fix']} |"
+            f"| {priority} | {result['name']} | {status_emoji(result['status'])} | {result['weight']} | `{result['rule_file']}` | {result['diagnosis']} | {result['fix']} |"
         )
     lines.append("")
     lines.append("## Priority Fix Backlog")
@@ -742,6 +768,7 @@ def render_report(
         for result in priorities:
             priority = classify_priority(result)
             lines.append(f"- **{priority} {result['name']}**: {result['diagnosis']}")
+            lines.append(f"  - Rule: `{result['rule_file']}`")
             lines.append(f"  - Why it matters: {result['mechanism']}")
             lines.append(f"  - Acceptance target: {result['signal']}")
             lines.append(f"  - Fix: {result['fix']}")
