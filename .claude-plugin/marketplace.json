@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "tensorfeed",
+      "description": "Live, machine-readable AI ecosystem data through TensorFeed.ai's hosted MCP server: AI news, model pricing across providers, AI service status, security advisories (CVE/KEV/EPSS/OSV), SEC EDGAR filings, FDA regulatory data (FAERS, drug labels, recalls, MAUDE), and US energy/macro indicators. 17 free tools, no auth required.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/tensorfeed"
+      ]
     }
   ]
 }
