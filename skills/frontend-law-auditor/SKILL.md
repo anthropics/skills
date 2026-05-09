@@ -1,7 +1,7 @@
 ---
 name: frontend-law-auditor
 description: Human-centered frontend quality gate and theory-based audit skill. Use when reviewing or debugging web/mobile UI for cognitive friction, conversion drop-offs, confusing forms, weak feedback, poor interaction flow, or pre-release UX signoff. Audits interfaces against Fitts, Hick, Gestalt, Von Restorff, Jakob, Miller, Goal-Gradient, Zeigarnik, Tesler, Peak-End, Postel, Doherty, Serial Position, Occam, and Parkinson laws.
-license: Apache-2.0
+license: Complete terms in LICENSE.txt
 ---
 
 # Frontend Law Auditor
