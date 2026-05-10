@@ -33,7 +33,35 @@ These match the `connectionName` field inside each action's `host` block.
 
 ---
 
-## Finding Connection GUIDs
+## Finding Connection References
+
+Preferred method: call `list_live_connections` in the target environment. Use
+`search` to narrow results to the connector you need; newer MCP server versions
+return paste-ready templates.
+
+```python
+matches = mcp("list_live_connections",
+    environmentName=ENV,
+    search="shared_sharepointonline")
+
+conn = next(c for c in matches["connections"]
+            if c.get("overallStatus") == "Connected"
+            or c.get("statuses", [{}])[0].get("status") == "Connected")
+
+conn_refs = {
+    "shared_sharepointonline": conn.get("connectionReferenceTemplate") or {
+        "connectionName": conn["id"],
+        "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+        "source": "Invoker"
+    }
+}
+host = conn.get("hostTemplate") or {"connectionName": "shared_sharepointonline"}
+```
+
+Use `host` as the action-side `inputs.host`. Use `conn_refs` as
+`update_live_flow(connectionReferences=conn_refs)`.
+
+Fallback method: copy from an existing flow.
 
 Call `get_live_flow` on **any existing flow** that uses the same connection
 and copy the `connectionReferences` block. The GUID after the connector prefix is

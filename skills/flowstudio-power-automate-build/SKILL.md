@@ -31,11 +31,12 @@ Subscribe at https://mcp.flowstudio.app
 
 ## Source of Truth
 
-> **Always call `tools/list` first** to confirm available tool names and their
-> parameter schemas. Tool names and parameters may change between server versions.
+> **Always call `list_skills` / `tool_search` first** to confirm available tool
+> names and parameter schemas. Tool names and parameters may change between
+> server versions.
 > This skill covers response shapes, behavioral notes, and build patterns —
-> things `tools/list` cannot tell you. If this document disagrees with `tools/list`
-> or a real API response, the API wins.
+> things tool schemas cannot tell you. If this document disagrees with
+> `tool_search` or a real API response, the API wins.
 
 ---
 
@@ -68,14 +69,38 @@ ENV = "<environment-id>"  # e.g. Default-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
 ---
 
+## Before Step 1 — Load the Current Build Tools
+
+For a brand-new flow, load the server's `create-flow` bundle. For editing an
+existing flow, load `build-flow`. This keeps the agent aligned with the MCP
+server's current schema before constructing JSON.
+
+```python
+schemas = mcp("tool_search", query="skill:create-flow")
+# Includes list_live_environments, list_live_connections,
+# describe_live_connector, get_live_dynamic_options, update_live_flow.
+```
+
+If you need a tool outside the bundle, load it explicitly:
+
+```python
+mcp("tool_search", query="select:get_live_dynamic_properties")
+```
+
+---
+
 ## Step 1 — Safety Check: Does the Flow Already Exist?
 
 Always look before you build to avoid duplicates:
 
 ```python
-results = mcp("list_live_flows", environmentName=ENV)
+results = mcp("list_live_flows",
+    environmentName=ENV,
+    mode="owner",
+    search="My New Flow",
+    top=20)
 
-# list_live_flows returns { "flows": [...] }
+# list_live_flows returns { "flows": [...], "mode": "...", ... }
 matches = [f for f in results["flows"]
            if "My New Flow".lower() in f["displayName"].lower()]
 
@@ -88,6 +113,11 @@ else:
     print("Flow not found — building from scratch")
     FLOW_ID = None
 ```
+
+For very large environments, `list_live_flows` may return a continuation URL.
+Pass it back as `continuationUrl` with the same `mode` to retrieve the next
+batch. Use `mode="admin"` only when the user needs all environment flows and
+the MCP identity has admin rights.
 
 ---
 
@@ -117,6 +147,19 @@ for c in active:
 
 print(f"Found {len(active)} active connections")
 print("Available connectors:", list(conn_map.keys()))
+```
+
+For a known connector, use `search` to reduce output and ask the server for
+paste-ready templates:
+
+```python
+sp_conns = mcp("list_live_connections",
+    environmentName=ENV,
+    search="shared_sharepointonline")
+
+# Each matching connection may include:
+# - connectionReferenceTemplate: copy into update_live_flow.connectionReferences
+# - hostTemplate: copy into action inputs.host
 ```
 
 ### 2b — Determine which connectors the flow needs
@@ -171,11 +214,16 @@ Only execute this after 2c confirms no missing connectors:
 
 ```python
 connection_references = {}
+host_templates = {}
 for connector in connectors_needed:
-    connection_references[connector] = {
-        "connectionName": conn_map[connector],   # the GUID from list_live_connections
+    c = next(c for c in active if c["connectorName"] == connector)
+    connection_references[connector] = c.get("connectionReferenceTemplate") or {
+        "connectionName": c["id"],   # the connection id from list_live_connections
         "source": "Invoker",
         "id": f"/providers/Microsoft.PowerApps/apis/{connector}"
+    }
+    host_templates[connector] = c.get("hostTemplate") or {
+        "connectionName": connector
     }
 ```
 
@@ -217,6 +265,69 @@ definition = {
 > See [build-patterns.md](references/build-patterns.md) for complete, ready-to-use
 > flow definitions covering Recurrence+SharePoint+Teams, HTTP triggers, and more.
 
+### Discover connector operations before guessing JSON
+
+For connector-backed triggers/actions, prefer the live connector describer over
+hand-written shapes. It can return authored hints, canonical examples, variant
+keys, inputs/outputs, and dynamic metadata pointers.
+
+```python
+# Search across connectors when you know the user's intent but not the API.
+matches = mcp("describe_live_connector",
+    environmentName=ENV,
+    search="send email",
+    top=5)
+
+# Describe a specific operation before copying an exampleDefinition.
+op = mcp("describe_live_connector",
+    environmentName=ENV,
+    connectorName="shared_office365",
+    operationId="SendEmailV2")
+print(op.get("hint"))
+```
+
+When an operation has multiple authored variants, request the variant the flow
+needs:
+
+```python
+teams_chat = mcp("describe_live_connector",
+    environmentName=ENV,
+    connectorName="shared_teams",
+    operationId="PostMessageToConversation",
+    variant="flowbot_chat")
+```
+
+When the operation description says a parameter has dynamic options or dynamic
+properties, call the indicated next tool:
+
+```python
+sp_op = mcp("describe_live_connector",
+    environmentName=ENV,
+    connectorName="shared_sharepointonline",
+    operationId="GetItems")
+
+sites = mcp("get_live_dynamic_options",
+    environmentName=ENV,
+    connectorName="shared_sharepointonline",
+    connectionName=conn_map["shared_sharepointonline"],
+    operationId="GetItems",
+    parameterName="dataset",
+    dynamicMetadata=sp_op["dynamicParameters"]["dataset"])
+
+fields = mcp("get_live_dynamic_properties",
+    environmentName=ENV,
+    connectorName="shared_sharepointonline",
+    connectionName=conn_map["shared_sharepointonline"],
+    operationId="GetItems",
+    parameterName="item",
+    parameters={"dataset": "<site-url>", "table": "<list-id>"},
+    dynamicMetadata=sp_op["dynamicProperties"]["item"])
+```
+
+Use dynamic options for dropdown IDs such as SharePoint sites/lists and Teams
+teams/channels. Use dynamic properties for schema/field shapes such as
+SharePoint list item columns.
+
 ---
 
 ## Step 4 — Deploy (Create or Update)
@@ -228,13 +339,14 @@ definition = {
 Omit `flowName` — the server generates a new GUID and creates via PUT:
 
 ```python
+definition["description"] = "Weekly SharePoint → Teams notification flow, built by agent"
+
 result = mcp("update_live_flow",
     environmentName=ENV,
     # flowName omitted → creates a new flow
     definition=definition,
     connectionReferences=connection_references,
-    displayName="Overdue Invoice Notifications",
-    description="Weekly SharePoint → Teams notification flow, built by agent"
+    displayName="Overdue Invoice Notifications"
 )
 
 if result.get("error") is not None:
@@ -250,13 +362,16 @@ else:
 Provide `flowName` to PATCH:
 
 ```python
+definition["description"] = (
+    "Updated by agent on " + __import__('datetime').datetime.utcnow().isoformat()
+)
+
 result = mcp("update_live_flow",
     environmentName=ENV,
     flowName=FLOW_ID,
     definition=definition,
     connectionReferences=connection_references,
-    displayName="My Updated Flow",
-    description="Updated by agent on " + __import__('datetime').datetime.utcnow().isoformat()
+    displayName="My Updated Flow"
 )
 
 if result.get("error") is not None:
@@ -268,7 +383,9 @@ else:
 > ⚠️ `update_live_flow` always returns an `error` key.
 > `null` (Python `None`) means success — do not treat the presence of the key as failure.
 >
-> ⚠️ `description` is required for both create and update.
+> ⚠️ Flow description lives at `definition["description"]`. The current server
+> appends `#flowstudio-mcp` for usage tracking. Do not pass a top-level
+> `description` argument unless `tool_search` shows one in the active schema.
 
 ### Common deployment errors
 
@@ -329,9 +446,10 @@ than the original run. For verifying a fix, `resubmit_live_flow_run` is
 better because it uses the exact data that caused the failure.
 
 ```python
-schema = mcp("get_live_flow_http_schema",
-    environmentName=ENV, flowName=FLOW_ID)
-print("Expected body:", schema.get("requestSchema"))
+defn = mcp("get_live_flow", environmentName=ENV, flowName=FLOW_ID)
+triggers = defn["properties"]["definition"]["triggers"]
+manual = next(iter(triggers.values()))
+print("Expected body:", manual.get("inputs", {}).get("schema"))
 
 result = mcp("trigger_live_flow",
     environmentName=ENV, flowName=FLOW_ID,
@@ -364,13 +482,13 @@ definition["triggers"] = {
 }
 
 # Deploy (create or update) with the temp trigger
+definition["description"] = "Deployed with temp HTTP trigger for testing"
 result = mcp("update_live_flow",
     environmentName=ENV,
     flowName=FLOW_ID,       # omit if creating new
     definition=definition,
     connectionReferences=connection_references,
-    displayName="Overdue Invoice Notifications",
-    description="Deployed with temp HTTP trigger for testing")
+    displayName="Overdue Invoice Notifications")
 
 if result.get("error") is not None:
     print("Deploy failed:", result["error"])
@@ -386,7 +504,7 @@ else:
 # Trigger the flow
 test = mcp("trigger_live_flow",
     environmentName=ENV, flowName=FLOW_ID)
-print(f"Trigger response status: {test['status']}")
+print(f"Trigger response status: {test['responseStatus']}")
 
 # Wait for the run to complete
 import time; time.sleep(15)
@@ -414,12 +532,12 @@ Once the test run succeeds, replace the temporary HTTP trigger with the real one
 # Restore the production trigger
 definition["triggers"] = production_trigger
 
+definition["description"] = "Swapped to production trigger after successful test"
 result = mcp("update_live_flow",
     environmentName=ENV,
     flowName=FLOW_ID,
     definition=definition,
-    connectionReferences=connection_references,
-    description="Swapped to production trigger after successful test")
+    connectionReferences=connection_references)
 
 if result.get("error") is not None:
     print("Trigger swap failed:", result["error"])

@@ -84,7 +84,7 @@ tool names.
 
 | Meta-tool | When to call |
 |---|---|
-| `list_skills` | Cold start — see the available bundles (`build-flow`, `debug-flow`, `monitor-flow`, `discover`, `governance`) and pick one |
+| `list_skills` | Cold start — see the available bundles (`build-flow`, `create-flow`, `debug-flow`, `monitor-flow`, `discover`, `governance`) and pick one |
 | `tool_search` with `query: "skill:<name>"` | Load the full schema set for one bundle (e.g. `skill:debug-flow`) |
 | `tool_search` with `query: "select:tool1,tool2"` | Load specific tools by name (e.g. when chaining across bundles) |
 | `tool_search` with `query: "<keywords>"` | Free-text search when the user request is ambiguous (e.g. `"cancel run"`) |
@@ -103,6 +103,17 @@ skills = mcp("list_skills", {})
 # Load schemas for the bundle
 debug_tools = mcp("tool_search", {"query": "skill:debug-flow"})
 ```
+
+Current common bundles:
+
+| Bundle | Use when |
+|---|---|
+| `create-flow` | Creating a brand-new flow; includes environment/connection discovery, connector description, dynamic options, and `update_live_flow` |
+| `build-flow` | Reading or modifying an existing flow definition |
+| `debug-flow` | Investigating failed runs and action-level inputs/outputs |
+| `monitor-flow` | Starting/stopping, triggering, cancelling, or resubmitting runs |
+| `discover` | Enumerating environments, flows, and connections |
+| `governance` | Pro+ cached-store tagging, maker audit, and metadata updates |
 
 ---
 
@@ -213,7 +224,7 @@ print(f"Connected — {len(skills)} skill bundles available:",
 Expected output:
 
 ```text
-Connected — 5 skill bundles available: ['build-flow', 'debug-flow', 'monitor-flow', 'discover', 'governance']
+Connected — 6 skill bundles available: ['build-flow', 'create-flow', 'debug-flow', 'monitor-flow', 'discover', 'governance']
 ```
 
 If this fails, see the **Common auth errors** note above. If it succeeds, hand
@@ -228,7 +239,8 @@ Some MCP tool responses are large enough to overflow the agent's context window:
 | Tool | Typical size | Cause |
 |---|---|---|
 | `describe_live_connector` | 100-600 KB | Full Swagger spec for a connector |
-| `get_live_flow_run_action_outputs` (no `actionName`) | 50 KB – several MB | All actions × all foreach iterations |
+| `get_live_dynamic_properties` | 50-500 KB | Dynamic connector field schemas such as SharePoint list columns |
+| `get_live_flow_run_action_outputs` (no `actionName`) | 50 KB – several MB | Top-level action outputs; with an action in a foreach, every repetition can be returned |
 | `get_live_flow` (large flows) | 50-500 KB | Deeply nested branches |
 | `list_live_flows` (large tenants) | 50-200 KB | Hundreds of flow records |
 
@@ -259,7 +271,7 @@ $payload = ((Get-Content $path -Raw | ConvertFrom-Json)[0].text) | ConvertFrom-J
 ### Rules of thumb
 
 1. **Extract, don't echo.** Pull the specific field(s) you need (one `operationId`, one action's outputs) and discard the rest before reasoning about it.
-2. **Always pass `actionName` to `get_live_flow_run_action_outputs`.** Omitting it fetches every action × every iteration — fine for offline debug scripts, dangerous for an agent that ingests the whole response.
+2. **Always pass `actionName` to `get_live_flow_run_action_outputs`.** Omitting it fetches all top-level actions. For actions inside a foreach, passing `actionName` without `iterationIndex` can return every repetition of that action.
 3. **Reuse the spill file within a session.** Refetching the same connector swagger costs 30+ seconds and produces another spill — cache the path.
 4. **Don't grep the spill file for JSON keys directly.** Strings are JSON-escaped inside the file (`\"OperationId\":`), so a plain grep for `"OperationId":` will not match. Parse first, then filter.
 5. **Summarize tool output to the user.** Echo `name + state + trigger` for flow lists and `actionName + status + code` for run errors — not raw JSON, unless asked.

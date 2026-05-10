@@ -35,11 +35,12 @@ Subscribe at https://mcp.flowstudio.app
 
 ## Source of Truth
 
-> **Always call `tools/list` first** to confirm available tool names and their
-> parameter schemas. Tool names and parameters may change between server versions.
+> **Always call `list_skills` / `tool_search` first** to confirm available tool
+> names and parameter schemas. Tool names and parameters may change between
+> server versions.
 > This skill covers response shapes, behavioral notes, and diagnostic patterns —
-> things `tools/list` cannot tell you. If this document disagrees with `tools/list`
-> or a real API response, the API wins.
+> things tool schemas cannot tell you. If this document disagrees with
+> `tool_search` or a real API response, the API wins.
 
 ---
 
@@ -161,6 +162,8 @@ detail = mcp("get_live_flow_run_action_outputs",
     runName=RUN_ID,
     actionName=root_action)
 
+if len(detail) > 1:
+    print(f"{root_action} returned {len(detail)} repetitions; inspect iteration indexes")
 out = detail[0] if detail else {}
 print(f"Action: {out.get('actionName')}")
 print(f"Status: {out.get('status')}")
@@ -197,6 +200,31 @@ if out.get("inputs"):
 | `InternalServerError` | The server's error message, stack trace, or API error JSON |
 | `InvalidTemplate` | The exact expression that failed and the null/wrong-type value |
 | `BadRequest` | The request body that was sent and why the server rejected it |
+
+### Foreach iterations
+
+When `actionName` refers to an action inside a foreach, the output tool can
+return every repetition of that action. Each item may include
+`repetitionIndexes` with the loop name and zero-based `itemIndex`. Use
+`iterationIndex` to inspect one iteration after you find the suspicious item:
+
+```python
+all_reps = mcp("get_live_flow_run_action_outputs",
+    environmentName=ENV,
+    flowName=FLOW_ID,
+    runName=RUN_ID,
+    actionName=root_action)
+
+for rep in all_reps[:10]:
+    print(rep.get("repetitionIndexes"), rep.get("status"), rep.get("error"))
+
+one_rep = mcp("get_live_flow_run_action_outputs",
+    environmentName=ENV,
+    flowName=FLOW_ID,
+    runName=RUN_ID,
+    actionName=root_action,
+    iterationIndex=3)
+```
 
 ### Evidence Compose Bookends
 
@@ -267,10 +295,9 @@ for action_name in [root_action, "Compose_WeekEnd", "HTTP_Get_Data"]:
 > ⚠️ Output payloads from array-processing actions can be very large.
 > Always slice (e.g. `[:500]`) before printing.
 
-> **Tip**: Omit `actionName` to get ALL actions in a single call.
-> This returns every action's inputs/outputs — useful when you're not sure
-> which upstream action produced the bad data. But use 120s+ timeout as
-> the response can be very large.
+> **Tip**: Omit `actionName` to list top-level actions when you're not sure
+> which action produced the bad data. Once you pick an action inside a foreach,
+> pass `iterationIndex` to avoid pulling every repetition into context.
 
 ---
 
@@ -328,6 +355,9 @@ through dynamic options. **Don't fix it by retrying AadGraph** — switch to
 Use `describe_live_connector` to confirm whether the affected parameter exposes
 a structured `fallback`, then call `get_live_dynamic_options` against
 `shared_office365users.SearchUserV2` instead of the broken AadGraph operation.
+For dynamic field schemas rather than dropdown options, use
+`get_live_dynamic_properties` with the metadata returned by
+`describe_live_connector`.
 
 ---
 
