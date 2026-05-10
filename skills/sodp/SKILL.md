@@ -1,6 +1,6 @@
 ---
 name: sodp
-description: Integrate SODP (State-Oriented Data Protocol) into a project. Use this skill when the user wants to add real-time state synchronization over WebSocket to their app — replacing polling, REST SSE, or manual socket management. Covers client setup (TypeScript, React, Python, Java), server setup (Rust, Go), watching state keys, writing state, and presence (live cursors, online indicators).
+description: Integrate SODP (State-Oriented Data Protocol) into a project. Use this skill when the user wants to add real-time state synchronization over WebSocket to their app — replacing polling, REST SSE, or manual socket management. Covers client setup (TypeScript, React, Python, Java), server setup (Rust standalone, Go embedded, TypeScript embedded), watching state keys, writing state, and presence (live cursors, online indicators).
 license: Complete terms in LICENSE.txt
 ---
 
@@ -210,6 +210,55 @@ sodp-server 0.0.0.0:7777 /var/lib/sodp/log schema.json  # with schema validation
 ```
 
 Environment variables: `SODP_JWT_SECRET`, `SODP_JWT_PUBLIC_KEY_FILE`, `SODP_ACL_FILE`, `SODP_HEALTH_PORT`, `SODP_METRICS_PORT`, `SODP_RATE_WRITES_PER_SEC`, `SODP_BACKPRESSURE_LIMIT`, `SODP_REDIS_URL`.
+
+### TypeScript server (embedded library)
+
+Install: `npm install @sodp/server ws @msgpack/msgpack jose`
+
+```typescript
+import { SodpServer } from "@sodp/server";
+
+const server = new SodpServer({
+  jwtSecret: process.env.SODP_JWT_SECRET,
+  aclFile: "config/acl.json",
+  schemaFile: "config/schema.json",     // ERROR 422 on type violations
+  persistDir: "/var/lib/sodp",          // survives restarts
+  redisUrl: process.env.SODP_REDIS_URL, // horizontal scaling (requires ioredis)
+  healthPort: 9090,   // GET /health
+  metricsPort: 9091,  // GET /metrics (Prometheus)
+
+  // Seed state from DB when a key is first watched
+  hydrate: async (key) => db.getState(key),
+
+  // Custom RPC methods
+  onCall: async (method, args, claims) => {
+    if (method === "compute.sum") return { success: true, data: args.a + args.b };
+    return { success: false, data: `unknown method: ${method}` };
+  },
+});
+
+await server.listen(7777);
+server.handleSignals(); // SIGTERM / SIGINT graceful shutdown
+
+// Push state from server-side code — fans out to all watchers
+server.set("game.score", { value: 42 });
+server.patch("game.score", { value: 99 });
+server.setIn("game.player", "/position/x", 5);
+server.append("game.events", event, 500); // append + cap array at 500
+server.delete("game.player");
+```
+
+Attach to an existing HTTP server instead of a standalone port:
+```typescript
+server.attach(existingHttpServer, { path: "/sodp" });
+```
+
+Built-in IdP presets (no manual claim mapping needed):
+```typescript
+new SodpServer({ jwtSecret: "...", jwtPreset: "keycloak" }); // or auth0 | okta | cognito
+```
+
+---
 
 ### Go server (embedded library)
 
