@@ -27,6 +27,9 @@ Flow is failing
 │   ├── error.code = "ActionFailed" + message mentions HTTP
 │   │   └── ► See: HTTP Action Workflow below
 │   │
+│   ├── parent action is Foreach / Apply to each
+│   │   └── ► Inspect child actions; handled child failures can still fail the parent
+│   │
 │   └── Unknown / generic error
 │       └── ► Walk actions backwards (Step B below)
 │
@@ -112,6 +115,9 @@ Flow succeeds but output data is wrong
 ├── Foreach output missing items
 │   ├── Check foreach condition — filter may be too strict
 │   └── Check if parallel foreach caused race condition (add Sequential)
+│
+├── Filter/Query result unexpectedly matches nulls or returns empty
+│   └── Guard lookup keys before the filter; do not compare null-to-null
 │
 └── Date/time values wrong timezone
     └── Use convertTimeZone() — utcNow() is always UTC

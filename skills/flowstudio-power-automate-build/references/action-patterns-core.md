@@ -337,6 +337,23 @@ walking a time range, polling until a status changes).
 
 ---
 
+### Agent Retry Loop
+
+When a flow calls an AI or Copilot-style agent until it reaches a terminal
+outcome, keep the loop state explicit:
+
+- Initialize variables such as `agentStatus`, `attempt`, and `finalPayload`
+  before the `Until`.
+- Inside the loop, call the agent, validate the response, update the status, and
+  delay/retry only when the status is non-terminal.
+- Put final dispatch actions such as email, SharePoint update, or Teams post
+  after the loop so retries do not duplicate side effects.
+- If the platform rejects a complex `Switch` nested inside `Until`, keep the
+  loop body to simple validation and state updates, then route with `Switch`
+  after the loop.
+
+---
+
 ### Async Polling with RequestId Correlation
 
 When an API starts a long-running job asynchronously (e.g. Power BI dataset refresh,
@@ -485,6 +502,19 @@ Join errors to string:     @if(equals(length(variables('Errors')),0), null, conc
 Normalize before compare:  @replace(coalesce(outputs('Value'),''),'_',' ')
 Robust non-empty check:    @greater(length(trim(coalesce(string(outputs('Val')), ''))), 0)
 ```
+
+### Unsupported / Risky Expression Assumptions
+
+Power Automate expressions are Workflow Definition Language, not JavaScript.
+These patterns often look plausible but do not deploy or do not behave as agents
+expect:
+
+| Goal | Avoid | Use instead |
+|---|---|---|
+| Build an object inline | `createObject(...)` | A Compose action with a JSON object literal |
+| Transform an array inline | `select(...)` inside an expression | Data Operations `Select` action |
+| Filter an array inline | `filter(...)` inside an expression | Data Operations `Filter array` action |
+| Find an array item index | `indexOf(array, item)` | Foreach with a counter variable, or build a keyed object map |
 
 ### Newlines in Expressions
 

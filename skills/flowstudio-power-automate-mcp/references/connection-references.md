@@ -14,7 +14,7 @@ connections in the Power Platform. They are required whenever you call
     "definition": { ... },
     "connectionReferences": {
       "shared_sharepointonline": {
-        "connectionName": "shared-sharepointonl-62599557c-1f33-4aec-b4c0-a6e4afcae3be",
+        "connectionName": "shared-sharepointonl-eeeeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
         "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
         "displayName": "SharePoint"
       },
@@ -43,7 +43,7 @@ the connection instance owned by the authenticating user.
 flow = mcp("get_live_flow", environmentName=ENV, flowName=EXISTING_FLOW_ID)
 conn_refs = flow["properties"]["connectionReferences"]
 # conn_refs["shared_sharepointonline"]["connectionName"]
-# → "shared-sharepointonl-62599557c-1f33-4aec-b4c0-a6e4afcae3be"
+# → "shared-sharepointonl-eeeeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
 ```
 
 > ⚠️ Connection references are **user-scoped**. If a connection is owned
@@ -62,7 +62,7 @@ result = mcp("update_live_flow",
     definition=modified_definition,
     connectionReferences={
         "shared_sharepointonline": {
-            "connectionName": "shared-sharepointonl-62599557c-1f33-4aec-b4c0-a6e4afcae3be",
+            "connectionName": "shared-sharepointonl-eeeeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
             "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
         }
     }

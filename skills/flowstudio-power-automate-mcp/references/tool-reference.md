@@ -138,7 +138,7 @@ Response: **direct array** (no wrapper).
 ]
 ```
 
-> **`id` format**: `envId.flowId` --- split on the first `.` to extract the flow UUID:
+> **`id` format**: `<environmentId>.<flowId>` --- split on the first `.` to extract the flow UUID:
 > `flow_id = item["id"].split(".", 1)[1]`
 
 ### `get_store_flow`
@@ -146,7 +146,7 @@ Response: **direct array** (no wrapper).
 Response: single flow metadata from cache (selected fields).
 ```json
 {
-  "id": "envId.flowId",
+  "id": "<environmentId>.<flowId>",
   "displayName": "My Flow",
   "state": "Started",
   "triggerType": "Recurrence",
@@ -204,7 +204,7 @@ Response:
 ```json
 {
   "created": false,
-  "flowKey": "envId.flowId",
+  "flowKey": "<environmentId>.<flowId>",
   "updated": ["definition", "connectionReferences"],
   "displayName": "My Flow",
   "state": "Started",
@@ -222,6 +222,15 @@ Response:
 ### `add_live_flow_to_solution`
 
 Migrates a non-solution flow into a solution. Returns error if already in a solution.
+
+Use this after creating a Copilot Studio Skills-triggered flow that must be
+discoverable as an agent tool. Pass `solutionId` for the target solution. If the
+server supports omitting `solutionId`, it uses the environment's default solution;
+prefer an explicit unmanaged solution for production ALM.
+
+This tool changes solution membership only. It does not validate the trigger
+schema, publish a Copilot Studio agent, or prove that the flow is callable by the
+agent.
 
 ---
 
@@ -353,17 +362,69 @@ Response keys: `flowKey`, `triggerName`, `triggerUrl`, `requiresAadAuth`, `authT
 
 > **Only works for `Request` (HTTP) triggers.** Returns an error for Recurrence
 > and other trigger types: `"only HTTP Request triggers can be invoked via this tool"`.
+> `Button`-kind triggers return `ListCallbackUrlOperationBlocked`.
 >
 > `responseStatus` + `responseBody` contain the flow's Response action output.
 > AAD-authenticated triggers are handled automatically.
+>
+> **Content-type note**: The body is sent as `application/octet-stream` (raw),
+> not `application/json`. Flows with a trigger schema that has `required` fields
+> will reject the request with `InvalidRequestContent` (400) because PA validates
+> `Content-Type` before parsing against the schema. Flows without a schema, or
+> flows designed to accept raw input (e.g. Baker-pattern flows that parse the body
+> internally), will work fine. The flow receives the JSON as base64-encoded
+> `$content` with `$content-type: application/octet-stream`.
 
 ---
 
 ## Flow State Management
 
+### `set_live_flow_state`
+
+Start or stop a Power Automate flow via the live PA API. Does **not** require
+a Power Clarity workspace — works for any flow the impersonated account can access.
+Reads the current state first and only issues the start/stop call if a change is
+actually needed.
+
+Parameters: `environmentName`, `flowName`, `state` (`"Started"` | `"Stopped"`) — all required.
+
+Response:
+```json
+{
+  "flowName": "6321ab25-7eb0-42df-b977-e97d34bcb272",
+  "environmentName": "Default-26e65220-...",
+  "requestedState": "Started",
+  "actualState": "Started"
+}
+```
+
+> **Use this tool** — not `update_live_flow` — to start or stop a flow.
+> `update_live_flow` only changes displayName/definition; the PA API ignores
+> state passed through that endpoint.
+
 ### `set_store_flow_state`
 
-Start or stop a flow. Pass `state: "Started"` or `state: "Stopped"`.
+Start or stop a flow via the live PA API **and** persist the updated state back
+to the Power Clarity cache. Same parameters as `set_live_flow_state` but requires
+a Power Clarity workspace.
+
+Response (different shape from `set_live_flow_state`):
+```json
+{
+  "flowKey": "<environmentId>.<flowId>",
+  "requestedState": "Stopped",
+  "currentState": "Stopped",
+  "flow": { /* full gFlows record, same shape as get_store_flow */ }
+}
+```
+
+> Prefer `set_live_flow_state` when you only need to toggle state — it's
+> simpler and has no subscription requirement.
+>
+> Use `set_store_flow_state` when you need the cache updated immediately
+> (without waiting for the next daily scan) AND want the full updated
+> governance record back in the same call — useful for workflows that
+> stop a flow and immediately tag or inspect it.
 
 ---
 
@@ -424,6 +485,8 @@ Non-obvious behaviors discovered through real API usage. These are things
 - `error` key is **always present** in response --- `null` means success.
   Do NOT check `if "error" in result`; check `result.get("error") is not None`.
 - On create, `created` = new flow GUID (string). On update, `created` = `false`.
+- **Cannot change flow state.** Only updates displayName, definition, and
+  connectionReferences. Use `set_live_flow_state` to start/stop a flow.
 
 ### `trigger_live_flow`
 - **Only works for HTTP Request triggers.** Returns error for Recurrence, connector,

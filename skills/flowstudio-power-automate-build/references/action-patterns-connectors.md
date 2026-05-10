@@ -132,6 +132,10 @@ Result reference: `@body('Get_SP_Item')?['FieldName']`
 }
 ```
 
+> `PatchItem` can validate required SharePoint columns even when you are not
+> changing those fields. Echo unchanged required fields from the trigger or a
+> prior Get Item action, for example `item/Title`, and use internal field names.
+
 ---
 
 ### SharePoint — File Upsert (Create or Overwrite in Document Library)
@@ -286,6 +290,10 @@ SharePoint REST API via the `HttpRequest` operation:
 > The `HttpRequest` operation reuses the existing SharePoint connection — no extra
 > authentication needed. Use this when the standard Update Item connector can't
 > reach the target list (different site collection, or you need raw REST control).
+> Keep the connector-specific parameter names exactly as shown:
+> `parameters/method`, `parameters/uri`, `parameters/headers`, and
+> `parameters/body`. The body is a JSON string, and `parameters/uri` is relative
+> to the SharePoint `dataset`.
 
 ---
 
@@ -337,6 +345,22 @@ the file; the flow downloads and filters it for before/after comparisons.
 >
 > **File path encoding:** In the `id` parameter, SharePoint URL-encodes paths
 > twice. Spaces become `%2b` (plus sign), slashes become `%252f`.
+
+---
+
+## Excel Online
+
+### Excel — Run Office Script
+
+Office Script actions require real workbook and script identifiers at save time.
+Do not deploy placeholder `scriptId` values; `update_live_flow` can fail during
+dynamic operation validation even before a test run exists.
+
+Use `describe_live_connector` or `get_live_dynamic_options` when available, or
+ask the user for the workbook and script if they are not discoverable. If a real
+`scriptId` still cannot be resolved, ask the user to add the Run script action
+once in the designer, then read the flow definition and preserve the resolved
+parameters.
 
 ---
 
@@ -476,6 +500,20 @@ For 1:1 ("Chat with Flow bot"), use `"location": "Chat with Flow bot"` and set
 > }
 > ```
 > Then gate: `@equals(body('Check_User_Active')?['accountEnabled'], true)`
+
+---
+
+## Copilot Studio
+
+### Copilot Studio — Invoke Agent
+
+When using the Copilot Studio connector, publish the agent before running the
+flow. Draft/test agents can exist in the studio canvas but still be unavailable
+or stale through the flow connector endpoint.
+
+If a connector action fails with an unavailable-agent or endpoint-style error,
+publish the agent, wait briefly for propagation, then resubmit the same flow run
+before changing the flow definition.
 
 ---
 

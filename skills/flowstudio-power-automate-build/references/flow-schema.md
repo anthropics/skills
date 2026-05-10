@@ -59,6 +59,15 @@ Beyond the required `type`, `runAfter`, and `inputs`, actions can include:
 | `runtimeConfiguration` | Pagination, concurrency, secure data, chunked transfer |
 | `operationOptions` | `"Sequential"` for Foreach, `"DisableAsyncPattern"` for HTTP |
 | `limit` | Timeout override (e.g. `{"timeout": "PT2H"}`) |
+| `metadata` | Designer metadata such as `operationMetadataId` |
+
+#### Designer Metadata
+
+For existing connector actions, preserve `metadata.operationMetadataId` when you
+edit the definition. For new connector actions or Skills/HTTP response actions,
+add a stable GUID and keep it stable across updates. Do not regenerate these IDs
+on every deploy; the designer and some run-only surfaces use them to keep action
+identity consistent.
 
 #### `runtimeConfiguration` Variants
 

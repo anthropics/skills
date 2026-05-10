@@ -149,6 +149,24 @@ iterations in parallel, causing write conflicts or undefined ordering.
 
 ---
 
+### Foreach Parent Failed After Handled Inner Failure
+
+**Symptom**: Inner actions have failure handlers, but the parent `Foreach` still
+shows `Failed`, and downstream actions such as `Response` are skipped.
+
+**Root cause**: A handled child failure can still mark the loop container as
+failed. Downstream `runAfter` that only accepts `Succeeded` will not run.
+
+**Diagnosis**: Inspect the parent foreach with `get_live_flow_run_error`, then
+inspect child action outputs for the iteration that failed.
+
+**Fix**: If partial success is acceptable, allow the downstream join/response to
+run after `Succeeded` and `Failed`, and include an explicit error summary in the
+payload. If the loop must be all-or-nothing, wrap risky inner work in a Scope and
+handle success/failure at the Scope boundary.
+
+---
+
 ## Update / Deploy Errors
 
 ### `update_live_flow` Returns No-Op
@@ -186,3 +204,20 @@ values override new_data for matching records.
 Before: @sort(union(outputs('Old_Array'), body('New_Array')), 'Date')
 After:  @sort(union(body('New_Array'), outputs('Old_Array')), 'Date')
 ```
+
+---
+
+### Null Cascade in Filter Array / Query
+
+**Symptom**: A lookup/filter step returns the wrong record or a later expression
+fails on null even though the filter action itself succeeded.
+
+**Root cause**: The lookup key is null or empty. A condition such as
+`equals(item()?['Email'], outputs('Lookup_Email'))` can accidentally match rows
+where both sides are null, or can pass an empty array downstream.
+
+**Diagnosis**: Inspect the action that creates the lookup key and the filter
+output length. Confirm the key is non-empty before trusting the filter result.
+
+**Fix**: Add a non-empty guard before the filter, normalize comparison values
+with `trim()`/`toLower()`, and branch explicitly when no match is found.
