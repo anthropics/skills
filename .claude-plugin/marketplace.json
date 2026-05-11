@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -49,6 +48,15 @@
       "strict": false,
       "skills": [
         "./skills/claude-api"
+      ]
+    },
+    {
+      "name": "security-audit",
+      "description": "Security audit skill for codebase vulnerability analysis \u2014 OWASP Top 10, dependency CVEs, secrets scanning, supply chain risks",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/security-audit"
       ]
     }
   ]
