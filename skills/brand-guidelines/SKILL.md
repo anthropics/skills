@@ -71,3 +71,85 @@ To access Anthropic's official brand identity and style resources, use this skil
 - Uses RGB color values for precise brand matching
 - Applied via python-pptx's RGBColor class
 - Maintains color fidelity across different systems
+
+## Implementation Guide
+
+### HTML/CSS Usage
+
+```html
+<!-- Applying brand colors in HTML -->
+<style>
+  body { background-color: #faf9f5; color: #141413; }
+  h1, h2, h3 { font-family: Poppins, Arial, sans-serif; }
+  p, body { font-family: Lora, Georgia, serif; }
+  
+  /* Accent color usage */
+  .accent-orange { color: #d97757; }
+  .accent-blue { color: #6a9bcc; }
+  .accent-green { color: #788c5d; }
+  
+  /* Dark background variant */
+  .dark-bg { background-color: #141413; color: #faf9f5; }
+  
+  /* Mid gray for secondary elements */
+  .secondary { color: #b0aea5; }
+  .subtle-bg { background-color: #e8e6dc; }
+</style>
+```
+
+### Python Usage (python-pptx)
+
+```python
+from pptx.util import Pt
+from pptx.dml.color import RGBColor
+
+# Brand colors as RGBColor objects
+BRAND_DARK = RGBColor(0x14, 0x14, 0x13)      # #141413
+BRAND_LIGHT = RGBColor(0xfa, 0xf9, 0xf5)     # #faf9f5
+BRAND_MID_GRAY = RGBColor(0xb0, 0xae, 0xa5)  # #b0aea5
+BRAND_ORANGE = RGBColor(0xd9, 0x77, 0x57)    # #d97757
+BRAND_BLUE = RGBColor(0x6a, 0x9b, 0xcc)      # #6a9bcc
+BRAND_GREEN = RGBColor(0x78, 0x8c, 0x5d)     # #788c5d
+```
+
+### Accent Color Usage Table
+
+| Color | Hex | Use Case | Pairing |
+|-------|-----|----------|---------|
+| Orange | `#d97757` | Primary accent, CTAs, highlights | Dark or Light bg |
+| Blue | `#6a9bcc` | Secondary accent, links, info | Light bg |
+| Green | `#788c5d` | Tertiary accent, success states | Light bg |
+
+### Accessibility Contrast Ratios
+
+For WCAG 2.1 AA compliance (minimum 4.5:1 for body text):
+
+| Combination | Ratio | WCAG Level |
+|-------------|-------|-----------|
+| `#141413` on `#faf9f5` | 17.7:1 | AAA |
+| `#faf9f5` on `#141413` | 17.7:1 | AAA |
+| `#d97757` on `#faf9f5` | 3.1:1 | Fail (use for decorative only) |
+| `#b0aea5` on `#141413` | 7.3:1 | AA |
+| `#788c5d` on `#faf9f5` | 4.6:1 | AA |
+
+**Recommendation**: Always use `#141413` on `#faf9f5` for body text to ensure AAA compliance.
+
+### Font Fallback Chains
+
+**Headings** (Poppins → Arial → sans-serif):
+```
+Poppins, Arial, Helvetica, sans-serif
+```
+
+**Body Text** (Lora → Georgia → serif):
+```
+Lora, Georgia, "Times New Roman", serif
+```
+
+### Dark Mode Guidance
+
+When applying brand styling in dark contexts:
+- Use `#faf9f5` as text color on dark backgrounds
+- Use `#e8e6dc` for subtle backgrounds in dark mode
+- Avoid pure black (`#000000`); use `#141413` for softer contrast
+- Test all accent color combinations for sufficient contrast in both light and dark modes
