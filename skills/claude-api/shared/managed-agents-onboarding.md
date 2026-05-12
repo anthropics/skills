@@ -96,7 +96,7 @@ Session creation blocks until all resources mount. Open the event stream before 
 
 ## 3. Emit the code
 
-Go straight from the last interview answer to the code — no preamble about the setup-vs-runtime split, no "the critical thing to internalize…", no lecture about `agents.create()` being one-time. The two-block structure below already shows that; don't narrate it. Generate **two clearly-separated blocks** per language detected (Python/TS/cURL — see SKILL.md → Language Detection):
+Generate **two clearly-separated blocks** per language detected (Python/TS/cURL — see SKILL.md → Language Detection):
 
 **Block 1 — Setup (run once, store the IDs):**
 1. `environments.create()` → persist `env_id`
