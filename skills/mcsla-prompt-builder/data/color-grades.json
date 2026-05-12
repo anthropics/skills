@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md",
+  "color_grades": [
+    {"mood": "Blockbuster", "description": "Teal shadows, orange highlights, high contrast"},
+    {"mood": "Cold thriller", "description": "Desaturated blue-grey, crushed blacks"},
+    {"mood": "Warm nostalgia", "description": "Golden amber, lifted shadows, soft grain"},
+    {"mood": "Cyberpunk", "description": "Neon magenta + cyan, deep shadows, HDR"},
+    {"mood": "Horror", "description": "Sickly yellow-green, low contrast, murky"},
+    {"mood": "Romance", "description": "Soft pink-gold, lifted shadows, dreamy"},
+    {"mood": "Documentary", "description": "Natural neutral, no grade"},
+    {"mood": "Epic fantasy", "description": "Deep jewel tones, volumetric light"},
+    {"mood": "Noir", "description": "High contrast black and white"},
+    {"mood": "Post-apocalyptic", "description": "Desaturated orange-brown, dust haze"}
+  ]
+}
