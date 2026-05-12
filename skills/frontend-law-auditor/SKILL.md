@@ -32,18 +32,18 @@ Always follow this sequence.
 2. **Initialize a metrics template**
 - Run:
 ```bash
-python scripts/law_audit.py --init-template /tmp/frontend-evidence.json
+python3 scripts/law_audit.py --init-template /tmp/frontend-evidence.json
 ```
 - Fill measured values in the generated JSON file.
 
 3. **Run audit**
 - Run:
 ```bash
-python scripts/law_audit.py --input /tmp/frontend-evidence.json --output /tmp/frontend-audit.md --json-out /tmp/frontend-audit.json
+python3 scripts/law_audit.py --input /tmp/frontend-evidence.json --output /tmp/frontend-audit.md --json-out /tmp/frontend-audit.json
 ```
 - For CI-style gating:
 ```bash
-python scripts/law_audit.py --input /tmp/frontend-evidence.json --strict --fail-threshold 85
+python3 scripts/law_audit.py --input /tmp/frontend-evidence.json --strict --fail-threshold 85
 ```
 
 4. **Interpret results using two layers**
