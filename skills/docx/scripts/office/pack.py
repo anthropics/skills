@@ -57,10 +57,11 @@ def pack(
             for xml_file in temp_content_dir.rglob(pattern):
                 _condense_xml(xml_file)
 
+        _OS_METADATA = {".DS_Store", "Thumbs.db"}
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zf:
             for f in temp_content_dir.rglob("*"):
-                if f.is_file():
+                if f.is_file() and f.name not in _OS_METADATA:
                     zf.write(f, f.relative_to(temp_content_dir))
 
     return None, f"Successfully packed {input_dir} to {output_file}"
