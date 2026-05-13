@@ -71,7 +71,7 @@ Add to `.mcp.json`:
 
 ### Option 1: Custom GPT (Recommended)
 
-Create a Custom GPT and add Xquik as an Action using the OpenAPI schema at `https://docs.xquik.com/openapi.json`. Set the API key under Authentication > API Key > Header `x-api-key`.
+Create a Custom GPT and add Xquik as an Action using the OpenAPI schema at `https://xquik.com/openapi.json`. Set the API key under Authentication > API Key > Header `x-api-key`.
 
 ### Option 2: Agents SDK
 
