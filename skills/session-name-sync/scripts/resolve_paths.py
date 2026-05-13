@@ -1,10 +1,29 @@
 """Resolve Claude Code project dir and cc-connect session file dynamically."""
-import os, hashlib, re
+import os, hashlib, re, glob, json
 
 def resolve_paths():
-    cwd = os.getcwd()
-    slug = cwd.replace('/', '-')
-    cc_project_dir = os.path.expanduser(f'~/.claude/projects/{slug}/')
+    # Find cc_project_dir by locating the current session's JSONL file
+    # This works regardless of cwd (e.g. skill working inside .claude/skills/)
+    session_id = os.environ.get('CLAUDE_CODE_SESSION_ID', '')
+    cc_project_dir = None
+
+    if session_id:
+        # Scan ~/.claude/projects/ for the directory containing our session JSONL
+        projects_base = os.path.expanduser('~/.claude/projects/')
+        if os.path.isdir(projects_base):
+            for entry in os.listdir(projects_base):
+                candidate = os.path.join(projects_base, entry)
+                if os.path.isdir(candidate):
+                    jsonl_path = os.path.join(candidate, f'{session_id}.jsonl')
+                    if os.path.isfile(jsonl_path):
+                        cc_project_dir = candidate
+                        break
+
+    # Fallback: use cwd-based slug (original behavior)
+    if not cc_project_dir:
+        cwd = os.getcwd()
+        slug = cwd.replace('/', '-')
+        cc_project_dir = os.path.expanduser(f'~/.claude/projects/{slug}/')
 
     config_path = os.path.expanduser('~/.cc-connect/config.toml')
     cc_sessions_dir = os.path.expanduser('~/.cc-connect/sessions/')
