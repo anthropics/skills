@@ -21,6 +21,18 @@ trigger: 给会话命名, session name, sync 会话名, 会话名同步, /sessio
 
 Bidirectionally sync session names between Claude Code (CLI + VSCode) and cc-connect (飞书).
 
+## Environment Check
+
+**Before executing any mode, run this first:**
+
+1. Run: `python3 scripts/check_env.py` — check if cc-connect and VSCode Claude Code extension are installed
+2. If any dependency is missing, run: `python3 scripts/check_env.py --install` — auto-install latest versions
+3. Proceed only after all dependencies are confirmed OK
+
+Dependencies:
+- **cc-connect**: npm global package (`npm install -g cc-connect`)
+- **VSCode Claude Code extension**: `anthropic.claude-code` (`code --install-extension anthropic.claude-code`)
+
 Three naming systems → two storage locations:
 - **Claude Code CLI `/rename`** and **VSCode** → both read/write JSONL `custom-title` entry
 - **cc-connect `/name`** (飞书) → writes own JSON file (`sessions[sN].name` + `session_names[UUID]`)
@@ -34,6 +46,7 @@ All operational code is in `scripts/` directory. Each script imports `resolve_pa
 | Script | Purpose | Usage |
 |---|---|---|
 | `resolve_paths.py` | Compute project dir + cc-connect file path | `python3 scripts/resolve_paths.py` |
+| `check_env.py` | Check & install dependencies (cc-connect, VSCode Claude Code extension) | `python3 scripts/check_env.py [--install]` |
 | `scan_sessions.py` | Register mode: scan + compare + classify changes | `python3 scripts/scan_sessions.py` |
 | `register_apply.py` | Register mode: apply all changes atomically | `python3 scripts/register_apply.py [--resolve s2=name]` |
 | `write_custom_title.py` | Write custom-title to JSONL | `python3 scripts/write_custom_title.py <name> <uuid>` |
