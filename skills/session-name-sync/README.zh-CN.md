@@ -18,11 +18,9 @@
 
 保持这两个存储位置一致 = 三个命名系统统一。
 
-**VSCode ↔ cc-connect 对应关系**：VSCode 中带名称的会话对应 cc-connect 飞书聊天中的选项卡：
+**VSCode ↔ cc-connect 对应关系**（示例）：VSCode 中带名称的会话对应 cc-connect 飞书聊天中的选项卡，通过本技能保持同步：
 
-![VSCode 会话命名](refs/vscode-session-names.png)
-
-![cc-connect 飞书选项卡](refs/cc-connect-tabs.png)
+![VSCode ↔ cc-connect 对应关系](refs/vscode-cc-connect-correspondence.png)
 
 ---
 

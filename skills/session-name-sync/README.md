@@ -18,11 +18,9 @@ Three naming systems share two storage locations:
 
 Keeping these two storage locations consistent = all three naming systems are unified.
 
-**VSCode ↔ cc-connect correspondence**: Named sessions in VSCode correspond to tabs in cc-connect's Feishu chat:
+**VSCode ↔ cc-connect correspondence** (示例): Named sessions in VSCode correspond to tabs in cc-connect's Feishu chat, kept in sync by this skill:
 
-![VSCode session names](refs/vscode-session-names.png)
-
-![cc-connect Feishu tabs](refs/cc-connect-tabs.png)
+![VSCode ↔ cc-connect correspondence](refs/vscode-cc-connect-correspondence.png)
 
 ---
 
