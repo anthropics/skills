@@ -27,6 +27,7 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
+- [specdd](https://github.com/unboundinnov/specdd) — Spec-Driven Development as a single Agent Skill
 
 # Try in Claude Code, Claude.ai, and the API
 
