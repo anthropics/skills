@@ -8,7 +8,7 @@ Connect AI agents and IDEs to Xquik via the Model Context Protocol. The MCP serv
 | Endpoint | `https://xquik.com/mcp` |
 | Auth header | `x-api-key` |
 
-> **Security:** Use a scoped, revocable API key - not your primary account key. Where your platform supports environment variable interpolation (e.g., `${XQUIK_API_KEY}`), prefer that over hardcoding. Rotate keys periodically from the [dashboard](https://dashboard.xquik.com/account). Never commit API keys to version control.
+> **Security:** Use a scoped, revocable API key - not your primary account key. Where your platform supports environment variable interpolation (e.g., `${XQUIK_API_KEY}`), prefer that over hardcoding. Rotate keys periodically from the [dashboard](https://dashboard.xquik.com/en/account). Never commit API keys to version control.
 
 ## Claude.ai (Web)
 

@@ -624,7 +624,7 @@ Download images, videos, and GIFs from tweets. Single or bulk (up to 50). Return
 ```json
 {
   "tweetId": "1893456789012345678",
-  "galleryUrl": "https://xquik.com/gallery/abc123",
+  "galleryUrl": "https://xquik.com/g/{share-token}",
   "cacheHit": false
 }
 ```
@@ -632,13 +632,13 @@ Download images, videos, and GIFs from tweets. Single or bulk (up to 50). Return
 **Response (bulk):**
 ```json
 {
-  "galleryUrl": "https://xquik.com/gallery/def456",
+  "galleryUrl": "https://xquik.com/g/{share-token}",
   "totalTweets": 3,
   "totalMedia": 7
 }
 ```
 
-First download is metered (counts toward monthly quota). Subsequent requests for the same tweet return cached URLs at no cost (`cacheHit: true`). All downloads are saved to the gallery at `https://xquik.com/gallery`.
+First download is metered (counts toward monthly quota). Subsequent requests for the same tweet return cached URLs at no cost (`cacheHit: true`). All downloads are saved to the gallery at `https://xquik.com/g/{share-token}`.
 
 Returns `400 no_media` if the tweet has no downloadable media. Returns `400 too_many_tweets` if bulk array exceeds 50 items.
 
