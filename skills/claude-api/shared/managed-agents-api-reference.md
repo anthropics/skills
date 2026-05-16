@@ -23,15 +23,16 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | Environments | `environments.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Environments.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Sessions | `sessions.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Sessions.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Session Events | `sessions.events.list` / `send` / `stream` | `Sessions.Events.List` / `Send` / `StreamEvents` |
+| Session Threads | `sessions.threads.list` / `retrieve` / `archive`; `sessions.threads.events.list` / `stream` | `Sessions.Threads.List` / `Get` / `Archive`; `Sessions.Threads.Events.List` / `StreamEvents` |
 | Session Resources | `sessions.resources.add` / `retrieve` / `update` / `list` / `delete` | `Sessions.Resources.Add` / `Get` / `Update` / `List` / `Delete` |
 | Vaults | `vaults.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
-| Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
+| Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` / `mcp_oauth_validate` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` / `McpOauthValidate` |
 | Memory Stores | `memory_stores.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `MemoryStores.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Memories | `memory_stores.memories.create` / `retrieve` / `update` / `list` / `delete` | `MemoryStores.Memories.New` / `Get` / `Update` / `List` / `Delete` |
 | Memory Versions | `memory_stores.memory_versions.list` / `retrieve` / `redact` | `MemoryStores.MemoryVersions.List` / `Get` / `Redact` |
 
 **Naming quirks to watch for:**
-- Agents have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, Credentials, and Memory Stores have both `delete` and `archive`; Session Resources, Files, Skills, and Memories are `delete`-only; Memory Versions have neither — only `redact`.
+- Agents and Session Threads have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, Credentials, and Memory Stores have both `delete` and `archive`; Session Resources, Files, Skills, and Memories are `delete`-only; Memory Versions have neither — only `redact`.
 - Session resources use `add` (not `create`).
 - Go's event stream is `StreamEvents` (not `Stream`).
 
@@ -72,6 +73,18 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `GET` | `/v1/sessions/{session_id}/events` | ListEvents | List events (polling, paginated) |
 | `POST` | `/v1/sessions/{session_id}/events` | SendEvents | Send events (user message, tool result) |
 | `GET` | `/v1/sessions/{session_id}/events/stream` | StreamEvents | Stream events via SSE |
+
+## Session Threads
+
+Per-subagent event streams in multiagent sessions. See `shared/managed-agents-multiagent.md`.
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `GET` | `/v1/sessions/{session_id}/threads` | ListThreads | List threads (paginated) |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}` | GetThread | Retrieve one thread (carries `agent` snapshot, `status`, `parent_thread_id`, `stats`, `usage`) |
+| `POST` | `/v1/sessions/{session_id}/threads/{thread_id}/archive` | ArchiveThread | Archive a thread |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}/events` | ListThreadEvents | List past events for one thread (paginated) |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}/stream` | StreamThreadEvents | Stream one thread via SSE (SDK: `threads.events.stream`) |
 
 ## Session Resources
 
@@ -119,6 +132,7 @@ Credentials are individual secrets stored inside a vault.
 | `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}`               | UpdateCredential   | Update credential            |
 | `DELETE` | `/v1/vaults/{vault_id}/credentials/{credential_id}`               | DeleteCredential   | Delete credential            |
 | `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}/archive`       | ArchiveCredential  | Archive credential           |
+| `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}/mcp_oauth_validate` | McpOauthValidate | Validate an MCP OAuth credential |
 
 ## Memory Stores
 
@@ -206,13 +220,21 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
       "url": "https://api.githubcopilot.com/mcp/"
     }
   ],
+  "multiagent": {
+    "type": "coordinator",
+    "agents": [
+      "agent_abc123",
+      { "type": "agent", "id": "agent_def456", "version": 4 },
+      { "type": "self" }
+    ]
+  },
   "metadata": {
     "key": "value (max 16 pairs, keys ≤64 chars, values ≤512 chars)"
   }
 }
 ```
 
-> Limits: `tools` max 50, `skills` max 64, `mcp_servers` max 20 (unique names).
+> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1–20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}`) — see `shared/managed-agents-multiagent.md`.
 
 ### CreateSession Request Body
 
@@ -275,6 +297,19 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   ]
 }
 ```
+
+### Define Outcome Event
+
+```json
+{
+  "type": "user.define_outcome",
+  "description": "Build a DCF model for Costco in .xlsx",
+  "rubric": { "type": "file", "file_id": "file_01..." },
+  "max_iterations": 5
+}
+```
+
+> `rubric` is required: `{type: "text", content}` or `{type: "file", file_id}`. `max_iterations` default 3, max 20. Echoed back with `outcome_id` + `processed_at`. See `shared/managed-agents-outcomes.md`.
 
 ### Tool Result Event
 

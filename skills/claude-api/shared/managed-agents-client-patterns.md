@@ -168,7 +168,7 @@ The `Promise.all([stream, send])` shape works too, but stream-first is simpler a
 **The mounted resource has a different `file_id` than the file you uploaded.** Session creation makes a session-scoped copy.
 
 ```ts
-const uploaded = await client.beta.files.upload({ file, purpose: 'agent_resource' })
+const uploaded = await client.beta.files.upload({ file })
 // uploaded.id         → the original file
 const session = await client.beta.sessions.create({
   /* ... */
