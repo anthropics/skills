@@ -26,7 +26,7 @@ client = Anthropic::Client.new(api_key: "your-api-key")
 
 ```ruby
 message = client.messages.create(
-  model: :"claude-opus-4-6",
+  model: :"claude-opus-4-7",
   max_tokens: 16000,
   messages: [
     { role: "user", content: "What is the capital of France?" }
@@ -46,7 +46,7 @@ end
 
 ```ruby
 stream = client.messages.stream(
-  model: :"claude-opus-4-6",
+  model: :"claude-opus-4-7",
   max_tokens: 64000,
   messages: [{ role: "user", content: "Write a haiku" }]
 )
@@ -78,7 +78,7 @@ class GetWeather < Anthropic::BaseTool
 end
 
 client.beta.messages.tool_runner(
-  model: :"claude-opus-4-6",
+  model: :"claude-opus-4-7",
   max_tokens: 16000,
   tools: [GetWeather.new],
   messages: [{ role: "user", content: "What's the weather in San Francisco?" }]
@@ -99,7 +99,7 @@ See the [shared tool use concepts](../shared/tool-use-concepts.md) for the tool 
 
 ```ruby
 message = client.messages.create(
-  model: :"claude-opus-4-6",
+  model: :"claude-opus-4-7",
   max_tokens: 16000,
   system_: [
     { type: "text", text: long_system_prompt, cache_control: { type: "ephemeral" } }

@@ -107,9 +107,17 @@ Fix by moving the dynamic piece after the last breakpoint, making it determinist
 - Max **4** `cache_control` breakpoints per request.
 - Goes on any content block: system text blocks, tool definitions, message content blocks (`text`, `image`, `tool_use`, `tool_result`, `document`).
 - Top-level `cache_control` on `messages.create()` auto-places on the last cacheable block — simplest option when you don't need fine-grained placement.
-- Minimum cacheable prefix is model-dependent (typically 1024–2048 tokens). Shorter prefixes silently won't cache even with a marker.
+- Minimum cacheable prefix is model-dependent. Shorter prefixes silently won't cache even with a marker — no error, just `cache_creation_input_tokens: 0`:
 
-**Economics:** Cache writes cost ~1.25× base input price; reads cost ~0.1×. A prefix must be used in at least two requests within TTL to break even (one writes the cache, subsequent ones read it). For bursty traffic, the 1-hour TTL keeps entries alive across gaps.
+| Model | Minimum |
+|---|---:|
+| Opus 4.7, Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
+| Sonnet 4.6, Haiku 3.5, Haiku 3 | 2048 tokens |
+| Sonnet 4.5, Sonnet 4.1, Sonnet 4, Sonnet 3.7 | 1024 tokens |
+
+A 3K-token prompt caches on Sonnet 4.5 but silently won't on Opus 4.7.
+
+**Economics:** Cache reads cost ~0.1× base input price. Cache writes cost **1.25× for 5-minute TTL, 2× for 1-hour TTL**. Break-even depends on TTL: with 5-minute TTL, two requests break even (1.25× + 0.1× = 1.35× vs 2× uncached); with 1-hour TTL, you need at least three requests (2× + 0.2× = 2.2× vs 3× uncached). The 1-hour TTL keeps entries alive across gaps in bursty traffic, but the doubled write cost means it needs more reads to pay off.
 
 ---
 
@@ -125,4 +133,39 @@ The response `usage` object reports cache activity:
 
 If `cache_read_input_tokens` is zero across repeated requests with identical prefixes, a silent invalidator is at work — diff the rendered prompt bytes between two requests to find it.
 
+**`input_tokens` is the uncached remainder only.** Total prompt size = `input_tokens + cache_creation_input_tokens + cache_read_input_tokens`. If your agent ran for hours but `input_tokens` shows 4K, the rest was served from cache — check the sum, not the single field.
+
 Language-specific access: `response.usage.cache_read_input_tokens` (Python/TS/Ruby), `$message->usage->cacheReadInputTokens` (PHP), `resp.Usage.CacheReadInputTokens` (Go/C#), `.usage().cacheReadInputTokens()` (Java).
+
+---
+
+## Invalidation hierarchy
+
+Not every parameter change invalidates everything. The API has three cache tiers, and changes only invalidate their own tier and below:
+
+| Change | Tools cache | System cache | Messages cache |
+|---|:---:|:---:|:---:|
+| Tool definitions (add/remove/reorder) | ❌ | ❌ | ❌ |
+| Model switch | ❌ | ❌ | ❌ |
+| `speed`, web-search, citations toggle | ✅ | ❌ | ❌ |
+| System prompt content | ✅ | ❌ | ❌ |
+| `tool_choice`, images, `thinking` enable/disable | ✅ | ✅ | ❌ |
+| Message content | ✅ | ✅ | ❌ |
+
+Implication: you can change `tool_choice` per-request or toggle `thinking` without losing the tools+system cache. Don't over-worry about these — only tool-definition and model changes force a full rebuild.
+
+---
+
+## 20-block lookback window
+
+Each breakpoint walks backward **at most 20 content blocks** to find a prior cache entry. If a single turn adds more than 20 blocks (common in agentic loops with many tool_use/tool_result pairs), the next request's breakpoint won't find the previous cache and silently misses.
+
+Fix: place an intermediate breakpoint every ~15 blocks in long turns, or put the marker on a block that's within 20 of the previous turn's last cached block.
+
+---
+
+## Concurrent-request timing
+
+A cache entry becomes readable only after the first response **begins streaming**. N parallel requests with identical prefixes all pay full price — none can read what the others are still writing.
+
+For fan-out patterns: send 1 request, await the first streamed token (not the full response), then fire the remaining N−1. They'll read the cache the first one just wrote.
