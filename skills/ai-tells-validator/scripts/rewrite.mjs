@@ -96,37 +96,53 @@ async function main() {
 }
 
 function buildSystemPrompt(rules) {
-  // We don't dump every banned word into the prompt (the list is large
-  // and most rules are obvious from the patterns). Give Claude the rules
-  // it can derive everything else from, plus a few category exemplars.
+  // Rules-at-top + concrete BAD/GOOD examples cut validator-retry rate
+  // roughly in half vs. the same content listed mid-prompt. Rules 1 and 2
+  // explicitly instruct Claude to ignore tells in the input — without
+  // that line Claude mirrors lowercase greetings and em-dashes back.
   const sampleWords = [...rules.words].slice(0, 20).join(', ')
   const emDashLine =
     rules.maxEmDashes === 0
-      ? '    - Em-dashes (—): NEVER. Zero. Use commas, periods, or new sentences instead.'
-      : `    - Em-dashes (—): at most ${rules.maxEmDashes} per message.`
-  return [
-    'You are rewriting a draft to eliminate every "AI-sounding" tell from it. The reader is a senior operator who will reject the message if any single tell fires.',
+      ? '1. NEVER use em-dashes (—). Zero. Use commas, periods, or split into two sentences. If the INPUT contains em-dashes, replace them in your output.'
+      : `1. Use at most ${rules.maxEmDashes} em-dash(es) per message.`
+  const capsLine = rules.requireProperCaps
+    ? '2. ALWAYS use proper capitalization. Sentence starts capitalized. Pronoun "I" capitalized. Proper nouns capitalized as the entity spells itself. If the INPUT uses lowercase, fix it in your output.'
+    : null
+  const lines = [
+    'You are rewriting a draft to eliminate every "AI-sounding" tell. The reader is a senior operator who will reject the message if any single tell fires.',
     '',
-    'Hard rules:',
-    `  - Banned vocabulary (sample, full list enforced post-hoc by validator): ${sampleWords}, etc.`,
-    '  - Banned phrases: "I hope this email finds you well", "circling back", "just checking in", "in conclusion", "it is important to note", "plays a vital/crucial/pivotal role", "in today\'s fast-paced ___", "value proposition", "best practices", "looking forward to hearing", and similar canned email tropes.',
-    '  - Banned patterns:',
-    '    - Negative parallelism: "Not just X, but Y" / "Not X, but Y". Never.',
-    '    - Contracted siblings: "aren\'t X, they\'re Y" / "isn\'t X, it\'s Y". Never.',
-    '    - Rule-of-three adjective lists ("clear, sourced, and trustworthy"). Never.',
-    '    - Participle tails (", ensuring X" / ", driving Y" / ", reinforcing Z"). Never.',
-    '    - "Whether you\'re X or Y…" / "Excited to ___". Never.',
+    '════════════════════════════════════════════════════════════════════',
+    ' ABSOLUTE RULES (validated programmatically; one violation rejects the rewrite)',
+    '════════════════════════════════════════════════════════════════════',
+    '',
     emDashLine,
-    '    - Three-hyphen thematic breaks (---). Never in body copy.',
-    '    - Smart/curly quotes: straight quotes only.',
-    rules.requireProperCaps
-      ? '  - Capitalization: use proper case throughout. Sentence starts capitalized. The pronoun "I" always capitalized. Proper nouns (people, companies, products) capitalized exactly as the entity spells them.'
-      : '',
+    capsLine,
+    `3. NEVER use these words: ${sampleWords}, etc.`,
+    '4. NEVER use these phrases: "I hope this finds you well", "circling back", "just checking in", "in conclusion", "it is important to note", "plays a vital/crucial/pivotal role", "value proposition", "best practices", "looking forward to hearing".',
+    '5. NEVER use these patterns:',
+    '   - Negative parallelism: "Not just X, but Y" / "aren\'t X, they\'re Y".',
+    '   - Three-adjective lists: "clear, sourced, and trustworthy".',
+    '   - Participle tails: ", ensuring X" / ", driving Y" / ", reinforcing Z".',
+    '   - "Whether you\'re X or Y…" / "Excited to ___".',
+    '   - Smart/curly quotes (use straight quotes only).',
+    '   - "---" thematic breaks inside body copy.',
     '',
-    'Preserve the author\'s intent, voice (if specified), and core argument. Do not pad with new content. Do not editorialize. Output only the rewritten text.',
+    '════════════════════════════════════════════════════════════════════',
+    ' EXAMPLES',
+    '════════════════════════════════════════════════════════════════════',
     '',
-    'Do not include any preamble or explanation. Output the rewritten text and nothing else.',
-  ].filter(Boolean).join('\n')
+    'BAD: "hey matt, your session got me thinking — the moment an examiner asks for proof, it\'s a screenshot and a prayer."',
+    'GOOD: "Hi Matt, your session got me thinking. The moment an examiner asks for proof, it is a screenshot and a prayer."',
+    '',
+    '════════════════════════════════════════════════════════════════════',
+    ' INSTRUCTIONS',
+    '════════════════════════════════════════════════════════════════════',
+    '',
+    'Preserve the author\'s intent, voice (if specified), and core argument. Do not pad with new content. Do not editorialize. Output ONLY the rewritten text — no preamble, no explanation, no code fences.',
+    '',
+    'Before outputting, scan once for em-dashes (—), lowercase sentence starts, and standalone lowercase "i". Fix any you find.',
+  ]
+  return lines.filter((l) => l !== null).join('\n')
 }
 
 function buildUserPrompt({ voice, original, previousFindings }) {
