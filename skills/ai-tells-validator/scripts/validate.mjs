@@ -49,6 +49,7 @@ async function main() {
     wikiPhrases,
     allow: args.allow,
     maxEmDashes: args.maxEmDashes,
+    requireProperCaps: args.requireProperCaps,
   })
   const tells = findAiTells(input, rules)
 
@@ -85,7 +86,8 @@ function parseArgs(argv) {
     source: undefined,
     file: undefined,
     allow: [],
-    maxEmDashes: 1,
+    maxEmDashes: 0,
+    requireProperCaps: true,
     help: false,
   }
   for (let i = 0; i < argv.length; i++) {
@@ -97,6 +99,7 @@ function parseArgs(argv) {
       case '--file': out.file = argv[++i]; break
       case '--allow': out.allow = (argv[++i] ?? '').split(',').map((s) => s.trim()).filter(Boolean); break
       case '--max-em-dashes': out.maxEmDashes = Number(argv[++i]); break
+      case '--allow-lowercase': out.requireProperCaps = false; break
       case '-h':
       case '--help': out.help = true; break
       default:
@@ -121,7 +124,8 @@ Flags:
   --source <url>          Override source URL.
   --file <path>           Read input from a file instead of stdin.
   --allow <tag,tag,...>   Suppress specific tell tags.
-  --max-em-dashes <n>     Cap em-dashes per message (default 1).
+  --max-em-dashes <n>     Cap em-dashes per message (default 0 — zero allowed).
+  --allow-lowercase       Disable proper-capitalization check (default: required).
   -h, --help              Show this message.
 
 Exit codes:

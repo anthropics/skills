@@ -139,12 +139,26 @@ const THEMATIC_BREAK_RE = /---+/
 /**
  * Build a runtime rule set: hardcoded + Wikipedia-derived. Apply --allow
  * suppressions, then return a normalized object.
+ *
+ * Defaults:
+ *   - maxEmDashes = 0 (any em-dash fails). The em-dash has become the
+ *     single strongest AI tell in 2026; humans rarely reach for it in
+ *     short-form prose. Raise the cap explicitly if your domain wants it.
+ *   - requireProperCaps = true. Sentence starts and the pronoun "I" must
+ *     be capitalized. The skill is built for sendable copy where lowercase
+ *     openers read as "AI imitating casual" rather than authentic casual.
  */
-export function buildRules({ wikiWords = [], wikiPhrases = [], allow = [], maxEmDashes = 1 } = {}) {
+export function buildRules({
+  wikiWords = [],
+  wikiPhrases = [],
+  allow = [],
+  maxEmDashes = 0,
+  requireProperCaps = true,
+} = {}) {
   const allowSet = new Set(allow.map((a) => a.toLowerCase()))
   const words = new Set([...HARDCODED_WORDS, ...wikiWords].map((w) => w.toLowerCase()))
   const phrases = new Set([...HARDCODED_PHRASES, ...wikiPhrases].map((p) => p.toLowerCase()))
-  return { words, phrases, allowSet, maxEmDashes }
+  return { words, phrases, allowSet, maxEmDashes, requireProperCaps }
 }
 
 /**
@@ -179,12 +193,47 @@ export function findAiTells(text, rules) {
   pushPatternFinding(text, findings, rules, EXCITED_TO_RE, 'pattern:excited_to', 'pattern')
 
   const emDashes = text.match(EM_DASH_RE) ?? []
-  if (emDashes.length > rules.maxEmDashes && !rules.allowSet.has('punctuation:em_dash_overuse')) {
+  if (emDashes.length > rules.maxEmDashes && !rules.allowSet.has('punctuation:em_dash')) {
+    const firstIdx = text.indexOf('—')
     findings.push({
-      tag: 'punctuation:em_dash_overuse',
-      quote: `${emDashes.length} em-dashes (cap ${rules.maxEmDashes})`,
+      tag: rules.maxEmDashes === 0 ? 'punctuation:em_dash' : 'punctuation:em_dash_overuse',
+      quote:
+        rules.maxEmDashes === 0
+          ? clip(text, firstIdx, 1)
+          : `${emDashes.length} em-dashes (cap ${rules.maxEmDashes})`,
       category: 'punctuation',
     })
+  }
+  // Proper-caps checks. Optional — controlled by `rules.requireProperCaps`.
+  // We split into two tags so callers can suppress one without the other.
+  if (rules.requireProperCaps) {
+    // Sentence-start lowercase: a sentence-ending punctuation + whitespace
+    // followed by a lowercase letter. Also catches the very first character.
+    const sentenceStartRe = /(?:^|[.!?]\s+|\n\s*)([a-z])/
+    const sm = sentenceStartRe.exec(text)
+    if (sm && !rules.allowSet.has('caps:sentence_start_lowercase')) {
+      // The captured letter is in m[1]; m.index points at the punctuation
+      // (or 0 for line-start). Find the actual letter position for clip.
+      const letterIdx = sm.index + sm[0].length - 1
+      findings.push({
+        tag: 'caps:sentence_start_lowercase',
+        quote: clip(text, letterIdx, 1),
+        category: 'structure',
+      })
+    }
+    // Lowercase "i" as a standalone pronoun. We exclude single-letter
+    // contraction roots ("i've", "i'm") because they'd already be flagged
+    // by the sentence-start check if at a sentence start.
+    const lowerIRe = /(?:^|\s)i(?=[\s,.!?;:'’])/
+    const li = lowerIRe.exec(text)
+    if (li && !rules.allowSet.has('caps:pronoun_i_lowercase')) {
+      const letterIdx = li.index + li[0].length - 1
+      findings.push({
+        tag: 'caps:pronoun_i_lowercase',
+        quote: clip(text, letterIdx, 1),
+        category: 'structure',
+      })
+    }
   }
   if (SMART_QUOTE_RE.test(text) && !rules.allowSet.has('punctuation:smart_quotes')) {
     findings.push({

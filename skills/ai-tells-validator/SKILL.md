@@ -60,7 +60,8 @@ Calls `claude -p` with the freshest banned list in the system prompt and retries
 - `--fresh` — force refetch of the Wikipedia source (default: refetch if cache > 1h old).
 - `--cache-ok` — use the cached copy unconditionally (skip network).
 - `--source <url>` — override the source page (default `https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing`).
-- `--max-em-dashes <n>` — relax the em-dash cap (default: 1).
+- `--max-em-dashes <n>` — relax the em-dash cap (default: 0, no em-dashes allowed).
+- `--allow-lowercase` — disable the proper-capitalization check (default: required).
 - `--allow <tag,tag>` — suppress specific tell tags (e.g. `--allow banned_word:landscape` if your domain is geography).
 
 ## What it catches
@@ -74,8 +75,9 @@ Pulled live from the Wikipedia article + hardcoded augmentations:
   - Rule-of-three adjective lists (`clear, sourced, and trustworthy`).
   - Trailing participle clauses (`, ensuring X`, `, driving Y`).
   - `Whether you're X or Y…`, `Excited to ___`.
-- **Punctuation**: em-dash overuse (≥2 per message), smart/curly quotes.
+- **Punctuation**: em-dash use (zero allowed by default — the strongest single tell in 2026), smart/curly quotes.
 - **Structure**: `---` thematic breaks inside body copy.
+- **Capitalization** (when `--allow-lowercase` not set): sentence starts capitalized, pronoun `I` capitalized.
 
 ## What it does NOT catch
 

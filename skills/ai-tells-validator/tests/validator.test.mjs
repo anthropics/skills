@@ -3,11 +3,13 @@ import { strict as assert } from 'node:assert'
 import { buildRules, findAiTells, wordCount } from '../lib/validator.mjs'
 import { parseSignsArticle } from '../lib/wikiParser.mjs'
 
-const rules = buildRules({ wikiWords: [], wikiPhrases: [], allow: [], maxEmDashes: 1 })
+// Default rules: maxEmDashes=0, requireProperCaps=true. Tests that need
+// the old laxer behavior pass overrides explicitly.
+const rules = buildRules({ wikiWords: [], wikiPhrases: [] })
 
 test('clean human-sounding text passes', () => {
   const f = findAiTells(
-    'hey adam, your workshop on bpo strategy got me thinking. when teams pull headcount out of fraud review, the audit trail breaks first. worth a quick call?',
+    'Hey Adam, your workshop on BPO strategy got me thinking. When teams pull headcount out of fraud review, the audit trail breaks first. Worth a quick call?',
     rules,
   )
   assert.equal(f.length, 0)
@@ -29,15 +31,17 @@ test('negative parallelism: Not X but Y', () => {
 })
 
 test('contracted negative parallelism: aren\'t X — they\'re Y', () => {
+  // Use a comma separator to avoid double-triggering the em-dash rule
+  // alongside the parallelism rule — we only want the parallelism finding.
   const tags = findAiTells(
-    "the teams closing this gap aren't hiring more reviewers — they're making AI inspectable.",
+    "The teams closing this gap aren't hiring more reviewers, they're making AI inspectable.",
     rules,
   ).map((x) => x.tag)
   assert.ok(tags.includes('pattern:negative_parallelism'))
 })
 
 test('rule of three: a, b, and c', () => {
-  const tags = findAiTells('clear, sourced, and trustworthy outputs', rules).map((x) => x.tag)
+  const tags = findAiTells('Clear, sourced, and trustworthy outputs', rules).map((x) => x.tag)
   assert.ok(tags.includes('pattern:rule_of_three'))
 })
 
@@ -46,18 +50,48 @@ test('participle tail: , ensuring X', () => {
   assert.ok(tags.includes('pattern:participle_tail'))
 })
 
-test('em-dash overuse (≥2)', () => {
-  const tags = findAiTells('alpha — beta — gamma', rules).map((x) => x.tag)
-  assert.ok(tags.includes('punctuation:em_dash_overuse'))
+test('any em-dash fails at default (maxEmDashes=0)', () => {
+  const tags = findAiTells("It's Artemii — quick question for you.", rules).map((x) => x.tag)
+  assert.ok(tags.includes('punctuation:em_dash'))
 })
 
-test('one em-dash is allowed at default cap', () => {
-  const tags = findAiTells("hey, it's Artemii — quick question for you.", rules).map((x) => x.tag)
+test('one em-dash is allowed when maxEmDashes=1', () => {
+  const lax = buildRules({ maxEmDashes: 1 })
+  const tags = findAiTells("It's Artemii — quick question for you.", lax).map((x) => x.tag)
+  assert.ok(!tags.includes('punctuation:em_dash'))
   assert.ok(!tags.includes('punctuation:em_dash_overuse'))
 })
 
+test('two em-dashes fire em_dash_overuse at maxEmDashes=1', () => {
+  const lax = buildRules({ maxEmDashes: 1 })
+  const tags = findAiTells('Alpha — beta — gamma', lax).map((x) => x.tag)
+  assert.ok(tags.includes('punctuation:em_dash_overuse'))
+})
+
+test('sentence-start lowercase fires when requireProperCaps=true', () => {
+  const tags = findAiTells('Hey Matt. your session got me thinking.', rules).map((x) => x.tag)
+  assert.ok(tags.includes('caps:sentence_start_lowercase'))
+})
+
+test('first-character lowercase fires', () => {
+  const tags = findAiTells('hey Matt, quick question.', rules).map((x) => x.tag)
+  assert.ok(tags.includes('caps:sentence_start_lowercase'))
+})
+
+test('lowercase pronoun "i" fires', () => {
+  const tags = findAiTells('Hey Matt, i wanted to ask one question.', rules).map((x) => x.tag)
+  assert.ok(tags.includes('caps:pronoun_i_lowercase'))
+})
+
+test('requireProperCaps=false skips caps checks', () => {
+  const lax = buildRules({ requireProperCaps: false })
+  const tags = findAiTells('hey matt, i wanted to ask one question.', lax).map((x) => x.tag)
+  assert.ok(!tags.includes('caps:sentence_start_lowercase'))
+  assert.ok(!tags.includes('caps:pronoun_i_lowercase'))
+})
+
 test('smart quotes flag', () => {
-  const tags = findAiTells('the “review queue” problem', rules).map((x) => x.tag)
+  const tags = findAiTells('The “review queue” problem.', rules).map((x) => x.tag)
   assert.ok(tags.includes('punctuation:smart_quotes'))
 })
 

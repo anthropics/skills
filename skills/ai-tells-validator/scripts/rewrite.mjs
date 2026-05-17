@@ -33,7 +33,9 @@ async function main() {
   }
   const { words: wikiWords, phrases: wikiPhrases } = parseSignsArticle(wikiText)
   const rules = buildRules({
-    wikiWords, wikiPhrases, allow: args.allow, maxEmDashes: args.maxEmDashes,
+    wikiWords, wikiPhrases, allow: args.allow,
+    maxEmDashes: args.maxEmDashes,
+    requireProperCaps: args.requireProperCaps,
   })
 
   const original = await readInput(args.file)
@@ -98,6 +100,10 @@ function buildSystemPrompt(rules) {
   // and most rules are obvious from the patterns). Give Claude the rules
   // it can derive everything else from, plus a few category exemplars.
   const sampleWords = [...rules.words].slice(0, 20).join(', ')
+  const emDashLine =
+    rules.maxEmDashes === 0
+      ? '    - Em-dashes (—): NEVER. Zero. Use commas, periods, or new sentences instead.'
+      : `    - Em-dashes (—): at most ${rules.maxEmDashes} per message.`
   return [
     'You are rewriting a draft to eliminate every "AI-sounding" tell from it. The reader is a senior operator who will reject the message if any single tell fires.',
     '',
@@ -106,18 +112,21 @@ function buildSystemPrompt(rules) {
     '  - Banned phrases: "I hope this email finds you well", "circling back", "just checking in", "in conclusion", "it is important to note", "plays a vital/crucial/pivotal role", "in today\'s fast-paced ___", "value proposition", "best practices", "looking forward to hearing", and similar canned email tropes.',
     '  - Banned patterns:',
     '    - Negative parallelism: "Not just X, but Y" / "Not X, but Y". Never.',
-    '    - Contracted siblings: "aren\'t X — they\'re Y" / "isn\'t X, it\'s Y". Never.',
+    '    - Contracted siblings: "aren\'t X, they\'re Y" / "isn\'t X, it\'s Y". Never.',
     '    - Rule-of-three adjective lists ("clear, sourced, and trustworthy"). Never.',
     '    - Participle tails (", ensuring X" / ", driving Y" / ", reinforcing Z"). Never.',
     '    - "Whether you\'re X or Y…" / "Excited to ___". Never.',
-    `    - Em-dashes: at most ${rules.maxEmDashes} per message.`,
+    emDashLine,
     '    - Three-hyphen thematic breaks (---). Never in body copy.',
     '    - Smart/curly quotes: straight quotes only.',
+    rules.requireProperCaps
+      ? '  - Capitalization: use proper case throughout. Sentence starts capitalized. The pronoun "I" always capitalized. Proper nouns (people, companies, products) capitalized exactly as the entity spells them.'
+      : '',
     '',
     'Preserve the author\'s intent, voice (if specified), and core argument. Do not pad with new content. Do not editorialize. Output only the rewritten text.',
     '',
     'Do not include any preamble or explanation. Output the rewritten text and nothing else.',
-  ].join('\n')
+  ].filter(Boolean).join('\n')
 }
 
 function buildUserPrompt({ voice, original, previousFindings }) {
@@ -179,8 +188,8 @@ async function readInput(filePath) {
 function parseArgs(argv) {
   const out = {
     fresh: false, cacheOk: false, source: undefined, file: undefined,
-    allow: [], maxEmDashes: 1, maxRetries: 3, model: 'sonnet',
-    voice: undefined, help: false,
+    allow: [], maxEmDashes: 0, maxRetries: 3, model: 'sonnet',
+    voice: undefined, requireProperCaps: true, help: false,
   }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
@@ -191,6 +200,7 @@ function parseArgs(argv) {
       case '--file': out.file = argv[++i]; break
       case '--allow': out.allow = (argv[++i] ?? '').split(',').map((s) => s.trim()).filter(Boolean); break
       case '--max-em-dashes': out.maxEmDashes = Number(argv[++i]); break
+      case '--allow-lowercase': out.requireProperCaps = false; break
       case '--max-retries': out.maxRetries = Number(argv[++i]); break
       case '--model': out.model = argv[++i]; break
       case '--voice': out.voice = argv[++i]; break
@@ -218,7 +228,8 @@ Flags:
   --source <url>           Override source URL.
   --file <path>            Read input from a file.
   --allow <tag,tag,...>    Suppress specific tell tags.
-  --max-em-dashes <n>      Cap em-dashes per message (default 1).
+  --max-em-dashes <n>      Cap em-dashes per message (default 0 — zero allowed).
+  --allow-lowercase        Disable proper-capitalization check (default: required).
   --max-retries <n>        Retry attempts (default 3).
   --model <alias>          Claude model alias (default 'sonnet').
   --voice <constraint>     One-line voice / brand constraint for the rewrite.
