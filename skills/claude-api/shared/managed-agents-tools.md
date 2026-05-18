@@ -258,7 +258,7 @@ Two types — both work the same way; the agent automatically uses them when rel
 | **Pre-built Anthropic skills** | Common document tasks (PowerPoint, Excel, Word, PDF). Reference by name (e.g. `xlsx`). |
 | **Custom skills** | Skills you've created in your organization via the Skills API. Reference by `skill_id` + optional `version`. |
 
-**Max 64 skills per agent.** Agent creation uses `managed-agents-2026-04-01`; the separate Skills API (for managing custom skill definitions) uses `skills-2025-10-02`.
+**Max 20 skills per agent.** Agent creation uses `managed-agents-2026-04-01`; the separate Skills API (for managing custom skill definitions) uses `skills-2025-10-02`.
 
 ### Enabling skills on a session
 

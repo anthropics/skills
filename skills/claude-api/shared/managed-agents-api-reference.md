@@ -8,7 +8,7 @@ All endpoints require `x-api-key` and `anthropic-version: 2023-06-01` headers. M
 anthropic-beta: managed-agents-2026-04-01
 ```
 
-The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
+The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults,memory_stores}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
 
 ---
 
@@ -23,18 +23,22 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | Environments | `environments.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Environments.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Sessions | `sessions.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Sessions.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Session Events | `sessions.events.list` / `send` / `stream` | `Sessions.Events.List` / `Send` / `StreamEvents` |
+| Session Threads | `sessions.threads.list` / `retrieve` / `archive`; `sessions.threads.events.list` / `stream` | `Sessions.Threads.List` / `Get` / `Archive`; `Sessions.Threads.Events.List` / `StreamEvents` |
 | Session Resources | `sessions.resources.add` / `retrieve` / `update` / `list` / `delete` | `Sessions.Resources.Add` / `Get` / `Update` / `List` / `Delete` |
 | Vaults | `vaults.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
-| Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
+| Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` / `mcp_oauth_validate` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` / `McpOauthValidate` |
+| Memory Stores | `memory_stores.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `MemoryStores.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
+| Memories | `memory_stores.memories.create` / `retrieve` / `update` / `list` / `delete` | `MemoryStores.Memories.New` / `Get` / `Update` / `List` / `Delete` |
+| Memory Versions | `memory_stores.memory_versions.list` / `retrieve` / `redact` | `MemoryStores.MemoryVersions.List` / `Get` / `Redact` |
 
 **Naming quirks to watch for:**
-- Agents have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, and Credentials have both `delete` and `archive`; Session Resources, Files, and Skills are `delete`-only.
+- Agents and Session Threads have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, Credentials, and Memory Stores have both `delete` and `archive`; Session Resources, Files, Skills, and Memories are `delete`-only; Memory Versions have neither — only `redact`.
 - Session resources use `add` (not `create`).
 - Go's event stream is `StreamEvents` (not `Stream`).
 
 **Agent shorthand:** `agent` on session create accepts either a bare string (`agent="agent_abc123"` — uses latest version) or the full reference object (`{type: "agent", id: "agent_abc123", version: 123}`).
 
-**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-4-7"` — uses `standard` speed) or the full config object (`{type: "model_config", id: "claude-opus-4-6", speed: "fast"}`). Note: `speed: "fast"` is only supported on Opus 4.6.
+**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-4-7"` — uses `standard` speed) or the full config object (`{id: "claude-opus-4-6", speed: "fast"}`). Note: `speed: "fast"` is only supported on Opus 4.6.
 
 ---
 
@@ -70,12 +74,24 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `POST` | `/v1/sessions/{session_id}/events` | SendEvents | Send events (user message, tool result) |
 | `GET` | `/v1/sessions/{session_id}/events/stream` | StreamEvents | Stream events via SSE |
 
+## Session Threads
+
+Per-subagent event streams in multiagent sessions. See `shared/managed-agents-multiagent.md`.
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `GET` | `/v1/sessions/{session_id}/threads` | ListThreads | List threads (paginated) |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}` | GetThread | Retrieve one thread (carries `agent` snapshot, `status`, `parent_thread_id`, `stats`, `usage`) |
+| `POST` | `/v1/sessions/{session_id}/threads/{thread_id}/archive` | ArchiveThread | Archive a thread |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}/events` | ListThreadEvents | List past events for one thread (paginated) |
+| `GET` | `/v1/sessions/{session_id}/threads/{thread_id}/stream` | StreamThreadEvents | Stream one thread via SSE (SDK: `threads.events.stream`) |
+
 ## Session Resources
 
 | Method   | Path                                                    | Operation        | Description                              |
 | -------- | ------------------------------------------------------- | ---------------- | ---------------------------------------- |
 | `GET` | `/v1/sessions/{session_id}/resources` | ListResources | List resources attached to session |
-| `POST` | `/v1/sessions/{session_id}/resources` | AddResource | Attach file or github_repository mount (SDK method: `add`, not `create`) |
+| `POST` | `/v1/sessions/{session_id}/resources` | AddResource | Attach `file` or `github_repository` resource (SDK method: `add`, not `create`). `memory_store` resources attach at session-create time only. |
 | `GET` | `/v1/sessions/{session_id}/resources/{resource_id}` | GetResource | Get a single resource |
 | `POST` | `/v1/sessions/{session_id}/resources/{resource_id}` | UpdateResource | Update resource |
 | `DELETE` | `/v1/sessions/{session_id}/resources/{resource_id}` | DeleteResource | Remove resource from session |
@@ -116,6 +132,42 @@ Credentials are individual secrets stored inside a vault.
 | `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}`               | UpdateCredential   | Update credential            |
 | `DELETE` | `/v1/vaults/{vault_id}/credentials/{credential_id}`               | DeleteCredential   | Delete credential            |
 | `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}/archive`       | ArchiveCredential  | Archive credential           |
+| `POST`   | `/v1/vaults/{vault_id}/credentials/{credential_id}/mcp_oauth_validate` | McpOauthValidate | Validate an MCP OAuth credential |
+
+## Memory Stores
+
+Workspace-scoped persistent memory that survives across sessions. Attach to a session via a `{"type": "memory_store", "memory_store_id": ...}` entry in `resources[]` (session-create time only). See `shared/managed-agents-memory.md` for the conceptual guide, the FUSE-mount agent interface, preconditions, and versioning.
+
+| Method   | Path                                             | Operation          | Description                              |
+| -------- | ------------------------------------------------ | ------------------ | ---------------------------------------- |
+| `POST`   | `/v1/memory_stores`                              | CreateMemoryStore  | Create a store (`name`, `description`, `metadata`) |
+| `GET`    | `/v1/memory_stores`                              | ListMemoryStores   | List stores (`include_archived`, `created_at_{gte,lte}`) |
+| `GET`    | `/v1/memory_stores/{memory_store_id}`            | GetMemoryStore     | Get store details                        |
+| `POST`   | `/v1/memory_stores/{memory_store_id}`            | UpdateMemoryStore  | Update store                             |
+| `DELETE` | `/v1/memory_stores/{memory_store_id}`            | DeleteMemoryStore  | Delete store                             |
+| `POST`   | `/v1/memory_stores/{memory_store_id}/archive`    | ArchiveMemoryStore | Archive store. Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive. |
+
+## Memories
+
+Individual text documents inside a store (≤ 100KB each). `create` creates at a `path` and returns `409` (`memory_path_conflict_error`, with `conflicting_memory_id`) if the path is occupied; `update` mutates by `mem_...` ID (rename and/or content). Only `update` accepts a `precondition` (`{"type": "content_sha256", "content_sha256": ...}`) — on mismatch returns `409` (`memory_precondition_failed_error`). List endpoints accept `view: "basic"|"full"` (controls whether `content` is populated; `retrieve` defaults to `full`).
+
+| Method   | Path                                                              | Operation      | Description                              |
+| -------- | ----------------------------------------------------------------- | -------------- | ---------------------------------------- |
+| `GET`    | `/v1/memory_stores/{memory_store_id}/memories`                    | ListMemories   | Returns `Memory \| MemoryPrefix`; filter by `path_prefix`, `depth`, `order_by`/`order` |
+| `POST`   | `/v1/memory_stores/{memory_store_id}/memories`                    | CreateMemory   | Create at `path` (SDK: `memories.create`); `409 memory_path_conflict_error` if occupied |
+| `GET`    | `/v1/memory_stores/{memory_store_id}/memories/{memory_id}`        | GetMemory      | Read one memory (defaults to `view="full"`) |
+| `PATCH`  | `/v1/memory_stores/{memory_store_id}/memories/{memory_id}`        | UpdateMemory   | Change `content`, `path`, or both by ID; optional `precondition` |
+| `DELETE` | `/v1/memory_stores/{memory_store_id}/memories/{memory_id}`        | DeleteMemory   | Delete (optional `expected_content_sha256`) |
+
+## Memory Versions
+
+Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surface. `operation` ∈ `created` / `modified` / `deleted`.
+
+| Method   | Path                                                                          | Operation             | Description                              |
+| -------- | ----------------------------------------------------------------------------- | --------------------- | ---------------------------------------- |
+| `GET`    | `/v1/memory_stores/{memory_store_id}/memory_versions`                         | ListMemoryVersions    | Newest-first; filter by `memory_id`, `operation`, `session_id`, `api_key_id`, `created_at_{gte,lte}` |
+| `GET`    | `/v1/memory_stores/{memory_store_id}/memory_versions/{version_id}`            | GetMemoryVersion      | List fields + full `content`             |
+| `POST`   | `/v1/memory_stores/{memory_store_id}/memory_versions/{version_id}/redact`     | RedactMemoryVersion   | Clear `content`/`content_sha256`/`content_size_bytes`/`path`; preserve actor + timestamps |
 
 ## Files
 
@@ -168,13 +220,21 @@ Credentials are individual secrets stored inside a vault.
       "url": "https://api.githubcopilot.com/mcp/"
     }
   ],
+  "multiagent": {
+    "type": "coordinator",
+    "agents": [
+      "agent_abc123",
+      { "type": "agent", "id": "agent_def456", "version": 4 },
+      { "type": "self" }
+    ]
+  },
   "metadata": {
     "key": "value (max 16 pairs, keys ≤64 chars, values ≤512 chars)"
   }
 }
 ```
 
-> Limits: `tools` max 50, `skills` max 64, `mcp_servers` max 20 (unique names).
+> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1–20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}`) — see `shared/managed-agents-multiagent.md`.
 
 ### CreateSession Request Body
 
@@ -237,6 +297,19 @@ Credentials are individual secrets stored inside a vault.
   ]
 }
 ```
+
+### Define Outcome Event
+
+```json
+{
+  "type": "user.define_outcome",
+  "description": "Build a DCF model for Costco in .xlsx",
+  "rubric": { "type": "file", "file_id": "file_01..." },
+  "max_iterations": 5
+}
+```
+
+> `rubric` is required: `{type: "text", content}` or `{type: "file", file_id}`. `max_iterations` default 3, max 20. Echoed back with `outcome_id` + `processed_at`. See `shared/managed-agents-outcomes.md`.
 
 ### Tool Result Event
 
