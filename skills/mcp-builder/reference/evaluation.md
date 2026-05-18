@@ -2,28 +2,9 @@
 
 ## Overview
 
-This document provides guidance on creating comprehensive evaluations for MCP servers. Evaluations test whether LLMs can effectively use your MCP server to answer realistic, complex questions using only the tools provided.
+This document covers how to create and run evaluations for MCP servers. Evaluations are the objective measure of whether an LLM can use your server to answer realistic, multi-step questions end-to-end.
 
----
-
-## Quick Reference
-
-### Evaluation Requirements
-- Create 10 human-readable questions
-- Questions must be READ-ONLY, INDEPENDENT, NON-DESTRUCTIVE
-- Each question requires multiple tool calls (potentially dozens)
-- Answers must be single, verifiable values
-- Answers must be STABLE (won't change over time)
-
-### Output Format
-```xml
-<evaluation>
-   <qa_pair>
-      <question>Your question here</question>
-      <answer>Single verifiable answer</answer>
-   </qa_pair>
-</evaluation>
-```
+**At a glance:** 10 questions, all read-only and independent, each requiring multiple tool calls, with single verifiable answers that do not change over time. XML format (see §Output Format). Run with `scripts/evaluation.py`; target ≥ 8/10 pass rate.
 
 ---
 
@@ -485,7 +466,7 @@ positional arguments:
 optional arguments:
   -h, --help            Show help message
   -t, --transport       Transport type: stdio, sse, or http (default: stdio)
-  -m, --model           Claude model to use (default: claude-3-7-sonnet-20250219)
+  -m, --model           Claude model to use (default: claude-sonnet-4-6)
   -o, --output          Output file for report (default: print to stdout)
 
 stdio options:
@@ -596,7 +577,7 @@ If many evaluations fail:
 ### Timeout Issues
 
 If tasks are timing out:
-- Use a more capable model (e.g., `claude-3-7-sonnet-20250219`)
+- Use a more capable model (e.g., `claude-opus-4-7`)
 - Check if tools are returning too much data
 - Verify pagination is working correctly
 - Consider simplifying complex questions
