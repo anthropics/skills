@@ -634,12 +634,12 @@ return {
 
 **To disable this skill temporarily:**
 ```bash
-mv ~/.claude/skills/n8n ~/.claude/skills/n8n.disabled
+mv ~/.claude/skills/n8n-builder ~/.claude/skills/n8n-builder.disabled
 ```
 
 **To re-enable:**
 ```bash
-mv ~/.claude/skills/n8n.disabled ~/.claude/skills/n8n
+mv ~/.claude/skills/n8n-builder.disabled ~/.claude/skills/n8n-builder
 ```
 
 ---
