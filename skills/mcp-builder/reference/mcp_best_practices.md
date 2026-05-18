@@ -4,7 +4,15 @@
 
 ### Server Naming
 - **Python**: `{service}_mcp` (e.g., `slack_mcp`)
+- **Ruby**: `{service}_mcp` (e.g., `slack_mcp`)
 - **Node/TypeScript**: `{service}-mcp-server` (e.g., `slack-mcp-server`)
+- **Java**: `{service}-mcp-server` (e.g., `slack-mcp-server`)
+- **PHP**: `{service}-mcp-server` (e.g., `slack-mcp-server`)
+- **Go**: `{service}-mcp` (e.g., `slack-mcp`)
+- **Kotlin**: `{service}-mcp` (e.g., `slack-mcp`)
+- **Swift**: `{service}-mcp` (e.g., `slack-mcp`)
+- **Rust**: `{service}-mcp-server` crate, `{service}-mcp` server name
+- **C#**: `{Service}.Mcp.Server` project, `{service}-mcp-server` server name
 
 ### Tool Naming
 - Use snake_case with service prefix
@@ -35,8 +43,32 @@ Follow these standardized naming patterns:
 **Python**: Use format `{service}_mcp` (lowercase with underscores)
 - Examples: `slack_mcp`, `github_mcp`, `jira_mcp`
 
+**Ruby**: Use format `{service}_mcp` (lowercase with underscores)
+- Examples: `slack_mcp`, `github_mcp`, `jira_mcp`
+
 **Node/TypeScript**: Use format `{service}-mcp-server` (lowercase with hyphens)
 - Examples: `slack-mcp-server`, `github-mcp-server`, `jira-mcp-server`
+
+**Java**: Use format `{service}-mcp-server` (lowercase with hyphens)
+- Examples: `slack-mcp-server`, `github-mcp-server`, `jira-mcp-server`
+
+**PHP**: Use format `{service}-mcp-server` (lowercase with hyphens)
+- Examples: `slack-mcp-server`, `github-mcp-server`, `jira-mcp-server`
+
+**Go**: Use format `{service}-mcp` (lowercase with hyphens)
+- Examples: `slack-mcp`, `github-mcp`, `jira-mcp`
+
+**Kotlin**: Use format `{service}-mcp` (lowercase with hyphens)
+- Examples: `slack-mcp`, `github-mcp`, `jira-mcp`
+
+**Swift**: Use format `{service}-mcp` (lowercase with hyphens)
+- Examples: `slack-mcp`, `github-mcp`, `jira-mcp`
+
+**Rust**: Crate name `{service}-mcp-server`, server info name `{service}-mcp`
+- Examples: crate `slack-mcp-server`, server name `slack-mcp`
+
+**C#**: Project `{Service}.Mcp.Server` (PascalCase), server info `{service}-mcp-server`
+- Examples: project `Slack.Mcp.Server`, server name `slack-mcp-server`
 
 The name should be general, descriptive of the service being integrated, easy to infer from the task description, and without version numbers.
 
@@ -169,7 +201,7 @@ Example pagination response:
 - Validate URLs and external identifiers
 - Check parameter sizes and ranges
 - Prevent command injection in system calls
-- Use schema validation (Pydantic/Zod) for all inputs
+- Use schema validation (Pydantic, Zod, Go struct tags, schemars, JsonSchema builder, `[Description]`/`#[Schema]` attributes) for all inputs
 
 ### Error Handling
 
