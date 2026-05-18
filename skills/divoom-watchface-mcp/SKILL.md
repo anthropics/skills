@@ -70,6 +70,15 @@ If the client supports resources, you may read:
 - `divoom://guide/quick-reference`
 - `divoom://skill/watchface-customization`
 
+## Multipart uploads (firmware packaging)
+
+传输文件打包要求：固件在 `divoom_http_server_upload_get_file_info` 中要求每个文件段必须有 `Content-Length`，而浏览器 `FormData` 通常只使用 boundary 分隔、不包含每段 `Content-Length`。正在实现固件在无 `Content-Length` 时用 boundary 终止解析，并修复 JSON 段之后定位文件数据的指针计算；编辑器侧改为手动构造带 `Content-Length` 的 multipart 以提高兼容性。
+
+For agents and human-maintained clients:
+
+- **`mcp-divoom-lan` tools** that send multipart (`watchface_upload_file`, `watchface_replace_dial_bg_file`, `watchface_create_local_clock`, `watchface_patch_local` with dial assets) already assemble bodies with **per-part `Content-Length`**—prefer these over hand-rolled HTTP.
+- **Browser / editor clients:** default `FormData` often omits per-part `Content-Length`; for strict compatibility with current firmware, **manually build** `multipart/form-data` with **`Content-Length` on each part** (JSON first, file second; CRLF and boundary rules as in the server docs). After firmware adds boundary-terminated parsing, tolerant clients may still prefer explicit lengths for reliability.
+
 ## Mandatory operating rules
 
 1. **Use MCP tools only** for device actions—don’t simulate HTTP or fabricate JSON responses.
@@ -120,5 +129,5 @@ If the client supports resources, you may read:
 ## References
 
 - MCP repository: [github.com/DivoomDevelop/mcp-divoom-lan](https://github.com/DivoomDevelop/mcp-divoom-lan)
-- npm package: [npmjs.com/package/mcp-divoom-lan](https://www.npmjs.com/package/mcp-divoom-lan)
+- npm package: [npmjs.com/package/mcp-divoom-lan](https://www.npmjs.com/package/mcp-divoom-lan) — multipart packaging detail lives in package `resources/skill-quick-reference.md` from **v0.1.5** onward.
 - Registry name (verification): `io.github.DivoomDevelop/mcp-divoom-lan` (see `package.json` → `mcpName`)
