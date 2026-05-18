@@ -21,6 +21,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | Agents | `agents.create` / `retrieve` / `update` / `list` / `archive` | `Agents.New` / `Get` / `Update` / `List` / `Archive` |
 | Agent Versions | `agents.versions.list` | `Agents.Versions.List` |
 | Environments | `environments.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Environments.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
+| Environment Work (self-hosted) | `environments.work.poller` / `stats` / `stop` | See `shared/managed-agents-self-hosted-sandboxes.md` |
 | Sessions | `sessions.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Sessions.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Session Events | `sessions.events.list` / `send` / `stream` | `Sessions.Events.List` / `Send` / `StreamEvents` |
 | Session Threads | `sessions.threads.list` / `retrieve` / `archive`; `sessions.threads.events.list` / `stream` | `Sessions.Threads.List` / `Get` / `Archive`; `Sessions.Threads.Events.List` / `StreamEvents` |
@@ -35,6 +36,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 - Agents and Session Threads have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, Credentials, and Memory Stores have both `delete` and `archive`; Session Resources, Files, Skills, and Memories are `delete`-only; Memory Versions have neither — only `redact`.
 - Session resources use `add` (not `create`).
 - Go's event stream is `StreamEvents` (not `Stream`).
+- The self-hosted worker is **not** under `client.beta.*` — it's `EnvironmentWorker` from `anthropic.lib.environments` / `@anthropic-ai/sdk/helpers/beta/environments`; only `environments.work.poller/stats/stop` are client methods.
 
 **Agent shorthand:** `agent` on session create accepts either a bare string (`agent="agent_abc123"` — uses latest version) or the full reference object (`{type: "agent", id: "agent_abc123", version: 123}`).
 
@@ -62,7 +64,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `GET` | `/v1/sessions` | ListSessions | List sessions (paginated) |
 | `POST` | `/v1/sessions` | CreateSession | Create a new session |
 | `GET` | `/v1/sessions/{session_id}` | GetSession | Get session details |
-| `POST` | `/v1/sessions/{session_id}` | UpdateSession | Update session metadata/title |
+| `POST` | `/v1/sessions/{session_id}` | UpdateSession | Update session `metadata`/`title`, or `agent.tools`/`agent.mcp_servers`/`vault_ids` (session-local override; session must be `idle`). See `shared/managed-agents-core.md` → Updating the agent configuration mid-session. |
 | `DELETE` | `/v1/sessions/{session_id}` | DeleteSession | Delete a session |
 | `POST` | `/v1/sessions/{session_id}/archive` | ArchiveSession | Archive a session |
 
@@ -106,6 +108,10 @@ Per-subagent event streams in multiagent sessions. See `shared/managed-agents-mu
 | `POST`   | `/v1/environments/{environment_id}`                    | UpdateEnvironment    | Update environment                  |
 | `DELETE` | `/v1/environments/{environment_id}`                    | DeleteEnvironment    | Delete environment. Returns 204. |
 | `POST`   | `/v1/environments/{environment_id}/archive`            | ArchiveEnvironment   | Archive environment. Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive — this is the terminal state. |
+| `GET`    | `/v1/environments/{environment_id}/work/stats`         | WorkQueueStats       | Self-hosted work-queue depth/pending/workers. `x-api-key` auth. See `shared/managed-agents-self-hosted-sandboxes.md`. |
+| `POST`   | `/v1/environments/{environment_id}/work/{work_id}/stop` | StopWork            | Self-hosted: stop a claimed work item. `x-api-key` auth. |
+
+For `type: "self_hosted"`, `config` is the bare `{"type": "self_hosted"}` — `networking` and `packages` do not apply.
 
 ## Vaults
 
@@ -270,7 +276,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   "name": "string (required)",
   "description": "string (optional)",
   "config": {
-    "type": "cloud",
+    "type": "cloud | self_hosted",
     "networking": {
       "type": "unrestricted | limited (union — see SDK types)"
     },
