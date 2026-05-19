@@ -392,7 +392,7 @@ sections: [{
 - **TOC requires HeadingLevel only** - no custom styles on heading paragraphs
 - **Override built-in styles** - use exact IDs: "Heading1", "Heading2", etc.
 - **Include `outlineLevel`** - required for TOC (0 for H1, 1 for H2, etc.)
-
+- **Never use `node -e` with non-ASCII content** — shell mangles multi-byte characters before Node sees them; write the script to a file first: `cat << 'SCRIPT' > /tmp/build.js ... SCRIPT && node /tmp/build.js`
 ---
 
 ## Editing Existing Documents
@@ -581,7 +581,48 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
 ```
 
 ---
+## CJK (Chinese, Japanese, Korean) Content
 
+### Execution (critical)
+
+Never use `node -e "..."` for scripts containing CJK or other non-ASCII text. The shell mangles multi-byte UTF-8 sequences before Node reads them, producing silently corrupted output — the file is created without error but characters are garbled or replaced with `?`.
+
+Write the script to a file instead:
+
+```bash
+cat << 'SCRIPT' > /tmp/build_doc.js
+// full JS here — CJK characters are safe
+SCRIPT
+node /tmp/build_doc.js
+```
+
+### Font stack
+
+Arial (the document default) has no CJK glyphs. Always declare an explicit font on both the document default style and each `TextRun`:
+
+| Language | Recommended font |
+|---|---|
+| Simplified Chinese | `宋体` (body) / `黑体` (headings) |
+| Traditional Chinese | `新細明體` |
+| Japanese | `MS Mincho` / `Yu Mincho` |
+| Korean | `Batang` |
+
+```javascript
+const doc = new Document({
+  styles: {
+    default: { document: { run: { font: '宋体', size: 24 } } }
+  },
+  sections: [{
+    children: [
+      new Paragraph({
+        children: [new TextRun({ text: '你好，世界', font: '宋体', size: 24 })]
+      })
+    ]
+  }]
+});
+```
+
+---
 ## Dependencies
 
 - **pandoc**: Text extraction
