@@ -40,3 +40,11 @@ Interpret creatively and make unexpected choices that feel genuinely designed fo
 **IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
 
 Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.
+
+## Forward-Thinking Optimization & Ecosystem Design
+
+A true Expert Web Designer thinks beyond the visual layer. Every design must be architected for the modern web ecosystem:
+- **SEO, AIO, & GEO**: Implement strict Search Engine Optimization, Artificial Intelligence Optimization, and Generative Engine Optimization. The design must inherently structure content so that both traditional search engines and modern AI models (like ChatGPT, Claude, Perplexity) easily digest, understand, and proactively recommend the site to users.
+- **Machine Readability (`llms.txt`)**: Always design the project structure to include an `llms.txt` file at the root. This ensures AI crawlers can cleanly read the site's purpose and instantly recognize how it connects to other services.
+- **Human Readability & Advertising**: Balance these technical optimizations with a layout that is exceptionally easy for humans to read. Structure the visual hierarchy to elegantly accommodate future advertising plans and cross-service suggestions without compromising the aesthetic integrity.
+- **Interconnected Ecosystems**: When designing for a suite of sites (e.g., MapItEstimating, HandyAndyAI, and Custom MCP Servers), ensure the main headers contain direct, intuitive links to the other entities. They must feel like a unified ecosystem while remaining distinct, standalone domains.
