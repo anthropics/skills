@@ -17,7 +17,7 @@ If you're about to write `sessions.create()` with `model`, `system`, or `tools` 
 
 **When generating code, separate setup from runtime.** `agents.create()` belongs in a setup script (or a guarded `if agent_id is None:` block), not at the top of the hot path. If the user's code calls `agents.create()` on every invocation, they're accumulating orphaned agents and paying the create latency for nothing. The correct shape is: create once → persist the ID (config file, env var, secrets manager) → every run loads the ID and calls `sessions.create()`.
 
-**To change the agent's behavior, use `POST /v1/agents/{id}` — don't create a new one.** Each update bumps the version; running sessions keep their pinned version, new sessions get the latest (or pin explicitly via `{type: "agent", id, version}`). See `shared/managed-agents-core.md` → Agents → Versioning.
+**To change the agent's behavior, use `POST /v1/agents/{id}` — don't create a new one.** Each update bumps the version; running sessions keep their pinned version, new sessions get the latest (or pin explicitly via `{type: "agent", id, version}`). See `shared/managed-agents-core.md` → Agents → Versioning. To change `tools`/`mcp_servers`/`vault_ids` on **one running session** without touching the agent object, use `sessions.update()` — see `shared/managed-agents-core.md` → Updating the agent configuration mid-session.
 
 ## Beta Headers
 
@@ -49,6 +49,7 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Define an outcome / rubric-graded iterate loop | `shared/managed-agents-outcomes.md` — `user.define_outcome` event, grader, `span.outcome_evaluation_*` events |
 | Coordinate multiple agents / subagents / threads | `shared/managed-agents-multiagent.md` — `multiagent: {type: "coordinator", agents: [...]}` on the agent, session threads, cross-posted tool confirmations |
 | Set up environments                    | `shared/managed-agents-environments.md` + language file |
+| Run tool execution in your own infra / VPC (self-hosted sandbox) | `shared/managed-agents-self-hosted-sandboxes.md` — `config:{type:"self_hosted"}`, `ANTHROPIC_ENVIRONMENT_KEY`, `EnvironmentWorker.run()` / `ant beta:worker poll` |
 | Upload files / attach repos            | `shared/managed-agents-environments.md` (Resources)     |
 | Give agents persistent memory across sessions | `shared/managed-agents-memory.md` — memory stores, `memory_store` session resource, preconditions, versions/redact |
 | Store MCP credentials                  | `shared/managed-agents-tools.md` (Vaults section)       |
@@ -63,5 +64,5 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 - **SSE stream has no replay — reconnect with consolidation** — if the stream drops while a `agent.tool_use`, `agent.mcp_tool_use`, or `agent.custom_tool_use` is pending resolution (`user.tool_confirmation` for the first two, `user.custom_tool_result` for the last one), the session deadlocks (client disconnects → session idles → reconnect happens → no client resolution happens). On every (re)connect: open stream with `GET /v1/sessions/{id}/events/stream` , fetch `GET /v1/sessions/{id}/events`, dedupe by event ID, then proceed. See `shared/managed-agents-events.md` → Reconnecting after a dropped stream.
 - **Don't trust HTTP-library timeouts as wall-clock caps** — `requests` `timeout=(c, r)` and `httpx.Timeout(n)` are *per-chunk* read timeouts; they reset every byte, so a trickling connection can block indefinitely. For a hard deadline on raw-HTTP polling, track `time.monotonic()` at the loop level and bail explicitly. Prefer the SDK's `sessions.events.stream()` / `session.events.list()` over hand-rolled HTTP. See `shared/managed-agents-events.md` → Receiving Events.
 - **Messages queue** — you can send events while the session is `running` or `idle`; they're processed in order. No need to wait for a response before sending the next message.
-- **Cloud environments only** — `config.type: "cloud"` is the only supported environment type.
+- **Environment `config.type` is `"cloud"` or `"self_hosted"`** — `cloud` runs the container on Anthropic's infrastructure; `self_hosted` moves tool execution to your own (see `shared/managed-agents-self-hosted-sandboxes.md`).
 - **Archive is permanent on every resource** — archiving an agent, environment, session, vault, credential, or memory store makes it read-only with no unarchive. For agents, environments, and memory stores specifically, archived resources cannot be referenced by new sessions (existing sessions continue). Do not call `.archive()` on a production agent, environment, or memory store as cleanup — **always confirm with the user before archiving**.
