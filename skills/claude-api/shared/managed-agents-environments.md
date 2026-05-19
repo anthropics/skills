@@ -38,6 +38,10 @@ const env = await client.beta.environments.create({
 });
 ```
 
+### Self-hosted sandboxes
+
+To run tool execution in **your own infrastructure** instead of Anthropic's, set `config: {type: "self_hosted"}` — the agent loop stays on Anthropic's side, but `bash` / file ops / code execute in a container you control via an outbound-polling worker. The `networking` block does not apply (you control egress). Resource mounting (`file`, `github_repository`) and memory stores behave differently — see `shared/managed-agents-self-hosted-sandboxes.md` for the worker, credentials, and cloud-vs-self-hosted comparison.
+
 ### Environment CRUD
 
 | Operation        | Method   | Path                                       | Notes |
