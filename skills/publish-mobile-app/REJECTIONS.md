@@ -39,7 +39,7 @@ Don't waste time on the API — we attempted 5 payload shapes against `v2/appAva
 5. Reply to reviewer in App Store Connect noting the change
 6. Resubmit
 
-**Example rewrites** (from a real production fix):
+**Example rewrites** (Sparkytales actual fix):
 - Subtitle: `AI storybooks for kids` → `Write & illustrate with AI`
 - Keywords: drop `kids,children`; add `imagination,books`
 - Promo: `with your kids tonight` → `with your family tonight`
@@ -88,6 +88,26 @@ Usually means you've shipped similar AI-generated apps before. No automated fix 
 
 ---
 
+### Crash on launch (Guideline 2.1 – Apps that crash)
+
+> *"The app crashed after the initial launch. Apps that crash negatively impact users."*
+
+Apple does NOT expose the review crash log via API — only in App Store Connect's Resolution Center UI as a `.crash`/`.ips` attachment. Without the log, work through the highest-probability launch killers first. For Capacitor/Expo/Flutter apps the leading suspects are:
+
+1. **`UIRequiredDeviceCapabilities=[armv7]` in `Info.plist`** — 32-bit ARM declaration; no modern iPad/iPhone has armv7 cores. Apps that declare this requirement cannot launch on arm64-only devices. **Fix**: delete the `UIRequiredDeviceCapabilities` key entirely from `Info.plist` (it's optional and you usually have no specific hardware requirement). The default Capacitor scaffold sometimes has this leftover.
+
+2. **Plugin registration crash in `CAPBridgeViewController`** — happens when a Capacitor plugin's native side has a startup bug. Check recent plugin updates; downgrade or remove the suspect plugin.
+
+3. **Force-unwrap of nil URL in AppDelegate** — analytics SDKs, deep-link handlers. Audit any `URL(string:)!` in Swift code.
+
+4. **Missing `UIApplicationSceneManifest`** — required on iPadOS 13+. Capacitor's default scaffold doesn't include one but the app launches anyway most of the time; rare crash path.
+
+**Don't change `LSRequiresIPhoneOS=true`** — that means "this is an iOS-only app (not Mac Catalyst)", NOT "iPhone-only". It does not block iPad launch.
+
+After fixing, bump `CFBundleVersion`, rebuild, push to TestFlight. The build will get a new build number; submit that to review with a note to the reviewer explaining what was fixed.
+
+---
+
 ### Common Apple gotchas (not full rejections, but precheck warnings)
 
 | Symptom | Cause | Fix |
@@ -96,7 +116,9 @@ Usually means you've shipped similar AI-generated apps before. No automated fix 
 | `Phone number must be in valid format` | Reviewer phone missing country code | `+91XXXXXXXXXX` format, no spaces |
 | `invalid byte sequence in US-ASCII` | Ruby locale not UTF-8 | Set `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` in npm script |
 | `Couldn't find API key JSON file at path '../app-store-connect-key.json'` | Fastfile uses relative path | Use `File.expand_path("../app-store-connect-key.json", __dir__)` |
+| `No value found for 'key_id'` in `app_store_connect_api_key` action | Action expects discrete `key_id`/`issuer_id`/`key_content` params, not the JSON wrapper | Parse the JSON yourself in Ruby and pass each field, OR pass `.p8` path to `key_filepath:` + `key_id:` + `issuer_id:` |
 | iPad screenshots uploaded but don't show in "iPad 13" Display" tab | Wrong display-type slot | Rename to `iPad Pro (12.9-inch) (3rd generation)-N.png` |
+| App crashes on launch on iPad review device | `UIRequiredDeviceCapabilities=[armv7]` in Info.plist | Delete the key entirely (see crash-on-launch section above) |
 
 ## Google Play Store
 
