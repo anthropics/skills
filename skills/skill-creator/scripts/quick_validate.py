@@ -9,6 +9,69 @@ import re
 import yaml
 from pathlib import Path
 
+# Known tools available across Claude platforms.
+# When a skill declares `allowed-tools`, each referenced tool is checked
+# against this set. If a tool is missing, the platform would silently fail
+# at runtime — this validation surfaces the problem early.
+KNOWN_TOOLS = frozenset({
+    # Claude Code built-in tools
+    'Bash', 'Read', 'Write', 'Edit', 'Glob', 'Grep',
+    'WebFetch', 'WebSearch', 'Think', 'Task', 'Plan',
+    # Cross-platform tools
+    'Skill', 'subagent', 'present_files', 'GroupChat',
+    'AddMemory', 'Notebook',
+    # Platform-specific / MCP-style tools
+    'TextEditor', 'Computer', 'View', 'Replace',
+    'Create', 'Delete', 'Move', 'Copy', 'Rename',
+    'Search', 'List',
+})
+
+
+def _validate_allowed_tools(allowed_tools_value):
+    """
+    Validate the allowed-tools field from skill frontmatter.
+
+    Format per spec:
+        Space-separated list of ToolName or ToolName(filter) entries.
+        Example: allowed-tools: Bash(git:*) Read WebFetch
+
+    Returns a list of error messages (empty list means valid).
+    """
+    errors = []
+
+    if not isinstance(allowed_tools_value, str):
+        errors.append("Field 'allowed-tools' must be a string")
+        return errors
+
+    value = allowed_tools_value.strip()
+    if not value:
+        errors.append("Field 'allowed-tools' must be a non-empty string if specified")
+        return errors
+
+    entries = value.split()
+    for entry in entries:
+        # Match ToolName or ToolName(filter) where filter is any non-paren chars
+        match = re.match(r'^([A-Za-z_]\w*)(?:\([^)]*\))?$', entry)
+        if not match:
+            errors.append(
+                f"Invalid entry '{entry}' in 'allowed-tools'. "
+                f"Expected format: ToolName or ToolName(filter)"
+            )
+            continue
+
+        tool_name = match.group(1)
+        if tool_name not in KNOWN_TOOLS:
+            errors.append(
+                f"Unknown tool '{tool_name}' in 'allowed-tools'. "
+                f"This tool is not recognized on Claude platforms. "
+                f"If '{tool_name}' is a valid third-party / MCP tool, "
+                f"the skill should declare it as a dependency in the "
+                f"'compatibility' field instead."
+            )
+
+    return errors
+
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -90,6 +153,13 @@ def validate_skill(skill_path):
             return False, f"Compatibility must be a string, got {type(compatibility).__name__}"
         if len(compatibility) > 500:
             return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
+
+    # Validate allowed-tools field if present (optional, experimental)
+    allowed_tools = frontmatter.get('allowed-tools', '')
+    if allowed_tools:
+        tool_errors = _validate_allowed_tools(allowed_tools)
+        if tool_errors:
+            return False, "allowed-tools validation failed:\n  " + "\n  ".join(tool_errors)
 
     return True, "Skill is valid!"
 
