@@ -165,6 +165,68 @@ Structure the course as 5–7 modules plus a required synthesis module. The arc 
 
 **Do NOT present the curriculum for approval — build it.** Design internally, generate the HTML, let the user react to the result.
 
+#### 2C: Brand Skin (optional — branded courses only)
+
+Skip this sub-phase by default. Run it only when **one of these triggers fires**:
+
+1. The user's request includes a branding phrase: "with our brand," "branded course," "use our brand colors," "apply our corporate branding," "with [company] branding," or similar
+2. A `.brand.json` file exists in the working directory
+
+The brand skin is a thin override layer. It does not replace the design system — typography, layout, warm backgrounds, alternating module rhythm, semantic colors, and voice rules stay under the skill's control. Only the accent color, logo, brand name in the nav, and optionally the actor palette are brand-driven.
+
+**2C-1: Detect or intake**
+
+If `.brand.json` is present, read it and confirm:
+> "Found brand spec for [name] with primary [#hex]. Apply it to this course?"
+
+If not present, prompt the user for:
+
+| Field | Required | Format |
+|---|---|---|
+| Brand name | yes | string |
+| Primary brand color | yes | hex (e.g., `#1A4FBA`) |
+| Logo | optional | local SVG path, PNG/JPG path, or URL |
+| Secondary colors | optional | up to 4 hex values for the actor palette |
+| Co-brand tagline | optional | short string |
+
+Persist the intake as `.brand.json` in the working directory so future runs in the same project don't re-prompt.
+
+**2C-2: Validate the brand color**
+
+Compute the contrast ratio of the brand primary against `#FAF7F2` (the warm off-white background):
+
+- ≥ 4.5:1 — safe for any use
+- 3:1 – 4.5:1 — large text only (acceptable for module numbers and titles)
+- < 3:1 — fails WCAG AA. Report the actual ratio and ask the user for a darker brand variant. Do not silently mutate the brand color.
+
+**2C-3: Embed the logo**
+
+The output must remain self-contained. Inline the logo into the nav:
+
+- **SVG** — paste the SVG markup directly into the nav HTML; strip any external `<image>`, `<use href>`, or web-font refs
+- **PNG/JPG (local)** — base64-encode and embed as a data URI
+- **URL** — fetch at build time, embed as data URI
+
+Render at 24–32px height in the nav (nav-height is 50px). **Logo appears in the nav only** — not in module headers, not in the synthesis reference card. Brand presence stays light.
+
+**2C-4: Apply the override**
+
+See `references/design-system.md` → "Brand Skin Layer" for the exact override mechanism, the full list of skinnable tokens, and the `.brand.json` schema. In short: emit a second `:root` block in the course's `<style>` containing only the overridden accent tokens and the derived radial-gradient tint; CSS cascade picks the brand values.
+
+**Actor palette rule:**
+- 5 secondary colors provided → wholesale replacement of `--color-actor-1..5`
+- 1–4 secondary colors provided → mix: brand colors fill `--color-actor-1..N`, defaults remain for the rest
+- 0 provided → defaults stand
+
+**2C-5: Nav rendering**
+
+Replace the default `.nav-title` text with a logo-plus-name lockup:
+- Logo on the left (24–32px height)
+- Brand name immediately right of the logo as `.nav-title`
+- Course title moves to the right side of the nav or below as a subtitle
+
+If no logo is provided, render brand name only.
+
 ---
 
 ### Phase 3: Build the Course
@@ -375,15 +437,20 @@ Every technical term with a precise meaning in this documentation gets a dashed-
 
 ### Design Identity
 
-Read `references/design-system.md` for the full token system. Non-negotiable principles:
+Read `references/design-system.md` for the full token system. **Immutable principles — never overridden, including by brand skins:**
 
 - **Warm palette**: off-white backgrounds, warm grays — no cold whites or blues
-- **Bold accent**: one confident color (vermillion, coral, teal — not purple gradients). Match to the subject matter's personality.
 - **Distinctive typography**: Bricolage Grotesque for headings — never Inter, Roboto, or Arial
 - **Generous whitespace**: modules breathe; max 3–4 short paragraphs per screen
 - **Alternating backgrounds**: even/odd modules alternate warm tones for visual rhythm
 - **Dark spec blocks**: dark background for spec-language excerpts — signals "official text"
 - **Depth without harshness**: warm RGBA shadows only — never pure black
+
+**Brand-overridable (only when invoked with corporate branding — see Phase 2C):**
+
+- **Bold accent**: one confident color. Defaults to vermillion, coral, teal, amber, or forest (matched to the subject matter's personality). When a brand skin is applied, the brand primary replaces the default accent and the radial-gradient tint is derived from it.
+- **Nav logo and brand name**: only appears when a brand spec is supplied.
+- **Actor palette**: defaults to the five colors in `references/design-system.md`. A brand spec can replace 1–5 of them.
 
 ---
 

@@ -574,3 +574,90 @@ For code blocks on the dark `--color-bg-code` background:
 .code-attr     { color: #F9E2AF; }  /* yellow — HTML attributes */
 .code-value    { color: #A6E3A1; }  /* green — attribute values */
 ```
+
+---
+
+## Brand Skin Layer (optional)
+
+When a course is generated with corporate branding (see SKILL.md Phase 2C), a thin override layer adjusts the accent and adds a logo. The layer is opt-in and skin-only — it does not replace the design system.
+
+### Skinnable tokens
+
+| Token | Override source | Notes |
+|---|---|---|
+| `--color-accent` | Brand primary hex | Must pass 3:1 contrast on `#FAF7F2` |
+| `--color-accent-hover` | Derived: brand primary, ~10% darker | Auto-computed |
+| `--color-accent-light` | Derived: brand primary mixed ~10% with `--color-bg` | Auto-computed |
+| `--color-accent-muted` | Derived: brand primary at reduced saturation | Auto-computed |
+| Body radial-gradient tint | Derived: brand primary at ~3% alpha | Replaces the default vermillion tint in [Scrollbar & Background](#scrollbar--background) |
+| `--color-actor-1..5` | Brand secondary colors | Wholesale replacement if 5 provided; otherwise mix with defaults |
+
+### Tokens that are NOT skinnable
+
+- All `--color-bg*` (warm off-white is structural to the aesthetic)
+- All `--font-*` (typography is the skill's identity)
+- All `--space-*`, `--radius-*`, `--shadow-*`
+- Semantic colors (`--color-success`, `--color-error`, `--color-info`) — functional, not branding
+- Dark code background (`--color-bg-code`) and syntax highlighting
+
+### `.brand.json` schema
+
+```json
+{
+  "name": "Acme Corp",
+  "primary": "#1A4FBA",
+  "logo": "./assets/logo.svg",
+  "secondary": ["#FF6B35", "#2D8B55", "#7B6DAA", "#D4A843"],
+  "tagline": "Engineering Excellence"
+}
+```
+
+All fields except `name` and `primary` are optional. Place `.brand.json` in the working directory and the skill auto-detects it on the next run.
+
+### Override pattern
+
+The generated HTML emits two `:root` blocks in `<style>`. The default block (from this file) stays unchanged; the override block appears immediately after and contains only the brand-driven tokens. CSS cascade resolves the conflict to the brand values:
+
+```css
+:root {
+  /* default tokens — copied verbatim from this file */
+  --color-accent: #D94F30;
+  /* ...etc */
+}
+
+:root {
+  /* brand skin overrides — emitted only when a brand spec is supplied */
+  --color-accent:        #1A4FBA;
+  --color-accent-hover:  /* ~10% darker */;
+  --color-accent-light:  /* mixed with --color-bg */;
+  --color-accent-muted:  /* reduced saturation */;
+}
+
+body {
+  background-image: radial-gradient(
+    ellipse at 20% 50%,
+    rgba(26, 79, 186, 0.03) 0%,  /* derived from brand primary */
+    transparent 50%
+  );
+}
+```
+
+### Logo embedding
+
+The course HTML must remain self-contained. Logos are inlined:
+
+- **SVG** — paste markup directly into the nav; strip external `<image>`, `<use href>`, or web-font references
+- **PNG/JPG** — base64 data URI
+- **URL** — fetched once at build time, embedded as a data URI
+
+Render at 24–32px height in the nav (nav-height is 50px). Logo only appears in the nav — never in module headers, synthesis cards, or elsewhere.
+
+### Contrast validation
+
+Before applying the override, compute the contrast ratio of the brand primary against `#FAF7F2`:
+
+| Ratio | Use |
+|---|---|
+| ≥ 4.5:1 | Any use, including body text accents |
+| 3:1 – 4.5:1 | Large text only (module numbers, titles) |
+| < 3:1 | Fails WCAG AA — ask the user for a darker brand variant; do not silently mutate |
