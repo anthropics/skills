@@ -1,0 +1,23 @@
+{
+  "skill_name": "nf-core-utils-release",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "PR #41 is merged and CI is green. Please cut the nf-core-utils release that is already versioned in build.gradle and publish it everywhere it needs to go.",
+      "expected_output": "Confirms the version, releases from a clean origin/main worktree to the Nextflow Plugin Registry, creates or verifies the matching GitHub release, and reports final URLs/status without leaking credentials.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "The release failed with HTTP 401 from https://registry.nextflow.io/api/v1/plugins/release. I have the token in 1Password at op://Employee/Nextflow Plugin Registry Token/credential — fix the auth and retry.",
+      "expected_output": "Reads the token via op, writes it only to ~/.gradle/gradle.properties as npr.apiKey with redacted confirmation, retries make release, and explains that the token was not written into the repo.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Can you check whether every nf-core-utils GitHub release has also been pushed to the Nextflow plugin registry?",
+      "expected_output": "Queries GitHub releases and the registry API, compares version sets, and reports missing versions in either direction. Mentions known historical 0.1.0 mismatch only if confirmed by current queries.",
+      "files": []
+    }
+  ]
+}
