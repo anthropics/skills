@@ -33,9 +33,23 @@ def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tupl
     random.shuffle(trigger)
     random.shuffle(no_trigger)
 
-    # Calculate split points
-    n_trigger_test = max(1, int(len(trigger) * holdout))
-    n_no_trigger_test = max(1, int(len(no_trigger) * holdout))
+    # Calculate split points. Clamp so the train set keeps at least one
+    # example from each class when possible: with a single positive (or
+    # negative) example, max(1, int(1*holdout))=1 would put it entirely in
+    # test, leaving train with zero positives/negatives and breaking the
+    # improvement loop (it would never see any failures-to-trigger / false
+    # triggers for that class).
+    def _split_point(n: int) -> int:
+        if n == 0:
+            return 0
+        if n == 1:
+            # Only one example for this class: keep it in train so the
+            # improvement loop can react to it.
+            return 0
+        return min(n - 1, max(1, int(n * holdout)))
+
+    n_trigger_test = _split_point(len(trigger))
+    n_no_trigger_test = _split_point(len(no_trigger))
 
     # Split
     test_set = trigger[:n_trigger_test] + no_trigger[:n_no_trigger_test]
