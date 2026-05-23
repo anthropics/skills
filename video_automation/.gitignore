@@ -1,0 +1,10 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+output/*.mp4
+credentials/youtube_token.pickle
+automation.db
+*.m4a
+*.tmp
