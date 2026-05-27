@@ -29,7 +29,7 @@ class RedliningValidator:
 
         # First, check if there are any tracked changes by Claude to validate
         try:
-            import xml.etree.ElementTree as ET
+            import defusedxml.ElementTree as ET
 
             tree = ET.parse(modified_file)
             root = tree.getroot()
@@ -79,15 +79,16 @@ class RedliningValidator:
                 )
                 return False
 
-            # Parse both XML files using xml.etree.ElementTree for redlining validation
-            try:
-                import xml.etree.ElementTree as ET
+            # Parse both XML files using defusedxml.ElementTree for redlining validation
+            import defusedxml.ElementTree as ET
+            from defusedxml import DefusedXmlException
 
+            try:
                 modified_tree = ET.parse(modified_file)
                 modified_root = modified_tree.getroot()
                 original_tree = ET.parse(original_file)
                 original_root = original_tree.getroot()
-            except ET.ParseError as e:
+            except (ET.ParseError, DefusedXmlException) as e:
                 print(f"FAILED - Error parsing XML files: {e}")
                 return False
 
