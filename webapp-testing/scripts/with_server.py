@@ -65,7 +65,12 @@ def main():
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            # Use shell=True to support commands with cd and &&
+            # Use shell=True to support commands with cd and &&.
+            # `server['cmd']` is supplied by the developer running the script
+            # from their own shell (via --server). There is no remote attack
+            # surface — this is a local dev orchestrator, equivalent to the
+            # developer typing the command themselves.
+            # nosemgrep: subprocess-shell-true
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,

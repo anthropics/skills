@@ -911,6 +911,10 @@ async function html2pptx(htmlFile, pres, options = {}) {
     let bodyDimensions;
     let slideData;
 
+    // nosemgrep: path-join-resolve-traversal
+    // CLI tool: `htmlFile` is the user-supplied positional argument
+    // pointing at the HTML the user wants rendered to PPTX. Resolving it
+    // against cwd is the intended behaviour, not a traversal bug.
     const filePath = path.isAbsolute(htmlFile) ? htmlFile : path.join(process.cwd(), htmlFile);
     const validationErrors = [];
 
@@ -921,6 +925,9 @@ async function html2pptx(htmlFile, pres, options = {}) {
         console.log(`Browser console: ${msg.text()}`);
       });
 
+      // nosemgrep: playwright-goto-injection
+      // Loading the user-supplied HTML file is the entire purpose of this
+      // CLI tool; there is no untrusted-network input to inject into here.
       await page.goto(`file://${filePath}`);
 
       bodyDimensions = await getBodyDimensions(page);
