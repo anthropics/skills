@@ -91,7 +91,14 @@ def recalc(filename, timeout=30):
 
     result = subprocess.run(cmd, capture_output=True, text=True, env=get_soffice_env())
 
-    if result.returncode != 0 and result.returncode != 124:  
+    if result.returncode == 124:
+        return {
+            "status": "recalc_timeout",
+            "error": f"LibreOffice recalculation timed out after {timeout} seconds",
+            "timeout_seconds": timeout,
+        }
+
+    if result.returncode != 0:
         error_msg = result.stderr or "Unknown error during recalculation"
         if "Module1" in error_msg or "RecalculateAndSave" not in error_msg:
             return {"error": "LibreOffice macro not configured properly"}
@@ -166,7 +173,7 @@ def main():
         print("Usage: python recalc.py <excel_file> [timeout_seconds]")
         print("\nRecalculates all formulas in an Excel file using LibreOffice")
         print("\nReturns JSON with error details:")
-        print("  - status: 'success' or 'errors_found'")
+        print("  - status: 'success', 'errors_found', or 'recalc_timeout'")
         print("  - total_errors: Total number of Excel errors found")
         print("  - total_formulas: Number of formulas in the file")
         print("  - error_summary: Breakdown by error type with locations")
