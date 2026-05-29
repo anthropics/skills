@@ -1,0 +1,1185 @@
+[
+  {
+    "id": "GDPR-Art12-response-time",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Response to Requests",
+    "severity": "warning",
+    "summary": "Controllers must respond to data subject requests within one month.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "response time",
+        "one month",
+        "30 days"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement process to handle and respond to data subject requests within 30 days.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.12(3)",
+      "source_url": "https://gdpr.eu/article-12-how-controllers-should-provide-personal-data-transparently/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art12-transparent",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Transparent Information",
+    "severity": "warning",
+    "summary": "Information about data processing must be provided in a concise, transparent, intelligible form using clear and plain language.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "privacy\\s+(policy|notice|statement)",
+        "how\\s+we\\s+(use|collect|process)\\s+(your\\s+)?data"
+      ],
+      "keywords": [
+        "privacy policy",
+        "privacy notice",
+        "data processing notice",
+        "privacy statement"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use clear, simple language in privacy notices. Avoid legal jargon.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.12(1)",
+      "source_url": "https://gdpr.eu/article-12-how-controllers-should-provide-personal-data-transparently/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-complaint-right",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Lodge Complaint",
+    "severity": "warning",
+    "summary": "Must inform data subjects of their right to lodge a complaint with a supervisory authority.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "supervisory\\s+authority",
+        "data\\s+protection\\s+authority",
+        "lodge\\s+a\\s+complaint",
+        "file\\s+a\\s+complaint.*DPA"
+      ],
+      "keywords": [
+        "supervisory authority",
+        "data protection authority",
+        "lodge a complaint",
+        "DPA",
+        "ICO",
+        "CNIL"
+      ]
+    },
+    "remediation": {
+      "guidance": "Inform data subjects of their right to complain to a supervisory authority and provide contact details.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(2)(d)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-identity",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Controller Identity Disclosure",
+    "severity": "critical",
+    "summary": "At data collection, must disclose identity and contact details of the controller.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "data\\s+controller",
+        "controller\\s+is",
+        "data\\s+protection\\s+officer"
+      ],
+      "keywords": [
+        "data controller",
+        "data protection officer",
+        "DPO",
+        "controller identity"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include company name, address, and contact information in privacy notice.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(1)(a)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-legitimate-interest",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Legitimate Interest Disclosure",
+    "severity": "warning",
+    "summary": "When processing is based on legitimate interests, the specific interests must be identified and disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "legitimate\\s+interest(s)?\\s+(pursued|of|include|such as)",
+        "our\\s+legitimate\\s+interest\\s+is"
+      ],
+      "keywords": [
+        "legitimate interest",
+        "legitimate interests pursued",
+        "business interest",
+        "legitimate basis"
+      ]
+    },
+    "remediation": {
+      "guidance": "When relying on legitimate interests as a legal basis, specify the actual interests pursued. Generic statements like 'our legitimate interests' are insufficient.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(1)(d)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-purposes",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Purpose and Legal Basis Disclosure",
+    "severity": "critical",
+    "summary": "Must disclose purposes and legal basis for processing at collection.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "process(ing|ed)?\\s+(your|personal)\\s+data\\s+(for|to)",
+        "legal\\s+basis\\s+for\\s+process",
+        "purpose\\s+of\\s+(the\\s+)?process"
+      ],
+      "keywords": [
+        "purpose of processing",
+        "legal basis for processing",
+        "we process your data",
+        "data processing purposes"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly state why data is being collected and the legal basis.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(1)(c)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-recipients",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Recipients Disclosure",
+    "severity": "warning",
+    "summary": "Must disclose the recipients or categories of recipients of personal data at the time of collection.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "share.*with\\s+(third|our)",
+        "disclose.*to\\s+(third|partner)",
+        "third[\\s-]?part(y|ies).*receiv",
+        "data\\s+processor"
+      ],
+      "keywords": [
+        "recipients",
+        "third party sharing",
+        "data processor",
+        "sub-processor",
+        "who we share with",
+        "service providers"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all recipients or categories of recipients who will receive personal data.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(1)(e)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art13-retention",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Retention Period Disclosure",
+    "severity": "warning",
+    "summary": "Must disclose how long personal data will be stored or criteria for determining retention.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "retain(ed)?\\s+(your|personal)\\s+data\\s+(for|until)",
+        "retention\\s+period",
+        "data\\s+(will\\s+be\\s+)?(stored|kept|retained)\\s+(for|until)"
+      ],
+      "keywords": [
+        "retention period",
+        "data retention",
+        "how long we keep",
+        "stored for"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include data retention periods in privacy policy.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(2)(a)",
+      "source_url": "https://gdpr.eu/article-13-personal-data-collected/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art14-indirect-collection",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Indirect Data Collection Disclosure",
+    "severity": "warning",
+    "summary": "When personal data is not obtained directly from the data subject, must disclose the source and categories of data within a reasonable period.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "obtained\\s+from\\s+third\\s+part",
+        "data\\s+source",
+        "publicly\\s+available\\s+source",
+        "received\\s+from"
+      ],
+      "keywords": [
+        "source of data",
+        "third party data",
+        "data broker",
+        "publicly available",
+        "indirect collection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose the source of personal data when it was not collected directly from the data subject, including the categories of data obtained.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.14",
+      "source_url": "https://gdpr.eu/article-14-personal-data-not-obtained-from-data-subject/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art15-access",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right of Access",
+    "severity": "warning",
+    "summary": "Data subjects have the right to obtain confirmation and access to their personal data.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "access",
+        "obtain",
+        "copy"
+      ]
+    },
+    "remediation": {
+      "guidance": "Inform users of their access rights and provide mechanism to request data.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.15(1)",
+      "source_url": "https://gdpr.eu/article-15-right-of-access/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "data-rights",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art17-erasure",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Erasure",
+    "severity": "warning",
+    "summary": "Data subjects have the right to have their personal data erased in certain circumstances.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "delete.*account",
+        "remove.*data",
+        "erasure"
+      ],
+      "keywords": [
+        "erasure",
+        "delete",
+        "right to be forgotten"
+      ]
+    },
+    "remediation": {
+      "guidance": "Inform users of their erasure rights and provide deletion request mechanism.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.17(1)",
+      "source_url": "https://gdpr.eu/article-17-right-to-be-forgotten/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art20-portability",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Data Portability",
+    "severity": "info",
+    "summary": "Data subjects have the right to receive their data in a machine-readable format.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "portability",
+        "export",
+        "download",
+        "machine-readable"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide data export functionality in common formats (JSON, CSV).",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.20(1)",
+      "source_url": "https://gdpr.eu/article-20-right-to-data-portability/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art21-marketing",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Object to Marketing",
+    "severity": "critical",
+    "summary": "Data subjects have an absolute right to object to direct marketing at any time.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "unsubscribe",
+        "marketing\\s+preferences",
+        "email\\s+preferences"
+      ],
+      "keywords": [
+        "marketing",
+        "unsubscribe",
+        "opt-out",
+        "preferences"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide easy opt-out from all marketing communications.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.21(2)",
+      "source_url": "https://gdpr.eu/article-21-right-to-object/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art21-object",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Object",
+    "severity": "warning",
+    "summary": "Data subjects have the right to object to processing based on legitimate interests.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "object",
+        "opt-out",
+        "stop processing"
+      ]
+    },
+    "remediation": {
+      "guidance": "Inform users of their right to object and provide mechanism to do so.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.21(1)",
+      "source_url": "https://gdpr.eu/article-21-right-to-object/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art22-automated-decisions",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Automated Decision-Making Disclosure",
+    "severity": "critical",
+    "summary": "Data subjects have the right not to be subject to decisions based solely on automated processing, including profiling. Must disclose existence of automated decision-making and meaningful information about the logic.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "automated\\s+decision",
+        "profiling",
+        "algorithm(ic)?\\s+(decision|processing)",
+        "AI[\\s-]?(based|driven|powered)\\s+decision",
+        "machine\\s+learning.*decision",
+        "automat(ed|ic)\\s+(assessment|scoring|rejection)"
+      ],
+      "keywords": [
+        "automated decision-making",
+        "profiling",
+        "algorithmic decision",
+        "automated processing",
+        "credit scoring",
+        "automated assessment"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose existence of automated decision-making, meaningful information about the logic involved, and the significance and envisaged consequences.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.22",
+      "source_url": "https://gdpr.eu/article-22-automated-individual-decision-making/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art5-lawful",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Lawful, Fair, and Transparent Processing",
+    "severity": "critical",
+    "summary": "Personal data must be processed lawfully, fairly and in a transparent manner.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "lawful",
+        "fair",
+        "transparent"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure clear legal basis for processing and transparent communication.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.5(1)(a)",
+      "source_url": "https://gdpr.eu/article-5-how-to-process-personal-data/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art5-purpose",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Purpose Limitation",
+    "severity": "warning",
+    "summary": "Personal data must be collected for specified, explicit and legitimate purposes.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "purpose",
+        "specified",
+        "legitimate"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly state purposes at collection and do not process for incompatible purposes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.5(1)(b)",
+      "source_url": "https://gdpr.eu/article-5-how-to-process-personal-data/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art6-legal-basis",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Legal Basis Required",
+    "severity": "critical",
+    "summary": "Processing must have a valid legal basis: consent, contract, legal obligation, vital interests, public task, or legitimate interests.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "legal basis",
+        "consent",
+        "legitimate interest",
+        "contract"
+      ]
+    },
+    "remediation": {
+      "guidance": "Document and disclose the legal basis for each processing activity.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.6(1)",
+      "source_url": "https://gdpr.eu/article-6-how-to-process-personal-data-legally/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art7-consent-conditions",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Consent Conditions",
+    "severity": "critical",
+    "summary": "Where consent is the legal basis, controller must demonstrate the data subject consented.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "consent",
+        "demonstrate",
+        "records"
+      ]
+    },
+    "remediation": {
+      "guidance": "Keep records of consent including when, how, and what was consented to.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.7(1)",
+      "source_url": "https://gdpr.eu/article-7-how-to-get-consent-to-collect-personal-data/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art7-cookie-consent",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Cookie Consent Banner",
+    "severity": "critical",
+    "summary": "Non-essential cookies require explicit consent before being set.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "document\\.cookie",
+        "localStorage",
+        "tracking"
+      ],
+      "keywords": [
+        "cookie",
+        "consent",
+        "banner",
+        "tracking"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement cookie consent banner that blocks non-essential cookies until consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.7",
+      "source_url": "https://gdpr.eu/cookies/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "cookies"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art7-unbundled-consent",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Unbundled Consent",
+    "severity": "warning",
+    "summary": "Consent requests must be clearly distinguishable from other matters. Consent cannot be bundled into terms of service or pre-ticked.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "by\\s+(using|continuing|accessing)\\s+(this|our)\\s+(site|website|service)\\s+you\\s+(agree|consent)",
+        "pre[\\s-]?ticked",
+        "pre[\\s-]?checked",
+        "by\\s+signing\\s+up\\s+you\\s+agree.*and.*market"
+      ],
+      "keywords": [
+        "bundled consent",
+        "pre-ticked",
+        "by using this site you agree",
+        "by continuing you consent"
+      ]
+    },
+    "remediation": {
+      "guidance": "Present consent requests separately from terms of service. Do not use pre-ticked boxes. Consent must be a clear affirmative action.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.7(2)",
+      "source_url": "https://gdpr.eu/article-7-how-to-get-consent-to-collect-personal-data/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art7-withdraw",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Right to Withdraw Consent",
+    "severity": "critical",
+    "summary": "Data subjects must be able to withdraw consent as easily as they gave it.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "unsubscribe",
+        "opt[\\s-]?out",
+        "withdraw\\s+consent"
+      ],
+      "keywords": [
+        "withdraw",
+        "unsubscribe",
+        "opt-out"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide clear and easy mechanism to withdraw consent at any time.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.7(3)",
+      "source_url": "https://gdpr.eu/article-7-how-to-get-consent-to-collect-personal-data/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art8-children-consent",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Children's Data Consent",
+    "severity": "critical",
+    "summary": "Processing personal data of children under 16 requires parental consent. Information society services directed at children must verify age and obtain parental authorization.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "parental\\s+consent",
+        "age\\s+verif",
+        "under\\s+(13|14|15|16)\\s+(years?)?",
+        "child(ren)?.*consent"
+      ],
+      "keywords": [
+        "parental consent",
+        "children's data",
+        "age verification",
+        "minors",
+        "child protection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement age verification mechanisms and obtain verifiable parental consent for children under 16.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.8",
+      "source_url": "https://gdpr.eu/article-8-conditions-for-consent-of-children/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-Art9-special-categories",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "Special Categories of Data",
+    "severity": "critical",
+    "summary": "Processing of special category data (health, biometric, genetic, racial/ethnic origin, political opinions, religious beliefs, sexual orientation) requires explicit consent.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(health|medical|biometric|genetic)\\s+(data|information)",
+        "(racial|ethnic)\\s+origin",
+        "political\\s+opinion",
+        "religious\\s+belief",
+        "sexual\\s+orientation",
+        "trade\\s+union\\s+membership"
+      ],
+      "keywords": [
+        "special category data",
+        "sensitive personal data",
+        "health data",
+        "biometric data",
+        "genetic data",
+        "explicit consent"
+      ]
+    },
+    "remediation": {
+      "guidance": "Obtain explicit consent before processing special category data. Clearly disclose what special categories are processed and why.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.9",
+      "source_url": "https://gdpr.eu/article-9-processing-special-categories-of-personal-data-prohibited/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "GDPR-transfer",
+    "version": "1.0.0",
+    "framework": "gdpr",
+    "title": "International Data Transfer Disclosure",
+    "severity": "warning",
+    "summary": "Must disclose intention to transfer data to third countries and safeguards in place.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "transfer(red|ring)?\\s+(to|outside)\\s+(a\\s+)?third\\s+countr",
+        "transfer.*outside\\s+(the\\s+)?(EU|EEA|European)"
+      ],
+      "keywords": [
+        "international transfer",
+        "transfer outside",
+        "third country",
+        "adequacy decision",
+        "standard contractual clauses"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose international transfers in privacy policy with legal mechanisms used.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed_with_attribution",
+      "citation": "Art.13(1)(f)",
+      "source_url": "https://gdpr.eu/international-data-transfer-rules/",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": true
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "data-transfer"
+      ],
+      "jurisdiction": [
+        "EU"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]
