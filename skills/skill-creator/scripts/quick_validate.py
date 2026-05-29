@@ -9,6 +9,22 @@ import re
 import yaml
 from pathlib import Path
 
+
+def _read_text_robust(path: Path) -> str:
+    """Read text in a way that works on Windows default encodings.
+
+    Many SKILL.md files are authored in UTF-8 and may include Unicode box drawing,
+    arrows, etc. Windows default cp1252 decoding can fail on bytes like 0x90.
+    """
+
+    for encoding in ("utf-8", "utf-8-sig", "utf-16"):
+        try:
+            return path.read_text(encoding=encoding)
+        except UnicodeDecodeError:
+            continue
+
+    return path.read_text(encoding="cp1252", errors="replace")
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -19,7 +35,7 @@ def validate_skill(skill_path):
         return False, "SKILL.md not found"
 
     # Read and validate frontmatter
-    content = skill_md.read_text()
+    content = _read_text_robust(skill_md)
     if not content.startswith('---'):
         return False, "No YAML frontmatter found"
 

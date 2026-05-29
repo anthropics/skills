@@ -1,0 +1,247 @@
+{
+    "_description": "Complete FRAP compliance rules for Ninth Circuit briefs",
+    "word_limits": {
+        "principal_brief": {
+            "limit": 14000,
+            "rule": "FRAP 32(a)(7)(B)(i)",
+            "note": "Opening and answering briefs"
+        },
+        "reply_brief": {
+            "limit": 7000,
+            "rule": "FRAP 32(a)(7)(B)(ii)",
+            "note": "Reply briefs only"
+        },
+        "cross_appeal_brief": {
+            "limit": 16500,
+            "rule": "FRAP 28.1(e)(2)(A)",
+            "note": "When cross-appeal is consolidated"
+        }
+    },
+    "required_sections": {
+        "order": [
+            "corporate_disclosure",
+            "table_of_contents",
+            "table_of_authorities",
+            "jurisdictional_statement",
+            "issues_presented",
+            "statement_of_case",
+            "summary_of_argument",
+            "argument",
+            "conclusion",
+            "certificate_of_compliance",
+            "certificate_of_service"
+        ],
+        "details": {
+            "corporate_disclosure": {
+                "rule": "FRAP 26.1",
+                "required_for": "nongovernmental corporations",
+                "content": "Identify parent corporation and any publicly held corporation owning 10%+ stock",
+                "exemption": "Natural persons do not need to file"
+            },
+            "table_of_contents": {
+                "rule": "FRAP 28(a)(2)",
+                "content": "List all sections with page numbers",
+                "format": "Include argument headings and subheadings"
+            },
+            "table_of_authorities": {
+                "rule": "FRAP 28(a)(3)",
+                "content": "All authorities cited with page references",
+                "format": {
+                    "cases": "Alphabetical by case name",
+                    "statutes": "Numerical by title and section",
+                    "rules": "By rule number",
+                    "other": "Treatises, law reviews, etc."
+                }
+            },
+            "jurisdictional_statement": {
+                "rule": "FRAP 28(a)(4)",
+                "content": [
+                    "District court jurisdiction basis with statute",
+                    "Appellate jurisdiction basis with statute",
+                    "Filing dates (judgment, notice of appeal)",
+                    "Timeliness rule citation",
+                    "Final judgment status"
+                ],
+                "answering_brief": "Not required if agreeing with opening brief"
+            },
+            "issues_presented": {
+                "rule": "FRAP 28(a)(5)",
+                "format": "Each issue as single sentence",
+                "tip": "Start with 'Whether' and suggest the answer"
+            },
+            "statement_of_case": {
+                "rule": "FRAP 28(a)(6)",
+                "content": [
+                    "Relevant facts",
+                    "Procedural history",
+                    "Rulings presented for review"
+                ],
+                "ninth_circuit": {
+                    "rule": "9th Cir. R. 28-2.8",
+                    "requirement": "Every factual assertion must cite to Excerpts of Record",
+                    "format": "ER-XX or 1-ER-XX for multi-volume"
+                }
+            },
+            "summary_of_argument": {
+                "rule": "FRAP 28(a)(7)",
+                "content": "Clear, succinct statement of arguments",
+                "prohibition": "Must not merely repeat argument headings"
+            },
+            "argument": {
+                "rule": "FRAP 28(a)(8)",
+                "content": [
+                    "Contentions with reasons and citations",
+                    "Standard of review for each issue",
+                    "Where objection preserved in record (if required)"
+                ]
+            },
+            "conclusion": {
+                "rule": "FRAP 28(a)(9)",
+                "content": "Short statement of relief sought"
+            },
+            "certificate_of_compliance": {
+                "rule": "FRAP 32(g)",
+                "content": [
+                    "Word count or line count",
+                    "Typeface used",
+                    "Type style used"
+                ]
+            },
+            "certificate_of_service": {
+                "rule": "FRAP 25(d)",
+                "content": [
+                    "Date of service",
+                    "Method of service",
+                    "Names of persons served"
+                ]
+            }
+        }
+    },
+    "optional_sections": {
+        "introduction": {
+            "rule": "FRAP 28(a)(1) (permitted)",
+            "tip": "Max 2 pages, summarize why you should win",
+            "placement": "After Table of Authorities, before Jurisdictional Statement"
+        },
+        "standard_of_review": {
+            "note": "Can be separate section or within each argument",
+            "tip": "Often clearer as separate section before Argument"
+        },
+        "addendum": {
+            "rule": "FRAP 28(f)",
+            "content": "Text of relevant statutes, rules, regulations",
+            "word_count": "Not counted toward word limit"
+        },
+        "statement_of_related_cases": {
+            "rule": "9th Cir. R. 28-2.6",
+            "content": "Any related cases pending in this Court"
+        }
+    },
+    "formatting_requirements": {
+        "typeface": {
+            "rule": "FRAP 32(a)(5)",
+            "proportional": {
+                "size": "14-point or larger",
+                "serif": "required",
+                "examples": [
+                    "Times New Roman",
+                    "Georgia",
+                    "Century Schoolbook"
+                ]
+            },
+            "monospaced": {
+                "max_characters_per_inch": 10.5
+            },
+            "footnotes": "Same size as body text"
+        },
+        "type_style": {
+            "rule": "FRAP 32(a)(6)",
+            "body": "plain, roman style",
+            "emphasis": "italics or boldface (sparingly)",
+            "case_names": "italics or underline"
+        },
+        "margins": {
+            "rule": "FRAP 32(a)(4)",
+            "minimum": "1 inch on all four sides",
+            "page_numbers": "May be in margins"
+        },
+        "spacing": {
+            "body": "double-spaced",
+            "exceptions": [
+                "quotations over 2 lines (may be single-spaced and indented)",
+                "headings (may be single-spaced)",
+                "footnotes (may be single-spaced)"
+            ]
+        },
+        "page_size": {
+            "rule": "FRAP 32(a)(4)",
+            "size": "8.5 x 11 inches"
+        }
+    },
+    "ninth_circuit_specific": {
+        "record_citations": {
+            "rule": "9th Cir. R. 28-2.8",
+            "format": {
+                "single_volume": "ER-123",
+                "multi_volume": "1-ER-234",
+                "supplemental": "1-SER-56",
+                "further": "1-FER-78"
+            },
+            "requirement": "Specific page citations, not large ranges"
+        },
+        "excerpts_of_record": {
+            "rule": "9th Cir. R. 30-1",
+            "content": "All portions of record cited in brief"
+        },
+        "immigration_cases": {
+            "rule": "9th Cir. R. 28-2.7",
+            "cite_to": "Certified administrative record and addendum"
+        },
+        "social_security_cases": {
+            "rule": "9th Cir. R. 30-1.4(e)",
+            "cite_to": "Certified administrative record and excerpts"
+        }
+    },
+    "common_errors": [
+        {
+            "error": "Missing record citations",
+            "consequence": "Brief may be stricken",
+            "rule": "9th Cir. R. 28-2.8"
+        },
+        {
+            "error": "Exceeding word limit",
+            "consequence": "Brief rejected or motion required",
+            "rule": "FRAP 32(a)(7)"
+        },
+        {
+            "error": "Wrong font size",
+            "consequence": "Non-compliance, may need refiling",
+            "rule": "FRAP 32(a)(5)"
+        },
+        {
+            "error": "Missing Certificate of Compliance",
+            "consequence": "Brief may be rejected",
+            "rule": "FRAP 32(g)"
+        },
+        {
+            "error": "Passim overuse in TOA",
+            "consequence": "Not an error but disfavored",
+            "tip": "List actual pages unless authority appears on nearly every page"
+        }
+    ],
+    "deadlines": {
+        "opening_brief": {
+            "days": 40,
+            "from": "docketing of appeal"
+        },
+        "answering_brief": {
+            "days": 30,
+            "from": "service of opening brief"
+        },
+        "reply_brief": {
+            "days": 21,
+            "from": "service of answering brief"
+        },
+        "note": "Check 9th Cir. website for current standing orders"
+    }
+}

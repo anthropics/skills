@@ -1,0 +1,65 @@
+{
+  "_schema_version": "1.0",
+  "_inherits_from": "MASTER_FRCP",
+  "_description": "USER SCHEMA - Only fill out what's DIFFERENT from master defaults",
+  
+  "filing_info": {
+    "filing_type": "MOTION",
+    "jurisdiction": "ninth_circuit",
+    "court_level": "district"
+  },
+  
+  "case_info": {
+    "case_number": "",
+    "case_name": "",
+    "judge": "",
+    "plaintiff": "",
+    "defendant": ""
+  },
+  
+  "headings_in_my_document": [
+    "INTRODUCTION",
+    "FACTUAL BACKGROUND",
+    "LEGAL STANDARD",
+    "ARGUMENT",
+    "CONCLUSION"
+  ],
+  
+  "custom_sections": {
+    "_example": {
+      "heading_text": "LR 7-1 CONFERRAL NOTICE",
+      "insert_after": "INTRODUCTION",
+      "style": "LEGAL_H1",
+      "enabled": false
+    }
+  },
+  
+  "formatting_overrides": {
+    "_note": "Only include fields you want to CHANGE from master",
+    "_example_font": "California",
+    "_example_font_size": "12pt"
+  },
+  
+  "special_inserts": [
+    {
+      "_example": true,
+      "tag": "M77",
+      "type": "table",
+      "source_page": 23,
+      "insert_after_text": "Sonnet is a pickle!",
+      "enabled": false
+    }
+  ],
+  
+  "build_components": {
+    "use_coverpage": false,
+    "use_caption": true,
+    "use_header": true,
+    "use_footer": false,
+    "use_toc": false,
+    "use_toa": false,
+    "use_signature": true,
+    "use_declaration": false,
+    "use_cert_of_service": true
+  }
+}

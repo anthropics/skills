@@ -1,0 +1,99 @@
+{
+  "_schema_name": "MASTER_FRAP",
+  "_version": "1.0.0",
+  "_description": "Master formatting rules for Federal Rules of Appellate Procedure (Court of Appeals)",
+  
+  "default_formatting": {
+    "font": "California",
+    "font_fallback": ["Century Schoolbook", "Times New Roman"],
+    "font_size": "14pt",
+    "line_spacing": "double",
+    "margins": {
+      "top": "1in",
+      "bottom": "1in",
+      "left": "1in",
+      "right": "1in"
+    },
+    "paragraph_indent": "0.5in",
+    "alignment": "left"
+  },
+  
+  "heading_styles": {
+    "LEGAL_H1": {
+      "font": "California",
+      "font_size": "14pt",
+      "bold": true,
+      "caps": true,
+      "alignment": "center",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H2": {
+      "font": "California",
+      "font_size": "14pt",
+      "bold": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "0in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H3": {
+      "font": "California",
+      "font_size": "14pt",
+      "bold": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "0.5in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H4": {
+      "font": "California",
+      "font_size": "14pt",
+      "italic": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "1in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    }
+  },
+  
+  "body_text_style": {
+    "LEGAL_BODY": {
+      "font": "California",
+      "font_size": "14pt",
+      "bold": false,
+      "italic": false,
+      "alignment": "left",
+      "first_line_indent": "0.5in",
+      "line_spacing": "double",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt"
+    }
+  },
+  
+  "page_settings": {
+    "page_numbers": true,
+    "page_number_location": "bottom_center",
+    "page_number_format": "arabic",
+    "header": {
+      "enabled": false
+    },
+    "footer": {
+      "enabled": false
+    }
+  },
+  
+  "document_limits": {
+    "opening_brief_word_limit": 14000,
+    "answering_brief_word_limit": 14000,
+    "reply_brief_word_limit": 7000,
+    "motion_word_limit": 5200
+  }
+}
