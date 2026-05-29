@@ -14,12 +14,27 @@ Auto-repair fixes:
 """
 
 import argparse
+import os
 import sys
 import tempfile
 import zipfile
 from pathlib import Path
 
 from validators import DOCXSchemaValidator, PPTXSchemaValidator, RedliningValidator
+
+
+def _safe_extractall(zf, target_dir):
+    """Extract zip contents safely, preventing Zip Slip path traversal."""
+    target = os.path.realpath(target_dir)
+    for info in zf.infolist():
+        member_path = os.path.realpath(os.path.join(target, info.filename))
+        if not member_path.startswith(target + os.sep) and member_path != target:
+            raise ValueError(
+                f"Zip entry {info.filename!r} would escape target directory"
+            )
+    _safe_extractall(zf, target_dir)
+
+
 
 
 def main():
@@ -71,7 +86,7 @@ def main():
     if path.is_file() and path.suffix.lower() in [".docx", ".pptx", ".xlsx"]:
         temp_dir = tempfile.mkdtemp()
         with zipfile.ZipFile(path, "r") as zf:
-            zf.extractall(temp_dir)
+            _safe_extractall(zf, temp_dir)
         unpacked_dir = Path(temp_dir)
     else:
         assert path.is_dir(), f"Error: {path} is not a directory or Office file"
