@@ -274,7 +274,7 @@ Skills are attached to the **agent** definition via `agents.create()`:
 const agent = await client.beta.agents.create(
   {
     name: "Financial Agent",
-    model: "claude-opus-4-7",
+    model: "claude-opus-4-8",
     system: "You are a financial analysis agent.",
     skills: [
       { type: "anthropic", skill_id: "xlsx" },
@@ -289,7 +289,7 @@ Python:
 ```python
 agent = client.beta.agents.create(
     name="Financial Agent",
-    model="claude-opus-4-7",
+    model="claude-opus-4-8",
     system="You are a financial analysis agent.",
     skills=[
         {"type": "anthropic", "skill_id": "xlsx"},
