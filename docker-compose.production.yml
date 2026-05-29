@@ -1,0 +1,339 @@
+version: '3.8'
+
+# ============================================
+# Production Environment Configuration
+# Blue-Green Deployment Ready
+# ============================================
+
+services:
+  # Frontend service
+  frontend:
+    image: ${REGISTRY:-ghcr.io}/${FRONTEND_IMAGE:-piano-tutor/frontend}:${VERSION:-latest}
+    container_name: piano-tutor-frontend-${DEPLOYMENT_COLOR:-blue}
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=https://api.piano-tutor.com
+      - VITE_WS_URL=wss://api.piano-tutor.com
+      - VITE_SENTRY_DSN=${SENTRY_DSN}
+      - VITE_ANALYTICS_ID=${ANALYTICS_ID}
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    labels:
+      - "com.piano-tutor.environment=production"
+      - "com.piano-tutor.service=frontend"
+      - "com.piano-tutor.version=${VERSION}"
+      - "com.piano-tutor.deployment-color=${DEPLOYMENT_COLOR:-blue}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backend service
+  backend:
+    image: ${REGISTRY:-ghcr.io}/${BACKEND_IMAGE:-piano-tutor/backend}:${VERSION:-latest}
+    container_name: piano-tutor-backend-${DEPLOYMENT_COLOR:-blue}
+    restart: always
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=https://piano-tutor.com,https://www.piano-tutor.com
+      - LOG_LEVEL=info
+      - SENTRY_DSN=${SENTRY_DSN}
+      - MAX_UPLOAD_SIZE=20971520  # 20MB
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - uploads-data:/app/uploads
+      - logs-data:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    labels:
+      - "com.piano-tutor.environment=production"
+      - "com.piano-tutor.service=backend"
+      - "com.piano-tutor.version=${VERSION}"
+      - "com.piano-tutor.deployment-color=${DEPLOYMENT_COLOR:-blue}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # PostgreSQL database with replication
+  postgres:
+    image: postgres:15-alpine
+    container_name: piano-tutor-db-production
+    restart: always
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-piano_tutor}
+      - POSTGRES_USER=${POSTGRES_USER:-piano_tutor}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+      - ./backups:/backups
+    networks:
+      - piano-tutor-network
+    command: >
+      postgres
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c work_mem=2621kB
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-piano_tutor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis cache with persistence
+  redis:
+    image: redis:7-alpine
+    container_name: piano-tutor-redis-production
+    restart: always
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+    volumes:
+      - redis-data:/data
+    networks:
+      - piano-tutor-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Celery worker for async tasks (multiple workers)
+  celery-worker:
+    image: ${REGISTRY:-ghcr.io}/${BACKEND_IMAGE:-piano-tutor/backend}:${VERSION:-latest}
+    container_name: piano-tutor-celery-${DEPLOYMENT_COLOR:-blue}
+    restart: always
+    command: >
+      celery -A app.celery.tasks worker
+      --loglevel=info
+      --concurrency=4
+      --max-tasks-per-child=100
+      --time-limit=300
+      --soft-time-limit=240
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_BROKER_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${REDIS_URL:-redis://redis:6379/0}
+      - SENTRY_DSN=${SENTRY_DSN}
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - uploads-data:/app/uploads
+      - logs-data:/app/logs
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    labels:
+      - "com.piano-tutor.environment=production"
+      - "com.piano-tutor.service=celery"
+      - "com.piano-tutor.version=${VERSION}"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Celery beat for scheduled tasks
+  celery-beat:
+    image: ${REGISTRY:-ghcr.io}/${BACKEND_IMAGE:-piano-tutor/backend}:${VERSION:-latest}
+    container_name: piano-tutor-celery-beat-${DEPLOYMENT_COLOR:-blue}
+    restart: always
+    command: celery -A app.celery.tasks beat --loglevel=info
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_BROKER_URL=${REDIS_URL:-redis://redis:6379/0}
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - postgres
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Nginx reverse proxy (optional - if not using external load balancer)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: piano-tutor-nginx-production
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx-production.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - nginx-cache:/var/cache/nginx
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - frontend
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  piano-tutor-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/piano-tutor/postgres
+  redis-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/piano-tutor/redis
+  uploads-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/piano-tutor/uploads
+  logs-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/log/piano-tutor
+  nginx-cache:
+    driver: local

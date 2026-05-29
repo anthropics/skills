@@ -1,0 +1,90 @@
+[tool.poetry]
+name = "music-training-backend"
+version = "0.1.0"
+description = "Backend for Music Training Platform with Score Following & Analysis"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.104.0"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+
+# Database
+sqlalchemy = "^2.0.0"
+alembic = "^1.13.0"
+psycopg2-binary = "^2.9.9"
+
+# Async support
+asyncio = "^3.4.3"
+aiofiles = "^23.2.1"
+
+# Celery for async tasks
+celery = "^5.3.4"
+redis = "^5.0.1"
+
+# Music analysis libraries
+partitura = "^1.5.0"
+mir-eval = "^0.7"
+librosa = "^0.10.1"
+scipy = "^1.11.0"
+dtaidistance = "^2.3.12"
+numpy = "^1.26.0"
+
+# Audio processing
+soundfile = "^0.12.1"
+resampy = "^0.4.2"
+
+# PyTorch for deep learning models
+torch = "^2.1.0"
+torchaudio = "^2.1.0"
+
+# WebSocket support
+websockets = "^12.0"
+
+# Cloud storage
+boto3 = "^1.34.0"
+google-cloud-storage = "^2.14.0"
+
+# Utils
+python-multipart = "^0.0.6"
+python-dotenv = "^1.0.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+httpx = "^0.25.2"
+
+# Production server
+gunicorn = "^21.2.0"
+
+# System monitoring
+psutil = "^5.9.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+black = "^23.12.1"
+flake8 = "^6.1.0"
+mypy = "^1.7.1"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
