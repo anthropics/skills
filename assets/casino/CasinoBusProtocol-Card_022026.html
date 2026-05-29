@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Casino Bus Protocol — by COCO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #EC4899;
+    --purple: #A855F7;
+    --cyan: #3B82F6;
+    --amber: #F59E0B;
+    --green: #10B981;
+    --red: #EF4444;
+  }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg,
+      #EC4899 0%,
+      #A855F7 30%,
+      #3B82F6 60%,
+      #1e3a8a 100%);
+    background-attachment: fixed;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Watercolor blob overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 15%, rgba(236,72,153,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 10%, rgba(168,85,247,0.2) 0%, transparent 70%),
+      radial-gradient(ellipse 70% 50% at 10% 60%, rgba(59,130,246,0.2) 0%, transparent 70%),
+      radial-gradient(ellipse 55% 45% at 85% 55%, rgba(245,158,11,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 40% 85%, rgba(16,185,129,0.2) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Rainbow shimmer bars */
+  .shimmer-bar {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,
+      #EF4444, #F97316, #F59E0B, #EAB308,
+      #22C55E, #3B82F6, #8B5CF6, #EC4899,
+      #EF4444, #F97316, #F59E0B, #EAB308,
+      #22C55E, #3B82F6, #8B5CF6, #EC4899);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: 0% 0; }
+  }
+
+  /* Card wrapper */
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 430px;
+    padding: 0 12px 20px;
+  }
+
+  /* Header */
+  .protocol-header {
+    text-align: center;
+    padding: 28px 16px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .protocol-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px, 7vw, 34px);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #fff 0%, #fce7f3 40%, #f3e8ff 70%, #dbeafe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    letter-spacing: -0.5px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+
+  .protocol-credits {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Cosmic context block */
+  .cosmic-block {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  .cosmic-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .cosmic-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+    flex-wrap: wrap;
+  }
+
+  .cosmic-icon { font-size: 14px; flex-shrink: 0; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .pill-pink { background: rgba(236,72,153,0.25); color: #fbcfe8; border: 1px solid rgba(236,72,153,0.4); }
+  .pill-purple { background: rgba(168,85,247,0.25); color: #e9d5ff; border: 1px solid rgba(168,85,247,0.4); }
+  .pill-cyan { background: rgba(59,130,246,0.25); color: #bfdbfe; border: 1px solid rgba(59,130,246,0.4); }
+  .pill-amber { background: rgba(245,158,11,0.25); color: #fde68a; border: 1px solid rgba(245,158,11,0.4); }
+  .pill-green { background: rgba(16,185,129,0.25); color: #a7f3d0; border: 1px solid rgba(16,185,129,0.4); }
+  .pill-red { background: rgba(239,68,68,0.25); color: #fecaca; border: 1px solid rgba(239,68,68,0.4); }
+  .pill-white { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.3); }
+
+  /* Window cards */
+  .window {
+    background: rgba(255,255,255,0.13);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 16px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .window:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  /* BEST LUCK rainbow glow */
+  .window.best-luck {
+    border: 1.5px solid rgba(255,255,255,0.35);
+    box-shadow:
+      0 0 0 2px rgba(236,72,153,0.5),
+      0 0 0 4px rgba(168,85,247,0.35),
+      0 0 0 6px rgba(59,130,246,0.25),
+      0 0 20px rgba(236,72,153,0.3),
+      0 0 40px rgba(168,85,247,0.2);
+    animation: rainbowPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes rainbowPulse {
+    0%, 100% {
+      box-shadow: 0 0 0 2px rgba(236,72,153,0.5), 0 0 0 4px rgba(168,85,247,0.35),
+        0 0 0 6px rgba(59,130,246,0.25), 0 0 20px rgba(236,72,153,0.3), 0 0 40px rgba(168,85,247,0.2);
+    }
+    33% {
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.5), 0 0 0 4px rgba(16,185,129,0.35),
+        0 0 0 6px rgba(239,68,68,0.25), 0 0 20px rgba(245,158,11,0.3), 0 0 40px rgba(16,185,129,0.2);
+    }
+    66% {
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.5), 0 0 0 4px rgba(239,68,68,0.35),
+        0 0 0 6px rgba(168,85,247,0.25), 0 0 20px rgba(59,130,246,0.3), 0 0 40px rgba(239,68,68,0.2);
+    }
+  }
+
+  /* Accent bar */
+  .window-accent {
+    height: 4px;
+    width: 100%;
+  }
+
+  .accent-pink { background: linear-gradient(90deg, #EC4899, #f472b6, #EC4899); }
+  .accent-purple { background: linear-gradient(90deg, #A855F7, #c084fc, #A855F7); }
+  .accent-rainbow { background: linear-gradient(90deg, #EF4444, #F97316, #F59E0B, #22C55E, #3B82F6, #8B5CF6, #EC4899); }
+  .accent-amber { background: linear-gradient(90deg, #F59E0B, #fbbf24, #F59E0B); }
+  .accent-green { background: linear-gradient(90deg, #10B981, #34d399, #10B981); }
+  .accent-cyan { background: linear-gradient(90deg, #3B82F6, #60a5fa, #3B82F6); }
+
+  /* Window header (clickable) */
+  .window-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s;
+  }
+
+  .window-header:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .window-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .bg-pink { background: var(--pink); }
+  .bg-purple { background: var(--purple); }
+  .bg-rainbow { background: linear-gradient(135deg, #EC4899, #A855F7, #3B82F6); }
+  .bg-amber { background: var(--amber); }
+  .bg-green { background: var(--green); }
+  .bg-cyan { background: var(--cyan); }
+
+  .window-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .window-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .window-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    line-height: 1.2;
+  }
+
+  .window-name.best-name {
+    background: linear-gradient(90deg, #fbbf24, #f472b6, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .peak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: linear-gradient(90deg, #F59E0B, #EC4899);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .chevron {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  /* Window body */
+  .window-body {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0 16px;
+  }
+
+  .window-body.open {
+    max-height: 500px;
+    padding: 0 16px 16px;
+  }
+
+  .window-body.open ~ * .chevron,
+  .window-header.active .chevron {
+    transform: rotate(180deg);
+  }
+
+  .window-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin-bottom: 12px;
+  }
+
+  /* Tips */
+  .tips-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 7px;
+    color: rgba(255,255,255,0.88);
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+
+  .tip-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Hard rules */
+  .hard-rules {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.35);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 10px;
+  }
+
+  .rules-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fca5a5;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .rule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    color: rgba(255,255,255,0.85);
+    font-size: 13.5px;
+  }
+
+  .rule-check {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid rgba(239,68,68,0.5);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .rules-disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* Footer */
+  .protocol-footer {
+    text-align: center;
+    padding: 16px 16px 32px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-brand {
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="shimmer-bar"></div>
+
+<div style="position:relative;z-index:1;width:100%;max-width:430px;">
+
+  <!-- Header -->
+  <div class="protocol-header">
+    <div class="protocol-title">CASINO BUS<br>PROTOCOL</div>
+    <div class="protocol-credits">by COCO</div>
+  </div>
+
+  <div class="card">
+
+    <!-- Cosmic Context Block -->
+    <div class="cosmic-block">
+      <div class="cosmic-title">Cosmic Context</div>
+
+      <div class="cosmic-row">
+        <span class="cosmic-icon">🌙</span>
+        <span class="pill pill-purple">LUNAR</span>
+        <span class="pill pill-white">Run protocol to generate live data</span>
+      </div>
+
+      <div class="cosmic-row">
+        <span class="cosmic-icon">🔢</span>
+        <span class="pill pill-amber">DAY CODE</span>
+        <span class="pill pill-white">GG33 numerology · date-specific</span>
+      </div>
+
+      <div class="cosmic-row">
+        <span class="cosmic-icon">🌍</span>
+        <span class="pill pill-cyan">YEAR CODE</span>
+        <span class="pill pill-cyan">1 — Leadership / New Era</span>
+      </div>
+
+      <div class="cosmic-row">
+        <span class="cosmic-icon">⚡</span>
+        <span class="pill pill-pink">TRANSIT</span>
+        <span class="pill pill-white">Live web fetch per session</span>
+      </div>
+
+      <div class="cosmic-row">
+        <span class="cosmic-icon">🐒</span>
+        <span class="pill pill-red">RESISTANCE</span>
+        <span class="pill pill-amber">2026 Fire Horse · Monkey Clash — tighten strategy</span>
+      </div>
+    </div>
+
+    <!-- Window 1: Arrival -->
+    <div class="window" id="w1">
+      <div class="window-accent accent-pink"></div>
+      <div class="window-header" onclick="toggleWindow('w1')">
+        <div class="window-num bg-pink">1</div>
+        <div class="window-header-text">
+          <div class="window-time">8:00 – 9:00 PM</div>
+          <div class="window-name">Arrival / Soft Entry</div>
+        </div>
+        <span class="chevron" id="c1">▼</span>
+      </div>
+      <div class="window-body" id="b1">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Walk the floor first — do not sit immediately</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Small bets only. 1 machine max, minimum denomination</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Read the room. Let the energy settle around you</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Observe which sections are active — high traffic = high energy</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Do not respond to FOMO on early wins you see others hit</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Set your session budget here, mentally or on paper</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window 2: Build Mode -->
+    <div class="window" id="w2">
+      <div class="window-accent accent-purple"></div>
+      <div class="window-header" onclick="toggleWindow('w2')">
+        <div class="window-num bg-purple">2</div>
+        <div class="window-header-text">
+          <div class="window-time">9:00 PM – [Numerology-Shifted]</div>
+          <div class="window-name">Build Mode</div>
+        </div>
+        <span class="chevron" id="c2">▼</span>
+      </div>
+      <div class="window-body" id="b2">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>1–2 machines max. No hopping.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>Stay on a machine for at least 20 min before deciding to move</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>Conservative steady play — track your credits baseline</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>If cold after 20 min, give one more cycle then move</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>No doubling up to recover early losses</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window 3: BEST LUCK -->
+    <div class="window best-luck" id="w3">
+      <div class="window-accent accent-rainbow"></div>
+      <div class="window-header" onclick="toggleWindow('w3')">
+        <div class="window-num bg-rainbow">3</div>
+        <div class="window-header-text">
+          <div class="window-time">Numerology-Shifted Peak Window</div>
+          <div class="window-name best-name">★ BEST LUCK WINDOW ★</div>
+        </div>
+        <span class="peak-badge">⭐ PEAK</span>
+        <span class="chevron" id="c3">▼</span>
+      </div>
+      <div class="window-body" id="b3">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--pink)"></div>
+          <span>Strongest energy alignment of the night — be present, not distracted</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--purple)"></div>
+          <span>Moderate pressure allowed — this is the window</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span><strong>If ahead:</strong> LOCK PROFIT immediately. Do not reinvest without a plan.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--red)"></div>
+          <span><strong>If behind:</strong> Cap losses here. Do not chase.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>Have your win-lock number decided BEFORE this window opens</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>If you hit during this window, walk away and reset before continuing</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window 4: Break -->
+    <div class="window" id="w4">
+      <div class="window-accent accent-amber"></div>
+      <div class="window-header" onclick="toggleWindow('w4')">
+        <div class="window-num bg-amber">4</div>
+        <div class="window-header-text">
+          <div class="window-time">Mid-Session Break</div>
+          <div class="window-name">Intentional Reset</div>
+        </div>
+        <span class="chevron" id="c4">▼</span>
+      </div>
+      <div class="window-body" id="b4">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>15–20 min break — NON-NEGOTIABLE. Never skip.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>Walk floor. Drink water. Recalibrate.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>Full scene change — step outside or to the food area</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>This is the break that saves the night, not wastes it</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>Reassess position: up, down, or even — adjust next windows accordingly</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--amber)"></div>
+          <span>Protection from fatigue and tilt. Frame it as armor, not downtime.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window 5: Taper -->
+    <div class="window" id="w5">
+      <div class="window-accent accent-green"></div>
+      <div class="window-header" onclick="toggleWindow('w5')">
+        <div class="window-num bg-green">5</div>
+        <div class="window-header-text">
+          <div class="window-time">12:00 – 1:30 AM</div>
+          <div class="window-name">Taper</div>
+        </div>
+        <span class="chevron" id="c5">▼</span>
+      </div>
+      <div class="window-body" id="b5">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>Light play only. No high-volatility machines.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>Penny or nickel denomination only during taper</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>If you're up, your only job is to leave with it</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>No new machines — stay with what you know</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--green)"></div>
+          <span>Protect everything gained. Low denomination, low pressure.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Window 6: Exit -->
+    <div class="window" id="w6">
+      <div class="window-accent accent-cyan"></div>
+      <div class="window-header" onclick="toggleWindow('w6')">
+        <div class="window-num bg-cyan">6</div>
+        <div class="window-header-text">
+          <div class="window-time">1:45 AM — HARD STOP</div>
+          <div class="window-name">Exit</div>
+        </div>
+        <span class="chevron" id="c6">▼</span>
+      </div>
+      <div class="window-body" id="b6">
+        <div class="window-divider"></div>
+        <div class="tips-label">Tips / Keys</div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>Get on the bus. No last spins. No "one more."</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>Cash out 15 min before bus time — avoid lines</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>Win or lose — the schedule says LEAVE</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>The bus is the hard stop. Honor it every time.</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-dot" style="background:var(--cyan)"></div>
+          <span>Debrief on the ride home — what worked, what didn't</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hard Rules -->
+    <div class="hard-rules">
+      <div class="rules-title">⚠ Hard Rules — Non-Negotiable</div>
+      <div class="rule-item">
+        <div class="rule-check"></div>
+        <span>Set loss limit BEFORE arriving</span>
+      </div>
+      <div class="rule-item">
+        <div class="rule-check"></div>
+        <span>Win-lock rule: lock a % when ahead</span>
+      </div>
+      <div class="rule-item">
+        <div class="rule-check"></div>
+        <span>No emotional chasing</span>
+      </div>
+      <div class="rule-item">
+        <div class="rule-check"></div>
+        <span>No "one last try"</span>
+      </div>
+      <div class="rule-item">
+        <div class="rule-check"></div>
+        <span>Leave on the bus at 1:45 AM</span>
+      </div>
+      <div class="rules-disclaimer">This is timing + probability. Not a guarantee.</div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /max-width wrapper -->
+
+<div class="shimmer-bar"></div>
+
+<div class="protocol-footer">
+  <div class="footer-brand">All Seeing Eyes · @allsxxing</div>
+  <div>ai.xxey.es/casino · GJ Bordallo · Houston TX</div>
+</div>
+
+<script>
+function toggleWindow(id) {
+  var body = document.getElementById('b' + id.replace('w', ''));
+  var chevron = document.getElementById('c' + id.replace('w', ''));
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+</script>
+
+</body>
+</html>
