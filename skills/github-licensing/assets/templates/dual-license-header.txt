@@ -1,0 +1,23 @@
+/*
+ * Copyright (c) [year] [Copyright Holder]
+ *
+ * This file is available under EITHER:
+ *   (1) the [GNU Affero General Public License, version 3], as published
+ *       by the Free Software Foundation; OR
+ *   (2) a commercial license from [Copyright Holder].
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-[Holder]-Commercial
+ *
+ * For commercial licensing, contact sales@[your-domain].example.
+ */
+
+# ----------------------------------------------------------------------------
+# Dual-license source header. Adjust the comment syntax to the file's language.
+#
+# Requires that you OWN/CONTROL all rights to the code -> set up a CLA with a
+# broad license grant from day one (see ../references/protection.md §2).
+#
+# Pair with:
+#   /LICENSE                 -> the open-source license text (e.g. AGPL-3.0)
+#   /LICENSE-COMMERCIAL.md    -> how to buy the commercial license
+# ----------------------------------------------------------------------------

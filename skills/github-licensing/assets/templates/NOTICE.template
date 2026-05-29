@@ -1,0 +1,20 @@
+[Project Name]
+Copyright [year] [Copyright Holder]
+
+This product includes software developed at [Copyright Holder].
+
+# ----------------------------------------------------------------------------
+# Apache-2.0 NOTICE file.
+#
+# Required ONLY for Apache-2.0 projects (§4d). Downstream redistributors must
+# reproduce the attribution notices contained here. KEEP IT MINIMAL — every
+# line propagates to all downstream users forever. Put ONLY required
+# attributions here (e.g. third-party components whose licenses require
+# attribution). Do NOT put general documentation, changelogs, or marketing.
+#
+# Add third-party attributions below, e.g.:
+#
+#   This product includes software from the Foo project
+#   (https://example.com/foo), Copyright [year] Foo Authors,
+#   licensed under the Apache License 2.0.
+# ----------------------------------------------------------------------------
