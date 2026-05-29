@@ -1,0 +1,14 @@
+{
+  "id": "standard",
+  "label_en": "Standard",
+  "label_zh": "标准版",
+  "description_en": "Balanced two-line preset for everyday Claude Code usage.",
+  "description_zh": "适合日常 Claude Code 使用的双行均衡预设。",
+  "lines": 2,
+  "modules": {
+    "1": ["model", "modes", "version", "active"],
+    "2": ["context", "tools", "cwd", "git"],
+    "3": []
+  },
+  "is_default": false
+}
