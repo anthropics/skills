@@ -7,9 +7,9 @@
 For **live** capability data — context window, max output tokens, feature support (thinking, vision, effort, structured outputs, etc.) — query the Models API instead of relying on the cached tables below. Use this when the user asks "what's the context window for X", "does model X support vision/thinking/effort", "which models support feature Y", or wants to select a model by capability at runtime.
 
 ```python
-m = client.models.retrieve("claude-opus-4-7")
-m.id                 # "claude-opus-4-7"
-m.display_name       # "Claude Opus 4.7"
+m = client.models.retrieve("claude-opus-4-8")
+m.id                 # "claude-opus-4-8"
+m.display_name       # "Claude Opus 4.8"
 m.max_input_tokens   # context window (int)
 m.max_tokens         # max output tokens (int)
 
@@ -32,16 +32,16 @@ Top-level fields (`id`, `display_name`, `max_input_tokens`, `max_tokens`) are ty
 ### Raw HTTP
 
 ```bash
-curl https://api.anthropic.com/v1/models/claude-opus-4-7 \
+curl https://api.anthropic.com/v1/models/claude-opus-4-8 \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01"
 ```
 
 ```json
 {
-  "id": "claude-opus-4-7",
-  "display_name": "Claude Opus 4.7",
-  "max_input_tokens": 200000,
+  "id": "claude-opus-4-8",
+  "display_name": "Claude Opus 4.8",
+  "max_input_tokens": 1000000,
   "max_tokens": 128000,
   "capabilities": {
     "image_input": {"supported": true},
@@ -57,14 +57,16 @@ curl https://api.anthropic.com/v1/models/claude-opus-4-7 \
 
 | Friendly Name     | Alias (use this)    | Full ID                       | Context        | Max Output | Status |
 |-------------------|---------------------|-------------------------------|----------------|------------|--------|
+| Claude Opus 4.8   | `claude-opus-4-8`   | —                             | 1M             | 128K       | Active |
 | Claude Opus 4.7   | `claude-opus-4-7`   | —                             | 1M             | 128K       | Active |
 | Claude Opus 4.6   | `claude-opus-4-6`   | —                             | 1M             | 128K       | Active |
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | -                             | 1M             | 64K        | Active |
 | Claude Haiku 4.5  | `claude-haiku-4-5`  | `claude-haiku-4-5-20251001`   | 200K           | 64K        | Active |
 
 ### Model Descriptions
-- **Claude Opus 4.7** — The most capable Claude model to date — highly autonomous, strong on long-horizon agentic work, knowledge work, vision, and memory. Adaptive thinking only; sampling parameters and `budget_tokens` are removed. 1M context window at standard API pricing (no long-context premium) — see `shared/model-migration.md` → Migrating to Opus 4.7 for breaking changes.
-- **Claude Opus 4.6** — Previous-generation Opus. Supports adaptive thinking (recommended), 128K max output tokens (requires streaming for large outputs). 1M context window.
+- **Claude Opus 4.8** — The most capable Claude model to date — highly autonomous, state-of-the-art on long-horizon agentic work, knowledge work, and memory; clearer, warmer writing. Same API surface as Opus 4.7 (adaptive thinking only; sampling parameters and `budget_tokens` removed). 1M context window at standard API pricing (no long-context premium). See `shared/model-migration.md` → Migrating to Opus 4.8 — a 4.7 → 4.8 move is a model-ID swap plus prompt re-tuning, no new breaking changes.
+- **Claude Opus 4.7** — Previous-generation Opus. Highly autonomous; strong on long-horizon agentic work, knowledge work, vision, and memory. Adaptive thinking only; sampling parameters and `budget_tokens` removed. 1M context window. See `shared/model-migration.md` → Migrating to Opus 4.7.
+- **Claude Opus 4.6** — Older Opus. Supports adaptive thinking (recommended), 128K max output tokens (requires streaming for large outputs). 1M context window.
 - **Claude Sonnet 4.6** — Our best combination of speed and intelligence. Supports adaptive thinking (recommended). 1M context window. 64K max output tokens.
 - **Claude Haiku 4.5** — Fastest and most cost-effective model for simple tasks.
 
@@ -103,12 +105,13 @@ When a user asks for a model by name, use this table to find the correct model I
 
 | User says...                              | Use this model ID              |
 |-------------------------------------------|--------------------------------|
-| "opus", "most powerful"                   | `claude-opus-4-7`              |
+| "opus", "most powerful"                   | `claude-opus-4-8`              |
+| "opus 4.8"                                | `claude-opus-4-8`              |
 | "opus 4.7"                                | `claude-opus-4-7`              |
 | "opus 4.6"                                | `claude-opus-4-6`              |
 | "opus 4.5"                                | `claude-opus-4-5`              |
 | "opus 4.1"                                | `claude-opus-4-1`              |
-| "opus 4", "opus 4.0"                      | `claude-opus-4-0`              |
+| "opus 4", "opus 4.0"                      | `claude-opus-4-0` (deprecated — suggest `claude-opus-4-8`) |
 | "sonnet", "balanced"                      | `claude-sonnet-4-6`            |
 | "sonnet 4.6"                              | `claude-sonnet-4-6`            |
 | "sonnet 4.5"                              | `claude-sonnet-4-5`            |
