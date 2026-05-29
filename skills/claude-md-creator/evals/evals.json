@@ -1,0 +1,61 @@
+{
+  "skill_name": "claude-md-creator",
+  "evals": [
+    {
+      "id": 1,
+      "category": "create",
+      "prompt": "I just cloned a Next.js project and want to set up CLAUDE.md for the team. Can you create one?",
+      "expected_output": "Analyzes the codebase (package.json, directory structure, frameworks), interviews the user for missing context, then generates a well-structured CLAUDE.md under 200 lines with build/test commands, code style rules, and Next.js-specific architecture conventions. May also suggest .claude/rules/ files if needed.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "category": "create",
+      "prompt": "We have a Python FastAPI monorepo with separate services. How should I organize CLAUDE.md and rules?",
+      "expected_output": "Creates a concise main CLAUDE.md with shared conventions, plus .claude/rules/ files scoped with paths: frontmatter for each service. Detects FastAPI, pytest, and relevant dependencies from pyproject.toml.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "category": "quick-eval",
+      "prompt": "Can you evaluate my CLAUDE.md and tell me if everything is still accurate?",
+      "expected_output": "Runs Phase 1 (claim extraction) and Phase 2 (coherence verification). Produces a coherence score showing how many claims match the codebase. Identifies stale paths, missing dependencies, and vague instructions. Generates an HTML report at /tmp/claude-md-eval.html.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "category": "quick-eval",
+      "prompt": "Audit my CLAUDE.md — I think some paths are outdated after our recent refactor.",
+      "expected_output": "Extracts path_reference claims and verifies each against the filesystem. Reports stale paths with fuzzy-match suggestions for correct replacements. Shows coherence score and a prioritized list of fixes.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "category": "full-eval",
+      "prompt": "Run a full evaluation with blind testing to see if my CLAUDE.md actually helps Claude write better code.",
+      "expected_output": "Runs all 5 phases: claim extraction, coherence check, eval task generation (3-7 tasks from verified claims), blind A/B coding test (with vs without CLAUDE.md), and final report. Shows effectiveness score with win/tie/loss counts, programmatic check delta, and blind judge scores.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "category": "full-eval",
+      "prompt": "I want to test whether my CLAUDE.md conventions actually change Claude's output. Run the blind test.",
+      "expected_output": "Generates dynamic eval tasks from the CLAUDE.md's own conventions. Runs blind_coder with and without CLAUDE.md context. Runs blind_judge comparison without revealing which output had CLAUDE.md. Reports effectiveness score and identifies conventions that don't change behavior (candidates for removal).",
+      "files": []
+    },
+    {
+      "id": 7,
+      "category": "improve",
+      "prompt": "My CLAUDE.md got a C grade. Can you fix it?",
+      "expected_output": "Runs Quick Eval to identify issues, then applies fixes in priority order: removes vague/generic instructions, updates stale paths, adds missing sections (build/test commands), and strengthens partially-followed conventions. Shows diff and re-runs eval to confirm improvement.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "category": "improve",
+      "prompt": "My CLAUDE.md is over 400 lines and Claude keeps ignoring some instructions. Help me fix it.",
+      "expected_output": "Diagnoses the size issue, identifies which instructions are vague/generic/redundant, suggests splitting into .claude/rules/ files with path-specific scoping, and produces a trimmed main CLAUDE.md under 200 lines.",
+      "files": []
+    }
+  ]
+}
