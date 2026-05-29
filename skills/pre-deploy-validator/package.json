@@ -1,0 +1,39 @@
+{
+  "name": "@anthropic-community/pre-deploy-validator",
+  "version": "1.0.0",
+  "description": "Pre-deployment flight checks for agent ability verification",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node test.js",
+    "validate": "node index.js",
+    "lint": "node --check index.js test.js",
+    "type-check": "node -e \"require('./index.js'); console.log('Type check passed')\"",
+    "build": "node -e \"console.log('No build step required')\""
+  },
+  "keywords": [
+    "deployment",
+    "validation",
+    "agents",
+    "ci-cd",
+    "pre-flight"
+  ],
+  "author": "Anthropic",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/skills.git",
+    "directory": "skills/pre-deploy-validator"
+  },
+  "homepage": "https://github.com/anthropics/skills/tree/main/skills/pre-deploy-validator",
+  "bugs": {
+    "url": "https://github.com/anthropics/skills/issues"
+  }
+}

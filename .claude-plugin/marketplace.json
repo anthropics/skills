@@ -23,7 +23,7 @@
     },
     {
       "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
+      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, theme styling, and pre-deployment validation",
       "source": "./",
       "strict": false,
       "skills": [
@@ -34,14 +34,14 @@
         "./skills/frontend-design",
         "./skills/internal-comms",
         "./skills/mcp-builder",
+        "./skills/pre-deploy-validator",
         "./skills/skill-creator",
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
