@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { readFileSync, writeFileSync, unlinkSync, mkdirSync } = require("fs");
+const { readFileSync, writeFileSync, unlinkSync, mkdirSync, existsSync } = require("fs");
 const { join } = require("path");
 const { homedir } = require("os");
 const { execSync } = require("child_process");
@@ -65,6 +65,11 @@ async function run() {
   try {
     countdownAndSnap(SCREENSHOT_PATH);
   } catch (err) {
+    process.exit(0);
+  }
+
+  // Don't tell Claude to read a file that doesn't exist (e.g. silent PowerShell failure)
+  if (!existsSync(SCREENSHOT_PATH)) {
     process.exit(0);
   }
 

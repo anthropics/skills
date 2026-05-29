@@ -1,7 +1,6 @@
 ---
 name: snap
 description: Use this skill when the user types "snap:" at the start of their message, wants to share their screen with Claude, wants Claude to see what's on their screen, asks to take a screenshot for AI analysis, or wants to install the snap screen-sharing tool. snap gives Claude eyes — type "snap: what's wrong?" in Claude Code, alt-tab to any window, and Claude reads your screen automatically. Works in Claude Code (terminal or VS Code extension) on Windows.
-license: MIT
 ---
 
 # snap: — Let your AI see what you see, instantly
