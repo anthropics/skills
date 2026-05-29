@@ -1,6 +1,6 @@
 ---
 name: web-artifacts-builder
-description: Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.
+description: Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React 19, Tailwind CSS v4, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -13,7 +13,7 @@ To build powerful frontend claude.ai artifacts, follow these steps:
 4. Display artifact to user
 5. (Optional) Test the artifact
 
-**Stack**: React 18 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui
+**Stack**: React 19 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS v4 + shadcn/ui
 
 ## Design & Style Guidelines
 
@@ -30,17 +30,24 @@ cd <project-name>
 ```
 
 This creates a fully configured project with:
-- ✅ React + TypeScript (via Vite)
-- ✅ Tailwind CSS 3.4.1 with shadcn/ui theming system
+- ✅ React 19 + TypeScript (via Vite)
+- ✅ Tailwind CSS v4 with CSS-first configuration
 - ✅ Path aliases (`@/`) configured
 - ✅ 40+ shadcn/ui components pre-installed
 - ✅ All Radix UI dependencies included
 - ✅ Parcel configured for bundling (via .parcelrc)
-- ✅ Node 18+ compatibility (auto-detects and pins Vite version)
+- ✅ Node 20+ required (Node 18 no longer supported)
 
 ### Step 2: Develop Your Artifact
 
 To build the artifact, edit the generated files. See **Common Development Tasks** below for guidance.
+
+**React 19 Patterns:**
+- `ref` is now a regular prop - no need for `forwardRef`
+- Use `use()` hook for promises and context
+- Server Actions with `"use server"` directive
+- `useActionState` for form handling
+- `useOptimistic` for optimistic updates
 
 ### Step 3: Bundle to Single HTML File
 
@@ -72,3 +79,5 @@ To test/visualize the artifact, use available tools (including other Skills or b
 ## Reference
 
 - **shadcn/ui components**: https://ui.shadcn.com/docs/components
+- **Tailwind CSS v4**: https://tailwindcss.com/docs
+- **React 19**: https://react.dev/blog/2024/12/05/react-19
