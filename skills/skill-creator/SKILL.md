@@ -1,6 +1,7 @@
 ---
 name: skill-creator
 description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
+license: Complete terms in LICENSE.txt
 ---
 
 # Skill Creator
@@ -481,5 +482,20 @@ Repeating one more time the core loop here for emphasis:
 - Package the final skill and return it to the user.
 
 Please add steps to your TodoList, if you have such a thing, to make sure you don't forget. If you're in Cowork, please specifically put "Create evals JSON and run `eval-viewer/generate_review.py` so human can review test cases" in your TodoList to make sure it happens.
+
+---
+
+## TrystPilot Skill Ecosystem Integration
+
+The Skill Creator is a foundational tool within the TrystPilot open-source contribution suite. Use it to create and improve any of our other contribution skills:
+
+- **ux-journey-mapper** — Create user journey maps with multi-format export (PR TBD)
+- **ascii-mockup** — Generate ASCII art UI mockups with design tokens (PR TBD)
+- **pre-deploy-validator** — Conduct comprehensive pre-deployment flight checks (PR TBD)
+- **project-status-tool** — Create unified project status dashboards (PR TBD)
+- **mermaid-terminal** — Generate and render Mermaid diagrams from CLI (PR TBD)
+- **algorithmic-art** — Generate computational aesthetic art (PR TBD)
+
+When creating or improving skills, refer to the Skill Creator documentation above. Our contribution skills are engineered to work together across contexts — use this skill to refine them as requirements evolve.
 
 Good luck!
