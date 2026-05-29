@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Sanity (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Primary dark surfaces */
+    --bg-canvas: #0b0b0b;
+    --bg-surface: #212121;
+    --bg-elevated: #353535;
+    --bg-prominent: #797979;
+    /* Brand */
+    --sanity-red: #f36458;
+    --sanity-red-hover: #e0544a;
+    --electric-blue: #0052ef;
+    --blue-300: #55beff;
+    --blue-dim: #afe3ff;
+    --neon-green: #19d600;
+    --error-red: #dd0000;
+    --accent-magenta: #e600ff;
+    /* Text */
+    --text-primary: #ffffff;
+    --text-secondary: #b9b9b9;
+    --text-tertiary: #797979;
+    /* Border */
+    --border-subtle: #212121;
+    --border-medium: #353535;
+    --border-strong: #797979;
+    /* Shadow */
+    --shadow-ring: 0 0 0 1px #212121;
+    /* Font */
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    /* Radius */
+    --radius-xs: 3px;
+    --radius-sm: 5px;
+    --radius-md: 6px;
+    --radius-lg: 12px;
+    --radius-pill: 99999px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: var(--text-primary);
+    color: var(--bg-canvas);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(11, 11, 11, 0.88);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--electric-blue); }
+
+  /* HERO */
+  .hero {
+    background: var(--bg-canvas);
+    padding: 100px 32px 96px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .hero h1 {
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1.00;
+    letter-spacing: -3.6px;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    line-height: 1.50;
+    letter-spacing: -0.18px;
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* SECTIONS */
+  .section {
+    padding: 80px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-title {
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.10;
+    letter-spacing: -1.14px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+  .section-subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.50;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  /* COLOR PALETTE */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .color-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+  }
+  .color-swatch {
+    height: 96px;
+    width: 100%;
+  }
+  .color-info {
+    padding: 12px 14px;
+  }
+  .color-name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.13px;
+    margin-bottom: 2px;
+    color: var(--text-primary);
+  }
+  .color-hex {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+  }
+  .color-role {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* TYPOGRAPHY */
+  .type-scale { display: flex; flex-direction: column; gap: 32px; }
+  .type-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .type-meta {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    line-height: 1.60;
+  }
+  .type-meta span { display: block; }
+  .type-meta .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  /* BUTTONS */
+  .button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.30;
+    letter-spacing: -0.15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    border: none;
+    outline: none;
+  }
+  .btn-primary {
+    background: var(--sanity-red);
+    color: #ffffff;
+    border-radius: var(--radius-pill);
+    padding: 12px 28px;
+  }
+  .btn-primary:hover { background: var(--electric-blue); }
+
+  .btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
+    padding: 12px 28px;
+  }
+  .btn-secondary:hover { background: var(--electric-blue); color: #fff; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--text-primary);
+    border-radius: var(--radius-pill);
+    padding: 11px 27px;
+  }
+  .btn-outline:hover { background: var(--electric-blue); color: #fff; border-color: var(--electric-blue); }
+
+  .btn-ghost {
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover { background: var(--electric-blue); color: #fff; }
+
+  .btn-label {
+    background: transparent;
+    color: var(--text-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+  .btn-label:hover { color: var(--electric-blue); }
+
+  .btn-sm {
+    font-size: 13px;
+    padding: 8px 18px;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card-tag {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.20;
+    letter-spacing: -0.2px;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+  .card-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+  }
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--blue-300);
+    text-decoration: none;
+    margin-top: 16px;
+  }
+  .card-link:hover { text-decoration: underline; }
+
+  /* FORMS */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 680px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full-width { grid-column: 1 / -1; }
+  .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: -0.13px;
+  }
+  .form-input {
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .form-input::placeholder { color: var(--text-tertiary); }
+  .form-input:focus {
+    border-color: var(--electric-blue);
+    box-shadow: 0 0 0 2px rgba(0, 82, 239, 0.3);
+  }
+  .form-textarea {
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 10px 12px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .form-textarea:focus {
+    border-color: var(--electric-blue);
+    box-shadow: 0 0 0 2px rgba(0, 82, 239, 0.3);
+  }
+  .form-helper {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* SPACING SCALE */
+  .spacing-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .spacing-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .spacing-label {
+    width: 80px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .spacing-bar {
+    height: 28px;
+    background: var(--sanity-red);
+    border-radius: var(--radius-xs);
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+  .spacing-bar:hover { opacity: 1; }
+
+  /* RADIUS SCALE */
+  .radius-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: end;
+  }
+  .radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-surface);
+    border: 2px solid var(--text-secondary);
+  }
+  .radius-label {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  /* ELEVATION */
+  .elevation-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: start;
+  }
+  .elevation-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .elevation-box {
+    width: 140px;
+    height: 90px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .elevation-label {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-tertiary);
+    text-align: center;
+    max-width: 140px;
+  }
+
+  /* Utility */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+  }
+  .badge-subtle { background: var(--bg-surface); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+  .badge-filled { background: var(--text-primary); color: var(--bg-canvas); }
+  .badge-red { background: var(--sanity-red); color: #fff; }
+  .badge-blue { background: var(--electric-blue); color: #fff; }
+  .badge-green { background: var(--neon-green); color: #0b0b0b; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 42px; letter-spacing: -1.6px; }
+    .hero { padding: 64px 20px 60px; }
+    .section { padding: 56px 20px; }
+    .section-title { font-size: 28px; letter-spacing: -0.6px; }
+    .type-row { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .nav-links { display: none; }
+    .dark-badge { top: 12px; right: 12px; font-size: 10px; padding: 4px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DARK MODE BADGE -->
+<div class="dark-badge">Dark Mode</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-brand">awesome-design-md</a>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#forms">Forms</a>
+    <a href="#spacing">Spacing</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Inspired by Sanity</h1>
+  <p>Structured content meets precise design. A dark-first, engineering-grade design language built on achromatic neutrals, tight typography, and vivid accent punctuation.</p>
+  <div class="hero-buttons">
+    <button class="btn btn-primary">Get Started</button>
+    <button class="btn btn-outline">Contact Sales</button>
+  </div>
+</section>
+
+<!-- COLOR PALETTE -->
+<section class="section" id="colors">
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-subtitle">Pure achromatic gray scale with vivid accent punctuation. No warm or cool bias in the neutral range.</p>
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:#0b0b0b"></div>
+      <div class="color-info">
+        <div class="color-name">Sanity Black</div>
+        <div class="color-hex">#0b0b0b</div>
+        <div class="color-role">Primary canvas</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#212121"></div>
+      <div class="color-info">
+        <div class="color-name">Dark Surface</div>
+        <div class="color-hex">#212121</div>
+        <div class="color-role">Elevated cards, containers</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#353535"></div>
+      <div class="color-info">
+        <div class="color-name">Medium Border</div>
+        <div class="color-hex">#353535</div>
+        <div class="color-role">Visible borders, dividers</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#797979"></div>
+      <div class="color-info">
+        <div class="color-name">Medium Gray</div>
+        <div class="color-hex">#797979</div>
+        <div class="color-role">Tertiary text, metadata</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#b9b9b9"></div>
+      <div class="color-info">
+        <div class="color-name">Silver</div>
+        <div class="color-hex">#b9b9b9</div>
+        <div class="color-role">Secondary text</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#ededed"></div>
+      <div class="color-info">
+        <div class="color-name">Light Gray</div>
+        <div class="color-hex">#ededed</div>
+        <div class="color-role">Light surfaces</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#ffffff; border-bottom: 1px solid #353535;"></div>
+      <div class="color-info">
+        <div class="color-name">White</div>
+        <div class="color-hex">#ffffff</div>
+        <div class="color-role">Primary text on dark</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#f36458"></div>
+      <div class="color-info">
+        <div class="color-name">Sanity Red</div>
+        <div class="color-hex">#f36458</div>
+        <div class="color-role">Primary CTA</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#0052ef"></div>
+      <div class="color-info">
+        <div class="color-name">Electric Blue</div>
+        <div class="color-hex">#0052ef</div>
+        <div class="color-role">Hover/active, focus rings</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#55beff"></div>
+      <div class="color-info">
+        <div class="color-name">Blue 300</div>
+        <div class="color-hex">#55beff</div>
+        <div class="color-role">Light blue accent</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#19d600"></div>
+      <div class="color-info">
+        <div class="color-name">Neon Green</div>
+        <div class="color-hex">#19d600</div>
+        <div class="color-role">Success, accent green</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#dd0000"></div>
+      <div class="color-info">
+        <div class="color-name">Error Red</div>
+        <div class="color-hex">#dd0000</div>
+        <div class="color-role">Errors, destructive</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <h2 class="section-title">Typography Scale</h2>
+  <p class="section-subtitle">Space Grotesk (substitute for waldenburgNormal) with tight negative tracking at display sizes. IBM Plex Mono for technical labels.</p>
+  <div class="type-scale">
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Display</span>
+        <span>80px / 700</span>
+        <span>LH: 1.00</span>
+        <span>LS: -3.6px</span>
+      </div>
+      <div style="font-size:80px; font-weight:700; line-height:1.00; letter-spacing:-3.6px;">Structure</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Heading 1</span>
+        <span>48px / 600</span>
+        <span>LH: 1.08</span>
+        <span>LS: -1.68px</span>
+      </div>
+      <div style="font-size:48px; font-weight:600; line-height:1.08; letter-spacing:-1.68px;">Powers intelligence</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Heading 2</span>
+        <span>38px / 600</span>
+        <span>LH: 1.10</span>
+        <span>LS: -1.14px</span>
+      </div>
+      <div style="font-size:38px; font-weight:600; line-height:1.10; letter-spacing:-1.14px;">Content operations</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Heading 3</span>
+        <span>24px / 500</span>
+        <span>LH: 1.24</span>
+        <span>LS: -0.24px</span>
+      </div>
+      <div style="font-size:24px; font-weight:500; line-height:1.24; letter-spacing:-0.24px;">Composable content platform</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Subheading</span>
+        <span>20px / 500</span>
+        <span>LH: 1.13</span>
+        <span>LS: -0.2px</span>
+      </div>
+      <div style="font-size:20px; font-weight:500; line-height:1.13; letter-spacing:-0.2px;">One API, every platform</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Body Large</span>
+        <span>18px / 400</span>
+        <span>LH: 1.50</span>
+        <span>LS: -0.18px</span>
+      </div>
+      <div style="font-size:18px; font-weight:400; line-height:1.50; letter-spacing:-0.18px;">Mirror how your content operations team works. Treat content as data with a structured, API-first approach.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Body</span>
+        <span>16px / 400</span>
+        <span>LH: 1.50</span>
+      </div>
+      <div style="font-size:16px; font-weight:400; line-height:1.50;">Power anything with one unified content platform. Connect to any frontend, any channel, any device.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Caption</span>
+        <span>13px / 400</span>
+        <span>LH: 1.50</span>
+        <span>LS: -0.13px</span>
+      </div>
+      <div style="font-size:13px; font-weight:400; line-height:1.50; letter-spacing:-0.13px; color: var(--text-secondary);">Loved by 1M+ users and 6K+ teams worldwide. Enterprise-grade content infrastructure.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Mono Label</span>
+        <span>12px / 500</span>
+        <span>LH: 1.50</span>
+        <span>UPPERCASE</span>
+      </div>
+      <div style="font-size:12px; font-weight:500; line-height:1.50; text-transform:uppercase; font-family:var(--font-mono); letter-spacing:0.5px; color: var(--text-tertiary);">CONTENT LAKE &middot; GROQ &middot; STUDIO &middot; SCHEMAS</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <span class="label">Code</span>
+        <span>15px / 400</span>
+        <span>LH: 1.50</span>
+        <span>IBM Plex Mono</span>
+      </div>
+      <div style="font-size:15px; font-weight:400; line-height:1.50; font-family:var(--font-mono); color: var(--neon-green);">sanity.fetch('*[_type == "post"]')</div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <h2 class="section-title">Button Variants</h2>
+  <p class="section-subtitle">Pill-shaped CTAs with coral-red brand color. All interactive elements hover to electric blue.</p>
+
+  <div style="margin-bottom: 40px;">
+    <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; letter-spacing:-0.16px;">Standard Buttons</h3>
+    <div class="button-grid">
+      <button class="btn btn-primary">Get Started</button>
+      <button class="btn btn-secondary">Contact Sales</button>
+      <button class="btn btn-outline">Learn More</button>
+      <button class="btn btn-ghost">Filter</button>
+      <button class="btn btn-label">DOCUMENTATION</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 40px;">
+    <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; letter-spacing:-0.16px;">Small Variants</h3>
+    <div class="button-grid">
+      <button class="btn btn-primary btn-sm">Get Started</button>
+      <button class="btn btn-outline btn-sm">Details</button>
+      <button class="btn btn-ghost btn-sm">Tag</button>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <h3 style="font-size:16px; font-weight:600; margin-bottom:16px; letter-spacing:-0.16px;">Badges</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+      <span class="badge badge-subtle">Neutral</span>
+      <span class="badge badge-filled">Filled</span>
+      <span class="badge badge-red">New</span>
+      <span class="badge badge-blue">Featured</span>
+      <span class="badge badge-green">Active</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <h2 class="section-title">Card Examples</h2>
+  <p class="section-subtitle">Minimal containment with border-based separation. Depth communicated through surface color shifts.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag">Content Lake</div>
+      <div class="card-title">Structured content as data</div>
+      <div class="card-body">Store, query, and distribute content across any channel using a single source of truth with real-time collaboration.</div>
+      <a href="#" class="card-link">Learn more &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="card-tag">GROQ</div>
+      <div class="card-title">Query language for content</div>
+      <div class="card-body">Purpose-built query language that lets you fetch exactly the content you need, in the shape you want it.</div>
+      <a href="#" class="card-link">Explore GROQ &rarr;</a>
+    </div>
+    <div class="card">
+      <div class="card-tag">Studio</div>
+      <div class="card-title">Customizable editing environment</div>
+      <div class="card-body">A fully customizable, open-source editing environment that adapts to your team's workflow and content model.</div>
+      <a href="#" class="card-link">Try Studio &rarr;</a>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <h3 style="font-size:16px; font-weight:600; margin-bottom:20px; letter-spacing:-0.16px;">Elevated Cards</h3>
+    <div class="card-grid">
+      <div style="background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-md); padding: 28px;">
+        <div class="card-tag" style="color: var(--text-secondary);">Schemas</div>
+        <div class="card-title">Define your content model</div>
+        <div class="card-body" style="color: var(--text-secondary);">Use code-first schemas to define documents, objects, and fields with full TypeScript support.</div>
+        <a href="#" class="card-link">View docs &rarr;</a>
+      </div>
+      <div style="background: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: var(--radius-md); padding: 28px;">
+        <div class="card-tag" style="color: var(--text-secondary);">Plugins</div>
+        <div class="card-title">Extend with the ecosystem</div>
+        <div class="card-body" style="color: var(--text-secondary);">Community-driven plugin ecosystem with dashboards, custom inputs, and workflow tools.</div>
+        <a href="#" class="card-link">Browse plugins &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <h2 class="section-title">Form Elements</h2>
+  <p class="section-subtitle">Minimal inputs with subtle borders on the dark canvas. Blue focus rings for accessibility.</p>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label class="form-label">Project Name</label>
+      <input type="text" class="form-input" placeholder="my-sanity-project">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dataset</label>
+      <input type="text" class="form-input" placeholder="production">
+    </div>
+    <div class="form-group full-width">
+      <label class="form-label">API Token</label>
+      <input type="text" class="form-input" placeholder="sk_xxxxxxxxxxxxxxxx">
+      <span class="form-helper">Keep your API token secure. Never commit it to version control.</span>
+    </div>
+    <div class="form-group full-width">
+      <label class="form-label">GROQ Query</label>
+      <textarea class="form-textarea" placeholder='*[_type == "post"]{title, slug, body}'></textarea>
+      <span class="form-helper">Write a GROQ query to test against your dataset.</span>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary" style="width:100%;">Run Query</button>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <h2 class="section-title">Spacing Scale</h2>
+  <p class="section-subtitle">8px base unit. Spacing follows a controlled progression for consistent rhythm.</p>
+  <div class="spacing-grid">
+    <div class="spacing-row">
+      <div class="spacing-label">4px</div>
+      <div class="spacing-bar" style="width: 4px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">8px</div>
+      <div class="spacing-bar" style="width: 32px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">12px</div>
+      <div class="spacing-bar" style="width: 64px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">16px</div>
+      <div class="spacing-bar" style="width: 96px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">24px</div>
+      <div class="spacing-bar" style="width: 160px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">32px</div>
+      <div class="spacing-bar" style="width: 220px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">48px</div>
+      <div class="spacing-bar" style="width: 320px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">64px</div>
+      <div class="spacing-bar" style="width: 420px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">96px</div>
+      <div class="spacing-bar" style="width: 560px;"></div>
+    </div>
+    <div class="spacing-row">
+      <div class="spacing-label">120px</div>
+      <div class="spacing-bar" style="width: 680px;"></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <h2 class="section-title">Border Radius Scale</h2>
+  <p class="section-subtitle">Sharp geometry for inputs, subtle rounding for cards, full pills for buttons and badges.</p>
+  <div class="radius-grid">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 3px;"></div>
+      <div class="radius-label">3px<br><span style="font-size:10px; color:var(--text-tertiary)">Inputs</span></div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 5px;"></div>
+      <div class="radius-label">5px<br><span style="font-size:10px; color:var(--text-tertiary)">Ghost buttons</span></div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 6px;"></div>
+      <div class="radius-label">6px<br><span style="font-size:10px; color:var(--text-tertiary)">Cards</span></div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 12px;"></div>
+      <div class="radius-label">12px<br><span style="font-size:10px; color:var(--text-tertiary)">Large cards</span></div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 99999px;"></div>
+      <div class="radius-label">99999px<br><span style="font-size:10px; color:var(--text-tertiary)">Pill / CTA</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ELEVATION / DEPTH -->
+<section class="section">
+  <h2 class="section-title">Elevation & Depth</h2>
+  <p class="section-subtitle">Colorimetric depth system. Elevation is communicated through surface color shifts rather than shadows.</p>
+  <div class="elevation-grid">
+    <div class="elevation-item">
+      <div class="elevation-box" style="background: #000000; border: 1px solid #212121;">Ground</div>
+      <div class="elevation-label">#000000</div>
+    </div>
+    <div class="elevation-item">
+      <div class="elevation-box" style="background: #0b0b0b; border: 1px solid #212121;">Canvas</div>
+      <div class="elevation-label">#0b0b0b</div>
+    </div>
+    <div class="elevation-item">
+      <div class="elevation-box" style="background: #212121; border: 1px solid #353535;">Surface</div>
+      <div class="elevation-label">#212121</div>
+    </div>
+    <div class="elevation-item">
+      <div class="elevation-box" style="background: #353535; border: 1px solid #797979;">Prominent</div>
+      <div class="elevation-label">#353535</div>
+    </div>
+    <div class="elevation-item">
+      <div class="elevation-box" style="background: #ffffff; color: #0b0b0b; border: 1px solid #ededed;">Inverted</div>
+      <div class="elevation-label">#ffffff</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top: 1px solid var(--border-subtle); padding: 48px 32px;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <span style="font-size: 13px; color: var(--text-secondary); font-family: var(--font-mono);">Design tokens extracted from sanity.io</span>
+    <span style="font-size: 12px; color: var(--text-tertiary); font-family: var(--font-mono); text-transform: uppercase;">awesome-design-md</span>
+  </div>
+</footer>
+
+</body>
+</html>
