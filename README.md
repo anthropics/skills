@@ -94,3 +94,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **HeyNeuron** - [FlowHunt Skill](https://github.com/heyneuron/flowhunt-skill) - Automation discovery audit skill. Walks through a 5-question workflow intake and audits Gmail/Calendar/Slack/task trackers to identify automation opportunities. Install: `npx skills add heyneuron/flowhunt-skill`
