@@ -1,0 +1,46 @@
+# [Project/Product Name] Trademark Policy
+
+> Customize the bracketed fields. This policy protects the **name and logo** of
+> the project — which your code license does NOT cover. Keep it permissive:
+> over-restriction alienates the community without adding meaningful protection.
+> Have an attorney review before publishing.
+
+## What this covers
+
+"[Marks]" means the name **"[Project Name]"**, the **[Project Name] logo**, and
+[any other names/logos]. The software is licensed under [SPDX-ID] (see `LICENSE`),
+but the Marks are **not** licensed with the code — they are owned by
+[Holder/Entity].
+
+## Uses that are always allowed (no permission needed)
+
+- Referring to the project truthfully ("works with [Project Name]",
+  "compatible with [Project Name]", "a plugin for [Project Name]").
+- Non-commercial, educational, and community use that does not imply endorsement.
+- Stating that your fork or distribution is **based on / derived from**
+  [Project Name] (e.g. "Powered by [Project Name]"), provided you do not present
+  it as the official project.
+
+## Uses that require written permission
+
+- Using the Marks as (or within) the **name of your own product, company, or
+  service**, especially a commercial or hosted one.
+- Using the **logo** in a modified form, or in a way that suggests official
+  status, sponsorship, or endorsement.
+- Domain names, app names, or social handles that could be mistaken for the
+  official project.
+
+## The cardinal rule
+
+**Your use must not be misleading or imply that [Holder] endorses, sponsors, or
+is affiliated with you** unless we have agreed to that in writing.
+
+## Forks and redistributions
+
+You may distribute modified versions under [SPDX-ID], but if your version differs
+materially from the official release, please **rename it** so users are not
+confused about which is the official [Project Name].
+
+## Questions / reporting misuse
+
+Contact: trademark@[your-domain].example

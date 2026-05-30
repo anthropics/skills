@@ -1,0 +1,27 @@
+Functional Source License (FSL) 1.1 — fill-in guide
+
+The FSL is a source-available license that automatically converts to a true
+open-source license after TWO YEARS. It bars only "Competing Use"; everything
+else (the "Permitted Purpose") is allowed.
+
+Pick ONE future-conversion variant:
+  - FSL-1.1-MIT     -> converts to the MIT License after 2 years
+  - FSL-1.1-ALv2    -> converts to the Apache License 2.0 after 2 years
+
+The ONLY fields you fill in are:
+  ${year}            e.g. 2026
+  ${licensor name}   e.g. Acme, Inc.
+
+Everything else in the FSL text is FIXED — do not edit the Permitted Purpose,
+Competing Use, or Grant of Future License sections.
+
+Fetch the canonical template for your chosen variant from:
+  https://fsl.software/        (official)
+  https://spdx.org/licenses/FSL-1.1-MIT.txt
+  https://spdx.org/licenses/FSL-1.1-ALv2.txt
+
+Write the completed text to the repo as LICENSE.md (FSL convention), substituting
+only ${year} and ${licensor name}.
+
+Note: FSL is NOT OSI-approved while restricted; call it "source-available" or
+"Fair Source" (fair.io), not "open source", until it converts.

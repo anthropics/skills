@@ -1,0 +1,33 @@
+Business Source License 1.1
+
+Parameters
+
+Licensor:             [ Your legal entity, e.g. Acme, Inc. ]
+
+Licensed Work:        [ Product Name ] Version [ X.Y.0 ] or later.
+                      The Licensed Work is (c) [ year ] [ Your legal entity ]
+
+Additional Use Grant: [ The production-use carve-out. Example:
+                      "You may make production use of the Licensed Work, provided
+                      Your use does not include offering the Licensed Work to third
+                      parties on a hosted or embedded basis which is competitive
+                      with [Your Company]'s products."
+                      Write "None" to require a commercial license for ALL
+                      production use until the Change Date. Per the BSL Covenants,
+                      this grant may only ADD rights (or be "None"). ]
+
+Change Date:          [ A date no more than four (4) years after the first public
+                      distribution of this version, e.g. 2030-01-01 ]
+
+Change License:       [ The OSI license this converts to on the Change Date.
+                      MUST be GPLv2-or-later compatible — e.g. Apache-2.0,
+                      MPL-2.0, GPL-2.0-or-later. ]
+
+-----------------------------------------------------------------------------
+
+The full, unmodifiable body of the Business Source License 1.1 follows the
+Parameters block above. Fetch the canonical text from https://mariadb.com/bsl11/
+and append it below this line WITHOUT modification. Only the Parameters above
+are yours to fill in.
+
+[ ... canonical BSL 1.1 body goes here, unmodified ... ]
