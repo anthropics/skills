@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "vibe-ui/open-design-template-recipes/v1",
+  "source": "Vibe UI recipes distilled from upstream source skill and template patterns",
+  "templates": [
+    {
+      "id": "open-design:saas-landing",
+      "aliases": ["saas-landing", "od:saas-landing"],
+      "name": "Vibe UI SaaS landing recipe",
+      "source": "nexu-io/open-design skills/web-prototype and design-system flow",
+      "pageType": "landing",
+      "description": "A compact recipe for product-led SaaS landing pages with strict section identity, proof, and self-review.",
+      "tags": ["landing", "saas", "marketing", "product", "conversion"],
+      "requiredSections": [
+        "Hero with product name, literal value proposition, one primary CTA, one secondary CTA, and visible product proof",
+        "Credibility strip with real integrations, customers, or neutral proof placeholders that do not invent metrics",
+        "Feature narrative with 3-5 concrete workflow modules instead of generic benefit cards",
+        "Product walkthrough or how-it-works section with sequential steps and UI states",
+        "Use-case or audience section that maps product capability to user roles",
+        "Pricing teaser or conversion block aligned to the selected DESIGN.md rhythm",
+        "FAQ and final CTA using the same visual system as the hero"
+      ],
+      "layoutNotes": [
+        "Give every top-level section a stable data-od-id for review and iteration",
+        "Use DESIGN.md colors, typography, spacing, radius, shadows, and density as the single source of truth",
+        "Use real product nouns and interface language; avoid lorem ipsum, fake 10x claims, and generic AI copy",
+        "Keep decorative media subordinate to product inspection unless DESIGN.md explicitly calls for editorial imagery"
+      ],
+      "p0SelfCheck": [
+        "Every visible color is a DESIGN.md token or clearly derived from it",
+        "No default LLM indigo, emoji-as-icon, invented metric, or placeholder copy remains",
+        "Hero, features, walkthrough, pricing/CTA, FAQ, and final CTA are present",
+        "Layout works at desktop and mobile widths without overlapping text or controls",
+        "Brand-safe: no copied logos, proprietary assets, official claims, or affiliation language"
+      ]
+    },
+    {
+      "id": "open-design:dashboard",
+      "aliases": ["od:dashboard"],
+      "name": "Vibe UI dashboard recipe",
+      "source": "nexu-io/open-design prototype/dashboard patterns",
+      "pageType": "dashboard",
+      "description": "A dense but readable operational dashboard recipe for SaaS, finance, and productivity tools.",
+      "tags": ["dashboard", "admin", "saas", "ops"],
+      "requiredSections": [
+        "Persistent navigation with clear current location",
+        "Primary workflow header with search/filter/action affordances",
+        "Metric row with grounded labels and no invented growth claims",
+        "Main table, feed, chart, or kanban area matched to the product domain",
+        "Secondary insight or activity panel",
+        "Empty, loading, active, and error states where the local stack supports them"
+      ],
+      "layoutNotes": [
+        "Favor scan density over marketing composition",
+        "Use consistent row heights, grid tracks, and control sizes",
+        "Make filters and primary actions reachable without layout shift"
+      ],
+      "p0SelfCheck": [
+        "Information hierarchy is readable in 10 seconds",
+        "No decorative card nesting or oversized hero typography inside panels",
+        "Controls have stable dimensions and accessible labels"
+      ]
+    },
+    {
+      "id": "open-design:docs",
+      "aliases": ["od:docs"],
+      "name": "Vibe UI docs recipe",
+      "source": "nexu-io/open-design docs/prototype patterns",
+      "pageType": "docs",
+      "description": "A documentation page recipe with navigable structure, code examples, and product-grade rhythm.",
+      "tags": ["docs", "developer", "api", "content"],
+      "requiredSections": [
+        "Docs shell with sidebar or top navigation",
+        "Article title, summary, and quick links",
+        "Code or configuration example",
+        "Callout or warning block using DESIGN.md component rules",
+        "Next/previous navigation"
+      ],
+      "layoutNotes": [
+        "Prioritize reading width, type scale, and code block contrast",
+        "Avoid marketing decoration inside the article body"
+      ],
+      "p0SelfCheck": [
+        "Landmarks and headings are semantic",
+        "Code blocks are readable on mobile",
+        "Links and callouts follow selected DESIGN.md tokens"
+      ]
+    }
+  ]
+}
