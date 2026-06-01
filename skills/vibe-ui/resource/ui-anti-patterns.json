@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "vibe-ui/ui-anti-patterns/v1",
+  "source": "Vibe Gate anti-patterns for Vibe UI execution checks",
+  "patterns": [
+    {
+      "id": "default-llm-indigo",
+      "category": "Color",
+      "label": "Default LLM indigo accent",
+      "bad": "Uses #6366f1, #4f46e5, #818cf8, or #7c3aed as an unearned accent instead of the selected DESIGN.md palette.",
+      "fix": "Replace the accent with a named color token from DESIGN.md, or document why the selected style explicitly supports it.",
+      "evidence": "Matched a hardcoded default AI accent color."
+    },
+    {
+      "id": "generic-ai-gradient",
+      "category": "Color",
+      "label": "Generic AI gradient",
+      "bad": "Adds an arbitrary gradient, glow, neon, or glass effect that is not present in the selected design system.",
+      "fix": "Use the selected DESIGN.md surface, border, and action color rules; keep gradients only when the source design documents them.",
+      "evidence": "Matched gradient or effect utility classes."
+    },
+    {
+      "id": "hardcoded-color",
+      "category": "Color",
+      "label": "Hardcoded color drift",
+      "bad": "Introduces raw hex colors that do not appear in DESIGN.md.",
+      "fix": "Replace raw values with DESIGN.md color tokens and reuse the same token for repeated roles.",
+      "evidence": "Matched hex values outside the extracted DESIGN.md token set."
+    },
+    {
+      "id": "emoji-icon",
+      "category": "Brand safety",
+      "label": "Emoji as UI icon",
+      "bad": "Uses emoji as iconography, decoration, or product ornament without design-system permission.",
+      "fix": "Use the project icon system, a real product asset, or plain text; keep emoji only if DESIGN.md explicitly allows it.",
+      "evidence": "Matched Unicode emoji or symbol characters in UI code."
+    },
+    {
+      "id": "invented-metric",
+      "category": "Copy/content",
+      "label": "Invented metric or claim",
+      "bad": "Uses 10x, 99.9%, 100k+, millions, or similar proof claims without evidence.",
+      "fix": "Cite a real source, use a verified metric, or rewrite as neutral product copy.",
+      "evidence": "Matched unsupported numeric proof language."
+    },
+    {
+      "id": "filler-copy",
+      "category": "Copy/content",
+      "label": "Filler copy",
+      "bad": "Ships placeholder text such as Lorem ipsum, your product, Acme, coming soon, or generic marketing filler.",
+      "fix": "Write product-specific copy tied to the actual audience, workflow, and page goal.",
+      "evidence": "Matched placeholder or generic copy markers."
+    },
+    {
+      "id": "uppercase-without-letter-spacing",
+      "category": "Typography",
+      "label": "Uppercase without tracking",
+      "bad": "Uses uppercase text without explicit letter spacing or tracking.",
+      "fix": "Add the selected style's tracking rule, or switch to sentence case.",
+      "evidence": "Matched uppercase styling without letter-spacing or tracking."
+    },
+    {
+      "id": "missing-section-id",
+      "category": "Layout",
+      "label": "Missing section identifiers",
+      "bad": "Top-level sections are not labeled, making design review and iteration ambiguous.",
+      "fix": "Add stable data-od-id values to top-level generated sections.",
+      "evidence": "Matched section elements without data-od-id attributes."
+    },
+    {
+      "id": "heavy-shadow",
+      "category": "Components",
+      "label": "Unsupported heavy shadow",
+      "bad": "Adds heavy elevation that most selected DESIGN.md systems do not call for.",
+      "fix": "Use the documented shadow token or reduce to a subtle border/shadow treatment.",
+      "evidence": "Matched heavy shadow utility classes or large box-shadow values."
+    },
+    {
+      "id": "radius-drift",
+      "category": "Components",
+      "label": "Radius drift",
+      "bad": "Uses arbitrary large radii that conflict with the selected component system.",
+      "fix": "Use the DESIGN.md radius scale consistently across cards, buttons, panels, and inputs.",
+      "evidence": "Matched arbitrary rounded utilities or large border-radius values."
+    },
+    {
+      "id": "unlabeled-button",
+      "category": "Accessibility",
+      "label": "Unlabeled button",
+      "bad": "Renders a button without accessible text or an aria-label.",
+      "fix": "Add visible text or a precise aria-label that names the action.",
+      "evidence": "Matched button elements without a detectable text label or aria-label."
+    },
+    {
+      "id": "weak-component-structure",
+      "category": "Layout",
+      "label": "Weak component structure",
+      "bad": "The target does not look like reusable page or component code.",
+      "fix": "Use semantic sections, repeated components, and explicit hierarchy before styling details.",
+      "evidence": "Static scan found too few component/page structure signals."
+    }
+  ]
+}
