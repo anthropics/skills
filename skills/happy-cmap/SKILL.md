@@ -1,10 +1,10 @@
 ----
-name: simply-happy
+name: happy-camp
 version: 0.1.0
 description: Launch a full-screen transparent fireworks effect on macOS. Triggered when the user expresses celebration, confetti, fireworks, milestones (PR merged / deployment / CI all green), festive occasions, or simply wants to "feel happy".
 ---
 
-# simply-happy
+# happy-camp
 
 Make the screen "happy" — overlay a transparent, click-through fireworks animation on the macOS desktop that automatically fades out after a few seconds.
 
