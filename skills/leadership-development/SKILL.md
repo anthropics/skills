@@ -8,7 +8,6 @@ description: Design leadership programs, frameworks, agendas, and capability map
 Use this skill when the user requests leadership frameworks, capability maps, program design, or development pathways.
 
 ## Steps
-
 1. Identify leadership competencies and organizational goals.
 2. Map competencies to behaviors, indicators, and levels.
 3. Create agendas, pathways, and experiential learning activities.
