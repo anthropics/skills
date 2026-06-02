@@ -18,77 +18,69 @@ description: >
 
 This skill enables Claude to design rigorous, evidence-based coaching and mentoring
 deliverables grounded in adult learning theory, ICF competencies, and organizational
-development frameworks. All outputs are context-adaptive, equity-aware, and
-ready for implementation.
+development best practices. Outputs are practical, role-specific, and outcome-oriented.
 
-## Output Types
+---
 
-| Output | When to Use |
+## Theoretical Foundations
+
+Always anchor designs in one or more of these frameworks — name them explicitly in outputs:
+
+| Framework | Application |
 |---|---|
-| Coaching Program Design | Building a structured coaching initiative |
-| Individual Development Plan (IDP) | Creating a personalized growth plan |
-| Mentoring Program Framework | Designing a formal or informal mentoring program |
-| 1:1 Coaching Agenda | Structuring coaching conversations |
-| Feedback Model Guide | Building or training feedback systems |
-| Coaching Impact Report | Measuring coaching effectiveness |
+| **Andragogy** (Knowles) | Self-directed, experience-based adult learning |
+| **Transformative Learning** (Mezirow) | Perspective shifts, reflective practice |
+| **Zone of Proximal Development** (Vygotsky) | Scaffolded growth via expert guidance |
+| **Self-Determination Theory** (Ryan & Deci) | Autonomy, competence, relatedness drives |
+| **Constructivism** (Kolb ELT) | Concrete experience → reflective observation → abstract conceptualization → active experimentation |
+| **ICF Core Competencies** | Ethical practice, co-active partnership, active listening, powerful questioning |
+| **Bloom's Taxonomy** | Cognitive scaffolding for learning goal design in IDPs |
 
-## Coaching Models
+---
 
-Always select and name the coaching model before producing output:
+## Deliverable Types & How to Build Each
 
-| Model | Structure | Best For |
+### 1. Coaching Frameworks
+
+Use when: designing structured coaching engagements, selecting a coaching model, or building a coaching process for an organization.
+
+**Step 1 — Clarify Context:**
+- Who is the coachee? (Level, role, development stage)
+- What is the coaching goal? (Performance, transition, leadership, career)
+- What is the time horizon? (Short-term sprint vs. long-term engagement)
+- Organizational or cultural constraints?
+
+**Step 2 — Select or Blend a Model:**
+
+| Model | Best For | Core Structure |
 |---|---|---|
-| GROW (Whitmore) | Goal → Reality → Options → Will | General performance and development coaching |
-| CLEAR (Hawkins) | Contract → Listen → Explore → Action → Review | Systemic and leadership coaching |
-| OSKAR (McKergow) | Outcome → Scaling → Know-how → Affirm → Review | Solution-focused coaching |
-| COACH (Zeus & Skiffington) | Curious → Open → Appreciate → Connect → Help | Relationship-centered coaching |
-| Cognitive Behavioral | Thoughts → Feelings → Behaviors → Outcomes | Mindset and resilience coaching |
-| Transformational | Identity → Values → Beliefs → Capabilities → Behaviors | Deep change and leadership coaching |
+| **GROW** (Whitmore) | Goal-oriented performance coaching | Goal → Reality → Options → Will |
+| **CLEAR** (Hawkins) | Systemic/leadership coaching | Contract → Listen → Explore → Action → Review |
+| **OSKAR** (McKergow & Clarke) | Solution-focused coaching | Outcome → Scaling → Know-how → Affirm → Review |
+| **FUEL** (Zenger & Stinnett) | Manager-as-coach conversations | Frame → Understand → Explore → Lay out |
+| **Co-Active** (Kimsey-House) | Whole-person development | Being ↔ Doing balance |
+| **RACSR** | Reflective supervision | Restorative → Accountable → Case → Skills → Review |
 
-Default to **GROW** unless the context indicates a different model is better suited.
-
-## Individual Development Plan (IDP) Template
-
-When producing an IDP, use this structure:
+**Step 3 — Build the Framework Document:**
+Include: purpose, model rationale, session cadence, conversation guide (opening/exploration/action/closing), between-session accountability structures, and success metrics.
 
 ---
-**Individual Development Plan**
-**Name:** [Coachee name or role]
-**Coach/Manager:** [Name or role]
-**Period:** [Date range]
-**Organizational Context:** [Department, role, level]
 
-**Development Focus Areas:**
+### 2. Mentoring Programs
 
-| Development Goal | Current State | Target State | Timeline | Success Indicators |
-|---|---|---|---|---|
-| [Goal 1] | [Where they are] | [Where they want to be] | [By when] | [How we'll know] |
-| [Goal 2] | | | | |
+Use when: designing formal or informal mentoring structures for organizations, schools, or cohorts.
 
-**Action Steps:**
+**Program Architecture Checklist:**
+- [ ] Program type: Formal / Informal / Peer / Group / Reverse / Developmental / Sponsorship
+- [ ] Eligibility and matching criteria (competency-based, affinity-based, developmental need)
+- [ ] Onboarding: goal-setting protocol, relationship contract, confidentiality norms
+- [ ] Session structure: cadence, agenda template, reflection tools
+- [ ] Training: mentor training (active listening, avoiding advice-giving traps, boundary-setting)
+- [ ] Milestone check-ins: 30/60/90-day touchpoints + program evaluator role
+- [ ] Evaluation: Kirkpatrick L1–L4 (Reaction → Learning → Behavior → Results)
+- [ ] Closure protocol: celebratory review, alumni network path
 
-| Action | Resources Needed | Support Required | Timeline | Completion Check |
-|---|---|---|---|---|
-| [Specific action] | [Tools, training, access] | [Manager, peer, mentor] | [Date] | [Done/In progress] |
-
-**Check-in Schedule:** [Frequency and format]
-**Review Date:** [Formal review date]
----
-
-## Mentoring Program Framework
-
-When designing a mentoring program, include:
-
-**Program Design Elements:**
-- Program purpose and theory of change
-- Eligibility criteria (mentor and mentee)
-- Matching methodology (see matching matrix below)
-- Program duration and structure (formal vs. informal)
-- Training and onboarding for mentors and mentees
-- Communication and check-in cadence
-- Evaluation and reporting plan
-
-**Mentor-Mentee Matching Matrix:**
+**Matching Matrix (example schema):**
 
 | Dimension | Mentee Need | Mentor Strength |
 |---|---|---|
@@ -98,7 +90,9 @@ When designing a mentoring program, include:
 | Cultural/identity alignment | | |
 | Availability/time zone | | |
 
-## Feedback Models
+---
+
+### 3. Feedback Models
 
 Use when: building structured feedback systems, designing feedback training, or writing feedback for a coachee.
 
@@ -106,52 +100,101 @@ Use when: building structured feedback systems, designing feedback training, or 
 
 | Model | Structure | Best For |
 |---|---|---|
-| SBI (CCL) | Situation > Behavior > Impact | Behavioral, observable feedback |
-| COIN | Context > Observation > Impact > Next steps | Developmental conversations |
-| STAR/AR | Situation/Task > Action > Result / Action Required | Performance reviews + coaching |
-| Feedforward (Goldsmith) | Future-focused suggestions only | Growth mindset cultures |
-| 360-Degree | Self + peer + manager + direct report | Leadership development |
-| Radical Candor (Scott) | Care personally + Challenge directly matrix | Manager coaching cultures |
+| **SBI** (CCL) | Situation → Behavior → Impact | Behavioral, observable feedback |
+| **COIN** | Context → Observation → Impact → Next steps | Developmental conversations |
+| **STAR/AR** | Situation/Task → Action → Result / Action Required | Performance reviews + coaching |
+| **Feedforward** (Goldsmith) | Future-focused suggestions only | Growth mindset cultures |
+| **360-Degree** | Self + peer + manager + direct report | Leadership development |
+| **Radical Candor** (Scott) | Care personally + Challenge directly matrix | Manager coaching cultures |
 
-## 1:1 Coaching Agenda Template
+**When writing feedback for a user:**
+1. Identify the model most appropriate to context
+2. Label the structural components clearly (can be shown or hidden from recipient)
+3. Ensure specificity: observable behaviors, not trait attributions
+4. Balance: affirm strengths + identify growth edge (avoid sandwich traps)
+5. Close with a clear forward-looking action or question
 
-Standard structure for coaching conversations:
+---
 
-| Time | Section | Purpose | Questions |
-|---|---|---|---|
-| 5 min | Check-in | Build rapport, set tone | "How are you doing? What's on your mind?" |
-| 5 min | Agenda Setting | Clarify focus | "What would you like to focus on today?" |
-| 30 min | Core Coaching | Explore, discover, plan | [Model-specific questions] |
-| 10 min | Action Planning | Commit to next steps | "What will you do? By when? What support do you need?" |
-| 5 min | Reflection + Close | Consolidate learning | "What was most valuable today? What will you carry forward?" |
-| 5 min | Admin | Schedule next session | [Logistics] |
+### 4. Individual Development Plans (IDPs)
 
-## Coaching Impact Measurement
+Use when: building a personalized growth plan for a coachee, employee, student, or program participant.
 
-Align to Kirkpatrick or ROI Framework:
+**IDP Architecture:**
 
-| Level | What to Measure | Methods |
+```
+Section 1: Professional Identity & Vision
+  - Long-term aspiration (3–5 years)
+  - Core values and motivators
+  - Signature strengths (StrengthsFinder, VIA, CliftonStrengths, or user-defined)
+
+Section 2: Current State Assessment
+  - Competency self-assessment (role-specific rubric or framework)
+  - Feedback synthesis (360 data, manager input, peer input)
+  - Energy audit: energizing vs. draining activities
+
+Section 3: Development Goals
+  - 2–4 SMART goals aligned to Bloom's levels (Analysis → Synthesis → Evaluation)
+  - Prioritization: urgency × impact matrix
+
+Section 4: Learning & Development Actions
+  - Formal: courses, certifications, conferences
+  - Social: mentoring, shadowing, communities of practice
+  - Experiential: stretch assignments, project leadership, cross-functional roles
+  - Reflective: journaling, peer coaching pairs, supervision
+
+Section 5: Milestones & Accountability
+  - 30/60/90-day checkpoints
+  - Success indicators (behavioral + outcome)
+  - Accountability partner or sponsor
+
+Section 6: Review & Iteration
+  - Cadence for IDP revisits
+  - Reflection prompts: What worked? What shifted? What's next?
+```
+
+---
+
+### 5. Coaching Ethics & Boundaries
+
+Embed when relevant:
+- **ICF Code of Ethics**: Confidentiality, dual relationships, scope of practice
+- **Coaching vs. Therapy boundary**: Coaching is present/future-focused; past trauma → refer to licensed mental health professional
+- **Power dynamics**: Especially in organizational coaching — clarify who the "client" is (individual vs. sponsor)
+- **Cultural humility**: Avoid imposing Western coaching assumptions; adapt framework to cultural context
+- **Informed consent**: Coachee must understand goals, methods, and limits of the engagement
+
+---
+
+### 6. Measuring Coaching Impact
+
+Use **Kirkpatrick Four Levels** as the default evaluation architecture:
+
+| Level | Question | Example Measure |
 |---|---|---|
-| L1 Reaction | Coachee satisfaction with coaching | Session surveys, NPS |
-| L2 Learning | Knowledge and insight gained | Pre/post reflection, competency self-assessment |
-| L3 Behavior | Practice change in role | Manager observation, 360 follow-up |
-| L4 Results | Organizational outcomes | Performance data, retention, promotion rate |
-| ROI | Financial return on coaching investment | Cost vs. outcomes analysis |
+| **L1 Reaction** | Did they find it valuable? | Session satisfaction survey |
+| **L2 Learning** | What knowledge/insight was gained? | Pre/post self-assessment |
+| **L3 Behavior** | Did behavior change on the job? | Manager observation, 360 delta |
+| **L4 Results** | Did it affect organizational outcomes? | Retention, promotion, performance KPIs |
 
-## Equity and Inclusion in Coaching
+For executive/leadership coaching, add **Phillips ROI Level 5**: monetary value of behavior change vs. program cost.
 
-Always embed equity considerations:
+---
 
-- **Power dynamics**: Name and address power differentials between coach and coachee
-- **Cultural humility**: Adapt frameworks to cultural context; avoid universalizing Western models
-- **Identity-aware coaching**: Acknowledge how identity (race, gender, disability, etc.) shapes development experiences
-- **Access**: Ensure coaching resources, tools, and time are equitably distributed
+## Output Formatting Standards
 
-## Coaching Ethics
+- **Frameworks**: Header + purpose statement + model rationale + structured process + evaluation plan
+- **IDPs**: Sectioned document with tables, goal statements, and action timelines
+- **Feedback**: Labeled model components + behavioral specificity + forward action
+- **Programs**: Architecture overview + matching logic + session templates + evaluation schema
+- **All outputs**: Name the theoretical grounding; use tables for comparison/selection; include measurable outcomes
 
-Reference ICF Code of Ethics:
-- Maintain confidentiality
-- Avoid dual relationships
-- Clarify coaching vs. therapy boundaries
-- Operate within competence
-- Prioritize coachee's wellbeing and autonomy
+---
+
+## Reference Files
+
+Load when needed:
+- `references/frameworks-deep-dive.md` — Extended model documentation (GROW, CLEAR, Co-Active, OSKAR)
+- `references/idp-templates.md` — Role-specific IDP templates (educator, leader, technologist, researcher)
+- `references/feedback-scripts.md` — Model conversation scripts and SBI/COIN examples
+- `references/evaluation-toolkit.md` — Kirkpatrick survey templates, 360 rubrics, ROI calculation guide
