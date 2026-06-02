@@ -1,0 +1,8 @@
+{
+  "name": "example-skills",
+  "description": "Anthropic example skills including skill-creator, mcp-builder, frontend-design, and more",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  }
+}
