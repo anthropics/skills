@@ -237,7 +237,7 @@ A single tight paragraph (4-6 sentences):
 - What the topic is and why it matters to researchers
 - Which framework was used (e.g., PICO) and the sub-areas it revealed
 - A brief characterization of the evidence landscape (e.g., "The literature is robust on X but sparse on Y")
-  
+
 ---
 
 ### Section 2: Start Here — Priority Reading Order
@@ -397,7 +397,7 @@ This section lets the researcher (and anyone reviewing the guide) understand exa
 ## docx Technical Requirements
 
 Follow the docx skill exactly. Key rules:
-  
+
 ```javascript
 // Setup
 const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
