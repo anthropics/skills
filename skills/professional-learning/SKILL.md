@@ -15,117 +15,80 @@ description: >
 # Professional Learning Skill
 
 ## Purpose
-
 Generate rigorous, equity-centered, outcomes-driven professional learning artifacts grounded in
 adult learning science. All outputs are **Structured Markdown** by default (headers, tables,
 timelines). Offer DOCX conversion via the `docx` skill when the user requests a downloadable file.
 
+---
+
 ## Output Types
 
-| Output Type | When to Use | Key Components |
+| Output Type | Trigger Phrases |
+|---|---|
+| **Workshop Agenda & Facilitation Guide** | "agenda," "workshop," "PD session," "facilitation plan" |
+| **PLC Meeting Protocol & Norms** | "PLC," "team meeting," "collaborative inquiry," "professional learning community" |
+| **Coaching Cycle Framework** | "coaching cycle," "observation," "debrief," "coaching plan," "instructional coaching" |
+| **Full PD Session Design** | "full session," "PD design," "training plan," "objectives + materials" |
+| **Adult Learning Experience Plan** | "onboarding," "staff training," "org development," "capacity building," "L&D" |
+
+---
+
+## Mandatory Embedded Frameworks
+
+Always apply **all five** frameworks. They are not optional add-ons.
+
+### 1. Andragogy (Knowles)
+Every design must honor the six assumptions of adult learners:
+- Self-concept: treat participants as autonomous learners
+- Experience: surface and build on prior knowledge
+- Readiness: connect content to immediate professional needs
+- Orientation: problem-centered, not subject-centered
+- Motivation: intrinsic over extrinsic
+- Need to know: state the "why" before the "what"
+
+### 2. Backward Design (ADDIE-aligned)
+Build in this sequence — never skip steps:
+1. **Outcomes first** → What should participants *know, do, believe* after?
+2. **Evidence** → How will you measure transfer? (feeds Kirkpatrick)
+3. **Learning experiences** → Activities, protocols, materials
+4. **Facilitation plan** → Timing, transitions, facilitation moves
+5. **Evaluation** → Always embed (see Kirkpatrick section)
+
+### 3. Kirkpatrick Levels 1–4 (always embed L1–L2 minimum)
+
+| Level | Focus | Artifact to Include |
 |---|---|---|
-| Workshop Agenda | User wants a single session plan | Objectives, timed agenda, materials, facilitation notes |
-| PLC Protocol | Team learning meeting with structured dialogue | Norms, protocol type, roles, timing |
-| Coaching Cycle | Ongoing instructional coaching relationship | Pre-conference, observation, post-conference |
-| PD Series Plan | Multi-session program | Learning arc, session summaries, evaluation plan |
-| Onboarding Plan | New staff or role transition | Week-by-week plan, goals, check-ins |
-| Training Deck Outline | Slide-by-slide plan | Objectives, slide structure, facilitation cues |
+| L1 Reaction | Did participants find it valuable? | Exit ticket, pulse check, satisfaction survey |
+| L2 Learning | Did they acquire knowledge/skill? | Pre/post prompt, performance task, reflection rubric |
+| L3 Behavior | Did they apply it on the job? | 30-day follow-up protocol, classroom walkthrough tool |
+| L4 Results | Did it impact outcomes? | Data collection plan, metric linkage |
 
-## Core Adult Learning Principles (Always Apply)
+> **Default rule**: Always embed L1 + L2 artifacts in every output. Include L3 when session length ≥ half-day or multi-session. Include L4 only when explicitly requested or when the user mentions program evaluation/impact.
 
-These principles ground every output. Reference explicitly when relevant:
+### 4. Cognitive Coaching / GROWTH Model
+Use this structure for all coaching cycle outputs:
 
-**Knowles' Andragogy:**
-- Adults need to know *why* they're learning
-- Adults learn best when connecting to prior experience
-- Adults are self-directed; offer choice and agency
-- Adults are problem-centered, not subject-centered
+| Phase | GROWTH Anchor | Key Questions |
+|---|---|---|
+| Pre-observation | **G**oal + **R**eality | What are you hoping participants/students will do? What's currently happening? |
+| Observation | **O**ptions | What evidence are you collecting? |
+| Debrief | **W**ay forward | What patterns did you notice? What would you keep/change? |
+| Follow-up | **T**imeline + **H**abits | What's the next step? By when? What support do you need? |
 
-**Kirkpatrick's Four Levels (for evaluation planning):**
-- L1 Reaction: Did participants find it valuable?
-- L2 Learning: Did knowledge/skills change?
-- L3 Behavior: Is practice changing in the classroom/workplace?
-- L4 Results: What's the organizational/student impact?
-
-**GROWTH Coaching Model (for coaching cycles):**
-Goal → Reality → Options → Will → Tactics → Habits
-
-## Workshop Agenda Template
-
-When producing a workshop agenda, use this structure:
-
----
-**[Workshop Title]**
-**Duration:** [X hours / X minutes]
-**Audience:** [Who is attending]
-**Facilitator:** [Name or role]
-**Learning Objectives:**
-By the end of this session, participants will be able to:
-1. [Objective 1 — measurable verb]
-2. [Objective 2]
-3. [Objective 3]
-
-**Materials:** [List]
-**Technology:** [List or "None required"]
-
-| Time | Activity | Format | Purpose | Facilitator Notes |
-|---|---|---|---|---|
-| 0:00–0:10 | Welcome & Norms | Whole group | Set tone, activate prior knowledge | [Specific notes] |
-| 0:10–0:25 | Opening Activity | [Pairs/Small group/Individual] | [Purpose] | [Notes] |
-| ... | ... | ... | ... | ... |
-| [Last slot] | Closure & Next Steps | Whole group | Consolidate learning, set application goal | [Notes] |
-
-**Evaluation:** [L1 exit ticket / L2 pre-post / L3 follow-up plan]
----
-
-## PLC Protocol Templates
-
-When producing a PLC protocol, identify the protocol type:
-
-| Protocol | Best For | Time | Structure |
-|---|---|---|---|
-| Tuning Protocol | Refining student work or teacher practice | 45–60 min | Warm/cool feedback + reflection |
-| Consultancy Protocol | Solving a specific dilemma | 45–60 min | Presenter share → clarifying Qs → discussion → debrief |
-| Data Protocol | Analyzing student performance data | 30–60 min | Data share → observations → inferences → implications |
-| Text-Based Discussion | Building shared understanding from reading | 30–45 min | Individual → pairs → whole group |
-| Success Analysis | Celebrating and scaling what works | 30–45 min | Share → identify factors → transfer |
-
-Produce a full facilitation guide including: roles (facilitator, presenter, timekeeper, recorder), norms, timed steps, and debrief questions.
-
-## Coaching Cycle Template
-
-Structure a coaching cycle in three phases:
-
-**Pre-Conference:**
-- Coaching focus (teacher-identified)
-- Look-fors agreed upon
-- Data collection method
-
-**Observation:**
-- Scripting/data collection tool
-- Non-evaluative lens
-
-**Post-Conference:**
-- Data share (non-evaluative)
-- Reflection questions (GROWTH model)
-- Action step(s) with timeline
-- Next cycle focus
-
-## Equity and UDL Integration
-
-Always embed equity and Universal Design for Learning (UDL) into designs:
-
-**Equity Lens:**
-Representation: How is content accessible (visual, text, audio)?
-Action/Expression: How can participants engage/respond flexibly?
-Engagement: What sustains motivation across diverse participants?
+### 5. UDL & Equity-Centered Facilitation
+Every output must include at least **one explicit UDL annotation** per activity:
+- Representation: How is content accessible (visual, text, audio)?
+- Action/Expression: How can participants engage/respond flexibly?
+- Engagement: What sustains motivation across diverse participants?
 
 Additionally flag:
-Power dynamics in facilitation (who speaks, who decides)
-Language access (multilingual participants, jargon reduction)
-Psychological safety protocols (norms, anonymous response options)
+- Power dynamics in facilitation (who speaks, who decides)
+- Language access (multilingual participants, jargon reduction)
+- Psychological safety protocols (norms, anonymous response options)
 
-## Duration Inference
+---
+
+## Session Length Inference Rules
 
 When duration is not specified, infer from context:
 
@@ -139,9 +102,151 @@ When duration is not specified, infer from context:
 
 Always state the inferred duration at the top of the output with a note: *"Duration inferred as [X] — adjust if needed."*
 
-## References
+---
 
-Read reference files for extended frameworks and evaluation instruments:
+## Output Structure Templates
 
-`references/framework-citations.md` — Extended framework citations (Knowles, Kirkpatrick, UDL guidelines, GROWTH model source literature)
-`references/evaluation-instruments.md` — Ready-to-use L1–L3 instruments, rubrics, and survey stems
+### Template A: Workshop Agenda & Facilitation Guide
+
+```
+## [Title]
+**Audience**: [role/level]  **Duration**: [X min/hrs]  **Facilitator**: [name/role]
+**Learning Objectives** (Bloom's action verbs):
+  - Participants will [verb] [content] in order to [purpose].
+
+---
+### Agenda
+
+| Time | Segment | Activity | Materials | Facilitation Notes | UDL Note |
+|------|---------|----------|-----------|-------------------|----------|
+
+---
+### Evaluation Artifacts
+- **L1 Exit Ticket**: [prompt]
+- **L2 Performance Indicator**: [task or reflection rubric]
+```
+
+### Template B: PLC Meeting Protocol
+
+```
+## PLC Meeting — [Date/Cycle]
+**Team**: [grade/dept/school]  **Duration**: [X min]  **Facilitator**: [name]
+**Inquiry Question**: [student-centered question driving this cycle]
+**Norms**: [list or link]
+
+---
+### Protocol Sequence
+
+| Time | Phase | Purpose | Facilitation Move |
+|------|-------|---------|------------------|
+
+---
+### Data Examined: [source + artifact]
+### Decisions Made: [action items + owner + deadline]
+### L1 Check: [team pulse — 1-word whip-around or thumb vote]
+```
+
+### Template C: Coaching Cycle Framework
+
+```
+## Coaching Cycle — [Coachee Name/Role]
+**Coach**: [name]  **Cycle Goal**: [SMART goal]  **Timeline**: [start → end]
+
+---
+### GROWTH Cycle Log
+
+| Date | Phase | Key Questions Used | Evidence Collected | Next Step |
+|------|-------|-------------------|-------------------|-----------|
+
+---
+### L2 Indicator: [observable behavior shift to track]
+### L3 Follow-up: [30-day check-in protocol]
+```
+
+### Template D: Full PD Session Design
+
+```
+## PD Session Design Document
+**Title** | **Audience** | **Duration** | **Designer** | **Date**
+
+### Part 1: Outcomes & Alignment
+| Objective | Bloom's Level | Kirkpatrick Level | Standard/Competency Aligned |
+
+### Part 2: Learning Arc
+[Opening hook → Activate prior knowledge → New learning → Application → Transfer → Closure]
+
+### Part 3: Materials & Resources
+[List with access/equity notes]
+
+### Part 4: Facilitation Guide
+[Full timed agenda — see Template A format]
+
+### Part 5: Evaluation Suite
+- L1 Reaction instrument
+- L2 Learning artifact
+- L3 Transfer protocol (if ≥ half-day)
+```
+
+### Template E: Adult Learning Experience Plan (Onboarding / Org Training)
+
+```
+## Adult Learning Experience Plan
+**Program**: [name]  **Audience**: [role]  **Duration**: [hours/days/weeks]
+**Organizational Goal Linkage**: [strategic priority or KPI]
+
+### Learning Pathway
+
+| Module | Duration | Mode | Outcome | Kirkpatrick Level Targeted |
+|--------|---------|------|---------|---------------------------|
+
+### Andragogy Alignment Check
+[One row per Knowles assumption — confirm each is addressed]
+
+### Evaluation Plan
+| Kirkpatrick Level | Instrument | Timing | Owner |
+```
+
+---
+
+## Facilitation Language Bank
+Reference when writing facilitation notes:
+
+- **Activating prior knowledge**: "Turn and talk: What do you already know about…?"
+- **Cognitive conflict**: "Look at this data. What surprises you?"
+- **Sense-making**: "What patterns are you noticing across these examples?"
+- **Transfer**: "How would you apply this in your context next week?"
+- **Psychological safety**: "Take 60 seconds to write before we share aloud."
+- **Equity check**: "Who hasn't spoken yet? Let's hear from a different voice."
+
+---
+
+## Out of Scope
+This skill does **not** produce:
+- Student-facing lesson plans or K-12 curriculum units (→ use `instructional-design` skill)
+- HR performance reviews or disciplinary documentation
+- Grant proposals or logic models (→ use `grant-writing` skill)
+- Program evaluation reports (→ use `program-evaluation` skill)
+
+If a request overlaps with these, note the boundary and offer to hand off to the appropriate skill.
+
+---
+
+## Quick-Start Decision Tree
+
+```
+User request received
+        │
+        ├─ Mentions "coaching," "observation," "debrief" ──→ Template C
+        ├─ Mentions "PLC," "team protocol," "inquiry" ────→ Template B
+        ├─ Mentions "agenda," "workshop," "facilitate" ───→ Template A
+        ├─ Mentions "onboarding," "training program" ─────→ Template E
+        └─ Mentions "design," "full session," "materials" → Template D
+```
+
+When in doubt between A and D: **A** if the user wants a single session run document; **D** if they want a complete design package with materials and evaluation suite.
+
+---
+
+## Reference Files
+- `references/frameworks.md` — Extended framework citations (Knowles, Kirkpatrick, UDL guidelines, GROWTH model source literature)
+- `references/evaluation-instruments.md` — Ready-to-use L1–L3 instruments, rubrics, and survey stems
