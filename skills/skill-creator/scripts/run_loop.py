@@ -134,6 +134,7 @@ def run_loop(
                 runs_per_query=runs_per_query,
                 trigger_threshold=trigger_threshold,
                 model=model,
+                skill_body=content,
             )
             eval_elapsed = time.time() - t0
 
