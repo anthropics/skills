@@ -56,7 +56,9 @@ def run_single_query(
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
-    eval_root = Path(tempfile.mkdtemp(prefix=f"skill-eval-{unique_id}-"))
+    # Include the skill name in the prefix so any tempdir stranded by a
+    # killed worker (rmtree never runs on SIGKILL) is attributable.
+    eval_root = Path(tempfile.mkdtemp(prefix=f"skill-eval-{skill_name}-{unique_id}-"))
     command_file = eval_root / ".claude" / "commands" / f"{clean_name}.md"
 
     try:
