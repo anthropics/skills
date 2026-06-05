@@ -196,6 +196,13 @@ Write an `eval_metadata.json` for each test case (assertions can be empty for no
 }
 ```
 
+> **Stop-gate before continuing**: confirm that every eval directory in this
+> iteration contains a valid `eval_metadata.json` with at minimum `eval_id`,
+> `eval_name`, and `prompt`. If any is missing, write it now — the prompt
+> cannot be recovered later from anywhere else. `aggregate_benchmark.py` will
+> refuse to run, and `generate_review.py` will print a loud warning and show
+> "(No prompt found)" in the viewer if you skip this.
+
 ### Step 2: While runs are in progress, draft assertions
 
 Don't just wait for the runs to finish — you can use this time productively. Draft quantitative assertions for each test case and explain them to the user. If assertions already exist in `evals/evals.json`, review them and explain what they check.

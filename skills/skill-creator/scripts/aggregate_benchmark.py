@@ -38,8 +38,33 @@ import argparse
 import json
 import math
 import sys
+import textwrap
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+# Canonical names for the per-condition subdirectories inside an eval directory.
+# An eval directory is identified by containing at least one of these.
+CONDITION_NAMES = ("with_skill", "without_skill", "old_skill", "new_skill")
+
+
+def _find_eval_dirs(search_dir: Path) -> list[Path]:
+    """Return all directories under search_dir that look like eval directories.
+
+    An eval directory is identified by containing at least one condition
+    subdirectory (with_skill / without_skill / old_skill / new_skill). This
+    accepts both the canonical "eval-N/" naming and descriptive names like
+    "my-eval-name/" (per SKILL.md line 188).
+    """
+    if not search_dir.is_dir():
+        return []
+    eval_dirs: list[Path] = []
+    for child in sorted(search_dir.iterdir()):
+        if not child.is_dir():
+            continue
+        if any((child / cond).is_dir() for cond in CONDITION_NAMES):
+            eval_dirs.append(child)
+    return eval_dirs
 
 
 def calculate_stats(values: list[float]) -> dict:
@@ -71,11 +96,13 @@ def load_run_results(benchmark_dir: Path) -> dict:
     Returns dict keyed by config name (e.g. "with_skill"/"without_skill",
     or "new_skill"/"old_skill"), each containing a list of run results.
     """
-    # Support both layouts: eval dirs directly under benchmark_dir, or under runs/
+    # Support both layouts: eval dirs directly under benchmark_dir, or under
+    # benchmark_dir/runs/. Detection uses the condition-subdir signature so
+    # descriptive eval names ("my-eval-name/") work as well as "eval-N/".
     runs_dir = benchmark_dir / "runs"
-    if runs_dir.exists():
+    if runs_dir.exists() and _find_eval_dirs(runs_dir):
         search_dir = runs_dir
-    elif list(benchmark_dir.glob("eval-*")):
+    elif _find_eval_dirs(benchmark_dir):
         search_dir = benchmark_dir
     else:
         print(f"No eval directories found in {benchmark_dir} or {benchmark_dir / 'runs'}")
@@ -83,19 +110,71 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     results: dict[str, list] = {}
 
-    for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
-        metadata_path = eval_dir / "eval_metadata.json"
-        if metadata_path.exists():
-            try:
-                with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
-            except (json.JSONDecodeError, OSError):
-                eval_id = eval_idx
-        else:
-            try:
-                eval_id = int(eval_dir.name.split("-")[1])
-            except ValueError:
-                eval_id = eval_idx
+    # Per SKILL.md Step 1, every eval directory must carry eval_metadata.json
+    # with at minimum {eval_id, eval_name, prompt}. The prompt cannot be
+    # recovered from anywhere else, so refuse to aggregate if any file is
+    # missing, unreadable, or has empty required fields.
+    eval_dirs = _find_eval_dirs(search_dir)
+    metadata_by_dir: dict[Path, dict] = {}
+    problems: list[str] = []
+    for d in eval_dirs:
+        metadata_path = d / "eval_metadata.json"
+        if not metadata_path.exists():
+            problems.append(f"missing file: {metadata_path}")
+            continue
+        try:
+            with open(metadata_path) as mf:
+                metadata = json.load(mf)
+        except (json.JSONDecodeError, OSError) as e:
+            problems.append(f"unreadable ({e.__class__.__name__}): {metadata_path}")
+            continue
+        empty_fields = []
+        for field in ("eval_id", "eval_name", "prompt"):
+            val = metadata.get(field)
+            if val is None or val == "":
+                empty_fields.append(field)
+        if empty_fields:
+            problems.append(
+                f"missing or empty {empty_fields} in: {metadata_path}"
+            )
+            continue
+        metadata_by_dir[d] = metadata
+
+    if problems:
+        n = len(problems)
+        noun = "problem" if n == 1 else "problems"
+        header = textwrap.dedent(f"""
+            ======================================================================
+              ERROR: {n} eval metadata {noun} detected
+            ======================================================================
+              Per SKILL.md Step 1, every eval directory must contain
+              eval_metadata.json with at minimum eval_id, eval_name, and prompt
+              written BEFORE spawning runs. The prompt cannot be recovered
+              from anywhere else.
+
+              Problems:
+        """).rstrip()
+        trailer = textwrap.dedent("""
+              Expected content template:
+                {
+                  "eval_id": 0,
+                  "eval_name": "<descriptive-name>",
+                  "prompt": "<the actual prompt used for this eval>",
+                  "assertions": []
+                }
+            ======================================================================
+        """).rstrip()
+
+        print(header, file=sys.stderr)
+        for p in problems:
+            print(f"    - {p}", file=sys.stderr)
+        print("", file=sys.stderr)
+        print(trailer, file=sys.stderr)
+        print("", file=sys.stderr)
+        sys.exit(1)
+
+    for eval_idx, eval_dir in enumerate(eval_dirs):
+        eval_id = metadata_by_dir[eval_dir].get("eval_id", eval_idx)
 
         # Discover config directories dynamically rather than hardcoding names
         for config_dir in sorted(eval_dir.iterdir()):

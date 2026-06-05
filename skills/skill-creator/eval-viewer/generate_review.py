@@ -21,11 +21,17 @@ import re
 import signal
 import subprocess
 import sys
+import textwrap
 import time
 import webbrowser
 from functools import partial
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
+
+# Sentinel value used in run["prompt"] when no prompt source can be located.
+# Kept as a module-level constant so other code paths (e.g. the post-scan
+# warning in main()) can compare against the exact same string.
+NO_PROMPT_SENTINEL = "(No prompt found)"
 
 # Files to exclude from output listings
 METADATA_FILES = {"transcript.md", "user_notes.md", "metrics.json"}
@@ -87,8 +93,21 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     prompt = ""
     eval_id = None
 
-    # Try eval_metadata.json
-    for candidate in [run_dir / "eval_metadata.json", run_dir.parent / "eval_metadata.json"]:
+    # Walk up from run_dir toward the workspace root looking for eval_metadata.json.
+    # Handles arbitrary nesting (e.g. iteration-N/eval-N/<condition>/run-N/) instead of
+    # assuming a single-parent layout — the canonical location per SKILL.md is eval-N/,
+    # which sits above the condition directory so prompt/assertions are shared across
+    # with_skill/without_skill runs.
+    candidates: list[Path] = []
+    current = run_dir.resolve()
+    root_resolved = root.resolve()
+    while True:
+        candidates.append(current / "eval_metadata.json")
+        if current == root_resolved or current.parent == current:
+            break
+        current = current.parent
+
+    for candidate in candidates:
         if candidate.exists():
             try:
                 metadata = json.loads(candidate.read_text())
@@ -114,7 +133,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
                     break
 
     if not prompt:
-        prompt = "(No prompt found)"
+        prompt = NO_PROMPT_SENTINEL
 
     run_id = str(run_dir.relative_to(root)).replace("/", "-").replace("\\", "-")
 
@@ -384,6 +403,52 @@ class ReviewHandler(BaseHTTPRequestHandler):
         pass
 
 
+def _warn_missing_prompts(runs: list[dict]) -> None:
+    """Print a stderr warning listing every run whose prompt could not be located.
+
+    A missing prompt usually means `eval_metadata.json` was never written for
+    that eval directory (SKILL.md Step 1). The prompt is otherwise unrecoverable,
+    so surface the omission loudly instead of silently rendering "(No prompt
+    found)" in the report.
+    """
+    missing = [r for r in runs if r.get("prompt") == NO_PROMPT_SENTINEL]
+    if not missing:
+        return
+
+    n = len(missing)
+    if n == 1:
+        noun, verb, dem = "run", "has", "this"
+    else:
+        noun, verb, dem = "runs", "have", "these"
+    header = textwrap.dedent(f"""
+        ======================================================================
+          WARNING: {n} {noun} {verb} no recoverable prompt
+        ======================================================================
+          The eval prompt was not found in eval_metadata.json or transcript.md
+          for {dem} {noun}. The review page will show '(No prompt found)'.
+          Per SKILL.md Step 1, write eval_metadata.json BEFORE spawning runs.
+
+          Missing {noun}:
+    """).rstrip()
+    trailer = textwrap.dedent("""
+          Expected metadata format (one per eval directory):
+            {
+              "eval_id": 0,
+              "eval_name": "<descriptive-name>",
+              "prompt": "<the actual prompt used>",
+              "assertions": []
+            }
+        ======================================================================
+    """).rstrip()
+
+    print(header, file=sys.stderr)
+    for run in missing:
+        print(f"    - {run.get('id', '?')}", file=sys.stderr)
+    print("", file=sys.stderr)
+    print(trailer, file=sys.stderr)
+    print("", file=sys.stderr)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate and serve eval review")
     parser.add_argument("workspace", type=Path, help="Path to workspace directory")
@@ -412,6 +477,8 @@ def main() -> None:
     if not runs:
         print(f"No runs found in {workspace}", file=sys.stderr)
         sys.exit(1)
+
+    _warn_missing_prompts(runs)
 
     skill_name = args.skill_name or workspace.name.replace("-workspace", "")
     feedback_path = workspace / "feedback.json"
