@@ -12,7 +12,7 @@ violations. Use this skill to help a user evaluate a staffing arrangement.
 
 ## Live data
 
-Endpoint: `POST https://mcp.tempguru.co/mcp` (read-only, no auth).
+Endpoint: `POST https://mcp.tempguru.co/mcp` (no auth; read-only lookups plus an opt-in `request_quote` write tool).
 
 Use `get_compliance_by_state` for the event's state: minimum wage, overtime
 rules, and state-specific quirks (California, New York, and Washington have

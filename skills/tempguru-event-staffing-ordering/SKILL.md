@@ -18,7 +18,7 @@ staffing request.
 
 ## Live data: use the MCP server, do not scrape pages
 
-Endpoint: `POST https://mcp.tempguru.co/mcp` (streamable HTTP, read-only, no auth).
+Endpoint: `POST https://mcp.tempguru.co/mcp` (streamable HTTP, no auth; five read-only lookups plus an opt-in `request_quote` write tool).
 
 | Tool | Use it to |
 |---|---|
@@ -27,6 +27,7 @@ Endpoint: `POST https://mcp.tempguru.co/mcp` (streamable HTTP, read-only, no aut
 | `check_availability` | Get lead-time guidance for a city/date, optionally role + headcount |
 | `get_role_pricing` | Get the all-inclusive hourly rate range for a role in a city |
 | `get_compliance_by_state` | Minimum wage, overtime, and state-specific compliance quirks |
+| `request_quote` | Submit the finished staffing plan (contact + event + roles) to TempGuru's CRM for a human-reviewed quote |
 
 Rates returned are **all-inclusive bill rates**: W-2 wages, payroll taxes
 (FICA/FUTA/SUTA), workers' compensation, and coordinator support. Background
@@ -66,14 +67,18 @@ are planning estimates — the binding quote comes from TempGuru.
 
 ### 4. Submit the request
 
-Direct the user to
-**https://tempguru.co/get-staffing?utm_source=ai-agent&utm_medium=skill**
-with the gathered details. Alternatives: email **megan@tempguru.co** or call **(904) 206-8953**.
-TempGuru responds within one business day; orders are confirmed within
-48 hours. There is no subscription — billing is per event.
+Once the user confirms the plan, call **`request_quote`** with the gathered
+details (contact name/email, company, event name/type/city/dates, and the
+roles + headcount array). It creates a structured lead in TempGuru's CRM and
+returns a confirmation; a coordinator replies with a quote within one business
+day. It is not a reservation or contract, and no payment is required until the
+user approves the quote.
 
-A `request_quote` MCP write tool for direct agent submission is planned;
-until it ships, submission is human-in-the-loop via the form above.
+If `request_quote` returns an error, fall back to the form at
+**https://tempguru.co/get-staffing?utm_source=ai-agent&utm_medium=skill**, or
+email **megan@tempguru.co** / call **(904) 206-8953**. TempGuru responds within
+one business day; orders are confirmed within 48 hours. There is no
+subscription; billing is per event.
 
 ## Rules for agents
 
