@@ -1,0 +1,43 @@
+theme-factory-addon
+Copyright 2026 Patrick Krebs
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+------------------------------------------------------------------------------
+Third-party names, marks, and palette attributions
+------------------------------------------------------------------------------
+
+This skill is a companion to Anthropic's "theme-factory" skill
+(https://github.com/anthropics/skills/tree/main/theme-factory) and follows its
+theme file format. It does not include or modify theme-factory's files.
+
+The theme palettes in this pack are provided as a DESIGN REFERENCE only. Several
+categories reference third-party names that are the trademarks or property of
+their respective owners. Inclusion here does not imply affiliation with, or
+endorsement by, any of these owners.
+
+- Aesthetic palettes (Earthy, Feminine, Coastal, Bold, Boho, Vintage, Luxury)
+  are adapted from publicly published color collections by The Brand Alchemists
+  and Steph Corrigan Design.
+
+- "Iconic Brands" reproduces publicly documented brand colors (e.g. Facebook,
+  Instagram, X/Twitter, Tesla, McDonald's, Nike, Spotify, Google, Netflix,
+  Coca-Cola, Slack, Starbucks, Amazon, Airbnb). All brand names and colors are
+  the property of their respective owners.
+
+- The developer/editor/terminal categories use the published color
+  specifications of community themes (e.g. Dracula, Nord, Gruvbox, Tokyo Night,
+  Catppuccin, Solarized, Monokai, One Dark, Night Owl, GitHub, Rosé Pine,
+  Everforest, Synthwave '84, Cobalt2, Shades of Purple, Spaceduck, Horizon).
+  The Obsidian-native themes (Things, Minimal, Blue Topaz, Primary, AnuPpuccin)
+  are approximations of each theme's signature look. All theme names belong to
+  their respective authors.
+
+- "Master Painters" and "Directors & Cinematographers" palettes are original
+  color selections DERIVED from each artist's or filmmaker's iconic work. Most
+  source works are in the public domain. These are evocations for design use,
+  not reproductions, and the artists' names belong to their respective estates
+  or owners.
+
+Theme names, color-role assignments, font pairings, and usage guidance in this
+pack were authored by the maintainer.
