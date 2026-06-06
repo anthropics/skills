@@ -1,0 +1,14 @@
+{
+  "extraKnownMarketplaces": {
+    "healthcare": {
+      "source": "github",
+      "repo": "drsandeeprana00-bit/healthcare"
+    }
+  },
+  "enabledPlugins": {
+    "clinical-trial-protocol@healthcare": true,
+    "prior-auth-review@healthcare": true,
+    "fhir-developer@healthcare": true
+  },
+  "enableAllProjectMcpServers": true
+}
