@@ -10,5 +10,43 @@
     "prior-auth-review@healthcare": true,
     "fhir-developer@healthcare": true
   },
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "WebFetch(*.cms.gov/*)",
+      "WebFetch(pubmed.ncbi.nlm.nih.gov/*)",
+      "WebFetch(fhir.hl7.org/*)"
+    ],
+    "ask": [
+      "Write",
+      "Edit"
+    ]
+  },
+  "env": {
+    "HEALTHCARE_API_TIMEOUT": "30000",
+    "FHIR_VERSION": "R4",
+    "CMS_API_RETRIES": "3"
+  },
+  "pluginConfigs": {
+    "clinical-trial-protocol@healthcare": {
+      "options": {
+        "regulatory_framework": "FDA",
+        "protocol_template": "standard"
+      }
+    },
+    "prior-auth-review@healthcare": {
+      "options": {
+        "payer_type": "commercial"
+      }
+    },
+    "fhir-developer@healthcare": {
+      "options": {
+        "fhir_version": "R4",
+        "enable_smart_auth": true
+      }
+    }
+  }
 }
