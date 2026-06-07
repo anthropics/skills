@@ -1,0 +1,17 @@
+{
+    "name": "@anthropics/skills",
+    "version": "1.0.0",
+    "description": "Anthropic Skills Repository with Playwright Testing",
+    "scripts": {
+        "test": "playwright test",
+        "test:ui": "playwright test --ui",
+        "test:debug": "playwright test --debug",
+        "test:headed": "playwright test --headed",
+        "test:chrome": "playwright test --project=chromium",
+        "test:firefox": "playwright test --project=firefox",
+        "test:webkit": "playwright test --project=webkit"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.40.0"
+    }
+}

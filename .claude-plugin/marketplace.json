@@ -15,10 +15,10 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./document-skills/xlsx",
-        "./document-skills/docx",
-        "./document-skills/pptx",
-        "./document-skills/pdf"
+        "./skills/xlsx",
+        "./skills/docx",
+        "./skills/pptx",
+        "./skills/pdf"
       ]
     },
     {

@@ -1,2 +1,17 @@
 .DS_Store
+__pycache__/
+.idea/
+.vscode/
+
+# Node.js & npm
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Playwright
+.playwright/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 
