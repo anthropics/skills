@@ -1,6 +1,6 @@
 # Claude API — C#
 
-> **Note:** The C# SDK is the official Anthropic SDK for C#. Tool use is supported via the Messages API. A class-annotation-based tool runner is not available; use raw tool definitions with JSON schema. The SDK also supports Microsoft.Extensions.AI IChatClient integration with function invocation.
+> **Note:** The C# SDK is the official Anthropic SDK for C#. Tool use is supported via the Messages API with a beta `BetaToolRunner` for automatic tool execution loops. The SDK also supports Microsoft.Extensions.AI IChatClient integration with function invocation and Managed Agents (beta).
 
 ## Installation
 
@@ -400,3 +400,48 @@ new BetaRequestDocumentBlock {
 ```
 
 The non-beta `DocumentBlockParamSource` union has no file-ID variant — file references need `client.Beta.Messages.Create()`.
+
+---
+
+## Tool Runner (Beta)
+
+The C# SDK provides a `BetaToolRunner` for automatic tool execution loops. Define tools with raw JSON schemas, and the runner handles the API call → tool execution → result feedback loop.
+
+```csharp
+using Anthropic.Models.Beta.Messages;
+
+// Define tools and create params as shown in the Tool Use section above,
+// but using the beta namespace types (BetaToolUnion, etc.)
+var runner = client.Beta.Messages.ToolRunner(betaParams);
+
+await foreach (BetaMessage message in runner)
+{
+    foreach (var block in message.Content)
+    {
+        if (block.TryPickText(out var text))
+        {
+            Console.WriteLine(text.Text);
+        }
+    }
+}
+```
+
+---
+
+## Stop Details
+
+When `StopReason` is `"refusal"`, the response includes structured `StopDetails`:
+
+```csharp
+if (response.StopReason == "refusal" && response.StopDetails is { } details)
+{
+    Console.WriteLine($"Category: {details.Category}");
+    Console.WriteLine($"Explanation: {details.Explanation}");
+}
+```
+
+---
+
+## Managed Agents (Beta)
+
+The C# SDK supports Managed Agents via `client.Beta.Agents`, `client.Beta.Sessions`, `client.Beta.Environments`, and related namespaces. See `shared/managed-agents-overview.md` for the architecture and `curl/managed-agents.md` for the wire-level reference.

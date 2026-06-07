@@ -8,21 +8,25 @@ Creating a session requires an `environment_id`. Environments are **reusable con
 
 ### Networking
 
-| Network Policy                  | Description                                                   |
-| ------------------------------- | ------------------------------------------------------------- |
-| `unrestricted`                  | Full egress (except legal blocklist)                          |
-| `package_managers_and_custom`   | Package managers + custom `allowed_hosts`                      |
+| Network Policy   | Description                                                   |
+| ---------------- | ------------------------------------------------------------- |
+| `unrestricted`   | Full egress (except legal blocklist)                          |
+| `limited`        | Deny-by-default; opt in via `allowed_hosts` / `allow_package_managers` / `allow_mcp_servers` |
 
 ```json
 {
   "networking": {
-    "type": "package_managers_and_custom",
+    "type": "limited",
+    "allow_package_managers": true,
+    "allow_mcp_servers": true,
     "allowed_hosts": ["api.example.com"]
   }
 }
 ```
 
-**MCP caveat:** If using restricted networking, make sure `allowed_hosts` includes your MCP server domains. Otherwise the container can't reach them and tools silently fail.
+All three `limited` fields are optional. `allow_package_managers` (default `false`) permits PyPI/npm/etc.; `allow_mcp_servers` (default `false`) permits the agent's configured MCP server endpoints without listing them in `allowed_hosts`.
+
+**MCP caveat:** Under `limited` networking, either set `allow_mcp_servers: true` or add each MCP server domain to `allowed_hosts`. Otherwise the container can't reach them and tools silently fail.
 
 ### Creating an environment
 

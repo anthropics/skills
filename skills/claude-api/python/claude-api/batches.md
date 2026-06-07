@@ -100,6 +100,19 @@ print(f"Status: {cancelled.processing_status}")  # "canceling"
 
 ---
 
+## List Batches (auto-pagination)
+
+Iterating the return value of any `list()` call auto-paginates across all pages — do not index into `.data` if you want the full set:
+
+```python
+for batch in client.messages.batches.list(limit=20):
+    print(batch.id, batch.processing_status)
+```
+
+For manual control, use `first_page.has_next_page()` / `first_page.get_next_page()` / `first_page.next_page_info()`; `first_page.data` holds the current page's items and `first_page.last_id` is the cursor.
+
+---
+
 ## Batch with Prompt Caching
 
 ```python

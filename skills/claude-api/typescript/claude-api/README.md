@@ -11,10 +11,12 @@ npm install @anthropic-ai/sdk
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
-// Default (uses ANTHROPIC_API_KEY env var)
+// Default — resolves credentials from the environment:
+// ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+// Prefer this for local dev; don't hardcode a key.
 const client = new Anthropic();
 
-// Explicit API key
+// Explicit API key (only when you must inject a specific key)
 const client = new Anthropic({ apiKey: "your-api-key" });
 ```
 
@@ -49,6 +51,32 @@ const response = await client.messages.create({
     "You are a helpful coding assistant. Always provide examples in Python.",
   messages: [{ role: "user", content: "How do I read a JSON file?" }],
 });
+```
+
+### Mid-conversation system messages (beta, model-gated)
+
+For operator instructions that arrive mid-conversation (mode switches, injected state), append `{role: "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
+
+```typescript
+// SDK types for role:"system" in messages are pending — pass the beta header
+// directly until the SDK updates, then switch to client.beta.messages.create
+// with betas: ["mid-conversation-system-2026-04-07"].
+const response = await client.messages.create(
+  {
+    model: MODEL_ID, // must support mid-conversation system messages
+    max_tokens: 16000,
+    system: [
+      { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
+    ],
+    messages: [
+      ...history,
+      { role: "user", content: userMessage },
+      // @ts-expect-error — role:"system" pending SDK types
+      { role: "system", content: "Terse mode enabled — keep responses under 40 words." },
+    ],
+  },
+  { headers: { "anthropic-beta": "mid-conversation-system-2026-04-07" } },
+);
 ```
 
 ---
@@ -297,7 +325,18 @@ The `stop_reason` field in the response indicates why the model stopped generati
 | `stop_sequence` | Hit a custom stop sequence                                      |
 | `tool_use`      | Claude wants to call a tool — execute it and continue           |
 | `pause_turn`    | Model paused and can be resumed (agentic flows)                 |
-| `refusal`       | Claude refused for safety reasons — output may not match schema |
+| `refusal`       | Claude refused for safety reasons — check `stop_details`        |
+
+### Structured Stop Details
+
+When `stop_reason` is `"refusal"`, the response includes a `stop_details` object with structured information about the refusal:
+
+```typescript
+if (response.stop_reason === "refusal" && response.stop_details) {
+  console.log(`Category: ${response.stop_details.category}`); // "cyber" | "bio" | null
+  console.log(`Explanation: ${response.stop_details.explanation}`);
+}
+```
 
 ---
 
