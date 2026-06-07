@@ -1,5 +1,7 @@
 # Model Migration Guide
 
+> **If you arrived via `/claude-api migrate`:** this is the right file. Execute the steps below in order — do not summarize them back to the user. Start with Step 0 (confirm scope) before touching any file.
+
 How to move existing code to newer Claude models. Covers breaking changes, deprecated parameters, and drop-in replacements for retired models.
 
 For the latest, authoritative version (with code samples in every supported language), WebFetch the **Migration Guide** URL from `shared/live-sources.md`. Use this file for the consolidated, skill-resident reference; fall back to the live docs whenever a model launch or breaking change may have shifted the picture.
@@ -86,6 +88,7 @@ Code examples in this guide are Python. **The same fields exist in every officia
 
 > **Verify type and method names against the SDK source before writing them into customer code.** WebFetch the relevant repository from the SDK source-code table in `shared/live-sources.md` (one row per SDK) and confirm the exact symbol — particularly for typed SDKs (Go, Java, C#) where union/builder names can differ from the JSON shape. Do not guess type names that aren't in the table below or in `<lang>/claude-api/README.md`.
 
+<!-- The rows below were verified against each SDK's `synced/model-launch-april` branch. -->
 
 ### `thinking` — `budget_tokens` → adaptive
 
@@ -483,6 +486,26 @@ If the model is now overtriggering a tool or skill, the fix is almost always to 
 
 Older aliases (`claude-opus-4-7`, `claude-opus-4-6`, `claude-opus-4-5`, `claude-sonnet-4-5`, etc.) are still active and can be pinned if you need time before upgrading — see `shared/models.md` for the full legacy list.
 
+### Amazon Bedrock model IDs
+
+If the code uses the `AnthropicBedrockMantle` client (Python `anthropic[bedrock]`, TypeScript `@anthropic-ai/bedrock-sdk`, Java `BedrockMantleBackend`, Go `bedrock.NewMantleClient`, etc.) or targets `https://bedrock-mantle.{region}.api.aws/anthropic`, it is running on **Claude in Amazon Bedrock**. All breaking changes in this guide apply unchanged there — it serves the same Messages API shape — but model IDs carry an `anthropic.` provider prefix:
+
+| First-party ID | Bedrock ID |
+|---|---|
+| `claude-opus-4-8` | `anthropic.claude-opus-4-8` |
+| `claude-opus-4-7` | `anthropic.claude-opus-4-7` |
+| `claude-haiku-4-5` | `anthropic.claude-haiku-4-5` |
+
+When migrating a Bedrock file, apply the same rename-table row as first-party, then keep/add the `anthropic.` prefix. Do **not** generate a first-party `claude-*` ID for a Bedrock client — it will 400.
+
+**Skip for Bedrock:** the `code_execution_*` tool-version checklist item and the **Task Budgets** section — both are first-party-only features (Bedrock does not support server-side Anthropic tools or the `task-budgets-2026-03-13` beta). Everything else in this guide — `effort`, adaptive/extended thinking, `output_config.format`, `thinking.display`, fine-grained tool streaming, token counting — is available on Bedrock.
+
+> **Out of scope:** the legacy Amazon Bedrock integration (`InvokeModel` / `Converse` APIs with ARN-versioned IDs like `anthropic.claude-3-5-sonnet-20241022-v2:0`) uses a different request shape and model-ID format. This guide does not cover it; WebFetch the Bedrock page in `shared/live-sources.md` if the user is migrating between the two Bedrock integrations.
+
+### Claude Platform on AWS
+
+If the code uses `AnthropicAWS` / `AnthropicAws` / `anthropicaws.NewClient` / `AnthropicAwsClient` (or targets `https://aws-external-anthropic.{region}.api.aws`), it is running on **Claude Platform on AWS** — Anthropic-operated, same-day API parity. Model IDs are **bare first-party** strings; apply the rename table above **verbatim** and every breaking-change section in this guide unchanged. There is nothing to skip. Do **not** add an `anthropic.` prefix (that's Amazon Bedrock, a separate offering). See `shared/claude-platform-on-aws.md` for client/auth details.
+
 ---
 
 ## Migration Checklist
@@ -496,6 +519,7 @@ For each file that calls `messages.create()` / equivalent SDK method:
 - [ ] **[BLOCKS]** Move `format` from top-level `output_format` into `output_config.format`
 - [ ] **[BLOCKS]** Remove any assistant-turn prefills if targeting Opus 4.6 or Sonnet 4.6 (see the prefill replacement table)
 - [ ] **[BLOCKS]** Switch to streaming if `max_tokens > ~16000` (otherwise SDK HTTP timeout)
+- [ ] **[TUNE]** Verify tool-input handling parses JSON rather than raw-string-matching the serialized input (4.6 may escape Unicode / forward slashes differently; most SDKs already expose `block.input` as a parsed object)
 - [ ] **[TUNE]** Set `output_config={"effort": "..."}` explicitly — especially when moving Sonnet 4.5 → Sonnet 4.6 (4.6 defaults to `high`)
 - [ ] **[TUNE]** Remove GA beta headers: `effort-2025-11-24`, `fine-grained-tool-streaming-2025-05-14`, `token-efficient-tools-2025-02-19`, `output-128k-2025-02-19`; remove `interleaved-thinking-2025-05-14` once on adaptive thinking
 - [ ] **[TUNE]** Switch `client.beta.messages.create(...)` → `client.messages.create(...)` once all betas are removed

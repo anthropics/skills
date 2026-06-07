@@ -369,7 +369,7 @@ Managed Agents endpoints have per-organization request-per-minute (RPM) limits, 
 
 | Endpoint group | Scope | RPM | Max concurrent |
 |---|---|---|---|
-| Create operations (Agents, Sessions, Vaults) | organization | 60 | — |
+| Create operations (Agents, Sessions, Vaults) | organization | 300 | — |
 | All other operations (Agents, Sessions, Vaults) | organization | 600 | — |
 | All operations (Environments) | organization | 60 | 5 |
 

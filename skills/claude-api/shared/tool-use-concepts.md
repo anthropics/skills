@@ -252,6 +252,26 @@ For full documentation, use WebFetch:
 
 ---
 
+## Server-Side Tools: Advisor (Beta)
+
+The advisor tool lets Claude consult a secondary model during a conversation. The advisor runs its own API call with a model you specify and returns its analysis to the primary model. Use it when you want a second opinion, specialized expertise, or cross-model verification without managing the orchestration yourself.
+
+### Tool Definition
+
+```json
+{
+  "type": "advisor_20260301",
+  "name": "advisor",
+  "model": "claude-sonnet-4-6"
+}
+```
+
+The `model` parameter is required — it specifies which model the advisor uses for its own inference. Optional fields: `caching`, `max_uses`, `allowed_callers`, `defer_loading`, `strict`.
+
+**Beta header required:** `advisor-tool-2026-03-01`. The SDK sets this automatically when using `client.beta.messages.create()` with advisor tools.
+
+---
+
 ## Client-Side Tools: Memory
 
 The memory tool enables Claude to store and retrieve information across conversations through a memory file directory. Claude can create, read, update, and delete files that persist between sessions.

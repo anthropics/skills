@@ -62,6 +62,24 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 ]}]
 ```
 
+### Mid-conversation system messages
+
+**Beta, model-gated.** When an operator instruction arrives mid-conversation — a mode switch, updated context, dynamically injected state — send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
+
+```json
+// Top-level system stays byte-identical; new instruction goes after the cached history
+"system": [{"type": "text", "text": "<stable core>", "cache_control": {"type": "ephemeral"}}],
+"messages": [
+  ...history,
+  {"role": "user", "content": "..."},
+  {"role": "system", "content": "Terse mode enabled — keep responses under 40 words."}
+]
+```
+
+This is also the prompt-injection-safe replacement for embedding operator instructions as text inside a user turn (the `<system-reminder>` pattern): both have the same caching profile, but `role: "system"` is the non-spoofable operator channel, whereas text inside user/tool content can be forged by anything that writes to user-visible input.
+
+Requires `anthropic-beta: mid-conversation-system-2026-04-07`. Must follow a `role: "user"` message (or an assistant message ending in a server tool result); cannot be `messages[0]` — use top-level `system` for the initial prompt. Content is text-only. Model-gated — unsupported models return a 400 (`BadRequestError`: `role 'system' is not supported on this model`); catch that error and fall back to putting the instruction in a user-turn `<system-reminder>` block.
+
 ### Prompts that change from the beginning every time
 
 Don't cache. If the first 1K tokens differ per request, there is no reusable prefix. Adding `cache_control` only pays the cache-write premium with zero reads. Leave it off.
@@ -72,7 +90,7 @@ Don't cache. If the first 1K tokens differ per request, there is no reusable pre
 
 These are the decisions that matter more than marker placement. Fix these first.
 
-**Keep the system prompt frozen.** Don't interpolate "current date: X", "mode: Y", "user name: Z" into the system prompt — those sit at the front of the prefix and invalidate everything downstream. Inject dynamic context as a user or assistant message later in `messages`. A message at turn 5 invalidates nothing before turn 5.
+**Keep the system prompt frozen.** Don't interpolate "current date: X", "mode: Y", "user name: Z" into the system prompt — those sit at the front of the prefix and invalidate everything downstream. Inject dynamic context later in `messages` instead — as a `{"role": "system", ...}` message where supported (see § Mid-conversation system messages above), or as text in a user message otherwise. A message at turn 5 invalidates nothing before turn 5.
 
 **Don't change tools or model mid-conversation.** Tools render at position 0; adding, removing, or reordering a tool invalidates the entire cache. Same for switching models (caches are model-scoped). If you need "modes", don't swap the tool set — give Claude a tool that records the mode transition, or pass the mode as message content. Serialize tools deterministically (sort by name).
 
@@ -169,3 +187,37 @@ Fix: place an intermediate breakpoint every ~15 blocks in long turns, or put the
 A cache entry becomes readable only after the first response **begins streaming**. N parallel requests with identical prefixes all pay full price — none can read what the others are still writing.
 
 For fan-out patterns: send 1 request, await the first streamed token (not the full response), then fire the remaining N−1. They'll read the cache the first one just wrote.
+
+## Pre-warming the cache
+
+To eliminate the cache-miss latency on the *first* real request, send a **`max_tokens: 0`** request at startup (or on an interval). The API runs prefill — writing the cache at your `cache_control` breakpoint — and returns immediately with `content: []`, `stop_reason: "max_tokens"`, and a populated `usage` block (zero output tokens billed; normal cache-write charge on `cache_creation_input_tokens`).
+
+**When to pre-warm** — pre-warming trades a cache-write charge *now* for lower TTFT on the *next* real request. It's worth it when all three hold: (a) first-request latency is user-visible (chat/voice/interactive — not background jobs), (b) the shared prefix is large enough that a cold write is noticeably slow, and (c) there's a moment *before* traffic to fire it — app startup, worker boot, post-deploy, start of a scheduled window.
+
+| Skip pre-warming when… | Because |
+|---|---|
+| Traffic is continuous (requests ≤ TTL apart) | The first real request warms the cache and every subsequent one hits it; a separate warm call is a pure extra write |
+| The prefix is small or below the cacheable minimum | The cold-write penalty is negligible |
+| The prefix varies per request/user | Nothing shared to pre-warm |
+| You'd pre-warm many distinct prefixes speculatively | Each is a ~1.25× write; cost can exceed the latency you save |
+
+**Scheduled re-warms:** only needed when traffic has gaps longer than the TTL. If real requests arrive more often than every 5 minutes, they keep the cache warm on their own — don't add an interval re-warm. For bursty traffic with long idle gaps, either re-warm just under the TTL or switch to `ttl: "1h"` and re-warm less often.
+
+```python
+client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=0,
+    system=[{
+        "type": "text",
+        "text": SYSTEM_PROMPT,
+        "cache_control": {"type": "ephemeral"},
+    }],
+    messages=[{"role": "user", "content": "warmup"}],
+)
+```
+
+**Breakpoint placement:** put `cache_control` on the **last block shared with the real request** (the system prompt or tool definitions) — **not** on the placeholder user message, and **not** via top-level automatic caching (which would key the cache to the placeholder). The placeholder can be any non-whitespace string; it's read during prefill but never answered.
+
+**Rejected combinations:** `max_tokens: 0` is an `invalid_request_error` with `stream: true`, `thinking.type: "enabled"`, `output_config.format`, `tool_choice` of `{"type":"tool"}` or `{"type":"any"}`, or inside a Message Batches request.
+
+**TTL still applies** — re-warm at least every 5 minutes for the default cache, or use the 1-hour TTL. This replaces the older `max_tokens: 1` workaround (no single-token reply to discard, no output tokens billed, intent is unambiguous).

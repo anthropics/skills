@@ -27,11 +27,17 @@ client := anthropic.NewClient(
 
 ---
 
+## Model Constants
+
+The Go SDK provides typed model constants: `anthropic.ModelClaudeOpus4_8`, `anthropic.ModelClaudeOpus4_7`, `anthropic.ModelClaudeSonnet4_6`, `anthropic.ModelClaudeHaiku4_5_20251001`. Use `ModelClaudeOpus4_8` unless the user specifies otherwise.
+
+---
+
 ## Basic Message Request
 
 ```go
 response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-    Model:     anthropic.ModelClaudeOpus4_6,
+    Model:     anthropic.ModelClaudeOpus4_8,
     MaxTokens: 16000,
     Messages: []anthropic.MessageParam{
         anthropic.NewUserMessage(anthropic.NewTextBlock("What is the capital of France?")),
@@ -278,12 +284,12 @@ Enable Claude's internal reasoning by setting `Thinking` in `MessageNewParams`. 
 
 **Adaptive thinking is the recommended mode for Claude 4.6+ models.** Claude decides dynamically when and how much to think. Combine with the `effort` parameter for cost-quality control.
 
-Derived from `anthropic-sdk-go/message.go` (`ThinkingConfigParamUnion`, `NewThinkingConfigAdaptiveParam`).
+Derived from `anthropic-sdk-go/message.go` (`ThinkingConfigParamUnion`, `ThinkingConfigAdaptiveParam`).
 
 ```go
 // There is no ThinkingConfigParamOfAdaptive helper — construct the union
 // struct-literal directly and take the address of the variant.
-adaptive := anthropic.NewThinkingConfigAdaptiveParam()
+adaptive := anthropic.ThinkingConfigAdaptiveParam{}
 params := anthropic.MessageNewParams{
     Model:     anthropic.ModelClaudeSonnet4_6,
     MaxTokens: 16000,
@@ -345,7 +351,20 @@ Tools: []anthropic.ToolUnionParam{
 },
 ```
 
-Also available: `WebFetchTool20260209Param`, `MemoryTool20250818Param`, `ToolSearchToolBm25_20251119Param`, `ToolSearchToolRegex20251119Param`.
+Also available: `WebFetchTool20260209Param`, `MemoryTool20250818Param`, `ToolSearchToolBm25_20251119Param`, `ToolSearchToolRegex20251119Param`. For the advisor tool, use `BetaAdvisorTool20260301Param` in the beta namespace.
+
+---
+
+## Stop Details
+
+When `StopReason` is `anthropic.StopReasonRefusal`, the response includes structured `StopDetails`:
+
+```go
+if resp.StopReason == anthropic.StopReasonRefusal {
+    fmt.Println("Category:", resp.StopDetails.Category)     // "cyber" | "bio" | ""
+    fmt.Println("Explanation:", resp.StopDetails.Explanation)
+}
+```
 
 ---
 

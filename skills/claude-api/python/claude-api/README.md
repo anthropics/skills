@@ -11,15 +11,78 @@ pip install anthropic
 ```python
 import anthropic
 
-# Default (uses ANTHROPIC_API_KEY env var)
+# Default — resolves credentials from the environment:
+# ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+# Prefer this for local dev; don't hardcode a key.
 client = anthropic.Anthropic()
 
-# Explicit API key
+# Explicit API key (only when you must inject a specific key)
 client = anthropic.Anthropic(api_key="your-api-key")
 
 # Async client
 async_client = anthropic.AsyncAnthropic()
 ```
+
+---
+
+## Client Configuration
+
+### Per-request overrides
+
+Use `with_options()` to override client settings for a single call without mutating the client:
+
+```python
+client.with_options(timeout=5.0, max_retries=5).messages.create(
+    model="claude-opus-4-8",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}],
+)
+```
+
+### Timeouts
+
+Default request timeout is 10 minutes. Pass a float (seconds) or an `httpx.Timeout` for granular control. On timeout the SDK raises `anthropic.APITimeoutError` (and retries per `max_retries`).
+
+```python
+import httpx
+
+client = anthropic.Anthropic(timeout=20.0)
+client = anthropic.Anthropic(
+    timeout=httpx.Timeout(60.0, read=5.0, write=10.0, connect=2.0),
+)
+```
+
+### Retries
+
+The SDK auto-retries connection errors, 408, 409, 429, and ≥500 with exponential backoff (default 2 retries). Set `max_retries` on the client or via `with_options()`; `max_retries=0` disables.
+
+### Async performance (aiohttp backend)
+
+For high-concurrency async workloads, install `anthropic[aiohttp]` and pass `DefaultAioHttpClient` instead of the default httpx backend:
+
+```python
+from anthropic import AsyncAnthropic, DefaultAioHttpClient
+
+async with AsyncAnthropic(http_client=DefaultAioHttpClient()) as client:
+    ...
+```
+
+### Custom HTTP client (proxy, base URL)
+
+Use `DefaultHttpxClient` / `DefaultAsyncHttpxClient` — not raw `httpx.Client` — so the SDK's default timeouts and connection limits are preserved:
+
+```python
+from anthropic import Anthropic, DefaultHttpxClient
+
+client = Anthropic(
+    base_url="http://my.test.server.example.com:8083",  # or ANTHROPIC_BASE_URL env var
+    http_client=DefaultHttpxClient(proxy="http://my.test.proxy.example.com"),
+)
+```
+
+### Logging
+
+Set `ANTHROPIC_LOG=debug` (or `info`) to enable SDK logging via the standard `logging` module.
 
 ---
 
@@ -50,6 +113,23 @@ response = client.messages.create(
     max_tokens=16000,
     system="You are a helpful coding assistant. Always provide examples in Python.",
     messages=[{"role": "user", "content": "How do I read a JSON file?"}]
+)
+```
+
+### Mid-conversation system messages (beta, model-gated)
+
+For operator instructions that arrive mid-conversation (mode switches, injected state), append `{"role": "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
+
+```python
+response = client.messages.create(
+    model=MODEL_ID,  # must support mid-conversation system messages
+    max_tokens=16000,
+    system=[{"type": "text", "text": STABLE_SYSTEM, "cache_control": {"type": "ephemeral"}}],
+    messages=history + [
+        {"role": "user", "content": user_message},
+        {"role": "system", "content": "Terse mode enabled — keep responses under 40 words."},
+    ],
+    extra_headers={"anthropic-beta": "mid-conversation-system-2026-04-07"},
 )
 ```
 
@@ -222,6 +302,31 @@ except anthropic.APIConnectionError:
 
 ---
 
+## Response Helpers
+
+Every response object exposes `_request_id` (populated from the `request-id` header) — log it when reporting failures to Anthropic. Despite the underscore prefix, this property is public.
+
+```python
+message = client.messages.create(...)
+print(message._request_id)       # req_018EeWyXxfu5pfWkrYcMdjWG
+print(message.to_json())          # serialize the Pydantic model
+print(message.to_dict())          # plain dict
+```
+
+To access raw headers or other response metadata, use `.with_raw_response`:
+
+```python
+raw = client.messages.with_raw_response.create(
+    model="claude-opus-4-8",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(raw.headers.get("request-id"))
+message = raw.parse()  # the Message object messages.create() would have returned
+```
+
+---
+
 ## Multi-Turn Conversations
 
 The API is stateless — send the full conversation history each time.
@@ -268,8 +373,9 @@ response2 = conversation.send("What's my name?")  # Claude remembers "Alice"
 
 **Rules:**
 
-- Messages must alternate between `user` and `assistant`
+- Consecutive same-role messages are allowed — the API combines them into a single turn
 - First message must be `user`
+- `role: "system"` messages are allowed mid-conversation under the `mid-conversation-system-2026-04-07` beta on supporting models — see § Mid-conversation system messages above
 
 ---
 
@@ -320,7 +426,17 @@ The `stop_reason` field in the response indicates why the model stopped generati
 | `stop_sequence` | Hit a custom stop sequence |
 | `tool_use` | Claude wants to call a tool — execute it and continue |
 | `pause_turn` | Model paused and can be resumed (agentic flows) |
-| `refusal` | Claude refused for safety reasons — output may not match your schema |
+| `refusal` | Claude refused for safety reasons — check `stop_details` |
+
+### Structured Stop Details
+
+When `stop_reason` is `"refusal"`, the response includes a `stop_details` object with structured information about the refusal:
+
+```python
+if response.stop_reason == "refusal" and response.stop_details:
+    print(f"Category: {response.stop_details.category}")   # "cyber" | "bio" | None
+    print(f"Explanation: {response.stop_details.explanation}")
+```
 
 ---
 
