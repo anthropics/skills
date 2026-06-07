@@ -52,6 +52,7 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Run tool execution in your own infra / VPC (self-hosted sandbox) | `shared/managed-agents-self-hosted-sandboxes.md` — `config:{type:"self_hosted"}`, `ANTHROPIC_ENVIRONMENT_KEY`, `EnvironmentWorker.run()` / `ant beta:worker poll` |
 | Upload files / attach repos            | `shared/managed-agents-environments.md` (Resources)     |
 | Give agents persistent memory across sessions | `shared/managed-agents-memory.md` — memory stores, `memory_store` session resource, preconditions, versions/redact |
+| Define agents/environments as version-controlled YAML; drive the API from the shell | `shared/anthropic-cli.md` — `ant beta:agents create < agent.yaml`, `--transform`, `@file` inlining |
 | Store MCP credentials                  | `shared/managed-agents-tools.md` (Vaults section)       |
 | Call a non-MCP API / CLI that needs a secret | `shared/managed-agents-client-patterns.md` Pattern 9 — no container env vars; vaults are MCP-only; keep the secret host-side via a custom tool |
 

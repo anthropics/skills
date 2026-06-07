@@ -131,7 +131,7 @@ Emit:
    # CI sync: ant beta:agents update --agent-id "$AGENT_ID" --version N < <name>.agent.yaml
    ```
 
-See the Anthropic CLI docs (URL in `shared/live-sources.md`) for the full CLI reference. If emitting SDK code instead, label it `# ONE-TIME SETUP — run once, save the IDs to config/.env` and call `environments.create()` → `agents.create()`.
+See `shared/anthropic-cli.md` for the full CLI reference. If emitting SDK code instead, label it `# ONE-TIME SETUP — run once, save the IDs to config/.env` and call `environments.create()` → `agents.create()`.
 
 **Block 2 — Runtime (run on every invocation).** This is SDK code in the detected language (Python/TS/cURL — see SKILL.md → Language Detection). The runtime path needs to react programmatically to events (tool confirmations, custom tool results, reconnect), which is SDK territory — don't emit shell loops here.
 1. Load `env_id` + `agent_id` from config/env
