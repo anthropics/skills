@@ -398,6 +398,21 @@ This skill includes helpful templates and documentation:
   - NOT a pattern menu - use these principles to build unique algorithms
   - Embed algorithms inline in the HTML artifact (don't create separate .js files)
 
+## Quick start — runnable example
+
+This repository includes a minimal, no-deps example you can run immediately.
+
+- Generator (CLI SVG): `skills/algorithmic-art/examples/generator_simple.js`
+  - Example usage:
+    ```bash
+    node skills/algorithmic-art/examples/generator_simple.js --seed=42 --size=800 --count=200 > out.svg
+    ```
+
+- Viewer (open in browser): `skills/algorithmic-art/examples/viewer_simple.html`
+  - Open the file in your browser and drag the generated `out.svg` into the viewer, or use the "Open SVG" control.
+
+The example is intentionally small and deterministic (seeded). Use it as a starting point for more complex algorithms or to demonstrate reproducible outputs in PRs.
+
 **Critical reminder**:
 - The **template is the STARTING POINT**, not inspiration
 - The **algorithm is where to create** something unique
