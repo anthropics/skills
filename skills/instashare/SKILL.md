@@ -1,4 +1,4 @@
-﻿---
+---
 name: instashare
 description: InstaShare — upload the current Claude Code chat session to instashare.to and return a public share link. The active session is the most recently modified `~/.claude/projects/<slug>/<uuid>.jsonl`; this skill POSTs that file to the InstaShare API in one shell call and prints the returned URL. Use when the user asks to "share this chat", "make a link to this conversation", "InstaShare this", "publish this session", or similar.
 tools: Bash
@@ -12,7 +12,7 @@ If this session has already been shared in a previous run, the script reuses the
 
 ## Configuration
 
-**Requires an account.** Sign in at <https://instashare.to>, generate an upload token at `/account`, and set it as `INSTASHARE_TOKEN` in your shell. The skill sends it as `Authorization: Bearer …` with every upload so the share lands on `/mine`.
+**No account required.** The first share creates an anonymous device identifier (`claim_token`) that the skill stores in `~/.claude/instashare/credentials.json`. Every subsequent share is grouped under the same device. The skill prints a one-time **claim link** so the user can sign in with Google later and pull every share from this device into a personal `/mine` page — past and future. Clicking the claim link is optional; the public share URLs work either way.
 
 Endpoint defaults to `https://instashare.to`. Override with the `INSTASHARE_API_URL` env var (use `http://localhost:3000` for local dev).
 
@@ -24,12 +24,20 @@ Pick by platform. The script computes the slug itself, finds the session, scrubs
 
 ```powershell
 $apiBase = if ($env:INSTASHARE_API_URL) { $env:INSTASHARE_API_URL } else { 'https://instashare.to' }
-$token = $env:INSTASHARE_TOKEN
-if (-not $token) {
-  Write-Output "INSTASHARE_TOKEN is not set. Generate one at $apiBase/account and add it to your shell (setx INSTASHARE_TOKEN '...' then reopen the shell), then retry."
-  exit 1
+$credentialsDir  = Join-Path $env:USERPROFILE ".claude\instashare"
+$credentialsFile = Join-Path $credentialsDir "credentials.json"
+$deviceHostname  = $env:COMPUTERNAME
+
+# Load the per-machine claim token if we have one. Server uses its hash to
+# group every share from this device under a single identity so the user
+# can later claim them all to an account.
+$claimToken = $null
+if (Test-Path $credentialsFile) {
+  try {
+    $claimToken = (Get-Content $credentialsFile -Raw -Encoding UTF8 | ConvertFrom-Json).claimToken
+  } catch { }
 }
-$authHeaders = @{ Authorization = "Bearer $token" }
+
 $cwd = (Get-Location).Path
 $slug = $cwd -replace ':', '-' -replace '\\', '-'
 $projDir = Join-Path $env:USERPROFILE ".claude\projects\$slug"
@@ -77,6 +85,13 @@ if ($envCount -gt 0) {
   $redactionSummary['env-secret'] = $envCount
 }
 
+function Build-Headers {
+  param($Token)
+  $h = @{ 'x-device-hostname' = $deviceHostname }
+  if ($Token) { $h['x-claim-token'] = $Token }
+  return $h
+}
+
 $resp = $null
 if (Test-Path $sidecar) {
   try {
@@ -84,7 +99,7 @@ if (Test-Path $sidecar) {
     $putUri = "$apiBase/api/chats/$($prev.slug)"
     if ($prev.deleteToken) { $putUri = "$putUri`?token=$($prev.deleteToken)" }
     $resp = Invoke-RestMethod -Uri $putUri -Method Put -Body $body `
-      -ContentType 'text/plain; charset=utf-8' -Headers $authHeaders
+      -ContentType 'text/plain; charset=utf-8' -Headers (Build-Headers $claimToken)
   } catch {
     $code = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
     if ($code -ne 404 -and $code -ne 401 -and $code -ne 403) { throw }
@@ -94,14 +109,26 @@ if (Test-Path $sidecar) {
 if (-not $resp) {
   try {
     $resp = Invoke-RestMethod -Uri "$apiBase/api/chats" -Method Post `
-      -Body $body -ContentType 'text/plain; charset=utf-8' -Headers $authHeaders
+      -Body $body -ContentType 'text/plain; charset=utf-8' -Headers (Build-Headers $claimToken)
   } catch {
     $code = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
-    if ($code -eq 401) {
-      Write-Output "Upload rejected (401). Your INSTASHARE_TOKEN is missing or revoked — generate a new one at $apiBase/account."
-      exit 1
+    if ($code -eq 401 -and $claimToken) {
+      # Server revoked / forgot our claim token. Wipe it and retry anonymously;
+      # the server will mint a fresh one.
+      Remove-Item $credentialsFile -Force -ErrorAction SilentlyContinue
+      $claimToken = $null
+      $resp = Invoke-RestMethod -Uri "$apiBase/api/chats" -Method Post `
+        -Body $body -ContentType 'text/plain; charset=utf-8' -Headers (Build-Headers $null)
+    } else {
+      throw
     }
-    throw
+  }
+  # Save the returned claim token (new on first run, same on subsequent — but
+  # always overwrite to support server-side rotation cleanly).
+  if ($resp.claimToken) {
+    New-Item -ItemType Directory -Force -Path $credentialsDir | Out-Null
+    @{ claimToken = $resp.claimToken } | ConvertTo-Json |
+      Out-File -FilePath $credentialsFile -Encoding utf8
   }
   $deleteToken = if ($resp.deleteUrl -and $resp.deleteUrl -match 'token=') { ($resp.deleteUrl -split 'token=')[-1] } else { '' }
   @{ slug = $resp.slug; deleteToken = $deleteToken; url = $resp.url } |
@@ -110,6 +137,9 @@ if (-not $resp) {
 
 Write-Output $resp.url
 Write-Output ("Delete: " + $resp.deleteUrl)
+if (-not $resp.linked -and $resp.claimUrl) {
+  Write-Output ("Make these yours: " + $resp.claimUrl)
+}
 if ($redactionSummary.Count -gt 0) {
   $summary = ($redactionSummary.GetEnumerator() | ForEach-Object { "$($_.Value) $($_.Key)" }) -join ', '
   Write-Output "Redacted before upload: $summary"
@@ -120,10 +150,18 @@ if ($redactionSummary.Count -gt 0) {
 
 ```bash
 api_base="${INSTASHARE_API_URL:-https://instashare.to}"
-if [ -z "$INSTASHARE_TOKEN" ]; then
-  echo "INSTASHARE_TOKEN is not set. Generate one at $api_base/account and add it to your shell (e.g. export INSTASHARE_TOKEN=...), then retry." >&2
-  exit 1
+credentials_dir="$HOME/.claude/instashare"
+credentials_file="$credentials_dir/credentials.json"
+device_hostname=$(hostname 2>/dev/null || echo unknown)
+
+# Load the per-machine claim token if we have one. Server uses its hash to
+# group every share from this device under a single identity so the user
+# can later claim them all to an account.
+claim_token=""
+if [ -f "$credentials_file" ]; then
+  claim_token=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("claimToken","") or "")' "$credentials_file" 2>/dev/null || echo "")
 fi
+
 cwd="$(pwd)"
 slug=$(echo "$cwd" | sed 's#/#-#g')
 src=$(ls -t "$HOME/.claude/projects/$slug"/*.jsonl 2>/dev/null | head -1)
@@ -177,29 +215,39 @@ print(', '.join(f'{v} {k}' for k, v in counts.items()))
 PY
 )
 
+post_chats() {
+  local with_claim="$1"
+  local headers=(-H "x-device-hostname: $device_hostname")
+  if [ -n "$with_claim" ]; then headers+=(-H "x-claim-token: $with_claim"); fi
+  curl -sS -o "$tmp" -w '%{http_code}' \
+    -X POST "$api_base/api/chats" \
+    "${headers[@]}" \
+    -H 'Content-Type: text/plain; charset=utf-8' \
+    --data-binary "@$redacted"
+}
+
 if [ -f "$sidecar" ]; then
   prev_slug=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["slug"])' "$sidecar")
   prev_token=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("deleteToken","") or "")' "$sidecar")
   put_uri="$api_base/api/chats/$prev_slug"
   [ -n "$prev_token" ] && put_uri="$put_uri?token=$prev_token"
+  put_headers=(-H "x-device-hostname: $device_hostname")
+  [ -n "$claim_token" ] && put_headers+=(-H "x-claim-token: $claim_token")
   code=$(curl -sS -o "$tmp" -w '%{http_code}' \
     -X PUT "$put_uri" \
-    -H "Authorization: Bearer $INSTASHARE_TOKEN" \
+    "${put_headers[@]}" \
     -H 'Content-Type: text/plain; charset=utf-8' \
     --data-binary "@$redacted")
   if [ "$code" = "200" ]; then resp="$(cat "$tmp")"; fi
 fi
 
 if [ -z "$resp" ]; then
-  code=$(curl -sS -o "$tmp" -w '%{http_code}' \
-    -X POST "$api_base/api/chats" \
-    -H "Authorization: Bearer $INSTASHARE_TOKEN" \
-    -H 'Content-Type: text/plain; charset=utf-8' \
-    --data-binary "@$redacted")
-  if [ "$code" = "401" ]; then
-    rm -f "$tmp" "$redacted"
-    echo "Upload rejected (401). Your INSTASHARE_TOKEN is missing or revoked — generate a new one at $api_base/account." >&2
-    exit 1
+  code=$(post_chats "$claim_token")
+  if [ "$code" = "401" ] && [ -n "$claim_token" ]; then
+    # Server revoked / forgot our claim token. Drop it and retry anonymously.
+    rm -f "$credentials_file"
+    claim_token=""
+    code=$(post_chats "")
   fi
   if [ "$code" != "200" ] && [ "$code" != "201" ]; then
     cat "$tmp" >&2
@@ -209,6 +257,13 @@ if [ -z "$resp" ]; then
     exit 1
   fi
   resp="$(cat "$tmp")"
+  # Save / refresh claim token. Always overwrite so server-side rotation works.
+  new_claim=$(echo "$resp" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("claimToken","") or "")' 2>/dev/null || echo "")
+  if [ -n "$new_claim" ]; then
+    mkdir -p "$credentials_dir"
+    python3 -c 'import json,sys; json.dump({"claimToken": sys.argv[1]}, open(sys.argv[2],"w"))' "$new_claim" "$credentials_file"
+    chmod 600 "$credentials_file" 2>/dev/null || true
+  fi
   echo "$resp" | python3 -c '
 import json, sys
 d = json.load(sys.stdin)
@@ -219,23 +274,32 @@ print(json.dumps({"slug": d["slug"], "deleteToken": token, "url": d["url"]}))
 fi
 rm -f "$tmp" "$redacted"
 
-echo "$resp" | python3 -c 'import sys, json; d=json.load(sys.stdin); print(d["url"]); print("Delete:", d["deleteUrl"])'
+echo "$resp" | python3 -c '
+import sys, json
+d = json.load(sys.stdin)
+print(d["url"])
+print("Delete:", d["deleteUrl"])
+if not d.get("linked") and d.get("claimUrl"):
+    print("Make these yours:", d["claimUrl"])
+'
 [ -n "$summary" ] && echo "Redacted before upload: $summary"
 ```
 
-The command prints the public URL on the first line, a delete URL on the second, and — if anything was scrubbed — a `Redacted before upload: …` summary on a third. Reruns on the same session reuse the same URL. The share also shows up immediately at `<api_base>/mine` for the signed-in account that owns the token.
+The command prints the public URL on the first line and a delete URL on the second. Until the device has been claimed, a third line offers the **claim URL** that links every share from this device to a Google account. After claiming, that line disappears and shares show up immediately at `<api_base>/mine`.
 
 ## After the command runs
 
 1. **Report the public URL** to the user — one line, clickable.
-2. **Show the delete URL** on a second line as a one-click revoke link. Also mention that the share is listed at `/mine` for the account that owns the upload token — that's the primary place to manage shares.
-3. **Note what was redacted, if anything**: when a `Redacted before upload: …` line appears, the skill replaced matches of a curated pattern set (AWS / GitHub / Slack / Stripe / OpenAI / Anthropic / Google keys, JWTs, PEM private-key blocks, HTTP `Authorization: Basic|Bearer|…` headers, `Cookie:` / `Set-Cookie:` header values, curl `-b 'cookie=val; …'` flags, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` assignments) with `[REDACTED:<kind>]` markers before upload. The scan is best-effort — custom or proprietary token formats won't match — so still suggest reviewing the public link if the chat may contain anything else sensitive.
+2. **Show the delete URL** on a second line so they can revoke the share later. Opening it in a browser shows a confirmation page; nothing is removed until they click the "Delete forever" button. The token is one-shot per chat — if it's lost, the chat can't be deleted again.
+3. **If the skill printed a `Make these yours:` line**, mention that opening it (and signing in with Google) attaches *every* share from this device — past and future — to a `/mine` page. This is optional; the public link works without it.
+4. **Note what was redacted, if anything**: when a `Redacted before upload: …` line appears, the skill replaced matches of a curated pattern set (AWS / GitHub / Slack / Stripe / OpenAI / Anthropic / Google keys, JWTs, PEM private-key blocks, HTTP `Authorization: Basic|Bearer|…` headers, `Cookie:` / `Set-Cookie:` header values, curl `-b 'cookie=val; …'` flags, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` assignments) with `[REDACTED:<kind>]` markers before upload. The scan is best-effort — custom or proprietary token formats won't match — so still suggest reviewing the public link if the chat may contain anything else sensitive.
 
 ## How this works
 
 - **The mtime sort identifies the active session.** Claude Code writes to the most recently modified `.jsonl` in the project's slug directory, so a single `ls -t … | head -1` reliably picks it — no separate Glob/Read pre-flight needed.
 - **The slug is the cwd with `/`, `\`, `:` replaced by `-`, case preserved.** That matches the directory Claude Code creates, including any leading dash on macOS/Linux (`/Users/foo` → `-Users-foo`). Lowercasing it or stripping the leading dash will miss the directory on case-preserving filesystems.
 - **The body is the file with common secrets scrubbed in place.** Before POST/PUT the snippet scans `$body` against a curated pattern set (provider API keys, JWTs, PEM private-key blocks, HTTP `Authorization` / `Cookie` / `Set-Cookie` header values, curl `-b 'cookies'` flags, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` style env assignments) and replaces matches with `[REDACTED:<kind>]`. Everything else is uploaded verbatim. Secrets matching one of the patterns therefore never leave the machine — they're scrubbed before the HTTPS body is even constructed. The original `.jsonl` on disk is never modified.
-- **The scan is best-effort.** It targets the well-known token formats listed above. Custom or proprietary tokens, free-form passwords in prose, and high-entropy strings without a recognizable prefix won't match. Still surface the public-link warning so the user can decide whether to share, and recommend reviewing the link if the chat may contain anything else sensitive. If they're unsure what's in the transcript, they can preview it locally (e.g. `wc -c "$src"` for size, or open it in an editor) before deciding.
+- **The scan is best-effort.** It targets the well-known token formats listed above. Custom or proprietary tokens, free-form passwords in prose, and high-entropy strings without a recognizable prefix won't match. Still surface the public-link warning so the user can decide whether to share, and recommend reviewing the link if the chat may contain anything else sensitive.
 - **Sidecar makes the URL stable across reruns.** After the first POST the script writes `<jsonl-path>.instashare.json` containing `{slug, deleteToken, url}`. On the next invocation it `PUT`s to `/api/chats/<slug>?token=<deleteToken>`, which replaces the stored JSONL and recomputes stats while preserving the slug, created-at, and delete token. If the chat was deleted server-side (PUT returns 404) or the sidecar is stale/tampered (401/403), the script falls back to POST and overwrites the sidecar. Delete the sidecar manually to force a brand-new URL.
-- **The original session file is never modified.** Only the sidecar (a separate small JSON file next to the .jsonl) is written locally; the .jsonl itself is read-only from the script's perspective.
+- **The claim token is per-machine, not per-share.** `~/.claude/instashare/credentials.json` is written on the first upload and reused thereafter. It's sent as `x-claim-token` on POST and PUT so the server can group all uploads from this device. If the server revokes it (the user clicked Revoke on `/account`), the next upload retries anonymously, the server mints a fresh token, and the user sees a fresh claim URL.
+- **The original session file is never modified.** Only the sidecar (a small JSON file next to the .jsonl) and the per-machine credentials file (`~/.claude/instashare/credentials.json`) are written locally; the .jsonl itself is read-only from the script's perspective.
