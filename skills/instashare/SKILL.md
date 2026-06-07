@@ -1,7 +1,7 @@
 ﻿---
 name: instashare
-description: Upload the current Claude Code chat session to instashare.to and return a public share link. The active session is the most recently modified `~/.claude/projects/<slug>/<uuid>.jsonl`; this skill POSTs that file to the InstaShare API in one shell call and prints the returned URL. Use when the user asks to "share this chat", "make a link to this conversation", "InstaShare this", "publish this session", or similar.
-license: Complete terms in LICENSE.txt
+description: InstaShare — upload the current Claude Code chat session to instashare.to and return a public share link. The active session is the most recently modified `~/.claude/projects/<slug>/<uuid>.jsonl`; this skill POSTs that file to the InstaShare API in one shell call and prints the returned URL. Use when the user asks to "share this chat", "make a link to this conversation", "InstaShare this", "publish this session", or similar.
+tools: Bash
 ---
 
 # InstaShare
@@ -11,6 +11,8 @@ Upload the current Claude Code session JSONL to the InstaShare API and report th
 If this session has already been shared in a previous run, the script reuses the existing URL: it reads a sidecar file `<jsonl-path>.instashare.json` (created by the first upload) and `PUT`s the new content to the same slug. The public URL stays the same so any link the user already pasted continues to work and now shows the latest transcript.
 
 ## Configuration
+
+**Requires an account.** Sign in at <https://instashare.to>, generate an upload token at `/account`, and set it as `INSTASHARE_TOKEN` in your shell. The skill sends it as `Authorization: Bearer …` with every upload so the share lands on `/mine`.
 
 Endpoint defaults to `https://instashare.to`. Override with the `INSTASHARE_API_URL` env var (use `http://localhost:3000` for local dev).
 
@@ -22,6 +24,12 @@ Pick by platform. The script computes the slug itself, finds the session, scrubs
 
 ```powershell
 $apiBase = if ($env:INSTASHARE_API_URL) { $env:INSTASHARE_API_URL } else { 'https://instashare.to' }
+$token = $env:INSTASHARE_TOKEN
+if (-not $token) {
+  Write-Output "INSTASHARE_TOKEN is not set. Generate one at $apiBase/account and add it to your shell (setx INSTASHARE_TOKEN '...' then reopen the shell), then retry."
+  exit 1
+}
+$authHeaders = @{ Authorization = "Bearer $token" }
 $cwd = (Get-Location).Path
 $slug = $cwd -replace ':', '-' -replace '\\', '-'
 $projDir = Join-Path $env:USERPROFILE ".claude\projects\$slug"
@@ -73,8 +81,10 @@ $resp = $null
 if (Test-Path $sidecar) {
   try {
     $prev = Get-Content $sidecar -Raw -Encoding UTF8 | ConvertFrom-Json
-    $resp = Invoke-RestMethod -Uri "$apiBase/api/chats/$($prev.slug)?token=$($prev.deleteToken)" `
-      -Method Put -Body $body -ContentType 'text/plain; charset=utf-8'
+    $putUri = "$apiBase/api/chats/$($prev.slug)"
+    if ($prev.deleteToken) { $putUri = "$putUri`?token=$($prev.deleteToken)" }
+    $resp = Invoke-RestMethod -Uri $putUri -Method Put -Body $body `
+      -ContentType 'text/plain; charset=utf-8' -Headers $authHeaders
   } catch {
     $code = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
     if ($code -ne 404 -and $code -ne 401 -and $code -ne 403) { throw }
@@ -82,9 +92,18 @@ if (Test-Path $sidecar) {
 }
 
 if (-not $resp) {
-  $resp = Invoke-RestMethod -Uri "$apiBase/api/chats" -Method Post `
-    -Body $body -ContentType 'text/plain; charset=utf-8'
-  $deleteToken = ($resp.deleteUrl -split 'token=')[-1]
+  try {
+    $resp = Invoke-RestMethod -Uri "$apiBase/api/chats" -Method Post `
+      -Body $body -ContentType 'text/plain; charset=utf-8' -Headers $authHeaders
+  } catch {
+    $code = if ($_.Exception.Response) { [int]$_.Exception.Response.StatusCode } else { 0 }
+    if ($code -eq 401) {
+      Write-Output "Upload rejected (401). Your INSTASHARE_TOKEN is missing or revoked — generate a new one at $apiBase/account."
+      exit 1
+    }
+    throw
+  }
+  $deleteToken = if ($resp.deleteUrl -and $resp.deleteUrl -match 'token=') { ($resp.deleteUrl -split 'token=')[-1] } else { '' }
   @{ slug = $resp.slug; deleteToken = $deleteToken; url = $resp.url } |
     ConvertTo-Json | Out-File -FilePath $sidecar -Encoding utf8
 }
@@ -101,6 +120,10 @@ if ($redactionSummary.Count -gt 0) {
 
 ```bash
 api_base="${INSTASHARE_API_URL:-https://instashare.to}"
+if [ -z "$INSTASHARE_TOKEN" ]; then
+  echo "INSTASHARE_TOKEN is not set. Generate one at $api_base/account and add it to your shell (e.g. export INSTASHARE_TOKEN=...), then retry." >&2
+  exit 1
+fi
 cwd="$(pwd)"
 slug=$(echo "$cwd" | sed 's#/#-#g')
 src=$(ls -t "$HOME/.claude/projects/$slug"/*.jsonl 2>/dev/null | head -1)
@@ -156,22 +179,41 @@ PY
 
 if [ -f "$sidecar" ]; then
   prev_slug=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["slug"])' "$sidecar")
-  prev_token=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["deleteToken"])' "$sidecar")
+  prev_token=$(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("deleteToken","") or "")' "$sidecar")
+  put_uri="$api_base/api/chats/$prev_slug"
+  [ -n "$prev_token" ] && put_uri="$put_uri?token=$prev_token"
   code=$(curl -sS -o "$tmp" -w '%{http_code}' \
-    -X PUT "$api_base/api/chats/$prev_slug?token=$prev_token" \
+    -X PUT "$put_uri" \
+    -H "Authorization: Bearer $INSTASHARE_TOKEN" \
     -H 'Content-Type: text/plain; charset=utf-8' \
     --data-binary "@$redacted")
   if [ "$code" = "200" ]; then resp="$(cat "$tmp")"; fi
 fi
 
 if [ -z "$resp" ]; then
-  resp=$(curl -sS -X POST "$api_base/api/chats" \
+  code=$(curl -sS -o "$tmp" -w '%{http_code}' \
+    -X POST "$api_base/api/chats" \
+    -H "Authorization: Bearer $INSTASHARE_TOKEN" \
     -H 'Content-Type: text/plain; charset=utf-8' \
     --data-binary "@$redacted")
+  if [ "$code" = "401" ]; then
+    rm -f "$tmp" "$redacted"
+    echo "Upload rejected (401). Your INSTASHARE_TOKEN is missing or revoked — generate a new one at $api_base/account." >&2
+    exit 1
+  fi
+  if [ "$code" != "200" ] && [ "$code" != "201" ]; then
+    cat "$tmp" >&2
+    rm -f "$tmp" "$redacted"
+    echo "" >&2
+    echo "Upload failed (HTTP $code)." >&2
+    exit 1
+  fi
+  resp="$(cat "$tmp")"
   echo "$resp" | python3 -c '
 import json, sys
 d = json.load(sys.stdin)
-token = d["deleteUrl"].split("token=")[-1]
+url = d.get("deleteUrl", "")
+token = url.split("token=")[-1] if "token=" in url else ""
 print(json.dumps({"slug": d["slug"], "deleteToken": token, "url": d["url"]}))
 ' > "$sidecar"
 fi
@@ -181,12 +223,12 @@ echo "$resp" | python3 -c 'import sys, json; d=json.load(sys.stdin); print(d["ur
 [ -n "$summary" ] && echo "Redacted before upload: $summary"
 ```
 
-The command prints the public URL on the first line, a delete URL on the second, and — if anything was scrubbed — a `Redacted before upload: …` summary on a third. Reruns on the same session reuse the same URL.
+The command prints the public URL on the first line, a delete URL on the second, and — if anything was scrubbed — a `Redacted before upload: …` summary on a third. Reruns on the same session reuse the same URL. The share also shows up immediately at `<api_base>/mine` for the signed-in account that owns the token.
 
 ## After the command runs
 
 1. **Report the public URL** to the user — one line, clickable.
-2. **Show the delete URL** on a second line so they can revoke the share later. Opening it in a browser shows a confirmation page; nothing is removed until they click the "Delete forever" button. The token is one-shot per chat — if it's lost, the chat can't be deleted later.
+2. **Show the delete URL** on a second line as a one-click revoke link. Also mention that the share is listed at `/mine` for the account that owns the upload token — that's the primary place to manage shares.
 3. **Note what was redacted, if anything**: when a `Redacted before upload: …` line appears, the skill replaced matches of a curated pattern set (AWS / GitHub / Slack / Stripe / OpenAI / Anthropic / Google keys, JWTs, PEM private-key blocks, HTTP `Authorization: Basic|Bearer|…` headers, `Cookie:` / `Set-Cookie:` header values, curl `-b 'cookie=val; …'` flags, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` assignments) with `[REDACTED:<kind>]` markers before upload. The scan is best-effort — custom or proprietary token formats won't match — so still suggest reviewing the public link if the chat may contain anything else sensitive.
 
 ## How this works
