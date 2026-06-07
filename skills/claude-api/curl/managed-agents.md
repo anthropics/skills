@@ -42,7 +42,9 @@ curl -X POST https://api.anthropic.com/v1/environments \
     "config": {
       "type": "cloud",
       "networking": {
-        "type": "package_managers_and_custom",
+        "type": "limited",
+        "allow_package_managers": true,
+        "allow_mcp_servers": true,
         "allowed_hosts": ["api.example.com"]
       }
     }
