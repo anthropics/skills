@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "project": "notemd-web",
+    "flow": "account-signup",
+    "auditor": "qa-team",
+    "notes": "Sample evidence with mixed pass/fail to demonstrate report output."
+  },
+  "metrics": {
+    "primary_cta_count": 2,
+    "min_target_size_px": 40,
+    "primary_action_reach": "hard",
+    "critical_action_at_task_end": false,
+    "screen_choice_count": 10,
+    "progressive_disclosure": false,
+    "group_spacing_ratio": 1.4,
+    "role_style_consistency": true,
+    "continuity_cue": false,
+    "closure_support": true,
+    "figure_ground_contrast": true,
+    "motion_group_consistency": true,
+    "focal_points": 3,
+    "isolated_key_element_count": 4,
+    "pattern_familiarity": true,
+    "chunk_count": 12,
+    "progress_visible": false,
+    "unfinished_resume_path": false,
+    "system_handles_complexity": false,
+    "positive_end_state": false,
+    "input_tolerant_parsing": false,
+    "feedback_ms_p95": 670,
+    "critical_actions_boundary_placement": false,
+    "inline_validation_clear": false,
+    "simplicity_score": 55,
+    "scope_creep_signals": true
+  }
+}
