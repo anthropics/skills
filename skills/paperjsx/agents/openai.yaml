@@ -1,0 +1,37 @@
+name: paperjsx
+description: >
+  Generate PPTX presentations, DOCX documents, XLSX spreadsheets, and PDF reports
+  from structured JSON input. PaperJSX converts declarative JSON layout specs into
+  production-ready Office documents and PDFs.
+
+instructions: >
+  Use this agent when the user wants to create presentations, Word documents,
+  Excel spreadsheets, or PDF reports. Build a JSON layout spec matching the
+  schema in references/json-schema.md, then write a Node.js script that passes
+  the spec to the appropriate PaperJSX engine. Validate the output file exists
+  and is non-zero bytes.
+
+triggers:
+  - create a presentation
+  - generate slides
+  - make a PPTX
+  - create a Word document
+  - Excel with charts
+  - spreadsheet with chart
+  - JSON to PPTX
+  - JSON to DOCX
+  - JSON to XLSX
+  - generate a PDF report
+  - create an invoice
+
+packages:
+  pptx: "@paperjsx/json-to-pptx"
+  docx: "@paperjsx/json-to-docx"
+  xlsx: "@paperjsx/json-to-xlsx"
+  pdf: "@paperjsx/json-to-pdf"
+
+supported_formats:
+  - pptx
+  - docx
+  - xlsx
+  - pdf
