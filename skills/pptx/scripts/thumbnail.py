@@ -16,9 +16,13 @@ Examples:
 """
 
 import argparse
+import glob as glob_mod
+import os
+import signal
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -35,6 +39,9 @@ GRID_PADDING = 20
 BORDER_WIDTH = 2
 FONT_SIZE_RATIO = 0.10
 LABEL_PADDING_RATIO = 0.4
+
+SOFFICE_MAX_RETRIES = 3
+SOFFICE_TIMEOUT = 120  # seconds
 
 
 def main():
@@ -155,25 +162,85 @@ def create_hidden_placeholder(size: tuple[int, int]) -> Image.Image:
     return img
 
 
+def _kill_stale_soffice():
+    """Kill any lingering soffice processes that may hold lock files."""
+    try:
+        result = subprocess.run(
+            ["pkill", "-f", "soffice"],
+            capture_output=True,
+            timeout=5,
+        )
+    except Exception:
+        pass
+    # Give processes time to die
+    time.sleep(0.5)
+
+
+def _clean_libreoffice_lockfiles():
+    """Remove stale LibreOffice lock/profile files that prevent startup."""
+    home = os.environ.get("HOME", os.path.expanduser("~"))
+    profile_dir = os.path.join(home, ".config", "libreoffice")
+    lock_pattern = os.path.join(profile_dir, "**", ".~lock.*")
+    for lock in glob_mod.glob(lock_pattern, recursive=True):
+        try:
+            os.remove(lock)
+        except OSError:
+            pass
+    # Also clean /tmp soffice lock files
+    for lock in glob_mod.glob("/tmp/.~lock.*"):
+        try:
+            os.remove(lock)
+        except OSError:
+            pass
+
+
 def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
     pdf_path = temp_dir / f"{pptx_path.stem}.pdf"
+    env = get_soffice_env()
 
-    result = subprocess.run(
-        [
-            "soffice",
-            "--headless",
-            "--convert-to",
-            "pdf",
-            "--outdir",
-            str(temp_dir),
-            str(pptx_path),
-        ],
-        capture_output=True,
-        text=True,
-        env=get_soffice_env(),
-    )
-    if result.returncode != 0 or not pdf_path.exists():
-        raise RuntimeError("PDF conversion failed")
+    last_error = None
+    for attempt in range(1, SOFFICE_MAX_RETRIES + 1):
+        # Clean up before each attempt
+        if attempt > 1:
+            _kill_stale_soffice()
+            _clean_libreoffice_lockfiles()
+            print(f"  Retry {attempt}/{SOFFICE_MAX_RETRIES}...", file=sys.stderr)
+            time.sleep(1)
+
+        try:
+            result = subprocess.run(
+                [
+                    "soffice",
+                    "--headless",
+                    "--norestore",
+                    "--convert-to",
+                    "pdf",
+                    "--outdir",
+                    str(temp_dir),
+                    str(pptx_path),
+                ],
+                capture_output=True,
+                text=True,
+                env=env,
+                timeout=SOFFICE_TIMEOUT,
+            )
+
+            if result.returncode == 0 and pdf_path.exists():
+                break  # success
+
+            last_error = (
+                f"soffice exited {result.returncode}; "
+                f"stdout={result.stdout.strip()!r}; "
+                f"stderr={result.stderr.strip()!r}; "
+                f"pdf_exists={pdf_path.exists()}"
+            )
+        except subprocess.TimeoutExpired:
+            last_error = f"soffice timed out after {SOFFICE_TIMEOUT}s"
+            _kill_stale_soffice()
+        except Exception as e:
+            last_error = str(e)
+    else:
+        raise RuntimeError(f"PDF conversion failed after {SOFFICE_MAX_RETRIES} attempts: {last_error}")
 
     result = subprocess.run(
         [
@@ -188,7 +255,9 @@ def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
         text=True,
     )
     if result.returncode != 0:
-        raise RuntimeError("Image conversion failed")
+        raise RuntimeError(
+            f"Image conversion failed: stderr={result.stderr.strip()!r}"
+        )
 
     return sorted(temp_dir.glob("slide-*.jpg"))
 
