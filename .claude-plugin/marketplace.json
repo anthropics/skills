@@ -51,6 +51,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "agentic-management-expert",
+      "description": "Expert advisor on managing, deploying, monitoring, and governing AI agent systems at organizational scale",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/agentic-management-expert"
+      ]
     }
   ]
 }
