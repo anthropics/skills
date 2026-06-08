@@ -1,0 +1,158 @@
+# International Tech Business Law Reference
+
+## GDPR for Non-EU Companies
+
+### Territorial Scope (Art. 3)
+GDPR applies to non-EU companies if:
+1. **Offering goods/services to EU/EEA residents**: having a website in EU languages, pricing in euros, EU-specific content, accepting EU payment methods — all signal offering services to EU residents. A general English-language website probably sufficient for application if EU users can sign up.
+2. **Monitoring behavior** of EU/EEA residents: analytics, behavioral advertising, tracking cookies, location monitoring, profiling.
+
+### US Company GDPR Compliance Checklist
+- [ ] Privacy policy updated to GDPR standard (lawful bases, DPO contact if applicable, data subject rights, international transfers)
+- [ ] Cookie consent banner with granular opt-in (not just "by using site you consent")
+- [ ] Lawful basis documented for each processing activity
+- [ ] Records of Processing Activities (Art. 30) maintained
+- [ ] DPAs in place with all processors
+- [ ] Data subject rights request process (access, deletion, portability within 30 days)
+- [ ] 72-hour breach notification procedure established
+- [ ] EU Representative appointed (if processing at scale, no EU establishment)
+- [ ] International transfer mechanisms in place (SCCs, DPF, adequacy)
+- [ ] DPO appointed if required
+
+**EU Representative (Art. 27)**: Non-EU organizations processing EU personal data at scale (or regularly) must designate a representative in an EU member state. Representative receives correspondence from supervisory authorities and data subjects. Small or occasional processors may be exempt. Representative is not personally liable but is point of contact.
+
+**DPO appointment** for non-EU companies: required if you regularly and systematically monitor data subjects at large scale, or process special categories at large scale. DPO must have expert knowledge; can be external consultant; must be independent (cannot be in conflict of interest with other role).
+
+---
+
+## UK GDPR Post-Brexit
+
+**Status**: UK maintained GDPR-equivalent law as UK GDPR (retained EU law) + Data Protection Act 2018. UK law largely mirrors EU GDPR.
+
+**EU Adequacy Decision for UK**:
+- EC renewed UK adequacy December 19, 2025; valid through December 27, 2031 (with 4-year review)
+- Data can flow freely from EU to UK without additional transfer mechanisms (for now)
+
+**Key UK Differences from EU GDPR:**
+- ICO (Information Commissioner's Office) is UK supervisory authority (not an EU DPA)
+- UK-specific: UK-GDPR, DPA 2018, Age-Appropriate Design Code (AADC/Children's Code), Privacy and Electronic Communications Regulations (PECR)
+- International transfers from UK: use IDTA (International Data Transfer Agreement) or Addendum to EU SCCs; not the EU SCCs themselves
+- Fines: up to £17.5M or 4% of global turnover (equivalent to GDPR but in GBP)
+- Post-Brexit UK government exploring UK GDPR reforms toward lighter touch/more innovation-friendly approach
+
+**Practical note**: Companies compliant with EU GDPR are generally compliant with UK GDPR with minor adjustments (add ICO contact, add UK data subject rights process, update transfer mechanisms to IDTA for UK-origin data).
+
+---
+
+## EU Digital Services Act (DSA)
+
+**Legal basis**: Regulation (EU) 2022/2065, fully applicable February 17, 2024.
+
+**Scope**: online intermediary services with users in EU (hosting services, online platforms, search engines, social networks, app stores, online marketplaces).
+
+**Categories and obligations:**
+
+**All intermediary services (all sizes):**
+- Terms of service transparency
+- Cooperation with authorities on illegal content
+- Annual transparency reports
+
+**Hosting services:**
+- Notice and action mechanisms for illegal content
+- Internal complaint-handling system
+
+**Online platforms** (additional):
+- Suspension policy for repeat offenders
+- Advertising transparency
+- Protection of minors
+- No targeting based on sensitive data
+- No "dark patterns" in consent interfaces
+- Recommender system transparency
+
+**Very Large Online Platforms (VLOPs)** and **Very Large Online Search Engines (VLOSEs)** (45M+ monthly EU active users; ~20 designated):
+- Annual systemic risk assessments
+- Audit of risk mitigation measures by independent auditor
+- Data access for vetted researchers
+- Crisis response protocol
+- Transparency reports on content moderation
+- Enhanced supervision by European Commission (not national DPA)
+
+**Penalties**: up to 6% of global annual turnover; repeated violations: temporary EU access ban.
+
+**Startup threshold**: SMEs (< 50 employees, < €10M turnover) with < 45M EU monthly users — lighter obligations; specifically exempt from VLOP requirements.
+
+---
+
+## EU Data Act (Regulation 2023/2854)
+
+**Effective**: September 12, 2025.
+
+**Scope**: IoT device manufacturers, related service providers, data holders in EU.
+
+**Key obligations:**
+- **Data access rights**: consumers have right to access data generated by their use of connected products/services; can share that data with third parties of their choice
+- **B2B data sharing**: holders of data generated by use of connected products must share on request with data recipients (under fair, reasonable, and non-discriminatory terms)
+- **Public sector access**: in exceptional circumstances (emergency, public interest), public bodies can request access to privately held data
+- **Cloud switching**: data processing services must enable customers to switch providers (porting, interoperability, portability); switching fees banned after 3-year transition
+
+**Interaction with GDPR**: Data Act covers non-personal data (primarily); where personal data is involved, GDPR applies in parallel.
+
+---
+
+## China's Data Regulatory Framework
+
+**Three core laws:**
+1. **Cybersecurity Law (CSL)** (effective 2017): network operators must store user personal information collected in China; security reviews for critical information infrastructure operators
+2. **Personal Information Protection Law (PIPL)** (effective November 2021): China's comprehensive privacy law
+3. **Data Security Law (DSL)** (effective September 2021): data classification and security obligations; "important data" and "core data" get enhanced protections
+
+### PIPL Key Provisions
+- Territorial scope: processing of personal information of persons within China; AND processing outside China for purposes of providing goods/services to persons in China, or analyzing behavior of persons in China
+- Lawful bases: consent (most common), contractual necessity, legal obligation, public interest, protecting life/health
+- Separate consent for sensitive personal information (health, financial, biometric, location, minors' data)
+- Data subject rights similar to GDPR (access, correction, deletion, portability, explanation of automated decisions)
+- **Cross-border transfer requirements** (Art. 38): personal information can only be transferred outside China if ONE of:
+  1. CAC security assessment (mandatory for large transfers — >1M individuals' total data, or >100K individuals' sensitive data, or critical information infrastructure operators)
+  2. Personal information protection certification by approved institution
+  3. Standard contracts filed with CAC (for smaller transfers)
+  4. International treaties/agreements
+- **Data localization**: critical information infrastructure operators must store personal information and "important data" within China
+
+**CAC Security Assessment**: China's Cyberspace Administration of China reviews outbound transfers meeting thresholds; 57-business-day review timeline; may require data processing changes before approval.
+
+**Penalties**: fines up to RMB 50M (≈$7M) or 5% of prior year revenue; operation suspension; personal liability for executives.
+
+---
+
+## Cross-Border Contract Enforcement
+
+**New York Convention on Recognition and Enforcement of Foreign Arbitral Awards (1958)**: 164 signatory countries; foreign arbitration awards enforceable in signatory countries with limited exceptions (public policy, procedural fairness). Strongest mechanism for cross-border enforcement.
+
+**Hague Convention on Choice of Court Agreements (2005)**: enforces exclusive jurisdiction clauses and judgments from designated courts; limited adoption compared to New York Convention; EU, UK, Mexico, Singapore, Ukraine signatories.
+
+**Practical enforcement challenges:**
+- No China-US judgment enforcement treaty → US court judgments not easily enforceable in China (and vice versa); use Hong Kong arbitration (HKIAC) for China-connected deals where enforcement matters
+- EU-US: US judgments enforceable in EU through comity; varies by EU member state
+- UK post-Brexit: UK court judgments no longer automatically recognized in EU under Brussels Regulation — enforcement through domestic rules of each EU member state
+
+**Contract drafting for international enforceability:**
+- Specify governing law (avoid jurisdictions with unclear commercial law)
+- Designate exclusive jurisdiction (court or arbitration) in neutral, enforcement-friendly location
+- For arbitration: ICC (Paris), LCIA (London), SIAC (Singapore), HKIAC (Hong Kong) are well-recognized and awards widely enforced
+- Force majeure clauses: cover government acts, regulatory changes, trade restrictions (especially relevant for China/US technology agreements)
+- Sanctions compliance clauses: represent that deal doesn't violate OFAC sanctions; termination right if party becomes sanctioned
+
+---
+
+## GDPR International Transfer Mechanisms (Summary)
+
+| Mechanism | When to Use | Process |
+|---|---|---|
+| Adequacy decision | Transferring to adequate country (UK, Japan, Korea, Canada partial, US under DPF) | None — data flows freely |
+| Standard Contractual Clauses (2021) | Transferring to non-adequate country (US without DPF, India, etc.) | Sign appropriate module; conduct Transfer Impact Assessment |
+| Binding Corporate Rules | Intra-group transfers for multinationals | DPA approval required; long process |
+| EU-US Data Privacy Framework | US companies self-certified to DPF | Self-certify via DoC; maintain privacy policy; annual certification |
+| Explicit consent | One-off, specific, informed consent from data subject | Practical for individual transfers; not scalable |
+| Contract necessity | Transfer necessary to perform contract with data subject | Narrow use case |
+
+**Transfer Impact Assessment (TIA)**: Required for SCC-based transfers post-Schrems II (2020). Assess: (1) does receiving country law protect data to GDPR-equivalent standard? (2) what government access powers exist? (3) are additional safeguards needed? Document findings. For US: document that specific use case unlikely to trigger NSA/FBI surveillance programs; encryption-in-transit/rest provides additional safeguards.
