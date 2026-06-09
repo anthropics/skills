@@ -35,6 +35,7 @@
         "./skills/internal-comms",
         "./skills/mcp-builder",
         "./skills/skill-creator",
+        "./skills/skill-matcher",
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
         "./skills/web-artifacts-builder",
