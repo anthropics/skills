@@ -14,6 +14,7 @@ Examples:
 """
 
 import argparse
+import os
 import sys
 import zipfile
 from pathlib import Path
@@ -22,6 +23,20 @@ import defusedxml.minidom
 
 from helpers.merge_runs import merge_runs as do_merge_runs
 from helpers.simplify_redlines import simplify_redlines as do_simplify_redlines
+
+
+def _safe_extractall(zf, target_dir):
+    """Extract zip contents safely, preventing Zip Slip path traversal."""
+    target = os.path.realpath(target_dir)
+    for info in zf.infolist():
+        member_path = os.path.realpath(os.path.join(target, info.filename))
+        if not member_path.startswith(target + os.sep) and member_path != target:
+            raise ValueError(
+                f"Zip entry {info.filename!r} would escape target directory"
+            )
+    _safe_extractall(zf, target_dir)
+
+
 
 SMART_QUOTE_REPLACEMENTS = {
     "\u201c": "&#x201C;",  
@@ -51,7 +66,7 @@ def unpack(
         output_path.mkdir(parents=True, exist_ok=True)
 
         with zipfile.ZipFile(input_path, "r") as zf:
-            zf.extractall(output_path)
+            _safe_extractall(zf, output_path)
 
         xml_files = list(output_path.rglob("*.xml")) + list(output_path.rglob("*.rels"))
         for xml_file in xml_files:
