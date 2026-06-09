@@ -1,0 +1,14 @@
+{
+  "id": "full",
+  "label_en": "Full",
+  "label_zh": "完整版",
+  "description_en": "Three-line preset with the complete Miluer-style statusline layout.",
+  "description_zh": "三行完整布局，尽量贴近当前 Miluer 风格的状态栏信息密度。",
+  "lines": 3,
+  "modules": {
+    "1": ["model", "modes", "version", "active"],
+    "2": ["context", "tools", "cwd", "git"],
+    "3": ["ctx_tokens", "sum_tokens", "duration", "cost"]
+  },
+  "is_default": true
+}
