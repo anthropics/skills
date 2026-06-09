@@ -1,0 +1,131 @@
+# ============================================
+# LAME-AI — .gitignore
+# ============================================
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Windows
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.vim/
+*.sublime-project
+*.sublime-workspace
+.cursor/
+
+# Python (if scripts added later)
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+ENV/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node.js (if tools added later)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+package-lock.json
+
+# Packaged skill files (build artifacts)
+*.skill
+*.zip
+*.tar.gz
+*.tar
+/dist/
+/build/
+/release/
+
+# Personal notes / drafts — don't commit
+notes/
+drafts/
+personal/
+*.draft.md
+TODO.personal.md
+scratch.*
+
+# Sensitive / private content
+*.env
+.env.*
+secrets/
+private/
+*.key
+*.pem
+*.cert
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/
+
+# Large binary files
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+*.mp4
+*.mp3
+*.zip
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.rej
+
+# Test outputs
+test-output/
+coverage/
+.coverage
+htmlcov/
+
+# CI/CD
+.github/workflows/*.local.yml
