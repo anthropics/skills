@@ -9,6 +9,7 @@ import argparse
 import json
 import os
 import select
+import signal
 import subprocess
 import sys
 import time
@@ -88,6 +89,8 @@ def run_single_query(
             stderr=subprocess.DEVNULL,
             cwd=project_root,
             env=env,
+            # Create new process group for proper cleanup on timeout
+            start_new_session=True,
         )
 
         triggered = False
@@ -172,7 +175,18 @@ def run_single_query(
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
-                process.kill()
+                # Kill the entire process group to ensure child processes are terminated
+                try:
+                    os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+                except ProcessLookupError:
+                    # Process already terminated
+                    pass
+                except PermissionError:
+                    # Fallback to regular kill if we don't have permission to kill group
+                    try:
+                        process.kill()
+                    except ProcessLookupError:
+                        pass
                 process.wait()
 
         return triggered
