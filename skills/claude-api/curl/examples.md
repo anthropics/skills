@@ -182,11 +182,11 @@ For 1-hour TTL: `"cache_control": {"type": "ephemeral", "ttl": "1h"}`. Top-level
 
 ## Extended Thinking
 
-> **Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Opus 4.8 and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
 > **Older models:** Use `"type": "enabled"` with `"budget_tokens": N` (must be < `max_tokens`, min 1024).
 
 ```bash
-# Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+# Fable 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 curl https://api.anthropic.com/v1/messages \
   -H "Content-Type: application/json" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \

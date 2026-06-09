@@ -23,7 +23,7 @@ for await (const event of stream) {
 
 ## Handling Different Content Types
 
-> **Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
+> **Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
 
 ```typescript
 const stream = client.messages.stream({
