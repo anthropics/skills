@@ -1,0 +1,292 @@
+name: Skill Contribution Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'skills/**'
+      - 'marketplace.json'
+
+jobs:
+  check-contribution:
+    runs-on: ubuntu-latest
+    name: Check Skill Contribution Quality
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Detect changed skills
+        id: changes
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+
+          # Get changed files (exclude deleted files so removed skills don't trigger validation)
+          result = subprocess.run(
+              ['git', 'diff', '--name-only', '--diff-filter=d', 'origin/main...HEAD'],
+              capture_output=True,
+              text=True
+          )
+
+          changed_files = result.stdout.strip().split('\n')
+
+          # Extract skill directories
+          changed_skills = set()
+          for file in changed_files:
+              if file.startswith('skills/'):
+                  parts = file.split('/')
+                  if len(parts) > 1:
+                      changed_skills.add(parts[1])
+
+          skills_json = json.dumps(sorted(list(changed_skills)))
+          print(f"changed_skills={skills_json}")
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"changed_skills={skills_json}\n")
+          EOF
+
+      - name: Verify skill completeness
+        env:
+          CHANGED_SKILLS: ${{ steps.changes.outputs.changed_skills }}
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          from pathlib import Path
+
+          changed_skills = json.loads(os.getenv('CHANGED_SKILLS', '[]'))
+
+          if not changed_skills:
+              print("No skill changes detected")
+              exit(0)
+
+          print(f"Checking {len(changed_skills)} changed skills...")
+
+          required_files = ['SKILL.md', 'LICENSE.txt']
+          errors = []
+
+          for skill in changed_skills:
+              skill_path = Path('skills') / skill
+
+              if not skill_path.exists():
+                  errors.append(f"Skill directory missing: {skill}")
+                  continue
+
+              for req_file in required_files:
+                  if not (skill_path / req_file).exists():
+                      errors.append(f"{skill}: Missing {req_file}")
+
+          if errors:
+              print("❌ Validation failed:")
+              for error in errors:
+                  print(f"  - {error}")
+              exit(1)
+
+          print(f"✅ All {len(changed_skills)} skill(s) have required files")
+          EOF
+
+      - name: Check marketplace.json consistency
+        run: |
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+
+          marketplace_file = Path('marketplace.json')
+          if not marketplace_file.exists():
+              print("No marketplace.json found, skipping consistency check")
+              exit(0)
+
+          try:
+              with open(marketplace_file) as f:
+                  marketplace = json.load(f)
+
+              # Extract all referenced skills
+              referenced_skills = set()
+              for plugin in marketplace.get('plugins', {}).values():
+                  for skill_path in plugin.get('skills', []):
+                      # Extract skill name from path like ./skills/skill-name
+                      skill_name = Path(skill_path).name
+                      referenced_skills.add(skill_name)
+
+              # Check that all referenced skills exist
+              errors = []
+              for skill_name in referenced_skills:
+                  skill_path = Path('skills') / skill_name
+                  if not (skill_path / 'SKILL.md').exists():
+                      errors.append(f"Referenced skill '{skill_name}' missing SKILL.md")
+
+              if errors:
+                  print("❌ Marketplace consistency errors:")
+                  for error in errors:
+                      print(f"  - {error}")
+                  exit(1)
+
+              print(f"✅ Marketplace references {len(referenced_skills)} valid skills")
+
+          except json.JSONDecodeError as e:
+              print(f"⚠️  Could not parse marketplace.json: {e}")
+          EOF
+
+      - name: Validate YAML frontmatter in changed skills
+        env:
+          CHANGED_SKILLS: ${{ steps.changes.outputs.changed_skills }}
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          import yaml
+          from pathlib import Path
+
+          changed_skills = json.loads(os.getenv('CHANGED_SKILLS', '[]'))
+
+          if not changed_skills:
+              exit(0)
+
+          errors = []
+
+          for skill in changed_skills:
+              skill_md = Path('skills') / skill / 'SKILL.md'
+
+              if not skill_md.exists():
+                  continue
+
+              content = skill_md.read_text()
+              if not content.startswith('---'):
+                  errors.append(f"{skill}/SKILL.md missing YAML frontmatter")
+                  continue
+
+              parts = content.split('---', 2)
+              if len(parts) < 3:
+                  errors.append(f"{skill}/SKILL.md invalid YAML format")
+                  continue
+
+              try:
+                  frontmatter = yaml.safe_load(parts[1])
+                  if not frontmatter:
+                      errors.append(f"{skill}/SKILL.md empty YAML frontmatter")
+                  elif not frontmatter.get('name'):
+                      errors.append(f"{skill}/SKILL.md missing 'name' field")
+                  elif not frontmatter.get('description'):
+                      errors.append(f"{skill}/SKILL.md missing 'description' field")
+              except yaml.YAMLError as e:
+                  errors.append(f"{skill}/SKILL.md invalid YAML: {str(e)[:50]}")
+
+          if errors:
+              print("❌ YAML validation failed:")
+              for error in errors:
+                  print(f"  - {error}")
+              exit(1)
+
+          print(f"✅ YAML frontmatter valid in {len(changed_skills)} skill(s)")
+          EOF
+
+      - name: Check for sensitive patterns
+        env:
+          CHANGED_SKILLS: ${{ steps.changes.outputs.changed_skills }}
+        run: |
+          python3 << 'EOF'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          changed_skills = json.loads(os.getenv('CHANGED_SKILLS', '[]'))
+
+          if not changed_skills:
+              exit(0)
+
+          # Patterns that should not be in public skills
+          # Only check non-markdown files for generic patterns (documentation examples are allowed)
+          patterns_all = [
+              (r'sk-[A-Za-z0-9]{48}', 'OpenAI API key'),
+              (r'AKIA[0-9A-Z]{16}', 'AWS access key'),
+              (r'ghp_[A-Za-z0-9]{36}', 'GitHub token'),
+          ]
+          # These patterns are only checked in code/config files, not documentation
+          patterns_code_only = [
+              (r'password\s*[:=]\s*["\']', 'Password field'),
+              (r'api[_-]?key\s*[:=]\s*["\']', 'API key field'),
+              (r'client[_-]secret\s*[:=]\s*["\']', 'Client secret'),
+          ]
+
+          errors = []
+
+          for skill in changed_skills:
+              skill_path = Path('skills') / skill
+
+              for file in skill_path.rglob('*'):
+                  if file.is_file() and file.suffix in ['.py', '.js', '.ts', '.sh', '.txt']:
+                      try:
+                          content = file.read_text(errors='ignore')
+
+                          # Check code files for all patterns (including generic patterns)
+                          for pattern, description in patterns_all + patterns_code_only:
+                              if re.search(pattern, content, re.IGNORECASE):
+                                  errors.append(f"{file.relative_to('skills')}: {description}")
+
+                      except Exception:
+                          pass
+                  elif file.is_file() and file.suffix == '.md':
+                      try:
+                          content = file.read_text(errors='ignore')
+
+                          # Only check documentation for high-confidence secrets
+                          for pattern, description in patterns_all:
+                              if re.search(pattern, content, re.IGNORECASE):
+                                  errors.append(f"{file.relative_to('skills')}: {description}")
+
+                      except Exception:
+                          pass
+
+          if errors:
+              print("❌ Sensitive patterns detected:")
+              for error in errors[:10]:  # Show first 10
+                  print(f"  - {error}")
+              if len(errors) > 10:
+                  print(f"  ... and {len(errors) - 10} more")
+              exit(1)
+
+          print(f"✅ No sensitive patterns detected in {len(changed_skills)} skill(s)")
+          EOF
+
+      - name: Add PR comment with validation results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const jobStatus = '${{ job.status }}';
+
+            let comment = '';
+            if (jobStatus === 'success') {
+              comment = '✅ **Skill Contribution Check**: All validations passed!';
+            } else if (jobStatus === 'failure') {
+              comment = '❌ **Skill Contribution Check**: Some validations failed. Please check the logs above.';
+            } else {
+              comment = '⚠️ **Skill Contribution Check**: Validation was cancelled or errored.';
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

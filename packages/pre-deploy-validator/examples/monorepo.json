@@ -1,0 +1,41 @@
+{
+  "name": "monorepo-validator",
+  "version": "1.0.0",
+  "description": "Configuration for validating monorepo projects",
+  "checks": {
+    "lint": {
+      "enabled": true,
+      "command": "npm run lint",
+      "timeoutMs": 30000,
+      "onFail": "block"
+    },
+    "typescript": {
+      "enabled": true,
+      "command": "npm run type-check",
+      "timeoutMs": 60000,
+      "onFail": "block"
+    },
+    "tests": {
+      "enabled": true,
+      "command": "npm test -- --run",
+      "coverageThreshold": {
+        "lines": 80,
+        "functions": 80,
+        "branches": 70
+      },
+      "timeoutMs": 180000,
+      "onFail": "block"
+    },
+    "build": {
+      "enabled": true,
+      "command": "npm run build",
+      "projects": [".", "./apps/web", "./apps/api", "./packages/shared"],
+      "timeoutMs": 300000,
+      "onFail": "block"
+    }
+  },
+  "skipOnBranches": [],
+  "parallel": true,
+  "reportFormat": "console",
+  "exitCode": 1
+}
