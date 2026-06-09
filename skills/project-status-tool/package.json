@@ -1,0 +1,60 @@
+{
+  "name": "@fused-gaming/project-status-tool",
+  "version": "1.0.0",
+  "description": "Unified project status dashboard integrating version history, git branches, roadmap milestones, changelog entries, and quality metrics. Generates JSON, Markdown, and HTML status reports tied to releases and deployments.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fused-gaming/skills"
+  },
+  "bin": {
+    "status": "dist/cli.js"
+  },
+  "keywords": [
+    "project-status",
+    "dashboard",
+    "metrics",
+    "version-tracking",
+    "changelog",
+    "roadmap",
+    "deployment"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "jest",
+    "lint": "eslint src/",
+    "prepublish": "npm run build && npm test"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "handlebars": "^4.7.0",
+    "marked": "^11.0.0",
+    "octokit": "^5.0.5",
+    "ora": "^6.1.0",
+    "yaml": "^2.3.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.40.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
