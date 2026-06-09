@@ -83,10 +83,10 @@ Emit as `resources: [{type: "file", file_id, mount_path}]`. Max 999 file resourc
 
 Per-run. Points at the agent + environment, attaches credentials, kicks off.
 
-**Vault credentials** (if the agent declared MCP servers):
+**Vault credentials** (if the agent declared MCP servers, or the job needs an API key for a CLI/SDK/direct API call):
 - [ ] Existing vault, or create one? (`client.beta.vaults.create()` + `vaults.credentials.create()`)
 
-Credentials are write-only, matched to MCP servers by URL, auto-refreshed. See `shared/managed-agents-tools.md` → Vaults.
+Credentials are write-only. MCP credentials are matched to MCP servers by URL and auto-refreshed; `environment_variable` credentials are substituted into outbound requests at egress (the sandbox sees only a placeholder). See `shared/managed-agents-tools.md` → Vaults.
 
 **Kickoff — pick one:**
 - [ ] **Conversational:** a first `user.message` to the agent.
