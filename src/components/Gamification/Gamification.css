@@ -1,0 +1,423 @@
+/* Streak Counter */
+.streak-counter {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.streak-header h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.2em;
+}
+
+.streak-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.current-streak {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.flame {
+  font-size: 2.5em;
+  transition: all 0.3s ease;
+}
+
+.flame.active {
+  animation: pulse 2s infinite;
+}
+
+.flame.cool {
+  filter: brightness(0.8);
+}
+.flame.warm {
+  filter: brightness(1.2) hue-rotate(-10deg);
+}
+.flame.hot {
+  filter: brightness(1.5) hue-rotate(-20deg);
+}
+.flame.inferno {
+  filter: brightness(2) hue-rotate(-30deg);
+  animation: inferno 1s infinite alternate;
+}
+
+.streak-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.streak-number {
+  font-size: 2.2em;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.streak-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+}
+
+.streak-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.streak-motivation {
+  text-align: center;
+  font-weight: 500;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Achievement System */
+.achievement-system {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.level-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.level-badge {
+  background: #4f46e5;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.points {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.level-progress {
+  background: #e5e7eb;
+  border-radius: 10px;
+  height: 8px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.level-progress-bar {
+  background: linear-gradient(90deg, #10b981, #3b82f6);
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.level-progress-text {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 0.8em;
+  color: #6b7280;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.achievement {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.achievement.unlocked {
+  background: #f0f9ff;
+  border: 2px solid #3b82f6;
+}
+
+.achievement.locked {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  opacity: 0.7;
+}
+
+.achievement-icon {
+  font-size: 2em;
+  flex-shrink: 0;
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-info h4 {
+  margin: 0 0 5px 0;
+  color: #1f2937;
+}
+
+.achievement-info p {
+  margin: 0 0 8px 0;
+  color: #6b7280;
+  font-size: 0.9em;
+}
+
+.achievement-points {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.progress-bar {
+  background: #e5e7eb;
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: #3b82f6;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* Leaderboard */
+.leaderboard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.time-frame-selector {
+  display: flex;
+  gap: 5px;
+  background: #f3f4f6;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.time-frame-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.time-frame-btn.active {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-entry {
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.leaderboard-entry:hover {
+  background: #f9fafb;
+}
+
+.leaderboard-entry.current-user {
+  background: #f0f9ff;
+  border-color: #3b82f6;
+}
+
+.leaderboard-entry.expanded {
+  background: #f8fafc;
+}
+
+.entry-main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.rank {
+  font-weight: bold;
+  font-size: 1.1em;
+  min-width: 40px;
+  text-align: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.you-badge {
+  background: #3b82f6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  font-weight: bold;
+}
+
+.score {
+  font-weight: bold;
+  color: #1f2937;
+  font-size: 1.1em;
+}
+
+.entry-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail .label {
+  color: #6b7280;
+  font-size: 0.9em;
+}
+
+.detail .value {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.empty-leaderboard {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes inferno {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .streak-display {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .streak-stats {
+    justify-content: center;
+  }
+
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leaderboard-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .time-frame-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .entry-details {
+    grid-template-columns: 1fr;
+  }
+}
