@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: HashiCorp (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand Primary */
+    --color-black: #000000;
+    --color-dark-charcoal: #15181e;
+    --color-near-black: #0d0e12;
+
+    /* Neutral Scale */
+    --color-light-gray: #f1f2f3;
+    --color-mid-gray: #d5d7db;
+    --color-cool-gray: #b2b6bd;
+    --color-dark-gray: #656a76;
+    --color-charcoal: #3b3d45;
+    --color-near-white: #efeff1;
+
+    /* Product Brand Colors */
+    --color-terraform: #7b42bc;
+    --color-vault: #ffcf25;
+    --color-waypoint: #14c6cb;
+    --color-waypoint-hover: #12b6bb;
+    --color-vagrant: #1868f2;
+    --color-purple-accent: #911ced;
+    --color-visited-purple: #a737ff;
+
+    /* Semantic Colors */
+    --color-action-blue: #1060ff;
+    --color-link-blue: #2264d6;
+    --color-bright-blue: #2b89ff;
+    --color-amber: #bb5a00;
+    --color-amber-light: #fbeabf;
+    --color-red: #731e25;
+    --color-navy: #101a59;
+    --color-orange: #a9722e;
+
+    /* Shadows */
+    --shadow-whisper: rgba(0, 0, 0, 0.15) 0px 1px 1px, rgba(0, 0, 0, 0.15) 0px 2px 2px;
+
+    /* Fonts */
+    --font-brand: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-system: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+
+    /* Dark mode */
+    --bg-page: #0d0e12;
+    --bg-card: #15181e;
+    --bg-section: #111318;
+    --bg-nav: rgba(13, 14, 18, 0.92);
+    --text-primary: #efeff1;
+    --text-secondary: #d5d7db;
+    --text-muted: #656a76;
+    --border-color: rgba(178, 182, 189, 0.15);
+    --border-subtle: rgba(178, 182, 189, 0.08);
+    --section-label-color: #656a76;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-system);
+    font-size: 16px;
+    line-height: 1.63;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: var(--color-action-blue);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nav-brand {
+    font-family: var(--font-brand);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+  }
+  .nav-brand .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--color-near-white);
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-near-black);
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.60;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--color-bright-blue); }
+  .nav-cta {
+    background: var(--color-near-white);
+    color: var(--color-near-black);
+    padding: 9px 9px 9px 15px;
+    border: 1px solid rgba(178, 182, 189, 0.3);
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: var(--font-system);
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: var(--shadow-whisper);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    background: var(--color-dark-charcoal);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 900px;
+    height: 900px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(123, 66, 188, 0.15) 0%, rgba(20, 198, 203, 0.10) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.69;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    color: var(--color-dark-gray);
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-brand);
+    font-size: 82px;
+    font-weight: 600;
+    line-height: 1.17;
+    letter-spacing: normal;
+    font-feature-settings: "kern" 1;
+    color: #ffffff;
+    max-width: 900px;
+    margin: 0 auto 24px;
+    position: relative;
+  }
+  .hero p {
+    font-family: var(--font-system);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--color-mid-gray);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    position: relative;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    position: relative;
+  }
+  .hero-buttons .btn-primary {
+    background: rgba(239, 239, 241, 0.1);
+    color: var(--color-near-white);
+    padding: 9px 9px 9px 15px;
+    border: 1px solid rgba(178, 182, 189, 0.4);
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: var(--font-system);
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: var(--shadow-whisper);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-buttons .btn-secondary {
+    background: transparent;
+    color: var(--color-near-white);
+    padding: 8px 12px;
+    border: 1px solid rgba(178, 182, 189, 0.4);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-system);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* SECTION SYSTEM */
+  .section {
+    padding: 80px 40px;
+    max-width: 1150px;
+    margin: 0 auto;
+  }
+  .section:nth-child(even of .section) {
+    background: var(--bg-section);
+    max-width: 100%;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .section:nth-child(even of .section) .section-inner {
+    max-width: 1150px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.69;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    color: var(--section-label-color);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-brand);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.19;
+    letter-spacing: -0.42px;
+    font-feature-settings: "kern" 1;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    font-family: var(--font-system);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.63;
+    color: var(--text-secondary);
+    margin-bottom: 48px;
+    max-width: 640px;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-family: var(--font-brand);
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.21;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-whisper);
+  }
+  .color-swatch .swatch-block {
+    height: 72px;
+    width: 100%;
+  }
+  .color-swatch .swatch-info {
+    padding: 10px 12px;
+    background: var(--bg-card);
+  }
+  .color-swatch .swatch-name {
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .color-swatch .swatch-hex {
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .color-swatch .swatch-role {
+    font-family: var(--font-system);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* TYPOGRAPHY */
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 32px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta {
+    flex-shrink: 0;
+    width: 200px;
+    text-align: right;
+  }
+  .type-meta .meta-role {
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    color: var(--section-label-color);
+  }
+  .type-meta .meta-spec {
+    font-family: var(--font-system);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .type-sample {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* BUTTONS */
+  .button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .button-group-title {
+    font-family: var(--font-brand);
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.21;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+  .button-group-title:first-child { margin-top: 0; }
+  .btn {
+    font-family: var(--font-system);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .btn-dark {
+    background: rgba(239, 239, 241, 0.08);
+    color: var(--color-mid-gray);
+    padding: 9px 9px 9px 15px;
+    border: 1px solid rgba(178, 182, 189, 0.4);
+    border-radius: 5px;
+    box-shadow: var(--shadow-whisper);
+  }
+  .btn-white {
+    background: transparent;
+    color: var(--color-near-white);
+    padding: 8px 12px;
+    border: 1px solid rgba(178, 182, 189, 0.4);
+    border-radius: 4px;
+  }
+  .btn-terraform {
+    background: var(--color-terraform);
+    color: #ffffff;
+    padding: 9px 9px 9px 15px;
+    border: 1px solid var(--color-terraform);
+    border-radius: 5px;
+  }
+  .btn-vault {
+    background: var(--color-vault);
+    color: var(--color-dark-charcoal);
+    padding: 9px 9px 9px 15px;
+    border: 1px solid var(--color-vault);
+    border-radius: 5px;
+  }
+  .btn-waypoint {
+    background: var(--color-waypoint);
+    color: #ffffff;
+    padding: 9px 9px 9px 15px;
+    border: 1px solid var(--color-waypoint);
+    border-radius: 5px;
+  }
+  .btn-vagrant {
+    background: var(--color-vagrant);
+    color: #ffffff;
+    padding: 9px 9px 9px 15px;
+    border: 1px solid var(--color-vagrant);
+    border-radius: 5px;
+  }
+  .btn-badge {
+    background: #42225b;
+    color: var(--color-near-white);
+    padding: 3px 7px;
+    border: 1px solid rgb(180, 87, 255);
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  /* Button showcase strip */
+  .btn-showcase-dark {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-whisper);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px, rgba(0, 0, 0, 0.2) 0px 4px 8px;
+  }
+  .card-color-bar {
+    height: 4px;
+    width: 100%;
+  }
+  .card-body {
+    padding: 24px;
+  }
+  .card-title {
+    font-family: var(--font-brand);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.19;
+    font-feature-settings: "kern" 1;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .card-desc {
+    font-family: var(--font-system);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.63;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .card-link {
+    font-family: var(--font-system);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-bright-blue);
+    text-decoration: none;
+  }
+  .card-link:hover { text-decoration: underline; }
+
+  /* FORMS */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-family: var(--font-brand);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--color-near-black);
+    border: 1px solid rgb(97, 104, 117);
+    border-radius: 5px;
+    padding: 11px;
+    font-family: var(--font-system);
+    font-size: 16px;
+    color: var(--color-near-white);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .form-input::placeholder {
+    color: var(--color-dark-gray);
+  }
+  .form-input:focus {
+    border-color: var(--color-action-blue);
+    box-shadow: 0 0 0 3px rgba(16, 96, 255, 0.3);
+  }
+  .form-input-error {
+    border-color: var(--color-red);
+  }
+  .form-error-msg {
+    font-family: var(--font-system);
+    font-size: 13px;
+    color: #ff6b6b;
+    margin-top: 6px;
+  }
+  .form-helper {
+    font-family: var(--font-system);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* Both dark form areas on dark */
+  .form-dark-area {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+  .form-light-area {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+  .form-light-area .form-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(178, 182, 189, 0.3);
+    color: var(--color-near-white);
+  }
+  .form-light-area .form-input:focus {
+    border-color: var(--color-action-blue);
+    box-shadow: 0 0 0 3px rgba(16, 96, 255, 0.3);
+  }
+
+  /* SPACING */
+  .spacing-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .spacing-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .spacing-box {
+    background: var(--color-action-blue);
+    border-radius: 3px;
+    opacity: 0.6;
+  }
+  .spacing-label {
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* RADIUS */
+  .radius-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid var(--color-near-white);
+  }
+  .radius-label {
+    font-family: var(--font-system);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .radius-name {
+    font-family: var(--font-system);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ELEVATION */
+  .elevation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .elevation-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+  }
+  .elevation-card .elev-title {
+    font-family: var(--font-brand);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+  .elevation-card .elev-desc {
+    font-family: var(--font-system);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .elevation-card .elev-code {
+    font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    word-break: break-all;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 48px 40px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .footer a {
+    color: var(--color-bright-blue);
+    text-decoration: none;
+  }
+  .footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- DARK MODE BADGE -->
+<div class="dark-badge">Dark Mode</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">
+    awesome-design-md
+  </div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#forms">Forms</a>
+    <a href="#spacing">Spacing</a>
+  </div>
+  <button class="nav-cta">Get Started &rarr;</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">Design System Preview</div>
+  <h1>Design System Inspired by HashiCorp</h1>
+  <p>Enterprise infrastructure typography, product color systems, and whisper-level shadows — all distilled into a single-page design reference.</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">Get Started &rarr;</a>
+    <a class="btn-secondary" href="#">View Documentation</a>
+  </div>
+</section>
+
+<!-- 1. COLOR PALETTE -->
+<section class="section" id="colors">
+  <div class="section-label">Section 1</div>
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-desc">A multi-product color system using CSS custom properties. The parent brand is black-and-white with blue accents; each child product injects its own chromatic identity.</p>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Brand Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#000000"></div>
+        <div class="swatch-info"><div class="swatch-name">Black</div><div class="swatch-hex">#000000</div><div class="swatch-role">Primary brand, text on light</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#15181e"></div>
+        <div class="swatch-info"><div class="swatch-name">Dark Charcoal</div><div class="swatch-hex">#15181e</div><div class="swatch-role">Dark mode backgrounds, hero</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#0d0e12"></div>
+        <div class="swatch-info"><div class="swatch-name">Near Black</div><div class="swatch-hex">#0d0e12</div><div class="swatch-role">Deepest dark surface, inputs</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutral Scale</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#f1f2f3"></div>
+        <div class="swatch-info"><div class="swatch-name">Light Gray</div><div class="swatch-hex">#f1f2f3</div><div class="swatch-role">Light backgrounds</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#d5d7db"></div>
+        <div class="swatch-info"><div class="swatch-name">Mid Gray</div><div class="swatch-hex">#d5d7db</div><div class="swatch-role">Borders, dark button text</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#b2b6bd"></div>
+        <div class="swatch-info"><div class="swatch-name">Cool Gray</div><div class="swatch-hex">#b2b6bd</div><div class="swatch-role">Border accents (0.1-0.4 opacity)</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#656a76"></div>
+        <div class="swatch-info"><div class="swatch-name">Dark Gray</div><div class="swatch-hex">#656a76</div><div class="swatch-role">Helper text, labels</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#3b3d45"></div>
+        <div class="swatch-info"><div class="swatch-name">Charcoal</div><div class="swatch-hex">#3b3d45</div><div class="swatch-role">Secondary text on light</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#efeff1"></div>
+        <div class="swatch-info"><div class="swatch-name">Near White</div><div class="swatch-hex">#efeff1</div><div class="swatch-role">Primary text on dark</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Product Brand Colors</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#7b42bc"></div>
+        <div class="swatch-info"><div class="swatch-name">Terraform Purple</div><div class="swatch-hex">#7b42bc</div><div class="swatch-role">Terraform brand</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#ffcf25"></div>
+        <div class="swatch-info"><div class="swatch-name">Vault Yellow</div><div class="swatch-hex">#ffcf25</div><div class="swatch-role">Vault brand</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#14c6cb"></div>
+        <div class="swatch-info"><div class="swatch-name">Waypoint Teal</div><div class="swatch-hex">#14c6cb</div><div class="swatch-role">Waypoint brand</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1868f2"></div>
+        <div class="swatch-info"><div class="swatch-name">Vagrant Blue</div><div class="swatch-hex">#1868f2</div><div class="swatch-role">Vagrant brand</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#911ced"></div>
+        <div class="swatch-info"><div class="swatch-name">Purple Accent</div><div class="swatch-hex">#911ced</div><div class="swatch-role">Accent purple</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#a737ff"></div>
+        <div class="swatch-info"><div class="swatch-name">Visited Purple</div><div class="swatch-hex">#a737ff</div><div class="swatch-role">Visited links</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Semantic Colors</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1060ff"></div>
+        <div class="swatch-info"><div class="swatch-name">Action Blue</div><div class="swatch-hex">#1060ff</div><div class="swatch-role">Primary action on dark</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#2264d6"></div>
+        <div class="swatch-info"><div class="swatch-name">Link Blue</div><div class="swatch-hex">#2264d6</div><div class="swatch-role">Primary links on light</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#2b89ff"></div>
+        <div class="swatch-info"><div class="swatch-name">Bright Blue</div><div class="swatch-hex">#2b89ff</div><div class="swatch-role">Active links, hover</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#bb5a00"></div>
+        <div class="swatch-info"><div class="swatch-name">Amber</div><div class="swatch-hex">#bb5a00</div><div class="swatch-role">Warning states</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#fbeabf"></div>
+        <div class="swatch-info"><div class="swatch-name">Amber Light</div><div class="swatch-hex">#fbeabf</div><div class="swatch-role">Warning backgrounds</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#731e25"></div>
+        <div class="swatch-info"><div class="swatch-name">Red</div><div class="swatch-hex">#731e25</div><div class="swatch-role">Error states</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#a9722e"></div>
+        <div class="swatch-info"><div class="swatch-name">Orange</div><div class="swatch-hex">#a9722e</div><div class="swatch-role">Unified core orange</div></div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#101a59"></div>
+        <div class="swatch-info"><div class="swatch-name">Navy</div><div class="swatch-hex">#101a59</div><div class="swatch-role">Unified core blue</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. TYPOGRAPHY SCALE -->
+<section class="section" id="typography">
+  <div class="section-inner">
+    <div class="section-label">Section 2</div>
+    <h2 class="section-title">Typography Scale</h2>
+    <p class="section-desc">Brand headings use DM Sans (standing in for HashiCorp Sans) with tight line-heights and kern enabled. Body text uses the system-ui stack for maximum readability.</p>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Display Hero</div>
+        <div class="meta-spec">82px / 600 / 1.17</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:82px;font-weight:600;line-height:1.17;font-feature-settings:'kern' 1;">Infrastructure</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Section Heading</div>
+        <div class="meta-spec">52px / 600 / 1.19</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:52px;font-weight:600;line-height:1.19;font-feature-settings:'kern' 1;">Cloud at Scale</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Feature Heading</div>
+        <div class="meta-spec">42px / 700 / 1.19 / -0.42px</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:42px;font-weight:700;line-height:1.19;letter-spacing:-0.42px;font-feature-settings:'kern' 1;">Automate Everything</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Sub-heading</div>
+        <div class="meta-spec">34px / 600 / 1.18</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:34px;font-weight:600;line-height:1.18;font-feature-settings:'kern' 1;">Provision and Manage</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Card Title</div>
+        <div class="meta-spec">26px / 700 / 1.19</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:26px;font-weight:700;line-height:1.19;font-feature-settings:'kern' 1;">Multi-Cloud Platform</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Small Title</div>
+        <div class="meta-spec">19px / 700 / 1.21</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:19px;font-weight:700;line-height:1.21;font-feature-settings:'kern' 1;">Zero Trust Security</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Body Emphasis</div>
+        <div class="meta-spec">17px / 600 / 1.35</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:17px;font-weight:600;line-height:1.35;font-feature-settings:'kern' 1;">HashiCorp provides infrastructure automation to provision, secure, connect, and run any infrastructure for any application.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Body Large</div>
+        <div class="meta-spec">20px / 400 / 1.50</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-system);font-size:20px;font-weight:400;line-height:1.50;">Automate your multi-cloud infrastructure provisioning workflows with declarative configuration files.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Body</div>
+        <div class="meta-spec">16px / 400 / 1.63</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-system);font-size:16px;font-weight:400;line-height:1.63;">Infrastructure as code lets you manage your infrastructure across multiple providers with one consistent workflow. Define infrastructure as code to increase operator productivity and transparency.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Nav Link</div>
+        <div class="meta-spec">15px / 500 / 1.60</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-system);font-size:15px;font-weight:500;line-height:1.60;">Products &nbsp; Solutions &nbsp; Partners &nbsp; Resources &nbsp; Pricing</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Small Body</div>
+        <div class="meta-spec">14px / 400 / 1.71</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-system);font-size:14px;font-weight:400;line-height:1.71;">Learn how to deploy applications across cloud providers with a standardized workflow.</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Caption</div>
+        <div class="meta-spec">13px / 400 / 1.69</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-system);font-size:13px;font-weight:400;line-height:1.69;">Updated 2 days ago &middot; 5 min read &middot; Infrastructure Automation</div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-meta">
+        <div class="meta-role">Uppercase Label</div>
+        <div class="meta-spec">13px / 600 / 1.69 / 1.3px</div>
+      </div>
+      <div class="type-sample" style="font-family:var(--font-brand);font-size:13px;font-weight:600;line-height:1.69;letter-spacing:1.3px;text-transform:uppercase;">Infrastructure Lifecycle</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. BUTTON VARIANTS -->
+<section class="section" id="buttons">
+  <div class="section-label">Section 3</div>
+  <h2 class="section-title">Button Variants</h2>
+  <p class="section-desc">Asymmetric padding (9px 9px 9px 15px) on primary buttons is intentional. Product-colored buttons follow the same structural pattern but inject their brand color.</p>
+
+  <div class="button-group-title">Core Buttons</div>
+  <div class="btn-showcase-dark">
+    <div class="button-grid">
+      <button class="btn btn-dark">Primary Dark &rarr;</button>
+      <button class="btn btn-white">Secondary White</button>
+    </div>
+  </div>
+
+  <div class="button-group-title">Product-Colored Buttons</div>
+  <div class="btn-showcase-dark">
+    <div class="button-grid">
+      <button class="btn btn-terraform">Terraform &rarr;</button>
+      <button class="btn btn-vault">Vault &rarr;</button>
+      <button class="btn btn-waypoint">Waypoint &rarr;</button>
+      <button class="btn btn-vagrant">Vagrant &rarr;</button>
+    </div>
+  </div>
+
+  <div class="button-group-title">Badges / Pills</div>
+  <div class="btn-showcase-dark">
+    <div class="button-grid">
+      <span class="btn btn-badge">New Feature</span>
+      <span class="btn btn-badge">Beta</span>
+      <span class="btn btn-badge">HCP</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CARD EXAMPLES -->
+<section class="section" id="cards">
+  <div class="section-inner">
+    <div class="section-label">Section 4</div>
+    <h2 class="section-title">Card Examples</h2>
+    <p class="section-desc">Dark surface cards with 8px radius and subtle border separation. Product accent bars indicate chromatic ownership.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-color-bar" style="background:var(--color-terraform)"></div>
+        <div class="card-body">
+          <div style="font-family:var(--font-brand);font-size:13px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--color-terraform);margin-bottom:8px;">Terraform</div>
+          <div class="card-title">Infrastructure as Code</div>
+          <div class="card-desc">Define and provision data center infrastructure using a declarative configuration language. Manage multi-cloud deployments with a single workflow.</div>
+          <a class="card-link" href="#">Learn more &rarr;</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-color-bar" style="background:var(--color-vault)"></div>
+        <div class="card-body">
+          <div style="font-family:var(--font-brand);font-size:13px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--color-vault);margin-bottom:8px;">Vault</div>
+          <div class="card-title">Secrets Management</div>
+          <div class="card-desc">Centrally store, access, and deploy secrets across applications, systems, and infrastructure. Dynamic secrets, encryption, and identity-based access.</div>
+          <a class="card-link" href="#">Learn more &rarr;</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-color-bar" style="background:var(--color-waypoint)"></div>
+        <div class="card-body">
+          <div style="font-family:var(--font-brand);font-size:13px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--color-waypoint);margin-bottom:8px;">Waypoint</div>
+          <div class="card-title">Application Delivery</div>
+          <div class="card-desc">Build, deploy, and release applications across any platform with a consistent workflow. Simplify the developer experience for Kubernetes and beyond.</div>
+          <a class="card-link" href="#">Learn more &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FORM ELEMENTS -->
+<section class="section" id="forms">
+  <div class="section-label">Section 5</div>
+  <h2 class="section-title">Form Elements</h2>
+  <p class="section-desc">Dark mode inputs use #0d0e12 background with 5px radius. Focus rings are 3px solid with product-appropriate color.</p>
+
+  <div class="form-grid">
+    <div>
+      <h3 class="button-group-title" style="margin-top:0">Default Inputs</h3>
+      <div class="form-group">
+        <label class="form-label">Default Input</label>
+        <input type="text" class="form-input" placeholder="Enter your email address" />
+        <div class="form-helper">We'll never share your email with anyone.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Focus State</label>
+        <input type="text" class="form-input" value="terraform@hashicorp.com" style="border-color:#1060ff;box-shadow:0 0 0 3px rgba(16,96,255,0.3);" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Error State</label>
+        <input type="text" class="form-input form-input-error" value="invalid-email" />
+        <div class="form-error-msg">Please enter a valid email address.</div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="button-group-title" style="margin-top:0">Textarea</h3>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" placeholder="Describe your infrastructure needs..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">With Content</label>
+        <textarea class="form-input" style="border-color:#1060ff;box-shadow:0 0 0 3px rgba(16,96,255,0.3);">We need to provision 50+ microservices across three cloud providers with centralized secrets management.</textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SPACING SCALE -->
+<section class="section" id="spacing">
+  <div class="section-inner">
+    <div class="section-label">Section 6</div>
+    <h2 class="section-title">Spacing Scale</h2>
+    <p class="section-desc">Base unit of 8px. The scale provides granular control for component spacing while maintaining rhythm across the layout.</p>
+
+    <div class="spacing-row">
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:16px;height:2px;"></div>
+        <span class="spacing-label">2px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:16px;height:3px;"></div>
+        <span class="spacing-label">3px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:16px;height:4px;"></div>
+        <span class="spacing-label">4px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:16px;height:6px;"></div>
+        <span class="spacing-label">6px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:16px;height:8px;"></div>
+        <span class="spacing-label">8px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:20px;height:12px;"></div>
+        <span class="spacing-label">12px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:24px;height:16px;"></div>
+        <span class="spacing-label">16px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:28px;height:20px;"></div>
+        <span class="spacing-label">20px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:32px;height:24px;"></div>
+        <span class="spacing-label">24px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:40px;height:32px;"></div>
+        <span class="spacing-label">32px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:48px;height:40px;"></div>
+        <span class="spacing-label">40px</span>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-box" style="width:56px;height:48px;"></div>
+        <span class="spacing-label">48px</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. BORDER RADIUS SCALE -->
+<section class="section" id="radius">
+  <div class="section-label">Section 7</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <p class="section-desc">Nothing pill-shaped or circular. Tight, minimal radii from 2px to 8px communicate structural precision. The system is deliberately restrained.</p>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:2px;"></div>
+      <span class="radius-label">2px</span>
+      <span class="radius-name">Minimal</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:3px;"></div>
+      <span class="radius-label">3px</span>
+      <span class="radius-name">Subtle</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:4px;"></div>
+      <span class="radius-label">4px</span>
+      <span class="radius-name">Standard</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:5px;"></div>
+      <span class="radius-label">5px</span>
+      <span class="radius-name">Comfortable</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:8px;"></div>
+      <span class="radius-label">8px</span>
+      <span class="radius-name">Card</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. ELEVATION / DEPTH -->
+<section class="section" id="elevation">
+  <div class="section-inner">
+    <div class="section-label">Section 8</div>
+    <h2 class="section-title">Elevation &amp; Depth</h2>
+    <p class="section-desc">Arguably the subtlest shadow system in modern web design. On dark surfaces, shadows shift to higher-opacity blacks to maintain the whisper effect against dark backgrounds.</p>
+
+    <div class="elevation-grid">
+      <div class="elevation-card" style="box-shadow:none;border:1px solid var(--border-color);">
+        <div class="elev-title">Level 0 &mdash; Flat</div>
+        <div class="elev-desc">Default surfaces, text blocks. No shadow applied.</div>
+        <div class="elev-code">box-shadow: none</div>
+      </div>
+      <div class="elevation-card" style="box-shadow:rgba(0,0,0,0.15) 0px 1px 1px, rgba(0,0,0,0.15) 0px 2px 2px;border:1px solid var(--border-color);">
+        <div class="elev-title">Level 1 &mdash; Whisper</div>
+        <div class="elev-desc">Cards, buttons, interactive surfaces. Barely visible micro-shadow.</div>
+        <div class="elev-code">rgba(0,0,0,0.15) 0px 1px 1px, rgba(0,0,0,0.15) 0px 2px 2px</div>
+      </div>
+      <div class="elevation-card" style="box-shadow:none;border:1px solid var(--border-color);outline:3px solid #1060ff;outline-offset:1px;">
+        <div class="elev-title">Level 2 &mdash; Focus</div>
+        <div class="elev-desc">Focus rings for keyboard navigation. 3px solid, color-matched to context.</div>
+        <div class="elev-code">outline: 3px solid var(--focus-color)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Design system tokens extracted from the public <a href="https://hashicorp.com" target="_blank">hashicorp.com</a> website. This is not the official HashiCorp design system.<br>Built for <strong>awesome-design-md</strong> &mdash; a curated collection of design system references.</p>
+</footer>
+
+</body>
+</html>

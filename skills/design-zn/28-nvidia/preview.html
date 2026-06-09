@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: NVIDIA (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nvidia-green: #76b900;
+    --nvidia-green-light: #bff230;
+    --black: #000000;
+    --white: #ffffff;
+    --near-black: #1a1a1a;
+    --gray-300: #a7a7a7;
+    --gray-400: #898989;
+    --gray-500: #757575;
+    --gray-border: #5e5e5e;
+    --link-hover: #3860be;
+    --btn-hover: #1eaedb;
+    --btn-active: #007fff;
+    --orange-400: #df6500;
+    --yellow-300: #ef9100;
+    --red-500: #e52020;
+    --green-500: #3f8500;
+    --blue-700: #0046a4;
+    --purple-800: #4d1368;
+    --fuchsia-700: #8c1c55;
+    --purple-100: #f9d4ff;
+    --yellow-050: #feeeb2;
+    --shadow-card: rgba(0,0,0,0.3) 0px 0px 5px 0px;
+    --font-primary: 'Inter', Arial, Helvetica, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-primary);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: var(--black);
+    border-bottom: 2px solid var(--nvidia-green);
+  }
+  .nav-brand { font-size: 14px; font-weight: 700; color: var(--white); text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 700; color: var(--gray-300); text-decoration: none; text-transform: uppercase; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--nvidia-green); }
+  .nav-cta {
+    display: inline-block; background: transparent; color: var(--white);
+    padding: 8px 16px; border-radius: 2px; font-size: 14px; font-weight: 700;
+    text-decoration: none; border: 2px solid var(--nvidia-green); transition: all 0.15s;
+  }
+  .nav-cta:hover { background: var(--btn-hover); color: var(--white); border-color: var(--btn-hover); }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; background: var(--black); }
+  .hero h1 {
+    font-size: 48px; font-weight: 700; line-height: 1.25;
+    color: var(--white); margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--nvidia-green); }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.67; color: var(--gray-300); max-width: 640px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: transparent; color: var(--white);
+    padding: 11px 20px; border-radius: 2px; border: 2px solid var(--nvidia-green);
+    font-family: var(--font-primary); font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary:hover { background: var(--btn-hover); border-color: var(--btn-hover); }
+  .btn-secondary {
+    display: inline-block; background: transparent; color: var(--gray-300);
+    padding: 11px 20px; border-radius: 2px; border: 1px solid var(--gray-border);
+    font-family: var(--font-primary); font-size: 16px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-secondary:hover { color: var(--white); border-color: var(--gray-300); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 700; color: var(--nvidia-green); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-title { font-size: 32px; font-weight: 700; line-height: 1.25; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 2px solid var(--nvidia-green); margin: 0; opacity: 0.3; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 2px; overflow: hidden; box-shadow: var(--shadow-card); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--gray-500); font-family: monospace; }
+  .color-swatch-role { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--gray-500); margin: 24px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #e5e5e5; }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: monospace; font-size: 12px; font-weight: 500; color: var(--gray-400); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--gray-400); margin-top: 8px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: var(--white); border-radius: 2px; padding: 24px; box-shadow: var(--shadow-card); transition: box-shadow 0.2s; border-top: 2px solid var(--nvidia-green); }
+  .card:hover { box-shadow: rgba(0,0,0,0.4) 0px 0px 12px 0px; }
+  .card h3 { font-size: 20px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; }
+  .card p { font-size: 15px; color: var(--gray-500); line-height: 1.67; }
+  .card-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 700; color: var(--black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--black);
+    border: 1px solid var(--gray-border); padding: 10px 12px; border-radius: 2px;
+    font-family: var(--font-primary); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--nvidia-green); box-shadow: 0 0 0 1px var(--nvidia-green); }
+  .form-input--focus { border-color: var(--nvidia-green); box-shadow: 0 0 0 1px var(--nvidia-green); }
+  .form-input--error { border-color: var(--red-500); box-shadow: 0 0 0 1px var(--red-500); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--white); color: var(--black);
+    border: 1px solid var(--gray-border); padding: 10px 12px; border-radius: 2px;
+    font-family: var(--font-primary); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--nvidia-green); border-radius: 1px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: monospace; font-size: 11px; font-weight: 500; color: var(--gray-400); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--black); margin-bottom: 6px; }
+  .radius-label { font-family: monospace; font-size: 11px; font-weight: 500; color: var(--gray-400); }
+  .radius-context { font-size: 10px; color: var(--gray-400); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--white); border-radius: 2px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-family: monospace; font-size: 11px; color: var(--gray-400); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--black); color: var(--gray-500); font-size: 13px; border-top: 2px solid var(--nvidia-green); }
+  .footer a { color: var(--nvidia-green); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Explore GPUs</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by <span>NVIDIA</span></h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value -- visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">Explore Solutions</a>
+    <a class="btn-secondary" href="#">View Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#76b900"></div><div class="color-swatch-info"><div class="color-swatch-name">NVIDIA Green</div><div class="color-swatch-hex">#76b900</div><div class="color-swatch-role">Accent, borders, CTAs</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">True Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">Primary background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e5e5e5"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Light backgrounds, text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#bff230"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Light</div><div class="color-swatch-hex">#bff230</div><div class="color-swatch-role">Bright accents</div></div></div>
+  </div>
+
+  <div class="color-group-label">Extended Palette</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#df6500"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange 400</div><div class="color-swatch-hex">#df6500</div><div class="color-swatch-role">Warm accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ef9100"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow 300</div><div class="color-swatch-hex">#ef9100</div><div class="color-swatch-role">Secondary warm</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#4d1368"></div><div class="color-swatch-info"><div class="color-swatch-name">Purple 800</div><div class="color-swatch-hex">#4d1368</div><div class="color-swatch-role">AI / Premium</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#8c1c55"></div><div class="color-swatch-info"><div class="color-swatch-name">Fuchsia 700</div><div class="color-swatch-hex">#8c1c55</div><div class="color-swatch-role">Promotions</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0046a4"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 700</div><div class="color-swatch-hex">#0046a4</div><div class="color-swatch-role">Informational</div></div></div>
+  </div>
+
+  <div class="color-group-label">Status</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e52020"></div><div class="color-swatch-info"><div class="color-swatch-name">Red 500</div><div class="color-swatch-hex">#e52020</div><div class="color-swatch-role">Error, destructive</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3f8500"></div><div class="color-swatch-info"><div class="color-swatch-name">Green 500</div><div class="color-swatch-hex">#3f8500</div><div class="color-swatch-role">Success</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#feeeb2"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow 050</div><div class="color-swatch-hex">#feeeb2</div><div class="color-swatch-role">Warning surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f9d4ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Purple 100</div><div class="color-swatch-hex">#f9d4ff</div><div class="color-swatch-role">Info surface</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">Dark surfaces</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5e5e5e"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray Border</div><div class="color-swatch-hex">#5e5e5e</div><div class="color-swatch-role">Borders, dividers</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#757575"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 500</div><div class="color-swatch-hex">#757575</div><div class="color-swatch-role">Tertiary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#898989"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 400</div><div class="color-swatch-hex">#898989</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a7a7a7"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 300</div><div class="color-swatch-hex">#a7a7a7</div><div class="color-swatch-role">Muted text</div></div></div>
+  </div>
+
+  <div class="color-group-label">Interactive</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3860be"></div><div class="color-swatch-info"><div class="color-swatch-name">Link Hover</div><div class="color-swatch-hex">#3860be</div><div class="color-swatch-role">Hover state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1eaedb"></div><div class="color-swatch-info"><div class="color-swatch-name">Button Hover</div><div class="color-swatch-hex">#1eaedb</div><div class="color-swatch-role">CTA hover</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#007fff"></div><div class="color-swatch-info"><div class="color-swatch-name">Button Active</div><div class="color-swatch-hex">#007fff</div><div class="color-swatch-role">CTA active/pressed</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:36px; font-weight:700; line-height:1.25;">Display Hero</div><div class="type-meta">Display Hero -- 36px / 700 / 1.25 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:24px; font-weight:700; line-height:1.25;">Section Heading</div><div class="type-meta">Section Heading -- 24px / 700 / 1.25 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:22px; font-weight:400; line-height:1.75;">Sub-heading -- Feature descriptions and subtitles</div><div class="type-meta">Sub-heading -- 22px / 400 / 1.75 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:700; line-height:1.25;">Card Title</div><div class="type-meta">Card Title -- 20px / 700 / 1.25 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:700; line-height:1.67;">Body Large -- Emphasized lead paragraph text for introductions</div><div class="type-meta">Body Large -- 18px / 700 / 1.67 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body -- Standard reading text for descriptions and content paragraphs across the site.</div><div class="type-meta">Body -- 16px / 400 / 1.50 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:700; line-height:1.50;">Body Bold -- Strong labels and nav items</div><div class="type-meta">Body Bold -- 16px / 700 / 1.50 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:15px; font-weight:400; line-height:1.67;">Body Small -- Secondary content and descriptions for product cards.</div><div class="type-meta">Body Small -- 15px / 400 / 1.67 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:700; line-height:1.43; text-transform:uppercase;">Link Uppercase Label</div><div class="type-meta">Link Uppercase -- 14px / 700 / 1.43 / uppercase / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:600; line-height:1.50;">Caption -- Metadata and timestamps</div><div class="type-meta">Caption -- 14px / 600 / 1.50 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:400; line-height:1.25;">Caption Small -- Fine print and legal text</div><div class="type-meta">Caption Small -- 12px / 400 / 1.25 / NVIDIA-EMEA</div></div>
+  <div class="type-sample"><div style="font-size:10px; font-weight:700; line-height:1.50; text-transform:uppercase; background:var(--nvidia-green); color:var(--black); display:inline-block; padding:2px 8px; border-radius:2px;">GPU ACCELERATED</div><div class="type-meta">Micro Label -- 10px / 700 / uppercase / NVIDIA-EMEA</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row" style="margin-bottom: 24px;">
+    <div class="button-item"><a class="btn-primary" href="#" style="color:#000; border:2px solid var(--nvidia-green);">Explore Solutions</a><div class="button-label">Primary (Light BG)</div></div>
+    <div class="button-item"><span style="display:inline-block; background:transparent; color:#fff; padding:11px 20px; border-radius:2px; border:2px solid var(--nvidia-green); font-size:16px; font-weight:700; background:#000;">Explore GPUs</span><div class="button-label">Primary (Dark BG)</div></div>
+    <div class="button-item"><a class="btn-secondary" href="#" style="color:#000; border:1px solid var(--gray-border);">Documentation</a><div class="button-label">Secondary</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--btn-hover); color:#fff; padding:11px 20px; border-radius:2px; font-size:16px; font-weight:700;">Hover State</span><div class="button-label">Hover</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--btn-active); color:#fff; padding:11px 20px; border-radius:2px; font-size:16px; font-weight:700; border:1px solid #003eff;">Active State</span><div class="button-label">Active</div></div>
+  </div>
+  <div class="button-row">
+    <div class="button-item"><span style="display:inline-block; font-size:14.4px; font-weight:700; letter-spacing:0.144px; color:var(--nvidia-green); text-decoration:underline; text-underline-offset:3px;">Learn More ></span><div class="button-label">Compact Link</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--nvidia-green); color:var(--black); padding:4px 10px; border-radius:2px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">NEW</span><div class="button-label">Micro Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--purple-800); color:#fff; padding:4px 10px; border-radius:2px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">AI</span><div class="button-label">Category Badge</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:var(--nvidia-green); color:var(--black);">GPU</div>
+      <h3>GeForce RTX Series</h3>
+      <p>The ultimate in PC gaming performance. Ray tracing, DLSS, and AI-powered graphics for immersive experiences.</p>
+    </div>
+    <div class="card" style="border-top-color: var(--purple-800);">
+      <div class="card-badge" style="background:var(--purple-800); color:#fff;">AI</div>
+      <h3>NVIDIA AI Enterprise</h3>
+      <p>End-to-end AI software platform that accelerates data science pipelines and streamlines development.</p>
+    </div>
+    <div class="card" style="border-top-color: var(--orange-400);">
+      <div class="card-badge" style="background:var(--orange-400); color:#fff;">DATA CENTER</div>
+      <h3>DGX Systems</h3>
+      <p>Purpose-built AI infrastructure integrating hardware and software for the most demanding workloads.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Project Name</label><input class="form-input" type="text" placeholder="my-gpu-project"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">CUDA Version</label><input class="form-input form-input--focus" type="text" value="CUDA 12.4"><div class="form-state-label">Focus (green border)</div></div>
+  <div class="form-group"><label class="form-label">GPU Count</label><input class="form-input form-input--error" type="text" value="invalid"><div class="form-state-label">Error (red border)</div></div>
+  <div class="form-group"><label class="form-label">Configuration</label><textarea class="form-textarea" placeholder="Enter GPU configuration..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:1px"></div><div class="radius-label">1px</div><div class="radius-context">Inline spans</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px</div><div class="radius-context">Buttons, cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50%</div><div class="radius-context">Avatars, icons</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid #e5e5e5;"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No shadow</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.3) 0px 0px 5px 0px;"><div class="elevation-label">Level 1: Card</div><div class="elevation-desc">rgba(0,0,0,0.3) 0 0 5px</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--gray-border);"><div class="elevation-label">Level 1b: Border</div><div class="elevation-desc">1px solid #5e5e5e</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--nvidia-green);"><div class="elevation-label">Level 2: Accent</div><div class="elevation-desc">2px solid #76b900</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.4) 0px 0px 12px 0px;"><div class="elevation-label">Level 3: Elevated</div><div class="elevation-desc">Hover intensified</div></div>
+    <div class="elevation-card" style="outline: 2px solid var(--black); outline-offset: 2px;"><div class="elevation-label">Focus</div><div class="elevation-desc">2px solid #000 outline</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://nvidia.com/">nvidia.com</a> DESIGN.md -- awesome-design-md
+</footer>
+
+</body>
+</html>
