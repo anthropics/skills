@@ -66,7 +66,12 @@ Based on the user interview, fill in these components:
 - **name**: Skill identifier
 - **description**: When to trigger, what it does. This is the primary triggering mechanism - include both what the skill does AND specific contexts for when to use it. All "when to use" info goes here, not in the body. Note: currently Claude has a tendency to "undertrigger" skills -- to not use them when they'd be useful. To combat this, please make the skill descriptions a little bit "pushy". So for instance, instead of "How to build a simple fast dashboard to display internal Anthropic data.", you might write "How to build a simple fast dashboard to display internal Anthropic data. Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics, or wants to display any kind of company data, even if they don't explicitly ask for a 'dashboard.'"
 - **compatibility**: Required tools, dependencies (optional, rarely needed)
+- **license**: License name or reference to a bundled LICENSE file (optional)
+- **metadata**: Arbitrary key-value mapping for author, version, etc. (optional)
+- **allowed-tools**: Space-delimited list of pre-approved tools the skill may use (optional, experimental). Example: `Bash(git:*) Bash(jq:*) Read`. Use this when a skill should only have access to specific tools — for instance, a read-only analysis skill that shouldn't modify files.
 - **the rest of the skill :)**
+
+The full list of allowed frontmatter fields per the [Agent Skills spec](https://agentskills.io/specification) is: `name`, `description`, `license`, `compatibility`, `metadata`, and `allowed-tools`. Only `name` and `description` are required.
 
 ### Skill Writing Guide
 
