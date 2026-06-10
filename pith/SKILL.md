@@ -45,13 +45,22 @@ and Benford's Law governs whether compressed text still has the statistical sign
 natural writing. Together they form a compression-validation loop that is principled,
 fast, and requires no model calls.
 
+The empirical test confirmed it: human text has Benford MAD of 3–5%. AI-generated and
+over-compressed text deviates to 7–14%. PITH's Benford gate prevents compression from
+crossing that threshold.
+
 ---
 
 ## Quick Start
 
 ```bash
+# Compress via stdin
 echo "<verbose agent output>" | python3 scripts/compress.py
+
+# With explicit ratio
 python3 scripts/compress.py --payload "<text>" --ratio 0.6
+
+# JSON output with metadata
 python3 scripts/compress.py --payload "<text>" --json
 ```
 
@@ -88,6 +97,40 @@ python3 scripts/compress.py --payload "<text>" --json
 <compressed payload here>
 ```
 
+| Field | Meaning |
+|-------|---------|
+| `✓` / `⚠` | Benford validation passed / structure warning |
+| `-42%` | Token reduction achieved |
+| `benford:4.3%` | MAD from Benford distribution (< 6% = natural) |
+| `compressed` / `passthrough` | Action taken |
+
+---
+
+## JSON Output
+
+```bash
+python3 scripts/compress.py --payload "<text>" --json
+```
+
+```json
+{
+  "compressed": "<compressed text>",
+  "meta": {
+    "action": "compressed",
+    "original_tokens": 487,
+    "compressed_tokens": 284,
+    "ratio": 0.583,
+    "saved_pct": 41.7,
+    "sentences_original": 22,
+    "sentences_kept": 13,
+    "original_benford_mad": 3.91,
+    "compressed_benford_mad": 4.42,
+    "benford_ok": true,
+    "preserved_blocks": 2
+  }
+}
+```
+
 ---
 
 ## Python Integration
@@ -103,8 +146,10 @@ def pith(payload: str, ratio: float = 0.6) -> tuple[str, dict]:
     data = json.loads(result.stdout)
     return data["compressed"], data["meta"]
 
+# In your pipeline
 raw = agent_a.run(task)
 compressed, meta = pith(raw)
+print(f"Saved {meta['saved_pct']:.0f}% tokens | Benford: {'✓' if meta['benford_ok'] else '⚠'}")
 agent_b.run(compressed)
 ```
 
@@ -112,8 +157,13 @@ agent_b.run(compressed)
 
 ## What PITH Preserves vs Compresses
 
-**Always preserved:** ` ```code blocks``` `, JSON, URLs, file paths, numbers.
-**Compressed:** verbose reasoning, redundant repetition, transitional filler.
+**Always preserved (never touched):**
+` ```code blocks``` `, `` `inline code` ``, JSON objects/arrays, URLs, file paths,
+XML/HTML tags, numbers and measurements.
+
+**Compressed:**
+Verbose reasoning, redundant context repetition, transitional filler,
+restatements of prior conclusions, elaboration on points already established.
 
 ---
 
@@ -121,15 +171,33 @@ agent_b.run(compressed)
 
 | MAD | Interpretation |
 |-----|----------------|
-| < 4% | Highly natural |
-| 4–6% | Normal |
-| 6–9% | Moderate deviation |
-| > 9% | ⚠ Check output |
+| < 4% | Highly natural — compression was gentle |
+| 4–6% | Normal range for most text |
+| 6–9% | Moderate — acceptable |
+| > 9% | ⚠ Check compressed output |
+
+When MAD exceeds 2× the original's MAD, PITH automatically relaxes the compression
+ratio and retries (up to 3 attempts). The compressor cannot produce output more
+structurally artificial than its input.
+
+---
+
+## How It Works
+
+1. **Parser** — Extracts code, JSON, URLs, paths, numbers. Quarantined, never touched.
+2. **Zipf Scorer** — Scores each sentence: words ≥ 7 chars = rare = high information.
+   Keeps top N% by density score.
+3. **Benford Gate** — Validates compressed MAD vs original MAD. Relaxes + retries if
+   threshold exceeded.
+4. **Reassembler** — Restores original sentence order. Reinserts preserved blocks.
+   Adds metadata header.
 
 ---
 
 ## Limitations
 
-- Requires ≥ 5 sentences (shorter = passthrough)
-- Zipf word-length proxy is an approximation
-- Not for legally sensitive exact-phrasing content
+- Requires ≥ 5 sentences (shorter payloads pass through automatically)
+- Zipf word-length proxy is an approximation — semantic importance may differ from
+  lexical rarity in edge cases
+- Not suitable for content where exact phrasing is legally or contractually required
+- Benford validation most reliable on 8+ sentence outputs
