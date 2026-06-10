@@ -1,0 +1,101 @@
+======================================================================
+BRIEF CONTENT - REVIEW DRAFT
+======================================================================
+Generated: 2025-12-07 15:41:49
+
+
+==================================================
+STATEMENT OF THE CASE
+==================================================
+
+1. Appellant's filings were ignored or rejected approximately 150 times (ER-160.)[fn:1][fn:2]
+
+2. Police reports show officers made selective statements violating department policy (ER-45.)[fn:3][fn:4]
+
+3. Officers Gunnarson and Blyth arrested Appellant without a warrant (ER-12.)[fn:5][fn:6]
+
+4. Appellant's discovery requests were denied 14 times while incarcerated (ER-130.)[fn:7][fn:8]
+
+5. Appellant was re-arrested by John Doe Officers 1 and 2 (ER-78.)[fn:9][fn:10]
+
+6. DA Rebecca Portlock and court-appointed advisor Rubin Medina colluded to delay trial (ER-89.)[fn:11][fn:12]
+
+7. At 5:10 PM during dinner lockdown, a jail guard deleted 62 of Appellant's legal files (ER-102.)[fn:13][fn:14]
+
+8. Court ordered Appellant's release, but jail continued detention for seven additional days (ER-115.)[fn:15][fn:16]
+
+9. State case was dismissed, marking the state's fault (ER-120.)[fn:17][fn:18]
+
+
+--- Footnotes ---
+[1] Documents were returned without explanation, rejected from PACER, and lost by the Oregon Court of Appeals.
+[2] See also At 5:10 PM during dinner lockdown, a jail guard de... (ER-102) See also Appellant's discovery requests were denied 14 time... (ER-130)
+[3] West Linn Police Department changed its policy immediately after notice of this suit, demonstrating awareness of prior deficiencies.
+[4] See also Officers Gunnarson and Blyth arrested Appellant wi... (ER-12) See also West Linn Police Department changed policy immedia... (ER-150)
+[5] The arrest occurred despite Appellant having committed no crime, as later confirmed when all charges were dismissed. See F010.
+[6] See also Appellant was re-arrested by John Doe Officers 1 a... (ER-78) See also State case was dismissed, marking the state's faul... (ER-120)
+[7] The systematic denial of discovery prevented Appellant from gathering evidence to support his defense.
+[8] See also At 5:10 PM during dinner lockdown, a jail guard de... (ER-102) See also Court ordered Appellant's release, but jail contin... (ER-115)
+[9] This second arrest for the same conduct raises double jeopardy concerns.
+[10] See also Officers Gunnarson and Blyth arrested Appellant wi... (ER-12)
+[11] The state's own witness later called DA Portlock 'a liar and full of half-truths' on the record.
+[12] See also Officers Gunnarson and Blyth arrested Appellant wi... (ER-12) See also Appellant was re-arrested by John Doe Officers 1 a... (ER-78)
+[13] These files contained critical evidence and legal arguments. The deletion occurred while Appellant was confined and unable to protect his property.
+[14] See also Court ordered Appellant's release, but jail contin... (ER-115) See also Appellant's discovery requests were denied 14 time... (ER-130)
+[15] During this unlawful detention, Appellant was denied access to legal resources, compounding the constitutional violations.
+[16] See also At 5:10 PM during dinner lockdown, a jail guard de... (ER-102)
+[17] The dismissal supports malicious prosecution claims under Thompson v. Clark.
+[18] See also Officers Gunnarson and Blyth arrested Appellant wi... (ER-12) See also Appellant was re-arrested by John Doe Officers 1 a... (ER-78)
+
+
+==================================================
+I. THE DISTRICT COURT ERRED IN DISMISSING APPELLANT'S ACCESS TO COURTS CLAIMS
+==================================================
+
+Officers Gunnarson and Blyth arrested Appellant without a warrant (ER-12.)[fn:19] This constitutes a Fourth Amendment violation - warrantless arrest.
+
+
+    A. The Destruction of 62 Legal Files Constituted Actual Injury
+    ----------------------------------------
+    At 5:10 PM during dinner lockdown, a jail guard deleted 62 of Appellant's legal files (ER-102.)[fn:20] This constitutes a Access to courts violation - destruction of legal materials.
+
+
+    B. Systematic Rejection of Filings Denied Meaningful Access
+    ----------------------------------------
+    Appellant's filings were ignored or rejected approximately 150 times (ER-160.)[fn:21] This constitutes a Systematic denial of access to courts.
+
+
+==================================================
+II. THE DISTRICT COURT ERRED IN FINDING NO DUE PROCESS VIOLATION
+==================================================
+
+Appellant was re-arrested by John Doe Officers 1 and 2 (ER-78.)[fn:22] This constitutes a Fifth Amendment - double jeopardy.
+
+DA Rebecca Portlock and court-appointed advisor Rubin Medina colluded to delay trial (ER-89.)[fn:23] This constitutes a Sixth Amendment - right to fair trial.
+
+State case was dismissed, marking the state's fault (ER-120.)[fn:24] This constitutes a Favorable termination for malicious prosecution.
+
+
+    A. Unlawful Detention Beyond Court-Ordered Release Violated Due Process
+    ----------------------------------------
+    Court ordered Appellant's release, but jail continued detention for seven additional days (ER-115.)[fn:25] This constitutes a Fourteenth Amendment - unlawful detention.
+
+
+    B. Denial of Discovery 14 Times Violated Procedural Due Process
+    ----------------------------------------
+    Appellant's discovery requests were denied 14 times while incarcerated (ER-130.)[fn:26] This constitutes a Procedural due process violation.
+
+
+==================================================
+III. THE DISTRICT COURT ERRED IN DISMISSING MONELL CLAIMS
+==================================================
+
+Police reports show officers made selective statements violating department policy (ER-45.)[fn:27] This constitutes a Monell - pattern of policy violations.
+
+
+    A. Appellant Sufficiently Alleged Official Policy or Custom
+    ----------------------------------------
+
+    B. The Pattern of Conduct Shows Deliberate Indifference
+    ----------------------------------------
+    West Linn Police Department changed policy immediately following notice of suit (ER-150.)[fn:28] This constitutes a Evidence of unconstitutional policy/custom.

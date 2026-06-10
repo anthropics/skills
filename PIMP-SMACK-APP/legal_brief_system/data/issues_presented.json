@@ -1,0 +1,25 @@
+{
+    "issues": [
+        {
+            "number": 1,
+            "heading": "Access to Courts",
+            "issue_statement": "Whether the district court erred in dismissing Appellant's claims where systematic denial of access to legal resources, destruction of 62 legal files, and rejection of filings without explanation violated the constitutional right of access to courts under the First and Fourteenth Amendments.",
+            "standard_of_review": "de novo",
+            "standard_citation": "Pierce v. Multnomah County, 76 F.3d 1032, 1037 (9th Cir. 1996)"
+        },
+        {
+            "number": 2,
+            "heading": "Due Process Violations",
+            "issue_statement": "Whether the district court erred in finding no due process violation where Appellant was unlawfully detained seven days beyond the court-ordered release date, denied discovery 14 times, and had critical evidence destroyed by jail officials.",
+            "standard_of_review": "de novo",
+            "standard_citation": "Mathews v. Eldridge, 424 U.S. 319, 333 (1976)"
+        },
+        {
+            "number": 3,
+            "heading": "Municipal Liability",
+            "issue_statement": "Whether the district court erred in dismissing Monell claims against Clackamas County where Appellant sufficiently alleged a pattern and practice of constitutional violations constituting official policy.",
+            "standard_of_review": "de novo",
+            "standard_citation": "Monell v. Dep't of Soc. Servs., 436 U.S. 658 (1978)"
+        }
+    ]
+}

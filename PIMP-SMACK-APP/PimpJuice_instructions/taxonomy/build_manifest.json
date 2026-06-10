@@ -1,0 +1,433 @@
+{
+  "_purpose": "BUILD MANIFEST - Framework for formatter model. Defines BUILD ORDER and HEADING ORDER for each filing type. Model parses HEADING_1 markers, formats body text between them.",
+  "_font_rules": {
+    "district_court": "12pt",
+    "court_of_appeals": "14pt"
+  },
+  "_naming": {
+    "file_name": "uses_underscores",
+    "display_name": "Uses Spaces"
+  },
+  
+  "FILING_TYPES": {
+    
+    "MOTION": {
+      "display_name": "Motion",
+      "build_order": [
+        {"slot": "Caption", "alt": "Coverpage", "note": "Caption for district, Coverpage for appeals"},
+        {"slot": "Header"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "INTRODUCTION", "display": "INTRODUCTION"},
+        {"h1": "FACTUAL_BACKGROUND", "display": "FACTUAL BACKGROUND"},
+        {"h1": "LEGAL_STANDARD", "display": "LEGAL STANDARD"},
+        {"h1": "ARGUMENT", "display": "ARGUMENT"},
+        {"h1": "CONCLUSION", "display": "CONCLUSION"}
+      ],
+      "attachments": ["Declaration", "Proposed_Order", "Exhibits"]
+    },
+    
+    "BRIEF": {
+      "display_name": "Brief / Memorandum",
+      "build_order": [
+        {"slot": "Caption", "alt": "Coverpage"},
+        {"slot": "Header"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "INTRODUCTION", "display": "INTRODUCTION"},
+        {"h1": "FACTUAL_BACKGROUND", "display": "FACTUAL BACKGROUND"},
+        {"h1": "PROCEDURAL_BACKGROUND", "display": "PROCEDURAL BACKGROUND", "optional": true},
+        {"h1": "LEGAL_STANDARD", "display": "LEGAL STANDARD"},
+        {"h1": "ARGUMENT", "display": "ARGUMENT"},
+        {"h1": "CONCLUSION", "display": "CONCLUSION"}
+      ],
+      "attachments": ["Declaration", "Exhibits"]
+    },
+    
+    "APPELLATE_BRIEF": {
+      "display_name": "Appellate Brief",
+      "font": "14pt",
+      "build_order": [
+        {"slot": "Coverpage", "required": true},
+        {"slot": "TOC"},
+        {"slot": "TOA"},
+        {"slot": "Body"},
+        {"slot": "Cert_of_Compliance"},
+        {"slot": "Cert_of_Service"},
+        {"slot": "Addendum", "optional": true}
+      ],
+      "heading_order": [
+        {"h1": "JURISDICTIONAL_STATEMENT", "display": "JURISDICTIONAL STATEMENT"},
+        {"h1": "STATEMENT_OF_ISSUES", "display": "STATEMENT OF THE ISSUES"},
+        {"h1": "STATEMENT_OF_THE_CASE", "display": "STATEMENT OF THE CASE"},
+        {"h1": "STATEMENT_OF_FACTS", "display": "STATEMENT OF FACTS"},
+        {"h1": "SUMMARY_OF_ARGUMENT", "display": "SUMMARY OF ARGUMENT"},
+        {"h1": "STANDARD_OF_REVIEW", "display": "STANDARD OF REVIEW"},
+        {"h1": "ARGUMENT", "display": "ARGUMENT"},
+        {"h1": "CONCLUSION", "display": "CONCLUSION"},
+        {"h1": "RELATED_CASES", "display": "RELATED CASES STATEMENT", "optional": true}
+      ],
+      "attachments": ["ER", "SER"]
+    },
+    
+    "COMPLAINT": {
+      "display_name": "Complaint",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Header"},
+        {"slot": "Body"},
+        {"slot": "Jury_Demand", "optional": true},
+        {"slot": "Signature"}
+      ],
+      "heading_order": [
+        {"h1": "PARTIES", "display": "PARTIES"},
+        {"h1": "JURISDICTION_AND_VENUE", "display": "JURISDICTION AND VENUE"},
+        {"h1": "FACTUAL_ALLEGATIONS", "display": "FACTUAL ALLEGATIONS"},
+        {"h1": "CAUSES_OF_ACTION", "display": "CAUSES OF ACTION", "note": "Numbered: FIRST CAUSE OF ACTION, SECOND..."},
+        {"h1": "PRAYER_FOR_RELIEF", "display": "PRAYER FOR RELIEF"}
+      ],
+      "attachments": ["Exhibits", "Civil_Cover_Sheet"]
+    },
+    
+    "ANSWER": {
+      "display_name": "Answer",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Header"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "RESPONSES", "display": "RESPONSES TO COMPLAINT", "note": "Numbered to match complaint paragraphs"},
+        {"h1": "AFFIRMATIVE_DEFENSES", "display": "AFFIRMATIVE DEFENSES", "note": "Numbered: FIRST AFFIRMATIVE DEFENSE..."},
+        {"h1": "PRAYER_FOR_RELIEF", "display": "PRAYER FOR RELIEF"}
+      ],
+      "attachments": []
+    },
+    
+    "REPLY_PLEADING": {
+      "display_name": "Reply to Affirmative Defenses",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Header"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "RESPONSES", "display": "RESPONSES", "note": "Responds to each affirmative defense"},
+        {"h1": "PRAYER_FOR_RELIEF", "display": "PRAYER FOR RELIEF"}
+      ],
+      "attachments": []
+    },
+    
+    "DECLARATION": {
+      "display_name": "Declaration",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Signature"}
+      ],
+      "heading_order": [
+        {"h1": "DECLARANT_IDENTITY", "display": "I, [NAME], declare as follows:", "note": "Numbered paragraphs, no formal H1 headings"},
+        {"h1": "FACTS", "display": "[Numbered paragraphs]"},
+        {"h1": "ATTESTATION", "display": "I declare under penalty of perjury..."}
+      ],
+      "attachments": ["Exhibits"],
+      "note": "Body is numbered paragraphs, not formal headings"
+    },
+    
+    "NOTICE": {
+      "display_name": "Notice",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "NOTICE_BODY", "display": "NOTICE", "note": "Single section, states what is being noticed"}
+      ],
+      "attachments": []
+    },
+    
+    "ORDER": {
+      "display_name": "Order / Proposed Order",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Judge_Signature"}
+      ],
+      "heading_order": [
+        {"h1": "ORDER_BODY", "display": "ORDER", "note": "IT IS HEREBY ORDERED..."}
+      ],
+      "attachments": []
+    },
+    
+    "STIPULATION": {
+      "display_name": "Stipulation",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Signature_All_Parties"}
+      ],
+      "heading_order": [
+        {"h1": "STIPULATION_TERMS", "display": "STIPULATION", "note": "Numbered terms parties agree to"}
+      ],
+      "attachments": ["Proposed_Order"]
+    },
+    
+    "DISCOVERY": {
+      "display_name": "Discovery Document",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Signature"},
+        {"slot": "Cert_of_Service"}
+      ],
+      "heading_order": [
+        {"h1": "DEFINITIONS", "display": "DEFINITIONS"},
+        {"h1": "INSTRUCTIONS", "display": "INSTRUCTIONS"},
+        {"h1": "REQUESTS", "display": "REQUESTS", "note": "Numbered requests"}
+      ],
+      "attachments": []
+    },
+    
+    "JUDGMENT": {
+      "display_name": "Judgment",
+      "build_order": [
+        {"slot": "Caption"},
+        {"slot": "Body"},
+        {"slot": "Judge_Signature"}
+      ],
+      "heading_order": [
+        {"h1": "JUDGMENT_BODY", "display": "JUDGMENT"}
+      ],
+      "attachments": []
+    },
+    
+    "LETTER": {
+      "display_name": "Letter / Correspondence",
+      "build_order": [
+        {"slot": "Letterhead"},
+        {"slot": "Body"},
+        {"slot": "Signature"}
+      ],
+      "heading_order": [
+        {"h1": "LETTER_BODY", "display": "[No formal heading]", "note": "Standard letter format"}
+      ],
+      "attachments": []
+    },
+    
+    "EXHIBIT": {
+      "display_name": "Exhibit / Evidence",
+      "build_order": [
+        {"slot": "Exhibit_Cover"},
+        {"slot": "Exhibit_Index"},
+        {"slot": "Exhibits"}
+      ],
+      "heading_order": [
+        {"h1": "EXHIBIT_LIST", "display": "INDEX OF EXHIBITS"}
+      ],
+      "attachments": []
+    }
+  },
+  
+  "HEADING_1_DEFINITIONS": {
+    "_note": "Body text between HEADING_1 markers. Format: 12pt district, 14pt appeals.",
+    
+    "INTRODUCTION": {
+      "display": "INTRODUCTION",
+      "description": "Brief overview. Sets stage for document.",
+      "format": "centered_bold_caps"
+    },
+    "FACTUAL_BACKGROUND": {
+      "display": "FACTUAL BACKGROUND",
+      "description": "Facts relevant to this specific filing only.",
+      "format": "centered_bold_caps"
+    },
+    "PROCEDURAL_BACKGROUND": {
+      "display": "PROCEDURAL BACKGROUND",
+      "description": "Procedural history of the case.",
+      "format": "centered_bold_caps"
+    },
+    "STATEMENT_OF_FACTS": {
+      "display": "STATEMENT OF FACTS",
+      "description": "Factual allegations or facts with record citations.",
+      "format": "centered_bold_caps"
+    },
+    "LEGAL_STANDARD": {
+      "display": "LEGAL STANDARD",
+      "description": "Legal test that applies. Cite controlling authority.",
+      "format": "centered_bold_caps"
+    },
+    "ARGUMENT": {
+      "display": "ARGUMENT",
+      "description": "Legal argument. Law applied to facts. Subheadings A, B, C for points.",
+      "format": "centered_bold_caps"
+    },
+    "CONCLUSION": {
+      "display": "CONCLUSION",
+      "description": "Summary and specific relief requested.",
+      "format": "centered_bold_caps"
+    },
+    "PARTIES": {
+      "display": "PARTIES",
+      "description": "Identification of plaintiff(s) and defendant(s).",
+      "format": "centered_bold_caps"
+    },
+    "JURISDICTION_AND_VENUE": {
+      "display": "JURISDICTION AND VENUE",
+      "description": "Basis for subject matter jurisdiction and venue.",
+      "format": "centered_bold_caps"
+    },
+    "FACTUAL_ALLEGATIONS": {
+      "display": "FACTUAL ALLEGATIONS",
+      "description": "Numbered paragraphs stating facts.",
+      "format": "centered_bold_caps"
+    },
+    "CAUSES_OF_ACTION": {
+      "display": "FIRST CAUSE OF ACTION",
+      "description": "Each claim stated separately. Numbered.",
+      "format": "centered_bold_caps",
+      "repeating": true
+    },
+    "PRAYER_FOR_RELIEF": {
+      "display": "PRAYER FOR RELIEF",
+      "description": "Specific relief requested. Lettered list.",
+      "format": "centered_bold_caps"
+    },
+    "RESPONSES": {
+      "display": "RESPONSES TO COMPLAINT",
+      "description": "Admit, deny, or lack knowledge. Matches complaint paragraphs.",
+      "format": "centered_bold_caps"
+    },
+    "AFFIRMATIVE_DEFENSES": {
+      "display": "AFFIRMATIVE DEFENSES",
+      "description": "Defenses that defeat liability. Numbered.",
+      "format": "centered_bold_caps"
+    },
+    "JURISDICTIONAL_STATEMENT": {
+      "display": "JURISDICTIONAL STATEMENT",
+      "description": "Appellate jurisdiction basis. FRAP 28(a)(4).",
+      "format": "centered_bold_caps"
+    },
+    "STATEMENT_OF_ISSUES": {
+      "display": "STATEMENT OF THE ISSUES",
+      "description": "Issues on appeal. FRAP 28(a)(5).",
+      "format": "centered_bold_caps"
+    },
+    "STATEMENT_OF_THE_CASE": {
+      "display": "STATEMENT OF THE CASE",
+      "description": "Procedural history. FRAP 28(a)(6).",
+      "format": "centered_bold_caps"
+    },
+    "SUMMARY_OF_ARGUMENT": {
+      "display": "SUMMARY OF ARGUMENT",
+      "description": "Roadmap of argument points. FRAP 28(a)(7).",
+      "format": "centered_bold_caps"
+    },
+    "STANDARD_OF_REVIEW": {
+      "display": "STANDARD OF REVIEW",
+      "description": "De novo, abuse of discretion, clear error.",
+      "format": "centered_bold_caps"
+    },
+    "RELATED_CASES": {
+      "display": "RELATED CASES STATEMENT",
+      "description": "Related cases in this or other courts.",
+      "format": "centered_bold_caps"
+    },
+    "DEFINITIONS": {
+      "display": "DEFINITIONS",
+      "description": "Terms defined for discovery requests.",
+      "format": "centered_bold_caps"
+    },
+    "INSTRUCTIONS": {
+      "display": "INSTRUCTIONS",
+      "description": "How to respond to discovery.",
+      "format": "centered_bold_caps"
+    },
+    "REQUESTS": {
+      "display": "REQUESTS",
+      "description": "Numbered discovery requests.",
+      "format": "centered_bold_caps"
+    },
+    "STIPULATION_TERMS": {
+      "display": "STIPULATION",
+      "description": "Terms parties agree to. Numbered.",
+      "format": "centered_bold_caps"
+    },
+    "DECLARANT_IDENTITY": {
+      "display": "I, [NAME], declare as follows:",
+      "description": "Opening of declaration.",
+      "format": "standard"
+    },
+    "FACTS": {
+      "display": "[Numbered paragraphs]",
+      "description": "Declaration fact paragraphs.",
+      "format": "numbered_paragraphs"
+    },
+    "ATTESTATION": {
+      "display": "I declare under penalty of perjury under the laws of the United States that the foregoing is true and correct.",
+      "description": "28 USC 1746 attestation.",
+      "format": "standard"
+    },
+    "NOTICE_BODY": {
+      "display": "NOTICE",
+      "description": "Body of notice filing.",
+      "format": "standard"
+    },
+    "ORDER_BODY": {
+      "display": "ORDER",
+      "description": "IT IS HEREBY ORDERED...",
+      "format": "standard"
+    },
+    "JUDGMENT_BODY": {
+      "display": "JUDGMENT",
+      "description": "Final judgment language.",
+      "format": "standard"
+    },
+    "LETTER_BODY": {
+      "display": "[No heading]",
+      "description": "Standard letter body.",
+      "format": "standard"
+    },
+    "EXHIBIT_LIST": {
+      "display": "INDEX OF EXHIBITS",
+      "description": "Table of exhibits with descriptions.",
+      "format": "table"
+    }
+  },
+  
+  "CONSTRUCT_SLOTS": {
+    "_note": "Physical pieces. Names are EXACT template file names.",
+    
+    "Coverpage": {"display": "Cover Page", "file": "Coverpage"},
+    "Caption": {"display": "Caption", "file": "Caption"},
+    "Header": {"display": "Header", "file": "Header"},
+    "Footer": {"display": "Footer", "file": "Footer"},
+    "Body": {"display": "Body", "file": "Body"},
+    "Signature": {"display": "Signature Block", "file": "Signature"},
+    "Signature_All_Parties": {"display": "All Party Signatures", "file": "Signature_All_Parties"},
+    "Cert_of_Service": {"display": "Certificate of Service", "file": "Cert_of_Service"},
+    "Cert_of_Compliance": {"display": "Certificate of Compliance", "file": "Cert_of_Compliance"},
+    "TOC": {"display": "Table of Contents", "file": "TOC"},
+    "TOA": {"display": "Table of Authorities", "file": "TOA"},
+    "Jury_Demand": {"display": "Jury Demand", "file": "Jury_Demand"},
+    "Addendum": {"display": "Addendum", "file": "Addendum"},
+    "Judge_Signature": {"display": "Judge Signature Line", "file": "Judge_Signature"},
+    "Letterhead": {"display": "Letterhead", "file": "Letterhead"},
+    "Exhibit_Cover": {"display": "Exhibit Cover", "file": "Exhibit_Cover"},
+    "Exhibit_Index": {"display": "Exhibit Index", "file": "Exhibit_Index"},
+    "Exhibits": {"display": "Exhibits", "file": "Exhibits"},
+    "Proposed_Order": {"display": "Proposed Order", "file": "Proposed_Order"},
+    "EVI_CARD": {"display": "Evidence Card", "file": "EVI_CARD"}
+  }
+}

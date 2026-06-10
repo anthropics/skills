@@ -1,0 +1,187 @@
+{
+  "_file": "HEADING_1_DEFINITIONS",
+  "version": "2.0.0",
+  
+  "_purpose": "Section markers WITHIN the Body building block. NO NUMBERING - jurisdiction adds that. Custom style names avoid Word conflicts.",
+
+  "_hierarchy": {
+    "level_1": "FILING_TYPES → filing_types.json",
+    "level_2": "BUILDING_BLOCKS → build_manifest.json",
+    "level_3": "HEADING_1 → this file (sections within Body)"
+  },
+
+  "_style_naming": {
+    "note": "Custom style names - NOT Word built-ins. Won't conflict with user's existing styles.",
+    "LEGAL_H1": "Major section heading (INTRODUCTION, ARGUMENT, etc.)",
+    "LEGAL_H2": "Subsection (I. The Court Erred...)",
+    "LEGAL_H3": "Sub-subsection (A. First point...)",
+    "LEGAL_BODY": "Body text between headings"
+  },
+
+  "_safe_fonts": {
+    "federal_appellate": "Century Schoolbook, 14pt",
+    "federal_district": "Times New Roman, 12pt",
+    "california_state": "Times New Roman, 12pt",
+    "universal_fallback": "Times New Roman, 12pt",
+    "monospace_option": "Courier New, 12pt"
+  },
+
+  "_xml_tags": {
+    "note": "Use these tags in templates. Style applied on load, no numbering baked in.",
+    "h1_tag": "<LEGAL_H1>INTRODUCTION</LEGAL_H1>",
+    "h2_tag": "<LEGAL_H2>The District Court Erred</LEGAL_H2>",
+    "h3_tag": "<LEGAL_H3>Standard of Review</LEGAL_H3>",
+    "body_tag": "<LEGAL_BODY>Text here...</LEGAL_BODY>"
+  },
+  
+  "HEADINGS": {
+
+    "_A_MOTIONS_BRIEFS": "Motion/Brief headings - chronological order",
+
+    "INTRODUCTION": {
+      "display": "INTRODUCTION",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF", "APPELLATE_BRIEF"],
+      "legal_reason": "Required in many jurisdictions as the ONLY place to preview legal authority without full argument. Ninth Circuit Rule 28-1 requires issues and relief stated here. Arguments not previewed may be waived. Sets jurisdictional hooks for the court."
+    },
+
+    "FACTUAL_BACKGROUND": {
+      "display": "FACTUAL BACKGROUND",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF"],
+      "legal_reason": "Facts relevant to THIS filing only. Must cite record (ER pages in appeals). Disputed facts must be noted. Court relies on this for context. Without this, court may misunderstand argument context."
+    },
+
+    "PROCEDURAL_BACKGROUND": {
+      "display": "PROCEDURAL BACKGROUND",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF"],
+      "legal_reason": "Procedural history affecting legal standard or timing. Required for procedural motions. Establishes case posture. Missing this can confuse timeliness or standard of review."
+    },
+
+    "LEGAL_STANDARD": {
+      "display": "LEGAL STANDARD",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF"],
+      "legal_reason": "The test the court applies. MUST cite controlling circuit authority. Wrong standard = fatal. MTD uses Iqbal/Twombly, MSJ uses Celotex/Anderson. Court applies YOUR stated standard."
+    },
+
+    "ARGUMENT": {
+      "display": "ARGUMENT",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF", "APPELLATE_BRIEF"],
+      "legal_reason": "Apply law to facts. WIN OR LOSE section. FRAP 28(a)(8). Must address EVERY element of legal standard. Points not argued = waived. Subheadings (LEGAL_H2) for each point."
+    },
+
+    "CONCLUSION": {
+      "display": "CONCLUSION",
+      "style": "LEGAL_H1",
+      "used_in": ["MOTION", "BRIEF", "APPELLATE_BRIEF"],
+      "legal_reason": "FRCP 7(b)(1)(C) - must state EXACT relief requested. 'Grant this motion' insufficient - specify order language. Some courts require proposed order attached. Relief not requested = not awarded."
+    },
+
+    "_B_APPELLATE": "Appellate brief headings - FRAP 28 order",
+
+    "JURISDICTIONAL_STATEMENT": {
+      "display": "JURISDICTIONAL STATEMENT",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(4) MANDATORY. Must cite 28 USC 1291/1292. Must state finality, timeliness. Jurisdictional defect = dismissal. First thing court checks."
+    },
+
+    "STATEMENT_OF_ISSUES": {
+      "display": "STATEMENT OF THE ISSUES",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(5). Issues not stated = waived. Defines scope of review. Frame favorably but accurately. Each issue numbered. Court won't consider issues not presented."
+    },
+
+    "STATEMENT_OF_THE_CASE": {
+      "display": "STATEMENT OF THE CASE",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(6). Procedural history ONLY - how case got here. NOT facts. Nature of case, course of proceedings, disposition below. Establishes what's being appealed."
+    },
+
+    "STATEMENT_OF_FACTS": {
+      "display": "STATEMENT OF FACTS",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(6). Every fact must cite record (ER-xxx). Court won't consider facts outside record. Your chance to tell the story favorably while staying accurate."
+    },
+
+    "SUMMARY_OF_ARGUMENT": {
+      "display": "SUMMARY OF ARGUMENT",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(7). Roadmap, 1-2 pages MAX. Judges read this first. Hit main points without detail. Not a repeat of full argument. Orients court to what's coming."
+    },
+
+    "STANDARD_OF_REVIEW": {
+      "display": "STANDARD OF REVIEW",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "FRAP 28(a)(9)(B). De novo for law, abuse of discretion for discretionary rulings, clear error for facts. CRITICAL - wrong standard = lose. State for each issue."
+    },
+
+    "RELATED_CASES": {
+      "display": "RELATED CASES STATEMENT",
+      "style": "LEGAL_H1",
+      "used_in": ["APPELLATE_BRIEF"],
+      "legal_reason": "Ninth Cir. Rule 28-2.6. Disclose related cases in any court. Failure to disclose = sanctions. Prevents inconsistent rulings, alerts panel to related matters."
+    },
+
+    "_C_COMPLAINT": "Complaint headings - FRCP order",
+
+    "PARTIES": {
+      "display": "PARTIES",
+      "style": "LEGAL_H1",
+      "used_in": ["COMPLAINT"],
+      "legal_reason": "FRCP 10(a). Identify every plaintiff/defendant with capacity (individual, corporate, official). Establishes who is bound by judgment. Missing party = no relief against them."
+    },
+
+    "JURISDICTION_AND_VENUE": {
+      "display": "JURISDICTION AND VENUE",
+      "style": "LEGAL_H1",
+      "used_in": ["COMPLAINT"],
+      "legal_reason": "FRCP 8(a)(1) MANDATORY. Must plead 28 USC 1331 (federal question) or 1332 (diversity) and 1391 (venue). Jurisdictional defect = dismissal. Can't be waived by defendant."
+    },
+
+    "FACTUAL_ALLEGATIONS": {
+      "display": "FACTUAL ALLEGATIONS",
+      "style": "LEGAL_H1",
+      "used_in": ["COMPLAINT"],
+      "legal_reason": "FRCP 8(a)(2). Numbered paragraphs. Must state PLAUSIBLE claim (Iqbal/Twombly). Not conclusions. Defendant must respond to each. Unanswered = admitted."
+    },
+
+    "CAUSES_OF_ACTION": {
+      "display": "FIRST CAUSE OF ACTION",
+      "style": "LEGAL_H1",
+      "used_in": ["COMPLAINT"],
+      "legal_reason": "FRCP 8(a)(2). Each claim separate. State elements, incorporate facts, show how facts satisfy elements. Missing element = dismissal under 12(b)(6). FIRST, SECOND, etc."
+    },
+
+    "PRAYER_FOR_RELIEF": {
+      "display": "PRAYER FOR RELIEF",
+      "style": "LEGAL_H1",
+      "used_in": ["COMPLAINT", "ANSWER"],
+      "legal_reason": "FRCP 8(a)(3). WHEREFORE clause. List EVERY relief type (damages, injunction, declaratory, fees, costs). Relief not requested = not awarded. Be specific on amounts."
+    },
+
+    "_D_ANSWER": "Answer headings",
+
+    "RESPONSES": {
+      "display": "RESPONSES TO COMPLAINT",
+      "style": "LEGAL_H1",
+      "used_in": ["ANSWER"],
+      "legal_reason": "FRCP 8(b). Respond to EACH numbered paragraph. Admit, Deny, or Lack Knowledge. Failure to deny = admission. Must match complaint paragraph numbers exactly."
+    },
+
+    "AFFIRMATIVE_DEFENSES": {
+      "display": "AFFIRMATIVE DEFENSES",
+      "style": "LEGAL_H1",
+      "used_in": ["ANSWER"],
+      "legal_reason": "FRCP 8(c). Defenses that defeat claim even if allegations true. MUST be pled or WAIVED (SOL, res judicata, qualified immunity, etc.). FIRST AFFIRMATIVE DEFENSE, SECOND..."
+    }
+  }
+}

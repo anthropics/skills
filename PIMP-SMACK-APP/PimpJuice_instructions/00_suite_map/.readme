@@ -1,0 +1,119 @@
+# PIMP FORMATTING SKILLS — SUITE MAP
+
+> **VERSION 2.0** — Complete rewrite with MODEL_INSTRUCTIONS.md
+
+---
+
+## READ ORDER
+
+1. **`PimpJuice_instructions/MODEL_INSTRUCTIONS.md`** — ★ COMPLETE GUIDE ★
+2. `PimpJuice_instructions/taxonomy/build_manifest.json` — 14 filing types + build_order + heading_order
+3. `PimpJuice_instructions/taxonomy/heading1_definitions.json` — Section definitions + LEGAL REASONS
+4. `PimpJuice_instructions/jurisdictions/courts.json` — Formatting per court
+
+---
+
+## WHAT THIS IS
+
+A **FORMATTER** that uses taxonomy files to format ANY legal document.
+
+The model reads the taxonomy files and generates correctly structured documents with:
+- Correct sections for the filing type
+- Correct formatting for the jurisdiction
+- Correct XML tags for styling
+
+---
+
+## THE 5 TAXONOMY FILES
+
+| File | What It Contains |
+|------|------------------|
+| `build_manifest.json` | ★ MAIN FILE: 14 types with `build_order` and `heading_order` (detailed) |
+| `filing_types.json` | Simplified version (backup) |
+| `heading1_definitions.json` | Section names, styles, and LEGAL REASONS |
+| `courts.json` | Font, size, margins, word limits per court |
+| `local_rules_override.json` | Cascading override system |
+
+---
+
+## HOW THE MODEL USES THEM
+
+```
+USER: "Format my Ninth Circuit appellate brief"
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 1. Look up APPELLATE_BRIEF in    │
+    │    filing_types.json             │
+    └───────────────────────────────────┘
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 2. Get construct_order:          │
+    │    [Coverpage, TOC, TOA, Body,   │
+    │     Cert_of_Compliance, ...]     │
+    └───────────────────────────────────┘
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 3. Get heading1_groups:          │
+    │    [JURISDICTIONAL_STATEMENT,    │
+    │     ISSUES, CASE_STATEMENT, ...] │
+    └───────────────────────────────────┘
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 4. Look up each heading in       │
+    │    heading1_definitions.json     │
+    │    → Get display name, style     │
+    └───────────────────────────────────┘
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 5. Look up NINTH_CIRCUIT in      │
+    │    courts.json                   │
+    │    → Font: Century Schoolbook    │
+    │    → Size: 14pt                  │
+    │    → Word limit: 14,000          │
+    └───────────────────────────────────┘
+                    │
+                    ▼
+    ┌───────────────────────────────────┐
+    │ 6. Generate XML document with    │
+    │    correct structure & styling   │
+    └───────────────────────────────────┘
+```
+
+---
+
+## FILE STRUCTURE
+
+```
+Pimp_Formatting_skills/
+├── SKILL.md                          # Entry point
+├── master_config.json                # Template for user data
+├── .master_instructions_plan.md      # Original requirements
+│
+└── PimpJuice_instructions/
+    ├── MODEL_INSTRUCTIONS.md         # ★ COMPLETE USAGE GUIDE ★
+    ├── 00_suite_map/
+    │   └── .readme                   # THIS FILE
+    ├── taxonomy/
+    │   ├── build_manifest.json       # ★ MAIN: 14 types + build_order + heading_order
+    │   ├── filing_types.json         # Simplified version (backup)
+    │   └── heading1_definitions.json # H1 definitions + LEGAL REASONS
+    └── jurisdictions/
+        ├── courts.json               # Formatting per court
+        └── local_rules_override.json # Override cascade
+```
+
+---
+
+## VERSION
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0.0 | 2024-12-20 | Initial |
+| 2.0.0 | 2024-12-21 | Rewrite with MODEL_INSTRUCTIONS.md |
+
+**END OF SUITE MAP**
