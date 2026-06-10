@@ -34,6 +34,10 @@ from scripts.utils import parse_skill_md
 # runs where Claude explores (TodoWrite/Glob/Bash) before invoking the skill.
 MAX_CLAUDE_TURNS = 8
 
+# Leftover artifacts must be at least this old before the sweep removes
+# them, so it never deletes the live artifact of a concurrent eval run.
+STALE_ARTIFACT_MIN_AGE_SECONDS = 3600
+
 _EVAL_SUFFIX_RE = re.compile(r"-eval-[0-9a-f]{8}$")
 
 
@@ -159,7 +163,12 @@ def run_single_query(
             except Empty:
                 continue
             if raw is None:  # EOF: process finished and output is drained
-                process.wait()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    # stdout closed but the process lingers; the finally
+                    # block kills it
+                    return False
                 if process.returncode != 0:
                     print(
                         f"Warning: claude -p exited with code {process.returncode} "
@@ -227,9 +236,14 @@ def _cleanup_stale_artifacts(skills_dir: Path, skill_name: str) -> None:
     """Remove eval skills left behind by a previous crashed/killed run."""
     if not skills_dir.is_dir():
         return
+    cutoff = time.time() - STALE_ARTIFACT_MIN_AGE_SECONDS
     for entry in skills_dir.glob(f"{skill_name}-eval-*"):
         if entry.is_dir() and _EVAL_SUFFIX_RE.search(entry.name):
-            shutil.rmtree(entry, ignore_errors=True)
+            try:
+                if entry.stat().st_mtime < cutoff:
+                    shutil.rmtree(entry, ignore_errors=True)
+            except OSError:
+                pass
 
 
 def _warn_if_shadowed(skill_name: str, project_root: Path) -> None:
