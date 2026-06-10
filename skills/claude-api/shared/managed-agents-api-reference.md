@@ -8,7 +8,7 @@ All endpoints require `x-api-key` and `anthropic-version: 2023-06-01` headers. M
 anthropic-beta: managed-agents-2026-04-01
 ```
 
-The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults,memory_stores}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
+The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults,memory_stores,deployments,deployment_runs}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
 
 ---
 
@@ -26,6 +26,8 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | Session Events | `sessions.events.list` / `send` / `stream` | `Sessions.Events.List` / `Send` / `StreamEvents` |
 | Session Threads | `sessions.threads.list` / `retrieve` / `archive`; `sessions.threads.events.list` / `stream` | `Sessions.Threads.List` / `Get` / `Archive`; `Sessions.Threads.Events.List` / `StreamEvents` |
 | Session Resources | `sessions.resources.add` / `retrieve` / `update` / `list` / `delete` | `Sessions.Resources.Add` / `Get` / `Update` / `List` / `Delete` |
+| Deployments | `deployments.create` / `pause` / `unpause` / `archive` / `run` | Not yet documented — WebFetch the SDK repo (`shared/live-sources.md`) |
+| Deployment Runs | `deployment_runs.list` (TS: `deploymentRuns.list`) | Not yet documented — WebFetch the SDK repo (`shared/live-sources.md`) |
 | Vaults | `vaults.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` / `mcp_oauth_validate` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` / `McpOauthValidate` |
 | Memory Stores | `memory_stores.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `MemoryStores.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
@@ -113,9 +115,29 @@ Per-subagent event streams in multiagent sessions. See `shared/managed-agents-mu
 
 For `type: "self_hosted"`, `config` is the bare `{"type": "self_hosted"}` — `networking` and `packages` do not apply.
 
+## Deployments
+
+Scheduled deployments (`depl_` IDs) run an agent on a recurring cron schedule — each firing creates a session. See `shared/managed-agents-scheduled-deployments.md` for the conceptual guide (cron/DST semantics, failure behavior, lifecycle).
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `POST`   | `/v1/deployments`                                | CreateDeployment | Create a scheduled deployment            |
+| `POST`   | `/v1/deployments/{deployment_id}/pause`          | PauseDeployment  | Suppress scheduled triggers (reversible; manual runs still allowed) |
+| `POST`   | `/v1/deployments/{deployment_id}/unpause`        | UnpauseDeployment | Resume from the next occurrence (no backfill) |
+| `POST`   | `/v1/deployments/{deployment_id}/archive`        | ArchiveDeployment | **Terminal** — schedule stops, deployment becomes immutable |
+| `POST`   | `/v1/deployments/{deployment_id}/run`            | RunDeployment    | Trigger a manual run immediately (`trigger_context.type: "manual"`); works while paused |
+
+## Deployment Runs
+
+Each trigger attempt (scheduled or manual) writes a `deployment_run` record (`drun_` IDs) carrying either the created `session_id` or an `error.type` (`environment_archived`, `agent_archived`, `vault_not_found`, `session_rate_limited`, `service_unavailable`).
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `GET`    | `/v1/deployment_runs?deployment_id=...`          | ListDeploymentRuns | List runs for a deployment (paginated; filter failures with `has_error=true`) |
+
 ## Vaults
 
-Vaults store MCP credentials that Anthropic manages on your behalf — OAuth credentials with auto-refresh, or static bearer tokens. Attach to sessions via `vault_ids`. See `managed-agents-tools.md` §Vaults for the conceptual guide and credential shapes.
+Vaults store credentials that Anthropic manages on your behalf — MCP credentials (OAuth with auto-refresh, or static bearer tokens) and `environment_variable` credentials substituted into outbound requests at egress. Attach to sessions via `vault_ids`. See `managed-agents-tools.md` §Vaults for the conceptual guide and credential shapes.
 
 | Method   | Path                                             | Operation        | Description                              |
 | -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
@@ -258,7 +280,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
       "checkout": { "type": "branch", "name": "main" }
     }
   ],
-  "vault_ids": ["vlt_abc123 (optional — MCP credentials with auto-refresh)"],
+  "vault_ids": ["vlt_abc123 (optional — vault credentials: MCP auth + environment variables)"],
   "metadata": {
     "key": "value"
   }
@@ -286,6 +308,26 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 }
 ```
 
+### CreateDeployment Request Body
+
+```json
+{
+  "name": "Weekly compliance scan",
+  "agent": "agent_abc123 (required — same shapes as CreateSession)",
+  "environment_id": "env_abc123 (required)",
+  "initial_events": [
+    { "type": "user.message", "content": [{ "type": "text", "text": "Run the weekly compliance scan." }] }
+  ],
+  "schedule": {
+    "type": "cron",
+    "expression": "0 20 * * 5",
+    "timezone": "America/New_York"
+  }
+}
+```
+
+> Optional session config (`resources`, `vault_ids`, etc.) is supported the same way as on CreateSession. Response includes `status`, `paused_reason`, and `schedule.upcoming_runs_at` (next fire times). See `shared/managed-agents-scheduled-deployments.md`.
+
 ### SendEvents Request Body
 
 ```json
@@ -303,6 +345,8 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   ]
 }
 ```
+
+> `system.message` events (update the system prompt between turns) use the same envelope with `type: "system.message"` — Claude Opus 4.8 only; see `shared/managed-agents-events.md` § Updating the system prompt mid-session.
 
 ### Define Outcome Event
 
