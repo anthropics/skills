@@ -13,6 +13,7 @@ description: >
   Compresses only natural language using Zipf word-density scoring, validated by Benford's
   Law structural integrity check. Typical savings: 30–60% on verbose agent outputs.
   Zero external dependencies. No API calls. Works offline.
+license: Complete terms in LICENSE.txt
 ---
 
 # PITH — Inter-Agent Payload Compressor
