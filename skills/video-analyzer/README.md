@@ -1,96 +1,127 @@
-> **Note:** This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Skills standard, see [agentskills.io](http://agentskills.io).
+# Video Analyzer Skill
 
-[![skills.sh](https://skills.sh/b/anthropics/skills)](https://skills.sh/anthropics/skills)
+> *Converts any video file into a comprehensive AI-readable report — because Claude Projects don't accept MP4 uploads.*
 
-# Skills
-Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks. Skills teach Claude how to complete specific tasks in a repeatable way, whether that's creating documents with your company's brand guidelines, analyzing data using your organization's specific workflows, or automating personal tasks.
-
-For more information, check out:
-- [What are skills?](https://support.claude.com/en/articles/12512176-what-are-skills)
-- [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills)
-- [Equipping agents for the real world with Agent Skills](https://anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
-
-# About This Repository
-
-This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).
-
-Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
-
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
-
-## Disclaimer
-
-**These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
-
-# Skill Sets
-- [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
-- [./spec](./spec): The Agent Skills specification
-- [./template](./template): Skill template
-
-# Try in Claude Code, Claude.ai, and the API
-
-## Claude Code
-You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
-```
-/plugin marketplace add anthropics/skills
-```
-
-Then, to install a specific set of skills:
-1. Select `Browse and install plugins`
-2. Select `anthropic-agent-skills`
-3. Select `document-skills` or `example-skills`
-4. Select `Install now`
-
-Alternatively, directly install either Plugin via:
-```
-/plugin install document-skills@anthropic-agent-skills
-/plugin install example-skills@anthropic-agent-skills
-```
-
-After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
-
-## Claude.ai
-
-These example skills are all already available to paid plans in Claude.ai. 
-
-To use any skill from this repository or upload custom skills, follow the instructions in [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude#h_a4222fa77b).
-
-## Claude API
-
-You can use Anthropic's pre-built skills, and upload custom skills, via the Claude API. See the [Skills API Quickstart](https://docs.claude.com/en/api/skills-guide#creating-a-skill) for more.
-
-# Creating a Basic Skill
-
-Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
-
-```markdown
----
-name: my-skill-name
-description: A clear description of what this skill does and when to use it
 ---
 
-# My Skill Name
+## What It Does
 
-[Add your instructions here that Claude will follow when this skill is active]
+Upload any video and get back a complete structured report Claude can actually use:
 
-## Examples
-- Example usage 1
-- Example usage 2
+- **Audio transcript** with timestamps (OpenAI Whisper, 99 languages, auto-detected)
+- **Character/scene detection** — visual clustering via HSV histogram, no ML model required
+- **Visual timeline** — frame-by-frame description via Claude Vision
+- **Dual output** — human-readable Markdown + machine-readable JSON (schema v1.0)
 
-## Guidelines
-- Guideline 1
-- Guideline 2
+---
+
+## Why This Exists
+
+Claude Projects don't support MP4 uploads. This skill bridges the gap: process the video once locally, get a structured report you can paste into any Claude project as a plain document.
+
+---
+
+## Supported Formats
+
+MP4, MOV, AVI, MKV, WebM, M4V
+
+---
+
+## Dependencies
+
+Auto-installed on first run:
+
+| Dependency | Purpose |
+|------------|---------|
+| `ffmpeg` (system) | Frame extraction, audio demux, metadata |
+| `openai-whisper` | Audio transcription (local inference, no API) |
+| `opencv-python-headless` | Frame fingerprinting for character clustering |
+| `numpy`, `Pillow` | Array ops and image I/O |
+
+No external API calls beyond `pip install`. No credentials required.
+
+---
+
+## Quick Start
+
+Just say: *"analyze this video"* / *"analizza questo video"* — the skill handles the rest.
+
+Or trigger it explicitly when you have a video file at a known path:
+
+```bash
+python3 scripts/process_video.py /path/to/video.mp4     --fps 0.5 --max-frames 30 --output-dir /tmp/video_work
 ```
 
-The frontmatter requires only two fields:
-- `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
-- `description` - A complete description of what the skill does and when to use it
+---
 
-The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
+## Output
 
-# Partner Skills
+| File | Contents |
+|------|----------|
+| `<basename>_report.md` | Human-readable Markdown with metadata, transcript, timeline |
+| `<basename>_report.json` | Structured JSON (schema v1.0) for downstream processing |
 
-Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
+### JSON schema snapshot
 
-- **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+```json
+{
+  "schema_version": "1.0",
+  "metadata": { "duration_formatted": "00:02:44", "width": 1080, "height": 1920 },
+  "characters": { "count": 4, "list": [ { "character_id": 1, "name": "Gioggia", "appearances": 12 } ] },
+  "audio": { "has_audio": true, "transcript_segments": [ { "timestamp": "00:00:03", "text": "..." } ] },
+  "visual_timeline": [ { "timestamp": "00:00:00", "description": "..." } ],
+  "summary": "...",
+  "key_observations": [ "..." ]
+}
+```
+
+---
+
+## Technical Approach
+
+1. **ffprobe** extracts metadata (duration, codec, resolution, bitrate)
+2. **ffmpeg** samples frames at configurable FPS (default 0.5 = 1 every 2 s) and extracts mono 16 kHz WAV
+3. **Whisper** transcribes audio locally with per-segment timestamps
+4. **HSV histogram clustering** groups frames by visual similarity — each cluster = one recurring "character slot"; no face recognition, no ML model, no API
+5. **Claude Vision** describes each representative frame, building the visual timeline
+6. **build_json_report.py** assembles everything into the final structured JSON
+
+---
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/process_video.py` | Metadata, frame extraction, audio extraction, Whisper transcription |
+| `scripts/detect_characters.py` | HSV histogram fingerprinting and greedy clustering |
+| `scripts/build_json_report.py` | Assembles final JSON report from all sources |
+
+---
+
+## Tuning
+
+| Parameter | Default | When to Change |
+|-----------|---------|----------------|
+| `--fps` | 0.5 | Increase for fast-cut videos (1.0); decrease for slow/static (0.2) |
+| `--max-frames` | 30 | Increase for long videos (up to 60) |
+| `--model` | base | Use `small` or `medium` for better transcription accuracy |
+| `--similarity-threshold` | 0.72 | Raise to 0.80 if too many clusters; lower to 0.60 if too few |
+
+---
+
+## Works On
+
+- Live-action video
+- AI-generated animation (SHOWRUNNER, Sora, etc.)
+- Screen recordings and tutorials
+- Vertical Reels/Shorts format
+
+---
+
+## License
+
+Apache 2.0 — see [LICENSE.txt](./LICENSE.txt)
+
+## Author
+
+Created by **Albert** ([@VjAlbert](https://github.com/VjAlbert))
