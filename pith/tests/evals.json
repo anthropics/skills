@@ -1,0 +1,47 @@
+[
+  {
+    "id": "TC01",
+    "category": "core_compression",
+    "description": "Verbose web search result — default ratio",
+    "prompt": "Compress this tool result before passing it to the synthesis agent:\n\nI searched the web for the latest AI research developments. According to MIT Technology Review, researchers have developed a new transformer architecture that reduces computational costs by approximately 40 percent while maintaining comparable performance on benchmark tasks. The article notes that this is a significant advancement in the field. A second result described a paper on reinforcement learning from human feedback, noting that the technique has been further refined to reduce reward hacking. A third result discussed multimodal models and their applications in robotics. A fourth result was about AI safety research at several institutions. A fifth result discussed token efficiency in large language models. The search was completed successfully and all five results appear to be from credible sources published within the last six months. I believe this information is sufficient to answer the user's question about recent AI developments.",
+    "assertions": [
+      "output contains [PITH",
+      "output contains % tokens",
+      "output does NOT contain 'The search was completed successfully'",
+      "output does NOT contain 'I believe this information is sufficient'",
+      "output contains 'transformer' OR output contains 'reinforcement learning'"
+    ]
+  },
+  {
+    "id": "TC02",
+    "category": "code_preservation",
+    "description": "Mixed code + verbose explanation",
+    "prompt": "Pith this output from the code execution agent:\n\nThe script ran and produced output. The algorithm processed each element sequentially. No errors were encountered during runtime. The computation completed successfully.\n\n```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1\n```\n\nThe result was 3. The binary search algorithm has O(log n) time complexity.",
+    "assertions": [
+      "output contains ```python",
+      "output contains def binary_search",
+      "output contains O(log n)",
+      "output does NOT contain 'The script ran and produced output'"
+    ]
+  },
+  {
+    "id": "TC03",
+    "category": "passthrough",
+    "description": "Short payload — must pass through unchanged",
+    "prompt": "Compress this agent result: The API returned status 200. Authentication succeeded.",
+    "assertions": [
+      "output contains passthrough",
+      "output contains -0%"
+    ]
+  },
+  {
+    "id": "TC04",
+    "category": "proactive_trigger",
+    "description": "Orchestrator noticing large intermediate result",
+    "prompt": "I am building a research pipeline with 4 agents. Agent 1 just returned 800 tokens of web search results and I need to pass it to Agent 2. How should I handle this?",
+    "assertions": [
+      "output mentions compression OR mentions PITH OR mentions token reduction",
+      "output contains compress OR output contains pith"
+    ]
+  }
+]
