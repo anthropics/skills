@@ -1,0 +1,98 @@
+[
+  {
+    "id": "TC01",
+    "category": "core_compression",
+    "description": "Verbose web search result — default ratio",
+    "prompt": "Compress this tool result before passing it to the synthesis agent:\n\nI searched the web for the latest AI research developments. The search returned several relevant results. According to the first result from MIT Technology Review, researchers have developed a new transformer architecture that reduces computational costs by approximately 40 percent while maintaining comparable performance on benchmark tasks. The article notes that this is a significant advancement in the field. The second result from Arxiv described a paper on reinforcement learning from human feedback, noting that the technique has been further refined to reduce reward hacking. The third result discussed multimodal models and their applications in robotics. The fourth result was about AI safety research at several institutions. The fifth result discussed token efficiency in large language models. The search was completed successfully and all five results appear to be from credible sources published within the last six months. I believe this information is sufficient to answer the user's question about recent AI developments.",
+    "assertions": [
+      "output contains [PITH",
+      "output contains -",
+      "output contains % tokens",
+      "output does NOT contain 'The search was completed successfully'",
+      "output does NOT contain 'I believe this information is sufficient'",
+      "output contains 'transformer architecture' OR output contains 'reinforcement learning' OR output contains 'multimodal'"
+    ]
+  },
+  {
+    "id": "TC02",
+    "category": "code_preservation",
+    "description": "Mixed code + verbose explanation — code must be untouched",
+    "prompt": "Pith this output from the code execution agent:\n\nThe script ran and produced output. Here is what happened during execution. The function was called with the input parameters as specified. The algorithm processed each element in the list sequentially. No errors were encountered during runtime. The computation completed successfully.\n\n```python\ndef binary_search(arr, target):\n    left, right = 0, len(arr) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1\n\nresult = binary_search([1, 3, 5, 7, 9, 11], 7)\nprint(result)  # Output: 3\n```\n\nThe result was 3, which is the correct index of the value 7 in the sorted array. The binary search algorithm has O(log n) time complexity, which makes it efficient for large datasets. The function returns -1 if the target is not found.",
+    "assertions": [
+      "output contains ```python",
+      "output contains def binary_search",
+      "output contains return mid",
+      "output contains O(log n)",
+      "output does NOT contain 'The script ran and produced output. Here is what happened'",
+      "output does NOT contain 'No errors were encountered during runtime'"
+    ]
+  },
+  {
+    "id": "TC03",
+    "category": "passthrough",
+    "description": "Short payload — must pass through unchanged",
+    "prompt": "Compress this agent result: The API returned status 200. Authentication succeeded.",
+    "assertions": [
+      "output contains passthrough",
+      "output contains -0% OR output contains The API returned"
+    ]
+  },
+  {
+    "id": "TC04",
+    "category": "json_preservation",
+    "description": "JSON payload — must be preserved and not broken",
+    "prompt": "Slim down this payload before the next agent processes it:\n\nThe database query returned successfully. Here are the results in structured format. The query took 45 milliseconds to complete. All records were retrieved without errors.\n\n{\"users\": [{\"id\": 1, \"name\": \"Alice\", \"role\": \"admin\"}, {\"id\": 2, \"name\": \"Bob\", \"role\": \"viewer\"}], \"total\": 2, \"page\": 1}\n\nThe data looks correct and matches the expected schema. You can now pass this to the processing agent.",
+    "assertions": [
+      "output contains \"id\": 1",
+      "output contains \"name\": \"Alice\"",
+      "output contains \"role\": \"admin\"",
+      "output does NOT contain 'The data looks correct and matches the expected schema'"
+    ]
+  },
+  {
+    "id": "TC05",
+    "category": "aggressive_compression",
+    "description": "Long reasoning trace — aggressive mode",
+    "prompt": "Use pith at ratio 0.4 to compress this reasoning trace before forwarding:\n\nI need to analyze the user's request carefully. The user has asked about climate change mitigation strategies. Let me think through this systematically. First, I should consider the major categories of mitigation. These include renewable energy transition, carbon capture and storage, reforestation and land use changes, and behavioral and policy interventions. Each of these categories has distinct mechanisms, timelines, and costs. Renewable energy is perhaps the most discussed category. Solar photovoltaic costs have fallen by over 90 percent in the last decade, making it the cheapest electricity source in history in many regions. Wind energy has also seen dramatic cost reductions. Battery storage technology is improving rapidly, addressing the intermittency problem. Carbon capture and storage technology exists but remains expensive at approximately 100 to 300 dollars per ton of CO2. Direct air capture is even more expensive. Reforestation has significant co-benefits for biodiversity and water cycles. Policy frameworks such as carbon pricing, regulations, and international agreements like the Paris Agreement play a crucial role in coordinating action. I believe the most impactful near-term strategies combine rapid renewable deployment with demand reduction. The evidence strongly supports this conclusion.",
+    "assertions": [
+      "output contains -",
+      "output contains % tokens",
+      "output contains 'Solar photovoltaic' OR output contains 'carbon capture' OR output contains 'renewable'",
+      "output does NOT contain 'I need to analyze the user' AND output does NOT contain 'Let me think through this systematically'"
+    ]
+  },
+  {
+    "id": "TC06",
+    "category": "url_preservation",
+    "description": "Payload with URLs — URLs must survive compression",
+    "prompt": "Reduce this context payload for the next agent in the pipeline:\n\nI found the following resources that may be relevant to the research task. The first resource is located at https://arxiv.org/abs/2301.07379 and contains a comprehensive survey of large language model alignment techniques. This is a highly cited paper in the field. The second resource at https://openai.com/research/gpt-4 describes the capabilities and limitations of the GPT-4 model in detail. There is also supplementary material available. The third resource from https://anthropic.com/research contains multiple papers on constitutional AI and related safety research. I believe these three resources together provide a solid foundation for the research task and cover the main approaches in the field adequately.",
+    "assertions": [
+      "output contains https://arxiv.org/abs/2301.07379",
+      "output contains https://openai.com/research/gpt-4",
+      "output contains https://anthropic.com/research",
+      "output does NOT contain 'I believe these three resources together provide a solid foundation'"
+    ]
+  },
+  {
+    "id": "TC07",
+    "category": "proactive_trigger",
+    "description": "Orchestrator noticing large intermediate result — should trigger PITH proactively",
+    "prompt": "I'm building a research pipeline with 4 agents. Agent 1 just returned 800 tokens of web search results and I need to pass it to Agent 2 for summarization. How should I handle this?",
+    "assertions": [
+      "output mentions compression OR mentions PITH OR mentions token reduction",
+      "output contains scripts/compress.py OR output contains pith OR output contains compress"
+    ]
+  },
+  {
+    "id": "TC08",
+    "category": "benford_validation",
+    "description": "Verify Benford gate activates on over-compressed text",
+    "prompt": "Compress this at ratio 0.3 and show me the JSON metadata including the Benford values:\n\nQuantum computing represents a fundamental paradigm shift in computational architecture. Unlike classical computers that process information as binary bits representing either zero or one, quantum computers exploit quantum mechanical phenomena including superposition and entanglement to process quantum bits called qubits that can represent multiple states simultaneously. This property enables quantum computers to evaluate vast numbers of computational pathways in parallel. Grover's algorithm demonstrates quadratic speedup for unstructured search problems. Shor's algorithm provides exponential speedup for integer factorization, with profound implications for current public-key cryptography systems. The primary technical challenge in building practical quantum computers is decoherence, the tendency of quantum systems to lose their quantum properties through interaction with the environment. Current approaches to maintaining coherence include superconducting qubits operated at temperatures near absolute zero, trapped ion systems, and topological qubits. Error correction overhead currently requires hundreds or thousands of physical qubits per logical qubit. IBM, Google, and several startups are racing to achieve fault-tolerant quantum computing.",
+    "assertions": [
+      "output contains benford_mad OR output contains original_benford_mad",
+      "output contains benford_ok",
+      "output contains compressed_tokens",
+      "output contains saved_pct"
+    ]
+  }
+]
