@@ -3,26 +3,44 @@
 
 Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
+
+Mechanism: the candidate description is installed once per run as a real
+skill at <project_root>/.claude/skills/<name>-eval-<id>/SKILL.md, because
+that is the only surface `claude -p` exposes to the model for
+auto-triggering (files under .claude/commands/ appear in slash_commands but
+never in the model's available_skills list, so they can never auto-trigger).
+The artifact is shared by all parallel workers and removed when the run ends.
 """
 
 import argparse
 import json
 import os
-import select
+import re
+import shutil
 import subprocess
 import sys
+import threading
 import time
 import uuid
+from collections import deque
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
+from queue import Empty, Queue
 
 from scripts.utils import parse_skill_md
+
+# Bounds conversation length for queries that never trigger, so cost and
+# wall-clock time stay capped without cutting off legitimate multi-turn
+# runs where Claude explores (TodoWrite/Glob/Bash) before invoking the skill.
+MAX_CLAUDE_TURNS = 8
+
+_EVAL_SUFFIX_RE = re.compile(r"-eval-[0-9a-f]{8}$")
 
 
 def find_project_root() -> Path:
     """Find the project root by walking up from cwd looking for .claude/.
 
-    Mimics how Claude Code discovers its project root, so the command file
+    Mimics how Claude Code discovers its project root, so the eval skill
     we create ends up where claude -p will look for it.
     """
     current = Path.cwd()
@@ -32,153 +50,241 @@ def find_project_root() -> Path:
     return current
 
 
+def resolve_claude_cli() -> str:
+    """Resolve the claude executable to a full path.
+
+    On Windows, Popen(["claude", ...]) only finds claude.exe; npm installs
+    provide a claude.cmd shim that raises FileNotFoundError unless resolved
+    to a full path first. shutil.which handles both via PATHEXT.
+    """
+    resolved = shutil.which("claude")
+    if not resolved:
+        raise RuntimeError(
+            "Could not find the `claude` CLI on PATH. Install Claude Code or "
+            "add its install directory to PATH before running evals."
+        )
+    return resolved
+
+
+def _pump_lines(stream, sink) -> None:
+    """Read a binary stream line by line into sink; signal EOF with None."""
+    try:
+        for raw in iter(stream.readline, b""):
+            sink(raw)
+    finally:
+        sink(None)
+
+
+def _tool_use_mentions(eval_skill_name: str, tool_name: str, tool_input: dict) -> bool:
+    """Whether a tool_use block is Claude consulting the eval skill."""
+    if tool_name not in ("Skill", "Read"):
+        return False
+    return eval_skill_name in json.dumps(tool_input)
+
+
 def run_single_query(
     query: str,
-    skill_name: str,
-    skill_description: str,
+    eval_skill_name: str,
     timeout: int,
     project_root: str,
     model: str | None = None,
+    claude_cli: str | None = None,
 ) -> bool:
-    """Run a single query and return whether the skill was triggered.
+    """Run a single query and return whether the eval skill was triggered.
 
-    Creates a command file in .claude/commands/ so it appears in Claude's
-    available_skills list, then runs `claude -p` with the raw query.
-    Uses --include-partial-messages to detect triggering early from
-    stream events (content_block_start) rather than waiting for the
-    full assistant message, which only arrives after tool execution.
+    Streams `claude -p` output and returns True as soon as a Skill/Read
+    tool_use referencing the eval skill appears. Other tool calls
+    (TodoWrite, Glob, Bash, ...) are ignored rather than treated as
+    non-triggers, since Claude often explores before consulting a skill.
+    Returns False only on a terminal `result` event, process exit, or
+    timeout.
     """
-    unique_id = uuid.uuid4().hex[:8]
-    clean_name = f"{skill_name}-skill-{unique_id}"
-    project_commands_dir = Path(project_root) / ".claude" / "commands"
-    command_file = project_commands_dir / f"{clean_name}.md"
+    cmd = [
+        claude_cli or resolve_claude_cli(),
+        "-p", query,
+        "--output-format", "stream-json",
+        "--verbose",
+        "--include-partial-messages",
+        "--max-turns", str(MAX_CLAUDE_TURNS),
+    ]
+    if model:
+        cmd.extend(["--model", model])
+
+    # Remove CLAUDECODE env var to allow nesting claude -p inside a
+    # Claude Code session. The guard is for interactive terminal conflicts;
+    # programmatic subprocess usage is safe.
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        cwd=project_root,
+        env=env,
+    )
+
+    # select() only works on sockets on Windows, so stream reading goes
+    # through reader threads + a queue, which behaves the same everywhere.
+    stdout_queue: Queue = Queue()
+    stderr_tail: deque = deque(maxlen=40)
+    threading.Thread(
+        target=_pump_lines, args=(process.stdout, stdout_queue.put), daemon=True
+    ).start()
+    threading.Thread(
+        target=_pump_lines,
+        args=(process.stderr, lambda raw: stderr_tail.append(raw) if raw else None),
+        daemon=True,
+    ).start()
+
+    def stderr_excerpt() -> str:
+        return b"".join(stderr_tail).decode("utf-8", errors="replace").strip()[:500]
+
+    deadline = time.time() + timeout
+    # Track the Skill/Read block currently streaming its input, if any
+    pending_tool_name = None
+    accumulated_json = ""
 
     try:
-        project_commands_dir.mkdir(parents=True, exist_ok=True)
-        # Use YAML block scalar to avoid breaking on quotes in description
-        indented_desc = "\n  ".join(skill_description.split("\n"))
-        command_content = (
-            f"---\n"
-            f"description: |\n"
-            f"  {indented_desc}\n"
-            f"---\n\n"
-            f"# {skill_name}\n\n"
-            f"This skill handles: {skill_description}\n"
-        )
-        command_file.write_text(command_content)
+        while True:
+            if time.time() > deadline:
+                print(
+                    f"Warning: query timed out after {timeout}s; counting as "
+                    f"not-triggered: {query[:60]}",
+                    file=sys.stderr,
+                )
+                return False
 
-        cmd = [
-            "claude",
-            "-p", query,
-            "--output-format", "stream-json",
-            "--verbose",
-            "--include-partial-messages",
-        ]
-        if model:
-            cmd.extend(["--model", model])
-
-        # Remove CLAUDECODE env var to allow nesting claude -p inside a
-        # Claude Code session. The guard is for interactive terminal conflicts;
-        # programmatic subprocess usage is safe.
-        env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
-
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            cwd=project_root,
-            env=env,
-        )
-
-        triggered = False
-        start_time = time.time()
-        buffer = ""
-        # Track state for stream event detection
-        pending_tool_name = None
-        accumulated_json = ""
-
-        try:
-            while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
-                    continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
-                    break
-                buffer += chunk.decode("utf-8", errors="replace")
-
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
-                        return triggered
-        finally:
-            # Clean up process on any exit path (return, exception, timeout)
-            if process.poll() is None:
-                process.kill()
+            try:
+                raw = stdout_queue.get(timeout=0.5)
+            except Empty:
+                continue
+            if raw is None:  # EOF: process finished and output is drained
                 process.wait()
+                if process.returncode != 0:
+                    print(
+                        f"Warning: claude -p exited with code {process.returncode} "
+                        f"for query: {query[:60]}\n  stderr: {stderr_excerpt()}",
+                        file=sys.stderr,
+                    )
+                return False
 
-        return triggered
+            line = raw.decode("utf-8", errors="replace").strip()
+            if not line:
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            # Early detection via stream events
+            if event.get("type") == "stream_event":
+                se = event.get("event", {})
+                se_type = se.get("type", "")
+
+                if se_type == "content_block_start":
+                    cb = se.get("content_block", {})
+                    if cb.get("type") == "tool_use":
+                        if cb.get("name", "") in ("Skill", "Read"):
+                            pending_tool_name = cb.get("name", "")
+                            accumulated_json = ""
+                        else:
+                            pending_tool_name = None
+
+                elif se_type == "content_block_delta" and pending_tool_name:
+                    delta = se.get("delta", {})
+                    if delta.get("type") == "input_json_delta":
+                        accumulated_json += delta.get("partial_json", "")
+                        if eval_skill_name in accumulated_json:
+                            return True
+
+                elif se_type == "content_block_stop":
+                    if pending_tool_name and eval_skill_name in accumulated_json:
+                        return True
+                    pending_tool_name = None
+
+            # Fallback: full assistant message
+            elif event.get("type") == "assistant":
+                for content_item in event.get("message", {}).get("content", []):
+                    if content_item.get("type") != "tool_use":
+                        continue
+                    if _tool_use_mentions(
+                        eval_skill_name,
+                        content_item.get("name", ""),
+                        content_item.get("input", {}),
+                    ):
+                        return True
+
+            elif event.get("type") == "result":
+                return False
     finally:
-        if command_file.exists():
-            command_file.unlink()
+        # Clean up process on any exit path (return, exception, timeout)
+        if process.poll() is None:
+            process.kill()
+            process.wait()
+
+
+def _cleanup_stale_artifacts(skills_dir: Path, skill_name: str) -> None:
+    """Remove eval skills left behind by a previous crashed/killed run."""
+    if not skills_dir.is_dir():
+        return
+    for entry in skills_dir.glob(f"{skill_name}-eval-*"):
+        if entry.is_dir() and _EVAL_SUFFIX_RE.search(entry.name):
+            shutil.rmtree(entry, ignore_errors=True)
+
+
+def _warn_if_shadowed(skill_name: str, project_root: Path) -> None:
+    """Warn when an installed skill with the same name could absorb triggers.
+
+    An installed copy of the skill shares its description with the eval
+    candidate, so Claude may consult it instead of the artifact and deflate
+    measured trigger rates. We warn rather than move user files aside.
+    """
+    candidates = [
+        project_root / ".claude" / "skills" / skill_name,
+        Path.home() / ".claude" / "skills" / skill_name,
+    ]
+    for installed in candidates:
+        if installed.is_dir():
+            print(
+                f"Warning: installed skill at {installed} has the same name as "
+                f"the skill under eval and may absorb triggers, deflating "
+                f"results. Consider moving it aside while running evals.",
+                file=sys.stderr,
+            )
+
+
+def create_eval_skill(
+    skill_name: str, skill_description: str, project_root: Path
+) -> tuple[str, Path]:
+    """Install the candidate description as a real, uniquely named skill.
+
+    Returns (eval_skill_name, skill_dir). The caller is responsible for
+    removing skill_dir when the run finishes.
+    """
+    unique_id = uuid.uuid4().hex[:8]
+    eval_skill_name = f"{skill_name}-eval-{unique_id}"
+    skills_dir = project_root / ".claude" / "skills"
+
+    _cleanup_stale_artifacts(skills_dir, skill_name)
+    _warn_if_shadowed(skill_name, project_root)
+
+    skill_dir = skills_dir / eval_skill_name
+    skill_dir.mkdir(parents=True, exist_ok=True)
+    # Use YAML block scalar to avoid breaking on quotes in description
+    indented_desc = "\n  ".join(skill_description.split("\n"))
+    skill_content = (
+        f"---\n"
+        f"name: {eval_skill_name}\n"
+        f"description: |\n"
+        f"  {indented_desc}\n"
+        f"---\n\n"
+        f"# {skill_name}\n\n"
+        f"This skill handles: {skill_description}\n\n"
+        f"(Temporary trigger-eval artifact created by skill-creator's "
+        f"run_eval.py; safe to delete.)\n"
+    )
+    (skill_dir / "SKILL.md").write_text(skill_content)
+    return eval_skill_name, skill_dir
 
 
 def run_eval(
@@ -194,35 +300,49 @@ def run_eval(
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
+    claude_cli = resolve_claude_cli()
+    # One shared artifact per run: per-worker copies with distinct names but
+    # identical descriptions made Claude pick one arbitrarily, so each
+    # worker missed triggers that landed on a sibling's copy.
+    eval_skill_name, skill_dir = create_eval_skill(
+        skill_name, description, Path(project_root)
+    )
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        future_to_info = {}
-        for item in eval_set:
-            for run_idx in range(runs_per_query):
-                future = executor.submit(
-                    run_single_query,
-                    item["query"],
-                    skill_name,
-                    description,
-                    timeout,
-                    str(project_root),
-                    model,
-                )
-                future_to_info[future] = (item, run_idx)
+    try:
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_info = {}
+            for item in eval_set:
+                for run_idx in range(runs_per_query):
+                    future = executor.submit(
+                        run_single_query,
+                        item["query"],
+                        eval_skill_name,
+                        timeout,
+                        str(project_root),
+                        model,
+                        claude_cli,
+                    )
+                    future_to_info[future] = (item, run_idx)
 
-        query_triggers: dict[str, list[bool]] = {}
-        query_items: dict[str, dict] = {}
-        for future in as_completed(future_to_info):
-            item, _ = future_to_info[future]
-            query = item["query"]
-            query_items[query] = item
-            if query not in query_triggers:
-                query_triggers[query] = []
-            try:
-                query_triggers[query].append(future.result())
-            except Exception as e:
-                print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+            query_triggers: dict[str, list[bool]] = {}
+            query_items: dict[str, dict] = {}
+            for future in as_completed(future_to_info):
+                item, _ = future_to_info[future]
+                query = item["query"]
+                query_items[query] = item
+                if query not in query_triggers:
+                    query_triggers[query] = []
+                try:
+                    query_triggers[query].append(future.result())
+                except Exception as e:
+                    print(
+                        f"Warning: query failed ({type(e).__name__}: {e}); "
+                        f"counting as not-triggered: {query[:60]}",
+                        file=sys.stderr,
+                    )
+                    query_triggers[query].append(False)
+    finally:
+        shutil.rmtree(skill_dir, ignore_errors=True)
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
