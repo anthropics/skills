@@ -11,10 +11,12 @@ npm install @anthropic-ai/sdk
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
-// Default (uses ANTHROPIC_API_KEY env var)
+// Default — resolves credentials from the environment:
+// ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+// Prefer this for local dev; don't hardcode a key.
 const client = new Anthropic();
 
-// Explicit API key
+// Explicit API key (only when you must inject a specific key)
 const client = new Anthropic({ apiKey: "your-api-key" });
 ```
 
@@ -24,7 +26,7 @@ const client = new Anthropic({ apiKey: "your-api-key" });
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   messages: [{ role: "user", content: "What is the capital of France?" }],
 });
@@ -43,12 +45,38 @@ for (const block of response.content) {
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   system:
     "You are a helpful coding assistant. Always provide examples in Python.",
   messages: [{ role: "user", content: "How do I read a JSON file?" }],
 });
+```
+
+### Mid-conversation system messages (beta, model-gated)
+
+For operator instructions that arrive mid-conversation (mode switches, injected state), append `{role: "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
+
+```typescript
+// SDK types for role:"system" in messages are pending — pass the beta header
+// directly until the SDK updates, then switch to client.beta.messages.create
+// with betas: ["mid-conversation-system-2026-04-07"].
+const response = await client.messages.create(
+  {
+    model: MODEL_ID, // must support mid-conversation system messages
+    max_tokens: 16000,
+    system: [
+      { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
+    ],
+    messages: [
+      ...history,
+      { role: "user", content: userMessage },
+      // @ts-expect-error — role:"system" pending SDK types
+      { role: "system", content: "Terse mode enabled — keep responses under 40 words." },
+    ],
+  },
+  { headers: { "anthropic-beta": "mid-conversation-system-2026-04-07" } },
+);
 ```
 
 ---
@@ -59,7 +87,7 @@ const response = await client.messages.create({
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   messages: [
     {
@@ -84,7 +112,7 @@ import fs from "fs";
 const imageData = fs.readFileSync("image.png").toString("base64");
 
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   messages: [
     {
@@ -113,7 +141,7 @@ Use top-level `cache_control` to automatically cache the last cacheable block in
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   cache_control: { type: "ephemeral" }, // auto-caches the last cacheable block
   system: "You are an expert on this large document...",
@@ -127,7 +155,7 @@ For fine-grained control, add `cache_control` to specific content blocks:
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   system: [
     {
@@ -141,7 +169,7 @@ const response = await client.messages.create({
 
 // With explicit TTL (time-to-live)
 const response2 = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   system: [
     {
@@ -168,13 +196,13 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 
 ## Extended Thinking
 
-> **Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Opus 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
 > **Older models:** Use `thinking: {type: "enabled", budget_tokens: N}` (must be < `max_tokens`, min 1024).
 
 ```typescript
-// Opus 4.7 / 4.6: adaptive thinking (recommended)
+// Fable 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   thinking: { type: "adaptive" },
   output_config: { effort: "high" }, // low | medium | high | max
@@ -232,7 +260,7 @@ const messages: Anthropic.MessageParam[] = [
 ];
 
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   messages: messages,
 });
@@ -248,7 +276,7 @@ const response = await client.messages.create({
 
 ### Compaction (long conversations)
 
-> **Beta, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests — append `response.content`, not just the text.
+> **Beta, Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests — append `response.content`, not just the text.
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
@@ -261,7 +289,7 @@ async function chat(userMessage: string): Promise<string> {
 
   const response = await client.beta.messages.create({
     betas: ["compact-2026-01-12"],
-    model: "claude-opus-4-7",
+    model: "claude-opus-4-8",
     max_tokens: 16000,
     messages,
     context_management: {
@@ -297,7 +325,18 @@ The `stop_reason` field in the response indicates why the model stopped generati
 | `stop_sequence` | Hit a custom stop sequence                                      |
 | `tool_use`      | Claude wants to call a tool — execute it and continue           |
 | `pause_turn`    | Model paused and can be resumed (agentic flows)                 |
-| `refusal`       | Claude refused for safety reasons — output may not match schema |
+| `refusal`       | Claude refused for safety reasons — check `stop_details`        |
+
+### Structured Stop Details
+
+When `stop_reason` is `"refusal"`, the response includes a `stop_details` object with structured information about the refusal:
+
+```typescript
+if (response.stop_reason === "refusal" && response.stop_details) {
+  console.log(`Category: ${response.stop_details.category}`); // "cyber" | "bio" | null
+  console.log(`Explanation: ${response.stop_details.explanation}`);
+}
+```
 
 ---
 
@@ -308,7 +347,7 @@ The `stop_reason` field in the response indicates why the model stopped generati
 ```typescript
 // Automatic caching (simplest — caches the last cacheable block)
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   max_tokens: 16000,
   cache_control: { type: "ephemeral" },
   system: largeDocumentText, // e.g., 50KB of context
@@ -323,7 +362,7 @@ const response = await client.messages.create({
 
 ```typescript
 const countResponse = await client.messages.countTokens({
-  model: "claude-opus-4-7",
+  model: "claude-opus-4-8",
   messages: messages,
   system: system,
 });
