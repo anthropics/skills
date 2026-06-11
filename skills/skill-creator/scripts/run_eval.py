@@ -4,21 +4,27 @@
 Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
 
-Mechanism: the candidate description is installed once per run as a real
-skill at <project_root>/.claude/skills/<name>-eval-<id>/SKILL.md, because
-that is the only surface `claude -p` exposes to the model for
-auto-triggering (files under .claude/commands/ appear in slash_commands but
-never in the model's available_skills list, so they can never auto-trigger).
-The artifact is shared by all parallel workers and removed when the run ends.
+Mechanism: each run creates an isolated temporary project containing the
+candidate description installed as a real skill at
+<tmp>/.claude/skills/<name>/SKILL.md, and `claude -p` executes with that
+project as its working directory. Skills are the only surface `claude -p`
+exposes to the model for auto-triggering (files under .claude/commands/
+appear in slash_commands but never in the model's available_skills list).
+Running in a throwaway project keeps the skill's real name (no suffix),
+never touches the user's project, and makes concurrent runs collision-free
+by construction: every run gets its own project directory keyed by a full
+UUID4. The directory is shared by the run's parallel workers and removed
+when the run ends; directories left behind by killed runs are swept once
+they are older than --stale-artifact-hours.
 """
 
 import argparse
 import json
 import os
-import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import uuid
@@ -34,11 +40,13 @@ from scripts.utils import parse_skill_md
 # runs where Claude explores (TodoWrite/Glob/Bash) before invoking the skill.
 MAX_CLAUDE_TURNS = 8
 
-# Leftover artifacts must be at least this old before the sweep removes
-# them, so it never deletes the live artifact of a concurrent eval run.
-STALE_ARTIFACT_MIN_AGE_SECONDS = 3600
+# All eval projects live under this root in the OS temp directory.
+EVAL_PROJECTS_ROOT = Path(tempfile.gettempdir()) / "claude-skill-evals"
 
-_EVAL_SUFFIX_RE = re.compile(r"-eval-[0-9a-f]{8}$")
+# Leftover eval projects must be at least this old (hours) before the sweep
+# removes them: long enough to survive a paused debugging session, short
+# enough not to accumulate cruft. Override with --stale-artifact-hours.
+DEFAULT_STALE_ARTIFACT_HOURS = 12.0
 
 
 def find_project_root() -> Path:
@@ -90,13 +98,14 @@ def run_single_query(
     query: str,
     eval_skill_name: str,
     timeout: int,
-    project_root: str,
+    eval_project_dir: str,
     model: str | None = None,
     claude_cli: str | None = None,
 ) -> bool:
     """Run a single query and return whether the eval skill was triggered.
 
-    Streams `claude -p` output and returns True as soon as a Skill/Read
+    Runs `claude -p` with the isolated eval project as its working
+    directory, streams its output, and returns True as soon as a Skill/Read
     tool_use referencing the eval skill appears. Other tool calls
     (TodoWrite, Glob, Bash, ...) are ignored rather than treated as
     non-triggers, since Claude often explores before consulting a skill.
@@ -123,7 +132,7 @@ def run_single_query(
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=project_root,
+        cwd=eval_project_dir,
         env=env,
     )
 
@@ -232,13 +241,18 @@ def run_single_query(
             process.wait()
 
 
-def _cleanup_stale_artifacts(skills_dir: Path, skill_name: str) -> None:
-    """Remove eval skills left behind by a previous crashed/killed run."""
-    if not skills_dir.is_dir():
+def _sweep_stale_eval_projects(stale_hours: float) -> None:
+    """Remove eval projects left behind by previous crashed/killed runs.
+
+    Only directories older than the threshold are removed, so the sweep
+    never deletes the live project of a concurrent eval run and survives
+    paused debugging sessions.
+    """
+    if not EVAL_PROJECTS_ROOT.is_dir():
         return
-    cutoff = time.time() - STALE_ARTIFACT_MIN_AGE_SECONDS
-    for entry in skills_dir.glob(f"{skill_name}-eval-*"):
-        if entry.is_dir() and _EVAL_SUFFIX_RE.search(entry.name):
+    cutoff = time.time() - stale_hours * 3600
+    for entry in EVAL_PROJECTS_ROOT.iterdir():
+        if entry.is_dir():
             try:
                 if entry.stat().st_mtime < cutoff:
                     shutil.rmtree(entry, ignore_errors=True)
@@ -246,49 +260,47 @@ def _cleanup_stale_artifacts(skills_dir: Path, skill_name: str) -> None:
                 pass
 
 
-def _warn_if_shadowed(skill_name: str, project_root: Path) -> None:
-    """Warn when an installed skill with the same name could absorb triggers.
+def _warn_if_shadowed(skill_name: str) -> None:
+    """Warn when a user-level skill with the same name also loads.
 
-    An installed copy of the skill shares its description with the eval
-    candidate, so Claude may consult it instead of the artifact and deflate
-    measured trigger rates. We warn rather than move user files aside.
+    The eval project isolates the candidate from the surrounding project,
+    but user-level skills (~/.claude/skills) load in every session. An
+    installed copy of the skill carries its own description, so triggers
+    it attracts are decided by the wrong description and skew measurement.
+    We warn rather than move user files aside.
     """
-    candidates = [
-        project_root / ".claude" / "skills" / skill_name,
-        Path.home() / ".claude" / "skills" / skill_name,
-    ]
-    for installed in candidates:
-        if installed.is_dir():
-            print(
-                f"Warning: installed skill at {installed} has the same name as "
-                f"the skill under eval and may absorb triggers, deflating "
-                f"results. Consider moving it aside while running evals.",
-                file=sys.stderr,
-            )
+    installed = Path.home() / ".claude" / "skills" / skill_name
+    if installed.is_dir():
+        print(
+            f"Warning: user-level skill at {installed} shares the eval "
+            f"skill's name and also loads during evals; triggers it absorbs "
+            f"are decided by its own description, skewing results. Consider "
+            f"moving it aside while running evals.",
+            file=sys.stderr,
+        )
 
 
-def create_eval_skill(
-    skill_name: str, skill_description: str, project_root: Path
-) -> tuple[str, Path]:
-    """Install the candidate description as a real, uniquely named skill.
+def create_eval_project(
+    skill_name: str, skill_description: str, stale_hours: float
+) -> Path:
+    """Create an isolated throwaway project with the candidate skill.
 
-    Returns (eval_skill_name, skill_dir). The caller is responsible for
-    removing skill_dir when the run finishes.
+    The skill keeps its real name — isolation comes from the project
+    directory, which is keyed by a full UUID4 so concurrent runs (parallel
+    CI jobs included) can never collide. Returns the project directory;
+    the caller is responsible for removing it when the run finishes.
     """
-    unique_id = uuid.uuid4().hex[:8]
-    eval_skill_name = f"{skill_name}-eval-{unique_id}"
-    skills_dir = project_root / ".claude" / "skills"
+    _sweep_stale_eval_projects(stale_hours)
+    _warn_if_shadowed(skill_name)
 
-    _cleanup_stale_artifacts(skills_dir, skill_name)
-    _warn_if_shadowed(skill_name, project_root)
-
-    skill_dir = skills_dir / eval_skill_name
+    project_dir = EVAL_PROJECTS_ROOT / f"{skill_name}-{uuid.uuid4().hex}"
+    skill_dir = project_dir / ".claude" / "skills" / skill_name
     skill_dir.mkdir(parents=True, exist_ok=True)
     # Use YAML block scalar to avoid breaking on quotes in description
     indented_desc = "\n  ".join(skill_description.split("\n"))
     skill_content = (
         f"---\n"
-        f"name: {eval_skill_name}\n"
+        f"name: {skill_name}\n"
         f"description: |\n"
         f"  {indented_desc}\n"
         f"---\n\n"
@@ -298,7 +310,7 @@ def create_eval_skill(
         f"run_eval.py; safe to delete.)\n"
     )
     (skill_dir / "SKILL.md").write_text(skill_content)
-    return eval_skill_name, skill_dir
+    return project_dir
 
 
 def run_eval(
@@ -307,19 +319,27 @@ def run_eval(
     description: str,
     num_workers: int,
     timeout: int,
-    project_root: Path,
+    project_root: Path | None = None,
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    stale_artifact_hours: float = DEFAULT_STALE_ARTIFACT_HOURS,
 ) -> dict:
-    """Run the full eval set and return results."""
+    """Run the full eval set and return results.
+
+    `project_root` is retained for backward compatibility but no longer
+    used: evals run inside an isolated temporary project so they keep the
+    skill's real name, never touch the caller's project, and cannot collide
+    across concurrent runs.
+    """
+    del project_root  # Deprecated; see docstring.
     results = []
     claude_cli = resolve_claude_cli()
     # One shared artifact per run: per-worker copies with distinct names but
     # identical descriptions made Claude pick one arbitrarily, so each
     # worker missed triggers that landed on a sibling's copy.
-    eval_skill_name, skill_dir = create_eval_skill(
-        skill_name, description, Path(project_root)
+    eval_project_dir = create_eval_project(
+        skill_name, description, stale_artifact_hours
     )
 
     try:
@@ -330,9 +350,9 @@ def run_eval(
                     future = executor.submit(
                         run_single_query,
                         item["query"],
-                        eval_skill_name,
+                        skill_name,
                         timeout,
-                        str(project_root),
+                        str(eval_project_dir),
                         model,
                         claude_cli,
                     )
@@ -356,7 +376,7 @@ def run_eval(
                     )
                     query_triggers[query].append(False)
     finally:
-        shutil.rmtree(skill_dir, ignore_errors=True)
+        shutil.rmtree(eval_project_dir, ignore_errors=True)
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
@@ -400,6 +420,12 @@ def main():
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
+    parser.add_argument(
+        "--stale-artifact-hours",
+        type=float,
+        default=DEFAULT_STALE_ARTIFACT_HOURS,
+        help="Age (hours) before leftover eval projects from crashed runs are swept",
+    )
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
@@ -427,6 +453,7 @@ def main():
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        stale_artifact_hours=args.stale_artifact_hours,
     )
 
     if args.verbose:
