@@ -16,6 +16,15 @@ If this session has already been shared in a previous run, the script reuses the
 
 Endpoint defaults to `https://instashare.to`. Override with the `INSTASHARE_API_URL` env var (use `http://localhost:3000` for local dev).
 
+## Fill in the session info
+
+The shared page shows a header line like `Opus 4.8 (1M context) with medium effort · Claude Max`. Plan is read from `~/.claude.json` automatically and the model also has a server-side fallback parsed from the transcript, but **effort and the model's context-window marker live only in the running session** — so before you run the snippet, set two variables from *your own* current session:
+
+- `$sessionModel` / `session_model` → your current model exactly as shown in the status line, including any context-window marker, e.g. `Opus 4.8 (1M context)`.
+- `$sessionEffort` / `session_effort` → your current reasoning effort, e.g. `medium` (the bare word, no "effort" suffix).
+
+If you genuinely don't know one of them, leave it as the empty string — the page degrades gracefully (the server still fills in the model from the transcript; effort/plan are simply omitted). Don't guess or invent values.
+
 ## Run exactly one of these
 
 Pick by platform. The script computes the slug itself, finds the session, scrubs known secret patterns from the body in memory, decides POST-vs-PUT from the sidecar, uploads the scrubbed body, and prints the URL.
@@ -27,6 +36,26 @@ $apiBase = if ($env:INSTASHARE_API_URL) { $env:INSTASHARE_API_URL } else { 'http
 $credentialsDir  = Join-Path $env:USERPROFILE ".claude\instashare"
 $credentialsFile = Join-Path $credentialsDir "credentials.json"
 $deviceHostname  = $env:COMPUTERNAME
+
+# Session info shown in the shared-page header. Model and effort are live-session
+# state only the running agent knows — BEFORE running, fill them from the current
+# session (see "Fill in the session info" below); leave '' if unknown (the server
+# falls back to the model parsed from the transcript). Plan is read from disk.
+$sessionModel  = ''   # e.g. 'Opus 4.8 (1M context)'
+$sessionEffort = ''   # e.g. 'medium'
+$sessionPlan   = ''
+$claudeConfig = Join-Path $env:USERPROFILE ".claude.json"
+if (Test-Path $claudeConfig) {
+  try {
+    $orgType = (Get-Content $claudeConfig -Raw -Encoding UTF8 | ConvertFrom-Json).oauthAccount.organizationType
+    switch ($orgType) {
+      'claude_max'        { $sessionPlan = 'Claude Max' }
+      'claude_pro'        { $sessionPlan = 'Claude Pro' }
+      'claude_team'       { $sessionPlan = 'Claude Team' }
+      'claude_enterprise' { $sessionPlan = 'Claude Enterprise' }
+    }
+  } catch { }
+}
 
 # Load the per-machine claim token if we have one. Server uses its hash to
 # group every share from this device under a single identity so the user
@@ -97,6 +126,9 @@ function Build-Headers {
   param($Token)
   $h = @{ 'x-device-hostname' = $deviceHostname }
   if ($Token) { $h['x-claim-token'] = $Token }
+  if ($sessionModel)  { $h['x-session-model']  = $sessionModel }
+  if ($sessionEffort) { $h['x-session-effort'] = $sessionEffort }
+  if ($sessionPlan)   { $h['x-session-plan']   = $sessionPlan }
   return $h
 }
 
@@ -167,6 +199,27 @@ api_base="${INSTASHARE_API_URL:-https://instashare.to}"
 credentials_dir="$HOME/.claude/instashare"
 credentials_file="$credentials_dir/credentials.json"
 device_hostname=$(hostname 2>/dev/null || echo unknown)
+
+# Session info shown in the shared-page header. Model and effort are live-session
+# state only the running agent knows — BEFORE running, fill them from the current
+# session (see "Fill in the session info" below); leave empty if unknown (the
+# server falls back to the model parsed from the transcript). Plan is read from disk.
+session_model=""    # e.g. 'Opus 4.8 (1M context)'
+session_effort=""   # e.g. 'medium'
+session_plan=""
+if [ -f "$HOME/.claude.json" ]; then
+  org_type=$(python3 -c 'import json,sys; print((json.load(open(sys.argv[1])).get("oauthAccount") or {}).get("organizationType","") or "")' "$HOME/.claude.json" 2>/dev/null || echo "")
+  case "$org_type" in
+    claude_max)        session_plan="Claude Max" ;;
+    claude_pro)        session_plan="Claude Pro" ;;
+    claude_team)       session_plan="Claude Team" ;;
+    claude_enterprise) session_plan="Claude Enterprise" ;;
+  esac
+fi
+session_headers=()
+[ -n "$session_model" ]  && session_headers+=(-H "x-session-model: $session_model")
+[ -n "$session_effort" ] && session_headers+=(-H "x-session-effort: $session_effort")
+[ -n "$session_plan" ]   && session_headers+=(-H "x-session-plan: $session_plan")
 
 # Load the per-machine claim token if we have one. Server uses its hash to
 # group every share from this device under a single identity so the user
@@ -242,6 +295,7 @@ post_chats() {
   curl -sS -o "$tmp" -w '%{http_code}' \
     -X POST "$api_base/api/chats" \
     "${headers[@]}" \
+    "${session_headers[@]}" \
     -H 'Content-Type: text/plain; charset=utf-8' \
     --data-binary "@$redacted"
 }
@@ -256,6 +310,7 @@ if [ -f "$sidecar" ]; then
   code=$(curl -sS -o "$tmp" -w '%{http_code}' \
     -X PUT "$put_uri" \
     "${put_headers[@]}" \
+    "${session_headers[@]}" \
     -H 'Content-Type: text/plain; charset=utf-8' \
     --data-binary "@$redacted")
   if [ "$code" = "200" ]; then resp="$(cat "$tmp")"; fi
@@ -322,4 +377,5 @@ The command prints the public URL on the first line and a delete URL on the seco
 - **The scan is best-effort.** It targets the well-known token formats listed above. Custom or proprietary tokens, free-form passwords in prose, and high-entropy strings without a recognizable prefix won't match. Still surface the public-link warning so the user can decide whether to share, and recommend reviewing the link if the chat may contain anything else sensitive.
 - **Sidecar makes the URL stable across reruns.** After the first POST the script writes `<jsonl-path>.instashare.json` containing `{slug, deleteToken, url}`. On the next invocation it `PUT`s to `/api/chats/<slug>?token=<deleteToken>`, which replaces the stored JSONL and recomputes stats while preserving the slug, created-at, and delete token. If the chat was deleted server-side (PUT returns 404) or the sidecar is stale/tampered (401/403), the script falls back to POST and overwrites the sidecar. Delete the sidecar manually to force a brand-new URL.
 - **The claim token is per-machine, not per-share.** `~/.claude/instashare/credentials.json` is written on the first upload and reused thereafter. It's sent as `x-claim-token` on POST and PUT so the server can group all uploads from this device. If the server revokes it (the user clicked Revoke on `/account`), the next upload retries anonymously, the server mints a fresh token, and the user sees a fresh claim URL.
+- **Session info is sent as headers, not baked into the body.** `x-session-model`, `x-session-effort`, and `x-session-plan` ride alongside the upload so the shared page can show e.g. `Opus 4.8 (1M context) with medium effort · Claude Max`. Plan comes from `~/.claude.json` (`oauthAccount.organizationType`); model/effort are filled in by the agent from the live session because the harness never writes them to the transcript (the persisted `message.model` is the bare id without the context-window marker, and effort isn't recorded at all). All three are optional — the server parses the base model from the transcript as a fallback, so a header-less or headless upload still shows the model.
 - **The original session file is never modified.** Only the sidecar (a small JSON file next to the .jsonl) and the per-machine credentials file (`~/.claude/instashare/credentials.json`) are written locally; the .jsonl itself is read-only from the script's perspective.
