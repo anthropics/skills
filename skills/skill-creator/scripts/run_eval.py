@@ -138,7 +138,22 @@ def run_single_query(
                                     pending_tool_name = tool_name
                                     accumulated_json = ""
                                 else:
-                                    return False
+                                    # Don't early-return — Claude may use
+                                    # exploration tools (Bash, LS, Glob,
+                                    # TodoWrite, etc.) before invoking the
+                                    # skill. For queries like "audit my
+                                    # latest skill", Claude needs to figure
+                                    # out what "my latest" means before
+                                    # triggering anything. Clear any
+                                    # in-progress Skill/Read state so this
+                                    # non-skill tool's input deltas don't
+                                    # get confused with a prior Skill
+                                    # invocation. The loop's natural
+                                    # terminator (message_stop or timeout)
+                                    # gives the right answer once it has
+                                    # seen everything Claude did.
+                                    pending_tool_name = None
+                                    accumulated_json = ""
 
                         elif se_type == "content_block_delta" and pending_tool_name:
                             delta = se.get("delta", {})
