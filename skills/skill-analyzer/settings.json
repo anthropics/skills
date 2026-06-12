@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(skill-analysis-*.md)",
+      "Edit(skill-analysis-*.md)",
+      "Bash(find ~/.claude/skills ~/.claude/plugins -type d*)"
+    ]
+  }
+}
