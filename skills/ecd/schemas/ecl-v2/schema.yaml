@@ -1,0 +1,153 @@
+name: ecl-v2
+version: 2.2
+description: A-H constraint-solving workflow with tiered complexity routing (Lite/Standard/Full), a single shared ledger, and one final handoff.
+# Tier model (v2.2): L1=Lite (2-3 stages, no subagents), L2=Standard (5-7 stages, optional subagents), L3=Full (10 stages, mandatory subagents).
+# Backward-compatible: missing ecl_tier defaults to L3.
+notes:
+  - id: overview
+    kind: artifact
+    filename: 00-overview.md
+    block_key: ecl.case
+    template: overview.md
+    requires: []
+    tier_fields:
+      ecl_tier: { type: string, enum: [L1, L2, L3], default: L3 }
+      complexity_classification:
+        q1_impact_surface: { type: string, enum: [L1, L2, L3] }
+        q2_risk_level: { type: string, enum: [L1, L2, L3] }
+        q3_clarity: { type: string, enum: [clear, ambiguous] }
+        final_tier: { type: string, enum: [L1, L2, L3] }
+  - id: constraint_ledger
+    kind: artifact
+    filename: 05-constraint-ledger.md
+    block_key: ecl.constraint_ledger
+    template: constraint-ledger.md
+    requires: [overview]
+  - id: preprocess
+    kind: stage
+    letter: A
+    filename: 10-a-preprocess.md
+    block_key: ecl.preprocess
+    template: stage-a.md
+    template_lite: stage-a-lite.md
+    tiers: [L1, L2, L3]
+    requires: [constraint_ledger]
+  - id: divergence
+    kind: stage
+    letter: B
+    filename: 20-b-divergence.md
+    block_key: ecl.options
+    template: stage-b.md
+    tiers: [L2, L3]
+    requires: [preprocess]
+  - id: requirements
+    kind: stage
+    letter: C
+    filename: 30-c-requirements.md
+    block_key: ecl.requirements
+    template: stage-c.md
+    tiers: [L2, L3]
+    requires: [divergence]
+  - id: critique
+    kind: stage
+    letter: D
+    filename: 40-d-critique.md
+    block_key: ecl.conflicts
+    template: stage-d.md
+    tiers: [L2, L3]
+    tiers_note: optional for L2, mandatory for L3
+    requires: [requirements]
+  - id: closure
+    kind: stage
+    letter: E
+    filename: 50-e-closure.md
+    block_key: ecl.dependencies
+    template: stage-e.md
+    tiers: [L2, L3]
+    tiers_note: slim for L2, full for L3
+    requires: [critique]
+  - id: probes
+    kind: stage
+    letter: F
+    filename: 60-f-probes.md
+    block_key: ecl.probes
+    template: stage-f.md
+    tiers: [L3]
+    requires: [closure]
+  - id: red_blue
+    kind: stage
+    letter: G
+    filename: 70-g-red-blue.md
+    block_key: ecl.adversarial
+    template: stage-g.md
+    tiers: [L3]
+    requires: [probes]
+  - id: review
+    kind: stage
+    letter: H
+    filename: 80-h-review.md
+    block_key: ecl.review
+    template: stage-h.md
+    tiers: [L2, L3]
+    tiers_note: optional for L2, mandatory for L3
+    requires: [red_blue]
+  - id: code_handoff
+    kind: artifact
+    filename: 90-code-handoff.md
+    block_key: ecl.code_handoff
+    template: code-handoff.md
+    template_lite: code-handoff-lite.md
+    tiers: [L1, L2, L3]
+    requires: [review]
+  - id: canonical_contracts
+    kind: artifact
+    filename: 91-canonical-contracts.md
+    block_key: ecl.canonical_contracts
+    template: canonical-contracts.md
+    tiers: [L2, L3]
+    requires: [code_handoff]
+  - id: constraint_crosswalk
+    kind: artifact
+    filename: 92-constraint-crosswalk.md
+    block_key: ecl.constraint_crosswalk
+    template: constraint-crosswalk.md
+    tiers: [L2, L3]
+    requires: [canonical_contracts]
+  - id: execution_manifest
+    kind: artifact
+    filename: 95-execution-manifest.md
+    block_key: ecl.execution_manifest
+    template: execution-manifest.md
+    tiers: [L2, L3]
+    requires: [constraint_crosswalk]
+  - id: code_batches
+    kind: artifact
+    filename: 96-code-batches.md
+    block_key: ecl.code_batches
+    template: code-batches.md
+    tiers: [L2, L3]
+    requires: [execution_manifest]
+  - id: code_preflight
+    kind: artifact
+    filename: 97-code-preflight.md
+    block_key: ecl.code_preflight
+    template: code-preflight.md
+    tiers: [L1, L2, L3]
+    tiers_note: "L1: requires []; L2/L3: requires [code_batches]"
+    requires: []
+  - id: compile_for_code
+    kind: stage
+    letter: J
+    filename: 98-j-compile-for-code.md
+    block_key: ecl.compile_for_code
+    template: stage-j.md
+    template_lite: stage-j-lite.md
+    tiers: [L1, L2, L3]
+    requires: [code_preflight]
+  - id: final_handoff
+    kind: artifact
+    filename: 99-code-handoff.md
+    block_key: ecl.final_handoff
+    template: final-handoff.md
+    tiers: [L2, L3]
+    requires: [compile_for_code]
