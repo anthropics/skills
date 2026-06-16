@@ -138,20 +138,27 @@ def run_single_query(
                                     pending_tool_name = tool_name
                                     accumulated_json = ""
                                 else:
-                                    return False
+                                    # Don't bail: other tools (Bash/WebFetch/etc.)
+                                    # may precede a later Skill/Read call. Reset the
+                                    # pending state and keep scanning.
+                                    pending_tool_name = None
 
                         elif se_type == "content_block_delta" and pending_tool_name:
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
+                                # Also match the real skill name: an installed skill
+                                # fires under its actual name, not the temp command
+                                # name (clean_name).
+                                if clean_name in accumulated_json or skill_name in accumulated_json:
                                     return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
+                                if clean_name in accumulated_json or skill_name in accumulated_json:
+                                    return True
+                                pending_tool_name = None
+                            # Don't return False here; keep scanning until "result".
 
                     # Fallback: full assistant message
                     elif event.get("type") == "assistant":
@@ -161,11 +168,17 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
+                            if tool_name == "Skill" and (
+                                clean_name in tool_input.get("skill", "")
+                                or skill_name in tool_input.get("skill", "")
+                            ):
+                                return True
+                            if tool_name == "Read" and (
+                                clean_name in tool_input.get("file_path", "")
+                                or skill_name in tool_input.get("file_path", "")
+                            ):
+                                return True
+                        # No match in this message; keep scanning subsequent ones.
 
                     elif event.get("type") == "result":
                         return triggered
