@@ -58,7 +58,8 @@ class SceneManager {
         this.scenes = scenes;
         this.currentIndex = 0;
         this.playing = false;
-        this.speed = 1.0; // 0.5x, 1x, 2x supported
+        this.speed = 1.0; // fractional speeds supported (0.25x, 0.5x, 1x, 2x, 4x)
+        this._frameAccum = 0;
     }
 
     get current() {
@@ -72,15 +73,17 @@ class SceneManager {
     update() {
         if (!this.playing) return;
 
-        // Speed multiplier: run update() multiple times for faster playback
-        const steps = this.speed >= 2 ? 2 : 1;
-        for (let i = 0; i < steps; i++) {
+        // Fractional accumulator keeps 0.5x genuinely slower and 2x/4x faster.
+        this._frameAccum += this.speed;
+        while (this._frameAccum >= 1) {
+            this._frameAccum--;
             if (this.current && !this.current.done) {
                 this.current.update();
             } else if (this.currentIndex < this.scenes.length - 1) {
                 this.goToScene(this.currentIndex + 1);
             } else {
                 this.playing = false; // Reached end
+                break;
             }
         }
     }
@@ -91,8 +94,11 @@ class SceneManager {
 
     goToScene(index) {
         if (index < 0 || index >= this.scenes.length) return;
+        if (this.current && this.current.onExit && index !== this.currentIndex) this.current.onExit();
         this.scenes[index].reset();
         this.currentIndex = index;
+        this._frameAccum = 0;
+        if (this.current && this.current.onEnter) this.current.onEnter();
     }
 
     nextScene() { this.goToScene(this.currentIndex + 1); }
@@ -159,6 +165,7 @@ function drawPartialPath(points, t, weight = 2, col = '#d97757') {
     const fullSegments = floor(progress);
     const partial = progress - fullSegments;
 
+    push();
     stroke(col);
     strokeWeight(weight);
     noFill();
@@ -172,11 +179,13 @@ function drawPartialPath(points, t, weight = 2, col = '#d97757') {
         vertex(lerp(from[0], to[0], partial), lerp(from[1], to[1], partial));
     }
     endShape();
+    pop();
 }
 
 // Draw an annotation arrow — the pen of the explainer
 // headSize controls arrowhead scale
 function drawArrow(x1, y1, x2, y2, col = '#d97757', weight = 2, headSize = 12) {
+    push();
     stroke(col);
     strokeWeight(weight);
     fill(col);
@@ -185,7 +194,6 @@ function drawArrow(x1, y1, x2, y2, col = '#d97757', weight = 2, headSize = 12) {
     const len = dist(x1, y1, x2, y2);
     const bodyLen = len - headSize;
 
-    push();
     translate(x1, y1);
     rotate(angle);
 
@@ -210,8 +218,10 @@ function drawLabel(x, y, text, opts = {}) {
         weight = 'normal'   // 'bold' or 'normal'
     } = opts;
 
-    textAlign(align);
+    push();
+    textAlign(align, CENTER);
     textSize(size);
+    textStyle(weight);
 
     if (bg) {
         const w = textWidth(text) + 20;
@@ -224,12 +234,13 @@ function drawLabel(x, y, text, opts = {}) {
 
     fill(red(color(col)), green(color(col)), blue(color(col)), alpha);
     noStroke();
-    text(text, x, y + size * 0.35);
-    textAlign(LEFT); // Reset
+    text(text, x, y);
+    pop();
 }
 
 // Highlight box — draw a glowing rectangle around something important
 function drawHighlight(x, y, w, h, col = '#d97757', alpha = 80, radius = 8) {
+    push();
     noStroke();
     fill(red(color(col)), green(color(col)), blue(color(col)), alpha);
     rectMode(CENTER);
@@ -238,6 +249,7 @@ function drawHighlight(x, y, w, h, col = '#d97757', alpha = 80, radius = 8) {
     strokeWeight(2);
     noFill();
     rect(x, y, w + 20, h + 12, radius);
+    pop();
 }
 
 // Typewriter effect: reveal text one character at a time
@@ -277,25 +289,38 @@ class CoordinateSystem {
         const [ax0, ay0] = this.toScreen(0, yRange[0]);
         const [ax1, ay1] = this.toScreen(0, yRange[1]);
 
+        push();
         stroke(col);
         strokeWeight(1.5);
         drawArrow(x0, y0, x1, y1, col, 1.5, 10);
         drawArrow(ax0, ay0, ax1, ay1, col, 1.5, 10);
+        pop();
     }
 
     // Plot a function f(x) from xMin to xMax with resolution steps
     plotFunction(f, xMin, xMax, col = '#d97757', weight = 2.5, steps = 200) {
+        push();
         stroke(col);
         strokeWeight(weight);
         noFill();
-        beginShape();
+        let drawing = false;
         for (let i = 0; i <= steps; i++) {
             const wx = map(i, 0, steps, xMin, xMax);
             const wy = f(wx);
+            if (!Number.isFinite(wy)) {
+                if (drawing) { endShape(); drawing = false; }
+                continue;
+            }
             const [sx, sy] = this.toScreen(wx, wy);
+            if (!Number.isFinite(sx) || !Number.isFinite(sy) || Math.abs(sy) > height * 8) {
+                if (drawing) { endShape(); drawing = false; }
+                continue;
+            }
+            if (!drawing) { beginShape(); drawing = true; }
             vertex(sx, sy);
         }
-        endShape();
+        if (drawing) endShape();
+        pop();
     }
 }
 
@@ -307,42 +332,50 @@ class CoordinateSystem {
 const Typography = {
     // Main concept title — shown once per scene at the top
     headline: (text, x, y, alpha = 255) => {
+        push();
         textFont('Lora, serif');
         textSize(28);
-        textAlign(CENTER);
+        textAlign(CENTER, CENTER);
         fill(20, 20, 19, alpha);
         noStroke();
         text(text, x, y);
+        pop();
     },
 
     // Step label — "Step 1 of 4" or scene subtitle
     stepLabel: (text, x, y, alpha = 180) => {
+        push();
         textFont('Poppins, sans-serif');
         textSize(13);
-        textAlign(CENTER);
+        textAlign(CENTER, CENTER);
         fill(176, 174, 165, alpha);
         noStroke();
         text(text, x, y);
+        pop();
     },
 
     // Body annotation — callout text next to a visual element
     annotation: (text, x, y, col = '#141413', alpha = 255) => {
+        push();
         textFont('Poppins, sans-serif');
         textSize(15);
-        textAlign(LEFT);
+        textAlign(LEFT, CENTER);
         fill(red(color(col)), green(color(col)), blue(color(col)), alpha);
         noStroke();
         text(text, x, y);
+        pop();
     },
 
     // Math expression (monospace)
     math: (text, x, y, size = 18, alpha = 255) => {
+        push();
         textFont('Courier New, monospace');
         textSize(size);
-        textAlign(CENTER);
+        textAlign(CENTER, CENTER);
         fill(20, 20, 19, alpha);
         noStroke();
         text(text, x, y);
+        pop();
     }
 };
 
