@@ -26,7 +26,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="request-1",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-4-7",
+                model="claude-opus-4-8",
                 max_tokens=16000,
                 messages=[{"role": "user", "content": "Summarize climate change impacts"}]
             )
@@ -34,7 +34,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="request-2",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-4-7",
+                model="claude-opus-4-8",
                 max_tokens=16000,
                 messages=[{"role": "user", "content": "Explain quantum computing basics"}]
             )
@@ -100,6 +100,19 @@ print(f"Status: {cancelled.processing_status}")  # "canceling"
 
 ---
 
+## List Batches (auto-pagination)
+
+Iterating the return value of any `list()` call auto-paginates across all pages — do not index into `.data` if you want the full set:
+
+```python
+for batch in client.messages.batches.list(limit=20):
+    print(batch.id, batch.processing_status)
+```
+
+For manual control, use `first_page.has_next_page()` / `first_page.get_next_page()` / `first_page.next_page_info()`; `first_page.data` holds the current page's items and `first_page.last_id` is the cursor.
+
+---
+
 ## Batch with Prompt Caching
 
 ```python
@@ -117,7 +130,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id=f"analysis-{i}",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-4-7",
+                model="claude-opus-4-8",
                 max_tokens=16000,
                 system=shared_system,
                 messages=[{"role": "user", "content": question}]

@@ -13,6 +13,31 @@ Send events to a session via `POST /v1/sessions/{id}/events`.
 | `user.tool_confirmation`  | Approve/deny a tool call (when `always_ask` policy) |
 | `user.custom_tool_result` | Provide result for a custom tool call |
 | `user.define_outcome`     | Start a rubric-graded iterate loop — see `shared/managed-agents-outcomes.md` |
+| `system.message`          | Update the agent's system prompt between turns — **Claude Opus 4.8 only**; see § Updating the system prompt mid-session |
+
+#### Updating the system prompt mid-session (`system.message`)
+
+Unlike the `system` field on the agent definition (fixed at session creation), a `system.message` event changes the system prompt **as the session progresses** — a different persona, revised constraints, or runtime-fetched context that should shape behavior going forward:
+
+```python
+client.beta.sessions.events.send(
+    session.id,
+    events=[
+        {
+            "type": "system.message",
+            "content": [
+                {"type": "text", "text": "The user's current timezone is America/New_York."},
+            ],
+        },
+    ],
+)
+```
+
+Constraints:
+
+- **Claude Opus 4.8 only.** If any model configured on the agent does not support mid-conversation system injection, the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
+- **Cannot be sent while the session is idle with `stop_reason: requires_action`** (blocked on `user.custom_tool_result` / `user.tool_confirmation`).
+- `content` accepts 1–1000 text items.
 
 ### Receiving Events
 

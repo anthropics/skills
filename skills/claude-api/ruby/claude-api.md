@@ -26,7 +26,7 @@ client = Anthropic::Client.new(api_key: "your-api-key")
 
 ```ruby
 message = client.messages.create(
-  model: :"claude-opus-4-7",
+  model: :"claude-opus-4-8",
   max_tokens: 16000,
   messages: [
     { role: "user", content: "What is the capital of France?" }
@@ -46,7 +46,7 @@ end
 
 ```ruby
 stream = client.messages.stream(
-  model: :"claude-opus-4-7",
+  model: :"claude-opus-4-8",
   max_tokens: 64000,
   messages: [{ role: "user", content: "Write a haiku" }]
 )
@@ -78,7 +78,7 @@ class GetWeather < Anthropic::BaseTool
 end
 
 client.beta.messages.tool_runner(
-  model: :"claude-opus-4-7",
+  model: :"claude-opus-4-8",
   max_tokens: 16000,
   tools: [GetWeather.new],
   messages: [{ role: "user", content: "What's the weather in San Francisco?" }]
@@ -99,7 +99,7 @@ See the [shared tool use concepts](../shared/tool-use-concepts.md) for the tool 
 
 ```ruby
 message = client.messages.create(
-  model: :"claude-opus-4-7",
+  model: :"claude-opus-4-8",
   max_tokens: 16000,
   system_: [
     { type: "text", text: long_system_prompt, cache_control: { type: "ephemeral" } }
@@ -111,3 +111,30 @@ message = client.messages.create(
 For 1-hour TTL: `cache_control: { type: "ephemeral", ttl: "1h" }`. There's also a top-level `cache_control:` on `messages.create` that auto-places on the last cacheable block.
 
 Verify hits via `message.usage.cache_creation_input_tokens` / `message.usage.cache_read_input_tokens`.
+
+---
+
+## Stop Details
+
+When `stop_reason` is `:refusal`, the response includes structured `stop_details`:
+
+```ruby
+if message.stop_reason == :refusal && message.stop_details
+  puts "Category: #{message.stop_details.category}"     # :cyber, :bio, or nil
+  puts "Explanation: #{message.stop_details.explanation}"
+end
+```
+
+---
+
+## Error Type
+
+`APIStatusError` exposes a `.type` field for programmatic error classification:
+
+```ruby
+begin
+  client.messages.create(...)
+rescue Anthropic::APIStatusError => e
+  puts e.type  # :rate_limit_error, :overloaded_error, etc.
+end
+```
