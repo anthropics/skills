@@ -1,0 +1,192 @@
+# {{FEATURE_NAME}} - Tasks
+
+> **Status**: Not Started | In Progress | Completed
+> **Design Doc**: [design.md](./design.md)
+> **Started**: {{DATE}}
+> **Target Completion**: {{DATE}}
+
+---
+
+## 🎛️ Execution Modes (AI Agent MUST Read)
+
+**Three execution modes available:**
+
+| Mode | Trigger Phrases | Behavior |
+|------|-----------------|----------|
+| **Step Mode** (Default) | "start", "begin" | Execute one task, wait for confirmation, repeat |
+| **Batch Mode** | "execute all", "batch mode" | Execute all tasks consecutively, report at end |
+| **Phase Mode** | "execute phase 1", "execute setup" | Execute all tasks in one phase, then wait |
+
+**All modes MUST follow:**
+1. ✅ Execute in order - Start from first `- [ ]`
+2. ✅ Check dependencies - Ensure dependency tasks completed (`- [x]`)
+3. ✅ Update status - Change `- [ ]` to `- [x]` after completion
+4. ✅ Report progress - Show (N/Total)
+5. ✅ Stop on error - Stop immediately on error, wait for user
+
+**Prohibited:**
+- ❌ Skip tasks
+- ❌ Execute out of order
+- ❌ Do work not in task list
+- ❌ Continue after error
+
+---
+
+## Overview
+
+| Phase | Tasks | Completed | Progress |
+|-------|-------|-----------|----------|
+| Setup | {{n}} | 0 | 0% |
+| Implementation | {{n}} | 0 | 0% |
+| Testing | {{n}} | 0 | 0% |
+| Documentation | {{n}} | 0 | 0% |
+| **Total** | **{{n}}** | **0** | **0%** |
+
+## Task Breakdown
+
+### Phase 1: Setup
+
+- [ ] **T-001**: {{task description}}
+  - **Complexity**: Low
+  - **Files**: `{{path/to/file}}`
+  - **Dependencies**: None
+  - **Notes**: {{additional context}}
+
+- [ ] **T-002**: {{task description}}
+  - **Complexity**: Low
+  - **Files**: `{{path/to/file}}`
+  - **Dependencies**: T-001
+  - **Notes**:
+
+### Phase 2: Core Implementation
+
+- [ ] **T-010**: {{task description}}
+  - **Complexity**: Medium
+  - **Files**:
+    - `{{path/to/file1}}`
+    - `{{path/to/file2}}`
+  - **Dependencies**: T-002
+  - **Notes**:
+
+- [ ] **T-011**: {{task description}}
+  - **Complexity**: High
+  - **Files**: `{{path/to/file}}`
+  - **Dependencies**: T-010
+  - **Notes**:
+
+- [ ] **T-012**: {{task description}}
+  - **Complexity**: Medium
+  - **Files**: `{{path/to/file}}`
+  - **Dependencies**: T-010
+  - **Notes**:
+
+### Phase 3: Integration
+
+- [ ] **T-020**: {{task description}}
+  - **Complexity**: Medium
+  - **Files**: `{{path/to/file}}`
+  - **Dependencies**: T-011, T-012
+  - **Notes**:
+
+### Phase 4: Testing
+
+- [ ] **T-030**: Write unit tests for {{component}}
+  - **Complexity**: Medium
+  - **Files**: `{{path/to/test/file}}`
+  - **Dependencies**: T-020
+  - **Notes**: Target coverage: {{percentage}}%
+
+- [ ] **T-031**: Write integration tests
+  - **Complexity**: Medium
+  - **Files**: `{{path/to/test/file}}`
+  - **Dependencies**: T-030
+  - **Notes**:
+
+- [ ] **T-032**: Manual QA testing
+  - **Complexity**: Low
+  - **Files**: N/A
+  - **Dependencies**: T-031
+  - **Notes**: Test cases: {{list}}
+
+### Phase 5: Documentation
+
+- [ ] **T-040**: Update API documentation
+  - **Complexity**: Low
+  - **Files**: `docs/{{file}}.md`
+  - **Dependencies**: T-020
+  - **Notes**:
+
+- [ ] **T-041**: Update README/changelog
+  - **Complexity**: Low
+  - **Files**: `README.md`, `CHANGELOG.md`
+  - **Dependencies**: T-040
+  - **Notes**:
+
+## Progress Tracking
+
+| Task | Status | Assignee | Started | Completed | Notes |
+|------|--------|----------|---------|-----------|-------|
+| T-001 | ⏳ Pending | | | | |
+| T-002 | ⏳ Pending | | | | |
+| T-010 | ⏳ Pending | | | | |
+| T-011 | ⏳ Pending | | | | |
+| T-012 | ⏳ Pending | | | | |
+| T-020 | ⏳ Pending | | | | |
+| T-030 | ⏳ Pending | | | | |
+| T-031 | ⏳ Pending | | | | |
+| T-032 | ⏳ Pending | | | | |
+| T-040 | ⏳ Pending | | | | |
+| T-041 | ⏳ Pending | | | | |
+
+**Legend**:
+- ⏳ Pending
+- 🔄 In Progress
+- ✅ Done
+- ❌ Blocked
+- ⏸️ On Hold
+
+## Dependency Graph
+
+```mermaid
+graph LR
+    T001[T-001: Setup] --> T002[T-002: Config]
+    T002 --> T010[T-010: Core]
+    T010 --> T011[T-011: Feature A]
+    T010 --> T012[T-012: Feature B]
+    T011 --> T020[T-020: Integration]
+    T012 --> T020
+    T020 --> T030[T-030: Unit Tests]
+    T030 --> T031[T-031: Integration Tests]
+    T031 --> T032[T-032: QA]
+    T020 --> T040[T-040: API Docs]
+    T040 --> T041[T-041: README]
+```
+
+## Blockers
+
+<!-- Track any blockers encountered -->
+
+| Blocker | Blocking Tasks | Raised | Owner | Status | Resolution |
+|---------|----------------|--------|-------|--------|------------|
+| {{blocker description}} | T-XXX | {{date}} | {{name}} | Open/Resolved | {{resolution}} |
+
+## Change Log
+
+<!-- Track significant changes to the task plan -->
+
+| Date | Change | Reason |
+|------|--------|--------|
+| {{date}} | Initial task breakdown | |
+| {{date}} | {{change}} | {{reason}} |
+
+## Completion Checklist
+
+Before marking as complete:
+
+- [ ] All tasks marked as Done
+- [ ] All tests passing
+- [ ] Code reviewed
+- [ ] Documentation updated
+- [ ] Changelog updated
+- [ ] Stakeholders notified
+- [ ] Spec archived to `.spec-flow/archive/{{feature-name}}/`
