@@ -1,0 +1,47 @@
+# Traffic Light FSM Example
+# A simple Moore machine implementation of a traffic light controller
+
+name: TrafficLight
+type: moore
+initial: red
+description: Standard traffic light with timer-based transitions
+
+states:
+  red:
+    output: STOP
+    entry_action: turn_on_red_light()
+    exit_action: turn_off_red_light()
+    transitions:
+      - event: timer_expired
+        next: green
+        duration: 30  # seconds
+
+  yellow:
+    output: CAUTION
+    entry_action: turn_on_yellow_light()
+    exit_action: turn_off_yellow_light()
+    transitions:
+      - event: timer_expired
+        next: red
+        duration: 5  # seconds
+
+  green:
+    output: GO
+    entry_action: turn_on_green_light()
+    exit_action: turn_off_green_light()
+    transitions:
+      - event: timer_expired
+        next: yellow
+        duration: 25  # seconds
+      - event: emergency_override
+        next: red
+        priority: high
+
+# Additional configuration
+timers:
+  default_cycle: 60  # Total cycle time in seconds
+  pedestrian_delay: 2  # Delay before pedestrian signal
+
+safety:
+  all_red_duration: 2  # All lights red during transition
+  minimum_green: 10  # Minimum green time before change
