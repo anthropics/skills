@@ -4,8 +4,8 @@ Safe test runner for the vscode skill.
 
 Default tests do not write user settings, install extensions, open remote
 windows, or modify any IDE state outside a temporary scratch directory. Temp
-artifacts land in $VSCODE_SKILL_TEMP/vscode-skill-tests/ when the env var is
-set, otherwise under the platform temp directory.
+artifacts land in an isolated subdirectory under $VSCODE_SKILL_TEMP when set,
+otherwise under the platform temp directory.
 """
 
 from __future__ import annotations
@@ -17,6 +17,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import hashlib
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -75,10 +77,15 @@ def _default_quick_validate() -> Path | None:
 QUICK_VALIDATE = _default_quick_validate()
 
 
-def _default_temp_root() -> Path:
+def _default_temp_base() -> Path:
     override = os.environ.get("VSCODE_SKILL_TEMP")
     base = Path(override) if override else Path(os.environ.get("TEMP", tempfile.gettempdir()))
     return base / "vscode-skill-tests"
+
+
+def _default_temp_root() -> Path:
+    digest = hashlib.sha1(str(SKILL_DIR).encode("utf-8")).hexdigest()[:10]
+    return _default_temp_base() / f"{SKILL_DIR.name}-{digest}"
 
 
 TEMP_ROOT = _default_temp_root()
@@ -164,6 +171,48 @@ def add(results: list[dict[str, Any]], result: dict[str, Any]) -> None:
     results.append(result)
 
 
+@contextmanager
+def temporary_env(updates: dict[str, str]):
+    original = {key: os.environ.get(key) for key in updates}
+    os.environ.update(updates)
+    try:
+        yield
+    finally:
+        for key, value in original.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+
+
+def write_fake_cli(path: Path, label: str = "Fake VS Code CLI") -> None:
+    if os.name == "nt":
+        path.write_text(
+            "@echo off\r\n"
+            "if \"%~1\"==\"--version\" (\r\n"
+            f"  echo {label} 0.0.0\r\n"
+            "  echo test-commit\r\n"
+            "  echo x64\r\n"
+            "  exit /b 0\r\n"
+            ")\r\n"
+            "if \"%~1\"==\"--list-extensions\" exit /b 0\r\n"
+            f"echo {label} %*\r\n"
+            "exit /b 0\r\n",
+            encoding="utf-8",
+        )
+    else:
+        path.write_text(
+            "#!/usr/bin/env sh\n"
+            "case \"$1\" in\n"
+            f"  --version) printf '%s\\n' '{label} 0.0.0' 'test-commit' 'x64'; exit 0 ;;\n"
+            "  --list-extensions) exit 0 ;;\n"
+            f"  *) printf '%s %s\\n' '{label}' \"$*\"; exit 0 ;;\n"
+            "esac\n",
+            encoding="utf-8",
+        )
+        path.chmod(0o755)
+
+
 def basic_tests(results: list[dict[str, Any]], scratch: Path) -> None:
     if QUICK_VALIDATE is not None:
         add(results, run([sys.executable, "-X", "utf8", str(QUICK_VALIDATE), str(SKILL_DIR)], name="quick_validate"))
@@ -183,14 +232,29 @@ def basic_tests(results: list[dict[str, Any]], scratch: Path) -> None:
     if SSHD_SCRIPT.exists():
         add(results, powershell_parse(SSHD_SCRIPT, "parse setup-local-sshd.ps1"))
 
-    add(results, run_vscode_cli("info", None, "--Product", "auto", name="info auto", timeout=90))
-    add(results, run_vscode_cli("ext", "list", "--Product", "auto", name="ext list auto", timeout=90))
+    fake_code = scratch / ("fake-code.cmd" if os.name == "nt" else "fake-code")
+    fake_user = scratch / "Code" / "User"
+    fake_ext = scratch / ".vscode" / "extensions"
+    write_fake_cli(fake_code)
+    fake_user.mkdir(parents=True, exist_ok=True)
+    fake_ext.mkdir(parents=True, exist_ok=True)
+
+    with temporary_env({
+        "VSCODE_CODE_CLI": str(fake_code),
+        "VSCODE_USER_DATA": str(fake_user),
+        "VSCODE_EXTENSIONS_DIR": str(fake_ext),
+    }):
+        add(results, run_vscode_cli("info", None, "--Product", "auto", name="info auto with fake cli", timeout=90))
+        add(results, run_vscode_cli("ext", "list", "--Product", "auto", name="ext list auto with fake cli", timeout=90))
+        add(results, run_vscode_cli("settings-sync", "status", name="settings-sync status"))
+        add(results, run_vscode_cli("profile", "list", name="profile list"))
+
     add(results, run_vscode_cli("settings", "path", "--Product", "vscode", name="settings path vscode"))
     add(results, run_vscode_cli("settings", "get", "--Product", "vscode", name="settings get vscode"))
     add(results, run_vscode_cli("settings", "path", "--Product", "codebuddy-cn", name="generic product requires configured path", expect_ok=False))
 
-    generic_cli = scratch / "fake-codebuddy.cmd"
-    generic_cli.write_text("@echo off\r\necho Fake CodeBuddy CLI 0.0.0\r\n", encoding="utf-8")
+    generic_cli = scratch / ("fake-codebuddy.cmd" if os.name == "nt" else "fake-codebuddy")
+    write_fake_cli(generic_cli, "Fake CodeBuddy CLI")
     generic_user = scratch / "CodeBuddy CN" / "User"
     generic_ext = scratch / ".codebuddycn" / "extensions"
     generic_user.mkdir(parents=True, exist_ok=True)
@@ -245,9 +309,6 @@ def basic_tests(results: list[dict[str, Any]], scratch: Path) -> None:
     add(results, run_vscode_cli("launch", "list", name="launch list"))
     add(results, run_vscode_cli("extensions", "stacks", name="extensions stacks"))
     add(results, run_vscode_cli("extensions", "recommend", "--Stack", "polyglot-baseline", name="extensions recommend"))
-    add(results, run_vscode_cli("settings-sync", "status", name="settings-sync status"))
-    add(results, run_vscode_cli("profile", "list", name="profile list"))
-
     tasks_project = scratch / "tasks-init"
     tasks_project.mkdir(parents=True, exist_ok=True)
     add(

@@ -283,7 +283,7 @@ python -X utf8 scripts/run_vscode_skill_tests.py --include-python-venv
 python -X utf8 scripts/run_vscode_skill_tests.py --clean
 ```
 
-Tests write temporary artifacts to `%TEMP%\vscode-skill\<run-id>\` (or `$VSCODE_SKILL_TEMP` if set), never to user settings or project files outside the temp root.
+Tests write temporary artifacts to an isolated subdirectory under `%TEMP%\vscode-skill-tests\` (or `$VSCODE_SKILL_TEMP` if set), never to user settings or project files outside the temp root.
 
 Validation against the Agent Skills spec:
 
@@ -307,5 +307,5 @@ python -X utf8 scripts\quick_validate.py .
 
 After running tests:
 
-- Delete the temp root (`%TEMP%\vscode-skill\` by default).
+- Delete the temp root (`%TEMP%\vscode-skill-tests\` by default).
 - If a settings write was rolled back by `settings smoke`, the original file is restored in-place; no extra cleanup needed.
