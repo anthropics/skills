@@ -32,6 +32,24 @@ def find_project_root() -> Path:
     return current
 
 
+def _skill_triggered(tool_name, tool_input, skill_name, clean_name):
+    """Whether this tool call actually invoked the target skill.
+
+    Field-scoped to avoid false positives: Claude Code invokes the skill by its
+    real name (e.g. {"skill": "<skill_name>"}); clean_name is the randomized temp
+    command filename. Read calls are matched on file_path only. Matching the whole
+    serialized input would let a short, common skill name (e.g. "test", "pdf")
+    match echoed argument text and over-count triggers.
+    """
+    if tool_name == "Skill":
+        invoked = (tool_input.get("skill") or "").strip()
+        return invoked == skill_name or invoked == clean_name
+    if tool_name == "Read":
+        fp = tool_input.get("file_path") or ""
+        return skill_name in fp or clean_name in fp
+    return False
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -144,12 +162,19 @@ def run_single_query(
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                # accumulated_json is now the complete tool input;
+                                # field-check it. Only ever early-return True so the
+                                # full-message path stays the authoritative decider.
+                                try:
+                                    parsed_input = json.loads(accumulated_json)
+                                except json.JSONDecodeError:
+                                    parsed_input = {}
+                                if _skill_triggered(pending_tool_name, parsed_input, skill_name, clean_name):
+                                    return True
+                                pending_tool_name = None
                             if se_type == "message_stop":
                                 return False
 
@@ -161,9 +186,7 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            if _skill_triggered(tool_name, tool_input, skill_name, clean_name):
                                 triggered = True
                             return triggered
 
