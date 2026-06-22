@@ -88,10 +88,22 @@ def _pump_lines(stream, sink) -> None:
 
 
 def _tool_use_mentions(eval_skill_name: str, tool_name: str, tool_input: dict) -> bool:
-    """Whether a tool_use block is Claude consulting the eval skill."""
-    if tool_name not in ("Skill", "Read"):
-        return False
-    return eval_skill_name in json.dumps(tool_input)
+    """Whether a tool_use block is Claude consulting the eval skill.
+
+    Field-scoped on purpose. A plain substring test (the skill name anywhere
+    in the serialized input) produces false positives for short names that
+    collide with common words or extensions: a skill named "pdf" would count
+    a Read of "report.pdf" or a Bash command touching a .pdf as a trigger.
+    Only an exact Skill invocation, or a Read of a path inside the skill's
+    own directory, is a genuine consult.
+    """
+    if tool_name == "Skill":
+        return (tool_input.get("skill") or "").strip() == eval_skill_name
+    if tool_name == "Read":
+        # Normalize separators so the match holds on Windows paths too.
+        path = (tool_input.get("file_path") or "").replace("\\", "/")
+        return f"/{eval_skill_name}/" in path
+    return False
 
 
 def run_single_query(
@@ -211,13 +223,22 @@ def run_single_query(
                 elif se_type == "content_block_delta" and pending_tool_name:
                     delta = se.get("delta", {})
                     if delta.get("type") == "input_json_delta":
+                        # Accumulate only; the input must be parsed as a whole
+                        # to field-scope the match, which partial JSON can't be.
                         accumulated_json += delta.get("partial_json", "")
-                        if eval_skill_name in accumulated_json:
-                            return True
 
                 elif se_type == "content_block_stop":
-                    if pending_tool_name and eval_skill_name in accumulated_json:
-                        return True
+                    if pending_tool_name:
+                        try:
+                            tool_input = (
+                                json.loads(accumulated_json) if accumulated_json else {}
+                            )
+                        except json.JSONDecodeError:
+                            tool_input = {}
+                        if _tool_use_mentions(
+                            eval_skill_name, pending_tool_name, tool_input
+                        ):
+                            return True
                     pending_tool_name = None
 
             # Fallback: full assistant message
