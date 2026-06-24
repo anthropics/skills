@@ -12,13 +12,40 @@ Send events to a session via `POST /v1/sessions/{id}/events`.
 | `user.interrupt`          | Interrupt the agent while it's running |
 | `user.tool_confirmation`  | Approve/deny a tool call (when `always_ask` policy) |
 | `user.custom_tool_result` | Provide result for a custom tool call |
+| `user.define_outcome`     | Start a rubric-graded iterate loop — see `shared/managed-agents-outcomes.md` |
+| `system.message`          | Update the agent's system prompt between turns — **Claude Opus 4.8 only**; see § Updating the system prompt mid-session |
+
+#### Updating the system prompt mid-session (`system.message`)
+
+Unlike the `system` field on the agent definition (fixed at session creation), a `system.message` event changes the system prompt **as the session progresses** — a different persona, revised constraints, or runtime-fetched context that should shape behavior going forward:
+
+```python
+client.beta.sessions.events.send(
+    session.id,
+    events=[
+        {
+            "type": "system.message",
+            "content": [
+                {"type": "text", "text": "The user's current timezone is America/New_York."},
+            ],
+        },
+    ],
+)
+```
+
+Constraints:
+
+- **Claude Opus 4.8 only.** If any model configured on the agent does not support mid-conversation system injection, the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
+- **Cannot be sent while the session is idle with `stop_reason: requires_action`** (blocked on `user.custom_tool_result` / `user.tool_confirmation`).
+- `content` accepts 1–1000 text items.
 
 ### Receiving Events
 
-Two methods:
+Three methods:
 
 1. **Streaming (SSE)**: `GET /v1/sessions/{id}/events/stream` — real-time Server-Sent Events. **Long-lived** — the server sends periodic heartbeats to keep the connection alive.
 2. **Polling**: `GET /v1/sessions/{id}/events` — paginated event list (query params: `limit` default 1000, `page`). **Returns immediately** — this is a plain paginated GET, not a long-poll.
+3. **Webhooks**: Anthropic POSTs session state transitions to your HTTPS endpoint — thin payloads (IDs only), HMAC-signed, Console-registered. See `shared/managed-agents-webhooks.md`.
 
 All received events carry `id`, `type`, and `processed_at` (ISO 8601; `null` if not yet processed by the agent).
 
@@ -47,8 +74,12 @@ Event types use dot notation, grouped by namespace:
 | `session.error` | Error occurred during processing |
 | `span.model_request_start` | Model inference started |
 | `span.model_request_end` | Model inference completed |
+| `span.outcome_evaluation_start` / `_ongoing` / `_end` | Grader progress for outcome-oriented sessions — see `shared/managed-agents-outcomes.md` |
+| `session.thread_created` | Subagent thread spawned (multiagent) — see `shared/managed-agents-multiagent.md` |
+| `session.thread_status_running` / `_idle` / `_rescheduled` / `_terminated` | Subagent thread status transitions (multiagent). `_idle` carries `stop_reason`. |
+| `agent.thread_message_sent` / `_received` | Cross-thread message, carries `to_session_thread_id` / `from_session_thread_id` (multiagent) |
 
-The stream also echoes back user-sent events (`user.message`, `user.interrupt`, `user.tool_confirmation`, `user.custom_tool_result`).
+The stream also echoes back user-sent events (`user.message`, `user.interrupt`, `user.tool_confirmation`, `user.custom_tool_result`, `user.define_outcome`).
 
 ---
 
@@ -125,7 +156,7 @@ await client.beta.sessions.events.send(sessionId, {
 });
 ```
 
-The agent stops mid-task. It does not see the interrupt as a message — it just halts. Send a follow-up `user` event to explain what to do instead.
+The agent stops mid-task. It does not see the interrupt as a message — it just halts. Send a follow-up `user` event to explain what to do instead. If an outcome is active, the interrupt also marks `span.outcome_evaluation_end.result: "interrupted"` (see `shared/managed-agents-outcomes.md`).
 
 > **Note**: Interrupt events may have empty IDs in the current implementation. When troubleshooting, use the `processed_at` timestamp along with surrounding event IDs.
 
