@@ -106,8 +106,8 @@ Categories: `browser`, `file_ops`, `terminal`, `vscode`, `chat`, `github`, `memo
 3. Show expected impact based on category token cost
 
 ### Common presets:
-- **Thesis writing**: Disable browser, github, memory, other
 - **Web development**: Keep browser, terminal, file_ops; disable memory, other
+- **Backend/API work**: Disable browser, github, memory; keep terminal, file_ops, vscode
 - **Minimal**: Only keep file_ops + terminal + chat (~20 tools)
 
 ## Safety Notes

@@ -17,70 +17,113 @@ Usage:
 
 Categories: browser, file_ops, terminal, vscode, chat, github, memory, other
 """
-import json, os, sys, sqlite3, platform, re
+import json, os, sys, sqlite3, platform, glob, subprocess
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 
-# Cross-platform database path
-system = platform.system()
-if system == "Darwin":
-    DB_PATH = os.path.expanduser("~/Library/Application Support/Code/User/globalStorage/state.vscdb")
-elif system == "Linux":
-    DB_PATH = os.path.expanduser("~/.config/Code/User/globalStorage/state.vscdb")
-elif system == "Windows":
-    DB_PATH = os.path.expanduser("~/AppData/Roaming/Code/User/globalStorage/state.vscdb")
-else:
-    print(f"Unsupported OS: {system}")
+
+def get_db_path():
+    """Find VS Code's state.vscdb, handling multiple installs (Code, VSCodium, Cursor, etc.)."""
+    system = platform.system()
+
+    if system == "Darwin":
+        base = os.path.expanduser("~/Library/Application Support")
+    elif system == "Linux":
+        base = os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
+    elif system == "Windows":
+        base = os.path.expanduser(os.environ.get("APPDATA", "~/AppData/Roaming"))
+    else:
+        print(f"Unsupported OS: {system}")
+        sys.exit(1)
+
+    # Try common VS Code app names in order of likelihood
+    app_names = ["Code", "VSCodium", "Cursor", "GitHub Codespaces", "Code - OSS"]
+
+    # First check if VSCODE_PID is set (we're running inside VS Code)
+    vscode_pid = os.environ.get("VSCODE_PID")
+    if vscode_pid:
+        # Try to find the app name from the parent process
+        try:
+            if system == "Darwin":
+                cmd = ["ps", "-o", "comm=", "-p", vscode_pid]
+            else:
+                cmd = ["ps", "-o", "comm=", "-p", vscode_pid]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=2)
+            parent = result.stdout.strip().lower()
+            if "codium" in parent:
+                app_names = ["VSCodium"] + [a for a in app_names if a != "VSCodium"]
+            elif "cursor" in parent:
+                app_names = ["Cursor"] + [a for a in app_names if a != "Cursor"]
+        except (subprocess.SubprocessError, OSError):
+            pass
+
+    # Search for the database file
+    for app in app_names:
+        db_path = os.path.join(base, app, "User/globalStorage/state.vscdb")
+        if os.path.exists(db_path):
+            return db_path
+
+    # Fallback: search all subdirectories
+    pattern = os.path.join(base, "*/User/globalStorage/state.vscdb")
+    matches = glob.glob(pattern)
+    if matches:
+        return matches[0]
+
+    print(f"Error: Could not find VS Code state.vscdb in {base}")
+    print("Tried app names: {0}".format(", ".join(app_names)))
     sys.exit(1)
 
-# Category patterns - matched against tool names (regex)
-CATEGORY_PATTERNS = {
-    'browser': [
-        r'click_element', r'drag_element', r'handle_dialog', r'hover_element',
-        r'navigate_page', r'open_browser', r'read_page', r'run_playwright',
-        r'screenshot', r'type_in_page'
-    ],
-    'file_ops': [
-        r'copilot_create', r'copilot_edit', r'copilot_read', r'copilot_view',
-        r'copilot_search', r'copilot_find', r'copilot_list'
-    ],
-    'terminal': [
-        r'run_in_terminal', r'get_terminal', r'kill_terminal', r'send_to_terminal',
-        r'terminal_last', r'terminal_selection'
-    ],
-    'vscode': [
-        r'vscode_', r'copilot_install', r'copilot_createNew', r'copilot_runVscode',
-        r'copilot_getVSCode', r'copilot_getErrors', r'copilot_getNotebookSummary',
-        r'copilot_runNotebookCell'
-    ],
-    'notebook': [
-        r'configure_notebook', r'configure_python_environment', r'notebook_install',
-        r'notebook_list', r'get_python_environment', r'get_python_executable',
-        r'install_python_packages', r'copilot_runNotebookCell'
-    ],
-    'testing': [
-        r'runTests', r'testFailure', r'run_task', r'get_task_output', r'create_and_run_task'
-    ],
-    'mcp': [
-        r'mcp_provides_tool_'
-    ],
-    'chat': [
-        r'runSubagent', r'execution_subagent', r'manage_todo'
-    ],
-    'github': [
-        r'copilot_fetchWeb', r'copilot_github', r'copilot_githubText'
-    ],
-    'memory': [
-        r'copilot_memory', r'copilot_resolveMemory'
-    ],
-}
+
+DB_PATH = get_db_path()
+
+# Category keywords — matched against tool names (order matters, first match wins)
+# Each entry is (category, [keywords]) — keywords are matched as substrings (case-insensitive)
+CATEGORY_KEYWORDS = [
+    ('browser',     ['click_element', 'drag_element', 'handle_dialog', 'hover_element',
+                     'navigate_page', 'open_browser', 'read_page', 'run_playwright',
+                     'screenshot_page', 'type_in_page']),
+    ('terminal',    ['run_in_terminal', 'get_terminal', 'kill_terminal', 'send_to_terminal',
+                     'terminal_last', 'terminal_selection']),
+    ('notebook',    ['configure_notebook', 'configure_python_environment', 'notebook_install',
+                     'notebook_list', 'python_environment', 'python_executable',
+                     'install_python_packages', 'runNotebookCell', 'getNotebookSummary',
+                     'readNotebookCellOutput']),
+    ('testing',     ['runTests', 'testFailure', 'run_task', 'get_task_output',
+                     'create_and_run_task']),
+    ('mcp',         ['mcp_provides_tool_', 'container-tools_']),
+    ('memory',      ['copilot_memory', 'resolveMemory']),
+    ('github',      ['copilot_github', 'githubRepo', 'githubTextSearch']),
+    ('web',         ['copilot_fetchWeb']),
+    ('vscode',      ['vscode_', 'copilot_install', 'copilot_createNew', 'copilot_runVscode',
+                     'copilot_getVSCode', 'copilot_getErrors']),
+    ('chat',        ['runSubagent', 'execution_subagent', 'manage_todo']),
+    ('file_ops',    ['copilot_create', 'copilot_edit', 'copilot_read', 'copilot_view',
+                     'copilot_search', 'copilot_find', 'copilot_list']),
+]
+
+# Cache: built once per run from actual tools in the database
+_CATEGORY_CACHE = {}
+
+def build_category_map(data):
+    """Build category->tools mapping dynamically from actual tools in database."""
+    categories = {}
+    for tool_name, enabled in data['toolEntries']:
+        cat = categorize_tool(tool_name)
+        categories.setdefault(cat, []).append(tool_name)
+    return categories
 
 def categorize_tool(name):
-    """Dynamically categorize a tool name using pattern matching."""
-    for category, patterns in CATEGORY_PATTERNS.items():
-        for pattern in patterns:
-            if re.search(pattern, name, re.IGNORECASE):
+    """Categorize a tool by matching against keyword list (first match wins)."""
+    # Check cache first
+    if name in _CATEGORY_CACHE:
+        return _CATEGORY_CACHE[name]
+    
+    for category, keywords in CATEGORY_KEYWORDS:
+        for keyword in keywords:
+            if keyword.lower() in name.lower():
+                _CATEGORY_CACHE[name] = category
                 return category
+    _CATEGORY_CACHE[name] = 'other'
     return 'other'
 
 def discover_categories(data):
@@ -133,13 +176,11 @@ def toggle(data, action, *args):
     for arg in args:
         if arg in categories:
             tools_to_toggle.extend(categories[arg])
-        elif arg in CATEGORY_PATTERNS:
-            tools_to_toggle.extend(categories.get(arg, []))
         else:
-            # Try to match as individual tool name
+            # Try to match as individual tool name (substring or exact)
             found = False
             for tool_name, _ in data['toolEntries']:
-                if tool_name == arg or re.search(arg, tool_name, re.IGNORECASE):
+                if tool_name == arg or arg.lower() in tool_name.lower():
                     tools_to_toggle.append(tool_name)
                     found = True
             if not found:
