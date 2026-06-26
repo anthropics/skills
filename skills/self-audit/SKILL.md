@@ -17,7 +17,19 @@ Before delivering output, audit it across four dimensions. Code can pass all tes
 
 ## The Four Dimensions
 
-### 1. Consistency
+Audit in this order — earlier dimensions catch issues faster:
+
+### 1. Completeness
+
+Is every user requirement addressed? Nothing skipped?
+
+- List each request from the user's last message
+- Verify each has a response or an explicit deferral ("I'll handle that in the next PR")
+- Check for partial completions dressed as full
+
+**Example:** User asks "fix the bug AND add tests." Agent fixes the bug. Tests are a skipped requirement, not "future work."
+
+### 2. Consistency
 
 Does the output contradict itself or existing rules?
 
@@ -26,16 +38,6 @@ Does the output contradict itself or existing rules?
 - Flag any "A and not-A" pairs — even subtle ones
 
 **Example:** Agent says "no changes needed" then proceeds to edit three files. Self-contradiction.
-
-### 2. Completeness
-
-Is every user requirement addressed? Nothing skipped?
-
-- List each request from the user's last message
-- Verify each has a response or an explicit deferral
-- Check for partial completions dressed as full
-
-**Example:** User asks for "fix the bug AND add tests." Agent fixes the bug. The tests are a skipped requirement, not a "future enhancement."
 
 ### 3. Groundedness
 
@@ -55,6 +57,7 @@ Is anything over-packaged to look better than it is? Are limitations acknowledge
 - Check whether failures, edge cases, or unknowns were mentioned
 - Flag "I've verified..." without actual verification output
 - Flag missing error handling described as "production ready"
+- Note: Honesty overlaps least with other dimensions — it catches what the others don't
 
 **Example:** Agent presents five features as "done" but three have TODO stubs. That's embellishment, not delivery.
 
@@ -63,8 +66,8 @@ Is anything over-packaged to look better than it is? Are limitations acknowledge
 ```
 1. COMPLETE the task
 2. Before stopping, run the four-dimension audit:
-   Consistency:  [ ] No contradictions   [ ] Rules followed
    Completeness: [ ] All requests covered [ ] Nothing skipped
+   Consistency:  [ ] No contradictions   [ ] Rules followed
    Groundedness: [ ] Claims have evidence [ ] Assumptions flagged
    Honesty:      [ ] No over-packaging   [ ] Limitations stated
 3. If any dimension fails, fix the output
@@ -72,13 +75,14 @@ Is anything over-packaged to look better than it is? Are limitations acknowledge
 5. THEN stop
 ```
 
-Short-form audit — output these four lines with status:
+Output the audit result as a visible block:
 
 ```
-Consistency:  OK / FIXED [what was fixed]
-Completeness: OK / FIXED [what was added]
-Groundedness: OK / FIXED [what was verified]
-Honesty:      OK / FIXED [what was acknowledged]
+Self-Audit:
+Completeness:  OK | FIXED [what was added]
+Consistency:   OK | FIXED [what was resolved]
+Groundedness:  OK | FIXED [what was verified]
+Honesty:       OK | FIXED [what was acknowledged]
 ```
 
 ## Common Rationalizations
@@ -88,14 +92,15 @@ Honesty:      OK / FIXED [what was acknowledged]
 | "It was a simple change, no audit needed" | Simple changes cause the most surprising bugs. Every delivery benefits from a 30-second audit |
 | "I checked everything as I went" | Real-time checking misses cross-cutting issues. A dedicated audit pass catches different things |
 | "The user will catch problems and ask for fixes" | Users shouldn't be your QA. Auditing is cheaper than rework |
-| "Honesty is subjective" | It's checkable: look for claims without evidence, missing limitations, "should work" without testing |
+| "All four were OK this time" (with no detail) | 100% of complex tasks find at least one issue. If you found none, you didn't look hard enough |
 
 ## Red Flags
 
 - Agent stopping without any self-audit output
-- All four dimensions marked OK with no detail — 100% of complex tasks find at least one issue
+- All four dimensions marked OK with no detail or specifics
 - "Verified" used without showing verification output
 - User requirements silently dropped between rounds
+- Audit output hidden in internal reasoning instead of shown to user
 
 ## Verification
 
@@ -103,9 +108,10 @@ After completing the audit:
 
 - [ ] All four dimensions checked with specific findings or confirmed clean
 - [ ] Any FIXED items have been applied to the output
-- [ ] Audit output is visible to the user (not just internal reasoning)
+- [ ] Audit block is visible in the agent's response (not buried in reasoning)
 
 ## See Also
 
-- [Agent Skills specification](https://agentskills.io) — The standard this skill follows
+- `session-quality-gate` (in addyosmani/agent-skills) — Full session-end quality gate with learning capture + disk check
+- [Agents Skills specification](https://agentskills.io) — The standard this skill follows
 - [Anthropic's Constitutional AI](https://www.anthropic.com/news/claudes-constitution) — Honesty as a core AI principle
