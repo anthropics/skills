@@ -12,28 +12,28 @@ Before you ship, ask yourself four questions:
 3. **Did I show evidence?** (Groundedness)
 4. **Am I being honest about the limits?** (Honesty)
 
-If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist. Any developer can pick this up in 30 seconds and get value.
+If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist.
 
-For automated enforcement, run `python scripts/audit.py --help`.
+This skill implements Anthropic's constitutional values in an operational quality gate. **Completeness** and **Groundedness** ensure helpfulness and harmlessness. **Honesty** directly enforces Claude's constitutional commitment to truthfulness. **Consistency** respects project constraints and earlier commitments. Together they form a practical instantiation of Constitutional AI at the output layer.
+
+For automated enforcement: `python scripts/audit.py --help`
 
 ## Chain of Command
 
-When dimensions conflict, this order wins:
+When dimensions conflict, resolve in this order:
 
-1. **Honesty first** — Never lie about what you did or didn't do. If output is dishonest, nothing else matters.
-2. **Completeness second** — Missing requirements are more damaging than inconsistent reasoning.
-3. **Consistency third** — Contradictions confuse users but don't cause data loss.
-4. **Groundedness fourth** — Unverified claims are bad, but a complete-and-honest answer with soft evidence beats a well-evidenced answer that misses half the question.
-
-This order reflects OpenAI's Model Spec principle: useful, safe, aligned. Completeness drives usefulness. Honesty drives safety. Consistency and Groundedness drive alignment.
+1. **Honesty** — Never misrepresent what was done. If output is dishonest, nothing else matters.
+2. **Completeness** — Missing requirements cause more harm than inconsistent reasoning.
+3. **Consistency** — Contradictions confuse but rarely cause data loss.
+4. **Groundedness** — A complete, honest answer with soft evidence is better than a well-evidenced answer missing half the requirements.
 
 ## Hard Constraints
 
-These are inviolable. The audit must never:
+Inviolable. The audit must never:
 
-- **Fabricate findings.** If all four dimensions pass, say so. Don't invent issues to look thorough.
-- **Expose sensitive data.** Redact file paths, secrets, tokens, PII before displaying audit output.
-- **Block delivery on subjective grounds.** "This could be better" is not a finding. Only flag concrete gaps.
+- **Fabricate findings.** If all four dimensions pass, report that honestly. Do not invent issues.
+- **Expose sensitive data.** Redact file paths, secrets, tokens, and PII before displaying audit output.
+- **Block on subjective grounds.** "Could be better" is not a finding. Flag only concrete, verifiable gaps.
 
 ## When to Use
 
@@ -48,17 +48,17 @@ Check in this order — faster first, deeper later:
 ### 1. Did I answer everything? (Completeness)
 
 - List each request from the user's last message
-- Verify each has a response or an explicit deferral
+- Verify each has a response or an explicit deferral with tracking
 - Flag partial completions presented as full
 
 **Example:** "Fix the bug AND add tests." Bug fixed. Tests missing = incomplete.
 
-See `references/patterns.md` for more examples and counter-examples.
+> See `references/patterns.md` for detailed examples and counter-examples.
 
 ### 2. Did I contradict myself? (Consistency)
 
-- Scan last response against earlier session statements
-- Check against project rules (CLAUDE.md, conventions)
+- Scan last response against earlier statements in the session
+- Check against project rules (CLAUDE.md, codebase conventions)
 - Flag any "A and not-A" — even subtle ones
 
 **Example:** "No changes needed" then editing three files.
@@ -73,14 +73,14 @@ See `references/patterns.md` for more examples and counter-examples.
 
 ### 4. Am I being honest about the limits? (Honesty)
 
-- Check for language making things sound more complete than they are
+- Check for language making output sound more complete than it is
 - Were edge cases, failures, unknowns mentioned?
 - Flag "I've verified..." without showing verification
-- Flag missing error handling called "production ready"
+- Flag missing error handling described as "production ready"
 
-Amanda Askell, who designed Claude's character: "We don't want Claude to think of helpfulness as its fundamental value. We want curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
+Amanda Askell, who designed Claude's character and wrote its constitution: "We don't want Claude to think of helpfulness as its fundamental value. We want curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
 
-**Example:** Five features "done", three have TODO stubs. Embellishment.
+**Example:** Five features "done", three have TODO stubs. That's embellishment, not delivery.
 
 ## Process
 
@@ -91,7 +91,7 @@ Amanda Askell, who designed Claude's character: "We don't want Claude to think o
 4. All four pass → stop.
 ```
 
-Output visibly (paste this block into your response):
+Output visibly:
 
 ```
 Self-Audit:
@@ -101,48 +101,48 @@ Groundedness:  OK | FIXED [what was verified]
 Honesty:       OK | FIXED [what was acknowledged]
 ```
 
-Or run the automated script:
+Or run automated:
 ```bash
-echo "agent response text" | python scripts/audit.py --verbose
+echo "response" | python scripts/audit.py --verbose
 python scripts/audit.py --file response.txt --json
-python scripts/audit.py --text "response" --requirements "fix bug" "add tests"
+python scripts/audit.py --text "..." --requirements "fix bug" "add tests"
 ```
 
 ## Failure Modes
 
-- **Overly long audit on big sessions**: Sample the 5 most critical claims.
-- **Sensitive data in audit output**: Redact file paths, secrets, or code snippets.
-- **Audit fatigue**: For high-frequency tasks, run detail mode only for shipping tasks.
+- **Overly long audit**: Sample the 5 most critical claims, don't audit all 50.
+- **Sensitive data leakage**: Redact paths, secrets, tokens, PII before display.
+- **Audit fatigue**: For high-frequency tasks, run detail mode only for shipping.
 
 ## Common Rationalizations
 
 | Rationalization | Reality |
 |---|---|
-| "Simple change, no audit needed" | Simple changes cause surprising bugs. 30 seconds saves hours |
-| "I checked as I went" | Cross-cutting patterns only visible in dedicated pass |
-| "User will catch problems" | Users are not QA. Audit before delivery |
-| "All four OK" with no detail | Complex tasks always find ≥1 issue |
-| "Agent verified internally" | Without output = indistinguishable from assumption |
+| "Simple change, no audit needed" | Simple changes cause surprising bugs. 30 seconds saves hours. |
+| "I checked as I went" | Cross-cutting patterns only visible in a dedicated pass. |
+| "User will catch problems" | Users are not QA. Audit before delivery. |
+| "All four OK" with no detail | Complex tasks find at least one issue. Always. |
+| "Agent verified internally" | Without visible output = indistinguishable from assumption. |
 
 ## Red Flags
 
 - Agent stopping without audit output
 - All four OK with no specifics
 - "Verified" without showing verification
-- User requirements dropped silently between rounds
+- Requirements dropped silently between rounds
 - Audit hidden in reasoning instead of shown to user
 
 ## Verification
 
 - [ ] Four questions answered — findings or confirmed clean
 - [ ] FIXED items applied to output
-- [ ] Audit block visible in response (not in reasoning)
+- [ ] Audit block visible in response
 - [ ] Hard constraints respected (no fabrication, no data leak, no subjective blocks)
 
 ## See Also
 
-- `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
-- [Agents Skills specification](https://agentskills.io)
-- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0)
-- [OpenAI Model Spec](https://model-spec.openai.com) (CC0)
-- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review)
+- `session-quality-gate` (addyosmani/agent-skills) — Session-end gate with learning capture + disk check
+- [Agents Skills specification](https://agentskills.io) — The standard this skill follows
+- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0) — Foundational document this skill implements
+- [OpenAI Model Spec](https://model-spec.openai.com) (CC0) — Chain of command, hard constraints framework
+- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent audit pattern
