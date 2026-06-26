@@ -14,6 +14,8 @@ Before you ship, ask yourself four questions:
 
 If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss.
 
+This skill is a practical implementation of Anthropic's core AI principles. **Completeness** and **Groundedness** ensure the output is Helpful and Harmless. **Honesty** directly enforces the constitutional principle of truthfulness. **Consistency** ensures alignment with project rules and conventions.
+
 ## When to Use
 
 - Complex task completed (multi-file edits, architectural decisions)
@@ -54,6 +56,8 @@ Check in this order — faster first, deeper later:
 - Were edge cases, failures, unknowns mentioned?
 - Flag "I've verified..." without showing verification
 - Flag missing error handling called "production ready"
+
+This dimension operationalizes Claude's constitutional commitment to honesty — "Claude should not make claims without appropriate evidence, and should acknowledge uncertainty and limitations."
 
 **Example:** Five features "done", three have TODO stubs. Embellishment.
 
@@ -111,5 +115,6 @@ Honesty:       OK | FIXED [what was acknowledged]
 ## See Also
 
 - `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
-- [Agents Skills specification](https://agentskills.io)
-- [Anthropic's Constitutional AI](https://www.anthropic.com/news/claudes-constitution) — Honesty as a core AI principle
+- [Agents Skills specification](https://agentskills.io) — The standard this skill follows
+- [Claude's Constitution](https://www.anthropic.com/constitution) — The foundational document this skill operationalizes (CC0)
+- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent review pattern
