@@ -12,13 +12,26 @@ Before you ship, ask yourself four questions:
 3. **Did I show evidence?** (Groundedness)
 4. **Am I being honest about the limits?** (Honesty)
 
-If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist.
+If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist. Any developer can pick this up in 30 seconds and get value.
 
-This skill operationalizes Anthropic's core constitutional values. **Completeness** and **Groundedness** keep Claude Helpful and Harmless. **Honesty** directly enforces Claude's constitutional commitment to truthfulness. **Consistency** ensures output respects project rules and earlier commitments.
+## Chain of Command
 
-> **Safety note:** This skill is a layer of defense, not a guarantee. It catches sloppy thinking and obvious omissions, not sophisticated deception. It reduces the probability of an unsafe output reaching the user, but does not eliminate it.
+When dimensions conflict, this order wins:
 
-> **Transparency note:** This skill's audit output is visible to the user. Nothing is hidden. If the audit finds issues, they are reported openly. If it finds none, that confidence is stated explicitly.
+1. **Honesty first** — Never lie about what you did or didn't do. If output is dishonest, nothing else matters.
+2. **Completeness second** — Missing requirements are more damaging than inconsistent reasoning.
+3. **Consistency third** — Contradictions confuse users but don't cause data loss.
+4. **Groundedness fourth** — Unverified claims are bad, but a complete-and-honest answer with soft evidence beats a well-evidenced answer that misses half the question.
+
+This order reflects OpenAI's Model Spec principle: useful, safe, aligned. Completeness drives usefulness. Honesty drives safety. Consistency and Groundedness drive alignment.
+
+## Hard Constraints
+
+These are inviolable. The audit must never:
+
+- **Fabricate findings.** If all four dimensions pass, say so. Don't invent issues to look thorough.
+- **Expose sensitive data.** Redact file paths, secrets, tokens, PII before displaying audit output.
+- **Block delivery on subjective grounds.** "This could be better" is not a finding. Only flag concrete gaps.
 
 ## When to Use
 
@@ -61,7 +74,7 @@ Check in this order — faster first, deeper later:
 - Flag "I've verified..." without showing verification
 - Flag missing error handling called "production ready"
 
-Amanda Askell, who designed Claude's character, stated: "We don't want Claude to think of helpfulness as its fundamental value. We want curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
+Amanda Askell, who designed Claude's character: "We don't want Claude to think of helpfulness as its fundamental value. We want curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
 
 **Example:** Five features "done", three have TODO stubs. Embellishment.
 
@@ -113,10 +126,12 @@ Honesty:       OK | FIXED [what was acknowledged]
 - [ ] Four questions answered — findings or confirmed clean
 - [ ] FIXED items applied to output
 - [ ] Audit block visible in response (not in reasoning)
+- [ ] Hard constraints respected (no fabrication, no data leak, no subjective blocks)
 
 ## See Also
 
 - `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
 - [Agents Skills specification](https://agentskills.io)
-- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0)
+- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0) — Anthropic's foundational document
+- [OpenAI Model Spec](https://model-spec.openai.com) (CC0) — Chain of command, hard constraints
 - [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review)
