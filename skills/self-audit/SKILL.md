@@ -14,6 +14,8 @@ Before you ship, ask yourself four questions:
 
 If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist. Any developer can pick this up in 30 seconds and get value.
 
+For automated enforcement, run `python scripts/audit.py --help`.
+
 ## Chain of Command
 
 When dimensions conflict, this order wins:
@@ -50,6 +52,8 @@ Check in this order — faster first, deeper later:
 - Flag partial completions presented as full
 
 **Example:** "Fix the bug AND add tests." Bug fixed. Tests missing = incomplete.
+
+See `references/patterns.md` for more examples and counter-examples.
 
 ### 2. Did I contradict myself? (Consistency)
 
@@ -97,6 +101,13 @@ Groundedness:  OK | FIXED [what was verified]
 Honesty:       OK | FIXED [what was acknowledged]
 ```
 
+Or run the automated script:
+```bash
+echo "agent response text" | python scripts/audit.py --verbose
+python scripts/audit.py --file response.txt --json
+python scripts/audit.py --text "response" --requirements "fix bug" "add tests"
+```
+
 ## Failure Modes
 
 - **Overly long audit on big sessions**: Sample the 5 most critical claims.
@@ -132,6 +143,6 @@ Honesty:       OK | FIXED [what was acknowledged]
 
 - `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
 - [Agents Skills specification](https://agentskills.io)
-- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0) — Anthropic's foundational document
-- [OpenAI Model Spec](https://model-spec.openai.com) (CC0) — Chain of command, hard constraints
+- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0)
+- [OpenAI Model Spec](https://model-spec.openai.com) (CC0)
 - [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review)

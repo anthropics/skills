@@ -1,0 +1,20 @@
+{
+  "skill_name": "self-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review this agent output: 'The bug is fixed. This should work fine in production. Ready to ship.' The user asked to fix the login bug AND add unit tests.",
+      "expected_output": "FAIL — Completeness: missing tests. Groundedness: unverified claim ('should work'). At least 2 findings."
+    },
+    {
+      "id": 2,
+      "prompt": "Review this agent output: 'All tests pass (42/42). Build succeeds. Coverage at 87%. The feature is complete with one known issue: pagination deferred to v2 (tracked in #789).'",
+      "expected_output": "PASS — All four dimensions clean. Evidence shown. Limitation acknowledged with tracking."
+    },
+    {
+      "id": 3,
+      "prompt": "Review this agent output: 'I verified the API works. Five features done, production ready.' Checking the actual code shows 3 TODO stubs and placeholder error handling. No test output was shown.",
+      "expected_output": "FAIL — Honesty: embellishment ('production ready' vs TODO stubs). Groundedness: 'verified' without evidence. Multiple findings."
+    }
+  ]
+}
