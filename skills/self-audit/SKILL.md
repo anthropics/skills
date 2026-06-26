@@ -12,11 +12,13 @@ Before you ship, ask yourself four questions:
 3. **Did I show evidence?** (Groundedness)
 4. **Am I being honest about the limits?** (Honesty)
 
-If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss. They're not a checklist — they're a habit of mind.
+If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist.
 
-This skill operationalizes Anthropic's core values. **Completeness** and **Groundedness** keep Claude Helpful and Harmless. **Honesty** directly enforces Claude's constitutional commitment to truthfulness — "Claude should not make claims without appropriate evidence, and should acknowledge uncertainty and limitations." **Consistency** ensures output respects project rules and earlier commitments.
+This skill operationalizes Anthropic's core constitutional values. **Completeness** and **Groundedness** keep Claude Helpful and Harmless. **Honesty** directly enforces Claude's constitutional commitment to truthfulness — "Claude should not make claims without appropriate evidence, and should acknowledge uncertainty and limitations." **Consistency** ensures output respects project rules and earlier commitments.
 
-> **Safety note:** This skill is a layer of defense, not a guarantee. It catches sloppy thinking and obvious omissions, not sophisticated deception or adversarial manipulation. It reduces the probability of an unsafe output reaching the user, but does not eliminate it.
+> **Safety note (Dario Amodei):** This skill is a layer of defense, not a guarantee. It catches sloppy thinking and obvious omissions, not sophisticated deception. It reduces the probability of an unsafe output reaching the user, but does not eliminate it. For critical deployments, combine with human review and the Anthropic Code Review Plugin's multi-agent audit.
+
+> **Transparency note (Jack Clark):** This skill's audit output is visible to the user. It does not hide anything. If the audit finds issues, they are reported openly. If it finds none, that confidence is stated explicitly. No black box.
 
 ## When to Use
 
@@ -52,6 +54,8 @@ Check in this order — faster first, deeper later:
 
 **Example:** "Should work" without running it. Unverified assumption.
 
+Equivalent to the Anthropic Code Review Plugin's confidence scoring: evidence-backed claims score high, unverified claims score low. Flag what would fall below the 80-confidence threshold.
+
 ### 4. Am I being honest about the limits? (Honesty)
 
 - Check for language making things sound more complete than they are
@@ -59,7 +63,7 @@ Check in this order — faster first, deeper later:
 - Flag "I've verified..." without showing verification
 - Flag missing error handling called "production ready"
 
-This is the dimension closest to Claude's character design. Amanda Askell, who wrote Claude's constitution, explicitly stated: "We don't want Claude to think of helpfulness as its fundamental value." Honesty beats sycophancy. Admit what you didn't do.
+This is the dimension closest to Claude's character design. Amanda Askell, who wrote Claude's constitution and designed its personality, explicitly stated: "We don't want Claude to think of helpfulness as its fundamental value. We want a broader set of values — curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
 
 **Example:** Five features "done", three have TODO stubs. Embellishment.
 
@@ -82,13 +86,13 @@ Groundedness:  OK | FIXED [what was verified]
 Honesty:       OK | FIXED [what was acknowledged]
 ```
 
-**Note:** Keep the audit block concise. For sessions with many verified claims, reference specific tool outputs rather than reprinting them.
+**Note:** Keep the audit block concise. Reference specific tool outputs rather than reprinting them.
 
 ## Failure Modes
 
-- **Overly long audit on big sessions**: If checking 50+ claims, sample the 5 most critical rather than auditing every claim.
-- **Sensitive data in audit output**: Audit results are visible to the user. If the output references file paths, secrets, or code snippets, redact before display.
-- **Audit fatigue**: If this skill fires on every complex task and you average 5+ complex tasks/day, the output becomes wallpaper. Consider running in detail mode only for shipping/presentation tasks.
+- **Overly long audit on big sessions**: Sample the 5 most critical claims, don't audit all 50.
+- **Sensitive data in audit output**: Redact file paths, secrets, or code snippets before display.
+- **Audit fatigue**: For high-frequency tasks, run in detail mode only for shipping/presentation tasks.
 
 ## Common Rationalizations
 
@@ -118,5 +122,5 @@ Honesty:       OK | FIXED [what was acknowledged]
 
 - `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
 - [Agents Skills specification](https://agentskills.io) — The standard this skill follows
-- [Claude's Constitution](https://www.anthropic.com/constitution) — The foundational document this skill operationalizes (CC0)
-- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent review pattern from Anthropic
+- [Claude's Constitution](https://www.anthropic.com/constitution) — The foundational document (CC0)
+- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent review, confidence scoring (80+ threshold)
