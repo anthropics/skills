@@ -1,6 +1,6 @@
 ---
 name: self-audit
-description: Audits AI output across four dimensions before delivering — completeness, consistency, groundedness, and honesty. Use when completing a complex task. Use when an agent is about to stop and deliver results. Use when you want to prevent sloppy thinking from reaching the user.
+description: Audits AI output across four dimensions before delivering — completeness, consistency, groundedness, and honesty. Use this skill whenever completing a complex task, before stopping and delivering results, or whenever output quality matters. Use whenever an agent is about to finish work — even if the user hasn't explicitly asked for review. Use after multi-file edits, architectural decisions, or any session where sloppy thinking could slip through. Use proactively: if you're about to ship, audit first.
 ---
 
 # Self-Audit
@@ -14,11 +14,11 @@ Before you ship, ask yourself four questions:
 
 If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist.
 
-This skill operationalizes Anthropic's core constitutional values. **Completeness** and **Groundedness** keep Claude Helpful and Harmless. **Honesty** directly enforces Claude's constitutional commitment to truthfulness — "Claude should not make claims without appropriate evidence, and should acknowledge uncertainty and limitations." **Consistency** ensures output respects project rules and earlier commitments.
+This skill operationalizes Anthropic's core constitutional values. **Completeness** and **Groundedness** keep Claude Helpful and Harmless. **Honesty** directly enforces Claude's constitutional commitment to truthfulness. **Consistency** ensures output respects project rules and earlier commitments.
 
-> **Safety note (Dario Amodei):** This skill is a layer of defense, not a guarantee. It catches sloppy thinking and obvious omissions, not sophisticated deception. It reduces the probability of an unsafe output reaching the user, but does not eliminate it. For critical deployments, combine with human review and the Anthropic Code Review Plugin's multi-agent audit.
+> **Safety note:** This skill is a layer of defense, not a guarantee. It catches sloppy thinking and obvious omissions, not sophisticated deception. It reduces the probability of an unsafe output reaching the user, but does not eliminate it.
 
-> **Transparency note (Jack Clark):** This skill's audit output is visible to the user. It does not hide anything. If the audit finds issues, they are reported openly. If it finds none, that confidence is stated explicitly. No black box.
+> **Transparency note:** This skill's audit output is visible to the user. Nothing is hidden. If the audit finds issues, they are reported openly. If it finds none, that confidence is stated explicitly.
 
 ## When to Use
 
@@ -54,8 +54,6 @@ Check in this order — faster first, deeper later:
 
 **Example:** "Should work" without running it. Unverified assumption.
 
-Equivalent to the Anthropic Code Review Plugin's confidence scoring: evidence-backed claims score high, unverified claims score low. Flag what would fall below the 80-confidence threshold.
-
 ### 4. Am I being honest about the limits? (Honesty)
 
 - Check for language making things sound more complete than they are
@@ -63,7 +61,7 @@ Equivalent to the Anthropic Code Review Plugin's confidence scoring: evidence-ba
 - Flag "I've verified..." without showing verification
 - Flag missing error handling called "production ready"
 
-This is the dimension closest to Claude's character design. Amanda Askell, who wrote Claude's constitution and designed its personality, explicitly stated: "We don't want Claude to think of helpfulness as its fundamental value. We want a broader set of values — curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
+Amanda Askell, who designed Claude's character, stated: "We don't want Claude to think of helpfulness as its fundamental value. We want curiosity, honesty, open-mindedness, intellectual humility, and ethics." Honesty beats sycophancy. Admit what you didn't do.
 
 **Example:** Five features "done", three have TODO stubs. Embellishment.
 
@@ -86,13 +84,11 @@ Groundedness:  OK | FIXED [what was verified]
 Honesty:       OK | FIXED [what was acknowledged]
 ```
 
-**Note:** Keep the audit block concise. Reference specific tool outputs rather than reprinting them.
-
 ## Failure Modes
 
-- **Overly long audit on big sessions**: Sample the 5 most critical claims, don't audit all 50.
-- **Sensitive data in audit output**: Redact file paths, secrets, or code snippets before display.
-- **Audit fatigue**: For high-frequency tasks, run in detail mode only for shipping/presentation tasks.
+- **Overly long audit on big sessions**: Sample the 5 most critical claims.
+- **Sensitive data in audit output**: Redact file paths, secrets, or code snippets.
+- **Audit fatigue**: For high-frequency tasks, run detail mode only for shipping tasks.
 
 ## Common Rationalizations
 
@@ -121,6 +117,6 @@ Honesty:       OK | FIXED [what was acknowledged]
 ## See Also
 
 - `session-quality-gate` (addyosmani/agent-skills) — Full session-end gate with learning capture + disk check
-- [Agents Skills specification](https://agentskills.io) — The standard this skill follows
-- [Claude's Constitution](https://www.anthropic.com/constitution) — The foundational document (CC0)
-- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent review, confidence scoring (80+ threshold)
+- [Agents Skills specification](https://agentskills.io)
+- [Claude's Constitution](https://www.anthropic.com/constitution) (CC0)
+- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review)
