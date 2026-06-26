@@ -14,15 +14,15 @@ Before you ship, ask yourself four questions:
 
 If any answer is no → fix it → re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they're a habit of mind, not a checklist.
 
-This skill implements Anthropic's constitutional values in an operational quality gate. **Completeness** and **Groundedness** ensure helpfulness and harmlessness. **Honesty** directly enforces Claude's constitutional commitment to truthfulness. **Consistency** respects project constraints and earlier commitments. Together they form a practical instantiation of Constitutional AI at the output layer.
+This skill implements Anthropic's constitutional values in an operational quality gate. **Completeness** and **Groundedness** ensure helpfulness and harmlessness. **Honesty** directly enforces Claude's constitutional commitment to truthfulness — "Claude should not make claims without appropriate evidence, and should acknowledge uncertainty and limitations." **Consistency** respects project constraints and earlier commitments. Together they form a practical instantiation of Constitutional AI at the output layer.
 
 For automated enforcement: `python scripts/audit.py --help`
 
-## Chain of Command
+## Priority Order
 
-When dimensions conflict, resolve in this order:
+When dimensions conflict, resolve in this order — derived from Claude's Constitution hierarchy of Safety > Ethics > Guidelines > Helpfulness:
 
-1. **Honesty** — Never misrepresent what was done. If output is dishonest, nothing else matters.
+1. **Honesty** — Never misrepresent what was done. Aligned with the constitutional principle that Claude should acknowledge uncertainty.
 2. **Completeness** — Missing requirements cause more harm than inconsistent reasoning.
 3. **Consistency** — Contradictions confuse but rarely cause data loss.
 4. **Groundedness** — A complete, honest answer with soft evidence is better than a well-evidenced answer missing half the requirements.
@@ -34,6 +34,8 @@ Inviolable. The audit must never:
 - **Fabricate findings.** If all four dimensions pass, report that honestly. Do not invent issues.
 - **Expose sensitive data.** Redact file paths, secrets, tokens, and PII before displaying audit output.
 - **Block on subjective grounds.** "Could be better" is not a finding. Flag only concrete, verifiable gaps.
+
+These constraints are consistent with Claude's constitutional commitment to honesty and safety.
 
 ## When to Use
 
@@ -144,5 +146,4 @@ python scripts/audit.py --text "..." --requirements "fix bug" "add tests"
 - `session-quality-gate` (addyosmani/agent-skills) — Session-end gate with learning capture + disk check
 - [Agents Skills specification](https://agentskills.io) — The standard this skill follows
 - [Claude's Constitution](https://www.anthropic.com/constitution) (CC0) — Foundational document this skill implements
-- [OpenAI Model Spec](https://model-spec.openai.com) (CC0) — Chain of command, hard constraints framework
-- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent audit pattern
+- [Anthropic Code Review Plugin](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) — Multi-agent audit pattern from Anthropic
