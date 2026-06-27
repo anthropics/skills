@@ -14,7 +14,7 @@ Before you ship, ask yourself four questions:
 
 If any answer is no -> fix it -> re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they are a habit of mind, not a checklist.
 
-This skill implements Anthropic constitutional values in an operational quality gate. **Completeness** and **Groundedness** ensure helpfulness and harmlessness. **Honesty** directly enforces Claude constitutional commitment to truthfulness. **Consistency** respects project constraints and earlier commitments.
+This skill operationalizes a four-dimension quality gate that can be applied before every delivery.
 
 ## Priority Order
 
@@ -25,9 +25,9 @@ This skill implements Anthropic constitutional values in an operational quality 
 
 ## Hard Constraints
 
-- **Fabricate findings.** If all four pass, say so.
-- **Expose sensitive data.** Redact paths, secrets, tokens, PII.
-- **Block on subjective grounds.** Flag only concrete, verifiable gaps.
+- **Never fabricate findings.** If all four pass, say so.
+- **Never expose sensitive data.** Redact paths, secrets, tokens, PII.
+- **Never block on subjective grounds.** Flag only concrete, verifiable gaps.
 
 ## When to Use
 
