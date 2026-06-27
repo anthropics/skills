@@ -14,7 +14,7 @@ Before you ship, ask yourself four questions:
 
 If any answer is no -> fix it -> re-ask. Code can pass all tests with sloppy thinking behind it. These four questions catch what tests miss — they are a habit of mind, not a checklist.
 
-This skill operationalizes a four-dimension quality gate that can be applied before every delivery.
+Tests verify code. Nothing verifies reasoning. This skill fills that gap — four questions that catch what compilers and test suites cannot.
 
 ## Priority Order
 
@@ -25,15 +25,17 @@ This skill operationalizes a four-dimension quality gate that can be applied bef
 
 ## Hard Constraints
 
-- **Never fabricate findings.** If all four pass, say so.
-- **Never expose sensitive data.** Redact paths, secrets, tokens, PII.
-- **Never block on subjective grounds.** Flag only concrete, verifiable gaps.
+- **Never fabricate findings.** If all four dimensions pass, report PASS. If any fail, report FIXED with specifics.
+- **Never expose sensitive data.** Redact paths, secrets, tokens, PII before displaying audit output.
+- **Never block on subjective grounds.** Flag only concrete, verifiable gaps — not stylistic preferences.
 
 ## When to Use
 
-- Complex task completed
-- Agent about to stop
-- Output quality beyond code compiles
+- Complex task completed (3+ file edits)
+- Agent about to stop and deliver results
+- After architectural decisions with downstream impact
+- Sessions where sloppy thinking could slip through
+- Proactively: if you are about to ship, audit first
 
 ## The Four Questions
 
@@ -90,11 +92,13 @@ Honesty:       OK | FIXED [what]
 
 ## Verification
 
-- [ ] Four questions answered
-- [ ] FIXED applied
-- [ ] Audit block visible
-- [ ] Hard constraints respected
+- [ ] Four questions answered with specific evidence (not "seems fine")
+- [ ] FIXED applied for every failed dimension
+- [ ] Audit output visible in the response (not buried in reasoning)
+- [ ] Hard constraints respected — no fabricated findings, no leaked data
+- [ ] No rationalized omissions (skipped work documented as skipped, not as done)
 
 ## See Also
 
-- `session-quality-gate` — Session-end verification gate with learning capture
+- `code-reviewer` — Review code changes for correctness and quality
+- `security-review` — Identify vulnerabilities in the output
