@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<!--
+    MOTION EXPLAINER VIEWER TEMPLATE
+    Keep the fixed UI shell and standard library. Replace only the concept metadata,
+    params, palette, helper data, and scenes array in the variable section.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion Explainer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <style>
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+            --anthropic-amber: #f5c89a;
+            --danger: #b94b4b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            visibility: visible;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f0ede4 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+            overflow: hidden;
+        }
+
+        body.fonts-pending { visibility: hidden; }
+        .global-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: rgba(20,20,19,0.08); z-index: 20; }
+        .global-progress-fill { height: 100%; width: 0%; background: var(--anthropic-orange); transition: width 0.05s linear; }
+
+        .container { display: flex; flex-direction: column; height: 100vh; padding-top: 3px; }
+        .main-row { display: flex; flex: 1; min-height: 0; padding: 20px; gap: 20px; }
+        .sidebar { width: 310px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 2px; }
+        .sidebar-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 18px; box-shadow: 0 8px 24px rgba(20,20,19,0.08); }
+        .concept-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
+        .concept-subtitle { font-size: 12px; color: var(--anthropic-mid-gray); line-height: 1.5; }
+        .section-label { font-size: 11px; font-weight: 600; color: var(--anthropic-mid-gray); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+        .scene-list { display: flex; flex-direction: column; gap: 4px; }
+        .scene-item { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; transition: all 0.15s ease; border: 1px solid transparent; }
+        .scene-item:hover { background: var(--anthropic-light); border-color: var(--anthropic-light-gray); }
+        .scene-item.active { background: rgba(217,119,87,0.08); border-color: rgba(217,119,87,0.3); }
+        .scene-item.misconception.active { border-color: rgba(185,75,75,0.45); background: rgba(185,75,75,0.07); }
+        .scene-number { width: 22px; height: 22px; border-radius: 50%; background: var(--anthropic-light-gray); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--anthropic-mid-gray); }
+        .scene-item.active .scene-number { background: var(--anthropic-orange); color: white; }
+        .scene-item.done .scene-number { background: var(--anthropic-green); color: white; }
+        .scene-name { font-size: 13px; line-height: 1.3; }
+        .scene-tag { font-size: 10px; color: var(--anthropic-mid-gray); background: var(--anthropic-light); border-radius: 999px; padding: 2px 6px; text-transform: uppercase; }
+        .playback-controls { display: flex; flex-direction: column; gap: 12px; }
+        .control-row { display: flex; align-items: center; gap: 8px; }
+        .spacer { flex: 1; }
+        .icon-btn, .button { border-radius: 8px; border: 1.5px solid var(--anthropic-light-gray); background: var(--anthropic-light); cursor: pointer; transition: all 0.15s ease; color: var(--anthropic-dark); font-family: 'Poppins', sans-serif; }
+        .icon-btn { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .icon-btn:hover, .button:hover { border-color: var(--anthropic-orange); background: rgba(217,119,87,0.06); }
+        .icon-btn.primary { background: var(--anthropic-orange); border-color: var(--anthropic-orange); color: white; width: 44px; height: 44px; font-size: 16px; }
+        .button { padding: 9px 12px; font-size: 12px; font-weight: 500; flex: 1; }
+        .button.active { background: rgba(217,119,87,0.12); border-color: var(--anthropic-orange); }
+        .speed-select { font-family: 'Courier New', monospace; font-size: 13px; padding: 8px 10px; border-radius: 8px; border: 1.5px solid var(--anthropic-light-gray); background: var(--anthropic-light); color: var(--anthropic-dark); cursor: pointer; }
+        .progress-group { display: flex; flex-direction: column; gap: 4px; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--anthropic-mid-gray); }
+        .progress-track { height: 8px; background: var(--anthropic-light-gray); border-radius: 4px; overflow: hidden; cursor: pointer; }
+        .progress-fill { height: 100%; width: 0%; background: var(--anthropic-orange); transition: width 0.05s linear; }
+        .param-control { display: grid; gap: 6px; margin-bottom: 12px; }
+        .param-control:last-child { margin-bottom: 0; }
+        .param-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--anthropic-dark); }
+        .param-control input[type="range"] { accent-color: var(--anthropic-orange); }
+        .canvas-area { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; position: relative; }
+        #canvas-shell { position: relative; max-width: 100%; max-height: 100%; border-radius: 16px; box-shadow: 0 20px 60px rgba(20,20,19,0.12); background: white; overflow: hidden; }
+        #canvas-shell.misconception { box-shadow: 0 0 0 3px rgba(185,75,75,0.45), 0 20px 60px rgba(20,20,19,0.12); }
+        #canvas-container { position: relative; }
+        .scene-overlay { position: absolute; top: 14px; left: 14px; background: rgba(250,249,245,0.92); border: 1px solid rgba(232,230,220,0.9); border-radius: 999px; padding: 6px 12px; font-size: 12px; color: var(--anthropic-mid-gray); pointer-events: none; z-index: 5; }
+        .misconception-badge { position: absolute; top: 14px; right: 14px; display: none; background: rgba(185,75,75,0.94); color: white; border-radius: 999px; padding: 6px 12px; font-size: 12px; z-index: 6; }
+        .math-overlay { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+        .math-label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; color: var(--anthropic-dark); }
+        .question-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(20,20,19,0.18); z-index: 10; padding: 28px; }
+        .question-card { max-width: 520px; background: rgba(255,255,255,0.96); border-radius: 18px; padding: 26px; box-shadow: 0 24px 80px rgba(20,20,19,0.22); text-align: center; }
+        .question-card h2 { font-family: 'Lora', serif; font-size: 24px; margin-bottom: 10px; }
+        .question-card p { color: var(--anthropic-dark); line-height: 1.55; margin-bottom: 18px; }
+        .question-card button { width: auto; min-width: 150px; }
+        canvas { display: block; }
+        @media (max-width: 800px) {
+            body { overflow: auto; }
+            .container { height: auto; min-height: 100vh; }
+            .main-row { flex-direction: column; }
+            .sidebar { width: 100%; max-height: none; order: 2; }
+            .canvas-area { order: 1; min-height: 55vh; }
+        }
+    </style>
+</head>
+<body class="fonts-pending">
+<div class="global-progress"><div class="global-progress-fill" id="global-progress-fill"></div></div>
+<div class="container">
+    <div class="main-row">
+        <div class="sidebar">
+            <div class="sidebar-card">
+                <div class="concept-title" id="concept-title">Concept Title</div>
+                <div class="concept-subtitle" id="concept-subtitle">A step-by-step visual explanation</div>
+            </div>
+            <div class="sidebar-card">
+                <div class="section-label">Scenes</div>
+                <div class="scene-list" id="scene-list"></div>
+            </div>
+            <div class="sidebar-card playback-controls">
+                <div class="section-label">Playback</div>
+                <div class="control-row">
+                    <button class="icon-btn" onclick="prevScene()" title="Previous scene (←)">⏮</button>
+                    <button class="icon-btn primary" id="play-btn" onclick="togglePlay()" title="Play / pause (Space)">▶</button>
+                    <button class="icon-btn" onclick="nextScene()" title="Next scene (→)">⏭</button>
+                    <div class="spacer"></div>
+                    <select class="speed-select" onchange="setSpeed(this.value)" title="Playback speed">
+                        <option value="0.25">0.25×</option>
+                        <option value="0.5">0.5×</option>
+                        <option value="1" selected>1×</option>
+                        <option value="2">2×</option>
+                        <option value="4">4×</option>
+                    </select>
+                </div>
+                <div class="progress-group">
+                    <div class="progress-label"><span id="scene-label">Scene 1 of 1</span><span id="time-label">0%</span></div>
+                    <div class="progress-track" onclick="scrubFromClick(event)" id="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+                </div>
+            </div>
+            <div class="sidebar-card" id="params-card" style="display:none;">
+                <div class="section-label">Parameters</div>
+                <div id="params-list"></div>
+            </div>
+            <div class="sidebar-card">
+                <div class="section-label">Actions</div>
+                <div style="display:flex; gap:8px;">
+                    <button class="button" onclick="restartAll()" title="Restart (R)">↺ Restart</button>
+                    <button class="button" id="loop-btn" onclick="toggleLoop()" title="Loop (L)">Loop</button>
+                    <button class="button secondary" onclick="downloadFrame()">↓ Save</button>
+                </div>
+            </div>
+        </div>
+        <div class="canvas-area">
+            <div id="canvas-shell">
+                <div id="canvas-container"></div>
+                <div class="math-overlay" id="math-overlay"></div>
+                <div class="scene-overlay" id="scene-overlay">Loading...</div>
+                <div class="misconception-badge" id="misconception-badge">⚠ Common misconception</div>
+                <div class="question-overlay" id="question-overlay">
+                    <div class="question-card">
+                        <h2 id="question-title">Pause and predict</h2>
+                        <p id="question-text">What do you think happens next?</p>
+                        <button class="button active" onclick="continueInteraction()">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  VARIABLE SECTION — replace this section for each concept
+// ═══════════════════════════════════════════════════════════════════════
+const CONCEPT_TITLE = "Concept Title";
+const CONCEPT_SUBTITLE = "Step-by-step visual";
+const CONCEPT_RENDERER = '2d'; // '2d' or 'webgl'
+
+const P = {
+    primary: '#d97757', secondary: '#6a9bcc', tertiary: '#788c5d',
+    neutral: '#b0aea5', dark: '#141413', light: '#faf9f5', gray: '#e8e6dc', amber: '#f5c89a'
+};
+
+const CONCEPT_PARAMS = {
+    // Example:
+    // amount: { label: 'Objects', min: 1, max: 12, step: 1, value: 5 }
+};
+
+const scenes = [
+    {
+        title: "Introduction",
+        duration: 4,
+        transition: 'fade',
+        draw(t) {
+            background(250, 249, 245);
+            const alpha = Ease.gate(t, 0, 0.4) * 255;
+            Typography.headline(CONCEPT_TITLE, width / 2, height / 2 - 20, alpha);
+            Typography.annotation(CONCEPT_SUBTITLE, width / 2 - 100, height / 2 + 28, P.neutral, alpha);
+        }
+    },
+    {
+        title: "Replace this scene",
+        duration: 5,
+        type: 'interaction',
+        pauseAt: 0.55,
+        question: "What should move, appear, or become clear next?",
+        draw(t) {
+            background(250, 249, 245);
+            Typography.headline("Build the aha moment here", width / 2, height / 2, 230);
+        }
+    }
+];
+// ═══════════════════════════════════════════════════════════════════════
+//  FIXED STANDARD LIBRARY AND VIEWER RUNTIME — do not modify casually
+// ═══════════════════════════════════════════════════════════════════════
+
+const CANVAS_ASPECT = 900 / 600;
+let params = {};
+let _mathPool = [];
+let _mathUsed = 0;
+let _enteredScene = -1;
+
+function clamp(v, lo = 0, hi = 1) { return Math.max(lo, Math.min(hi, v)); }
+function lerpNum(a, b, t) { return a + (b - a) * t; }
+function hexToRGB(hex) {
+    let h = String(hex).trim().replace('#', '');
+    if (h.length === 3) h = h.split('').map(ch => ch + ch).join('');
+    const n = parseInt(h, 16);
+    if (Number.isNaN(n) || h.length !== 6) return [0, 0, 0];
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function applyFill(hex, alpha = 255) { const [r, g, b] = hexToRGB(hex); fill(r, g, b, alpha); }
+function applyStroke(hex, alpha = 255) { const [r, g, b] = hexToRGB(hex); stroke(r, g, b, alpha); }
+
+const Ease = {
+    linear: t => clamp(t),
+    inOut: t => { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; },
+    out: t => 1 - Math.pow(1 - clamp(t), 3),
+    in: t => Math.pow(clamp(t), 3),
+    outBounce: t => {
+        t = clamp(t);
+        if (t < 1 / 2.75) return 7.5625 * t * t;
+        if (t < 2 / 2.75) return 7.5625 * (t -= 1.5 / 2.75) * t + 0.75;
+        if (t < 2.5 / 2.75) return 7.5625 * (t -= 2.25 / 2.75) * t + 0.9375;
+        return 7.5625 * (t -= 2.625 / 2.75) * t + 0.984375;
+    },
+    outElastic: t => {
+        t = clamp(t);
+        if (t === 0 || t === 1) return t;
+        return Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * (2 * Math.PI / 3)) + 1;
+    },
+    gate: (t, start = 0, win = 0.3) => Ease.inOut(clamp((t - start) / win))
+};
+
+function animate(a, b, t, easeFn = Ease.inOut) { return lerpNum(a, b, easeFn(t)); }
+function drawPartialPath(points, t, weight = 2, col = P.primary) {
+    if (!points || points.length < 2) return;
+    push(); noFill(); applyStroke(col); strokeWeight(weight);
+    const progress = clamp(t) * (points.length - 1);
+    const full = Math.floor(progress);
+    const partial = progress - full;
+    beginShape();
+    for (let i = 0; i <= full && i < points.length; i++) vertex(points[i][0], points[i][1]);
+    if (full < points.length - 1) {
+        const a = points[full], b = points[full + 1];
+        vertex(lerpNum(a[0], b[0], partial), lerpNum(a[1], b[1], partial));
+    }
+    endShape(); pop();
+}
+function drawArrow(x1, y1, x2, y2, col = P.primary, weight = 2, headSize = 12) {
+    push(); applyStroke(col); strokeWeight(weight); applyFill(col);
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const bodyLen = Math.max(0, len - headSize);
+    translate(x1, y1); rotate(angle); line(0, 0, bodyLen, 0); translate(bodyLen, 0); noStroke(); triangle(0, -headSize * 0.4, 0, headSize * 0.4, headSize, 0); pop();
+}
+function drawLabel(x, y, label, opts = {}) {
+    const { size = 18, col = P.dark, bg = null, alpha = 255, align = CENTER, weight = NORMAL } = opts;
+    push(); textFont('Poppins, sans-serif'); textSize(size); textStyle(weight); textAlign(align, CENTER);
+    if (bg) { const w = textWidth(label) + 20; applyFill(bg, Math.min(alpha, 245)); noStroke(); rectMode(CENTER); rect(x, y, w, size + 12, 6); }
+    applyFill(col, alpha); noStroke(); text(label, x, y); pop();
+}
+function drawHighlight(x, y, w, h, col = P.primary, alpha = 80, radius = 8) {
+    push(); rectMode(CENTER); noStroke(); applyFill(col, alpha); rect(x, y, w + 20, h + 12, radius); applyStroke(col); strokeWeight(2); noFill(); rect(x, y, w + 20, h + 12, radius); pop();
+}
+function typewriter(fullText, t) { return String(fullText).substring(0, Math.ceil(clamp(t) * String(fullText).length)); }
+function fadeIn(t, start = 0, end = 0.3) { return lerpNum(0, 255, clamp((t - start) / (end - start))); }
+
+class CoordinateSystem {
+    constructor(cx, cy, scale) { this.cx = cx; this.cy = cy; this.scale = scale; }
+    toScreen(wx, wy) { return [this.cx + wx * this.scale, this.cy - wy * this.scale]; }
+    drawAxes(xRange = [-5, 5], yRange = [-4, 4], col = P.neutral) {
+        const [x0, y0] = this.toScreen(xRange[0], 0), [x1, y1] = this.toScreen(xRange[1], 0);
+        const [ax0, ay0] = this.toScreen(0, yRange[0]), [ax1, ay1] = this.toScreen(0, yRange[1]);
+        drawArrow(x0, y0, x1, y1, col, 1.5, 10); drawArrow(ax0, ay0, ax1, ay1, col, 1.5, 10);
+    }
+    plotFunction(f, xMin, xMax, col = P.primary, weight = 2.5, steps = 240) {
+        push(); applyStroke(col); strokeWeight(weight); noFill();
+        let drawing = false;
+        for (let i = 0; i <= steps; i++) {
+            const wx = lerpNum(xMin, xMax, i / steps);
+            const wy = f(wx);
+            if (!Number.isFinite(wy)) { if (drawing) { endShape(); drawing = false; } continue; }
+            const [sx, sy] = this.toScreen(wx, wy);
+            if (!Number.isFinite(sx) || !Number.isFinite(sy) || Math.abs(sy) > height * 8) { if (drawing) { endShape(); drawing = false; } continue; }
+            if (!drawing) { beginShape(); drawing = true; }
+            vertex(sx, sy);
+        }
+        if (drawing) endShape(); pop();
+    }
+}
+
+const Typography = {
+    headline: (label, x, y, alpha = 255) => { push(); textFont('Lora, serif'); textSize(28); textAlign(CENTER, CENTER); applyFill(P.dark, alpha); noStroke(); text(label, x, y); pop(); },
+    stepLabel: (label, x, y, alpha = 180) => { push(); textFont('Poppins, sans-serif'); textSize(13); textAlign(CENTER, CENTER); applyFill(P.neutral, alpha); noStroke(); text(label, x, y); pop(); },
+    annotation: (label, x, y, col = P.dark, alpha = 255) => { push(); textFont('Poppins, sans-serif'); textSize(15); textAlign(LEFT, CENTER); applyFill(col, alpha); noStroke(); text(label, x, y); pop(); },
+    math: (label, x, y, size = 18, alpha = 255) => { push(); textFont('Courier New, monospace'); textSize(size); textAlign(CENTER, CENTER); applyFill(P.dark, alpha); noStroke(); text(label, x, y); pop(); }
+};
+
+function clearMathLabels() { _mathUsed = 0; }
+function mathLabel(latex, x, y, opts = {}) {
+    const overlay = document.getElementById('math-overlay');
+    if (!overlay) return;
+    let el = _mathPool[_mathUsed];
+    if (!el) { el = document.createElement('div'); el.className = 'math-label'; overlay.appendChild(el); _mathPool.push(el); }
+    _mathUsed++;
+    el.style.display = 'block';
+    el.style.left = `${x}px`; el.style.top = `${y}px`;
+    el.style.fontSize = `${opts.size || 20}px`; el.style.color = opts.color || P.dark;
+    el.style.opacity = opts.alpha == null ? '1' : String(clamp(opts.alpha / 255));
+    if (el.dataset.latex !== latex) {
+        el.dataset.latex = latex;
+        if (window.katex) katex.render(latex, el, { throwOnError: false, displayMode: !!opts.displayMode });
+        else el.textContent = latex;
+    }
+}
+function hideUnusedMathLabels() { for (let i = _mathUsed; i < _mathPool.length; i++) _mathPool[i].style.display = 'none'; }
+
+let manager = {
+    current: 0, frame: 0, playing: false, speed: 1.0, loop: false, _frameAccum: 0,
+    get scene() { return scenes[this.current]; },
+    get durationFrames() { return Math.max(1, (this.scene.duration || 1) * 60); },
+    get t() { return clamp(this.frame / this.durationFrames); },
+    get done() { return this.t >= 1; },
+    update() {
+        if (!this.playing) return;
+        const s = this.scene;
+        if (isInteractionPaused(s, this.t)) { this.playing = false; showQuestion(s); updatePlayBtn(); return; }
+        this._frameAccum += this.speed;
+        while (this._frameAccum >= 1) {
+            this.frame++; this._frameAccum--;
+            if (this.frame >= this.durationFrames) {
+                if (this.current < scenes.length - 1) this.goTo(this.current + 1);
+                else if (this.loop) this.goTo(0);
+                else { this.playing = false; updatePlayBtn(); }
+                break;
+            }
+        }
+    },
+    goTo(index) {
+        if (index < 0 || index >= scenes.length) return;
+        const previous = scenes[this.current];
+        if (previous && previous.onExit && index !== this.current) previous.onExit.call(previous);
+        this.current = index; this.frame = 0; this._frameAccum = 0; hideQuestion(); enterSceneIfNeeded(true); updateSceneList(); updatePlayBtn();
+    }
+};
+
+function setup() {
+    const mode = String(CONCEPT_RENDERER).toLowerCase() === 'webgl' ? WEBGL : P2D;
+    const [cw, ch] = canvasSize();
+    const canvas = createCanvas(cw, ch, mode);
+    canvas.parent('canvas-container');
+    textFont('Poppins, sans-serif'); frameRate(60);
+    document.getElementById('concept-title').textContent = CONCEPT_TITLE;
+    document.getElementById('concept-subtitle').textContent = CONCEPT_SUBTITLE;
+    initParams(); buildSceneList(); updateSceneList(); enterSceneIfNeeded(true);
+}
+function draw() {
+    clearMathLabels(); enterSceneIfNeeded(false); manager.update();
+    const shell = document.getElementById('canvas-shell');
+    const badge = document.getElementById('misconception-badge');
+    shell.classList.toggle('misconception', manager.scene.type === 'misconception');
+    badge.style.display = manager.scene.type === 'misconception' ? 'block' : 'none';
+    if (manager.scene && manager.scene.draw) manager.scene.draw(manager.t);
+    drawTransitionOverlay(manager.scene, manager.t);
+    hideUnusedMathLabels(); updateProgress();
+    document.getElementById('scene-overlay').textContent = `${manager.current + 1} / ${scenes.length} — ${manager.scene.title}`;
+}
+function windowResized() { const [cw, ch] = canvasSize(); resizeCanvas(cw, ch); }
+function canvasSize() {
+    const area = document.querySelector('.canvas-area');
+    const maxW = Math.max(320, area.clientWidth - 8), maxH = Math.max(240, area.clientHeight - 8);
+    let w = Math.min(900, maxW), h = w / CANVAS_ASPECT;
+    if (h > maxH) { h = maxH; w = h * CANVAS_ASPECT; }
+    return [Math.floor(w), Math.floor(h)];
+}
+function drawTransitionOverlay(scene, t) {
+    if (scene.transition !== 'fade') return;
+    const alpha = Math.max(Ease.gate(1 - t, 0, 0.12), Ease.gate(t, 0.88, 0.12)) * 220;
+    if (alpha > 0) { push(); resetMatrix(); noStroke(); fill(20, 20, 19, alpha); rectMode(CORNER); rect(0, 0, width, height); pop(); }
+}
+function enterSceneIfNeeded(force) {
+    if (!force && _enteredScene === manager.current) return;
+    _enteredScene = manager.current;
+    const s = manager.scene;
+    if (s && s.onEnter) s.onEnter.call(s, params);
+}
+function isInteractionPaused(scene, t) { return scene && scene.type === 'interaction' && !scene._interacted && t >= (scene.pauseAt ?? 0.5); }
+function showQuestion(scene) {
+    document.getElementById('question-title').textContent = scene.questionTitle || 'Pause and predict';
+    document.getElementById('question-text').textContent = scene.question || 'What do you think happens next?';
+    document.getElementById('question-overlay').style.display = 'flex';
+}
+function hideQuestion() { document.getElementById('question-overlay').style.display = 'none'; }
+function continueInteraction() { manager.scene._interacted = true; hideQuestion(); manager.playing = true; updatePlayBtn(); }
+function togglePlay() { manager.playing = !manager.playing; updatePlayBtn(); }
+function updatePlayBtn() { document.getElementById('play-btn').textContent = manager.playing ? '⏸' : '▶'; }
+function nextScene() { manager.goTo(manager.current + 1); }
+function prevScene() { manager.goTo(manager.current - 1); }
+function setSpeed(v) { manager.speed = Math.max(0.01, parseFloat(v)); }
+function toggleLoop() { manager.loop = !manager.loop; document.getElementById('loop-btn').classList.toggle('active', manager.loop); }
+function restartAll() { scenes.forEach(s => { s._interacted = false; }); manager.goTo(0); manager.playing = false; updatePlayBtn(); }
+function scrubFromClick(e) {
+    const rect = document.getElementById('progress-track').getBoundingClientRect();
+    const t = clamp((e.clientX - rect.left) / rect.width);
+    manager.frame = Math.floor(t * manager.durationFrames); manager._frameAccum = 0; manager.playing = false;
+    if (manager.scene.type === 'interaction' && t >= (manager.scene.pauseAt ?? 0.5)) manager.scene._interacted = true;
+    hideQuestion(); updatePlayBtn();
+}
+function updateProgress() {
+    const t = manager.t;
+    document.getElementById('progress-fill').style.width = `${t * 100}%`;
+    document.getElementById('scene-label').textContent = `Scene ${manager.current + 1} of ${scenes.length}`;
+    document.getElementById('time-label').textContent = `${Math.floor(t * 100)}%`;
+    const prior = scenes.slice(0, manager.current).reduce((sum, s) => sum + (s.duration || 1), 0);
+    const total = scenes.reduce((sum, s) => sum + (s.duration || 1), 0);
+    document.getElementById('global-progress-fill').style.width = `${((prior + t * (manager.scene.duration || 1)) / total) * 100}%`;
+}
+function buildSceneList() {
+    const list = document.getElementById('scene-list'); list.innerHTML = '';
+    scenes.forEach((s, i) => {
+        const item = document.createElement('div'); item.className = 'scene-item'; item.id = `scene-item-${i}`; item.onclick = () => manager.goTo(i);
+        const tag = s.type ? `<div class="scene-tag">${s.type}</div>` : '<div></div>';
+        item.innerHTML = `<div class="scene-number">${i + 1}</div><div class="scene-name">${s.title}</div>${tag}`;
+        list.appendChild(item);
+    });
+}
+function updateSceneList() {
+    scenes.forEach((s, i) => {
+        const item = document.getElementById(`scene-item-${i}`); if (!item) return;
+        item.className = 'scene-item' + (i === manager.current ? ' active' : '') + (i < manager.current ? ' done' : '') + (s.type === 'misconception' ? ' misconception' : '');
+    });
+}
+function initParams() {
+    params = {}; const keys = Object.keys(CONCEPT_PARAMS || {}); const card = document.getElementById('params-card'); const list = document.getElementById('params-list');
+    if (!keys.length) { card.style.display = 'none'; return; }
+    card.style.display = 'block'; list.innerHTML = '';
+    keys.forEach(key => {
+        const cfg = CONCEPT_PARAMS[key]; params[key] = Number(cfg.value ?? cfg.min ?? 0);
+        const wrap = document.createElement('div'); wrap.className = 'param-control';
+        wrap.innerHTML = `<div class="param-label"><span>${cfg.label || key}</span><span id="param-value-${key}">${params[key]}</span></div><input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step || 1}" value="${params[key]}">`;
+        const input = wrap.querySelector('input'); input.addEventListener('input', () => { params[key] = Number(input.value); document.getElementById(`param-value-${key}`).textContent = input.value; if (manager.scene.onParamChange) manager.scene.onParamChange.call(manager.scene, params); });
+        list.appendChild(wrap);
+    });
+}
+function downloadFrame() { saveCanvas('explainer-frame', 'png'); }
+
+document.addEventListener('keydown', e => {
+    if (['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'].includes(document.activeElement.tagName)) return;
+    if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+    if (e.code === 'ArrowRight') nextScene();
+    if (e.code === 'ArrowLeft') prevScene();
+    if (e.key.toLowerCase() === 'r') restartAll();
+    if (e.key.toLowerCase() === 'l') toggleLoop();
+});
+window.addEventListener('load', () => {
+    const start = () => { document.body.classList.remove('fonts-pending'); updatePlayBtn(); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(start); else start();
+});
+</script>
+</body>
+</html>
