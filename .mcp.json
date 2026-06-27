@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "CMS Coverage": {
+      "type": "http",
+      "url": "https://mcp.deepsense.ai/cms_coverage/mcp"
+    },
+    "ICD-10 Codes": {
+      "type": "http",
+      "url": "https://mcp.deepsense.ai/icd10_codes/mcp"
+    },
+    "NPI Registry": {
+      "type": "http",
+      "url": "https://mcp.deepsense.ai/npi_registry/mcp"
+    },
+    "PubMed": {
+      "type": "http",
+      "url": "https://pubmed.mcp.claude.com/mcp"
+    }
+  }
+}
