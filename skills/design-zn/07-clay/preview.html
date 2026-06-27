@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Clay (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #faf9f7;
+    --black: #000000;
+    --white: #ffffff;
+    --oat: #dad4c8;
+    --oat-light: #eee9df;
+    --silver: #9f9b93;
+    --charcoal: #55534e;
+    --matcha-300: #84e7a5;
+    --matcha-600: #078a52;
+    --matcha-800: #02492a;
+    --slushie-500: #3bd3fd;
+    --slushie-800: #0089ad;
+    --lemon-400: #f8cc65;
+    --lemon-500: #fbbd41;
+    --ube-300: #c1b0ff;
+    --ube-800: #43089f;
+    --pomegranate-400: #fc7981;
+    --blueberry-800: #01418d;
+    --badge-bg: #f0f8ff;
+    --badge-text: #3859f9;
+    --focus: rgb(20,110,245);
+    --font-sans: 'DM Sans', Arial, sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(250,249,247,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--oat);
+  }
+  .nav-brand { font-size: 15px; font-weight: 600; color: var(--black); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 15px; font-weight: 500; color: var(--charcoal); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-cta {
+    display: inline-block; background: var(--black); color: var(--white);
+    padding: 8px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: all 0.3s;
+  }
+  .nav-cta:hover { transform: translateY(-2px) rotateZ(-2deg); box-shadow: rgb(0,0,0) -3px 3px; }
+
+  .hero { padding: 80px 32px 64px; max-width: 1000px; margin: 0 auto; }
+  .hero h1 { font-size: 72px; font-weight: 600; line-height: 1.00; letter-spacing: -3.2px; margin-bottom: 16px; }
+  .hero p { font-size: 20px; font-weight: 400; line-height: 1.40; color: var(--silver); max-width: 560px; margin-bottom: 32px; }
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-solid { display: inline-block; background: var(--black); color: var(--white); padding: 10px 20px; border-radius: 12px; font-family: var(--font-sans); font-size: 16px; font-weight: 500; text-decoration: none; cursor: pointer; border: none; transition: all 0.3s; }
+  .btn-solid:hover { transform: translateY(-3px) rotateZ(-4deg); box-shadow: rgb(0,0,0) -5px 5px; }
+  .btn-outline { display: inline-block; background: transparent; color: var(--black); padding: 10px 20px; border-radius: 4px; border: 1px solid #717989; font-family: var(--font-sans); font-size: 16px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.3s; }
+  .btn-outline:hover { background: var(--ube-800); color: white; transform: translateY(-3px) rotateZ(-4deg); box-shadow: rgb(0,0,0) -5px 5px; }
+  .btn-white { display: inline-block; background: var(--white); color: var(--black); padding: 8px 16px; border-radius: 12px; border: 1px solid var(--oat); font-family: var(--font-sans); font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.3s; }
+  .btn-white:hover { transform: translateY(-2px) rotateZ(-2deg); box-shadow: rgba(0,0,0,0.1) -3px 3px; }
+
+  .section { padding: 64px 32px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.08px; color: var(--silver); margin-bottom: 8px; }
+  .section-title { font-size: 32px; font-weight: 600; line-height: 1.10; letter-spacing: -0.64px; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--oat); margin: 0; }
+  .section-divider-dashed { border: none; border-top: 1px dashed var(--oat); margin: 0; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--oat); background: var(--white); }
+  .color-swatch-block { height: 68px; width: 100%; }
+  .color-swatch-info { padding: 10px; }
+  .color-swatch-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 11px; color: var(--silver); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 10px; color: var(--charcoal); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--charcoal); margin: 24px 0 10px; }
+
+  .type-sample { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--oat-light); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--silver); margin-top: 6px; }
+
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; font-weight: 500; color: var(--silver); margin-top: 8px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: var(--white); border: 1px solid var(--oat); border-radius: 24px; padding: 24px; box-shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px; }
+  .card-dashed { background: var(--white); border: 1px dashed var(--oat); border-radius: 24px; padding: 24px; }
+  .card-colored { border-radius: 24px; padding: 24px; color: var(--white); }
+  .card h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.4px; margin-bottom: 8px; }
+  .card p, .card-dashed p, .card-colored p { font-size: 14px; line-height: 1.50; }
+  .card-badge { display: inline-block; font-size: 9.6px; font-weight: 600; padding: 2px 6px; border-radius: 11px; margin-bottom: 12px; }
+
+  .form-group { margin-bottom: 16px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .form-input { width: 100%; background: var(--white); color: var(--black); border: 1px solid #717989; padding: 8px 12px; border-radius: 4px; font-family: var(--font-sans); font-size: 14px; outline: none; }
+  .form-input:focus { outline: 2px solid var(--focus); }
+  .form-input--focus { outline: 2px solid var(--focus); }
+  .form-input--error { border-color: var(--pomegranate-400); outline: 2px solid var(--pomegranate-400); }
+  .form-textarea { width: 100%; min-height: 80px; background: var(--white); color: var(--black); border: 1px solid #717989; padding: 8px 12px; border-radius: 4px; font-family: var(--font-sans); font-size: 14px; resize: vertical; outline: none; }
+  .form-state-label { font-size: 10px; color: var(--silver); margin-top: 4px; }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--matcha-600); border-radius: 4px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 10px; color: var(--silver); }
+
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 60px; height: 60px; background: var(--lemon-500); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-mono); font-size: 10px; color: var(--silver); }
+  .radius-context { font-size: 9px; color: var(--charcoal); }
+
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: var(--white); border-radius: 24px; padding: 20px; text-align: center; border: 1px solid var(--oat); }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 10px; color: var(--silver); }
+
+  .footer { padding: 40px 32px; text-align: center; background: var(--white); border-top: 1px solid var(--oat); border-radius: 40px 40px 0 0; font-size: 13px; color: var(--silver); }
+  .footer a { color: var(--matcha-600); text-decoration: underline; }
+
+  @media (max-width: 767px) {
+    .hero h1 { font-size: 44px; letter-spacing: -1.32px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Clay</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-solid" href="#">Start Building</a>
+    <a class="btn-outline" href="#">Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Clay Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">Text, headings</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Cards, buttons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#faf9f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Cream</div><div class="color-swatch-hex">#faf9f7</div><div class="color-swatch-role">Page background</div></div></div>
+  </div>
+
+  <div class="color-group-label">Swatch Palette</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#84e7a5"></div><div class="color-swatch-info"><div class="color-swatch-name">Matcha 300</div><div class="color-swatch-hex">#84e7a5</div><div class="color-swatch-role">Light green</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#078a52"></div><div class="color-swatch-info"><div class="color-swatch-name">Matcha 600</div><div class="color-swatch-hex">#078a52</div><div class="color-swatch-role">Mid green</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#02492a"></div><div class="color-swatch-info"><div class="color-swatch-name">Matcha 800</div><div class="color-swatch-hex">#02492a</div><div class="color-swatch-role">Deep green sections</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3bd3fd"></div><div class="color-swatch-info"><div class="color-swatch-name">Slushie 500</div><div class="color-swatch-hex">#3bd3fd</div><div class="color-swatch-role">Bright cyan</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fbbd41"></div><div class="color-swatch-info"><div class="color-swatch-name">Lemon 500</div><div class="color-swatch-hex">#fbbd41</div><div class="color-swatch-role">Primary gold</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c1b0ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Ube 300</div><div class="color-swatch-hex">#c1b0ff</div><div class="color-swatch-role">Soft lavender</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#43089f"></div><div class="color-swatch-info"><div class="color-swatch-name">Ube 800</div><div class="color-swatch-hex">#43089f</div><div class="color-swatch-role">Deep purple</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fc7981"></div><div class="color-swatch-info"><div class="color-swatch-name">Pomegranate 400</div><div class="color-swatch-hex">#fc7981</div><div class="color-swatch-role">Coral pink</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#01418d"></div><div class="color-swatch-info"><div class="color-swatch-name">Blueberry 800</div><div class="color-swatch-hex">#01418d</div><div class="color-swatch-role">Deep navy</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9f9b93"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Silver</div><div class="color-swatch-hex">#9f9b93</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#55534e"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Charcoal</div><div class="color-swatch-hex">#55534e</div><div class="color-swatch-role">Tertiary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dad4c8"></div><div class="color-swatch-info"><div class="color-swatch-name">Oat Border</div><div class="color-swatch-hex">#dad4c8</div><div class="color-swatch-role">Primary border</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eee9df"></div><div class="color-swatch-info"><div class="color-swatch-name">Oat Light</div><div class="color-swatch-hex">#eee9df</div><div class="color-swatch-role">Secondary border</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider-dashed">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:72px; font-weight:600; line-height:1.00; letter-spacing:-3.2px;">Display Hero</div><div class="type-meta">Display — 80px / 600 / 1.00 / -3.2px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:52px; font-weight:600; line-height:1.00; letter-spacing:-2.4px;">Display Secondary</div><div class="type-meta">Secondary — 60px / 600 / 1.00 / -2.4px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:44px; font-weight:600; line-height:1.10; letter-spacing:-1.32px;">Section Heading</div><div class="type-meta">Section — 44px / 600 / 1.10 / -1.32px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:32px; font-weight:600; line-height:1.10; letter-spacing:-0.64px;">Card Heading</div><div class="type-meta">Card — 32px / 600 / 1.10 / -0.64px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:600; line-height:1.40; letter-spacing:-0.4px;">Feature Title</div><div class="type-meta">Feature — 20px / 600 / 1.40 / -0.4px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:400; line-height:1.60; letter-spacing:-0.36px;">Body — Go to market with unique data — and the ability to act on it. Clay helps sales teams build pipeline.</div><div class="type-meta">Body — 18px / 400 / 1.60 / -0.36px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.50; letter-spacing:-0.16px;">Button — Start your free trial</div><div class="type-meta">Button — 16px / 500 / 1.50 / -0.16px / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:1.50;">Caption — Updated 3 minutes ago</div><div class="type-meta">Caption — 14px / 400 / 1.50 / Roobert</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:600; line-height:1.20; text-transform:uppercase; letter-spacing:1.08px;">Uppercase Label</div><div class="type-meta">Label — 12px / 600 / uppercase / 1.08px / Roobert</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:14px; font-weight:400; line-height:1.50; color:var(--matcha-600);">clay.people.enrich({ email: 'user@company.com' })</div><div class="type-meta">Code — 14px / 400 / Space Mono</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-solid" href="#">Start Building</a><div class="button-label">Primary Solid</div></div>
+    <div class="button-item"><a class="btn-white" href="#">Learn More</a><div class="button-label">White Card</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">View Docs</a><div class="button-label">Ghost Outlined</div></div>
+    <div class="button-item"><span class="card-badge" style="background:var(--badge-bg); color:var(--badge-text);">NEW FEATURE</span><div class="button-label">Badge</div></div>
+  </div>
+  <p style="font-size:13px; color:var(--silver); margin-top:16px;">Hover over buttons to see the playful rotateZ + hard shadow animation.</p>
+</section>
+
+<hr class="section-divider-dashed">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:rgba(7,138,82,0.1); color:var(--matcha-600);">Data Enrichment</div>
+      <h3>Turn data into action</h3>
+      <p style="color:var(--charcoal);">Enrich any record with 100+ data providers. Build automated workflows with Clay tables.</p>
+    </div>
+    <div class="card-dashed">
+      <div class="card-badge" style="background:rgba(67,8,159,0.1); color:var(--ube-800);">Dashed Border</div>
+      <h3>Flexible integrations</h3>
+      <p style="color:var(--charcoal);">Connect to any CRM, email tool, or data source. Dashed border variant for secondary content.</p>
+    </div>
+    <div class="card-colored" style="background:var(--matcha-800);">
+      <div class="card-badge" style="background:rgba(132,231,165,0.2); color:var(--matcha-300);">Colored Section</div>
+      <h3>Growth on autopilot</h3>
+      <p style="color:rgba(255,255,255,0.8);">Full-width colored section using the Matcha 800 swatch background.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" type="text" placeholder="Acme Corp"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Email</label><input class="form-input form-input--focus" type="email" value="user@clay.com"><div class="form-state-label">Focus (blue ring)</div></div>
+  <div class="form-group"><label class="form-label">Domain</label><input class="form-input form-input--error" type="text" value="invalid"><div class="form-state-label">Error (pomegranate ring)</div></div>
+  <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" placeholder="Add enrichment notes..."></textarea></div>
+</section>
+
+<hr class="section-divider-dashed">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Inputs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Small cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div><div class="radius-context">Buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div><div class="radius-context">Feature cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:40px"></div><div class="radius-label">40px</div><div class="radius-context">Sections</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px; width:60px; height:60px;"></div><div class="radius-label">pill</div><div class="radius-context">CTAs</div></div>
+  </div>
+</section>
+
+<hr class="section-divider-dashed">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">Cream canvas</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px;"><div class="elevation-label">Level 1: Clay</div><div class="elevation-desc">Multi-layer + inset</div></div>
+    <div class="elevation-card" style="box-shadow: rgb(0,0,0) -7px 7px; transform: rotateZ(-2deg);"><div class="elevation-label">Level 2: Hover Hard</div><div class="elevation-desc">Hard offset shadow</div></div>
+    <div class="elevation-card" style="outline: 2px solid rgb(20,110,245);"><div class="elevation-label">Focus</div><div class="elevation-desc">Blue focus ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://clay.com/">clay.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

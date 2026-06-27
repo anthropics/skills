@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Inspired by PostHog — Dark Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive-ink: #4d4f46;
+    --deep-olive: #23251d;
+    --posthog-orange: #F54E00;
+    --amber-gold: #F7A501;
+    --gold-border: #b17816;
+    --focus-blue: #3b82f6;
+    --warm-parchment: #fdfdf8;
+    --sage-cream: #eeefe9;
+    --light-sage: #e5e7e0;
+    --warm-tan: #d4c9b8;
+    --hover-white: #f4f4f4;
+    --muted-olive: #65675e;
+    --sage-placeholder: #9ea096;
+    --sage-border: #bfc1b7;
+    --light-border: #b6b7af;
+    --near-black: #1e1f23;
+    --dark-text: #111827;
+    --white: #ffffff;
+    --font: 'IBM Plex Sans', -apple-system, system-ui, 'Segoe UI', 'Helvetica Neue', Helvetica, Ubuntu, Roboto, Noto, Arial, sans-serif;
+    --mono: 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Dark mode */
+    --dk-bg: #151614;
+    --dk-surface: #1c1d1a;
+    --dk-surface-elevated: #252621;
+    --dk-border: #3a3b36;
+    --dk-text-primary: #e5e7e0;
+    --dk-text-secondary: #9ea096;
+    --dk-text-muted: #65675e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--dk-bg);
+    color: var(--dk-text-primary);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 200;
+    background: var(--posthog-orange);
+    color: var(--white);
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(21, 22, 20, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--dk-border);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dk-text-primary);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dk-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--posthog-orange); }
+  .nav-cta {
+    background: var(--warm-parchment);
+    color: var(--deep-olive);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    background: var(--dk-bg);
+    padding: 80px 32px 64px;
+    border-bottom: 1px solid var(--dk-border);
+  }
+  .hero-inner { max-width: 800px; margin: 0 auto; }
+  .hero h1 {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.20;
+    letter-spacing: -0.75px;
+    color: var(--dk-text-primary);
+    margin-bottom: 16px;
+  }
+  .hero .subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.56;
+    color: var(--dk-text-secondary);
+    margin-bottom: 32px;
+  }
+  .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-light {
+    background: var(--warm-parchment);
+    color: var(--deep-olive);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-light:hover { opacity: 0.85; }
+  .btn-outline-dk {
+    background: transparent;
+    color: var(--dk-text-primary);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font);
+    border: 1px solid var(--dk-border);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-outline-dk:hover { color: var(--posthog-orange); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.33;
+    color: var(--dk-text-primary);
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--dk-text-secondary);
+    margin-bottom: 40px;
+  }
+
+  /* COLORS */
+  .color-category { margin-bottom: 32px; }
+  .color-category h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--dk-text-primary);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--dk-border);
+    background: var(--dk-surface);
+  }
+  .swatch-color { height: 80px; width: 100%; }
+  .swatch-info { padding: 10px 12px; }
+  .swatch-name { font-size: 13px; font-weight: 700; color: var(--dk-text-primary); margin-bottom: 2px; }
+  .swatch-hex { font-size: 12px; font-weight: 500; color: var(--dk-text-muted); font-family: var(--mono); margin-bottom: 4px; }
+  .swatch-role { font-size: 11px; color: var(--dk-text-secondary); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--dk-border);
+  }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample .type-text { color: var(--dk-text-primary); margin-bottom: 6px; }
+  .type-sample .type-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--posthog-orange);
+    font-family: var(--mono);
+    line-height: 1.4;
+  }
+
+  /* BUTTONS */
+  .button-grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+  .button-item { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .btn-label { font-size: 11px; font-weight: 500; color: var(--dk-text-muted); font-family: var(--mono); }
+  .btn-dk-primary {
+    background: var(--warm-parchment);
+    color: var(--deep-olive);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-dk-primary:hover { opacity: 0.85; }
+  .btn-dk-sage {
+    background: var(--dk-surface-elevated);
+    color: var(--dk-text-primary);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font);
+    border: 1px solid var(--dk-border);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-dk-sage:hover { color: var(--posthog-orange); }
+  .btn-dk-tan {
+    background: #4a3f30;
+    color: var(--warm-tan);
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font);
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-dk-tan:hover { color: var(--posthog-orange); }
+  .btn-dk-input {
+    background: var(--dk-surface);
+    color: var(--dk-text-muted);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--font);
+    border: 1px solid var(--dk-border);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-dk-input:hover { color: var(--posthog-orange); }
+  .btn-dk-ghost {
+    background: transparent;
+    color: var(--dk-text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .btn-dk-ghost:hover { color: var(--posthog-orange); }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .card { border-radius: 6px; padding: 24px; transition: transform 0.15s; }
+  .card-dk-bordered { background: var(--dk-surface); border: 1px solid var(--dk-border); }
+  .card-dk-elevated { background: var(--dk-surface-elevated); border: 1px solid var(--dk-border); }
+  .card-dk-shadow {
+    background: var(--dk-surface);
+    border: 1px solid var(--dk-border);
+    box-shadow: 0px 25px 50px -12px rgba(0,0,0,0.5);
+  }
+  .card-hover:hover { transform: translateY(-2px); }
+  .card h4 { font-size: 20px; font-weight: 700; color: var(--dk-text-primary); margin-bottom: 8px; line-height: 1.40; }
+  .card .card-desc { font-size: 15px; font-weight: 400; line-height: 1.71; color: var(--dk-text-secondary); }
+  .card .card-label { font-size: 11px; font-weight: 500; color: var(--posthog-orange); font-family: var(--mono); margin-top: 12px; }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 14px; font-weight: 600; color: var(--dk-text-primary); }
+  .form-group input, .form-group textarea {
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 400;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--dk-border);
+    background: var(--dk-surface);
+    color: var(--dk-text-primary);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: var(--dk-text-muted); }
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: var(--focus-blue);
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  }
+  .form-group input.error { border-color: var(--posthog-orange); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-hint { font-size: 11px; color: var(--dk-text-muted); font-family: var(--mono); }
+  .form-error-text { font-size: 11px; color: var(--posthog-orange); }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .spacing-box { background: var(--posthog-orange); border-radius: 2px; height: 40px; opacity: 0.6; }
+  .spacing-label { font-size: 10px; font-weight: 600; color: var(--dk-text-muted); font-family: var(--mono); }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .radius-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .radius-box { width: 80px; height: 80px; background: var(--dk-surface-elevated); border: 1px solid var(--dk-border); }
+  .radius-label { font-size: 12px; font-weight: 700; color: var(--dk-text-primary); font-family: var(--mono); }
+  .radius-context { font-size: 10px; color: var(--dk-text-muted); text-align: center; }
+
+  /* ELEVATION */
+  .elevation-section {
+    background: var(--dk-surface);
+    border-radius: 6px;
+    padding: 40px;
+    border: 1px solid var(--dk-border);
+  }
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+  .elevation-card {
+    background: var(--dk-surface-elevated);
+    border-radius: 6px;
+    padding: 24px;
+    min-height: 120px;
+  }
+  .elevation-card h4 { font-size: 14px; font-weight: 700; color: var(--dk-text-primary); margin-bottom: 6px; }
+  .elevation-card p { font-size: 12px; color: var(--dk-text-secondary); line-height: 1.5; }
+  .elev-flat { box-shadow: none; border: none; }
+  .elev-border { box-shadow: none; border: 1px solid var(--dk-border); }
+  .elev-compound { box-shadow: none; border-top: 1px solid var(--dk-border); border-left: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); }
+  .elev-deep { box-shadow: 0px 25px 50px -12px rgba(0,0,0,0.6); border: none; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px 32px;
+    border-top: 1px solid var(--dk-border);
+    font-size: 13px;
+    color: var(--dk-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 10px 16px; }
+    .nav-links { display: none; }
+    .hero { padding: 48px 16px 40px; }
+    .hero h1 { font-size: 24px; }
+    .section { padding: 40px 16px; }
+    .section-title { font-size: 20px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .card-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .elevation-section { padding: 20px; }
+    .elevation-grid { grid-template-columns: 1fr; }
+    .dark-badge { top: 10px; right: 10px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DARK MODE BADGE -->
+<div class="dark-badge">Dark Mode</div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">awesome-design-md</span>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+    <li><a href="#radius">Radius</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Get started - free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Design System Inspired by PostHog</h1>
+    <p class="subtitle">A visual catalog of design tokens extracted from PostHog's website — warm, earthy, and deliberately anti-corporate.</p>
+    <div class="hero-buttons">
+      <button class="btn-light">Explore Tokens</button>
+      <button class="btn-outline-dk">View DESIGN.md</button>
+    </div>
+  </div>
+</section>
+
+<!-- 1. COLORS -->
+<section class="section" id="colors">
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-subtitle">PostHog's warm olive/sage palette on dark surfaces.</p>
+
+  <div class="color-category">
+    <h3>Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-color" style="background:#4d4f46;"></div><div class="swatch-info"><div class="swatch-name">Olive Ink</div><div class="swatch-hex">#4d4f46</div><div class="swatch-role">Primary text color</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#23251d;"></div><div class="swatch-info"><div class="swatch-name">Deep Olive</div><div class="swatch-hex">#23251d</div><div class="swatch-role">Links and headings</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#F54E00;"></div><div class="swatch-info"><div class="swatch-name">PostHog Orange</div><div class="swatch-hex">#F54E00</div><div class="swatch-role">Hidden hover accent</div></div></div>
+    </div>
+  </div>
+
+  <div class="color-category">
+    <h3>Secondary & Accent</h3>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-color" style="background:#F7A501;"></div><div class="swatch-info"><div class="swatch-name">Amber Gold</div><div class="swatch-hex">#F7A501</div><div class="swatch-role">Dark button hover accent</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#b17816;"></div><div class="swatch-info"><div class="swatch-name">Gold Border</div><div class="swatch-hex">#b17816</div><div class="swatch-role">Featured button borders</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#3b82f6;"></div><div class="swatch-info"><div class="swatch-name">Focus Blue</div><div class="swatch-hex">#3b82f6</div><div class="swatch-role">Focus ring (accessibility)</div></div></div>
+    </div>
+  </div>
+
+  <div class="color-category">
+    <h3>Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-color" style="background:#fdfdf8;"></div><div class="swatch-info"><div class="swatch-name">Warm Parchment</div><div class="swatch-hex">#fdfdf8</div><div class="swatch-role">Page background (light)</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#eeefe9;"></div><div class="swatch-info"><div class="swatch-name">Sage Cream</div><div class="swatch-hex">#eeefe9</div><div class="swatch-role">Input & secondary surfaces</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#e5e7e0;"></div><div class="swatch-info"><div class="swatch-name">Light Sage</div><div class="swatch-hex">#e5e7e0</div><div class="swatch-role">Button backgrounds</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#d4c9b8;"></div><div class="swatch-info"><div class="swatch-name">Warm Tan</div><div class="swatch-hex">#d4c9b8</div><div class="swatch-role">Featured button background</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#f4f4f4;"></div><div class="swatch-info"><div class="swatch-name">Hover White</div><div class="swatch-hex">#f4f4f4</div><div class="swatch-role">Hover background state</div></div></div>
+    </div>
+  </div>
+
+  <div class="color-category">
+    <h3>Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch"><div class="swatch-color" style="background:#65675e;"></div><div class="swatch-info"><div class="swatch-name">Muted Olive</div><div class="swatch-hex">#65675e</div><div class="swatch-role">Secondary text</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#9ea096;"></div><div class="swatch-info"><div class="swatch-name">Sage Placeholder</div><div class="swatch-hex">#9ea096</div><div class="swatch-role">Placeholder text</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#bfc1b7;"></div><div class="swatch-info"><div class="swatch-name">Sage Border</div><div class="swatch-hex">#bfc1b7</div><div class="swatch-role">Primary borders</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#b6b7af;"></div><div class="swatch-info"><div class="swatch-name">Light Border</div><div class="swatch-hex">#b6b7af</div><div class="swatch-role">Toolbar borders</div></div></div>
+      <div class="color-swatch"><div class="swatch-color" style="background:#1e1f23;"></div><div class="swatch-info"><div class="swatch-name">Near-Black</div><div class="swatch-hex">#1e1f23</div><div class="swatch-role">Dark CTA button</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. TYPOGRAPHY -->
+<section class="section" id="typography">
+  <h2 class="section-title">Typography Scale</h2>
+  <p class="section-subtitle">IBM Plex Sans Variable with bold headings and generous body line-heights.</p>
+
+  <div class="type-sample">
+    <div class="type-text" style="font-size:30px; font-weight:800; line-height:1.20; letter-spacing:-0.75px;">Display Hero</div>
+    <div class="type-label">Display Hero — 30px / 800 / 1.20 / -0.75px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:36px; font-weight:700; line-height:1.50;">Section Heading</div>
+    <div class="type-label">Section Heading — 36px / 700 / 1.50 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:24px; font-weight:700; line-height:1.33;">Feature Heading</div>
+    <div class="type-label">Feature Heading — 24px / 700 / 1.33 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:20px; font-weight:700; line-height:1.40; letter-spacing:-0.5px;">Sub-heading</div>
+    <div class="type-label">Sub-heading — 20px / 700 / 1.40 / -0.5px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:20px; font-weight:700; line-height:1.40; text-transform:uppercase;">Sub-heading Uppercase</div>
+    <div class="type-label">Sub-heading Uppercase — 20px / 700 / 1.40 / uppercase</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:18px; font-weight:600; line-height:1.56;">Body Semi — Semi-bold body text for callouts and emphasis</div>
+    <div class="type-label">Body Semi — 18px / 600 / 1.56 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:16px; font-weight:400; line-height:1.50;">Body — Standard reading text with comfortable line-height for content-heavy pages.</div>
+    <div class="type-label">Body — 16px / 400 / 1.50 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:15px; font-weight:400; line-height:1.71;">Body Relaxed — Relaxed line-height for long-form reading passages and editorial content.</div>
+    <div class="type-label">Body Relaxed — 15px / 400 / 1.71 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:15px; font-weight:600; line-height:1.50;">Nav / UI Label</div>
+    <div class="type-label">Nav / UI — 15px / 600 / 1.50 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:14px; font-weight:600; line-height:1.43;">Caption Semi — Emphasized captions</div>
+    <div class="type-label">Caption Semi — 14px / 600 / 1.43 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:13px; font-weight:700; line-height:1.50;">Small Label Bold</div>
+    <div class="type-label">Small Label — 13px / 700 / 1.50 / 0px</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:12px; font-weight:700; line-height:1.33; text-transform:uppercase;">Micro Uppercase</div>
+    <div class="type-label">Micro Uppercase — 12px / 700 / 1.33 / uppercase</div>
+  </div>
+  <div class="type-sample">
+    <div class="type-text" style="font-size:14px; font-weight:500; line-height:1.43; font-family:var(--mono);">Code — Source Code Pro monospace</div>
+    <div class="type-label">Code — 14px / 500 / 1.43 / Source Code Pro</div>
+  </div>
+</section>
+
+<!-- 3. BUTTONS -->
+<section class="section" id="buttons">
+  <h2 class="section-title">Button Variants</h2>
+  <p class="section-subtitle">Inverted for dark surfaces — orange hover flash preserved.</p>
+
+  <div class="button-grid">
+    <div class="button-item">
+      <button class="btn-dk-primary">Light Primary</button>
+      <span class="btn-label">#fdfdf8 / #23251d / 6px</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-dk-sage">Sage Outline</button>
+      <span class="btn-label">#252621 / border / 4px</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-dk-tan">Warm Tan</button>
+      <span class="btn-label">dark tan bg / tan text / 4px</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-dk-input">Input Style</button>
+      <span class="btn-label">dark surface / muted / 4px</span>
+    </div>
+    <div class="button-item">
+      <button class="btn-dk-ghost">Ghost</button>
+      <span class="btn-label">transparent / secondary / 4px</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CARDS -->
+<section class="section" id="cards">
+  <h2 class="section-title">Card Examples</h2>
+  <p class="section-subtitle">Dark surface cards with olive-tinted borders.</p>
+
+  <div class="card-grid">
+    <div class="card card-dk-bordered card-hover">
+      <h4>Bordered Card</h4>
+      <p class="card-desc">Dark surface with subtle olive border. Hover to see lift effect.</p>
+      <p class="card-label">bg: #1c1d1a / border: 1px #3a3b36 / radius: 6px</p>
+    </div>
+    <div class="card card-dk-elevated">
+      <h4>Elevated Card</h4>
+      <p class="card-desc">Slightly lighter surface for secondary content groupings.</p>
+      <p class="card-label">bg: #252621 / border: 1px #3a3b36 / radius: 6px</p>
+    </div>
+    <div class="card card-dk-shadow">
+      <h4>Deep Shadow Card</h4>
+      <p class="card-desc">Dramatic shadow for modals and floating elements on dark backgrounds.</p>
+      <p class="card-label">shadow: 0 25px 50px -12px rgba(0,0,0,0.5)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FORMS -->
+<section class="section" id="forms">
+  <h2 class="section-title">Form Elements</h2>
+  <p class="section-subtitle">Dark surface inputs with blue focus rings.</p>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Default Input</label>
+      <input type="text" placeholder="Search or ask a question...">
+      <span class="form-hint">bg: #1c1d1a / border: #3a3b36 / radius: 4px</span>
+    </div>
+    <div class="form-group">
+      <label>Focus State</label>
+      <input type="text" placeholder="Focused input" style="border-color:#3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.3);">
+      <span class="form-hint">focus: blue ring rgba(59,130,246,0.3)</span>
+    </div>
+    <div class="form-group">
+      <label>Error State</label>
+      <input type="text" class="error" placeholder="Invalid" value="bad input">
+      <span class="form-error-text">Validation error — PostHog Orange border</span>
+    </div>
+    <div class="form-group">
+      <label>Textarea</label>
+      <textarea placeholder="Type your message..."></textarea>
+      <span class="form-hint">Same styles as input, resizable</span>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SPACING -->
+<section class="section" id="spacing">
+  <h2 class="section-title">Spacing Scale</h2>
+  <p class="section-subtitle">8px base unit system.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-box" style="width:2px;"></div><span class="spacing-label">2</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:4px;"></div><span class="spacing-label">4</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:6px;"></div><span class="spacing-label">6</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:8px;"></div><span class="spacing-label">8</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:10px;"></div><span class="spacing-label">10</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:12px;"></div><span class="spacing-label">12</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:16px;"></div><span class="spacing-label">16</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:18px;"></div><span class="spacing-label">18</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:24px;"></div><span class="spacing-label">24</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:32px;"></div><span class="spacing-label">32</span></div>
+    <div class="spacing-item"><div class="spacing-box" style="width:34px;"></div><span class="spacing-label">34</span></div>
+  </div>
+</section>
+
+<!-- 7. BORDER RADIUS -->
+<section class="section" id="radius">
+  <h2 class="section-title">Border Radius Scale</h2>
+  <p class="section-subtitle">Tight and functional — 2px to pill (9999px).</p>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:2px;"></div>
+      <span class="radius-label">2px</span>
+      <span class="radius-context">Tags, inline</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:4px;"></div>
+      <span class="radius-label">4px</span>
+      <span class="radius-context">Buttons, inputs</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:6px;"></div>
+      <span class="radius-label">6px</span>
+      <span class="radius-context">Cards, containers</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:9999px; width:80px; height:40px;"></div>
+      <span class="radius-label">9999px</span>
+      <span class="radius-context">Pill badges</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. ELEVATION -->
+<section class="section" id="elevation">
+  <h2 class="section-title">Elevation & Depth</h2>
+  <p class="section-subtitle">Minimal shadows — borders and surface colors do the heavy lifting.</p>
+
+  <div class="elevation-section">
+    <div class="elevation-grid">
+      <div class="elevation-card elev-flat">
+        <h4>Level 0 — Flat</h4>
+        <p>No shadow, dark surface. Default canvas for most elements.</p>
+      </div>
+      <div class="elevation-card elev-border">
+        <h4>Level 1 — Border</h4>
+        <p>1px solid olive-tinted border. Card containment and dividers.</p>
+      </div>
+      <div class="elevation-card elev-compound">
+        <h4>Level 2 — Compound</h4>
+        <p>Multiple borders on different sides. Toolbar and input groupings.</p>
+      </div>
+      <div class="elevation-card elev-deep">
+        <h4>Level 3 — Deep Shadow</h4>
+        <p>Dramatic shadow for modals, dropdowns, and floating elements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Generated from DESIGN.md — PostHog Design System Catalog (Dark Mode)
+</footer>
+
+</body>
+</html>
