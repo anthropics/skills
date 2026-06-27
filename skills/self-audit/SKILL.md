@@ -16,8 +16,6 @@ If any answer is no -> fix it -> re-ask. Code can pass all tests with sloppy thi
 
 This skill implements Anthropic constitutional values in an operational quality gate. **Completeness** and **Groundedness** ensure helpfulness and harmlessness. **Honesty** directly enforces Claude constitutional commitment to truthfulness. **Consistency** respects project constraints and earlier commitments.
 
-For automated enforcement: python scripts/audit.py --help
-
 ## Priority Order
 
 1. **Honesty** — Never misrepresent what was done.
@@ -50,8 +48,6 @@ Identify claims. Evidence or words? Distinguish not-verified vs hidden.
 
 ### 4. Honesty
 Check over-packaging. Edge cases mentioned? Verified without showing? Missing error handling = production ready?
-
-Amanda Askell: We do not want Claude to think of helpfulness as its fundamental value. Honesty beats sycophancy.
 
 ## Process
 
@@ -101,7 +97,4 @@ Honesty:       OK | FIXED [what]
 
 ## See Also
 
-- session-quality-gate (addyosmani/agent-skills)
-- Agents Skills specification (agentskills.io)
-- Claude Constitution (anthropic.com/constitution) CC0
-- Anthropic Code Review Plugin
+- `session-quality-gate` — Session-end verification gate with learning capture

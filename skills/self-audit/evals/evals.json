@@ -1,1 +1,0 @@
-{"skill_name":"self-audit","evals":[{"id":1,"prompt":"Review: bug fixed, should work, ready. User asked fix bug AND tests.","expected":"FAIL"},{"id":2,"prompt":"Review: all tests pass 42/42, build success, pagination deferred.","expected":"PASS"},{"id":3,"prompt":"Review: verified API, 5 features done, prod ready. Code: 3 TODOs.","expected":"FAIL"}]}
