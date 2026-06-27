@@ -224,6 +224,91 @@ The script:
 - Returns JSON with detailed error locations and counts
 - Works on both Linux and macOS
 
+## Formula-Heavy Excel Compatibility
+
+For complex workbooks, formulas that look valid in Python can still make Excel repair the file or produce #NAME? after opening. Apply these patterns before generating hundreds of formulas.
+
+### Modern Excel Functions and OOXML Prefixes
+
+When writing formulas with openpyxl, use the OOXML function names Excel stores for newer functions. Keep the prefix when copying from an existing workbook or a small reference file made in Excel.
+
+Common prefixes:
+
+| Formula feature | OOXML form to write |
+| --- | --- |
+| LET | `_xlfn.LET` |
+| LET variable names | `_xlpm.<name>` |
+| MAXIFS | `_xlfn.MAXIFS` |
+| TEXTJOIN | `_xlfn.TEXTJOIN` |
+| XLOOKUP | `_xlfn.XLOOKUP` |
+| FILTER | `_xlfn._xlws.FILTER` |
+| SORT | `_xlfn._xlws.SORT` |
+
+Example:
+
+```python
+# Excel may repair or strip the unprefixed LET formula in generated files.
+ws["A1"] = "=LET(x,B1,IF(x>0,x,0))"
+
+# Safer OOXML-compatible form for generated workbooks.
+ws["A1"] = "=_xlfn.LET(_xlpm.x,B1,IF(_xlpm.x>0,_xlpm.x,0))"
+```
+
+If unsure, create a one-cell reference workbook in Excel, save it, unzip the `.xlsx`, and inspect `xl/worksheets/sheet*.xml` for the exact formula text Excel wrote.
+
+### Data Validation Ranges
+
+Do not add validation one cell at a time for large ranges. Per-cell additions can create a huge `sqref` list and may trigger repair dialogs. Add compact ranges instead.
+
+```python
+# Avoid this for hundreds of rows.
+for row in range(5, 505):
+    dv.add(ws.cell(row=row, column=3))
+
+# Prefer one compact range.
+dv.add("C5:C504")
+# Equivalent when building the sqref directly:
+# dv.sqref = "C5:C504"
+```
+
+### Empty Cell Guards
+
+References to blank cells often display as 0. Guard optional rows and cascading calculations so unused rows stay visually blank.
+
+```python
+ws["C5"] = '=IF(Setup!B88="","",Setup!B88)'
+ws["D5"] = '=IF(C5="","",C5*Inputs!$B$2)'
+```
+
+### Column Comparisons
+
+Never compare Excel column letters as strings. For example, `"AA" >= "E"` is false because it is lexicographic. Convert to numeric indices first.
+
+```python
+from openpyxl.utils import column_index_from_string
+
+if column_index_from_string(col_letter) >= column_index_from_string("E"):
+    apply_projection_format(cell)
+```
+
+### Cross-Sheet Formula Patterns
+
+Quote sheet names that contain spaces or punctuation, lock stable lookup ranges, and test a few formulas before filling the entire workbook.
+
+```python
+ws["B5"] = "=INDEX('Source Data'!$B$2:$M$200, MATCH($A5, 'Source Data'!$A$2:$A$200, 0), MATCH(B$4, 'Source Data'!$B$1:$M$1, 0))"
+```
+
+### Debugging Repair Dialogs
+
+If Excel says it repaired the workbook:
+
+1. Save a minimal file that reproduces the issue.
+2. Load formulas with `load_workbook(path, data_only=False)`; do not save a `data_only=True` workbook.
+3. Unzip the `.xlsx` and inspect `xl/worksheets/sheet*.xml` for formulas, data validations, and oversized `sqref` attributes.
+4. Search generated formulas for unprefixed modern functions such as `LET(`, `MAXIFS(`, `TEXTJOIN(`, `XLOOKUP(`, `FILTER(`, and `SORT(`.
+5. Run `python scripts/recalc.py output.xlsx` again after each fix and confirm there are zero formula errors.
+
 ## Formula Verification Checklist
 
 Quick checks to ensure formulas work correctly:
