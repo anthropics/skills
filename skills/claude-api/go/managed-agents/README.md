@@ -38,9 +38,11 @@ ctx := context.Background()
 ```go
 environment, err := client.Beta.Environments.New(ctx, anthropic.BetaEnvironmentNewParams{
     Name: "my-dev-env",
-    Config: anthropic.BetaCloudConfigParams{
-        Networking: anthropic.BetaCloudConfigParamsNetworkingUnion{
-            OfUnrestricted: &anthropic.UnrestrictedNetworkParam{},
+    Config: anthropic.BetaEnvironmentNewParamsConfigUnion{
+        OfCloud: &anthropic.BetaCloudConfigParams{
+            Networking: anthropic.BetaCloudConfigParamsNetworkingUnion{
+                OfUnrestricted: &anthropic.BetaUnrestrictedNetworkParam{},
+            },
         },
     },
 })
@@ -132,7 +134,7 @@ if err != nil {
 
 ```go
 _, err = client.Beta.Sessions.Events.Send(ctx, session.ID, anthropic.BetaSessionEventSendParams{
-    Events: []anthropic.SendEventsParamsUnion{{
+    Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
         OfUserMessage: &anthropic.BetaManagedAgentsUserMessageEventParams{
             Type: anthropic.BetaManagedAgentsUserMessageEventParamsTypeUserMessage,
             Content: []anthropic.BetaManagedAgentsUserMessageEventParamsContentUnion{{
@@ -161,7 +163,7 @@ stream := client.Beta.Sessions.Events.StreamEvents(ctx, session.ID, anthropic.Be
 defer stream.Close()
 
 if _, err := client.Beta.Sessions.Events.Send(ctx, session.ID, anthropic.BetaSessionEventSendParams{
-    Events: []anthropic.SendEventsParamsUnion{{
+    Events: []anthropic.BetaManagedAgentsEventParamsUnion{{
         OfUserMessage: &anthropic.BetaManagedAgentsUserMessageEventParams{
             Type: anthropic.BetaManagedAgentsUserMessageEventParamsTypeUserMessage,
             Content: []anthropic.BetaManagedAgentsUserMessageEventParamsContentUnion{{
@@ -383,8 +385,8 @@ agent, err := client.Beta.Agents.New(ctx, anthropic.BetaAgentNewParams{
         ID:   "claude-opus-4-8",
         Type: anthropic.BetaManagedAgentsModelConfigParamsTypeModelConfig,
     },
-    MCPServers: []anthropic.BetaManagedAgentsUrlmcpServerParams{{
-        Type: anthropic.BetaManagedAgentsUrlmcpServerParamsTypeURL,
+    MCPServers: []anthropic.BetaManagedAgentsURLMCPServerParams{{
+        Type: anthropic.BetaManagedAgentsURLMCPServerParamsTypeURL,
         Name: "github",
         URL:  "https://api.githubcopilot.com/mcp/",
     }},

@@ -64,7 +64,7 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 
 ### Mid-conversation system messages
 
-**Beta, model-gated.** When an operator instruction arrives mid-conversation — a mode switch, updated context, dynamically injected state — send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
+**Claude Opus 4.8 only; no beta header.** When an operator instruction arrives mid-conversation — a mode switch, updated context, dynamically injected state — send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
 
 ```json
 // Top-level system stays byte-identical; new instruction goes after the cached history
@@ -78,7 +78,7 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 
 This is also the prompt-injection-safe replacement for embedding operator instructions as text inside a user turn (the `<system-reminder>` pattern): both have the same caching profile, but `role: "system"` is the non-spoofable operator channel, whereas text inside user/tool content can be forged by anything that writes to user-visible input.
 
-Requires `anthropic-beta: mid-conversation-system-2026-04-07`. Must follow a `role: "user"` message (or an assistant message ending in a server tool result); cannot be `messages[0]` — use top-level `system` for the initial prompt. Content is text-only. Model-gated — unsupported models return a 400 (`BadRequestError`: `role 'system' is not supported on this model`); catch that error and fall back to putting the instruction in a user-turn `<system-reminder>` block.
+Available on Claude Opus 4.8; no beta header is required. Must follow a `role: "user"` message (or an `assistant` message ending in server-tool use), and must be either the last entry in `messages` or be followed by an `assistant` turn; cannot be `messages[0]` — use top-level `system` for the initial prompt. Content is text-only. Unsupported models return a 400 (`BadRequestError`: `role 'system' is not supported on this model`); catch that error and fall back to putting the instruction in a user-turn `<system-reminder>` block.
 
 ### Prompts that change from the beginning every time
 

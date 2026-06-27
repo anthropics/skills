@@ -208,9 +208,9 @@ const response = await client.messages.create({
 
 ---
 
-## Server-Side Tools
+## Anthropic-Defined Tools
 
-Version-suffixed `type` literals; `name` is fixed per interface. Pass plain object literals — the `ToolUnion` type is satisfied structurally. **The `name`/`type` pair must match the interface**: mixing `str_replace_based_edit_tool` (20250728 name) with `text_editor_20250124` (which expects `str_replace_editor`) is a TS2322.
+Version-suffixed `type` literals; `name` is fixed per interface. Web search and code execution are server-executed; bash and text editor are client-executed (you handle the `tool_use` locally — see `shared/tool-use-concepts.md`). Pass plain object literals — the `ToolUnion` type is satisfied structurally. **The `name`/`type` pair must match the interface**: mixing `str_replace_based_edit_tool` (20250728 name) with `text_editor_20250124` (which expects `str_replace_editor`) is a TS2322.
 
 **Don't type-annotate as `Tool[]`** — `Tool` is just the custom-tool variant. Let structural typing infer from the `tools` param, or annotate as `Anthropic.Messages.ToolUnion[]` if you must:
 
@@ -524,4 +524,25 @@ const response = await client.messages.create({
     },
   ],
 });
+```
+
+---
+
+## Agent Skills
+
+Enable an Anthropic-managed skill (e.g., `pptx`) via `container.skills` + the `code_execution` tool on the beta path. Both beta headers are required. Outputs land as files in the response content — download by file ID via the Files API.
+
+```typescript
+const response = await client.beta.messages.create({
+  model: "claude-opus-4-8",
+  max_tokens: 16000,
+  container: {
+    skills: [{ type: "anthropic", skill_id: "pptx", version: "latest" }],
+  },
+  tools: [{ type: "code_execution_20260521", name: "code_execution" }],
+  betas: ["code-execution-2025-08-25", "skills-2025-10-02"],
+  messages: [{ role: "user", content: "Create a 3-slide deck about X." }],
+});
+// Find the file_id in response.content, then:
+// await client.beta.files.download(fileId)
 ```

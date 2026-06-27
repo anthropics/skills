@@ -29,7 +29,7 @@ for await (const event of stream) {
 const stream = client.messages.stream({
   model: "claude-opus-4-8",
   max_tokens: 64000,
-  thinking: { type: "adaptive" },
+  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Opus 4.8 / 4.7
   messages: [{ role: "user", content: "Analyze this problem" }],
 });
 

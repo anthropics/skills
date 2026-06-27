@@ -183,42 +183,65 @@ thinking: budget_tokens=10000, max_tokens=16000
 
 ## Typed Exceptions in SDKs
 
-**Always use the SDK's typed exception classes** instead of checking error messages with string matching. Each HTTP error code maps to a specific exception class:
+**Always use the SDK's typed exception classes** instead of checking error messages with string matching. Each HTTP status code maps to a specific exception class per SDK.
 
-| HTTP Code | TypeScript Class                  | Python Class                      |
-| --------- | --------------------------------- | --------------------------------- |
-| 400       | `Anthropic.BadRequestError`       | `anthropic.BadRequestError`       |
-| 401       | `Anthropic.AuthenticationError`   | `anthropic.AuthenticationError`   |
-| 403       | `Anthropic.PermissionDeniedError` | `anthropic.PermissionDeniedError` |
-| 404       | `Anthropic.NotFoundError`         | `anthropic.NotFoundError`         |
-| 413       | `Anthropic.RequestTooLargeError`  | `anthropic.RequestTooLargeError`  |
-| 429       | `Anthropic.RateLimitError`        | `anthropic.RateLimitError`        |
-| 500+      | `Anthropic.InternalServerError`   | `anthropic.InternalServerError`   |
-| 529       | `Anthropic.OverloadedError`       | `anthropic.OverloadedError`       |
-| Any       | `Anthropic.APIError`              | `anthropic.APIError`              |
+### Exception class names by language
 
-```typescript
-// ✅ Correct: use typed exceptions
-try {
-  const response = await client.messages.create({...});
-} catch (error) {
-  if (error instanceof Anthropic.RateLimitError) {
-    // Handle rate limiting
-  } else if (error instanceof Anthropic.APIError) {
-    console.error(`API error ${error.status}:`, error.message);
-  }
-}
+| HTTP | Python (`anthropic.*`) / TypeScript (`Anthropic.*`) | Ruby (`Anthropic::Errors::*`) | Java (`com.anthropic.errors.*`) | C# | PHP (`Anthropic\Core\Exceptions\*`) |
+|---|---|---|---|---|---|
+| 400 | `BadRequestError` | `BadRequestError` | `BadRequestException` | `AnthropicBadRequestException` | `BadRequestException` |
+| 401 | `AuthenticationError` | `AuthenticationError` | `UnauthorizedException` | `AnthropicUnauthorizedException` | `AuthenticationException` |
+| 403 | `PermissionDeniedError` | `PermissionDeniedError` | `PermissionDeniedException` | `AnthropicForbiddenException` | `PermissionDeniedException` |
+| 404 | `NotFoundError` | `NotFoundError` | `NotFoundException` | `AnthropicNotFoundException` | `NotFoundException` |
+| 422 | `UnprocessableEntityError` | `UnprocessableEntityError` | `UnprocessableEntityException` | `AnthropicUnprocessableEntityException` | `UnprocessableEntityException` |
+| 429 | `RateLimitError` | `RateLimitError` | `RateLimitException` | `AnthropicRateLimitException` | `RateLimitException` |
+| ≥500 | `InternalServerError` | `InternalServerError` | `InternalServerException` | `Anthropic5xxException` | `InternalServerException` |
+| net | `APIConnectionError` | `APIConnectionError` | `AnthropicIoException` | `AnthropicIOException` | `APIConnectionException` |
+| base | `APIError` (both); `APIStatusError` (Python only) | `APIStatusError` / `APIError` | `AnthropicServiceException` | `AnthropicApiException` | `APIStatusException` / `APIException` |
 
-// ❌ Wrong: don't check error messages with string matching
-try {
-  const response = await client.messages.create({...});
-} catch (error) {
-  const msg = error instanceof Error ? error.message : String(error);
-  if (msg.includes("429") || msg.includes("rate_limit")) { ... }
-}
+The Ruby and PHP classes live in a dedicated errors namespace — write `Anthropic::Errors::RateLimitError` and `Anthropic\Core\Exceptions\RateLimitException` (not bare `Anthropic::RateLimitError`). All 4xx C# exceptions also inherit from `Anthropic4xxException`.
+
+### Catch most-specific first, in a chain
+
+Order `catch`/`except`/`rescue` clauses from the most specific subclass to the base class, with a separate clause for each category you handle differently — retryable (429, ≥500, network) vs. non-retryable (4xx). The SDK defines a distinct class per status for exactly this reason; a single broad catch-all discards that information.
+
+```python
+try:
+    msg = client.messages.create(...)
+except anthropic.NotFoundError as e:          # 404 — e.g. bad model ID
+    ...
+except anthropic.RateLimitError as e:         # 429 — back off and retry
+    ...
+except anthropic.APIStatusError as e:         # any other non-2xx HTTP response
+    print(e.status_code, e.message)
+except anthropic.APIConnectionError as e:     # network failure before a response
+    ...
 ```
 
-All exception classes extend `Anthropic.APIError`, which has a `status` property. Use `instanceof` checks from most specific to least specific (e.g., check `RateLimitError` before `APIError`).
+The same chain shape applies in every SDK: TypeScript `instanceof Anthropic.NotFoundError` → `RateLimitError` → `APIConnectionError` → `APIError` (check `APIConnectionError` before `APIError` — in the TypeScript SDK it's a subclass of `APIError`, unlike Python where it's a sibling); Ruby `rescue Anthropic::Errors::NotFoundError` → `…::RateLimitError` → `…::APIStatusError`; Java `catch (NotFoundException) … catch (RateLimitException) … catch (AnthropicServiceException)`; C# `catch (AnthropicNotFoundException) … catch (AnthropicRateLimitException) … catch (AnthropicApiException)`; PHP `catch (NotFoundException) … catch (RateLimitException) … catch (APIStatusException)`.
+
+### Go — `errors.As` then branch on status
+
+The Go SDK returns a single `*anthropic.Error` for all non-2xx responses. Unwrap it with `errors.As`, then branch on `StatusCode`:
+
+```go
+_, err := client.Messages.New(ctx, params)
+if err != nil {
+    var apierr *anthropic.Error
+    if errors.As(err, &apierr) {
+        switch apierr.StatusCode {
+        case 404:
+            // bad model ID / resource
+        case 429:
+            // back off and retry
+        default:
+            // other API error — apierr.StatusCode, apierr.RequestID
+        }
+    } else {
+        // transport-level error (*url.Error wrapping *net.OpError, etc.)
+    }
+}
+```
 
 ### Error `.type` Field
 

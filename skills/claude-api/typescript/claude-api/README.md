@@ -1,10 +1,16 @@
 # Claude API — TypeScript
 
+| Feature | Namespace | Key types / call |
+|---|---|---|
+| User profiles | beta | `client.beta.userProfiles.create(...)` / `.retrieve(id)` / `.list()`. Pass the returned profile id on `client.beta.messages.create`. Requires a beta header — check the SDK's beta-headers reference for the current flag. |
+
 ## Installation
 
 ```bash
 npm install @anthropic-ai/sdk
 ```
+
+> **Reading local files (ESM):** `__dirname` and `__filename` are **undefined** in ES modules — using either throws `ReferenceError: __dirname is not defined` at runtime. For cwd-relative reads, pass the bare relative path (`fs.readFileSync("./sample.png")`). For script-relative paths, derive the directory from `import.meta.url`: `const here = path.dirname(fileURLToPath(import.meta.url))`. Never write `path.join(__dirname, …)` in an ESM `.ts` file.
 
 ## Client Initialization
 
@@ -53,30 +59,24 @@ const response = await client.messages.create({
 });
 ```
 
-### Mid-conversation system messages (beta, model-gated)
+### Mid-conversation system messages (model-gated)
 
-For operator instructions that arrive mid-conversation (mode switches, injected state), append `{role: "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
+For operator instructions that arrive mid-conversation (mode switches, injected state), append `{role: "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message (or an `assistant` message ending in server-tool use), and must be either the last entry in `messages` or be followed by an `assistant` turn; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
 
 ```typescript
-// SDK types for role:"system" in messages are pending — pass the beta header
-// directly until the SDK updates, then switch to client.beta.messages.create
-// with betas: ["mid-conversation-system-2026-04-07"].
-const response = await client.messages.create(
-  {
-    model: MODEL_ID, // must support mid-conversation system messages
-    max_tokens: 16000,
-    system: [
-      { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
-    ],
-    messages: [
-      ...history,
-      { role: "user", content: userMessage },
-      // @ts-expect-error — role:"system" pending SDK types
-      { role: "system", content: "Terse mode enabled — keep responses under 40 words." },
-    ],
-  },
-  { headers: { "anthropic-beta": "mid-conversation-system-2026-04-07" } },
-);
+// No beta header needed — use regular client.messages.create.
+const response = await client.messages.create({
+  model: MODEL_ID, // must support mid-conversation system messages
+  max_tokens: 16000,
+  system: [
+    { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
+  ],
+  messages: [
+    ...history,
+    { role: "user", content: userMessage },
+    { role: "system", content: "Terse mode enabled — keep responses under 40 words." },
+  ],
+});
 ```
 
 ---
@@ -204,7 +204,7 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 const response = await client.messages.create({
   model: "claude-opus-4-8",
   max_tokens: 16000,
-  thinking: { type: "adaptive" },
+  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Opus 4.8 / 4.7
   output_config: { effort: "high" }, // low | medium | high | max
   messages: [
     { role: "user", content: "Solve this math problem step by step..." },
@@ -333,10 +333,42 @@ When `stop_reason` is `"refusal"`, the response includes a `stop_details` object
 
 ```typescript
 if (response.stop_reason === "refusal" && response.stop_details) {
-  console.log(`Category: ${response.stop_details.category}`); // "cyber" | "bio" | null
+  console.log(`Category: ${response.stop_details.category}`); // e.g. "cyber", "bio", "reasoning_extraction", "frontier_llm", or null — see docs for the full set
   console.log(`Explanation: ${response.stop_details.explanation}`);
 }
 ```
+
+### Refusal Fallbacks (Claude Fable 5) — opt in by default
+
+Fallbacks are **opt-in**: without them a refused request simply stops. Include the server-side `fallbacks` parameter in `claude-fable-5` code by default — on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.
+
+```typescript
+const response = await client.beta.messages.create({
+  model: "claude-fable-5",
+  max_tokens: 16000,
+  betas: ["server-side-fallback-2026-06-01"],
+  fallbacks: [{ model: "claude-opus-4-8" }],
+  messages: [{ role: "user", content: "..." }],
+});
+
+// Switch points: one fallback block per model that ran and declined this turn
+for (const block of response.content) {
+  if (block.type === "fallback") {
+    console.log(`${block.from.model} declined; ${block.to.model} continued`);
+  }
+}
+
+// Served-by signal — covers sticky turns, which carry no fallback block.
+// Pair with stop_reason: the fallback model can itself refuse.
+const fallbackRan = (response.usage.iterations ?? []).some(
+  (entry) => entry.type === "fallback_message",
+);
+if (fallbackRan && response.stop_reason !== "refusal") {
+  console.log(`Served by ${response.model}`);
+}
+```
+
+A `stop_reason: "refusal"` on the final response means the whole chain refused. The header must be exactly `server-side-fallback-2026-06-01`; the parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry — register the client-side `betaRefusalFallbackMiddleware` on the client there instead. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
 
 ---
 
