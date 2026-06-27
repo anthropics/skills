@@ -7,6 +7,70 @@ description: Create new skills, modify and improve existing skills, and measure 
 
 A skill for creating new skills and iteratively improving them.
 
+## Quick Start — What do you want to do?
+
+When the user invokes this skill without a specific request (e.g., just types `/skill-creator` with no context), present the following menu so they can choose:
+
+---
+
+**Welcome to Skill Creator! Here's what I can help you with:**
+
+| # | Command | What it does |
+|---|---------|-------------|
+| 1 | **Create a new skill** | Guide you through designing, writing, and testing a skill from scratch. |
+| 2 | **Improve an existing skill** | Read an existing skill, run tests, review outputs, and refine instructions iteratively. |
+| 3 | **Diagnose a skill** | Analyze a skill for common issues (broken references, vague description, missing examples) without running any tests. |
+| 4 | **Generate test cases** | Auto-generate quality evals and/or trigger evals by analyzing a skill's contents. |
+| 5 | **Run evals & benchmark** | Run your skill against test prompts (with-skill vs baseline), grade results, and open the visual reviewer. |
+| 6 | **Optimize trigger description** | Generate trigger queries and run an optimization loop to find the best description. |
+| 7 | **Package a skill** | Validate and bundle a finished skill into a distributable `.skill` file. |
+
+**Available scripts** (run from the skill-creator directory):
+
+```bash
+# Diagnose a skill (no tests needed)
+python -m scripts.generate_evals <skill-path> --type diagnose --verbose
+
+# Generate quality evals + trigger evals + diagnostics
+python -m scripts.generate_evals <skill-path> --verbose
+
+# Generate only quality evals or only trigger evals
+python -m scripts.generate_evals <skill-path> --type quality --quality-count 5
+python -m scripts.generate_evals <skill-path> --type trigger --trigger-count 20
+
+# Append new evals to existing ones (instead of replacing)
+python -m scripts.generate_evals <skill-path> --append --verbose
+
+# Preview without saving
+python -m scripts.generate_evals <skill-path> --dry-run
+
+# Aggregate benchmark results after running evals
+python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>
+
+# Launch visual eval reviewer
+python eval-viewer/generate_review.py <workspace>/iteration-N \
+  --skill-name "<name>" --benchmark <workspace>/iteration-N/benchmark.json
+
+# Optimize trigger description (after skill is stable)
+python -m scripts.run_loop \
+  --eval-set <trigger-evals.json> --skill-path <skill-path> \
+  --model <model-id> --max-iterations 5 --verbose
+
+# Validate skill structure
+python -m scripts.quick_validate <skill-path>
+
+# Package for distribution
+python -m scripts.package_skill <skill-path>
+```
+
+**Just tell me what you'd like to do, or give me a skill path to work with.**
+
+---
+
+If the user's message already contains a clear intent (e.g., "I want to make a skill for X" or "help me improve my pdf skill"), skip the menu and jump directly into the relevant workflow below.
+
+## Overview
+
 At a high level, the process of creating a skill goes like this:
 
 - Decide what you want the skill to do and roughly how it should do it
@@ -141,6 +205,24 @@ Try to explain to the model why things are important in lieu of heavy-handed mus
 ### Test Cases
 
 After writing the skill draft, come up with 2-3 realistic test prompts — the kind of thing a real user would actually say. Share them with the user: [you don't have to use this exact language] "Here are a few test cases I'd like to try. Do these look right, or do you want to add more?" Then run them.
+
+You can also auto-generate test cases from an existing skill directory using `scripts/generate_evals.py`:
+
+```bash
+# Generate both quality evals and trigger evals
+python -m scripts.generate_evals <path-to-skill> --verbose
+
+# Generate only quality evals (evals.json)
+python -m scripts.generate_evals <path-to-skill> --type quality --quality-count 3
+
+# Generate only trigger evals (trigger_evals.json)
+python -m scripts.generate_evals <path-to-skill> --type trigger --trigger-count 20
+
+# Preview without saving (dry run)
+python -m scripts.generate_evals <path-to-skill> --dry-run --verbose
+```
+
+The script reads the skill's SKILL.md and all bundled resources (scripts, references, assets), then calls Claude to generate realistic test cases. Quality evals are saved to `<skill>/evals/evals.json` and trigger evals to `<skill>/evals/trigger_evals.json`. Always review the generated evals with the user before running them.
 
 Save test cases to `evals/evals.json`. Don't write assertions yet — just the prompts. You'll draft assertions in the next step while the runs are in progress.
 
