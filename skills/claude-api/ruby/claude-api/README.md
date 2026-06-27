@@ -42,54 +42,26 @@ end
 
 ---
 
-## Streaming
+## Extended Thinking
+
+> **Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Older models:** Use `thinking: { type: "enabled", budget_tokens: N }` (must be < `max_tokens`, min 1024).
 
 ```ruby
-stream = client.messages.stream(
-  model: :"claude-opus-4-8",
-  max_tokens: 64000,
-  messages: [{ role: "user", content: "Write a haiku" }]
-)
-
-stream.text.each { |text| print(text) }
-```
-
----
-
-## Tool Use
-
-The Ruby SDK supports tool use via raw JSON schema definitions and also provides a beta tool runner for automatic tool execution.
-
-### Tool Runner (Beta)
-
-```ruby
-class GetWeatherInput < Anthropic::BaseModel
-  required :location, String, doc: "City and state, e.g. San Francisco, CA"
-end
-
-class GetWeather < Anthropic::BaseTool
-  doc "Get the current weather for a location"
-
-  input_schema GetWeatherInput
-
-  def call(input)
-    "The weather in #{input.location} is sunny and 72°F."
-  end
-end
-
-client.beta.messages.tool_runner(
+message = client.messages.create(
   model: :"claude-opus-4-8",
   max_tokens: 16000,
-  tools: [GetWeather.new],
-  messages: [{ role: "user", content: "What's the weather in San Francisco?" }]
-).each_message do |message|
-  puts message.content
+  thinking: { type: "adaptive" },
+  messages: [{ role: "user", content: "Solve: 27 * 453" }]
+)
+
+message.content.each do |block|
+  case block.type
+  when :thinking then puts "Thinking: #{block.thinking}"
+  when :text then puts "Response: #{block.text}"
+  end
 end
 ```
-
-### Manual Loop
-
-See the [shared tool use concepts](../shared/tool-use-concepts.md) for the tool definition format and agentic loop pattern.
 
 ---
 
@@ -120,9 +92,30 @@ When `stop_reason` is `:refusal`, the response includes structured `stop_details
 
 ```ruby
 if message.stop_reason == :refusal && message.stop_details
-  puts "Category: #{message.stop_details.category}"     # :cyber, :bio, or nil
+  puts "Category: #{message.stop_details.category}"     # e.g. :cyber, :bio, :reasoning_extraction, :frontier_llm, or nil — see docs for the full set
   puts "Explanation: #{message.stop_details.explanation}"
 end
+```
+
+**Refusal fallbacks (Claude Fable 5) — opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. New `claude-fable-5` code should include the server-side `fallbacks` parameter (beta header `server-side-fallback-2026-06-01`, `fallbacks: [{model: "claude-opus-4-8"}]` on the beta messages call) by default. The exact Ruby binding (and the client-side middleware for providers without server-side support) is not documented here — WebFetch the Ruby SDK repo's `examples/` from `shared/live-sources.md`; full semantics in `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
+
+---
+
+## Beta Features
+
+`betas:` is only valid on `client.beta.messages.create`, not the non-beta path.
+
+### Task budgets
+
+```ruby
+response = client.beta.messages.create(
+  model: :"claude-opus-4-8",
+  max_tokens: 16000,
+  output_config: { task_budget: { type: :tokens, total: 64_000 } },
+  tools: [...],
+  messages: [...],
+  betas: ["task-budgets-2026-03-13"]
+)
 ```
 
 ---
@@ -134,7 +127,7 @@ end
 ```ruby
 begin
   client.messages.create(...)
-rescue Anthropic::APIStatusError => e
+rescue Anthropic::Errors::APIStatusError => e
   puts e.type  # :rate_limit_error, :overloaded_error, etc.
 end
 ```

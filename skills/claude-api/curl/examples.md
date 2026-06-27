@@ -195,7 +195,8 @@ curl https://api.anthropic.com/v1/messages \
     "model": "claude-opus-4-8",
     "max_tokens": 16000,
     "thinking": {
-      "type": "adaptive"
+      "type": "adaptive",
+      "display": "summarized"
     },
     "output_config": {
       "effort": "high"
@@ -203,6 +204,44 @@ curl https://api.anthropic.com/v1/messages \
     "messages": [{"role": "user", "content": "Solve this step by step..."}]
   }'
 ```
+
+---
+
+## Refusal Fallbacks (Claude Fable 5) — opt in by default
+
+On `claude-fable-5`, safety classifiers may decline a request (HTTP 200 with `stop_reason: "refusal"`). Fallbacks are **opt-in**: without them the request simply stops. Include the `fallbacks` parameter and its beta header by default — on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.
+
+```bash
+response=$(curl -s https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "anthropic-beta: server-side-fallback-2026-06-01" \
+  -d '{
+    "model": "claude-fable-5",
+    "max_tokens": 16000,
+    "fallbacks": [{"model": "claude-opus-4-8"}],
+    "messages": [{"role": "user", "content": "Hello"}]
+  }')
+
+# Which model produced the message
+echo "$response" | jq -r '.model'
+
+# Refusal on the final response means the whole chain refused
+echo "$response" | jq -r '.stop_reason'
+
+# Switch points: one fallback block per model that ran and declined this turn
+echo "$response" | jq -r '.content[] | select(.type == "fallback") | "\(.from.model) declined; \(.to.model) continued"'
+
+# Served-by signal — covers sticky turns, which carry no fallback block.
+# Pair with stop_reason: the fallback model can itself refuse.
+if [ "$(echo "$response" | jq -r '.stop_reason')" != "refusal" ] && \
+   echo "$response" | jq -e '[.usage.iterations[]? | select(.type == "fallback_message")] | length > 0' > /dev/null; then
+  echo "fallback model served this turn"
+fi
+```
+
+The header must be exactly `server-side-fallback-2026-06-01`. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
 
 ---
 

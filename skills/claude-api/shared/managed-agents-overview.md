@@ -41,7 +41,7 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | See the full endpoint reference        | `shared/managed-agents-api-reference.md`                |
 | **Create an agent** (required first step) | `shared/managed-agents-core.md` (Agents section) + language file |
 | Update/version an agent                | `shared/managed-agents-core.md` (Agents → Versioning) — update, don't re-create |
-| Create a session                       | `shared/managed-agents-core.md` + `{lang}/managed-agents/README.md` |
+| Create a session                       | `shared/managed-agents-core.md` + `{lang}/managed-agents/README.md` (cURL/C#: `curl/managed-agents.md`) |
 | Configure tools and permissions        | `shared/managed-agents-tools.md`                        |
 | Set up MCP servers                     | `shared/managed-agents-tools.md` (MCP Servers section)  |
 | Stream events / handle tool_use        | `shared/managed-agents-events.md` + language file       |
