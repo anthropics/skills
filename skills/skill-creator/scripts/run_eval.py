@@ -50,6 +50,10 @@ def run_single_query(
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
+    # Match any worker's temp command, not just ours. With parallel workers,
+    # Claude sees multiple identically-described commands and picks one
+    # arbitrarily — matching on the shared prefix avoids false negatives.
+    match_prefix = f"{skill_name}-skill-"
     project_commands_dir = Path(project_root) / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
@@ -144,12 +148,12 @@ def run_single_query(
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
+                                if match_prefix in accumulated_json:
                                     return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                return match_prefix in accumulated_json
                             if se_type == "message_stop":
                                 return False
 
@@ -161,9 +165,9 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                            if tool_name == "Skill" and match_prefix in tool_input.get("skill", ""):
                                 triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            elif tool_name == "Read" and match_prefix in tool_input.get("file_path", ""):
                                 triggered = True
                             return triggered
 
