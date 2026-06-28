@@ -1,0 +1,809 @@
+{
+  "metadata": {
+    "skill_name": "context7-cache",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-18T16:21:54Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 23.3,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can access their own records\" ON bibleai.my_table FOR SELECT TO authenticated USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "(SELECT auth.uid()) = user_id \u2014 used in all four policy statements (SELECT, INSERT, UPDATE, DELETE)"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "FOR SELECT TO authenticated USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "FOR INSERT TO authenticated WITH CHECK ( (SELECT auth.uid()) = user_id ); and FOR UPDATE ... USING ( (SELECT auth.uid()) = user_id ) WITH CHECK ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only uses auth.uid() (a real Supabase/PostgreSQL function), standard SQL clauses (USING, WITH CHECK, FOR SELECT/INSERT/UPDATE/DELETE), and ALTER TABLE ENABLE ROW LEVEL SECURITY \u2014 all are legitimate Supabase RLS constructs"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 19.8,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can only access their own data\" ON bibleai.your_table FOR ALL USING (auth.uid() = user_id);"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "USING (auth.uid() = user_id) appears in every policy example, and also in the best practice note: 'explicitly check auth.uid() IS NOT NULL AND auth.uid() = user_id'"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can view own rows\" ON bibleai.your_table FOR SELECT TO authenticated USING (auth.uid() = user_id);"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can insert own rows\" ON bibleai.your_table FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id); and UPDATE policy also includes WITH CHECK (auth.uid() = user_id)"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only standard PostgreSQL/Supabase functions used: auth.uid() is a real Supabase function, ENABLE ROW LEVEL SECURITY is standard SQL, all policy syntax (FOR SELECT, USING, WITH CHECK, TO authenticated) is standard PostgreSQL RLS syntax"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 14.2,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can access their own records\" ON bibleai.my_table FOR SELECT TO authenticated USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "(SELECT auth.uid()) = user_id \u2014 used in all three policy examples for SELECT, INSERT, and UPDATE"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "FOR SELECT TO authenticated USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "FOR INSERT TO authenticated WITH CHECK ( (SELECT auth.uid()) = user_id ); and FOR UPDATE uses both USING and WITH CHECK clauses"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only real Supabase/PostgreSQL constructs used: auth.uid(), ENABLE ROW LEVEL SECURITY, CREATE POLICY, USING, WITH CHECK, TO authenticated \u2014 all are legitimate and documented"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 18.9,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0' and broker_url='redis://:secretpass@redis-host:6379/0'"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0' and result_backend='redis://:secretpass@redis-host:6379/1'"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "'redis://localhost:6379/0', 'redis://:password@hostname:port/db_number', 'redis://:secretpass@redis-host:6379/0'"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": false,
+          "evidence": "No @app.task or @shared_task decorator example appears anywhere in the response"
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "Uses modern app.conf.broker_url and app.conf.result_backend (not BROKER_URL, CELERY_RESULT_BACKEND uppercase dict-style config from Celery 3.x)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 23.5,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0'"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0' and backend='redis://localhost:6379/0'"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "broker='redis://localhost:6379/0' and multiple redis:// URL examples including variants with auth, TLS (rediss://), and unix socket"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": false,
+          "evidence": "No @app.task or @shared_task decorator example is shown. The response only mentions '@celery_app.task(bind=True, max_retries=3)' in a tip referencing the existing codebase, not as a code example."
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "Uses modern app.conf.broker_url and app.conf.result_backend style configuration, not the deprecated BROKER_URL or CELERY_RESULT_BACKEND uppercase settings from Celery 3.x"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 20.9,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0'"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0'"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "broker='redis://localhost:6379/0', backend='redis://localhost:6379/1'"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": false,
+          "evidence": "No @app.task or @shared_task decorator example appears anywhere in the response"
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "Uses app.conf.broker_url and app.conf.result_backend (modern Celery 4+ patterns), not BROKER_URL or CELERY_RESULT_BACKEND uppercase config dict patterns"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 13.9,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def read_items(commons: dict = Depends(common_parameters)): and async def read_users_me(current_user: User = Depends(get_current_user)):"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated style (modern style): CommonDeps = Annotated[dict, Depends(common_parameters)] and standard Depends() injection patterns consistent with current FastAPI"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": true,
+          "evidence": "All functions used (FastAPI, Depends, app.get) are real FastAPI APIs; no invented or non-existent functions present"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 12.1,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def read_items(commons: dict = Depends(common_parameters)): \u2014 common_parameters function is passed as dependency parameter"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated pattern: CommonDeps = Annotated[dict, Depends(common_parameters)] which is the modern recommended FastAPI style"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": true,
+          "evidence": "All functions used (Depends, FastAPI, Annotated) are real and correctly described. No fabricated APIs present."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 14.3,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def read_items(params: dict = Depends(common_parameters)): and async def read_users_me(current_user: User = Depends(get_current_user)):"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated pattern: CommonParams = Annotated[dict, Depends(common_parameters)] which is the modern recommended approach in FastAPI"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": true,
+          "evidence": "Only uses real FastAPI constructs: FastAPI(), Depends(), @app.get() decorators, and standard Python typing \u2014 no invented functions or methods"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 28.3,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can view their own rows\" ON bibleai.your_table FOR SELECT USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "(SELECT auth.uid()) = user_id \u2014 used in all four policy examples"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "FOR SELECT USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users insert their own data\" ON bibleai.your_table FOR INSERT WITH CHECK ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only uses auth.uid() which is a real Supabase/PostgreSQL function, and standard PostgreSQL RLS syntax (USING, WITH CHECK, ENABLE ROW LEVEL SECURITY)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 29.9,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can view their own rows\" ON bibleai.your_table FOR SELECT USING ( (select auth.uid()) = user_id );"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "`auth.uid()` extracts the user's UUID from the JWT token automatically"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can view their own rows\" ON bibleai.your_table FOR SELECT USING ( (select auth.uid()) = user_id );"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can insert their own rows\" ON bibleai.your_table FOR INSERT WITH CHECK ( (select auth.uid()) = user_id );"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only uses auth.uid() and standard PostgreSQL RLS syntax - all real, documented Supabase/PostgreSQL functions"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 30.2,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains CREATE POLICY SQL statement",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users can view their own rows\" ON bibleai.your_table FOR SELECT USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Uses auth.uid() function for user identification",
+          "passed": true,
+          "evidence": "`auth.uid()` extracts the user's UUID from the JWT token ... (SELECT auth.uid()) = user_id"
+        },
+        {
+          "text": "Shows USING clause for SELECT policies",
+          "passed": true,
+          "evidence": "FOR SELECT USING ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Shows WITH CHECK clause for INSERT/UPDATE policies",
+          "passed": true,
+          "evidence": "CREATE POLICY \"Users insert their own data\" ON bibleai.your_table FOR INSERT WITH CHECK ( (SELECT auth.uid()) = user_id );"
+        },
+        {
+          "text": "Does not use made-up Supabase functions",
+          "passed": true,
+          "evidence": "Only uses auth.uid() which is a real Supabase/PostgreSQL function, and standard PostgreSQL DDL (ALTER TABLE, CREATE POLICY, USING, WITH CHECK)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 35.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0' and broker_url = 'redis://localhost:6379/0' in celeryconfig.py example"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0' and result_backend = 'redis://localhost:6379/0' in celeryconfig.py example"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "Multiple examples: 'redis://localhost:6379/0', 'redis://:password@hostname:6379/0', 'redis+socket:///path/to/redis.sock?virtual_host=0'"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": false,
+          "evidence": "No @app.task or @shared_task decorator example appears anywhere in the response"
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "All configuration uses modern lowercase keys (broker_url, result_backend) via app.conf and celeryconfig.py, not deprecated uppercase BROKER_URL or CELERY_RESULT_BACKEND patterns"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 33.5,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0'"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0'"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "broker='redis://localhost:6379/0', backend='redis://localhost:6379/0'"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": false,
+          "evidence": "No @app.task or @shared_task decorator example appears anywhere in the response"
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "Uses modern app.conf.broker_url and app.conf.result_backend patterns; no BROKER_URL or CELERY_RESULT_BACKEND uppercase config dict patterns present"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 26.9,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains broker_url or CELERY_BROKER_URL configuration",
+          "passed": true,
+          "evidence": "app.conf.broker_url = 'redis://localhost:6379/0' and broker='redis://localhost:6379/0' in Celery() constructor"
+        },
+        {
+          "text": "Contains result_backend configuration",
+          "passed": true,
+          "evidence": "app.conf.result_backend = 'redis://localhost:6379/0' and backend='redis://localhost:6379/0' in Celery() constructor"
+        },
+        {
+          "text": "Shows redis:// URL format",
+          "passed": true,
+          "evidence": "broker='redis://localhost:6379/0' and multiple examples using redis:// and rediss:// URL formats throughout"
+        },
+        {
+          "text": "Includes @app.task or @shared_task decorator example",
+          "passed": true,
+          "evidence": "@celery_app.task(bind=True, max_retries=3) def process_episode(self, episode_id: str): in the 'Your Project's Pattern' section"
+        },
+        {
+          "text": "Does not use deprecated Celery 3.x configuration patterns",
+          "passed": true,
+          "evidence": "Uses modern Celery 4+ patterns: broker_url, result_backend (not BROKER_URL, CELERY_RESULT_BACKEND), and app.conf style configuration throughout"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 35.6,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from typing import Annotated\nfrom fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def read_items(commons: Annotated[dict, Depends(common_parameters)]): \u2014 common_parameters function is passed as dependency argument to Depends()"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated[ReturnType, Depends(func)] style explicitly noted as 'preferred modern style', avoids old-style type hint comments"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": false,
+          "evidence": "The Depends() Parameters table lists a 'scope' parameter with values '\"function\"' or '\"request\"' \u2014 FastAPI's Depends() only accepts 'dependency' and 'use_cache'; there is no 'scope' parameter"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 2,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 36.8,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from typing import Annotated\nfrom fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):\n    return {\"q\": q, \"skip\": skip, \"limit\": limit}\n\n@app.get(\"/items/\")\nasync def read_items(commons: Annotated[dict, Depends(common_parameters)]):"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated[dict, Depends(common_parameters)] \u2014 the modern recommended pattern replacing the older Query/Depends without Annotated style"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": false,
+          "evidence": "The response invents a 'Scope parameter' with 'scope=\"function\"' and 'scope=\"request\"' values: 'scope=\"function\" \u2014 cleanup runs before response is sent / scope=\"request\" \u2014 cleanup runs after response is delivered'. The Depends() function does not have a scope parameter in FastAPI."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 3,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 30.6,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Contains a code example with 'from fastapi import Depends'",
+          "passed": true,
+          "evidence": "from fastapi import Depends, FastAPI"
+        },
+        {
+          "text": "Shows a function used as a dependency parameter",
+          "passed": true,
+          "evidence": "async def read_items(commons: Annotated[dict, Depends(common_parameters)]): \u2014 common_parameters is a function passed to Depends(), not called"
+        },
+        {
+          "text": "Uses current FastAPI API (not deprecated patterns)",
+          "passed": true,
+          "evidence": "Uses Annotated[ReturnType, Depends(func)] pattern and explicitly notes 'Use Annotated \u2014 Annotated[ReturnType, Depends(func)] is the modern pattern (preferred over bare = Depends())'"
+        },
+        {
+          "text": "Does not hallucinate non-existent FastAPI functions",
+          "passed": false,
+          "evidence": "The response describes a 'scope' parameter on yield dependencies with values 'function' and 'request', claiming it 'Controls when yield-based dependencies finalize' \u2014 this parameter does not exist in FastAPI's Depends() or yield dependency system and appears to be fabricated"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9333,
+        "stddev": 0.1,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 17.8778,
+        "stddev": 4.3361,
+        "min": 12.1,
+        "max": 23.5
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.8722,
+        "stddev": 0.1228,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 31.8667,
+        "stddev": 3.4713,
+        "min": 26.9,
+        "max": 36.8
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.06",
+      "time_seconds": "-14.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}
