@@ -77,6 +77,8 @@ curl -X POST https://api.anthropic.com/v1/sessions \
     "agent": { "type": "agent", "id": "agent_abc123", "version": "1772585501101368014" },
     "environment_id": "env_abc123"
   }'
+# → { "id": "sesn_abc123", ... }
+# Trace: https://platform.claude.com/workspaces/default/sessions/sesn_abc123
 ```
 
 ### With system prompt, custom tools, and GitHub repo

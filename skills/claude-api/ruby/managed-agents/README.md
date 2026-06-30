@@ -63,6 +63,7 @@ session = client.beta.sessions.create(
   title: "Quickstart session"
 )
 puts "Session ID: #{session.id}"
+puts "Trace: https://platform.claude.com/workspaces/default/sessions/#{session.id}"
 ```
 
 ### Updating an Agent

@@ -112,7 +112,7 @@ ant beta:agents list --transform '{id,name,model}' --format jsonl
 **Extract a scalar for shell use:** pair `--transform` with `-r` (`--raw-output` — prints strings unquoted, jq-style):
 
 ```sh
-AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-4-6}' \
+AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-5}' \
   --transform id -r)
 ```
 
@@ -144,7 +144,7 @@ YAML
 **`@file` references** — inline a file's contents into any string-valued field. Inside structured flag values, quote the path. Binary files are auto-base64'd; force with `@file://` (text) or `@data://` (base64). Escape a literal leading `@` as `\@`.
 
 ```sh
-ant beta:agents create --name "Researcher" --model '{id: claude-sonnet-4-6}' --system @./prompts/researcher.txt
+ant beta:agents create --name "Researcher" --model '{id: claude-sonnet-5}' --system @./prompts/researcher.txt
 
 ant messages create --model claude-opus-4-8 --max-tokens 1024 \
   --message '{role: user, content: [
@@ -163,7 +163,7 @@ This is the recommended flow for defining agents and environments — check the 
 ```yaml
 # summarizer.agent.yaml
 name: Summarizer
-model: claude-sonnet-4-6
+model: claude-sonnet-5
 system: |
   You are a helpful assistant that writes concise summaries.
 tools:

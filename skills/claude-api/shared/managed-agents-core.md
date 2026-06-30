@@ -47,6 +47,8 @@ rescheduling → running ↔ idle → terminated
 - The agent transitions `idle → running` when it receives a new event, then back to `idle` when done.
 - Errors surface as `session.error` events in the stream, not as a status value.
 
+Every session has a live trace view in the Anthropic Console at `https://platform.claude.com/workspaces/default/sessions/{session_id}`. Print this URL immediately after creating a session so the user can watch tool calls and messages stream in real time. The `default` workspace segment auto-resolves to the session's actual workspace on load, so you don't need the workspace id.
+
 ### Built-in session features
 
 - **Context compaction** — if you approach max context, the API automatically condenses session history to keep the interaction going
@@ -122,13 +124,13 @@ const session = await client.beta.sessions.create(
 );
 ```
 
-> 💡 **Watch it live in Console.** While developing, print a link so you can click through to the session UI instead of parsing the event stream: `https://platform.claude.com/workspaces/{workspace}/sessions/{session.id}`. Use `default` for the workspace slug unless you created the session in a non-default workspace; the sessions list for your workspace is at `https://platform.claude.com/workspaces/default/sessions`. Include this `print`/`console.log` in code you generate for users who are iterating locally.
+> 💡 **Watch it live in Console.** While developing, print a link so you can click through to the session UI instead of parsing the event stream: `https://platform.claude.com/workspaces/default/sessions/{session.id}`. The `default` workspace segment auto-resolves to the session's actual workspace on load, so you don't need to know the workspace id. Include this `print`/`console.log` in code you generate for users who are iterating locally.
 
 **Session creation parameters:**
 
 | Field           | Type     | Required | Description                                    |
 | --------------- | -------- | -------- | ---------------------------------------------- |
-| `agent`         | string or object | **Yes** | String shorthand `"agent_abc123"` (latest version) or `{type: "agent", id, version}` |
+| `agent`         | string or object | **Yes** | Three forms: string shorthand `"agent_abc123"` (latest version); pinned `{type: "agent", id, version}`; or `{type: "agent_with_overrides", id, version?, ...}` to override `model`/`system`/`tools`/`mcp_servers`/`skills` for this session only — see § Override agent configuration for a session |
 | `environment_id`| string   | **Yes**  | Environment ID                                 |
 | `title`         | string   | No       | Human-readable name (appears in logs/dashboards) |
 | `resources`     | array    | No       | Files, GitHub repos, or memory stores, attached to the container at startup. Memory stores are session-create-only (not addable via `resources.add()`). |
@@ -232,9 +234,34 @@ session = client.beta.sessions.create(
 )
 ```
 
+### Override agent configuration for a session
+
+The third `agent` form, `agent_with_overrides`, replaces parts of the agent's configuration for **a single session** — try a different model or grant an extra tool without versioning the agent. Pass `id` (and optionally `version`; omitted = latest, same default as the other two forms) plus any of `model`, `system`, `tools`, `mcp_servers`, `skills`:
+
+```python
+session = client.beta.sessions.create(
+    agent={
+        "type": "agent_with_overrides",
+        "id": agent.id,
+        "model": "claude-opus-4-8",   # replace the agent's model for this session
+        "system": None,           # clear the system prompt for this session
+    },
+    environment_id=environment_id,
+)
+```
+
+Each overridable field follows tri-state rules:
+- **Omit** → the session inherits the value from the referenced agent version.
+- **`null` (or `[]` for list fields)** → the session runs with that field cleared. Applies in full to `system`, `mcp_servers`, `skills`. Two exceptions: `model` is never clearable (`model: null` → 400 `agent_model_required`); clearing `tools` returns 400 when the session's effective `skills` is non-empty (skills require the `read` tool), otherwise `tools: null` / `tools: []` clears.
+- **A value** → replaces the agent's value **in full**. Overrides never merge — a `tools` override must list every tool the session should have.
+
+Overrides are session-local: they do **not** modify the agent resource or create a new agent version. The response's `agent` object reflects the post-override configuration, while its `id` and `version` still identify the base agent — so you can trace a session back to its base. In multiagent sessions, overrides apply to the coordinator and its `{type: "self"}` copies; roster agents referenced by ID always use their own as-created configuration (see `shared/managed-agents-multiagent.md`).
+
 ### Updating the agent configuration mid-session
 
 `sessions.update()` can change `agent.tools`, `agent.mcp_servers` (including permission policies), and `vault_ids` on an **existing** session. This is a **session-local override** — it does not create a new agent version and does not propagate back to the agent object. The provided arrays are **full replacements**; to append one tool, `GET` the session, modify, and `POST` back. The session must be `idle` — interrupt first if running.
+
+Only `tools` and `mcp_servers` can change after a session is created — to run with a `model`, `system`, or `skills` other than the agent's values, use `agent_with_overrides` at create time (above). The agent's configured `system` field is fixed for the session's lifetime; you can still **replace the effective system prompt between turns** by sending a `system.message` event (see `shared/managed-agents-events.md` § Updating the system prompt mid-session).
 
 ```python
 client.beta.sessions.update(

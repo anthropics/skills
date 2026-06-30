@@ -61,6 +61,7 @@ session = client.beta.sessions.create(
     environment_id=environment.id,
 )
 print(session.id, session.status)
+print(f"Trace: https://platform.claude.com/workspaces/default/sessions/{session.id}")
 ```
 
 ### With system prompt and custom tools

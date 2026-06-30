@@ -96,6 +96,19 @@ Switch on `data.type`, fetch the resource by `data.id`, return any **2xx** to ac
 | `vault_credential.created` | Vault credential was created |
 | `vault_credential.deleted` | Vault credential was deleted |
 | `vault_credential.refresh_failed` | MCP OAuth vault credential failed to refresh |
+| `agent.created` | Agent created |
+| `agent.updated` | A new agent version was published. Updates that do not create a new version do **not** fire this. |
+| `agent.archived` | Agent archived |
+| `agent.deleted` | Agent permanently deleted — no object left to fetch; treat the event itself as final |
+| `deployment.created` | Scheduled deployment created |
+| `deployment.updated` | Deployment properties changed (e.g. schedule edited) |
+| `deployment.paused` | Deployment paused — by request, or automatically when a scheduled run fails with a **non-recoverable** error (archived agent, missing environment). Recoverable failures, including rate limits, do **not** auto-pause. |
+| `deployment.unpaused` | Deployment unpaused; schedule resumes |
+| `deployment.archived` | Deployment archived — directly, or as a result of agent archival/deletion |
+| `deployment.deleted` | Deployment permanently deleted — no object left to fetch; treat the event itself as final |
+| `deployment_run.started` | A **scheduled** run started. Manual runs do **not** emit `deployment_run.*` events. |
+| `deployment_run.succeeded` | Scheduled run created its session. Same `data.id` (the run ID) as the run's `.started` event — fetch the deployment run for its `session_id`, then subscribe to the session events to follow the work. |
+| `deployment_run.failed` | Scheduled run did not create a session. Same `data.id` as the run's `.started` event — fetch the deployment run for `error.type` / `error.message`. |
 
 > These are **webhook** `data.type` values — a separate namespace from SSE event types (`session.status_idle`, `span.outcome_evaluation_end`, etc. in `shared/managed-agents-events.md`). Don't reuse SSE constants in webhook handlers.
 

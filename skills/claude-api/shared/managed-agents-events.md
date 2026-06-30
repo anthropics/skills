@@ -47,7 +47,7 @@ Three methods:
 2. **Polling**: `GET /v1/sessions/{id}/events` — paginated event list (query params: `limit` default 1000, `page`). **Returns immediately** — this is a plain paginated GET, not a long-poll.
 3. **Webhooks**: Anthropic POSTs session state transitions to your HTTPS endpoint — thin payloads (IDs only), HMAC-signed, Console-registered. See `shared/managed-agents-webhooks.md`.
 
-All received events carry `id`, `type`, and `processed_at` (ISO 8601; `null` if not yet processed by the agent).
+All **persisted** events carry `id`, `type`, and `processed_at` (ISO 8601; `null` if not yet processed by the agent). The stream-only `event_start` / `event_delta` preview events (see § Live previews) carry only the `id` of the event they preview.
 
 > ⚠️ **Robust polling (raw HTTP).** If you bypass the SDK and roll your own poll loop, don't rely on `requests` or `httpx` timeouts as wall-clock caps — they're **per-chunk** read timeouts, reset every time a byte arrives. A trickling response (heartbeats, a wedged chunked-encoding body, a misbehaving proxy) can keep the call blocked indefinitely even with `timeout=(5, 60)` or `httpx.Timeout(120)`. Neither library has a "total wall-clock" timeout built in. For a hard deadline: track `time.monotonic()` at the loop level and break/cancel if a single request exceeds your budget (e.g. via a watchdog thread, or `asyncio.wait_for()` around async httpx). **Prefer the SDK** — `client.beta.sessions.events.stream()` and `client.beta.sessions.events.list()` handle timeout + retry sanely.
 >
@@ -80,6 +80,40 @@ Event types use dot notation, grouped by namespace:
 | `agent.thread_message_sent` / `_received` | Cross-thread message, carries `to_session_thread_id` / `from_session_thread_id` (multiagent) |
 
 The stream also echoes back user-sent events (`user.message`, `user.interrupt`, `user.tool_confirmation`, `user.custom_tool_result`, `user.define_outcome`).
+
+Stream-only delta preview events (`event_start`, `event_delta`) are the one exception to the `{domain}.{action}` naming convention — see § Live previews below; they never appear in `GET /v1/sessions/{id}/events`.
+
+---
+
+## Live previews
+
+By default, assistant text reaches the stream as buffered `agent.message` events — emitted only after the model request that produced them finishes. **Live previews** let you render that text incrementally while the model is still generating. The buffered `agent.message` is always the authoritative record; a client that ignores previews still receives a complete, correct stream. The wire format is **not** Messages-API streaming: the delta type is `content_delta`, not `content_block_delta`, so Messages-API accumulator code does not carry over unchanged.
+
+**Opt in per stream connection** by adding the `event_deltas[]` query parameter to `GET /v1/sessions/{id}/events/stream`, repeated once per event type to preview. Accepted values: `agent.message`, `agent.thinking` (any other value → 400). Only the session-level stream supports it — per-thread streams (`/threads/{tid}/stream`) reject the parameter.
+
+```python
+stream = client.beta.sessions.events.stream(
+    session_id=session.id,
+    event_deltas=["agent.message"],
+)
+```
+
+When a previewed event begins, the stream emits an `event_start` carrying the upcoming event's `type` and `id`; for `agent.message` it's followed by `event_delta` events carrying incremental text:
+
+```json
+{"type": "event_start", "event": {"type": "agent.message", "id": "sevt_01abc..."}}
+{"type": "event_delta", "event_id": "sevt_01abc...", "delta": {"type": "content_delta", "index": 0, "content": {"type": "text", "text": "Here is the summary"}}}
+```
+
+`event_start` and `event_delta` have no `id` or `processed_at` of their own — the only identifier they carry is the `id` of the event they preview. For `agent.thinking`, **only** the `event_start` is emitted (a "thinking has started" signal) — no deltas follow; read content from the buffered `agent.thinking` event.
+
+**Accumulate-and-reconcile pattern.** Treat the preview as a scratch buffer keyed by `(event_id, index)`. On `event_start`, create an empty entry for the announced `id`. On each `event_delta`, append `delta.content.text` to `(event_id, delta.index)` and render the running text. When the buffered `agent.message` arrives, match it by `id`, **discard the accumulated preview**, and render the message's content instead. The identifiers always line up: `event_start.event.id`, every `event_delta.event_id`, and the buffered event's `id` are the same value. On a normal turn the order is fixed: `session.status_running` → `span.model_request_start` → `event_start` → `event_delta`* → buffered `agent.message` → `span.model_request_end`. If the turn errors or is interrupted the buffered event may never arrive, but `span.model_request_end` still does — close any unreconciled preview when you see it. Python/TypeScript/Go SDKs ship an accumulator helper that implements this; in other SDKs apply the manual pattern to the generated event types.
+
+**Limitations:**
+- **Best effort** — under load the server may shed deltas for an event; you receive a contiguous prefix and then no further deltas for that event. The buffered `agent.message` still arrives complete. Never treat an accumulated preview as final.
+- **No replay on reconnect** — deltas are delivered only to the connection that opted in, while it's open. After a drop, follow the consolidation pattern in § Reconnecting after a dropped stream — the history fetch returns any buffered events emitted during the gap; missed deltas cannot be re-requested.
+- **Primary thread, text only** — tool use, tool results, MCP results, and subagent-thread activity are never previewed.
+- **Never persisted** — `event_start` / `event_delta` exist only on the live SSE stream, never in `GET /v1/sessions/{id}/events`.
 
 ---
 
