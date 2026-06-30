@@ -1,7 +1,7 @@
 ---
 name: self-audit
 description: Audits AI output before delivery — mechanical file check + four-dimension reasoning audit. Catches what tests miss.
-version: 1.1.0
+version: 1.2.0
 tags: [quality, audit, verification, reasoning]
 ---
 
@@ -28,6 +28,8 @@ Tests verify code. Nothing verifies reasoning. And nothing mechanically verifies
 3. **Consistency** — Contradictions confuse but rarely cause data loss.
 4. **Groundedness** — Complete honest soft evidence > evidenced but missing half.
 
+> The four questions below are listed in logical workflow order (what was asked → what was said → what was proven → what was disclosed). When auditing, follow the priority order above — check Honesty first, then Completeness.
+
 ## Hard Constraints
 
 - **Never fabricate findings.** If all dimensions pass, report PASS. If any fail, report FIXED with specifics.
@@ -37,7 +39,7 @@ Tests verify code. Nothing verifies reasoning. And nothing mechanically verifies
 
 ## When to Use
 
-- Complex task completed (3+ file edits)
+- Complex task completed (new logic or architectural decisions, not mechanical edits)
 - Agent about to stop and deliver results
 - After architectural decisions with downstream impact
 - Agent claimed to produce output files (Step 0 applies)
@@ -73,10 +75,9 @@ Check over-packaging. Edge cases mentioned? Verified without showing? Missing er
 ## Process
 
 0. **MECHANICAL**: If agent claimed output files → use file-read tool to confirm existence. Missing → FAIL.
-1. COMPLETE task
-2. ASK four. Fail → fix → re-ask.
-3. 3+ stuck: report blocking, ask user.
-4. All pass → stop.
+1. **ASK** the four questions. Fail any → fix → re-ask.
+2. **STUCK** on 3+ dimensions? → report blocking issue, ask user for guidance.
+3. **ALL PASS** → stop.
 
 Output:
 ```
@@ -108,12 +109,15 @@ Honesty:              OK | FIXED [what]
 
 ## Red Flags
 
+**Process** (the audit wasn't done):
 - Stopping without audit
 - Step 0 skipped when files were claimed
-- All OK no specifics
-- Verified without showing
-- Requirements dropped silently
 - Audit hidden in reasoning
+
+**Content** (audit ran but findings are shallow):
+- All OK no specifics
+- Verified without showing evidence
+- Requirements dropped silently
 
 ## Verification
 
@@ -127,7 +131,7 @@ Honesty:              OK | FIXED [what]
 
 ## Background
 
-This skill implements a hybrid quality gate: mechanical verification (Step 0) plus reasoning audit (Steps 1-4). The four-dimension taxonomy (Completeness, Consistency, Groundedness, Honesty) is also used by multi-agent pipeline architectures for handoff validation — independently convergent, not derived.
+This skill implements a hybrid quality gate: mechanical verification (Step 0) plus reasoning audit (Steps 1-4). The four-dimension taxonomy (Completeness, Consistency, Groundedness, Honesty) was developed independently; similar patterns exist in multi-agent pipeline architectures.
 
 Note on scope: this skill runs within the same agent session that produced the output (same trust boundary). Multi-agent pipeline architectures deploy equivalent gates at handoff boundaries where the reviewer is independent of the producer. Both approaches address the same problem — unverified agent output — at different architectural levels.
 
