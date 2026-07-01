@@ -67,6 +67,7 @@ const session = await client.beta.sessions.create(
   },
 );
 console.log(session.id, session.status);
+console.log(`Trace: https://platform.claude.com/workspaces/default/sessions/${session.id}`);
 ```
 
 ### With system prompt and custom tools

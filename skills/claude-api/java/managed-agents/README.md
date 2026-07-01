@@ -75,6 +75,7 @@ var session = client.beta().sessions().create(SessionCreateParams.builder()
     .title("Quickstart session")
     .build());
 System.out.println("Session ID: " + session.id());
+System.out.println("Trace: https://platform.claude.com/workspaces/default/sessions/" + session.id());
 ```
 
 ### Updating an Agent

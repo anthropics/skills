@@ -64,6 +64,7 @@ $session = $client->beta->sessions->create(
     title: 'Quickstart session',
 );
 echo "Session ID: {$session->id}\n";
+echo "Trace: https://platform.claude.com/workspaces/default/sessions/{$session->id}\n";
 ```
 
 ### Updating an Agent
