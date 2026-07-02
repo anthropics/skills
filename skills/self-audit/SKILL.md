@@ -1,13 +1,13 @@
 ---
 name: self-audit
-description: Audits AI output before delivery — mechanical file verification + four-dimension reasoning audit. Catches what tests miss. Use before shipping any complex task, after architectural decisions, or whenever the agent claims to have produced output files.
+description: Audits AI output before delivery — mechanical file verification + four-dimension reasoning audit. Catches what tests miss. Use before shipping complex work, after architectural decisions, or whenever the agent claims to have produced output files.
 ---
 
 # Self-Audit
 
 Before you ship, verify mechanically first, then audit reasoning.
 
-**Step 0 (mechanical):** If you claimed to produce files, confirm each one exists AND has non-trivial content. Use the file-read tool to open each claimed file — a file that doesn't exist is a hard fail, and a file that exists but is empty or contains only placeholder text ("TODO", "content here") is also a fail. The tool may report success without actually writing content; only a read-back can confirm.
+**Step 0 (mechanical):** If you claimed to produce files, confirm each one exists AND has non-trivial content. This includes files produced by sub-agents or spawned tasks. Use the file-read tool to open each claimed file — a file that doesn't exist is a hard fail, and a file that exists but is empty or contains only placeholder text ("TODO", "content here") is also a fail. The tool may report success without actually writing content; only a read-back can confirm.
 
 **Steps 1-4 (reasoning):** Ask four questions:
 1. **Am I being honest about the limits?** (Honesty)
@@ -30,14 +30,6 @@ The four dimensions are ordered by **damage severity** — how much harm a failu
 
 **Lexicographic rule:** Fix Honesty issues first (they invalidate all other checks), then Completeness (missing coverage), then Consistency (contradictions), then Groundedness (evidence quality). Never spend time improving Groundedness while Honesty is failing.
 
-> The four questions below are listed in logical workflow order (what was disclosed → what was asked → what was said → what was proven). When auditing, follow the priority order above — Honesty first, Groundedness last.
-
-## Hard Constraints
-
-- **Never fabricate findings.** If all dimensions pass, report PASS. If any fail, report FIXED with specifics.
-- **Never expose sensitive data.** Redact paths, secrets, tokens, PII before displaying audit output.
-- **Never block on subjective grounds.** Flag only concrete, verifiable gaps — not stylistic preferences.
-- **Step 0 is non-negotiable when files are claimed.** If the agent said it produced output files, verify mechanically first. No exceptions. This includes verifying content is non-trivial — not just that the path exists.
 
 ## When to Use
 
@@ -46,6 +38,14 @@ The four dimensions are ordered by **damage severity** — how much harm a failu
 - After architectural decisions with downstream impact
 - Agent claimed to produce output files (Step 0 applies)
 - Proactively: if you are about to ship, audit first
+
+## Hard Constraints
+
+- **Never fabricate findings.** If all dimensions pass, report PASS. If any fail, report FIXED with specifics.
+- **Never expose sensitive data.** Redact paths, secrets, tokens, PII before displaying audit output.
+- **Never block on subjective grounds.** Flag only concrete, verifiable gaps — not stylistic preferences.
+- **Step 0 is non-negotiable when files are claimed.** If the agent said it produced output files, verify mechanically first. No exceptions. This includes verifying content is non-trivial — not just that the path exists.
+
 
 ## Step 0 — Mechanical File Check
 
@@ -81,7 +81,7 @@ Identify claims. Evidence or words? Distinguish not-verified vs hidden.
 
 0. **MECHANICAL**: If agent claimed output files → use file-read tool to confirm existence AND non-trivial content. Missing or empty → FAIL, report to user, do not continue.
 1. **ASK** the four questions in priority order (Honesty → Completeness → Consistency → Groundedness). Fail any → fix → re-ask.
-2. **STUCK** on 3+ dimensions? → report blocking issue, ask user for guidance.
+2. **STUCK** on 3+ dimensions (failing 3+ of 4 questions after first fix attempt)? → report blocking issue, ask user for guidance.
 3. **ALL PASS** → stop.
 
 Output:
