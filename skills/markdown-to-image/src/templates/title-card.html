@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 1440px;
+      height: 2400px;
+      overflow: hidden;
+    }
+
+    .title-card {
+      width: 1440px;
+      height: 2400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px;
+      background-color: {{background}};
+    }
+
+    .title-text {
+      font-size: {{fontSize}}px;
+      line-height: 1.5;
+      color: {{textColor}};
+      font-family: {{fontFamily}};
+      text-align: center;
+      word-break: break-word;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="title-card">
+    <div class="title-text">{{title}}</div>
+  </div>
+</body>
+</html>
