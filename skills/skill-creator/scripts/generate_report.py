@@ -311,12 +311,12 @@ def main():
     if args.input == "-":
         data = json.load(sys.stdin)
     else:
-        data = json.loads(Path(args.input).read_text())
+        data = json.loads(Path(args.input).read_text(encoding="utf-8"))
 
     html_output = generate_html(data, skill_name=args.skill_name)
 
     if args.output:
-        Path(args.output).write_text(html_output)
+        Path(args.output).write_text(html_output, encoding="utf-8")
         print(f"Report written to {args.output}", file=sys.stderr)
     else:
         print(html_output)
