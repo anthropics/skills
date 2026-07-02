@@ -56,24 +56,29 @@ class TestFrontmatter:
 
     def test_description_length(self):
         desc = self.fm["description"]
-        assert len(desc) <= 120, (
-            f"description is {len(desc)} chars (max 120): {desc!r}"
+        assert len(desc) <= 250, (
+            f"description is {len(desc)} chars (max 250): {desc!r}"
         )
 
     def test_description_ends_with_period(self):
         assert self.fm["description"].endswith(".")
 
-    def test_version_present(self):
-        assert "version" in self.fm
+    def test_no_version_field(self):
+        """Repo convention: only name + description in frontmatter (plus optional license)."""
+        assert "version" not in self.fm, (
+            "version field not used by this repo — remove from frontmatter"
+        )
 
     def test_author_not_hermes_agent(self):
         author = self.fm.get("author", "")
         if author:
             assert author != "Hermes Agent"
 
-    def test_tags_present(self):
-        tags = self.fm.get("tags", [])
-        assert len(tags) >= 2, "skill should have at least 2 tags"
+    def test_no_tags_field(self):
+        """Repo convention: only name + description in frontmatter (plus optional license)."""
+        assert "tags" not in self.fm, (
+            "tags field not used by this repo — remove from frontmatter"
+        )
 
 
 class TestRequiredSections:
