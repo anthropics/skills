@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "snap",
+      "description": "Type 'snap:' in Claude Code to share your screen instantly — countdown, screenshot, and Claude reads it automatically (Windows)",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/snap"
+      ]
     }
   ]
 }
