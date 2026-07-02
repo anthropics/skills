@@ -150,5 +150,5 @@ The priority ordering (Honesty > Completeness > Consistency > Groundedness) is o
 
 ## See Also
 
-- `code-reviewer` — Review code changes for correctness and quality
-- `security-review` — Identify vulnerabilities in the output
+- `skill-creator` — Build, test, and iterate on new skills; its eval loop pairs with self-audit as the "create → verify" cycle
+- `webapp-testing` — Verify application behavior through browser testing; audit the reasoning behind test results, not just pass/fail
