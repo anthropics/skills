@@ -43,6 +43,15 @@
     }
     ,
     {
+      "name": "landable-implementation-loop",
+      "description": "Workflow skill for taking coding tasks past first-pass implementation into review, repair, validation, and shippable readiness reporting",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/landable-implementation-loop"
+      ]
+    },
+    {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
       "source": "./",
