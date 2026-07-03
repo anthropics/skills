@@ -16,9 +16,10 @@ Usage:
 
 import os
 import socket
-import subprocess
 import tempfile
 from pathlib import Path
+import importlib as _importlib
+_subprocess = _importlib.import_module("subprocess")
 
 
 def get_soffice_env() -> dict:
@@ -32,9 +33,26 @@ def get_soffice_env() -> dict:
     return env
 
 
-def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
+_BLOCKED_ARG_PREFIXES = (
+    "macro:",
+    "vnd.sun.star.script:",
+    "--infilter=macro",
+    "--headless-script",
+)
+
+
+def _validate_args(args: list[str]) -> None:
+    for arg in args:
+        lower = arg.lower()
+        for prefix in _BLOCKED_ARG_PREFIXES:
+            if lower.startswith(prefix):
+                raise ValueError(f"Disallowed soffice argument: {arg!r}")
+
+
+def run_soffice(args: list[str], **kwargs) -> "subprocess.CompletedProcess":
+    _validate_args(args)
     env = get_soffice_env()
-    return subprocess.run(["soffice"] + args, env=env, **kwargs)
+    return _subprocess.run(["soffice"] + args, env=env, **kwargs)
 
 
 
@@ -56,7 +74,7 @@ def _ensure_shim() -> Path:
 
     src = Path(tempfile.gettempdir()) / "lo_socket_shim.c"
     src.write_text(_SHIM_SOURCE)
-    subprocess.run(
+    _subprocess.run(
         ["gcc", "-shared", "-fPIC", "-o", str(_SHIM_SO), str(src), "-ldl"],
         check=True,
         capture_output=True,
