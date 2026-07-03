@@ -88,6 +88,7 @@ def run_single_query(
             stderr=subprocess.DEVNULL,
             cwd=project_root,
             env=env,
+            shell=False,
         )
 
         triggered = False
