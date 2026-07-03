@@ -100,9 +100,10 @@ async def execute_tool_use(
     connection: Any,
     tool_metrics: dict[str, Any],
 ) -> dict[str, Any]:
-    """Execute one tool call and return the MCP tool_result block."""
+    """Execute one tool call and return the tool_result content block."""
     tool_name = tool_use.name
     tool_input = tool_use.input
+
     tool_start_ts = time.time()
     try:
         tool_result = await connection.call_tool(tool_name, tool_input)
@@ -111,10 +112,12 @@ async def execute_tool_use(
         tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
         tool_response += traceback.format_exc()
     tool_duration = time.time() - tool_start_ts
+
     if tool_name not in tool_metrics:
         tool_metrics[tool_name] = {"count": 0, "durations": []}
     tool_metrics[tool_name]["count"] += 1
     tool_metrics[tool_name]["durations"].append(tool_duration)
+
     return {
         "type": "tool_result",
         "tool_use_id": tool_use.id,
