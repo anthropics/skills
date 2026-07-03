@@ -21,6 +21,12 @@ import defusedxml.minidom
 
 from validators import DOCXSchemaValidator, PPTXSchemaValidator, RedliningValidator
 
+# keynote_sanitize lives in the parent scripts/ directory
+_scripts_dir = Path(__file__).resolve().parent.parent
+if str(_scripts_dir) not in sys.path:
+    sys.path.insert(0, str(_scripts_dir))
+from keynote_sanitize import sanitize as _keynote_sanitize
+
 def pack(
     input_directory: str,
     output_file: str,
@@ -62,6 +68,13 @@ def pack(
             for f in temp_content_dir.rglob("*"):
                 if f.is_file():
                     zf.write(f, f.relative_to(temp_content_dir))
+
+    # Post-process .pptx files for Keynote / macOS compatibility.
+    # python-pptx produces OOXML that Powerpoint and LibreOffice accept
+    # but Keynote rejects. The sanitizer is idempotent and safe on files
+    # not produced by python-pptx.
+    if suffix == ".pptx":
+        _keynote_sanitize(str(output_path))
 
     return None, f"Successfully packed {input_dir} to {output_file}"
 
