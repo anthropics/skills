@@ -16,6 +16,7 @@ from openpyxl import load_workbook
 
 MACRO_DIR_MACOS = "~/Library/Application Support/LibreOffice/4/user/basic/Standard"
 MACRO_DIR_LINUX = "~/.config/libreoffice/4/user/basic/Standard"
+MACRO_DIR_WIN = os.path.join(os.environ.get("APPDATA", ""), "LibreOffice", "4", "user", "basic", "Standard")
 MACRO_FILENAME = "Module1.xba"
 
 RECALCULATE_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
@@ -40,9 +41,12 @@ def has_gtimeout():
 
 
 def setup_libreoffice_macro():
-    macro_dir = os.path.expanduser(
-        MACRO_DIR_MACOS if platform.system() == "Darwin" else MACRO_DIR_LINUX
-    )
+    if platform.system() == "Windows":
+        macro_dir = MACRO_DIR_WIN
+    else:
+        macro_dir = os.path.expanduser(
+            MACRO_DIR_MACOS if platform.system() == "Darwin" else MACRO_DIR_LINUX
+        )
     macro_file = os.path.join(macro_dir, MACRO_FILENAME)
 
     if (
