@@ -85,10 +85,16 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
         metadata_path = eval_dir / "eval_metadata.json"
+        eval_name = ""
         if metadata_path.exists():
             try:
                 with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                    metadata = json.load(mf)
+                eval_id = metadata.get("eval_id", eval_idx)
+                # pass eval_name through to the
+                # benchmark runs — schemas.md documents it and the viewer
+                # shows it as the eval heading
+                eval_name = metadata.get("eval_name", "")
             except (json.JSONDecodeError, OSError):
                 eval_id = eval_idx
         else:
@@ -101,15 +107,25 @@ def load_run_results(benchmark_dir: Path) -> dict:
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
-                continue
+            run_dirs = [
+                (run_dir, int(run_dir.name.split("-")[1]))
+                for run_dir in sorted(config_dir.glob("run-*"))
+            ]
+            # SKILL.md's workflow produces a flat
+            # layout without a run-N level (eval-N/<config>/outputs + grading
+            # .json). Treat such a config dir as a single run instead of
+            # silently skipping it. Dirs with neither run-* nor grading.json/
+            # outputs (e.g. inputs/) are still skipped.
+            if not run_dirs:
+                if (config_dir / "grading.json").exists() or (config_dir / "outputs").is_dir():
+                    run_dirs = [(config_dir, 1)]
+                else:
+                    continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            for run_dir, run_number in run_dirs:
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -126,6 +142,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 # Extract metrics
                 result = {
                     "eval_id": eval_id,
+                    "eval_name": eval_name,
                     "run_number": run_number,
                     "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
                     "passed": grading.get("summary", {}).get("passed", 0),
@@ -180,7 +197,19 @@ def aggregate_results(results: dict) -> dict:
     Returns run_summary with stats for each configuration and delta.
     """
     run_summary = {}
+    # fixed priority order instead of discovery
+    # order — configs are discovered alphabetically, which puts old_skill
+    # before with_skill and flips the delta sign in the improve flow
+    # (an improvement then reads as a regression). The skill/candidate
+    # config is always primary, the baseline second.
+    primary_names = ("with_skill", "new_skill")
+    baseline_names = ("without_skill", "old_skill", "baseline")
     configs = list(results.keys())
+    primary = next((c for c in configs if c in primary_names), None)
+    baseline = next((c for c in configs if c in baseline_names), None)
+    if primary and baseline:
+        rest = [c for c in configs if c not in (primary, baseline)]
+        configs = [primary, baseline] + rest
 
     for config in configs:
         runs = results.get(config, [])
@@ -237,6 +266,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for result in results[config]:
             runs.append({
                 "eval_id": result["eval_id"],
+                "eval_name": result.get("eval_name", ""),
                 "configuration": config,
                 "run_number": result["run_number"],
                 "result": {
@@ -368,6 +398,18 @@ def main():
 
     # Generate benchmark
     benchmark = generate_benchmark(args.benchmark_dir, args.skill_name, args.skill_path)
+
+    # fail loudly instead of writing an empty
+    # benchmark.json — a silent empty benchmark reads as "0% pass rate,
+    # delta +0.00" and misleads the iteration decision
+    if not benchmark["runs"]:
+        print(
+            f"Error: no runs found under {args.benchmark_dir}. "
+            f"Expected eval-*/<config>/run-N/grading.json or "
+            f"eval-*/<config>/grading.json. Nothing was written.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Determine output paths
     output_json = args.output or (args.benchmark_dir / "benchmark.json")
