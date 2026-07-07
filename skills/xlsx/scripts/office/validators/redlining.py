@@ -3,9 +3,24 @@ Validator for tracked changes in Word documents.
 """
 
 import subprocess
+import os
 import tempfile
 import zipfile
 from pathlib import Path
+
+
+def _safe_extractall(zf, target_dir):
+    """Extract zip contents safely, preventing Zip Slip path traversal."""
+    target = os.path.realpath(target_dir)
+    for info in zf.infolist():
+        member_path = os.path.realpath(os.path.join(target, info.filename))
+        if not member_path.startswith(target + os.sep) and member_path != target:
+            raise ValueError(
+                f"Zip entry {info.filename!r} would escape target directory"
+            )
+    _safe_extractall(zf, target_dir)
+
+
 
 
 class RedliningValidator:
@@ -61,7 +76,7 @@ class RedliningValidator:
 
             try:
                 with zipfile.ZipFile(self.original_docx, "r") as zip_ref:
-                    zip_ref.extractall(temp_path)
+                    _safe_extractall(zip_ref, temp_path)
             except Exception as e:
                 print(f"FAILED - Error unpacking original docx: {e}")
                 return False
