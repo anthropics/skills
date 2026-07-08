@@ -1,0 +1,47 @@
+{
+  "name": "advanced-validator",
+  "version": "1.0.0",
+  "description": "Full configuration with all quality gates",
+  "checks": {
+    "lint": {
+      "enabled": true,
+      "command": "npm run lint",
+      "timeoutMs": 30000,
+      "onFail": "block"
+    },
+    "typescript": {
+      "enabled": true,
+      "command": "tsc --noEmit",
+      "timeoutMs": 60000,
+      "onFail": "block"
+    },
+    "tests": {
+      "enabled": true,
+      "command": "npm test -- --run",
+      "coverageThreshold": {
+        "lines": 80,
+        "functions": 80,
+        "branches": 70
+      },
+      "timeoutMs": 120000,
+      "onFail": "block"
+    },
+    "security-audit": {
+      "enabled": true,
+      "command": "npm audit --audit-level=moderate",
+      "timeoutMs": 45000,
+      "onFail": "warn"
+    },
+    "build": {
+      "enabled": true,
+      "command": "npm run build",
+      "projects": ["."],
+      "timeoutMs": 180000,
+      "onFail": "block"
+    }
+  },
+  "skipOnBranches": ["main", "production"],
+  "parallel": true,
+  "reportFormat": "console",
+  "exitCode": 1
+}

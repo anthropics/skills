@@ -1,0 +1,17 @@
+{
+  "name": "minimal-validator",
+  "version": "1.0.0",
+  "description": "Minimal pre-deployment configuration",
+  "checks": {
+    "lint": {
+      "enabled": true,
+      "command": "npm run lint",
+      "timeoutMs": 30000,
+      "onFail": "block"
+    }
+  },
+  "skipOnBranches": [],
+  "parallel": false,
+  "reportFormat": "console",
+  "exitCode": 1
+}

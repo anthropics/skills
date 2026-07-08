@@ -1,0 +1,20 @@
+{
+  "name": "@fused-gaming/skills",
+  "private": true,
+  "description": "Fused Gaming skills monorepo — npm packages and Agent Skills for Claude",
+  "workspaces": [
+    "packages/pre-deploy-validator",
+    "packages/mermaid-terminal",
+    "packages/project-status-tool",
+    "packages/ux-journey-mapper"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "publish:all": "npm publish --workspaces --access public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
