@@ -7,6 +7,7 @@ for a set of queries. Outputs results as JSON.
 
 import argparse
 import json
+import logging
 import os
 import select
 import shutil
@@ -19,6 +20,8 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
+
+logger = logging.getLogger(__name__)
 
 
 def find_project_root() -> Path:
@@ -59,6 +62,11 @@ def run_single_query(
     # Include the skill name in the prefix so any tempdir stranded by a
     # killed worker (rmtree never runs on SIGKILL) is attributable.
     eval_root = Path(tempfile.mkdtemp(prefix=f"skill-eval-{skill_name}-{unique_id}-"))
+    # Make the hermetic-by-design intent explicit for anyone reading eval logs:
+    # the synthetic variant lives only under this throwaway root, never the live
+    # project. Silent by default (no handler configured); emits when the caller
+    # turns logging on.
+    logger.info("Isolated eval root: %s (cleaned on exit)", eval_root)
     command_file = eval_root / ".claude" / "commands" / f"{clean_name}.md"
 
     try:
