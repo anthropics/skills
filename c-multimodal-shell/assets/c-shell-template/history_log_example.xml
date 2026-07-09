@@ -1,0 +1,6 @@
+<history append_only="true" editable="false" key_column="epoch_time">
+  <message epoch_time="0" speaker="system" route="mcp">
+    <body>Shakti history starts here. Entries append after self reflection.</body>
+    <metadata_tags>bootstrap,example</metadata_tags>
+  </message>
+</history>
