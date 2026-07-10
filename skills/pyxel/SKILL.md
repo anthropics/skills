@@ -10,14 +10,14 @@ Build Pyxel games with the smallest workflow that can honestly prove the game wo
 
 ## Runtime
 
-The host should expose the `pyxel` MCP namespace from `pyxel-mcp >= 1.0.0`. Use these tools as observation verbs, not judges:
+The host should expose the `pyxel` MCP namespace from `pyxel-mcp >= 1.1.0`. Use these tools as observation verbs, not judges:
 
-- `validate` before the first run or after structural edits.
-- `run` as the primary loop: scheduled inputs plus `state`, `screen_image`, `screen_grid`, `layout`, or `video` snapshots.
+- `validate` before the first run or after structural edits; read `pyxel://anti-patterns` when an issue category is unfamiliar.
+- `run` as the primary loop: scheduled inputs plus `state`, `screen_image`, `screen_grid`, `layout`, or `video` snapshots. `until="<condition>"` stops at the first frame where an App-attribute expression holds; pair it with `"frame": "end"` snapshots to capture that moment.
 - `read_image`, `read_animation`, `read_audio`, `read_palette`, `read_tilemap`, and `diff_frames` only when the current task needs that specific observation.
 - `pyxel_info` when debugging setup or finding bundled examples/resources.
 
-If pyxel-mcp is missing or older than 1.0.0, ask the user to install/register `pyxel-mcp >= 1.0.0`, normally with `uvx pyxel-mcp install`. If installation or MCP access is blocked, use direct Pyxel headless runs only as a temporary fallback: `py_compile` or focused tests for logic plus `pyxel.init(headless=True)` and `pyxel.screenshot()`. Say verification is weaker until pyxel-mcp is available.
+If pyxel-mcp is missing or older than 1.1.0, ask the user to install/register `pyxel-mcp >= 1.1.0`, normally with `uvx pyxel-mcp install`. If installation or MCP access is blocked, use direct Pyxel headless runs only as a temporary fallback: `py_compile` or focused tests for logic plus `pyxel.init(headless=True)` and `pyxel.screenshot()`. Say verification is weaker until pyxel-mcp is available.
 
 ## Default Loop
 
@@ -26,7 +26,7 @@ If pyxel-mcp is missing or older than 1.0.0, ask the user to install/register `p
 3. Run `validate`. Fix syntax and Pyxel footguns before dynamic runs.
 4. Run the game headlessly with `run`; capture at least one `state` snapshot and one `screen_image` on the path being verified.
 5. Inspect the captured PNG yourself for the task-specific result, not just nonblank pixels. State values prove mechanics; pixels prove what the player actually sees.
-6. Iterate on observed defects. Do not create PLAN/STRUCTURE/ASSETS/MEMORY files unless the project is large enough that they reduce confusion.
+6. Iterate on observed defects. Do not create planning or tracking documents (PLAN.md, ASSETS.md, and similar) unless the project is large enough that they reduce confusion.
 7. Hand off with controls, changed files, and exact verification commands/results.
 
 ## Minimum Verification
