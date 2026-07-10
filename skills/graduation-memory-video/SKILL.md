@@ -67,7 +67,42 @@ The 6 images follow an intentional emotional color progression:
 
 ## Step 2: Create Transition Videos
 
-Use Kling (or similar AI video generation tool) to create transition videos. If not available, use moviepy crossfade montage as fallback (still achieves smooth transitions, but no AI-generated continuous camera motion).
+Use Kling's **First-Last Frame mode** to create transition videos. This is the core generation method — Kling takes a start frame image and an end frame image as input, and AI-generates the smooth transition animation between them.
+
+### ⚠️ Strict Generation Order
+
+1. **Complete Step 1 first**: Generate all 6 graduation scene images in order (1→6), confirming each image's quality before proceeding to the next
+2. **Then generate videos**: Only start Step 2 after all 6 images are finished
+3. **Generate videos in order**: Videos 1→5 use first-last frame mode sequentially, Video 6 uses first-frame-only mode
+
+### First-Last Frame Mode Details
+
+Kling's first-last frame mode allows you to provide both a starting frame image and an ending frame image — Kling automatically generates the smooth transition animation between them. This ensures continuity: each video's end frame is the next video's start frame, forming a perfect chain.
+
+**Generation rules**:
+- **Videos 1-5**: Use first-last frame mode. Start frame = previous image, End frame = next image
+- **Video 6**: Use first-frame-only mode (no end frame needed). Start frame = Image 6, static hold + slow fade-out
+
+| Video # | Start Frame Image | End Frame Image | Transition Description | Suggested Duration | Emotional Role |
+|---------|-------------------|----------------|----------------------|--------------------|----------------|
+| 1 | Image 1 (High School) | Image 2 (Bachelor's) | School corridor → campus path | 2-2.5s | Youthful beginning |
+| 2 | Image 2 (Bachelor's) | Image 3 (Master's) | Library path → ginkgo path | 2-2.5s | Growth acceleration |
+| 3 | Image 3 (Master's) | Image 4 (Doctoral) | Graduate school → ancient building | 3-3.5s | Academic peak |
+| 4 | Image 4 (Doctoral) | Image 5 (Diploma) | Peach blossoms → sunlit desk | 2.5-3s | Celebration → reflection |
+| 5 | Image 5 (Diploma) | Image 6 (Memorial Book) | Diploma → memorial book | 2.5-3s | Reflection → closure |
+| 6 | Image 6 (Memorial Book) | **No end frame** | Memorial book static hold ending | 3-4s | Warm closure |
+
+**Video 6 special handling**: Only provide Image 6 as the start frame — no end frame. Kling will generate a slow static hold + fade-out ending (3-4 seconds), giving viewers time to absorb the emotional conclusion.
+
+### Transition Prompt Requirements
+
+Each video's prompt must include:
+1. **Explicit start and end frame content description** (e.g., "starting from school corridor scene, naturally transitioning to campus path scene")
+2. **Transition style**: Smooth, natural, aesthetically beautiful — **no stiff mechanical morphing, no abrupt cuts**. This is critical.
+3. **Emotional atmosphere description**: Each transition should echo its emotional role (e.g., Video 3 is "academic peak" — needs dignified pacing)
+4. **Color tone continuity**: Maintain warm color progression throughout the transition — no sudden color shifts
+
+Complete prompt templates in `references/prompt_templates.md`.
 
 ### Cinematic Pacing Strategy
 
@@ -82,24 +117,9 @@ Use Kling (or similar AI video generation tool) to create transition videos. If 
 
 Total: approximately 15-18 seconds.
 
-### Transition Connection Map
+### If Kling is Not Available
 
-| Video # | Start Frame | End Frame | Transition Description | Suggested Duration |
-|---------|-------------|-----------|----------------------|--------------------|
-| 1 | Image 1 (High School) | Image 2 (Bachelor's) | School corridor → campus path | 2-2.5s |
-| 2 | Image 2 (Bachelor's) | Image 3 (Master's) | Library path → ginkgo path | 2-2.5s |
-| 3 | Image 3 (Master's) | Image 4 (Doctoral) | Graduate school → ancient building | 3-3.5s |
-| 4 | Image 4 (Doctoral) | Image 5 (Diploma) | Peach blossoms → sunlit desk | 2.5-3s |
-| 5 | Image 5 (Diploma) | Image 6 (Memorial Book) | Diploma → memorial book cover | 2.5-3s |
-| 6 | Image 6 (Memorial Book) | Static hold | Memorial book cover freeze-frame ending | 3-4s |
-
-### Key Parameters
-
-- **Duration**: Variable — opening/closing longer (4-5s), transitions shorter (2-2.5s), doctoral peak (3-3.5s)
-- **Total**: ~15-18 seconds
-- **Transition style**: Smooth crossfade (0.6-0.8s overlap), never hard cuts
-- **Final video (Video 6)**: Static hold with slow fade-out (3-4 seconds)
-- **Camera movement**: Gentle push/pull/pan matching scene atmosphere; slow right-pan for opening, slow fade-out for ending
+If Kling is not available in the current environment, use moviepy crossfade montage as a fallback — still achieves smooth visual transitions, but no AI-generated continuous camera motion. See Step 3 for moviepy fallback parameters.
 
 ## Step 3: Assemble Video
 

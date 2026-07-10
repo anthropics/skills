@@ -99,38 +99,47 @@ Default uses pink trim (humanities). If user specifies a different discipline, a
 
 ## Transition Video Prompt Templates
 
-Each transition video uses Kling (or similar AI video generation tool). Prompts describe smooth transitions from start frame to end frame.
+Each transition video uses Kling's **First-Last Frame mode** — you provide a start frame image and an end frame image, and Kling AI-generates the smooth transition animation between them.
+
+### ⚠️ How to Use
+
+1. Upload the start frame image and end frame image to Kling
+2. Enter the corresponding prompt text in Kling's text description field
+3. Kling generates the smooth transition between the two images based on both the images and the prompt
+4. **Video 6 is special**: Only upload Image 6 as start frame, no end frame — Kling generates a static hold + slow fade-out
+
+**Critical Prompt Requirement**: Every prompt must emphasize **the transition should be smooth, natural, and aesthetically beautiful — no stiff or mechanical morphing, no abrupt cuts**. Transitions must be natural and graceful evolutions, not forced deformations or jump cuts.
 
 **⚠️ Variable Duration**: Per cinematic pacing strategy, durations are NOT uniform 3 seconds. See suggested durations below.
 
-### Video 1: High School → Bachelor's (2-2.5 seconds)
+### Video 1: High School → Bachelor's (Start frame=Image 1, End frame=Image 2, 2-2.5 seconds)
 ```
-Smooth cinematic transition: starting from a young student in Chinese high school uniform standing in a bright school corridor with warm morning light, gently and naturally transforming into the same person wearing a black bachelor's graduation gown with pink trim on a tree-lined campus path with the library in soft-focus background, gentle camera drift right, warm nostalgic golden color grading throughout, 2.5 seconds duration, seamless morphing transition
-```
-
-### Video 2: Bachelor's → Master's (2-2.5 seconds)
-```
-Smooth cinematic transition: starting from a graduate in black bachelor's gown on a campus tree-lined path with library background, gently transforming into the same person wearing a blue master's graduation gown on a golden ginkgo-lined autumn path with graduate school entrance in background, gentle camera movement, warm autumn amber tones intensifying, 2.5 seconds duration, seamless and natural transition
+Kling first-last frame transition video. Start frame: a young student in Chinese high school uniform standing in a bright school corridor with warm morning light. End frame: the same person wearing a black bachelor's graduation gown with pink trim on a tree-lined campus path with library in soft-focus background. The transition should be smooth, natural, and aesthetically beautiful — the scene gently evolves from the school corridor to the campus path with the person's attire naturally morphing from school uniform to graduation gown, warm nostalgic golden color grading maintained throughout, gentle camera drift right, NO stiff or mechanical morphing, NO abrupt cuts, 2.5 seconds duration
 ```
 
-### Video 3: Master's → Doctoral (3-3.5 seconds)
+### Video 2: Bachelor's → Master's (Start frame=Image 2, End frame=Image 3, 2-2.5 seconds)
 ```
-Smooth cinematic transition: starting from a graduate in blue master's gown on a ginkgo-lined autumn path with graduate school gate, slowly and gracefully transforming into the same person wearing a red doctoral gown in front of a traditional Chinese ancient building with peach blossoms and visible "学术报告厅" plaque, gentle camera pull-in with slight zoom, warm tones becoming richer and more saturated, 3.5 seconds duration, dignified and deliberate transition giving this key moment more screen time
-```
-
-### Video 4: Doctoral → Diploma (2.5-3 seconds)
-```
-Smooth cinematic transition: starting from a doctoral graduate in red gown standing proudly before an ancient building with peach blossoms, camera gently pulls back and shifts perspective to a close-up of a doctoral diploma certificate resting on a sunlit wooden desk with the graduate's portrait visible and university name obscured, warm golden light rays across the desk, tones becoming softer and more muted, 3 seconds duration, transition from celebration to quiet reflection
+Kling first-last frame transition video. Start frame: a graduate in black bachelor's gown on a campus tree-lined path with library background. End frame: the same person wearing a blue master's graduation gown on a golden ginkgo-lined autumn path with graduate school entrance in background. The transition should be smooth, natural, and aesthetically beautiful — the scene gently evolves from spring campus path to autumn ginkgo path with the gown color naturally shifting from black to blue, warm autumn amber tones gradually intensifying, gentle camera movement, NO stiff or mechanical morphing, NO abrupt cuts, 2.5 seconds duration
 ```
 
-### Video 5: Diploma → Memorial Book (2.5-3 seconds)
+### Video 3: Master's → Doctoral (Start frame=Image 3, End frame=Image 4, 3-3.5 seconds)
 ```
-Smooth cinematic transition: starting from a doctoral diploma on a sunlit desk with golden light rays, gently transforming into a closed book with cover reading "毕业纪念册" in elegant Chinese typography resting on a warm surface with sunset-like ambient lighting, soft camera movement, the warmest and softest color palette of the entire sequence, nostalgic and sentimental atmosphere, 3 seconds duration, transition from reflection to closure
+Kling first-last frame transition video. Start frame: a graduate in blue master's gown on a ginkgo-lined autumn path with graduate school gate. End frame: the same person wearing a red doctoral gown in front of a traditional Chinese ancient building with peach blossoms and visible "学术报告厅" plaque. The transition should be smooth, natural, and aesthetically beautiful — the scene slowly and gracefully evolves from autumn ginkgo path to spring ancient building with peach blossoms, the gown naturally shifts from blue to red, warm tones becoming richer and more saturated, gentle camera pull-in with slight zoom, NO stiff or mechanical morphing, NO abrupt cuts, this key moment deserves more screen time with a dignified and deliberate pace, 3.5 seconds duration
 ```
 
-### Video 6: Memorial Book Ending Hold (3-4 seconds)
+### Video 4: Doctoral → Diploma (Start frame=Image 4, End frame=Image 5, 2.5-3 seconds)
 ```
-Cinematic final frame: the closed "毕业纪念册" book cover in warm sunset-like ambient light, slow gentle camera hold with very subtle breathing movement, the warmest muted golden tones suggesting fond memory and closure, sentimental atmosphere, first frame only — no end frame transition, slow fade to slightly darker/warmer in the final second, 4 seconds duration, emotional ending that gives the viewer time to absorb
+Kling first-last frame transition video. Start frame: a doctoral graduate in red gown standing proudly before an ancient building with peach blossoms. End frame: a close-up of a doctoral diploma certificate resting on a sunlit wooden desk with the graduate's portrait visible and university name obscured. The transition should be smooth, natural, and aesthetically beautiful — the camera gently pulls back and shifts perspective from the person in graduation scene to the diploma on the desk, warm golden light rays gradually appear across the desk surface, tones becoming softer and more muted, NO stiff or mechanical morphing, NO abrupt cuts, this transition shifts emotional tone from celebration to quiet reflection, 3 seconds duration
+```
+
+### Video 5: Diploma → Memorial Book (Start frame=Image 5, End frame=Image 6, 2.5-3 seconds)
+```
+Kling first-last frame transition video. Start frame: a doctoral diploma on a sunlit desk with golden light rays. End frame: a closed book with cover reading "毕业纪念册" in elegant Chinese typography resting on a warm surface with sunset-like ambient lighting. The transition should be smooth, natural, and aesthetically beautiful — the scene gently evolves from the desk with diploma to the warm surface with the memorial book, the warmest and softest color palette of the entire sequence gradually emerging, soft camera movement, nostalgic and sentimental atmosphere intensifying, NO stiff or mechanical morphing, NO abrupt cuts, transition from reflection to closure, 3 seconds duration
+```
+
+### Video 6: Memorial Book Ending Hold (Start frame=Image 6, NO end frame, 3-4 seconds)
+```
+Kling first-frame-only video. Start frame: the closed "毕业纪念册" book cover in warm sunset-like ambient light. NO end frame provided — this is a final hold sequence. Slow gentle camera hold with very subtle breathing movement, the warmest muted golden tones suggesting fond memory and closure, sentimental atmosphere, slow fade to slightly darker/warmer in the final second, emotional ending that gives the viewer time to absorb, 4 seconds duration. The transition style should be natural and gentle — no abrupt changes, just a peaceful, lingering final moment
 ```
 
 ---
