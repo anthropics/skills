@@ -19,6 +19,7 @@ import argparse
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
@@ -155,25 +156,55 @@ def create_hidden_placeholder(size: tuple[int, int]) -> Image.Image:
     return img
 
 
-def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
-    pdf_path = temp_dir / f"{pptx_path.stem}.pdf"
+_SOFFICE_RETRIES = 3
+_SOFFICE_RETRY_DELAY = 2  # seconds between attempts
 
-    result = subprocess.run(
-        [
-            "soffice",
-            "--headless",
-            "--convert-to",
-            "pdf",
-            "--outdir",
-            str(temp_dir),
-            str(pptx_path),
-        ],
-        capture_output=True,
-        text=True,
-        env=get_soffice_env(),
-    )
-    if result.returncode != 0 or not pdf_path.exists():
-        raise RuntimeError("PDF conversion failed")
+
+def _pptx_to_pdf(pptx_path: Path, temp_dir: Path) -> Path:
+    """Convert PPTX to PDF via LibreOffice, retrying on lock-file failures."""
+    pdf_path = temp_dir / f"{pptx_path.stem}.pdf"
+    result = None
+
+    for attempt in range(1, _SOFFICE_RETRIES + 1):
+        # Remove stale LibreOffice lock files before each attempt.
+        for lock_dir in (pptx_path.parent, temp_dir):
+            for lock in lock_dir.glob(".~lock.*"):
+                lock.unlink(missing_ok=True)
+
+        try:
+            result = subprocess.run(
+                [
+                    "soffice",
+                    "--headless",
+                    "--norestore",
+                    "--convert-to", "pdf",
+                    "--outdir", str(temp_dir),
+                    str(pptx_path),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                env=get_soffice_env(),
+            )
+        except subprocess.TimeoutExpired:
+            if attempt < _SOFFICE_RETRIES:
+                time.sleep(_SOFFICE_RETRY_DELAY)
+                continue
+            raise RuntimeError("PDF conversion timed out")
+
+        if result.returncode == 0 and pdf_path.exists():
+            return pdf_path
+
+        if attempt < _SOFFICE_RETRIES:
+            time.sleep(_SOFFICE_RETRY_DELAY)
+
+    stderr = (result.stderr or "").strip() if result else ""
+    detail = f": {stderr}" if stderr else ""
+    raise RuntimeError(f"PDF conversion failed after {_SOFFICE_RETRIES} attempts{detail}")
+
+
+def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
+    pdf_path = _pptx_to_pdf(pptx_path, temp_dir)
 
     result = subprocess.run(
         [
@@ -287,3 +318,4 @@ def create_grid(
 
 if __name__ == "__main__":
     main()
+
