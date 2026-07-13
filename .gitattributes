@@ -1,0 +1,5 @@
+# The OOXML schemas are vendored verbatim from ECMA/ISO and are never edited by
+# hand. Upstream ships them CRLF, and the tooling that copies them in preserves
+# that, so without this every sync rewrites all 42 files end-to-end: ~82k diff
+# lines, zero content change, burying the actual edits.
+*.xsd text eol=lf
