@@ -104,8 +104,21 @@ def get_soffice_env() -> dict:
 
 
 def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
+    """Run soffice with a private user profile.
+
+    Without a dedicated profile, soffice hands the job to any LibreOffice
+    instance the user already has open and exits 0 having converted nothing --
+    a silent no-op that is harder to diagnose than a crash.
+    """
     env = get_soffice_env()
-    return subprocess.run([find_soffice()] + list(args), env=env, **kwargs)
+    args = list(args)
+
+    if not any(a.startswith("-env:UserInstallation") for a in args):
+        profile = Path(tempfile.gettempdir()) / "lo_profile_skill"
+        profile.mkdir(parents=True, exist_ok=True)
+        args.insert(0, f"-env:UserInstallation={profile.as_uri()}")
+
+    return subprocess.run([find_soffice()] + args, env=env, **kwargs)
 
 
 
