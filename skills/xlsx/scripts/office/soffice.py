@@ -1,40 +1,124 @@
 """
-Helper for running LibreOffice (soffice) in environments where AF_UNIX
-sockets may be blocked (e.g., sandboxed VMs).  Detects the restriction
-at runtime and applies an LD_PRELOAD shim if needed.
+Helper for running LibreOffice (soffice) across platforms.
+
+On Linux, AF_UNIX sockets may be blocked (e.g., sandboxed VMs).  This detects
+the restriction at runtime and applies an LD_PRELOAD shim if needed.  On
+Windows and macOS no shim is used: the binary is located on PATH or in the
+standard install location.
 
 Usage:
-    from office.soffice import run_soffice, get_soffice_env
+    from office.soffice import run_soffice, get_soffice_env, find_soffice
 
-    # Option 1 – run soffice directly
+    # Option 1 - run soffice directly
     result = run_soffice(["--headless", "--convert-to", "pdf", "input.docx"])
 
-    # Option 2 – get env dict for your own subprocess calls
+    # Option 2 - get the binary + env for your own subprocess calls
     env = get_soffice_env()
-    subprocess.run(["soffice", ...], env=env)
+    subprocess.run([find_soffice(), ...], env=env)
 """
 
 import os
+import shutil
 import socket
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
+
+IS_WINDOWS = sys.platform == "win32"
+IS_MACOS = sys.platform == "darwin"
+IS_LINUX = sys.platform.startswith("linux")
+
+# Windows Python builds do not expose socket.AF_UNIX at all, so touching it
+# raises AttributeError rather than OSError.
+HAS_AF_UNIX = hasattr(socket, "AF_UNIX")
+
+
+class SofficeNotFound(RuntimeError):
+    """Raised when the LibreOffice binary cannot be located."""
+
+
+_WINDOWS_CANDIDATES = [
+    r"C:\Program Files\LibreOffice\program\soffice.exe",
+    r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+]
+
+_MACOS_CANDIDATES = [
+    "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+]
+
+
+def find_soffice() -> str:
+    """Locate the soffice binary.
+
+    Checks $SOFFICE_BIN, then PATH, then the platform's standard install
+    location.  The Windows installer does not put soffice on PATH, so PATH
+    lookup alone is not enough there.
+    """
+    override = os.environ.get("SOFFICE_BIN")
+    if override:
+        if Path(override).is_file():
+            return override
+        raise SofficeNotFound(f"SOFFICE_BIN is set but is not a file: {override}")
+
+    for name in ("soffice", "soffice.exe"):
+        found = shutil.which(name)
+        if found:
+            return found
+
+    candidates: list[str] = []
+    if IS_WINDOWS:
+        candidates = list(_WINDOWS_CANDIDATES)
+        for root_var in ("ProgramFiles", "ProgramFiles(x86)", "ProgramW6432"):
+            root = os.environ.get(root_var)
+            if root:
+                candidates.append(
+                    str(Path(root) / "LibreOffice" / "program" / "soffice.exe")
+                )
+    elif IS_MACOS:
+        candidates = list(_MACOS_CANDIDATES)
+
+    for candidate in candidates:
+        if Path(candidate).is_file():
+            return candidate
+
+    raise SofficeNotFound(
+        "Could not find the LibreOffice 'soffice' binary.  Install LibreOffice, "
+        "put soffice on PATH, or set the SOFFICE_BIN environment variable to its "
+        "full path."
+    )
 
 
 def get_soffice_env() -> dict:
     env = os.environ.copy()
-    env["SAL_USE_VCLPLUGIN"] = "svp"
 
-    if _needs_shim():
-        shim = _ensure_shim()
-        env["LD_PRELOAD"] = str(shim)
+    # SAL_USE_VCLPLUGIN and the LD_PRELOAD shim are Linux-only.
+    if IS_LINUX:
+        env["SAL_USE_VCLPLUGIN"] = "svp"
+
+        if _needs_shim():
+            shim = _ensure_shim()
+            env["LD_PRELOAD"] = str(shim)
 
     return env
 
 
 def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
+    """Run soffice with a private user profile.
+
+    Without a dedicated profile, soffice hands the job to any LibreOffice
+    instance the user already has open and exits 0 having converted nothing --
+    a silent no-op that is harder to diagnose than a crash.
+    """
     env = get_soffice_env()
-    return subprocess.run(["soffice"] + args, env=env, **kwargs)
+    args = list(args)
+
+    if not any(a.startswith("-env:UserInstallation") for a in args):
+        profile = Path(tempfile.gettempdir()) / "lo_profile_skill"
+        profile.mkdir(parents=True, exist_ok=True)
+        args.insert(0, f"-env:UserInstallation={profile.as_uri()}")
+
+    return subprocess.run([find_soffice()] + args, env=env, **kwargs)
 
 
 
@@ -42,6 +126,8 @@ _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
 
 
 def _needs_shim() -> bool:
+    if not IS_LINUX or not HAS_AF_UNIX:
+        return False
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
@@ -63,7 +149,6 @@ def _ensure_shim() -> Path:
     )
     src.unlink()
     return _SHIM_SO
-
 
 
 _SHIM_SOURCE = r"""
@@ -178,6 +263,9 @@ int close(int fd) {
 
 
 if __name__ == "__main__":
-    import sys
-    result = run_soffice(sys.argv[1:])
+    try:
+        result = run_soffice(sys.argv[1:])
+    except SofficeNotFound as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        sys.exit(127)
     sys.exit(result.returncode)
