@@ -1,61 +1,53 @@
 ---
 name: pyxel
-description: Use when the user asks to make, modify, or verify a Pyxel game or retro/pixel-art game in Python. Do not use for non-Pyxel engines or general Python work.
+description: Use when creating, modifying, debugging, or verifying a game made with Pyxel or a requested retro Python game that should use Pyxel. Do not use for other engines or general Python work.
 license: MIT
 ---
 
-# pyxel
+# Pyxel
 
-Build Pyxel games with the smallest workflow that can honestly prove the game works. Modern models do not need a ceremony-heavy pipeline; use pyxel-mcp to observe reality, then apply game-specific judgment.
+Build the smallest complete game that satisfies the request, then verify it from observed behavior. Keep the process proportional to the task.
 
 ## Runtime
 
-The host should expose the `pyxel` MCP namespace from `pyxel-mcp >= 1.1.0`. Use these tools as observation verbs, not judges:
+Expect the `pyxel` MCP namespace from pyxel-mcp 1.2+ with Pyxel 2.9.6+ and Python 3.11+. Its eight tools are observation verbs:
 
-- `validate` before the first run or after structural edits; read `pyxel://anti-patterns` when an issue category is unfamiliar.
-- `run` as the primary loop: scheduled inputs plus `state`, `screen_image`, `screen_grid`, `layout`, or `video` snapshots. `until="<condition>"` stops at the first frame where an App-attribute expression holds; pair it with `"frame": "end"` snapshots to capture that moment.
-- `read_image`, `read_animation`, `read_audio`, `read_palette`, `read_tilemap`, and `diff_frames` only when the current task needs that specific observation.
-- `pyxel_info` when debugging setup or finding bundled examples/resources.
+- `validate` reports syntax errors and recognizable code patterns.
+- `run` drives frames and captures state, screen images, screen grids, or video.
+- `pyxel_info` reports versions, examples, and resource URIs.
+- `read_palette`, `read_image`, `read_tilemap`, and `read_audio` inspect the corresponding Pyxel data.
+- `diff_frames` compares two captured PNGs.
 
-If pyxel-mcp is missing or older than 1.1.0, ask the user to install/register `pyxel-mcp >= 1.1.0`, normally with `uvx pyxel-mcp install`. If installation or MCP access is blocked, use direct Pyxel headless runs only as a temporary fallback: `py_compile` or focused tests for logic plus `pyxel.init(headless=True)` and `pyxel.screenshot()`. Say verification is weaker until pyxel-mcp is available.
+If pyxel-mcp is unavailable, register it with `uvx pyxel-mcp install`; if older than 1.2.0, update it with `uvx --refresh-package pyxel-mcp pyxel-mcp install`. While blocked, use focused logic tests plus direct Pyxel headless runs temporarily, and state that visual and interaction verification is weaker.
 
-## Default Loop
+## Workflow
 
-1. Pick the smallest playable scope that satisfies the user's request. Ask only for missing constraints that materially change the game.
-2. Build a complete first slice: title or start state, controls, one objective, one failure/retry path when the genre needs it.
-3. Run `validate`. Fix syntax and Pyxel footguns before dynamic runs.
-4. Run the game headlessly with `run`; capture at least one `state` snapshot and one `screen_image` on the path being verified.
-5. Inspect the captured PNG yourself for the task-specific result, not just nonblank pixels. State values prove mechanics; pixels prove what the player actually sees.
-6. Iterate on observed defects. Do not create planning or tracking documents (PLAN.md, ASSETS.md, and similar) unless the project is large enough that they reduce confusion.
-7. Hand off with controls, changed files, and exact verification commands/results.
+1. Infer the smallest playable scope. Ask only when a missing choice would materially change the game.
+2. Implement a complete slice: entry state, controls, objective, and a retry or terminal state when the genre needs one.
+3. Run `validate`; fix errors and review relevant warnings. Read `pyxel://validation-patterns` only when a category needs explanation.
+4. Use `run` from frame 0 with deterministic input. Capture `state` for mechanics and `screen_image` for what the player sees. Prefer `until` with snapshots at `"end"` for event-driven checks.
+5. Read the run result's log field (`log`) even when `ok` is true. Inspect the captured image for the task-specific result; nonblank output alone is not evidence of a correct scene.
+6. Iterate only on observed defects. Add focused logic tests when rules are easier to prove outside rendering.
+7. Report controls, changed files, and exact verification results.
 
-## Minimum Verification
+## Minimum Evidence
 
-Every game needs:
+- `validate` has no syntax errors; relevant warnings are resolved or explained.
+- A smoke `run` reaches its intended stop.
+- At least one captured frame is inspected directly.
+- At least one task-specific state predicate is checked.
 
-- `validate` clean.
-- A smoke `run` that reaches the intended frame count.
-- At least one captured frame inspected visually.
-- One task-specific predicate checked from `state` snapshots.
+Add only relevant evidence: success and failure paths for action games, legal and illegal moves for puzzles, rendered WAV data for authored audio, or asset inspection when sprites and maps are part of the request.
 
-Add only genre-relevant checks:
+## References
 
-- Puzzle: solvable path, invalid move rejection, reset/undo if present.
-- Platformer/action: win/fail path, collision consequence, input timing tolerance where precision matters.
-- Rule-heavy games: keep core rules in a small logic module with focused tests before relying on visual runs.
-- Shooter/runner: spawn determinism, projectile/hazard consequence, no long static dead time.
-- Asset-heavy work: `read_image`/`read_animation` plus visual inspection of sprites.
-- Audio work: `read_audio(script=..., target={"sound": N}, output_path=<absolute path>)`, non-empty notes, audible peak.
-
-## When to Escalate
-
-Read `strict-mode.md` only when the user asks for release-quality evidence, a proof bundle, a long multi-session build, or an adversarial audit. Otherwise keep the loop light.
-
-Read `pyxel-notes.md` when Pyxel behavior is surprising or when implementing input, drawing, sprites, audio, tilemaps, or deterministic replays.
+- Read [references/pyxel.md](references/pyxel.md) only when implementing or diagnosing Pyxel input, drawing, assets, tilemaps, audio, or deterministic runs.
+- Read [references/strict-mode.md](references/strict-mode.md) only when the user requests release confidence, an audit, a proof bundle, or a long multi-session build.
 
 ## Boundaries
 
-- Do not invent universal quality scores or `judge_*` behavior.
-- Do not require proof bundles for small games.
-- Do not keep a broken visual result because the code state passed.
-- Do not use placeholder rectangles for declared sprites unless the design explicitly calls for primitive geometry.
+- Treat tool output as evidence, not aesthetic judgment.
+- Do not require a proof bundle for ordinary edits.
+- Do not accept a broken frame because state checks passed.
+- Do not create planning or tracking files unless project scale makes them useful.
+- Do not substitute placeholder shapes for requested sprite art unless primitive geometry is the intended style.
