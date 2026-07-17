@@ -39,11 +39,12 @@ def validate_skill(skill_path):
         return False, f"Invalid YAML in frontmatter: {e}"
 
     # Agent Skills spec fields (agentskills.io/specification)
-    # + documented Claude Code extensions (code.claude.com/docs/en/skills#skill-md-frontmatter)
+    # + documented Claude Code extensions (code.claude.com/docs/en/skills#frontmatter-reference)
     SPEC_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
     CLAUDE_CODE_PROPERTIES = {
         'agent', 'argument-hint', 'arguments', 'context', 'disable-model-invocation',
-        'disallowed-tools', 'effort', 'hooks', 'model', 'paths', 'shell', 'user-invocable',
+        'disallowed-tools', 'effort', 'hooks', 'model', 'paths', 'shell',
+        'user-invocable', 'when_to_use',
     }
     ALLOWED_PROPERTIES = SPEC_PROPERTIES | CLAUDE_CODE_PROPERTIES
 
