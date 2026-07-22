@@ -37,7 +37,7 @@ session = client.beta.sessions.create(agent=orchestrator.id, environment_id=env.
 
 If the session was created with `agent_with_overrides` (see `shared/managed-agents-core.md` → Override agent configuration for a session), those overrides apply to the **coordinator and its `self` copies**. Roster agents referenced by ID always use their own as-created configuration — overrides do not propagate to them.
 
-Up to **20 unique agents** in the roster; the coordinator may spawn **multiple copies** of each. **One level of delegation only** — depth > 1 is ignored.
+Up to **20 unique agents** in the roster; the coordinator may spawn **multiple copies** of each. **One level of delegation only** — and it is enforced rather than silently flattened: rostering an agent that itself carries a `multiagent.agents` roster fails the create or update with a validation error.
 
 ---
 
@@ -66,8 +66,24 @@ Each `SessionThread` carries `id`, `status` (`running` | `idle` | `rescheduling`
 | `session.thread_status_idle` | `session_thread_id`, `agent_name`, **`stop_reason`** | Thread is awaiting input. Inspect `stop_reason` (same shape as `session.status_idle.stop_reason`). |
 | `session.thread_status_rescheduled` | `session_thread_id`, `agent_name` | Thread is rescheduling after a retryable error. |
 | `session.thread_status_terminated` | `session_thread_id`, `agent_name` | Thread was archived or hit a terminal error. |
-| `agent.thread_message_sent` | `to_session_thread_id`, `to_agent_name`, `content` | Coordinator sent a follow-up to another thread. |
-| `agent.thread_message_received` | `from_session_thread_id`, `from_agent_name`, `content` | An agent delivered its result to the coordinator. |
+| `agent.thread_message_sent` | `to_session_thread_id`, `to_agent_name`, `content` | *This* thread sent a message to another thread. On the primary stream: the coordinator sent a task or follow-up to an agent. |
+| `agent.thread_message_received` | `from_session_thread_id`, `from_agent_name`, `content` | A message arrived on *this* thread from another. On the primary stream: an agent sent a report or question to the coordinator. |
+
+> **Direction is relative to the thread whose stream carries the event**, not to the coordinator. The same delegated task is an `agent.thread_message_sent` on the primary stream and an `agent.thread_message_received` on the child's own stream. Reading `_received` as "a subagent finished" is wrong once you're reading a child stream.
+
+---
+
+## Previewing a subagent's text
+
+Each thread's stream accepts the same `event_deltas[]` parameter as the session-level stream, so you can watch a subagent's text as the model generates it:
+
+```
+GET /v1/sessions/{sid}/threads/{tid}/stream?event_deltas%5B%5D=agent.message
+```
+
+**Previews are thread-scoped.** A child's previews are delivered only on that child's stream and never cross-posted to the session-level stream, whose previews stay scoped to the primary thread. So watching a subagent live means opening its thread stream — the session stream will not show it, no matter what you pass.
+
+> ⚠️ **Only plain assistant text previews.** A subagent's *reply to its coordinator* rides `agent.thread_message_sent` and is never previewed. A worker that does nothing but report back therefore streams no deltas at all, even with a correct opt-in on the right thread. To get a live preview out of a subagent, its prompt has to make it write the answer as a plain assistant message in its own thread first, and only then report to the coordinator. Run one accumulator per connection, and exit the read loop on `session.thread_status_idle`. Opt-in, accumulate, and reconcile details: `shared/managed-agents-events.md` → Live previews.
 
 ---
 
@@ -92,10 +108,18 @@ The same pattern applies to `user.custom_tool_result`.
 
 ---
 
+## Interrupting and archiving threads
+
+- **`user.interrupt` without `session_thread_id` interrupts every non-archived thread in the session, including the primary** — it is not a primary-only stop. Pass `session_thread_id` to target one thread.
+- **Against a child thread blocked on `requires_action`**, the interrupt closes each pending tool call with an *error* tool result (`"Tool execution was interrupted before completion. Please retry."`) and re-emits `session.thread_status_idle` with `stop_reason: end_turn` directly — the model is not sampled. Against a thread already `idle`, the interrupt is a no-op.
+- **Archive requires the thread to be idle, and `requires_action` counts as idle** — a thread parked on a pending tool call can be archived directly. Only a *running* thread must be interrupted first.
+
+---
+
 ## Pitfalls
 
 - **Don't put the roster on `sessions.create()` or in `tools[]`.** `multiagent` is a top-level agent field; update the coordinator, then start a session that references it.
 - **Don't assume shared context.** Threads share the filesystem but not conversation history or tools. If the coordinator needs a subagent to act on something, it must say so in the delegated message (or write it to disk).
-- **Depth > 1 is ignored.** A subagent's own `multiagent` roster (if any) doesn't cascade — only the session's coordinator delegates.
+- **Depth > 1 is a validation error.** Rostering an agent that itself carries a `multiagent.agents` roster fails the create or update — only the session's coordinator delegates.
 
 For per-language bindings beyond Python, WebFetch `https://platform.claude.com/docs/en/managed-agents/multi-agent.md` (see `shared/live-sources.md`).

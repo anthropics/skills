@@ -6,6 +6,8 @@ Sessions are ephemeral by default — when one ends, anything the agent learned 
 
 Every mutation to a memory produces an immutable **memory version** (`memver_...`), giving you an audit trail and point-in-time rollback/redact.
 
+> ⚠️ **Never store credentials, API keys, or tokens in memory stores.** Memories persist across sessions and are returned verbatim into future contexts — a key written once is replayed into every later session that mounts the store. Use vault `environment_variable` credentials instead (`shared/managed-agents-tools.md` → Vaults). If a secret has already been written, delete the memory and redact the affected versions (see "Redact a version" below).
+
 ## Object model
 
 | Object | ID prefix | Scope | Notes |

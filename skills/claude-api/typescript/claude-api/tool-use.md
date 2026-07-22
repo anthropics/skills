@@ -39,18 +39,59 @@ const finalMessage = await client.beta.messages.toolRunner({
 console.log(finalMessage.content);
 ```
 
+Zod is optional — `betaTool()` from `@anthropic-ai/sdk/helpers/beta/json-schema` accepts a raw JSON Schema `inputSchema` plus a `run` function if you don't want a Zod dependency.
+
 **Key benefits of the tool runner:**
 
 - No manual loop — the SDK handles calling tools and feeding results back
-- Type-safe tool inputs via Zod schemas
+- Type-safe tool inputs via Zod schemas (or raw JSON Schema via `betaTool()`)
 - Tool schemas are generated automatically from Zod definitions
 - Iteration stops automatically when Claude has no more tool calls
+
+### Server tools with the tool runner
+
+The runner's `tools` array accepts raw server-tool definitions (`web_search_20260209`, `web_fetch_20260209`, code execution) alongside runnable tools — pass the literal tool object; server tools run on Anthropic's servers, so there is no `run` function.
+
+**Caution — the runner does not auto-resume `pause_turn` (as of `@anthropic-ai/sdk` 0.110.0).** A long-running server-tool turn can stop with `stop_reason: "pause_turn"`. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message — no error, no warning, just a silently truncated answer. If you mix server tools into the runner, check `stop_reason` on every iteration and resume by pushing the paused assistant turn back:
+
+```typescript
+const params = {
+  model: "claude-opus-4-8",
+  max_tokens: 16000,
+  tools: [getWeather, { type: "web_search_20260209", name: "web_search", max_uses: 5 }],
+  messages: [{ role: "user", content: "Compare this week's forecasts for Paris across two sources" }],
+};
+
+const runner = client.beta.messages.toolRunner(params);
+
+// Non-streaming: each iteration yields a complete message
+for await (const message of runner) {
+  if (message.stop_reason === "pause_turn") {
+    runner.pushMessages({ role: "assistant", content: message.content });
+  }
+}
+
+// Streaming alternative — construct the runner with `stream: true` (same
+// params as above). Each iteration then yields a stream, not a message — a
+// bare `message.stop_reason` check never fires. Resolve the stream first:
+const streamingRunner = client.beta.messages.toolRunner({ ...params, stream: true });
+for await (const stream of streamingRunner) {
+  const message = await stream.finalMessage();
+  if (message.stop_reason === "pause_turn") {
+    streamingRunner.pushMessages({ role: "assistant", content: message.content });
+  }
+}
+```
+
+Each pause–resume consumes a `max_iterations` tick, so a capped run can still end paused — check the final message's `stop_reason` before trusting the result (after the loop, call `.done()` on the runner you iterated to get the final message). Alternatively, use the manual loop below, which handles `pause_turn` explicitly.
 
 ---
 
 ## Manual Agentic Loop
 
-Use this when you need fine-grained control (custom logging, conditional tool execution, streaming individual iterations, human-in-the-loop approval):
+Prefer the tool runner above. Drop to a manual loop only when you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, or avoiding a beta dependency — the runner is beta, and it supports per-token streaming via `stream: true`). Human-in-the-loop approval does *not* require a manual loop — gate inside the tool's `run()` function (return a "user declined" result) or inspect pending `tool_use` blocks and call `setMessagesParams()` between iterations.
+
+If you do need a manual loop:
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";

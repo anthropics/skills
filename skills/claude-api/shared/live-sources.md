@@ -106,7 +106,7 @@ Use these when a managed-agents binding, behavior, or wire-level detail isn't co
 
 ### Anthropic CLI
 
-The `ant` CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is one convenient way to create agents, environments, sessions, and other resources from version-controlled YAML, and to inspect responses interactively.
+The `ant` CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is the recommended way to create agents and environments from version-controlled YAML (`ant beta:agents create < agent.yaml` — see `shared/anthropic-cli.md`), and also exposes sessions and every other API resource for scripting and interactive inspection.
 
 | Topic         | URL                                                     | Extraction Prompt                                                                                  |
 | ------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |

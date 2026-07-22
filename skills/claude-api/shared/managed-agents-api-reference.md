@@ -2,6 +2,8 @@
 
 All endpoints require `x-api-key` and `anthropic-version: 2023-06-01` headers. Managed Agents endpoints additionally require the `anthropic-beta` header.
 
+> Most users should define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md`. The endpoints below are the underlying API that the CLI and SDKs drive.
+
 ## Beta Headers
 
 ```
@@ -42,7 +44,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 
 **Agent shorthand:** `agent` on session create accepts three forms — a bare string (`agent="agent_abc123"`, latest version), a pinned reference `{type: "agent", id, version}`, or `{type: "agent_with_overrides", id, version?, model?, system?, tools?, mcp_servers?, skills?}` to override those fields for this session only (see `shared/managed-agents-core.md` → Override agent configuration for a session).
 
-**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-4-8"` — uses `standard` speed) or the full config object (`{id: "claude-opus-4-8", speed: "fast"}`). Note: `speed: "fast"` is supported only on Opus 4.8 and Opus 4.7. Opus 4.7 fast mode is deprecated; after removal, `speed: "fast"` on Opus 4.7 returns an error. Opus 4.8 is the durable fast-capable tier.
+**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-4-8"` — uses `standard` speed) or the full config object, which takes `speed` and `effort` alongside `id`: `{id: "claude-opus-4-8", speed: "fast"}`, `{id: "claude-opus-4-8", effort: "high"}`. `effort` accepts a level string (`low`/`medium`/`high`/`xhigh`/`max`) or `{type: "<level>"}`, and is **agent-configuration only** — an `effort` inside a per-session `model` override is ignored. See `shared/managed-agents-core.md` → Effort on the agent model. Note: `speed: "fast"` is supported only on Opus 4.8 and Opus 4.7. Opus 4.7 fast mode is deprecated; after removal, `speed: "fast"` on Opus 4.7 returns an error. Opus 4.8 is the durable fast-capable tier.
 
 ---
 
@@ -55,7 +57,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `GET` | `/v1/agents` | ListAgents | List agents |
 | `POST` | `/v1/agents` | CreateAgent | Create a saved agent configuration |
 | `GET` | `/v1/agents/{agent_id}` | GetAgent | Get agent details |
-| `POST` | `/v1/agents/{agent_id}` | UpdateAgent | Update agent configuration |
+| `POST` | `/v1/agents/{agent_id}` | UpdateAgent | Update agent configuration. `version` is **optional**: supply it (≥ 1) for optimistic concurrency — a mismatch returns 409 — or omit it for an unconditional last-write-wins update. |
 | `POST` | `/v1/agents/{agent_id}/archive` | ArchiveAgent | Archive an agent. Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive — this is the terminal state. |
 | `GET` | `/v1/agents/{agent_id}/versions` | ListAgentVersions | List agent versions |
 
@@ -232,7 +234,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 ```json
 {
   "name": "string (required, 1-256 chars)",
-  "model": "claude-opus-4-8 (required — bare string, or {id, speed} object)",
+  "model": "claude-opus-4-8 (required — bare string, or {id, speed?, effort?} object)",
   "description": "string (optional, up to 2048 chars)",
   "system": "string (optional, up to 100,000 chars)",
   "tools": [
@@ -281,6 +283,9 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
       "checkout": { "type": "branch", "name": "main" }
     }
   ],
+  "initial_events": [
+    { "type": "user.message", "content": [{ "type": "text", "text": "Review the auth module." }] }
+  ],
   "vault_ids": ["vlt_abc123 (optional — vault credentials: MCP auth + environment variables)"],
   "metadata": {
     "key": "value"
@@ -288,7 +293,9 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 }
 ```
 
-> The `agent` field accepts a string ID, `{type: "agent", id, version}`, or `{type: "agent_with_overrides", id, version?, ...}` for session-local overrides of `model`/`system`/`tools`/`mcp_servers`/`skills`. Outside the overrides form, those fields live on the agent, not here.
+> The `agent` field accepts a string ID, `{type: "agent", id, version}`, or `{type: "agent_with_overrides", id, version?, ...}` for session-local overrides of `model`/`system`/`tools`/`mcp_servers`/`skills`. Outside the overrides form, those fields live on the agent, not here. An `effort` inside a `model` override is ignored — set it on the agent.
+>
+> **`initial_events`** (optional, max 50) sends events at creation and starts the agent loop in the same call. Only `user.message` and `user.define_outcome` are accepted — no `system.message`, and none of the tool-result kinds. Validation is all-or-nothing. See `shared/managed-agents-core.md` → Seeding a session with `initial_events`.
 >
 > **`checkout`** accepts `{type: "branch", name: "..."}` or `{type: "commit", sha: "..."}`. Omit for the repo's default branch.
 
@@ -347,7 +354,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 }
 ```
 
-> `system.message` events (update the system prompt between turns) use the same envelope with `type: "system.message"` — Claude Opus 4.8 only; see `shared/managed-agents-events.md` § Updating the system prompt mid-session.
+> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` — supported on Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5, checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
 
 ### Define Outcome Event
 

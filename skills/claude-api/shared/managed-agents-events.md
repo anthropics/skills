@@ -13,11 +13,11 @@ Send events to a session via `POST /v1/sessions/{id}/events`.
 | `user.tool_confirmation`  | Approve/deny a tool call (when `always_ask` policy) |
 | `user.custom_tool_result` | Provide result for a custom tool call |
 | `user.define_outcome`     | Start a rubric-graded iterate loop — see `shared/managed-agents-outcomes.md` |
-| `system.message`          | Update the agent's system prompt between turns — **Claude Opus 4.8 only**; see § Updating the system prompt mid-session |
+| `system.message`          | Append privileged system-level context for this turn and every turn after it; see § Adding system context mid-session |
 
-#### Updating the system prompt mid-session (`system.message`)
+#### Adding system context mid-session (`system.message`)
 
-Unlike the `system` field on the agent definition (fixed at session creation), a `system.message` event changes the system prompt **as the session progresses** — a different persona, revised constraints, or runtime-fetched context that should shape behavior going forward:
+The `system` field on the agent definition sets the top-level system prompt and is fixed for the session's lifetime. A `system.message` event **appends** to the session's system context as a `role: "system"` turn — it does not replace that prompt. The content applies to the accompanying turn and all subsequent turns. Use it for a different persona, revised constraints, or runtime-fetched context that should shape behavior going forward:
 
 ```python
 client.beta.sessions.events.send(
@@ -35,8 +35,8 @@ client.beta.sessions.events.send(
 
 Constraints:
 
-- **Claude Opus 4.8 only.** If any model configured on the agent does not support mid-conversation system injection, the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
-- **Cannot be sent while the session is idle with `stop_reason: requires_action`** (blocked on `user.custom_tool_result` / `user.tool_confirmation`).
+- **Model-gated: Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5.** Only the agent's **primary** model is checked — `system.message` lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
+- **While the session is idle with `stop_reason: requires_action`** (blocked on `user.custom_tool_result` / `user.tool_confirmation`), a `system.message` is accepted **only when it trails a tool result event in the same request**. Sent on its own — or alongside a `user.message` — it is rejected until the pending tool events are resolved.
 - `content` accepts 1–1000 text items.
 
 ### Receiving Events
@@ -47,7 +47,7 @@ Three methods:
 2. **Polling**: `GET /v1/sessions/{id}/events` — paginated event list (query params: `limit` default 1000, `page`). **Returns immediately** — this is a plain paginated GET, not a long-poll.
 3. **Webhooks**: Anthropic POSTs session state transitions to your HTTPS endpoint — thin payloads (IDs only), HMAC-signed, Console-registered. See `shared/managed-agents-webhooks.md`.
 
-All **persisted** events carry `id`, `type`, and `processed_at` (ISO 8601; `null` if not yet processed by the agent). The stream-only `event_start` / `event_delta` preview events (see § Live previews) carry only the `id` of the event they preview.
+All **persisted** events carry `id`, `type`, and `processed_at` (ISO 8601), set when the event finishes processing. On events you send, `processed_at` is `null` while the event is still queued behind earlier ones — **except** `user.define_outcome`, `user.custom_tool_result`, and `user.tool_result`, which are processed on receipt and echoed back with `processed_at` already populated. The stream-only `event_start` / `event_delta` preview events (see § Live previews) carry only the `id` of the event they preview.
 
 > ⚠️ **Robust polling (raw HTTP).** If you bypass the SDK and roll your own poll loop, don't rely on `requests` or `httpx` timeouts as wall-clock caps — they're **per-chunk** read timeouts, reset every time a byte arrives. A trickling response (heartbeats, a wedged chunked-encoding body, a misbehaving proxy) can keep the call blocked indefinitely even with `timeout=(5, 60)` or `httpx.Timeout(120)`. Neither library has a "total wall-clock" timeout built in. For a hard deadline: track `time.monotonic()` at the loop level and break/cancel if a single request exceeds your budget (e.g. via a watchdog thread, or `asyncio.wait_for()` around async httpx). **Prefer the SDK** — `client.beta.sessions.events.stream()` and `client.beta.sessions.events.list()` handle timeout + retry sanely.
 >
@@ -60,7 +60,7 @@ Event types use dot notation, grouped by namespace:
 | Event Type | Description |
 | --- | --- |
 | `agent.message` | Agent text output |
-| `agent.thinking` | Extended thinking blocks |
+| `agent.thinking` | Progress signal that the agent is thinking — it does **not** carry the thinking content |
 | `agent.tool_use` | Agent used a built-in tool (`agent_toolset_20260401`) |
 | `agent.tool_result` | Result from a built-in tool |
 | `agent.mcp_tool_use` | Agent used an MCP tool |
@@ -70,7 +70,7 @@ Event types use dot notation, grouped by namespace:
 | `session.status_idle` | Agent has finished the current task, and is awaiting input. It's either waiting for input to continue working via a `user.message` or blocked awaiting a `user.custom_tool_result` or `user.tool_confirmation`. The `stop_reason` attached contains more information about why the Agent has stopped working. |
 | `session.status_running` | Session has starting running, and the Agent is actively doing work. |
 | `session.status_rescheduled` | Session is (re)scheduling after a retryable error has occurred, ready to be picked up by the orchestration system. |
-| `session.status_terminated` | Session has terminated, entering an irreversible and unusable state.  |
+| `session.status_terminated` | Session ended and is irreversibly unusable — **on completion or on error**, not error-only. |
 | `session.error` | Error occurred during processing |
 | `span.model_request_start` | Model inference started |
 | `span.model_request_end` | Model inference completed |
@@ -89,7 +89,9 @@ Stream-only delta preview events (`event_start`, `event_delta`) are the one exce
 
 By default, assistant text reaches the stream as buffered `agent.message` events — emitted only after the model request that produced them finishes. **Live previews** let you render that text incrementally while the model is still generating. The buffered `agent.message` is always the authoritative record; a client that ignores previews still receives a complete, correct stream. The wire format is **not** Messages-API streaming: the delta type is `content_delta`, not `content_block_delta`, so Messages-API accumulator code does not carry over unchanged.
 
-**Opt in per stream connection** by adding the `event_deltas[]` query parameter to `GET /v1/sessions/{id}/events/stream`, repeated once per event type to preview. Accepted values: `agent.message`, `agent.thinking` (any other value → 400). Only the session-level stream supports it — per-thread streams (`/threads/{tid}/stream`) reject the parameter.
+**Opt in per stream connection** by adding the `event_deltas[]` query parameter, repeated once per event type to preview. Accepted values: `agent.message`, `agent.thinking` — any other value returns a 400, as does a request with more than 100 values. **Both stream endpoints accept it:** the session-level stream (`GET /v1/sessions/{id}/events/stream`) and each session thread's own stream (`GET /v1/sessions/{sid}/threads/{tid}/stream`). In a shell, quote the URL or percent-encode the brackets as `%5B%5D` — bare `[]` is a glob pattern.
+
+**Previews are thread-scoped.** A connection previews only the thread it is reading. A child thread's previews are delivered on that child's stream and are *never* cross-posted to the session-level stream, whose previews stay scoped to the primary thread. To watch a subagent's text as the model generates it, open that subagent's thread stream — see `shared/managed-agents-multiagent.md`. Run one accumulator instance per connection.
 
 ```python
 stream = client.beta.sessions.events.stream(
@@ -105,15 +107,25 @@ When a previewed event begins, the stream emits an `event_start` carrying the up
 {"type": "event_delta", "event_id": "sevt_01abc...", "delta": {"type": "content_delta", "index": 0, "content": {"type": "text", "text": "Here is the summary"}}}
 ```
 
-`event_start` and `event_delta` have no `id` or `processed_at` of their own — the only identifier they carry is the `id` of the event they preview. For `agent.thinking`, **only** the `event_start` is emitted (a "thinking has started" signal) — no deltas follow; read content from the buffered `agent.thinking` event.
+`event_start` and `event_delta` have no `id` or `processed_at` of their own — the only identifier they carry is the `id` of the event they preview. For `agent.thinking`, **only** the `event_start` is emitted (a "thinking has started" signal) — no deltas follow, and the buffered `agent.thinking` that concludes the preview carries no thinking content either. It is a progress signal, not a content carrier; there is nothing to read out of it.
 
 **Accumulate-and-reconcile pattern.** Treat the preview as a scratch buffer keyed by `(event_id, index)`. On `event_start`, create an empty entry for the announced `id`. On each `event_delta`, append `delta.content.text` to `(event_id, delta.index)` and render the running text. When the buffered `agent.message` arrives, match it by `id`, **discard the accumulated preview**, and render the message's content instead. The identifiers always line up: `event_start.event.id`, every `event_delta.event_id`, and the buffered event's `id` are the same value. On a normal turn the order is fixed: `session.status_running` → `span.model_request_start` → `event_start` → `event_delta`* → buffered `agent.message` → `span.model_request_end`. If the turn errors or is interrupted the buffered event may never arrive, but `span.model_request_end` still does — close any unreconciled preview when you see it. Python/TypeScript/Go SDKs ship an accumulator helper that implements this; in other SDKs apply the manual pattern to the generated event types.
 
+**Two guarantees the pattern relies on:** concatenating a preview's deltas in arrival order, keyed by `(event_id, index)`, yields a *prefix* of `content[index].text` in the buffered event (a prefix, not necessarily the whole text — deltas may be shed under load); and a connection emits at most one `event_start` per `event_id`, with the buffered event as the last thing that connection delivers for that `id`.
+
 **Limitations:**
 - **Best effort** — under load the server may shed deltas for an event; you receive a contiguous prefix and then no further deltas for that event. The buffered `agent.message` still arrives complete. Never treat an accumulated preview as final.
-- **No replay on reconnect** — deltas are delivered only to the connection that opted in, while it's open. After a drop, follow the consolidation pattern in § Reconnecting after a dropped stream — the history fetch returns any buffered events emitted during the gap; missed deltas cannot be re-requested.
-- **Primary thread, text only** — tool use, tool results, MCP results, and subagent-thread activity are never previewed.
-- **Never persisted** — `event_start` / `event_delta` exist only on the live SSE stream, never in `GET /v1/sessions/{id}/events`.
+- **No replay on reconnect** — deltas are delivered only to the connection that opted in, while it's open; this holds for the session-level stream and each thread stream alike. A connection opened after a model request started receives no deltas for that in-flight event. After a drop, follow the consolidation pattern in § Reconnecting after a dropped stream — the history fetch returns any buffered events emitted during the gap; missed deltas cannot be re-requested.
+- **One thread, text only** — previews cover assistant text on the thread the connection is reading. Tool use, tool results, MCP results, and activity on any *other* thread are never previewed on that connection.
+- **Never persisted** — `event_start` / `event_delta` exist only on the live SSE stream, never in `GET /v1/sessions/{id}/events` or any thread's event history.
+
+**Troubleshooting:**
+
+| You see | What it means |
+| --- | --- |
+| Buffered events but no `event_start` / `event_delta` | This connection didn't opt in (`event_deltas[]` is per connection, not per session), or the turn ran on a different thread. List `GET /v1/sessions/{sid}/threads` to find which one ran. |
+| 404 on the stream URL | Wrong path or ID, or the request carries no managed-agents beta header — the thread endpoints are beta-gated, so without it they don't exist. The thread path is `/threads/{tid}/stream`, **not** `/threads/{tid}/events/stream` (which doesn't exist) and not `/events/stream` (session level only). |
+| 400 naming `event_deltas` | Only `agent.message` and `agent.thinking` are accepted, max 100 values. |
 
 ---
 
@@ -182,15 +194,19 @@ Events can be sent up to the Session at any time. There is no need to wait on a 
 
 ### Interrupt
 
-An `interrupt` event **jumps the queue** (ahead of any pending user messages) and forces the session into `idle`. Use this for "stop" / "nevermind" / "cancel" commands:
+A `user.interrupt` event **jumps the queue** (ahead of any pending user messages) and forces the session into `idle`. Use this for "stop" / "nevermind" / "cancel" commands:
 
 ```ts
 await client.beta.sessions.events.send(sessionId, {
-  events: [{ type: 'interrupt' }],
+  events: [{ type: 'user.interrupt' }],
 });
 ```
 
 The agent stops mid-task. It does not see the interrupt as a message — it just halts. Send a follow-up `user` event to explain what to do instead. If an outcome is active, the interrupt also marks `span.outcome_evaluation_end.result: "interrupted"` (see `shared/managed-agents-outcomes.md`).
+
+**The interrupted turn ends with `stop_reason: end_turn`** — the same value a turn that finishes on its own carries. There is no interruption-specific stop reason, so a drain loop can't distinguish the two from `stop_reason` alone; track that you sent the interrupt.
+
+**In a multiagent session, omitting `session_thread_id` interrupts every non-archived thread, including the primary** — it is not primary-only. Pass `session_thread_id` to stop one thread. See `shared/managed-agents-multiagent.md`.
 
 > **Note**: Interrupt events may have empty IDs in the current implementation. When troubleshooting, use the `processed_at` timestamp along with surrounding event IDs.
 

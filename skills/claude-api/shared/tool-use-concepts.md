@@ -59,9 +59,25 @@ Any `tool_choice` value can also include `"disable_parallel_tool_use": true` to 
 
 ### Tool Runner vs Manual Loop
 
-**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, Ruby, and PHP SDKs (beta). The Python SDK also provides MCP conversion helpers (`anthropic.lib.tools.mcp`) to convert MCP tools, prompts, and resources for use with the tool runner — see `python/claude-api/tool-use.md` for details.
+**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, Ruby, PHP, and C# SDKs (beta). The Python SDK also provides MCP conversion helpers (`anthropic.lib.tools.mcp`) to convert MCP tools, prompts, and resources for use with the tool runner — see `python/claude-api/tool-use.md` for details. **Default to the tool runner** for any custom-tool agent.
 
-**Manual Agentic Loop:** Use when you need fine-grained control over the loop (e.g., custom logging, conditional tool execution, human-in-the-loop approval). Loop until `stop_reason == "end_turn"`, always append the full `response.content` to preserve tool_use blocks, and ensure each `tool_result` includes the matching `tool_use_id`.
+**The tool runner is not a black box — "I need control" is rarely a reason to drop to the manual loop.** Each iteration yields the assistant message *before* the tools run and lets you intervene, so most "fine-grained control" needs are covered without hand-writing the loop:
+
+- **Human-in-the-loop approval / gating** — gate in the tool's run function (return a "user declined" result instead of executing), or inspect the tool call in the yielded message and override the pending request with `set_messages_params()` / `setMessagesParams()` / `append_messages()` / `pushMessages()` to allow or deny *before* the tool executes. The runner runs your function automatically only if you don't intervene.
+- **Error interception** — inspect the tool result before it returns to Claude (`generate_tool_call_response()` / `generateToolResponse()`); stop early or handle it yourself.
+- **Result modification** — mutate the tool result before it goes back (e.g. add `cache_control` for prompt caching, or transform the output).
+- **Per-turn retries / param changes** — e.g. bump `max_tokens` and re-run a truncated turn; bound the whole loop with `max_iterations`.
+- **Streaming and automatic compaction** are both supported.
+
+These hooks are SDK helper features, not separate API parameters — for the exact method names and worked examples, WebFetch the per-language SDK repo listed in `shared/live-sources.md` → *Claude API SDK Repositories* (the tool-runner helpers live in each repo's `tools.md` / `helpers.md`). The bundled `python/claude-api/tool-use.md` and `typescript/claude-api/tool-use.md` show the basic tool-runner setup.
+
+**Don't drop to a manual loop because of these misconceptions:**
+
+- The tool runner does not require Zod/Pydantic — `betaTool()` (TS) and `@beta_tool` (Python) accept raw JSON Schema; other SDKs use plain structs/maps/classes.
+- The runner makes detecting the final turn *easier*, not harder — iteration ends when Claude stops calling tools, and the last yielded message is the final response. Most SDKs also offer a one-shot variant (`runner.until_done()` / `runner.runUntilDone()` / `RunToCompletion()`).
+- Confirmation/approval gates work with the runner (see Security below).
+
+**Manual Agentic Loop:** Reach for this only when you want to own the *entire* loop — you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, per-token streaming on SDKs whose runner does not support it), you'd rather not take the beta dependency, or your control flow doesn't fit the runner's per-turn hooks (e.g. interleaving unrelated work mid-loop). Approval gates, logging, interception, result modification, and conditional execution do **not** require it — the tool runner covers those (above). Loop until `stop_reason == "end_turn"`, always append the full `response.content` to preserve tool_use blocks, and ensure each `tool_result` includes the matching `tool_use_id`.
 
 **Stop reasons for server-side tools:** When using server-side tools (code execution, web search, etc.), the API runs a server-side sampling loop. If this loop reaches its default limit of 10 iterations, the response will have `stop_reason: "pause_turn"`. To continue, re-send the user message and assistant response and make another API request — the server will resume where it left off. Do NOT add an extra user message like "Continue." — the API detects the trailing `server_tool_use` block and knows to resume automatically.
 
@@ -78,9 +94,11 @@ if response.stop_reason == "pause_turn":
     )
 ```
 
+**Note:** the SDK tool runners do not auto-resume `pause_turn` (as of `@anthropic-ai/sdk` 0.110.0 / `anthropic` 0.116.0) — a paused turn ends the runner and is returned as the final message, with no error. In TypeScript you can resume inside the iteration body (push the paused assistant turn back onto the runner); in Python the runner cannot be resumed mid-loop — restart a new runner with the paused turn appended, or handle `pause_turn` in a manual loop. See each language's `tool-use.md` for the pattern.
+
 Set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the full guide, see: `https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons`
 
-> **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs within your tool functions and consider requiring confirmation for destructive operations. Use the manual agentic loop if you need human-in-the-loop approval before each tool execution.
+> **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs and gate destructive operations behind human approval. **Both** the tool runner and the manual loop support this — with the tool runner, gate inside the tool's run function (prompt the user and return a "user declined" result instead of executing), or inspect the tool call in each yielded message and take over message history with `set_messages_params()` / `setMessagesParams()` to allow or deny *before* the tool runs (it executes your function automatically only if you don't intervene); with the manual loop you gate inline before calling the function.
 
 ---
 
