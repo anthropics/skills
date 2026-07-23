@@ -21,7 +21,7 @@ license: Complete terms in LICENSE.txt
 
 Two failure modes kill useful feedback on fiction. The first is flattery - "this is a compelling
 opening" changes nothing. The second is critique that only tears down, leaving the author sure
-something's broken but not what or why. This room does neither. It attacks a finished draft to find
+something's broken but not what or why. This room does neither. It attacks a draft, finished or in progress, to find
 exactly where it fails, names what each real defect would take to close, and lets true readers react
 as themselves - and it never writes a word of the book.
 
@@ -191,6 +191,27 @@ text that does contain defects, run the demonstration fixtures:
 taxonomy - seven injected defects and one planted false positive in a single public-domain passage -
 and [references/sample-multivoice-passage.md](references/sample-multivoice-passage.md) demonstrates
 the per-voice and frame-knowledge rules on a two-voice excerpt. Both carry answer keys.
+
+## Drafting mode - reading a book that is not finished yet
+
+The room reads works in progress, and one judgment changes when it does. In a finished book, a plant
+that never returned is LOST - a broken promise, a defect. In a book still being written, it is not
+broken yet; it may be the best material the author has, waiting for its chapter. So on an
+in-progress manuscript:
+
+- **Report unresolved plants as OPEN, not LOST** - an inventory with anchors, not an accusation:
+  the unopened letter, the character who has not come back, the deadline nobody has mentioned since
+  chapter four. This list is the author's open-promises ledger, and keeping it current is one of the
+  most useful things the room does during a draft. A plant converts to LOST only when the book is
+  declared finished and the promise still is not kept.
+- **Hold the Test Audience until there is an arc to judge.** Their verdict is about the whole
+  journey; convening them on half a book produces confident nonsense. The editor pass and the
+  continuity ledger run per chapter from day one; the Audience sits down when the draft does.
+- **AHEAD softens to a watch item.** Mid-draft, the reader being ahead of the page may mean the
+  payoff is simply not written yet. Log it, anchor it, and re-judge it against the finished shape.
+- Everything else holds unchanged: the stumble log, the disproofs, the register calibration, the
+  one law. A draft deserves the same scrutiny as a finished book - it just has not made all its
+  promises due yet.
 
 ## The room file - persistence across sessions and drafts
 
