@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -30,6 +31,24 @@ def find_project_root() -> Path:
         if (parent / ".claude").is_dir():
             return parent
     return current
+
+
+def _pump_stdout(stream, chunks: "queue.Queue") -> None:
+    """Read chunks from a subprocess pipe into a queue, ending with None.
+
+    select() cannot watch pipes on Windows (only sockets), so a blocking
+    reader thread is used instead of select-based polling.
+    """
+    try:
+        while True:
+            chunk = stream.read1(8192)
+            if not chunk:
+                break
+            chunks.put(chunk)
+    except (OSError, ValueError):
+        pass
+    finally:
+        chunks.put(None)
 
 
 def run_single_query(
@@ -97,20 +116,19 @@ def run_single_query(
         pending_tool_name = None
         accumulated_json = ""
 
+        chunks: queue.Queue = queue.Queue()
+        reader = threading.Thread(
+            target=_pump_stdout, args=(process.stdout, chunks), daemon=True
+        )
+        reader.start()
+
         try:
             while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
+                try:
+                    chunk = chunks.get(timeout=1.0)
+                except queue.Empty:
                     continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
+                if chunk is None:
                     break
                 buffer += chunk.decode("utf-8", errors="replace")
 
@@ -279,6 +297,22 @@ def main():
     name, original_description, content = parse_skill_md(skill_path)
     description = args.description or original_description
     project_root = find_project_root()
+
+    # a globally installed copy of the skill shadows
+    # the synthetic test command in every `claude -p` subprocess — the model
+    # then triggers the real skill under its real name, which this eval cannot
+    # attribute to the candidate description. Positive queries read as false
+    # negatives and the optimization loop scores garbage.
+    installed_copy = Path.home() / ".claude" / "skills" / name
+    if installed_copy.exists():
+        print(
+            f"WARNING: '{name}' is installed at {installed_copy} and visible to "
+            f"every `claude -p` subprocess. It will shadow the synthetic test "
+            f"skill and distort trigger rates (positives read as false negatives). "
+            f"Temporarily move it away (e.g. rename the folder) before running "
+            f"trigger evals, then restore it.",
+            file=sys.stderr,
+        )
 
     if args.verbose:
         print(f"Evaluating: {description}", file=sys.stderr)

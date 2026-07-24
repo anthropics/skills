@@ -376,6 +376,8 @@ This step matters — bad eval queries lead to bad descriptions.
 
 Tell the user: "This will take some time — I'll run the optimization loop in the background and check on it periodically."
 
+Before running: if the skill under test is installed at `~/.claude/skills/<name>`, temporarily move that folder away (and restore it afterwards). An installed copy is visible to every `claude -p` subprocess and shadows the synthetic test skill — the model triggers the real skill under its real name, the eval cannot attribute that to the candidate description, and every should-trigger query reads as a false negative.
+
 Save the eval set to the workspace, then run in the background:
 
 ```bash
