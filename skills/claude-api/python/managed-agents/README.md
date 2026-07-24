@@ -51,7 +51,7 @@ print(environment.id)  # env_...
 # 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
     name="Coding Assistant",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True}}],
 )
 
@@ -71,7 +71,7 @@ import os
 
 agent = client.beta.agents.create(
     name="Code Reviewer",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     system="You are a senior code reviewer.",
     tools=[
         {"type": "agent_toolset_20260401"},
@@ -314,7 +314,7 @@ client.beta.sessions.archive(session_id="sesn_011CZxAbc123Def456")
 # Agent declares MCP server (no auth here — auth goes in a vault)
 agent = client.beta.agents.create(
     name="MCP Agent",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     mcp_servers=[
         {"type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse"},
     ],

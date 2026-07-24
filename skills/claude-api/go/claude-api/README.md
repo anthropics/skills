@@ -29,7 +29,9 @@ client := anthropic.NewClient(
 
 ## Model Constants
 
-The Go SDK provides typed model constants: `anthropic.ModelClaudeFable5`, `anthropic.ModelClaudeOpus4_8`, `anthropic.ModelClaudeOpus4_7`, `anthropic.ModelClaudeSonnet4_6`, `anthropic.ModelClaudeHaiku4_5_20251001`. Use `ModelClaudeOpus4_8` unless the user specifies otherwise; if they ask for Fable or the most powerful model, use `anthropic.ModelClaudeFable5` (see `shared/models.md` for the full resolution table).
+The Go SDK provides typed model constants: `anthropic.ModelClaudeFable5`, `anthropic.ModelClaudeOpus4_8`, `anthropic.ModelClaudeOpus4_7`, `anthropic.ModelClaudeSonnet4_6`, `anthropic.ModelClaudeHaiku4_5_20251001`. Default to Claude Opus 5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use `anthropic.ModelClaudeFable5` (see `shared/models.md` for the full resolution table).
+
+`anthropic.Model` is an alias for `string`, so a model with no typed constant yet — including Claude Opus 5 — is passed as the plain id: `Model: "claude-opus-5"`. Check the SDK release notes for a typed `Claude Opus 5` constant before assuming one exists.
 
 ---
 
@@ -37,7 +39,7 @@ The Go SDK provides typed model constants: `anthropic.ModelClaudeFable5`, `anthr
 
 ```go
 response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
-    Model:     anthropic.ModelClaudeOpus4_8,
+    Model:     "claude-opus-5",
     MaxTokens: 16000,
     Messages: []anthropic.MessageParam{
         anthropic.NewUserMessage(anthropic.NewTextBlock("What is the capital of France?")),
@@ -93,10 +95,11 @@ for _, block := range resp.Content {
 }
 ```
 
-> **Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (above). `ThinkingConfigParamOfEnabled(budgetTokens)` is removed on Fable 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (above). `ThinkingConfigParamOfEnabled(budgetTokens)` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5:** thinking is on by default — leaving `Thinking` unset runs adaptive (the adaptive union is equivalent), unlike Opus 4.8/4.7 where leaving it unset meant no thinking.
 > **Older models:** Use `anthropic.ThinkingConfigParamOfEnabled(N)` (budget must be < `MaxTokens`, min 1024).
 
-To disable: `anthropic.ThinkingConfigParamUnion{OfDisabled: &anthropic.ThinkingConfigDisabledParam{}}`.
+To disable: `anthropic.ThinkingConfigParamUnion{OfDisabled: &anthropic.ThinkingConfigDisabledParam{}}`. On Claude Opus 5 that is accepted only at effort `high` or lower — pairing it with `xhigh`/`max` returns a 400.
 
 ---
 
@@ -155,7 +158,7 @@ Use `Beta.Messages.New` with `ContextManagement` on `BetaMessageNewParams`. Ther
 
 ```go
 params := anthropic.BetaMessageNewParams{
-    Model:     anthropic.ModelClaudeOpus4_8,  // also supported: ModelClaudeSonnet4_6
+    Model:     "claude-opus-5",  // also supported: ModelClaudeOpus4_8, ModelClaudeSonnet4_6
     MaxTokens: 16000,
     Betas:     []anthropic.AnthropicBeta{"compact-2026-01-12"},
     ContextManagement: anthropic.BetaContextManagementConfigParam{

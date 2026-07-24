@@ -13,7 +13,7 @@ The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `c
 ```python
 orchestrator = client.beta.agents.create(
     name="Engineering Lead",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     system="You coordinate engineering work. Delegate code review to the reviewer and test writing to the test agent.",
     tools=[{"type": "agent_toolset_20260401"}],
     multiagent={

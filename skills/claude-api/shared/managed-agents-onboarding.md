@@ -24,7 +24,7 @@ Their description does the interview's work. Draft the agent config from it and 
 - **Skills** — **suggest** prebuilt `xlsx`/`docx`/`pptx`/`pdf` when the job produces those artifacts; custom by `skill_id` (max 20 total per agent, prebuilt + custom combined).
 - **Outcome** — if the description implies checkable "done" criteria (or you can elicit them in the follow-up: not "a good report" but "a CSV with a numeric `price` column per SKU"), **suggest an Outcome kickoff** — the harness grades and iterates against a rubric (`shared/managed-agents-outcomes.md`).
 - **On-hand resources** — repos on disk (`github_repository`: URL, optional `mount_path`/`checkout`; token comes in §4), files to seed (Files API upload → `{type: "file", file_id, mount_path}`; read-only), if the job references them.
-- **Model** — default `claude-opus-4-8`; `claude-fable-5` for the hardest long-horizon work (`shared/model-migration.md` → Migrating to Claude Fable 5).
+- **Model** — default `claude-opus-5`; `claude-fable-5` for the hardest long-horizon work (`shared/model-migration.md` → Migrating to Claude Fable 5).
 
 > ‼️ **PR creation needs the GitHub MCP server too** — a `github_repository` mount is filesystem-only. Edit in the mount → push branch via `bash` → open the PR via the MCP `create_pull_request` tool.
 

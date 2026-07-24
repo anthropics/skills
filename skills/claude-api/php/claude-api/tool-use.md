@@ -31,7 +31,7 @@ $weatherTool = new BetaRunnableTool(
 $runner = $client->beta->messages->toolRunner(
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'What is the weather in Paris?']],
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     tools: [$weatherTool],
 );
 
@@ -68,7 +68,7 @@ $tools = [
 $messages = [['role' => 'user', 'content' => 'What is the weather in SF?']];
 
 $response = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     tools: $tools,
     messages: $messages,
@@ -95,7 +95,7 @@ while ($response->stopReason === 'tool_use') {  // camelCase property
     $messages[] = ['role' => 'user', 'content' => $toolResults];
 
     $response = $client->messages->create(
-        model: 'claude-opus-4-8',
+        model: 'claude-opus-5',
         maxTokens: 16000,
         tools: $tools,
         messages: $messages,
@@ -139,7 +139,7 @@ class Person implements StructuredOutputModel
 }
 
 $message = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'Generate a profile for Alice, age 30']],
     outputConfig: ['format' => Person::class],
@@ -155,7 +155,7 @@ Types are inferred from PHP type hints. Use `#[Constrained(description: '...')]`
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     messages: [['role' => 'user', 'content' => 'Extract: John (john@co.com), Enterprise plan']],
     outputConfig: [
@@ -194,7 +194,7 @@ foreach ($message->content as $block) {
 use Anthropic\Beta\Messages\BetaRequestMCPServerURLDefinition;
 
 $response = $client->beta->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     mcpServers: [
         BetaRequestMCPServerURLDefinition::with(
@@ -211,7 +211,7 @@ $response = $client->beta->messages->create(
 
 ```php
 $response = $client->beta->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     outputConfig: ['taskBudget' => ['type' => 'tokens', 'total' => 64000]],
     tools: [...],
@@ -226,7 +226,7 @@ Pass the previous response's `id` on the next request; print the `diagnostics` o
 
 ```php
 $r2 = $client->beta->messages->create(
-    model: 'claude-opus-4-8', maxTokens: 1024,
+    model: 'claude-opus-5', maxTokens: 1024,
     diagnostics: ['previousMessageId' => $r1->id],
     betas: ['cache-diagnosis-2026-04-07'],
     messages: [...],

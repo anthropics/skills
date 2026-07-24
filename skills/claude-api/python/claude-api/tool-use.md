@@ -27,7 +27,7 @@ def get_weather(location: str, unit: str = "celsius") -> str:
 
 # The tool runner handles the agentic loop automatically
 runner = client.beta.messages.tool_runner(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=[get_weather],
     messages=[{"role": "user", "content": "What's the weather in Paris?"}],
@@ -60,7 +60,7 @@ max_restarts = 5  # cap pause_turn restarts, mirroring max_continuations advice
 restarts = 0
 while True:
     runner = client.beta.messages.tool_runner(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         tools=tools,  # may mix @beta_tool functions and server-tool definitions
         messages=messages,
@@ -109,7 +109,7 @@ async with stdio_client(StdioServerParameters(command="mcp-server")) as (read, w
         tools_result = await mcp_client.list_tools()
         # tool_runner is sync — returns the runner, not a coroutine
         runner = client.beta.messages.tool_runner(
-            model="claude-opus-4-8",
+            model="claude-opus-5",
             max_tokens=16000,
             messages=[{"role": "user", "content": "Use the available tools"}],
             tools=[async_mcp_tool(t, mcp_client) for t in tools_result.tools],
@@ -127,7 +127,7 @@ from anthropic.lib.tools.mcp import mcp_message
 
 prompt = await mcp_client.get_prompt(name="my-prompt")
 response = await client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[mcp_message(m) for m in prompt.messages],
 )
@@ -140,7 +140,7 @@ from anthropic.lib.tools.mcp import mcp_resource_to_content
 
 resource = await mcp_client.read_resource(uri="file:///path/to/doc.txt")
 response = await client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -181,7 +181,7 @@ messages = [{"role": "user", "content": user_input}]
 # Agentic loop: keep going until Claude stops calling tools
 while True:
     response = client.messages.create(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         tools=tools,
         messages=messages
@@ -228,7 +228,7 @@ final_text = next(b.text for b in response.content if b.type == "text")
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=tools,
     messages=[{"role": "user", "content": "What's the weather in Paris?"}]
@@ -243,7 +243,7 @@ for block in response.content:
         result = execute_tool(tool_name, tool_input)
 
         followup = client.messages.create(
-            model="claude-opus-4-8",
+            model="claude-opus-5",
             max_tokens=16000,
             tools=tools,
             messages=[
@@ -280,7 +280,7 @@ for block in response.content:
 # Send all results back at once
 if tool_results:
     followup = client.messages.create(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         tools=tools,
         messages=[
@@ -310,7 +310,7 @@ tool_result = {
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=tools,
     tool_choice={"type": "tool", "name": "get_weather"},  # Force specific tool
@@ -330,7 +330,7 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -358,7 +358,7 @@ uploaded = client.beta.files.upload(file=open("sales_data.csv", "rb"))
 # 2. Pass to code execution via container_upload block
 # Code execution is GA; Files API is still beta (pass via extra_headers)
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     extra_headers={"anthropic-beta": "files-api-2025-04-14"},
     messages=[{
@@ -403,7 +403,7 @@ for block in response.content:
 ```python
 # First request: set up environment
 response1 = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Install tabulate and create data.json with sample data"}],
     tools=[{"type": "code_execution_20260120", "name": "code_execution"}]
@@ -415,7 +415,7 @@ container_id = response1.container.id
 # Second request: reuse the same container
 response2 = client.messages.create(
     container=container_id,
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Read data.json and display as a formatted table"}],
     tools=[{"type": "code_execution_20260120", "name": "code_execution"}]
@@ -455,7 +455,7 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Remember that my preferred language is Python."}],
     tools=[{"type": "memory_20250818", "name": "memory"}],
@@ -481,7 +481,7 @@ memory = MyMemoryTool()
 
 # Use with tool runner
 runner = client.beta.messages.tool_runner(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=[memory],
     messages=[{"role": "user", "content": "Remember my preferences"}],
@@ -516,7 +516,7 @@ class ContactInfo(BaseModel):
 client = anthropic.Anthropic()
 
 response = client.messages.parse(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -535,7 +535,7 @@ print(contact.interests)      # ["API", "SDKs"]
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -569,7 +569,7 @@ data = json.loads(text)
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Book a flight to Tokyo for 2 passengers on March 15"}],
     tools=[{
@@ -594,7 +594,7 @@ response = client.messages.create(
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Plan a trip to Paris next month"}],
     output_config={

@@ -40,7 +40,7 @@ print(f"Size: {uploaded.size_bytes} bytes")
 
 ```python
 response = client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -69,7 +69,7 @@ image_file = client.beta.files.upload(
 )
 
 response = client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -147,7 +147,7 @@ questions = [
 
 for question in questions:
     response = client.beta.messages.create(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         messages=[{
             "role": "user",

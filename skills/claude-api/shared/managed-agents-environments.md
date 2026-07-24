@@ -143,7 +143,7 @@ Repositories are attached for the lifetime of the session — to change which re
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -177,7 +177,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     mcp_servers=[{
         "type": "url",
         "name": "github",

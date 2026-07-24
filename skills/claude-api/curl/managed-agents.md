@@ -65,7 +65,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Coding Assistant",
-    "model": "claude-opus-4-8",
+    "model": "claude-opus-5",
     "tools": [{ "type": "agent_toolset_20260401" }]
   }'
 # → { "id": "agent_abc123", ... }
@@ -89,7 +89,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Code Reviewer",
-    "model": "claude-opus-4-8",
+    "model": "claude-opus-5",
     "system": "You are a senior code reviewer. Be thorough and constructive.",
     "tools": [
       { "type": "agent_toolset_20260401" },
@@ -295,7 +295,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "MCP Agent",
-    "model": "claude-opus-4-8",
+    "model": "claude-opus-5",
     "mcp_servers": [
       { "type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse" }
     ],
@@ -326,7 +326,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Restricted Agent",
-    "model": "claude-opus-4-8",
+    "model": "claude-opus-5",
     "tools": [
       {
         "type": "agent_toolset_20260401",

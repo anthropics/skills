@@ -4,7 +4,7 @@
 
 ```python
 with client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
     messages=[{"role": "user", "content": "Write a story"}]
 ) as stream:
@@ -16,7 +16,7 @@ with client.messages.stream(
 
 ```python
 async with async_client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
     messages=[{"role": "user", "content": "Write a story"}]
 ) as stream:
@@ -30,7 +30,7 @@ async with async_client.messages.stream(
 
 ```python
 for event in client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
     messages=[{"role": "user", "content": "Write a story"}],
     stream=True,
@@ -46,13 +46,13 @@ No final-message accumulation is done for you in this form.
 
 Claude may return text, thinking blocks, or tool use. Handle each appropriately:
 
-> **Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
+> **Fable 5 / Claude Opus 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On Claude Opus 5 adaptive is also what you get by omitting `thinking` entirely. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
 
 ```python
 with client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
-    thinking={"type": "adaptive", "display": "summarized"},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Opus 4.8 / 4.7
+    thinking={"type": "adaptive", "display": "summarized"},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
     messages=[{"role": "user", "content": "Analyze this problem"}]
 ) as stream:
     for event in stream:
@@ -77,7 +77,7 @@ The Python tool runner supports streaming: pass `stream=True` to `client.beta.me
 
 ```python
 with client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
     tools=tools,
     messages=messages
@@ -95,7 +95,7 @@ with client.messages.stream(
 
 ```python
 with client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=64000,
     messages=[{"role": "user", "content": "Hello"}]
 ) as stream:
@@ -142,7 +142,7 @@ def stream_with_progress(client, **kwargs):
 ```python
 try:
     with client.messages.stream(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=64000,
         messages=[{"role": "user", "content": "Write a story"}]
     ) as stream:

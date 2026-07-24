@@ -9,7 +9,7 @@ use Anthropic\Messages\RawContentBlockDeltaEvent;
 use Anthropic\Messages\TextDelta;
 
 $stream = $client->messages->createStream(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 64000,
     messages: [
         ['role' => 'user', 'content' => 'Write a haiku'],

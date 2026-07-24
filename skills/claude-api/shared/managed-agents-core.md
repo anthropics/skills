@@ -108,7 +108,7 @@ Key fields returned by the API:
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-4-8",
+    model: "claude-opus-5",
     system: "You are a helpful coding agent.",
     tools: [{ type: "agent_toolset_20260401"}],
   },
@@ -214,11 +214,11 @@ The agent is a **persistent resource**, not a per-run parameter. The intended pa
 
 ### Effort on the agent model
 
-Pass `model` as an object to set the effort level: `{"id": "claude-opus-4-8", "effort": "high"}`. `effort` accepts a level string (`low`, `medium`, `high`, `xhigh`, `max`) or an object such as `{"type": "high"}`. The create/update response echoes it in object form and fills in omitted `model` fields with their defaults.
+Pass `model` as an object to set the effort level: `{"id": "claude-opus-5", "effort": "high"}`. `effort` accepts a level string (`low`, `medium`, `high`, `xhigh`, `max`) or an object such as `{"type": "high"}`. The create/update response echoes it in object form and fills in omitted `model` fields with their defaults.
 
 > ⚠️ **Effort is agent configuration only.** An `effort` set inside a per-session `model` override is **not applied** — the session runs at the agent's effort. To change effort you must update the agent (or point the session at a different agent). This is the one field where the override form silently does nothing rather than erroring.
 
-The same object form carries `speed` for fast mode: `{"id": "claude-opus-4-8", "speed": "fast"}`.
+The same object form carries `speed` for fast mode: `{"id": "claude-opus-5", "speed": "fast"}`.
 
 ### Versioning
 
@@ -283,7 +283,7 @@ session = client.beta.sessions.create(
     agent={
         "type": "agent_with_overrides",
         "id": agent.id,
-        "model": "claude-opus-4-8",   # replace the agent's model for this session
+        "model": "claude-opus-5",   # replace the agent's model for this session
         "system": None,           # clear the system prompt for this session
     },
     environment_id=environment_id,
