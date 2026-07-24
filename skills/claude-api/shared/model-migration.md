@@ -953,18 +953,16 @@ Both are specific to `thinking: {type: "disabled"}` on Claude Opus 5, and for bo
 
 **1. Tool calls can arrive as plain text.** The model occasionally writes a tool call into its user-facing text rather than emitting a structured `tool_use` block. **The turn completes normally and the call never runs** — there is no error and no `tool_use` block to catch, so a harness sees a successful turn that silently did nothing. Worse in an agentic loop: the bogus text stays in conversation history and skews later turns. Most common on tool-heavy workloads such as search.
 
-If you cannot enable thinking, give the model explicit permission to talk first — the failure appears to come from suppressing the preamble it wants to write:
-
-> *"You may say a brief sentence before using a tool."*
-
 **2. `<thinking>` tags can leak into the visible response.** The model may emit `<thinking>` or other internal XML in its user-facing output.
 
-If you cannot enable thinking, there are two counterintuitive rules here:
+If you cannot enable thinking, one instruction covers both failure modes — give the model explicit permission to talk before a tool call (the tool-as-text failure appears to come from suppressing the preamble it wants to write), and forbid internal tags generically:
+
+> *"When you use a tool, you may say a brief sentence first. If no tool can express what the user asked for, say so instead of guessing. Do not include internal or system XML tags in your response."*
+
+Two counterintuitive rules for that instruction:
 
 - **Delete any instruction telling the model not to think or not to reason.** That kind of rule *increases* tag leakage rather than suppressing it.
-- **Write the instruction generically, and do not name thinking tags.** Calling them out by name is measurably less effective than the general form:
-
-> *"Do not include internal or system XML tags in your response."*
+- **Do not name thinking tags in the prompt.** Calling out `<thinking>` by name is measurably less effective than the generic "internal or system XML tags" wording above.
 
 ### New API features
 
@@ -1008,10 +1006,8 @@ The added tool must already be declared in `tools[]` with `"defer_loading": True
 
 **Effort: the full ladder, and where to start.** Claude Opus 5 supports all five levels — `low`, `medium`, `high`, `xhigh`, `max` — with no beta header. The API default is `high`.
 
-The published starting points and the model's measured behavior pull in slightly different directions, and both are worth knowing:
-
-- **Start at `xhigh` for coding and agentic work, `high` for other intelligence-sensitive workloads.** That's the documented recommendation, and `max` is the explicit top tier for the deepest reasoning — worth testing where capability matters more than spend, though it can show diminishing returns and overthink simpler tasks.
-- **Then sweep downward, because `low` and `medium` punch well above their weight on this model** — strong quality at a fraction of the tokens and latency on many workloads. Step down only where your evals show quality holds, but do run the sweep: effort defaults carried over from a prior model are usually not the right setting here.
+- **Start at `high` (the API default), then sweep down.** `low` and `medium` are unusually effective on this model — strong quality at a fraction of the tokens and latency on many workloads — so treat them as the primary cost/latency lever and reserve `high` and above for tasks where your evals show a quality difference. Effort defaults carried over from a prior model are usually not the right setting here; run a fresh sweep.
+- **`xhigh` and `max` are for measured wins, not a starting point.** `max` is the top tier for the deepest reasoning and worth testing where capability matters more than spend, but it can show diminishing returns and overthink simpler tasks.
 
 At `xhigh` or `max`, **set a large `max_tokens`** so the model has room to think and act across tool calls and subagents. Start at 64K and tune.
 
@@ -1109,6 +1105,12 @@ Note the interaction with over-verification below: "do not use subagents to veri
 
 The second paragraph matters as much as the first: a plain follow-up question can otherwise trigger a re-audit of work that was correct.
 
+**Time to first token (TTFT).** Claude Opus 5 sometimes thinks before its first visible block, which raises TTFT — a problem for user-facing chat and voice, where the pause reads as latency. This one-line instruction reduces pre-first-block thinking significantly:
+
+> *"Latency-sensitive; begin your visible answer immediately."*
+
+Apply it only where first-token latency is user-visible; on background and agentic routes the pre-answer thinking is usually worth keeping.
+
 **Severity filters still depress measured recall.** Unchanged from 4.7/4.8: if a review harness says "only report high-severity issues" or "be conservative", Claude Opus 5 follows it literally. Ask it to report everything with confidence and severity, and filter in a separate pass — see the **Code review** guidance in the Opus 4.7 section for the recommended prompt.
 
 ### Claude Opus 5 Migration Checklist
@@ -1119,7 +1121,7 @@ The second paragraph matters as much as the first: a plain follow-up question ca
 - [ ] **[BLOCKS]** Any route combining `thinking: {type: "disabled"}` with `effort` of `xhigh` or `max`: enable thinking, or lower effort to `high` or below. Validated per request, so audit every call site, not just the first
 - [ ] **[BLOCKS]** Every route that never set `thinking`: it now thinks, and `max_tokens` caps thinking + response text together. Raise `max_tokens` or pass `thinking: {type: "disabled"}` at effort `high` or below — otherwise responses truncate mid-answer
 - [ ] **[BLOCKS]** *(only if coming from Opus 4.7 or earlier)* Apply the **Migrating to Opus 4.7** breaking changes first — `budget_tokens` → adaptive thinking, strip `temperature`/`top_p`/`top_k`, remove last-assistant-turn prefills
-- [ ] **[TUNE]** Effort: start `xhigh` for coding/agentic and `high` elsewhere, then sweep down — `low`/`medium` are unusually strong here, and prior-model defaults rarely transfer. At `xhigh`/`max`, set `max_tokens` to at least 64K
+- [ ] **[TUNE]** Effort: start at `high` (the API default) and sweep down — `low`/`medium` are unusually strong on this model and are the primary cost/latency lever; reserve `xhigh`/`max` for tasks where you've measured a quality difference. Prior-model defaults rarely transfer. At `xhigh`/`max`, set `max_tokens` to at least 64K
 - [ ] **[TUNE]** Re-check prompts you'd written off as uncacheable — the minimum drops to 512 tokens (from 1024 on Opus 4.8)
 - [ ] **[TUNE]** Rate limits: Claude Opus 5 is a separate bucket from the combined Opus 4.x pool — confirm your tier's limits before shifting volume
 - [ ] **[TUNE]** Fast mode (`speed: "fast"`, `fast-mode-2026-02-01`, $10/$50) is Claude-API-only — drop it on Bedrock, Google Cloud, and Foundry routes
@@ -1132,7 +1134,8 @@ The second paragraph matters as much as the first: a plain follow-up question ca
 - [ ] **[TUNE]** Consider mid-conversation tool changes (`mid-conversation-tool-changes-2026-07-01`) — changes the tool set between turns without invalidating the prompt cache. Note per-turn `effort` / `task_budget` are **not** in this launch; both stay request-level
 - [ ] **[TUNE]** Subagent-capable harnesses: this model delegates *more* readily than Opus 4.8 — remove any "delegate more" guidance you added for 4.8 and add an explicit cap
 - [ ] **[TUNE]** User-facing products: add the corrections instruction if self-correction narration reads as thrash
-- [ ] **[TUNE]** Any route running `thinking: {type: "disabled"}`: prefer turning thinking on at `low`/`medium` effort. Disabled thinking can emit tool calls as plain text (the call silently never runs) and leak `<thinking>` tags into output. If you must stay thinking-off, add *"You may say a brief sentence before using a tool"*, delete any don't-think/don't-reason rule, and use a generic *"no internal or system XML tags"* instruction
+- [ ] **[TUNE]** TTFT-sensitive routes (chat, voice): add *"Latency-sensitive; begin your visible answer immediately"* to reduce pre-first-block thinking; skip on background/agentic routes
+- [ ] **[TUNE]** Any route running `thinking: {type: "disabled"}`: prefer turning thinking on at `low`/`medium` effort. Disabled thinking can emit tool calls as plain text (the call silently never runs) and leak `<thinking>` tags into output. If you must stay thinking-off, delete any don't-think/don't-reason rule and add the combined *"When you use a tool, you may say a brief sentence first. If no tool can express what the user asked for, say so instead of guessing. Do not include internal or system XML tags in your response"* — do not name `<thinking>` tags in the prompt
 - [ ] **[TUNE]** Vision pipelines: give it crop/analyze/verify tools — cheaper and more effective than raising thinking
 - [ ] **[TUNE]** Handle `stop_reason: "refusal"` before reading `content`, and opt into `fallbacks: "default"` (`server-side-fallback-2026-07-01`) rather than pinning a model — cyber-category refusals route to Claude Opus 4.8
 - [ ] **[TUNE]** Long-horizon / agentic work: give the complete task spec up front in one turn rather than building it up across interactive turns
@@ -1360,7 +1363,7 @@ else:
 
 Three ways to retry a refused request on another model, in order of preference:
 
-**1. Server-side `fallbacks` parameter (beta; **Claude API only** — Claude Platform on AWS support is still being validated, so don't assume it) — preferred.** One round trip, a plain client, no client-side logic. Name substitute models (the only supported fallback target at launch is `claude-opus-4-8`, expansion expected); on a policy decline the API runs the next model on the same request and returns its answer, with credit-style repricing applied automatically. A `stop_reason: "refusal"` on the final response means the whole chain refused.
+**1. Server-side `fallbacks` parameter (beta; Claude API and Claude Platform on AWS) — preferred.** One round trip, a plain client, no client-side logic. Name substitute models (the only supported fallback target at launch is `claude-opus-4-8`, expansion expected); on a policy decline the API runs the next model on the same request and returns its answer, with credit-style repricing applied automatically. A `stop_reason: "refusal"` on the final response means the whole chain refused.
 
 ```python
 response = client.beta.messages.create(
@@ -1388,7 +1391,7 @@ if fallback_ran and response.stop_reason != "refusal":
 
 Key semantics:
 
-- **Header depends on the form you use.** The **array** form (`fallbacks: [{...}]`) requires exactly `server-side-fallback-2026-06-01` — other `server-side-fallback-*` values reject it with a 400, and that header carries the *earliest* date of the series (`-2026-06-09` and `-2026-06-02` were earlier previews), so do not "correct" it to a newer-looking date. The **`"default"` scalar** form uses `server-side-fallback-2026-07-01` instead — see § New API features under Migrating to Claude Opus 5. Pairing either header with the other form 400s. Rejected on the Batches API; not available on Amazon Bedrock, Vertex AI, or Microsoft Foundry (use pattern 2 there — the SDK middleware). Entries may override `max_tokens` per hop (bounding that attempt's own output independently of the top-level `max_tokens`); `thinking`, `output_config`, and `speed` overrides are rolling out (`speed` additionally requires its beta) — until your requests accept them, include only `model` and `max_tokens` in each entry. Entries must be distinct and must be in the requested model's `allowed_fallback_models` (published on `/v1/models` when the `server-side-fallback-2026-06-01` beta header is set — not yet visible under the `fallback-credit-*` header alone, and not exposed on Amazon Bedrock, Vertex AI, or Microsoft Foundry). The request *with an entry's overrides merged in* must be valid as a direct request to that entry's model.
+- **Header depends on the form you use.** The **array** form (`fallbacks: [{...}]`) requires exactly `server-side-fallback-2026-06-01` — other `server-side-fallback-*` values reject it with a 400, and that header carries the *earliest* date of the series (`-2026-06-09` and `-2026-06-02` were earlier previews), so do not "correct" it to a newer-looking date. The **`"default"` scalar** form uses `server-side-fallback-2026-07-01` instead — see § New API features under Migrating to Claude Opus 5. Pairing either header with the other form 400s. Rejected on the Batches API; available on the Claude API and Claude Platform on AWS; not on Amazon Bedrock, Vertex AI, or Microsoft Foundry (use pattern 2 there — the SDK middleware). Entries may override `max_tokens` per hop (bounding that attempt's own output independently of the top-level `max_tokens`); `thinking`, `output_config`, and `speed` overrides are rolling out (`speed` additionally requires its beta) — until your requests accept them, include only `model` and `max_tokens` in each entry. Entries must be distinct and must be in the requested model's `allowed_fallback_models` (published on `/v1/models` when the `server-side-fallback-2026-06-01` beta header is set — not yet visible under the `fallback-credit-*` header alone, and not exposed on Amazon Bedrock, Vertex AI, or Microsoft Foundry). The request *with an entry's overrides merged in* must be valid as a direct request to that entry's model.
 - **Triggers on policy declines only** — rate limits, overloads, and server errors on the requested model are returned as-is, never falling back.
 - **Reading the response:** a `fallback` content block (`{"type": "fallback", "from": {"model": ...}, "to": {"model": ...}}`) marks each switch point in `content`; the served-by signal is a `fallback_message` entry in `usage.iterations` (don't rely on the block — sticky-served turns have none). Top-level `model` names the model that produced the message.
 - **Billing:** `usage.iterations` is the per-attempt source of truth; top-level `usage` covers only the attempt that produced the returned message. Declined-before-output attempts are reported but not billed; fallback attempts bill at the fallback model's rates. Each attempt claims the rate limits of the model that ran it — if the fallback model is rate-limited or overloaded, the fallback attempt is not made and the preceding refusal is returned instead with `stop_details.recommended_model` naming a model to retry directly (the recommendation is a hint, not a guarantee, and is `null` when no recommendation is available) — size fallback-model limits for expected refusal volume.
@@ -1516,7 +1519,7 @@ For agents that only narrate routine progress, the model's default progress narr
 - [ ] **[BLOCKS]** Remove all other `thinking` configuration (`{type: "enabled", budget_tokens: N}` returns a 400, same as on Opus 4.7/4.8); control depth with `output_config.effort` instead
 - [ ] **[BLOCKS]** If thinking content is surfaced to users or stored in logs: add `thinking: {type: "adaptive", display: "summarized"}` (the default is `"omitted"` — otherwise the rendered text is empty)
 - [ ] **[TUNE]** Re-baseline cost and latency on your own workloads — token counts are roughly unchanged from Opus 4.7/4.8 and Mythos Preview (same tokenizer); per-token pricing differs. Coming from Opus 4.6, Sonnet, Haiku, or older, token counts differ — use `count_tokens` with each model to compare
-- [ ] **[TUNE]** Add `stop_reason == "refusal"` handling before reading `response.content` (pre-output: empty + unbilled; mid-stream: partial output billed — discard); opt into a fallback by default — server-side `fallbacks` (Claude API only: `fallbacks: "default"` with `server-side-fallback-2026-07-01`, or the array form with `server-side-fallback-2026-06-01`) where available, otherwise the SDK middleware or fallback credit (`fallback-credit-2026-06-01`, exact body); a bare client-side replay (history as-is; other models drop Fable's thinking blocks) is the floor, not the recommendation
+- [ ] **[TUNE]** Add `stop_reason == "refusal"` handling before reading `response.content` (pre-output: empty + unbilled; mid-stream: partial output billed — discard); opt into a fallback by default — server-side `fallbacks` (Claude API and Claude Platform on AWS: `fallbacks: "default"` with `server-side-fallback-2026-07-01`, or the array form with `server-side-fallback-2026-06-01`) where available, otherwise the SDK middleware or fallback credit (`fallback-credit-2026-06-01`, exact body); a bare client-side replay (history as-is; other models drop Fable's thinking blocks) is the floor, not the recommendation
 - [ ] **[TUNE]** If you surfaced thinking text to users, plan for the thinking output change — the raw chain of thought is never returned; render the `display: "summarized"` summary (per the [BLOCKS] item above); pass blocks back unchanged on the same model; other models drop them from the prompt (unbilled)
 - [ ] **[TUNE]** Plan for minutes-long turns: timeouts, streaming, async check-ins, progress UX (see Behavior changes above)
 - [ ] **[TUNE]** Run an effort sweep including low/medium for routine workloads; add the no-tidying instruction if higher effort produces unrequested refactors
