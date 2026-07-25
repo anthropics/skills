@@ -115,6 +115,8 @@ For manual control, use `first_page.has_next_page()` / `first_page.get_next_page
 
 ## Batch with Prompt Caching
 
+The Batch API cache is separate from the regular Messages API cache — a prefix written by a synchronous Messages call is not reliably readable by a batch, and vice versa. To prime the cache before a large batch, submit a single-request batch with the shared prefix first (see "Priming for Batch API workloads" in the prompt-caching guide), then submit the rest.
+
 ```python
 shared_system = [
     {"type": "text", "text": "You are a literary analyst."},
