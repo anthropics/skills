@@ -61,7 +61,7 @@ To run tool execution in **your own infrastructure** instead of Anthropic's, set
 
 ## Resources
 
-Attach files, GitHub repositories, and memory stores to a session. **Session creation blocks until all resources are mounted** — the container won't go `running` until every file and repo is in place. Max **999 file resources** per session. Multiple GitHub repositories per session are supported. For `type: "memory_store"` resources (persistent cross-session memory — max 8 per session), see `shared/managed-agents-memory.md`.
+Attach files, GitHub repositories, and memory stores to a session. Resources are resolved during session creation, so a bad `file_id` or an unreachable repo surfaces on the create call rather than mid-run. Creating a session does **not** by itself start work or provision the sandbox — without `initial_events` the session is only registered, and the sandbox comes up when the session first needs it (see `shared/managed-agents-core.md` → Seeding a session with `initial_events`). Max **999 file resources** per session. Multiple GitHub repositories per session are supported. For `type: "memory_store"` resources (persistent cross-session memory — max 8 per session), see `shared/managed-agents-memory.md`.
 
 ### File Uploads (input — host → agent)
 
@@ -143,7 +143,7 @@ Repositories are attached for the lifetime of the session — to change which re
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -177,7 +177,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     mcp_servers=[{
         "type": "url",
         "name": "github",

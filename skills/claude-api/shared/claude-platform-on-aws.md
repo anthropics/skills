@@ -1,6 +1,6 @@
 # Claude Platform on AWS
 
-**Anthropic-operated** access to the Claude Developer Platform through AWS infrastructure — SigV4 authentication, AWS IAM access control, and AWS Marketplace billing. Because Anthropic operates it, **the API surface matches first-party with same-day parity** — for per-feature exceptions, see `shared/platform-availability.md` (the single source of truth; do not rely on an inline exception list here). Model IDs are the bare first-party strings (`claude-opus-4-8`, `claude-sonnet-5`) — **no provider prefix**.
+**Anthropic-operated** access to the Claude Developer Platform through AWS infrastructure — SigV4 authentication, AWS IAM access control, and AWS Marketplace billing. Because Anthropic operates it, **the API surface matches first-party with same-day parity** — for per-feature exceptions, see `shared/platform-availability.md` (the single source of truth; do not rely on an inline exception list here). Model IDs are the bare first-party strings (`claude-opus-5`, `claude-sonnet-5`) — **no provider prefix**.
 
 > **Not the same as Amazon Bedrock.** Bedrock is partner-operated (AWS runs the service; release schedules vary, feature subset, `anthropic.`-prefixed model IDs). Claude Platform on AWS and Bedrock coexist; pick by whether you need AWS-native IAM/billing with full Anthropic API parity (this page) vs. Bedrock's own ecosystem.
 
@@ -25,7 +25,7 @@ from anthropic import AnthropicAWS
 
 client = AnthropicAWS()  # region + workspace_id from env; see below
 client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello"}],
 )
@@ -55,5 +55,5 @@ The client resolves AWS credentials via the standard precedence chain: explicit 
 ## What to tell users
 
 - Treat it as first-party: every section of this skill applies unchanged. Do **not** apply Bedrock's feature-availability mask.
-- Model IDs are bare (`claude-opus-4-8`). Do **not** add an `anthropic.` prefix.
+- Model IDs are bare (`claude-opus-5`). Do **not** add an `anthropic.` prefix.
 - A missing region or `workspace_id` throws at client-construction time (no request is sent). A **403** means the request reached the server — check for a **wrong** `workspace_id` or a missing IAM action on the principal. See the IAM actions reference in `shared/live-sources.md`.

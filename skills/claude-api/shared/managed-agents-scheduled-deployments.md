@@ -9,7 +9,7 @@ Requires the `managed-agents-2026-04-01` beta header (the SDK sets it automatica
 A deployment bundles everything a session needs (agent, environment, optional files / GitHub / memory stores / vaults) plus a `schedule` and the `initial_events` that kick off each run:
 
 - `agent` and `environment_id` are required — same shapes as `sessions.create` (see `shared/managed-agents-core.md`).
-- `initial_events` must contain the starting `user.message`.
+- `initial_events` must contain at least one starting event — a `user.message` **or** a `user.define_outcome`. (A deployment's `initial_events` also accepts `system.message`, which a session's does not.)
 - `schedule` takes a cron `expression` and an IANA `timezone`. Minute-level granularity is the maximum.
 
 ```bash
@@ -71,7 +71,7 @@ The response is a deployment object (`depl_` ID prefix). Check `schedule.upcomin
 }
 ```
 
-Deployments may apply up to **10 seconds of jitter** to distribute load. Maximum **1000 scheduled deployments per organization** (contact Anthropic support for more).
+`upcoming_runs_at` reflects the exact configured schedule, but **execution is jittered to distribute load: up to 15% of the interval between runs, floored at 5 seconds and capped at 9 minutes.** An hourly deployment can therefore fire up to 9 minutes late; don't build a downstream deadline that assumes the listed timestamp. Maximum **1000 scheduled deployments per organization** (contact Anthropic support for more).
 
 ### Cron and timezone semantics
 
@@ -139,7 +139,7 @@ Raw HTTP: `POST /v1/deployments/{deployment_id}/pause` (likewise `/unpause`, `/a
 
 - **Rate-limited:** recorded immediately as a `session_rate_limited` run, **no retry** — the schedule simply tries again at the next occurrence. (Rate limits on API calls *inside* a session are handled by the session itself.)
 - **Other failed runs** (e.g. `environment_archived`, `vault_not_found`, `service_unavailable`): the run records the `error.type` — monitor runs and fix the referenced resource, or pause the deployment.
-- **Agent archived or deleted:** the deployment is automatically **archived** (terminal) and no further sessions are created.
+- **Agent archived:** the deployment is automatically **archived** (terminal) in the same operation. **Agent deleted:** the next scheduled trigger detects the missing agent and archives the deployment then. Either way no deployment run is recorded, and no further sessions are created.
 
 ## Manual runs
 

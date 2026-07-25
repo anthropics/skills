@@ -10,6 +10,8 @@ The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `c
 
 Outcomes are not a field on `sessions.create()`. You create a normal session, then send a `user.define_outcome` event. The agent starts working on receipt — **do not also send a `user.message`** to kick it off.
 
+You can collapse both calls into one by passing a single `user.define_outcome` in the session's `initial_events` array — same event, same rules, one round trip (see `shared/managed-agents-core.md` → Seeding a session with `initial_events`). More than one `user.define_outcome` in that array, or one without a `rubric`, rejects the whole create with a 400.
+
 ```python
 session = client.beta.sessions.create(
     agent=AGENT_ID,
@@ -62,7 +64,7 @@ These appear on the standard event stream (`sessions.events.stream` / `.list`) a
 | `needs_revision` | Agent starts another iteration. |
 | `max_iterations_reached` | No further grader cycles. Agent may run one final revision, then session → `idle`. |
 | `failed` | Session → `idle`. Rubric fundamentally doesn't match the task (e.g. description and rubric contradict). |
-| `interrupted` | Only emitted if `_start` had already fired before a `user.interrupt` arrived. |
+| `interrupted` | Emitted whenever a `user.interrupt` arrives while an outcome is active — **even if evaluation hadn't started**. In that case `outcome_evaluation_start_id` is an empty string rather than an event ID, so don't use it as a lookup key without checking. |
 
 ```json
 {

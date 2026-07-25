@@ -59,9 +59,25 @@ Any `tool_choice` value can also include `"disable_parallel_tool_use": true` to 
 
 ### Tool Runner vs Manual Loop
 
-**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, Ruby, and PHP SDKs (beta). The Python SDK also provides MCP conversion helpers (`anthropic.lib.tools.mcp`) to convert MCP tools, prompts, and resources for use with the tool runner — see `python/claude-api/tool-use.md` for details.
+**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, Ruby, PHP, and C# SDKs (beta). The Python SDK also provides MCP conversion helpers (`anthropic.lib.tools.mcp`) to convert MCP tools, prompts, and resources for use with the tool runner — see `python/claude-api/tool-use.md` for details. **Default to the tool runner** for any custom-tool agent.
 
-**Manual Agentic Loop:** Use when you need fine-grained control over the loop (e.g., custom logging, conditional tool execution, human-in-the-loop approval). Loop until `stop_reason == "end_turn"`, always append the full `response.content` to preserve tool_use blocks, and ensure each `tool_result` includes the matching `tool_use_id`.
+**The tool runner is not a black box — "I need control" is rarely a reason to drop to the manual loop.** Each iteration yields the assistant message *before* the tools run and lets you intervene, so most "fine-grained control" needs are covered without hand-writing the loop:
+
+- **Human-in-the-loop approval / gating** — gate in the tool's run function (return a "user declined" result instead of executing), or inspect the tool call in the yielded message and override the pending request with `set_messages_params()` / `setMessagesParams()` / `append_messages()` / `pushMessages()` to allow or deny *before* the tool executes. The runner runs your function automatically only if you don't intervene.
+- **Error interception** — inspect the tool result before it returns to Claude (`generate_tool_call_response()` / `generateToolResponse()`); stop early or handle it yourself.
+- **Result modification** — mutate the tool result before it goes back (e.g. add `cache_control` for prompt caching, or transform the output).
+- **Per-turn retries / param changes** — e.g. bump `max_tokens` and re-run a truncated turn; bound the whole loop with `max_iterations`.
+- **Streaming and automatic compaction** are both supported.
+
+These hooks are SDK helper features, not separate API parameters — for the exact method names and worked examples, WebFetch the per-language SDK repo listed in `shared/live-sources.md` → *Claude API SDK Repositories* (the tool-runner helpers live in each repo's `tools.md` / `helpers.md`). The bundled `python/claude-api/tool-use.md` and `typescript/claude-api/tool-use.md` show the basic tool-runner setup.
+
+**Don't drop to a manual loop because of these misconceptions:**
+
+- The tool runner does not require Zod/Pydantic — `betaTool()` (TS) and `@beta_tool` (Python) accept raw JSON Schema; other SDKs use plain structs/maps/classes.
+- The runner makes detecting the final turn *easier*, not harder — iteration ends when Claude stops calling tools, and the last yielded message is the final response. Most SDKs also offer a one-shot variant (`runner.until_done()` / `runner.runUntilDone()` / `RunToCompletion()`).
+- Confirmation/approval gates work with the runner (see Security below).
+
+**Manual Agentic Loop:** Reach for this only when you want to own the *entire* loop — you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, per-token streaming on SDKs whose runner does not support it), you'd rather not take the beta dependency, or your control flow doesn't fit the runner's per-turn hooks (e.g. interleaving unrelated work mid-loop). Approval gates, logging, interception, result modification, and conditional execution do **not** require it — the tool runner covers those (above). Loop until `stop_reason == "end_turn"`, always append the full `response.content` to preserve tool_use blocks, and ensure each `tool_result` includes the matching `tool_use_id`.
 
 **Stop reasons for server-side tools:** When using server-side tools (code execution, web search, etc.), the API runs a server-side sampling loop. If this loop reaches its default limit of 10 iterations, the response will have `stop_reason: "pause_turn"`. To continue, re-send the user message and assistant response and make another API request — the server will resume where it left off. Do NOT add an extra user message like "Continue." — the API detects the trailing `server_tool_use` block and knows to resume automatically.
 
@@ -74,13 +90,15 @@ if response.stop_reason == "pause_turn":
     ]
     # Make another API request — server resumes automatically
     response = client.messages.create(
-        model="claude-opus-4-8", messages=messages, tools=tools
+        model="claude-opus-5", messages=messages, tools=tools
     )
 ```
 
+**Note:** the SDK tool runners do not auto-resume `pause_turn` (as of `@anthropic-ai/sdk` 0.110.0 / `anthropic` 0.116.0) — a paused turn ends the runner and is returned as the final message, with no error. In TypeScript you can resume inside the iteration body (push the paused assistant turn back onto the runner); in Python the runner cannot be resumed mid-loop — restart a new runner with the paused turn appended, or handle `pause_turn` in a manual loop. See each language's `tool-use.md` for the pattern.
+
 Set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the full guide, see: `https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons`
 
-> **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs within your tool functions and consider requiring confirmation for destructive operations. Use the manual agentic loop if you need human-in-the-loop approval before each tool execution.
+> **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs and gate destructive operations behind human approval. **Both** the tool runner and the manual loop support this — with the tool runner, gate inside the tool's run function (prompt the user and return a "user declined" result instead of executing), or inspect the tool call in each yielded message and take over message history with `set_messages_params()` / `setMessagesParams()` to allow or deny *before* the tool runs (it executes your function automatically only if you don't intervene); with the manual loop you gate inline before calling the function.
 
 ---
 
@@ -171,7 +189,7 @@ Web search and web fetch let Claude search the web and retrieve page content. Th
 ]
 ```
 
-### Dynamic Filtering (Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6 / Sonnet 4.6)
+### Dynamic Filtering (Claude Opus 5 / Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6 / Sonnet 5 / Sonnet 4.6)
 
 The `web_search_20260209` and `web_fetch_20260209` versions support **dynamic filtering** — Claude writes and executes code to filter search results before they reach the context window, improving accuracy and token efficiency. Dynamic filtering is built into these tool versions and activates automatically; you do not need to separately declare the `code_execution` tool or pass any beta header.
 
@@ -212,6 +230,46 @@ For full documentation, use WebFetch:
 
 ---
 
+## Mid-conversation tool changes (Beta)
+
+**Beta header `mid-conversation-tool-changes-2026-07-01`; Claude Opus 5 onward.** Normally `tools` is fixed for a conversation's lifetime — editing it changes the very front of the prompt prefix and invalidates the entire cache (see `prompt-caching.md` § Invalidation hierarchy). This feature lets you add and remove tools between turns while the cached prefix survives.
+
+Both operations are content blocks on a `{"role": "system", ...}` message appended to `messages[]`, and both reference a tool by name via a `tool_reference`:
+
+```python
+# Removal — must sit immediately before an assistant message, or last in messages.
+{"role": "system", "content": [
+    {"type": "tool_removal", "tool": {"type": "tool_reference", "name": "get_weather"}},
+]}
+
+# Addition — surfaces a tool declared up front with defer_loading.
+{"role": "system", "content": [
+    {"type": "tool_addition", "tool": {"type": "tool_reference", "name": "get_forecast"}},
+]}
+```
+
+**A tool you plan to add must already be declared in `tools[]` with `"defer_loading": True`.** Deferred tools are known to the request but not loaded into the model's context until a `tool_addition` surfaces them:
+
+```python
+tools = [
+    {"name": "get_weather", "description": "Get weather",
+     "input_schema": {"type": "object", "properties": {"city": {"type": "string"}}}},
+    {"name": "get_forecast", "description": "Get 5-day forecast",
+     "input_schema": {"type": "object", "properties": {"city": {"type": "string"}}},
+     "defer_loading": True},
+]
+```
+
+**To change a tool's definition**, do it across two requests: send a `tool_removal` for the old definition on the first, then carry the conversation forward with the updated entry in `tools[]` on the next.
+
+> ⚠️ Earlier previews used a different beta header and different block shapes; both are deprecated. Use `mid-conversation-tool-changes-2026-07-01` with `tool_addition` / `tool_removal` / `tool_reference`.
+
+SDK typings lag these blocks — pass them as plain dicts in Python, or add a `@ts-expect-error` in TypeScript.
+
+**Choosing between this and tool search:** tool search is for *discovery* — Claude finds what it needs from a large library on its own. Mid-conversation tool changes are for *control* — your application decides the tool set has changed (a mode switch, a resource that became available, a capability you want to revoke) and says so explicitly.
+
+---
+
 ## Agent Skills (Messages API)
 
 Agent Skills package task-specific instructions and files that Claude loads when relevant (e.g., the Anthropic pre-built `pptx`, `xlsx`, `pdf`, `docx` skills). On the **Messages API**, skills are enabled via the `container` parameter alongside the code-execution tool — this is **not** the Managed Agents surface and does **not** use `client.beta.agents` / `sessions` / `environments`. Availability: see `shared/platform-availability.md`.
@@ -224,7 +282,7 @@ Required on each request:
 
 ```python
 response = client.beta.messages.create(
-    model="claude-opus-4-8", max_tokens=16000,
+    model="claude-opus-5", max_tokens=16000,
     betas=["code-execution-2025-08-25", "skills-2025-10-02"],
     container={"skills": [{"type": "anthropic", "skill_id": "pptx", "version": "latest"}]},
     tools=[{"type": "code_execution_20260521", "name": "code_execution"}],
@@ -251,7 +309,7 @@ The `mcp_server_name` in the toolset must match a `name` in `mcp_servers`. Omitt
 
 ```python
 client.beta.messages.create(
-    model="claude-opus-4-8", max_tokens=1024,
+    model="claude-opus-5", max_tokens=1024,
     betas=["mcp-client-2025-11-20"],
     mcp_servers=[{"type": "url", "url": "https://example/sse", "name": "example-mcp"}],
     tools=[{"type": "mcp_toolset", "mcp_server_name": "example-mcp"}],
@@ -315,8 +373,20 @@ The advisor tool pairs a faster, lower-cost **executor** model (the top-level `m
 
 | Executor (request `model`) | Valid advisor (tool `model`) |
 |---|---|
-| `claude-haiku-4-5` / `claude-sonnet-4-6` / `claude-sonnet-5` / `claude-opus-4-6` / `claude-opus-4-7` | `claude-opus-4-8` or `claude-opus-4-7` |
-| `claude-opus-4-8` | `claude-opus-4-8` only |
+| `claude-haiku-4-5` / `claude-sonnet-4-6` / `claude-sonnet-5` / `claude-opus-4-6` / `claude-opus-4-7` | `claude-opus-5`, `claude-fable-5`, `claude-mythos-5`, `claude-opus-4-8`, or `claude-opus-4-7` |
+| `claude-opus-4-8` | `claude-opus-5`, `claude-fable-5`, `claude-mythos-5`, or `claude-opus-4-8` |
+| `claude-opus-5` | `claude-opus-5`, `claude-fable-5`, or `claude-mythos-5` |
+| `claude-fable-5` | `claude-fable-5` or `claude-opus-5` |
+| `claude-mythos-5` | `claude-mythos-5` or `claude-opus-5` |
+
+> ⚠️ **The advisor's payload shape differs by advisor model.** The response block is always `advisor_tool_result`; what varies is its **`content`**, a discriminated union:
+>
+> | `content` type | Fields | When |
+> |---|---|---|
+> | `advisor_result` | `text`, `stop_reason` | Advisor returns plaintext (e.g. Opus 4.8) |
+> | `advisor_redacted_result` | `encrypted_content`, `stop_reason` | Advisor returns encrypted output — Claude Opus 5, Claude Fable 5, Claude Mythos 5 |
+>
+> So switch on `advisor_tool_result.content` type, not on the block type. Code that reads `.text` unconditionally gets nothing back from an Claude Opus 5 advisor, because the payload is under `encrypted_content` instead — and you cannot read it, only replay it.
 
 Call via `client.beta.messages.create(...)` with `betas=["advisor-tool-2026-03-01"]` (or the `anthropic-beta: advisor-tool-2026-03-01` header). In multi-turn conversations, append the full `response.content` — including any `advisor_tool_result` blocks — back to `messages` on the next turn. If you remove the advisor tool from `tools` on a later turn while the history still contains `advisor_tool_result` blocks, the API returns a 400.
 
@@ -397,7 +467,7 @@ Two features are available:
 - **JSON outputs** (`output_config.format`): Control Claude's response format
 - **Strict tool use** (`strict: true`): Guarantee valid tool parameter schemas
 
-**Supported models:** Claude Fable 5, Claude Opus 4.8, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.
+**Supported models:** Claude Fable 5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.
 
 > **Recommended:** Use `client.messages.parse()` which automatically validates responses against your schema. When using `messages.create()` directly, use `output_config: {format: {...}}`. The `output_format` convenience parameter is also accepted by some SDK methods (e.g., `.parse()`), but `output_config.format` is the canonical API-level parameter.
 

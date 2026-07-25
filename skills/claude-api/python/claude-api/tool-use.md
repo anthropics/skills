@@ -27,7 +27,7 @@ def get_weather(location: str, unit: str = "celsius") -> str:
 
 # The tool runner handles the agentic loop automatically
 runner = client.beta.messages.tool_runner(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=[get_weather],
     messages=[{"role": "user", "content": "What's the weather in Paris?"}],
@@ -46,6 +46,43 @@ For async usage, use `@beta_async_tool` with `async def` functions.
 - Type-safe tool inputs via decorators
 - Tool schemas are generated automatically from function signatures
 - Iteration stops automatically when Claude has no more tool calls
+
+### Server tools with the tool runner
+
+The runner's `tools` list accepts raw server-tool definitions (`web_search_20260209`, `web_fetch_20260209`, code execution) alongside decorated tools — pass the literal tool dict; server tools run on Anthropic's servers, so there is no function to implement.
+
+**Caution — the runner does not auto-resume `pause_turn` (as of `anthropic` 0.116.0).** A long-running server-tool turn can stop with `stop_reason: "pause_turn"`. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message — no error, no warning, just a silently truncated answer. Unlike the TypeScript runner, the Python runner cannot be resumed mid-loop: it exits unconditionally when no client tool ran, and `runner.append_messages(...)` does not prevent the exit. To handle `pause_turn`, mirror the conversation history as you iterate, then restart the runner with the paused turn appended:
+
+```python
+messages = [{"role": "user", "content": user_input}]
+
+max_restarts = 5  # cap pause_turn restarts, mirroring max_continuations advice
+restarts = 0
+while True:
+    runner = client.beta.messages.tool_runner(
+        model="claude-opus-5",
+        max_tokens=16000,
+        tools=tools,  # may mix @beta_tool functions and server-tool definitions
+        messages=messages,
+    )
+    last = None
+    for message in runner:
+        last = message
+        # Mirror the history — the runner keeps its own copy and does not expose it
+        messages.append({"role": "assistant", "content": message.content})
+        tool_response = runner.generate_tool_call_response()  # cached; tools still run once
+        if tool_response is not None:
+            messages.append(tool_response)
+    if last is None or last.stop_reason != "pause_turn":
+        break
+    restarts += 1
+    if restarts > max_restarts:
+        raise RuntimeError("giving up: turn still paused after max_restarts")
+    # Paused mid-turn: `messages` already ends with the paused assistant
+    # turn, so the next runner resumes it
+```
+
+Alternatively, use the manual loop below, which handles `pause_turn` explicitly.
 
 ---
 
@@ -72,7 +109,7 @@ async with stdio_client(StdioServerParameters(command="mcp-server")) as (read, w
         tools_result = await mcp_client.list_tools()
         # tool_runner is sync — returns the runner, not a coroutine
         runner = client.beta.messages.tool_runner(
-            model="claude-opus-4-8",
+            model="claude-opus-5",
             max_tokens=16000,
             messages=[{"role": "user", "content": "Use the available tools"}],
             tools=[async_mcp_tool(t, mcp_client) for t in tools_result.tools],
@@ -90,7 +127,7 @@ from anthropic.lib.tools.mcp import mcp_message
 
 prompt = await mcp_client.get_prompt(name="my-prompt")
 response = await client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[mcp_message(m) for m in prompt.messages],
 )
@@ -103,7 +140,7 @@ from anthropic.lib.tools.mcp import mcp_resource_to_content
 
 resource = await mcp_client.read_resource(uri="file:///path/to/doc.txt")
 response = await client.beta.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -130,7 +167,9 @@ Conversion functions raise `UnsupportedMCPValueError` if an MCP value cannot be 
 
 ## Manual Agentic Loop
 
-Use this when you need fine-grained control over the loop (e.g., custom logging, conditional tool execution, human-in-the-loop approval):
+Prefer the tool runner above. Drop to a manual loop only when you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, or avoiding a beta dependency — the runner is beta). Human-in-the-loop approval does *not* require a manual loop — gate inside the tool function (return a "user declined" result) or inspect pending `tool_use` blocks in the `for message in runner:` body and call `runner.set_messages_params()`.
+
+If you do need a manual loop:
 
 ```python
 import anthropic
@@ -142,7 +181,7 @@ messages = [{"role": "user", "content": user_input}]
 # Agentic loop: keep going until Claude stops calling tools
 while True:
     response = client.messages.create(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         tools=tools,
         messages=messages
@@ -189,7 +228,7 @@ final_text = next(b.text for b in response.content if b.type == "text")
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=tools,
     messages=[{"role": "user", "content": "What's the weather in Paris?"}]
@@ -204,7 +243,7 @@ for block in response.content:
         result = execute_tool(tool_name, tool_input)
 
         followup = client.messages.create(
-            model="claude-opus-4-8",
+            model="claude-opus-5",
             max_tokens=16000,
             tools=tools,
             messages=[
@@ -241,7 +280,7 @@ for block in response.content:
 # Send all results back at once
 if tool_results:
     followup = client.messages.create(
-        model="claude-opus-4-8",
+        model="claude-opus-5",
         max_tokens=16000,
         tools=tools,
         messages=[
@@ -271,7 +310,7 @@ tool_result = {
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=tools,
     tool_choice={"type": "tool", "name": "get_weather"},  # Force specific tool
@@ -291,7 +330,7 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -319,7 +358,7 @@ uploaded = client.beta.files.upload(file=open("sales_data.csv", "rb"))
 # 2. Pass to code execution via container_upload block
 # Code execution is GA; Files API is still beta (pass via extra_headers)
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     extra_headers={"anthropic-beta": "files-api-2025-04-14"},
     messages=[{
@@ -364,7 +403,7 @@ for block in response.content:
 ```python
 # First request: set up environment
 response1 = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Install tabulate and create data.json with sample data"}],
     tools=[{"type": "code_execution_20260120", "name": "code_execution"}]
@@ -376,7 +415,7 @@ container_id = response1.container.id
 # Second request: reuse the same container
 response2 = client.messages.create(
     container=container_id,
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Read data.json and display as a formatted table"}],
     tools=[{"type": "code_execution_20260120", "name": "code_execution"}]
@@ -416,7 +455,7 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Remember that my preferred language is Python."}],
     tools=[{"type": "memory_20250818", "name": "memory"}],
@@ -442,7 +481,7 @@ memory = MyMemoryTool()
 
 # Use with tool runner
 runner = client.beta.messages.tool_runner(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     tools=[memory],
     messages=[{"role": "user", "content": "Remember my preferences"}],
@@ -477,7 +516,7 @@ class ContactInfo(BaseModel):
 client = anthropic.Anthropic()
 
 response = client.messages.parse(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -496,7 +535,7 @@ print(contact.interests)      # ["API", "SDKs"]
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -530,7 +569,7 @@ data = json.loads(text)
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Book a flight to Tokyo for 2 passengers on March 15"}],
     tools=[{
@@ -555,7 +594,7 @@ response = client.messages.create(
 
 ```python
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     messages=[{"role": "user", "content": "Plan a trip to Paris next month"}],
     output_config={

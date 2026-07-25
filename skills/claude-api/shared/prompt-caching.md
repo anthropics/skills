@@ -64,7 +64,7 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 
 ### Mid-conversation system messages
 
-**Claude Opus 4.8 only; no beta header.** When an operator instruction arrives mid-conversation — a mode switch, updated context, dynamically injected state — send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
+**Claude Opus 5, Claude Opus 4.8, Claude Fable 5, and Claude Mythos 5; no beta header. Not available on Claude Sonnet 5** — use top-level `system` there. (Sources conflict on Claude Sonnet 5: the model config marks it supported, but every canonical docs page omits it. Treat it as unsupported and catch the 400.) When an operator instruction arrives mid-conversation — a mode switch, updated context, dynamically injected state — send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
 
 ```json
 // Top-level system stays byte-identical; new instruction goes after the cached history
@@ -78,7 +78,7 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 
 This is also the prompt-injection-safe replacement for embedding operator instructions as text inside a user turn (the `<system-reminder>` pattern): both have the same caching profile, but `role: "system"` is the non-spoofable operator channel, whereas text inside user/tool content can be forged by anything that writes to user-visible input.
 
-Available on Claude Opus 4.8; no beta header is required. Must follow a `role: "user"` message (or an `assistant` message ending in server-tool use), and must be either the last entry in `messages` or be followed by an `assistant` turn; cannot be `messages[0]` — use top-level `system` for the initial prompt. Content is text-only. Unsupported models return a 400 (`BadRequestError`: `role 'system' is not supported on this model`); catch that error and fall back to putting the instruction in a user-turn `<system-reminder>` block.
+Must follow a `role: "user"` message (or an `assistant` message ending in server-tool use), and must be either the last entry in `messages` or be followed by an `assistant` turn; cannot be `messages[0]` — use top-level `system` for the initial prompt. Content is text-only. Unsupported models return a 400 (`BadRequestError`: `role 'system' is not supported on this model`); catch that error and fall back to putting the instruction in a user-turn `<system-reminder>` block.
 
 ### Prompts that change from the beginning every time
 
@@ -129,11 +129,14 @@ Fix by moving the dynamic piece after the last breakpoint, making it determinist
 
 | Model | Minimum |
 |---|---:|
-| Opus 4.8, Opus 4.7, Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
-| Fable 5, Sonnet 4.6, Haiku 3.5, Haiku 3 | 2048 tokens |
-| Sonnet 4.5, Sonnet 4.1, Sonnet 4, Sonnet 3.7 | 1024 tokens |
+| Claude Opus 5, Claude Fable 5, Claude Mythos 5 | 512 tokens |
+| Opus 4.8, Claude Sonnet 5, Sonnet 4.6, Sonnet 4.5, Opus 4.1, Opus 4, Sonnet 4 | 1024 tokens |
+| Opus 4.7, Mythos Preview, Haiku 3.5 | 2048 tokens |
+| Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
 
-A 3K-token prompt caches on Sonnet 4.5 and Fable 5 but silently won't on Opus 4.8.
+**The minimum is not monotonic across generations** — 512 on the newest models, but 4096 on Opus 4.6/4.5 and Haiku 4.5. A 3K-token prompt caches on Claude Opus 5, Opus 4.8, and Sonnet 4.5, and silently won't on Opus 4.6 or Haiku 4.5. Claude Opus 5 halves the Opus 4.8 minimum (1024 → 512), so prompts previously too short to cache now create entries with no code change.
+
+These minimums apply on **every** platform where the model is available — the old Amazon Bedrock override for Claude Fable 5 was removed, and no per-platform exception remains.
 
 **Economics:** Cache reads cost ~0.1× base input price. Cache writes cost **1.25× for 5-minute TTL, 2× for 1-hour TTL**. Break-even depends on TTL: with 5-minute TTL, two requests break even (1.25× + 0.1× = 1.35× vs 2× uncached); with 1-hour TTL, you need at least three requests (2× + 0.2× = 2.2× vs 3× uncached). The 1-hour TTL keeps entries alive across gaps in bursty traffic, but the doubled write cost means it needs more reads to pay off.
 
@@ -172,6 +175,15 @@ Not every parameter change invalidates everything. The API has three cache tiers
 
 Implication: you can change `tool_choice` per-request or toggle `thinking` without losing the tools+system cache. Don't over-worry about these — only tool-definition and model changes force a full rebuild.
 
+**Two of these rows have a cache-preserving escape hatch**, each by moving the change out of the top-level request and into a system message inside `messages[]`, after the cached prefix. **Availability differs per row** — the two are not gated together:
+
+| Top-level change that invalidates | Cache-preserving form | Available on |
+|---|---|---|
+| Tool definitions (add/remove) | `tool_addition` / `tool_removal` blocks — see `shared/tool-use-concepts.md` § Mid-conversation tool changes | Claude Opus 5 onward, behind `mid-conversation-tool-changes-2026-07-01` |
+| System prompt content | A `{"role": "system", "content": "…"}` message — see § Mid-conversation system messages above | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Mythos 5 — **already available today**, no beta header |
+
+Model switch has no escape hatch: caches are model-scoped. Keep the main loop on one model and spawn a subagent for cheaper sub-tasks (see `agent-design.md` § Caching for Agents).
+
 ---
 
 ## 20-block lookback window
@@ -205,7 +217,7 @@ To eliminate the cache-miss latency on the *first* real request, send a **`max_t
 
 ```python
 client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=0,
     system=[{
         "type": "text",

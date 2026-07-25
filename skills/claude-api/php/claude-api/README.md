@@ -26,7 +26,7 @@ use Anthropic\Bedrock\MantleClient;
 $client = new MantleClient(awsRegion: 'us-east-1');
 ```
 
-Model IDs on Bedrock take an `anthropic.` prefix — e.g. `model: 'anthropic.claude-opus-4-8'`.
+Model IDs on Bedrock take an `anthropic.` prefix — e.g. `model: 'anthropic.claude-opus-5'`.
 
 ### Google Vertex AI
 
@@ -58,7 +58,7 @@ $client = Foundry\Client::withCredentials(
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     messages: [
         ['role' => 'user', 'content' => 'What is the capital of France?'],
@@ -97,9 +97,9 @@ foreach ($message->content as $block) {
 use Anthropic\Messages\ThinkingBlock;
 
 $message = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
-    thinking: ['type' => 'adaptive', 'display' => 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Opus 4.8 / 4.7
+    thinking: ['type' => 'adaptive', 'display' => 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
     messages: [
         ['role' => 'user', 'content' => 'Solve: 27 * 453'],
     ],
@@ -117,7 +117,8 @@ foreach ($message->content as $block) {
 }
 ```
 
-> **Fable 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (above). `['type' => 'enabled', 'budgetTokens' => N]` is removed on Fable 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (above). `['type' => 'enabled', 'budgetTokens' => N]` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5:** thinking is on by default — omitting `thinking:` runs adaptive (`['type' => 'adaptive']` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `['type' => 'disabled']` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `thinking: ['type' => 'enabled', 'budgetTokens' => N]` (budget must be < `maxTokens`, min 1024).
 
 `$block->type === 'thinking'` also works for the check; `instanceof` narrows for PHPStan.
@@ -130,7 +131,7 @@ foreach ($message->content as $block) {
 
 ```php
 $message = $client->messages->create(
-    model: 'claude-opus-4-8',
+    model: 'claude-opus-5',
     maxTokens: 16000,
     system: [
         ['type' => 'text', 'text' => $longSystemPrompt, 'cacheControl' => ['type' => 'ephemeral']],

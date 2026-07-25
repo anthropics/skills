@@ -2,7 +2,7 @@
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for Python. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Python SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `agents.create` and pass it to every subsequent `sessions.create`; do not call `agents.create` in the request path. The Anthropic CLI is one convenient way to create agents and environments from version-controlled YAML — its URL is in `shared/live-sources.md`. The examples below show in-code creation for completeness; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `agents.create` and pass it to every subsequent `sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
@@ -51,7 +51,7 @@ print(environment.id)  # env_...
 # 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
     name="Coding Assistant",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True}}],
 )
 
@@ -61,7 +61,7 @@ session = client.beta.sessions.create(
     environment_id=environment.id,
 )
 print(session.id, session.status)
-print(f"Trace: https://platform.claude.com/workspaces/default/sessions/{session.id}")
+print(f"Trace: https://platform.claude.com/workspaces/default/sessions/{session.id}")  # swap 'default' for your workspace ID if the API key is not in the Default workspace
 ```
 
 ### With system prompt and custom tools
@@ -71,7 +71,7 @@ import os
 
 agent = client.beta.agents.create(
     name="Code Reviewer",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     system="You are a senior code reviewer.",
     tools=[
         {"type": "agent_toolset_20260401"},
@@ -314,7 +314,7 @@ client.beta.sessions.archive(session_id="sesn_011CZxAbc123Def456")
 # Agent declares MCP server (no auth here — auth goes in a vault)
 agent = client.beta.agents.create(
     name="MCP Agent",
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     mcp_servers=[
         {"type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse"},
     ],
