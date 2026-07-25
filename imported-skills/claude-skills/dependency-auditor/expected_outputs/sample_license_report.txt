@@ -1,0 +1,37 @@
+============================================================
+LICENSE COMPLIANCE REPORT
+============================================================
+Analysis Date: 2024-02-16T15:30:00.000Z
+Project: /example/sample-web-app
+Project License: MIT
+
+SUMMARY:
+  Total Dependencies: 23
+  Compliance Score: 92.5/100
+  Overall Risk: LOW
+  License Conflicts: 0
+
+LICENSE DISTRIBUTION:
+  Permissive: 21
+  Copyleft_weak: 1
+  Copyleft_strong: 0
+  Proprietary: 0
+  Unknown: 1
+
+RISK BREAKDOWN:
+  Low: 21
+  Medium: 1
+  High: 0
+  Critical: 1
+
+HIGH-RISK DEPENDENCIES:
+------------------------------
+  moment v2.29.4: Unknown (CRITICAL)
+
+RECOMMENDATIONS:
+--------------------
+1. Investigate and clarify licenses for 1 dependencies with unknown licensing
+2. Overall compliance score is high - maintain current practices
+3. Consider updating moment.js which has been deprecated by maintainers
+
+============================================================

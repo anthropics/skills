@@ -1,0 +1,145 @@
+{
+  "tuple_id": "013-valid-doi-bnt162b2-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Polack2020BNT162b2",
+    "title": "Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine",
+    "authors": [
+      {
+        "family": "Polack",
+        "given": "Fernando P."
+      },
+      {
+        "family": "Thomas",
+        "given": "Stephen J."
+      },
+      {
+        "family": "Kitchin",
+        "given": "Nicholas"
+      },
+      {
+        "family": "Absalon",
+        "given": "Judith"
+      },
+      {
+        "family": "Gurtman",
+        "given": "Alejandra"
+      },
+      {
+        "family": "Lockhart",
+        "given": "Stephen"
+      },
+      {
+        "family": "Perez",
+        "given": "John L."
+      },
+      {
+        "family": "Pérez Marc",
+        "given": "Gonzalo"
+      },
+      {
+        "family": "Moreira",
+        "given": "Edson D."
+      },
+      {
+        "family": "Zerbini",
+        "given": "Cristiano"
+      },
+      {
+        "family": "Bailey",
+        "given": "Ruth"
+      },
+      {
+        "family": "Swanson",
+        "given": "Kena A."
+      },
+      {
+        "family": "Roychoudhury",
+        "given": "Satrajit"
+      },
+      {
+        "family": "Koury",
+        "given": "Kenneth"
+      },
+      {
+        "family": "Li",
+        "given": "Ping"
+      },
+      {
+        "family": "Kalina",
+        "given": "Warren V."
+      },
+      {
+        "family": "Cooper",
+        "given": "David"
+      },
+      {
+        "family": "Frenck",
+        "given": "Robert W."
+      },
+      {
+        "family": "Hammitt",
+        "given": "Laura L."
+      },
+      {
+        "family": "Türeci",
+        "given": "Özlem"
+      },
+      {
+        "family": "Nell",
+        "given": "Haylene"
+      },
+      {
+        "family": "Schaefer",
+        "given": "Axel"
+      },
+      {
+        "family": "Ünal",
+        "given": "Serhat"
+      },
+      {
+        "family": "Tresnan",
+        "given": "Dina B."
+      },
+      {
+        "family": "Mather",
+        "given": "Susan"
+      },
+      {
+        "family": "Dormitzer",
+        "given": "Philip R."
+      },
+      {
+        "family": "Şahin",
+        "given": "Uğur"
+      },
+      {
+        "family": "Jansen",
+        "given": "Kathrin U."
+      },
+      {
+        "family": "Gruber",
+        "given": "William C."
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1056/NEJMoa2034577",
+    "venue": "New England Journal of Medicine",
+    "source_pointer": "https://doi.org/10.1056/NEJMoa2034577",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "polack-2020-bnt162b2",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

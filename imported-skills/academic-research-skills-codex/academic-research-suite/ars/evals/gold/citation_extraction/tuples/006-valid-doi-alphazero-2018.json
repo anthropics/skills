@@ -1,0 +1,76 @@
+{
+  "tuple_id": "006-valid-doi-alphazero-2018",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Silver2018AlphaZero",
+    "title": "A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play",
+    "authors": [
+      {
+        "family": "Silver",
+        "given": "David"
+      },
+      {
+        "family": "Hubert",
+        "given": "Thomas"
+      },
+      {
+        "family": "Schrittwieser",
+        "given": "Julian"
+      },
+      {
+        "family": "Antonoglou",
+        "given": "Ioannis"
+      },
+      {
+        "family": "Lai",
+        "given": "Matthew"
+      },
+      {
+        "family": "Guez",
+        "given": "Arthur"
+      },
+      {
+        "family": "Lanctot",
+        "given": "Marc"
+      },
+      {
+        "family": "Sifre",
+        "given": "Laurent"
+      },
+      {
+        "family": "Kumaran",
+        "given": "Dharshan"
+      },
+      {
+        "family": "Graepel",
+        "given": "Thore"
+      },
+      {
+        "family": "Lillicrap",
+        "given": "Timothy"
+      },
+      {
+        "family": "Simonyan",
+        "given": "Karen"
+      },
+      {
+        "family": "Hassabis",
+        "given": "Demis"
+      }
+    ],
+    "year": 2018,
+    "doi": "10.1126/science.aar6404",
+    "venue": "Science",
+    "source_pointer": "https://doi.org/10.1126/science.aar6404",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "silver-2018-alphazero",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

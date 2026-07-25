@@ -1,0 +1,95 @@
+{
+  "tuple_id": "021-valid-arxiv-mistral-7b-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Jiang2023Mistral7B",
+    "title": "Mistral 7B",
+    "authors": [
+      {
+        "family": "Jiang",
+        "given": "Albert Q."
+      },
+      {
+        "family": "Sablayrolles",
+        "given": "Alexandre"
+      },
+      {
+        "family": "Mensch",
+        "given": "Arthur"
+      },
+      {
+        "family": "Bamford",
+        "given": "Chris"
+      },
+      {
+        "family": "Chaplot",
+        "given": "Devendra Singh"
+      },
+      {
+        "family": "Casas",
+        "given": "Diego de las"
+      },
+      {
+        "family": "Bressand",
+        "given": "Florian"
+      },
+      {
+        "family": "Lengyel",
+        "given": "Gianna"
+      },
+      {
+        "family": "Lample",
+        "given": "Guillaume"
+      },
+      {
+        "family": "Saulnier",
+        "given": "Lucile"
+      },
+      {
+        "family": "Lavaud",
+        "given": "Lélio Renard"
+      },
+      {
+        "family": "Lachaux",
+        "given": "Marie-Anne"
+      },
+      {
+        "family": "Stock",
+        "given": "Pierre"
+      },
+      {
+        "family": "Scao",
+        "given": "Teven Le"
+      },
+      {
+        "family": "Lavril",
+        "given": "Thibaut"
+      },
+      {
+        "family": "Wang",
+        "given": "Thomas"
+      },
+      {
+        "family": "Lacroix",
+        "given": "Timothée"
+      },
+      {
+        "family": "Sayed",
+        "given": "William El"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2310.06825",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2310.06825",
+  "ref_slug": "jiang-2023-mistral7b",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

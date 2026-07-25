@@ -1,0 +1,5 @@
+schema_version: "1.0"
+sources:
+  - citation_key: handbook-2024ed
+    type: institutional-document
+events: []

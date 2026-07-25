@@ -1,0 +1,622 @@
+{
+  "role": "Product Manager",
+  "level": "senior",
+  "competencies": [
+    "strategy",
+    "analytics",
+    "business_strategy",
+    "product_strategy",
+    "stakeholder_management",
+    "p&l_responsibility",
+    "leadership",
+    "team_leadership",
+    "user_research",
+    "data_analysis"
+  ],
+  "question_types": [
+    "technical",
+    "behavioral",
+    "situational"
+  ],
+  "generated_at": "2026-02-16T13:27:41.303329",
+  "total_questions": 20,
+  "questions": [
+    {
+      "question": "What challenges have you faced related to p&l responsibility and how did you overcome them?",
+      "competency": "p&l_responsibility",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "Analyze conversion funnel data to identify the biggest drop-off point and propose solutions.",
+      "competency": "data_analysis",
+      "type": "analytical",
+      "difficulty": "medium",
+      "time_limit": 45,
+      "key_concepts": [
+        "funnel_analysis",
+        "conversion_optimization",
+        "statistical_significance"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to team leadership and how did you overcome them?",
+      "competency": "team_leadership",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "Design a go-to-market strategy for a new B2B SaaS product entering a competitive market.",
+      "competency": "product_strategy",
+      "type": "strategic",
+      "difficulty": "hard",
+      "time_limit": 60,
+      "key_concepts": [
+        "market_analysis",
+        "competitive_positioning",
+        "pricing_strategy",
+        "channel_strategy"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to business strategy and how did you overcome them?",
+      "competency": "business_strategy",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "Describe your experience with business strategy in your current or previous role.",
+      "competency": "business_strategy",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "Describe your experience with team leadership in your current or previous role.",
+      "competency": "team_leadership",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "Describe a situation where you had to influence someone without having direct authority over them.",
+      "competency": "leadership",
+      "type": "behavioral",
+      "method": "STAR",
+      "focus_areas": [
+        "influence",
+        "persuasion",
+        "stakeholder_management"
+      ]
+    },
+    {
+      "question": "Given a dataset of user activities, calculate the daily active users for the past month.",
+      "competency": "data_analysis",
+      "type": "analytical",
+      "difficulty": "easy",
+      "time_limit": 30,
+      "key_concepts": [
+        "sql_basics",
+        "date_functions",
+        "aggregation"
+      ]
+    },
+    {
+      "question": "Describe your experience with analytics in your current or previous role.",
+      "competency": "analytics",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "How would you prioritize features for a mobile app with limited engineering resources?",
+      "competency": "product_strategy",
+      "type": "case_study",
+      "difficulty": "medium",
+      "time_limit": 45,
+      "key_concepts": [
+        "prioritization_frameworks",
+        "resource_allocation",
+        "impact_estimation"
+      ]
+    },
+    {
+      "question": "Describe your experience with stakeholder management in your current or previous role.",
+      "competency": "stakeholder_management",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to stakeholder management and how did you overcome them?",
+      "competency": "stakeholder_management",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to user research and how did you overcome them?",
+      "competency": "user_research",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to strategy and how did you overcome them?",
+      "competency": "strategy",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    },
+    {
+      "question": "Describe your experience with user research in your current or previous role.",
+      "competency": "user_research",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "Describe your experience with p&l responsibility in your current or previous role.",
+      "competency": "p&l_responsibility",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "Describe your experience with strategy in your current or previous role.",
+      "competency": "strategy",
+      "type": "experience",
+      "focus_areas": [
+        "experience_depth",
+        "practical_application"
+      ]
+    },
+    {
+      "question": "Tell me about a time when you had to lead a team through a significant change or challenge.",
+      "competency": "leadership",
+      "type": "behavioral",
+      "method": "STAR",
+      "focus_areas": [
+        "change_management",
+        "team_motivation",
+        "communication"
+      ]
+    },
+    {
+      "question": "What challenges have you faced related to analytics and how did you overcome them?",
+      "competency": "analytics",
+      "type": "challenge_based",
+      "focus_areas": [
+        "problem_solving",
+        "learning_from_experience"
+      ]
+    }
+  ],
+  "scoring_rubrics": {
+    "question_8": {
+      "question": "Describe a situation where you had to influence someone without having direct authority over them.",
+      "competency": "leadership",
+      "type": "behavioral",
+      "scoring_criteria": {
+        "situation_clarity": {
+          "4": "Clear, specific situation with relevant context and stakes",
+          "3": "Good situation description with adequate context",
+          "2": "Situation described but lacks some specifics",
+          "1": "Vague or unclear situation description"
+        },
+        "action_quality": {
+          "4": "Specific, thoughtful actions showing strong competency",
+          "3": "Good actions demonstrating competency",
+          "2": "Adequate actions but could be stronger",
+          "1": "Weak or inappropriate actions"
+        },
+        "result_impact": {
+          "4": "Significant positive impact with measurable results",
+          "3": "Good positive impact with clear outcomes",
+          "2": "Some positive impact demonstrated",
+          "1": "Little or no positive impact shown"
+        },
+        "self_awareness": {
+          "4": "Excellent self-reflection, learns from experience, acknowledges growth areas",
+          "3": "Good self-awareness and learning orientation",
+          "2": "Some self-reflection demonstrated",
+          "1": "Limited self-awareness or reflection"
+        }
+      },
+      "weight": "high",
+      "time_limit": 30
+    },
+    "question_19": {
+      "question": "Tell me about a time when you had to lead a team through a significant change or challenge.",
+      "competency": "leadership",
+      "type": "behavioral",
+      "scoring_criteria": {
+        "situation_clarity": {
+          "4": "Clear, specific situation with relevant context and stakes",
+          "3": "Good situation description with adequate context",
+          "2": "Situation described but lacks some specifics",
+          "1": "Vague or unclear situation description"
+        },
+        "action_quality": {
+          "4": "Specific, thoughtful actions showing strong competency",
+          "3": "Good actions demonstrating competency",
+          "2": "Adequate actions but could be stronger",
+          "1": "Weak or inappropriate actions"
+        },
+        "result_impact": {
+          "4": "Significant positive impact with measurable results",
+          "3": "Good positive impact with clear outcomes",
+          "2": "Some positive impact demonstrated",
+          "1": "Little or no positive impact shown"
+        },
+        "self_awareness": {
+          "4": "Excellent self-reflection, learns from experience, acknowledges growth areas",
+          "3": "Good self-awareness and learning orientation",
+          "2": "Some self-reflection demonstrated",
+          "1": "Limited self-awareness or reflection"
+        }
+      },
+      "weight": "high",
+      "time_limit": 30
+    }
+  },
+  "follow_up_probes": {
+    "question_1": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_2": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_3": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_4": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_5": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_6": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_7": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_8": [
+      "What would you do differently if you faced this situation again?",
+      "How did you handle team members who were resistant to the change?",
+      "What metrics did you use to measure success?",
+      "How did you communicate progress to stakeholders?",
+      "What did you learn from this experience?"
+    ],
+    "question_9": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_10": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_11": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_12": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_13": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_14": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_15": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_16": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_17": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_18": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ],
+    "question_19": [
+      "What would you do differently if you faced this situation again?",
+      "How did you handle team members who were resistant to the change?",
+      "What metrics did you use to measure success?",
+      "How did you communicate progress to stakeholders?",
+      "What did you learn from this experience?"
+    ],
+    "question_20": [
+      "Can you provide more specific details about your approach?",
+      "What would you do differently if you had to do this again?",
+      "What challenges did you face and how did you overcome them?"
+    ]
+  },
+  "calibration_examples": {
+    "question_1": {
+      "question": "What challenges have you faced related to p&l responsibility and how did you overcome them?",
+      "competency": "p&l_responsibility",
+      "sample_answers": {
+        "poor_answer": {
+          "answer": "Sample poor answer for p&l_responsibility question - lacks detail, specificity, or demonstrates weak competency",
+          "score": "1-2",
+          "issues": [
+            "Vague response",
+            "Limited evidence of competency",
+            "Poor structure"
+          ]
+        },
+        "good_answer": {
+          "answer": "Sample good answer for p&l_responsibility question - adequate detail, demonstrates competency clearly",
+          "score": "3",
+          "strengths": [
+            "Clear structure",
+            "Demonstrates competency",
+            "Adequate detail"
+          ]
+        },
+        "great_answer": {
+          "answer": "Sample excellent answer for p&l_responsibility question - exceptional detail, strong evidence, goes above and beyond",
+          "score": "4",
+          "strengths": [
+            "Exceptional detail",
+            "Strong evidence",
+            "Strategic thinking",
+            "Goes beyond requirements"
+          ]
+        }
+      },
+      "scoring_rationale": {
+        "key_indicators": "Look for evidence of p&l responsibility competency",
+        "red_flags": "Vague answers, lack of specifics, negative outcomes without learning",
+        "green_flags": "Specific examples, clear impact, demonstrates growth and learning"
+      }
+    },
+    "question_2": {
+      "question": "Analyze conversion funnel data to identify the biggest drop-off point and propose solutions.",
+      "competency": "data_analysis",
+      "sample_answers": {
+        "poor_answer": {
+          "answer": "Sample poor answer for data_analysis question - lacks detail, specificity, or demonstrates weak competency",
+          "score": "1-2",
+          "issues": [
+            "Vague response",
+            "Limited evidence of competency",
+            "Poor structure"
+          ]
+        },
+        "good_answer": {
+          "answer": "Sample good answer for data_analysis question - adequate detail, demonstrates competency clearly",
+          "score": "3",
+          "strengths": [
+            "Clear structure",
+            "Demonstrates competency",
+            "Adequate detail"
+          ]
+        },
+        "great_answer": {
+          "answer": "Sample excellent answer for data_analysis question - exceptional detail, strong evidence, goes above and beyond",
+          "score": "4",
+          "strengths": [
+            "Exceptional detail",
+            "Strong evidence",
+            "Strategic thinking",
+            "Goes beyond requirements"
+          ]
+        }
+      },
+      "scoring_rationale": {
+        "key_indicators": "Look for evidence of data analysis competency",
+        "red_flags": "Vague answers, lack of specifics, negative outcomes without learning",
+        "green_flags": "Specific examples, clear impact, demonstrates growth and learning"
+      }
+    },
+    "question_3": {
+      "question": "What challenges have you faced related to team leadership and how did you overcome them?",
+      "competency": "team_leadership",
+      "sample_answers": {
+        "poor_answer": {
+          "answer": "Sample poor answer for team_leadership question - lacks detail, specificity, or demonstrates weak competency",
+          "score": "1-2",
+          "issues": [
+            "Vague response",
+            "Limited evidence of competency",
+            "Poor structure"
+          ]
+        },
+        "good_answer": {
+          "answer": "Sample good answer for team_leadership question - adequate detail, demonstrates competency clearly",
+          "score": "3",
+          "strengths": [
+            "Clear structure",
+            "Demonstrates competency",
+            "Adequate detail"
+          ]
+        },
+        "great_answer": {
+          "answer": "Sample excellent answer for team_leadership question - exceptional detail, strong evidence, goes above and beyond",
+          "score": "4",
+          "strengths": [
+            "Exceptional detail",
+            "Strong evidence",
+            "Strategic thinking",
+            "Goes beyond requirements"
+          ]
+        }
+      },
+      "scoring_rationale": {
+        "key_indicators": "Look for evidence of team leadership competency",
+        "red_flags": "Vague answers, lack of specifics, negative outcomes without learning",
+        "green_flags": "Specific examples, clear impact, demonstrates growth and learning"
+      }
+    },
+    "question_4": {
+      "question": "Design a go-to-market strategy for a new B2B SaaS product entering a competitive market.",
+      "competency": "product_strategy",
+      "sample_answers": {
+        "poor_answer": {
+          "answer": "Sample poor answer for product_strategy question - lacks detail, specificity, or demonstrates weak competency",
+          "score": "1-2",
+          "issues": [
+            "Vague response",
+            "Limited evidence of competency",
+            "Poor structure"
+          ]
+        },
+        "good_answer": {
+          "answer": "Sample good answer for product_strategy question - adequate detail, demonstrates competency clearly",
+          "score": "3",
+          "strengths": [
+            "Clear structure",
+            "Demonstrates competency",
+            "Adequate detail"
+          ]
+        },
+        "great_answer": {
+          "answer": "Sample excellent answer for product_strategy question - exceptional detail, strong evidence, goes above and beyond",
+          "score": "4",
+          "strengths": [
+            "Exceptional detail",
+            "Strong evidence",
+            "Strategic thinking",
+            "Goes beyond requirements"
+          ]
+        }
+      },
+      "scoring_rationale": {
+        "key_indicators": "Look for evidence of product strategy competency",
+        "red_flags": "Vague answers, lack of specifics, negative outcomes without learning",
+        "green_flags": "Specific examples, clear impact, demonstrates growth and learning"
+      }
+    },
+    "question_5": {
+      "question": "What challenges have you faced related to business strategy and how did you overcome them?",
+      "competency": "business_strategy",
+      "sample_answers": {
+        "poor_answer": {
+          "answer": "Sample poor answer for business_strategy question - lacks detail, specificity, or demonstrates weak competency",
+          "score": "1-2",
+          "issues": [
+            "Vague response",
+            "Limited evidence of competency",
+            "Poor structure"
+          ]
+        },
+        "good_answer": {
+          "answer": "Sample good answer for business_strategy question - adequate detail, demonstrates competency clearly",
+          "score": "3",
+          "strengths": [
+            "Clear structure",
+            "Demonstrates competency",
+            "Adequate detail"
+          ]
+        },
+        "great_answer": {
+          "answer": "Sample excellent answer for business_strategy question - exceptional detail, strong evidence, goes above and beyond",
+          "score": "4",
+          "strengths": [
+            "Exceptional detail",
+            "Strong evidence",
+            "Strategic thinking",
+            "Goes beyond requirements"
+          ]
+        }
+      },
+      "scoring_rationale": {
+        "key_indicators": "Look for evidence of business strategy competency",
+        "red_flags": "Vague answers, lack of specifics, negative outcomes without learning",
+        "green_flags": "Specific examples, clear impact, demonstrates growth and learning"
+      }
+    }
+  },
+  "usage_guidelines": {
+    "interview_flow": {
+      "warm_up": "Start with 1-2 easier questions to build rapport",
+      "core_assessment": "Focus majority of time on core competency questions",
+      "closing": "End with questions about candidate's questions/interests"
+    },
+    "time_management": {
+      "technical_questions": "Allow extra time for coding/design questions",
+      "behavioral_questions": "Keep to time limits but allow for follow-ups",
+      "total_recommendation": "45-75 minutes per interview round"
+    },
+    "question_selection": {
+      "variety": "Mix question types within each competency area",
+      "difficulty": "Adjust based on candidate responses and energy",
+      "customization": "Adapt questions based on candidate's background"
+    },
+    "common_mistakes": [
+      "Don't ask all questions mechanically",
+      "Don't skip follow-up questions",
+      "Don't forget to assess cultural fit alongside competencies",
+      "Don't let one strong/weak area bias overall assessment"
+    ],
+    "calibration_reminders": [
+      "Compare against role standard, not other candidates",
+      "Focus on evidence demonstrated, not potential",
+      "Consider level-appropriate expectations",
+      "Document specific examples in feedback"
+    ]
+  }
+}

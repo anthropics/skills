@@ -1,0 +1,42 @@
+schema_version: '1.0'
+audit_run_id: 2026-05-18T12:34:56Z-a1b2
+report_reference_date: '2026-05-18'
+findings:
+- finding_id: TF-001
+  finding_kind: TEMPORAL-DEICTIC
+  severity: LOW
+  mode: 5
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: Currently, the most recent edition prescribes annual review.
+  matched_span:
+    text: Currently
+    char_start: 0
+    char_end: 9
+  bound_refs: []
+  bound_event: null
+  bound_dates: null
+  rationale: Deictic phrase 'Currently' anchors claim to writing time; rewrite to
+    specific date or version identifier.
+  suggested_fix: Replace with 'as of YYYY-MM-DD' or a specific edition/year reference.
+- finding_id: TF-002
+  finding_kind: TEMPORAL-DEICTIC
+  severity: LOW
+  mode: 5
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: Currently, the most recent edition prescribes annual review.
+  matched_span:
+    text: most recent
+    char_start: 15
+    char_end: 26
+  bound_refs: []
+  bound_event: null
+  bound_dates: null
+  rationale: Deictic phrase 'most recent' anchors claim to writing time; rewrite to
+    specific date or version identifier.
+  suggested_fix: Replace with 'as of YYYY-MM-DD' or a specific edition/year reference.

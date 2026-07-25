@@ -1,0 +1,126 @@
+{
+  "contract_id": "academic_paper/evaluator_full/v1",
+  "mode": "evaluator_full",
+  "stage": "evaluator_full_evaluation",
+  "baseline_version": "v3.6.6",
+  "acceptance_dimensions": [
+    {
+      "id": "D1",
+      "name": "originality",
+      "description": "Novel contribution to the field; new framework, new evidence, or unique perspective; not a restatement of existing work.",
+      "priority": "high"
+    },
+    {
+      "id": "D2",
+      "name": "methodological_rigor",
+      "description": "Research design matches the question; method is appropriate, replicable, and limitations are disclosed.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D3",
+      "name": "evidence_sufficiency",
+      "description": "Every claim is supported by adequate citations or data; no unsupported assertions; no cherry-picking.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D4",
+      "name": "argument_coherence",
+      "description": "Logic flows across sections; transitions are smooth; thesis-to-conclusion alignment holds; no self-contradiction.",
+      "priority": "high"
+    },
+    {
+      "id": "D5",
+      "name": "writing_quality",
+      "description": "Language is clear and precise; grammar, formatting, and citation style are consistent; readability fits the venue.",
+      "priority": "normal"
+    }
+  ],
+  "disagreement_handling": {
+    "paraphrase_minimum_dimensions": "all",
+    "scoring_plan": {
+      "per_dimension_criteria": [
+        {
+          "dimension_id": "D1",
+          "what_to_look_for": "Introduction's contribution statement names a specific gap; Discussion engages prior work substantively (not list-citation); Literature Review identifies the gap the paper fills.",
+          "what_triggers_block": "Contribution statement is vague or absent; Discussion lists prior work without engagement; paper restates known conclusions in a new context with no added evidence.",
+          "what_triggers_warn": "Contribution exists but is weakly differentiated from cited prior work; Discussion engagement is uneven across cited sources."
+        },
+        {
+          "dimension_id": "D2",
+          "what_to_look_for": "Method is named and justified against the research question; sample / data sources are appropriate; analysis steps are described in enough detail for replication; limitations are explicit.",
+          "what_triggers_block": "Method does not match the research question; significant design flaws; limitations are not discussed; analysis cannot be replicated from the description.",
+          "what_triggers_warn": "Method is fundamentally sound but insufficiently detailed; some choices lack justification; limitations are mentioned but not engaged with."
+        },
+        {
+          "dimension_id": "D3",
+          "what_to_look_for": "Every factual claim carries a citation; cited sources are appropriate quality for the field; inferences in Discussion stay within what the data supports.",
+          "what_triggers_block": "Multiple core claims lack evidence; over-reliance on a single source; Discussion inferences exceed what the data supports; cherry-picking of favorable evidence.",
+          "what_triggers_warn": "Core claims have evidence but some secondary claims lack support; citation density is uneven across sections."
+        },
+        {
+          "dimension_id": "D4",
+          "what_to_look_for": "Introduction's research question is answered in the Conclusion; section-to-section transitions are present; thesis statement is consistent across Abstract, Introduction, and Conclusion.",
+          "what_triggers_block": "Multiple logical gaps between sections; conclusion disconnected from the introduction's research question; self-contradictory passages.",
+          "what_triggers_warn": "Overall logic holds but some transitions feel forced; minor inconsistencies between section claims."
+        },
+        {
+          "dimension_id": "D5",
+          "what_to_look_for": "Register is consistently academic; grammar errors are rare; citation format is internally consistent; figures and tables are referenced in text.",
+          "what_triggers_block": "Difficult to understand; numerous grammar errors; colloquial register; citation format inconsistent across the manuscript.",
+          "what_triggers_warn": "Readable but with several grammar or word-choice issues; some paragraphs overly long; minor citation format inconsistencies."
+        }
+      ]
+    },
+    "pre_commitment_check_protocol": {
+      "check_writer_artifact": "pre_commitment_artifacts"
+    },
+    "disagreement_resolution": {
+      "on_dimension_disagreement": "evaluator_decision=request_revision",
+      "on_structural_drift": "evaluator_decision=request_revision"
+    }
+  },
+  "failure_conditions": [
+    {
+      "condition_id": "F1",
+      "severity": 90,
+      "expression": "any mandatory dimension scores 'block'",
+      "action": "evaluator_decision=request_revision"
+    },
+    {
+      "condition_id": "F2",
+      "severity": 70,
+      "expression": "one or more mandatory dimensions score 'warn'",
+      "action": "evaluator_decision=request_revision"
+    },
+    {
+      "condition_id": "F3",
+      "severity": 60,
+      "expression": "any high-priority dimension scores 'block'",
+      "action": "evaluator_decision=request_revision"
+    },
+    {
+      "condition_id": "F6",
+      "severity": 55,
+      "expression": "any normal-priority dimension scores 'block'",
+      "action": "evaluator_decision=request_revision"
+    },
+    {
+      "condition_id": "F4",
+      "severity": 50,
+      "expression": "the evaluator's own scoring plan triggers 'warn' on a high or normal-priority dimension AND no mandatory dimension scores 'block' or 'warn'",
+      "action": "evaluator_decision=accept_with_dissent_note"
+    },
+    {
+      "condition_id": "F5",
+      "severity": 95,
+      "expression": "round 2 still shows mandatory-dimension block after a writer revise_in_phase_4b attempt",
+      "action": "evaluator_decision=flag_for_reviewer_stage"
+    },
+    {
+      "condition_id": "F0",
+      "severity": 10,
+      "expression": "every mandatory dimension scores 'pass' AND no dimension scores 'block'",
+      "action": "evaluator_decision=accept"
+    }
+  ]
+}

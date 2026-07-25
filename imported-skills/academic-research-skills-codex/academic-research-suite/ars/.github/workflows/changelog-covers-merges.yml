@@ -1,0 +1,44 @@
+name: Changelog Covers Merges
+
+# Pre-tag release gate: on a release-prep PR (head branch `release/**`), every
+# release-worthy commit merged to main since the previous release tag must be
+# documented in CHANGELOG.md above the previous release's section —
+# [Unreleased] or the just-promoted version section (§0.2).
+#
+# Merges are audited against origin/main (--merges-ref): the prep branch's own
+# in-flight commits are not merges yet, while the coverage window reads the
+# PR's CHANGELOG state (which contains the promotion). The manual fallback
+# (CONTRIBUTING "Before tagging") remains for tag flows that skip a release/
+# branch. Spec: docs/design/2026-06-13-changelog-covers-merges-release-gate-spec.md
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  # House invariant: include github.event_name so push and pull_request runs on
+  # the same ref do not fight over one group.
+  group: changelog-covers-merges-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changelog-covers-merges:
+    if: startsWith(github.head_ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository (full history + tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: CHANGELOG covers all merges since the previous tag
+        run: python3 scripts/check_changelog_covers_merges.py --merges-ref origin/main

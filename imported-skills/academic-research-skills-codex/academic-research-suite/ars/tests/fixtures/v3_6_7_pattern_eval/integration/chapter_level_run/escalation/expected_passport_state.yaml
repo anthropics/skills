@@ -1,0 +1,67 @@
+# Expected passport state after escalation acknowledgement applied.
+# Per §5.4: ship_with_known_residue appends a NEW persisted entry per acknowledged
+# agent that mirrors the original MATERIAL entry's run_id but carries an
+# acknowledgement{} block. The strict-monotonic verified_at helper bumps each
+# ack entry's verified_at to be ≥ 1 ms after the original MATERIAL entry's
+# verified_at (D3 closure).
+
+audit_artifact:
+  # Round 1 entries (already persisted)
+  - run_id: 2026-04-30T15-00-00Z-f101
+    agent: synthesis_agent
+    verdict_status: MATERIAL
+    round: 1
+  - run_id: 2026-04-30T15-01-00Z-f102
+    agent: research_architect_agent
+    verdict_status: PASS
+    round: 1
+  - run_id: 2026-04-30T15-02-00Z-f103
+    agent: report_compiler_agent
+    verdict_status: MATERIAL
+    round: 1
+  # Round 2 entries
+  - run_id: 2026-04-30T15-30-00Z-f201
+    agent: synthesis_agent
+    verdict_status: MATERIAL
+    round: 2
+  - run_id: 2026-04-30T15-31-00Z-f202
+    agent: research_architect_agent
+    verdict_status: PASS
+    round: 2
+  - run_id: 2026-04-30T15-32-00Z-f203
+    agent: report_compiler_agent
+    verdict_status: MATERIAL
+    round: 2
+  # Round 3 entries
+  - run_id: 2026-04-30T16-00-00Z-f301
+    agent: synthesis_agent
+    verdict_status: MATERIAL
+    round: 3
+  - run_id: 2026-04-30T16-01-00Z-f302
+    agent: research_architect_agent
+    verdict_status: PASS
+    round: 3
+  - run_id: 2026-04-30T16-02-00Z-f303
+    agent: report_compiler_agent
+    verdict_status: MATERIAL
+    round: 3
+  # Acknowledgement entries (§5.4 ship_with_known_residue append)
+  - run_id: 2026-04-30T16-00-00Z-f301
+    agent: synthesis_agent
+    verdict_status: MATERIAL
+    round: 3
+    acknowledgement:
+      finding_ids: [F-101]
+      acknowledged_at: "2026-04-30T16:05:00.000Z"
+      acknowledged_by: user
+  - run_id: 2026-04-30T16-02-00Z-f303
+    agent: report_compiler_agent
+    verdict_status: MATERIAL
+    round: 3
+    acknowledgement:
+      finding_ids: [F-103]
+      acknowledged_at: "2026-04-30T16:05:00.000Z"
+      acknowledged_by: user
+
+stage_outcome: shipped_with_known_residue
+proceed_to: stage_3

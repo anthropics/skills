@@ -1,0 +1,220 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "business-growth",
+  "skill_count": 5,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "business-growth-skills",
+      "path": "business-growth/skills/business-growth-skills",
+      "description": "Router/index for the 4 business & growth skills bundled in this plugin: customer-success-manager (health scoring, churn risk, expansion), sales-engineer (RFP analysis, competitive matrices, PoC planning), revenue-operations (pipeline, forecast accuracy, GTM efficiency), and contract-and-proposal-writer. Use when a growth/revenue request doesn't obviously match one skill and you need to pick the right one (e.g., 'which accounts are at risk', 'should we bid on this RFP').",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "contract-and-proposal-writer",
+      "path": "business-growth/skills/contract-and-proposal-writer",
+      "description": "Generate professional, jurisdiction-aware business documents: freelance contracts, project proposals, SOWs, NDAs, and MSAs. Structured Markdown output with docx conversion instructions. Covers US (Delaware), EU (GDPR), UK, and DACH (German law) jurisdictions. Not a substitute for legal counsel \u2014 use as strong starting points. Use when drafting a freelance contract, preparing a client proposal, writing an SOW for a new engagement, or producing an NDA before sharing sensitive material.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "customer-success-manager",
+      "path": "business-growth/skills/customer-success-manager",
+      "description": "Monitors customer health, predicts churn risk, and identifies expansion opportunities using weighted scoring models for SaaS customer success. Use when analyzing customer accounts, reviewing retention metrics, scoring at-risk customers, or when the user mentions churn, customer health scores, upsell opportunities, expansion revenue, retention analysis, or customer analytics. Runs three Python CLI tools to produce deterministic health scores, churn risk tiers, and prioritized expansion recommendations across Enterprise, Mid-Market, and SMB segments.",
+      "tools": [
+        {
+          "script": "business-growth/skills/customer-success-manager/scripts/churn_risk_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/customer-success-manager/scripts/churn_risk_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/customer-success-manager/scripts/expansion_opportunity_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/customer-success-manager/scripts/expansion_opportunity_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/customer-success-manager/scripts/health_score_calculator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/customer-success-manager/scripts/health_score_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 business-growth/skills/customer-success-manager/scripts/health_score_calculator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cs-metrics-benchmarks.md",
+        "cs-playbooks.md",
+        "health-scoring-framework.md"
+      ]
+    },
+    {
+      "name": "revenue-operations",
+      "path": "business-growth/skills/revenue-operations",
+      "description": "Analyzes sales pipeline health, revenue forecasting accuracy, and go-to-market efficiency metrics for SaaS revenue optimization. Use when analyzing sales pipeline coverage, forecasting revenue, evaluating go-to-market performance, reviewing sales metrics, assessing pipeline analysis, tracking forecast accuracy with MAPE, calculating GTM efficiency, or measuring sales efficiency and unit economics for SaaS teams.",
+      "tools": [
+        {
+          "script": "business-growth/skills/revenue-operations/scripts/forecast_accuracy_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/revenue-operations/scripts/forecast_accuracy_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/revenue-operations/scripts/gtm_efficiency_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/revenue-operations/scripts/gtm_efficiency_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/revenue-operations/scripts/pipeline_analyzer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/revenue-operations/scripts/pipeline_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 business-growth/skills/revenue-operations/scripts/pipeline_analyzer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "gtm-efficiency-benchmarks.md",
+        "pipeline-management-framework.md",
+        "revops-metrics-guide.md"
+      ]
+    },
+    {
+      "name": "sales-engineer",
+      "path": "business-growth/skills/sales-engineer",
+      "description": "Analyzes RFP/RFI responses for coverage gaps, builds competitive feature comparison matrices, and plans proof-of-concept (POC) engagements for pre-sales engineering. Use when responding to RFPs, bids, or proposal requests; comparing product features against competitors; planning or scoring a customer POC or sales demo; preparing a technical proposal; or performing win/loss competitor analysis. Handles tasks described as 'RFP response', 'bid response', 'proposal response', 'competitor comparison', 'feature matrix', 'POC planning', 'sales demo prep', or 'pre-sales engineering'.",
+      "tools": [
+        {
+          "script": "business-growth/skills/sales-engineer/scripts/competitive_matrix_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/sales-engineer/scripts/competitive_matrix_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/sales-engineer/scripts/poc_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/sales-engineer/scripts/poc_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "business-growth/skills/sales-engineer/scripts/rfp_response_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 business-growth/skills/sales-engineer/scripts/rfp_response_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "competitive-positioning-framework.md",
+        "poc-best-practices.md",
+        "rfp-response-guide.md"
+      ]
+    }
+  ]
+}

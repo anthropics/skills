@@ -1,0 +1,29 @@
+run_id: 2026-04-30T15-01-00Z-c100
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "4(f)"
+    file: bad_run/deliverable.md
+    line: 5
+    description: >
+      Compression overclaim (C1): The upstream chapter body (Section 4.3) hedged
+      the central finding with "tentatively suggest" and "may accelerate" — both
+      listed as protected hedges in the dispatch context. The abstract drops both
+      phrases and asserts "accelerates institutional responsiveness" as fact,
+      upgrading an exploratory, n=14 observational finding to an unconditional
+      causal claim.
+    suggested_fix: >
+      Restore the protected hedge pair verbatim: replace "accelerates institutional
+      responsiveness" with "may accelerate institutional responsiveness" and prepend
+      "findings tentatively suggest that" to the opening claim, within existing
+      word budget.
+generated_at: "2026-04-30T15:01:44.391Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

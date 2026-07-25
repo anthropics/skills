@@ -1,0 +1,63 @@
+# SLO definition — fill in <PLACEHOLDERS>
+# Pass this through slo_review.py before going live.
+---
+slo_id: slo-<service>-<sli_type>-<unix_ts>
+service: <service-name>                # e.g., checkout-svc
+owner: <team-or-handle@org>             # required; named individual or team
+created: <YYYY-MM-DD>
+review_cadence: quarterly               # quarterly | monthly | weekly
+
+# The user journey this SLO protects.
+# Be specific. NOT "API works" — instead "User completes checkout in <2s".
+user_journey: <describe the user journey>
+
+# The SLI: a measurable signal of user-perceived health.
+sli:
+  type: request-success-rate            # request-success-rate | request-latency
+                                        # | availability-time | data-freshness | correctness
+  numerator: count(http_requests_total{job="<service>", status_code=~"2..|3.."})
+  denominator: count(http_requests_total{job="<service>", source!="bot"})
+  labels:
+    - env=prod
+    - region=us-east-1
+
+# The target value the SLI must hit over the window.
+# Pick from data: floor(p50 of last 30d × 100) / 100.
+# Don't copy 99.9% blindly.
+target_percent: 99.9
+window_days: 28                         # 7 / 28 / 30 / 90 — default 28
+
+error_budget:
+  # Computed by error_budget_calculator.py — confirm the math.
+  minutes_per_window: <40.32 for 99.9% over 28 days>
+  # Path or URL to the error budget policy.
+  # The policy must answer: "When budget burns to 25% / 0%, what changes?"
+  policy_doc: <link required before SLO is live>
+
+# Burn-rate alert thresholds, computed by error_budget_calculator.py.
+# Multi-window per Google SRE Workbook Chapter 5.
+alerts:
+  fast_burn:
+    long_window: 1h
+    short_window: 5m
+    burn_rate_threshold: <from error_budget_calculator.py>
+    severity: page
+  slow_burn:
+    long_window: 6h
+    short_window: 30m
+    burn_rate_threshold: <from error_budget_calculator.py>
+    severity: page
+  ticket_burn:
+    long_window: 3d
+    short_window: 6h
+    burn_rate_threshold: <from error_budget_calculator.py>
+    severity: ticket
+
+# Composition with other skills.
+# Wire-up with feature-flags-architect, chaos-engineering, kubernetes-operator
+# is documented in references/composition.md.
+references:
+  monitoring_dashboard: <URL>
+  policy_doc: <URL>
+  related_slos:
+    - <other-slo-id>

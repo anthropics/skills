@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "files_in_diff": 3,
+  "total_change_lines": 45,
+  "noise_lines": 4,
+  "noise_ratio": 0.09,
+  "verdict": "CLEAN",
+  "file_results": []
+}

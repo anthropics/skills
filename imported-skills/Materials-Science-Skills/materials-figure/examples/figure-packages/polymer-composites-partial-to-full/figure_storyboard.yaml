@@ -1,0 +1,33 @@
+layout: 3x2
+title: Polymer composite property-mechanism package
+panels:
+  - id: A
+    role: property-performance
+    title: Stress-strain
+    claim: Stress-strain curves compare composite formulations.
+    evidence: Mechanical test data.
+    source: stress_strain.csv
+  - id: B
+    role: mechanism-evidence
+    title: Fiber orientation
+    claim: Fiber orientation is associated with anisotropic response.
+    evidence: Microscopy or orientation analysis.
+    source: fiber_orientation.csv
+  - id: C
+    role: mechanism-evidence
+    title: Interface mechanism
+    claim: Interface mechanism is bounded by characterization evidence.
+    evidence: SEM/FTIR/interface observations.
+    source: interface_mechanism.csv
+  - id: D
+    role: durability-aging
+    title: Fatigue
+    claim: Fatigue performance is limited to the tested loading protocol.
+    evidence: S-N fatigue data.
+    source: fatigue.csv
+  - id: E
+    role: property-performance
+    title: Interlaminar shear
+    claim: Interlaminar shear strength is compared across samples.
+    evidence: ILSS data.
+    source: interlaminar_shear.csv

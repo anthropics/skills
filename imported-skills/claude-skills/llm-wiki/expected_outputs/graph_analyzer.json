@@ -1,0 +1,18 @@
+{
+  "total_pages": 2,
+  "total_edges": 2,
+  "top_outbound_hubs": [
+    {"page": "sources/hello", "outbound": 1},
+    {"page": "concepts/sparse-autoencoder", "outbound": 1}
+  ],
+  "top_inbound_hubs": [
+    {"page": "sources/hello", "inbound": 1},
+    {"page": "concepts/sparse-autoencoder", "inbound": 1}
+  ],
+  "orphans": [],
+  "sinks": [],
+  "components": [
+    {"size": 2, "sample": ["concepts/sparse-autoencoder", "sources/hello"]}
+  ],
+  "component_count": 1
+}

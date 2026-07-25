@@ -1,0 +1,28 @@
+{
+  "tuple_id": "036-fabricated-fictive-market",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Andersson2024FictiveMarket",
+    "title": "Fictive Market Microstructure and the Phantom Liquidity Premium",
+    "authors": [
+      {"family": "Andersson", "given": "J."},
+      {"family": "Mehta", "given": "S."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.econ.2024.233",
+    "venue": "Review of Fictive Finance",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.econ.2024.233",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "andersson-2024-fictive-market",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": {
+    "verdict": "false",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-27T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": true
+}

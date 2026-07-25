@@ -1,0 +1,568 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "productivity",
+  "skill_count": 7,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "andreessen",
+      "path": "productivity/andreessen/skills/andreessen",
+      "description": "Marc Andreessen-mode decision and productivity skill. A blunt, market-first operator that pressure-tests ideas, ventures, features, and career bets through Andreessen's actual frameworks \u2014 market dominates team and product; the only milestone that matters is product/market fit; bias to build over deliberate. Use when the user says 'andreessen', 'pmarca mode', 'should I build this', 'is there a market', 'are we at product/market fit', 'pmf check', 'pressure-test this idea', 'be brutal about this venture', 'market-first take', or wants a no-disclaimers, no-hedging, confidence-leveled verdict \u2026",
+      "tools": [
+        {
+          "script": "productivity/andreessen/skills/andreessen/scripts/anti_todo_card.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/anti_todo_card.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/anti_todo_card.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/andreessen/skills/andreessen/scripts/market_first_evaluator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/market_first_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/market_first_evaluator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/andreessen/skills/andreessen/scripts/pmf_signal_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/pmf_signal_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/andreessen/skills/andreessen/scripts/pmf_signal_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "market_first_canon.md",
+        "operating_prompt.md",
+        "personal_productivity_system.md",
+        "pmf_and_build_canon.md"
+      ]
+    },
+    {
+      "name": "capture",
+      "path": "productivity/capture/skills/capture",
+      "description": "Captures and organizes chaotic brain dumps into a structured, actionable system with zero information loss. Use this skill whenever the user says 'capture this', 'brain dump', 'let me dump some ideas', 'I've got a bunch of thoughts', 'here's everything on my mind', 'idea dump', 'let me get this out of my head', 'I need to organize my thoughts', 'here's what I'm thinking', or any variation where someone is unloading a messy stream of ideas, tasks, thoughts, and plans wanting them turned into something coherent. Also trigger when the user pastes or dictates a long, unstructured block of mixed \u2026",
+      "tools": [
+        {
+          "script": "productivity/capture/skills/capture/scripts/complexity_estimator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/complexity_estimator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/complexity_estimator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/capture/skills/capture/scripts/dump_classifier.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/dump_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/dump_classifier.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/capture/skills/capture/scripts/workspace_inventory.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/workspace_inventory.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/capture/skills/capture/scripts/workspace_inventory.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "complexity_matching.md",
+        "voice_preservation.md",
+        "workspace_detection.md"
+      ]
+    },
+    {
+      "name": "inbox-setup",
+      "path": "productivity/email/skills/inbox-setup",
+      "description": "One-time setup skill that builds a personalized inbox triage knowledge base via interactive interview. Interviews the user about their email patterns, business context, reply style, and priorities using grill-me discipline (one question at a time, forcing format where possible, dependency-ordered, each question explains why I'm asking), then generates the knowledge base files that power the companion 'inbox-triage' skill. Run this once before using inbox-triage for the first time. Re-run when business, pricing, or priorities change significantly. Triggers: 'set up my inbox', 'configure \u2026",
+      "tools": [
+        {
+          "script": "productivity/email/skills/inbox-setup/scripts/kb_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-setup/scripts/kb_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/email/skills/inbox-setup/scripts/kb_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/email/skills/inbox-setup/scripts/section_progress_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-setup/scripts/section_progress_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "productivity/email/skills/inbox-setup/scripts/voice_sample_analyzer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-setup/scripts/voice_sample_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/email/skills/inbox-setup/scripts/voice_sample_analyzer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "grill_me_section_walk.md",
+        "kb_file_contract.md",
+        "voice_calibration.md"
+      ]
+    },
+    {
+      "name": "inbox-triage",
+      "path": "productivity/email/skills/inbox-triage",
+      "description": "Runs a full inbox triage using the knowledge base created by the 'inbox-setup' skill. Light-intake by design (most invocations skip questions and run with KB-default preferences); asks at most 2 grill-me override questions when invocation is outside normal cadence or includes category-skip intent. Searches recent emails, classifies them via the user's taxonomy, researches new senders, generates recommendations, drafts replies (NEVER sends), delivers a report in the user's preferred format, and updates the knowledge base with learnings. Designed to run on a recurring schedule (1-3x daily) or \u2026",
+      "tools": [
+        {
+          "script": "productivity/email/skills/inbox-triage/scripts/draft_safety_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-triage/scripts/draft_safety_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/email/skills/inbox-triage/scripts/draft_safety_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/email/skills/inbox-triage/scripts/kb_reader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-triage/scripts/kb_reader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/email/skills/inbox-triage/scripts/kb_reader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/email/skills/inbox-triage/scripts/search_window_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 productivity/email/skills/inbox-triage/scripts/search_window_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "drafts_only_safety.md",
+        "kb_file_contract.md",
+        "triage_decision_framework.md"
+      ]
+    },
+    {
+      "name": "handoff",
+      "path": "productivity/handoff/skills/handoff",
+      "description": "Compact the current conversation into a handoff document for another agent to pick up. Save to a user-configured location (OS temp, home folder, or per-project .handoff/), redact secrets before write, suggest skills for the next session, and auto-load the latest handoff on the next SessionStart. First-run setup asks where to save so the project folder never gets cluttered. Use when the user says 'hand this off', 'handoff doc', 'summarize this for a new session', 'compact this conversation', 'I'm ending this session', 'pick this up later', or any variation signaling intent to pass work to a \u2026",
+      "tools": [
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/cleanup.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/cleanup.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/cleanup.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/handoff_self_check.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/handoff_self_check.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/handoff_self_check.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/handoff_template_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/handoff_template_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/handoff_template_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/redaction_linter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/redaction_linter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/redaction_linter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/setup.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/setup.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/setup.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/handoff/skills/handoff/scripts/skill_recommender.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/skill_recommender.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/handoff/skills/handoff/scripts/skill_recommender.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "configuration.md",
+        "deduplication_discipline.md",
+        "handoff_prompt.md",
+        "handoff_structure.md",
+        "redaction_checklist.md"
+      ]
+    },
+    {
+      "name": "reflect",
+      "path": "productivity/reflect/skills/reflect",
+      "description": "Mid-conversation reflection skill that pauses execution and zooms out from detail-mode to honestly reassess direction, assumptions, and bias. Use when the user says 'reflect', 'take a step back', 'step back', 'zoom out', 'are we missing something', 'bigger picture', 'sanity check this', 'are we on track', 'are we overthinking this', 'forest for the trees', or any variation signaling intent to break out of detail-mode and reassess. Also trigger when the conversation has gone deep on implementation details without strategic check-in, or when the user shows signs of being stuck \u2014 that's often \u2026",
+      "tools": [
+        {
+          "script": "productivity/reflect/skills/reflect/scripts/bias_pattern_detector.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/bias_pattern_detector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/bias_pattern_detector.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/reflect/skills/reflect/scripts/conversation_depth_analyzer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/conversation_depth_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/conversation_depth_analyzer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/reflect/skills/reflect/scripts/directional_recommendation_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/directional_recommendation_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/reflect/skills/reflect/scripts/directional_recommendation_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cognitive_bias_canon.md",
+        "conversation_reflection_practice.md",
+        "honest_output_discipline.md"
+      ]
+    },
+    {
+      "name": "roast",
+      "path": "productivity/roast/skills/roast",
+      "description": "Use when someone asks to roast an idea, pressure-test or stress-test an idea, validate a business idea, \"convene the panel\", get a brutal second opinion before building something, or says \"/roast\". Spins up a 5-angle panel (Critic, Champion, Analyst, Investigator, Customer) that attacks the idea from every angle, then a Judge returns one GO / RESHAPE / KILL verdict with the cheapest test to de-risk it.",
+      "tools": [
+        {
+          "script": "productivity/roast/skills/roast/scripts/brief_builder.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/brief_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/brief_builder.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/roast/skills/roast/scripts/cheapest_test_designer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/cheapest_test_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/cheapest_test_designer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "productivity/roast/skills/roast/scripts/verdict_synthesizer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/verdict_synthesizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 productivity/roast/skills/roast/scripts/verdict_synthesizer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "adversarial_panel_canon.md",
+        "cheapest_test_canon.md",
+        "verdict_synthesis_method.md"
+      ]
+    }
+  ]
+}

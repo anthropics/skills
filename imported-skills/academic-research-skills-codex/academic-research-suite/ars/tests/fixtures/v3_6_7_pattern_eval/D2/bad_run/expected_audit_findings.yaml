@@ -1,0 +1,19 @@
+# D2 special case per §7.4 criterion 1:
+# The failure signal for D2 is NOT finding-based. The pattern is a
+# convergence-policy assertion — a single-round CLEAN claim that violates
+# the spec §4.2 minimum 3-round convergence requirement. The verdict_status
+# is PASS (0 findings) because Round 1 finds nothing in the deliverable text
+# itself. The D2 trigger is logged as a convergence-theatre policy assertion
+# in expected_orchestrator_action.yaml, not as a finding in this file.
+run_id: 2026-04-30T15-09-00Z-d200
+verdict_status: PASS
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 0
+  p2: 0
+  p3: 0
+findings: []
+generated_at: "2026-04-30T15:09:44.018Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

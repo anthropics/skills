@@ -1,0 +1,5 @@
+level,label,size_label,value
+atom,Au lattice,0.3 nm,1.0
+nano,Au NP,8 nm,0.85
+micro,Mesoporous shell,1 um,0.70
+macro,Monolith bulk,1 cm,0.55

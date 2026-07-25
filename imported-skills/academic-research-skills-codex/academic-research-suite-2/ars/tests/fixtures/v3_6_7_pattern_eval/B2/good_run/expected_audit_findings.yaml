@@ -1,0 +1,12 @@
+run_id: 2026-04-30T10-22-00Z-b2a0
+verdict_status: PASS
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 0
+  p2: 0
+  p3: 0
+findings: []
+generated_at: "2026-04-30T10:22:31.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

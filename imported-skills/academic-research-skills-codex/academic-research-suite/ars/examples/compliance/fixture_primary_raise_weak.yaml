@@ -1,0 +1,37 @@
+# Fixture: Primary Research — Weak human_oversight description → warn (primary mode never blocks)
+# Expected validator result: exit 0, overall_decision = warn, user_action_required = true
+# prisma_trAIce: null  (cross-field rule: primary_research → null)
+# raise.mode: principles_only → roles NOT required, omitted entirely
+# CA-4 does NOT fire: all pass principles (transparency, reproducibility, fit_for_purpose) have evidence.
+
+mode: primary_research
+stage: "4.5"
+generated_at: "2026-04-20T09:30:00Z"
+
+prisma_trAIce: null
+
+raise:
+  mode: principles_only
+  principles:
+    human_oversight: warn
+    transparency: pass
+    reproducibility: pass
+    fit_for_purpose: pass
+  principle_evidence:
+    human_oversight:
+      - "[weak evidence] Section 4: manuscript states 'the first author reviewed AI outputs' with no further detail on review protocol, criteria, or proportion of outputs checked."
+    transparency:
+      - "Methods 2.2: model name (claude-sonnet-4-6), API version, and prompt template included as supplementary material."
+      - "Author contribution statement: AI use declared per journal policy."
+    reproducibility:
+      - "GitHub repository github.com/example/study2026: analysis scripts and prompts archived under MIT license."
+      - "Methods 2.3: random seed fixed (42); environment pinned in requirements.txt."
+    fit_for_purpose:
+      - "Methods 1.3: AI assistance limited to literature synthesis; all statistical analyses performed with R 4.3 without AI involvement."
+      - "Discussion 5.1: AI tool selection rationale provided; alternatives considered and scope limitations acknowledged."
+  block_decision: warn
+
+overall_decision: warn
+user_action_required: true
+
+upstream_sync_status: current

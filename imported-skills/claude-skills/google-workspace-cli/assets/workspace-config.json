@@ -1,0 +1,61 @@
+{
+  "_comment": "Google Workspace CLI automation config template. Copy and customize for your environment.",
+  "auth": {
+    "method": "oauth",
+    "client_id": "",
+    "client_secret": "",
+    "token_path": "~/.config/gws/token.json",
+    "service_account_key": "",
+    "delegated_user": ""
+  },
+  "defaults": {
+    "output_format": "json",
+    "pagination_limit": 100,
+    "timeout_ms": 30000,
+    "log_level": "warn"
+  },
+  "persona": "developer",
+  "scopes": [
+    "gmail.modify",
+    "gmail.send",
+    "drive.file",
+    "drive.metadata.readonly",
+    "spreadsheets",
+    "calendar",
+    "calendar.events",
+    "tasks"
+  ],
+  "scheduled_tasks": [
+    {
+      "name": "morning-briefing",
+      "recipe": "morning-briefing",
+      "schedule": "0 8 * * 1-5",
+      "output": "~/workspace-reports/morning-{date}.json"
+    },
+    {
+      "name": "eod-wrap",
+      "recipe": "eod-wrap",
+      "schedule": "0 17 * * 1-5",
+      "output": "~/workspace-reports/eod-{date}.json"
+    },
+    {
+      "name": "weekly-summary",
+      "recipe": "weekly-summary",
+      "schedule": "0 9 * * 5",
+      "output": "~/workspace-reports/weekly-{date}.json"
+    },
+    {
+      "name": "security-audit",
+      "command": "python3 scripts/workspace_audit.py --json",
+      "schedule": "0 10 * * 1",
+      "output": "~/workspace-reports/audit-{date}.json"
+    }
+  ],
+  "aliases": {
+    "inbox": "gws gmail users.messages list me --query 'is:inbox' --limit 20 --json",
+    "unread": "gws gmail users.messages list me --query 'is:unread' --limit 20 --json",
+    "files": "gws drive files list --limit 20 --json",
+    "events": "gws calendar events list primary --timeMin $(date -u +%Y-%m-%dT%H:%M:%SZ) --maxResults 10 --json",
+    "tasks": "gws tasks tasks list @default --json"
+  }
+}

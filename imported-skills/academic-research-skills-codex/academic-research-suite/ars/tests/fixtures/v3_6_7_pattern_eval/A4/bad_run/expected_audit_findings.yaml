@@ -1,0 +1,31 @@
+run_id: 2026-04-30T10-07-00Z-a4b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.3"
+    file: bad_run/deliverable.md
+    line: 8
+    description: >
+      Quote scope creep (A4): The verbatim quote block (lines 8-11) presents
+      the full Article 7 text including panel composition requirements ("at least
+      two external experts ... one industry representative") as verified verbatim.
+      However, the prior artifact (ministerial_order_2019.md) marks the verified
+      phrase boundary at "five-year cycle" only — the panel composition clause
+      is explicitly marked as surrounding unverified decree context. The quote
+      extends past the verified boundary and presents unverified text inside
+      quotation marks, misrepresenting its verification status.
+    suggested_fix: >
+      Terminate the verbatim quote at "five-year cycle." [verified-by-source
+      ministerial_order_2019-line-2]. Paraphrase the panel composition clause
+      without quotation marks and note it is pending verification against the
+      official gazette text.
+generated_at: "2026-04-30T10:07:38.629Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

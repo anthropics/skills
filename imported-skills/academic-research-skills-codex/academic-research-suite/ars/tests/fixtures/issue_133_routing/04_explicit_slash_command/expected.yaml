@@ -1,0 +1,11 @@
+fixture_id: 04_explicit_slash_command
+expected_routing_class: proceed
+expected_destination: academic-paper:lit-review
+escape_hatch_applied: false
+notes: |
+  Slash command `/ars-lit-review` is an explicit invocation. Per Routing Discipline
+  Step 1, route directly with no clarification, no orchestrator detour.
+
+  Pass criteria:
+  - Response begins lit-review work
+  - Response does NOT clarify

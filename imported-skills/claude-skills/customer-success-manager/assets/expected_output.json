@@ -1,0 +1,170 @@
+{
+  "report": "customer_health_scores",
+  "summary": {
+    "total_customers": 4,
+    "average_score": 78.8,
+    "green_count": 3,
+    "yellow_count": 1,
+    "red_count": 0
+  },
+  "customers": [
+    {
+      "customer_id": "CUST-001",
+      "name": "Acme Corp",
+      "segment": "enterprise",
+      "arr": 120000,
+      "overall_score": 86.2,
+      "classification": "green",
+      "dimensions": {
+        "usage": {
+          "score": 91.6,
+          "weight": "30%",
+          "classification": "green"
+        },
+        "engagement": {
+          "score": 82.0,
+          "weight": "25%",
+          "classification": "green"
+        },
+        "support": {
+          "score": 78.5,
+          "weight": "20%",
+          "classification": "green"
+        },
+        "relationship": {
+          "score": 90.1,
+          "weight": "25%",
+          "classification": "green"
+        }
+      },
+      "trends": {
+        "usage": "improving",
+        "engagement": "improving",
+        "support": "stable",
+        "relationship": "improving",
+        "overall": "improving"
+      },
+      "recommendations": []
+    },
+    {
+      "customer_id": "CUST-002",
+      "name": "TechStart Inc",
+      "segment": "smb",
+      "arr": 18000,
+      "overall_score": 53.7,
+      "classification": "yellow",
+      "dimensions": {
+        "usage": {
+          "score": 52.5,
+          "weight": "30%",
+          "classification": "yellow"
+        },
+        "engagement": {
+          "score": 61.6,
+          "weight": "25%",
+          "classification": "yellow"
+        },
+        "support": {
+          "score": 63.2,
+          "weight": "20%",
+          "classification": "yellow"
+        },
+        "relationship": {
+          "score": 39.5,
+          "weight": "25%",
+          "classification": "red"
+        }
+      },
+      "trends": {
+        "usage": "stable",
+        "engagement": "improving",
+        "support": "stable",
+        "relationship": "declining",
+        "overall": "stable"
+      },
+      "recommendations": [
+        "Login frequency below target -- schedule product engagement session",
+        "NPS below threshold -- conduct a feedback deep-dive with customer",
+        "CSAT is critically low -- escalate to support leadership",
+        "Single-threaded relationship -- expand contacts across departments",
+        "Renewal sentiment is negative -- initiate save plan immediately"
+      ]
+    },
+    {
+      "customer_id": "CUST-003",
+      "name": "GlobalTrade Solutions",
+      "segment": "mid-market",
+      "arr": 55000,
+      "overall_score": 79.7,
+      "classification": "green",
+      "dimensions": {
+        "usage": {
+          "score": 85.6,
+          "weight": "30%",
+          "classification": "green"
+        },
+        "engagement": {
+          "score": 79.6,
+          "weight": "25%",
+          "classification": "green"
+        },
+        "support": {
+          "score": 72.0,
+          "weight": "20%",
+          "classification": "green"
+        },
+        "relationship": {
+          "score": 79.0,
+          "weight": "25%",
+          "classification": "green"
+        }
+      },
+      "trends": {
+        "usage": "improving",
+        "engagement": "improving",
+        "support": "improving",
+        "relationship": "improving",
+        "overall": "improving"
+      },
+      "recommendations": []
+    },
+    {
+      "customer_id": "CUST-004",
+      "name": "HealthFirst Medical",
+      "segment": "enterprise",
+      "arr": 200000,
+      "overall_score": 95.7,
+      "classification": "green",
+      "dimensions": {
+        "usage": {
+          "score": 100.0,
+          "weight": "30%",
+          "classification": "green"
+        },
+        "engagement": {
+          "score": 92.0,
+          "weight": "25%",
+          "classification": "green"
+        },
+        "support": {
+          "score": 88.7,
+          "weight": "20%",
+          "classification": "green"
+        },
+        "relationship": {
+          "score": 100.0,
+          "weight": "25%",
+          "classification": "green"
+        }
+      },
+      "trends": {
+        "usage": "improving",
+        "engagement": "improving",
+        "support": "stable",
+        "relationship": "improving",
+        "overall": "improving"
+      },
+      "recommendations": []
+    }
+  ]
+}

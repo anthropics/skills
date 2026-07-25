@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Materials Science Reader Source Map",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_type",
+    "paper_title",
+    "doi_or_url",
+    "sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "paper_title": {
+      "type": "string"
+    },
+    "doi_or_url": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "source_kind",
+          "source_location",
+          "source_anchor",
+          "original_excerpt",
+          "evidence_layer",
+          "evidence_type",
+          "certainty_tier",
+          "confidence_label",
+          "missing_evidence_flag"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "source_kind": {
+            "type": "string"
+          },
+          "source_location": {
+            "type": "string"
+          },
+          "source_anchor": {
+            "type": "string"
+          },
+          "original_excerpt": {
+            "type": "string"
+          },
+          "evidence_layer": {
+            "type": "string"
+          },
+          "evidence_type": {
+            "type": "string"
+          },
+          "certainty_tier": {
+            "type": "string",
+            "enum": ["measured", "inferred", "speculative", "missing"]
+          },
+          "confidence_label": {
+            "type": "string"
+          },
+          "missing_evidence_flag": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

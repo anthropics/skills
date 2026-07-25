@@ -1,0 +1,22 @@
+{
+  "program": "<program name>",
+  "enabled_frameworks": [
+    "iso_27001",
+    "soc_2",
+    "iso_42001",
+    "eu_ai_act",
+    "gdpr"
+  ],
+  "_supported_framework_ids": [
+    "iso_27001",
+    "iso_13485",
+    "iso_42001",
+    "iso_14971",
+    "eu_ai_act",
+    "eu_mdr_745",
+    "gdpr",
+    "soc_2",
+    "fda_qsr"
+  ],
+  "_note": "Enable only the frameworks the framework_selector returned as applicable. Cross-framework mapper will compute overlap across enabled frameworks only."
+}

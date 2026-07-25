@@ -1,0 +1,29 @@
+{
+  "tuple_id": "031-fabricated-synthetic-genome",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Liu2024SyntheticGenome",
+    "title": "Synthetic Genome Reconstruction via Phantom Allele Imputation in Non-Model Organisms",
+    "authors": [
+      {"family": "Liu", "given": "H."},
+      {"family": "Okonkwo", "given": "A."},
+      {"family": "Vasquez", "given": "M."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.bio.2024.311",
+    "venue": "Journal of Synthetic Genomics",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.bio.2024.311",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "liu-2024-synthetic-genome",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": {
+    "verdict": "false",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-27T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": true
+}

@@ -1,0 +1,71 @@
+# Production CRD template — passes crd_validator.py
+# Fill in <PLACEHOLDERS>; remove these comments before applying.
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: <plural>.<group>            # e.g., myapps.apps.example.com
+spec:
+  group: <group>                    # e.g., apps.example.com
+  names:
+    kind: <Kind>                    # e.g., MyApp
+    plural: <plural>                # e.g., myapps
+    singular: <singular>            # e.g., myapp
+    listKind: <Kind>List            # e.g., MyAppList
+    shortNames: [<short>]           # optional, 2-3 letters
+  scope: Namespaced                 # default; Cluster requires justification
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required: [version]
+              properties:
+                version:
+                  type: string
+                  pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+                  description: Semver version of the application
+                replicas:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+                  default: 3
+                  description: Number of replicas to run
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  enum: [Pending, Running, Failed]
+                observedGeneration:
+                  type: integer
+                  description: Spec generation last reconciled
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    required: [type, status, lastTransitionTime]
+                    properties:
+                      type: { type: string }
+                      status: { type: string, enum: ["True", "False", "Unknown"] }
+                      reason: { type: string }
+                      message: { type: string }
+                      lastTransitionTime: { type: string, format: date-time }
+                      observedGeneration: { type: integer }
+      subresources:
+        status: {}                  # CRITICAL — enables /status subresource
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Ready
+          type: string
+          jsonPath: .status.conditions[?(@.type=="Ready")].status
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

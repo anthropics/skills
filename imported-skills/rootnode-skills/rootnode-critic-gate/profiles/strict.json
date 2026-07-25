@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "name": "strict",
+  "description": "Strictest critic profile. Operates as last line of defense. Only clean passes auto-approve. Any finding (including info-severity) routes to REJECT — change waits for supervised review window. Use for unattended runs.",
+  "auto_approve_on": ["clean_pass_only"],
+  "request_changes_threshold": [],
+  "reject_on": ["info", "minor", "major", "blocker"],
+  "skip_checks": [],
+  "escalation_required_for_categories": [
+    "invariant_violation",
+    "out_of_scope",
+    "verification_reduction",
+    "test_deletion",
+    "schema_contract_change"
+  ],
+  "auto_resolution_allowed": false,
+  "max_diff_size_for_auto_eval": 200,
+  "notes": "Strictest profile. Empty request_changes_threshold means there is no middle ground — either the change is clean or it gets rejected for human review. Rationale: in unattended mode, REQUEST_CHANGES routing back to the change author is just an autonomous loop with no human gate. Better to surface 'this change waited for review' in next supervised window than to risk an autonomous fix-loop landing changes that should have been evaluated by a human. Small max diff size forces granular changes; large autonomous diffs in strict mode are exactly the kind of thing that should split for review."
+}

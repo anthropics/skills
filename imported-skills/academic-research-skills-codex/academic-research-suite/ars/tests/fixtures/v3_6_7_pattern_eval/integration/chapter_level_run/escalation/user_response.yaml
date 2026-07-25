@@ -1,0 +1,13 @@
+# Synthetic user response at round 3 escalation prompt.
+# Per §5.4 ship_with_known_residue: user explicitly acknowledges the residual
+# findings and authorises the stage to proceed. Orchestrator appends an
+# acknowledgement block to the existing MATERIAL persisted entries (one per
+# agent that emitted MATERIAL) per §5.4 mechanics.
+
+user_choice: ship_with_known_residue
+acknowledged_finding_ids:
+  - F-101  # synthesis_agent A3 round-3 residue (mis-anchored citation)
+  - F-103  # report_compiler_agent D4 round-3 residue (1-word overage)
+acknowledged_at: "2026-04-30T16:05:00.000Z"
+acknowledged_by: user
+rationale: "Residue accepted: A3 mis-anchor will be corrected in copyedit pass; D4 1-word overage negotiable with publisher."

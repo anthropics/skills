@@ -1,0 +1,133 @@
+# {{VAULT_NAME}} — LLM Wiki
+
+> **Topic:** {{TOPIC}}
+> **Initialized:** {{DATE}}
+> **Tool:** Claude Code (this file). A parallel `AGENTS.md` exists for Codex/Cursor/Antigravity.
+
+You are the maintainer of this wiki. You read from `raw/`, you write to `wiki/`. You never edit `raw/`.
+
+## The three layers
+
+```
+raw/     → sources (articles, papers, notes). IMMUTABLE. You only read.
+wiki/    → the knowledge base. You own this. Create, update, cross-reference.
+CLAUDE.md / AGENTS.md → schema (this file). Co-evolved with the user.
+```
+
+## Vault structure
+
+```
+raw/
+├── <sources>              # articles, papers, notes — IMMUTABLE
+└── assets/                # downloaded images from clipped articles
+
+wiki/
+├── index.md               # content catalog — update every ingest
+├── log.md                 # append-only timeline
+├── entities/              # people, orgs, places, products
+├── concepts/              # ideas, theories, frameworks
+├── sources/               # one summary page per ingested source
+├── comparisons/           # cross-source analysis
+├── synthesis/             # high-level overviews and theses
+└── .templates/            # page templates (reference only)
+```
+
+## Page frontmatter (required on every wiki page)
+
+```yaml
+---
+title: <Title>
+category: entity | concept | source | comparison | synthesis
+summary: <one-line summary>
+tags: [tag1, tag2]
+sources: <count of sources referencing this page>
+updated: YYYY-MM-DD
+---
+```
+
+For `source` pages, also include:
+```yaml
+source_path: raw/<path>
+source_date: YYYY-MM (original publication)
+authors: [author1, author2]
+ingested: YYYY-MM-DD
+```
+
+## The three operations
+
+### Ingest (`/wiki-ingest <path>`)
+
+1. Run `python scripts/ingest_source.py --vault . --source <path> --json` to get the brief
+2. Read the source directly
+3. **Discuss with the user first** — TL;DR, key claims, which pages will be touched, contradictions
+4. Wait for confirmation
+5. Create or merge the summary page at `wiki/sources/<slug>.md`
+6. Update every relevant entity and concept page (typically 5-15 pages)
+7. Flag contradictions with `> ⚠️ Contradiction:` callouts on both sides
+8. Update `wiki/index.md` (run `update_index.py` or edit inline)
+9. Run `append_log.py --op ingest --title "<title>" --detail "<touched pages>"`
+10. Report back with a bulleted list of touched pages
+
+### Query (`/wiki-query <question>`)
+
+1. Read `wiki/index.md` first
+2. Pick 3-10 relevant pages across categories (synthesis + concepts + sources + entities)
+3. Read them in full
+4. Follow wikilinks opportunistically
+5. Fall back to `wiki_search.py --query <terms>` if the index doesn't surface the answer
+6. Synthesize: direct answer (1-3 sentences) → supporting detail → inline `[[sources/xxx]]` citations → "Related pages" section
+7. **Offer to file the answer back** as a new page in `comparisons/` or `synthesis/`
+
+### Lint (`/wiki-lint`)
+
+1. Run `python scripts/lint_wiki.py --vault .` for mechanical checks
+2. Run `python scripts/graph_analyzer.py --vault .` for structural stats
+3. Semantic checks: look for contradictions, stale claims, concepts mentioned without their own page, cross-reference gaps
+4. Present findings as a markdown report with suggested actions
+5. Append a `lint` entry to `log.md`
+
+## Iron rules
+
+1. **`raw/` is immutable.** You read from it; you never write to it.
+2. **All writes go to `wiki/`.** No exceptions.
+3. **Every wiki page has YAML frontmatter** with `title`, `category`, `summary`, `updated`.
+4. **Every ingest touches ≥5 files.** The source summary, 2-4 entity/concept pages, `index.md`, `log.md`.
+5. **Every claim has a citation.** Link back to the `sources/<slug>` page.
+6. **Contradictions get flagged inline.** Both pages get the callout.
+7. **Good answers get filed back.** Explorations compound.
+
+## Log format
+
+```
+## [YYYY-MM-DD] <op> | <title>
+<optional detail — which pages touched, what changed>
+```
+
+Valid ops: `ingest`, `query`, `lint`, `create`, `update`, `delete`, `note`.
+
+Grep the log: `grep "^## \[" wiki/log.md | tail -10`
+
+## Tools
+
+All scripts live at `~/.claude/skills/llm-wiki/scripts/` (or wherever you installed the plugin). Standard library only.
+
+- `init_vault.py` — bootstrap a vault
+- `ingest_source.py` — prep a source for ingest (metadata + preview)
+- `update_index.py` — regenerate `wiki/index.md` from page frontmatter
+- `append_log.py` — append a standardized log entry
+- `wiki_search.py` — BM25 search fallback
+- `lint_wiki.py` — mechanical health check
+- `graph_analyzer.py` — link graph stats
+- `export_marp.py` — render a page as a Marp slide deck
+
+## Obsidian
+
+The user opens this vault in Obsidian. They watch the graph view while you edit. Useful plugins: Graph view, Backlinks, Dataview, Marp, Templates, Git.
+
+## Style
+
+- Be concise. Wiki pages are read, not generated.
+- Prefer short paragraphs. Bulleted lists where appropriate.
+- Cite aggressively with `[[wikilinks]]`.
+- When you're not sure, say so in the page. Don't invent content.
+- Update `updated:` frontmatter whenever you touch a page.

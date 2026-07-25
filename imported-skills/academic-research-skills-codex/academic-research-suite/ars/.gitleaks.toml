@@ -1,0 +1,34 @@
+# Repository-hygiene scan config (#151).
+#
+# Extends the upstream gitleaks default ruleset; adds NO custom rules.
+# What it catches is documented at the level of the upstream tool's docs:
+# https://github.com/gitleaks/gitleaks#rules
+#
+# The allowlist removes the single structural false-positive class this repo
+# carries: bibliographic citation keys (e.g. "Becht2019UMAP",
+# "vaswani2017-arxiv-v1") stored in key-shaped fields of eval gold tuples,
+# the version-family example/design doc, and their schema test. These match
+# the generic-api-key heuristic but are literature identifiers, not
+# credentials — the 2026-06-10 baseline evaluation found 43 findings across
+# 518 commits, all of this class, zero true positives.
+#
+# Maintenance note: a new citation-tuple file under the allowlisted evals
+# path needs no action here. A NEW false-positive class elsewhere should be
+# added as a path entry (or a .gitleaksignore fingerprint for a one-off),
+# never as a rule edit.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Bibliographic citation keys misread as generic-api-key (literature identifiers, not credentials)"
+paths = [
+  '''evals/gold/citation_extraction/tuples/.*\.json''',
+  '''scripts/fixtures/check_evals_gold_set/.*''',
+  '''scripts/adapters/examples/.*''',
+  '''scripts/adapters/tests/test_zotero\.py''',
+  '''academic-paper/examples/version_family_reconciliation_example\.md''',
+  '''docs/design/2026-05-28-kong-258-version-family-reconciliation\.md''',
+  '''docs/design/2026-04-23-ars-v3\.6\.4-literature-corpus-adapters-plan\.md''',
+  '''scripts/test_version_records_schema\.py''',
+]

@@ -1,0 +1,87 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "marketing",
+  "skill_count": 1,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "landing",
+      "path": "marketing/landing/skills/landing",
+      "description": "Generates a premium single-page HTML landing page with 3D CSS animations, GSAP scroll effects, and mouse-parallax depth. Forcing intake (product + elevator pitch, audience register, brand overrides, tone) locks down positioning before any copy or markup is written, so the page reflects the actual product rather than generic boilerplate. Use whenever the user says 'landing for X', 'create a landing page', 'build a landing page', 'make a landing page for X', 'I need a web page for Y', or provides product/service details and wants a polished website. Also triggers on 'promotional page' \u2026",
+      "tools": [
+        {
+          "script": "marketing/landing/skills/landing/scripts/brand_palette_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/brand_palette_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/brand_palette_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "marketing/landing/skills/landing/scripts/html_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/html_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/html_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "marketing/landing/skills/landing/scripts/kebab_slug_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/kebab_slug_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing/landing/skills/landing/scripts/kebab_slug_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "brand_system_design.md",
+        "gsap_animation_patterns.md",
+        "single_file_html_discipline.md"
+      ]
+    }
+  ]
+}

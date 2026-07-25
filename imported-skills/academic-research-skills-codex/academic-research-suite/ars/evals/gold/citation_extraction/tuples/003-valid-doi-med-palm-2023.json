@@ -1,0 +1,152 @@
+{
+  "tuple_id": "003-valid-doi-med-palm-2023",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Singhal2023MedPaLM",
+    "title": "Large language models encode clinical knowledge",
+    "authors": [
+      {
+        "family": "Singhal",
+        "given": "Karan"
+      },
+      {
+        "family": "Azizi",
+        "given": "Shekoofeh"
+      },
+      {
+        "family": "Tu",
+        "given": "Tao"
+      },
+      {
+        "family": "Mahdavi",
+        "given": "S. Sara"
+      },
+      {
+        "family": "Wei",
+        "given": "Jason"
+      },
+      {
+        "family": "Chung",
+        "given": "Hyung Won"
+      },
+      {
+        "family": "Scales",
+        "given": "Nathan"
+      },
+      {
+        "family": "Tanwani",
+        "given": "Ajay"
+      },
+      {
+        "family": "Cole-Lewis",
+        "given": "Heather"
+      },
+      {
+        "family": "Pfohl",
+        "given": "Stephen"
+      },
+      {
+        "family": "Payne",
+        "given": "Perry"
+      },
+      {
+        "family": "Seneviratne",
+        "given": "Martin"
+      },
+      {
+        "family": "Gamble",
+        "given": "Paul"
+      },
+      {
+        "family": "Kelly",
+        "given": "Chris"
+      },
+      {
+        "family": "Babiker",
+        "given": "Abubakr"
+      },
+      {
+        "family": "Schärli",
+        "given": "Nathanael"
+      },
+      {
+        "family": "Chowdhery",
+        "given": "Aakanksha"
+      },
+      {
+        "family": "Mansfield",
+        "given": "Philip"
+      },
+      {
+        "family": "Demner-Fushman",
+        "given": "Dina"
+      },
+      {
+        "family": "Agüera y Arcas",
+        "given": "Blaise"
+      },
+      {
+        "family": "Webster",
+        "given": "Dale"
+      },
+      {
+        "family": "Corrado",
+        "given": "Greg S."
+      },
+      {
+        "family": "Matias",
+        "given": "Yossi"
+      },
+      {
+        "family": "Chou",
+        "given": "Katherine"
+      },
+      {
+        "family": "Gottweis",
+        "given": "Juraj"
+      },
+      {
+        "family": "Tomasev",
+        "given": "Nenad"
+      },
+      {
+        "family": "Liu",
+        "given": "Yun"
+      },
+      {
+        "family": "Rajkomar",
+        "given": "Alvin"
+      },
+      {
+        "family": "Barral",
+        "given": "Joelle"
+      },
+      {
+        "family": "Semturs",
+        "given": "Christopher"
+      },
+      {
+        "family": "Karthikesalingam",
+        "given": "Alan"
+      },
+      {
+        "family": "Natarajan",
+        "given": "Vivek"
+      }
+    ],
+    "year": 2023,
+    "doi": "10.1038/s41586-023-06291-2",
+    "venue": "Nature",
+    "source_pointer": "https://doi.org/10.1038/s41586-023-06291-2",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "singhal-2023-medpalm",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,6 @@
+layer,material,thickness_mm,color_hex
+Surface course,Upper AC (SMA-13),40-50,#424242
+Tack coat,CRS-2P emulsion,0.2-0.6 L/m2,#FFC107
+Binder course,Lower AC (AC-20),60-80,#616161
+Base course,Granular base,150-200,#BCAAA4
+Subgrade,Compacted soil,Variable,#D7CCC8

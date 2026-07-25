@@ -1,0 +1,43 @@
+version: "1.0.0"
+record_type: experiment-design
+study_id: ""
+title: ""
+created_by: "materials-doe"
+created_at: ""
+
+direction_profile:
+  material_family: ""
+  domain: ""
+  application: ""
+
+objectives:
+  - description: ""
+    response_variable: ""
+    optimization: maximize
+
+response_variables:
+  - name: ""
+    unit: ""
+    measurement_method: ""
+    replicate_count: 3
+
+factors:
+  - name: ""
+    unit: ""
+    type: continuous
+    levels: []
+
+design:
+  type: ""
+  runs:
+    - run_id: R1
+      factor_levels: {}
+      randomization_order: 1
+      block: 1
+      notes: ""
+
+materials: []
+processing: []
+characterization: []
+evidence_links: []
+terminology: []

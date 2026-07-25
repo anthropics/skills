@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "vite-spa",
+  "description": "Vite + React (or Vue/Solid) SPA for an auth-walled application. Login → app shell loads once → client routing. No SEO. Heavier JS bundle is acceptable because users come back. Internal tools, dashboards, B2B apps.",
+  "version": "1.0.0",
+  "constraints": {
+    "primary_device": ["desktop-fiber", "corporate-network"],
+    "rendering": "spa",
+    "seo_dependent": false,
+    "auth_walled_only": true,
+    "team_size_min": 1,
+    "team_size_max": 15
+  },
+  "stack": {
+    "build_tool": "vite",
+    "framework_options": ["react", "vue", "solid", "preact"],
+    "language": "typescript",
+    "styling": "tailwind-with-css-modules-for-component-isolation",
+    "component_library_options": ["shadcn-ui", "mantine", "chakra-ui", "ant-design"],
+    "router": "react-router-v6 or tanstack-router",
+    "state_client": "zustand-or-jotai or redux-toolkit",
+    "data_fetching": "tanstack-query (react-query)",
+    "forms": "react-hook-form + zod",
+    "testing": "vitest + react-testing-library + playwright-e2e",
+    "code_split": "route-level-lazy-load-mandatory"
+  },
+  "anti_recommendations": {
+    "no-code-splitting": "kill — single bundle for a multi-route SPA = unusable on slow networks",
+    "ssr-on-spa-only-surface": "warn — adds infra cost with no SEO benefit",
+    "next-or-remix-for-pure-spa": "warn — overkill; Vite is leaner",
+    "redux-without-justification": "warn — TanStack Query handles server state; Zustand handles UI state",
+    "context-as-global-state": "kill — re-renders cascade; use Zustand/Jotai for global UI state"
+  },
+  "success_thresholds": {
+    "lcp_ms_corporate_network_p75": 2500,
+    "inp_ms_p75": 200,
+    "cls_p75": 0.1,
+    "initial_bundle_kb_gzip_max": 200,
+    "per_route_chunk_kb_gzip_max": 80,
+    "lighthouse_perf_min": 80,
+    "lighthouse_a11y_min": 90,
+    "test_coverage_min": 0.5
+  },
+  "ci_gates": [
+    "bundlewatch-initial-and-per-route",
+    "a11y-axe-checks",
+    "playwright-smoke-on-key-flows",
+    "typecheck-strict"
+  ],
+  "canon_references": [
+    "Evan You + Vite team, Vite docs (2020-2024)",
+    "Brad Frost, Atomic Design (2016)",
+    "TanStack Query docs — server state vs UI state distinction",
+    "Marcy Sutton, Accessibility in JavaScript Applications (2017+)"
+  ]
+}

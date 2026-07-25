@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Materials Science Reader Visual Asset Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "package_type",
+    "assets",
+    "warnings",
+    "qa_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "package_type": {
+      "type": "string"
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "qa_status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

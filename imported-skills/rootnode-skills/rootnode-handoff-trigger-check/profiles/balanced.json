@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "name": "balanced",
+  "description": "Balanced gate for mobile-only HITL contexts. The user can approve or redirect via mobile notifications but cannot do deep-dive corrections. Stricter than lenient because failures may not be surfaced until a window of full attention; looser than strict because brief intervention is possible.",
+  "threshold_rule": "min_count",
+  "min_pass_count": 6,
+  "required_conditions": [
+    "invariants_documented",
+    "budget_headroom",
+    "verification_surface",
+    "rollback_tolerable"
+  ],
+  "budget_safety_margin": 1.2,
+  "budget_data_source": "manual_input",
+  "notes": "Mobile-only HITL profile. Verification and rollback both required because deep-dive correction is not available during fragmented-attention windows. Budget margin moderate (1.2x) to absorb minor estimation drift without forcing an interrupt. Reconsider if work surfaces a need for full-supervision-mode escalation more than 2x per week."
+}

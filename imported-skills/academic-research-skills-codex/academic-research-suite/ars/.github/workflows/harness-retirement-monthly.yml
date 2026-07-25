@@ -1,0 +1,80 @@
+name: Harness Retirement (Monthly)
+
+# Monthly audit for obsolete scaffolding in agent prompts. Opens a
+# tracking issue with the audit report so retirement work can be
+# scheduled rather than forgotten.
+#
+# Why: 5 days, 9 tags accumulated prompt-level workarounds. The
+# harness-retirement skill exists but hasn't been run against ARS
+# itself. Running monthly via cron prevents prompt debt from
+# silently compounding.
+#
+# The skill is loaded locally (~/.claude/...), so this workflow
+# can't invoke it directly on a GHA runner. Instead it opens an
+# issue with a checklist the user can run locally with
+# `/harness-retirement` and paste results into.
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st = 14:00 Asia/Taipei
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  open-audit-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compute month label
+        id: month
+        run: |
+          M=$(date -u +%Y-%m)
+          echo "label=$M" >> "$GITHUB_OUTPUT"
+
+      - name: Open audit tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          MONTH: ${{ steps.month.outputs.label }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## Harness retirement audit — ${MONTH}"
+            echo ""
+            echo "Run \`/harness-retirement\` locally against ARS agents and paste the report below."
+            echo ""
+            echo "### Scope"
+            echo ""
+            echo "All 22 Bucket A agents under v3.9.2 prompt hard fence:"
+            echo ""
+            echo "- deep-research (×9): research_question / research_architect / bibliography / source_verification / synthesis / editor_in_chief / ethics_review / risk_of_bias / meta_analysis"
+            echo "- academic-paper (×7): literature_strategist / structure_architect / draft_writer / citation_compliance / abstract_bilingual / peer_reviewer / formatter"
+            echo "- academic-paper-reviewer (×6): eic / methodology / domain / perspective / devils_advocate_reviewer / editorial_synthesizer"
+            echo ""
+            echo "### Six debt categories"
+            echo ""
+            echo "- [ ] **Sonnet 3.x workarounds** — explicit JSON-mode coercion, redundant role priming"
+            echo "- [ ] **Pre-tool-use scaffolds** — manual schema validation that current models do natively"
+            echo "- [ ] **Verbose chain-of-thought prompts** — opus 4.7 handles structured reasoning without templates"
+            echo "- [ ] **Defensive few-shot examples** — examples added for model limitations now fixed"
+            echo "- [ ] **Format guards** — duplicated 'return ONLY JSON' across agents"
+            echo "- [ ] **Deprecated tool references** — tool names / signatures from older Claude Code versions"
+            echo ""
+            echo "### Output checklist"
+            echo ""
+            echo "- [ ] Audit report posted as comment"
+            echo "- [ ] P0 retirements scheduled (open separate issues with \`harness-retirement\` label)"
+            echo "- [ ] P1 retirements logged in CHANGELOG [Unreleased]"
+            echo "- [ ] P2+ added to backlog"
+            echo ""
+            echo "---"
+            echo "_Auto-opened by harness-retirement-monthly.yml. Close once audit complete._"
+          } > issue-body.md
+
+          gh issue create \
+            --title "harness-retirement audit ${MONTH}" \
+            --label "harness-retirement" \
+            --body-file issue-body.md

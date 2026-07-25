@@ -1,0 +1,39 @@
+{
+  "language": "python",
+  "framework": "pytest",
+  "source_code": "def calculate_discount(price: float, discount_percent: float) -> float:\n    \"\"\"Calculate discounted price.\"\"\"\n    if price < 0:\n        raise ValueError(\"Price cannot be negative\")\n    if discount_percent < 0 or discount_percent > 100:\n        raise ValueError(\"Discount must be between 0 and 100\")\n    \n    discount_amount = price * (discount_percent / 100)\n    return round(price - discount_amount, 2)",
+  "requirements": {
+    "user_stories": [
+      {
+        "description": "Calculate discounted price for valid inputs",
+        "action": "calculate_discount",
+        "given": ["Price is 100", "Discount is 20%"],
+        "when": "Discount is calculated",
+        "then": "Return 80.00",
+        "error_conditions": [
+          {
+            "condition": "negative_price",
+            "description": "Price is negative",
+            "error_type": "ValueError"
+          },
+          {
+            "condition": "invalid_discount",
+            "description": "Discount is out of range",
+            "error_type": "ValueError"
+          }
+        ],
+        "edge_cases": [
+          {
+            "scenario": "zero_discount",
+            "description": "Discount is 0%"
+          },
+          {
+            "scenario": "full_discount",
+            "description": "Discount is 100%"
+          }
+        ]
+      }
+    ]
+  },
+  "coverage_threshold": 90
+}

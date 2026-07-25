@@ -1,0 +1,28 @@
+{
+  "tuple_id": "041-manual-exempt-hofstede-2010-cultures",
+  "kind": "manual_exempt",
+  "corpus_entry": {
+    "citation_key": "Hofstede2010Cultures",
+    "title": "Cultures and Organizations: Software of the Mind, Third Edition",
+    "authors": [
+      {"family": "Hofstede", "given": "Geert"},
+      {"family": "Hofstede", "given": "Gert Jan"},
+      {"family": "Minkov", "given": "Michael"}
+    ],
+    "year": 2010,
+    "venue": "McGraw-Hill",
+    "source_pointer": "urn:isbn:9780071664189",
+    "obtained_via": "manual"
+  },
+  "arxiv_id": null,
+  "ref_slug": "hofstede-2010-cultures",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": {
+    "verdict": "unresolvable",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

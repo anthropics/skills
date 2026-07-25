@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/citation_provenance.schema.json",
+  "title": "Material Passport Citation Provenance (phase2_investigation/citation_provenance.yaml)",
+  "description": "Aggregate schema for first-party citation verification results. Per spec §3.4. NOT added to literature_corpus_entry.schema.json (closed contract).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "audit_run_id", "entries"],
+  "properties": {
+    "schema_version": { "const": "1.0", "description": "Schema-internal version. v3.9.4 ships 1.0." },
+    "audit_run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "ISO-8601 UTC timestamp + 4-hex suffix; joins to temporal_audit_results.audit_run_id for per-run pairing."
+    },
+    "entries": {
+      "type": "array",
+      "description": "Per-citation first-party verification entries. Each entry joins to literature_corpus[] via citation_key. Per spec §3.4.",
+      "items": { "$ref": "#/$defs/citation_provenance_entry" }
+    }
+  },
+  "$defs": {
+    "citation_provenance_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["citation_key", "verification_method", "confidence"],
+      "properties": {
+        "citation_key": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_:-]*$", "description": "Joins to literature_corpus_entry.citation_key." },
+        "crossref_issued": {
+          "description": "Crossref API issued-date lookup result. Null when no DOI in corpus entry OR Crossref outage.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["value", "precision", "verified_at", "api_endpoint"],
+              "properties": {
+                "value": { "type": "string" },
+                "precision": { "enum": ["day", "month", "year"] },
+                "verified_at": { "type": "string", "format": "date-time" },
+                "api_endpoint": { "type": "string", "format": "uri" }
+              }
+            }
+          ]
+        },
+        "pdftotext_cover_first_line": {
+          "description": "pdftotext cover-page first-line scan result. Null when no local PDF in source_pointer.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["line", "verified_at", "pdf_path"],
+              "properties": {
+                "line": { "type": "string" },
+                "published_date_candidate": {
+                  "oneOf": [
+                    { "type": "null" },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["value", "precision"],
+                      "properties": {
+                        "value": { "type": "string" },
+                        "precision": { "enum": ["day", "month", "year"] }
+                      }
+                    }
+                  ]
+                },
+                "verified_at": { "type": "string", "format": "date-time" },
+                "pdf_path": { "type": "string" }
+              }
+            }
+          ]
+        },
+        "verification_method": {
+          "enum": ["crossref_and_pdftotext", "crossref_only", "pdftotext_only", "none"],
+          "description": "Closed enum; matches spec §3.4 verification_method values."
+        },
+        "confidence": {
+          "enum": ["high", "medium", "low", "conflict"],
+          "description": "Closed enum per spec §3.4 agreement table. high requires both sources; medium = single source agrees; low = no first-party verification; conflict = Crossref/pdftotext year disagree."
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Free-form notes (e.g., 'crossref_outage'). Null when no notes."
+        }
+      },
+      "allOf": [
+        {
+          "description": "confidence:high requires both crossref_issued AND pdftotext_cover_first_line PRESENT and non-null (spec §3.4 agreement table row 1). v3.9.4.1 hotfix: also require the properties so absent ones don't bypass the non-null check.",
+          "if": {
+            "properties": { "confidence": { "const": "high" } },
+            "required": ["confidence"]
+          },
+          "then": {
+            "required": ["crossref_issued", "pdftotext_cover_first_line"],
+            "properties": {
+              "crossref_issued": { "not": { "type": "null" } },
+              "pdftotext_cover_first_line": { "not": { "type": "null" } }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

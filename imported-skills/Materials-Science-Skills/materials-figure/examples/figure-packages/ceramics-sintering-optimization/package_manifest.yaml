@@ -1,0 +1,15 @@
+#target_journal: JACerS
+#material: Al2O3-5vol%SiC
+#figure_type: sintering-optimization
+---
+## Core conclusion
+Adding 5 vol% SiC nanoparticles to alumina improves densification at lower sintering temperatures while maintaining fine grain size.
+
+## Evidence chain
+Sintering temperature → relative density → grain size → hardness
+
+## Figure package contents
+- source_data.csv
+- plot_sintering_curve.py
+- plot_microstructure_bar.py
+- figure_contract.yaml

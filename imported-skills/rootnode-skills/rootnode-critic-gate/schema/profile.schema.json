@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drayline.io/rootnode/critic-gate/profile.schema.json",
+  "title": "Critic Gate Profile",
+  "description": "Configuration for a named profile that determines verdict thresholds and behavior of the rootnode-critic-gate Skill. Profiles are portable across users and projects. Same shape conventions as rootnode-handoff-trigger-check profiles but with critic-gate-specific parameters.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "description",
+    "auto_approve_on",
+    "request_changes_threshold",
+    "reject_on",
+    "escalation_required_for_categories"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the profile schema this file conforms to. Current version: 1.0.0."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+      "description": "Profile identifier in kebab-case. Used in the Skill's output to record which profile was applied."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Human-readable description of when this profile applies."
+    },
+    "auto_approve_on": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["clean_pass_only", "info"]
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "description": "Severity levels that, when present as the highest finding, still result in APPROVE verdict. 'clean_pass_only' means no findings of any kind. 'info' allows info-severity findings to coexist with APPROVE verdict (findings are recorded in audit trail but don't block)."
+    },
+    "request_changes_threshold": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["minor", "major"]
+      },
+      "uniqueItems": true,
+      "description": "Severity levels that route to REQUEST_CHANGES verdict (rather than escalating to REJECT). Author can re-propose after addressing findings. Empty array means no severity routes to REQUEST_CHANGES — every non-passing finding becomes REJECT. Strictest profiles use empty array."
+    },
+    "reject_on": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["info", "minor", "major", "blocker"]
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "description": "Severity levels that route to REJECT verdict regardless of other settings. 'blocker' is always REJECT. Strict profiles add 'major', 'minor', or even 'info'. SEVERITY COVERAGE REQUIREMENT: every severity (info, minor, major, blocker) must appear in exactly one of auto_approve_on, request_changes_threshold, or reject_on. No severity should be unrouted; the Skill validates this at runtime and rejects misconfigured profiles."
+    },
+    "skip_checks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "invariant_compliance",
+          "scope_authorization",
+          "detection_narrowness",
+          "regression_risk"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Checks to skip entirely. Should be empty in nearly all cases. Listed here only to support specialized profiles where a check genuinely doesn't apply (e.g., a profile for non-engine-evolution changes might skip detection_narrowness). Skipping invariant_compliance is strongly discouraged — that check is the core safety mechanism."
+    },
+    "escalation_required_for_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "invariant_violation",
+          "out_of_scope",
+          "verification_reduction",
+          "test_deletion",
+          "schema_contract_change"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1,
+      "description": "Finding categories that always require human escalation regardless of severity. These are the changes the Critic does not have authority to approve under any profile."
+    },
+    "auto_resolution_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, REQUEST_CHANGES verdicts can be auto-resolved if the change author addresses findings within the same turn (no full re-submission cycle). Useful for desk profiles where the human is supervising. Should be false for unattended profiles."
+    },
+    "max_diff_size_for_auto_eval": {
+      "type": "integer",
+      "minimum": 50,
+      "maximum": 5000,
+      "default": 500,
+      "description": "Maximum diff size (lines) the Critic will evaluate without recommending the change be split. Larger diffs trigger REQUEST_CHANGES with a 'split for review' recommendation. Smaller numbers force more granular reviews."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional. Free-text notes about when/how this profile is used."
+    }
+  }
+}

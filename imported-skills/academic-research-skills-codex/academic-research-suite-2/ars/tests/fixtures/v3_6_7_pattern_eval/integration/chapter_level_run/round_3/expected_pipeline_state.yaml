@@ -1,0 +1,28 @@
+# Round 3 expected pipeline state — final round before §5.4 escalation prompt.
+# A3 + D4 still MATERIAL after 3 rounds. Per §5.4 round upper bound, the
+# orchestrator now emits the escalation block (B11) and awaits user choice:
+# ship_with_known_residue / another_round (bumps cap by 1) / abort_stage.
+
+round: 3
+target_rounds: 3
+overall_verdict: MATERIAL
+ship_or_block: escalation_prompt
+audit_artifact_appended:
+  - agent: synthesis_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T16-00-00Z-f301
+  - agent: research_architect_agent
+    verdict_status: PASS
+    run_id: 2026-04-30T16-01-00Z-f302
+  - agent: report_compiler_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T16-02-00Z-f303
+findings_summary:
+  total_p1: 2
+  total_p2: 0
+  total_p3: 0
+escalation_prompt_emitted: true
+expected_user_options:
+  - ship_with_known_residue
+  - another_round
+  - abort_stage

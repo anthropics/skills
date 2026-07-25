@@ -1,0 +1,68 @@
+{
+  "skill_path": "assets/sample-skill",
+  "timestamp": "2026-02-16T16:41:00Z",
+  "overall_score": 85.0,
+  "compliance_level": "GOOD",
+  "checks": {
+    "skill_md_exists": {
+      "passed": true,
+      "message": "SKILL.md found",
+      "score": 1.0
+    },
+    "readme_exists": {
+      "passed": true,
+      "message": "README.md found",
+      "score": 1.0
+    },
+    "skill_md_length": {
+      "passed": true,
+      "message": "SKILL.md has 145 lines (≥100)",
+      "score": 1.0
+    },
+    "frontmatter_complete": {
+      "passed": true,
+      "message": "All required frontmatter fields present",
+      "score": 1.0
+    },
+    "required_sections": {
+      "passed": true,
+      "message": "All required sections present",
+      "score": 1.0
+    },
+    "dir_scripts_exists": {
+      "passed": true,
+      "message": "scripts/ directory found",
+      "score": 1.0
+    },
+    "min_scripts_count": {
+      "passed": true,
+      "message": "Found 1 Python scripts (≥1)",
+      "score": 1.0
+    },
+    "script_syntax_text_processor.py": {
+      "passed": true,
+      "message": "text_processor.py has valid Python syntax",
+      "score": 1.0
+    },
+    "script_argparse_text_processor.py": {
+      "passed": true,
+      "message": "Uses argparse in text_processor.py",
+      "score": 1.0
+    },
+    "script_main_guard_text_processor.py": {
+      "passed": true,
+      "message": "Has main guard in text_processor.py",
+      "score": 1.0
+    },
+    "tier_compliance": {
+      "passed": true,
+      "message": "Meets BASIC tier requirements",
+      "score": 1.0
+    }
+  },
+  "warnings": [],
+  "errors": [],
+  "suggestions": [
+    "Consider adding optional directories: references, expected_outputs"
+  ]
+}

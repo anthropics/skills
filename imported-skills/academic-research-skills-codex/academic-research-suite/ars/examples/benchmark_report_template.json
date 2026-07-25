@@ -1,0 +1,29 @@
+{
+  "ars_version": "3.3.5",
+  "task_definition": {
+    "description": "FILL IN: one-sentence description of the task",
+    "task_type": "open-ended",
+    "outcome_gradable": false
+  },
+  "human_baseline": {
+    "sample_size": 0,
+    "author_independence": "author-conducted",
+    "hours_spent": 0,
+    "recruitment": "FILL IN: how participants were recruited",
+    "tools_allowed": ["FILL IN: list of tools"]
+  },
+  "ars_run": {
+    "hours_spent": 0,
+    "cost_usd": 0,
+    "skills_used": ["academic-pipeline"],
+    "data_access_level_declared": "raw"
+  },
+  "metrics": {
+    "primary_metric": "FILL IN: metric name",
+    "primary_metric_value": 0,
+    "scoring_independence": "authors-scored"
+  },
+  "caveats": [
+    "FILL IN: at least one known limitation"
+  ]
+}

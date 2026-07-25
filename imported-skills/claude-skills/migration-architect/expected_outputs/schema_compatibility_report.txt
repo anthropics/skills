@@ -1,0 +1,129 @@
+================================================================================
+COMPATIBILITY ANALYSIS REPORT
+================================================================================
+Analysis Date: 2026-02-16T13:47:27.050459
+Overall Compatibility: POTENTIALLY_INCOMPATIBLE
+
+SUMMARY
+----------------------------------------
+Breaking Changes: 0
+Potentially Breaking: 4
+Non-Breaking Changes: 0
+Additive Changes: 0
+Total Issues Found: 4
+
+RISK ASSESSMENT
+----------------------------------------
+Overall Risk: medium
+Deployment Risk: safe_independent_deployment
+Rollback Complexity: low
+Testing Requirements: ['integration_testing', 'regression_testing', 'data_migration_testing']
+
+POTENTIALLY BREAKING ISSUES
+----------------------------------------
+• New check constraint 'phone IS NULL OR LENGTH(phone) >= 10' added to table 'users'
+  Field: tables.users.constraints.check
+  Impact: New check constraint may reject existing data
+  Migration: Validate existing data complies with new constraint
+  Affected Operations: INSERT, UPDATE
+
+• New check constraint 'bio IS NULL OR LENGTH(bio) <= 2000' added to table 'user_profiles'
+  Field: tables.user_profiles.constraints.check
+  Impact: New check constraint may reject existing data
+  Migration: Validate existing data complies with new constraint
+  Affected Operations: INSERT, UPDATE
+
+• New check constraint 'language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh')' added to table 'user_profiles'
+  Field: tables.user_profiles.constraints.check
+  Impact: New check constraint may reject existing data
+  Migration: Validate existing data complies with new constraint
+  Affected Operations: INSERT, UPDATE
+
+• New check constraint 'session_type IN ('web', 'mobile', 'api', 'admin')' added to table 'user_sessions'
+  Field: tables.user_sessions.constraints.check
+  Impact: New check constraint may reject existing data
+  Migration: Validate existing data complies with new constraint
+  Affected Operations: INSERT, UPDATE
+
+SUGGESTED MIGRATION SCRIPTS
+----------------------------------------
+1. Create new table user_preferences
+   Type: sql
+   Script:
+     CREATE TABLE user_preferences (
+       id bigint NOT NULL,
+       user_id bigint NOT NULL,
+       preference_key varchar NOT NULL,
+       preference_value json,
+       created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+     );
+
+2. Add column email_verified_at to table users
+   Type: sql
+   Script:
+     ALTER TABLE users ADD COLUMN email_verified_at timestamp;
+
+3. Add column phone_verified_at to table users
+   Type: sql
+   Script:
+     ALTER TABLE users ADD COLUMN phone_verified_at timestamp;
+
+4. Add column two_factor_enabled to table users
+   Type: sql
+   Script:
+     ALTER TABLE users ADD COLUMN two_factor_enabled boolean NOT NULL DEFAULT False;
+
+5. Add column last_login_at to table users
+   Type: sql
+   Script:
+     ALTER TABLE users ADD COLUMN last_login_at timestamp;
+
+6. Add check constraint to users
+   Type: sql
+   Script:
+     ALTER TABLE users ADD CONSTRAINT check_users CHECK (phone IS NULL OR LENGTH(phone) >= 10);
+
+7. Add column timezone to table user_profiles
+   Type: sql
+   Script:
+     ALTER TABLE user_profiles ADD COLUMN timezone varchar DEFAULT UTC;
+
+8. Add column language to table user_profiles
+   Type: sql
+   Script:
+     ALTER TABLE user_profiles ADD COLUMN language varchar NOT NULL DEFAULT en;
+
+9. Add check constraint to user_profiles
+   Type: sql
+   Script:
+     ALTER TABLE user_profiles ADD CONSTRAINT check_user_profiles CHECK (bio IS NULL OR LENGTH(bio) <= 2000);
+
+10. Add check constraint to user_profiles
+   Type: sql
+   Script:
+     ALTER TABLE user_profiles ADD CONSTRAINT check_user_profiles CHECK (language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'));
+
+11. Add column session_type to table user_sessions
+   Type: sql
+   Script:
+     ALTER TABLE user_sessions ADD COLUMN session_type varchar NOT NULL DEFAULT web;
+
+12. Add column is_mobile to table user_sessions
+   Type: sql
+   Script:
+     ALTER TABLE user_sessions ADD COLUMN is_mobile boolean NOT NULL DEFAULT False;
+
+13. Add check constraint to user_sessions
+   Type: sql
+   Script:
+     ALTER TABLE user_sessions ADD CONSTRAINT check_user_sessions CHECK (session_type IN ('web', 'mobile', 'api', 'admin'));
+
+RECOMMENDATIONS
+----------------------------------------
+1. Conduct thorough testing with realistic data volumes
+2. Implement monitoring for migration success metrics
+3. Test all migration scripts in staging environment
+4. Implement migration progress monitoring
+5. Create detailed communication plan for stakeholders
+6. Implement feature flags for gradual rollout

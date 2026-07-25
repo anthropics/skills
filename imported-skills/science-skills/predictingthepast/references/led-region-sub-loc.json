@@ -1,0 +1,312 @@
+[
+  {
+    "name": "Achaia",
+    "lat": 38.099043,
+    "lng": 22.4314905
+  },
+  {
+    "name": "Aegyptus",
+    "lat": 31.2001,
+    "lng": 29.9187
+  },
+  {
+    "name": "Aemilia",
+    "lat": 44.4949,
+    "lng": 11.3426
+  },
+  {
+    "name": "Africa Proconsularis",
+    "lat": 32.5,
+    "lng": 12.5
+  },
+  {
+    "name": "Alpes Cottiae",
+    "lat": 45.1396,
+    "lng": 7.0703
+  },
+  {
+    "name": "Alpes Graiae",
+    "lat": 45.62,
+    "lng": 6.6819
+  },
+  {
+    "name": "Alpes Maritimae",
+    "lat": 43.7102,
+    "lng": 7.262
+  },
+  {
+    "name": "Alpes Poeninae",
+    "lat": 46.1036,
+    "lng": 7.0731
+  },
+  {
+    "name": "Apulia et Calabria",
+    "lat": 40.4748,
+    "lng": 17.2385
+  },
+  {
+    "name": "Aquitania",
+    "lat": 44.8378,
+    "lng": -0.5792
+  },
+  {
+    "name": "Arabia",
+    "lat": 32.5,
+    "lng": 37.5
+  },
+  {
+    "name": "Armenia",
+    "lat": 39.5,
+    "lng": 40.5
+  },
+  {
+    "name": "Asia",
+    "lat": 37.945,
+    "lng": 27.3417
+  },
+  {
+    "name": "Baetica",
+    "lat": 37.8882,
+    "lng": -4.7794
+  },
+  {
+    "name": "Barbaricum",
+    "lat": 51.3127,
+    "lng": 9.4797
+  },
+  {
+    "name": "Belgica",
+    "lat": 49.2583,
+    "lng": 4.0317
+  },
+  {
+    "name": "Bithynia et Pontus",
+    "lat": 40.7667,
+    "lng": 29.9167
+  },
+  {
+    "name": "Britannia",
+    "lat": 52.5,
+    "lng": -2.5
+  },
+  {
+    "name": "Bruttium et Lucania",
+    "lat": 38.1105,
+    "lng": 15.6501
+  },
+  {
+    "name": "Cappadocia",
+    "lat": 39.25,
+    "lng": 35.75
+  },
+  {
+    "name": "Cilicia",
+    "lat": 36.25,
+    "lng": 33.25
+  },
+  {
+    "name": "Corsica",
+    "lat": 42.0978,
+    "lng": 9.4544
+  },
+  {
+    "name": "Creta",
+    "lat": 35.20052306,
+    "lng": 25.00709816
+  },
+  {
+    "name": "Cyprus",
+    "lat": 34.7768,
+    "lng": 32.4245
+  },
+  {
+    "name": "Cyrene",
+    "lat": 32.49965333,
+    "lng": 20.87174333
+  },
+  {
+    "name": "Dacia",
+    "lat": 45.5,
+    "lng": 22.5
+  },
+  {
+    "name": "Dalmatia",
+    "lat": 43.5225,
+    "lng": 16.4739
+  },
+  {
+    "name": "Epirus",
+    "lat": 39.54648402,
+    "lng": 20.78770214
+  },
+  {
+    "name": "Etruria",
+    "lat": 43.7696,
+    "lng": 11.2558
+  },
+  {
+    "name": "Galatia",
+    "lat": 39.75,
+    "lng": 32.75
+  },
+  {
+    "name": "Germania inferior",
+    "lat": 50.9375,
+    "lng": 6.9603
+  },
+  {
+    "name": "Germania superior",
+    "lat": 50.0011,
+    "lng": 8.267
+  },
+  {
+    "name": "Hispania citerior",
+    "lat": 41.1189,
+    "lng": 1.245
+  },
+  {
+    "name": "Iudaea",
+    "lat": 32.5183,
+    "lng": 34.9083
+  },
+  {
+    "name": "Latium et Campania",
+    "lat": 40.8518,
+    "lng": 14.2681
+  },
+  {
+    "name": "Liguria",
+    "lat": 44.4056,
+    "lng": 8.9463
+  },
+  {
+    "name": "Lugdunensis",
+    "lat": 45.757,
+    "lng": 4.832
+  },
+  {
+    "name": "Lusitania",
+    "lat": 38.9159,
+    "lng": -6.3437
+  },
+  {
+    "name": "Lycia et Pamphylia",
+    "lat": 36.8969,
+    "lng": 30.7133
+  },
+  {
+    "name": "Macedonia",
+    "lat": 41.25,
+    "lng": 21.75
+  },
+  {
+    "name": "Mauretania Caesariensis",
+    "lat": 36.52285575,
+    "lng": 3.6414695
+  },
+  {
+    "name": "Mauretania Tingitana",
+    "lat": 34.0725,
+    "lng": -5.5548
+  },
+  {
+    "name": "Mesopotamia",
+    "lat": 37.5,
+    "lng": 39.5
+  },
+  {
+    "name": "Moesia inferior",
+    "lat": 44.1728,
+    "lng": 28.635
+  },
+  {
+    "name": "Moesia superior",
+    "lat": 42.5,
+    "lng": 22.5
+  },
+  {
+    "name": "Narbonensis",
+    "lat": 43.1838,
+    "lng": 3.0045
+  },
+  {
+    "name": "Noricum",
+    "lat": 46.7167,
+    "lng": 14.4167
+  },
+  {
+    "name": "Numidia",
+    "lat": 36.607058,
+    "lng": 2.1918495
+  },
+  {
+    "name": "Pannonia inferior",
+    "lat": 47.5333,
+    "lng": 19.05
+  },
+  {
+    "name": "Pannonia superior",
+    "lat": 48.0772,
+    "lng": 16.8583
+  },
+  {
+    "name": "Picenum",
+    "lat": 42.8542,
+    "lng": 13.575
+  },
+  {
+    "name": "Raetia",
+    "lat": 48.3705,
+    "lng": 10.8978
+  },
+  {
+    "name": "Regnum Bospori",
+    "lat": 45.3564,
+    "lng": 36.4718
+  },
+  {
+    "name": "Roma",
+    "lat": 41.9028,
+    "lng": 12.4964
+  },
+  {
+    "name": "Sabina et Samnium",
+    "lat": 41.1385,
+    "lng": 14.775
+  },
+  {
+    "name": "Sardinia",
+    "lat": 39.2238,
+    "lng": 9.1217
+  },
+  {
+    "name": "Sicilia, Melita",
+    "lat": 37.0692,
+    "lng": 15.2875
+  },
+  {
+    "name": "Syria",
+    "lat": 36.2021,
+    "lng": 36.16
+  },
+  {
+    "name": "Thracia",
+    "lat": 41.5,
+    "lng": 25.0
+  },
+  {
+    "name": "Transpadana",
+    "lat": 45.4642,
+    "lng": 9.19
+  },
+  {
+    "name": "Umbria",
+    "lat": 43.1122,
+    "lng": 12.3888
+  },
+  {
+    "name": "Venetia et Histria",
+    "lat": 45.7722,
+    "lng": 13.37
+  }
+]

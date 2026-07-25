@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "issue": 215,
+    "task_name": "field_norm_severity",
+    "task_type": "regression-fixture",
+    "description": "First-party regression fixture of severity-miscalibration cases extracted verbatim from Kim et al. 2026 (arXiv:2605.20668v1). NOT a calibrated threshold set: n is small and there is no deterministic detector for field-norm severity miscalibration (it requires domain judgment). The fixture pins the documented failure shapes so downstream prompt/protocol changes can be checked against real, traceable cases — it does not assert distributional FNR/FPR calibration.",
+    "source_paper": {
+      "citation": "Kim, S., Yoon, D., Gashteovski, K., Suk, J., Baek, J., et al. (2026). On the limits and opportunities of AI reviewers: Reviewing the reviews of Nature-family papers with 45 expert scientists. arXiv:2605.20668v1 [cs.CL].",
+      "arxiv_id": "2605.20668v1",
+      "note": "Author list and section anchors verified first-party against the PDF, not the KB summary (the summary's author list drifted; PDF is authoritative)."
+    },
+    "labels": ["field_norm_boundary", "significance_boundary"],
+    "subtypes": {
+      "field_norm_boundary": "Severity miscalibration where the AI critique is content-correct against a discipline-neutral standard but mis-rated because it lacks the subfield's accepted-practice prior (paper W1, n=54).",
+      "significance_boundary": "Significance miscalibration from the AI meta-reviewer's habitual 'would addressing this change the core result?' formula (paper F.3.4, 56 errors)."
+    }
+  },
+  "items": [
+    {
+      "id": "fnb-001",
+      "severity_miscalibration": true,
+      "subtype": "field_norm_boundary",
+      "provenance": {
+        "section": "§5.1 W1 Example #1 / appendix E.1.1 Example #1",
+        "paper_citation": "P9 · GPT-5.2 · item 5 · primary",
+        "domain": "Particle physics (CERN/LHCb)",
+        "reviewer_model": "GPT-5.2",
+        "verbatim_anchor": "these are kept internally at CERN and the authors are not expected to share any data or simulation when publishing the paper"
+      },
+      "ai_critique": "Analysis choices (simulation-fixed fit shapes, external calibration inputs, pseudoexperiment uncertainties) are not documented enough for independent reproduction; requests tabulated fit parameters and a machine-readable likelihood artifact.",
+      "field_norm": "At CERN (LHCb), calibration and fit-configuration artifacts are maintained internally by the collaboration rather than published alongside the paper; not sharing them is the community's normal publication boundary.",
+      "miscalibration_direction": "over-harsh",
+      "expert_verdict": "irrelevant for this paper",
+      "exception": false
+    },
+    {
+      "id": "fnb-002",
+      "severity_miscalibration": true,
+      "subtype": "field_norm_boundary",
+      "provenance": {
+        "section": "appendix E.1.1 Example #2",
+        "paper_citation": "P28 · GPT-5.2 · item 1 · primary",
+        "domain": "Bacterial community modeling",
+        "reviewer_model": "GPT-5.2",
+        "verbatim_anchor": "to the bacterial modeling community this paper does not read that it claims a universal law"
+      },
+      "ai_critique": "The 'universal collapse' claim is not established beyond the studied system; requests out-of-distribution validation and tighter scope.",
+      "field_norm": "In the bacterial modeling literature 'universal' denotes a bounded empirical statement, not an unconditional physical law; the scope-tightening request is correct but the reading of an overgeneralized universality claim reflects a missing community prior.",
+      "miscalibration_direction": "correct-request-overstrong-interpretation",
+      "expert_verdict": "harsh but correct on the methodological request; wrong on the universality reading",
+      "exception": false
+    },
+    {
+      "id": "fnb-003",
+      "severity_miscalibration": true,
+      "subtype": "field_norm_boundary",
+      "provenance": {
+        "section": "appendix E.1.1 Example #3",
+        "paper_citation": "P41 · Claude 4.5 · item 4 · primary",
+        "domain": "Agricultural ecology",
+        "reviewer_model": "Claude Opus 4.5",
+        "verbatim_anchor": "I think the AI does not understand how hard ecology is! R2 of 0.36 is impressive!"
+      },
+      "ai_critique": "Weakly predictive models (marginal pseudo-R² 0.05–0.36) are used to support strong global biodiversity projections of up to 89% species loss.",
+      "field_norm": "By agricultural-ecology standards on variance-dominated observational cross-study data, a marginal R² of 0.36 is an unusually strong fixed-effect signal, not a weak one; the AI's reference class is from controlled experiments, not observational ecology.",
+      "miscalibration_direction": "over-harsh",
+      "expert_verdict": "R² of 0.36 is impressive by field standards",
+      "exception": false
+    },
+    {
+      "id": "fnb-004",
+      "severity_miscalibration": true,
+      "subtype": "field_norm_boundary",
+      "provenance": {
+        "section": "appendix E.1.1 W1 case list (n=54)",
+        "paper_citation": "P15 · Claude 4.5 · item 2 · primary",
+        "domain": "Neuroscience (intracranial recording)",
+        "reviewer_model": "Claude Opus 4.5",
+        "verbatim_anchor": "It's not possible to obtain intracranial data from healthy controls - it won't pass the ethical committee protocol"
+      },
+      "ai_critique": "Requests intracranial control data that the AI treats as a feasible missing comparison.",
+      "field_norm": "Intracranial data from healthy controls cannot pass an ethics committee protocol; the requested comparison is infeasible by the field's research-ethics norm, not merely absent.",
+      "miscalibration_direction": "over-harsh",
+      "expert_verdict": "infeasible by ethics norm",
+      "exception": false
+    },
+    {
+      "id": "fnb-005",
+      "severity_miscalibration": true,
+      "subtype": "field_norm_boundary",
+      "provenance": {
+        "section": "appendix E.1.1 W1 case list (n=54)",
+        "paper_citation": "P37 · GPT-5.2 · item 2 · secondary",
+        "domain": "Machine learning (clinical-adjacent)",
+        "reviewer_model": "GPT-5.2",
+        "verbatim_anchor": "I don't think the ML community these days care so much about statistical rigor any more"
+      },
+      "ai_critique": "Focuses on statistical-rigor gaps (possibly following a Nature review guideline) and rates them as substantive methodological weaknesses.",
+      "field_norm": "The contemporary ML community weights statistical rigor lower than the Nature-family guideline implies; the critique applies a reference class the field does not currently use for this paper type.",
+      "miscalibration_direction": "over-harsh",
+      "expert_verdict": "less concerning by current ML community norms",
+      "exception": false
+    },
+    {
+      "id": "sgb-001",
+      "severity_miscalibration": true,
+      "subtype": "significance_boundary",
+      "provenance": {
+        "section": "§F.3.4 Pattern A Example 1",
+        "paper_citation": "Paper 49 · Human reviewer 1",
+        "domain": "Neuroimaging (translational)",
+        "reviewer_model": "human",
+        "verbatim_anchor": "adding phenotypic linkage would enrich interpretation, but it would not change the core analyses or main results"
+      },
+      "ai_critique": "Reviewer noted the study does not incorporate phenotypic profiles (symptoms + neurocognitive disturbances) of the disorders.",
+      "ai_rating": "Marginally Significant",
+      "expert_rating": "Significant",
+      "field_norm": "Connecting brain-imaging findings to clinical phenotypes is fundamental to the translational value of the work, not merely enriching; the 'does not change the core result' formula under-rates it.",
+      "miscalibration_direction": "under-rating",
+      "exception": false
+    },
+    {
+      "id": "sgb-002",
+      "severity_miscalibration": true,
+      "subtype": "significance_boundary",
+      "provenance": {
+        "section": "§F.3.4 Pattern A Example 3",
+        "paper_citation": "Paper 61 · Human reviewer 2",
+        "domain": "General (figure organization)",
+        "reviewer_model": "human",
+        "verbatim_anchor": "rated it Not Significant on the grounds that figure placement does not affect the paper's scientific substance"
+      },
+      "ai_critique": "Reviewer suggested moving Figure 4 to the supplementary file.",
+      "ai_rating": "Not Significant",
+      "expert_rating": "Marginally Significant",
+      "field_norm": "Information organization has real impact on how readers interpret results; a presentation issue is still substantive enough to be Marginally rather than Not Significant.",
+      "miscalibration_direction": "under-rating",
+      "exception": false
+    },
+    {
+      "id": "sgb-003",
+      "severity_miscalibration": true,
+      "subtype": "significance_boundary",
+      "provenance": {
+        "section": "§F.3.4 Pattern B Example 4",
+        "paper_citation": "Paper 33 · Claude reviewer",
+        "domain": "Machine learning (metrics)",
+        "reviewer_model": "Claude",
+        "verbatim_anchor": "rated this Significant because evaluation metrics are core methodological evidence"
+      },
+      "ai_critique": "Reviewer noted Table 1 reports 'R-squared' for binary classification tasks (technically the wrong metric name).",
+      "ai_rating": "Significant",
+      "expert_rating": "Marginally Significant",
+      "field_norm": "The underlying 5-fold cross-validation accuracy is interpretable despite the mislabelling, so the issue is presentation rather than substance; the AI over-weights presentation issues that involve technical terminology.",
+      "miscalibration_direction": "over-rating",
+      "exception": false
+    },
+    {
+      "id": "sgb-004",
+      "severity_miscalibration": true,
+      "subtype": "significance_boundary",
+      "provenance": {
+        "section": "§F.3.4 Pattern B Example 5",
+        "paper_citation": "Paper 33 · GPT reviewer",
+        "domain": "Battery electrochemistry",
+        "reviewer_model": "GPT",
+        "verbatim_anchor": "in battery electrochemistry, CE values slightly over 100% are well-understood measurement artifacts"
+      },
+      "ai_critique": "Reviewer flagged Coulombic efficiencies exceeding 100% as evidence of high reversibility lacking proper uncertainty quantification.",
+      "ai_rating": "Significant",
+      "expert_rating": "Not Significant",
+      "field_norm": "In battery electrochemistry, CE values slightly over 100% are well-understood measurement artifacts, making this a minor concern; the AI over-weights it as a headline metric. (Also field-norm-like: the significance error is driven by a missing electrochemistry prior.)",
+      "miscalibration_direction": "over-rating",
+      "exception": false
+    },
+    {
+      "id": "sgb-005-exception",
+      "severity_miscalibration": true,
+      "subtype": "significance_boundary",
+      "provenance": {
+        "section": "§F.3.4 Pattern A Example 2",
+        "paper_citation": "Paper 6 · Gemini reviewer",
+        "domain": "MRI safety (11.7T)",
+        "reviewer_model": "Gemini",
+        "verbatim_anchor": "Both experts rated this Marginally Significant in the opposite direction in this case, but across the broader pattern"
+      },
+      "ai_critique": "Reviewer raised concerns about safety monitoring and RF heating at unprecedented 11.7T field strength; AI reasoned it improves safety reporting but does not change the core scientific contribution.",
+      "ai_rating": "(downgraded via 'does not change core result' formula)",
+      "expert_rating": "Marginally Significant (experts agreed with the AI direction HERE)",
+      "field_norm": "Cited by the paper as part of the broader under-rating pattern even though experts agreed with the AI's direction in THIS specific case. Retained as an EXCEPTION fixture: it documents that the 'does not change the core result' formula is not always wrong, so a severity check must not blanket-flag it.",
+      "miscalibration_direction": "ambiguous (formula applied; experts concurred in this instance)",
+      "exception": true,
+      "exception_reason": "Paper explicitly notes experts rated this in the opposite (concurring) direction for this case while still citing it under the broader pattern. Not a clean positive Pattern A case; included to prevent over-flagging."
+    }
+  ]
+}

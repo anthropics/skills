@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/compliance_report.schema.json",
+  "title": "ARS Compliance Report (Schema 12)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mode",
+    "stage",
+    "generated_at",
+    "raise",
+    "overall_decision",
+    "user_action_required"
+  ],
+  "properties": {
+    "mode": {
+      "enum": ["systematic_review", "primary_research", "other_evidence_synthesis"]
+    },
+    "stage": { "enum": ["2.5", "4.5"] },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "prisma_trAIce": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["items_total", "by_tier", "block_decision"],
+          "properties": {
+            "items_total": { "const": 17 },
+            "by_tier": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["mandatory", "highly_recommended", "recommended", "optional"],
+              "properties": {
+                "mandatory": { "$ref": "#/$defs/tier_bucket" },
+                "highly_recommended": { "$ref": "#/$defs/tier_bucket" },
+                "recommended": { "$ref": "#/$defs/tier_bucket" },
+                "optional": { "$ref": "#/$defs/tier_bucket" }
+              }
+            },
+            "block_decision": { "$ref": "#/$defs/decision" },
+            "protocol_maturity": { "$ref": "#/$defs/protocol_maturity" }
+          }
+        }
+      ]
+    },
+    "raise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "principles", "principle_evidence", "block_decision"],
+      "properties": {
+        "mode": { "enum": ["full", "principles_only"] },
+        "principles": {
+          "type": "object",
+          "required": ["human_oversight", "transparency", "reproducibility", "fit_for_purpose"],
+          "additionalProperties": false,
+          "properties": {
+            "human_oversight": { "$ref": "#/$defs/principle_status" },
+            "transparency": { "$ref": "#/$defs/principle_status" },
+            "reproducibility": { "$ref": "#/$defs/principle_status" },
+            "fit_for_purpose": { "$ref": "#/$defs/principle_status" }
+          }
+        },
+        "principle_evidence": {
+          "type": "object",
+          "required": ["human_oversight", "transparency", "reproducibility", "fit_for_purpose"],
+          "additionalProperties": false,
+          "properties": {
+            "human_oversight": { "type": "array", "items": { "type": "string" } },
+            "transparency": { "type": "array", "items": { "type": "string" } },
+            "reproducibility": { "type": "array", "items": { "type": "string" } },
+            "fit_for_purpose": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "roles": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Present only when raise.mode == 'full'; see top-level allOf constraint.",
+          "properties": {
+            "evidence_synthesists": { "type": "array", "items": { "type": "string" } },
+            "ai_development_teams": { "type": "array", "items": { "type": "string" } },
+            "methodologists": { "type": "array", "items": { "type": "string" } },
+            "publishers": { "type": "array", "items": { "type": "string" } },
+            "users": { "type": "array", "items": { "type": "string" } },
+            "trainers": { "type": "array", "items": { "type": "string" } },
+            "organisations": { "type": "array", "items": { "type": "string" } },
+            "funders": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "block_decision": { "$ref": "#/$defs/decision" }
+      }
+    },
+    "overall_decision": { "$ref": "#/$defs/decision" },
+    "user_action_required": { "type": "boolean" },
+    "evidence": { "type": "array", "items": { "type": "string" } },
+    "user_override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "timestamp", "rationale", "scope"],
+      "properties": {
+        "decision": { "const": true },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "rationale": { "type": "string", "minLength": 1 },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^(T1|A1|I1|M([1-9]|10)|R[12]|D[12]|human_oversight|transparency|reproducibility|fit_for_purpose)$"
+          }
+        }
+      }
+    },
+    "upstream_sync_status": { "enum": ["current", "stale"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "systematic_review" } }, "required": ["mode"] },
+      "then": { "properties": { "prisma_trAIce": { "type": "object" } } }
+    },
+    {
+      "if": { "properties": { "mode": { "const": "primary_research" } }, "required": ["mode"] },
+      "then": { "properties": { "prisma_trAIce": { "type": "null" } } }
+    },
+    {
+      "if": {
+        "properties": { "raise": { "properties": { "mode": { "const": "full" } }, "required": ["mode"] } },
+        "required": ["raise"]
+      },
+      "then": { "properties": { "raise": { "required": ["roles"] } } }
+    }
+  ],
+  "$defs": {
+    "decision": { "enum": ["block", "warn", "pass"] },
+    "principle_status": { "enum": ["pass", "warn", "fail"] },
+    "protocol_maturity": {
+      "description": "Optional maturity-disclosure context for the PRISMA-trAIce protocol authority backing this report. Populated by compliance_agent from shared/prisma_trAIce_protocol.md: frontmatter `citation` and `snapshot_date` are the deterministic source for upstream_citation and snapshot_date; `status` is derived from the protocol authors' self-description (currently foundational_proposal per Holst et al. 2025); `caveat_summary` is composed from the protocol's framing (issue #93 / PR #94 add a `§ Status disclaimer` section as the canonical prose source — until that PR lands, agents derive the summary from the Holst 2025 framing). See handoff_schemas.md § Schema 12 and issue #95 for the contract narrative.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "upstream_citation", "snapshot_date", "caveat_summary"],
+      "properties": {
+        "status": {
+          "description": "Authors' self-described maturity stage. 'foundational_proposal' = pre-Delphi, immediately-adoptable-but-unvalidated (current Holst et al. 2025 status). 'delphi_consensus' = post-formal-consensus. 'empirically_validated' = items validated across diverse research contexts.",
+          "enum": ["foundational_proposal", "delphi_consensus", "empirically_validated"]
+        },
+        "upstream_citation": {
+          "description": "Citation string matching shared/prisma_trAIce_protocol.md frontmatter `citation` field.",
+          "type": "string",
+          "minLength": 1
+        },
+        "snapshot_date": {
+          "description": "ISO 8601 date of the protocol snapshot consulted; matches shared/prisma_trAIce_protocol.md frontmatter `snapshot_date`.",
+          "type": "string",
+          "format": "date"
+        },
+        "caveat_summary": {
+          "description": "One-paragraph summary of the maturity caveat, suitable for inclusion in the block message and the AI Self-Reflection Report compliance summary.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tier_bucket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "pass", "fail"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "array", "items": { "type": "string" } },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["item_id", "reason"],
+            "properties": {
+              "item_id": { "type": "string" },
+              "reason": { "type": "string" },
+              "evidence_path": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Materials Science Reader Visual Asset Spec",
+  "type": "object",
+  "required": [
+    "asset_id",
+    "source_anchor",
+    "asset_type",
+    "source_location",
+    "caption_boundary",
+    "evidence_layer",
+    "certainty_tier",
+    "handoff_target"
+  ],
+  "properties": {
+    "asset_id": {
+      "type": "string"
+    },
+    "source_anchor": {
+      "type": "string"
+    },
+    "asset_type": {
+      "type": "string"
+    },
+    "source_location": {
+      "type": "string"
+    },
+    "caption_boundary": {
+      "type": "string"
+    },
+    "evidence_layer": {
+      "type": "string"
+    },
+    "certainty_tier": {
+      "type": "string",
+      "enum": ["measured", "inferred", "speculative", "missing"]
+    },
+    "handoff_target": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

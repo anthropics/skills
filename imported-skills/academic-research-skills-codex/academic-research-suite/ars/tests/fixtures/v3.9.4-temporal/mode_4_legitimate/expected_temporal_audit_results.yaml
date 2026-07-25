@@ -1,0 +1,38 @@
+schema_version: '1.0'
+audit_run_id: 2026-05-18T12:34:56Z-a1b2
+report_reference_date: '2026-05-18'
+findings:
+- finding_id: TF-001
+  finding_kind: TEMPORAL-METADATA-MISSING
+  severity: LOW
+  mode: null
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: Policy A<!--ref:policy-a--> enabled Policy B<!--ref:policy-b-->.
+  matched_span: null
+  bound_refs:
+  - ref_slug: policy-a
+    timeline_entry: policy-a
+  bound_event: null
+  bound_dates: null
+  rationale: policy-a has no effective_date_range; anachronism check cannot run.
+  suggested_fix: null
+- finding_id: TF-002
+  finding_kind: TEMPORAL-METADATA-MISSING
+  severity: LOW
+  mode: null
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: Policy A<!--ref:policy-a--> enabled Policy B<!--ref:policy-b-->.
+  matched_span: null
+  bound_refs:
+  - ref_slug: policy-b
+    timeline_entry: policy-b
+  bound_event: null
+  bound_dates: null
+  rationale: policy-b has no effective_date_range; anachronism check cannot run.
+  suggested_fix: null

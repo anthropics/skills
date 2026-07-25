@@ -1,0 +1,179 @@
+{
+  "tuple_id": "023-valid-arxiv-sleeper-agents-2024",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Hubinger2024SleeperAgents",
+    "title": "Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training",
+    "authors": [
+      {
+        "family": "Hubinger",
+        "given": "Evan"
+      },
+      {
+        "family": "Denison",
+        "given": "Carson"
+      },
+      {
+        "family": "Mu",
+        "given": "Jesse"
+      },
+      {
+        "family": "Lambert",
+        "given": "Mike"
+      },
+      {
+        "family": "Tong",
+        "given": "Meg"
+      },
+      {
+        "family": "MacDiarmid",
+        "given": "Monte"
+      },
+      {
+        "family": "Lanham",
+        "given": "Tamera"
+      },
+      {
+        "family": "Ziegler",
+        "given": "Daniel M."
+      },
+      {
+        "family": "Maxwell",
+        "given": "Tim"
+      },
+      {
+        "family": "Cheng",
+        "given": "Newton"
+      },
+      {
+        "family": "Jermyn",
+        "given": "Adam"
+      },
+      {
+        "family": "Askell",
+        "given": "Amanda"
+      },
+      {
+        "family": "Radhakrishnan",
+        "given": "Ansh"
+      },
+      {
+        "family": "Anil",
+        "given": "Cem"
+      },
+      {
+        "family": "Duvenaud",
+        "given": "David"
+      },
+      {
+        "family": "Ganguli",
+        "given": "Deep"
+      },
+      {
+        "family": "Barez",
+        "given": "Fazl"
+      },
+      {
+        "family": "Clark",
+        "given": "Jack"
+      },
+      {
+        "family": "Ndousse",
+        "given": "Kamal"
+      },
+      {
+        "family": "Sachan",
+        "given": "Kshitij"
+      },
+      {
+        "family": "Sellitto",
+        "given": "Michael"
+      },
+      {
+        "family": "Sharma",
+        "given": "Mrinank"
+      },
+      {
+        "family": "DasSarma",
+        "given": "Nova"
+      },
+      {
+        "family": "Grosse",
+        "given": "Roger"
+      },
+      {
+        "family": "Kravec",
+        "given": "Shauna"
+      },
+      {
+        "family": "Bai",
+        "given": "Yuntao"
+      },
+      {
+        "family": "Witten",
+        "given": "Zachary"
+      },
+      {
+        "family": "Favaro",
+        "given": "Marina"
+      },
+      {
+        "family": "Brauner",
+        "given": "Jan"
+      },
+      {
+        "family": "Karnofsky",
+        "given": "Holden"
+      },
+      {
+        "family": "Christiano",
+        "given": "Paul"
+      },
+      {
+        "family": "Bowman",
+        "given": "Samuel R."
+      },
+      {
+        "family": "Graham",
+        "given": "Logan"
+      },
+      {
+        "family": "Kaplan",
+        "given": "Jared"
+      },
+      {
+        "family": "Mindermann",
+        "given": "Sören"
+      },
+      {
+        "family": "Greenblatt",
+        "given": "Ryan"
+      },
+      {
+        "family": "Shlegeris",
+        "given": "Buck"
+      },
+      {
+        "family": "Schiefer",
+        "given": "Nicholas"
+      },
+      {
+        "family": "Perez",
+        "given": "Ethan"
+      }
+    ],
+    "year": 2024,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2401.05566",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2401.05566",
+  "ref_slug": "hubinger-2024-sleeperagents",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

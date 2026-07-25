@@ -1,0 +1,77 @@
+{
+  "test_generation": {
+    "generated_tests": [
+      {
+        "name": "should_validate_password_length_successfully",
+        "type": "happy_path",
+        "priority": "P0",
+        "framework": "jest",
+        "code": "it('should validate password with sufficient length', () => {\n  const validator = new PasswordValidator();\n  const result = validator.validate('Test@123');\n  expect(result).toBe(true);\n});"
+      },
+      {
+        "name": "should_handle_too_short_password",
+        "type": "error_case",
+        "priority": "P0",
+        "framework": "jest",
+        "code": "it('should reject password shorter than 8 characters', () => {\n  const validator = new PasswordValidator();\n  const result = validator.validate('Test@1');\n  expect(result).toBe(false);\n});"
+      }
+    ],
+    "test_file": "password-validator.test.ts",
+    "total_tests_generated": 8
+  },
+  "coverage_analysis": {
+    "summary": {
+      "line_coverage": 100.0,
+      "branch_coverage": 100.0,
+      "function_coverage": 100.0,
+      "total_lines": 20,
+      "covered_lines": 20,
+      "total_branches": 12,
+      "covered_branches": 12
+    },
+    "gaps": [],
+    "assessment": "Excellent coverage - all paths tested"
+  },
+  "metrics": {
+    "complexity": {
+      "cyclomatic_complexity": 6,
+      "cognitive_complexity": 8,
+      "testability_score": 85.0,
+      "assessment": "Medium complexity - moderately testable"
+    },
+    "test_quality": {
+      "total_tests": 8,
+      "total_assertions": 16,
+      "avg_assertions_per_test": 2.0,
+      "isolation_score": 95.0,
+      "naming_quality": 87.5,
+      "quality_score": 88.0,
+      "test_smells": []
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "P1",
+      "type": "edge_case_coverage",
+      "message": "Consider adding boundary value tests",
+      "action": "Add tests for exact boundary conditions (7 vs 8 characters)",
+      "impact": "medium"
+    },
+    {
+      "priority": "P2",
+      "type": "test_organization",
+      "message": "Group related tests using describe blocks",
+      "action": "Organize tests by feature (length validation, complexity validation)",
+      "impact": "low"
+    }
+  ],
+  "tdd_workflow": {
+    "current_phase": "GREEN",
+    "status": "Tests passing, ready for refactoring",
+    "next_steps": [
+      "Review code for duplication",
+      "Consider extracting validation rules",
+      "Commit changes"
+    ]
+  }
+}

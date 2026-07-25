@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/audit/audit_sidecar.schema.json",
+  "title": "Codex Audit Sidecar Metadata",
+  "description": "Schema for <run_id>.meta.json — the Layer 3 anti-fake-audit evidence file produced by scripts/run_codex_audit.sh. Captures runner / timing / process / stream / prompt context for one audit run. Cross-file rules linking sidecar fields to JSONL events / on-disk files / passport entries (B1-B7 in §3.7 family B) are lint-enforced by scripts/check_audit_artifact_consistency.py (Phase 6.3); this schema only enforces the per-file shape. AUDIT_FAILED conditional: when the companion verdict's status == 'AUDIT_FAILED', the JSON Schema 'if/then' below relaxes stream.jsonl_thread_id to allow empty string (no usable JSONL thread exists when codex aborted).",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "run_id",
+    "codex_cli_version",
+    "runner",
+    "timing",
+    "process",
+    "stream",
+    "prompt"
+  ],
+
+  "properties": {
+    "run_id": {
+      "$ref": "#/$defs/run_id",
+      "description": "Canonical run identifier; equals file basename (§3.7 F3). Cross-file basename consistency (B7) is lint-enforced."
+    },
+    "codex_cli_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Bare semver. Wrapper strips the 'codex-cli ' prefix from `codex --version` output before writing here (§4.4 _codex_version helper)."
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostname", "cwd", "git_sha", "git_dirty"],
+      "properties": {
+        "hostname": { "type": "string", "minLength": 1 },
+        "cwd": { "type": "string", "minLength": 1 },
+        "git_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{7,40}$",
+          "description": "Repo HEAD at audit start (7-40 hex; not a full SHA-256). Lint (B4) verifies this resolves to a real commit."
+        },
+        "git_dirty": { "type": "boolean" }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_at", "ended_at", "duration_seconds"],
+      "properties": {
+        "started_at": {
+          "$ref": "#/$defs/rfc3339_ms_utc",
+          "description": "RFC 3339 UTC, millisecond precision."
+        },
+        "ended_at": {
+          "$ref": "#/$defs/rfc3339_ms_utc"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Lint (B5) verifies duration_seconds == ended_at - started_at within +/- 1s."
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exit_code", "stdout_path", "stderr_path"],
+      "properties": {
+        "exit_code": { "type": "integer" },
+        "stdout_path": { "$ref": "#/$defs/repo_relative_path" },
+        "stderr_path": { "$ref": "#/$defs/repo_relative_path" }
+      }
+    },
+    "stream": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jsonl_thread_id"],
+      "properties": {
+        "jsonl_thread_id": {
+          "type": "string",
+          "description": "UUID matching the JSONL stream's single thread.started event's thread_id (B1, lint-enforced cross-file). When the companion verdict's status == 'AUDIT_FAILED', empty string '' is accepted because no usable JSONL thread exists; UUID format constraint and B1 are both suspended for AUDIT_FAILED entries (§3.4)."
+        }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audit_template_path", "audit_template_sha", "bundle"],
+      "properties": {
+        "audit_template_path": {
+          "const": "shared/templates/codex_audit_multifile_template.md",
+          "description": "v3.6.7 ships a single canonical audit template; the path is constant. Future versions that add additional templates will widen this to enum."
+        },
+        "audit_template_sha": { "$ref": "#/$defs/sha256_hex" },
+        "bundle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["bundle_manifest_sha", "primary_deliverables", "supporting_context"],
+          "properties": {
+            "bundle_id": { "type": "string", "minLength": 1 },
+            "bundle_manifest_sha": { "$ref": "#/$defs/sha256_hex" },
+            "primary_deliverables": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/file_ref" }
+            },
+            "supporting_context": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/file_ref" }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "allOf": [
+    {
+      "description": "When the companion verdict's status is NOT AUDIT_FAILED, jsonl_thread_id MUST match canonical UUID (8-4-4-4-12 hex). When status == 'AUDIT_FAILED', empty string is also acceptable. Pattern mirrors audit/audit_jsonl.schema.json#thread_id — keep in sync. Co-validation with the verdict file is performed by Layer 3 lint (Phase 6.3); this schema enforces the format-or-empty discipline so a sidecar file alone (without verdict context) still rejects garbage values like '------------------------------------'.",
+      "properties": {
+        "stream": {
+          "properties": {
+            "jsonl_thread_id": {
+              "anyOf": [
+                { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+                { "type": "string", "const": "" }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+
+  "$defs": {
+    "sha256_hex": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Lowercase hex SHA-256. Mirrored from passport/audit_artifact_entry.schema.json $defs.sha256_hex; keep regex in sync."
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Mirrored from passport/audit_artifact_entry.schema.json $defs.run_id; F1 in §3.7. Keep regex in sync."
+    },
+    "rfc3339_ms_utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "RFC 3339 UTC with millisecond precision. Mirrored from passport/audit_artifact_entry.schema.json $defs.rfc3339_ms_utc."
+    },
+    "repo_relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/][^\\s]*$",
+      "not": { "pattern": "(^|/)\\.\\.(/|$)" },
+      "description": "Repo-relative POSIX path. Mirrored from passport/audit_artifact_entry.schema.json $defs.repo_relative_path; keep regex pair in sync."
+    },
+    "file_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha"],
+      "properties": {
+        "path": { "$ref": "#/$defs/repo_relative_path" },
+        "sha": { "$ref": "#/$defs/sha256_hex" }
+      }
+    }
+  }
+}

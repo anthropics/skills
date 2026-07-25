@@ -1,0 +1,5 @@
+expected_path: B
+expected_phase: B11
+expected_block_message: "[ESCALATION] round 3/3 MATERIAL — choices: ship_with_known_residue / another_round / abort_stage"
+expected_passport_mutation: appended
+expected_run_id_format: "matches §3.7 family F F1 regex"

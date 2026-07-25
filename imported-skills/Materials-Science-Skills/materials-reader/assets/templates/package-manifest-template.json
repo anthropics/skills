@@ -1,0 +1,29 @@
+{
+  "package_type": "materials-reader-package",
+  "skill_version": "1.2.0",
+  "source_type": "",
+  "paper_title": "",
+  "doi_or_url": "",
+  "generated_at": "",
+  "required_files": [
+    "source_map.json",
+    "paper.md",
+    "translation_notes.md",
+    "source_anchor_checklist.md",
+    "figure_table_cards.md",
+    "mechanism_evidence_table.csv",
+    "dosage_window_table.csv",
+    "citation_handoff.csv",
+    "figure_handoff.csv",
+    "review_handoff.md",
+    "obsidian_note.md",
+    "qa_report.md",
+    "assets/asset_manifest.md",
+    "assets/visual_asset_report.json"
+  ],
+  "handoff_targets": [
+    "materials-citation",
+    "materials-figure"
+  ],
+  "evidence_boundary": "No unsupported claim is promoted without a source anchor."
+}

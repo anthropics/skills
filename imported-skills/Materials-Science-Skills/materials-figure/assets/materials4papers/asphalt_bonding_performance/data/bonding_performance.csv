@@ -1,0 +1,10 @@
+modifier,condition,bond_strength_MPa,bond_strength_std_MPa,retention_rate_pct,retention_rate_std_pct
+WER,Dry,0.820,0.060,100.0,0.0
+WER,Wet,0.650,0.080,79.3,4.2
+WER,Aged,0.580,0.070,70.7,3.8
+SBS,Dry,0.950,0.070,100.0,0.0
+SBS,Wet,0.780,0.060,82.1,3.5
+SBS,Aged,0.710,0.050,74.7,2.9
+EVA,Dry,0.760,0.050,100.0,0.0
+EVA,Wet,0.610,0.070,80.3,3.9
+EVA,Aged,0.540,0.060,71.1,3.4

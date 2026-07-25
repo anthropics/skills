@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/patch/block_manifest.schema.json",
+  "title": "Block Manifest",
+  "description": "#89 Item 7 block manifest (spec docs/design/2026-06-10-390-diff-patch-revision-mode-spec.md §3.1). Machine-generated sidecar emitted by scripts/ars_anchorize_draft.py beside the anchored draft (<draft>.block-manifest.json) and included in the writer's revision-invocation context. It is the ONLY legitimate hash source for a patch document: the writer copies base_draft_hash and per-op old_hash values from here, never computes them (Bucket A agents have all Bash denied, #134; an LLM asked to emit a SHA-256 would hallucinate one). Sidecar artifact, NOT a passport field (§6).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest_format_version", "base_draft_hash", "blocks"],
+  "properties": {
+    "manifest_format_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "base_draft_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}$",
+      "description": "First 12 hex chars of SHA-256 over the anchored draft's raw bytes."
+    },
+    "blocks": {
+      "type": "array",
+      "description": "One entry per block, in document order.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["block_id", "old_hash", "first_line_excerpt"],
+        "properties": {
+          "block_id": {
+            "type": "string",
+            "pattern": "^B[0-9]{4,}$"
+          },
+          "old_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}$",
+            "description": "First 12 hex chars of SHA-256 over the block's normalized text (§3.2 normalization; marker line excluded)."
+          },
+          "first_line_excerpt": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "First content line (truncated) so the writer can sanity-check it is naming the block it thinks it is."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "citationKey": "chen2024ai",
+    "itemType": "journalArticle",
+    "title": "AI assessment in higher education",
+    "creators": [
+      {"creatorType": "author", "firstName": "Cindy", "lastName": "Chen"},
+      {"creatorType": "author", "firstName": "Jing", "lastName": "Wang"}
+    ],
+    "date": "2024",
+    "publicationTitle": "Assessment & Evaluation",
+    "DOI": "10.1234/xyz",
+    "tags": [{"tag": "assessment"}, {"tag": "ai"}],
+    "itemID": "ABCD1234",
+    "abstractNote": "An abstract that is publisher-copyrighted."
+  },
+  {
+    "citationKey": "who2024report",
+    "itemType": "report",
+    "title": "World higher-education report",
+    "creators": [
+      {"creatorType": "author", "name": "World Health Organization"}
+    ],
+    "date": "2024-03",
+    "itemID": "EFGH5678"
+  },
+  {
+    "citationKey": "forthcoming2024",
+    "itemType": "journalArticle",
+    "title": "To appear",
+    "creators": [{"creatorType": "author", "firstName": "X", "lastName": "Y"}],
+    "date": "forthcoming",
+    "itemID": "IJKL9012"
+  },
+  {
+    "citationKey": "editor2023",
+    "itemType": "book",
+    "title": "Edited volume",
+    "creators": [{"creatorType": "editor", "firstName": "E", "lastName": "Z"}],
+    "date": "2023",
+    "itemID": "MNOP3456"
+  }
+]

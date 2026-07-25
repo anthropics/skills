@@ -1,0 +1,107 @@
+route_scenarios:
+  - name: configure-without-scoring
+    axes:
+      pipeline_mode: configure
+      material_family: neutral
+      output: digest
+    target_bytes: 24000
+    max_bytes: 27000
+
+  - name: run-scored-digest
+    axes:
+      pipeline_mode: run
+      material_family: civil
+      output: digest
+    on_demand:
+      - scoring
+      - digest-template
+    target_bytes: 30000
+    max_bytes: 34000
+
+  - name: pipeline-to-reader
+    axes:
+      pipeline_mode: run
+      material_family: civil
+      output: candidate-table
+    on_demand:
+      - scoring
+      - candidate-table
+    companions:
+      - skill: materials-reader
+        required_axes:
+          - source_format
+          - output_type
+          - material_family
+          - domain
+        axes:
+          source_format: pdf-text
+          output_type: full-reader
+          material_family: civil
+          domain: civil
+    target_bytes: 72000
+    max_bytes: 80000
+
+  - name: pipeline-to-citation
+    axes:
+      pipeline_mode: run
+      material_family: civil
+      output: candidate-table
+    on_demand:
+      - scoring
+      - candidate-table
+    companions:
+      - skill: materials-citation
+        required_axes:
+          - task
+          - journal_family
+          - material_domain
+          - material_family
+        axes:
+          task: reference-gap
+          journal_family: cbm-jbe
+          material_domain: asphalt
+          material_family: civil
+    target_bytes: 72000
+    max_bytes: 80000
+
+  - name: research-pipeline-reader
+    axes:
+      pipeline_mode: run
+      material_family: civil
+      output: digest
+    on_demand:
+      - scoring
+      - research-state
+    companions:
+      - skill: materials-research
+        required_axes:
+          - task
+          - paper_stage
+          - workflow_mode
+          - output_package
+          - material_family
+          - domain
+          - journal
+        axes:
+          task: literature-review
+          paper_stage: screening
+          workflow_mode: paper-production
+          output_package: matrix
+          material_family: civil
+          domain: asphalt-pavement
+          journal: cbm
+        on_demand:
+          - research-state-contract
+      - skill: materials-reader
+        required_axes:
+          - source_format
+          - output_type
+          - material_family
+          - domain
+        axes:
+          source_format: pdf-text
+          output_type: evidence-chain-audit
+          material_family: civil
+          domain: civil
+    target_bytes: 118000
+    max_bytes: 132000

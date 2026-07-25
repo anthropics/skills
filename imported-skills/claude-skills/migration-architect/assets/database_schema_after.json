@@ -1,0 +1,367 @@
+{
+  "schema_version": "2.0",
+  "database": "user_management_v2",
+  "tables": {
+    "users": {
+      "columns": {
+        "id": {
+          "type": "bigint",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "username": {
+          "type": "varchar",
+          "length": 50,
+          "nullable": false,
+          "unique": true
+        },
+        "email": {
+          "type": "varchar",
+          "length": 320,
+          "nullable": false,
+          "unique": true
+        },
+        "password_hash": {
+          "type": "varchar",
+          "length": 255,
+          "nullable": false
+        },
+        "first_name": {
+          "type": "varchar",
+          "length": 100,
+          "nullable": true
+        },
+        "last_name": {
+          "type": "varchar",
+          "length": 100,
+          "nullable": true
+        },
+        "created_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        },
+        "is_active": {
+          "type": "boolean",
+          "nullable": false,
+          "default": true
+        },
+        "phone": {
+          "type": "varchar",
+          "length": 20,
+          "nullable": true
+        },
+        "email_verified_at": {
+          "type": "timestamp",
+          "nullable": true,
+          "comment": "When email was verified"
+        },
+        "phone_verified_at": {
+          "type": "timestamp", 
+          "nullable": true,
+          "comment": "When phone was verified"
+        },
+        "two_factor_enabled": {
+          "type": "boolean",
+          "nullable": false,
+          "default": false
+        },
+        "last_login_at": {
+          "type": "timestamp",
+          "nullable": true
+        }
+      },
+      "constraints": {
+        "primary_key": ["id"],
+        "unique": [
+          "username",
+          "email"
+        ],
+        "foreign_key": [],
+        "check": [
+          "email LIKE '%@%'",
+          "LENGTH(password_hash) >= 60",
+          "phone IS NULL OR LENGTH(phone) >= 10"
+        ]
+      },
+      "indexes": [
+        {
+          "name": "idx_users_email",
+          "columns": ["email"],
+          "unique": true
+        },
+        {
+          "name": "idx_users_username",
+          "columns": ["username"],
+          "unique": true
+        },
+        {
+          "name": "idx_users_created_at",
+          "columns": ["created_at"]
+        },
+        {
+          "name": "idx_users_email_verified",
+          "columns": ["email_verified_at"]
+        },
+        {
+          "name": "idx_users_last_login",
+          "columns": ["last_login_at"]
+        }
+      ]
+    },
+    "user_profiles": {
+      "columns": {
+        "id": {
+          "type": "bigint",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "user_id": {
+          "type": "bigint",
+          "nullable": false
+        },
+        "bio": {
+          "type": "text",
+          "nullable": true
+        },
+        "avatar_url": {
+          "type": "varchar",
+          "length": 500,
+          "nullable": true
+        },
+        "birth_date": {
+          "type": "date",
+          "nullable": true
+        },
+        "location": {
+          "type": "varchar",
+          "length": 100,
+          "nullable": true
+        },
+        "website": {
+          "type": "varchar",
+          "length": 255,
+          "nullable": true
+        },
+        "privacy_level": {
+          "type": "varchar",
+          "length": 20,
+          "nullable": false,
+          "default": "public"
+        },
+        "timezone": {
+          "type": "varchar",
+          "length": 50,
+          "nullable": true,
+          "default": "UTC"
+        },
+        "language": {
+          "type": "varchar",
+          "length": 10,
+          "nullable": false,
+          "default": "en"
+        },
+        "created_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        }
+      },
+      "constraints": {
+        "primary_key": ["id"],
+        "unique": [],
+        "foreign_key": [
+          {
+            "columns": ["user_id"],
+            "references": "users(id)",
+            "on_delete": "CASCADE"
+          }
+        ],
+        "check": [
+          "privacy_level IN ('public', 'private', 'friends_only')",
+          "bio IS NULL OR LENGTH(bio) <= 2000",
+          "language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh')"
+        ]
+      },
+      "indexes": [
+        {
+          "name": "idx_user_profiles_user_id",
+          "columns": ["user_id"],
+          "unique": true
+        },
+        {
+          "name": "idx_user_profiles_privacy",
+          "columns": ["privacy_level"]
+        },
+        {
+          "name": "idx_user_profiles_language",
+          "columns": ["language"]
+        }
+      ]
+    },
+    "user_sessions": {
+      "columns": {
+        "id": {
+          "type": "varchar",
+          "length": 128,
+          "nullable": false,
+          "primary_key": true
+        },
+        "user_id": {
+          "type": "bigint",
+          "nullable": false
+        },
+        "ip_address": {
+          "type": "varchar",
+          "length": 45,
+          "nullable": true
+        },
+        "user_agent": {
+          "type": "text",
+          "nullable": true
+        },
+        "expires_at": {
+          "type": "timestamp",
+          "nullable": false
+        },
+        "created_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "last_activity": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        },
+        "session_type": {
+          "type": "varchar",
+          "length": 20,
+          "nullable": false,
+          "default": "web"
+        },
+        "is_mobile": {
+          "type": "boolean",
+          "nullable": false,
+          "default": false
+        }
+      },
+      "constraints": {
+        "primary_key": ["id"],
+        "unique": [],
+        "foreign_key": [
+          {
+            "columns": ["user_id"],
+            "references": "users(id)",
+            "on_delete": "CASCADE"
+          }
+        ],
+        "check": [
+          "session_type IN ('web', 'mobile', 'api', 'admin')"
+        ]
+      },
+      "indexes": [
+        {
+          "name": "idx_user_sessions_user_id",
+          "columns": ["user_id"]
+        },
+        {
+          "name": "idx_user_sessions_expires",
+          "columns": ["expires_at"]
+        },
+        {
+          "name": "idx_user_sessions_type",
+          "columns": ["session_type"]
+        }
+      ]
+    },
+    "user_preferences": {
+      "columns": {
+        "id": {
+          "type": "bigint",
+          "nullable": false,
+          "primary_key": true,
+          "auto_increment": true
+        },
+        "user_id": {
+          "type": "bigint",
+          "nullable": false
+        },
+        "preference_key": {
+          "type": "varchar",
+          "length": 100,
+          "nullable": false
+        },
+        "preference_value": {
+          "type": "json",
+          "nullable": true
+        },
+        "created_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "type": "timestamp",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        }
+      },
+      "constraints": {
+        "primary_key": ["id"],
+        "unique": [
+          ["user_id", "preference_key"]
+        ],
+        "foreign_key": [
+          {
+            "columns": ["user_id"],
+            "references": "users(id)",
+            "on_delete": "CASCADE"
+          }
+        ],
+        "check": []
+      },
+      "indexes": [
+        {
+          "name": "idx_user_preferences_user_key",
+          "columns": ["user_id", "preference_key"],
+          "unique": true
+        }
+      ]
+    }
+  },
+  "views": {
+    "active_users": {
+      "definition": "SELECT u.id, u.username, u.email, u.first_name, u.last_name, u.email_verified_at, u.last_login_at FROM users u WHERE u.is_active = true",
+      "columns": ["id", "username", "email", "first_name", "last_name", "email_verified_at", "last_login_at"]
+    },
+    "verified_users": {
+      "definition": "SELECT u.id, u.username, u.email FROM users u WHERE u.is_active = true AND u.email_verified_at IS NOT NULL",
+      "columns": ["id", "username", "email"]
+    }
+  },
+  "procedures": [
+    {
+      "name": "cleanup_expired_sessions",
+      "parameters": [],
+      "definition": "DELETE FROM user_sessions WHERE expires_at < NOW()"
+    },
+    {
+      "name": "get_user_with_profile",
+      "parameters": ["user_id BIGINT"],
+      "definition": "SELECT u.*, p.bio, p.avatar_url, p.privacy_level FROM users u LEFT JOIN user_profiles p ON u.id = p.user_id WHERE u.id = user_id"
+    }
+  ]
+}

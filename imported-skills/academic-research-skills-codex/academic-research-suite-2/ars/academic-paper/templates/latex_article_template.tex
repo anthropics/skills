@@ -1,0 +1,199 @@
+% ============================================================
+% Academic Paper LaTeX Template
+% Compatible with XeLaTeX for CJK (zh-TW) support
+% ============================================================
+
+\documentclass[12pt, a4paper]{article}
+
+% === Core Packages ===
+\usepackage[margin=1in]{geometry}       % 1-inch margins (APA)
+\usepackage{setspace}                   % Line spacing control
+\usepackage{amsmath,amssymb}            % Math support
+\usepackage{graphicx}                   % Figures
+\usepackage{booktabs}                   % Professional tables
+\usepackage{float}                      % Figure placement [H]
+\usepackage{hyperref}                   % Clickable links
+\usepackage{url}                        % URL formatting
+\usepackage{enumitem}                   % List customization
+
+% === Citation Package (choose one) ===
+% Option A: natbib (APA-style)
+\usepackage[round]{natbib}
+\bibliographystyle{apalike}
+
+% Option B: biblatex with APA style (uncomment to use)
+% \usepackage[style=apa,backend=biber]{biblatex}
+% \addbibresource{references.bib}
+
+% === CJK Support (uncomment for zh-TW content) ===
+% Requires XeLaTeX compilation
+% \usepackage{xeCJK}
+% \setCJKmainfont{Noto Sans CJK TC}
+% \setCJKsansfont{Noto Sans CJK TC}
+% \setCJKmonofont{Noto Sans Mono CJK TC}
+
+% === Font (for pdfLaTeX) ===
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times}                      % Times New Roman
+
+% === Settings ===
+\doublespacing                          % APA double spacing
+\setlength{\parindent}{0.5in}           % First-line indent
+
+% === Hyperref Settings ===
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdfauthor={Author Name},
+    pdftitle={Paper Title}
+}
+
+% === Custom Commands ===
+\newcommand{\keywords}[1]{\textit{Keywords}: #1}
+
+% ============================================================
+% DOCUMENT
+% ============================================================
+
+\begin{document}
+
+% === Title Page ===
+\begin{titlepage}
+\begin{center}
+\vspace*{2in}
+
+{\LARGE \textbf{Paper Title in Title Case}} \\[0.5in]
+
+{\large Author Name} \\[0.1in]
+{\normalsize Department, Institution} \\[0.1in]
+{\normalsize \href{mailto:author@example.com}{author@example.com}} \\[0.5in]
+
+{\normalsize \today}
+
+\end{center}
+\end{titlepage}
+
+% === Abstract ===
+\begin{abstract}
+\noindent
+% Replace with your abstract (150-250 words)
+Abstract text goes here. Include background, purpose, method, findings, and implications in a single paragraph without indent.
+
+\vspace{6pt}
+\noindent
+\keywords{keyword1, keyword2, keyword3, keyword4, keyword5}
+\end{abstract}
+
+% === Chinese Abstract (uncomment if bilingual) ===
+% \newpage
+% \begin{center}
+% \textbf{中文摘要}
+% \end{center}
+% \noindent
+% 中文摘要內容。
+%
+% \vspace{6pt}
+% \noindent
+% \textbf{關鍵詞}：關鍵詞一、關鍵詞二、關鍵詞三
+
+\newpage
+
+% === Introduction ===
+\section{Introduction}
+
+\subsection{Context and Background}
+Introduction text here.
+
+\subsection{Problem Statement}
+% Problem text here.
+
+\subsection{Research Questions}
+% The following research questions guide this study:
+% \begin{enumerate}
+%     \item RQ1: Question?
+%     \item RQ2: Question?
+% \end{enumerate}
+
+% === Literature Review ===
+\section{Literature Review}
+
+\subsection{Theoretical Framework}
+% Framework text with \citet{Smith2024} or \citep{Smith2024}.
+
+\subsection{Theme One}
+% Theme 1 text.
+
+\subsection{Theme Two}
+% Theme 2 text.
+
+% === Methodology ===
+\section{Methodology}
+
+\subsection{Research Design}
+% Design text.
+
+\subsection{Participants}
+% Participant description.
+
+\subsection{Data Collection}
+% Data collection description.
+
+\subsection{Data Analysis}
+% Analysis description.
+
+% === Results ===
+\section{Results}
+
+\subsection{Finding One}
+% Results text. See Table~\ref{tab:example}.
+
+% === Example Table ===
+\begin{table}[H]
+\centering
+\caption{Example Table with Descriptive Statistics}
+\label{tab:example}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Variable} & \textbf{\textit{M}} & \textbf{\textit{SD}} & \textbf{\textit{N}} \\
+\midrule
+Variable 1 & 3.45 & 0.82 & 120 \\
+Variable 2 & 4.12 & 0.67 & 120 \\
+Variable 3 & 2.98 & 1.03 & 120 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Finding Two}
+% Results text.
+
+% === Discussion ===
+\section{Discussion}
+
+\subsection{Interpretation of Findings}
+% Discussion text.
+
+\subsection{Implications}
+% Implications text.
+
+\subsection{Limitations}
+% Limitations text.
+
+% === Conclusion ===
+\section{Conclusion}
+% Conclusion text.
+
+% === AI Disclosure ===
+\subsection*{AI Disclosure}
+This paper was prepared with the assistance of AI-powered academic writing tools. All content has been reviewed and verified by the author(s).
+
+% === References ===
+\newpage
+\bibliography{references}
+
+% For biblatex users:
+% \printbibliography
+
+\end{document}

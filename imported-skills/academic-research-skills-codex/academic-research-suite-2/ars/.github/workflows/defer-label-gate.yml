@@ -1,0 +1,69 @@
+name: Defer Label Gate
+
+# Block a tag push if any issue labelled `defer:<this-tag>` remains open.
+#
+# Why: v3.7.1 spec MERGED 2026-05-07 but impl never started — overtaken
+# by v3.7.3 then v3.8. Deferred items accumulate without a forcing
+# function. This gate enforces "before tagging vX.Y.Z, all
+# `defer:vX.Y.Z` issues must be closed (or relabelled to a later version)."
+#
+# Convention: label format is `defer:vMAJOR.MINOR.PATCH` (lowercase, with v).
+# Example: `defer:v3.10` blocks the v3.10 tag.
+#
+# Override: include [skip-defer-check] in the tagged commit message.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  defer-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Check defer label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEW_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          # Normalize tag -> defer label. v3.9.4.1 -> defer:v3.9.4.1
+          LABEL="defer:${NEW_TAG}"
+          echo "Checking label: $LABEL"
+
+          # Override
+          TAG_BODY=$(git log -1 --format=%B "$NEW_TAG")
+          if echo "$TAG_BODY" | grep -qF '[skip-defer-check]'; then
+            echo "Override [skip-defer-check] present — defer gate bypassed."
+            exit 0
+          fi
+
+          # Fetch open issues with this label
+          COUNT=$(gh issue list \
+            --label "$LABEL" \
+            --state open \
+            --json number \
+            --jq 'length')
+
+          echo "Open issues with label '$LABEL': $COUNT"
+
+          if [ "$COUNT" -gt 0 ]; then
+            echo "::error::$COUNT issue(s) labelled '$LABEL' are still open."
+            echo "::error::Close them, relabel to a later version, or add [skip-defer-check] + justification."
+            echo ""
+            echo "Open issues:"
+            gh issue list --label "$LABEL" --state open
+            exit 1
+          fi
+
+          echo "No open defer issues for $NEW_TAG."

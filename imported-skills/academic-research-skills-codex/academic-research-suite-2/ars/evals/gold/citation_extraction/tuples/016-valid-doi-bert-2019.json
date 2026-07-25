@@ -1,0 +1,45 @@
+{
+  "tuple_id": "016-valid-doi-bert-2019",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Devlin2019BERT",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "authors": [
+      {
+        "family": "Devlin",
+        "given": "Jacob"
+      },
+      {
+        "family": "Chang",
+        "given": "Ming-Wei"
+      },
+      {
+        "family": "Lee",
+        "given": "Kenton"
+      },
+      {
+        "family": "Toutanova",
+        "given": "Kristina"
+      }
+    ],
+    "year": 2019,
+    "doi": "10.18653/v1/N19-1423",
+    "venue": "Proceedings of the 2019 Conference of the North",
+    "source_pointer": "https://doi.org/10.18653/v1/N19-1423",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "devlin-2019-bert",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,225 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drayline.io/rootnode/mode-router/router-config.schema.json",
+  "title": "Mode Router Config",
+  "description": "Configuration for rootnode-mode-router. Defines the rule set the router evaluates to select an active profile. Same shape conventions as other rootnode runtime schemas: schema_version, name, description, plus router-specific fields (default_profile, rules, manual_override).",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "description",
+    "default_profile",
+    "rules"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the router config schema. Current version: 1.0.0."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+      "description": "Router config identifier in kebab-case."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Human-readable description of what this router config does and when it applies."
+    },
+    "default_profile": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+      "description": "Profile name to return when no rule matches. Required — guarantees the router always returns a routing decision."
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of routing rules. Evaluated in priority order (lowest priority number first). The first rule whose trigger matches the context returns its profile.",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "priority", "trigger", "profile"],
+        "additionalProperties": false,
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+            "description": "Unique identifier for this rule within the config. Used in evaluation traces."
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999,
+            "description": "Evaluation order. Lower numbers evaluated first. Use sparse numbering (10, 20, 30) to allow inserting new rules without renumbering."
+          },
+          "profile": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+            "description": "Profile name to return when this rule's trigger matches."
+          },
+          "trigger": {
+            "$ref": "#/definitions/trigger"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "Optional. Human-readable description of what this rule represents."
+          }
+        }
+      }
+    },
+    "manual_override": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["profile", "set_at", "expires_at"],
+          "additionalProperties": false,
+          "properties": {
+            "profile": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$"
+            },
+            "set_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO-8601 timestamp when override was set."
+            },
+            "expires_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO-8601 timestamp when override expires. After this, override is ignored and rules-based routing resumes."
+            },
+            "set_by": {
+              "type": "string",
+              "maxLength": 100,
+              "description": "Optional. Source of the override (e.g., 'telegram_command', 'apple_shortcut', 'cli')."
+            },
+            "reason": {
+              "type": "string",
+              "maxLength": 500,
+              "description": "Optional. User-supplied note about why the override was set."
+            }
+          }
+        }
+      ],
+      "description": "Active manual override, if any. When non-null and not expired, takes precedence over all rules. Null when no override is active."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional. Free-text notes about this router config."
+    }
+  },
+  "definitions": {
+    "trigger": {
+      "oneOf": [
+        { "$ref": "#/definitions/trigger_time_window" },
+        { "$ref": "#/definitions/trigger_calendar" },
+        { "$ref": "#/definitions/trigger_geofence" },
+        { "$ref": "#/definitions/trigger_custom_signal" },
+        { "$ref": "#/definitions/trigger_compound" }
+      ]
+    },
+    "trigger_time_window": {
+      "type": "object",
+      "required": ["type", "days_of_week", "start_time", "end_time"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "time_window" },
+        "time_zone": {
+          "type": "string",
+          "description": "IANA timezone name (e.g., 'America/Phoenix'). If omitted, uses the timezone of the caller-supplied current_time."
+        },
+        "days_of_week": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun", "all", "weekday", "weekend"]
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "start_time": {
+          "type": "string",
+          "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "HH:MM in 24-hour format."
+        },
+        "end_time": {
+          "type": "string",
+          "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "HH:MM in 24-hour format. May be earlier than start_time to indicate a window crossing midnight (e.g., 22:00 → 06:00)."
+        }
+      }
+    },
+    "trigger_calendar": {
+      "type": "object",
+      "required": ["type", "predicate"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "calendar" },
+        "predicate": {
+          "type": "string",
+          "enum": ["event_in_progress", "event_starts_within", "no_events_for"]
+        },
+        "category": {
+          "type": "string",
+          "description": "Required for 'event_in_progress' and 'event_starts_within'. Event category to match (e.g., 'focus', 'meeting', 'travel')."
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Required for 'event_starts_within' and 'no_events_for'. Time window in minutes."
+        }
+      }
+    },
+    "trigger_geofence": {
+      "type": "object",
+      "required": ["type", "location"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "geofence" },
+        "location": {
+          "type": "string",
+          "description": "Geofence label to match against context.geofence (e.g., 'at_office', 'at_home', 'in_transit'). Caller is responsible for computing geofence labels; the router only matches them."
+        }
+      }
+    },
+    "trigger_custom_signal": {
+      "type": "object",
+      "required": ["type", "signal_name", "expected_value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "custom_signal" },
+        "signal_name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Key name in context.custom_signals to match."
+        },
+        "expected_value": {
+          "type": ["string", "boolean", "number"],
+          "description": "Expected value for the signal. Match is exact equality."
+        }
+      }
+    },
+    "trigger_compound": {
+      "type": "object",
+      "required": ["type", "logic", "conditions"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "compound" },
+        "logic": {
+          "type": "string",
+          "enum": ["AND", "OR", "NOT"]
+        },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/trigger" }
+        }
+      }
+    }
+  }
+}

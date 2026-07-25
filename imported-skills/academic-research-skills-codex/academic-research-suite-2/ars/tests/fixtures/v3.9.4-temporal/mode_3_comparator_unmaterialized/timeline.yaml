@@ -1,0 +1,13 @@
+schema_version: "1.0"
+sources:
+  - citation_key: standard-2020ed
+    type: standard
+    version_family_id: standard-family
+    published_date:
+      value: "2020-01-01"
+      precision: year
+      open_ended: false
+      provenance:
+        method: user_override
+        confidence: high
+events: []

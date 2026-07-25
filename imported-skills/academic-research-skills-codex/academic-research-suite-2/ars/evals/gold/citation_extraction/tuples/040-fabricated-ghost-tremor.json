@@ -1,0 +1,23 @@
+{
+  "tuple_id": "040-fabricated-ghost-tremor",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Moreau2023GhostTremor",
+    "title": "Ghost Tremor Detection along Faults That Do Not Exist",
+    "authors": [
+      {"family": "Moreau", "given": "P."},
+      {"family": "Ibrahim", "given": "N."}
+    ],
+    "year": 2023,
+    "doi": "10.99999/ars184.fake.seismo.2023.177",
+    "venue": "Journal of Phantom Seismology",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.seismo.2023.177",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "moreau-2023-ghost-tremor",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

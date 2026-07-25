@@ -1,0 +1,30 @@
+run_id: 2026-04-30T15-07-00Z-d100
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.4"
+    file: bad_run/deliverable.md
+    line: 8
+    description: >
+      Cross-file inconsistency (D1): Chapter A characterises Decree No. 47's
+      sanction as "suspension effective 90 days after formal recording," while
+      Chapter B characterises the same decree as imposing "immediate revocation
+      if no response within 30 days." These two characterisations are mutually
+      incompatible. A sequential file-by-file audit passed both chapters
+      individually because neither file alone contains a contradiction; the
+      inconsistency is only visible under multi-file parallel audit.
+    suggested_fix: >
+      Run a multi-file parallel audit loading chapter_a.md and chapter_b.md
+      simultaneously. Reconcile the two characterisations against the primary
+      text of Decree No. 47 and emit a unified effect inventory before
+      finalising the cross-chapter synthesis.
+generated_at: "2026-04-30T15:07:51.629Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/timeline.schema.json",
+  "title": "Material Passport Timeline (phase2_investigation/timeline.yaml)",
+  "description": "Aggregate schema for the v3.9.4 timeline sidecar. Per spec §3.1 and §4. Owned by timeline_extraction_agent; literature_corpus_entry.schema.json is unmodified.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "sources"],
+  "properties": {
+    "schema_version": { "const": "1.0", "description": "Schema-internal version. v3.9.4 ships 1.0. Future drafts bump this constant to drive explicit migration." },
+    "sources": {
+      "type": "array",
+      "description": "Per-source temporal facts (publication date, effective range, supersession chain). Each entry joins to literature_corpus[] via citation_key. Per spec §3.1.",
+      "items": { "$ref": "#/$defs/timeline_source_entry" }
+    },
+    "events": {
+      "type": "array",
+      "description": "Events referenced in prose without a bibliographic citation (e.g., 'law repealed in 2024'). Optional; absent or empty when no such events exist. Per spec §3.1 + §4 join key discipline.",
+      "items": { "$ref": "#/$defs/timeline_event_entry" }
+    }
+  },
+  "$defs": {
+    "date_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "precision", "provenance"],
+      "properties": {
+        "value": { "type": ["string", "null"] },
+        "precision": { "enum": ["day", "month", "year", "interval", "unknown"] },
+        "open_ended": { "type": "boolean", "description": "True ONLY on effective_date_range.end when the source is still in force (verifier treats as +∞). MUST be absent or false on any other date. False or absent with value:null + precision:unknown means missing data (verifier emits TEMPORAL-METADATA-MISSING). Per spec §3.1 date shape table." },
+        "provenance": { "$ref": "#/$defs/provenance_object" }
+      }
+    },
+    "provenance_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "confidence"],
+      "properties": {
+        "method": { "enum": ["crossref_lookup", "pdftotext_cover", "user_override", "adapter_metadata", "unknown"] },
+        "raw": { "type": ["string", "null"] },
+        "source_locator": { "type": ["string", "null"] },
+        "confidence": { "enum": ["high", "medium", "low", "unverified"] }
+      }
+    },
+    "timeline_source_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["citation_key", "type"],
+      "properties": {
+        "citation_key": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_:-]*$" },
+        "type": { "type": "string", "minLength": 1, "description": "Free-form classification string (e.g., 'institutional-document', 'policy', 'standard'). No closed vocabulary at v1.0; v3.10 may introduce one. Per spec §3.1 sources entry shape." },
+        "published_date": { "$ref": "#/$defs/date_object" },
+        "effective_date_range": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": { "$ref": "#/$defs/date_object" },
+            "end": { "$ref": "#/$defs/date_object" }
+          }
+        },
+        "supersedes": { "type": ["string", "null"] },
+        "superseded_by": { "type": ["string", "null"] },
+        "version_family_id": { "type": ["string", "null"] },
+        "version_catalog_completeness": { "enum": ["exhaustive", "partial", "unknown"] }
+      },
+      "allOf": [
+        {
+          "description": "open_ended:true is permitted ONLY on effective_date_range.end (spec §3.1 date shape table). Rejecting open_ended:true on start.",
+          "if": {
+            "required": ["effective_date_range"],
+            "properties": {
+              "effective_date_range": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "object",
+                    "properties": { "open_ended": { "const": true } },
+                    "required": ["open_ended"]
+                  }
+                },
+                "required": ["start"]
+              }
+            }
+          },
+          "then": { "not": {} }
+        }
+      ]
+    },
+    "timeline_event_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "date"],
+      "properties": {
+        "event_id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_:-]*$" },
+        "description": { "type": "string" },
+        "date": { "$ref": "#/$defs/date_object" },
+        "governed_by": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

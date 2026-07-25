@@ -1,0 +1,13 @@
+fixture_id: 05_direct_mode_honored
+expected_routing_class: proceed
+expected_destination: bibliography_agent
+escape_hatch_applied: true
+direct_mode_stripped_message: "run bibliography_agent on these 30 PDFs about scaling laws"
+notes: |
+  `[direct-mode]` at byte-0 of first message. Per Routing Discipline Step 0, strip the
+  token and skip clarification. Dispatch the literal target (`bibliography_agent`).
+
+  Pass criteria:
+  - bibliography_agent is dispatched directly with the stripped message
+  - The literal `[direct-mode]` token is NOT passed through to the dispatched agent
+  - No clarification fires

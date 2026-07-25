@@ -1,0 +1,314 @@
+{
+  "customers": [
+    {
+      "customer_id": "CUST-001",
+      "name": "Acme Corp",
+      "segment": "enterprise",
+      "arr": 120000,
+      "contract_end_date": "2026-12-31",
+      "usage": {
+        "login_frequency": 85,
+        "feature_adoption": 72,
+        "dau_mau_ratio": 0.45
+      },
+      "engagement": {
+        "support_ticket_volume": 3,
+        "meeting_attendance": 90,
+        "nps_score": 8,
+        "csat_score": 4.2
+      },
+      "support": {
+        "open_tickets": 2,
+        "escalation_rate": 0.05,
+        "avg_resolution_hours": 18
+      },
+      "relationship": {
+        "executive_sponsor_engagement": 80,
+        "multi_threading_depth": 4,
+        "renewal_sentiment": "positive"
+      },
+      "previous_period": {
+        "usage_score": 70,
+        "engagement_score": 65,
+        "support_score": 75,
+        "relationship_score": 60,
+        "overall_score": 67
+      },
+      "usage_decline": {
+        "login_trend": 5,
+        "feature_adoption_change": 3,
+        "dau_mau_change": 0.02
+      },
+      "engagement_drop": {
+        "meeting_cancellations": 0,
+        "response_time_days": 1,
+        "nps_change": 1
+      },
+      "support_issues": {
+        "open_escalations": 0,
+        "unresolved_critical": 0,
+        "satisfaction_trend": "improving"
+      },
+      "relationship_signals": {
+        "champion_left": false,
+        "sponsor_change": false,
+        "competitor_mentions": 0
+      },
+      "commercial_factors": {
+        "contract_type": "annual",
+        "pricing_complaints": false,
+        "budget_cuts_mentioned": false
+      },
+      "contract": {
+        "licensed_seats": 100,
+        "active_seats": 95,
+        "plan_tier": "professional",
+        "available_tiers": ["professional", "enterprise", "enterprise_plus"]
+      },
+      "product_usage": {
+        "core_platform": {"adopted": true, "usage_pct": 85},
+        "analytics_module": {"adopted": true, "usage_pct": 60},
+        "integrations_module": {"adopted": false, "usage_pct": 0},
+        "api_access": {"adopted": true, "usage_pct": 40},
+        "advanced_reporting": {"adopted": false, "usage_pct": 0}
+      },
+      "departments": {
+        "current": ["engineering", "product"],
+        "potential": ["marketing", "sales", "support"]
+      }
+    },
+    {
+      "customer_id": "CUST-002",
+      "name": "TechStart Inc",
+      "segment": "smb",
+      "arr": 18000,
+      "contract_end_date": "2026-04-15",
+      "usage": {
+        "login_frequency": 40,
+        "feature_adoption": 30,
+        "dau_mau_ratio": 0.15
+      },
+      "engagement": {
+        "support_ticket_volume": 8,
+        "meeting_attendance": 50,
+        "nps_score": 5,
+        "csat_score": 3.0
+      },
+      "support": {
+        "open_tickets": 6,
+        "escalation_rate": 0.18,
+        "avg_resolution_hours": 42
+      },
+      "relationship": {
+        "executive_sponsor_engagement": 30,
+        "multi_threading_depth": 1,
+        "renewal_sentiment": "negative"
+      },
+      "previous_period": {
+        "usage_score": 55,
+        "engagement_score": 50,
+        "support_score": 60,
+        "relationship_score": 45,
+        "overall_score": 52
+      },
+      "usage_decline": {
+        "login_trend": -25,
+        "feature_adoption_change": -18,
+        "dau_mau_change": -0.12
+      },
+      "engagement_drop": {
+        "meeting_cancellations": 3,
+        "response_time_days": 8,
+        "nps_change": -4
+      },
+      "support_issues": {
+        "open_escalations": 2,
+        "unresolved_critical": 1,
+        "satisfaction_trend": "declining"
+      },
+      "relationship_signals": {
+        "champion_left": true,
+        "sponsor_change": false,
+        "competitor_mentions": 3
+      },
+      "commercial_factors": {
+        "contract_type": "month-to-month",
+        "pricing_complaints": true,
+        "budget_cuts_mentioned": true
+      },
+      "contract": {
+        "licensed_seats": 20,
+        "active_seats": 8,
+        "plan_tier": "starter",
+        "available_tiers": ["starter", "professional", "enterprise"]
+      },
+      "product_usage": {
+        "core_platform": {"adopted": true, "usage_pct": 35},
+        "analytics_module": {"adopted": false, "usage_pct": 0},
+        "integrations_module": {"adopted": false, "usage_pct": 0},
+        "api_access": {"adopted": false, "usage_pct": 0},
+        "advanced_reporting": {"adopted": false, "usage_pct": 0}
+      },
+      "departments": {
+        "current": ["engineering"],
+        "potential": ["product", "design"]
+      }
+    },
+    {
+      "customer_id": "CUST-003",
+      "name": "GlobalTrade Solutions",
+      "segment": "mid-market",
+      "arr": 55000,
+      "contract_end_date": "2026-09-30",
+      "usage": {
+        "login_frequency": 70,
+        "feature_adoption": 58,
+        "dau_mau_ratio": 0.35
+      },
+      "engagement": {
+        "support_ticket_volume": 5,
+        "meeting_attendance": 75,
+        "nps_score": 7,
+        "csat_score": 3.8
+      },
+      "support": {
+        "open_tickets": 3,
+        "escalation_rate": 0.10,
+        "avg_resolution_hours": 30
+      },
+      "relationship": {
+        "executive_sponsor_engagement": 60,
+        "multi_threading_depth": 3,
+        "renewal_sentiment": "neutral"
+      },
+      "previous_period": {
+        "usage_score": 68,
+        "engagement_score": 70,
+        "support_score": 65,
+        "relationship_score": 62,
+        "overall_score": 66
+      },
+      "usage_decline": {
+        "login_trend": -8,
+        "feature_adoption_change": -5,
+        "dau_mau_change": -0.03
+      },
+      "engagement_drop": {
+        "meeting_cancellations": 1,
+        "response_time_days": 3,
+        "nps_change": -1
+      },
+      "support_issues": {
+        "open_escalations": 1,
+        "unresolved_critical": 0,
+        "satisfaction_trend": "stable"
+      },
+      "relationship_signals": {
+        "champion_left": false,
+        "sponsor_change": true,
+        "competitor_mentions": 1
+      },
+      "commercial_factors": {
+        "contract_type": "annual",
+        "pricing_complaints": false,
+        "budget_cuts_mentioned": false
+      },
+      "contract": {
+        "licensed_seats": 50,
+        "active_seats": 48,
+        "plan_tier": "professional",
+        "available_tiers": ["professional", "enterprise", "enterprise_plus"]
+      },
+      "product_usage": {
+        "core_platform": {"adopted": true, "usage_pct": 78},
+        "analytics_module": {"adopted": true, "usage_pct": 45},
+        "integrations_module": {"adopted": true, "usage_pct": 55},
+        "api_access": {"adopted": false, "usage_pct": 0},
+        "advanced_reporting": {"adopted": false, "usage_pct": 0}
+      },
+      "departments": {
+        "current": ["operations", "finance"],
+        "potential": ["logistics", "compliance"]
+      }
+    },
+    {
+      "customer_id": "CUST-004",
+      "name": "HealthFirst Medical",
+      "segment": "enterprise",
+      "arr": 200000,
+      "contract_end_date": "2027-03-15",
+      "usage": {
+        "login_frequency": 92,
+        "feature_adoption": 88,
+        "dau_mau_ratio": 0.55
+      },
+      "engagement": {
+        "support_ticket_volume": 2,
+        "meeting_attendance": 95,
+        "nps_score": 9,
+        "csat_score": 4.6
+      },
+      "support": {
+        "open_tickets": 1,
+        "escalation_rate": 0.02,
+        "avg_resolution_hours": 12
+      },
+      "relationship": {
+        "executive_sponsor_engagement": 92,
+        "multi_threading_depth": 6,
+        "renewal_sentiment": "positive"
+      },
+      "previous_period": {
+        "usage_score": 85,
+        "engagement_score": 82,
+        "support_score": 88,
+        "relationship_score": 80,
+        "overall_score": 84
+      },
+      "usage_decline": {
+        "login_trend": 3,
+        "feature_adoption_change": 5,
+        "dau_mau_change": 0.03
+      },
+      "engagement_drop": {
+        "meeting_cancellations": 0,
+        "response_time_days": 1,
+        "nps_change": 0
+      },
+      "support_issues": {
+        "open_escalations": 0,
+        "unresolved_critical": 0,
+        "satisfaction_trend": "improving"
+      },
+      "relationship_signals": {
+        "champion_left": false,
+        "sponsor_change": false,
+        "competitor_mentions": 0
+      },
+      "commercial_factors": {
+        "contract_type": "multi-year",
+        "pricing_complaints": false,
+        "budget_cuts_mentioned": false
+      },
+      "contract": {
+        "licensed_seats": 250,
+        "active_seats": 240,
+        "plan_tier": "enterprise",
+        "available_tiers": ["professional", "enterprise", "enterprise_plus"]
+      },
+      "product_usage": {
+        "core_platform": {"adopted": true, "usage_pct": 92},
+        "analytics_module": {"adopted": true, "usage_pct": 80},
+        "integrations_module": {"adopted": true, "usage_pct": 70},
+        "api_access": {"adopted": true, "usage_pct": 65},
+        "advanced_reporting": {"adopted": true, "usage_pct": 50},
+        "security_module": {"adopted": false, "usage_pct": 0},
+        "audit_module": {"adopted": false, "usage_pct": 0}
+      },
+      "departments": {
+        "current": ["clinical", "operations", "IT", "compliance"],
+        "potential": ["research", "finance", "HR"]
+      }
+    }
+  ]
+}

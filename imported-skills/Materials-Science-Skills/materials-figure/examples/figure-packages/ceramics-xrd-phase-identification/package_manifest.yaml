@@ -1,0 +1,9 @@
+#target_journal: JACerS, Ceramics International
+#material: Al2O3-ZrO2 composite
+#figure_type: phase-identification
+---
+## Core conclusion
+XRD confirms that ZrO2 exists predominantly in the tetragonal phase when stabilized with 3 mol% Y2O3, with no monoclinic ZrO2 detected after sintering at 1550°C.
+
+## Evidence chain
+Composition → sintering → XRD pattern → phase identification → t-ZrO2 fraction via Rietveld

@@ -1,0 +1,140 @@
+route_scenarios:
+  - name: default-pasted-full-reader
+    axes:
+      source_format: pasted-text
+      output_type: full-reader
+      material_family: neutral
+      domain: general
+    on_demand:
+      - terminology-ledger
+    target_bytes: 21504
+    max_bytes: 23552
+
+  - name: pdf-civil-full-reader
+    axes:
+      source_format: pdf-text
+      output_type: full-reader
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+    target_bytes: 24576
+    max_bytes: 26624
+
+  - name: pdf-evidence-chain-audit
+    axes:
+      source_format: pdf-text
+      output_type: evidence-chain-audit
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+    target_bytes: 22528
+    max_bytes: 24576
+
+  - name: pdf-figure-anchored
+    axes:
+      source_format: pdf-text
+      output_type: fulltext-figure-anchored-reading
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+      - source-grounding
+      - standard-output-package
+    target_bytes: 34816
+    max_bytes: 36864
+
+  - name: wer-ea-intensive-package
+    axes:
+      source_format: pdf-text
+      output_type: wer-ea-intensive-reading-package
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+      - source-grounding
+      - standard-output-package
+    target_bytes: 34816
+    max_bytes: 36864
+
+  - name: literature-matrix-paper
+    axes:
+      source_format: pasted-text
+      output_type: literature-matrix
+      material_family: neutral
+      domain: general
+    on_demand:
+      - terminology-ledger
+    target_bytes: 21504
+    max_bytes: 23552
+
+  - name: journal-club-paper
+    axes:
+      source_format: pdf-text
+      output_type: journal-club
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+    target_bytes: 24576
+    max_bytes: 26624
+
+  - name: microstructure-paper
+    axes:
+      source_format: pdf-text
+      output_type: microstructure-interpretation
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+    target_bytes: 24576
+    max_bytes: 26624
+
+  - name: reader-to-review-handoff
+    axes:
+      source_format: pdf-text
+      output_type: evidence-to-review-handoff
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+      - source-grounding
+    target_bytes: 32768
+    max_bytes: 34816
+
+  - name: pdf-visual-asset-reading
+    axes:
+      source_format: pdf-text
+      output_type: pdf-visual-asset-extraction
+      material_family: civil
+      domain: civil
+    on_demand:
+      - terminology-ledger
+    target_bytes: 28672
+    max_bytes: 30720
+
+  - name: ceramics-intensive-package
+    axes:
+      source_format: pdf-text
+      output_type: full-reader
+      material_family: ceramics
+      domain: ceramics
+    on_demand:
+      - terminology-ledger
+      - ceramics-intensive-reading
+    target_bytes: 30720
+    max_bytes: 32768
+
+  - name: doi-citation-attribution
+    axes:
+      source_format: doi-arxiv
+      output_type: full-reader
+      material_family: neutral
+      domain: general
+    on_demand:
+      - terminology-ledger
+      - source-grounding
+      - ethics
+    target_bytes: 24576
+    max_bytes: 26624

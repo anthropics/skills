@@ -1,0 +1,268 @@
+{
+  "scan_metadata": {
+    "directory": "/project/src",
+    "scan_date": "2024-01-15T09:00:00",
+    "scanner_version": "1.0.0"
+  },
+  "summary": {
+    "total_files_scanned": 25,
+    "total_lines_scanned": 12543,
+    "total_debt_items": 28,
+    "health_score": 68.5,
+    "debt_density": 1.12
+  },
+  "debt_items": [
+    {
+      "id": "DEBT-0001",
+      "type": "large_function",
+      "description": "create_user function in user_service.py is 89 lines long",
+      "file_path": "src/user_service.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0002",
+      "type": "duplicate_code",
+      "description": "Password validation logic duplicated in 3 locations",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0003",
+      "type": "security_risk",
+      "description": "Hardcoded API key in payment_processor.py",
+      "file_path": "src/payment_processor.py",
+      "severity": "critical",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0004",
+      "type": "high_complexity",
+      "description": "process_payment function has cyclomatic complexity of 24",
+      "file_path": "src/payment_processor.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0005",
+      "type": "missing_docstring",
+      "description": "PaymentProcessor class missing docstring",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0006",
+      "type": "todo_comment",
+      "description": "TODO: Move this to configuration file",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0007",
+      "type": "empty_catch_blocks",
+      "description": "Empty catch block in update_user method",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0008",
+      "type": "magic_numbers",
+      "description": "Magic number 1800 used for lock timeout",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0009",
+      "type": "deep_nesting",
+      "description": "Deep nesting detected: 6 levels in preferences handling",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0010",
+      "type": "long_line",
+      "description": "Line too long: 156 characters",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0011",
+      "type": "commented_code",
+      "description": "Dead code left in comments",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0012",
+      "type": "global_variables",
+      "description": "Global variable userCache should be encapsulated",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0013",
+      "type": "synchronous_ajax",
+      "description": "Synchronous AJAX call blocks UI thread",
+      "file_path": "src/frontend.js",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0014",
+      "type": "hardcoded_values",
+      "description": "Tax rates hardcoded in payment processing logic",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0015",
+      "type": "no_error_handling",
+      "description": "API calls without proper error handling",
+      "file_path": "src/payment_processor.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0016",
+      "type": "inefficient_algorithm",
+      "description": "O(n) user search could be optimized with indexing",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0017",
+      "type": "memory_leak_risk",
+      "description": "Event listeners attached without cleanup",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0018",
+      "type": "sql_injection_risk",
+      "description": "Potential SQL injection in user query",
+      "file_path": "src/database.py",
+      "severity": "critical",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0019",
+      "type": "outdated_dependency",
+      "description": "jQuery version 2.1.4 has known security vulnerabilities",
+      "file_path": "package.json",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0020",
+      "type": "test_debt",
+      "description": "No unit tests for critical payment processing logic",
+      "file_path": "src/payment_processor.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0021",
+      "type": "large_class",
+      "description": "UserService class has 15 methods",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0022",
+      "type": "unused_imports",
+      "description": "Unused import: sys",
+      "file_path": "src/utils.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0023",
+      "type": "missing_type_hints",
+      "description": "Function get_user_score missing type hints",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0024",
+      "type": "circular_dependency",
+      "description": "Circular import between user_service and auth_service",
+      "file_path": "src/user_service.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0025",
+      "type": "inconsistent_naming",
+      "description": "Variable name userID should be user_id",
+      "file_path": "src/auth.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0026",
+      "type": "broad_exception",
+      "description": "Catching generic Exception instead of specific types",
+      "file_path": "src/database.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0027",
+      "type": "deprecated_api",
+      "description": "Using deprecated datetime.utcnow() method",
+      "file_path": "src/utils.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0028",
+      "type": "logging_issue",
+      "description": "Using print() instead of proper logging",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+version: "1.1.0"
+status: beta
+
+context_budget:
+  target_activation_bytes: 18432
+  max_activation_bytes: 20480
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 50
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes:
+    - pipeline_mode
+    - material_family
+    - output
+  required_route_scenarios:
+    - configure-without-scoring
+    - run-scored-digest
+    - pipeline-to-reader
+    - pipeline-to-citation
+    - research-pipeline-reader
+
+always_load:
+  - ../_shared/core/direction-profile.md
+  - static/core/contract.md
+  - static/core/workflow.md
+
+axes:
+  pipeline_mode:
+    detect: "Is the user configuring, running, or auditing a literature pipeline?"
+    default: run
+    values:
+      configure:
+        path: static/core/workflow.md
+        triggers: ["configure", "set up", "monitoring plan", "literature watch"]
+      run:
+        path: static/core/workflow.md
+        triggers: ["run pipeline", "screen papers", "daily digest", "weekly digest"]
+      audit:
+        path: static/core/scoring.md
+        triggers: ["audit scoring", "check candidates", "deduplicate", "score inflation"]
+
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile fallback", "general materials"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "pavement", "asphalt"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "epoxy", "rubber"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "sintering", "refractory", "porcelain"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "functional material"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "nanocomposite", "2D material"]
+
+  output:
+    detect: "What output does the user need?"
+    default: digest
+    values:
+      digest:
+        path: assets/templates/literature-pipeline-digest.md
+        triggers: ["digest", "summary", "push note", "ranked list"]
+      candidate-table:
+        path: assets/templates/literature-candidate-table.csv
+        triggers: ["candidate table", "csv", "screening table", "paper list"]
+      scoring-rubric:
+        path: static/core/scoring.md
+        triggers: ["scoring", "rubric", "ranking", "priority"]
+      cron-plan:
+        path: references/cron-operations.md
+        triggers: ["cron", "schedule", "daily push", "weekly push", "automation"]
+      push-format:
+        path: references/push-format.md
+        triggers: ["push format", "feishu", "telegram", "digest message", "notification"]
+      gap-report:
+        path: references/gap-analysis.md
+        triggers: ["gap analysis", "research gap", "blank area", "literature gap"]
+      review-compilation:
+        path: references/review-compilation-workflow.md
+        triggers: ["review compilation", "综述", "review workflow", "literature review"]
+
+references:
+  on_demand:
+    scoring:
+      path: static/core/scoring.md
+      when: "Candidates are scored, ranked, calibrated, or audited."
+    research-state:
+      path: ../_shared/core/research-state-contract.md
+      when: "The pipeline participates in a persistent multi-skill research state."
+    digest-template:
+      path: assets/templates/literature-pipeline-digest.md
+      when: "The user needs a digest."
+    candidate-table:
+      path: assets/templates/literature-candidate-table.csv
+      when: "The user needs a CSV candidate table."
+    cron-operations:
+      path: references/cron-operations.md
+      when: "The user asks to schedule recurring local literature runs or verify an automation."
+    push-format:
+      path: references/push-format.md
+      when: "The user needs a daily or weekly push message format."
+    degradation-strategy:
+      path: references/degradation-strategy.md
+      when: "A source, scheduler, delivery channel, or archive write fails."
+    gap-analysis:
+      path: references/gap-analysis.md
+      when: "The user asks whether a topic has been explored or needs a structured gap report."
+    review-compilation-workflow:
+      path: references/review-compilation-workflow.md
+      when: "The user is compiling a review from pipeline outputs, vault notes, or Zotero/library records."
+
+assets:
+  - assets
+scripts: []
+quality_gates:
+  - release gate must report no issues for this skill
+  - metadata-only candidates must be labelled as candidate evidence
+  - score totals must equal the scoring dimensions
+handoffs:
+  provides:
+    literature-pipeline-handoff:
+      description: "Candidate literature table, digest, source-depth labels, and next-reading actions"
+      contract: ../../_shared/contracts/literature-pipeline-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: citation-handoff
+      from: materials-citation
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

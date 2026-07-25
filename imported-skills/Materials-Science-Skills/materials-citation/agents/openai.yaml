@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Citation"
+  short_description: "Search and citation maps for materials."
+  default_prompt: "Use $materials-citation to map literature, claims, and references for this materials manuscript."
+  brand_color: "#4B6F8A"
+
+policy:
+  allow_implicit_invocation: true

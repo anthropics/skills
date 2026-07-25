@@ -1,0 +1,89 @@
+{
+  "skill_name": "materials-response",
+  "evals": [
+    {
+      "id": "point-by-point-structure",
+      "prompt": "Please draft a point-by-point response to these reviewer comments for a CBM submission:\n\nReviewer 1:\n1. The novelty of this study is unclear. How does it differ from existing epoxy-modified asphalt studies?\n2. The mechanism discussion is insufficient. Please provide SEM and rheology data to support the FTIR findings.\n3. Table 3 has inconsistent units. Please check and correct.\n4. The conclusion overstates the engineering applicability. Please revise.\n\nPlease provide a structured response package.",
+      "expected_output": "The assistant should produce a structured response with: (1) A response table mapping each reviewer comment to a point-by-point reply; (2) Each reply should classify the comment type (novelty/mechanism/data-error/overclaim); (3) The response tone should be respectful and constructive, not defensive; (4) For comment 2, propose SEM/rheology evidence or explain the current evidence scope without claiming unconfirmed experiments were completed; (5) For comment 3, acknowledge the unit issue but use AUTHOR_INPUT_NEEDED until the correct units or revised table are supplied; (6) For comment 4, draft hedged conclusion language while leaving exact revision proof blocked until the revised text and location are confirmed.",
+      "assertions": [
+        {
+          "name": "all_comments_addressed",
+          "description": "Every reviewer comment (1-4) has a corresponding response entry; no comment is skipped or ignored."
+        },
+        {
+          "name": "structured_format",
+          "description": "The output uses a clear point-by-point table or numbered format that maps reviewer comment to author response."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "tone-not-defensive",
+      "prompt": "Draft a response to this aggressive reviewer comment for a CCC submission:\n\n'The authors claim to have elucidated the mechanism of epoxy-cement interaction, but the evidence is entirely superficial. The FTIR analysis is basic and does not support the bold conclusions drawn. The SEM images are low quality and lack proper magnification scales. This manuscript is not suitable for publication in CCC in its current form and represents a marginal contribution to the field at best.'",
+      "expected_output": "The assistant must produce a professional, non-defensive response that: (1) Acknowledges the reviewer's detailed evaluation; (2) Proposes additional characterization (XRD, TG, nanoindentation) or narrows the evidence claim without stating that unconfirmed experiments were completed; (3) Acknowledges the SEM quality concern and marks improved images, scale bars, and manuscript locations as AUTHOR_INPUT_NEEDED unless the revised assets and locations are supplied; (4) Does not argue, dismiss, or counter-attack; (5) Uses evidence-bound language such as 'We appreciate', 'We acknowledge', or conditional planned-action wording, and does not use 'We have revised' without revision proof.",
+      "assertions": [
+        {
+          "name": "professional_tone",
+          "description": "The response uses respectful, constructive language throughout. No defensive, dismissive, or confrontational phrases appear."
+        },
+        {
+          "name": "evidence_based_reply",
+          "description": "Each concern is addressed with specific proposed actions or AUTHOR_INPUT_NEEDED; experiments, revised figures, and completed manuscript changes are not claimed without confirmation."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "mechanism-comment-type",
+      "prompt": "A CBM reviewer wrote: 'The authors should provide a more detailed explanation of the curing mechanism. What is the role of the curing agent? How does the epoxy-asphalt interface evolve during curing?' Draft a response that addresses this mechanism-type comment.",
+      "expected_output": "The assistant should: (1) Classify this as a 'mechanism' comment type; (2) Suggest specific additional evidence: FTIR peak deconvolution, DSC curing kinetics, SEM/AFM interface morphology at different curing stages; (3) Propose a revised mechanism discussion with explicit evidence boundaries; (4) Use AUTHOR_INPUT_NEEDED for unconfirmed experiment status, revised wording, or manuscript locations rather than claiming completion; (5) If new experiments are not feasible, acknowledge the limitation and soften the claims; (6) Reference the response-strategy.md patterns for mechanism comments.",
+      "assertions": [
+        {
+          "name": "mechanism_type_classified",
+          "description": "The comment is correctly classified as mechanism-type and the response follows mechanism-specific response patterns."
+        },
+        {
+          "name": "specific_evidence_suggested",
+          "description": "The response suggests at least two specific characterization techniques (e.g., DSC, SEM, AFM, rheology) rather than vague promises."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "response-document-format",
+      "prompt": "Prepare a complete response document package for a CBM major revision. The reviewer asked for: (1) additional durability testing, (2) mechanism clarification, (3) statistical analysis improvement, (4) reference updates.",
+      "expected_output": "The output should follow response-document-format.md structure as an evidence-bound draft: (1) A cover-letter section that distinguishes confirmed changes from requested or planned actions; (2) A point-by-point response table with each reviewer comment, response type, manuscript action, evidence basis, revision proof, author input, and status; (3) A revision plan that labels durability testing, mechanism analysis, statistics, and reference updates as confirmed, proposed, or AUTHOR_INPUT_NEEDED; (4) Language-polish notes only for supplied revised text. The package must remain blocked or drafted, not submission-ready, until experiment status, revised text, and manuscript locations are confirmed.",
+      "assertions": [
+        {
+          "name": "complete_package_structure",
+          "description": "The output includes the cover-letter section, point-by-point table, revision plan, and conditional language notes while separating confirmed changes from proposed or blocked actions."
+        },
+        {
+          "name": "verifiable_changes",
+          "description": "Each response entry uses exact section, figure, table, paragraph, or line proof only when supplied; otherwise it leaves revision proof empty and uses AUTHOR_INPUT_NEEDED with blocked or drafted status."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "context-budget-and-composition",
+      "prompt": "An incoming materials-research gate report contains four reviewer weaknesses for a CBM manuscript. Draft the point-by-point response, update the manuscript actions, and prepare the submission response package. Two requested experiments have unconfirmed status, and no revised line numbers are available.",
+      "expected_output": "The assistant should route the incoming gate-report rows through the response workflow, preserve stable comment IDs, separate response strategy from manuscript action and evidence, mark both unconfirmed experiments and missing line proof as AUTHOR_INPUT_NEEDED or blocked, and emit a response package or response-handoff without claiming completion.",
+      "assertions": [
+        {
+          "name": "shared_contracts_are_opt_in",
+          "description": "The router keeps stance, evidence, ethics, and weakness routing out of always_load and loads only the shared contracts required by the incoming gate report."
+        },
+        {
+          "name": "missing_revision_proof_blocks_completion",
+          "description": "Unconfirmed experiments and absent line numbers produce AUTHOR_INPUT_NEEDED or blocked rows rather than claims that revisions are complete."
+        },
+        {
+          "name": "response_handoff_shape_preserved",
+          "description": "The output separates comment ID, strategy, manuscript action, evidence basis, revision proof, author input, and status."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

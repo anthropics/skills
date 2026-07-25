@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "name": "lenient",
+  "description": "Lenient critic profile. Critic acts as a fast second opinion on proposed changes; minor findings can be auto-resolved if author addresses them in the same turn. Use during active execution sessions with full supervision.",
+  "auto_approve_on": ["clean_pass_only", "info"],
+  "request_changes_threshold": ["minor", "major"],
+  "reject_on": ["blocker"],
+  "skip_checks": [],
+  "escalation_required_for_categories": [
+    "invariant_violation",
+    "out_of_scope",
+    "test_deletion"
+  ],
+  "auto_resolution_allowed": true,
+  "max_diff_size_for_auto_eval": 500,
+  "notes": "Lenient profile for active sessions. Auto-resolution permitted because the user is present to review the resolution. Escalation list is the minimum non-negotiable set — invariant violations and out-of-scope changes always escalate, test deletion always escalates because it reduces verification surface."
+}

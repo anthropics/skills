@@ -1,0 +1,4 @@
+test_type,control_mean_pct,control_std_pct,modified_mean_pct,modified_std_pct,p_value,significance
+Freeze-thaw,72.3,4.1,89.6,3.2,0.0008,***
+Carbonation,61.8,5.6,82.4,4.3,0.0021,**
+Chloride ingress,58.4,3.9,79.1,3.5,0.0065,**

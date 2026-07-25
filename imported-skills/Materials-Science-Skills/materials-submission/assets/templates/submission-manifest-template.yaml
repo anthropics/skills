@@ -1,0 +1,20 @@
+# Submission manifest — fill this before running build_submission_package.py
+target_journal: cbm  # supported journal ID; see manifest.yaml
+article_type: research-article  # must be accepted by the selected journal template
+title: ""
+authors:
+  - name: ""
+    affiliation: ""
+    email: ""
+    corresponding: false
+corresponding_author: ""
+funding: ""
+conflicts: ""
+data_availability_status: pending  # ready requires a readable, parseable FAIR manifest
+code_availability_status: not-applicable  # ready | pending | not-applicable; use when the template requests code availability
+writing_state_path: ""  # optional path to materials-writing/state.json
+figure_package_path: ""  # optional path to figure package manifest
+fair_package_path: ""  # optional path to a readable, parseable FAIR package manifest
+weakness_routing_path: ""  # optional path to weakness-routing CSV
+suggested_reviewers: []  # optional; only real names supplied by the user
+live_verification_acknowledged: false  # must be true for final assembly

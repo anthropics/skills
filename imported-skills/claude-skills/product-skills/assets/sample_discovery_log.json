@@ -1,0 +1,20 @@
+{
+  "_comment": "Continuous-discovery log shape — feed to scripts/discovery_cadence_tracker.py.",
+  "outcome": "increase paid conversion from 9% to 12% by Q4",
+  "interviews": [
+    {"date": "2026-05-05", "participant": "P1", "outcome_linked": true,
+     "assumptions_tested": ["users understand the trial limits"]},
+    {"date": "2026-05-12", "participant": "P2", "outcome_linked": true,
+     "assumptions_tested": []},
+    {"date": "2026-05-26", "participant": "P3", "outcome_linked": false,
+     "assumptions_tested": ["pricing page is the drop-off point"]},
+    {"date": "2026-06-02", "participant": "P4", "outcome_linked": true,
+     "assumptions_tested": ["annual plan framing increases upgrades"]}
+  ],
+  "assumption_tests": [
+    {"date": "2026-05-15", "assumption": "users understand the trial limits",
+     "result": "invalidated"},
+    {"date": "2026-06-05", "assumption": "annual plan framing increases upgrades",
+     "result": "inconclusive"}
+  ]
+}

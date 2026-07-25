@@ -1,0 +1,31 @@
+run_id: 2026-04-30T10-05-00Z-a3b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.1"
+    file: bad_run/deliverable.md
+    line: 6
+    description: >
+      Mis-anchored citation (A3): The 12% employment improvement finding
+      (p < .01, n = 340 programmes) is attributed to Johnson (2022) in lines 6-9
+      and again in line 12. However, bibliography entry Johnson2022 annotation
+      explicitly states it contains no quantitative outcome data and provides only
+      comparative overview material. The quantitative finding belongs to Chen (2023)
+      (entry_C_outcome_metrics.md). The agent anchored to the nearest contextually
+      prominent entry rather than the entry whose annotation directly supports
+      the claim.
+    suggested_fix: >
+      Replace "Johnson and colleagues (2022)" with "Chen (2023)" and add anchor
+      justification: "anchored to Chen2023 because entry annotation directly
+      states the 12% employment finding; not anchored to Johnson2022 because
+      that entry contains no quantitative outcome data."
+generated_at: "2026-04-30T10:05:29.413Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

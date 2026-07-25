@@ -1,0 +1,24 @@
+{
+  "revenue": {
+    "current_arr": 5000000,
+    "prior_arr": 3800000,
+    "net_new_arr": 1200000,
+    "arpa_monthly": 2500,
+    "revenue_growth_pct": 31.6
+  },
+  "costs": {
+    "sales_marketing_spend": 1800000,
+    "cac": 18000,
+    "gross_margin_pct": 78,
+    "total_operating_expense": 6500000,
+    "net_burn": 1500000,
+    "fcf_margin_pct": 8.4
+  },
+  "customers": {
+    "beginning_arr": 3800000,
+    "expansion_arr": 600000,
+    "contraction_arr": 100000,
+    "churned_arr": 300000,
+    "annual_churn_rate_pct": 8
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "task": "initial_tenant_setup",
+  "tenant_config": {
+    "company_name": "Acme Corporation",
+    "domain_name": "acme.com",
+    "user_count": 75,
+    "industry": "technology",
+    "compliance_requirements": ["GDPR"],
+    "licenses": {
+      "E5": 5,
+      "E3": 15,
+      "Business_Standard": 50,
+      "Business_Basic": 5
+    }
+  },
+  "admin_details": {
+    "primary_admin_email": "admin@acme.com",
+    "timezone": "Pacific Standard Time",
+    "country": "US"
+  }
+}

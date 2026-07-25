@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Reviewer"
+  short_description: "Simulated peer review for materials manuscripts."
+  default_prompt: "Use $materials-reviewer to simulate two independent reviewer reports and a cross-review synthesis."
+  brand_color: "#5C6B52"
+
+policy:
+  allow_implicit_invocation: true

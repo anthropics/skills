@@ -1,0 +1,21 @@
+{
+  "tuple_id": "044-manual-exempt-turing-1950-computing",
+  "kind": "manual_exempt",
+  "corpus_entry": {
+    "citation_key": "Turing1950Computing",
+    "title": "Computing Machinery and Intelligence",
+    "authors": [
+      {"family": "Turing", "given": "Alan M."}
+    ],
+    "year": 1950,
+    "venue": "Mind, 59(236), 433-460",
+    "source_pointer": "zotero://select/items/0_Turing1950Computing",
+    "obtained_via": "manual"
+  },
+  "arxiv_id": null,
+  "ref_slug": "turing-1950-computing",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/audit/audit_verdict.schema.json",
+  "title": "Codex Audit Verdict File",
+  "description": "Schema for <run_id>.verdict.yaml — the human-readable verdict file produced by the wrapper after parsing the JSONL stream's single item.completed.agent_message event (per §3.3 / §3.5). This is the policy surface the orchestrator reads for ship/block decisions; JSONL is raw evidence (Layer 2) and sidecar is environmental evidence (Layer 3). Cross-field invariants (PASS/MINOR/MATERIAL/AUDIT_FAILED count consistency; finding_counts agrees with findings[]) are lint-enforced in scripts/check_audit_artifact_consistency.py (Phase 6.3 §3.7 family A rows A1/A2/A5/A6) — this schema enforces the per-file shape so wrapper-side lint can reject malformed verdicts before they reach the orchestrator.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "run_id",
+    "verdict_status",
+    "round",
+    "target_rounds",
+    "finding_counts",
+    "findings",
+    "generated_at",
+    "generated_by",
+    "generator_version"
+  ],
+
+  "properties": {
+    "run_id": { "$ref": "#/$defs/run_id" },
+    "verdict_status": {
+      "type": "string",
+      "enum": ["PASS", "MINOR", "MATERIAL", "AUDIT_FAILED"],
+      "description": "Three completion states + AUDIT_FAILED for wrapper-side aborts (§4.6). Cross-field consistency with finding_counts and failure_reason is lint-enforced (§3.7 A1/A2)."
+    },
+    "round": { "type": "integer", "minimum": 1 },
+    "target_rounds": { "type": "integer", "minimum": 1 },
+    "finding_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p1", "p2", "p3"],
+      "properties": {
+        "p1": { "type": "integer", "minimum": 0 },
+        "p2": { "type": "integer", "minimum": 0 },
+        "p3": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" },
+      "description": "May be []. When verdict_status == 'AUDIT_FAILED', findings MUST be [] (lint-enforced per §3.7 A6). When non-empty, finding_counts must agree with severity tallies (§3.7 A5, lint-enforced)."
+    },
+    "failure_reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "pattern": "^[^\\n\\r]+$",
+      "description": "One-line human-readable reason. Required iff verdict_status == 'AUDIT_FAILED' (§3.7 A2; lint-enforced)."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generated_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path to the wrapper script that produced this verdict (canonical: 'scripts/run_codex_audit.sh')."
+    },
+    "generator_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Wrapper script semver."
+    }
+  },
+
+  "allOf": [
+    {
+      "title": "[doc-only] round vs target_rounds — enforced by lint, not schema",
+      "description": "JSON Schema 2020-12 has no native cross-field comparison; round <= target_rounds (§3.7 A3) is enforced by scripts/check_audit_artifact_consistency.py (Phase 6.3) and by the wrapper's --round/--target-rounds preflight (§4.2). This clause carries the comment so future readers don't try to add a non-existent schema-level constraint here."
+    },
+    {
+      "description": "AUDIT_FAILED requires failure_reason. Lint additionally enforces findings == [] and finding_counts all zero per §3.7 A2/A6.",
+      "if": {
+        "properties": { "verdict_status": { "const": "AUDIT_FAILED" } },
+        "required": ["verdict_status"]
+      },
+      "then": {
+        "required": ["failure_reason"]
+      }
+    },
+    {
+      "description": "Non-AUDIT_FAILED verdicts MUST NOT carry failure_reason (§3.7 A2 inverse direction).",
+      "if": {
+        "properties": {
+          "verdict_status": {
+            "type": "string",
+            "enum": ["PASS", "MINOR", "MATERIAL"]
+          }
+        },
+        "required": ["verdict_status"]
+      },
+      "then": {
+        "not": { "required": ["failure_reason"] }
+      }
+    }
+  ],
+
+  "$defs": {
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Mirrored from passport/audit_artifact_entry.schema.json $defs.run_id; F1 in §3.7. Keep regex in sync."
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "severity", "dimension", "file", "line", "description", "suggested_fix"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^F-[0-9]{3,}$",
+          "description": "Stable per-verdict-file identifier (e.g., 'F-007'). acknowledgement.finding_ids cross-references these (§3.7 B10)."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["P1", "P2", "P3"]
+        },
+        "dimension": {
+          "type": "string",
+          "enum": ["3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "4(f)"],
+          "description": "Audit template Section 3 dimension or '4(f)' for report_compiler_agent abstract-only checks."
+        },
+        "file": { "type": "string", "minLength": 1 },
+        "line": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "suggested_fix": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

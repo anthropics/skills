@@ -1,0 +1,141 @@
+{
+  "skill_name": "materials-data",
+  "evals": [
+    {
+      "id": "fair-audit-completeness",
+      "prompt": "Audit this dataset for FAIR compliance: a CSV file with three columns — 'Sample ID', 'Compressive Strength (MPa)', 'Water Absorption (%)' — for 10 geopolymer concrete samples. No README, no metadata, no data dictionary, and no repository link are provided.",
+      "expected_output": "The assistant must audit all four FAIR dimensions: Findable (no DOI, no metadata record, no repository — flag as not findable), Accessible (CSV is local-only, no access protocol — flag as not accessible), Interoperable (no standard vocabulary, no schema, no units specification — flag as not interoperable), Reusable (no README, no license, no provenance, no contact — flag as not reusable). The output must not skip any dimension.",
+      "assertions": [
+        {
+          "name": "findable_audited",
+          "description": "The Findable dimension is checked: DOI, metadata, repository."
+        },
+        {
+          "name": "accessible_audited",
+          "description": "The Accessible dimension is checked: access protocol, authentication, persistence."
+        },
+        {
+          "name": "interoperable_audited",
+          "description": "The Interoperable dimension is checked: standard vocabulary, schema, units, format."
+        },
+        {
+          "name": "reusable_audited",
+          "description": "The Reusable dimension is checked: README, license, provenance, contact."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "data-availability-statement-domain",
+      "prompt": "Generate a data availability statement for a paper on 'Microstructure and mechanical properties of ZrO2-toughened alumina ceramics'. The raw data (XRD patterns, SEM images, mechanical test data) will be deposited in Zenodo with embargo until publication.",
+      "expected_output": "The assistant must detect the domain as 'ceramics' and generate a data availability statement that includes: the repository name (Zenodo), the embargo period, the types of data (XRD, SEM, mechanical tests), and the access conditions. The statement must not claim the data is 'available upon request' if it is going to a repository, and must not claim 'publicly available' before the embargo lifts. The statement must follow the conventions in references/data-availability-statements.md.",
+      "assertions": [
+        {
+          "name": "domain_detected",
+          "description": "The assistant identifies the domain as ceramics."
+        },
+        {
+          "name": "repository_named",
+          "description": "The statement names the specific repository (Zenodo)."
+        },
+        {
+          "name": "embargo_stated",
+          "description": "The statement includes the embargo period and access conditions."
+        },
+        {
+          "name": "no_false_public_claim",
+          "description": "The statement does not claim 'publicly available' before the embargo lifts."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "column-schema-validation",
+      "prompt": "Validate this CSV against the asphalt data schema: columns are 'Sample', 'Temp (°C)', 'Penetration (dmm)', 'Softening Point (°C)', 'Ductility (cm)'. The data contains 8 rows of asphalt binder test results.",
+      "expected_output": "The assistant must validate the CSV columns against the asphalt data schema (references/asphalt-data-schema.md). It should check: (1) required columns are present, (2) column naming conventions match the schema, (3) units are specified in headers, (4) data types are appropriate. If any column is missing or misnamed, the assistant should report the discrepancy. The output must reference the asphalt-data-schema.md file.",
+      "assertions": [
+        {
+          "name": "schema_referenced",
+          "description": "The assistant references asphalt-data-schema.md or the appropriate domain schema."
+        },
+        {
+          "name": "columns_checked",
+          "description": "The response checks all columns against the schema for presence, naming, and units."
+        },
+        {
+          "name": "discrepancies_reported",
+          "description": "Any missing or misnamed columns are reported with specific recommendations."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "dataset-readme-required-fields",
+      "prompt": "Create a dataset README for a thermal insulation materials dataset. The dataset includes: thermal conductivity at 25 °C, 50 °C, 100 °C for 5 aerogel composite samples; density; porosity by mercury intrusion; SEM images of pore structure. The user provides the contact email and measurement methods.",
+      "expected_output": "The assistant must include all required fields from the dataset README template (assets/templates/dataset-readme-template.md): materials description (aerogel composites, sample IDs), methods (thermal conductivity by guarded hot plate, porosity by MIP, SEM), variables (temperature, thermal conductivity, density, porosity), units, and contact information. The output must not omit any required field.",
+      "assertions": [
+        {
+          "name": "materials_described",
+          "description": "The README includes a materials description with sample IDs."
+        },
+        {
+          "name": "methods_described",
+          "description": "The README includes measurement methods (guarded hot plate, MIP, SEM)."
+        },
+        {
+          "name": "variables_and_units",
+          "description": "The README lists all variables with their units."
+        },
+        {
+          "name": "contact_included",
+          "description": "The README includes contact information."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "experiment-record-to-dataset",
+      "prompt": "Convert this experiment-record.yaml to a structured dataset package. The experiment record describes a cement mortar study with 3 mix designs, each tested for compressive strength at 7 and 28 days with 3 replicates, and setting time. The record includes raw data file paths, test standards (ASTM C109, ASTM C191), and the researcher's contact.",
+      "expected_output": "The assistant must convert the experiment record into a dataset package following references/experiment-record-to-dataset.md. The output should include: (1) a structured CSV data file with columns for mix ID, age, replicate, compressive strength, setting time, (2) a dataset README with methods, variables, units, standards, and contact, (3) a metadata file. The conversion must preserve all quantitative data, replicate counts, and test standards from the original record.",
+      "assertions": [
+        {
+          "name": "csv_structure_correct",
+          "description": "The CSV includes columns for mix ID, age, replicate, compressive strength, and setting time."
+        },
+        {
+          "name": "readme_generated",
+          "description": "A dataset README is generated with methods, standards, variables, units, and contact."
+        },
+        {
+          "name": "standards_preserved",
+          "description": "ASTM C109 and ASTM C191 are preserved in the output."
+        },
+        {
+          "name": "replicates_preserved",
+          "description": "The 3 replicates are preserved in the structured data."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "budgeted-data-routing",
+      "prompt": "Create an asphalt FAIR dataset package from an experiment-record.yaml supplied by materials-doe, with a later request for a data availability statement.",
+      "expected_output": "The assistant should load the minimal data core first, then load the experiment-record conversion rules, asphalt schema, and availability rules only for the relevant output. It must preserve validation-before-scaffolding, the data-package handoff contract, and visible missing-data boundaries without treating shared stance, ethics, or the legacy duplicate contract as always-load content.",
+      "assertions": [
+        {
+          "name": "shared_rules_are_on_demand",
+          "description": "The default router keeps operating stance, ethics, and the legacy data-contract entry outside always_load."
+        },
+        {
+          "name": "doe_and_domain_routes_are_conditional",
+          "description": "Experiment-record validation and conversion load only for DOE-backed input, while asphalt schema and availability rules load only for their relevant tasks."
+        },
+        {
+          "name": "data_package_contract_preserved",
+          "description": "The output retains raw versus processed separation, explicit units and replicate counts, validation-before-scaffolding, and the data-package handoff fields."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

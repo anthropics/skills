@@ -1,0 +1,377 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "project-management",
+  "skill_count": 9,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "atlassian-admin",
+      "path": "project-management/skills/atlassian-admin",
+      "description": "Atlassian Administrator for managing and organizing Atlassian products (Jira, Confluence, Bitbucket, Trello), users, permissions, security, integrations, system configuration, and org-wide governance. Use when asked to add users to Jira, change Confluence permissions, configure access control, update admin settings, manage Atlassian groups, set up SSO, install marketplace apps, review security policies, or handle any org-wide Atlassian administration task.",
+      "tools": [
+        {
+          "script": "project-management/skills/atlassian-admin/scripts/permission_audit_tool.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/atlassian-admin/scripts/permission_audit_tool.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "security-hardening-guide.md",
+        "user-provisioning-checklist.md"
+      ]
+    },
+    {
+      "name": "atlassian-templates",
+      "path": "project-management/skills/atlassian-templates",
+      "description": "Atlassian Template and Files Creator/Modifier expert for creating, modifying, and managing Jira and Confluence templates, blueprints, custom layouts, reusable components, and standardized content structures. Use when building org-wide templates, custom blueprints, page layouts, and automated content generation.",
+      "tools": [
+        {
+          "script": "project-management/skills/atlassian-templates/scripts/template_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/atlassian-templates/scripts/template_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "governance-framework.md",
+        "template-design-patterns.md"
+      ]
+    },
+    {
+      "name": "confluence-expert",
+      "path": "project-management/skills/confluence-expert",
+      "description": "Atlassian Confluence expert for creating and managing spaces, knowledge bases, and documentation. Configures space permissions and hierarchies, creates page templates with macros, sets up documentation taxonomies, designs page layouts, and manages content governance. Use when users need to build or restructure a Confluence space, design page hierarchies with permission structures, author or standardise documentation templates, embed Jira reports in pages, run knowledge base audits, or establish documentation standards and collaborative workflows.",
+      "tools": [
+        {
+          "script": "project-management/skills/confluence-expert/scripts/content_audit_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/confluence-expert/scripts/content_audit_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/confluence-expert/scripts/space_structure_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/confluence-expert/scripts/space_structure_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "macro-cheat-sheet.md",
+        "space-architecture-patterns.md",
+        "templates.md"
+      ]
+    },
+    {
+      "name": "jira-expert",
+      "path": "project-management/skills/jira-expert",
+      "description": "Atlassian Jira expert for creating and managing projects, planning, product discovery, JQL queries, workflows, custom fields, automation, reporting, and all Jira features. Use when setting up or configuring Jira projects, writing JQL and advanced searches, creating dashboards, designing workflows, or performing technical Jira operations.",
+      "tools": [
+        {
+          "script": "project-management/skills/jira-expert/scripts/jql_query_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/jira-expert/scripts/jql_query_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/jira-expert/scripts/workflow_validator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/jira-expert/scripts/workflow_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "AUTOMATION.md",
+        "WORKFLOWS.md",
+        "automation-examples.md",
+        "jql-examples.md"
+      ]
+    },
+    {
+      "name": "meeting-analyzer",
+      "path": "project-management/skills/meeting-analyzer",
+      "description": "Analyzes meeting transcripts and recordings to surface behavioral patterns, communication anti-patterns, and actionable coaching feedback. Use this skill whenever the user uploads or points to meeting transcripts (.txt, .md, .vtt, .srt, .docx), asks about their communication habits, wants feedback on how they run meetings, requests speaking ratio analysis, mentions filler words or conflict avoidance, or wants to compare their communication across time periods. Also trigger when users mention tools like Granola, Otter, Fireflies, or Zoom transcripts. Even if the user just says \"look at my \u2026",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "pm-skills",
+      "path": "project-management/skills/pm-skills",
+      "description": "Use when coordinating project-delivery work across the 8 project-management sub-skills \u2014 sprint/velocity analytics, portfolio health, Jira/JQL, Confluence, Atlassian admin, templates, meeting analysis, team comms. Triggers on 'our sprints feel off', 'project health report', 'audit our Jira permissions', 'when will it be done', 'run the delivery loop'. Forks context to route to one sub-skill via a deterministic signal router and returns a digest; can also drive a full goal\u2192plan\u2192execute\u2192verify\u2192close delivery loop through the repo-wide agent-harness with Jira MCP data bridged into the domain's \u2026",
+      "tools": [
+        {
+          "script": "project-management/skills/pm-skills/scripts/delivery_loop_gate.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/delivery_loop_gate.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/delivery_loop_gate.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/pm-skills/scripts/jira_snapshot_bridge.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/jira_snapshot_bridge.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/jira_snapshot_bridge.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/pm-skills/scripts/pm_goal_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/pm_goal_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 project-management/skills/pm-skills/scripts/pm_goal_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "agentic_delivery_governance.md",
+        "flow_forecasting_canon.md",
+        "pm_loop_playbook.md"
+      ]
+    },
+    {
+      "name": "scrum-master",
+      "path": "project-management/skills/scrum-master",
+      "description": "Advanced Scrum Master skill for data-driven agile team analysis and coaching. Use when the user asks about sprint planning, velocity tracking, retrospectives, standup facilitation, backlog grooming, story points, burndown charts, blocker resolution, or agile team health. Runs Python scripts to analyse sprint JSON exports from Jira or similar tools: velocity_analyzer.py for Monte Carlo sprint forecasting, sprint_health_scorer.py for multi-dimension health scoring, and retrospective_analyzer.py for action-item and theme tracking. Produces confidence-interval forecasts, health grade reports \u2026",
+      "tools": [
+        {
+          "script": "project-management/skills/scrum-master/scripts/retrospective_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/scrum-master/scripts/retrospective_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/scrum-master/scripts/sprint_health_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/scrum-master/scripts/sprint_health_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/scrum-master/scripts/velocity_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/scrum-master/scripts/velocity_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "retro-formats.md",
+        "team-dynamics-framework.md",
+        "velocity-forecasting-guide.md"
+      ]
+    },
+    {
+      "name": "senior-pm",
+      "path": "project-management/skills/senior-pm",
+      "description": "Senior Project Manager for enterprise software, SaaS, and digital transformation projects. Specializes in portfolio management, quantitative risk analysis, resource optimization, stakeholder alignment, and executive reporting. Uses advanced methodologies including EMV analysis, Monte Carlo simulation, WSJF prioritization, and multi-dimensional health scoring. Use when a user needs help with project plans, project status reports, risk assessments, resource allocation, project roadmaps, milestone tracking, team capacity planning, portfolio health reviews, program management, or \u2026",
+      "tools": [
+        {
+          "script": "project-management/skills/senior-pm/scripts/project_health_dashboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/senior-pm/scripts/project_health_dashboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/senior-pm/scripts/resource_capacity_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/senior-pm/scripts/resource_capacity_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "project-management/skills/senior-pm/scripts/risk_matrix_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 project-management/skills/senior-pm/scripts/risk_matrix_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "portfolio-kpis.md",
+        "portfolio-prioritization-models.md",
+        "risk-management-framework.md"
+      ]
+    },
+    {
+      "name": "team-communications",
+      "path": "project-management/skills/team-communications",
+      "description": "Write internal company communications \u2014 3P updates (Progress/Plans/Problems), company-wide newsletters, FAQ roundups, incident reports, leadership updates, status reports, project updates, and general internal comms. Use this skill any time the user asks to draft, edit, or format something meant for internal audiences. Trigger on keywords like \"3P\", \"weekly update\", \"newsletter\", \"FAQ\", \"internal comms\", \"status report\", \"company update\", \"team update\", \"incident report\", or any request to summarize work for leadership, teammates, or the broader company. Even casual requests like \"write my \u2026",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "3p-updates.md",
+        "company-newsletter.md",
+        "faq-answers.md",
+        "general-comms.md"
+      ]
+    }
+  ]
+}

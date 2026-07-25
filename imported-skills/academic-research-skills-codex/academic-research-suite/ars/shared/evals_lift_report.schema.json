@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/evals_lift_report.schema.json",
+  "title": "ARS Evals Lift Report",
+  "type": "object",
+  "required": [
+    "harness_version",
+    "run_id",
+    "gold_set_version",
+    "per_task",
+    "caveats"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "harness_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Version of scripts/run_evals.py that produced this report."
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique identifier for this harness run (UTC timestamp + random suffix)."
+    },
+    "gold_set_version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Aggregate marker of the gold-set manifest versions covered by this run."
+    },
+    "generated_at": {
+      "type": "string",
+      "minLength": 1,
+      "description": "ISO-8601 UTC timestamp the report was generated. Format-only; never asserted as a relative time."
+    },
+    "mode": {
+      "enum": ["single", "compare"],
+      "description": "single = one gold-set run; compare = baseline-vs-compare side-by-side."
+    },
+    "per_task": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/task_result" },
+      "description": "One entry per discovered or selected eval task."
+    },
+    "caveats": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "Known limitations of this run. Empty array not permitted — honest disclosure required."
+    }
+  },
+  "$defs": {
+    "task_result": {
+      "type": "object",
+      "required": ["task_name", "manifest_version", "aggregate_metric"],
+      "additionalProperties": false,
+      "properties": {
+        "task_name": { "type": "string", "minLength": 1 },
+        "manifest_version": { "type": "string", "minLength": 1 },
+        "status": {
+          "enum": ["measured", "pending", "skipped"],
+          "description": "measured = ran against gold set; pending/skipped = entrypoint module or gold set unavailable."
+        },
+        "notice": {
+          "type": "string",
+          "description": "Human-readable explanation when status is pending/skipped."
+        },
+        "sample_n": { "type": "integer", "minimum": 0 },
+        "aggregate_metric": { "$ref": "#/$defs/metric_value" },
+        "per_class": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/class_metric" }
+        },
+        "lift_pre": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/lift_entry" },
+          "description": "Baseline-side metric values when invoked in compare mode."
+        },
+        "lift_post": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/lift_entry" },
+          "description": "Compare-side metric values when invoked in compare mode."
+        },
+        "expert_concordance": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/concordance_entry" },
+          "description": "Advisory agreement of human_expert_verdict vs expected_outcomes on the labeled subset. Never gates."
+        }
+      }
+    },
+    "metric_value": {
+      "type": "object",
+      "required": ["metric", "value", "direction"],
+      "additionalProperties": false,
+      "properties": {
+        "metric": { "type": "string", "minLength": 1 },
+        "value": { "type": "number" },
+        "direction": { "enum": ["higher_is_better", "lower_is_better"] },
+        "threshold_value": { "type": "number" },
+        "comparison": { "type": "string" },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "class_metric": {
+      "type": "object",
+      "required": ["class_name", "metric", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "class_name": { "type": "string", "minLength": 1 },
+        "metric": { "type": "string", "minLength": 1 },
+        "value": { "type": "number" },
+        "direction": { "enum": ["higher_is_better", "lower_is_better"] },
+        "threshold_value": { "type": "number" },
+        "comparison": { "type": "string" },
+        "passed": { "type": "boolean" },
+        "support": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "lift_entry": {
+      "type": "object",
+      "required": ["class_name", "metric", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "class_name": { "type": "string", "minLength": 1 },
+        "metric": { "type": "string", "minLength": 1 },
+        "value": { "type": "number" },
+        "direction": { "enum": ["higher_is_better", "lower_is_better"] }
+      }
+    },
+    "concordance_entry": {
+      "type": "object",
+      "required": ["class_name", "agreement_rate", "labeled_count"],
+      "additionalProperties": false,
+      "properties": {
+        "class_name": { "type": "string", "minLength": 1 },
+        "agreement_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "labeled_count": { "type": "integer", "minimum": 0 },
+        "agreements": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

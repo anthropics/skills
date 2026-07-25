@@ -1,0 +1,15 @@
+fixture_id: 02_single_phase_literature_only
+expected_routing_class: proceed
+expected_destination: academic-paper:lit-review
+escape_hatch_applied: false
+notes: |
+  Materials: literature only (Phase 2). Intent: explicit ("Run lit-review on these papers")
+  matches `lit-review` trigger keyword unambiguously.
+
+  Per Routing Discipline Step 1 (explicit clear intent), route directly to academic-paper
+  lit-review mode. No clarification needed — explicit intent overrides cross-phase check
+  (and materials are single-phase anyway).
+
+  Pass criteria:
+  - Response begins lit-review work (search strategy, screening, annotated bibliography)
+  - Response does NOT trigger clarification a-d options

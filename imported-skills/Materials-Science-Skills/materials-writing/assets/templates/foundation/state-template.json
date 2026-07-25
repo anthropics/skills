@@ -1,0 +1,53 @@
+{
+  "schema_version": "materials-writing-state/v1",
+  "writing_mode": "compose",
+  "project": {
+    "title": "Untitled materials writing project",
+    "material_system": "",
+    "target_reader": "",
+    "target_journal": "",
+    "language": ""
+  },
+  "current_stage": "foundation",
+  "round": 0,
+  "scores": {
+    "task_scope_clarity": null,
+    "scientific_tension": null,
+    "evidence_match": null,
+    "materials_method_reproducibility": null,
+    "argument_chain": null,
+    "innovation_specificity": null,
+    "risk_boundary": null,
+    "language_quality": null
+  },
+  "previous_scores": {
+    "task_scope_clarity": null,
+    "scientific_tension": null,
+    "evidence_match": null,
+    "materials_method_reproducibility": null,
+    "argument_chain": null,
+    "innovation_specificity": null,
+    "risk_boundary": null,
+    "language_quality": null
+  },
+  "technical_debts": [],
+  "stop_status": {
+    "decision": "continue",
+    "reason": "",
+    "stop_rule": null,
+    "next_action": ""
+  },
+  "artifacts": {
+    "scope": "00_scope.md",
+    "research_canon": "01_research_canon.md",
+    "evidence_table": "02_evidence_table.md",
+    "argument_map": "03_argument_map.md",
+    "section_contracts": "04_section_contracts.md",
+    "style_guide": "05_style_guide.md",
+    "sources_dir": "sources",
+    "drafts_dir": "drafts",
+    "revision_briefs_dir": "revision_briefs",
+    "qa_logs_dir": "qa_logs",
+    "exports_dir": "exports"
+  }
+}

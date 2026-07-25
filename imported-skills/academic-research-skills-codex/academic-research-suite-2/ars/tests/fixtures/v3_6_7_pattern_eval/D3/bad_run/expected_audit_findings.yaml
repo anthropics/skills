@@ -1,0 +1,30 @@
+run_id: 2026-04-30T15-11-00Z-d300
+verdict_status: MATERIAL
+round: 2
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.6"
+    file: bad_run/deliverable.md
+    line: 4
+    description: >
+      PARTIAL marked CLOSED (D3): Finding F-001 was flagged PARTIAL in Round 1
+      because Sections 3 and 4 had not reconciled the effect inventory for
+      Decree No. 47. The Round 2 closure record marks F-001 CLOSED without a
+      zero-finding verdict. Section 3 still reads "loss of accreditation status"
+      while Section 2 reads "suspension pending remediation" — the cross-section
+      inconsistency remains operative. Per spec §4.3, PARTIAL findings must be
+      treated as NOT_CLOSED; another round is required.
+    suggested_fix: >
+      Revert F-001 status to PARTIAL. Run a third audit round after reconciling
+      Section 3's "loss of accreditation status" with Section 2's "suspension
+      pending remediation review" against the primary text of Decree No. 47.
+      Only mark F-001 CLOSED after a fresh round produces zero findings.
+generated_at: "2026-04-30T15:11:57.403Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

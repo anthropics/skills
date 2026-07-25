@@ -1,0 +1,29 @@
+run_id: 2026-04-30T10-03-00Z-a2b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.2"
+    file: bad_run/deliverable.md
+    line: 7
+    description: >
+      Pending-source assumed as fact (A2): Smith and Lee (2024) is flagged
+      "待人工查證" (pending manual verification) in the bibliography — annotation
+      is inferred from a publisher landing page abstract, not the retrieved source.
+      The deliverable treats the 18-month clustering claim as an established empirical
+      finding, citing Smith & Lee (2024) declaratively in both Section 3.1 and 3.2
+      without any hedge indicating unverified status.
+    suggested_fix: >
+      Wrap every claim sourced from Smith & Lee (2024) in an explicit pending-
+      verification hedge: "pending verification of Smith & Lee (2024), the 18-month
+      clustering pattern is inferred from upstream annotation and has not been
+      confirmed against the retrieved source."
+generated_at: "2026-04-30T10:03:51.774Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

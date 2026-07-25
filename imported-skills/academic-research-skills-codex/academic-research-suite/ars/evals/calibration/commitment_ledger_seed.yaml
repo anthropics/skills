@@ -1,0 +1,209 @@
+# Kong A1 / v3.11 — Commitment Ledger Calibration Seed
+# ----------------------------------------------------------------
+# Purpose: 12 R&R cases for calibrating the COMMITMENT_GAP + EVIDENCE_TYPE_UNSPECIFIED advisory
+# trigger (re_review_mode_protocol step 5) once #263 Phase 1b harness
+# ships. Until then, this file is a SEED — not a runnable test.
+#
+# Schema (per case) — nested-object shape (#268):
+#   case_id: unique id
+#   reviewer_comment: input string
+#   expected_commitments: the expected post-revision / re-review ledger objects —
+#                    built from the commitments revision_coach_agent Step 3.5 would
+#                    extract (commitment_text / commitment_type / required_evidence_type),
+#                    with the per-commitment lifecycle annotations the harness should
+#                    arrive at (fulfillment_status, and iff non-fulfilled
+#                    unfulfilled_rationale) nested INSIDE the same object. Note Step 3.5
+#                    itself emits only the extraction fields; the lifecycle fields are
+#                    the calibration target, added here for the expected re-review state.
+#                    There are no separate top-level parallel status/rationale lists —
+#                    status and rationale travel with the commitment they describe, so
+#                    index desync is structurally impossible (#268).
+#                    unfulfilled_rationale is OMITTED (not "") on a fulfilled commitment.
+#   simulated_revision: what author did
+#   expected_commitment_gap: boolean — true if re-review should surface COMMITMENT_GAP
+#   expected_evidence_type_unspecified: boolean — true if re-review should surface
+#                    EVIDENCE_TYPE_UNSPECIFIED (fires iff any required_evidence_type == other).
+#                    Omitted/false on cases with no `other` evidence type.
+#
+# Case distribution (by case_id prefix):
+#   F1-F5 (5 cases): single-commitment, all fulfilled
+#   P1    (1 case):  single-commitment, partial (evidence-exists-but-incomplete, with rationale)
+#   P2-P3 (2 cases): multi-commitment, mix of not-fulfilled-with-rationale + fulfilled
+#   N1-N2 (2 cases): not-fulfilled with empty rationale (SHOULD trigger COMMITMENT_GAP)
+#   E1-E2 (2 cases): enum-widening (#269) — E1 prose_edit fulfilled; E2 other → EVIDENCE_TYPE_UNSPECIFIED
+#
+# Per re_review_mode_protocol Commitment Ledger Verification:
+#   - partial = required evidence exists but does not fully address commitment
+#   - not-fulfilled = required evidence absent (rationale presence is orthogonal)
+#   - COMMITMENT_GAP triggers iff a commitment object's fulfillment_status ∈
+#                    {partial, not-fulfilled, explicitly-rejected-with-rationale}
+#                    AND that object's unfulfilled_rationale is empty/missing
+#   - EVIDENCE_TYPE_UNSPECIFIED triggers iff required_evidence_type == other (orthogonal to
+#                    fulfillment_status and to COMMITMENT_GAP)
+#
+# Pass criterion (when harness arrives via #263):
+#   For each case, harness output must match expected_commitment_gap (boolean), the
+#   per-commitment fulfillment_status nested in each expected_commitments object, AND
+#   expected_evidence_type_unspecified (boolean).
+
+version: 1
+created: 2026-05-28
+issue: 256
+meta_issue: 255
+
+cases:
+  # === 5 fulfilled cases ===
+  - case_id: F1
+    reviewer_comment: "Please add an ablation on CIFAR-100."
+    expected_commitments:
+      - commitment_text: "add ablation on CIFAR-100"
+        commitment_type: add_experiment
+        required_evidence_type: new_table
+        fulfillment_status: fulfilled
+    simulated_revision: "§4.3 Table 4 added with CIFAR-100 ablation rows."
+    expected_commitment_gap: false
+
+  - case_id: F2
+    reviewer_comment: "Clarify whether the proposed method assumes i.i.d. samples."
+    expected_commitments:
+      - commitment_text: "clarify i.i.d. assumption"
+        commitment_type: add_clarification
+        required_evidence_type: methods_paragraph
+        fulfillment_status: fulfilled
+    simulated_revision: "§3.1 ¶2 now states the i.i.d. assumption explicitly."
+    expected_commitment_gap: false
+
+  - case_id: F3
+    reviewer_comment: "Cite Patel 2025 in Discussion."
+    expected_commitments:
+      - commitment_text: "cite Patel 2025 in Discussion"
+        commitment_type: add_citation
+        required_evidence_type: new_citation
+        fulfillment_status: fulfilled
+    simulated_revision: "§5.4 ¶1 now cites Patel 2025."
+    expected_commitment_gap: false
+
+  - case_id: F4
+    reviewer_comment: "Restructure §4 so the proposed method appears before the baseline comparison."
+    expected_commitments:
+      - commitment_text: "restructure §4: method before baseline"
+        commitment_type: restructure
+        required_evidence_type: new_section
+        fulfillment_status: fulfilled
+    simulated_revision: "§4 reordered as requested; §4.1 method, §4.2 baselines."
+    expected_commitment_gap: false
+
+  - case_id: F5
+    reviewer_comment: "Add a discussion paragraph on limitations of small-sample evaluation."
+    expected_commitments:
+      - commitment_text: "discussion paragraph on small-sample limits"
+        commitment_type: add_clarification
+        required_evidence_type: discussion_paragraph
+        fulfillment_status: fulfilled
+    simulated_revision: "§6 Limitations gained ¶3 addressing small-sample concerns."
+    expected_commitment_gap: false
+
+  # === 1 partial case (evidence-exists-but-incomplete) ===
+  - case_id: P1
+    reviewer_comment: "Please run ablation across 5 random seeds and report standard errors."
+    expected_commitments:
+      - commitment_text: "run ablation across 5 random seeds with std errors"
+        commitment_type: add_experiment
+        required_evidence_type: new_table
+        fulfillment_status: partial
+        unfulfilled_rationale: "Computational budget allowed 3 seeds; 5-seed deferred per §6 Limitations."
+    simulated_revision: "§4.3 Table 4 footnote reports 3-seed std errors; §6 acknowledges 5-seed replication as future work."
+    expected_commitment_gap: false
+
+  # === 2 mixed cases (not-fulfilled-with-rationale + fulfilled) ===
+  - case_id: P2
+    reviewer_comment: "Add experiments on ImageNet and CIFAR-100 to show generalization."
+    expected_commitments:
+      - commitment_text: "add ImageNet experiments"
+        commitment_type: add_experiment
+        required_evidence_type: new_table
+        fulfillment_status: not-fulfilled
+        unfulfilled_rationale: "ImageNet experiments deferred to future work — compute budget; acknowledged in §6."
+      - commitment_text: "add CIFAR-100 experiments"
+        commitment_type: add_experiment
+        required_evidence_type: new_table
+        fulfillment_status: fulfilled
+    simulated_revision: "§4.4 added CIFAR-100 ablation. ImageNet deferred."
+    # ImageNet evidence is absent → not-fulfilled (per protocol: partial = evidence-exists-but-incomplete, not absent-evidence).
+    # CIFAR-100 evidence present → fulfilled. Rationale present for ImageNet → no COMMITMENT_GAP.
+    expected_commitment_gap: false
+
+  - case_id: P3
+    reviewer_comment: "Compare against TransformerEncoder baseline and discuss why ResNet was chosen."
+    expected_commitments:
+      - commitment_text: "compare against TransformerEncoder baseline"
+        commitment_type: add_experiment
+        required_evidence_type: new_table
+        fulfillment_status: not-fulfilled
+        unfulfilled_rationale: "TransformerEncoder requires architecture our compute cluster does not support; documented as limitation in §6."
+      - commitment_text: "discuss why ResNet was chosen"
+        commitment_type: add_clarification
+        required_evidence_type: discussion_paragraph
+        fulfillment_status: fulfilled
+    simulated_revision: "§5.2 added rationale for ResNet choice. TransformerEncoder baseline not run."
+    # TransformerEncoder baseline absent → not-fulfilled. ResNet clarification present → fulfilled.
+    # Rationale present for absent baseline → no COMMITMENT_GAP.
+    expected_commitment_gap: false
+
+  # === 2 not-fulfilled cases (SHOULD trigger COMMITMENT_GAP) ===
+  - case_id: N1
+    reviewer_comment: "Please add error bars across 5 seeds."
+    expected_commitments:
+      - commitment_text: "add error bars across 5 seeds"
+        commitment_type: add_experiment
+        required_evidence_type: new_figure
+        fulfillment_status: not-fulfilled
+        # unfulfilled_rationale omitted → COMMITMENT_GAP trigger (silent omission)
+    simulated_revision: "No change to evaluation section."
+    expected_commitment_gap: true
+
+  - case_id: N2
+    reviewer_comment: "Cite the relevant work by Patel 2025 and discuss differences."
+    expected_commitments:
+      - commitment_text: "cite Patel 2025"
+        commitment_type: add_citation
+        required_evidence_type: new_citation
+        fulfillment_status: not-fulfilled
+        # unfulfilled_rationale omitted → COMMITMENT_GAP trigger (silent omission)
+      - commitment_text: "discuss differences from Patel 2025"
+        commitment_type: add_clarification
+        required_evidence_type: discussion_paragraph
+        fulfillment_status: not-fulfilled
+        # unfulfilled_rationale omitted → COMMITMENT_GAP trigger (silent omission)
+    simulated_revision: "No mention of Patel 2025 anywhere in revised manuscript."
+    expected_commitment_gap: true
+
+  # === 2 enum-widening cases (#269) ===
+  - case_id: E1
+    reviewer_comment: "Fix the typo in the definition of 'consistency' on page 4 and correct the equation formatting in §3.2."
+    expected_commitments:
+      - commitment_text: "fix typo in 'consistency' definition, p.4 (other: copy-edit, no structural change)"
+        commitment_type: other
+        required_evidence_type: prose_edit
+        fulfillment_status: fulfilled
+      - commitment_text: "correct equation formatting in §3.2 (other: formatting fix, no structural change)"
+        commitment_type: other
+        required_evidence_type: prose_edit
+        fulfillment_status: fulfilled
+    simulated_revision: "p.4 definition typo corrected; §3.2 equation reformatted."
+    # prose_edit is a manuscript-evidence type — verifies at revision_location like the structural types.
+    # Both fulfilled → no COMMITMENT_GAP. No `other` evidence type → no EVIDENCE_TYPE_UNSPECIFIED.
+    expected_commitment_gap: false
+    expected_evidence_type_unspecified: false
+
+  - case_id: E2
+    reviewer_comment: "The submission feels incomplete somewhere in the framing, please tighten it."
+    expected_commitments:
+      - commitment_text: "tighten framing (reviewer unspecified — clarify location at re-review)"
+        commitment_type: other
+        required_evidence_type: other
+        fulfillment_status: fulfilled
+    simulated_revision: "§1 ¶2 framing tightened; revision_location populated as §1 ¶2."
+    # other → EVIDENCE_TYPE_UNSPECIFIED fires; author populated revision_location so still verifiable (advisory orthogonal to fulfillment & COMMITMENT_GAP).
+    expected_commitment_gap: false
+    expected_evidence_type_unspecified: true

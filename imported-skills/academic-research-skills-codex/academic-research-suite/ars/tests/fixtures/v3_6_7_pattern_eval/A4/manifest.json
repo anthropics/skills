@@ -1,0 +1,21 @@
+{
+  "pattern_id": "A4",
+  "agent": "synthesis_agent",
+  "pattern_scope": "agent_specific",
+  "stage": 2,
+  "fixture_kind": "micro",
+  "upstream_context": {
+    "passport_snippet_path": "upstream_context/passport_snippet.yaml",
+    "prior_artifacts_dir": "upstream_context/prior_artifacts"
+  },
+  "bad_run": {
+    "deliverable_path": "bad_run/deliverable.md",
+    "expected_audit_findings_path": "bad_run/expected_audit_findings.yaml",
+    "expected_orchestrator_action_path": "bad_run/expected_orchestrator_action.yaml"
+  },
+  "good_run": {
+    "deliverable_path": "good_run/deliverable.md",
+    "expected_audit_findings_path": "good_run/expected_audit_findings.yaml",
+    "expected_orchestrator_action_path": "good_run/expected_orchestrator_action.yaml"
+  }
+}

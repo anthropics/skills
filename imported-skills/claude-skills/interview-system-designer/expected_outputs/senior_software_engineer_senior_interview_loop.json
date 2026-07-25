@@ -1,0 +1,435 @@
+{
+  "role": "Senior Software Engineer",
+  "level": "senior",
+  "team": "platform",
+  "generated_at": "2026-02-16T13:27:37.925680",
+  "total_duration_minutes": 300,
+  "total_rounds": 5,
+  "rounds": {
+    "round_1_technical_phone_screen": {
+      "name": "Technical Phone Screen",
+      "duration_minutes": 45,
+      "format": "virtual",
+      "objectives": [
+        "Assess coding fundamentals",
+        "Evaluate problem-solving approach",
+        "Screen for basic technical competency"
+      ],
+      "question_types": [
+        "coding_problems",
+        "technical_concepts",
+        "experience_questions"
+      ],
+      "evaluation_criteria": [
+        "technical_accuracy",
+        "problem_solving_process",
+        "communication_clarity"
+      ],
+      "order": 1,
+      "focus_areas": [
+        "coding_fundamentals",
+        "problem_solving",
+        "technical_leadership",
+        "system_architecture",
+        "people_development"
+      ]
+    },
+    "round_2_coding_deep_dive": {
+      "name": "Coding Deep Dive",
+      "duration_minutes": 75,
+      "format": "in_person_or_virtual",
+      "objectives": [
+        "Evaluate coding skills in depth",
+        "Assess code quality and testing",
+        "Review debugging approach"
+      ],
+      "question_types": [
+        "complex_coding_problems",
+        "code_review",
+        "testing_strategy"
+      ],
+      "evaluation_criteria": [
+        "code_quality",
+        "testing_approach",
+        "debugging_skills",
+        "optimization_thinking"
+      ],
+      "order": 2,
+      "focus_areas": [
+        "technical_execution",
+        "code_quality",
+        "technical_leadership",
+        "system_architecture",
+        "people_development"
+      ]
+    },
+    "round_3_system_design": {
+      "name": "System Design",
+      "duration_minutes": 75,
+      "format": "collaborative_whiteboard",
+      "objectives": [
+        "Assess architectural thinking",
+        "Evaluate scalability considerations",
+        "Review trade-off analysis"
+      ],
+      "question_types": [
+        "system_architecture",
+        "scalability_design",
+        "trade_off_analysis"
+      ],
+      "evaluation_criteria": [
+        "architectural_thinking",
+        "scalability_awareness",
+        "trade_off_reasoning"
+      ],
+      "order": 3,
+      "focus_areas": [
+        "system_thinking",
+        "architectural_reasoning",
+        "technical_leadership",
+        "system_architecture",
+        "people_development"
+      ]
+    },
+    "round_4_behavioral": {
+      "name": "Behavioral Interview",
+      "duration_minutes": 45,
+      "format": "conversational",
+      "objectives": [
+        "Assess cultural fit",
+        "Evaluate past experiences",
+        "Review leadership examples"
+      ],
+      "question_types": [
+        "star_method_questions",
+        "situational_scenarios",
+        "values_alignment"
+      ],
+      "evaluation_criteria": [
+        "communication_skills",
+        "leadership_examples",
+        "cultural_alignment"
+      ],
+      "order": 4,
+      "focus_areas": [
+        "cultural_fit",
+        "communication",
+        "teamwork",
+        "technical_leadership",
+        "system_architecture"
+      ]
+    },
+    "round_5_technical_leadership": {
+      "name": "Technical Leadership",
+      "duration_minutes": 60,
+      "format": "discussion_based",
+      "objectives": [
+        "Evaluate mentoring capability",
+        "Assess technical decision making",
+        "Review cross-team collaboration"
+      ],
+      "question_types": [
+        "leadership_scenarios",
+        "technical_decisions",
+        "mentoring_examples"
+      ],
+      "evaluation_criteria": [
+        "leadership_potential",
+        "technical_judgment",
+        "influence_skills"
+      ],
+      "order": 5,
+      "focus_areas": [
+        "leadership",
+        "mentoring",
+        "influence",
+        "technical_leadership",
+        "system_architecture"
+      ]
+    }
+  },
+  "suggested_schedule": {
+    "type": "multi_day",
+    "total_duration_minutes": 300,
+    "recommended_breaks": [
+      {
+        "type": "short_break",
+        "duration": 15,
+        "after_minutes": 90
+      },
+      {
+        "type": "lunch_break",
+        "duration": 60,
+        "after_minutes": 180
+      }
+    ],
+    "day_structure": {
+      "day_1": {
+        "date": "TBD",
+        "start_time": "09:00",
+        "end_time": "12:45",
+        "rounds": [
+          {
+            "type": "interview",
+            "round_name": "round_1_technical_phone_screen",
+            "title": "Technical Phone Screen",
+            "start_time": "09:00",
+            "end_time": "09:45",
+            "duration_minutes": 45,
+            "format": "virtual"
+          },
+          {
+            "type": "interview",
+            "round_name": "round_2_coding_deep_dive",
+            "title": "Coding Deep Dive",
+            "start_time": "10:00",
+            "end_time": "11:15",
+            "duration_minutes": 75,
+            "format": "in_person_or_virtual"
+          },
+          {
+            "type": "interview",
+            "round_name": "round_3_system_design",
+            "title": "System Design",
+            "start_time": "11:30",
+            "end_time": "12:45",
+            "duration_minutes": 75,
+            "format": "collaborative_whiteboard"
+          }
+        ]
+      },
+      "day_2": {
+        "date": "TBD",
+        "start_time": "09:00",
+        "end_time": "11:00",
+        "rounds": [
+          {
+            "type": "interview",
+            "round_name": "round_4_behavioral",
+            "title": "Behavioral Interview",
+            "start_time": "09:00",
+            "end_time": "09:45",
+            "duration_minutes": 45,
+            "format": "conversational"
+          },
+          {
+            "type": "interview",
+            "round_name": "round_5_technical_leadership",
+            "title": "Technical Leadership",
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "duration_minutes": 60,
+            "format": "discussion_based"
+          }
+        ]
+      }
+    },
+    "logistics_notes": [
+      "Coordinate interviewer availability before scheduling",
+      "Ensure all interviewers have access to job description and competency requirements",
+      "Prepare interview rooms/virtual links for all rounds",
+      "Share candidate resume and application with all interviewers",
+      "Test video conferencing setup before virtual interviews",
+      "Share virtual meeting links with candidate 24 hours in advance",
+      "Prepare whiteboard or collaborative online tool for design sessions"
+    ]
+  },
+  "scorecard_template": {
+    "scoring_scale": {
+      "4": "Exceeds Expectations - Demonstrates mastery beyond required level",
+      "3": "Meets Expectations - Solid performance meeting all requirements",
+      "2": "Partially Meets - Shows potential but has development areas",
+      "1": "Does Not Meet - Significant gaps in required competencies"
+    },
+    "dimensions": [
+      {
+        "dimension": "system_architecture",
+        "weight": "high",
+        "scale": "1-4",
+        "description": "Assessment of system architecture competency"
+      },
+      {
+        "dimension": "technical_leadership",
+        "weight": "high",
+        "scale": "1-4",
+        "description": "Assessment of technical leadership competency"
+      },
+      {
+        "dimension": "mentoring",
+        "weight": "high",
+        "scale": "1-4",
+        "description": "Assessment of mentoring competency"
+      },
+      {
+        "dimension": "cross_team_collab",
+        "weight": "high",
+        "scale": "1-4",
+        "description": "Assessment of cross team collab competency"
+      },
+      {
+        "dimension": "technology_evaluation",
+        "weight": "medium",
+        "scale": "1-4",
+        "description": "Assessment of technology evaluation competency"
+      },
+      {
+        "dimension": "process_improvement",
+        "weight": "medium",
+        "scale": "1-4",
+        "description": "Assessment of process improvement competency"
+      },
+      {
+        "dimension": "hiring_contribution",
+        "weight": "medium",
+        "scale": "1-4",
+        "description": "Assessment of hiring contribution competency"
+      },
+      {
+        "dimension": "communication",
+        "weight": "high",
+        "scale": "1-4"
+      },
+      {
+        "dimension": "cultural_fit",
+        "weight": "medium",
+        "scale": "1-4"
+      },
+      {
+        "dimension": "learning_agility",
+        "weight": "medium",
+        "scale": "1-4"
+      }
+    ],
+    "overall_recommendation": {
+      "options": [
+        "Strong Hire",
+        "Hire",
+        "No Hire",
+        "Strong No Hire"
+      ],
+      "criteria": "Based on weighted average and minimum thresholds"
+    },
+    "calibration_notes": {
+      "required": true,
+      "min_length": 100,
+      "sections": [
+        "strengths",
+        "areas_for_development",
+        "specific_examples"
+      ]
+    }
+  },
+  "interviewer_requirements": {
+    "round_1_technical_phone_screen": {
+      "required_skills": [
+        "technical_assessment",
+        "coding_evaluation"
+      ],
+      "preferred_experience": [
+        "same_domain",
+        "senior_level"
+      ],
+      "calibration_level": "standard",
+      "suggested_interviewers": [
+        "senior_engineer",
+        "tech_lead"
+      ]
+    },
+    "round_2_coding_deep_dive": {
+      "required_skills": [
+        "advanced_technical",
+        "code_quality_assessment"
+      ],
+      "preferred_experience": [
+        "senior_engineer",
+        "system_design"
+      ],
+      "calibration_level": "high",
+      "suggested_interviewers": [
+        "senior_engineer",
+        "staff_engineer"
+      ]
+    },
+    "round_3_system_design": {
+      "required_skills": [
+        "architecture_design",
+        "scalability_assessment"
+      ],
+      "preferred_experience": [
+        "senior_architect",
+        "large_scale_systems"
+      ],
+      "calibration_level": "high",
+      "suggested_interviewers": [
+        "senior_architect",
+        "staff_engineer"
+      ]
+    },
+    "round_4_behavioral": {
+      "required_skills": [
+        "behavioral_interviewing",
+        "competency_assessment"
+      ],
+      "preferred_experience": [
+        "hiring_manager",
+        "people_leadership"
+      ],
+      "calibration_level": "standard",
+      "suggested_interviewers": [
+        "hiring_manager",
+        "people_manager"
+      ]
+    },
+    "round_5_technical_leadership": {
+      "required_skills": [
+        "leadership_assessment",
+        "technical_mentoring"
+      ],
+      "preferred_experience": [
+        "engineering_manager",
+        "tech_lead"
+      ],
+      "calibration_level": "high",
+      "suggested_interviewers": [
+        "engineering_manager",
+        "senior_staff"
+      ]
+    }
+  },
+  "competency_framework": {
+    "required": [
+      "system_architecture",
+      "technical_leadership",
+      "mentoring",
+      "cross_team_collab"
+    ],
+    "preferred": [
+      "technology_evaluation",
+      "process_improvement",
+      "hiring_contribution"
+    ],
+    "focus_areas": [
+      "technical_leadership",
+      "system_architecture",
+      "people_development"
+    ]
+  },
+  "calibration_notes": {
+    "hiring_bar_notes": "Calibrated for senior level software engineer role",
+    "common_pitfalls": [
+      "Avoid comparing candidates to each other rather than to the role standard",
+      "Don't let one strong/weak area overshadow overall assessment",
+      "Ensure consistent application of evaluation criteria"
+    ],
+    "calibration_checkpoints": [
+      "Review score distribution after every 5 candidates",
+      "Conduct monthly interviewer calibration sessions",
+      "Track correlation with 6-month performance reviews"
+    ],
+    "escalation_criteria": [
+      "Any candidate receiving all 4s or all 1s",
+      "Significant disagreement between interviewers (>1.5 point spread)",
+      "Unusual circumstances or accommodations needed"
+    ]
+  }
+}

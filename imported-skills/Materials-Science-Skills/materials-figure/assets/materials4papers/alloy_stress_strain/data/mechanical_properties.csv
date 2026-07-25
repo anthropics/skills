@@ -1,0 +1,4 @@
+condition,E_GPa,sigma_y_MPa,UTS_MPa,fracture_strain
+As-received,114,880,956.5,0.150
+Annealed,114,830,905.8,0.180
+STA,114,950,1027.6,0.120

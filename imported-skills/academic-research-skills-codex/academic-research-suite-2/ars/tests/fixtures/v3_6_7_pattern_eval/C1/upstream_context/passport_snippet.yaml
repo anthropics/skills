@@ -1,0 +1,8 @@
+schema_version: 9
+project_id: phase-6.8-eval-fixture-C1
+audit_artifact: []
+checkpoints:
+  - kind: SLIM
+    stage: 1
+    timestamp: "2026-04-30T14:00:00.000Z"
+prior_findings: []

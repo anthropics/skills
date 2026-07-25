@@ -1,0 +1,157 @@
+name: Test Count Monotonic
+
+# Verify the PR doesn't reduce pytest collection count vs. base.
+#
+# Why: 5 days from v3.9.0 to v3.9.4.1 added 1463 -> 1561 tests
+# (+98, 0 regression). Manual baseline tracking. This gate catches
+# any PR that silently drops tests (deletion, accidental skip,
+# fixture rename leaving orphans).
+#
+# Tolerance: net count must be >= base. Renames are fine; deletions
+# require explicit justification.
+#
+# Override: include [skip-test-count] in PR body with justification
+# (e.g., "removing dead suite X — N tests retired intentionally").
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: test-count-${{ github.event.pull_request.number }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  count-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install deps (PR head)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt pytest
+
+      - name: Count tests on PR head
+        id: head
+        run: |
+          set -euo pipefail
+          # Capture pytest exit code separately from grep so a collection
+          # error (broken import, missing fixture file, etc.) fails the gate
+          # instead of being swallowed by the pipe (#155 / re-attempt of F4
+          # from the v3.9.4.2 cycle, originally in PR #153 commit 8121dfa
+          # before being reverted in 4abf9de while #154 was still open).
+          set +e
+          pytest --collect-only -q > pytest-collect.txt 2> pytest-collect.err
+          PYTEST_EXIT=$?
+          set -e
+          # Exit 5 = pytest "no tests collected"; tolerable for degenerate
+          # cases (empty repo, path filter that matches nothing). Any other
+          # non-zero exit is a real collection failure and must fail the gate.
+          if [ "$PYTEST_EXIT" -ne 0 ] && [ "$PYTEST_EXIT" -ne 5 ]; then
+            echo "::error::pytest collection failed on PR head (exit $PYTEST_EXIT)"
+            cat pytest-collect.err >&2 || true
+            tail -20 pytest-collect.txt >&2 || true
+            exit 1
+          fi
+          # grep -c exits 1 when there are zero matches — tolerate ONLY that;
+          # any other non-zero exit from grep is a real error (unreadable
+          # file, missing binary) and must propagate.
+          set +e
+          COUNT=$(grep -c '::' pytest-collect.txt)
+          GREP_EXIT=$?
+          set -e
+          if [ "$GREP_EXIT" -ne 0 ] && [ "$GREP_EXIT" -ne 1 ]; then
+            echo "::error::grep failed unexpectedly (exit $GREP_EXIT)"
+            exit 1
+          fi
+          echo "Head test count: $COUNT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          rm -f pytest-collect.txt pytest-collect.err
+
+      - name: Add base via worktree
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          git worktree add ../base "$BASE_SHA"
+
+      - name: Install deps (base)
+        working-directory: ../base
+        run: |
+          # Reuse pip cache; requirements may differ
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt pytest --quiet
+          else
+            pip install pytest --quiet
+          fi
+
+      - name: Count tests on base
+        id: base
+        working-directory: ../base
+        run: |
+          set -euo pipefail
+          # Symmetric strict collection — mirrors the PR-head step above.
+          # The previous `2>/dev/null | grep -c '::' || true` pattern would
+          # set BASE_COUNT to 0 on any collection error, making the
+          # monotonic comparison (head >= base) vacuously pass and hiding
+          # genuine drift. Fail the gate on real collection errors instead.
+          set +e
+          pytest --collect-only -q > pytest-collect.txt 2> pytest-collect.err
+          PYTEST_EXIT=$?
+          set -e
+          if [ "$PYTEST_EXIT" -ne 0 ] && [ "$PYTEST_EXIT" -ne 5 ]; then
+            echo "::error::pytest collection failed on base (exit $PYTEST_EXIT)"
+            cat pytest-collect.err >&2 || true
+            tail -20 pytest-collect.txt >&2 || true
+            exit 1
+          fi
+          set +e
+          COUNT=$(grep -c '::' pytest-collect.txt)
+          GREP_EXIT=$?
+          set -e
+          if [ "$GREP_EXIT" -ne 0 ] && [ "$GREP_EXIT" -ne 1 ]; then
+            echo "::error::grep failed unexpectedly (exit $GREP_EXIT)"
+            exit 1
+          fi
+          echo "Base test count: $COUNT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          rm -f pytest-collect.txt pytest-collect.err
+
+      - name: Compare
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          HEAD_COUNT: ${{ steps.head.outputs.count }}
+          BASE_COUNT: ${{ steps.base.outputs.count }}
+        run: |
+          set -euo pipefail
+          DELTA=$((HEAD_COUNT - BASE_COUNT))
+          echo "Base: $BASE_COUNT  Head: $HEAD_COUNT  Delta: $DELTA"
+
+          if [ "$HEAD_COUNT" -ge "$BASE_COUNT" ]; then
+            echo "OK — test count monotonic ($DELTA)."
+            exit 0
+          fi
+
+          if echo "${PR_BODY:-}" | grep -qF '[skip-test-count]'; then
+            echo "::warning::Test count dropped by $((BASE_COUNT - HEAD_COUNT)) but [skip-test-count] override present."
+            exit 0
+          fi
+
+          echo "::error::Test count dropped: $BASE_COUNT -> $HEAD_COUNT (-$((BASE_COUNT - HEAD_COUNT)))."
+          echo "::error::Add [skip-test-count] + justification to PR body if intentional."
+          exit 1

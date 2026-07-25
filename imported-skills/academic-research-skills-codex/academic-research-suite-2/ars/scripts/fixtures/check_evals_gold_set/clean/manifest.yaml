@@ -1,0 +1,37 @@
+task_name: citation_extraction_test
+manifest_version: "1.0.0"
+ars_min_version: "3.10.0"
+task_type: outcome-gradable
+outcome_gradable: true
+description: |
+  Test fixture for check_evals_gold_set validator.
+  3 tuples: 1 valid_doi + 1 valid_arxiv + 1 fabricated.
+target:
+  entrypoint: verification_gate.verify_citation
+  predicted_field: lookup_verified
+  expected_outcomes_path: expected_outcomes.json
+  tuple_dir: tuples
+sample_n: 3
+labels: ["true", "false"]
+thresholds:
+  aggregate:
+    metric: accuracy
+    direction: higher_is_better
+    comparison: ">="
+    threshold_value: 0.90
+  per_class:
+    metric: accuracy
+    direction: higher_is_better
+    comparison: ">="
+    threshold_value: 0.85
+    classes: ["true", "false"]
+tuple_distribution:
+  - kind: valid_doi
+    n: 1
+    expected_lookup_verified: "true"
+  - kind: valid_arxiv
+    n: 1
+    expected_lookup_verified: "true"
+  - kind: fabricated
+    n: 1
+    expected_lookup_verified: "false"

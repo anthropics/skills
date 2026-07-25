@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/audit/audit_jsonl.schema.json",
+  "title": "Codex Audit JSONL Event",
+  "description": "Schema for one row of the codex CLI 0.125+ --json event stream produced by scripts/run_codex_audit.sh (verified compatible across 0.125 through 0.128). Each JSONL line in <run_id>.jsonl validates against this schema. This is the Layer 2 anti-fake-audit check (§3.3): orchestrator validates the JSONL row-by-row before reading any verdict. Stream-level rules (first event must be thread.started; clean run ends with turn.completed; exactly one item.completed.agent_message carries the verdict text) live in scripts/check_audit_artifact_consistency.py (Phase 6.3), NOT in this schema. Codex 0.125 retired pre-0.125 fields (model, reasoning_effort, session_id, final_message, per-row usage); see §3.3 'Codex 0.125+ --json event-stream shape' for the load-bearing shape contract. NOTE: item.started events appear in tool-using runs (command_execution start, etc.) and are accepted here even though spec §3.3's enumerated four-event canonical run did not list them — empirical capture from codex 0.125+ confirms they precede every item.completed of types other than agent_message.",
+
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["thread.started", "turn.started", "item.started", "item.completed", "turn.completed", "error"]
+    }
+  },
+
+  "oneOf": [
+    {
+      "title": "thread.started",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "thread_id"],
+      "properties": {
+        "type": { "const": "thread.started" },
+        "thread_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Canonical UUID (8-4-4-4-12 hex layout) identifying this codex run. Per §3.3, codex emits this once at stream open; downstream events SHOULD NOT redeclare it. Tight pattern blocks Layer 2 forgery via 36-char garbage like '------------------------------------'."
+        }
+      }
+    },
+    {
+      "title": "turn.started",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "turn.started" }
+      }
+    },
+    {
+      "title": "item.started",
+      "description": "Emitted in tool-using runs (e.g., command_execution begin) before the matching item.completed event. Carries no text yet — the completed event holds the result. Verdict logic only reads agent_message item.completed events; item.started rows are evidence that codex actually invoked tools. Closed against unknown top-level fields to match the rest of the event arms; per-tool fields belong inside `item`, not at the row root.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "item"],
+      "properties": {
+        "type": { "const": "item.started" },
+        "item": {
+          "type": "object",
+          "required": ["id", "type"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "type": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    {
+      "title": "item.completed",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "item"],
+      "properties": {
+        "type": { "const": "item.completed" },
+        "item": {
+          "type": "object",
+          "required": ["id", "type"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "type": { "type": "string", "minLength": 1 },
+            "text": { "type": "string" }
+          },
+          "allOf": [
+            {
+              "description": "When item.type == 'agent_message', item.text is required and non-empty (§3.3 table row 'item.completed').",
+              "if": {
+                "properties": { "type": { "const": "agent_message" } },
+                "required": ["type"]
+              },
+              "then": {
+                "required": ["text"],
+                "properties": {
+                  "text": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "turn.completed",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "usage"],
+      "properties": {
+        "type": { "const": "turn.completed" },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input_tokens", "cached_input_tokens", "output_tokens", "reasoning_output_tokens"],
+          "properties": {
+            "input_tokens": { "type": "integer", "minimum": 0 },
+            "cached_input_tokens": { "type": "integer", "minimum": 0 },
+            "output_tokens": { "type": "integer", "minimum": 0 },
+            "reasoning_output_tokens": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    {
+      "title": "error",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "error"],
+      "properties": {
+        "type": { "const": "error" },
+        "error": {
+          "type": "object",
+          "required": ["message"],
+          "properties": {
+            "message": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  ]
+}

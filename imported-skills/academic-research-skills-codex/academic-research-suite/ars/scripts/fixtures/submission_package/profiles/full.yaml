@@ -1,0 +1,15 @@
+# Fully-declared venue profile matching the venue_clean fixture — every
+# Family B check runs and passes. declared_by is the only required field.
+venue_name: Journal of Quality Assurance
+word_limit: 200
+word_count_scope: body_only
+abstract_word_limit: 50
+keyword_range:
+  min: 3
+  max: 6
+required_sections:
+  - Data Availability
+  - Method
+reference_limit: 5
+blind_review: open
+declared_by: scholar

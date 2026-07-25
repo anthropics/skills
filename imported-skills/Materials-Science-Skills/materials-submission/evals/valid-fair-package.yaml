@@ -1,0 +1,27 @@
+contract: data-package
+contract_version: "1.0"
+status: ready
+producer: materials-data
+package_dir: valid-fair-package
+artifacts:
+  metadata:
+    status: ready
+    path: metadata.md
+  readme:
+    status: ready
+    path: README.md
+  data_availability_statement:
+    status: ready
+    path: data_availability_statement.md
+  fair_audit:
+    status: ready
+    path: fair_audit.md
+  raw_data:
+    status: ready
+    path: raw_data
+  processed_data:
+    status: ready
+    path: processed_data
+  figures:
+    status: ready
+    path: figures

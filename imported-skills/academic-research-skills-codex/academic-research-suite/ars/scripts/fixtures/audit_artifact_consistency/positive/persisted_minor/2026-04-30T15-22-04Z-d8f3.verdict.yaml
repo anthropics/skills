@@ -1,0 +1,19 @@
+run_id: 2026-04-30T15-22-04Z-d8f3
+verdict_status: MINOR
+round: 2
+target_rounds: 3
+finding_counts:
+  p1: 0
+  p2: 0
+  p3: 1
+findings:
+- id: F-007
+  severity: P3
+  dimension: '3.7'
+  file: chapter_4/synthesis.md
+  line: 482
+  description: deictic temporal phrase
+  suggested_fix: replace with explicit date
+generated_at: '2026-04-30T15:22:58.471Z'
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

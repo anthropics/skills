@@ -1,0 +1,14 @@
+{
+  "description": "Database connection timeouts causing 500 errors for payment processing API. Users unable to complete checkout. Error rate spiked from 0.1% to 45% starting at 14:30 UTC. Database monitoring shows connection pool exhaustion with 200/200 connections active.",
+  "service": "payment-api",
+  "affected_users": "80%",
+  "business_impact": "high",
+  "duration_minutes": 95,
+  "metadata": {
+    "error_rate": "45%",
+    "connection_pool_utilization": "100%",
+    "affected_regions": ["us-west", "us-east", "eu-west"],
+    "detection_method": "monitoring_alert",
+    "customer_escalations": 12
+  }
+}

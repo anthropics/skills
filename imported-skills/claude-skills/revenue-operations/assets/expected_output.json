@@ -1,0 +1,117 @@
+{
+  "coverage": {
+    "total_pipeline_value": 1105000,
+    "quota": 500000,
+    "coverage_ratio": 2.21,
+    "rating": "At Risk",
+    "target": "3.0x - 4.0x"
+  },
+  "stage_conversions": [
+    {
+      "from_stage": "Discovery",
+      "to_stage": "Qualification",
+      "from_count": 17,
+      "to_count": 12,
+      "conversion_rate_pct": 70.6
+    },
+    {
+      "from_stage": "Qualification",
+      "to_stage": "Proposal",
+      "from_count": 12,
+      "to_count": 9,
+      "conversion_rate_pct": 75.0
+    },
+    {
+      "from_stage": "Proposal",
+      "to_stage": "Negotiation",
+      "from_count": 9,
+      "to_count": 5,
+      "conversion_rate_pct": 55.6
+    },
+    {
+      "from_stage": "Negotiation",
+      "to_stage": "Closed Won",
+      "from_count": 5,
+      "to_count": 2,
+      "conversion_rate_pct": 40.0
+    }
+  ],
+  "velocity": {
+    "num_opportunities": 17,
+    "avg_deal_size": 74588.24,
+    "win_rate_pct": 11.8,
+    "avg_cycle_days": 32.5,
+    "velocity_per_day": 4594.2,
+    "velocity_per_month": 137826.09
+  },
+  "aging": {
+    "global_aging_threshold_days": 90,
+    "stage_thresholds": {
+      "Discovery": 90,
+      "Qualification": 78,
+      "Proposal": 67,
+      "Negotiation": 56
+    },
+    "total_open_deals": 15,
+    "healthy_deals": 13,
+    "at_risk_deals": 2,
+    "aging_deals": [
+      {
+        "id": "D011",
+        "name": "Vertex Solutions",
+        "stage": "Proposal",
+        "age_days": 95,
+        "threshold_days": 67,
+        "days_over": 28,
+        "value": 110000
+      },
+      {
+        "id": "D014",
+        "name": "Horizon Telecom",
+        "stage": "Negotiation",
+        "age_days": 60,
+        "threshold_days": 56,
+        "days_over": 4,
+        "value": 250000
+      }
+    ]
+  },
+  "risk": {
+    "overall_risk": "MEDIUM",
+    "risk_factors_count": 3,
+    "concentration_risks": [],
+    "has_concentration_risk": false,
+    "stage_distribution": {
+      "Discovery": {
+        "count": 5,
+        "value": 194000,
+        "pct_of_pipeline": 17.6
+      },
+      "Qualification": {
+        "count": 3,
+        "value": 150000,
+        "pct_of_pipeline": 13.6
+      },
+      "Proposal": {
+        "count": 4,
+        "value": 333000,
+        "pct_of_pipeline": 30.1
+      },
+      "Negotiation": {
+        "count": 3,
+        "value": 428000,
+        "pct_of_pipeline": 38.7
+      }
+    },
+    "empty_stages": [],
+    "coverage_gaps": [
+      {
+        "quarter": "2025-Q2",
+        "pipeline_value": 344000,
+        "quarterly_target": 125000.0,
+        "coverage_ratio": 2.75,
+        "gap": "Below 3x target"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "tuple_id": "002-valid-arxiv-test",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Test2023ArXiv",
+    "title": "Test arxiv preprint title",
+    "authors": [{ "family": "TestX", "given": "B." }],
+    "year": 2023,
+    "venue": "arXiv preprint",
+    "source_pointer": "https://arxiv.org/abs/2301.99999",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2301.99999",
+  "ref_slug": "testx-2023-arxiv",
+  "anchor": { "kind": "page", "value": "1" },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

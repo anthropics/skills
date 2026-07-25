@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science DOE"
+  short_description: "Design-of-experiments matrices for materials research: factorial, orthogonal, and mixture designs."
+  default_prompt: "Use $materials-doe to generate a design-of-experiments matrix for this materials research project."
+  brand_color: "#8B6914"
+
+policy:
+  allow_implicit_invocation: true

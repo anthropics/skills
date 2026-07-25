@@ -1,0 +1,24 @@
+# Per-repo manifest for the vendored command-invariants lint
+# (tools/release-discipline/scripts/check_command_invariants.py).
+# Discovers commands/*.md and asserts the SessionStart announce script lists
+# exactly that set; [version_lockstep] pins plugin.json to the newest
+# CHANGELOG entry.
+
+command_glob = "commands/*.md"
+
+[[announce]]
+path = "scripts/announce-ars-loaded.sh"
+token_pattern = '/(?P<name>ars-[a-z0-9-]+)'
+# Each ANNOUNCE="..." assignment (resume short form + startup long form) is an
+# independent region: every command must appear in BOTH, so drift in one form
+# cannot hide behind the other, and comments don't count as "listed".
+region_pattern = 'ANNOUNCE="(?P<region>[^"]*)"'
+count_pattern = 'Slash commands \((?P<count>[0-9]+)\)'
+
+[version_lockstep]
+changelog_path = "CHANGELOG.md"
+package_path = ".claude-plugin/plugin.json"
+package_key = "version"
+# ARS release headings carry an em-dash summary after the date
+# ("## [3.14.0] - 2026-07-02 — ..."), which the default pattern rejects.
+changelog_entry_pattern = '^## \[(?P<version>\S+)\] - (?P<date>\d{4}-\d{2}-\d{2})( — .+)?\s*$'

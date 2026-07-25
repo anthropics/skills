@@ -1,0 +1,276 @@
+{
+  "incident": {
+    "id": "INC-2024-0142",
+    "title": "Payment Service Degradation",
+    "severity": "SEV1",
+    "status": "resolved",
+    "declared_at": "2024-01-15T14:23:00Z",
+    "resolved_at": "2024-01-15T16:45:00Z",
+    "commander": "Jane Smith",
+    "service": "payment-gateway",
+    "affected_services": ["checkout", "subscription-billing"]
+  },
+  "events": [
+    {
+      "timestamp": "2024-01-15T14:15:00Z",
+      "type": "trigger",
+      "actor": "system",
+      "description": "Database connection pool utilization reaches 95% on payment-gateway primary",
+      "metadata": {"metric": "db_pool_utilization", "value": 95, "threshold": 90}
+    },
+    {
+      "timestamp": "2024-01-15T14:20:00Z",
+      "type": "detection",
+      "actor": "monitoring",
+      "description": "PagerDuty alert fired: payment-gateway error rate >5% (current: 8.2%)",
+      "metadata": {"alert_id": "PD-98765", "source": "datadog", "error_rate": 8.2}
+    },
+    {
+      "timestamp": "2024-01-15T14:21:00Z",
+      "type": "detection",
+      "actor": "monitoring",
+      "description": "Datadog alert: p99 latency on /api/payments exceeds 5000ms (current: 8500ms)",
+      "metadata": {"alert_id": "DD-54321", "source": "datadog", "latency_p99_ms": 8500}
+    },
+    {
+      "timestamp": "2024-01-15T14:23:00Z",
+      "type": "declaration",
+      "actor": "Jane Smith",
+      "description": "SEV1 declared. Incident channel #inc-20240115-payment-degradation created. Bridge call started.",
+      "metadata": {"channel": "#inc-20240115-payment-degradation", "severity": "SEV1"}
+    },
+    {
+      "timestamp": "2024-01-15T14:25:00Z",
+      "type": "investigation",
+      "actor": "Alice Chen",
+      "description": "Confirmed: database connection pool at 100% utilization. All new connections being rejected.",
+      "metadata": {"pool_size": 20, "active_connections": 20, "waiting_requests": 147}
+    },
+    {
+      "timestamp": "2024-01-15T14:28:00Z",
+      "type": "investigation",
+      "actor": "Carol Davis",
+      "description": "Identified recent deployment of user-api v2.4.1 at 13:45 UTC. New ORM version (3.2.0) changed connection handling behavior.",
+      "metadata": {"deployment": "user-api-v2.4.1", "deployed_at": "2024-01-15T13:45:00Z"}
+    },
+    {
+      "timestamp": "2024-01-15T14:30:00Z",
+      "type": "communication",
+      "actor": "Bob Kim",
+      "description": "Status page updated: Investigating - We are investigating increased error rates affecting payment processing.",
+      "metadata": {"channel": "status_page", "status": "investigating"}
+    },
+    {
+      "timestamp": "2024-01-15T14:35:00Z",
+      "type": "escalation",
+      "actor": "Jane Smith",
+      "description": "Escalated to VP Engineering. Customer impact confirmed: 12,500+ users affected, failed transactions accumulating.",
+      "metadata": {"escalated_to": "VP Engineering", "reason": "revenue_impact"}
+    },
+    {
+      "timestamp": "2024-01-15T14:40:00Z",
+      "type": "mitigation",
+      "actor": "Alice Chen",
+      "description": "Attempting mitigation: increasing connection pool size from 20 to 50 via config override.",
+      "metadata": {"action": "pool_resize", "old_value": 20, "new_value": 50}
+    },
+    {
+      "timestamp": "2024-01-15T14:45:00Z",
+      "type": "communication",
+      "actor": "Bob Kim",
+      "description": "Status page updated: Identified - The issue has been identified as a database configuration problem. We are implementing a fix.",
+      "metadata": {"channel": "status_page", "status": "identified"}
+    },
+    {
+      "timestamp": "2024-01-15T14:50:00Z",
+      "type": "investigation",
+      "actor": "Carol Davis",
+      "description": "Pool resize partially effective. Error rate dropped from 23% to 12%. ORM 3.2.0 opens 3x more connections per request than 3.1.2.",
+      "metadata": {"error_rate_before": 23.5, "error_rate_after": 12.1}
+    },
+    {
+      "timestamp": "2024-01-15T15:00:00Z",
+      "type": "mitigation",
+      "actor": "Alice Chen",
+      "description": "Decision: roll back ORM version to 3.1.2. Initiating rollback deployment of user-api v2.3.9.",
+      "metadata": {"action": "rollback", "target_version": "2.3.9", "rollback_reason": "orm_connection_leak"}
+    },
+    {
+      "timestamp": "2024-01-15T15:15:00Z",
+      "type": "mitigation",
+      "actor": "Alice Chen",
+      "description": "Rollback deployment complete. user-api v2.3.9 running in production. Connection pool utilization dropping.",
+      "metadata": {"deployment_duration_minutes": 15, "pool_utilization": 45}
+    },
+    {
+      "timestamp": "2024-01-15T15:20:00Z",
+      "type": "communication",
+      "actor": "Bob Kim",
+      "description": "Status page updated: Monitoring - A fix has been implemented and we are monitoring the results.",
+      "metadata": {"channel": "status_page", "status": "monitoring"}
+    },
+    {
+      "timestamp": "2024-01-15T15:30:00Z",
+      "type": "mitigation",
+      "actor": "Jane Smith",
+      "description": "Error rate back to baseline (<0.1%). Payment processing fully restored. Entering monitoring phase.",
+      "metadata": {"error_rate": 0.08, "pool_utilization": 32}
+    },
+    {
+      "timestamp": "2024-01-15T16:30:00Z",
+      "type": "investigation",
+      "actor": "Carol Davis",
+      "description": "Confirmed stable for 60 minutes. No degradation detected. Root cause documented: ORM 3.2.0 connection pooling incompatibility.",
+      "metadata": {"monitoring_duration_minutes": 60, "stable": true}
+    },
+    {
+      "timestamp": "2024-01-15T16:45:00Z",
+      "type": "resolution",
+      "actor": "Jane Smith",
+      "description": "Incident resolved. All services nominal. Postmortem scheduled for 2024-01-17 10:00 UTC.",
+      "metadata": {"postmortem_scheduled": "2024-01-17T10:00:00Z"}
+    },
+    {
+      "timestamp": "2024-01-15T16:50:00Z",
+      "type": "communication",
+      "actor": "Bob Kim",
+      "description": "Status page updated: Resolved - The issue has been resolved. Payment processing is operating normally.",
+      "metadata": {"channel": "status_page", "status": "resolved"}
+    }
+  ],
+  "communications": [
+    {
+      "timestamp": "2024-01-15T14:30:00Z",
+      "channel": "status_page",
+      "audience": "external",
+      "message": "Investigating - We are investigating increased error rates affecting payment processing. Some transactions may fail. We will provide an update within 15 minutes."
+    },
+    {
+      "timestamp": "2024-01-15T14:35:00Z",
+      "channel": "slack_exec",
+      "audience": "internal",
+      "message": "SEV1 ACTIVE: Payment service degradation. ~12,500 users affected. Failed transactions accumulating. IC: Jane Smith. Bridge: [link]. ETA for mitigation: investigating."
+    },
+    {
+      "timestamp": "2024-01-15T14:45:00Z",
+      "channel": "status_page",
+      "audience": "external",
+      "message": "Identified - The issue has been identified as a database configuration problem following a recent deployment. We are implementing a fix. Next update in 15 minutes."
+    },
+    {
+      "timestamp": "2024-01-15T15:20:00Z",
+      "channel": "status_page",
+      "audience": "external",
+      "message": "Monitoring - A fix has been implemented and we are monitoring the results. Payment processing is recovering. We will provide a final update once we confirm stability."
+    },
+    {
+      "timestamp": "2024-01-15T16:50:00Z",
+      "channel": "status_page",
+      "audience": "external",
+      "message": "Resolved - The issue affecting payment processing has been resolved. All systems are operating normally. We will publish a full incident report within 48 hours."
+    }
+  ],
+  "impact": {
+    "revenue_impact": "high",
+    "affected_users_percentage": 45,
+    "affected_regions": ["us-east-1", "eu-west-1"],
+    "data_integrity_risk": false,
+    "security_breach": false,
+    "customer_facing": true,
+    "degradation_type": "partial",
+    "workaround_available": false
+  },
+  "signals": {
+    "error_rate_percentage": 23.5,
+    "latency_p99_ms": 8500,
+    "affected_endpoints": ["/api/payments", "/api/checkout", "/api/subscriptions"],
+    "dependent_services": ["checkout", "subscription-billing", "order-service"],
+    "alert_count": 12,
+    "customer_reports": 8
+  },
+  "context": {
+    "recent_deployments": [
+      {
+        "service": "user-api",
+        "deployed_at": "2024-01-15T13:45:00Z",
+        "version": "2.4.1",
+        "changes": "Upgraded ORM from 3.1.2 to 3.2.0"
+      }
+    ],
+    "ongoing_incidents": [],
+    "maintenance_windows": [],
+    "on_call": {
+      "primary": "alice@company.com",
+      "secondary": "bob@company.com",
+      "escalation_manager": "director-eng@company.com"
+    }
+  },
+  "resolution": {
+    "root_cause": "Database connection pool exhaustion caused by ORM 3.2.0 opening 3x more connections per request than previous version 3.1.2, exceeding the pool size of 20",
+    "contributing_factors": [
+      "Insufficient load testing of new ORM version under production-scale connection patterns",
+      "Connection pool monitoring alert threshold set too high (90%) with no warning at 70%",
+      "No canary deployment process for database configuration or ORM changes",
+      "Missing connection pool sizing documentation for service dependencies"
+    ],
+    "mitigation_steps": [
+      "Increased connection pool size from 20 to 50 as temporary relief",
+      "Rolled back user-api from v2.4.1 (ORM 3.2.0) to v2.3.9 (ORM 3.1.2)"
+    ],
+    "permanent_fix": "Load test ORM 3.2.0 with production connection patterns, update pool sizing, implement canary deployment for ORM changes",
+    "customer_impact": {
+      "affected_users": 12500,
+      "failed_transactions": 342,
+      "revenue_impact_usd": 28500,
+      "data_loss": false
+    }
+  },
+  "action_items": [
+    {
+      "title": "Add connection pool utilization alerting at 70% warning and 85% critical thresholds",
+      "owner": "alice@company.com",
+      "priority": "P1",
+      "deadline": "2024-01-22",
+      "type": "detection",
+      "status": "open"
+    },
+    {
+      "title": "Implement canary deployment pipeline for database configuration and ORM changes",
+      "owner": "bob@company.com",
+      "priority": "P1",
+      "deadline": "2024-02-01",
+      "type": "prevention",
+      "status": "open"
+    },
+    {
+      "title": "Load test ORM v3.2.0 with production-scale connection patterns before re-deployment",
+      "owner": "carol@company.com",
+      "priority": "P2",
+      "deadline": "2024-01-29",
+      "type": "prevention",
+      "status": "open"
+    },
+    {
+      "title": "Document connection pool sizing requirements for all services in runbook",
+      "owner": "alice@company.com",
+      "priority": "P2",
+      "deadline": "2024-02-05",
+      "type": "process",
+      "status": "open"
+    },
+    {
+      "title": "Add ORM connection behavior to integration test suite",
+      "owner": "carol@company.com",
+      "priority": "P3",
+      "deadline": "2024-02-15",
+      "type": "prevention",
+      "status": "open"
+    }
+  ],
+  "participants": [
+    {"name": "Jane Smith", "role": "Incident Commander"},
+    {"name": "Alice Chen", "role": "Operations Lead"},
+    {"name": "Bob Kim", "role": "Communications Lead"},
+    {"name": "Carol Davis", "role": "Database SME"}
+  ]
+}

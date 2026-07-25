@@ -1,0 +1,560 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "research",
+  "skill_count": 9,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "deep-research",
+      "path": "research/deep-research/skills/deep-research",
+      "description": "Run a disciplined, multi-source research investigation for a high-stakes question or decision \u2014 fan-out web search across many channels, parallel sub-agents, source triangulation (each claim backed by \u22653 independent sources), an adversarial review pass, and every source saved to its own file with verbatim quotes for reuse. Use when a low-quality answer is expensive: strategy work, comparing N products/methods/markets, validating a hypothesis with external data, or mapping how a field works. NOT for quick fact-checks (answer directly), structured 12-dimension competitor scoring (use \u2026",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "full-catalog.md"
+      ]
+    },
+    {
+      "name": "dossier",
+      "path": "research/dossier/skills/dossier",
+      "description": "Decision-grade entity research skill \u2014 produces a hypothesis-tested dossier on a specific company, person, nonprofit, or government org, not a generic profile. Forcing intake makes the user state their hypothesis upfront (what they already believe and want to verify or disprove) so the dossier tests it rather than confirms it. Output is an editable Word document (.docx) with verdict on the hypothesis, identity facts, 12-month activity timeline, network and reputation signals, red flags, conversation hooks tied to specific findings, and source-provenance audit log. Uses WebSearch + WebFetch \u2026",
+      "tools": [
+        {
+          "script": "research/dossier/skills/dossier/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/dossier/skills/dossier/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/dossier/skills/dossier/scripts/disconfirming_evidence_balance.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/dossier/skills/dossier/scripts/disconfirming_evidence_balance.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/dossier/skills/dossier/scripts/disconfirming_evidence_balance.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/dossier/skills/dossier/scripts/source_tier_classifier.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/dossier/skills/dossier/scripts/source_tier_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/dossier/skills/dossier/scripts/source_tier_classifier.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "conversation_hook_quality.md",
+        "hypothesis_testing_discipline.md",
+        "subject_type_source_matrix.md"
+      ]
+    },
+    {
+      "name": "grants",
+      "path": "research/grants/skills/grants",
+      "description": "NIH grant research skill for clinical researchers. Grill-me intake (research idea + career stage + preliminary data + environment + submission posture + known institute targets) locks down the funding strategy before any search runs. Runs a 5-facet Consensus positioning analysis (with draft Significance/Innovation language), maps the research to the right NIH institutes and study sections via RePORTER, finds NOSIs and funded overlap, and produces an editable Word document (.docx) with budget/scope-aware mechanism recommendations, submission timelines, and a mandatory program officer \u2026",
+      "tools": [
+        {
+          "script": "research/grants/skills/grants/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/grants/skills/grants/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/grants/skills/grants/scripts/fiscal_year_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/grants/skills/grants/scripts/fiscal_year_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/grants/skills/grants/scripts/mechanism_matcher.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/grants/skills/grants/scripts/mechanism_matcher.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/grants/skills/grants/scripts/mechanism_matcher.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "docx_9_sections.md",
+        "nih_mechanism_matching.md",
+        "reporter_post_patterns.md"
+      ]
+    },
+    {
+      "name": "litreview",
+      "path": "research/litreview/skills/litreview",
+      "description": "Academic literature orientation skill that searches papers via free keyless APIs (PubMed E-utilities + OpenAlex) by default \u2014 with the Consensus MCP as an optional enhancement lane when connected \u2014 builds a strategic search plan using PICO (default) or SPIDER / Decomposition / hybrid as fallbacks, and synthesizes findings into a formatted Word (.docx) research guide. Grill-me intake (research question specificity + framework hint + tentative depth) before the recon search; a second forcing checkpoint after Phase 2 confirms framework + sub-areas + depth before searches consume budget. \u2026",
+      "tools": [
+        {
+          "script": "research/litreview/skills/litreview/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/litreview/skills/litreview/scripts/cross_search_aggregator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/cross_search_aggregator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/cross_search_aggregator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/litreview/skills/litreview/scripts/framework_recommender.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/framework_recommender.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/framework_recommender.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/litreview/skills/litreview/scripts/free_search.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/litreview/skills/litreview/scripts/free_search.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "docx_8_sections.md",
+        "framework_selection.md",
+        "search_budget_allocation.md"
+      ]
+    },
+    {
+      "name": "notebooklm",
+      "path": "research/notebooklm/skills/notebooklm",
+      "description": "Browser automation skill for controlling Google's NotebookLM. Use when the user wants anything done in NotebookLM (e.g., 'open NotebookLM', 'check my [name] notebook', 'ask my notebook about X', 'add [source] to NotebookLM', 'generate a Video Overview from my notebook', 'use NotebookLM Studio'). Handles reading and querying notebooks, adding sources (URLs, text, files, YouTube links, synthesized content), generating Studio outputs (Audio/Video Overviews, Mind Maps, Reports incl. Briefing Doc/Study Guide/FAQ, Flashcards, Quiz, slide decks, infographics \u2014 discover the exact set from the live \u2026",
+      "tools": [
+        {
+          "script": "research/notebooklm/skills/notebooklm/scripts/action_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/action_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/action_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/notebooklm/skills/notebooklm/scripts/async_action_classifier.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/async_action_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/async_action_classifier.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/notebooklm/skills/notebooklm/scripts/custom_prompt_template_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/custom_prompt_template_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/notebooklm/skills/notebooklm/scripts/custom_prompt_template_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "async_action_discipline.md",
+        "browser_automation_canon.md",
+        "studio_output_custom_prompts.md"
+      ]
+    },
+    {
+      "name": "patent",
+      "path": "research/patent/skills/patent",
+      "description": "Patent prior-art and landscape intelligence skill \u2014 not generic patent help. Commits to one of five sub-use-cases via forcing intake (novelty search / freedom-to-operate / competitive landscape / acquisition diligence / litigation prior-art) before any search runs. Searches Google Patents, Espacenet, USPTO, and optionally Lens.org for citation-graph signals. Output is an editable Word document (.docx) with verdict, ranked closest art (claim-text extracted), CPC-class-aware landscape, family-resolved hits, geographic coverage, FTO flags where applicable, strategy recommendations, and full \u2026",
+      "tools": [
+        {
+          "script": "research/patent/skills/patent/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/patent/skills/patent/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/patent/skills/patent/scripts/family_resolver.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/patent/skills/patent/scripts/family_resolver.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/patent/skills/patent/scripts/family_resolver.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/patent/skills/patent/scripts/sub_use_case_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/patent/skills/patent/scripts/sub_use_case_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/patent/skills/patent/scripts/sub_use_case_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cpc_classification_canon.md",
+        "legal_disclaimer_discipline.md",
+        "sub_use_case_routing.md"
+      ]
+    },
+    {
+      "name": "pulse",
+      "path": "research/pulse/skills/pulse",
+      "description": "Multi-source recency research skill that takes the pulse of any topic across Reddit, Hacker News, the open web, and optionally X/Twitter within a configurable recent window (default 30 days). Forcing intake clarifies topic specificity, angle (trend/sentiment/problems/opportunities/comparison), time window, and platform scope before searching. Returns a synthesized briefing with citations, engagement metrics, and cross-platform pattern analysis. Use when the user requests multi-source recency intelligence on a topic (e.g., 'pulse on [topic]', 'what's happening with [topic]', 'what are people \u2026",
+      "tools": [
+        {
+          "script": "research/pulse/skills/pulse/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/pulse/skills/pulse/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/pulse/skills/pulse/scripts/time_window_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/pulse/skills/pulse/scripts/time_window_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/pulse/skills/pulse/scripts/topic_slug_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/pulse/skills/pulse/scripts/topic_slug_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cross_platform_synthesis.md",
+        "parallel_execution_discipline.md",
+        "research_pack_conventions.md"
+      ]
+    },
+    {
+      "name": "research",
+      "path": "research/research/skills/research",
+      "description": "Default entry point for any research request \u2014 a hybrid router that classifies the question deterministically and either delegates to a specialist research skill (pulse for trends/sentiment, grants for NIH funding, litreview for academic literature, syllabus for course reading, patent for prior-art + IP landscape, dossier for entity research) or runs its own plan-decompose-multi-source-search-synthesize-cite fallback workflow when no specialist matches. Always surfaces the routing decision so users can override. Use when the user makes any research request that doesn't obviously match a \u2026",
+      "tools": [
+        {
+          "script": "research/research/skills/research/scripts/classifier.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/research/skills/research/scripts/classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/research/skills/research/scripts/classifier.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/research/skills/research/scripts/fallback_decomposer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/research/skills/research/scripts/fallback_decomposer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/research/skills/research/scripts/fallback_decomposer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/research/skills/research/scripts/routing_transparency_logger.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/research/skills/research/scripts/routing_transparency_logger.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/research/skills/research/scripts/routing_transparency_logger.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "deterministic_classification_canon.md",
+        "fallback_workflow_canon.md",
+        "hybrid_router_architecture.md"
+      ]
+    },
+    {
+      "name": "syllabus",
+      "path": "research/syllabus/skills/syllabus",
+      "description": "Generates a curated supplementary reading list from any course syllabus using Consensus academic search. Grill-me intake (syllabus input format + course audience + year range) plus a grouping forcing-options checkpoint before any search runs \u2014 so the reading list matches the course's level and recency need. Parses the syllabus to extract topics and learning outcomes, searches Consensus for recent peer-reviewed papers per topic, and produces a professionally formatted .docx with clickable Consensus links, plain-language summaries calibrated to audience level, and Bloom-higher-order \u2026",
+      "tools": [
+        {
+          "script": "research/syllabus/skills/syllabus/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research/syllabus/skills/syllabus/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research/syllabus/skills/syllabus/scripts/discussion_question_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/syllabus/skills/syllabus/scripts/discussion_question_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/syllabus/skills/syllabus/scripts/discussion_question_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research/syllabus/skills/syllabus/scripts/topic_grouper.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research/syllabus/skills/syllabus/scripts/topic_grouper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research/syllabus/skills/syllabus/scripts/topic_grouper.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "applied_domain_weaving.md",
+        "audience_calibration.md",
+        "bundled_script_pattern.md"
+      ]
+    }
+  ]
+}

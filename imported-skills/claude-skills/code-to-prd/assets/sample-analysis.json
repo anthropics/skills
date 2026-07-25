@@ -1,0 +1,81 @@
+{
+  "project": {
+    "root": "/path/to/my-app",
+    "name": "my-app",
+    "framework": "next",
+    "detected_frameworks": ["next", "react"],
+    "key_dependencies": {
+      "next": "14.1.0",
+      "react": "18.2.0",
+      "tailwindcss": "3.4.1",
+      "axios": "1.6.5",
+      "@tanstack/react-query": "5.17.0"
+    },
+    "stack_type": "fullstack"
+  },
+  "structure": {
+    "total_files": 87,
+    "components": {
+      "components": 42,
+      "modules": 35
+    },
+    "route_dirs": ["/path/to/my-app/app"],
+    "api_dirs": ["/path/to/my-app/app/api"],
+    "state_dirs": ["/path/to/my-app/src/store"],
+    "i18n_dirs": [],
+    "controller_dirs": [],
+    "model_dirs": [],
+    "dto_dirs": []
+  },
+  "routes": {
+    "count": 8,
+    "frontend_pages": [
+      {"path": "/", "source": "app/page.tsx", "filesystem": true},
+      {"path": "/dashboard", "source": "app/dashboard/page.tsx", "filesystem": true},
+      {"path": "/users", "source": "app/users/page.tsx", "filesystem": true},
+      {"path": "/users/:id", "source": "app/users/[id]/page.tsx", "filesystem": true},
+      {"path": "/settings", "source": "app/settings/page.tsx", "filesystem": true}
+    ],
+    "backend_endpoints": [
+      {"path": "/api/users", "method": "GET", "source": "app/api/users/route.ts", "type": "backend"},
+      {"path": "/api/users", "method": "POST", "source": "app/api/users/route.ts", "type": "backend"},
+      {"path": "/api/users/:id", "method": "GET", "source": "app/api/users/[id]/route.ts", "type": "backend"}
+    ],
+    "pages": []
+  },
+  "apis": {
+    "total": 5,
+    "integrated": 4,
+    "mock": 1,
+    "endpoints": [
+      {"path": "/api/users", "method": "GET", "source": "services/user.ts", "integrated": true, "mock_detected": false},
+      {"path": "/api/users", "method": "POST", "source": "services/user.ts", "integrated": true, "mock_detected": false},
+      {"path": "/api/users/:id", "method": "GET", "source": "services/user.ts", "integrated": true, "mock_detected": false},
+      {"path": "/api/users/:id", "method": "PUT", "source": "services/user.ts", "integrated": true, "mock_detected": false},
+      {"path": "/api/dashboard/stats", "method": "GET", "source": "services/dashboard.ts", "integrated": false, "mock_detected": true}
+    ]
+  },
+  "enums": {
+    "count": 2,
+    "definitions": [
+      {"name": "UserRole", "type": "enum", "values": {"ADMIN": "admin", "USER": "user", "MANAGER": "manager"}, "source": "types/user.ts"},
+      {"name": "STATUS_MAP", "type": "constant_map", "values": {"active": "Active", "inactive": "Inactive", "suspended": "Suspended"}, "source": "constants/status.ts"}
+    ]
+  },
+  "models": {
+    "count": 0,
+    "definitions": []
+  },
+  "summary": {
+    "pages": 5,
+    "backend_endpoints": 3,
+    "api_endpoints": 5,
+    "api_integrated": 4,
+    "api_mock": 1,
+    "enums": 2,
+    "models": 0,
+    "has_i18n": false,
+    "has_state_management": true,
+    "stack_type": "fullstack"
+  }
+}

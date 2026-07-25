@@ -1,0 +1,26 @@
+{
+  "skill_name": "webinar-marketing",
+  "evals": [
+    {
+      "id": 0,
+      "name": "plan-first-webinar-from-scratch",
+      "prompt": "We're a Series A B2B SaaS selling an AP automation tool to finance teams. I want to run our first webinar next month to generate leads. I've got an email list of about 8,000 finance and ops people. Can you help me plan the whole thing? I honestly have no idea where to start.",
+      "expected_output": "A full webinar plan: clear attendee promise, format recommendation, funnel targets worked backward from a lead goal, a promotion calendar across the runway, a show-up/reminder sequence, live structure with a live-to-close, and a segmented follow-up plan (incl. no-shows).",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "rescue-low-attendance",
+      "prompt": "Our last webinar flopped on attendance. We had 540 registrations but only 95 people showed up live, and barely anyone watched the recording afterward. The content itself was good — it's the turnout that's killing us. What should we do differently next time?",
+      "expected_output": "Diagnosis that correctly identifies registration->attendance (show-up) as the broken stage, then specific fixes: a full reminder sequence with timing, one-click calendar add, a live-only incentive, and shortening the registration-to-event gap. Should NOT just rewrite the landing page or content.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "write-segmented-followup",
+      "prompt": "I need follow-up emails for a webinar we ran yesterday on 'Cutting cloud costs in 2026.' 220 people registered and 80 attended live. Can you write the follow-up emails? I want to push everyone toward booking a demo.",
+      "expected_output": "A segmented follow-up sequence: attendees who engaged, attendees who didn't act, and no-shows (the ~140 who registered but didn't attend) each get tailored copy. Recording sent within 24h, one clear demo CTA per email, with the no-show segment treated as warm.",
+      "files": []
+    }
+  ]
+}

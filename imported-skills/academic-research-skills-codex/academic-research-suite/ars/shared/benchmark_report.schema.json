@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/benchmark_report.schema.json",
+  "title": "ARS Benchmark Report",
+  "type": "object",
+  "required": [
+    "ars_version",
+    "task_definition",
+    "human_baseline",
+    "ars_run",
+    "metrics",
+    "caveats"
+  ],
+  "properties": {
+    "ars_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Exact ARS version the benchmark was run against"
+    },
+    "task_definition": {
+      "type": "object",
+      "required": ["description", "task_type", "outcome_gradable"],
+      "properties": {
+        "description": { "type": "string", "minLength": 1 },
+        "task_type": { "enum": ["outcome-gradable", "open-ended"] },
+        "outcome_gradable": { "type": "boolean" }
+      }
+    },
+    "human_baseline": {
+      "type": "object",
+      "required": ["sample_size", "author_independence", "hours_spent", "recruitment", "tools_allowed"],
+      "properties": {
+        "sample_size": { "type": "integer", "minimum": 1 },
+        "author_independence": {
+          "enum": ["author-conducted", "author-blinded", "third-party-conducted"],
+          "description": "author-conducted means the benchmark creators also did the human baseline (downward bias risk)"
+        },
+        "hours_spent": { "type": "number", "minimum": 0 },
+        "recruitment": { "type": "string", "minLength": 1 },
+        "tools_allowed": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        }
+      }
+    },
+    "ars_run": {
+      "type": "object",
+      "required": ["hours_spent", "cost_usd", "skills_used", "data_access_level_declared"],
+      "properties": {
+        "hours_spent": { "type": "number", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 },
+        "skills_used": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "data_access_level_declared": {
+          "enum": ["raw", "redacted", "verified_only"]
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["primary_metric", "primary_metric_value", "scoring_independence"],
+      "properties": {
+        "primary_metric": { "type": "string", "minLength": 1 },
+        "primary_metric_value": { "type": "number" },
+        "scoring_independence": {
+          "enum": ["authors-scored", "third-party-scored", "blind-scored", "self-scored"]
+        }
+      }
+    },
+    "caveats": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "description": "Known limitations. Empty array not permitted — honest disclosure required."
+    }
+  }
+}

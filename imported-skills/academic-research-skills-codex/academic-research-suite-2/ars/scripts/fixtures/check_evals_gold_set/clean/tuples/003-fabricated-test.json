@@ -1,0 +1,20 @@
+{
+  "tuple_id": "003-fabricated-test",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Bogus2023Fab",
+    "title": "Intentionally bogus fabricated paper title",
+    "authors": [{ "family": "Fictitious", "given": "A." }],
+    "year": 2023,
+    "doi": "10.99999/bogus-fab-1",
+    "venue": "Bogus Journal",
+    "source_pointer": "https://doi.org/10.99999/bogus-fab-1",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "bogus-2023-fab",
+  "anchor": { "kind": "page", "value": "1" },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

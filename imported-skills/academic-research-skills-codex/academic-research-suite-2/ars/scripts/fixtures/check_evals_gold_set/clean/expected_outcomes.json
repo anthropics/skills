@@ -1,0 +1,77 @@
+{
+  "001-valid-doi-test": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "002-valid-arxiv-test": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "003-fabricated-test": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  }
+}

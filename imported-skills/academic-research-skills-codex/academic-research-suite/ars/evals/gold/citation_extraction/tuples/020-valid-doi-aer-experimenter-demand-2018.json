@@ -1,0 +1,41 @@
+{
+  "tuple_id": "020-valid-doi-aer-experimenter-demand-2018",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "deQuidt2018Demand",
+    "title": "Measuring and Bounding Experimenter Demand",
+    "authors": [
+      {
+        "family": "de Quidt",
+        "given": "Jonathan"
+      },
+      {
+        "family": "Haushofer",
+        "given": "Johannes"
+      },
+      {
+        "family": "Roth",
+        "given": "Christopher"
+      }
+    ],
+    "year": 2018,
+    "doi": "10.1257/aer.20171330",
+    "venue": "American Economic Review",
+    "source_pointer": "https://doi.org/10.1257/aer.20171330",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "dequidt-2018-demand",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

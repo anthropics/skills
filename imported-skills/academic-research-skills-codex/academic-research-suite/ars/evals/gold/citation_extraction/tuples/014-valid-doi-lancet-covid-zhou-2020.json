@@ -1,0 +1,100 @@
+{
+  "tuple_id": "014-valid-doi-lancet-covid-zhou-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Zhou2020COVID",
+    "title": "Clinical course and risk factors for mortality of adult inpatients with COVID-19 in Wuhan, China: a retrospective cohort study",
+    "authors": [
+      {
+        "family": "Zhou",
+        "given": "Fei"
+      },
+      {
+        "family": "Yu",
+        "given": "Ting"
+      },
+      {
+        "family": "Du",
+        "given": "Ronghui"
+      },
+      {
+        "family": "Fan",
+        "given": "Guohui"
+      },
+      {
+        "family": "Liu",
+        "given": "Ying"
+      },
+      {
+        "family": "Liu",
+        "given": "Zhibo"
+      },
+      {
+        "family": "Xiang",
+        "given": "Jie"
+      },
+      {
+        "family": "Wang",
+        "given": "Yeming"
+      },
+      {
+        "family": "Song",
+        "given": "Bin"
+      },
+      {
+        "family": "Gu",
+        "given": "Xiaoying"
+      },
+      {
+        "family": "Guan",
+        "given": "Lulu"
+      },
+      {
+        "family": "Wei",
+        "given": "Yuan"
+      },
+      {
+        "family": "Li",
+        "given": "Hui"
+      },
+      {
+        "family": "Wu",
+        "given": "Xudong"
+      },
+      {
+        "family": "Xu",
+        "given": "Jiuyang"
+      },
+      {
+        "family": "Tu",
+        "given": "Shengjin"
+      },
+      {
+        "family": "Zhang",
+        "given": "Yi"
+      },
+      {
+        "family": "Chen",
+        "given": "Hua"
+      },
+      {
+        "family": "Cao",
+        "given": "Bin"
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1016/S0140-6736(20)30566-3",
+    "venue": "The Lancet",
+    "source_pointer": "https://doi.org/10.1016/S0140-6736(20)30566-3",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "zhou-2020-covid",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

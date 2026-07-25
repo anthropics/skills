@@ -1,0 +1,56 @@
+{
+  "tuple_id": "017-valid-doi-bart-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Lewis2020BART",
+    "title": "BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension",
+    "authors": [
+      {
+        "family": "Lewis",
+        "given": "Mike"
+      },
+      {
+        "family": "Liu",
+        "given": "Yinhan"
+      },
+      {
+        "family": "Goyal",
+        "given": "Naman"
+      },
+      {
+        "family": "Ghazvininejad",
+        "given": "Marjan"
+      },
+      {
+        "family": "Mohamed",
+        "given": "Abdelrahman"
+      },
+      {
+        "family": "Levy",
+        "given": "Omer"
+      },
+      {
+        "family": "Stoyanov",
+        "given": "Veselin"
+      },
+      {
+        "family": "Zettlemoyer",
+        "given": "Luke"
+      }
+    ],
+    "year": 2020,
+    "doi": "10.18653/v1/2020.acl-main.703",
+    "venue": "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics",
+    "source_pointer": "https://doi.org/10.18653/v1/2020.acl-main.703",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "lewis-2020-bart",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,26 @@
+{
+  "name": "baoyu-url-to-markdown-scripts",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "baoyu-fetch": "./baoyu-fetch"
+  },
+  "scripts": {
+    "reader": "bun ./lib/cli.ts"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "chrome-launcher": "^1.2.1",
+    "defuddle": "^0.17.0",
+    "jsdom": "^29.0.2",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2",
+    "unified": "^11.0.5",
+    "ws": "^8.18.3"
+  },
+  "overrides": {
+    "@xmldom/xmldom": "0.8.13"
+  }
+}

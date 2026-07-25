@@ -1,0 +1,350 @@
+version: "1.3.0"
+status: stable
+context_budget:
+  target_activation_bytes: 32768
+  max_activation_bytes: 34816
+  max_always_load: 4
+  max_skill_lines: 70
+  max_workflow_lines: 110
+
+# Minimal always_load: the architecture entry (contract), direction profile,
+# drafting workflow, and output format. The shared stance is available on
+# demand when a task needs its detailed placeholder and attribution rules.
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/workflow.md
+  - static/core/output-format.md
+
+axes:
+  paper_type:
+    detect: "What type of paper is being drafted?"
+    default: experimental-manuscript
+    values:
+      experimental-manuscript:
+        path: static/fragments/paper_type/experimental-manuscript.md
+        triggers: ["experiment", "results", "bonding performance", "waterborne epoxy", "test matrix", "mechanism"]
+      review-paper:
+        path: static/fragments/paper_type/review-paper.md
+        triggers: ["review", "mini-review", "small review", "literature review", "research progress"]
+      methods-paper:
+        path: static/fragments/paper_type/methods-paper.md
+        triggers: ["method", "standard", "protocol", "test method", "workflow"]
+
+  section:
+    detect: "Which manuscript section is the target?"
+    multi: true
+    default: full-argument
+    values:
+      abstract:
+        path: static/fragments/section/abstract.md
+        triggers: ["abstract", "summary", "摘要"]
+      introduction:
+        path: static/fragments/section/introduction.md
+        triggers: ["introduction", "gap", "novelty", "引言"]
+      methods:
+        path: static/fragments/section/methods.md
+        triggers: ["methods", "materials and methods", "experimental", "方法"]
+      results-discussion:
+        path: static/fragments/section/results-discussion.md
+        triggers: ["results", "discussion", "结果", "讨论"]
+      results:
+        path: static/fragments/section/results.md
+        triggers: ["results only", "results section"]
+      discussion:
+        path: static/fragments/section/discussion.md
+        triggers: ["discussion only", "discussion section"]
+      related-work:
+        path: static/fragments/section/related-work.md
+        triggers: ["related work", "literature", "相关工作"]
+      title:
+        path: static/fragments/section/title.md
+        triggers: ["title", "标题"]
+      conclusion:
+        path: static/fragments/section/conclusion.md
+        triggers: ["conclusion", "结论"]
+      full-argument:
+        path: references/argument-chain.md
+        triggers: ["outline", "manuscript structure", "paper framework", "论文框架"]
+      cover-letter:
+        path: static/fragments/section/cover-letter.md
+        triggers: ["cover letter", "submission letter", "editor letter"]
+      highlights:
+        path: static/fragments/section/highlights.md
+        triggers: ["highlights", "bullet summary", "key points"]
+      methods-from-record:
+        path: static/fragments/section/methods-from-record.md
+        triggers: ["methods from record", "methods from doe", "record-driven methods"]
+      results-from-record:
+        path: static/fragments/section/results-from-record.md
+        triggers: ["results from record", "results from doe", "record-driven results"]
+      discussion-mechanism:
+        path: static/fragments/section/discussion-mechanism.md
+        triggers: ["mechanism discussion", "mechanism interpretation", "rival explanations"]
+
+  language:
+    detect: "What language is the user writing in or translating to?"
+    default: en
+    values:
+      en:
+        path: static/fragments/language/en.md
+        triggers: ["English", "SCI", "manuscript"]
+      zh-to-en:
+        path: static/fragments/language/zh-to-en.md
+        triggers: ["Chinese", "translate", "中译英", "中文"]
+
+  journal_family:
+    detect: "Which journal family is the target?"
+    default: materials
+    values:
+      materials:
+        path: static/fragments/journal/materials.md
+        triggers: ["materials journal", "generic", "undecided"]
+      CBM:
+        path: static/fragments/journal/cbm.md
+        triggers: ["CBM", "Construction and Building Materials"]
+      CCC:
+        path: static/fragments/journal/ccc.md
+        triggers: ["CCC", "Cement and Concrete Composites"]
+      RMPD:
+        path: static/fragments/journal/rmpd.md
+        triggers: ["RMPD", "IJPE", "JRE", "pavement"]
+      JBE:
+        path: static/fragments/journal/jbe.md
+        triggers: ["JBE", "CSCM", "building"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+  domain:
+    detect: "Which material domain does the manuscript target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: ["civil", "asphalt", "pavement", "cement", "concrete", "construction", "土木", "建筑", "道路"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "thermoplastic", "thermoset", "高分子", "聚合物"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "ferrous", "nonferrous", "金属", "合金", "钢"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "porcelain", "refractory", "sintering", "陶瓷", "耐火"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "photonic", "optoelectronic", "半导体", "介电"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "2D material", "graphene", "mxene", "纳米"]
+
+  input_source:
+    detect: "Is the draft based on an experiment record or manual notes?"
+    default: manual
+    values:
+      manual:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["manual", "notes", "from scratch"]
+      experiment-record:
+        path: references/experiment-record-for-writing.md
+        triggers: ["experiment record", "from doe", "record", "yaml"]
+
+references:
+  on_demand:
+    stance:
+      path: ../_shared/core/stance.md
+      when: "Detailed evidence placeholders, attribution, or never-invent rules."
+    evidence-contract:
+      path: ../_shared/core/evidence-contract.md
+      when: "Building a claim-evidence table, auditing overclaim, or checking evidence support for a major claim."
+    claim-strength-ladder:
+      path: ../_shared/core/claim-strength-ladder.md
+      when: "Calibrating verb strength to evidence (Stage 5b) or sweeping for overclaim words (Stage 5c)."
+    terminology-ledger:
+      path: ../_shared/core/terminology-ledger.md
+      when: "Locking recurring domain terms before drafting (Stage 1), or seeding the ledger from an experiment record."
+    ethics:
+      path: ../_shared/core/ethics.md
+      when: "Citation attribution, AI traffic-light boundary, or materials-specific fabrication prohibitions need checking."
+    weakness-routing:
+      path: ../_shared/paper-production/weakness-routing.md
+      when: "A handoff artifact is missing and the weakness must be routed instead of inventing evidence."
+    content-first-qa-pipeline:
+      path: references/content-first-qa-pipeline.md
+      when: "Auditing, revising, or polishing a draft after initial drafting; content review must precede language review."
+    foundation-files:
+      path: references/state-machine/foundation-files.md
+      when: "A QA or multi-round revision task needs project-level continuity and foundation-file checks."
+    stopping-rules:
+      path: references/state-machine/stopping-rules.md
+      when: "A QA or multi-round revision task needs a stop-or-continue decision."
+    evaluation-rubric:
+      path: references/state-machine/evaluation-rubric.md
+      when: "A QA task needs anchored dimension scores or a target threshold."
+    validation-checklist:
+      path: references/state-machine/validation-checklist.md
+      when: "A QA task needs traceability, methods, argument, risk, and output checks."
+    argument-chain:
+      path: references/argument-chain.md
+      when: "The user needs paper logic, contribution chain, or section-to-section flow."
+    waterborne-epoxy-narrative:
+      path: references/waterborne-epoxy-narrative.md
+      when: "The manuscript concerns waterborne epoxy modified emulsified asphalt."
+    review-paper-strategy:
+      path: references/review-paper-strategy.md
+      when: "The task is a mini-review, small review, or literature review."
+    wer-ea-mini-review-pipeline:
+      path: references/wer-ea-mini-review-pipeline.md
+      when: "The task is a WER-EA mini-review, waterborne epoxy emulsified asphalt review, or small review on modified emulsified asphalt bonding performance."
+    reviewer-risk-writing:
+      path: references/reviewer-risk-writing.md
+      when: "The draft needs overclaim, missing-evidence, or journal-fit risk checking."
+    journal-cbm-facts:
+      path: ../_shared/journal-formats/cbm.md
+      when: "The target journal is CBM, Construction and Building Materials."
+    journal-ccc-facts:
+      path: ../_shared/journal-formats/ccc.md
+      when: "The target journal is CCC, Cement and Concrete Composites."
+    journal-rmpd-facts:
+      path: ../_shared/journal-formats/rmpd.md
+      when: "The target journal is RMPD or IJPE."
+    journal-jbe-facts:
+      path: ../_shared/journal-formats/jbe.md
+      when: "The target journal is JBE, Journal of Building Engineering."
+    ceramics-narrative:
+      path: references/ceramics-narrative.md
+      when: "The user is writing a ceramics manuscript."
+    insulation-narrative:
+      path: references/insulation-narrative.md
+      when: "The user is writing a thermal insulation manuscript."
+    asphalt-narrative:
+      path: references/asphalt-narrative.md
+      when: "The user is writing an asphalt, emulsified asphalt, or pavement materials manuscript."
+    cement-narrative:
+      path: references/cement-narrative.md
+      when: "The user is writing a cement, concrete, or mortar manuscript."
+    table-system:
+      path: references/table-system.md
+      when: "The user needs table system templates."
+    section-patterns-abstract:
+      path: references/section-patterns/abstract-claim-arc.md
+      when: "The user needs a materials-science abstract arc from background pain to application boundary."
+    section-patterns-introduction:
+      path: references/section-patterns/introduction-gap-ladder.md
+      when: "The user needs an introduction gap ladder, novelty chain, or field-progress to evidence-gap structure."
+    section-patterns-results-discussion:
+      path: references/section-patterns/results-discussion-evidence-chain.md
+      when: "The user needs results and discussion logic from observation to mechanism evidence and alternative explanation exclusion."
+    section-patterns-conclusion:
+      path: references/section-patterns/conclusion-boundary.md
+      when: "The user needs a conclusion that states contribution, limitations, next steps, and overclaim boundaries."
+    section-patterns-review:
+      path: references/section-patterns/review-synthesis-patterns.md
+      when: "The user is writing review-paper synthesis, classification, controversy, trend, or research-gap paragraphs."
+    ceramics-intensive-reading:
+      path: ../materials-reader/references/ceramics-intensive-reading-package.md
+      when: "The user is reading a ceramics paper or needs a ceramics-specific intensive reading protocol."
+    phrase-bank-wer-ea:
+      path: references/phrase-banks/wer-ea.md
+      when: "The manuscript concerns WER-EA bonding, demulsification, curing, interfacial energy, or emulsion stability."
+    phrase-bank-thermal-insulation:
+      path: references/phrase-banks/thermal-insulation.md
+      when: "The manuscript concerns thermal insulation, thermal conductivity, density, pore structure, hygrothermal aging, or fire performance."
+    phrase-bank-polymer-composites:
+      path: references/phrase-banks/polymer-composites.md
+      when: "The manuscript concerns polymer composites, interfacial bonding, fiber orientation, interlaminar shear, fatigue, or fracture mechanism."
+    phrase-bank-cement-concrete:
+      path: references/phrase-banks/cement-concrete.md
+      when: "The manuscript concerns cement, concrete, mortar, hydration, compressive strength, SCM, alkali-activated materials, fiber reinforcement, or durability of cementitious systems."
+    phrase-bank-ceramics:
+      path: references/phrase-banks/ceramics.md
+      when: "The manuscript concerns ceramics, sintering, hardness, fracture toughness, thermal properties, dielectric properties, or bioceramics."
+    phrase-bank-metals-alloys:
+      path: references/phrase-banks/metals-alloys.md
+      when: "The manuscript concerns metals, alloys, steel, aluminum, microstructure, strengthening mechanisms, corrosion, fatigue, heat treatment, or additive manufacturing of metals."
+    phrase-bank-durability-sustainability:
+      path: references/phrase-banks/durability-sustainability.md
+      when: "The manuscript concerns durability, aging, moisture resistance, freeze-thaw, LCA, recycled materials, waste utilization, carbon footprint, or sustainability claims."
+    phrase-bank-civil-general:
+      path: references/phrase-banks/civil-general.md
+      when: "The manuscript concerns general civil engineering materials, construction materials, building materials, geotechnical materials, timber, masonry, waterproofing, or thermal insulation not specifically covered by other phrase banks."
+    phrase-bank-nano:
+      path: references/phrase-banks/nano.md
+      when: "The manuscript concerns nanoparticles, 2D materials, thin films, nanocomposites, quantum dots, or other nanomaterials."
+    phrase-bank-functional:
+      path: references/phrase-banks/functional.md
+      when: "The manuscript concerns semiconductors, dielectrics, piezoelectrics, photonic/optoelectronic materials, electrochemistry, or electronic devices."
+    published-article-patterns:
+      path: references/published-article-patterns.md
+      when: "The user needs writing patterns from published materials papers, sentence templates, or before/after examples from real publications."
+    examples-abstract-templates:
+      path: references/examples/abstract-examples.md
+      when: "user needs reusable abstract templates or sentence skeletons"
+    examples-introduction-variants:
+      path: references/examples/introduction-examples.md
+      when: "user needs introduction variant skeletons"
+    examples-method-skeletons:
+      path: references/examples/method-examples.md
+      when: "user needs method section skeletons or characterization-purpose templates"
+    examples-library-index:
+      path: references/examples/index.md
+      when: "user needs the full example library index"
+    journal-positioning-quick-ref:
+      path: references/journal-positioning-writing.md
+      when: "user needs a quick one-line reminder of what each journal family emphasizes, before opening the per-journal fragment."
+    chinese-to-english-quick-ref:
+      path: references/chinese-to-english-drafting.md
+      when: "user needs the short zh-to-en term mapping cheat sheet, before opening the full zh-to-en language fragment."
+    paragraph-flow:
+      path: references/paragraph-flow.md
+      when: "user needs to check or fix paragraph-level flow, topic sentences, or inter-paragraph transitions."
+    article-architecture:
+      path: references/article-architecture.md
+      when: "user needs the full-paper architecture reference: how the one-sentence argument expands into each section's moves."
+assets:
+  - assets
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+handoffs:
+  provides: {}
+  consumes:
+    - handoff: reader-package
+      from: materials-reader
+      optional: true
+    - handoff: doe-handoff
+      from: materials-doe
+      optional: true
+    - handoff: response-handoff
+      from: materials-response
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

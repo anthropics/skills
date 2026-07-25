@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Response"
+  short_description: "Reviewer response workflows for materials manuscripts."
+  default_prompt: "Use $materials-response to draft a reviewer response package for this materials manuscript."
+  brand_color: "#7A5C3E"
+
+policy:
+  allow_implicit_invocation: true

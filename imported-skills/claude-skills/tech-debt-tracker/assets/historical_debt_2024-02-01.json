@@ -1,0 +1,214 @@
+{
+  "scan_metadata": {
+    "directory": "/project/src",
+    "scan_date": "2024-02-01T14:30:00",
+    "scanner_version": "1.0.0"
+  },
+  "summary": {
+    "total_files_scanned": 27,
+    "total_lines_scanned": 13421,
+    "total_debt_items": 22,
+    "health_score": 74.2,
+    "debt_density": 0.81
+  },
+  "debt_items": [
+    {
+      "id": "DEBT-0001",
+      "type": "large_function",
+      "description": "create_user function in user_service.py is 89 lines long",
+      "file_path": "src/user_service.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0002",
+      "type": "duplicate_code",
+      "description": "Password validation logic duplicated in 3 locations",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0004",
+      "type": "high_complexity",
+      "description": "process_payment function has cyclomatic complexity of 24",
+      "file_path": "src/payment_processor.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0005",
+      "type": "missing_docstring",
+      "description": "PaymentProcessor class missing docstring",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0007",
+      "type": "empty_catch_blocks",
+      "description": "Empty catch block in update_user method",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0009",
+      "type": "deep_nesting",
+      "description": "Deep nesting detected: 6 levels in preferences handling",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0010",
+      "type": "long_line",
+      "description": "Line too long: 156 characters",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0011",
+      "type": "commented_code",
+      "description": "Dead code left in comments",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0012",
+      "type": "global_variables",
+      "description": "Global variable userCache should be encapsulated",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0013",
+      "type": "synchronous_ajax",
+      "description": "Synchronous AJAX call blocks UI thread",
+      "file_path": "src/frontend.js",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0014",
+      "type": "hardcoded_values",
+      "description": "Tax rates hardcoded in payment processing logic",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0015",
+      "type": "no_error_handling",
+      "description": "API calls without proper error handling",
+      "file_path": "src/payment_processor.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0016",
+      "type": "inefficient_algorithm",
+      "description": "O(n) user search could be optimized with indexing",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0017",
+      "type": "memory_leak_risk",
+      "description": "Event listeners attached without cleanup",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0021",
+      "type": "large_class",
+      "description": "UserService class has 15 methods",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0024",
+      "type": "circular_dependency",
+      "description": "Circular import between user_service and auth_service",
+      "file_path": "src/user_service.py",
+      "severity": "high",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0026",
+      "type": "broad_exception",
+      "description": "Catching generic Exception instead of specific types",
+      "file_path": "src/database.py",
+      "severity": "medium",
+      "detected_date": "2024-01-15T09:00:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0029",
+      "type": "missing_validation",
+      "description": "New API endpoint missing input validation",
+      "file_path": "src/api.py",
+      "severity": "high",
+      "detected_date": "2024-02-01T14:30:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0030",
+      "type": "performance_issue",
+      "description": "N+1 query detected in user listing",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "detected_date": "2024-02-01T14:30:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0031",
+      "type": "css_debt",
+      "description": "Inline styles should be moved to CSS files",
+      "file_path": "templates/user_profile.html",
+      "severity": "low",
+      "detected_date": "2024-02-01T14:30:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0032",
+      "type": "accessibility_issue",
+      "description": "Missing alt text for images",
+      "file_path": "templates/dashboard.html",
+      "severity": "medium",
+      "detected_date": "2024-02-01T14:30:00",
+      "status": "identified"
+    },
+    {
+      "id": "DEBT-0033",
+      "type": "configuration_debt",
+      "description": "Environment-specific config hardcoded in application",
+      "file_path": "src/config.py",
+      "severity": "medium",
+      "detected_date": "2024-02-01T14:30:00",
+      "status": "identified"
+    }
+  ]
+}

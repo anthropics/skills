@@ -1,0 +1,39 @@
+# Example Material Passport with populated repro_lock block.
+# Validates with `python scripts/check_repro_lock.py examples/passport_with_repro_lock.yaml`.
+
+origin_skill: deep-research
+origin_mode: full
+origin_date: "2026-04-15T10:00:00Z"
+verification_status: VERIFIED
+version_label: "v1.0"
+integrity_pass_date: "2026-04-15T10:15:00Z"
+content_hash: "sha256:a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd"
+
+repro_lock:
+  schema_version: "1.0"
+
+  stochasticity_declaration: "LLM outputs are not byte-reproducible. This lockfile documents configuration, not a deterministic replay guarantee."
+
+  ars_version: "3.3.5"
+
+  model:
+    family: claude
+    id: claude-opus-4-7
+    weight_stable: false
+
+  prompts:
+    hash_timing: skill-load
+    skill_md_hash: "sha256:b2c3d4e5f6789012345678901234567890123456789012345678901234abcd01"
+    agents_bundle_hash: "sha256:c3d4e5f6789012345678901234567890123456789012345678901234abcd0123"
+
+  materials:
+    list_hash: "sha256:d4e5f6789012345678901234567890123456789012345678901234abcd012345"
+    count: 8
+
+  external_protocols:
+    s2_api_protocol_version: "3.3"
+    s2_snapshot_available: false
+
+  cross_model:
+    enabled: false
+    secondary_model_id: null

@@ -1,0 +1,37 @@
+{
+  "skill_name": "materials-literature-pipeline",
+  "evals": [
+    {
+      "id": "configure-does-not-load-scoring",
+      "prompt": "Configure a weekly materials literature watch. Define the topic, time window, sources, inclusion rules, exclusion rules, and schedule, but do not score or rank papers yet.",
+      "expected_output": "The assistant should configure the watch without loading or restating the full 100-point scoring rubric. It should preserve the existing pipeline axes and make clear that scoring is loaded only when candidates are scored, ranked, calibrated, or audited. The literature pipeline handoff should explicitly route next_action=read to materials-reader and next_action=cite-gap-audit to materials-citation.",
+      "assertions": [
+        {
+          "name": "scoring_is_opt_in",
+          "description": "Configure mode keeps the full scoring rubric out of default activation."
+        },
+        {
+          "name": "next_action_routes_are_explicit",
+          "description": "read routes to materials-reader and cite-gap-audit routes to materials-citation through the literature pipeline handoff."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "candidate-depth-does-not-promote-evidence",
+      "prompt": "Run a literature watch containing metadata-only, abstract-screened, full-text-read, and data-extracted candidate rows, rank the candidates, and hand them off for reading or a citation-gap audit.",
+      "expected_output": "The assistant should state that every literature-pipeline candidate row remains candidate evidence at every source_depth and score, including metadata-only, abstract-screened, full-text-read, and data-extracted rows. A candidate row may link or route to a separate source-anchored materials-reader or extraction artifact, and only that separate artifact may support manuscript claims; the candidate row itself is never promoted. The output should keep candidates in source_map.candidates for a persistent multi-skill workflow and use explicit read or cite-gap-audit next actions.",
+      "assertions": [
+        {
+          "name": "candidate_evidence_boundary_preserved",
+          "description": "Metadata-only and abstract-screened records remain candidate evidence after handoff."
+        },
+        {
+          "name": "candidate_row_never_becomes_manuscript_evidence",
+          "description": "Every literature-pipeline candidate row stays candidate evidence at all source depths and scores; manuscript support comes only from a separate source-anchored reader or extraction artifact."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

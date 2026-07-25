@@ -1,0 +1,29 @@
+task_name: rq_framing_patterns
+manifest_version: "1.0.0"
+issue: 257
+task_type: advisory-calibration
+description: |
+  Hand-curated calibration set for the Kong #257 Socratic wording-pattern
+  advisory. Measures conservative detection of AI-typical RQ wording shells
+  while avoiding over-warning on domain-native RQ formulations.
+target:
+  entrypoint: scripts.check_rq_framing_patterns
+  predicted_field: trigger_advisory
+  gold_set_path: gold_set.json
+sample_n: 40
+labels: ["wording_cliche", "domain_native"]
+thresholds:
+  fnr:
+    comparison: "<"
+    threshold_value: 0.30
+  fpr:
+    comparison: "<"
+    threshold_value: 0.20
+  balanced_accuracy:
+    comparison: ">="
+    threshold_value: 0.75
+tuple_distribution:
+  - label: wording_cliche
+    n: 20
+  - label: domain_native
+    n: 20

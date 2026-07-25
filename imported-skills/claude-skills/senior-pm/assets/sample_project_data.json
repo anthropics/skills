@@ -1,0 +1,458 @@
+{
+  "portfolio_metadata": {
+    "organization": "TechCorp Inc.",
+    "reporting_period": "2025-Q1",
+    "generated_on": "2025-02-15",
+    "total_projects": 4,
+    "total_budget": 2800000,
+    "fte_count": 32
+  },
+  "projects": [
+    {
+      "id": "PROJ001",
+      "name": "Mobile Banking App v3.0",
+      "status": "in_progress",
+      "priority": "high",
+      "start_date": "2024-10-01",
+      "planned_end_date": "2025-06-30",
+      "actual_end_date": null,
+      "budget": {
+        "planned": 850000,
+        "spent": 425000,
+        "remaining": 425000,
+        "variance_percentage": 0.0
+      },
+      "timeline": {
+        "total_sprints": 18,
+        "completed_sprints": 9,
+        "progress_percentage": 50.0,
+        "days_behind_schedule": 5,
+        "critical_path_delay": false
+      },
+      "team": {
+        "size": 12,
+        "roles": {
+          "product_manager": 1,
+          "tech_lead": 1,
+          "senior_developer": 3,
+          "developer": 4,
+          "qa_engineer": 2,
+          "ui_ux_designer": 1
+        }
+      },
+      "quality_metrics": {
+        "code_coverage": 85.2,
+        "test_pass_rate": 94.7,
+        "defect_density": 0.8,
+        "technical_debt_hours": 120,
+        "security_vulnerabilities": 2
+      },
+      "stakeholder_satisfaction": 8.5,
+      "scope_change_count": 3,
+      "dependencies": ["PROJ002", "PROJ004"],
+      "key_milestones": [
+        {
+          "name": "MVP Release",
+          "planned_date": "2025-03-15",
+          "status": "at_risk",
+          "completion_percentage": 75
+        },
+        {
+          "name": "Beta Testing",
+          "planned_date": "2025-05-01",
+          "status": "on_track",
+          "completion_percentage": 0
+        }
+      ]
+    },
+    {
+      "id": "PROJ002",
+      "name": "Cloud Infrastructure Migration",
+      "status": "in_progress",
+      "priority": "critical",
+      "start_date": "2024-08-15",
+      "planned_end_date": "2025-04-30",
+      "actual_end_date": null,
+      "budget": {
+        "planned": 650000,
+        "spent": 520000,
+        "remaining": 130000,
+        "variance_percentage": -20.0
+      },
+      "timeline": {
+        "total_sprints": 16,
+        "completed_sprints": 12,
+        "progress_percentage": 75.0,
+        "days_behind_schedule": 0,
+        "critical_path_delay": false
+      },
+      "team": {
+        "size": 8,
+        "roles": {
+          "solution_architect": 1,
+          "devops_engineer": 3,
+          "senior_developer": 2,
+          "security_specialist": 1,
+          "project_manager": 1
+        }
+      },
+      "quality_metrics": {
+        "code_coverage": 78.9,
+        "test_pass_rate": 98.2,
+        "defect_density": 0.3,
+        "technical_debt_hours": 45,
+        "security_vulnerabilities": 0
+      },
+      "stakeholder_satisfaction": 9.2,
+      "scope_change_count": 1,
+      "dependencies": [],
+      "key_milestones": [
+        {
+          "name": "Phase 1: Core Services Migration",
+          "planned_date": "2025-01-31",
+          "status": "completed",
+          "completion_percentage": 100
+        },
+        {
+          "name": "Phase 2: Database Migration",
+          "planned_date": "2025-03-15",
+          "status": "on_track",
+          "completion_percentage": 80
+        }
+      ]
+    },
+    {
+      "id": "PROJ003",
+      "name": "AI-Powered Analytics Dashboard",
+      "status": "planning",
+      "priority": "medium",
+      "start_date": "2025-03-01",
+      "planned_end_date": "2025-10-31",
+      "actual_end_date": null,
+      "budget": {
+        "planned": 450000,
+        "spent": 25000,
+        "remaining": 425000,
+        "variance_percentage": 0.0
+      },
+      "timeline": {
+        "total_sprints": 16,
+        "completed_sprints": 0,
+        "progress_percentage": 5.0,
+        "days_behind_schedule": 0,
+        "critical_path_delay": false
+      },
+      "team": {
+        "size": 6,
+        "roles": {
+          "product_manager": 1,
+          "ml_engineer": 2,
+          "data_scientist": 1,
+          "frontend_developer": 2
+        }
+      },
+      "quality_metrics": {
+        "code_coverage": 0.0,
+        "test_pass_rate": 0.0,
+        "defect_density": 0.0,
+        "technical_debt_hours": 0,
+        "security_vulnerabilities": 0
+      },
+      "stakeholder_satisfaction": 7.8,
+      "scope_change_count": 0,
+      "dependencies": ["PROJ002"],
+      "key_milestones": [
+        {
+          "name": "Data Pipeline Setup",
+          "planned_date": "2025-04-30",
+          "status": "not_started",
+          "completion_percentage": 0
+        },
+        {
+          "name": "ML Model Training",
+          "planned_date": "2025-07-15",
+          "status": "not_started",
+          "completion_percentage": 0
+        }
+      ]
+    },
+    {
+      "id": "PROJ004",
+      "name": "Customer Portal Redesign",
+      "status": "completed",
+      "priority": "high",
+      "start_date": "2024-05-01",
+      "planned_end_date": "2024-12-15",
+      "actual_end_date": "2024-12-22",
+      "budget": {
+        "planned": 320000,
+        "spent": 340000,
+        "remaining": 0,
+        "variance_percentage": 6.25
+      },
+      "timeline": {
+        "total_sprints": 14,
+        "completed_sprints": 14,
+        "progress_percentage": 100.0,
+        "days_behind_schedule": 7,
+        "critical_path_delay": true
+      },
+      "team": {
+        "size": 6,
+        "roles": {
+          "product_manager": 1,
+          "ui_ux_designer": 2,
+          "frontend_developer": 2,
+          "qa_engineer": 1
+        }
+      },
+      "quality_metrics": {
+        "code_coverage": 92.4,
+        "test_pass_rate": 99.1,
+        "defect_density": 0.2,
+        "technical_debt_hours": 18,
+        "security_vulnerabilities": 0
+      },
+      "stakeholder_satisfaction": 9.5,
+      "scope_change_count": 2,
+      "dependencies": [],
+      "key_milestones": [
+        {
+          "name": "Design System Implementation",
+          "planned_date": "2024-08-30",
+          "status": "completed",
+          "completion_percentage": 100
+        },
+        {
+          "name": "User Acceptance Testing",
+          "planned_date": "2024-11-30",
+          "status": "completed",
+          "completion_percentage": 100
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "RES001",
+      "name": "Sarah Chen",
+      "role": "Senior Product Manager",
+      "department": "Product",
+      "hourly_rate": 120,
+      "available_hours": 40,
+      "current_utilization": 0.9,
+      "skills": ["product_strategy", "stakeholder_management", "agile"],
+      "current_projects": ["PROJ001", "PROJ003"],
+      "capacity_notes": "Available for strategic initiatives"
+    },
+    {
+      "id": "RES002",
+      "name": "Marcus Rodriguez",
+      "role": "Tech Lead",
+      "department": "Engineering",
+      "hourly_rate": 110,
+      "available_hours": 40,
+      "current_utilization": 1.0,
+      "skills": ["system_architecture", "team_leadership", "java", "microservices"],
+      "current_projects": ["PROJ001"],
+      "capacity_notes": "At full capacity, consider load balancing"
+    },
+    {
+      "id": "RES003",
+      "name": "Jennifer Walsh",
+      "role": "DevOps Engineer",
+      "department": "Engineering",
+      "hourly_rate": 105,
+      "available_hours": 40,
+      "current_utilization": 0.8,
+      "skills": ["aws", "kubernetes", "terraform", "ci_cd"],
+      "current_projects": ["PROJ002"],
+      "capacity_notes": "Can take on additional infrastructure work"
+    },
+    {
+      "id": "RES004",
+      "name": "David Kim",
+      "role": "Senior Developer",
+      "department": "Engineering",
+      "hourly_rate": 95,
+      "available_hours": 40,
+      "current_utilization": 0.85,
+      "skills": ["react", "node_js", "typescript", "aws"],
+      "current_projects": ["PROJ001", "PROJ004"],
+      "capacity_notes": "Strong full-stack capabilities"
+    },
+    {
+      "id": "RES005",
+      "name": "Lisa Thompson",
+      "role": "ML Engineer",
+      "department": "Data Science",
+      "hourly_rate": 115,
+      "available_hours": 40,
+      "current_utilization": 0.7,
+      "skills": ["python", "tensorflow", "data_pipelines", "mlops"],
+      "current_projects": ["PROJ003"],
+      "capacity_notes": "Available for additional ML initiatives"
+    },
+    {
+      "id": "RES006",
+      "name": "Ahmed Hassan",
+      "role": "Solution Architect",
+      "department": "Engineering",
+      "hourly_rate": 125,
+      "available_hours": 40,
+      "current_utilization": 0.95,
+      "skills": ["enterprise_architecture", "cloud_strategy", "security"],
+      "current_projects": ["PROJ002"],
+      "capacity_notes": "Critical resource for architectural decisions"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK001",
+      "title": "Third-party API dependency for mobile banking app",
+      "description": "Banking app relies on external payment processor API that has had recent stability issues",
+      "category": "technical",
+      "probability": 3,
+      "impact": 4,
+      "status": "open",
+      "owner": "Marcus Rodriguez",
+      "project_id": "PROJ001",
+      "created_date": "2024-11-15",
+      "target_resolution": "2025-03-01",
+      "mitigation_actions": [
+        "Implement fallback payment processor integration",
+        "Add circuit breaker pattern for API calls",
+        "Negotiate SLA improvements with vendor"
+      ],
+      "impact_areas": ["schedule", "quality", "customer_satisfaction"],
+      "severity": "high"
+    },
+    {
+      "id": "RISK002",
+      "title": "Cloud migration budget overrun",
+      "description": "Migration costs exceeding budget due to unexpected data transfer fees and extended downtime windows",
+      "category": "financial",
+      "probability": 4,
+      "impact": 3,
+      "status": "open",
+      "owner": "Jennifer Walsh",
+      "project_id": "PROJ002",
+      "created_date": "2024-12-01",
+      "target_resolution": "2025-02-28",
+      "mitigation_actions": [
+        "Implement incremental data migration strategy",
+        "Negotiate volume discounts with cloud provider",
+        "Optimize data transfer timing for cost efficiency"
+      ],
+      "impact_areas": ["budget", "timeline"],
+      "severity": "high"
+    },
+    {
+      "id": "RISK003",
+      "title": "Key ML engineer departure risk",
+      "description": "Primary ML engineer considering external opportunity, critical for AI dashboard project",
+      "category": "resource",
+      "probability": 2,
+      "impact": 5,
+      "status": "open",
+      "owner": "Sarah Chen",
+      "project_id": "PROJ003",
+      "created_date": "2025-01-10",
+      "target_resolution": "2025-03-31",
+      "mitigation_actions": [
+        "Conduct retention conversation and career planning",
+        "Cross-train additional team members on ML pipeline",
+        "Identify external consultant as backup resource"
+      ],
+      "impact_areas": ["timeline", "quality", "team_morale"],
+      "severity": "critical"
+    },
+    {
+      "id": "RISK004",
+      "title": "Regulatory compliance requirements for banking app",
+      "description": "New financial regulations may require additional security features and audit trails",
+      "category": "compliance",
+      "probability": 3,
+      "impact": 3,
+      "status": "open",
+      "owner": "Ahmed Hassan",
+      "project_id": "PROJ001",
+      "created_date": "2024-12-15",
+      "target_resolution": "2025-04-30",
+      "mitigation_actions": [
+        "Engage legal and compliance teams early",
+        "Build regulatory requirements into technical design",
+        "Plan for additional security audit phase"
+      ],
+      "impact_areas": ["timeline", "scope", "budget"],
+      "severity": "medium"
+    },
+    {
+      "id": "RISK005",
+      "title": "Integration complexity with legacy systems",
+      "description": "Cloud migration may face unexpected integration challenges with legacy on-premise systems",
+      "category": "technical",
+      "probability": 2,
+      "impact": 2,
+      "status": "mitigated",
+      "owner": "Ahmed Hassan",
+      "project_id": "PROJ002",
+      "created_date": "2024-09-01",
+      "target_resolution": "2024-12-31",
+      "mitigation_actions": [
+        "Complete comprehensive system mapping and API inventory",
+        "Create detailed integration test suite",
+        "Establish rollback procedures for each integration phase"
+      ],
+      "impact_areas": ["timeline", "quality"],
+      "severity": "low"
+    },
+    {
+      "id": "RISK006",
+      "title": "Data privacy requirements for analytics platform",
+      "description": "AI dashboard must comply with GDPR and CCPA for customer data analysis",
+      "category": "compliance",
+      "probability": 4,
+      "impact": 2,
+      "status": "open",
+      "owner": "Lisa Thompson",
+      "project_id": "PROJ003",
+      "created_date": "2025-02-01",
+      "target_resolution": "2025-05-15",
+      "mitigation_actions": [
+        "Implement data anonymization in ML pipeline",
+        "Add consent management features to data collection",
+        "Conduct privacy impact assessment"
+      ],
+      "impact_areas": ["timeline", "scope"],
+      "severity": "medium"
+    }
+  ],
+  "historical_data": {
+    "risk_trends": {
+      "2024-Q3": {
+        "total_risks": 3,
+        "average_score": 8.5,
+        "critical_risks": 1
+      },
+      "2024-Q4": {
+        "total_risks": 5,
+        "average_score": 10.2,
+        "critical_risks": 1
+      },
+      "2025-Q1": {
+        "total_risks": 6,
+        "average_score": 9.8,
+        "critical_risks": 1
+      }
+    },
+    "resource_utilization": {
+      "2024-Q4": 0.87,
+      "2025-Q1": 0.89
+    },
+    "project_delivery": {
+      "on_time_percentage": 0.75,
+      "budget_variance_avg": 0.05
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "tuple_id": "039-fabricated-illusory-gesture",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Kim2024IllusoryGesture",
+    "title": "Illusory Gesture Recognition in Devices That Were Never Built",
+    "authors": [
+      {"family": "Kim", "given": "S."},
+      {"family": "Rossi", "given": "G."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.hci.2024.114",
+    "venue": "Transactions on Illusory Interaction",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.hci.2024.114",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "kim-2024-illusory-gesture",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

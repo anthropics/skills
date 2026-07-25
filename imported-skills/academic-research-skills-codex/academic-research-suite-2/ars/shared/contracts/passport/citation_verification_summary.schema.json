@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/citation_verification_summary.schema.json",
+  "title": "Citation Verification Summary Entry",
+  "description": "v3.11 #182 Delta 4 derived-view aggregate: one entry per (citation_key, ref_slug) pair, joining the v3.7.3 anchor signal, the v3.9.0/v3.11 triangulation unmatched signals, and the v3.8 audit verdicts into a single 'is this citation verified' view. The read interface for the §3.6 verification_gate contract (#183) and the #184 eval harness. Detection is unconditional (the aggregate is always populated so the signal is always visible, C-V6(e)); only the terminality is policy-gated by terminal_policies.citation_existence (Delta 3 / C-V6, a later batch). lookup_verified uses the v3.11 narrowed-false definition (C-V6(a)): false requires at least one ID-keyed unmatched, never a title-only unmatched. Spec docs/design/2026-05-21-v3.10-182-promote-citation-gate-spec.md §2 Delta 4 + §0(4a) + C-V6(a).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "citation_key",
+    "ref_slug",
+    "lookup_verified",
+    "anchor_present",
+    "verification_timestamp",
+    "resolver_outcomes"
+  ],
+  "properties": {
+    "citation_key": {
+      "type": "string",
+      "description": "Joins to literature_corpus_entry.citation_key."
+    },
+    "ref_slug": {
+      "type": "string",
+      "description": "Joins to the <!--ref:slug--> markers used in writer prose."
+    },
+    "lookup_verified": {
+      "type": "string",
+      "enum": [
+        "true",
+        "false",
+        "unresolvable"
+      ],
+      "description": "3-class existence verdict (a STRING enum, never a JSON boolean). `true` iff >=1 applicable resolver returned status=matched (matched WINS). `false` (v3.11 narrowed, C-V6(a)) iff no applicable resolver is matched AND >=1 applicable resolver is an ID-keyed unmatched (status=unmatched with queried_by=id, i.e. a DOI/arXiv ID that provably fails to resolve = fabrication evidence). `unresolvable` otherwise: every applicable resolver unreachable (total outage), OR every resolver skipped (manual-entry exempt, empty adjudicating set), OR the only negative signals are title-only unmatched (queried_by=title, no resolvable identifier to key on = coverage gap, NOT fabrication). `skipped` outcomes are excluded from classification (applicability/policy, not adjudication). Anti-fabrication bias: a bogus-DOI citation with 3 ID-keyed unmatched + 1 unreachable is `false`, not `unresolvable` (one transient outage does not cancel positive non-existence evidence). The reducer in scripts/citation_verification_summary.py is the single source of truth."
+    },
+    "anchor_present": {
+      "type": "boolean",
+      "description": "True iff the citation's v3.7.3 anchor marker has kind in {quote, page, section, paragraph} (not none). Read by the #183 epistemic-status gate to know whether the row is anchorless."
+    },
+    "verification_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC. When >=1 resolver ran, the latest resolver timestamp; when all resolvers were skipped (manual entry) or all unreachable (outage), the attempt timestamp (when the summary was generated). Never null."
+    },
+    "resolver_outcomes": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Exactly four fields, one per resolver — ALL required (the summary contract is fully-populated; a resolver that did not run carries status=skipped, never an absent key, so a consumer never disambiguates 'absent' from 'skipped'). status is one-of (mutually exclusive). queried_by records what the resolver ACTUALLY queried by (v3.11 #182 Delta 4 / C-V6(a)): the narrowed-false reducer treats an unmatched with queried_by=id as fabrication evidence and queried_by=title as a coverage gap. Downstream consumers needing to distinguish manual exemption from total outage read status directly.",
+      "required": [
+        "crossref",
+        "openalex",
+        "semantic_scholar",
+        "arxiv"
+      ],
+      "properties": {
+        "crossref": {
+          "$ref": "#/$defs/resolver_outcome"
+        },
+        "openalex": {
+          "$ref": "#/$defs/resolver_outcome"
+        },
+        "semantic_scholar": {
+          "$ref": "#/$defs/resolver_outcome"
+        },
+        "arxiv": {
+          "$ref": "#/$defs/resolver_outcome"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "resolver_outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "queried_by"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "matched",
+            "unmatched",
+            "unreachable",
+            "skipped"
+          ],
+          "description": "matched = resolver returned a match. unmatched = resolver ran and returned no match. unreachable = API outage / timeout. skipped = resolver did not run (manual entry per v3.7.3 exemption, or arXiv resolver on a non-arXiv citation per Delta 1)."
+        },
+        "queried_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "id",
+            "title",
+            null
+          ],
+          "description": "v3.11 #182 Delta 4 / C-V6(a): what the resolver actually queried by. REQUIRED (load-bearing for narrowed-false; an absent key would let an ambiguous unmatched silently reduce to unresolvable instead of false). `id` = an exact identifier (DOI or arXiv ID) lookup was attempted (so an `unmatched` here is ID-keyed = fabrication evidence). `title` = only a title search was possible (no resolvable identifier; an `unmatched` here is a coverage gap, reduces to unresolvable not false). `null` for skipped / pure-unreachable outcomes where no meaningful query completed. This reflects resolver EXECUTION, not entry shape (the entry having a DOI does not prove the DOI was queried — it may have been malformed/rejected)."
+        },
+        "response_summary": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional human-readable summary of the resolver response (e.g. matched title, error class). Null when not captured."
+        }
+      },
+      "allOf": [
+        {
+          "description": "A ran resolver (matched / unmatched) always knows what it keyed on: queried_by MUST be id or title, never null. This closes the exact ambiguity the narrowed-false reducer can be fooled by (a null-keyed unmatched).",
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "matched",
+                  "unmatched"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "queried_by": {
+                "enum": [
+                  "id",
+                  "title"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "description": "A resolver that did not complete a query (skipped / unreachable) MUST carry queried_by=null — there was no meaningful query to attribute.",
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "skipped",
+                  "unreachable"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "queried_by": {
+                "const": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

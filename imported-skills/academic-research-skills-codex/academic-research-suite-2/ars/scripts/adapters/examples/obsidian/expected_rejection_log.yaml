@@ -1,0 +1,13 @@
+adapter_name: obsidian.py
+adapter_version: 1.1.0
+generated_at: '1970-01-01T00:00:00Z'
+rejected:
+- missing_fields:
+  - title
+  - authors
+  - year
+  raw: invalid.md
+  reason: authors_unparseable
+  source: invalid.md
+summary:
+  total_rejected: 1

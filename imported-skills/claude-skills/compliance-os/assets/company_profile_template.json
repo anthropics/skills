@@ -1,0 +1,22 @@
+{
+  "company": "<company name>",
+  "industry": "<saas | medical_device | financial | healthcare | other>",
+  "products_include_ai": false,
+  "ai_high_risk_per_eu": false,
+  "deploys_ai_in_eu": false,
+  "products_are_medical_devices": false,
+  "sells_to_eu_customers": false,
+  "sells_to_us_customers": false,
+  "sells_to_enterprise_b2b": false,
+  "processes_personal_data": false,
+  "processes_eu_personal_data": false,
+  "headcount": 0,
+  "stage": "<seed | series_a | series_b | series_c | growth>",
+  "processes_phi": false,
+  "us_healthcare_covered_entity": false,
+  "us_healthcare_business_associate": false,
+  "nis2_essential_entity": false,
+  "nis2_important_entity": false,
+  "adopts_nist_csf": false,
+  "us_government_contractor": false
+}

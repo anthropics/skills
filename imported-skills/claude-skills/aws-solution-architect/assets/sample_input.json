@@ -1,0 +1,18 @@
+{
+  "application_type": "saas_platform",
+  "expected_users": 50000,
+  "requests_per_second": 100,
+  "budget_monthly_usd": 1500,
+  "team_size": 5,
+  "aws_experience": "intermediate",
+  "compliance": ["GDPR"],
+  "data_size_gb": 500,
+  "region": "us-east-1",
+  "requirements": {
+    "authentication": true,
+    "real_time_features": false,
+    "multi_region": false,
+    "high_availability": true,
+    "auto_scaling": true
+  }
+}

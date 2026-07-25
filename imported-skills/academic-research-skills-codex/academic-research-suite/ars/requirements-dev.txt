@@ -1,0 +1,5 @@
+pyyaml
+ruamel.yaml>=0.17
+jsonschema[format]>=4.17
+pypdf
+defusedxml

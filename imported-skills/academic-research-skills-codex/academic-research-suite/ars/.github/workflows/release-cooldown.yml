@@ -1,0 +1,113 @@
+name: Release Cooldown
+
+# Block consecutive minor/patch tags within 24h of a hotfix tag.
+#
+# Why: v3.9.4 -> v3.9.4.1 (6hr) was a structural symptom — ship velocity
+# overran review chain. This gate enforces a 24h cooldown after any tag
+# whose name or annotated message indicates a hotfix, so the next release
+# requires either elapsed time or an explicit override.
+#
+# Override: include the literal token [skip-cooldown] in the commit message
+# the new tag points to, with a justification on the next line.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: release-cooldown-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  cooldown-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Evaluate cooldown window
+        env:
+          NEW_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          echo "New tag: $NEW_TAG"
+
+          # Find previous release tag (v*, by creator date, exclude current).
+          # Filtering to v* avoids non-release tags (e.g., test, internal markers)
+          # being picked as PREV_TAG and bypassing the cooldown classification.
+          PREV_TAG=$(git tag -l 'v*' --sort=-creatordate | grep -v "^${NEW_TAG}$" | head -1 || true)
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous release tag — first release, skip cooldown."
+            exit 0
+          fi
+          echo "Previous tag: $PREV_TAG"
+
+          # Was the previous tag a hotfix?
+          # Three signals (any one is sufficient):
+          #   a) Tag name has 4 dot-segments (e.g., v3.9.4.1)
+          #   b) Pointed commit subject matches hotfix pattern
+          #   c) Annotated tag subject (if any) matches hotfix pattern
+          # The regex accepts both 'hotfix' and 'hot-fix' spellings.
+          PREV_COMMIT_SUBJECT=$(git log -1 --format=%s "$PREV_TAG")
+          PREV_TAG_SUBJECT=$(git for-each-ref "refs/tags/${PREV_TAG}" --format='%(subject)')
+          HOTFIX_REGEX='(hot-?fix|post-ship|^fix\(v)'
+          IS_HOTFIX="false"
+          if [[ "$PREV_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            IS_HOTFIX="true"
+          fi
+          if echo "$PREV_COMMIT_SUBJECT" | grep -qiE "$HOTFIX_REGEX"; then
+            IS_HOTFIX="true"
+          fi
+          if [ -n "$PREV_TAG_SUBJECT" ] && echo "$PREV_TAG_SUBJECT" | grep -qiE "$HOTFIX_REGEX"; then
+            IS_HOTFIX="true"
+          fi
+          echo "Previous tag classified as hotfix: $IS_HOTFIX"
+
+          if [ "$IS_HOTFIX" != "true" ]; then
+            echo "Previous tag was not a hotfix — no cooldown required."
+            exit 0
+          fi
+
+          # Compute elapsed hours
+          PREV_TS=$(git log -1 --format=%ct "$PREV_TAG")
+          NEW_TS=$(git log -1 --format=%ct "$NEW_TAG")
+          ELAPSED_S=$((NEW_TS - PREV_TS))
+          ELAPSED_H=$((ELAPSED_S / 3600))
+          echo "Elapsed since previous hotfix tag: ${ELAPSED_H}h"
+
+          # Override check — accept [skip-cooldown] token in either the pointed
+          # commit message OR the annotated tag message. Symmetry with hotfix
+          # detection (which reads both sources): for squash-merged hotfix PRs
+          # the commit message is fixed at merge time, so the only place the
+          # tagger can add the override is the tag annotation. Reading both
+          # avoids forcing a follow-up commit just to carry the override token.
+          NEW_COMMIT_BODY=$(git log -1 --format=%B "$NEW_TAG")
+          NEW_TAG_BODY=$(git for-each-ref "refs/tags/${NEW_TAG}" --format='%(contents)')
+          OVERRIDE_SOURCE=""
+          OVERRIDE_BODY=""
+          if echo "$NEW_COMMIT_BODY" | grep -qF '[skip-cooldown]'; then
+            OVERRIDE_SOURCE="commit message"
+            OVERRIDE_BODY="$NEW_COMMIT_BODY"
+          elif [ -n "$NEW_TAG_BODY" ] && echo "$NEW_TAG_BODY" | grep -qF '[skip-cooldown]'; then
+            OVERRIDE_SOURCE="annotated tag message"
+            OVERRIDE_BODY="$NEW_TAG_BODY"
+          fi
+          if [ -n "$OVERRIDE_SOURCE" ]; then
+            echo "Override token [skip-cooldown] present in ${OVERRIDE_SOURCE} — cooldown bypassed."
+            echo "Justification (next non-empty line):"
+            echo "$OVERRIDE_BODY" | awk '/\[skip-cooldown\]/{found=1; next} found && NF{print; exit}'
+            exit 0
+          fi
+
+          if [ "$ELAPSED_H" -lt 24 ]; then
+            echo "::error::Cooldown violation — previous hotfix tag $PREV_TAG was ${ELAPSED_H}h ago (<24h)."
+            echo "::error::Either wait until $((24 - ELAPSED_H))h have passed, or add [skip-cooldown] + justification to the tagged commit."
+            exit 1
+          fi
+
+          echo "Cooldown satisfied (${ELAPSED_H}h >= 24h)."

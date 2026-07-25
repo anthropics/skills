@@ -1,0 +1,55 @@
+{
+  "recommended_architecture": {
+    "pattern_name": "Modern Three-Tier Application",
+    "description": "Classic architecture with containers and managed services",
+    "estimated_monthly_cost": 1450,
+    "scaling_characteristics": {
+      "users_supported": "10k - 500k",
+      "requests_per_second": "1,000 - 50,000"
+    }
+  },
+  "services": {
+    "load_balancer": "Application Load Balancer (ALB)",
+    "compute": "ECS Fargate",
+    "database": "RDS Aurora (MySQL/PostgreSQL)",
+    "cache": "ElastiCache Redis",
+    "cdn": "CloudFront",
+    "storage": "S3",
+    "authentication": "Cognito"
+  },
+  "cost_breakdown": {
+    "ALB": "20-30 USD",
+    "ECS_Fargate": "50-200 USD",
+    "RDS_Aurora": "100-300 USD",
+    "ElastiCache": "30-80 USD",
+    "CloudFront": "10-50 USD",
+    "S3": "10-30 USD"
+  },
+  "implementation_phases": [
+    {
+      "phase": "Foundation",
+      "duration": "1 week",
+      "tasks": ["VPC setup", "IAM roles", "CloudTrail", "AWS Config"]
+    },
+    {
+      "phase": "Core Services",
+      "duration": "2 weeks",
+      "tasks": ["Deploy ALB", "ECS Fargate", "RDS Aurora", "ElastiCache"]
+    },
+    {
+      "phase": "Security & Monitoring",
+      "duration": "1 week",
+      "tasks": ["WAF rules", "CloudWatch dashboards", "Alarms", "X-Ray"]
+    },
+    {
+      "phase": "CI/CD",
+      "duration": "1 week",
+      "tasks": ["CodePipeline", "Blue/Green deployment", "Rollback procedures"]
+    }
+  ],
+  "iac_templates_generated": [
+    "CloudFormation template (YAML)",
+    "AWS CDK stack (TypeScript)",
+    "Terraform configuration (HCL)"
+  ]
+}

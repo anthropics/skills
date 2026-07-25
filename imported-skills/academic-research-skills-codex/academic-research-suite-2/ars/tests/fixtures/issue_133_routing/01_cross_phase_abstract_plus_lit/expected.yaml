@@ -1,0 +1,8 @@
+fixture_id: 01_cross_phase_abstract_plus_lit
+expected_routing_class: clarify
+expected_destination: clarification_only
+escape_hatch_applied: false
+notes: |
+  Abstract (Phase 4 artifact) + literature (Phase 2 artifact) = cross-phase materials
+  spanning ≥ 2 phases without explicit skill invocation. Per Routing Discipline Step 2,
+  must clarify with a-d options. This is the exact #133 root-cause scenario.

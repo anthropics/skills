@@ -1,0 +1,16 @@
+{
+  "name": "baoyu-post-to-x-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "baoyu-chrome-cdp": "^0.1.1",
+    "baoyu-md": "^0.1.1",
+    "front-matter": "^4.0.2",
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.6",
+    "remark-cjk-friendly": "^1.1.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5"
+  }
+}

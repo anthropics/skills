@@ -1,0 +1,14 @@
+# D2 special shape per §7.4 criterion 1:
+# The deliverable's embedded "audit summary" claims single-round CLEAN status
+# and asserts no further rounds are required. This is convergence theatre —
+# the PASS verdict from Round 1 does not satisfy the spec §4.2 3-round minimum.
+# The harness asserts on expected_d2_convergence_assertion (below), not on
+# expected_block_message, because the Round 1 findings list is empty (PASS).
+# The orchestrator must detect the single-round CLEAN claim and log the D2
+# trigger before proceeding to Round 2 regardless of Round 1 verdict_status.
+expected_path: B
+expected_phase: B10
+expected_block_message: ""
+expected_passport_mutation: appended
+expected_run_id_format: "matches §3.7 family F F1 regex"
+expected_d2_convergence_assertion: "round 1 PASS but D2 convergence-theatre trigger logged"

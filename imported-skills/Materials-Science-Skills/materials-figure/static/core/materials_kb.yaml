@@ -1,0 +1,482 @@
+# Materials knowledge graph for civil and construction materials.
+# Schema: see references/materials-validation.md
+families:
+  ceramics:
+    xrd_peaks:
+      - phase: "Alumina α-Al2O3"
+        peaks_2theta: [25.6, 35.1, 37.8, 43.4, 52.6, 57.5]
+        card: "PDF#46-1212"
+        tolerance_deg: 0.5
+      - phase: "Zirconia t-ZrO2"
+        peaks_2theta: [30.2, 34.8, 50.2, 59.6, 62.2]
+        card: "PDF#50-1089"
+        tolerance_deg: 0.5
+      - phase: "Zirconia m-ZrO2"
+        peaks_2theta: [24.0, 28.2, 31.5, 34.2]
+        card: "PDF#37-1484"
+        tolerance_deg: 0.5
+      - phase: "Silica SiO2 (alpha-quartz)"
+        peaks_2theta: [20.9, 26.6, 36.5, 39.5, 50.1]
+        card: "PDF#46-1045"
+        tolerance_deg: 0.5
+      - phase: "SiC (beta, 3C)"
+        peaks_2theta: [35.6, 41.4, 60.0, 72.0]
+        card: "PDF#29-1129"
+        tolerance_deg: 0.5
+      - phase: "Si3N4 (beta)"
+        peaks_2theta: [23.4, 27.0, 34.6, 52.2]
+        card: "PDF#33-1160"
+        tolerance_deg: 0.5
+      - phase: "Mullite 3Al2O3·2SiO2"
+        peaks_2theta: [16.4, 26.0, 33.2, 35.3, 40.9]
+        card: "PDF#15-0776"
+        tolerance_deg: 0.5
+      - phase: "WC (tungsten carbide)"
+        peaks_2theta: [31.5, 35.6, 48.3, 64.0, 65.8]
+        card: "PDF#51-0939"
+        tolerance_deg: 0.5
+      - phase: "TiC"
+        peaks_2theta: [35.9, 41.7, 60.4, 72.4, 76.4]
+        card: "PDF#32-1383"
+        tolerance_deg: 0.5
+      - phase: "ZnO (wurtzite)"
+        peaks_2theta: [31.8, 34.4, 36.3, 47.5, 56.6]
+        card: "PDF#36-1451"
+        tolerance_deg: 0.5
+    ftir_wavenumbers:
+      - bond: "Si-O stretch"
+        wavenumber: 1080
+        tolerance: 60
+      - bond: "Al-O stretch"
+        wavenumber: 850
+        tolerance: 80
+      - bond: "Zr-O stretch"
+        wavenumber: 500
+        tolerance: 60
+      - bond: "Ti-O stretch"
+        wavenumber: 700
+        tolerance: 60
+      - bond: "O-H (silanol)"
+        wavenumber: 3500
+        tolerance: 80
+      - bond: "C-O (residual carbonate)"
+        wavenumber: 1450
+        tolerance: 30
+    performance_ranges:
+      - { name: "Alumina flexural strength (MPa)", typical_min: 200, typical_max: 600, warning_threshold: 0.20 }
+      - { name: "Zirconia flexural strength (MPa)", typical_min: 600, typical_max: 1500, warning_threshold: 0.20 }
+      - { name: "SiC flexural strength (MPa)", typical_min: 300, typical_max: 600, warning_threshold: 0.20 }
+      - { name: "Vickers hardness (Al2O3, GPa)", typical_min: 15, typical_max: 25, warning_threshold: 0.20 }
+      - { name: "Fracture toughness KIc (ZrO2, MPa·m^0.5)", typical_min: 4, typical_max: 12, warning_threshold: 0.20 }
+      - { name: "Sintered density (%TD)", typical_min: 90, typical_max: 99.9, warning_threshold: 0.05 }
+    thermal_events:
+      - { name: "Alumina sintering peak", temperature_c: 1450, tolerance: 100 }
+      - { name: "Zirconia sintering peak", temperature_c: 1350, tolerance: 100 }
+      - { name: "Mullite formation", temperature_c: 1100, tolerance: 100 }
+      - { name: "WC oxidation onset", temperature_c: 600, tolerance: 50 }
+      - { name: "SiC oxidation onset", temperature_c: 1000, tolerance: 100 }
+      - { name: "t→m ZrO2 transition (cooling)", temperature_c: 950, tolerance: 50 }
+      - { name: "Quartz alpha→beta", temperature_c: 573, tolerance: 10 }
+      - { name: "Calcite decomposition", temperature_c: 750, tolerance: 50 }
+  civil:
+    xrd_peaks:
+      - phase: "Quartz (SiO2)"
+        peaks_2theta: [20.9, 26.6, 36.5, 39.5, 50.1, 59.9]
+        card: "PDF#46-1045"
+        tolerance_deg: 0.5
+      - phase: "Calcite (CaCO3)"
+        peaks_2theta: [23.0, 29.4, 36.0, 39.4, 43.2, 47.5]
+        card: "PDF#47-1743"
+        tolerance_deg: 0.5
+      - phase: "Portlandite Ca(OH)2"
+        peaks_2theta: [18.0, 28.6, 34.1, 47.1, 50.8]
+        card: "PDF#44-1481"
+        tolerance_deg: 0.5
+      - phase: "Ettringite"
+        peaks_2theta: [9.1, 15.8, 19.0, 23.0, 27.5]
+        card: "PDF#41-1451"
+        tolerance_deg: 0.5
+      - phase: "C3S (alite)"
+        peaks_2theta: [29.4, 32.2, 34.4, 41.3, 51.8]
+        card: "PDF#49-0442"
+        tolerance_deg: 0.5
+      - phase: "C2S (belite)"
+        peaks_2theta: [28.9, 31.0, 32.1, 41.2, 51.7]
+        card: "PDF#33-0302"
+        tolerance_deg: 0.5
+      - phase: "CSH gel (principal peak)"
+        peaks_2theta: [29.4, 32.0, 49.7]
+        card: "PDF#33-0306"
+        tolerance_deg: 0.6
+      - phase: "Asphalt binder (broad)"
+        peaks_2theta: [19.5, 25.5]
+        card: "broad amorphous"
+        tolerance_deg: 1.5
+    ftir_wavenumbers:
+      - bond: "O-H stretch (hydration water)"
+        wavenumber: 3400
+        tolerance: 80
+      - bond: "C-O stretch (calcite)"
+        wavenumber: 1420
+        tolerance: 30
+      - bond: "Si-O-Si stretch"
+        wavenumber: 1000
+        tolerance: 50
+      - bond: "C=O stretch (carbonyl, aged asphalt)"
+        wavenumber: 1700
+        tolerance: 25
+      - bond: "S=O stretch (sulfoxide, aged asphalt)"
+        wavenumber: 1030
+        tolerance: 25
+      - bond: "CH2/CH3 stretch (bitumen)"
+        wavenumber: 2920
+        tolerance: 20
+    performance_ranges:
+      - { name: "Concrete 28d compressive strength (MPa)", typical_min: 20, typical_max: 100, warning_threshold: 0.20 }
+      - { name: "Concrete elastic modulus (GPa)", typical_min: 25, typical_max: 45, warning_threshold: 0.20 }
+      - { name: "Asphalt penetration (dmm)", typical_min: 20, typical_max: 100, warning_threshold: 0.20 }
+      - { name: "Asphalt softening point (°C)", typical_min: 40, typical_max: 70, warning_threshold: 0.20 }
+      - { name: "Asphalt DSR G*/sin δ @ 64°C (kPa)", typical_min: 1.0, typical_max: 10.0, warning_threshold: 0.30 }
+      - { name: "Steel yield strength (MPa)", typical_min: 235, typical_max: 2000, warning_threshold: 0.20 }
+      - { name: "Concrete slump (mm)", typical_min: 50, typical_max: 220, warning_threshold: 0.20 }
+      - { name: "Concrete water-cement ratio", typical_min: 0.30, typical_max: 0.65, warning_threshold: 0.20 }
+      - { name: "Mortar 28d flexural strength (MPa)", typical_min: 3, typical_max: 12, warning_threshold: 0.25 }
+      - { name: "Gravel LA abrasion (%)", typical_min: 10, typical_max: 40, warning_threshold: 0.25 }
+    thermal_events:
+      - { name: "Concrete DTG peak (C-S-H dehydration)", temperature_c: 120, tolerance: 20 }
+      - { name: "Asphalt TGA onset oxidation", temperature_c: 180, tolerance: 30 }
+      - { name: "Calcite decarbonation", temperature_c: 750, tolerance: 50 }
+      - { name: "Ettringite dehydration", temperature_c: 110, tolerance: 20 }
+      - { name: "Portlandite decomposition", temperature_c: 450, tolerance: 30 }
+      - { name: "C-S-H main dehydration", temperature_c: 700, tolerance: 40 }
+  polymers:
+    xrd_peaks:
+      - phase: "PE (semi-crystalline)"
+        peaks_2theta: [21.5, 23.9]
+        card: "PDF#53-1859"
+        tolerance_deg: 0.7
+      - phase: "PP (alpha)"
+        peaks_2theta: [14.0, 16.8, 18.5, 21.2, 25.4]
+        card: "PDF#50-1238"
+        tolerance_deg: 0.7
+      - phase: "PET (semi-crystalline)"
+        peaks_2theta: [17.5, 22.7, 25.8]
+        card: "PDF#50-2275"
+        tolerance_deg: 0.7
+      - phase: "PVC"
+        peaks_2theta: [18.7, 24.0]
+        card: "amorphous broad"
+        tolerance_deg: 1.0
+      - phase: "PMMA"
+        peaks_2theta: [13.5, 30.0]
+        card: "amorphous broad"
+        tolerance_deg: 1.5
+      - phase: "Nylon-6 alpha"
+        peaks_2theta: [20.0, 23.7]
+        card: "PDF#50-0982"
+        tolerance_deg: 0.7
+    ftir_wavenumbers:
+      - bond: "C-H stretch (alkyl)"
+        wavenumber: 2920
+        tolerance: 25
+      - bond: "C=O stretch (ester, PET/PBT)"
+        wavenumber: 1720
+        tolerance: 25
+      - bond: "C-O-C oxirane (epoxy)"
+        wavenumber: 915
+        tolerance: 20
+      - bond: "N-H stretch (polyamide)"
+        wavenumber: 3300
+        tolerance: 50
+      - bond: "C-Cl stretch (PVC)"
+        wavenumber: 700
+        tolerance: 30
+      - bond: "Si-O-Si (silicone)"
+        wavenumber: 1100
+        tolerance: 50
+      - bond: "C=C aromatic (PS, epoxy)"
+        wavenumber: 1600
+        tolerance: 20
+      - bond: "O-H stretch (hydroxyl)"
+        wavenumber: 3450
+        tolerance: 60
+    performance_ranges:
+      - { name: "PE tensile strength (MPa)", typical_min: 10, typical_max: 35, warning_threshold: 0.20 }
+      - { name: "PP tensile strength (MPa)", typical_min: 25, typical_max: 40, warning_threshold: 0.20 }
+      - { name: "PVC tensile strength (MPa)", typical_min: 40, typical_max: 70, warning_threshold: 0.20 }
+      - { name: "PET tensile modulus (GPa)", typical_min: 2.5, typical_max: 4.0, warning_threshold: 0.20 }
+      - { name: "Epoxy Tg (°C)", typical_min: 60, typical_max: 200, warning_threshold: 0.20 }
+      - { name: "Elongation at break (%)", typical_min: 5, typical_max: 600, warning_threshold: 0.25 }
+      - { name: "MFI (g/10min, PE)", typical_min: 0.1, typical_max: 50, warning_threshold: 0.30 }
+      - { name: "Density PE (g/cm3)", typical_min: 0.91, typical_max: 0.97, warning_threshold: 0.05 }
+    thermal_events:
+      - { name: "PE TGA onset decomposition", temperature_c: 380, tolerance: 30 }
+      - { name: "PP TGA onset", temperature_c: 350, tolerance: 30 }
+      - { name: "PMMA TGA onset", temperature_c: 280, tolerance: 30 }
+      - { name: "PS TGA onset", temperature_c: 320, tolerance: 30 }
+      - { name: "PVC dehydrochlorination", temperature_c: 250, tolerance: 30 }
+      - { name: "PET glass transition", temperature_c: 75, tolerance: 10 }
+      - { name: "Epoxy Tg (DSC inflection)", temperature_c: 120, tolerance: 30 }
+      - { name: "PE melting peak (DSC)", temperature_c: 130, tolerance: 10 }
+  metals:
+    xrd_peaks:
+      - phase: "Ferrite α-Fe"
+        peaks_2theta: [44.7, 65.0, 82.3]
+        card: "PDF#06-0696"
+        tolerance_deg: 0.5
+      - phase: "Austenite γ-Fe"
+        peaks_2theta: [43.6, 50.8, 74.7]
+        card: "PDF#52-0513"
+        tolerance_deg: 0.5
+      - phase: "Cementite Fe3C"
+        peaks_2theta: [37.7, 43.0, 44.6, 45.9, 49.1]
+        card: "PDF#76-1877"
+        tolerance_deg: 0.5
+      - phase: "Martensite (BCT, principal)"
+        peaks_2theta: [44.6, 64.8]
+        card: "PDF#44-1290"
+        tolerance_deg: 0.7
+      - phase: "Al (FCC)"
+        peaks_2theta: [38.5, 44.7, 65.1, 78.2]
+        card: "PDF#04-0787"
+        tolerance_deg: 0.5
+      - phase: "Cu (FCC)"
+        peaks_2theta: [43.3, 50.4, 74.1]
+        card: "PDF#04-0836"
+        tolerance_deg: 0.5
+      - phase: "Ti α-phase (HCP)"
+        peaks_2theta: [35.1, 38.4, 40.2, 53.0, 62.9]
+        card: "PDF#44-1294"
+        tolerance_deg: 0.5
+      - phase: "Mg (HCP)"
+        peaks_2theta: [32.2, 34.4, 36.6, 47.8, 57.4]
+        card: "PDF#35-0821"
+        tolerance_deg: 0.5
+    ftir_wavenumbers:
+      - bond: "Fe-O stretch (iron oxide)"
+        wavenumber: 540
+        tolerance: 50
+      - bond: "Al-O stretch"
+        wavenumber: 950
+        tolerance: 80
+      - bond: "Ti-O stretch"
+        wavenumber: 700
+        tolerance: 60
+      - bond: "Cu-O stretch"
+        wavenumber: 620
+        tolerance: 40
+    performance_ranges:
+      - { name: "Steel yield strength (MPa)", typical_min: 235, typical_max: 2000, warning_threshold: 0.20 }
+      - { name: "Steel UTS (MPa)", typical_min: 360, typical_max: 2500, warning_threshold: 0.20 }
+      - { name: "Steel elongation (%)", typical_min: 5, typical_max: 50, warning_threshold: 0.25 }
+      - { name: "Al alloy yield (MPa)", typical_min: 70, typical_max: 600, warning_threshold: 0.20 }
+      - { name: "Ti alloy yield (MPa)", typical_min: 380, typical_max: 1100, warning_threshold: 0.20 }
+      - { name: "Mg alloy yield (MPa)", typical_min: 130, typical_max: 350, warning_threshold: 0.20 }
+      - { name: "Hardness HV (steel)", typical_min: 100, typical_max: 800, warning_threshold: 0.20 }
+      - { name: "Hardness HV (Al alloy)", typical_min: 30, typical_max: 200, warning_threshold: 0.20 }
+      - { name: "Fatigue endurance limit (steel, MPa)", typical_min: 200, typical_max: 1200, warning_threshold: 0.20 }
+      - { name: "Density steel (g/cm3)", typical_min: 7.7, typical_max: 8.1, warning_threshold: 0.05 }
+    thermal_events:
+      - { name: "Steel austenitization (Ac1)", temperature_c: 727, tolerance: 20 }
+      - { name: "Al alloy solution treatment", temperature_c: 530, tolerance: 30 }
+      - { name: "Ti alloy beta-transus", temperature_c: 882, tolerance: 30 }
+      - { name: "Mg alloy solidus", temperature_c: 470, tolerance: 30 }
+      - { name: "Cu recrystallization", temperature_c: 400, tolerance: 50 }
+      - { name: "Fe oxidation onset", temperature_c: 200, tolerance: 50 }
+      - { name: "Austenite-to-martensite start (Ms)", temperature_c: 300, tolerance: 100 }
+      - { name: "Austenite-to-martensite finish (Mf)", temperature_c: 150, tolerance: 100 }
+  functional:
+    xrd_peaks:
+      - phase: "BaTiO3 (perovskite)"
+        peaks_2theta: [22.2, 31.6, 39.0, 44.9, 50.7, 56.2]
+        card: "PDF#05-0626"
+        tolerance_deg: 0.5
+      - phase: "PZT (tetragonal)"
+        peaks_2theta: [22.0, 31.2, 38.4, 44.6, 50.2]
+        card: "PDF#50-0346"
+        tolerance_deg: 0.5
+      - phase: "Si (cubic, semiconductor)"
+        peaks_2theta: [28.4, 47.3, 56.1, 69.1, 76.4]
+        card: "PDF#27-1402"
+        tolerance_deg: 0.5
+      - phase: "GaAs (zinc blende)"
+        peaks_2theta: [27.3, 45.3, 53.7, 65.7]
+        card: "PDF#14-0451"
+        tolerance_deg: 0.5
+      - phase: "InP (zinc blende)"
+        peaks_2theta: [26.3, 43.6, 51.6, 64.6]
+        card: "PDF#32-0452"
+        tolerance_deg: 0.5
+      - phase: "TiO2 anatase"
+        peaks_2theta: [25.3, 37.8, 48.0, 53.9, 55.1]
+        card: "PDF#21-1272"
+        tolerance_deg: 0.5
+      - phase: "TiO2 rutile"
+        peaks_2theta: [27.4, 36.1, 41.2, 44.0, 54.3]
+        card: "PDF#21-1276"
+        tolerance_deg: 0.5
+      - phase: "LiNbO3 (principal)"
+        peaks_2theta: [23.7, 32.8, 40.9, 49.4, 51.8]
+        card: "PDF#20-0631"
+        tolerance_deg: 0.5
+    ftir_wavenumbers:
+      - bond: "Ti-O stretch (BaTiO3)"
+        wavenumber: 540
+        tolerance: 60
+      - bond: "Si-O stretch (silica glass)"
+        wavenumber: 1100
+        tolerance: 50
+      - bond: "P-O stretch (phosphate)"
+        wavenumber: 1050
+        tolerance: 50
+      - bond: "B-O stretch (borate)"
+        wavenumber: 1350
+        tolerance: 60
+      - bond: "O-H (hydroxyl on surface)"
+        wavenumber: 3400
+        tolerance: 80
+      - bond: "C-H stretch (residual organic)"
+        wavenumber: 2900
+        tolerance: 30
+    performance_ranges:
+      - { name: "BaTiO3 dielectric constant", typical_min: 1000, typical_max: 10000, warning_threshold: 0.30 }
+      - { name: "PZT d33 (pC/N)", typical_min: 200, typical_max: 700, warning_threshold: 0.20 }
+      - { name: "Si band gap (eV)", typical_min: 1.10, typical_max: 1.20, warning_threshold: 0.05 }
+      - { name: "GaAs band gap (eV)", typical_min: 1.40, typical_max: 1.50, warning_threshold: 0.05 }
+      - { name: "TiO2 anatase band gap (eV)", typical_min: 3.0, typical_max: 3.3, warning_threshold: 0.05 }
+      - { name: "Si carrier mobility (cm2/Vs)", typical_min: 100, typical_max: 1500, warning_threshold: 0.25 }
+      - { name: "Resistivity semiconductor (Ω·cm)", typical_min: 0.001, typical_max: 1000, warning_threshold: 0.30 }
+      - { name: "Curie temperature BaTiO3 (°C)", typical_min: 110, typical_max: 130, warning_threshold: 0.10 }
+    thermal_events:
+      - { name: "BaTiO3 tetragonal→cubic (Curie)", temperature_c: 120, tolerance: 10 }
+      - { name: "PZT Curie", temperature_c: 250, tolerance: 100 }
+      - { name: "Anatase→rutile transition", temperature_c: 600, tolerance: 80 }
+      - { name: "Si oxidation kinetics active", temperature_c: 900, tolerance: 100 }
+      - { name: "GaAs decomposition", temperature_c: 600, tolerance: 50 }
+      - { name: "Phosphosilicate glass flow", temperature_c: 850, tolerance: 80 }
+      - { name: "Si3N4 deposition temperature", temperature_c: 800, tolerance: 100 }
+      - { name: "Borosilicate glass Tg", temperature_c: 550, tolerance: 50 }
+  nano:
+    xrd_peaks:
+      - phase: "Au (FCC nanoparticles, principal)"
+        peaks_2theta: [38.2, 44.4, 64.6, 77.5, 81.7]
+        card: "PDF#04-0784"
+        tolerance_deg: 0.5
+      - phase: "Ag (FCC)"
+        peaks_2theta: [38.1, 44.3, 64.4, 77.4]
+        card: "PDF#04-0783"
+        tolerance_deg: 0.5
+      - phase: "Fe3O4 (magnetite)"
+        peaks_2theta: [30.1, 35.5, 43.1, 53.4, 56.9, 62.6]
+        card: "PDF#19-0629"
+        tolerance_deg: 0.5
+      - phase: "ZnO (wurtzite, nano)"
+        peaks_2theta: [31.8, 34.4, 36.3, 47.5, 56.6]
+        card: "PDF#36-1451"
+        tolerance_deg: 0.5
+      - phase: "Graphene 2H (002)"
+        peaks_2theta: [26.5]
+        card: "PDF#75-1621"
+        tolerance_deg: 0.5
+      - phase: "MoS2 (2H, principal)"
+        peaks_2theta: [14.4, 32.7, 39.5, 49.8, 58.3]
+        card: "PDF#37-1492"
+        tolerance_deg: 0.5
+    ftir_wavenumbers:
+      - bond: "O-H (surface)"
+        wavenumber: 3400
+        tolerance: 80
+      - bond: "C=O (ligand)"
+        wavenumber: 1700
+        tolerance: 25
+      - bond: "C-H (ligand)"
+        wavenumber: 2920
+        tolerance: 25
+      - bond: "Si-O-Si (silica shell)"
+        wavenumber: 1100
+        tolerance: 50
+      - bond: "Fe-O (magnetite)"
+        wavenumber: 580
+        tolerance: 50
+      - bond: "C=C (graphene/GO)"
+        wavenumber: 1620
+        tolerance: 30
+    performance_ranges:
+      - { name: "Au nanoparticle size (DLS, nm)", typical_min: 2, typical_max: 200, warning_threshold: 0.20 }
+      - { name: "Ag nanoparticle size (TEM, nm)", typical_min: 5, typical_max: 100, warning_threshold: 0.20 }
+      - { name: "Specific surface area BET (m2/g)", typical_min: 20, typical_max: 1500, warning_threshold: 0.20 }
+      - { name: "Zeta potential magnitude (mV)", typical_min: 10, typical_max: 80, warning_threshold: 0.25 }
+      - { name: "Carbon dot size (TEM, nm)", typical_min: 1, typical_max: 10, warning_threshold: 0.25 }
+      - { name: "GO sheet thickness (AFM, nm)", typical_min: 0.6, typical_max: 2.0, warning_threshold: 0.20 }
+      - { name: "MXene flake lateral size (nm)", typical_min: 100, typical_max: 5000, warning_threshold: 0.30 }
+      - { name: "Magnetic saturation Fe3O4 (emu/g)", typical_min: 30, typical_max: 92, warning_threshold: 0.20 }
+    thermal_events:
+      - { name: "Au nanoparticle sintering onset", temperature_c: 200, tolerance: 50 }
+      - { name: "GO reduction (thermal)", temperature_c: 250, tolerance: 50 }
+      - { name: "Ligand desorption (thiol/Au)", temperature_c: 180, tolerance: 30 }
+      - { name: "MoS2 oxidation onset", temperature_c: 350, tolerance: 50 }
+      - { name: "Carbon dot carbonization", temperature_c: 400, tolerance: 80 }
+      - { name: "Silica shell densification", temperature_c: 600, tolerance: 100 }
+      - { name: "Quantum dot surface oxidation", temperature_c: 200, tolerance: 50 }
+      - { name: "MXene oxidation (ambient)", temperature_c: 25, tolerance: 30 }
+      - { name: "Polymer ligand TGA onset", temperature_c: 250, tolerance: 50 }
+      - { name: "Quantum dot annealing", temperature_c: 300, tolerance: 50 }
+  thermal-insulation:
+    xrd_peaks:
+      - phase: "SiO2 (amorphous, broad)"
+        peaks_2theta: [22.0]
+        card: "amorphous broad"
+        tolerance_deg: 2.0
+      - phase: "alpha-cristobalite"
+        peaks_2theta: [22.0, 28.4, 31.5, 36.1]
+        card: "PDF#39-1425"
+        tolerance_deg: 0.5
+      - phase: "Calcite (in foamed concrete)"
+        peaks_2theta: [29.4, 36.0, 39.4, 43.2]
+        card: "PDF#47-1743"
+        tolerance_deg: 0.5
+      - phase: "Gypsum (in plaster insulation)"
+        peaks_2theta: [11.6, 20.7, 23.4, 29.1]
+        card: "PDF#33-0311"
+        tolerance_deg: 0.5
+    ftir_wavenumbers:
+      - bond: "Si-O-Si stretch (silica aerogel)"
+        wavenumber: 1100
+        tolerance: 60
+      - bond: "O-H (silanol, aerogel)"
+        wavenumber: 3400
+        tolerance: 80
+      - bond: "Si-CH3 (hydrophobic aerogel)"
+        wavenumber: 1250
+        tolerance: 30
+      - bond: "C-H (polymer foam)"
+        wavenumber: 2920
+        tolerance: 25
+      - bond: "C-O-C (polyurethane foam)"
+        wavenumber: 1100
+        tolerance: 40
+      - bond: "N-H (polyurea/PU)"
+        wavenumber: 3300
+        tolerance: 50
+    performance_ranges:
+      - { name: "Thermal conductivity aerogel (W/mK)", typical_min: 0.012, typical_max: 0.030, warning_threshold: 0.20 }
+      - { name: "Thermal conductivity PU foam (W/mK)", typical_min: 0.020, typical_max: 0.040, warning_threshold: 0.20 }
+      - { name: "Density aerogel (kg/m3)", typical_min: 30, typical_max: 200, warning_threshold: 0.20 }
+      - { name: "Density EPS/XPS foam (kg/m3)", typical_min: 15, typical_max: 50, warning_threshold: 0.20 }
+      - { name: "Compressive strength EPS (kPa)", typical_min: 60, typical_max: 250, warning_threshold: 0.20 }
+      - { name: "Water vapor permeability (ng/Pa·s·m)", typical_min: 0.5, typical_max: 5.0, warning_threshold: 0.25 }
+      - { name: "Operating temperature max aerogel (°C)", typical_min: 200, typical_max: 1000, warning_threshold: 0.20 }
+      - { name: "Closed-cell ratio PU (%)", typical_min: 85, typical_max: 99, warning_threshold: 0.10 }
+      - { name: "R-value per inch (imperial)", typical_min: 4.0, typical_max: 10.0, warning_threshold: 0.20 }
+      - { name: "Hydrophobicity contact angle (°)", typical_min: 110, typical_max: 170, warning_threshold: 0.10 }
+    thermal_events:
+      - { name: "Aerogel pyrolysis onset", temperature_c: 350, tolerance: 50 }
+      - { name: "EPS glass transition", temperature_c: 100, tolerance: 20 }
+      - { name: "PU foam decomposition onset", temperature_c: 250, tolerance: 50 }
+      - { name: "XPS decomposition onset", temperature_c: 300, tolerance: 50 }
+      - { name: "Mineral wool sintering (re-melt)", temperature_c: 700, tolerance: 100 }
+      - { name: "Aerogel shrinkage (high T)", temperature_c: 600, tolerance: 100 }
+      - { name: "Foam glass crystallization", temperature_c: 700, tolerance: 50 }
+      - { name: "PIR foam char formation", temperature_c: 400, tolerance: 50 }
+      - { name: "Vapor barrier LDPE melting", temperature_c: 110, tolerance: 10 }
+      - { name: "Phenolic foam decomposition", temperature_c: 300, tolerance: 50 }

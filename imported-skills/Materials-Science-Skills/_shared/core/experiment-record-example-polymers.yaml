@@ -1,0 +1,200 @@
+version: "1.0.0"
+record_type: experiment-design
+study_id: "study-2026-002"
+title: "Graphene oxide reinforced polyimide nanocomposite films"
+created_by: "materials-doe"
+created_at: "2026-07-01"
+
+direction_profile:
+  material_family: functional
+  domain: 2d-materials
+  application: thermal-management
+
+objectives:
+  - description: "maximize thermal conductivity"
+    response_variable: thermal_conductivity
+    optimization: maximize
+  - description: "maximize tensile strength"
+    response_variable: tensile_strength
+    optimization: maximize
+
+response_variables:
+  - name: thermal_conductivity
+    unit: "W/mK"
+    measurement_method: "laser flash analysis (LFA)"
+    replicate_count: 3
+  - name: tensile_strength
+    unit: "MPa"
+    measurement_method: "tensile testing per ASTM D882"
+    replicate_count: 5
+
+factors:
+  - name: GO_content
+    unit: "wt%"
+    type: continuous
+    levels: [0, 0.5, 1.0, 2.0, 3.0]
+  - name: imidization_temperature
+    unit: "degC"
+    type: continuous
+    levels: [250, 300, 350]
+
+design:
+  type: "Central-Composite"
+  runs:
+    - run_id: R1
+      factor_levels:
+        GO_content: 0
+        imidization_temperature: 250
+      randomization_order: 5
+      block: 1
+      notes: "factorial point"
+    - run_id: R2
+      factor_levels:
+        GO_content: 0
+        imidization_temperature: 350
+      randomization_order: 2
+      block: 1
+      notes: "factorial point"
+    - run_id: R3
+      factor_levels:
+        GO_content: 3.0
+        imidization_temperature: 250
+      randomization_order: 7
+      block: 1
+      notes: "factorial point"
+    - run_id: R4
+      factor_levels:
+        GO_content: 3.0
+        imidization_temperature: 350
+      randomization_order: 1
+      block: 1
+      notes: "factorial point"
+    - run_id: R5
+      factor_levels:
+        GO_content: 1.5
+        imidization_temperature: 300
+      randomization_order: 9
+      block: 1
+      notes: "center point"
+    - run_id: R6
+      factor_levels:
+        GO_content: 0
+        imidization_temperature: 300
+      randomization_order: 4
+      block: 1
+      notes: "axial point"
+    - run_id: R7
+      factor_levels:
+        GO_content: 3.0
+        imidization_temperature: 300
+      randomization_order: 6
+      block: 1
+      notes: "axial point"
+    - run_id: R8
+      factor_levels:
+        GO_content: 1.5
+        imidization_temperature: 250
+      randomization_order: 3
+      block: 1
+      notes: "axial point"
+    - run_id: R9
+      factor_levels:
+        GO_content: 1.5
+        imidization_temperature: 350
+      randomization_order: 8
+      block: 1
+      notes: "axial point"
+
+materials:
+  - role: filler
+    name: "graphene oxide (GO)"
+    supplier: null
+    lot: null
+    specification: "lateral size 0.5-5 um, thickness 0.8-1.2 nm, oxygen content 30-40 at%"
+  - role: matrix
+    name: "polyamic acid precursor"
+    supplier: null
+    lot: null
+    specification: "solid content 15 wt%, viscosity 2000-5000 cP at 25 degC"
+
+processing:
+  - step: solution-mixing
+    equipment: "mechanical stirrer with ultrasonic probe"
+    parameters:
+      temperature: 25
+      temperature_unit: degC
+      speed: 500
+      speed_unit: rpm
+      time: 120
+      time_unit: min
+  - step: film-casting
+    equipment: "doctor blade coater"
+    parameters:
+      substrate: "glass plate"
+      gap: 200
+      gap_unit: um
+  - step: thermal-imidization
+    equipment: "tube furnace"
+    parameters:
+      heating_rate: 5
+      heating_rate_unit: "degC/min"
+      hold_time: 60
+      hold_time_unit: min
+      atmosphere: "nitrogen"
+
+characterization:
+  - name: thermal_conductivity
+    technique: "laser flash analysis (LFA)"
+    instrument: null
+    standard: "ASTM E1461"
+    specimen_geometry: "10 mm x 10 mm square, thickness ~50 um"
+    conditioning: "25 degC / 50% RH / 24 h"
+    parameters: {}
+  - name: tensile_testing
+    technique: "universal tensile testing"
+    instrument: "universal testing machine"
+    standard: "ASTM D882"
+    specimen_geometry: "dog-bone, gauge length 25 mm, width 4 mm"
+    conditioning: "25 degC / 50% RH / 24 h"
+    parameters:
+      crosshead_speed: 5
+      crosshead_speed_unit: "mm/min"
+  - name: ftir
+    technique: "FTIR-ATR"
+    instrument: null
+    standard: null
+    specimen_geometry: "film piece ~5 mm x 5 mm"
+    conditioning: null
+    parameters:
+      scan_range: "400-4000 cm-1"
+      resolution: "4 cm-1"
+  - name: sem
+    technique: "scanning electron microscopy"
+    instrument: null
+    standard: null
+    specimen_geometry: "cryo-fractured cross-section"
+    conditioning: "gold sputter coating"
+    parameters:
+      acceleration_voltage: "5-15 kV"
+
+evidence_links:
+  - claim: "GO content enhances thermal conductivity through percolation network formation"
+    evidence_type: quantitative
+    figure_or_table: "Fig. 2a"
+    mechanism_evidence: "FTIR confirms imide ring formation at 1780 and 1380 cm-1; SEM shows GO sheet dispersion and interfacial contact"
+    boundary: "valid for GO content 0-3 wt% and imidization temperature 250-350 degC"
+  - claim: "imidization temperature affects film density and interfacial bonding"
+    evidence_type: mechanistic
+    figure_or_table: "Fig. 3b"
+    mechanism_evidence: "SEM cross-section images show improved GO-matrix adhesion at higher imidization temperatures"
+    boundary: "valid within the studied temperature range; degradation may occur above 400 degC"
+
+terminology:
+  - canonical: "graphene oxide"
+    abbreviation: "GO"
+    variants: ["graphite oxide", "GO nanosheets"]
+  - canonical: "polyimide"
+    abbreviation: "PI"
+    variants: ["PI film", "polyimide film"]
+  - canonical: "nanocomposite film"
+    variants: ["nano-composite membrane", "GO/PI composite"]

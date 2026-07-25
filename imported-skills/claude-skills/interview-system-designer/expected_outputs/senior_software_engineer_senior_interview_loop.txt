@@ -1,0 +1,151 @@
+Interview Loop Design for Senior Software Engineer (Senior Level)
+============================================================
+Team: platform
+Generated: 2026-02-16T13:27:37.925680
+Total Duration: 300 minutes (5h 0m)
+Total Rounds: 5
+
+INTERVIEW ROUNDS
+----------------------------------------
+
+Round 1: Technical Phone Screen
+Duration: 45 minutes
+Format: Virtual
+Objectives:
+  • Assess coding fundamentals
+  • Evaluate problem-solving approach
+  • Screen for basic technical competency
+Focus Areas:
+  • Coding Fundamentals
+  • Problem Solving
+  • Technical Leadership
+  • System Architecture
+  • People Development
+
+Round 2: Coding Deep Dive
+Duration: 75 minutes
+Format: In Person Or Virtual
+Objectives:
+  • Evaluate coding skills in depth
+  • Assess code quality and testing
+  • Review debugging approach
+Focus Areas:
+  • Technical Execution
+  • Code Quality
+  • Technical Leadership
+  • System Architecture
+  • People Development
+
+Round 3: System Design
+Duration: 75 minutes
+Format: Collaborative Whiteboard
+Objectives:
+  • Assess architectural thinking
+  • Evaluate scalability considerations
+  • Review trade-off analysis
+Focus Areas:
+  • System Thinking
+  • Architectural Reasoning
+  • Technical Leadership
+  • System Architecture
+  • People Development
+
+Round 4: Behavioral Interview
+Duration: 45 minutes
+Format: Conversational
+Objectives:
+  • Assess cultural fit
+  • Evaluate past experiences
+  • Review leadership examples
+Focus Areas:
+  • Cultural Fit
+  • Communication
+  • Teamwork
+  • Technical Leadership
+  • System Architecture
+
+Round 5: Technical Leadership
+Duration: 60 minutes
+Format: Discussion Based
+Objectives:
+  • Evaluate mentoring capability
+  • Assess technical decision making
+  • Review cross-team collaboration
+Focus Areas:
+  • Leadership
+  • Mentoring
+  • Influence
+  • Technical Leadership
+  • System Architecture
+
+SUGGESTED SCHEDULE
+----------------------------------------
+Schedule Type: Multi Day
+
+Day 1:
+Time: 09:00 - 12:45
+  09:00-09:45: Technical Phone Screen (45min)
+  10:00-11:15: Coding Deep Dive (75min)
+  11:30-12:45: System Design (75min)
+
+Day 2:
+Time: 09:00 - 11:00
+  09:00-09:45: Behavioral Interview (45min)
+  10:00-11:00: Technical Leadership (60min)
+
+INTERVIEWER REQUIREMENTS
+----------------------------------------
+
+Technical Phone Screen:
+Required Skills: technical_assessment, coding_evaluation
+Suggested Interviewers: senior_engineer, tech_lead
+Calibration Level: Standard
+
+Coding Deep Dive:
+Required Skills: advanced_technical, code_quality_assessment
+Suggested Interviewers: senior_engineer, staff_engineer
+Calibration Level: High
+
+System Design:
+Required Skills: architecture_design, scalability_assessment
+Suggested Interviewers: senior_architect, staff_engineer
+Calibration Level: High
+
+Behavioral:
+Required Skills: behavioral_interviewing, competency_assessment
+Suggested Interviewers: hiring_manager, people_manager
+Calibration Level: Standard
+
+Technical Leadership:
+Required Skills: leadership_assessment, technical_mentoring
+Suggested Interviewers: engineering_manager, senior_staff
+Calibration Level: High
+
+SCORECARD TEMPLATE
+----------------------------------------
+Scoring Scale:
+  4: Exceeds Expectations - Demonstrates mastery beyond required level
+  3: Meets Expectations - Solid performance meeting all requirements
+  2: Partially Meets - Shows potential but has development areas
+  1: Does Not Meet - Significant gaps in required competencies
+
+Evaluation Dimensions:
+  • System Architecture (Weight: high)
+  • Technical Leadership (Weight: high)
+  • Mentoring (Weight: high)
+  • Cross Team Collab (Weight: high)
+  • Technology Evaluation (Weight: medium)
+  • Process Improvement (Weight: medium)
+  • Hiring Contribution (Weight: medium)
+  • Communication (Weight: high)
+  • Cultural Fit (Weight: medium)
+  • Learning Agility (Weight: medium)
+
+CALIBRATION NOTES
+----------------------------------------
+Hiring Bar: Calibrated for senior level software engineer role
+
+Common Pitfalls:
+  • Avoid comparing candidates to each other rather than to the role standard
+  • Don't let one strong/weak area overshadow overall assessment
+  • Ensure consistent application of evaluation criteria

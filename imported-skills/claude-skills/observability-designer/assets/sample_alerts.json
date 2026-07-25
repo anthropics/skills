@@ -1,0 +1,276 @@
+{
+  "alerts": [
+    {
+      "alert": "HighLatency",
+      "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service=\"payment-service\"}[5m])) > 0.5",
+      "for": "5m",
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "High request latency detected",
+        "description": "95th percentile latency is {{ $value }}s for payment-service",
+        "runbook_url": "https://runbooks.company.com/high-latency"
+      },
+      "historical_data": {
+        "fires_per_day": 2.5,
+        "false_positive_rate": 0.15,
+        "average_duration_minutes": 12
+      }
+    },
+    {
+      "alert": "ServiceDown",
+      "expr": "up{service=\"payment-service\"} == 0",
+      "labels": {
+        "severity": "critical",
+        "service": "payment-service", 
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "Payment service is down",
+        "description": "Payment service has been down for more than 1 minute",
+        "runbook_url": "https://runbooks.company.com/service-down"
+      },
+      "historical_data": {
+        "fires_per_day": 0.1,
+        "false_positive_rate": 0.05,
+        "average_duration_minutes": 3
+      }
+    },
+    {
+      "alert": "HighErrorRate",
+      "expr": "sum(rate(http_requests_total{service=\"payment-service\",code=~\"5..\"}[5m])) / sum(rate(http_requests_total{service=\"payment-service\"}[5m])) > 0.01",
+      "for": "2m",
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "High error rate detected",
+        "description": "Error rate is {{ $value | humanizePercentage }} for payment-service",
+        "runbook_url": "https://runbooks.company.com/high-error-rate"
+      },
+      "historical_data": {
+        "fires_per_day": 1.8,
+        "false_positive_rate": 0.25,
+        "average_duration_minutes": 8
+      }
+    },
+    {
+      "alert": "HighCPUUsage",
+      "expr": "rate(process_cpu_seconds_total{service=\"payment-service\"}[5m]) * 100 > 80",
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "High CPU usage",
+        "description": "CPU usage is {{ $value }}% for payment-service"
+      },
+      "historical_data": {
+        "fires_per_day": 15.2,
+        "false_positive_rate": 0.8,
+        "average_duration_minutes": 45
+      }
+    },
+    {
+      "alert": "HighMemoryUsage", 
+      "expr": "process_resident_memory_bytes{service=\"payment-service\"} / process_virtual_memory_max_bytes{service=\"payment-service\"} * 100 > 85",
+      "labels": {
+        "severity": "info",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "High memory usage",
+        "description": "Memory usage is {{ $value }}% for payment-service"
+      },
+      "historical_data": {
+        "fires_per_day": 8.5,
+        "false_positive_rate": 0.6,
+        "average_duration_minutes": 30
+      }
+    },
+    {
+      "alert": "DatabaseConnectionPoolExhaustion",
+      "expr": "db_connections_active{service=\"payment-service\"} / db_connections_max{service=\"payment-service\"} > 0.9",
+      "for": "1m",
+      "labels": {
+        "severity": "critical",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "Database connection pool near exhaustion",
+        "description": "Connection pool utilization is {{ $value | humanizePercentage }}",
+        "runbook_url": "https://runbooks.company.com/db-connections"
+      },
+      "historical_data": {
+        "fires_per_day": 0.3,
+        "false_positive_rate": 0.1,
+        "average_duration_minutes": 5
+      }
+    },
+    {
+      "alert": "LowTraffic",
+      "expr": "sum(rate(http_requests_total{service=\"payment-service\"}[5m])) < 10",
+      "for": "10m",
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "Unusually low traffic",
+        "description": "Request rate is {{ $value }} RPS, which is unusually low"
+      },
+      "historical_data": {
+        "fires_per_day": 12.0,
+        "false_positive_rate": 0.9,
+        "average_duration_minutes": 120
+      }
+    },
+    {
+      "alert": "HighLatencyDuplicate",
+      "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service=\"payment-service\"}[5m])) > 0.5",
+      "for": "5m", 
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "High request latency detected (duplicate)",
+        "description": "95th percentile latency is {{ $value }}s for payment-service"
+      },
+      "historical_data": {
+        "fires_per_day": 2.5,
+        "false_positive_rate": 0.15,
+        "average_duration_minutes": 12
+      }
+    },
+    {
+      "alert": "VeryLowErrorRate",
+      "expr": "sum(rate(http_requests_total{service=\"payment-service\",code=~\"5..\"}[5m])) / sum(rate(http_requests_total{service=\"payment-service\"}[5m])) > 0.001",
+      "labels": {
+        "severity": "info",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "Error rate above 0.1%",
+        "description": "Error rate is {{ $value | humanizePercentage }}"
+      },
+      "historical_data": {
+        "fires_per_day": 25.0,
+        "false_positive_rate": 0.95,
+        "average_duration_minutes": 5
+      }
+    },
+    {
+      "alert": "DiskUsageHigh",
+      "expr": "disk_usage_percent{service=\"payment-service\"} > 85",
+      "labels": {
+        "severity": "warning",
+        "service": "payment-service",
+        "team": "payments"
+      },
+      "annotations": {
+        "summary": "Disk usage high",
+        "description": "Disk usage is {{ $value }}%"
+      },
+      "historical_data": {
+        "fires_per_day": 3.2,
+        "false_positive_rate": 0.4,
+        "average_duration_minutes": 240
+      }
+    }
+  ],
+  "services": [
+    {
+      "name": "payment-service",
+      "type": "api",
+      "criticality": "critical",
+      "team": "payments"
+    },
+    {
+      "name": "user-service", 
+      "type": "api",
+      "criticality": "high",
+      "team": "identity"
+    },
+    {
+      "name": "notification-service",
+      "type": "api", 
+      "criticality": "medium",
+      "team": "communications"
+    }
+  ],
+  "alert_routing": {
+    "routes": [
+      {
+        "match": {
+          "severity": "critical"
+        },
+        "receiver": "pager-critical",
+        "group_wait": "10s",
+        "group_interval": "1m",
+        "repeat_interval": "5m"
+      },
+      {
+        "match": {
+          "severity": "warning"
+        },
+        "receiver": "slack-warnings",
+        "group_wait": "30s",
+        "group_interval": "5m", 
+        "repeat_interval": "1h"
+      },
+      {
+        "match": {
+          "severity": "info"
+        },
+        "receiver": "email-info",
+        "group_wait": "2m",
+        "group_interval": "10m",
+        "repeat_interval": "24h"
+      }
+    ]
+  },
+  "receivers": [
+    {
+      "name": "pager-critical",
+      "pagerduty_configs": [
+        {
+          "routing_key": "pager-key-critical",
+          "description": "Critical alert: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}"
+        }
+      ]
+    },
+    {
+      "name": "slack-warnings",
+      "slack_configs": [
+        {
+          "api_url": "https://hooks.slack.com/services/warnings",
+          "channel": "#alerts-warnings",
+          "title": "Warning Alert",
+          "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+        }
+      ]
+    },
+    {
+      "name": "email-info",
+      "email_configs": [
+        {
+          "to": "team-notifications@company.com",
+          "subject": "Info Alert: {{ .GroupLabels.alertname }}",
+          "body": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+        }
+      ]
+    }
+  ]
+}

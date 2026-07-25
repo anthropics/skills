@@ -1,0 +1,44 @@
+{
+  "tuple_id": "019-valid-doi-qubit-mof-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Jellen2020Qubit",
+    "title": "2D Arrays of Organic Qubit Candidates Embedded into a Pillared-Paddlewheel Metal–Organic Framework",
+    "authors": [
+      {
+        "family": "Jellen",
+        "given": "Marcus J."
+      },
+      {
+        "family": "Ayodele",
+        "given": "Mayokun J."
+      },
+      {
+        "family": "Cantu",
+        "given": "Annabelle"
+      },
+      {
+        "family": "Forbes",
+        "given": "Malcolm D. E."
+      },
+      {
+        "family": "Garcia-Garibay",
+        "given": "Miguel A."
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1021/jacs.0c07251",
+    "venue": "Journal of the American Chemical Society",
+    "source_pointer": "https://doi.org/10.1021/jacs.0c07251",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "jellen-2020-qubit",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "vault": "/tmp/test-vault",
+  "source": "wiki/concepts/sparse-autoencoder.md",
+  "theme": "gaia",
+  "output_dir": "slides",
+  "rendered_count": 1,
+  "rendered": ["slides/sparse-autoencoder.marp.md"]
+}

@@ -1,0 +1,175 @@
+{
+  "type": "service",
+  "pattern": "strangler_fig",
+  "source": "Legacy User Service (Java Spring Boot 2.x)",
+  "target": "New User Service (Node.js + TypeScript)",
+  "description": "Migrate legacy user management service to modern microservices architecture",
+  "constraints": {
+    "max_downtime_minutes": 0,
+    "data_volume_gb": 50,
+    "dependencies": [
+      "payment_service",
+      "order_service", 
+      "notification_service",
+      "analytics_service",
+      "mobile_app_v1",
+      "mobile_app_v2",
+      "web_frontend",
+      "admin_dashboard"
+    ],
+    "compliance_requirements": [
+      "PCI_DSS",
+      "GDPR"
+    ],
+    "special_requirements": [
+      "api_backward_compatibility",
+      "session_continuity",
+      "rate_limit_preservation"
+    ]
+  },
+  "service_details": {
+    "legacy_service": {
+      "endpoints": [
+        "GET /api/v1/users/{id}",
+        "POST /api/v1/users",
+        "PUT /api/v1/users/{id}",
+        "DELETE /api/v1/users/{id}",
+        "GET /api/v1/users/{id}/profile",
+        "PUT /api/v1/users/{id}/profile",
+        "POST /api/v1/users/{id}/verify-email",
+        "POST /api/v1/users/login",
+        "POST /api/v1/users/logout"
+      ],
+      "current_load": {
+        "requests_per_second": 850,
+        "peak_requests_per_second": 2000,
+        "average_response_time_ms": 120,
+        "p95_response_time_ms": 300
+      },
+      "infrastructure": {
+        "instances": 4,
+        "cpu_cores_per_instance": 4,
+        "memory_gb_per_instance": 8,
+        "load_balancer": "AWS ELB Classic"
+      }
+    },
+    "new_service": {
+      "endpoints": [
+        "GET /api/v2/users/{id}",
+        "POST /api/v2/users",
+        "PUT /api/v2/users/{id}",
+        "DELETE /api/v2/users/{id}",
+        "GET /api/v2/users/{id}/profile",
+        "PUT /api/v2/users/{id}/profile", 
+        "POST /api/v2/users/{id}/verify-email",
+        "POST /api/v2/users/{id}/verify-phone",
+        "POST /api/v2/auth/login",
+        "POST /api/v2/auth/logout",
+        "POST /api/v2/auth/refresh"
+      ],
+      "target_performance": {
+        "requests_per_second": 1500,
+        "peak_requests_per_second": 3000,
+        "average_response_time_ms": 80,
+        "p95_response_time_ms": 200
+      },
+      "infrastructure": {
+        "container_platform": "Kubernetes",
+        "initial_replicas": 3,
+        "max_replicas": 10,
+        "cpu_request_millicores": 500,
+        "cpu_limit_millicores": 1000,
+        "memory_request_mb": 512,
+        "memory_limit_mb": 1024,
+        "load_balancer": "AWS ALB"
+      }
+    }
+  },
+  "migration_phases": [
+    {
+      "phase": "preparation",
+      "description": "Deploy new service and configure routing",
+      "estimated_duration_hours": 8
+    },
+    {
+      "phase": "intercept",
+      "description": "Configure API gateway to route to new service",
+      "estimated_duration_hours": 2
+    },
+    {
+      "phase": "gradual_migration",
+      "description": "Gradually increase traffic to new service",
+      "estimated_duration_hours": 48
+    },
+    {
+      "phase": "validation",
+      "description": "Validate new service performance and functionality",
+      "estimated_duration_hours": 24
+    },
+    {
+      "phase": "decommission",
+      "description": "Remove legacy service after validation",
+      "estimated_duration_hours": 4
+    }
+  ],
+  "feature_flags": [
+    {
+      "name": "enable_new_user_service",
+      "description": "Route user service requests to new implementation",
+      "initial_percentage": 5,
+      "rollout_schedule": [
+        {"percentage": 5, "duration_hours": 24},
+        {"percentage": 25, "duration_hours": 24},
+        {"percentage": 50, "duration_hours": 24},
+        {"percentage": 100, "duration_hours": 0}
+      ]
+    },
+    {
+      "name": "enable_new_auth_endpoints",
+      "description": "Enable new authentication endpoints",
+      "initial_percentage": 0,
+      "rollout_schedule": [
+        {"percentage": 10, "duration_hours": 12},
+        {"percentage": 50, "duration_hours": 12},
+        {"percentage": 100, "duration_hours": 0}
+      ]
+    }
+  ],
+  "monitoring": {
+    "critical_metrics": [
+      "request_rate",
+      "error_rate", 
+      "response_time_p95",
+      "response_time_p99",
+      "cpu_utilization",
+      "memory_utilization",
+      "database_connection_pool"
+    ],
+    "alert_thresholds": {
+      "error_rate": 0.05,
+      "response_time_p95": 250,
+      "cpu_utilization": 0.80,
+      "memory_utilization": 0.85
+    }
+  },
+  "rollback_triggers": [
+    {
+      "metric": "error_rate",
+      "threshold": 0.10,
+      "duration_minutes": 5,
+      "action": "automatic_rollback"
+    },
+    {
+      "metric": "response_time_p95",
+      "threshold": 500,
+      "duration_minutes": 10,
+      "action": "alert_team"
+    },
+    {
+      "metric": "cpu_utilization",
+      "threshold": 0.95,
+      "duration_minutes": 5,
+      "action": "scale_up"
+    }
+  ]
+}

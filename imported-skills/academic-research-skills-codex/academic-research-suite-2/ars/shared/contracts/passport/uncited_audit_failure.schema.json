@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/uncited_audit_failure.schema.json",
+  "title": "Material Passport Uncited Audit Failure Entry",
+  "description": "One entry in Material Passport Schema 9 uncited_audit_failures[] aggregate (v3.8.2 / #118). Per uncited-sentence × manifest pair where the constraint judge raised a JudgeInvocationError during §4 step 5 stream (d) judging. Rides in its own aggregate because the cited-path INV-14 audit_tool_failure row (a claim_audit_result entry carrying ref_retrieval_method=audit_tool_failure) cannot be reused — claim_audit_result.ref_slug is required and the uncited path has no ref to bind; uncited_assertion is LOW-WARN advisory and routing UAF through it would conflate D4-c detector signal with audit-time infrastructure failure. Drives the [CLAIM-AUDIT-TOOL-FAILURE-UNCITED — <fault-class>] formatter annotation at MED-WARN advisory tier; gate passes — retry-next-pass remediation. Pre-v3.8.2 behaviour silently substituted NOT_VIOLATED on JudgeInvocationError and suppressed HIGH-WARN constraint checks; v3.8.2 routes failures through this aggregate so operational signal surfaces without dropping audit coverage. Cross-field invariants UAF-INV-1..UAF-INV-6 are lint-enforced in scripts/check_claim_audit_consistency.py. See docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §3.6.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "finding_id",
+    "claim_text",
+    "section_path",
+    "scoped_manifest_id",
+    "fault_class",
+    "rationale",
+    "judge_model",
+    "judge_run_at",
+    "rule_version"
+  ],
+
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "pattern": "^UAF-[0-9]{3,}$",
+      "description": "Per-passport unique finding identifier for uncited_audit_failures[]. UAF-INV-1 enforces uniqueness."
+    },
+    "claim_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "section_path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Hierarchical path from document root to the section containing the offending sentence. Mirrors uncited_assertion.section_path."
+    },
+    "scoped_manifest_id": {
+      "type": "string",
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Points to the claim_intent_manifest.manifest_id whose MNC/NC-C set was being judged when the failure occurred. Required — no MANIFEST-MISSING sentinel admitted; UAF emission requires an active manifest scope. UAF-INV-2 enforces cross-array resolvability."
+    },
+    "manifest_claim_id": {
+      "type": ["string", "null"],
+      "pattern": "^C-[0-9]{3,}$",
+      "description": "When the sentence was bound to a manifest claim (sentence carries manifest_claim_id per §4 step 5 stream (d) NC-C judging path), points to that claim. Null when the judge call was against MNCs only (manifest-wide constraints, no claim binding). UAF-INV-3 enforces (scoped_manifest_id, manifest_claim_id) pair integrity when non-null. Mirrors constraint_violation.manifest_claim_id polarity."
+    },
+    "fault_class": {
+      "enum": [
+        "judge_timeout",
+        "judge_api_error",
+        "judge_parse_error",
+        "cache_corruption",
+        "retrieval_api_error",
+        "retrieval_timeout",
+        "retrieval_network_error"
+      ],
+      "description": "Same closed enum as INV-14 fault-class taxonomy on the cited path. Sourced from JudgeInvocationError.fault_class at the raise site in claim_audit_pipeline.py."
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "description": "MUST begin with this row's fault_class value followed by ': ' and a free-form detail. UAF-INV-5 enforces the prefix match. Example: 'judge_timeout: judge timed out after 30s'. Mirrors INV-14 rationale format on the cited path."
+    },
+    "judge_model": { "type": "string", "minLength": 1 },
+    "judge_run_at": { "type": "string", "format": "date-time" },
+    "rule_version": {
+      "const": "D4-c-v1-uaf-v1",
+      "description": "Frozen literal for the v3.8.2 release. UAF surface version. Distinguishes from D4-c-v1 (uncited_assertion D4-c detector) and D4-a-v1 (constraint_violation). Future revisions bump the literal and require re-lint."
+    },
+    "upstream_owner_agent": {
+      "enum": ["synthesis_agent", "draft_writer_agent", "report_compiler_agent", null]
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "skill_name": "materials-citation",
+  "evals": [
+    {
+      "id": "search-strategy-domain-aware",
+      "prompt": "I need to build a citation search plan for a manuscript on waterborne epoxy modified emulsified asphalt tack coat bonding performance. The target journal is CBM. Help me generate a domain-aware search strategy.",
+      "expected_output": "The assistant must load the asphalt domain fragment and produce a search strategy that includes domain-specific keywords such as 'emulsified asphalt', 'tack coat', 'bonding', 'waterborne epoxy', 'interface adhesion', and 'moisture damage'. The strategy should separate search queries by evidence layer (binder/emulsion, interface/bonding, mixture, construction, service-condition). Target journals should include CBM, JBE, RMPD, and other asphalt/pavement journals. The assistant must not invent papers, DOIs, or impact factors.",
+      "assertions": [
+        {
+          "name": "domain_fragment_loaded",
+          "description": "The assistant loads or references the asphalt domain fragment (static/fragments/domain/asphalt.md) and uses its evidence-layer taxonomy."
+        },
+        {
+          "name": "domain_keywords_present",
+          "description": "The search strategy includes domain-specific keywords such as 'emulsified asphalt', 'tack coat', 'bonding', and 'waterborne epoxy'."
+        },
+        {
+          "name": "evidence_layers_separated",
+          "description": "Search queries are separated by evidence layer: binder/emulsion, interface/bonding, mixture, construction, service-condition."
+        },
+        {
+          "name": "no_invented_sources",
+          "description": "The assistant does not fabricate paper titles, DOIs, impact factors, or journal rules."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "citation-matrix-structure",
+      "prompt": "Build a citation matrix for a civil materials manuscript. I have three claims: (1) WER-EA improves bonding strength, (2) epoxy curing enhances interface adhesion, (3) the formulation is field-ready. Map them to citations.",
+      "expected_output": "The assistant must use the citation-matrix-template.csv structure and produce a matrix with all required fields: claim_id, evidence_layer, source_role, source_quality, mechanism_directness, durability_relevance, service_relevance, reader_anchor, figure_handoff, and reviewer_risk. The third claim ('field-ready') should be flagged with reviewer_risk 'must-fix' if no field evidence is provided. The matrix must not treat weak background sources as core mechanism or durability evidence.",
+      "assertions": [
+        {
+          "name": "all_required_fields_present",
+          "description": "The citation matrix includes all required fields: claim_id, evidence_layer, source_role, source_quality, reader_anchor, figure_handoff, and reviewer_risk."
+        },
+        {
+          "name": "field_ready_claim_flagged",
+          "description": "The claim about being 'field-ready' is flagged with reviewer_risk 'must-fix' when no field validation data is provided."
+        },
+        {
+          "name": "weak_source_not_upgraded",
+          "description": "Weak background sources are not upgraded to core mechanism, durability, or service claim evidence."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "reference-gap-audit",
+      "prompt": "Audit the reference list for a civil materials manuscript on emulsified asphalt bonding. The current references include: 3 primary experimental papers on bonding strength, 1 review on asphalt modification, 0 method papers, 0 standard/specification references, and 0 benchmark comparisons. All references are from 2018-2020 and the topic is actively researched.",
+      "expected_output": "The assistant must perform a reference gap audit and identify: (1) missing method paper for the bonding test standard, (2) missing standard/specification reference (e.g., ASTM, JTG), (3) potential recency gap if the topic is active, (4) missing benchmark comparison against conventional tack coat materials. Each gap should be labeled with a risk level (must-fix, strengthen, optional). The audit must reference the domain-specific gap checks from the civil construction materials section.",
+      "assertions": [
+        {
+          "name": "method_paper_gap_identified",
+          "description": "The audit identifies the missing method paper for the bonding test standard."
+        },
+        {
+          "name": "standard_reference_gap_identified",
+          "description": "The audit identifies the missing standard/specification reference (e.g., ASTM, JTG)."
+        },
+        {
+          "name": "recency_gap_checked",
+          "description": "The audit checks whether all references being from 2018-2020 constitutes a recency gap for an active topic."
+        },
+        {
+          "name": "risk_labels_assigned",
+          "description": "Each identified gap is assigned a risk label: must-fix, strengthen, or optional."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "claim-citation-mapping",
+      "prompt": "Map these claims from a civil materials manuscript to appropriate citation evidence layers: (1) 'The bonding strength increased by 28% with 10% epoxy content' (2) 'FTIR confirms the epoxy-amine curing reaction' (3) 'The material is suitable for field application in cold regions' (4) 'Previous studies have shown similar trends in polymer-modified asphalt'.",
+      "expected_output": "The assistant must map each claim to the correct evidence layer from the civil domain taxonomy: claim (1) maps to interface/bonding with primary experimental evidence, claim (2) maps to binder/emulsion with mechanism evidence (FTIR characterization), claim (3) should be flagged as needing service-condition evidence and field validation, claim (4) maps to review evidence or weak background. The assistant must use the claim-citation mapping table to distinguish strong from weak evidence for each claim type.",
+      "assertions": [
+        {
+          "name": "performance_claim_mapped_to_bonding_layer",
+          "description": "The bonding strength claim (1) is mapped to the interface/bonding evidence layer with primary experimental evidence."
+        },
+        {
+          "name": "mechanism_claim_mapped_with_technique",
+          "description": "The FTIR mechanism claim (2) is mapped to the binder/emulsion layer and the specific characterization technique is noted."
+        },
+        {
+          "name": "field_claim_flagged_for_gap",
+          "description": "The field application claim (3) is flagged as needing service-condition evidence or field validation."
+        },
+        {
+          "name": "background_claim_identified",
+          "description": "The 'previous studies' claim (4) is correctly identified as review evidence or weak background, not core mechanism evidence."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "export-format-bibtex",
+      "prompt": "Export the citation matrix references in BibTeX format. Include at least one journal article, one conference paper, and one standard/specification.",
+      "expected_output": "The assistant must use the mcp/export/bibtex.py module or produce valid BibTeX-formatted entries. Each entry must include the mandatory BibTeX fields for its type: @article entries need author, title, journal, year, volume, pages, doi; @inproceedings entries need author, title, booktitle, year; @techreport or @misc entries for standards need author/organization, title, year, number. The assistant must not invent entries — if no real data is available, it should use placeholder markers and note that screening is needed.",
+      "assertions": [
+        {
+          "name": "bibtex_syntax_valid",
+          "description": "The output contains valid BibTeX entry types (@article, @inproceedings, @techreport or @misc) with correct syntax."
+        },
+        {
+          "name": "mandatory_fields_present",
+          "description": "Each BibTeX entry includes the mandatory fields for its type (author, title, journal/year for articles; author, title, booktitle/year for conference papers)."
+        },
+        {
+          "name": "no_invented_entries",
+          "description": "The assistant does not fabricate real paper details; unscreened entries use placeholder markers with screening-needed notes."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

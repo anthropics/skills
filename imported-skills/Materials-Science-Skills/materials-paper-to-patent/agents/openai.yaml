@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Paper to Chinese Patent"
+  short_description: "Convert materials science papers into evidence-grounded Chinese invention patent drafts."
+  brand_color: "#5A4E7C"
+  default_prompt: "Use $materials-paper-to-patent to convert this materials science paper into an evidence-grounded Chinese invention patent draft."
+
+policy:
+  allow_implicit_invocation: true

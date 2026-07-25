@@ -1,0 +1,44 @@
+{
+  "tuple_id": "011-valid-doi-optuna-2019",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Akiba2019Optuna",
+    "title": "Optuna",
+    "authors": [
+      {
+        "family": "Akiba",
+        "given": "Takuya"
+      },
+      {
+        "family": "Sano",
+        "given": "Shotaro"
+      },
+      {
+        "family": "Yanase",
+        "given": "Toshihiko"
+      },
+      {
+        "family": "Ohta",
+        "given": "Takeru"
+      },
+      {
+        "family": "Koyama",
+        "given": "Masanori"
+      }
+    ],
+    "year": 2019,
+    "doi": "10.1145/3292500.3330701",
+    "venue": "Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining",
+    "source_pointer": "https://doi.org/10.1145/3292500.3330701",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "akiba-2019-optuna",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

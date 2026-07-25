@@ -1,0 +1,104 @@
+# AI disclosure discovery — anchor snapshot manifest
+# Discovery issue: https://github.com/Imbad0202/academic-research-skills/issues/106
+# Captured: 2026-05-13 UTC
+# Phase: 1 (scaffold) — snapshots taken to lock provenance before Phase 2/3 cell-filling.
+
+manifest_version: "1.0"
+discovery_doc: docs/design/2026-05-13-ai-disclosure-schema-discovery.md
+captured_at: "2026-05-13T07:55:00Z"
+captured_by: imbad
+capture_method: "Wayback Machine save + local HTML mirror"
+
+# Snapshot integrity rules (per #106 Deliverable 1):
+# - Wayback ID locks the public-archive copy at capture time.
+# - SHA-256 of local HTML mirror enables byte-level verification before any explicit-mandate /
+#   explicit-recommend / conditional-mandate cell is written from that snapshot.
+# - If the live URL drifts later, downstream cells stay defensible: cite Wayback ID + SHA, not live URL.
+
+anchors:
+  - slug: prisma-trAIce
+    name: "PRISMA-trAIce"
+    full_title: "PRISMA-trAIce 2025: Reporting Guidelines for AI-Assisted Systematic Literature Reviews"
+    scope: "SLR-specific living guideline (proposal, pre-Delphi)"
+    live_url: "https://ai.jmir.org/2025/1/e80247/"
+    wayback_id: "20260513075443"
+    wayback_url: "https://web.archive.org/web/20260513075443/https://ai.jmir.org/2025/1/e80247/"
+    local_path: "prisma-trAIce.html"
+    sha256: "f95fc59f83023b4f0a4fa9b158f10a20fee002fa3b8856e396e3f08f8bc7b5fa"
+    size_bytes: 365582
+    capture_status: ok
+    notes: >
+      Source-strength baseline: explicit-mandate / explicit-recommend depends on whether the
+      PRISMA-trAIce checklist items use "should" vs "must". To be classified per-item in Phase 2.
+
+  - slug: icmje
+    name: "ICMJE Recommendations on AI Use by Authors"
+    full_title: "ICMJE Recommendations | AI Use by Authors"
+    scope: "Medical journals, broad — adopted recommendations"
+    live_url: "https://www.icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-authors.html"
+    wayback_id: "20260513075516"
+    wayback_url: "https://web.archive.org/web/20260513075516/https://www.icmje.org/recommendations/browse/artificial-intelligence/ai-use-by-authors.html"
+    local_path: "icmje.html"
+    sha256: "52f9e6bc4e5247560591789139f8026d330f44c5d6714c38da73a7a516055f30"
+    size_bytes: 20046
+    capture_status: ok
+    notes: >
+      Adopted by 1000+ journals as baseline policy. Source-strength classification likely mixes
+      mandate (disclosure required) and recommend (location guidance).
+
+  - slug: nature
+    name: "Nature Portfolio Editorial Policies — AI"
+    full_title: "Artificial Intelligence (AI) | Nature Portfolio"
+    scope: "Nature Portfolio editorial policy (publisher-level guidance)"
+    live_url: "https://www.nature.com/nature-portfolio/editorial-policies/ai"
+    wayback_id: "20260513075542"
+    wayback_url: "https://web.archive.org/web/20260513075542/https://www.nature.com/nature-portfolio/editorial-policies/ai"
+    local_path: "nature.html"
+    sha256: "cf691cba21c26f056245f25262e79b9b0a057d6d9c2265abe14181712349a500"
+    size_bytes: 98994
+    capture_status: ok
+    notes: >
+      Nature Portfolio treats LLM-as-author as out of scope (cannot be author). Disclosure
+      requirements split between Methods/Acknowledgments sections — locator classification
+      needed in Phase 2.
+
+  - slug: ieee
+    name: "IEEE Author Guidelines for AI-Generated Text"
+    full_title: "Guidelines for Authors on Use of AI-Generated Text | IEEE Open"
+    scope: "IEEE author guidelines, April 2024 vintage"
+    live_url: "https://open.ieee.org/author-guidelines-for-artificial-intelligence-ai-generated-text/"
+    wayback_id: "20260513075605"
+    wayback_url: "https://web.archive.org/web/20260513075605/https://open.ieee.org/author-guidelines-for-artificial-intelligence-ai-generated-text/"
+    local_path: "ieee.html"
+    sha256: "3ab8db50be1b3f4c8759f1b1eae7c74c6de9bfdc28bfedc1fe54bf1d1ac6185a"
+    size_bytes: 212281
+    capture_status: ok
+    notes: >
+      IEEE Open author-guidelines page. Note IEEE has multiple AI-related policies across
+      sub-publications; this is the open-access portal version. Cross-check with IEEE.org
+      flagship author center may be needed in Phase 2 if cells diverge.
+
+# Expansion candidates (out of Phase 1 scope, snapshot if Phase 3 author elects to expand):
+expansion_candidates_not_snapshotted:
+  - slug: cope
+    name: "COPE Position Statement on AI Authorship"
+    url: "https://publicationethics.org/cope-position-statements/ai-author"
+  - slug: cse
+    name: "Council of Science Editors — ML/AI Guidance"
+    url: "https://www.csescienceeditor.org/article/cse-guidance-on-machine-learning-and-artificial-intelligence-tools/"
+  - slug: wame
+    name: "WAME Recommendations"
+    url: "https://wame.org/page3.php?id=106"
+  - slug: jama
+    name: "JAMA Instructions for Authors"
+    url: "https://jamanetwork.com/journals/jama/pages/instructions-for-authors"
+  - slug: plos
+    name: "PLOS Ethical Publishing Practice"
+    url: "https://journals.plos.org/plosone/s/ethical-publishing-practice"
+
+# Verification protocol (for downstream readers):
+# Before writing an explicit-mandate / explicit-recommend / conditional-mandate cell from any
+# anchor below, re-compute the SHA-256 of the local HTML and confirm it matches the value here.
+# Mismatch means the local mirror was edited or corrupted — re-fetch via wayback_url and re-hash
+# before proceeding. The wayback_url is the canonical reference; the local mirror is a working
+# convenience.

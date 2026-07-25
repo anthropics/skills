@@ -1,0 +1,26 @@
+{
+  "status": "ok",
+  "vault_path": "/tmp/test-vault",
+  "topic": "LLM interpretability",
+  "tool": "all",
+  "date": "2026-04-11",
+  "installed_files": [
+    "CLAUDE.md",
+    "AGENTS.md",
+    ".cursorrules",
+    "wiki/index.md",
+    "wiki/log.md"
+  ],
+  "page_templates_copied": 5,
+  "layers": {
+    "raw": "your sources — immutable",
+    "wiki": "LLM-maintained knowledge base",
+    "index": "wiki/index.md",
+    "log": "wiki/log.md"
+  },
+  "next_steps": [
+    "Open the vault in Obsidian",
+    "Drop a source into raw/",
+    "Run /wiki-ingest <path> in your LLM CLI"
+  ]
+}

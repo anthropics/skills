@@ -1,0 +1,22 @@
+schema_version: '1.0'
+audit_run_id: 2026-05-18T12:34:56Z-a1b2
+report_reference_date: '2026-05-18'
+findings:
+- finding_id: TF-001
+  finding_kind: TEMPORAL-METADATA-MISSING
+  severity: LOW
+  mode: null
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: The handbook governed the 2022 review cycle.<!--ref:handbook-2024ed-->
+  matched_span: null
+  bound_refs:
+  - ref_slug: handbook-2024ed
+    timeline_entry: handbook-2024ed
+  bound_event: null
+  bound_dates: null
+  rationale: handbook-2024ed has no effective_date_range; anachronism check cannot
+    run.
+  suggested_fix: null

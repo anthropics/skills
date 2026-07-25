@@ -1,0 +1,19 @@
+{
+  "$schema_note": "Manifest of supported literature_corpus[] consumer agents. v3.6.5 release state: bibliography_agent (deep-research) + literature_strategist_agent (academic-paper).",
+  "supported_consumers": [
+    {
+      "agent_path": "deep-research/agents/bibliography_agent.md",
+      "agent_basename": "bibliography_agent",
+      "skill": "deep-research",
+      "since_version": "v3.6.5",
+      "phase": "Phase 1"
+    },
+    {
+      "agent_path": "academic-paper/agents/literature_strategist_agent.md",
+      "agent_basename": "literature_strategist_agent",
+      "skill": "academic-paper",
+      "since_version": "v3.6.5",
+      "phase": "Phase 1"
+    }
+  ]
+}

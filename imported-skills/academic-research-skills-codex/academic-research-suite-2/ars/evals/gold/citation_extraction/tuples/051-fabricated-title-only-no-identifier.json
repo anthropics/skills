@@ -1,0 +1,27 @@
+{
+  "tuple_id": "051-fabricated-title-only-no-identifier",
+  "kind": "fabricated_title_only",
+  "corpus_entry": {
+    "citation_key": "Nakamura2024PhantomEthnographyTitleOnly",
+    "title": "Phantom Ethnography of Vanished Riverine Trade Guilds in Pre-Colonial Sarawak",
+    "authors": [
+      {"family": "Nakamura", "given": "K."},
+      {"family": "Abdullah", "given": "R."}
+    ],
+    "year": 2024,
+    "venue": "Journal of Regional Historical Ethnography",
+    "source_pointer": "shelf:regional-history/sarawak-trade-guilds",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "nakamura-2024-phantom-ethnography",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": {
+    "verdict": "unresolvable",
+    "labeled_by": "ars-182-v3.11-by-design-fn-fixture",
+    "labeled_at": "2026-06-04T00:00:00Z",
+    "notes": "By-design false-negative fixture per spec OQ-5 / C-V6(a). This citation is FABRICATED (fabrication_intent=true) but carries NO DOI and NO arXiv ID — only a bogus title. With no resolvable identifier to key on, every resolver can only title-search, producing title-only unmatched (queried_by=title). The narrowed-false definition (C-V6(a)) classifies this as unresolvable, NOT false: a no-identifier fabrication is indistinguishable from a legitimately-unindexed regional/non-English paper, and the existence gate accepts this recall limit by design (the v3.8 claim-faithfulness audit + human review catch it instead). This fixture pins that the narrow does NOT promote a title-only unmatched to false even under a would-be strict policy."
+  },
+  "provenance_note": "Spec OQ-5 Acknowledged Limitation fixture. Mirrors the strict_articles_only coverage-gap carve-out: fabrication requires a falsifiable identifier, not mere absence-from-index.",
+  "fabrication_intent": true
+}

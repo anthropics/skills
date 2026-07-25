@@ -1,0 +1,137 @@
+{
+  "skill_name": "materials-research",
+  "evals": [
+    {
+      "id": "profile-first-routing",
+      "prompt": "I want to write a research paper about emulsified asphalt. Help me get started.",
+      "expected_output": "The assistant must first check for .materials/profile.yaml and read the researcher's direction settings (domain, journal preferences, task preferences) before making any routing recommendation. If the profile exists, the assistant should reference its contents explicitly. If the profile does not exist, the assistant should prompt the user to create one or proceed with explicit domain questioning.",
+      "assertions": [
+        {
+          "name": "profile_check_attempted",
+          "description": "The assistant attempts to read .materials/profile.yaml or asks the user about its existence before routing."
+        },
+        {
+          "name": "profile_content_referenced",
+          "description": "If the profile exists, the assistant explicitly references its domain, journal, or task preferences in the routing response."
+        },
+        {
+          "name": "no_blind_routing",
+          "description": "The assistant does not jump to a domain-specific recommendation without first checking or asking about the profile."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "stage-gated-plan",
+      "prompt": "I need to write a full research paper on geopolymer concrete from my experimental data. Generate a complete plan for me.",
+      "expected_output": "The assistant must generate a 6-stage gated plan: (1) positioning — research gap and contribution mapping; (2) reading — literature review and citation mapping; (3) citation — reference management and journal targeting; (4) writing — manuscript drafting by section; (5) polishing — language and figure quality; (6) reviewer/response — pre-submission audit and response preparation. Each stage should have clear entry criteria, deliverables, and exit gates.",
+      "assertions": [
+        {
+          "name": "six_stages_present",
+          "description": "The plan explicitly covers all six stages: positioning, reading, citation, writing, polishing, and reviewer/response."
+        },
+        {
+          "name": "stage_gates_defined",
+          "description": "Each stage has defined entry criteria, deliverables, and exit gates before the next stage can begin."
+        },
+        {
+          "name": "stages_ordered",
+          "description": "The stages follow the canonical order: positioning → reading → citation → writing → polishing → reviewer/response."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "coverage-tier-report",
+      "prompt": "Generate a research plan for writing a paper on carbon nanotube reinforced polymer composites. My domain is nano-materials and I have extensive experimental data.",
+      "expected_output": "The assistant must report the coverage tier for the requested domain (nano-materials / polymer composites). The tier should be one of: full (comprehensive domain knowledge, rich references, detailed guidance), partial (substantial coverage with some gaps), skeleton (basic framework only), or generic (no domain-specific assets, using general guidance). The plan should be transparent about what is available and what is missing.",
+      "assertions": [
+        {
+          "name": "coverage_tier_reported",
+          "description": "The response explicitly states the coverage tier (full/partial/skeleton/generic) for the requested domain."
+        },
+        {
+          "name": "tier_appropriate_planning",
+          "description": "The plan's level of detail is consistent with the reported coverage tier — full tier plans should be rich, skeleton tier plans should acknowledge gaps."
+        },
+        {
+          "name": "gap_transparency",
+          "description": "If the tier is not full, the response explicitly lists what domain-specific assets are missing or what the user should supplement."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "task-domain-journal-detection",
+      "prompt": "I have experimental data on the bonding strength and rheological properties of waterborne epoxy modified emulsified asphalt. I want to publish in Construction and Building Materials. Help me plan the manuscript.",
+      "expected_output": "The assistant must correctly detect: (1) task type — manuscript-writing (from the user's intent to publish); (2) material domain — asphalt-pavement or civil-generic (from the material context); (3) journal family — CBM/transportation (from the stated journal). The routing should load the appropriate domain fragment (asphalt-pavement.md or civil-generic.md) and journal fragment (cbm-transportation.md or cbm.md).",
+      "assertions": [
+        {
+          "name": "task_type_detected",
+          "description": "The response correctly identifies the task type as manuscript-writing or a closely related task category."
+        },
+        {
+          "name": "material_domain_detected",
+          "description": "The response correctly identifies the material domain as asphalt-pavement or civil-generic."
+        },
+        {
+          "name": "journal_family_detected",
+          "description": "The response correctly identifies the journal family as CBM (Construction and Building Materials)."
+        },
+        {
+          "name": "correct_fragments_loaded",
+          "description": "The response references or loads the appropriate domain and journal fragments corresponding to the detected classifications."
+        },
+        {
+          "name": "selected_fragments_loaded_from_manifest",
+          "description": "The routing protocol reads the mapped path for each selected task, domain, and journal axis from manifest.yaml before producing the plan."
+        },
+        {
+          "name": "evidence_contract_loaded_when_building_ladder",
+          "description": "When the workflow builds or inspects a claim-evidence ladder, the routing protocol loads the shared evidence-contract reference."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "handoff-row-generation",
+      "prompt": "I need a complete research plan for writing a paper on dielectric properties of BaTiO3 ceramics for Journal of the American Ceramic Society.",
+      "expected_output": "The assistant must include handoff rows in the stage plan that specify which companion skills should be invoked at each stage boundary. For example: after writing stage, handoff to materials-polishing for language polish; after polishing, handoff to materials-figure for figure package generation; before submission, handoff to materials-reviewer for pre-submission audit. Each handoff row should specify the target skill, trigger condition, and expected handoff artifact.",
+      "assertions": [
+        {
+          "name": "handoff_rows_present",
+          "description": "The stage plan includes explicit handoff rows referencing companion skills (materials-polishing, materials-figure, materials-reviewer) at appropriate stage boundaries."
+        },
+        {
+          "name": "handoff_trigger_defined",
+          "description": "Each handoff row specifies the trigger condition for when the handoff should occur."
+        },
+        {
+          "name": "handoff_artifact_specified",
+          "description": "Each handoff row specifies the expected output artifact from the companion skill."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "context-budget-and-opt-in-core",
+      "prompt": "Route a broad research-planning request for a waterborne epoxy modified emulsified asphalt study. The request needs cross-skill positioning and manuscript planning, but does not ask for a reviewer-risk loop or a persistent multi-stage state update.",
+      "expected_output": "The router must keep the default core context-budgeted: load the direction profile and workflow, keep the detailed shared stance out of always_load, and load evidence-contract, research-state-contract, or weakness-routing only when the task actually requires them. The router must retain profile-first routing, mapped-path loading, coverage_tier reporting, and the no-invention boundary.",
+      "assertions": [
+        {
+          "name": "context_budget_declared",
+          "description": "The manifest declares a bounded activation target, hard maximum, and maximum always_load count."
+        },
+        {
+          "name": "stance_is_opt_in",
+          "description": "The shared stance is available through references.on_demand rather than included in the default always_load list."
+        },
+        {
+          "name": "router_invariants_preserved",
+          "description": "Slimming the default core does not remove profile-first routing, explicit manifest path loading, coverage_tier reporting, or no-invention rules."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

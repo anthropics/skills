@@ -1,0 +1,811 @@
+{
+  "metadata": {
+    "title": "customer-portal - SRE Dashboard",
+    "service": {
+      "name": "customer-portal",
+      "type": "web",
+      "criticality": "high",
+      "user_facing": true,
+      "description": "Customer-facing web application for account management and billing",
+      "team": "frontend",
+      "environment": "production",
+      "dependencies": [
+        {
+          "name": "user-service",
+          "type": "api",
+          "criticality": "high"
+        },
+        {
+          "name": "billing-service",
+          "type": "api",
+          "criticality": "high"
+        },
+        {
+          "name": "notification-service",
+          "type": "api",
+          "criticality": "medium"
+        },
+        {
+          "name": "cdn",
+          "type": "external",
+          "criticality": "medium"
+        }
+      ],
+      "pages": [
+        {
+          "path": "/dashboard",
+          "sla_load_time_ms": 2000,
+          "expected_concurrent_users": 1000
+        },
+        {
+          "path": "/billing",
+          "sla_load_time_ms": 3000,
+          "expected_concurrent_users": 200
+        },
+        {
+          "path": "/settings",
+          "sla_load_time_ms": 1500,
+          "expected_concurrent_users": 100
+        }
+      ],
+      "business_metrics": {
+        "daily_active_users": {
+          "metric": "count(user_sessions_started_total[1d])",
+          "target": 10000,
+          "unit": "users"
+        },
+        "session_duration": {
+          "metric": "avg(user_session_duration_seconds)",
+          "target": 300,
+          "unit": "seconds"
+        },
+        "bounce_rate": {
+          "metric": "sum(rate(page_views_bounced_total[1h])) / sum(rate(page_views_total[1h]))",
+          "target": 0.3,
+          "unit": "percentage"
+        }
+      },
+      "infrastructure": {
+        "container_orchestrator": "kubernetes",
+        "replicas": 4,
+        "cpu_limit": "1000m",
+        "memory_limit": "2Gi",
+        "storage": {
+          "type": "nfs",
+          "size": "50Gi"
+        },
+        "ingress": {
+          "type": "nginx",
+          "ssl_termination": true,
+          "rate_limiting": {
+            "requests_per_second": 100,
+            "burst": 200
+          }
+        }
+      },
+      "monitoring": {
+        "synthetic_checks": [
+          {
+            "name": "login_flow",
+            "url": "/auth/login",
+            "frequency": "1m",
+            "locations": [
+              "us-east",
+              "eu-west",
+              "ap-south"
+            ]
+          },
+          {
+            "name": "checkout_flow",
+            "url": "/billing/checkout",
+            "frequency": "5m",
+            "locations": [
+              "us-east",
+              "eu-west"
+            ]
+          }
+        ],
+        "rum": {
+          "enabled": true,
+          "sampling_rate": 0.1
+        }
+      },
+      "compliance_requirements": [
+        "GDPR",
+        "CCPA"
+      ],
+      "tags": [
+        "frontend",
+        "customer-facing",
+        "billing",
+        "high-traffic"
+      ]
+    },
+    "target_role": "sre",
+    "generated_at": "2026-02-16T14:02:03.421248Z",
+    "version": "1.0"
+  },
+  "configuration": {
+    "time_ranges": [
+      "1h",
+      "6h",
+      "1d",
+      "7d"
+    ],
+    "default_time_range": "6h",
+    "refresh_interval": "30s",
+    "timezone": "UTC",
+    "theme": "dark"
+  },
+  "layout": {
+    "grid_settings": {
+      "width": 24,
+      "height_unit": "px",
+      "cell_height": 30
+    },
+    "sections": [
+      {
+        "title": "Service Overview",
+        "collapsed": false,
+        "y_position": 0,
+        "panels": [
+          "service_status",
+          "slo_summary",
+          "error_budget"
+        ]
+      },
+      {
+        "title": "Golden Signals",
+        "collapsed": false,
+        "y_position": 8,
+        "panels": [
+          "latency",
+          "traffic",
+          "errors",
+          "saturation"
+        ]
+      },
+      {
+        "title": "Resource Utilization",
+        "collapsed": false,
+        "y_position": 16,
+        "panels": [
+          "cpu_usage",
+          "memory_usage",
+          "network_io",
+          "disk_io"
+        ]
+      },
+      {
+        "title": "Dependencies & Downstream",
+        "collapsed": true,
+        "y_position": 24,
+        "panels": [
+          "dependency_status",
+          "downstream_latency",
+          "circuit_breakers"
+        ]
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": "service_status",
+      "title": "Service Status",
+      "type": "stat",
+      "grid_pos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "up{service=\"customer-portal\"}",
+          "legendFormat": "Status"
+        }
+      ],
+      "field_config": {
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": 0
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "text": "DOWN"
+                      }
+                    },
+                    "type": "value"
+                  },
+                  {
+                    "options": {
+                      "1": {
+                        "text": "UP"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "orientation": "horizontal",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": "slo_summary",
+      "title": "SLO Achievement (30d)",
+      "type": "stat",
+      "grid_pos": {
+        "x": 6,
+        "y": 0,
+        "w": 9,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "(1 - (increase(http_requests_total{service=\"customer-portal\",code=~\"5..\"}[30d]) / increase(http_requests_total{service=\"customer-portal\"}[30d]))) * 100",
+          "legendFormat": "Availability"
+        },
+        {
+          "expr": "histogram_quantile(0.95, increase(http_request_duration_seconds_bucket{service=\"customer-portal\"}[30d])) * 1000",
+          "legendFormat": "P95 Latency (ms)"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 99.0
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "orientation": "horizontal",
+        "textMode": "value_and_name"
+      }
+    },
+    {
+      "id": "error_budget",
+      "title": "Error Budget Remaining",
+      "type": "gauge",
+      "grid_pos": {
+        "x": 15,
+        "y": 0,
+        "w": 9,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "(1 - (increase(http_requests_total{service=\"customer-portal\",code=~\"5..\"}[30d]) / increase(http_requests_total{service=\"customer-portal\"}[30d])) - 0.999) / 0.001 * 100",
+          "legendFormat": "Error Budget %"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 25
+              },
+              {
+                "color": "green",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "options": {
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": "latency",
+      "title": "Request Latency",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{service=\"customer-portal\"}[5m])) * 1000",
+          "legendFormat": "P50 Latency"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service=\"customer-portal\"}[5m])) * 1000",
+          "legendFormat": "P95 Latency"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{service=\"customer-portal\"}[5m])) * 1000",
+          "legendFormat": "P99 Latency"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10
+          }
+        }
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": "traffic",
+      "title": "Request Rate",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\"}[5m]))",
+          "legendFormat": "Total RPS"
+        },
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\",code=~\"2..\"}[5m]))",
+          "legendFormat": "2xx RPS"
+        },
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\",code=~\"4..\"}[5m]))",
+          "legendFormat": "4xx RPS"
+        },
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\",code=~\"5..\"}[5m]))",
+          "legendFormat": "5xx RPS"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 0
+          }
+        }
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": "errors",
+      "title": "Error Rate",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\",code=~\"5..\"}[5m])) / sum(rate(http_requests_total{service=\"customer-portal\"}[5m])) * 100",
+          "legendFormat": "5xx Error Rate"
+        },
+        {
+          "expr": "sum(rate(http_requests_total{service=\"customer-portal\",code=~\"4..\"}[5m])) / sum(rate(http_requests_total{service=\"customer-portal\"}[5m])) * 100",
+          "legendFormat": "4xx Error Rate"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "fillOpacity": 20
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5xx Error Rate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": "saturation",
+      "title": "Saturation Metrics",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total{service=\"customer-portal\"}[5m]) * 100",
+          "legendFormat": "CPU Usage %"
+        },
+        {
+          "expr": "process_resident_memory_bytes{service=\"customer-portal\"} / process_virtual_memory_max_bytes{service=\"customer-portal\"} * 100",
+          "legendFormat": "Memory Usage %"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "percent",
+          "max": 100,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "fillOpacity": 10
+          }
+        }
+      },
+      "options": {
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        },
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      }
+    },
+    {
+      "id": "cpu_usage",
+      "title": "CPU Usage",
+      "type": "gauge",
+      "grid_pos": {
+        "x": 0,
+        "y": 20,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total{service=\"customer-portal\"}[5m]) * 100",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        }
+      },
+      "options": {
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": "memory_usage",
+      "title": "Memory Usage",
+      "type": "gauge",
+      "grid_pos": {
+        "x": 6,
+        "y": 20,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{service=\"customer-portal\"} / 1024 / 1024",
+          "legendFormat": "Memory MB"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "decbytes",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 512000000
+              },
+              {
+                "color": "red",
+                "value": 1024000000
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "network_io",
+      "title": "Network I/O",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 12,
+        "y": 20,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(process_network_receive_bytes_total{service=\"customer-portal\"}[5m])",
+          "legendFormat": "RX Bytes/s"
+        },
+        {
+          "expr": "rate(process_network_transmit_bytes_total{service=\"customer-portal\"}[5m])",
+          "legendFormat": "TX Bytes/s"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "binBps"
+        }
+      }
+    },
+    {
+      "id": "disk_io",
+      "title": "Disk I/O",
+      "type": "timeseries",
+      "grid_pos": {
+        "x": 18,
+        "y": 20,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(process_disk_read_bytes_total{service=\"customer-portal\"}[5m])",
+          "legendFormat": "Read Bytes/s"
+        },
+        {
+          "expr": "rate(process_disk_write_bytes_total{service=\"customer-portal\"}[5m])",
+          "legendFormat": "Write Bytes/s"
+        }
+      ],
+      "field_config": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "binBps"
+        }
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "environment",
+      "type": "query",
+      "query": "label_values(environment)",
+      "current": {
+        "text": "production",
+        "value": "production"
+      },
+      "includeAll": false,
+      "multi": false,
+      "refresh": "on_dashboard_load"
+    },
+    {
+      "name": "instance",
+      "type": "query",
+      "query": "label_values(up{service=\"customer-portal\"}, instance)",
+      "current": {
+        "text": "All",
+        "value": "$__all"
+      },
+      "includeAll": true,
+      "multi": true,
+      "refresh": "on_time_range_change"
+    },
+    {
+      "name": "handler",
+      "type": "query",
+      "query": "label_values(http_requests_total{service=\"customer-portal\"}, handler)",
+      "current": {
+        "text": "All",
+        "value": "$__all"
+      },
+      "includeAll": true,
+      "multi": true,
+      "refresh": "on_time_range_change"
+    }
+  ],
+  "alerts_integration": {
+    "alert_annotations": true,
+    "alert_rules_query": "ALERTS{service=\"customer-portal\"}",
+    "alert_panels": [
+      {
+        "title": "Active Alerts",
+        "type": "table",
+        "query": "ALERTS{service=\"customer-portal\",alertstate=\"firing\"}",
+        "columns": [
+          "alertname",
+          "severity",
+          "instance",
+          "description"
+        ]
+      }
+    ]
+  },
+  "drill_down_paths": {
+    "service_overview": {
+      "from": "service_status",
+      "to": "detailed_health_dashboard",
+      "url": "/d/service-health/customer-portal-health",
+      "params": [
+        "var-service",
+        "var-environment"
+      ]
+    },
+    "error_investigation": {
+      "from": "errors",
+      "to": "error_details_dashboard",
+      "url": "/d/errors/customer-portal-errors",
+      "params": [
+        "var-service",
+        "var-time_range"
+      ]
+    },
+    "latency_analysis": {
+      "from": "latency",
+      "to": "trace_analysis_dashboard",
+      "url": "/d/traces/customer-portal-traces",
+      "params": [
+        "var-service",
+        "var-handler"
+      ]
+    },
+    "capacity_planning": {
+      "from": "saturation",
+      "to": "capacity_dashboard",
+      "url": "/d/capacity/customer-portal-capacity",
+      "params": [
+        "var-service",
+        "var-time_range"
+      ]
+    }
+  }
+}

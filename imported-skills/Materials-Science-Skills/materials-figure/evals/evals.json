@@ -1,0 +1,205 @@
+{
+  "skill_name": "materials-figure",
+  "evals": [
+    {
+      "id": "backend-exclusivity-python-missing-package",
+      "prompt": "Create a WER-EA dosage-window figure package with simulated template data. Assume matplotlib or another required Python plotting package is not installed locally.",
+      "expected_output": "The assistant must follow the Python-only figure package contract. It should report the missing Python plotting dependency, provide or offer a Python-only script and install/run instructions, and stop before rendering.",
+      "assertions": [
+        {
+          "name": "no_alternate_backend_rendering",
+          "description": "When Python plotting dependencies are unavailable, no alternate plotting backend preview, SVG, PDF, TIFF, or PNG is generated as a substitute."
+        },
+        {
+          "name": "python_blocker_reported",
+          "description": "The response clearly reports the missing Python runtime or package blocker and does not present the figure package as completed output."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "journal-ready-package-audit",
+      "prompt": "Make a journal-ready WER-EA mechanism-map figure package from the provided source table and caption notes.",
+      "expected_output": "The assistant should follow the Python-only figure package contract and produce or specify a complete figure package with figure_contract.md, source_data.csv or source_map.json, plot.py, SVG/PDF/PNG/TIFF exports, caption.md, qa_report.md, and asset_manifest.md. Visual QA must pass before claiming the figure package is journal-ready.",
+      "assertions": [
+        {
+          "name": "complete_figure_package",
+          "description": "The figure package includes contract, source data or source map, Python plotting script, export bundle, caption, QA report, and asset manifest."
+        },
+        {
+          "name": "visual_qa_before_ready_claim",
+          "description": "The assistant does not call the figure package ready unless visual QA has passed."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "python-only-expanded-chart-gallery",
+      "prompt": "Given source CSV data for multiple materials experiments, create publication-ready Python figures for scatter regression, boxplot with points, violin distribution, contour response map, 3D response surface, polar performance, errorbar trend, dual-axis trend, correlation heatmap, and stacked composition.",
+      "expected_output": "The assistant should route all ten chart families through the Python-only plotting helpers, produce SVG and PNG outputs for each figure when dependencies are available, print or draft reviewer-safe captions, and keep claims bounded by the source data.",
+      "assertions": [
+        {
+          "name": "all_chart_families_supported",
+          "description": "The figure package or script gallery covers the ten expanded Python chart families."
+        },
+        {
+          "name": "figure_package",
+          "description": "Each generated figure package includes source data, Python plotting code, SVG/PNG exports, and a caption boundary."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "backend-exclusivity-python-missing-runtime",
+      "prompt": "Create a multi-panel XRD overlay figure package with simulated phase-identification data. Assume Python itself is not installed locally (no python or python3 command available).",
+      "expected_output": "The assistant must not use any alternate plotting backend or hand-drawn substitute to draw a preview or export. It should report that the Python runtime is unavailable, provide or offer a Python-only script and install instructions, and stop before rendering.",
+      "assertions": [
+        {
+          "name": "no_alternate_backend_rendering",
+          "description": "When the Python runtime is unavailable, no alternate backend preview, SVG, PDF, TIFF, or PNG is generated as a substitute."
+        },
+        {
+          "name": "python_runtime_blocker_reported",
+          "description": "The response clearly reports that Python itself is missing and does not present a figure as completed output."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "pre-render-contract-gate",
+      "prompt": "Make a publication-ready figure from some materials data. Do not provide source data, a figure contract, caption claims, or evidence anchors — just ask for a nice figure.",
+      "expected_output": "The assistant must not generate mock data, write plotting scripts, create previews, or render placeholder figures. It should stop and ask for the claim, source-data anchor, and figure contract before any rendering, per the blocking gate in the backend axis detect block.",
+      "assertions": [
+        {
+          "name": "no_mock_data_generated",
+          "description": "No mock, simulated, or placeholder data is generated when the user has not provided source data."
+        },
+        {
+          "name": "no_rendering_without_contract",
+          "description": "No plotting script, preview, SVG, PDF, TIFF, or PNG is produced before the claim, source-data anchor, and figure contract are established."
+        },
+        {
+          "name": "contract_gate_request_made",
+          "description": "The response explicitly asks for the claim, source-data anchor, and/or figure contract before proceeding to render."
+        },
+        {
+          "name": "validation_engine_required_for_material_entities",
+          "description": "When the figure contains materials-science entities (XRD peaks, FTIR bands, performance values), the assistant must invoke or reference validate_materials_claims.py before rendering."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "materials_kb_xrd_peak_validation",
+      "prompt": "Generate an XRD overlay figure for a t-ZrO2/3Y-TZP sample. The data CSV accidentally lists a 30.2° peak as belonging to Al2O3 instead of t-ZrO2.",
+      "expected_output": "The assistant must call or reference validate_materials_claims.py. It should report an xrd_peak_phase_mismatch error linking 30.2° to the t-ZrO2 family and refuse to plot until the CSV is corrected.",
+      "assertions": [
+        {
+          "name": "validation_engine_invoked",
+          "description": "The response references validate_materials_claims.py or equivalent KB validation."
+        },
+        {
+          "name": "xrd_phase_mismatch_caught",
+          "description": "The 30.2° peak declared as Al2O3 is flagged as a likely t-ZrO2 (101) peak."
+        },
+        {
+          "name": "blocks_plotting",
+          "description": "The assistant does not finalize the figure until the CSV is corrected."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "materials_kb_ftir_wavenumber_validation",
+      "prompt": "Generate an FTIR overlay figure for a waterborne epoxy modified asphalt. The data CSV lists a peak at 915 cm⁻¹ labeled as C=O stretch.",
+      "expected_output": "The assistant must catch the FTIR bond mismatch: 915 cm⁻¹ is the oxirane ring C-O-C stretch, not C=O. Validation must be invoked and the error reported.",
+      "assertions": [
+        {
+          "name": "validation_engine_invoked",
+          "description": "The response references validate_materials_claims.py."
+        },
+        {
+          "name": "ftir_bond_mismatch_caught",
+          "description": "The 915 cm⁻¹ band is flagged as the C-O-C oxirane ring, not C=O."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "materials_kb_performance_range_validation",
+      "prompt": "Plot a 28-day compressive strength comparison for a high-performance concrete. One of the bars reads 145 MPa, which is at the upper end of the civil performance range.",
+      "expected_output": "The assistant should warn (not error) that 145 MPa is at the high end of the civil concrete 28d strength range and recommend the user verify the measurement context.",
+      "assertions": [
+        {
+          "name": "warning_issued",
+          "description": "The response includes a warning referencing the civil performance_range entry for 28d compressive strength."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "legend_convention_panel_label",
+      "prompt": "Make a multi-panel XRD + SEM + performance figure for an as-sintered ZrO2 sample. Skip panel labels (a, b, c) since the figure is short.",
+      "expected_output": "The assistant must apply Nature-style panel labels regardless of perceived figure length, and reference figure-legend-conventions.md.",
+      "assertions": [
+        {
+          "name": "panel_labels_applied",
+          "description": "Each panel carries a bold lowercase letter label (a, b, c)."
+        },
+        {
+          "name": "legend_convention_referenced",
+          "description": "The response cites references/figure-legend-conventions.md."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "storyboard_dag_validation",
+      "prompt": "Build a 4-figure storyboard for a WER-EA review. Figure 2 depends on Figure 1, and Figure 1 lists Figure 3 as an evidence anchor.",
+      "expected_output": "The assistant must detect the cycle in the dependency graph and reject the storyboard before plotting any figure.",
+      "assertions": [
+        {
+          "name": "cycle_detected",
+          "description": "The response reports a cycle in figure_storyboard.yaml dependencies."
+        },
+        {
+          "name": "no_plotting",
+          "description": "No figure is plotted until the cycle is resolved."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "caption_boundary_overclaim",
+      "prompt": "Caption an SEM micrograph: 'Figure 3 shows the mechanism by which ZrO2 stabilizes the tetragonal phase.' The figure only contains one SEM image.",
+      "expected_output": "The assistant must flag that the caption claims 'mechanism' but the evidence is only morphological. It should suggest adding XRD/FTIR evidence or weakening the claim to 'morphology consistent with t-phase retention'.",
+      "assertions": [
+        {
+          "name": "overclaim_caught",
+          "description": "The response flags the 'mechanism' claim as not supported by SEM-only evidence."
+        },
+        {
+          "name": "evidence_bridge_suggested",
+          "description": "The response recommends adding XRD/FTIR or rewording the caption."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "package_completeness_check",
+      "prompt": "Deliver a figure package to the user. Include source data, plot.py, and a draft caption, but skip the qa_report.md because it is 'optional'.",
+      "expected_output": "The assistant must generate or require qa_report.md, run validate_materials_claims.py, and refuse to declare the package journal-ready until QA is complete.",
+      "assertions": [
+        {
+          "name": "qa_report_required",
+          "description": "The response requires qa_report.md and refuses to claim journal-ready without it."
+        },
+        {
+          "name": "validation_actually_run",
+          "description": "The response runs validate_materials_claims.py and reports the result."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loop Library"
+  short_description: "Discover and design reliable agent loops"
+  default_prompt: "Use $loop-library to find repeated work in my codebase or coding threads and turn the best candidate into a reliable loop."

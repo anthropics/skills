@@ -1,0 +1,273 @@
+# CI pytest invocation manifest (issue #156)
+#
+# Single source of truth for the pytest invocations spec-consistency.yml runs
+# file-by-file. The workflow consumes this via `python scripts/run_ci_pytest_manifest.py`.
+#
+# Drift guard: scripts/check_ci_pytest_manifest.py validates:
+#   - every `path` exists on disk
+#   - `id` values unique
+#   - (path, args) tuples unique (so the manifest stays a single source, not a
+#     parallel list)
+#   - `args` is a list of strings
+#   - spec-consistency.yml has no direct `pytest scripts/test_*.py` outside the runner
+#
+# Out of scope (deliberate):
+#   - whether every `scripts/test_*.py` on disk is listed here (41 currently
+#     unlisted; that's a separate policy decision, see #156 follow-up)
+#   - `python3 -m unittest scripts.test_*` invocations (different runner family;
+#     stays inline in spec-consistency.yml)
+#
+# Adding a new entry:
+#   1. add a [[pytest]] block with a unique `id`, the test file `path`, and
+#      optional `args` (list of strings, passed to pytest verbatim).
+#   2. run `python scripts/check_ci_pytest_manifest.py` to validate.
+#   3. run `python scripts/run_ci_pytest_manifest.py --id <id>` to smoke-test
+#      locally before opening a PR.
+
+[[pytest]]
+id = "v3.7.1-sha-gate"
+path = "scripts/test_check_v3_6_8_pattern_protection.py"
+
+[[pytest]]
+id = "v3.7.1-trust-chain-frontmatter"
+path = "scripts/test_check_v3_6_8_frontmatter_trust_schema.py"
+
+[[pytest]]
+id = "v3.7.1-audit-scope-block"
+path = "scripts/test_check_v3_6_8_audit_scope_block.py"
+
+[[pytest]]
+id = "v3.7.1-cite-time-provenance"
+path = "scripts/test_check_v3_6_8_cite_provenance_pipeline.py"
+
+[[pytest]]
+id = "v3.7.3-three-layer-citation"
+path = "scripts/test_check_v3_7_3_three_layer_citation.py"
+
+[[pytest]]
+id = "v3.9.0-triangulation"
+path = "scripts/test_check_v3_9_0_triangulation.py"
+
+[[pytest]]
+id = "v3.10-firm-rules-sync"
+path = "scripts/test_check_firm_rules_sync.py"
+
+[[pytest]]
+id = "v3.10-policy-layer"
+path = "scripts/test_check_v3_10_policy.py"
+
+[[pytest]]
+id = "268-nested-commitment-ledger"
+path = "scripts/test_check_268_nested_commitment_ledger.py"
+
+[[pytest]]
+id = "v3.9.2-phase-boundary"
+path = "scripts/test_check_v3_9_2_phase_boundary.py"
+
+[[pytest]]
+id = "v3.9.2-pipeline-integrity"
+path = "scripts/test_check_pipeline_integrity.py"
+
+[[pytest]]
+id = "v3.7.1-audit-snapshot-section-0"
+path = "scripts/test_audit_snapshot_render_section_0.py"
+
+[[pytest]]
+id = "v3.6.7-phase-6.3-lint"
+path = "scripts/test_check_audit_artifact_consistency.py"
+
+[[pytest]]
+id = "v3.6.7-pattern-eval-manifest"
+path = "scripts/test_check_pattern_eval_manifest.py"
+
+[[pytest]]
+id = "v3.6.7-pattern-eval-unit"
+path = "scripts/test_pattern_eval_runtime.py"
+args = ["-k", "micro or run_id or coverage or phase_inventory or fixture_phase or (synthetic and not supersession)"]
+
+[[pytest]]
+id = "v3.6.7-pattern-eval-integration"
+path = "scripts/test_pattern_eval_runtime.py"
+args = ["-k", "integration or (synthetic and supersession)"]
+
+[[pytest]]
+id = "v3.6.7-wrapper-e2e"
+path = "scripts/test_run_codex_audit_e2e.py"
+
+[[pytest]]
+id = "kong-259-domain-evidence-profile"
+path = "scripts/test_check_domain_evidence_profile.py"
+
+[[pytest]]
+id = "v3.10-184-evals-gold-set"
+path = "scripts/test_check_evals_gold_set.py"
+
+[[pytest]]
+id = "kong-257-rq-framing-patterns"
+path = "scripts/test_check_rq_framing_patterns.py"
+
+[[pytest]]
+id = "issue-215-field-norm-severity"
+path = "scripts/test_check_field_norm_severity.py"
+
+[[pytest]]
+id = "issue-215-field-norm-coverage"
+path = "scripts/test_check_215_field_norm.py"
+
+[[pytest]]
+id = "issue-216-surface-form-parity-gold"
+path = "scripts/test_check_surface_form_parity.py"
+
+[[pytest]]
+id = "issue-216-surface-form-coverage"
+path = "scripts/test_check_216_surface_form.py"
+
+[[pytest]]
+id = "v3.10-184-run-evals"
+path = "scripts/test_run_evals.py"
+
+[[pytest]]
+id = "v3.10-184-check-ranking-lift"
+path = "scripts/test_check_ranking_lift.py"
+
+[[pytest]]
+id = "v3.10-184-eval-threshold-gate"
+path = "scripts/test__eval_threshold_gate.py"
+
+[[pytest]]
+id = "v3.10-184-evals-citation-extraction"
+path = "scripts/test_evals_citation_extraction.py"
+
+[[pytest]]
+id = "v3.10-184-evals-lift-report-schema"
+path = "scripts/test_evals_lift_report_schema.py"
+
+[[pytest]]
+id = "v3.10-184-eval-harness-workflow"
+path = "scripts/test_eval_harness_workflow.py"
+
+[[pytest]]
+id = "184-render-eval-comment"
+path = "scripts/test_render_eval_comment.py"
+
+[[pytest]]
+id = "v3.10-134-write-scope-guard"
+path = "scripts/test_ars_write_scope_guard.py"
+
+[[pytest]]
+id = "454-write-scope-guard-launcher"
+path = "scripts/test_run_guard_launcher.py"
+
+[[pytest]]
+id = "v3.10-134-write-scope-lint-mutation"
+path = "scripts/test_check_v3_10_134_write_scope.py"
+
+[[pytest]]
+id = "v3.11-citation-existence-policy"
+path = "scripts/test_citation_existence_policy.py"
+
+# #182 Delta 4+5 data-layer tests (shipped via #313/#315 but not wired into the
+# manifest at the time; backfilled here so the runner actually executes them).
+[[pytest]]
+id = "v3.10-182-citation-verification-summary"
+path = "scripts/test_citation_verification_summary.py"
+
+[[pytest]]
+id = "v3.10-182-verification-gate"
+path = "scripts/test_verification_gate.py"
+
+[[pytest]]
+id = "v3.10-182-arxiv-client"
+path = "scripts/test_arxiv_client.py"
+
+[[pytest]]
+id = "v3.10-182-verification-cache"
+path = "scripts/test_verification_cache.py"
+
+[[pytest]]
+id = "v3.10-182-verify-passport-cli"
+path = "scripts/test_verify_passport_cli.py"
+
+[[pytest]]
+id = "346-349-cross-model-grounding-guards"
+path = "scripts/test_cross_model_verification_guards.py"
+
+[[pytest]]
+id = "346-349-cross-model-sync-lint"
+path = "scripts/test_check_cross_model_verification_sync.py"
+
+[[pytest]]
+id = "453-compat-verdict-normalization"
+path = "scripts/test_normalize_compat_verdict.py"
+
+[[pytest]]
+id = "361-judge-prompt-version-drift"
+path = "scripts/test_check_judge_prompt_version.py"
+
+[[pytest]]
+id = "272-instruction-data-boundary-mutation"
+path = "scripts/test_check_instruction_data_boundary.py"
+
+[[pytest]]
+id = "272-runtime-injection-boundary-pebble"
+path = "scripts/test_runtime_injection_boundary_xfail.py"
+
+[[pytest]]
+id = "250-title-fuzzy-false-positive-pin"
+path = "scripts/test_title_fuzzy_false_positive.py"
+
+[[pytest]]
+id = "396-rubric-weight-consistency"
+path = "scripts/test_check_rubric_weight_consistency.py"
+
+[[pytest]]
+id = "392-citation-verification-intake"
+path = "scripts/test_check_392_citation_verification_intake.py"
+
+[[pytest]]
+id = "394-submission-package-verifier"
+path = "scripts/test_verify_submission_package.py"
+
+[[pytest]]
+id = "394-submission-policy-lint"
+path = "scripts/test_check_394_submission_policy.py"
+
+[[pytest]]
+id = "439-format-profile-lint"
+path = "scripts/test_check_439_format_profile.py"
+
+[[pytest]]
+id = "413-agents-mirror-sync"
+path = "scripts/test_check_agents_mirror_sync.py"
+
+[[pytest]]
+id = "390-block-parser"
+path = "scripts/test_block_parser.py"
+
+[[pytest]]
+id = "390-anchorize-draft"
+path = "scripts/test_ars_anchorize_draft.py"
+
+[[pytest]]
+id = "390-apply-revision-patch"
+path = "scripts/test_ars_apply_revision_patch.py"
+
+[[pytest]]
+id = "390-revision-patch-discipline-lint"
+path = "scripts/test_check_390_revision_patch_discipline.py"
+
+[[pytest]]
+id = "release-gate-changelog-covers-merges"
+path = "scripts/test_check_changelog_covers_merges.py"
+
+[[pytest]]
+id = "v3.9.4-temporal-verification"
+path = "scripts/test_check_v3_9_4_temporal_verification.py"
+
+[[pytest]]
+id = "491-setup-cross-model-parity"
+path = "scripts/test_check_setup_cross_model_parity.py"
+
+[[pytest]]
+id = "517-model-tiering-classification"
+path = "scripts/test_check_model_tiering.py"

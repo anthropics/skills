@@ -1,0 +1,79 @@
+# Fixture: Systematic Review — Full PRISMA-trAIce + Full RAISE, all pass
+# Expected validator result: exit 0, overall_decision = pass, user_action_required = false
+# No CA-3 warning (evidence[] is non-empty).  No CA-4 warning (all principles have evidence).
+
+mode: systematic_review
+stage: "4.5"
+generated_at: "2026-04-20T09:00:00Z"
+
+prisma_trAIce:
+  items_total: 17
+  by_tier:
+    mandatory:
+      total: 10
+      pass: 10
+      fail: []
+    highly_recommended:
+      total: 1
+      pass: 1
+      fail: []
+    recommended:
+      total: 3
+      pass: 3
+      fail: []
+    optional:
+      total: 3
+      pass: 3
+      fail: []
+  block_decision: pass
+
+raise:
+  mode: full
+  principles:
+    human_oversight: pass
+    transparency: pass
+    reproducibility: pass
+    fit_for_purpose: pass
+  principle_evidence:
+    human_oversight:
+      - "Section 2.3: Two independent reviewers validated all AI-assisted title/abstract screening decisions."
+      - "PROSPERO CRD42026999001: protocol pre-registered with explicit human-review checkpoints at each stage."
+    transparency:
+      - "Appendix A: full prompt library disclosed; model version (claude-sonnet-4-6, 2026-02-01) logged."
+      - "Methods 3.1: AI tool names, versions, and date of use reported per PRISMA-trAIce T1 guidance."
+    reproducibility:
+      - "OSF repository osf.io/xyz99: search strings, inclusion/exclusion decisions, and extraction sheets archived."
+      - "Methods 3.4: seed phrases and temperature settings documented; results replicable with provided scripts."
+    fit_for_purpose:
+      - "Methods 2.1: AI screening calibrated against 200-abstract gold set; Cohen's kappa = 0.87 before deployment."
+      - "Discussion 5.2: AI limitations for this evidence base explicitly acknowledged and bounded."
+  roles:
+    evidence_synthesists:
+      - "Lead author conducted final arbitration on all AI-flagged conflicts (n = 34)."
+    ai_development_teams:
+      - "Used published claude-sonnet-4-6 API; no custom fine-tuning; model card reviewed."
+    methodologists:
+      - "Statistical reviewer confirmed meta-analytic model selection was made independently of AI outputs."
+    publishers:
+      - "Submitted to JAMA Systematic Reviews under AI-disclosure policy v2025."
+    users:
+      - "All three authors completed PRISMA-trAIce training module before study start."
+    trainers:
+      - "Internal journal club session on AI-assisted SR conducted 2026-01-15 (slides archived)."
+    organisations:
+      - "Institutional IRB waiver obtained (REF-2026-012); institutional AI use policy version 3.1 applied."
+    funders:
+      - "Grant NSC-2026-0045: funder aware of AI assistance; no restrictions on disclosure."
+  block_decision: pass
+
+overall_decision: pass
+user_action_required: false
+
+evidence:
+  - "Appendix A (prompt library, model versions)"
+  - "OSF osf.io/xyz99 (data and scripts)"
+  - "Methods 2.1 (calibration kappa)"
+  - "Methods 3.1 (AI disclosure)"
+  - "Section 2.3 (human review checkpoints)"
+
+upstream_sync_status: current

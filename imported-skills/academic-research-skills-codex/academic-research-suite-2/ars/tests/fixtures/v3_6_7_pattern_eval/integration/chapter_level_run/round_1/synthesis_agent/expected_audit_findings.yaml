@@ -1,0 +1,19 @@
+run_id: 2026-04-30T15-00-00Z-f101
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-101
+    severity: P1
+    dimension: "3.1"
+    file: round_1/synthesis_agent/deliverable.md
+    line: 8
+    description: "Cross-national QA claim mis-anchored to Smith (2024); Smith covers North American institutions only. Should anchor to Lin (2023)."
+    suggested_fix: "Re-anchor citation from Smith (2024) to Lin (2023) and add one-line anchor justification per A3 protection rule."
+generated_at: "2026-04-30T15:00:58.471Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

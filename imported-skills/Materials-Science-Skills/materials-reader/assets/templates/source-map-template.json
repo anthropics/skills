@@ -1,0 +1,35 @@
+{
+  "paper_id": "",
+  "source_path_or_url": "",
+  "extraction_status": "",
+  "anchors": [
+    {
+      "source_id": "EX-001",
+      "page": null,
+      "section": "",
+      "anchor_type": "text|figure|table|method|result|limitation",
+      "anchor_label": "",
+      "original_excerpt": "",
+      "chinese_understanding": "",
+      "claim_supported": "",
+      "evidence_layer": "literature screening|bonding performance|emulsion stability|rheology|microstructure|chemistry|durability|field/service",
+      "boundary": "",
+      "borrowable_writing": "",
+      "table_destination": "literature-screening-table|mechanism-evidence-table|test-method-table|performance-comparison-table|durability-evidence-table|journal-positioning-table",
+      "figure_destination": "mechanism map|evidence heatmap|material-system map|performance-mechanism boundary|literature-screening flow|graphical abstract",
+      "downstream_files": [
+        "paper.md",
+        "translation_notes.md",
+        "figure_table_cards.md",
+        "mechanism_evidence_table.md",
+        "dosage_window_table.md",
+        "review_handoff.md",
+        "obsidian_note.md",
+        "assets/"
+      ],
+      "linked_card_ids": [],
+      "linked_mechanism_ids": [],
+      "linked_dosage_ids": []
+    }
+  ]
+}

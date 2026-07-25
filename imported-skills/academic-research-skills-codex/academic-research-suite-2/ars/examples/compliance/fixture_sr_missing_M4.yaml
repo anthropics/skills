@@ -1,0 +1,70 @@
+# Fixture: Systematic Review — PRISMA-trAIce M4 (Input Data) fail → block at Stage 2.5
+# Expected validator result: exit 0 (schema valid), overall_decision = block
+# CA-3 does NOT fire (not all 17 pass).
+# CA-4 may fire for transparency and reproducibility (warn, empty evidence) — acceptable.
+
+mode: systematic_review
+stage: "2.5"
+generated_at: "2026-04-20T09:15:00Z"
+
+prisma_trAIce:
+  items_total: 17
+  by_tier:
+    mandatory:
+      total: 10
+      pass: 9
+      fail:
+        - M4
+      gaps:
+        - item_id: M4
+          reason: "[MATERIAL GAP] Input data sources fed to the AI screening tool are not described. The manuscript reports AI-assisted title/abstract screening but does not identify which database exports were used as input, preventing reproducibility assessment."
+          evidence_path: "passport/prisma_trace/M4_input_data_gap.md"
+    highly_recommended:
+      total: 1
+      pass: 1
+      fail: []
+    recommended:
+      total: 3
+      pass: 3
+      fail: []
+    optional:
+      total: 3
+      pass: 3
+      fail: []
+  block_decision: block
+
+raise:
+  mode: full
+  principles:
+    human_oversight: pass
+    transparency: warn
+    reproducibility: warn
+    fit_for_purpose: pass
+  principle_evidence:
+    human_oversight:
+      - "Methods 2.4: dual-reviewer arbitration documented for all AI-flagged conflicts."
+    transparency: []
+    reproducibility: []
+    fit_for_purpose:
+      - "Methods 2.1: screening tool validated against 150-abstract pilot set before deployment."
+  roles:
+    evidence_synthesists:
+      - "[GAP] AI input data gap (M4) means AI contribution to evidence synthesis cannot be fully audited."
+    ai_development_teams: []
+    methodologists: []
+    publishers: []
+    users: []
+    trainers: []
+    organisations: []
+    funders: []
+  block_decision: warn
+
+overall_decision: block
+user_action_required: true
+
+evidence:
+  - "passport/prisma_trace/M4_input_data_gap.md"
+  - "Methods 2.4: dual-reviewer arbitration record"
+  - "Methods 2.1: pilot-set validation log"
+
+upstream_sync_status: current

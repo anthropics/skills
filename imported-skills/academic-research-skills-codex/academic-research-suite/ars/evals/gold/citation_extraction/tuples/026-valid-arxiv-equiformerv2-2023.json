@@ -1,0 +1,39 @@
+{
+  "tuple_id": "026-valid-arxiv-equiformerv2-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Liao2023EquiformerV2",
+    "title": "EquiformerV2: Improved Equivariant Transformer for Scaling to Higher-Degree Representations",
+    "authors": [
+      {
+        "family": "Liao",
+        "given": "Yi-Lun"
+      },
+      {
+        "family": "Wood",
+        "given": "Brandon"
+      },
+      {
+        "family": "Das",
+        "given": "Abhishek"
+      },
+      {
+        "family": "Smidt",
+        "given": "Tess"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2306.12059",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2306.12059",
+  "ref_slug": "liao-2023-equiformerv2",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

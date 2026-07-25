@@ -1,0 +1,56 @@
+{
+  "contract_id": "reviewer/reviewer_methodology_focus/v1",
+  "mode": "reviewer_methodology_focus",
+  "stage": "reviewer_methodology_focus_review",
+  "baseline_version": "v3.6.2",
+  "panel_size": 2,
+  "acceptance_dimensions": [
+    {
+      "id": "D1",
+      "name": "methodology_rigor",
+      "description": "Study design, data handling, statistical reporting, and reproducibility affordances meet the field's peer-review bar.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D2",
+      "name": "writing_and_structure",
+      "description": "Manuscript organisation, clarity of exposition, and adherence to venue conventions for method-focused papers.",
+      "priority": "normal"
+    }
+  ],
+  "measurement_procedure": {
+    "reviewer_must_output_before_paper": ["contract_paraphrase", "scoring_plan"],
+    "scoring_plan_schema": {
+      "required": [
+        "dimension_id",
+        "what_to_look_for",
+        "what_triggers_block",
+        "what_triggers_warn"
+      ]
+    },
+    "paraphrase_minimum_dimensions": "all"
+  },
+  "failure_conditions": [
+    {
+      "condition_id": "F1",
+      "severity": 90,
+      "cross_reviewer_quantifier": "any",
+      "expression": "D1 scores 'block'",
+      "action": "editorial_decision=reject_or_major_revision"
+    },
+    {
+      "condition_id": "F2",
+      "severity": 70,
+      "cross_reviewer_quantifier": "any",
+      "expression": "D1 scores 'warn'",
+      "action": "editorial_decision=major_revision"
+    },
+    {
+      "condition_id": "F0",
+      "severity": 10,
+      "cross_reviewer_quantifier": "all",
+      "expression": "D1 scores 'pass'",
+      "action": "editorial_decision=accept"
+    }
+  ]
+}

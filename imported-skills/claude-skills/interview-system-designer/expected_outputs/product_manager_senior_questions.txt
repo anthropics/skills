@@ -1,0 +1,177 @@
+Interview Question Bank: Product Manager (Senior Level)
+======================================================================
+Generated: 2026-02-16T13:27:41.303329
+Total Questions: 20
+Question Types: technical, behavioral, situational
+Target Competencies: strategy, analytics, business_strategy, product_strategy, stakeholder_management, p&l_responsibility, leadership, team_leadership, user_research, data_analysis
+
+INTERVIEW QUESTIONS
+--------------------------------------------------
+
+1. What challenges have you faced related to p&l responsibility and how did you overcome them?
+   Competency: P&L Responsibility
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+2. Analyze conversion funnel data to identify the biggest drop-off point and propose solutions.
+   Competency: Data Analysis
+   Type: Analytical
+   Time Limit: 45 minutes
+
+3. What challenges have you faced related to team leadership and how did you overcome them?
+   Competency: Team Leadership
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+4. Design a go-to-market strategy for a new B2B SaaS product entering a competitive market.
+   Competency: Product Strategy
+   Type: Strategic
+   Time Limit: 60 minutes
+
+5. What challenges have you faced related to business strategy and how did you overcome them?
+   Competency: Business Strategy
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+6. Describe your experience with business strategy in your current or previous role.
+   Competency: Business Strategy
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+7. Describe your experience with team leadership in your current or previous role.
+   Competency: Team Leadership
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+8. Describe a situation where you had to influence someone without having direct authority over them.
+   Competency: Leadership
+   Type: Behavioral
+   Focus Areas: influence, persuasion, stakeholder_management
+
+9. Given a dataset of user activities, calculate the daily active users for the past month.
+   Competency: Data Analysis
+   Type: Analytical
+   Time Limit: 30 minutes
+
+10. Describe your experience with analytics in your current or previous role.
+   Competency: Analytics
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+11. How would you prioritize features for a mobile app with limited engineering resources?
+   Competency: Product Strategy
+   Type: Case_Study
+   Time Limit: 45 minutes
+
+12. Describe your experience with stakeholder management in your current or previous role.
+   Competency: Stakeholder Management
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+13. What challenges have you faced related to stakeholder management and how did you overcome them?
+   Competency: Stakeholder Management
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+14. What challenges have you faced related to user research and how did you overcome them?
+   Competency: User Research
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+15. What challenges have you faced related to strategy and how did you overcome them?
+   Competency: Strategy
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+16. Describe your experience with user research in your current or previous role.
+   Competency: User Research
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+17. Describe your experience with p&l responsibility in your current or previous role.
+   Competency: P&L Responsibility
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+18. Describe your experience with strategy in your current or previous role.
+   Competency: Strategy
+   Type: Experience
+   Focus Areas: experience_depth, practical_application
+
+19. Tell me about a time when you had to lead a team through a significant change or challenge.
+   Competency: Leadership
+   Type: Behavioral
+   Focus Areas: change_management, team_motivation, communication
+
+20. What challenges have you faced related to analytics and how did you overcome them?
+   Competency: Analytics
+   Type: Challenge_Based
+   Focus Areas: problem_solving, learning_from_experience
+
+
+SCORING RUBRICS
+--------------------------------------------------
+Sample Scoring Criteria (behavioral questions):
+
+Situation Clarity:
+  4: Clear, specific situation with relevant context and stakes
+  3: Good situation description with adequate context
+  2: Situation described but lacks some specifics
+  1: Vague or unclear situation description
+
+Action Quality:
+  4: Specific, thoughtful actions showing strong competency
+  3: Good actions demonstrating competency
+  2: Adequate actions but could be stronger
+  1: Weak or inappropriate actions
+
+Result Impact:
+  4: Significant positive impact with measurable results
+  3: Good positive impact with clear outcomes
+  2: Some positive impact demonstrated
+  1: Little or no positive impact shown
+
+Self Awareness:
+  4: Excellent self-reflection, learns from experience, acknowledges growth areas
+  3: Good self-awareness and learning orientation
+  2: Some self-reflection demonstrated
+  1: Limited self-awareness or reflection
+
+
+FOLLOW-UP PROBE EXAMPLES
+--------------------------------------------------
+Sample follow-up questions:
+  • Can you provide more specific details about your approach?
+  • What would you do differently if you had to do this again?
+  • What challenges did you face and how did you overcome them?
+
+
+USAGE GUIDELINES
+--------------------------------------------------
+Interview Flow:
+  • Warm Up: Start with 1-2 easier questions to build rapport
+  • Core Assessment: Focus majority of time on core competency questions
+  • Closing: End with questions about candidate's questions/interests
+
+Time Management:
+  • Technical Questions: Allow extra time for coding/design questions
+  • Behavioral Questions: Keep to time limits but allow for follow-ups
+  • Total Recommendation: 45-75 minutes per interview round
+
+Common Mistakes to Avoid:
+  • Don't ask all questions mechanically
+  • Don't skip follow-up questions
+  • Don't forget to assess cultural fit alongside competencies
+
+
+CALIBRATION EXAMPLES
+--------------------------------------------------
+Question: What challenges have you faced related to p&l responsibility and how did you overcome them?
+
+Sample Answer Quality Levels:
+  Poor Answer (Score 1-2):
+    Issues: Vague response, Limited evidence of competency, Poor structure
+  Good Answer (Score 3):
+    Strengths: Clear structure, Demonstrates competency, Adequate detail
+  Great Answer (Score 4):
+    Strengths: Exceptional detail, Strong evidence, Strategic thinking, Goes beyond requirements

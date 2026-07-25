@@ -1,0 +1,25 @@
+literature_corpus:
+- adapter_name: folder_scan.py
+  adapter_version: 1.1.0
+  authors:
+  - family: Chen
+  citation_key: chen2024aiassessment
+  obtained_at: '1970-01-01T00:00:00Z'
+  obtained_via: folder-scan
+  source_pointer: 'file:///FIXTURE/STRIPPED'
+  title: Chen2024 AIAssessment
+  venue_type: unknown
+  venue_type_provenance: unknown
+  year: 2024
+- adapter_name: folder_scan.py
+  adapter_version: 1.1.0
+  authors:
+  - family: Wang
+  citation_key: wang2023formative
+  obtained_at: '1970-01-01T00:00:00Z'
+  obtained_via: folder-scan
+  source_pointer: 'file:///FIXTURE/STRIPPED'
+  title: Wang 2023 formative feedback
+  venue_type: unknown
+  venue_type_provenance: unknown
+  year: 2023

@@ -1,0 +1,42 @@
+{
+  "tco_analysis": {
+    "technology": "AWS",
+    "team_size": 10,
+    "timeline_years": 5,
+    "initial_costs": {
+      "licensing": 0,
+      "training_hours_per_dev": 40,
+      "developer_hourly_rate": 100,
+      "training_materials": 1000,
+      "migration": 50000,
+      "setup": 10000,
+      "tooling": 5000
+    },
+    "operational_costs": {
+      "annual_licensing": 0,
+      "monthly_hosting": 5000,
+      "annual_support": 20000,
+      "maintenance_hours_per_dev_monthly": 20
+    },
+    "scaling_params": {
+      "initial_users": 5000,
+      "annual_growth_rate": 0.30,
+      "initial_servers": 10,
+      "cost_per_server_monthly": 300
+    },
+    "productivity_factors": {
+      "productivity_multiplier": 1.2,
+      "time_to_market_reduction_days": 15,
+      "avg_feature_time_days": 45,
+      "avg_feature_value": 15000,
+      "technical_debt_percentage": 0.12,
+      "vendor_lock_in_risk": "medium",
+      "security_incidents_per_year": 0.3,
+      "avg_security_incident_cost": 30000,
+      "downtime_hours_per_year": 4,
+      "downtime_cost_per_hour": 8000,
+      "annual_turnover_rate": 0.12,
+      "cost_per_new_hire": 35000
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "skill_name": "materials-polishing",
+  "evals": [
+    {
+      "id": "claim-strength-downgrade-weak-evidence",
+      "prompt": "Please polish this paragraph: 'The waterborne epoxy modified emulsified asphalt significantly improves bonding performance. The mechanism proves that epoxy curing enhances the interface adhesion. This is the first study to demonstrate field-ready sustainable tack coat materials.'",
+      "expected_output": "The assistant must downgrade 'significantly improves' to 'improves' (no p-value provided), 'proves' to 'suggests' or 'is consistent with' (only performance data, not direct mechanism proof), 'first' should be softened unless verified, 'field-ready' should be removed (no field data), and 'sustainable' should be qualified or removed (no LCA). The output must preserve all quantitative data and test conditions from the original.",
+      "assertions": [
+        {
+          "name": "verb_downgrade_applied",
+          "description": "Strong causal verbs ('proves', 'confirms', 'demonstrates') are downgraded to hedged alternatives ('suggests', 'is consistent with', 'may indicate') when no direct mechanism evidence is stated."
+        },
+        {
+          "name": "data_preserved",
+          "description": "All quantitative data, units, test conditions, and specific material names from the original text are preserved exactly."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "chinese-to-english-anti-literal",
+      "prompt": "请润色这段中译英学术文本：'The waterborne epoxy has important significance for improving the bonding performance of emulsified asphalt. The results showed that the modified asphalt has excellent comprehensive performance and is a green material that can be promoted and applied in engineering.'",
+      "expected_output": "The assistant must eliminate literal translation patterns: 'has important significance' -> rephrased naturally, 'comprehensive performance' -> specific performance metrics or 'overall performance', 'green material' -> removed or qualified with environmental boundary, 'promoted and applied in engineering' -> rephrased as 'shows potential for engineering application'. The output should read like natural English academic prose.",
+      "assertions": [
+        {
+          "name": "no_literal_chinese",
+          "description": "Common Chinese-to-English literal patterns ('has important significance', 'comprehensive performance', 'green material', 'promoted and applied') are eliminated or rephrased."
+        },
+        {
+          "name": "preserve_author_intent",
+          "description": "The author's core meaning about improved bonding and engineering applicability is preserved despite the language changes."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "journal-terminology-cbm",
+      "prompt": "Polish this abstract for CBM: 'The novel composite material exhibited significant enhancement in mechanical properties. The microstructural analysis confirmed the proposed mechanism. The material demonstrates excellent durability under harsh environmental conditions.'",
+      "expected_output": "The assistant should use CBM-appropriate practical engineering language: avoid 'novel' without verification, provide specific mechanical property names (compressive strength, tensile strength, bonding strength, etc.), specify which microstructural technique (SEM, XRD, FTIR, etc.), and specify environmental conditions (temperature, moisture, UV, etc.). The output should be precise and engineering-focused rather than generic.",
+      "assertions": [
+        {
+          "name": "cbm_practical_language",
+          "description": "The output uses CBM-style practical engineering language with specific material properties, test methods, and conditions rather than generic praise."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "preserve-data-precision",
+      "prompt": "Polish this results paragraph: 'The bonding strength was 0.55 MPa at 10% epoxy content, which was 28% higher than the control (0.43 MPa). After moisture conditioning at 60 °C for 48 h, the wet bonding strength decreased to 0.42 MPa (24% retention ratio). The FTIR spectra showed a decrease in the oxirane peak at 915 cm⁻¹.'",
+      "expected_output": "The assistant must preserve ALL quantitative data exactly: 0.55 MPa, 10%, 28%, 0.43 MPa, 60 °C, 48 h, 0.42 MPa, 24%, 915 cm⁻¹. Units must remain identical. Only sentence structure, flow, and academic tone should be improved.",
+      "assertions": [
+        {
+          "name": "numbers_preserved",
+          "description": "Every numerical value (0.55, 10%, 28%, 0.43, 60, 48, 0.42, 24%, 915) in the output matches the original exactly."
+        },
+        {
+          "name": "units_preserved",
+          "description": "All units (MPa, %, °C, h, cm⁻¹) are preserved without conversion or abbreviation change."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "fast-path-bounded-paragraph",
+      "prompt": "Polish this sentence for clarity: 'The bonding strength of the modified emulsion was 0.55 MPa at 25 °C.'",
+      "expected_output": "The assistant should perform a bounded local polish without asking for a full manuscript, terminology ledger, argument map, or paper-production workflow. The value 0.55 MPa and condition 25 °C must remain unchanged.",
+      "assertions": [
+        {
+          "name": "bounded_fast_path",
+          "description": "The response directly polishes the bounded sentence without launching document-scale setup."
+        },
+        {
+          "name": "fast_path_data_preserved",
+          "description": "The response preserves 0.55 MPa and 25 °C exactly."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "mechanism-risk-on-demand",
+      "prompt": "Polish this claim: 'The increase in bonding strength proves that epoxy curing formed a complete interfacial network.' No spectroscopy or microscopy evidence is available.",
+      "expected_output": "The assistant must apply claim-strength guidance, replace proof language with a bounded interpretation, and flag the missing direct mechanism evidence. It must not retain 'proves' or 'complete interfacial network' as established facts.",
+      "assertions": [
+        {
+          "name": "claim_strength_condition_triggered",
+          "description": "The response behaves as if the claim-strength ladder was loaded for risky causal wording."
+        },
+        {
+          "name": "mechanism_boundary_visible",
+          "description": "The missing spectroscopy or microscopy evidence remains visible."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "terminology-ledger-multi-paragraph",
+      "prompt": "Polish these two paragraphs and standardize terminology. The source alternates among 'waterborne epoxy modified emulsified asphalt', 'WEMEA', 'WER-EA', and 'epoxy asphalt emulsion' for the same material.",
+      "expected_output": "The assistant must treat this as document-scale terminology work, select one canonical term and abbreviation, state the normalization decision, and use it consistently across both paragraphs without inventing a new material name.",
+      "assertions": [
+        {
+          "name": "terminology_ledger_condition_triggered",
+          "description": "The response establishes a canonical term for the multi-paragraph task."
+        },
+        {
+          "name": "canonical_term_consistent",
+          "description": "The same canonical material name and abbreviation are used throughout."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "evidence-contract-complex-claim",
+      "prompt": "Polish this conclusion: 'The material is durable, sustainable, and ready for pavement construction because wet bonding strength remained 75% after one moisture-conditioning cycle.'",
+      "expected_output": "The assistant must separate the measured moisture-retention result from broader durability, sustainability, and field-readiness claims. It should preserve 75%, identify missing durability breadth, LCA boundary, and constructability or field evidence, and avoid inventing those inputs.",
+      "assertions": [
+        {
+          "name": "evidence_contract_condition_triggered",
+          "description": "Performance, sustainability, and applicability claims are checked against distinct evidence requirements."
+        },
+        {
+          "name": "complex_claims_bounded",
+          "description": "The output keeps 75% but bounds durability, sustainability, and field-readiness language."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "citation-ethics-on-demand",
+      "prompt": "Polish this literature sentence and keep the citation honest: 'Zhang et al. proved that all epoxy-modified asphalt systems are environmentally friendly [12].' The source is a review article and no LCA data are supplied.",
+      "expected_output": "The assistant must preserve citation [12], avoid attributing universal proof to a review article, flag the need to verify the original evidence, and remove or bound the unsupported environmental claim.",
+      "assertions": [
+        {
+          "name": "citation_ethics_condition_triggered",
+          "description": "The response checks attribution, source depth, and sustainability evidence."
+        },
+        {
+          "name": "citation_marker_preserved",
+          "description": "Citation marker [12] is preserved while its claim is corrected."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "weakness-routing-paper-production",
+      "prompt": "This paragraph failed the manuscript gate because claim strength exceeds the available performance-only evidence. Polish it and return the paper-production handoff needed for regression checking.",
+      "expected_output": "The assistant must polish the claim conservatively and produce a weakness-routing handoff containing the responsible route, required fix, expected artifact, and regression check. It must not load or emit paper-production routing for ordinary local edits.",
+      "assertions": [
+        {
+          "name": "weakness_routing_condition_triggered",
+          "description": "The paper-production request produces an explicit routed weakness and regression check."
+        },
+        {
+          "name": "paper_production_scope_respected",
+          "description": "Weakness routing is used because the prompt explicitly requests a gate handoff."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "slides": [
+    {
+      "title": "Title",
+      "bullets": ["Topic: {title}", "Presenter: {presenter}", "Date: {date}"]
+    },
+    {
+      "title": "Engineering Problem",
+      "bullets": ["What fails in service?", "Why current solutions are insufficient?", "Why this matters for civil engineering?"]
+    },
+    {
+      "title": "Material Design",
+      "bullets": ["Base material:", "Modifier:", "Dosage/design variable:", "Expected mechanism:"]
+    },
+    {
+      "title": "Experiment Matrix",
+      "bullets": ["Preparation:", "Workability/stability:", "Mechanical/bonding test:", "Durability/service test:", "Microstructure/mechanism:"]
+    },
+    {
+      "title": "Key Result",
+      "bullets": ["Claim:", "Evidence:", "Reviewer-safe takeaway:"]
+    },
+    {
+      "title": "Mechanism",
+      "bullets": ["Direct evidence:", "Inference:", "Boundary:"]
+    },
+    {
+      "title": "Limitations",
+      "bullets": ["Missing evidence:", "Scope boundary:", "Next experiment:"]
+    },
+    {
+      "title": "Next Work",
+      "bullets": ["Short-term task:", "Paper angle:", "Submission target:"]
+    }
+  ]
+}

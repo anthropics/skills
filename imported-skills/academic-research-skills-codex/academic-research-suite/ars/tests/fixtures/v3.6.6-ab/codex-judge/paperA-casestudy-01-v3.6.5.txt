@@ -1,0 +1,3 @@
+STUB — fixture data populate commit replaces this with the real codex gpt-5.5 + xhigh verdict-only judge full-text output for paperA-casestudy-01 v3.6.5 baseline.
+
+Per §6.3, this file holds the H1 (acceptance dimension pass rate per-paper verdict) and H3 (deduped self-detected issue count verdict) judge full text run against the v3.6.5 baseline output. Expected size when populated: ~150-400 KB. Paper-C is exempt from this judge per §6.2 paper-C must-not-have rules.

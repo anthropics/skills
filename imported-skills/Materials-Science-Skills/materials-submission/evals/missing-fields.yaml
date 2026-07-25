@@ -1,0 +1,7 @@
+# Test manifest for eval: missing required fields
+target_journal: cbm
+article_type: research-article
+title: ""
+corresponding_author: ""
+data_availability_status: ready
+live_verification_acknowledged: false

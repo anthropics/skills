@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/drayline/rootnode-skills/schemas/cc-design-brief.schema.json",
+  "title": "CC Design Brief",
+  "description": "Schema for the YAML front-matter of {project_code}_design_brief.md \u2014 the grounding artifact for cc-design Skill conversations. Authored by the rootnode-cc-design Skill via the 5-question interview, or by the rootnode-profile-builder Skill if that flow is preferred. Brief body is free-form Markdown below the front-matter.",
+  "type": "object",
+  "required": [
+    "project_name",
+    "current_state",
+    "tech_surface",
+    "governance_state",
+    "authority_constraints",
+    "verification_surface",
+    "last_updated"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "project_name": {
+      "type": "string",
+      "description": "Human-readable project name (the delivery project this brief grounds).",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "project_code": {
+      "type": "string",
+      "description": "Optional short code for the project, used as filename prefix per Aaron's working preferences (e.g., 'rt', 'mc', 'rsa'). Lowercase, kebab- or snake-case, no spaces.",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "maxLength": 32
+    },
+    "current_state": {
+      "type": "string",
+      "description": "Where the project is in its lifecycle. Used by the Skill to calibrate output (e.g., a greenfield project skips the W1 engine-state-snapshot section in CLAUDE.md).",
+      "enum": [
+        "greenfield",
+        "in-progress",
+        "shipped",
+        "maintenance"
+      ]
+    },
+    "tech_surface": {
+      "type": "array",
+      "description": "Primary tech stack \u2014 languages, frameworks, key dependencies, infrastructure platforms. Used by the Skill to tailor recommendations (e.g., language-specific lint hooks, framework-specific test runners).",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "minItems": 1,
+      "maxItems": 30
+    },
+    "governance_state": {
+      "type": "object",
+      "description": "Snapshot of the project's existing CC governance artifacts. Used by the Skill to determine whether DESIGN, EVOLVE, or AUDIT mode is appropriate.",
+      "required": [
+        "claude_md",
+        "skills",
+        "scope_rules"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "claude_md": {
+          "type": "string",
+          "description": "Status of the project's CLAUDE.md.",
+          "enum": [
+            "none",
+            "exists",
+            "needs-update"
+          ]
+        },
+        "skills": {
+          "type": "integer",
+          "description": "Count of custom Skills in the project's .claude/skills/ directory.",
+          "minimum": 0
+        },
+        "scope_rules": {
+          "type": "string",
+          "description": "Maturity of the project's scope-authorization framework (in-scope / in-scope-with-notification / out-of-scope lists, halt-and-escalate triggers).",
+          "enum": [
+            "none",
+            "partial",
+            "mature"
+          ]
+        },
+        "subagents": {
+          "type": "integer",
+          "description": "Optional: count of custom subagents in .claude/agents/.",
+          "minimum": 0
+        },
+        "hooks": {
+          "type": "integer",
+          "description": "Optional: count of configured hook entries in .claude/settings.json.",
+          "minimum": 0
+        },
+        "rules_files": {
+          "type": "integer",
+          "description": "Optional: count of files in .claude/rules/.",
+          "minimum": 0
+        },
+        "mcp_servers": {
+          "type": "integer",
+          "description": "Optional: count of configured MCP servers in .mcp.json.",
+          "minimum": 0
+        }
+      }
+    },
+    "runtime_tooling": {
+      "type": "object",
+      "description": "Status of the rootnode runtime Skills (handoff-trigger-check, critic-gate, mode-router) installed in the project. Skill recommendations are gap-driven; this captures the baseline.",
+      "additionalProperties": false,
+      "properties": {
+        "handoff_gate": {
+          "type": "string",
+          "description": "Status of the rootnode-handoff-trigger-check Skill (CP-side or CC-side, depending on deployment).",
+          "enum": [
+            "none",
+            "configured",
+            "active"
+          ]
+        },
+        "critic_gate": {
+          "type": "string",
+          "description": "Status of the rootnode-critic-gate Skill (CC-side).",
+          "enum": [
+            "none",
+            "configured",
+            "active"
+          ]
+        },
+        "mode_router": {
+          "type": "string",
+          "description": "Status of the rootnode-mode-router Skill (CC-side).",
+          "enum": [
+            "none",
+            "configured",
+            "active"
+          ]
+        },
+        "profile_builder": {
+          "type": "string",
+          "description": "Optional: status of the rootnode-profile-builder Skill (CP-side).",
+          "enum": [
+            "none",
+            "configured",
+            "active"
+          ]
+        }
+      }
+    },
+    "authority_constraints": {
+      "type": "string",
+      "description": "Free-text summary of what the agent must NOT modify autonomously, or 'see brief body' if the constraints require detail beyond the front-matter. Source-of-truth lives in the brief body if the field value is 'see brief body'.",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "verification_surface": {
+      "type": "string",
+      "description": "Free-text summary of how correctness is checked (unit tests, integration tests, manual review, LLM judge, smoke scripts, runtime monitoring), or 'see brief body' if detail is required. 'Tests' alone is too vague \u2014 be specific about what runs and what it validates.",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "ISO 8601 date (YYYY-MM-DD) of the most recent brief update. Used to detect stale briefs (>90 days triggers refresh prompt).",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "brief_version": {
+      "type": "string",
+      "description": "Optional: semantic version of the brief itself (e.g., '1.0', '1.1'). Useful when briefs are versioned alongside the project.",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "ecosystem_position": {
+      "type": "object",
+      "description": "Optional: cross-project context. Used when the project depends on or is depended on by other projects in the Drayline ecosystem.",
+      "additionalProperties": false,
+      "properties": {
+        "depends_on": {
+          "type": "array",
+          "description": "Project codes this project depends on.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "depended_on_by": {
+          "type": "array",
+          "description": "Project codes that depend on this project.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "shared_artifacts": {
+          "type": "array",
+          "description": "Cross-project shared artifacts this project consumes (e.g., shared_BRAND_BRIEF.md).",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

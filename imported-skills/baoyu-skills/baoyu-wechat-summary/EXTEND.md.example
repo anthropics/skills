@@ -1,0 +1,39 @@
+# baoyu-wechat-summary preferences
+#
+# Copy this file to one of:
+#   .baoyu-skills/baoyu-wechat-summary/EXTEND.md           (project-local, takes precedence)
+#   $XDG_CONFIG_HOME/baoyu-skills/baoyu-wechat-summary/EXTEND.md   (XDG, falls back to ~/.config)
+#   ~/.baoyu-skills/baoyu-wechat-summary/EXTEND.md         (per-user home)
+#
+# First match wins. Keys are case-insensitive. Use `key: value` or `key=value`.
+# Blank lines and lines starting with `#` are ignored.
+
+# REQUIRED — your own wxid. Used to recognize your own messages so they show up
+# as `self_display` (below) in digests instead of the raw wxid string.
+# Find via:  wx contacts --query <你的昵称> --json    (look for chat_type=private, your own row)
+self_wxid: wxid_xxxxxxxxxxxx
+
+# REQUIRED — the display name to substitute for your wxid in digest text.
+self_display: 宝玉
+
+# OPTIONAL — which version(s) to generate when the user doesn't explicitly say.
+# Values: normal | roast | both
+# Default: normal
+default_version: normal
+
+# OPTIONAL — default time range when the user gives none and there's no prior
+# digest to incrementally extend from. Forms: `Nd` (days), `Nh` (hours), or a
+# fixed `YYYY-MM-DD` (treated as both --since and --until).
+# Default: 24h (i.e., today)
+# default_time_range: 7d
+
+# OPTIONAL — override the root directory where digest folders live. Default
+# resolves to `{project_root}/wechat`. Useful if you want a shared archive
+# outside the current project.
+# data_root: ~/Documents/wechat-digests
+
+# OPTIONAL — 触发「🤖 @bot 答疑」小节的名字（逗号分隔）。消息含 @<别名> 即视为
+# 冲总结 bot 提的问题/请求，会在每版简报里专门答复。
+# 请选用群里【不存在】的人物/机器人名，以免与真人 @ 混淆。
+# Default: bot, 精华bot
+# bot_aliases: bot, 精华bot

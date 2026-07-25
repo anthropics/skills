@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Data"
+  short_description: "Prepare materials datasets, FAIR audits, and data availability statements."
+  default_prompt: "Use $materials-data to organize this dataset into a FAIR-ready package with metadata, data availability wording, and reviewer-risk flags."
+  brand_color: "#4E7258"
+
+policy:
+  allow_implicit_invocation: true

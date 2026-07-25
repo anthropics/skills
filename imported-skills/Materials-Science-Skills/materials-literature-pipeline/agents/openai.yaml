@@ -1,0 +1,2 @@
+name: materials-literature-pipeline
+default_prompt: "Use $materials-literature-pipeline to screen materials literature candidates, score evidence depth, and route deep-reading next actions."

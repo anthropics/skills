@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "node-express",
+  "description": "Node.js + Express (or Fastify) + Postgres. Modular monolith default. Team size 1-15, customer-facing SaaS, read-heavy with some writes. Fast time-to-market, hire-against-stack easy.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_min": 1,
+    "team_size_max": 15,
+    "tenancy": "shared-multi-tenant",
+    "data_sensitivity_tier_max": "pii",
+    "pattern": "modular-monolith"
+  },
+  "stack": {
+    "runtime": "node-20-or-22-lts",
+    "language": "typescript-strict",
+    "framework_options_ranked": ["fastify-v4-or-v5", "express-v5", "hono", "nest-when-clean-architecture-needed"],
+    "orm_options": ["drizzle", "prisma", "kysely-for-typed-sql"],
+    "database": "postgresql-16+",
+    "cache": "redis-cluster-only-if-justified",
+    "queue_options": ["pg-boss-or-pgmq", "bullmq-on-redis"],
+    "auth_options": ["lucia-auth", "authjs-v5", "clerk-paid", "auth0-paid"],
+    "validation": "zod",
+    "testing": "vitest + supertest + testcontainers-for-postgres",
+    "tracing": "opentelemetry-with-honeycomb-or-jaeger-or-tempo"
+  },
+  "anti_recommendations": {
+    "mongoose": "warn — Postgres + Drizzle/Prisma usually wins for relational workloads",
+    "callback-style": "kill — async/await throughout",
+    "no-validation": "kill — every request body validated with zod or equivalent",
+    "express-without-helmet-and-cors-explicit": "kill — security defaults",
+    "kafka": "kill at this scale — Postgres LISTEN/NOTIFY or pg-boss handles fine",
+    "microservices": "kill — modular monolith with clear domain boundaries",
+    "session-cookies-without-csrf": "kill — CSRF tokens or SameSite=Lax mandatory"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 80,
+    "p95_api_latency_ms": 250,
+    "p99_api_latency_ms": 600,
+    "uptime_target": 0.995,
+    "test_coverage_min": 0.7,
+    "security_scan_severity_max": "medium",
+    "rpo_minutes_max": 60,
+    "rto_minutes_max": 240
+  },
+  "named_approver_chain": {
+    "schema_change_production": "tech-lead + on-call",
+    "new-external-service": "tech-lead + cfo",
+    "auth-or-authz-change": "tech-lead + security-owner"
+  },
+  "canon_references": [
+    "Sam Newman, Building Microservices 2e (2021) — MonolithFirst",
+    "Martin Kleppmann, DDIA (2017)",
+    "Fastify docs + benchmarks (Tomas Della Vedova, 2018-2024)",
+    "Prisma vs Drizzle benchmarks (2024 community comparisons)",
+    "OWASP API Security Top 10 (2023)"
+  ]
+}

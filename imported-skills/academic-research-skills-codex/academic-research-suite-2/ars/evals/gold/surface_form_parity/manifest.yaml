@@ -1,0 +1,51 @@
+task_name: surface_form_parity
+manifest_version: "1.0.0"
+issue: 216
+task_type: regression-fixture
+description: |
+  Mixed-provenance regression fixture for the §F.3.6 reviewer-type (surface-form)
+  asymmetry, anchored to first-party verbatim examples from Kim et al. 2026
+  (arXiv:2605.20668v1). The documented failure is an AI meta-reviewer applying two
+  standards keyed off PROSE STYLE: it penalises informal/vague human wording and
+  credits technical-precise AI wording. The hook is framing_style, NOT the author
+  label — so this targets SURFACE-FORM parity, not authorship parity.
+
+  This is NOT a calibrated detector. There is no deterministic predictor for this
+  bias, n is tiny, and the paper's 29-FN-human / 10-FP-AI split is DIRECTIONAL
+  (§H), not a calibration target. The validator checks data integrity + provenance
+  honesty + pair invariants only — it does not compute FNR/FPR or assert
+  distributional asymmetry.
+
+  counterfactual_rewrite items are maintainer-authored minimal-difference variants
+  (NOT first-party). They give the prompt discipline "do not let framing style flip
+  a correctness verdict" paired, traceable test material.
+target:
+  entrypoint: scripts.check_surface_form_parity
+  gold_set_path: gold_set.json
+sample_n: 7
+labels: ["informal_vague", "technical_precise"]
+provenance_distribution:
+  - provenance_type: paper_verbatim
+    n: 4
+  - provenance_type: counterfactual_rewrite
+    n: 2
+  - provenance_type: maintainer_boundary
+    n: 1
+pairs:
+  - pair_id: pair-01
+    members: ["sfp-001", "sfp-001-cf"]
+  - pair_id: pair-03
+    members: ["sfp-003", "sfp-003-cf"]
+source_paper:
+  arxiv_id: "2605.20668v1"
+  citation: >
+    Kim, S., Yoon, D., Gashteovski, K., Suk, J., Baek, J., et al. (2026).
+    On the limits and opportunities of AI reviewers: Reviewing the reviews of
+    Nature-family papers with 45 expert scientists. arXiv:2605.20668v1 [cs.CL].
+related_issues:
+  - issue: 273
+    relationship: cross-reference-only
+    note: >
+      #273 (same-family / rubric-aware calibration) is a DIFFERENT mechanism. It is
+      NOT folded into #216 — see docs/design. Cross-reference only; no shared prompt,
+      gold, or runtime wiring.

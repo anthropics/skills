@@ -1,0 +1,10 @@
+{
+  "scope": "v3.6.8-only",
+  "rationale_doc": "docs/design/2026-04-30-ars-v3.6.8-trust-provenance-and-drift-transparency-spec.md#step-3a--agent-two-layer-citation-emission-uniform-across-all-modes",
+  "_note_pr1": "Step 0 created this manifest with empty `files`. Step 3a populates with the three downstream agents that emit citations: synthesis_agent (deep-research), draft_writer_agent (academic-paper), report_compiler_agent (deep-research). Each carries the canonical `## Two-Layer Citation Emission (v3.7.1)` H2 block, OUTSIDE the v3.6.7 PATTERN PROTECTION block, with invariants enforced by `check_v3_6_8_pattern_protection.py`.",
+  "files": [
+    "deep-research/agents/synthesis_agent.md",
+    "academic-paper/agents/draft_writer_agent.md",
+    "deep-research/agents/report_compiler_agent.md"
+  ]
+}

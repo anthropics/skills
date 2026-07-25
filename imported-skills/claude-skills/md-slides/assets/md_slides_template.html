@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+  md_slides_template.html — Reference shape for deck_html_renderer.py output.
+
+  Documents the canonical single-file deck layout. The renderer produces this
+  same shape dynamically from a parsed deck (slide_splitter + presenter_notes
+  _parser) plus the design-system config.
+
+  See: deck_html_renderer.py for the live implementation.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{DECK_TITLE}}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{HEADING_FONT}}&family={{BODY_FONT}}&display=swap">
+
+<!-- Prism is OPT-IN for decks (off by default) — pass --syntax to enable -->
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"> -->
+
+<style>
+:root {
+    /* 12 brand tokens from design-system.derived_palette */
+    --md-bg: {{BG}}; --md-surface: {{SURFACE}}; --md-border: {{BORDER}};
+    --md-text: {{TEXT}}; --md-text-muted: {{TEXT_MUTED}};
+    --md-accent: {{ACCENT}}; --md-accent-soft: {{ACCENT_SOFT}};
+    --md-code-bg: {{CODE_BG}}; --md-link: {{LINK}}; --md-link-hover: {{LINK_HOVER}};
+    --md-success: {{SUCCESS}}; --md-warn: {{WARN}};
+    --md-font-heading: 'Inter', system-ui, sans-serif;
+    --md-font-body: 'Inter', system-ui, sans-serif;
+}
+/* One slide visible at a time; print stylesheet shows them all */
+.slide { display: none; position: absolute; inset: 0; padding: 4vh 8vw; }
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+.progress { position: fixed; top: 0; height: 3px; background: var(--md-accent); }
+.presenter-panel { display: none; position: fixed; right: 0; width: 40vw; }
+body.presenter .deck { width: 60vw; }
+body.presenter .presenter-panel { display: flex; }
+@media print {
+    .slide { display: flex !important; position: relative; height: 100vh; page-break-after: always; }
+    .chrome, .progress, .presenter-panel { display: none !important; }
+}
+/* ... BASE_CSS ... */
+</style>
+</head>
+
+<body class="style-{{DESIGN_STYLE}}">
+
+<!-- Progress bar at top -->
+<div id="progress" class="progress"></div>
+
+<!-- All slides — visibility controlled by JS toggling .active -->
+<div class="deck">
+    <section class="slide active" id="slide-1" data-notes="">
+        <h1>{{SLIDE_1_TITLE}}</h1>
+        <!-- body markdown rendered as HTML (paragraphs / lists / code / tables / callouts) -->
+    </section>
+
+    <section class="slide" id="slide-2" data-notes="Speaker notes for slide 2 go here. Multi-line.">
+        <h1>{{SLIDE_2_TITLE}}</h1>
+        <ul>
+            <li>Point one</li>
+            <li>Point two</li>
+        </ul>
+    </section>
+
+    <!-- ...more slides... -->
+</div>
+
+<!-- Presenter view: appears when P is pressed -->
+<aside class="presenter-panel" aria-label="Presenter view (toggle with P)">
+    <h3>Clock</h3>
+    <div class="clock">12:34:56</div>
+    <h3>Speaker notes</h3>
+    <div class="notes"></div>
+    <div class="next-preview">
+        <h4>Up next (#3)</h4>
+        <h1>{{NEXT_SLIDE_TITLE}}</h1>
+    </div>
+</aside>
+
+<!-- Bottom-right chrome: slide counter + presenter toggle -->
+<div class="chrome">
+    <a href="#" onclick="event.preventDefault();
+        document.dispatchEvent(new KeyboardEvent('keydown', {key:'P'}))">P · presenter</a>
+    <span id="counter">1 / 5</span>
+</div>
+
+<!-- Inline vanilla-JS payload (~3 KB):
+     - keyboard nav: ← / → / Space / PgDn / PgUp / Home / End / P / Esc
+     - URL hash sync (#3 = slide 3; works for deep links + back button)
+     - presenter panel with clock + notes + next-slide preview
+     - prefers-reduced-motion honored throughout
+-->
+<script>
+(function () {
+    "use strict";
+    var slides = document.querySelectorAll(".slide");
+    var current = 0;
+
+    function show(idx) {
+        idx = Math.max(0, Math.min(slides.length - 1, idx));
+        slides.forEach(function (s, i) { s.classList.toggle("active", i === idx); });
+        current = idx;
+        history.replaceState(null, "", "#" + (current + 1));
+    }
+
+    document.addEventListener("keydown", function (e) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        switch (e.key) {
+            case "ArrowRight":
+            case "PageDown":
+            case " ":  e.preventDefault(); show(current + 1); break;
+            case "ArrowLeft":
+            case "PageUp":  e.preventDefault(); show(current - 1); break;
+            case "Home": e.preventDefault(); show(0); break;
+            case "End":  e.preventDefault(); show(slides.length - 1); break;
+            case "p":
+            case "P":   e.preventDefault();
+                        document.body.classList.toggle("presenter"); break;
+        }
+    });
+
+    // Honor URL hash on load
+    if (location.hash) {
+        var n = parseInt(location.hash.slice(1), 10);
+        if (!isNaN(n)) show(n - 1);
+    } else { show(0); }
+})();
+</script>
+</body>
+</html>

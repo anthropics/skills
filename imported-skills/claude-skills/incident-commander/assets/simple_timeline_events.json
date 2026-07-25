@@ -1,0 +1,30 @@
+[
+  {
+    "timestamp": "2024-03-10T09:00:00Z",
+    "source": "monitoring",
+    "message": "High CPU utilization detected on web servers",
+    "severity": "medium",
+    "actor": "system"
+  },
+  {
+    "timestamp": "2024-03-10T09:05:00Z",
+    "source": "slack",
+    "message": "Engineer investigating high CPU alerts",
+    "severity": "medium", 
+    "actor": "john.doe"
+  },
+  {
+    "timestamp": "2024-03-10T09:15:00Z",
+    "source": "deployment",
+    "message": "Deployed hotfix to reduce CPU usage",
+    "severity": "low",
+    "actor": "john.doe"
+  },
+  {
+    "timestamp": "2024-03-10T09:25:00Z",
+    "source": "monitoring",
+    "message": "CPU utilization returned to normal levels",
+    "severity": "low",
+    "actor": "system"
+  }
+]

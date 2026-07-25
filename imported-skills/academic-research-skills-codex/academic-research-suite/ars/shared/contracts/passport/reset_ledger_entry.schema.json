@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/reset_ledger_entry.schema.json",
+  "title": "Passport Reset Ledger Entry",
+  "description": "One append-only ledger entry in reset_boundary[]. Two kinds: 'boundary' (recorded at a FULL checkpoint when ARS_PASSPORT_RESET=1) and 'resume' (recorded when resume_from_passport consumes a boundary entry). See academic-pipeline/references/passport_as_reset_boundary.md.",
+  "oneOf": [
+    { "$ref": "#/$defs/boundary" },
+    { "$ref": "#/$defs/resume" }
+  ],
+  "$defs": {
+    "boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "hash",
+        "stage",
+        "next",
+        "generated_at",
+        "session_marker",
+        "version_label"
+      ],
+      "properties": {
+        "kind": {
+          "const": "boundary",
+          "description": "Discriminator. 'boundary' = reset emitted at a FULL checkpoint."
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}$",
+          "description": "First 12 lowercase hex characters of SHA-256 over the concatenated ledger (prior entries + this entry with hash set to the canonical placeholder '000000000000'). Placeholder rule is normative — see protocol doc §'The reset boundary protocol' step 2."
+        },
+        "stage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stage number or name that just completed (e.g., '1', '2', '2.5', 'RESEARCH')."
+        },
+        "next": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "description": "Default next stage after resume. When pending_decision is unset, this is the authoritative route. When pending_decision is set, this field is advisory: the matched option's next_stage takes precedence, and next MAY be null (including when all branches terminate). The orchestrator MUST NOT auto-advance using next when pending_decision is present."
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of boundary creation."
+        },
+        "session_marker": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque identifier for the source session. Audit-only; not relied on for resume."
+        },
+        "version_label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Monotonic version label for the passport state at this boundary (e.g., 'v1.0', 'v1.1-revised'). Stage re-runs bump this."
+        },
+        "mode": {
+          "type": "string",
+          "description": "Mode of the just-completed stage (e.g., 'full', 'systematic-review')."
+        },
+        "verification_status": {
+          "type": "string",
+          "enum": ["VERIFIED", "UNVERIFIED", "STALE"],
+          "description": "Mirror of Schema 9 verification_status at this boundary. Copied for convenience; authoritative value lives in Schema 9 top-level."
+        },
+        "observer_snapshot_ref": {
+          "type": "string",
+          "description": "Optional path or ID of the collaboration_depth_agent observer output for this checkpoint. Audit-only."
+        },
+        "pending_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["question", "options"],
+          "properties": {
+            "question": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Human-readable question the user must answer on resume (e.g., 'Stage 3 review outcome: revise, restructure, or abort?')."
+            },
+            "options": {
+              "type": "array",
+              "minItems": 2,
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["value", "next_stage"],
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Branch identifier. Must be unique across the options array — chosen_branch on the resume entry matches this field."
+                  },
+                  "next_stage": {
+                    "type": ["string", "null"],
+                    "description": "Stage number or name to route to when this branch is chosen. null means terminate the pipeline."
+                  },
+                  "next_mode": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Optional downstream mode override when this branch is chosen. Omit to use the default mode for next_stage."
+                  }
+                }
+              },
+              "description": "Enumerated decision branches. Each option carries its own routing: on resume, the orchestrator looks up chosen_branch in options[].value, then uses that entry's next_stage and next_mode to determine actual routing. The boundary entry's next field is advisory (best-guess default) and is superseded by the matched option's next_stage at resume time. CLI stage=/mode= overrides from resume_from_passport still win over option routing."
+            }
+          },
+          "description": "Set when the boundary co-occurs with a MANDATORY user decision (Stage 3 rejection, Stage 5 finalization, etc.). When present, resume must re-prompt the user. Each option carries its own next_stage/next_mode routing; the boundary entry's 'next' field is advisory only and is overridden by the matched option's next_stage at resume time."
+        }
+      }
+    },
+    "resume": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "consumes_hash",
+        "generated_at",
+        "session_marker"
+      ],
+      "properties": {
+        "kind": {
+          "const": "resume",
+          "description": "Discriminator. 'resume' = resume_from_passport consumed a prior boundary entry."
+        },
+        "consumes_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}$",
+          "description": "Hash of the boundary entry this resume consumes. Append-only pointer — lets readers compute awaiting_resume state from the ledger alone."
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of resume event."
+        },
+        "session_marker": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opaque identifier for the resuming session."
+        },
+        "chosen_branch": {
+          "type": "string",
+          "description": "If the consumed boundary had pending_decision, record which option the user chose. Omit otherwise."
+        },
+        "user_override": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "stage": { "type": "string" },
+            "mode": { "type": "string" }
+          },
+          "description": "Optional stage/mode overrides the user supplied on the resume command."
+        }
+      }
+    }
+  }
+}

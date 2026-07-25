@@ -1,0 +1,2 @@
+claim_id,source_anchor,source_location,original_excerpt,measured_evidence,inferred_mechanism,boundary_or_missing_test,citation_role,evidence_type,figure_archetype,reviewer_risk,handoff_target,confidence_label,missing_evidence_flag,citation_key_or_doi,review_section
+CLAIM-001,EX-001,page/section/figure label,"short exact excerpt",directly measured or reported result,mechanism interpretation or [none],missing test or boundary,central WER-EA evidence,primary experimental,none,overclaim risk,materials-citation,high,none,,mechanism/performance/durability

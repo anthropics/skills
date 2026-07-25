@@ -1,0 +1,155 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_c_smells.c",
+  "language": "c",
+  "metrics": {
+    "lines": {
+      "total": 67,
+      "code": 37,
+      "blank": 17,
+      "comment": 13
+    },
+    "functions": 4,
+    "classes": 0,
+    "avg_complexity": 2.0
+  },
+  "quality_score": 4,
+  "grade": "F",
+  "smells": [
+    {
+      "type": "long_function",
+      "severity": "medium",
+      "message": "Function 'unsafe_input' has 54 lines (max: 50)",
+      "location": "unsafe_input"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 242 should be a named constant",
+      "location": "line 17"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 100 should be a named constant",
+      "location": "line 27"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 134 should be a named constant",
+      "location": "line 31"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 120 should be a named constant",
+      "location": "line 35"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 690 should be a named constant",
+      "location": "line 41"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 416 should be a named constant",
+      "location": "line 47"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 100 should be a named constant",
+      "location": "line 62"
+    },
+    {
+      "type": "c_banned_gets",
+      "severity": "high",
+      "message": "'gets()' is unsafe: no bounds check, removed from C11 (CWE-242)",
+      "location": "offset 117"
+    },
+    {
+      "type": "c_banned_strcpy",
+      "severity": "high",
+      "message": "'strcpy()' is unsafe: no bounds check \u2014 prefer strncpy or strlcpy",
+      "location": "offset 157"
+    },
+    {
+      "type": "c_banned_strcpy",
+      "severity": "high",
+      "message": "'strcpy()' is unsafe: no bounds check \u2014 prefer strncpy or strlcpy",
+      "location": "offset 447"
+    },
+    {
+      "type": "c_banned_strcat",
+      "severity": "high",
+      "message": "'strcat()' is unsafe: no bounds check \u2014 prefer strncat or strlcat",
+      "location": "offset 186"
+    },
+    {
+      "type": "c_banned_sprintf",
+      "severity": "high",
+      "message": "'sprintf()' is unsafe: no bounds check \u2014 prefer snprintf",
+      "location": "offset 238"
+    },
+    {
+      "type": "c_format_string",
+      "severity": "high",
+      "message": "'printf(buf)' uses a non-literal format string \u2014 CWE-134 format string vulnerability",
+      "location": "offset 284"
+    },
+    {
+      "type": "c_unbounded_scanf",
+      "severity": "high",
+      "message": "scanf '%s' without a width specifier \u2014 unbounded read can overflow the destination buffer",
+      "location": "offset 326"
+    },
+    {
+      "type": "c_malloc_unchecked",
+      "severity": "medium",
+      "message": "'buf' from malloc/calloc/realloc is not NULL-checked within 5 lines \u2014 dereferencing NULL is UB (CWE-690)",
+      "location": "line 36"
+    },
+    {
+      "type": "c_free_without_null",
+      "severity": "low",
+      "message": "'free(buf)' not followed by 'buf = NULL;' \u2014 dangling pointer can be reused (CWE-416)",
+      "location": "line 42"
+    },
+    {
+      "type": "c_system_non_literal",
+      "severity": "high",
+      "message": "'system(cmd_from_user)' with a non-literal argument \u2014 command injection (CWE-78); use execve with validated args",
+      "location": "offset 571"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "unsafe_input",
+      "parameters": 1,
+      "lines": 54,
+      "complexity": 2
+    },
+    {
+      "name": "leaky_alloc",
+      "parameters": 1,
+      "lines": 28,
+      "complexity": 2
+    },
+    {
+      "name": "run_user_cmd",
+      "parameters": 1,
+      "lines": 15,
+      "complexity": 2
+    },
+    {
+      "name": "main",
+      "parameters": 2,
+      "lines": 9,
+      "complexity": 2
+    }
+  ],
+  "class_details": []
+}

@@ -1,0 +1,82 @@
+{
+  "technologies": {
+    "PostgreSQL": {
+      "category_scores": {
+        "performance": 85.0,
+        "scalability": 90.0,
+        "developer_experience": 75.0,
+        "ecosystem": 95.0,
+        "learning_curve": 70.0,
+        "documentation": 90.0,
+        "community_support": 95.0,
+        "enterprise_readiness": 95.0
+      },
+      "weighted_total": 85.5,
+      "strengths": ["scalability", "ecosystem", "documentation", "community_support", "enterprise_readiness"],
+      "weaknesses": ["learning_curve"]
+    },
+    "MongoDB": {
+      "category_scores": {
+        "performance": 80.0,
+        "scalability": 95.0,
+        "developer_experience": 85.0,
+        "ecosystem": 85.0,
+        "learning_curve": 80.0,
+        "documentation": 85.0,
+        "community_support": 85.0,
+        "enterprise_readiness": 75.0
+      },
+      "weighted_total": 84.5,
+      "strengths": ["scalability", "developer_experience", "learning_curve"],
+      "weaknesses": []
+    }
+  },
+  "recommendation": "PostgreSQL",
+  "confidence": 52.0,
+  "decision_factors": [
+    {
+      "category": "performance",
+      "importance": "20.0%",
+      "best_performer": "PostgreSQL",
+      "score": 85.0
+    },
+    {
+      "category": "scalability",
+      "importance": "20.0%",
+      "best_performer": "MongoDB",
+      "score": 95.0
+    },
+    {
+      "category": "developer_experience",
+      "importance": "15.0%",
+      "best_performer": "MongoDB",
+      "score": 85.0
+    }
+  ],
+  "comparison_matrix": [
+    {
+      "category": "Performance",
+      "weight": "20.0%",
+      "scores": {
+        "PostgreSQL": "85.0",
+        "MongoDB": "80.0"
+      }
+    },
+    {
+      "category": "Scalability",
+      "weight": "20.0%",
+      "scores": {
+        "PostgreSQL": "90.0",
+        "MongoDB": "95.0"
+      }
+    },
+    {
+      "category": "WEIGHTED TOTAL",
+      "weight": "100%",
+      "scores": {
+        "PostgreSQL": "85.5",
+        "MongoDB": "84.5"
+      }
+    }
+  ]
+}

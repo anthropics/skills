@@ -1,0 +1,26 @@
+# Round 1 expected orchestrator pipeline state.
+# Per §5.6 Path B: each agent's MATERIAL/PASS verdict is appended to passport
+# audit_artifact[]; MATERIAL verdicts trigger BLOCK at B10 (await re-audit at
+# round 2 per §5.4 escalation).
+
+round: 1
+target_rounds: 3
+overall_verdict: MATERIAL  # at least one agent failed; transition blocked
+ship_or_block: block
+audit_artifact_appended:
+  - agent: synthesis_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T15-00-00Z-f101
+  - agent: research_architect_agent
+    verdict_status: PASS
+    run_id: 2026-04-30T15-01-00Z-f102
+  - agent: report_compiler_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T15-02-00Z-f103
+findings_summary:
+  total_p1: 4
+  total_p2: 0
+  total_p3: 0
+expected_user_options:
+  - "revise and re-audit at round 2"
+  - "abort_stage"

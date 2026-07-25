@@ -1,0 +1,556 @@
+# UniProt REST Query Fields Reference
+
+This document lists the available query fields for searching UniProt
+databases via the REST API.
+
+Fields marked with `(Experimental Evidence)` are used to filter for entries
+where the annotation has experimental support.
+
+## UniProtKB (UniProt Knowledgebase)
+
+- **UniProtKB AC**: `accession`
+- **Entry Name [ID]**: `id`
+- **Secondary Accession**: `sec_acc`
+- **Protein Name [DE]**: `protein_name`
+- **Gene Name [GN]**: `gene`
+- **Organism [OS]**: `organism_name`
+- **Taxonomy [OC]**: `taxonomy_name`
+- **Virus host**: `virus_host_name`
+- **Protein Existence [PE]**: `existence`
+- **Function**
+  - **Enzyme classification [EC]**: `ec`
+  - **Cofactors**
+    - **ChEBI term**
+      - **Chebi**: `cc_cofactor_chebi`
+      - **Exp (Experimental Evidence)**: `cc_cofactor_chebi_exp`
+    - **Note**
+      - **Note**: `cc_cofactor_note`
+      - **Exp (Experimental Evidence)**: `cc_cofactor_note_exp`
+  - **Biophysicochemical properties**
+    - **Any**
+      - **Bpcp**: `cc_bpcp`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_exp`
+    - **Absorption**
+      - **Absorption**: `cc_bpcp_absorption`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_absorption_exp`
+    - **Kinetics**
+      - **Kinetics**: `cc_bpcp_kinetics`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_kinetics_exp`
+    - **pH dependence**
+      - **Dependence**: `cc_bpcp_ph_dependence`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_ph_dependence_exp`
+    - **Redox potential**
+      - **Potential**: `cc_bpcp_redox_potential`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_redox_potential_exp`
+    - **Temperature dependence**
+      - **Dependence**: `cc_bpcp_temp_dependence`
+      - **Exp (Experimental Evidence)**: `cc_bpcp_temp_dependence_exp`
+  - **Catalytic Activity**
+    - **Activity**: `cc_catalytic_activity`
+    - **Exp (Experimental Evidence)**: `cc_catalytic_activity_exp`
+  - **Activity regulation**
+    - **Regulation**: `cc_activity_regulation`
+    - **Exp (Experimental Evidence)**: `cc_activity_regulation_exp`
+  - **Function [CC]**
+    - **Function**: `cc_function`
+    - **Exp (Experimental Evidence)**: `cc_function_exp`
+  - **Caution**
+    - **Caution**: `cc_caution`
+    - **Exp (Experimental Evidence)**: `cc_caution_exp`
+  - **Sites**
+    - **Any**
+      - **Sites**: `ft_sites`
+      - **Exp (Experimental Evidence)**: `ft_sites_exp`
+    - **Active site**
+      - **Site**: `ft_act_site`
+      - **Exp (Experimental Evidence)**: `ft_act_site_exp`
+    - **Binding site**
+      - **Binding**: `ft_binding`
+      - **Exp (Experimental Evidence)**: `ft_binding_exp`
+    - **Other**
+      - **Site**: `ft_site`
+      - **Exp (Experimental Evidence)**: `ft_site_exp`
+  - **DNA binding**
+    - **Bind**: `ft_dna_bind`
+    - **Exp (Experimental Evidence)**: `ft_dna_bind_exp`
+  - **Pathway**
+    - **Pathway**: `cc_pathway`
+    - **Exp (Experimental Evidence)**: `cc_pathway_exp`
+  - **Miscellaneous [CC]**
+    - **Miscellaneous**: `cc_miscellaneous`
+    - **Exp (Experimental Evidence)**: `cc_miscellaneous_exp`
+- **Subcellular location**
+  - **Subcellular location [CC]**
+    - **Subcellular location term**
+      - **Term**: `cc_scl_term`
+      - **Exp (Experimental Evidence)**: `cc_scl_term_exp`
+    - **Subcellular location note**
+      - **Note**: `cc_scl_note`
+      - **Exp (Experimental Evidence)**: `cc_scl_note_exp`
+  - **Transmembrane**
+    - **Transmem**: `ft_transmem`
+    - **Exp (Experimental Evidence)**: `ft_transmem_exp`
+  - **Topological domain**
+    - **Dom**: `ft_topo_dom`
+    - **Exp (Experimental Evidence)**: `ft_topo_dom_exp`
+  - **Intramembrane**
+    - **Intramem**: `ft_intramem`
+    - **Exp (Experimental Evidence)**: `ft_intramem_exp`
+- **Pathology & Biotech**
+  - **Disease**
+    - **Disease**: `cc_disease`
+    - **Exp (Experimental Evidence)**: `cc_disease_exp`
+  - **Allergenic properties**
+    - **Allergen**: `cc_allergen`
+    - **Exp (Experimental Evidence)**: `cc_allergen_exp`
+  - **Toxic dose**
+    - **Dose**: `cc_toxic_dose`
+    - **Exp (Experimental Evidence)**: `cc_toxic_dose_exp`
+  - **Biotechnological use**
+    - **Biotechnology**: `cc_biotechnology`
+    - **Exp (Experimental Evidence)**: `cc_biotechnology_exp`
+  - **Pharmaceutical use**
+    - **Pharmaceutical**: `cc_pharmaceutical`
+    - **Exp (Experimental Evidence)**: `cc_pharmaceutical_exp`
+  - **Disruption phenotype**
+    - **Phenotype**: `cc_disruption_phenotype`
+    - **Exp (Experimental Evidence)**: `cc_disruption_phenotype_exp`
+  - **Mutagenesis**
+    - **Mutagen**: `ft_mutagen`
+    - **Exp (Experimental Evidence)**: `ft_mutagen_exp`
+- **PTM/Processing**
+  - **Post-translational modification [CC]**
+    - **Ptm**: `cc_ptm`
+    - **Exp (Experimental Evidence)**: `cc_ptm_exp`
+  - **Modified residue [FT]**
+    - **Res**: `ft_mod_res`
+    - **Exp (Experimental Evidence)**: `ft_mod_res_exp`
+  - **Lipidation [FT]**
+    - **Lipid**: `ft_lipid`
+    - **Exp (Experimental Evidence)**: `ft_lipid_exp`
+  - **Glycosylation [FT]**
+    - **Carbohyd**: `ft_carbohyd`
+    - **Exp (Experimental Evidence)**: `ft_carbohyd_exp`
+  - **Disulfide bond [FT]**
+    - **Disulfid**: `ft_disulfid`
+    - **Exp (Experimental Evidence)**: `ft_disulfid_exp`
+  - **Cross-link [FT]**
+    - **Crosslnk**: `ft_crosslnk`
+    - **Exp (Experimental Evidence)**: `ft_crosslnk_exp`
+  - **Molecule Processing [FT]**
+    - **Any molecule processing**
+      - **Processing**: `ft_molecule_processing`
+      - **Exp (Experimental Evidence)**: `ft_molecule_processing_exp`
+    - **Chain**
+      - **Chain**: `ft_chain`
+      - **Exp (Experimental Evidence)**: `ft_chain_exp`
+    - **Initiator methionine**
+      - **Met**: `ft_init_met`
+      - **Exp (Experimental Evidence)**: `ft_init_met_exp`
+    - **Peptide**
+      - **Peptide**: `ft_peptide`
+      - **Exp (Experimental Evidence)**: `ft_peptide_exp`
+    - **Signal Peptide**
+      - **Signal**: `ft_signal`
+      - **Exp (Experimental Evidence)**: `ft_signal_exp`
+    - **Propeptide**
+      - **Propep**: `ft_propep`
+      - **Exp (Experimental Evidence)**: `ft_propep_exp`
+    - **Transit Peptide**
+      - **Transit**: `ft_transit`
+      - **Exp (Experimental Evidence)**: `ft_transit_exp`
+- **Expression**
+  - **Developmental stage**
+    - **Stage**: `cc_developmental_stage`
+    - **Exp (Experimental Evidence)**: `cc_developmental_stage_exp`
+  - **Induction**
+    - **Induction**: `cc_induction`
+    - **Exp (Experimental Evidence)**: `cc_induction_exp`
+  - **Tissue specificity**
+    - **Specificity**: `cc_tissue_specificity`
+    - **Exp (Experimental Evidence)**: `cc_tissue_specificity_exp`
+- **Interaction**
+  - **Binary Interaction**: `interactor`
+  - **Subunit structure**
+    - **Subunit**: `cc_subunit`
+    - **Exp (Experimental Evidence)**: `cc_subunit_exp`
+- **Structure**
+  - **3D Structure**: `structure_3d`
+  - **Secondary structure**
+    - **Any**
+      - **Secstruct**: `ft_secstruct`
+      - **Exp (Experimental Evidence)**: `ft_secstruct_exp`
+    - **Helix**
+      - **Helix**: `ft_helix`
+      - **Exp (Experimental Evidence)**: `ft_helix_exp`
+    - **Turn**
+      - **Turn**: `ft_turn`
+      - **Exp (Experimental Evidence)**: `ft_turn_exp`
+    - **Beta strand**
+      - **Strand**: `ft_strand`
+      - **Exp (Experimental Evidence)**: `ft_strand_exp`
+- **Sequence**
+  - **Mass(Da)**: `mass`
+  - **Checksum (CRC64/MD5)**: `checksum`
+  - **Sequence length**: `length`
+  - **Alternative products (isoforms)**
+    - **Any**
+      - **Ap**: `cc_ap`
+      - **Exp (Experimental Evidence)**: `cc_ap_exp`
+    - **Alternative promoter usage**
+      - **Apu**: `cc_ap_apu`
+      - **Exp (Experimental Evidence)**: `cc_ap_apu_exp`
+    - **Alternative splicing**
+      - **As**: `cc_ap_as`
+      - **Exp (Experimental Evidence)**: `cc_ap_as_exp`
+    - **Alternative initiation**
+      - **Ai**: `cc_ap_ai`
+      - **Exp (Experimental Evidence)**: `cc_ap_ai_exp`
+    - **Ribosomal frameshifting**
+      - **Rf**: `cc_ap_rf`
+      - **Exp (Experimental Evidence)**: `cc_ap_rf_exp`
+  - **Sequence caution**
+    - **Any**
+      - **Caution**: `cc_sequence_caution`
+      - **Exp (Experimental Evidence)**: `cc_sequence_caution_exp`
+    - **Frameshift**: `cc_sc_framesh`
+    - **Erroneous initiation**: `cc_sc_einit`
+    - **Erroneous termination**: `cc_sc_eterm`
+    - **Erroneous gene model prediction**: `cc_sc_epred`
+    - **Erroneous translation**: `cc_sc_etran`
+    - **Miscellaneous Discrepancy**
+      - **Misc**: `cc_sc_misc`
+      - **Exp (Experimental Evidence)**: `cc_sc_misc_exp`
+  - **Mass Spectrometry**
+    - **Spectrometry**: `cc_mass_spectrometry`
+    - **Exp (Experimental Evidence)**: `cc_mass_spectrometry_exp`
+  - **Polymorphism**
+    - **Polymorphism**: `cc_polymorphism`
+    - **Exp (Experimental Evidence)**: `cc_polymorphism_exp`
+  - **RNA Editing**
+    - **Editing**: `cc_rna_editing`
+    - **Exp (Experimental Evidence)**: `cc_rna_editing_exp`
+  - **Natural Variations**
+    - **Any**
+      - **Variants**: `ft_variants`
+      - **Exp (Experimental Evidence)**: `ft_variants_exp`
+    - **Natural variant**
+      - **Variant**: `ft_variant`
+      - **Exp (Experimental Evidence)**: `ft_variant_exp`
+    - **Alternative sequence**
+      - **Seq**: `ft_var_seq`
+      - **Exp (Experimental Evidence)**: `ft_var_seq_exp`
+  - **Non-standard residue**
+    - **Std**: `ft_non_std`
+    - **Exp (Experimental Evidence)**: `ft_non_std_exp`
+  - **Non-terminal residue**
+    - **Ter**: `ft_non_ter`
+    - **Exp (Experimental Evidence)**: `ft_non_ter_exp`
+  - **Non-adjacent residue**
+    - **Cons**: `ft_non_cons`
+    - **Exp (Experimental Evidence)**: `ft_non_cons_exp`
+  - **Sequence conflict**
+    - **Conflict**: `ft_conflict`
+    - **Exp (Experimental Evidence)**: `ft_conflict_exp`
+  - **Sequence uncertainty**
+    - **Unsure**: `ft_unsure`
+    - **Exp (Experimental Evidence)**: `ft_unsure_exp`
+  - **Sequence features [FT]**
+    - **Positional**: `ft_positional`
+    - **Exp (Experimental Evidence)**: `ft_positional_exp`
+  - **Fragment**: `fragment`
+  - **Encoded in**: `encoded_in`
+  - **Precursor**: `precursor`
+  - **Sequence from ... [RC]**
+    - **Tissue**: `tissue`
+    - **Strain**: `strain`
+    - **Plasmid**: `plasmid`
+    - **Transposon**: `transposon`
+- **Family and Domains**
+  - **Domain [FT]**
+    - **Domain**: `ft_domain`
+    - **Exp (Experimental Evidence)**: `ft_domain_exp`
+  - **Domain Comments [CC]**
+    - **Domain**: `cc_domain`
+    - **Exp (Experimental Evidence)**: `cc_domain_exp`
+  - **Protein family**: `family`
+  - **Coiled-coil**
+    - **Coiled**: `ft_coiled`
+    - **Exp (Experimental Evidence)**: `ft_coiled_exp`
+  - **Compositional bias**
+    - **Compbias**: `ft_compbias`
+    - **Exp (Experimental Evidence)**: `ft_compbias_exp`
+  - **Motif**
+    - **Motif**: `ft_motif`
+    - **Exp (Experimental Evidence)**: `ft_motif_exp`
+  - **Region**
+    - **Region**: `ft_region`
+    - **Exp (Experimental Evidence)**: `ft_region_exp`
+  - **Repeat**
+    - **Repeat**: `ft_repeat`
+    - **Exp (Experimental Evidence)**: `ft_repeat_exp`
+  - **Sequence similarity**
+    - **Similarity**: `cc_similarity`
+    - **Exp (Experimental Evidence)**: `cc_similarity_exp`
+  - **Zinc finger**
+    - **Fing**: `ft_zn_fing`
+    - **Exp (Experimental Evidence)**: `ft_zn_fing_exp`
+- **Cross-references**
+  - **Source**: `source`
+  - **Any**
+    - **Any cross-reference**: `xref`
+  - **Sequence databases**
+    - **EMBL**: `xref`
+    - **CCDS**: `xref`
+    - **PIR**: `xref`
+    - **RefSeq**: `xref`
+  - **3D structure databases**
+    - **PDB**: `xref`
+    - **PDBsum**: `xref`
+    - **PCDDB**: `xref`
+    - **SASBDB**: `xref`
+    - **BMRB**: `xref`
+    - **SMR**: `xref`
+    - **AlphaFoldDB**: `xref`
+    - **EMDB**: `xref`
+  - **Protein-protein interaction databases**
+    - **BioGRID**: `xref`
+    - **ComplexPortal**: `xref`
+    - **CORUM**: `xref`
+    - **DIP**: `xref`
+    - **ELM**: `xref`
+    - **IntAct**: `xref`
+    - **MINT**: `xref`
+    - **STRING**: `xref`
+    - **FunCoup**: `xref`
+  - **Chemistry**
+    - **BindingDB**: `xref`
+    - **ChEMBL**: `xref`
+    - **DrugBank**: `xref`
+    - **GuidetoPHARMACOLOGY**: `xref`
+    - **SwissLipids**: `xref`
+    - **DrugCentral**: `xref`
+  - **Protein family/group databases**
+    - **Allergome**: `xref`
+    - **CAZy**: `xref`
+    - **ESTHER**: `xref`
+    - **IMGT_GENE-DB**: `xref`
+    - **MEROPS**: `xref`
+    - **MoonDB**: `xref`
+    - **MoonProt**: `xref`
+    - **PeroxiBase**: `xref`
+    - **REBASE**: `xref`
+    - **TCDB**: `xref`
+    - **UniLectin**: `xref`
+    - **CARD**: `xref`
+  - **PTM databases**
+    - **CarbonylDB**: `xref`
+    - **DEPOD**: `xref`
+    - **GlyConnect**: `xref`
+    - **GlyCosmos**: `xref`
+    - **GlyGen**: `xref`
+    - **iPTMnet**: `xref`
+    - **PhosphoSitePlus**: `xref`
+    - **SwissPalm**: `xref`
+    - **UniCarbKB**: `xref`
+    - **MetOSite**: `xref`
+  - **Genetic variation databases**
+    - **BioMuta**: `xref`
+    - **DMDM**: `xref`
+    - **dbSNP**: `xref`
+  - **2D gel databases**
+    - **OGP**: `xref`
+    - **REPRODUCTION-2DPAGE**: `xref`
+  - **Proteomic databases**
+    - **CPTAC**: `xref`
+    - **PaxDb**: `xref`
+    - **PeptideAtlas**: `xref`
+    - **PRIDE**: `xref`
+    - **ProMEX**: `xref`
+    - **ProteomicsDB**: `xref`
+    - **Pumba**: `xref`
+    - **TopDownProteomics**: `xref`
+    - **jPOST**: `xref`
+    - **MassIVE**: `xref`
+  - **Protocols and materials databases**
+    - **DNASU**: `xref`
+    - **ABCD**: `xref`
+    - **Antibodypedia**: `xref`
+    - **CPTC**: `xref`
+    - **YCharOS**: `xref`
+  - **Genome annotation databases**
+    - **Ensembl**: `xref`
+    - **EnsemblBacteria**: `xref`
+    - **EnsemblFungi**: `xref`
+    - **EnsemblMetazoa**: `xref`
+    - **EnsemblPlants**: `xref`
+    - **EnsemblProtists**: `xref`
+    - **GeneID**: `xref`
+    - **Gramene**: `xref`
+    - **KEGG**: `xref`
+    - **MANE-Select**: `xref`
+    - **PATRIC**: `xref`
+    - **UCSC**: `xref`
+    - **VectorBase**: `xref`
+    - **WBParaSite**: `xref`
+  - **Organism-specific databases**
+    - **ArachnoServer**: `xref`
+    - **Araport**: `xref`
+    - **CGD**: `xref`
+    - **ConoServer**: `xref`
+    - **CTD**: `xref`
+    - **dictyBase**: `xref`
+    - **DisGeNET**: `xref`
+    - **EchoBASE**: `xref`
+    - **euHCVdb**: `xref`
+    - **VEuPathDB**: `xref`
+    - **FlyBase**: `xref`
+    - **GeneCards**: `xref`
+    - **GeneReviews**: `xref`
+    - **HGNC**: `xref`
+    - **AGR**: `xref`
+    - **HPA**: `xref`
+    - **LegioList**: `xref`
+    - **Leproma**: `xref`
+    - **MaizeGDB**: `xref`
+    - **MalaCards**: `xref`
+    - **MGI**: `xref`
+    - **MIM**: `xref`
+    - **NIAGADS**: `xref`
+    - **OpenTargets**: `xref`
+    - **Orphanet**: `xref`
+    - **ClinPGx**: `xref`
+    - **PomBase**: `xref`
+    - **PseudoCAP**: `xref`
+    - **RGD**: `xref`
+    - **SGD**: `xref`
+    - **TAIR**: `xref`
+    - **TubercuList**: `xref`
+    - **VGNC**: `xref`
+    - **WormBase**: `xref`
+    - **Xenbase**: `xref`
+    - **ZFIN**: `xref`
+    - **JaponicusDB**: `xref`
+    - **CIViC**: `xref`
+  - **Phylogenomic databases**
+    - **eggNOG**: `xref`
+    - **GeneTree**: `xref`
+    - **HOGENOM**: `xref`
+    - **InParanoid**: `xref`
+    - **OMA**: `xref`
+    - **OrthoDB**: `xref`
+    - **PhylomeDB**: `xref`
+    - **PAN-GO**: `xref`
+  - **Enzyme and pathway databases**
+    - **BioCyc**: `xref`
+    - **BRENDA**: `xref`
+    - **Reactome**: `xref`
+    - **SABIO-RK**: `xref`
+    - **SignaLink**: `xref`
+    - **SIGNOR**: `xref`
+    - **UniPathway**: `xref`
+    - **PlantReactome**: `xref`
+    - **PathwayCommons**: `xref`
+    - **STRENDA-DB**: `xref`
+  - **Miscellaneous**
+    - **ChiTaRS**: `xref`
+    - **EvolutionaryTrace**: `xref`
+    - **Agora**: `xref`
+    - **GeneWiki**: `xref`
+    - **GenomeRNAi**: `xref`
+    - **PHI-base**: `xref`
+    - **PRO**: `xref`
+    - **Pharos**: `xref`
+    - **RNAct**: `xref`
+    - **BioGRID-ORCS**: `xref`
+    - **CD-CODE**: `xref`
+  - **Gene expression databases**
+    - **Bgee**: `xref`
+    - **CleanEx**: `xref`
+    - **CollecTF**: `xref`
+    - **ExpressionAtlas**: `xref`
+  - **Family and domain databases**
+    - **AntiFam**: `xref`
+    - **CDD**: `xref`
+    - **FunFam**: `xref`
+    - **Gene3D**: `xref`
+    - **HAMAP**: `xref`
+    - **IDEAL**: `xref`
+    - **InterPro**: `xref`
+    - **PANTHER**: `xref`
+    - **Pfam**: `xref`
+    - **PIRSF**: `xref`
+    - **PRINTS**: `xref`
+    - **SFLD**: `xref`
+    - **SMART**: `xref`
+    - **SUPFAM**: `xref`
+    - **NCBIfam**: `xref`
+    - **PROSITE**: `xref`
+    - **DisProt**: `xref`
+  - **Proteomes databases**
+    - **Proteomes**: `xref`
+  - **Database**: `database`
+- **Web Resources**
+  - **Webresource**: `cc_webresource`
+  - **Exp (Experimental Evidence)**: `cc_webresource_exp`
+- **Date Of**
+  - **Date Of Creation**: `date_created`
+  - **Date of last entry modification**: `date_modified`
+  - **Date of last sequence modification**: `date_sequence_modified`
+- **Gene Ontology [GO]**
+  - **Go**: `go`
+- **Small molecule**
+  - **Name or ID (CHEBI)**: `chebi`
+  - **InChIKey**: `inchikey`
+- **Keyword [KW]**: `keyword`
+- **Literature Citation**
+  - **Author**: `lit_author`
+  - **Journal**: `lit_journal`
+  - **Published**: `lit_pubdate`
+  - **PubMed ID**: `lit_pubmed`
+  - **Title**: `lit_title`
+  - **Citation ID**: `lit_citation_id`
+  - **Computational PubMed ID**: `computational_pubmed_id`
+  - **Community PubMed ID**: `community_pubmed_id`
+- **Proteomes**
+  - **Proteome ID**: `proteome`
+  - **Proteome Component**: `proteomecomponent`
+- **Cited for**: `scope`
+- **Reviewed**: `reviewed`
+- **Active**: `active`
+- **UniRef ID**
+  - **UniRef50**: `uniref_cluster_50`
+  - **UniRef90**: `uniref_cluster_90`
+  - **UniRef100**: `uniref_cluster_100`
+- **UniParc ID**: `uniparc`
+
+## UniRef (UniProt Reference Clusters)
+
+- **UniRef ID**: `id`
+- **Cluster name**: `name`
+- **Sequence identity**: `identity`
+- **Cluster size**: `count`
+- **Sequence length**: `length`
+- **Date of last modification**: `date_modified`
+- **UniProtKB ID/AC**: `uniprotkb`
+- **UniParc ID**: `uniparc`
+- **Taxonomy [OC]**: `taxonomy_name`
+- **Related clusters**: `cluster`
+
+## UniParc (UniProt Archive)
+
+- **UniParc ID**: `upi`
+- **UniProtKB AC (active only)**: `uniprotkb`
+- **UniProtKB isoform ID**: `isoform`
+- **Proteome ID**: `proteome`
+- **Organism**: `organism_id`
+- **Taxonomy [OC]**: `taxonomy_name`
+- **Gene name [GN]**: `gene`
+- **Protein name**: `protein_name`
+- **Database**: `database`
+- **Active**: `active`
+- **Checksum (CRC64/MD5)**: `checksum`
+- **Sequence length**: `length`
+- **Database ID**: `dbid`
+- **Feature ID**: `feature_id`
+- **Proteome Component**: `proteomecomponent`

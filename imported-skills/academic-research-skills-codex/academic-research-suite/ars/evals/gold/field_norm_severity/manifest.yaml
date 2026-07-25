@@ -1,0 +1,30 @@
+task_name: field_norm_severity
+manifest_version: "1.0.0"
+issue: 215
+task_type: regression-fixture
+description: |
+  First-party regression fixture of severity-miscalibration cases extracted
+  verbatim from Kim et al. 2026 (arXiv:2605.20668v1). Pins the W1 field-norm
+  boundary and F.3.4 significance-boundary failure shapes so downstream prompt
+  and protocol changes can be checked against real, traceable cases.
+
+  This is NOT a calibrated threshold set. There is no deterministic detector for
+  field-norm severity miscalibration (it needs domain judgment), and n is small,
+  so the validator checks data integrity + first-party provenance only — it does
+  not compute FNR/FPR or assert distributional calibration.
+target:
+  entrypoint: scripts.check_field_norm_severity
+  gold_set_path: gold_set.json
+sample_n: 10
+labels: ["field_norm_boundary", "significance_boundary"]
+subtype_distribution:
+  - subtype: field_norm_boundary
+    n: 5
+  - subtype: significance_boundary
+    n: 5
+source_paper:
+  arxiv_id: "2605.20668v1"
+  citation: >
+    Kim, S., Yoon, D., Gashteovski, K., Suk, J., Baek, J., et al. (2026).
+    On the limits and opportunities of AI reviewers: Reviewing the reviews of
+    Nature-family papers with 45 expert scientists. arXiv:2605.20668v1 [cs.CL].

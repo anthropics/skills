@@ -1,0 +1,133 @@
+{
+  "skill_name": "materials-doe",
+  "evals": [
+    {
+      "id": "orthogonal-array-generation",
+      "prompt": "Generate an orthogonal array design for optimizing waterborne epoxy modified emulsified asphalt formulation. Three factors at 3 levels each: epoxy content (5%, 10%, 15%), curing temperature (25 °C, 40 °C, 60 °C), and curing time (24 h, 48 h, 72 h). Use Taguchi method.",
+      "expected_output": "The assistant must generate an L9(3⁴) orthogonal array with 9 runs. The matrix must show all 3 factors at 3 levels with the L9 structure: each level of each factor appears exactly 3 times, and any two columns contain all 9 possible level combinations exactly once. The output must include the factor-level table and the 9-run experimental matrix. The assistant must verify the orthogonality property before presenting the matrix.",
+      "assertions": [
+        {
+          "name": "l9_array_generated",
+          "description": "The output is an L9(3⁴) orthogonal array with exactly 9 runs."
+        },
+        {
+          "name": "orthogonality_verified",
+          "description": "The assistant verifies that each level of each factor appears exactly 3 times."
+        },
+        {
+          "name": "factor_level_table",
+          "description": "A factor-level table (epoxy content, curing temperature, curing time with their levels) is included."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "factor-level-validation",
+      "prompt": "Generate a factorial design for a ceramic sintering study. The user proposes: sintering temperature at 1200 °C, 1400 °C, 1600 °C, and 2000 °C; holding time at 0.5 h, 2 h, 8 h, and 48 h; heating rate at 1 °C/min, 5 °C/min, 10 °C/min, and 100 °C/min.",
+      "expected_output": "The assistant must validate factor levels before generating the matrix. It should flag: 2000 °C may exceed typical alumina sintering range (warning, not error), 48 h holding time is unusually long and may be impractical (warning), 100 °C/min heating rate may cause thermal shock in ceramics (warning). The assistant must confirm the levels with the user before generating the design matrix.",
+      "assertions": [
+        {
+          "name": "extreme_levels_flagged",
+          "description": "The assistant flags 2000 °C, 48 h, and 100 °C/min as potentially problematic levels."
+        },
+        {
+          "name": "domain_aware_warnings",
+          "description": "Warnings are domain-aware (ceramic thermal shock, practical sintering limits)."
+        },
+        {
+          "name": "confirmation_before_matrix",
+          "description": "The assistant asks for user confirmation before generating the design matrix."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "mixture-design-constraint",
+      "prompt": "Generate a mixture design for a ternary geopolymer system: fly ash, slag, and metakaolin. The constraints are: fly ash 40-70%, slag 20-50%, metakaolin 0-30%. The sum of all three must equal 100%.",
+      "expected_output": "The assistant must generate a simplex-based mixture design where the sum of all three components equals 100% for every run. The output must respect the lower and upper bounds: fly ash ∈ [40, 70], slag ∈ [20, 50], metakaolin ∈ [0, 30]. The assistant must verify the mixture constraint (sum = 100%) for every design point before presenting the matrix.",
+      "assertions": [
+        {
+          "name": "sum_constraint_enforced",
+          "description": "Every design point sums to exactly 100%."
+        },
+        {
+          "name": "bounds_respected",
+          "description": "All design points respect the individual component bounds (fly ash 40-70%, slag 20-50%, metakaolin 0-30%)."
+        },
+        {
+          "name": "simplex_design",
+          "description": "The design uses simplex lattice or simplex centroid structure appropriate for mixture experiments."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "experiment-record-output",
+      "prompt": "Generate a Box-Behnken design for optimizing a polymer composite formulation. Factors: filler content (10, 20, 30 wt%), mixing speed (200, 400, 600 rpm), mixing time (5, 10, 15 min). Output the design as an experiment record.",
+      "expected_output": "The assistant must generate the Box-Behnken design matrix (15 runs for 3 factors) and output it as an experiment-record.yaml file following the experiment-record-schema.yaml structure. The YAML must include: experiment metadata, factor definitions with levels, the design matrix, response variables (to be filled), and the design type (Box-Behnken). The file must be valid YAML.",
+      "assertions": [
+        {
+          "name": "yaml_output",
+          "description": "The output includes an experiment-record.yaml file."
+        },
+        {
+          "name": "schema_compliant",
+          "description": "The YAML follows the experiment-record-schema.yaml structure (metadata, factors, matrix, responses)."
+        },
+        {
+          "name": "bbd_matrix_correct",
+          "description": "The design matrix is a correct Box-Behnken design with 15 runs for 3 factors."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "methods-paragraph-generation",
+      "prompt": "Generate a methods paragraph for a paper describing the experimental design of a cement mortar study. The design is a central composite design (CCD) with 3 factors: water-to-binder ratio (0.35, 0.40, 0.45), superplasticizer dosage (0.5%, 1.0%, 1.5%), and silica fume content (0%, 5%, 10%). The response variable is 28-day compressive strength. The total number of runs is 20 (8 factorial + 6 axial + 6 center).",
+      "expected_output": "The assistant must generate a methods paragraph that can be directly pasted into a manuscript. The paragraph must include: the design type (CCD), the number of factors (3) and their ranges, the number of runs (20) with the breakdown (8 factorial, 6 axial, 6 center points), the response variable (28-day compressive strength), and the analysis plan (ANOVA, response surface). The paragraph must use past tense and follow standard materials science methods section conventions.",
+      "assertions": [
+        {
+          "name": "design_type_stated",
+          "description": "The paragraph states the design type (central composite design, CCD)."
+        },
+        {
+          "name": "factor_ranges_listed",
+          "description": "All three factors with their ranges are listed in the paragraph."
+        },
+        {
+          "name": "run_breakdown",
+          "description": "The paragraph includes the run breakdown (8 factorial + 6 axial + 6 center = 20)."
+        },
+        {
+          "name": "analysis_plan",
+          "description": "The paragraph mentions the analysis plan (ANOVA, response surface methodology)."
+        },
+        {
+          "name": "paste_ready",
+          "description": "The paragraph reads as complete, self-contained methods prose suitable for direct insertion into a manuscript."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "doe-data-handoff-routing",
+      "prompt": "Create a Taguchi asphalt experiment matrix and then prepare a data-entry package from the resulting experiment record.",
+      "expected_output": "The assistant must first complete and verify the DOE route, emit the experiment record, and only then hand the record to materials-data for the data-entry package. It must not preload writing or figure workflows, and shared files selected by both skills must be applied once rather than treated as separate conflicting instructions.",
+      "assertions": [
+        {
+          "name": "doe_route_completed_first",
+          "description": "The factor table, Taguchi matrix, and orthogonality check are completed before the data handoff."
+        },
+        {
+          "name": "record_based_data_handoff",
+          "description": "The materials-data package is explicitly built from the DOE experiment record."
+        },
+        {
+          "name": "unrequested_skills_excluded",
+          "description": "Writing and figure workflows are not invoked because the prompt does not request them."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

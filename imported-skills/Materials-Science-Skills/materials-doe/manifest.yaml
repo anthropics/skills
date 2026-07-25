@@ -1,0 +1,174 @@
+version: "1.1.0"
+status: stable
+
+context_budget:
+  target_activation_bytes: 16384
+  max_activation_bytes: 18432
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 70
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes:
+    - design_mode
+    - material_family
+    - domain
+    - output
+    - output_format
+  required_route_scenarios:
+    - default-classical-note
+    - taguchi-asphalt-matrix
+    - rsm-polymer-record
+    - constrained-mixture-matrix
+    - doe-to-data-handoff
+    - doe-to-writing-methods
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/workflow.md
+
+axes:
+  design_mode:
+    detect: "Which design-of-experiments approach does the user need?"
+    default: classical
+    values:
+      classical:
+        path: static/core/classical-doe.md
+        triggers: ["classical", "full factorial", "fractional factorial", "Taguchi", "one-factor-at-a-time", "OFAT", "经典", "全因子", "正交表", "田口"]
+      orthogonal:
+        path: static/core/orthogonal-tables.md
+        triggers: ["orthogonal", "orthogonal array", "L9", "L16", "L25", "signal-to-noise", "S/N ratio", "极差分析", "方差分析", "信噪比"]
+      screening:
+        path: static/core/screening-designs.md
+        triggers: ["Plackett-Burman", "PB", "screening", "fraction factorial", "2^(k-p)", "2^k-p", "factor screening", "因子筛选", "筛选设计", "部分因子", "分辨度"]
+      response-surface:
+        path: static/core/response-surface.md
+        triggers: ["RSM", "response surface", "response surface methodology", "CCD", "central composite", "Box-Behnken", "BBD", "响应面", "中心复合", "响应曲面", "优化设计"]
+      mixture-design:
+        path: static/core/mixture-design.md
+        triggers: ["simplex lattice", "simplex centroid", "extreme vertices", "mixture design", "混料设计", "Simplex格点", "单纯形重心", "三元相图", "配方优化", "混料试验"]
+      mix-design:
+        path: static/core/mix-design-guide.md
+        triggers: ["mix design", "mixture proportion", "simplex", "D-optimal", "配合比", "级配", "混合料设计"]
+
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+
+  domain:
+    detect: "Which materials field is the experiment design for?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      asphalt:
+        path: static/reference/asphalt-experiments.md
+        triggers: ["asphalt", "emulsified asphalt", "waterborne epoxy", "bitumen", "沥青", "乳化沥青", "水性环氧"]
+      cement-concrete:
+        path: static/reference/cement-experiments.md
+        triggers: ["cement", "concrete", "mortar", "UHPC", "geopolymer", "水泥", "混凝土", "砂浆"]
+      insulation:
+        path: static/reference/insulation-experiments.md
+        triggers: ["insulation", "thermal insulation", "aerogel", "foam insulation", "building envelope", "保温", "绝热", "气凝胶"]
+      polymers:
+        path: static/reference/polymers-experiments.md
+        triggers: ["polymer", "thermoplastic", "thermoset", "rubber", "composite", "injection molding", "extrusion", "高分子", "聚合物", "橡胶", "注塑"]
+      metals:
+        path: static/reference/metals-experiments.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "titanium", "welding", "heat treatment", "金属", "合金", "钢", "焊接", "热处理"]
+      ceramics:
+        path: static/reference/ceramics-experiments.md
+        triggers: ["ceramic", "陶瓷"]
+      functional:
+        path: static/reference/functional-experiments.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "ferroelectric", "photonic", "半导体", "介电", "压电"]
+      nano:
+        path: static/reference/nano-experiments.md
+        triggers: ["nano", "nanoparticle", "nanotube", "graphene", "2D material", "quantum dot", "纳米", "纳米材料"]
+
+  output:
+    detect: "What deliverable does the user expect?"
+    default: note
+    values:
+      note:
+        path: static/core/workflow.md
+        triggers: ["note", "summary", "plan", "说明", "方案"]
+      matrix:
+        path: static/reference/factor-level-template.md
+        triggers: ["matrix", "test matrix", "experimental matrix", "因子矩阵", "试验矩阵", "试验方案"]
+      figure-package:
+        path: static/reference/doe-figure-package.md
+        triggers: ["figure", "plot", "chart", "图", "图表", "作图"]
+      analysis-plan:
+        path: static/core/response-surface.md
+        triggers: ["analysis plan", "ANOVA", "分析计划", "方差分析", "分析方法"]
+
+  output_format:
+    detect: "In what format should the design be delivered?"
+    default: yaml-record
+    values:
+      yaml-record:
+        path: static/core/experiment-record-output.md
+        triggers: ["yaml", "record", "experiment-record", "machine-readable", "default"]
+      textual:
+        path: static/core/output-format.md
+        triggers: ["text", "summary", "table only", "no yaml"]
+
+references:
+  on_demand:
+    evidence-contract:
+      path: ../_shared/core/evidence-contract.md
+      when: "The task audits claim support, statistical conclusions, or an evidence chain."
+    screening-factor-template:
+      path: static/reference/factor-level-template.md
+      when: "A screening design needs a reusable factor-level worksheet."
+    classical-validity:
+      path: static/core/classical-doe.md
+      when: "The user asks about sample size, replication, randomization, controls, power, or design validity."
+
+assets:
+  - assets/templates
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+handoffs:
+  provides:
+    doe-handoff:
+      description: "Design-of-experiments plan with factor matrix, levels, and analysis strategy"
+      contract: ../../_shared/contracts/doe-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: citation-handoff
+      from: materials-citation
+      optional: true
+    - handoff: reader-package
+      from: materials-reader
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

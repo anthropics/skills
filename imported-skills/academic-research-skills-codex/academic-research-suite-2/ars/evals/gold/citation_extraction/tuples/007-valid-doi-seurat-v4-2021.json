@@ -1,0 +1,124 @@
+{
+  "tuple_id": "007-valid-doi-seurat-v4-2021",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Hao2021Seurat",
+    "title": "Integrated analysis of multimodal single-cell data",
+    "authors": [
+      {
+        "family": "Hao",
+        "given": "Yuhan"
+      },
+      {
+        "family": "Hao",
+        "given": "Stephanie"
+      },
+      {
+        "family": "Andersen-Nissen",
+        "given": "Erica"
+      },
+      {
+        "family": "Mauck",
+        "given": "William M."
+      },
+      {
+        "family": "Zheng",
+        "given": "Shiwei"
+      },
+      {
+        "family": "Butler",
+        "given": "Andrew"
+      },
+      {
+        "family": "Lee",
+        "given": "Maddie J."
+      },
+      {
+        "family": "Wilk",
+        "given": "Aaron J."
+      },
+      {
+        "family": "Darby",
+        "given": "Charlotte"
+      },
+      {
+        "family": "Zager",
+        "given": "Michael"
+      },
+      {
+        "family": "Hoffman",
+        "given": "Paul"
+      },
+      {
+        "family": "Stoeckius",
+        "given": "Marlon"
+      },
+      {
+        "family": "Papalexi",
+        "given": "Efthymia"
+      },
+      {
+        "family": "Mimitou",
+        "given": "Eleni P."
+      },
+      {
+        "family": "Jain",
+        "given": "Jaison"
+      },
+      {
+        "family": "Srivastava",
+        "given": "Avi"
+      },
+      {
+        "family": "Stuart",
+        "given": "Tim"
+      },
+      {
+        "family": "Fleming",
+        "given": "Lamar M."
+      },
+      {
+        "family": "Yeung",
+        "given": "Bertrand"
+      },
+      {
+        "family": "Rogers",
+        "given": "Angela J."
+      },
+      {
+        "family": "McElrath",
+        "given": "Juliana M."
+      },
+      {
+        "family": "Blish",
+        "given": "Catherine A."
+      },
+      {
+        "family": "Gottardo",
+        "given": "Raphael"
+      },
+      {
+        "family": "Smibert",
+        "given": "Peter"
+      },
+      {
+        "family": "Satija",
+        "given": "Rahul"
+      }
+    ],
+    "year": 2021,
+    "doi": "10.1016/j.cell.2021.04.048",
+    "venue": "Cell",
+    "source_pointer": "https://doi.org/10.1016/j.cell.2021.04.048",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "hao-2021-seurat",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

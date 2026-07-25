@@ -1,0 +1,471 @@
+{
+  "tuple_id": "004-valid-doi-scipy-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Virtanen2020SciPy",
+    "title": "SciPy 1.0: fundamental algorithms for scientific computing in Python",
+    "authors": [
+      {
+        "family": "Virtanen",
+        "given": "Pauli"
+      },
+      {
+        "family": "Gommers",
+        "given": "Ralf"
+      },
+      {
+        "family": "Oliphant",
+        "given": "Travis E."
+      },
+      {
+        "family": "Haberland",
+        "given": "Matt"
+      },
+      {
+        "family": "Reddy",
+        "given": "Tyler"
+      },
+      {
+        "family": "Cournapeau",
+        "given": "David"
+      },
+      {
+        "family": "Burovski",
+        "given": "Evgeni"
+      },
+      {
+        "family": "Peterson",
+        "given": "Pearu"
+      },
+      {
+        "family": "Weckesser",
+        "given": "Warren"
+      },
+      {
+        "family": "Bright",
+        "given": "Jonathan"
+      },
+      {
+        "family": "van der Walt",
+        "given": "Stéfan J."
+      },
+      {
+        "family": "Brett",
+        "given": "Matthew"
+      },
+      {
+        "family": "Wilson",
+        "given": "Joshua"
+      },
+      {
+        "family": "Millman",
+        "given": "K. Jarrod"
+      },
+      {
+        "family": "Mayorov",
+        "given": "Nikolay"
+      },
+      {
+        "family": "Nelson",
+        "given": "Andrew R. J."
+      },
+      {
+        "family": "Jones",
+        "given": "Eric"
+      },
+      {
+        "family": "Kern",
+        "given": "Robert"
+      },
+      {
+        "family": "Larson",
+        "given": "Eric"
+      },
+      {
+        "family": "Carey",
+        "given": "C J"
+      },
+      {
+        "family": "Polat",
+        "given": "İlhan"
+      },
+      {
+        "family": "Feng",
+        "given": "Yu"
+      },
+      {
+        "family": "Moore",
+        "given": "Eric W."
+      },
+      {
+        "family": "VanderPlas",
+        "given": "Jake"
+      },
+      {
+        "family": "Laxalde",
+        "given": "Denis"
+      },
+      {
+        "family": "Perktold",
+        "given": "Josef"
+      },
+      {
+        "family": "Cimrman",
+        "given": "Robert"
+      },
+      {
+        "family": "Henriksen",
+        "given": "Ian"
+      },
+      {
+        "family": "Quintero",
+        "given": "E. A."
+      },
+      {
+        "family": "Harris",
+        "given": "Charles R."
+      },
+      {
+        "family": "Archibald",
+        "given": "Anne M."
+      },
+      {
+        "family": "Ribeiro",
+        "given": "Antônio H."
+      },
+      {
+        "family": "Pedregosa",
+        "given": "Fabian"
+      },
+      {
+        "family": "van Mulbregt",
+        "given": "Paul"
+      },
+      {
+        "literal": "SciPy 1.0 Contributors"
+      },
+      {
+        "family": "Vijaykumar",
+        "given": "Aditya"
+      },
+      {
+        "family": "Bardelli",
+        "given": "Alessandro Pietro"
+      },
+      {
+        "family": "Rothberg",
+        "given": "Alex"
+      },
+      {
+        "family": "Hilboll",
+        "given": "Andreas"
+      },
+      {
+        "family": "Kloeckner",
+        "given": "Andreas"
+      },
+      {
+        "family": "Scopatz",
+        "given": "Anthony"
+      },
+      {
+        "family": "Lee",
+        "given": "Antony"
+      },
+      {
+        "family": "Rokem",
+        "given": "Ariel"
+      },
+      {
+        "family": "Woods",
+        "given": "C. Nathan"
+      },
+      {
+        "family": "Fulton",
+        "given": "Chad"
+      },
+      {
+        "family": "Masson",
+        "given": "Charles"
+      },
+      {
+        "family": "Häggström",
+        "given": "Christian"
+      },
+      {
+        "family": "Fitzgerald",
+        "given": "Clark"
+      },
+      {
+        "family": "Nicholson",
+        "given": "David A."
+      },
+      {
+        "family": "Hagen",
+        "given": "David R."
+      },
+      {
+        "family": "Pasechnik",
+        "given": "Dmitrii V."
+      },
+      {
+        "family": "Olivetti",
+        "given": "Emanuele"
+      },
+      {
+        "family": "Martin",
+        "given": "Eric"
+      },
+      {
+        "family": "Wieser",
+        "given": "Eric"
+      },
+      {
+        "family": "Silva",
+        "given": "Fabrice"
+      },
+      {
+        "family": "Lenders",
+        "given": "Felix"
+      },
+      {
+        "family": "Wilhelm",
+        "given": "Florian"
+      },
+      {
+        "family": "Young",
+        "given": "G."
+      },
+      {
+        "family": "Price",
+        "given": "Gavin A."
+      },
+      {
+        "family": "Ingold",
+        "given": "Gert-Ludwig"
+      },
+      {
+        "family": "Allen",
+        "given": "Gregory E."
+      },
+      {
+        "family": "Lee",
+        "given": "Gregory R."
+      },
+      {
+        "family": "Audren",
+        "given": "Hervé"
+      },
+      {
+        "family": "Probst",
+        "given": "Irvin"
+      },
+      {
+        "family": "Dietrich",
+        "given": "Jörg P."
+      },
+      {
+        "family": "Silterra",
+        "given": "Jacob"
+      },
+      {
+        "family": "Webber",
+        "given": "James T"
+      },
+      {
+        "family": "Slavič",
+        "given": "Janko"
+      },
+      {
+        "family": "Nothman",
+        "given": "Joel"
+      },
+      {
+        "family": "Buchner",
+        "given": "Johannes"
+      },
+      {
+        "family": "Kulick",
+        "given": "Johannes"
+      },
+      {
+        "family": "Schönberger",
+        "given": "Johannes L."
+      },
+      {
+        "family": "de Miranda Cardoso",
+        "given": "José Vinícius"
+      },
+      {
+        "family": "Reimer",
+        "given": "Joscha"
+      },
+      {
+        "family": "Harrington",
+        "given": "Joseph"
+      },
+      {
+        "family": "Rodríguez",
+        "given": "Juan Luis Cano"
+      },
+      {
+        "family": "Nunez-Iglesias",
+        "given": "Juan"
+      },
+      {
+        "family": "Kuczynski",
+        "given": "Justin"
+      },
+      {
+        "family": "Tritz",
+        "given": "Kevin"
+      },
+      {
+        "family": "Thoma",
+        "given": "Martin"
+      },
+      {
+        "family": "Newville",
+        "given": "Matthew"
+      },
+      {
+        "family": "Kümmerer",
+        "given": "Matthias"
+      },
+      {
+        "family": "Bolingbroke",
+        "given": "Maximilian"
+      },
+      {
+        "family": "Tartre",
+        "given": "Michael"
+      },
+      {
+        "family": "Pak",
+        "given": "Mikhail"
+      },
+      {
+        "family": "Smith",
+        "given": "Nathaniel J."
+      },
+      {
+        "family": "Nowaczyk",
+        "given": "Nikolai"
+      },
+      {
+        "family": "Shebanov",
+        "given": "Nikolay"
+      },
+      {
+        "family": "Pavlyk",
+        "given": "Oleksandr"
+      },
+      {
+        "family": "Brodtkorb",
+        "given": "Per A."
+      },
+      {
+        "family": "Lee",
+        "given": "Perry"
+      },
+      {
+        "family": "McGibbon",
+        "given": "Robert T."
+      },
+      {
+        "family": "Feldbauer",
+        "given": "Roman"
+      },
+      {
+        "family": "Lewis",
+        "given": "Sam"
+      },
+      {
+        "family": "Tygier",
+        "given": "Sam"
+      },
+      {
+        "family": "Sievert",
+        "given": "Scott"
+      },
+      {
+        "family": "Vigna",
+        "given": "Sebastiano"
+      },
+      {
+        "family": "Peterson",
+        "given": "Stefan"
+      },
+      {
+        "family": "More",
+        "given": "Surhud"
+      },
+      {
+        "family": "Pudlik",
+        "given": "Tadeusz"
+      },
+      {
+        "family": "Oshima",
+        "given": "Takuya"
+      },
+      {
+        "family": "Pingel",
+        "given": "Thomas J."
+      },
+      {
+        "family": "Robitaille",
+        "given": "Thomas P."
+      },
+      {
+        "family": "Spura",
+        "given": "Thomas"
+      },
+      {
+        "family": "Jones",
+        "given": "Thouis R."
+      },
+      {
+        "family": "Cera",
+        "given": "Tim"
+      },
+      {
+        "family": "Leslie",
+        "given": "Tim"
+      },
+      {
+        "family": "Zito",
+        "given": "Tiziano"
+      },
+      {
+        "family": "Krauss",
+        "given": "Tom"
+      },
+      {
+        "family": "Upadhyay",
+        "given": "Utkarsh"
+      },
+      {
+        "family": "Halchenko",
+        "given": "Yaroslav O."
+      },
+      {
+        "family": "Vázquez-Baeza",
+        "given": "Yoshiki"
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1038/s41592-019-0686-2",
+    "venue": "Nature Methods",
+    "source_pointer": "https://doi.org/10.1038/s41592-019-0686-2",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "virtanen-2020-scipy",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

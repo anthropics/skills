@@ -1,0 +1,150 @@
+{
+  "description": "Expected outputs from all three senior-pm scripts when run against sample_project_data.json",
+  "risk_matrix_analyzer": {
+    "summary": {
+      "total_risks": 6,
+      "active_risks": 5,
+      "closed_risks": 1,
+      "critical_risks": 0,
+      "high_risks": 1,
+      "total_risk_exposure": 59.2,
+      "average_risk_score": 11.84,
+      "overdue_risks": 5
+    },
+    "risk_level_distribution": {
+      "critical": 0,
+      "high": 1,
+      "medium": 3,
+      "low": 1
+    },
+    "highest_risk_categories": [
+      "financial",
+      "technical",
+      "resource"
+    ],
+    "key_recommendations": [
+      "Focus mitigation efforts on financial risks - highest concentration of risk exposure",
+      "Address overdue mitigation actions - more than 20% of risks are past their target resolution date"
+    ],
+    "top_risks": [
+      {
+        "title": "Cloud migration budget overrun",
+        "score": 16.8,
+        "level": "high",
+        "category": "financial"
+      },
+      {
+        "title": "Third-party API dependency for mobile banking app",
+        "score": 14.4,
+        "level": "medium",
+        "category": "technical"
+      },
+      {
+        "title": "Key ML engineer departure risk",
+        "score": 11.0,
+        "level": "medium",
+        "category": "resource"
+      }
+    ]
+  },
+  "resource_capacity_planner": {
+    "summary": {
+      "total_resources": 6,
+      "total_projects": 4,
+      "active_projects": 2,
+      "overall_utilization": 86.7
+    },
+    "utilization_analysis": {
+      "optimal": 3,
+      "over_utilized": 2,
+      "critical": 1
+    },
+    "capacity_alerts": [
+      "CRITICAL: 1 resources are severely over-allocated (>95%)",
+      "WARNING: 2 resources are over-allocated (85-95%)"
+    ],
+    "critical_resources": [
+      {
+        "name": "Marcus Rodriguez",
+        "role": "tech lead",
+        "utilization": 100.0
+      }
+    ],
+    "available_capacity": {
+      "Jennifer Walsh": "20% available (8h/week)",
+      "Lisa Thompson": "30% available (12h/week)",
+      "David Kim": "15% available (6h/week)"
+    },
+    "key_recommendations": [
+      "URGENT: Redistribute workload for critically over-allocated resources to prevent burnout",
+      "Review skill-to-project matching and consider reallocation for better efficiency"
+    ]
+  },
+  "project_health_dashboard": {
+    "portfolio_overview": {
+      "total_projects": 4,
+      "active_projects": 3,
+      "portfolio_average_score": 89.8,
+      "projects_needing_attention": 0,
+      "critical_projects": 0
+    },
+    "rag_status": {
+      "green": 3,
+      "amber": 0,
+      "red": 0,
+      "portfolio_grade": "healthy"
+    },
+    "dimension_analysis": {
+      "strongest": "timeline",
+      "weakest": "quality",
+      "dimension_scores": {
+        "timeline": 100.0,
+        "budget": 100.0,
+        "scope": 100.0,
+        "quality": 49.0,
+        "risk": 100.0
+      }
+    },
+    "project_performance": [
+      {
+        "name": "Mobile Banking App v3.0",
+        "score": 89.8,
+        "status": "green",
+        "priority": "high"
+      },
+      {
+        "name": "Cloud Infrastructure Migration",
+        "score": 89.8,
+        "status": "green",
+        "priority": "critical"
+      },
+      {
+        "name": "AI-Powered Analytics Dashboard",
+        "score": 89.8,
+        "status": "green",
+        "priority": "medium"
+      }
+    ],
+    "key_recommendations": [
+      "Focus improvement efforts on quality - weakest portfolio dimension"
+    ]
+  },
+  "usage_examples": {
+    "risk_analysis": {
+      "command": "python3 scripts/risk_matrix_analyzer.py assets/sample_project_data.json",
+      "description": "Generates comprehensive risk analysis with probability/impact matrix, category breakdown, and mitigation recommendations"
+    },
+    "capacity_planning": {
+      "command": "python3 scripts/resource_capacity_planner.py assets/sample_project_data.json",
+      "description": "Analyzes resource utilization across portfolio, identifies capacity constraints and optimization opportunities"
+    },
+    "portfolio_health": {
+      "command": "python3 scripts/project_health_dashboard.py assets/sample_project_data.json",
+      "description": "Provides executive dashboard view of portfolio health across multiple dimensions with RAG status"
+    },
+    "json_output": {
+      "command": "python3 scripts/[script_name].py assets/sample_project_data.json --format json",
+      "description": "All scripts support JSON output format for integration with dashboards and reporting tools"
+    }
+  }
+}

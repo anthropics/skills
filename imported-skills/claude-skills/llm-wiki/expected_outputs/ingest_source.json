@@ -1,0 +1,12 @@
+{
+  "source_path": "/tmp/test-vault/raw/articles/hello.md",
+  "relative": "raw/articles/hello.md",
+  "bytes": 204,
+  "sha256": "dcb7021b49882e26",
+  "ext": ".md",
+  "title_guess": "Hello Monosemanticity",
+  "word_count": 28,
+  "preview": "# Hello Monosemanticity\n\nAnthropic's Bricken et al. 2023 paper trained a sparse autoencoder on a one-layer transformer and found interpretable features.\nKey claim: the feature dictionary is overcomplete.\n",
+  "existing_summary_page": null,
+  "suggested_summary_path": "wiki/sources/hello-monosemanticity.md"
+}

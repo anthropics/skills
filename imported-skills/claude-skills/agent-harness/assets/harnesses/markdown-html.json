@@ -1,0 +1,357 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "markdown-html",
+  "skill_count": 5,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "design-system",
+      "path": "markdown-html/skills/design-system",
+      "description": "Captures the user's brand identity once via a 10-question onboarding wizard (primary/accent HEX + heading + body Google Fonts + design style editorial/technical/minimal/playful + default output directory + syntax theme + TOC behavior + optional logo/company), validates body-text and link contrast against WCAG 2.2 AA, derives 12 CSS custom properties in HSL space, and stores the result for every markdown-html converter to consume. Use before any markdown-html conversion. Triggers on first-run onboarding (\"set up the brand\", \"configure markdown-html\", \"run onboarding\"), on explicit reset \u2026",
+      "tools": [
+        {
+          "script": "markdown-html/skills/design-system/scripts/brand_palette_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/design-system/scripts/brand_palette_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/design-system/scripts/brand_palette_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/design-system/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/design-system/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/design-system/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/design-system/scripts/onboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/design-system/scripts/onboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "design_token_canon.md",
+        "typography_pairing.md",
+        "wcag_accessibility.md"
+      ]
+    },
+    {
+      "name": "markdown-html-orchestrator",
+      "path": "markdown-html/skills/markdown-html-orchestrator",
+      "description": "Use when a user wants to convert any markdown file in their Claude project into a single-file, lightly-interactive HTML \u2014 long-form documents (specs, plans, RFCs, reports, explainers), code reviews with diffs and severity-tagged annotations, or slide decks. Triggers on \"convert this markdown to HTML\", \"make this an HTML file\", \"turn this into an interactive document\", \"render this report as HTML\", \"PR writeup as HTML\", \"slides from this markdown\". Forks context to route to one of three converter sub-skills (md-document, md-review, md-slides) based on a deterministic doctype classifier \u2026",
+      "tools": [
+        {
+          "script": "markdown-html/skills/markdown-html-orchestrator/scripts/doctype_classifier.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/markdown-html-orchestrator/scripts/doctype_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/markdown-html-orchestrator/scripts/doctype_classifier.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/markdown-html-orchestrator/scripts/output_path_resolver.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/markdown-html-orchestrator/scripts/output_path_resolver.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/markdown-html-orchestrator/scripts/output_path_resolver.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/markdown-html-orchestrator/scripts/route_explainer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/markdown-html-orchestrator/scripts/route_explainer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "information_density_canon.md",
+        "orchestrator_routing_patterns.md",
+        "single_file_html_discipline.md"
+      ]
+    },
+    {
+      "name": "md-document",
+      "path": "markdown-html/skills/md-document",
+      "description": "Converts long-form markdown (specs, RFCs, reports, plans, explainers) into a single-file, lightly-interactive HTML document with sticky TOC, scrollspy, search filter, code-copy buttons, and design-system-driven brand tokens. Triggers when the markdown-html-orchestrator classifies an input as DOCUMENT, or when invoked directly via /cs:md-document. Reads the design-system config via config_loader.py and inlines the user's 12 derived CSS custom properties; refuses to render if onboarding hasn't run. Single-file output \u2014 Google Fonts + Prism.js CDN are the only externals; no framework runtime \u2026",
+      "tools": [
+        {
+          "script": "markdown-html/skills/md-document/scripts/html_renderer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/html_renderer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/html_renderer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-document/scripts/interactivity_injector.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/interactivity_injector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/interactivity_injector.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-document/scripts/markdown_parser.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/markdown_parser.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-document/scripts/markdown_parser.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "information_density_patterns.md",
+        "single_file_html_discipline.md",
+        "toc_and_nav_ux.md"
+      ]
+    },
+    {
+      "name": "md-review",
+      "path": "markdown-html/skills/md-review",
+      "description": "Converts a markdown PR writeup or code review (one with ```diff fenced blocks and severity-tagged > [!BLOCKER]/[!MAJOR]/[!MINOR]/[!NIT] callouts) into a single-file 2-column HTML review \u2014 unified-diff on the left, severity-tagged annotation cards on the right, top jump-nav listing every finding, mandatory named reviewer footer. Triggers when the markdown-html-orchestrator classifies an input as REVIEW, or when invoked directly via /cs:md-review. Refuses without explicit --reviewer (a code review must name a human), refuses if no diff hunks present (route to md-document instead), and refuses \u2026",
+      "tools": [
+        {
+          "script": "markdown-html/skills/md-review/scripts/annotation_extractor.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/annotation_extractor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/annotation_extractor.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-review/scripts/diff_parser.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/diff_parser.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/diff_parser.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-review/scripts/review_html_renderer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/review_html_renderer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-review/scripts/review_html_renderer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "diff_rendering_canon.md",
+        "pr_annotation_ux.md",
+        "severity_coding.md"
+      ]
+    },
+    {
+      "name": "md-slides",
+      "path": "markdown-html/skills/md-slides",
+      "description": "Converts a markdown deck (slides separated by `---` HR boundaries or by `# ` H1 headings, with optional `<!-- notes: ... -->` presenter notes blocks) into a single-file HTML presentation with arrow-key / space / PgDn / PgUp / Home / End / P / Esc keyboard navigation, presenter mode (split view with current slide + speaker notes + clock + next-slide preview), URL-hash deep linking, and `@media print` page-per-slide for PDF export. Triggers when the markdown-html-orchestrator classifies an input as SLIDES, or when invoked directly via /cs:md-slides. Reuses md-document's markdown parser for \u2026",
+      "tools": [
+        {
+          "script": "markdown-html/skills/md-slides/scripts/deck_html_renderer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/deck_html_renderer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/deck_html_renderer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-slides/scripts/presenter_notes_parser.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/presenter_notes_parser.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/presenter_notes_parser.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "markdown-html/skills/md-slides/scripts/slide_splitter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/slide_splitter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 markdown-html/skills/md-slides/scripts/slide_splitter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "keyboard_nav_patterns.md",
+        "presentation_ux.md",
+        "single_file_deck_conventions.md"
+      ]
+    }
+  ]
+}

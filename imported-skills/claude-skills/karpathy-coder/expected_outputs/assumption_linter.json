@@ -1,0 +1,34 @@
+{
+  "status": "ok",
+  "source": "stdin",
+  "total_findings": 3,
+  "by_category": {
+    "assumption-just": 1,
+    "assumption-obvious": 1,
+    "missing-format": 1
+  },
+  "verdict": "REVIEW",
+  "findings": [
+    {
+      "line": 1,
+      "category": "assumption-just",
+      "matched": "just",
+      "message": "'just' often hides complexity. What's being skipped?",
+      "context": "I'll just add a function to export all user data"
+    },
+    {
+      "line": 1,
+      "category": "assumption-obvious",
+      "matched": "Obviously",
+      "message": "Signals an unstated assumption. Is it really obvious?",
+      "context": "Obviously we need caching too"
+    },
+    {
+      "line": 1,
+      "category": "missing-format",
+      "matched": "export all user data",
+      "message": "Export/save/fetch mentioned but format not specified (JSON? CSV? API?)",
+      "context": "I'll just add a function to export all user data"
+    }
+  ]
+}

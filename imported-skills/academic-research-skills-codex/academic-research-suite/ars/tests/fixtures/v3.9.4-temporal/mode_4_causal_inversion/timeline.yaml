@@ -1,0 +1,21 @@
+schema_version: "1.0"
+sources:
+  - citation_key: policy-a
+    type: policy
+    published_date:
+      value: "2026-03-01"
+      precision: day
+      open_ended: false
+      provenance:
+        method: user_override
+        confidence: high
+  - citation_key: policy-b
+    type: policy
+    published_date:
+      value: "2020-05-15"
+      precision: day
+      open_ended: false
+      provenance:
+        method: user_override
+        confidence: high
+events: []

@@ -1,0 +1,317 @@
+{
+  "migration_id": "23a52ed1507f",
+  "source_system": "PostgreSQL 13 Production Database",
+  "target_system": "PostgreSQL 15 Cloud Database",
+  "migration_type": "database",
+  "complexity": "critical",
+  "estimated_duration_hours": 95,
+  "phases": [
+    {
+      "name": "preparation",
+      "description": "Prepare systems and teams for migration",
+      "duration_hours": 19,
+      "dependencies": [],
+      "validation_criteria": [
+        "All backups completed successfully",
+        "Monitoring systems operational",
+        "Team members briefed and ready",
+        "Rollback procedures tested"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Backup source system",
+        "Set up monitoring and alerting",
+        "Prepare rollback procedures",
+        "Communicate migration timeline",
+        "Validate prerequisites"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "expand",
+      "description": "Execute expand phase",
+      "duration_hours": 19,
+      "dependencies": [
+        "preparation"
+      ],
+      "validation_criteria": [
+        "Expand phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete expand activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "migrate",
+      "description": "Execute migrate phase",
+      "duration_hours": 19,
+      "dependencies": [
+        "expand"
+      ],
+      "validation_criteria": [
+        "Migrate phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete migrate activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "contract",
+      "description": "Execute contract phase",
+      "duration_hours": 19,
+      "dependencies": [
+        "migrate"
+      ],
+      "validation_criteria": [
+        "Contract phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete contract activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "cleanup",
+      "description": "Execute cleanup phase",
+      "duration_hours": 19,
+      "dependencies": [
+        "contract"
+      ],
+      "validation_criteria": [
+        "Cleanup phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete cleanup activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "category": "technical",
+      "description": "Data corruption during migration",
+      "probability": "low",
+      "impact": "critical",
+      "severity": "high",
+      "mitigation": "Implement comprehensive backup and validation procedures",
+      "owner": "DBA Team"
+    },
+    {
+      "category": "technical",
+      "description": "Extended downtime due to migration complexity",
+      "probability": "medium",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Use blue-green deployment and phased migration approach",
+      "owner": "DevOps Team"
+    },
+    {
+      "category": "business",
+      "description": "Business process disruption",
+      "probability": "medium",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Communicate timeline and provide alternate workflows",
+      "owner": "Business Owner"
+    },
+    {
+      "category": "operational",
+      "description": "Insufficient rollback testing",
+      "probability": "high",
+      "impact": "critical",
+      "severity": "critical",
+      "mitigation": "Execute full rollback procedures in staging environment",
+      "owner": "QA Team"
+    },
+    {
+      "category": "business",
+      "description": "Zero-downtime requirement increases complexity",
+      "probability": "high",
+      "impact": "medium",
+      "severity": "high",
+      "mitigation": "Implement blue-green deployment or rolling update strategy",
+      "owner": "DevOps Team"
+    },
+    {
+      "category": "compliance",
+      "description": "Regulatory compliance requirements",
+      "probability": "medium",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Ensure all compliance checks are integrated into migration process",
+      "owner": "Compliance Team"
+    }
+  ],
+  "success_criteria": [
+    "All data successfully migrated with 100% integrity",
+    "System performance meets or exceeds baseline",
+    "All business processes functioning normally",
+    "No critical security vulnerabilities introduced",
+    "Stakeholder acceptance criteria met",
+    "Documentation and runbooks updated"
+  ],
+  "rollback_plan": {
+    "rollback_phases": [
+      {
+        "phase": "cleanup",
+        "rollback_actions": [
+          "Revert cleanup changes",
+          "Restore pre-cleanup state",
+          "Validate cleanup rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-cleanup state",
+          "All cleanup changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 285
+      },
+      {
+        "phase": "contract",
+        "rollback_actions": [
+          "Revert contract changes",
+          "Restore pre-contract state",
+          "Validate contract rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-contract state",
+          "All contract changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 285
+      },
+      {
+        "phase": "migrate",
+        "rollback_actions": [
+          "Revert migrate changes",
+          "Restore pre-migrate state",
+          "Validate migrate rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-migrate state",
+          "All migrate changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 285
+      },
+      {
+        "phase": "expand",
+        "rollback_actions": [
+          "Revert expand changes",
+          "Restore pre-expand state",
+          "Validate expand rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-expand state",
+          "All expand changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 285
+      },
+      {
+        "phase": "preparation",
+        "rollback_actions": [
+          "Revert preparation changes",
+          "Restore pre-preparation state",
+          "Validate preparation rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-preparation state",
+          "All preparation changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 285
+      }
+    ],
+    "rollback_triggers": [
+      "Critical system failure",
+      "Data corruption detected",
+      "Migration timeline exceeded by > 50%",
+      "Business-critical functionality unavailable",
+      "Security breach detected",
+      "Stakeholder decision to abort"
+    ],
+    "rollback_decision_matrix": {
+      "low_severity": "Continue with monitoring",
+      "medium_severity": "Assess and decide within 15 minutes",
+      "high_severity": "Immediate rollback initiation",
+      "critical_severity": "Emergency rollback - all hands"
+    },
+    "rollback_contacts": [
+      "Migration Lead",
+      "Technical Lead",
+      "Business Owner",
+      "On-call Engineer"
+    ]
+  },
+  "stakeholders": [
+    "Business Owner",
+    "Technical Lead",
+    "DevOps Team",
+    "QA Team",
+    "Security Team",
+    "End Users"
+  ],
+  "created_at": "2026-02-16T13:47:23.704502"
+}

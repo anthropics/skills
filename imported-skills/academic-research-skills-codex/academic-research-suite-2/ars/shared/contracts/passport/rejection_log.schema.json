@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/rejection_log.schema.json",
+  "title": "Literature Corpus Rejection Log",
+  "description": "Output companion to passport.yaml. Records entries that the adapter could not include in literature_corpus[]. Always emitted; empty when no rejections. Consumers are not required to read this; it exists for user debugging and audit.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": ["adapter_name", "adapter_version", "generated_at", "rejected"],
+
+  "properties": {
+    "adapter_name":   { "type": "string", "minLength": 1 },
+    "adapter_version":{ "type": "string", "minLength": 1 },
+    "generated_at":   { "type": "string", "format": "date-time" },
+    "input_source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional. Human-readable description of the adapter input (path, URL, etc.)."
+    },
+    "rejected": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rejection" }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "total_input":    { "type": "integer", "minimum": 0 },
+        "total_accepted": { "type": "integer", "minimum": 0 },
+        "total_rejected": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+
+  "$defs": {
+    "rejection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "reason"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Where the rejected item came from. Adapter-specific: filename for folder_scan, Zotero item key for zotero, .md path for obsidian."
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "missing_required_field",
+            "invalid_field_format",
+            "duplicate_citation_key",
+            "unresolvable_source_pointer",
+            "year_unparseable",
+            "authors_unparseable",
+            "adapter_error",
+            "other"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Free-text explanation. Required when reason='other' (enforced by allOf below). Recommended otherwise. Must be non-empty when present — empty strings defeat the 'interpretable rejection' contract."
+        },
+        "raw": {
+          "type": ["object", "string"],
+          "description": "Optional. Adapter's best-effort reproduction of the original input item. Object for structured sources; string for raw filenames or text lines."
+        },
+        "missing_fields": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional but strongly recommended when reason='missing_required_field'."
+        }
+      },
+      "allOf": [
+        {
+          "description": "When reason='other', detail MUST be provided so the rejection is interpretable. Categorical reason values are self-explanatory and do not require detail.",
+          "if": {
+            "properties": { "reason": { "const": "other" } },
+            "required": ["reason"]
+          },
+          "then": {
+            "required": ["detail"]
+          }
+        }
+      ]
+    }
+  }
+}

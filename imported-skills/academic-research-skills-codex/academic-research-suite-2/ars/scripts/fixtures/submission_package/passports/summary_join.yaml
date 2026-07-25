@@ -1,0 +1,16 @@
+# A passport whose citation_verification_summary[] carries the REAL prose join
+# (ref_slug differs from citation_key, proving the join is consumed rather than
+# an identity guess) plus the literature_corpus[] reference list.
+citation_verification_summary:
+  - citation_key: smith2024
+    ref_slug: smith-feedback-2024
+    lookup_verified: "true"
+    anchor_present: true
+    verification_timestamp: "2026-06-10T00:00:00+00:00"
+literature_corpus:
+  - citation_key: smith2024
+    title: Feedback loops in institutional accreditation
+    year: 2024
+    authors:
+      - family: Smith
+        given: Jordan

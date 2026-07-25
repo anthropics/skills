@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "enterprise-scale",
+  "description": "Customer-facing product, 50+ engineers, $50M+ ARR, regulated (SOC2 / HIPAA / PCI-DSS). Cadence: per-PR with strict gates. Cloud ceiling: $50K+/mo. Engineering org has dedicated platform team.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_min": 50,
+    "team_size_year_one_max": 200,
+    "deployment_cadence": "per-pr-with-gates",
+    "cloud_budget_monthly_usd_ceiling": 250000,
+    "user_facing": true,
+    "data_sensitivity_tier": "regulated-pii-phi-or-pci"
+  },
+  "stack_recommendations": {
+    "primary": "domain-bounded-services-with-shared-platform",
+    "frontend": {
+      "framework": "next-or-remix-or-internal-platform",
+      "rendering": "ssr-or-rsc-with-edge-caching",
+      "styling": "design-system-tokens-on-tailwind-or-stitches",
+      "state": "react-query-plus-zustand-or-redux-toolkit"
+    },
+    "backend": {
+      "pattern": "domain-bounded-services-or-modular-monolith-per-bounded-context",
+      "language": "polyglot-acceptable-with-3-language-cap",
+      "framework_options": ["spring-boot", "go-gin", "fastapi", "rails", "dotnet-minimal"],
+      "database": "postgresql-with-read-replicas-plus-warehouse",
+      "cache": "redis-cluster",
+      "queue": "kafka-or-sqs-with-explicit-ownership"
+    },
+    "infrastructure": {
+      "hosting": ["eks", "gke", "aks", "self-hosted-k8s"],
+      "service_mesh": "istio-or-linkerd-if-services-cross-30",
+      "observability": "datadog-or-honeycomb-plus-grafana",
+      "feature_flags": "launchdarkly-or-internal-platform",
+      "secrets": "vault-or-secrets-manager-required"
+    }
+  },
+  "anti_recommendations": {
+    "monolith-no-modular-boundaries": "kill — review cycle breaks past 30 engineers",
+    "single-database-no-read-replicas": "kill — fan-out reads at this scale collapse the primary",
+    "no-feature-flags": "kill — gates are mandatory at per-PR cadence",
+    "no-platform-team": "warn — dedicate 8-15% of headcount or velocity halves (Team Topologies, Skelton 2019)",
+    "no-disaster-recovery-runbook": "kill — RTO/RPO must be documented and tested"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 50,
+    "p95_api_latency_ms": 150,
+    "p99_api_latency_ms": 400,
+    "frontend_lcp_ms_mobile_4g": 2000,
+    "frontend_inp_ms": 100,
+    "uptime_target": 0.9995,
+    "deployment_time_minutes_max": 30,
+    "test_coverage_min": 0.8,
+    "security_scan_severity_max": "high",
+    "rpo_minutes_max": 15,
+    "rto_minutes_max": 60
+  },
+  "ci_cd": {
+    "platform": "github-actions-or-gitlab-or-buildkite",
+    "stages": ["lint", "typecheck", "unit-test", "integration-test", "sast", "sca", "container-scan", "build", "deploy-canary", "smoke-test", "deploy-prod"],
+    "gates": ["all-tests-pass", "no-high-or-critical-vulns", "sast-baseline-met", "code-coverage-floor", "perf-baseline-not-regressed"]
+  },
+  "named_approver_chain": {
+    "stack_change": "principal-engineer + architecture-review-board",
+    "production-data-migration": "data-team-lead + dba + on-call + change-advisory-board",
+    "external-service-add": "principal-engineer + security-review + finance-approval"
+  },
+  "canon_references": [
+    "Matthew Skelton & Manuel Pais, Team Topologies (2019) — platform team sizing",
+    "Sam Newman, Building Microservices 2e (2021) — bounded-context boundaries",
+    "Google SRE Workbook — SLO/SLI/error-budget discipline at scale",
+    "Susan Fowler, Production-Ready Microservices (2017) — eight pillars",
+    "ITIL v4 / Change Advisory Board pattern for regulated industries"
+  ]
+}

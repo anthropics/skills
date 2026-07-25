@@ -1,0 +1,7 @@
+material,mechanical_strength,thermal_conductivity,electrical_conductivity,emi_shielding,flame_retardancy
+Sample A,0.85,0.72,0.68,0.78,0.82
+Sample B,0.78,0.85,0.75,0.82,0.75
+Sample C,0.92,0.65,0.88,0.72,0.90
+Sample D,0.70,0.90,0.82,0.88,0.68
+Sample E,0.88,0.78,0.72,0.85,0.85
+Target,0.95,0.95,0.95,0.95,0.95

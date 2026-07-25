@@ -1,0 +1,19 @@
+{
+  "name": "aeo",
+  "description": "Answer Engine Optimization (AEO) skill — optimize content to be cited by AI language models (ChatGPT, Perplexity, Claude, Gemini, Mistral) as authoritative sources. Distinct from SEO (which optimizes for search rankings), AEO optimizes for citation in LLM-generated responses. Ships 3 stdlib Python tools (aeo_audit.py for E-E-A-T + structure scoring, aeo_optimizer.py for content rewriting in conservative/balanced/aggressive modes, citation_tracker.py for local-first citation ledger), 3 references citing 7+ authoritative sources each (E-E-A-T methodology, per-LLM citation patterns, AEO-vs-SEO strategy), and industry-aware thresholds for 8 industries (saas/healthcare/finance/legal/ecommerce/b2b/media/education) with stricter YMYL calibration. Triggers — 'AEO audit', 'optimize for ChatGPT', 'get cited by Perplexity', 'E-E-A-T audit', 'LLM citation strategy', 'answer engine optimization'.",
+  "version": "2.9.0",
+  "author": {
+    "name": "Alireza Rezvani",
+    "url": "https://alirezarezvani.com"
+  },
+  "homepage": "https://github.com/alirezarezvani/claude-skills/tree/main/marketing-skill/skills/aeo",
+  "repository": "https://github.com/alirezarezvani/claude-skills",
+  "license": "MIT",
+  "skills": ["./"],
+  "source": {
+    "upstream": "https://github.com/alirezarezvani/aeo-box/tree/main/answer-engine-optimization",
+    "upstream_version": "1.0.0",
+    "build_pattern": "Port from aeo-box answer-engine-optimization/ skill (9 modules, 2,464 LOC). Distilled into 3 stdlib CLI tools per claude-skills convention. Preserves E-E-A-T scoring methodology, citation-tracking schema, and industry-aware thresholds. Adds cs-aeo agent + /cs:aeo command + 3 references citing 8 sources each.",
+    "distinct_from": "marketing-skill/skills/seo-audit (traditional click-through SEO) — AEO and SEO complement, not substitute. Both can run on the same content."
+  }
+}

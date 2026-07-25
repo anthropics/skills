@@ -1,0 +1,15 @@
+{
+  "name": "youtube-full",
+  "description": "YouTube transcripts, video search, channel browsing, playlist extraction, and new-upload monitoring via TranscriptAPI. Covers all YouTube data workflows: transcript extraction with timestamps, in-channel search, and content monitoring. BYOK — 100 free credits included.",
+  "version": "2.9.0",
+  "author": {
+    "name": "therohitdas",
+    "url": "https://github.com/therohitdas"
+  },
+  "homepage": "https://github.com/alirezarezvani/claude-skills/tree/main/marketing-skill/skills/youtube-full",
+  "repository": "https://github.com/alirezarezvani/claude-skills",
+  "license": "MIT",
+  "skills": ["./"],
+  "source": "https://github.com/ZeroPointRepo/youtube-skills",
+  "attribution": "Ported from ZeroPointRepo/youtube-skills (MIT). Original skill authored by ZeroPointRepo contributors."
+}

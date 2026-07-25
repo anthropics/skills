@@ -1,0 +1,167 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "finance",
+  "skill_count": 4,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "business-investment-advisor",
+      "path": "finance/business-investment-advisor/skills/business-investment-advisor",
+      "description": "Business investment analysis and capital allocation advisor. Use when evaluating whether to invest in equipment, real estate, a new business, hiring, technology, or any capital expenditure. Also use for ROI calculations, IRR, NPV, payback period, build vs buy decisions, lease vs buy analysis, vendor evaluation, or deciding where to allocate limited budget for maximum return.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "finance-skills",
+      "path": "finance/skills/finance-skills",
+      "description": "Router/index for the 2 finance skills bundled in this plugin: financial-analyst (ratio analysis, DCF valuation, budget variance, rolling forecasts) and saas-metrics-coach (ARR/MRR, churn, CAC/LTV, NRR, quick ratio). Use when a finance request doesn't obviously match one skill and you need to pick the right one (e.g., 'analyze these financials', 'how healthy are my SaaS metrics').",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "financial-analyst",
+      "path": "finance/skills/financial-analyst",
+      "description": "Performs financial ratio analysis, DCF valuation, budget variance analysis, and rolling forecast construction for strategic decision-making. Use when analyzing financial statements, building valuation models, assessing budget variances, or constructing financial projections and forecasts. Also applicable when users mention financial modeling, cash flow analysis, company valuation, financial projections, or spreadsheet analysis.",
+      "tools": [
+        {
+          "script": "finance/skills/financial-analyst/scripts/budget_variance_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/financial-analyst/scripts/budget_variance_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "finance/skills/financial-analyst/scripts/dcf_valuation.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/financial-analyst/scripts/dcf_valuation.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "finance/skills/financial-analyst/scripts/forecast_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/financial-analyst/scripts/forecast_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "finance/skills/financial-analyst/scripts/ratio_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/financial-analyst/scripts/ratio_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "financial-ratios-guide.md",
+        "forecasting-best-practices.md",
+        "industry-adaptations.md",
+        "valuation-methodology.md"
+      ]
+    },
+    {
+      "name": "saas-metrics-coach",
+      "path": "finance/skills/saas-metrics-coach",
+      "description": "SaaS financial health advisor. Use when a user shares revenue or customer numbers, or mentions ARR, MRR, churn, LTV, CAC, NRR, or asks how their SaaS business is doing.",
+      "tools": [
+        {
+          "script": "finance/skills/saas-metrics-coach/scripts/metrics_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/saas-metrics-coach/scripts/metrics_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "finance/skills/saas-metrics-coach/scripts/quick_ratio_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/saas-metrics-coach/scripts/quick_ratio_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "finance/skills/saas-metrics-coach/scripts/unit_economics_simulator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 finance/skills/saas-metrics-coach/scripts/unit_economics_simulator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "benchmarks.md",
+        "formulas.md"
+      ]
+    }
+  ]
+}

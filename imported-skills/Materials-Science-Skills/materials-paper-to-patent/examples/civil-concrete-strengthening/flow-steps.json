@@ -1,0 +1,10 @@
+[
+  {"label": "称量水泥", "kind": "step"},
+  {"label": "称量碎石骨料", "kind": "step"},
+  {"label": "按 w/b=0.35 加水", "kind": "step"},
+  {"label": "搅拌 3 min", "kind": "step"},
+  {"label": "浇注入模", "kind": "step"},
+  {"label": "振捣 2 min", "kind": "step"},
+  {"label": "标准养护 28 天", "kind": "step"},
+  {"label": "抗压强度 50-60 MPa", "kind": "result"}
+]

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "internal-tool",
+  "description": "Internal-only application (admin panel, ops dashboard, employee tool). Auth-walled, low traffic (< 100 DAU), no SEO, no public a11y requirements. Goal: ship features fast, not engineer for scale.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_max": 5,
+    "deployment_cadence": "weekly-or-on-demand",
+    "cloud_budget_monthly_usd_ceiling": 500,
+    "user_facing": false,
+    "data_sensitivity_tier": "internal-or-pii-only"
+  },
+  "stack_recommendations": {
+    "primary": "internal-tool-platform-or-thin-stack",
+    "consider_no_code_first": [
+      "retool",
+      "appsmith-self-host",
+      "budibase-self-host",
+      "tooljet-self-host"
+    ],
+    "if_custom_required": {
+      "frontend": "next-pages-router-or-vite-react-with-shadcn",
+      "backend": "next-api-routes-or-fastapi-or-django-admin",
+      "database": "postgresql-shared-with-prod-via-read-replica-OR-supabase",
+      "auth": "okta-saml-or-google-workspace-sso"
+    }
+  },
+  "anti_recommendations": {
+    "design-system-investment": "kill — four-user audience does not measure design polish",
+    "wcag-aaa-compliance": "kill — auth-walled means screen-reader audience is known and small",
+    "edge-cdn-for-mobile-4g": "kill — internal users are on corporate networks",
+    "feature-flags": "warn — usually unnecessary at this scale, push-and-pray is fine for non-customer-facing changes",
+    "kubernetes": "kill — single container on Fly.io / Render / EC2 t3.small is overkill already",
+    "microservices": "kill — full-stop"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 300,
+    "p95_api_latency_ms": 1000,
+    "p99_api_latency_ms": 3000,
+    "frontend_lcp_ms_corporate_network": 3000,
+    "uptime_target": 0.99,
+    "deployment_time_minutes_max": 30,
+    "test_coverage_min": 0.3
+  },
+  "ci_cd": {
+    "platform": "github-actions-minimal",
+    "stages": ["lint", "test", "build", "deploy"],
+    "gates": ["tests-pass"]
+  },
+  "named_approver_chain": {
+    "stack_change": "tech-lead",
+    "production-data-migration": "tech-lead",
+    "external-service-add": "tech-lead"
+  },
+  "canon_references": [
+    "Donald Reinertsen, Principles of Product Development Flow (2009) — minimize WIP and ceremony",
+    "Basecamp / 37signals, REWORK (2010) — under-engineer internal tools",
+    "Retool internal benchmarks (2024) — 80% of internal-tool teams over-invest in a custom build"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "log_path": "/tmp/test-vault/wiki/log.md",
+  "date": "2026-04-11",
+  "op": "ingest",
+  "title": "Hello Monosemanticity",
+  "header": "## [2026-04-11] ingest | Hello Monosemanticity",
+  "detail": "touched 2 pages"
+}

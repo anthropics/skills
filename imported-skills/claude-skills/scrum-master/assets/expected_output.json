@@ -1,0 +1,131 @@
+{
+  "velocity_analysis": {
+    "summary": {
+      "total_sprints": 6,
+      "velocity_stats": {
+        "mean": 20.17,
+        "median": 20.0,
+        "min": 17,
+        "max": 24,
+        "total_points": 121
+      },
+      "commitment_analysis": {
+        "average_commitment_ratio": 0.908,
+        "commitment_consistency": 0.179,
+        "sprints_under_committed": 3,
+        "sprints_over_committed": 2
+      },
+      "volatility": {
+        "volatility": "low",
+        "coefficient_of_variation": 0.127
+      }
+    },
+    "trend_analysis": {
+      "trend": "stable",
+      "confidence": 0.15,
+      "relative_slope": -0.013
+    },
+    "forecasting": {
+      "expected_total": 121.0,
+      "forecasted_totals": {
+        "50%": 115,
+        "70%": 125,
+        "85%": 135,
+        "95%": 148
+      }
+    },
+    "anomalies": [
+      {
+        "sprint_number": 5,
+        "velocity": 17,
+        "anomaly_type": "outlier",
+        "deviation_percentage": -15.7
+      }
+    ]
+  },
+  "sprint_health": {
+    "overall_score": 78.3,
+    "health_grade": "good",
+    "dimension_scores": {
+      "commitment_reliability": {
+        "score": 96.8,
+        "grade": "excellent"
+      },
+      "scope_stability": {
+        "score": 54.8,
+        "grade": "poor"
+      },
+      "blocker_resolution": {
+        "score": 51.7,
+        "grade": "poor"
+      },
+      "ceremony_engagement": {
+        "score": 92.3,
+        "grade": "excellent"
+      },
+      "story_completion_distribution": {
+        "score": 93.3,
+        "grade": "excellent"
+      },
+      "velocity_predictability": {
+        "score": 80.5,
+        "grade": "good"
+      }
+    }
+  },
+  "retrospective_analysis": {
+    "summary": {
+      "total_retrospectives": 6,
+      "average_duration": 74,
+      "average_attendance": 0.933
+    },
+    "action_item_analysis": {
+      "total_action_items": 15,
+      "completion_rate": 0.467,
+      "overdue_rate": 0.533,
+      "priority_analysis": {
+        "high": {"completion_rate": 0.50},
+        "medium": {"completion_rate": 0.33},
+        "low": {"completion_rate": 0.67}
+      }
+    },
+    "theme_analysis": {
+      "recurring_themes": {
+        "process": {"frequency": 1.0, "trend": {"direction": "decreasing"}},
+        "team_dynamics": {"frequency": 1.0, "trend": {"direction": "increasing"}},
+        "technical": {"frequency": 0.83, "trend": {"direction": "increasing"}},
+        "communication": {"frequency": 0.67, "trend": {"direction": "decreasing"}}
+      }
+    },
+    "improvement_trends": {
+      "team_maturity_score": {
+        "score": 75.6,
+        "level": "performing"
+      },
+      "improvement_velocity": {
+        "velocity": "moderate",
+        "velocity_score": 0.62
+      }
+    }
+  },
+  "interpretation": {
+    "strengths": [
+      "Excellent commitment reliability - team consistently delivers what they commit to",
+      "High ceremony engagement - team actively participates in scrum events",
+      "Good story completion distribution - stories are finished rather than left partially done",
+      "Low velocity volatility - predictable delivery capability"
+    ],
+    "areas_for_improvement": [
+      "Scope instability - too much mid-sprint change (22.6% average)",
+      "Blocker resolution time - 4.7 days average is too long",
+      "Action item completion rate - only 46.7% completed",
+      "High overdue rate - 53.3% of action items become overdue"
+    ],
+    "recommended_actions": [
+      "Strengthen backlog refinement to reduce scope changes",
+      "Implement faster blocker escalation process",
+      "Reduce number of retrospective action items and focus on follow-through",
+      "Create external dependency register to proactively manage blockers"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "tuple_id": "038-fabricated-phantom-epitope",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Cohen2022PhantomEpitope",
+    "title": "Phantom Epitope Mapping for a Nonexistent Viral Antigen",
+    "authors": [
+      {"family": "Cohen", "given": "D."},
+      {"family": "Fischer", "given": "A."},
+      {"family": "Park", "given": "J."}
+    ],
+    "year": 2022,
+    "doi": "10.99999/ars184.fake.immuno.2022.291",
+    "venue": "Journal of Imaginary Immunology",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.immuno.2022.291",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "cohen-2022-phantom-epitope",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

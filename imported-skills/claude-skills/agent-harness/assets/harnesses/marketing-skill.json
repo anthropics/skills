@@ -1,0 +1,1617 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "marketing-skill",
+  "skill_count": 48,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "ab-test-setup",
+      "path": "marketing-skill/skills/ab-test-setup",
+      "description": "When the user wants to plan, design, or implement an A/B test or experiment. Also use when the user mentions \"A/B test,\" \"split test,\" \"experiment,\" \"test this change,\" \"variant copy,\" \"multivariate test,\" \"hypothesis,\" \"conversion experiment,\" \"statistical significance,\" or \"test this.\" For tracking implementation, see analytics-tracking.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/ab-test-setup/scripts/sample_size_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/ab-test-setup/scripts/sample_size_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "sample-size-guide.md",
+        "test-templates.md"
+      ]
+    },
+    {
+      "name": "ad-creative",
+      "path": "marketing-skill/skills/ad-creative",
+      "description": "When the user needs to generate, iterate, or scale ad creative for paid advertising. Use when they say 'write ad copy,' 'generate headlines,' 'create ad variations,' 'bulk creative,' 'iterate on ads,' 'ad copy validation,' 'RSA headlines,' 'Meta ad copy,' 'LinkedIn ad,' or 'creative testing.' This is pure creative production \u2014 distinct from paid-ads (campaign strategy). Use ad-creative when you need the copy, not the campaign plan.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/ad-creative/scripts/ad_copy_validator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/ad-creative/scripts/ad_copy_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "creative-frameworks.md",
+        "platform-specs.md"
+      ]
+    },
+    {
+      "name": "aeo",
+      "path": "marketing-skill/skills/aeo",
+      "description": "Answer Engine Optimization (AEO) skill \u2014 optimize content to be cited by AI language models (ChatGPT, Perplexity, Claude, Gemini, Mistral) as authoritative sources. Distinct from SEO \u2014 AEO optimizes for citation in LLM-generated responses, not search rankings. Use when planning content for AI-first search audiences, auditing existing content for E-E-A-T signals, tracking which pages get cited by which LLMs, or building a citation-friendly content strategy. Triggers \u2014 'AEO audit', 'optimize for ChatGPT', 'get cited by Perplexity', 'LLM citation strategy', 'answer engine optimization' \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/aeo/scripts/aeo_audit.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/aeo_audit.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/aeo_audit.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/aeo/scripts/aeo_optimizer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/aeo_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/aeo_optimizer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/aeo/scripts/citation_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/citation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing-skill/skills/aeo/scripts/citation_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "aeo_eeat_canon.md",
+        "aeo_vs_seo.md",
+        "bot_access_and_monitoring.md",
+        "extractable_content_patterns.md",
+        "llm_citation_patterns.md"
+      ]
+    },
+    {
+      "name": "analytics-tracking",
+      "path": "marketing-skill/skills/analytics-tracking",
+      "description": "Set up, audit, and debug analytics tracking implementation \u2014 GA4, Google Tag Manager, event taxonomy, conversion tracking, and data quality. Use when building a tracking plan from scratch, auditing existing analytics for gaps or errors, debugging missing events, or setting up GTM. Trigger keywords: GA4 setup, Google Tag Manager, GTM, event tracking, analytics implementation, conversion tracking, tracking plan, event taxonomy, custom dimensions, UTM tracking, analytics audit, missing events, tracking broken. NOT for analyzing marketing campaign data \u2014 use campaign-analytics for that. NOT for \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/analytics-tracking/scripts/tracking_plan_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/analytics-tracking/scripts/tracking_plan_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "debugging-playbook.md",
+        "event-taxonomy-guide.md",
+        "gtm-patterns.md"
+      ]
+    },
+    {
+      "name": "app-store-optimization",
+      "path": "marketing-skill/skills/app-store-optimization",
+      "description": "App Store Optimization (ASO) toolkit for researching keywords, analyzing competitor rankings, generating metadata suggestions, and improving app visibility on Apple App Store and Google Play Store. Use when the user asks about ASO, app store rankings, app metadata, app titles and descriptions, app store listings, app visibility, or mobile app marketing on iOS or Android. Supports keyword research and scoring, competitor keyword analysis, metadata optimization, A/B test planning, launch checklists, and tracking ranking changes.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/ab_test_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/ab_test_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/aso_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/aso_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/competitor_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/competitor_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/keyword_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/keyword_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/launch_checklist.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/launch_checklist.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/localization_helper.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/localization_helper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/metadata_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/metadata_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/app-store-optimization/scripts/review_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/app-store-optimization/scripts/review_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "aso-best-practices.md",
+        "keyword-research-guide.md",
+        "platform-requirements.md"
+      ]
+    },
+    {
+      "name": "brand-guidelines",
+      "path": "marketing-skill/skills/brand-guidelines",
+      "description": "When the user wants to apply, document, or enforce brand guidelines for any product or company. Also use when the user mentions 'brand guidelines,' 'brand colors,' 'typography,' 'logo usage,' 'brand voice,' 'visual identity,' 'tone of voice,' 'brand standards,' 'style guide,' 'brand consistency,' or 'company design standards.' Covers color systems, typography, logo rules, imagery guidelines, and tone matrix for any brand \u2014 including Anthropic's official identity.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "brand-identity-and-framework.md"
+      ]
+    },
+    {
+      "name": "campaign-analytics",
+      "path": "marketing-skill/skills/campaign-analytics",
+      "description": "Analyzes campaign performance with multi-touch attribution, funnel conversion analysis, and ROI calculation for marketing optimization. Use when analyzing marketing campaigns, ad performance, attribution models, conversion rates, or calculating marketing ROI, ROAS, CPA, and campaign metrics across channels.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/campaign-analytics/scripts/attribution_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/campaign-analytics/scripts/attribution_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/campaign-analytics/scripts/campaign_roi_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/campaign-analytics/scripts/campaign_roi_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/campaign-analytics/scripts/funnel_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/campaign-analytics/scripts/funnel_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "attribution-models-guide.md",
+        "campaign-metrics-benchmarks.md",
+        "funnel-optimization-framework.md"
+      ]
+    },
+    {
+      "name": "churn-prevention",
+      "path": "marketing-skill/skills/churn-prevention",
+      "description": "Reduce voluntary and involuntary churn through cancel flow design, save offers, exit surveys, and dunning sequences. Use when designing or optimizing a cancel flow, building save offers, setting up dunning emails, or reducing failed-payment churn. Trigger keywords: cancel flow, churn reduction, save offers, dunning, exit survey, payment recovery, win-back, involuntary churn, failed payments, cancel page. NOT for customer health scoring or expansion revenue \u2014 use customer-success-manager for that.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/churn-prevention/scripts/churn_impact_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/churn-prevention/scripts/churn_impact_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "cancel-flow-playbook.md",
+        "dunning-guide.md"
+      ]
+    },
+    {
+      "name": "cold-email",
+      "path": "marketing-skill/skills/cold-email",
+      "description": "When the user wants to write, improve, or build a sequence of B2B cold outreach emails to prospects who haven't asked to hear from them. Use when the user mentions 'cold email,' 'cold outreach,' 'prospecting emails,' 'SDR emails,' 'sales emails,' 'first touch email,' 'follow-up sequence,' or 'email prospecting.' Also use when they share an email draft that sounds too sales-y and needs to be humanized. Distinct from email-sequence (lifecycle/nurture to opted-in subscribers) \u2014 this is unsolicited outreach to new prospects. NOT for lifecycle emails, newsletters, or drip campaigns (use \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/cold-email/scripts/email_sequence_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/cold-email/scripts/email_sequence_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "deliverability-guide.md",
+        "follow-up-playbook.md",
+        "frameworks.md"
+      ]
+    },
+    {
+      "name": "competitor-alternatives",
+      "path": "marketing-skill/skills/competitor-alternatives",
+      "description": "When the user wants to create competitor comparison or alternative pages for SEO and sales enablement. Also use when the user mentions 'alternative page,' 'vs page,' 'competitor comparison,' 'comparison page,' '[Product] vs [Product],' '[Product] alternative,' 'competitive landing pages,' 'switch from competitor,' or 'comparison content.' Covers four formats: singular alternative, plural alternatives, you vs competitor, and competitor vs competitor. Emphasizes deep research, modular content architecture, and varied section types beyond feature tables.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/competitor-alternatives/scripts/comparison_matrix_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/competitor-alternatives/scripts/comparison_matrix_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "content-architecture.md",
+        "templates.md"
+      ]
+    },
+    {
+      "name": "content-creator",
+      "path": "marketing-skill/skills/content-creator",
+      "description": "Deprecated redirect skill that routes legacy 'content creator' requests to the correct specialist. Use when a user invokes 'content creator', asks to write a blog post, article, guide, or brand voice analysis (routes to content-production), or asks to plan content, build a topic cluster, or create a content calendar (routes to content-strategy). Does not handle requests directly \u2014 identifies user intent and redirects to content-production for writing/SEO/brand-voice tasks or content-strategy for planning tasks.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "analytics_guide.md",
+        "brand_guidelines.md",
+        "content_frameworks.md",
+        "social_media_optimization.md"
+      ]
+    },
+    {
+      "name": "content-humanizer",
+      "path": "marketing-skill/skills/content-humanizer",
+      "description": "Makes AI-generated content sound genuinely human \u2014 not just cleaned up, but alive. Use when content feels robotic, uses too many AI clich\u00e9s, lacks personality, or reads like it was written by committee. Triggers: 'this sounds like AI', 'make it more human', 'add personality', 'it feels generic', 'sounds robotic', 'fix AI writing', 'inject our voice'. NOT for initial content creation (use content-production). NOT for SEO optimization (use content-production Mode 3).",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/content-humanizer/scripts/humanizer_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-humanizer/scripts/humanizer_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai-tells-checklist.md",
+        "voice-techniques.md"
+      ]
+    },
+    {
+      "name": "content-production",
+      "path": "marketing-skill/skills/content-production",
+      "description": "Full content production pipeline \u2014 takes a topic from blank page to published-ready piece. Use when you need to execute content: write a blog post, article, or guide end-to-end. Triggers: 'write a post about', 'draft an article', 'create content for', 'help me write', 'I need a blog post'. NOT for content strategy or calendar planning (use content-strategy). NOT for repurposing existing content (use content-repurposing). NOT for social captions only.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/content-production/scripts/brand_voice_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-production/scripts/brand_voice_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/content-production/scripts/content_quality_gates.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-production/scripts/content_quality_gates.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/content-production/scripts/content_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-production/scripts/content_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/content-production/scripts/seo_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-production/scripts/seo_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai-citation-readiness.md",
+        "content-brief-guide.md",
+        "content-templates.md",
+        "optimization-checklist.md"
+      ]
+    },
+    {
+      "name": "content-strategy",
+      "path": "marketing-skill/skills/content-strategy",
+      "description": "When the user wants to plan a content strategy, decide what content to create, or figure out what topics to cover. Also use when the user mentions \\\"content strategy,\\\" \\\"what should I write about,\\\" \\\"content ideas,\\\" \\\"blog strategy,\\\" \\\"topic clusters,\\\" or \\\"content planning.\\\" For writing individual pieces, see copywriting. For SEO-specific audits, see seo-audit.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/content-strategy/scripts/topic_cluster_mapper.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/content-strategy/scripts/topic_cluster_mapper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "content-strategy-reference.md"
+      ]
+    },
+    {
+      "name": "copy-editing",
+      "path": "marketing-skill/skills/copy-editing",
+      "description": "When the user wants to edit, review, or improve existing marketing copy. Also use when the user mentions 'edit this copy,' 'review my copy,' 'copy feedback,' 'proofread,' 'polish this,' 'make this better,' or 'copy sweep.' This skill provides a systematic approach to editing marketing copy through multiple focused passes.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/copy-editing/scripts/ai_content_detector.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/copy-editing/scripts/ai_content_detector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/copy-editing/scripts/readability_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/copy-editing/scripts/readability_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai-detection-patterns.md",
+        "plain-english-alternatives.md"
+      ]
+    },
+    {
+      "name": "copywriting",
+      "path": "marketing-skill/skills/copywriting",
+      "description": "When the user wants to write, rewrite, or improve marketing copy for any page \u2014 including homepage, landing pages, pricing pages, feature pages, about pages, or product pages. Also use when the user says \\\"write copy for,\\\" \\\"improve this copy,\\\" \\\"rewrite this page,\\\" \\\"marketing copy,\\\" \\\"headline help,\\\" or \\\"CTA copy.\\\" For email copy, see email-sequence. For popup copy, see popup-cro.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/copywriting/scripts/headline_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/copywriting/scripts/headline_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "copy-frameworks.md",
+        "natural-transitions.md"
+      ]
+    },
+    {
+      "name": "email-sequence",
+      "path": "marketing-skill/skills/email-sequence",
+      "description": "When the user wants to create or optimize an email sequence, drip campaign, automated email flow, or lifecycle email program. Also use when the user mentions \"email sequence,\" \"drip campaign,\" \"nurture sequence,\" \"onboarding emails,\" \"welcome sequence,\" \"re-engagement emails,\" \"email automation,\" or \"lifecycle emails.\" For in-app onboarding, see onboarding-cro.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/email-sequence/scripts/sequence_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/email-sequence/scripts/sequence_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "email-sequence-playbook.md"
+      ]
+    },
+    {
+      "name": "form-cro",
+      "path": "marketing-skill/skills/form-cro",
+      "description": "When the user wants to optimize any form that is NOT signup/registration \u2014 including lead capture forms, contact forms, demo request forms, application forms, survey forms, or checkout forms. Also use when the user mentions \"form optimization,\" \"lead form conversions,\" \"form friction,\" \"form fields,\" \"form completion rate,\" or \"contact form.\" For signup/registration forms, see signup-flow-cro. For popups containing forms, see popup-cro.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/form-cro/scripts/form_field_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/form-cro/scripts/form_field_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "form-cro-playbook.md"
+      ]
+    },
+    {
+      "name": "free-tool-strategy",
+      "path": "marketing-skill/skills/free-tool-strategy",
+      "description": "When the user wants to build a free tool for marketing \u2014 lead generation, SEO value, or brand awareness. Use when they mention 'engineering as marketing,' 'free tool,' 'calculator,' 'generator,' 'checker,' 'grader,' 'marketing tool,' 'lead gen tool,' 'build something for traffic,' 'interactive tool,' or 'free resource.' Covers idea evaluation, tool design, and launch strategy. For pure SEO content strategy (no tool), use seo-audit or content-strategy instead.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/free-tool-strategy/scripts/tool_roi_estimator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/free-tool-strategy/scripts/tool_roi_estimator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "launch-playbook.md",
+        "tool-types-guide.md"
+      ]
+    },
+    {
+      "name": "launch-strategy",
+      "path": "marketing-skill/skills/launch-strategy",
+      "description": "When the user wants to plan a product launch, feature announcement, or release strategy. Also use when the user mentions 'launch,' 'Product Hunt,' 'feature release,' 'announcement,' 'go-to-market,' 'beta launch,' 'early access,' 'waitlist,' 'product update,' 'GTM plan,' 'launch checklist,' or 'launch momentum.' This skill covers phased launches, channel strategy, and ongoing launch momentum.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/launch-strategy/scripts/launch_readiness_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/launch-strategy/scripts/launch_readiness_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "launch-frameworks-and-checklists.md"
+      ]
+    },
+    {
+      "name": "local-seo-manager",
+      "path": "marketing-skill/skills/local-seo-manager",
+      "description": "Manage local SEO for service-area businesses \u2014 appliance repair, HVAC, plumbing, cleaning, and any business that serves customers at their location. Use when the user wants to: audit Google Business Profile, generate neighborhood service area pages, check NAP consistency across directories, create LocalBusiness schema, or write review responses. Triggers: 'local SEO', 'Google Business Profile', 'GBP', 'service area page', 'NAP consistency', 'local citations', 'LocalBusiness schema', 'review responses', 'Google Maps ranking'. NOT for national SEO (use seo-audit). NOT for general schema (use \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/local-seo-manager/scripts/nap_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/local-seo-manager/scripts/nap_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/local-seo-manager/scripts/schema_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/local-seo-manager/scripts/schema_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/local-seo-manager/scripts/service_area_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/local-seo-manager/scripts/service_area_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "local-schema-types.md",
+        "local-seo-checklist.md",
+        "review-response-templates.md"
+      ]
+    },
+    {
+      "name": "marketing-context",
+      "path": "marketing-skill/skills/marketing-context",
+      "description": "Create and maintain the marketing context document that all marketing skills read before starting. Use when the user mentions 'marketing context,' 'brand voice,' 'set up context,' 'target audience,' 'ICP,' 'style guide,' 'who is my customer,' 'positioning,' or wants to avoid repeating foundational information across marketing tasks. Run this at the start of any new project before using other marketing skills.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/marketing-context/scripts/context_validator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/marketing-context/scripts/context_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "marketing-demand-acquisition",
+      "path": "marketing-skill/skills/marketing-demand-acquisition",
+      "description": "Creates demand generation campaigns, optimizes paid ad spend across LinkedIn, Google, and Meta, develops SEO strategies, and structures partnership programs. Use when planning demand gen strategy, growth marketing, advertising campaigns, PPC optimization, lead generation, pipeline generation, or marketing budgets. Covers multi-channel acquisition (Google Ads, LinkedIn Ads, Meta Ads), CAC analysis, MQL/SQL workflows, attribution modeling, technical SEO, and co-marketing partnerships. Default calibration profile is a Series A+ B2B SaaS scaling internationally (EU/US/Canada, hybrid \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/marketing-demand-acquisition/scripts/calculate_cac.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/marketing-demand-acquisition/scripts/calculate_cac.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "attribution-guide.md",
+        "campaign-templates.md",
+        "hubspot-workflows.md",
+        "international-playbooks.md"
+      ]
+    },
+    {
+      "name": "marketing-ideas",
+      "path": "marketing-skill/skills/marketing-ideas",
+      "description": "When the user needs marketing ideas, inspiration, or strategies for their SaaS or software product. Also use when the user asks for 'marketing ideas,' 'growth ideas,' 'how to market,' 'marketing strategies,' 'marketing tactics,' 'ways to promote,' or 'ideas to grow.' This skill provides 139 proven marketing approaches organized by category.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ideas-by-category.md"
+      ]
+    },
+    {
+      "name": "marketing-ops",
+      "path": "marketing-skill/skills/marketing-ops",
+      "description": "Central router for the marketing skill ecosystem. Use when unsure which marketing skill to use, when orchestrating a multi-skill campaign, or when coordinating across content, SEO, CRO, channels, and analytics. Also use when the user mentions 'marketing help,' 'campaign plan,' 'what should I do next,' 'marketing priorities,' or 'coordinate marketing.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/marketing-ops/scripts/campaign_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/marketing-ops/scripts/campaign_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "marketing-psychology",
+      "path": "marketing-skill/skills/marketing-psychology",
+      "description": "When the user wants to apply psychological principles, mental models, or behavioral science to marketing. Also use when the user mentions 'psychology,' 'mental models,' 'cognitive bias,' 'persuasion,' 'behavioral science,' 'why people buy,' 'decision-making,' or 'consumer behavior.' This skill provides 70+ mental models organized for marketing application.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "mental-models-catalog.md"
+      ]
+    },
+    {
+      "name": "marketing-skills",
+      "path": "marketing-skill/skills/marketing-skills",
+      "description": "Directory and router for the marketing skills library. Use when you need to find the right marketing skill for a task, see what marketing capabilities exist, or get oriented in this plugin. 44 specialist skills across 8 pods (content, SEO + AEO, CRO, channels, growth, intelligence, sales enablement, ops), 59 stdlib Python tools. Routes to one skill \u2014 it does not execute marketing work itself.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "marketing-strategy-pmm",
+      "path": "marketing-skill/skills/marketing-strategy-pmm",
+      "description": "Product marketing skill for positioning, GTM strategy, competitive intelligence, and product launches. Use when the user asks about product positioning, go-to-market planning, competitive analysis, target audience definition, ICP definition, market research, launch plans, or sales enablement. Covers April Dunford positioning, ICP definition, competitive battlecards, launch playbooks, and international market entry. Produces deliverables including positioning statements, battlecard documents, launch plans, and go-to-market strategies.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "international-gtm.md",
+        "launch-checklists.md",
+        "messaging-templates.md",
+        "positioning-frameworks.md"
+      ]
+    },
+    {
+      "name": "onboarding-cro",
+      "path": "marketing-skill/skills/onboarding-cro",
+      "description": "When the user wants to optimize post-signup onboarding, user activation, first-run experience, or time-to-value. Also use when the user mentions \"onboarding flow,\" \"activation rate,\" \"user activation,\" \"first-run experience,\" \"empty states,\" \"onboarding checklist,\" \"aha moment,\" or \"new user experience.\" For signup/registration optimization, see signup-flow-cro. For ongoing email sequences, see email-sequence.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/onboarding-cro/scripts/activation_funnel_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/onboarding-cro/scripts/activation_funnel_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": []
+    },
+    {
+      "name": "page-cro",
+      "path": "marketing-skill/skills/page-cro",
+      "description": "When the user wants to optimize, improve, or increase conversions on any marketing page \u2014 including homepage, landing pages, pricing pages, feature pages, or blog posts. Also use when the user says \"CRO,\" \"conversion rate optimization,\" \"this page isn't converting,\" \"improve conversions,\" or \"why isn't this page working.\" For signup/registration flows, see signup-flow-cro. For post-signup activation, see onboarding-cro. For forms outside of signup, see form-cro. For popups/modals, see popup-cro.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/page-cro/scripts/conversion_audit.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/page-cro/scripts/conversion_audit.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "paid-ads",
+      "path": "marketing-skill/skills/paid-ads",
+      "description": "When the user wants help with paid advertising campaigns on Google Ads, Meta (Facebook/Instagram), LinkedIn, Twitter/X, or other ad platforms. Also use when the user mentions 'PPC,' 'paid media,' 'ad copy,' 'ad creative,' 'ROAS,' 'CPA,' 'ad campaign,' 'retargeting,' or 'audience targeting.' This skill covers campaign strategy, ad creation, audience targeting, and optimization.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/paid-ads/scripts/ad_health_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/paid-ads/scripts/ad_health_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/paid-ads/scripts/roas_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/paid-ads/scripts/roas_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ad-copy-templates.md",
+        "audience-targeting.md",
+        "copy-frameworks.md",
+        "platform-setup-checklists.md",
+        "scoring-system.md"
+      ]
+    },
+    {
+      "name": "paywall-upgrade-cro",
+      "path": "marketing-skill/skills/paywall-upgrade-cro",
+      "description": "When the user wants to create or optimize in-app paywalls, upgrade screens, upsell modals, or feature gates. Also use when the user mentions \"paywall,\" \"upgrade screen,\" \"upgrade modal,\" \"upsell,\" \"feature gate,\" \"convert free to paid,\" \"freemium conversion,\" \"trial expiration screen,\" \"limit reached screen,\" \"plan upgrade prompt,\" or \"in-app pricing.\" Distinct from public pricing pages (see page-cro) \u2014 this skill focuses on in-product upgrade moments where the user has already experienced value.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": []
+    },
+    {
+      "name": "popup-cro",
+      "path": "marketing-skill/skills/popup-cro",
+      "description": "When the user wants to create or optimize popups, modals, overlays, slide-ins, or banners for conversion purposes. Also use when the user mentions \"exit intent,\" \"popup conversions,\" \"modal optimization,\" \"lead capture popup,\" \"email popup,\" \"announcement banner,\" or \"overlay.\" For forms outside of popups, see form-cro. For general page conversion optimization, see page-cro.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "popup-cro-playbook.md"
+      ]
+    },
+    {
+      "name": "pricing-strategy",
+      "path": "marketing-skill/skills/pricing-strategy",
+      "description": "Design, optimize, and communicate SaaS pricing \u2014 tier structure, value metrics, pricing pages, and price increase strategy. Use when building a pricing model from scratch, redesigning existing pricing, planning a price increase, or improving a pricing page. Trigger keywords: pricing tiers, pricing page, price increase, packaging, value metric, per seat pricing, usage-based pricing, freemium, good-better-best, pricing strategy, monetization, pricing page conversion, Van Westendorp. NOT for broader product strategy \u2014 use product-strategist for that. NOT for customer success or renewals \u2014 use \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/pricing-strategy/scripts/pricing_modeler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/pricing-strategy/scripts/pricing_modeler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "pricing-models.md",
+        "pricing-page-playbook.md"
+      ]
+    },
+    {
+      "name": "programmatic-seo",
+      "path": "marketing-skill/skills/programmatic-seo",
+      "description": "When the user wants to create SEO-driven pages at scale using templates and data. Also use when the user mentions \"programmatic SEO,\" \"template pages,\" \"pages at scale,\" \"directory pages,\" \"location pages,\" \"[keyword] + [city] pages,\" \"comparison pages,\" \"integration pages,\" or \"building many pages for SEO.\" For auditing existing SEO issues, see seo-audit.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/programmatic-seo/scripts/url_pattern_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/programmatic-seo/scripts/url_pattern_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "prompt-engineer-toolkit",
+      "path": "marketing-skill/skills/prompt-engineer-toolkit",
+      "description": "Turns marketing prompts into tested, versioned production assets: A/B prompt evaluation against structured test cases, immutable prompt version history with diffs, ready-to-use marketing prompt templates (ad copy, email campaigns, social posts, landing pages, SEO meta), and an LLM-governance playbook for marketing teams (claim discipline, disclosure rules, human-review gates). Use when a marketing team relies on AI-generated content and needs prompt quality to be measurable and safe \u2014 or when the user mentions 'prompt engineering,' 'improve my prompts,' 'prompt templates,' 'prompt \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/prompt-engineer-toolkit/scripts/prompt_tester.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/prompt-engineer-toolkit/scripts/prompt_tester.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/prompt-engineer-toolkit/scripts/prompt_versioner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/prompt-engineer-toolkit/scripts/prompt_versioner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "evaluation-rubric.md",
+        "prompt-templates.md",
+        "technique-guide.md"
+      ]
+    },
+    {
+      "name": "referral-program",
+      "path": "marketing-skill/skills/referral-program",
+      "description": "When the user wants to design, launch, or optimize a referral or affiliate program. Use when they mention 'referral program,' 'affiliate program,' 'word of mouth,' 'refer a friend,' 'incentive program,' 'customer referrals,' 'brand ambassador,' 'partner program,' 'referral link,' or 'growth through referrals.' Covers program mechanics, incentive design, and optimization \u2014 not just the idea of referrals but the actual system.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/referral-program/scripts/referral_roi_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/referral-program/scripts/referral_roi_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "measurement-framework.md",
+        "program-mechanics.md"
+      ]
+    },
+    {
+      "name": "schema-markup",
+      "path": "marketing-skill/skills/schema-markup",
+      "description": "When the user wants to implement, audit, or validate structured data (schema markup) on their website. Use when the user mentions 'structured data,' 'schema.org,' 'JSON-LD,' 'rich results,' 'rich snippets,' 'schema markup,' 'FAQ schema,' 'Product schema,' 'HowTo schema,' or 'structured data errors in Search Console.' Also use when someone asks why their content isn't showing rich results or wants to improve AI search visibility. NOT for general SEO audits (use seo-audit) or technical SEO crawl issues (use site-architecture).",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/schema-markup/scripts/schema_validator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/schema-markup/scripts/schema_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "implementation-patterns.md",
+        "schema-types-guide.md"
+      ]
+    },
+    {
+      "name": "seo-audit",
+      "path": "marketing-skill/skills/seo-audit",
+      "description": "When the user wants to audit, review, or diagnose SEO issues on their site. Also use when the user mentions \"SEO audit,\" \"technical SEO,\" \"why am I not ranking,\" \"SEO issues,\" \"on-page SEO,\" \"meta tags review,\" or \"SEO health check.\" For building pages at scale to target keywords, see programmatic-seo. For adding structured data, see schema-markup.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/seo-audit/scripts/seo_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/seo-audit/scripts/seo_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/seo-audit/scripts/seo_health_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/seo-audit/scripts/seo_health_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cwv-thresholds.md",
+        "eeat-framework.md",
+        "schema-types.md",
+        "seo-audit-reference.md"
+      ]
+    },
+    {
+      "name": "signup-flow-cro",
+      "path": "marketing-skill/skills/signup-flow-cro",
+      "description": "When the user wants to optimize signup, registration, account creation, or trial activation flows. Also use when the user mentions \"signup conversions,\" \"registration friction,\" \"signup form optimization,\" \"free trial signup,\" \"reduce signup dropoff,\" or \"account creation flow.\" For post-signup onboarding, see onboarding-cro. For lead capture forms (not account creation), see form-cro.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/signup-flow-cro/scripts/funnel_drop_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/signup-flow-cro/scripts/funnel_drop_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "signup-cro-playbook.md"
+      ]
+    },
+    {
+      "name": "site-architecture",
+      "path": "marketing-skill/skills/site-architecture",
+      "description": "When the user wants to audit, redesign, or plan their website's structure, URL hierarchy, navigation design, or internal linking strategy. Use when the user mentions 'site architecture,' 'URL structure,' 'internal links,' 'site navigation,' 'breadcrumbs,' 'topic clusters,' 'hub pages,' 'orphan pages,' 'silo structure,' 'information architecture,' or 'website reorganization.' Also use when someone has SEO problems and the root cause is structural (not content or schema). NOT for content strategy decisions about what to write (use content-strategy) or for schema markup (use schema-markup).",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/site-architecture/scripts/sitemap_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/site-architecture/scripts/sitemap_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "internal-linking-playbook.md",
+        "url-design-guide.md"
+      ]
+    },
+    {
+      "name": "social-content",
+      "path": "marketing-skill/skills/social-content",
+      "description": "When the user wants help creating, scheduling, or optimizing social media content for LinkedIn, Twitter/X, Instagram, TikTok, Facebook, or other platforms. Also use when the user mentions 'LinkedIn post,' 'Twitter thread,' 'social media,' 'content calendar,' 'social scheduling,' 'engagement,' or 'viral content.' This skill covers content creation, repurposing, and platform-specific strategies.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "platforms.md",
+        "post-templates.md",
+        "reverse-engineering.md"
+      ]
+    },
+    {
+      "name": "social-media-analyzer",
+      "path": "marketing-skill/skills/social-media-analyzer",
+      "description": "Social media campaign analysis and performance tracking. Calculates engagement rates, ROI, and benchmarks across platforms. Use when analyzing social media performance, calculating engagement rate, measuring campaign ROI, comparing platform metrics, or benchmarking against industry standards. Also use when the user mentions \"social media audit,\" \"engagement rate,\" or \"which platform performs best.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/social-media-analyzer/scripts/analyze_performance.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/social-media-analyzer/scripts/analyze_performance.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/social-media-analyzer/scripts/calculate_metrics.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/social-media-analyzer/scripts/calculate_metrics.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "platform-benchmarks.md"
+      ]
+    },
+    {
+      "name": "social-media-manager",
+      "path": "marketing-skill/skills/social-media-manager",
+      "description": "When the user wants to develop social media strategy, plan content calendars, manage community engagement, or grow their social presence across platforms. Also use when the user mentions 'social media strategy,' 'social calendar,' 'community management,' 'social media plan,' 'grow followers,' 'engagement rate,' 'social media audit,' or 'which platforms should I use.' For writing individual social posts, see social-content. For analyzing social performance data, see social-media-analyzer.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/social-media-manager/scripts/social_calendar_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/social-media-manager/scripts/social_calendar_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "webinar-marketing",
+      "path": "marketing-skill/skills/webinar-marketing",
+      "description": "When the user wants to plan, promote, run, or improve a webinar or virtual event to generate and convert demand. Use when the user mentions 'webinar,' 'virtual event,' 'online event,' 'live demo,' 'virtual summit,' 'workshop,' 'masterclass,' 'fireside chat,' 'roundtable,' 'registration funnel,' 'show-up rate,' 'attendance rate,' 'webinar promotion,' 'webinar follow-up,' or 'on-demand webinar.' Also use when they have a webinar that isn't converting \u2014 low registrations, low show-up, or attendees who don't buy \u2014 and want to diagnose and fix it. Covers the full funnel: registration, promotion \u2026",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/webinar-marketing/scripts/webinar_funnel_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/webinar-marketing/scripts/webinar_funnel_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 marketing-skill/skills/webinar-marketing/scripts/webinar_funnel_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "benchmarks.md",
+        "promotion-playbook.md",
+        "webinar-formats.md"
+      ]
+    },
+    {
+      "name": "x-twitter-growth",
+      "path": "marketing-skill/skills/x-twitter-growth",
+      "description": "X/Twitter growth engine for building audience, crafting viral content, and analyzing engagement. Use when the user wants to grow on X/Twitter, write tweets or threads, analyze their X profile, research competitors on X, plan a posting strategy, or optimize engagement. Complements social-content (generic multi-platform) with X-specific depth: algorithm mechanics, thread engineering, reply strategy, profile optimization, and competitive intelligence via web search.",
+      "tools": [
+        {
+          "script": "marketing-skill/skills/x-twitter-growth/scripts/competitor_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/x-twitter-growth/scripts/competitor_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/x-twitter-growth/scripts/content_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/x-twitter-growth/scripts/content_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/x-twitter-growth/scripts/growth_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/x-twitter-growth/scripts/growth_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/x-twitter-growth/scripts/profile_auditor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/x-twitter-growth/scripts/profile_auditor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "marketing-skill/skills/x-twitter-growth/scripts/tweet_composer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 marketing-skill/skills/x-twitter-growth/scripts/tweet_composer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "algorithm-signals.md"
+      ]
+    },
+    {
+      "name": "youtube-full",
+      "path": "marketing-skill/skills/youtube-full",
+      "description": "Use when the user needs YouTube transcripts, video search, channel browsing, playlist extraction, or content monitoring. Trigger phrases: 'get the transcript for', 'search YouTube for', 'what are the latest videos on', 'list this playlist', 'monitor this channel', or any request involving a YouTube URL, video ID, or @handle. Do NOT use for downloading video or audio files, YouTube engagement data (likes, comments), or private/age-restricted videos.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "video-content-strategist",
+      "path": "marketing-skill/video-content-strategist/skills/video-content-strategist",
+      "description": "Use when planning video content strategy, writing video scripts, optimizing YouTube channels, building short-form video pipelines (Reels, TikTok, Shorts), or repurposing long-form content into video. Triggers: 'start a YouTube channel', 'video content strategy', 'write a video script', 'repurpose into video', 'YouTube SEO', 'short-form video'. NOT for written blog content (use content-production). NOT for social captions without video (use social-media-manager).",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "schema_before": "{\n  \"schema_version\": \"1.0\",\n  \"database\": \"user_management\",\n  \"tables\": {\n    \"users\": {\n      \"columns\": {\n        \"id\": {\n          \"type\": \"bigint\",\n          \"nullable\": false,\n          \"primary_key\": true,\n          \"auto_increment\": true\n        },\n        \"username\": {\n          \"type\": \"varchar\",\n          \"length\": 50,\n          \"nullable\": false,\n          \"unique\": true\n        },\n        \"email\": {\n          \"type\": \"varchar\",\n          \"length\": 255,\n          \"nullable\": false,\n...",
+  "schema_after": "{\n  \"schema_version\": \"2.0\",\n  \"database\": \"user_management_v2\",\n  \"tables\": {\n    \"users\": {\n      \"columns\": {\n        \"id\": {\n          \"type\": \"bigint\",\n          \"nullable\": false,\n          \"primary_key\": true,\n          \"auto_increment\": true\n        },\n        \"username\": {\n          \"type\": \"varchar\",\n          \"length\": 50,\n          \"nullable\": false,\n          \"unique\": true\n        },\n        \"email\": {\n          \"type\": \"varchar\",\n          \"length\": 320,\n          \"nullable\": fals...",
+  "analysis_date": "2026-02-16T13:47:27.050459",
+  "overall_compatibility": "potentially_incompatible",
+  "breaking_changes_count": 0,
+  "potentially_breaking_count": 4,
+  "non_breaking_changes_count": 0,
+  "additive_changes_count": 0,
+  "issues": [
+    {
+      "type": "check_added",
+      "severity": "potentially_breaking",
+      "description": "New check constraint 'phone IS NULL OR LENGTH(phone) >= 10' added to table 'users'",
+      "field_path": "tables.users.constraints.check",
+      "old_value": null,
+      "new_value": "phone IS NULL OR LENGTH(phone) >= 10",
+      "impact": "New check constraint may reject existing data",
+      "suggested_migration": "Validate existing data complies with new constraint",
+      "affected_operations": [
+        "INSERT",
+        "UPDATE"
+      ]
+    },
+    {
+      "type": "check_added",
+      "severity": "potentially_breaking",
+      "description": "New check constraint 'bio IS NULL OR LENGTH(bio) <= 2000' added to table 'user_profiles'",
+      "field_path": "tables.user_profiles.constraints.check",
+      "old_value": null,
+      "new_value": "bio IS NULL OR LENGTH(bio) <= 2000",
+      "impact": "New check constraint may reject existing data",
+      "suggested_migration": "Validate existing data complies with new constraint",
+      "affected_operations": [
+        "INSERT",
+        "UPDATE"
+      ]
+    },
+    {
+      "type": "check_added",
+      "severity": "potentially_breaking",
+      "description": "New check constraint 'language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh')' added to table 'user_profiles'",
+      "field_path": "tables.user_profiles.constraints.check",
+      "old_value": null,
+      "new_value": "language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh')",
+      "impact": "New check constraint may reject existing data",
+      "suggested_migration": "Validate existing data complies with new constraint",
+      "affected_operations": [
+        "INSERT",
+        "UPDATE"
+      ]
+    },
+    {
+      "type": "check_added",
+      "severity": "potentially_breaking",
+      "description": "New check constraint 'session_type IN ('web', 'mobile', 'api', 'admin')' added to table 'user_sessions'",
+      "field_path": "tables.user_sessions.constraints.check",
+      "old_value": null,
+      "new_value": "session_type IN ('web', 'mobile', 'api', 'admin')",
+      "impact": "New check constraint may reject existing data",
+      "suggested_migration": "Validate existing data complies with new constraint",
+      "affected_operations": [
+        "INSERT",
+        "UPDATE"
+      ]
+    }
+  ],
+  "migration_scripts": [
+    {
+      "script_type": "sql",
+      "description": "Create new table user_preferences",
+      "script_content": "CREATE TABLE user_preferences (\n  id bigint NOT NULL,\n  user_id bigint NOT NULL,\n  preference_key varchar NOT NULL,\n  preference_value json,\n  created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n);",
+      "rollback_script": "DROP TABLE IF EXISTS user_preferences;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'user_preferences';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column email_verified_at to table users",
+      "script_content": "ALTER TABLE users ADD COLUMN email_verified_at timestamp;",
+      "rollback_script": "ALTER TABLE users DROP COLUMN email_verified_at;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'email_verified_at';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column phone_verified_at to table users",
+      "script_content": "ALTER TABLE users ADD COLUMN phone_verified_at timestamp;",
+      "rollback_script": "ALTER TABLE users DROP COLUMN phone_verified_at;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'phone_verified_at';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column two_factor_enabled to table users",
+      "script_content": "ALTER TABLE users ADD COLUMN two_factor_enabled boolean NOT NULL DEFAULT False;",
+      "rollback_script": "ALTER TABLE users DROP COLUMN two_factor_enabled;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'two_factor_enabled';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column last_login_at to table users",
+      "script_content": "ALTER TABLE users ADD COLUMN last_login_at timestamp;",
+      "rollback_script": "ALTER TABLE users DROP COLUMN last_login_at;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'users' AND column_name = 'last_login_at';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add check constraint to users",
+      "script_content": "ALTER TABLE users ADD CONSTRAINT check_users CHECK (phone IS NULL OR LENGTH(phone) >= 10);",
+      "rollback_script": "ALTER TABLE users DROP CONSTRAINT check_users;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_name = 'users' AND constraint_type = 'CHECK';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column timezone to table user_profiles",
+      "script_content": "ALTER TABLE user_profiles ADD COLUMN timezone varchar DEFAULT UTC;",
+      "rollback_script": "ALTER TABLE user_profiles DROP COLUMN timezone;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'timezone';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column language to table user_profiles",
+      "script_content": "ALTER TABLE user_profiles ADD COLUMN language varchar NOT NULL DEFAULT en;",
+      "rollback_script": "ALTER TABLE user_profiles DROP COLUMN language;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'language';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add check constraint to user_profiles",
+      "script_content": "ALTER TABLE user_profiles ADD CONSTRAINT check_user_profiles CHECK (bio IS NULL OR LENGTH(bio) <= 2000);",
+      "rollback_script": "ALTER TABLE user_profiles DROP CONSTRAINT check_user_profiles;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_name = 'user_profiles' AND constraint_type = 'CHECK';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add check constraint to user_profiles",
+      "script_content": "ALTER TABLE user_profiles ADD CONSTRAINT check_user_profiles CHECK (language IN ('en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'));",
+      "rollback_script": "ALTER TABLE user_profiles DROP CONSTRAINT check_user_profiles;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_name = 'user_profiles' AND constraint_type = 'CHECK';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column session_type to table user_sessions",
+      "script_content": "ALTER TABLE user_sessions ADD COLUMN session_type varchar NOT NULL DEFAULT web;",
+      "rollback_script": "ALTER TABLE user_sessions DROP COLUMN session_type;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'user_sessions' AND column_name = 'session_type';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add column is_mobile to table user_sessions",
+      "script_content": "ALTER TABLE user_sessions ADD COLUMN is_mobile boolean NOT NULL DEFAULT False;",
+      "rollback_script": "ALTER TABLE user_sessions DROP COLUMN is_mobile;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.columns WHERE table_name = 'user_sessions' AND column_name = 'is_mobile';"
+    },
+    {
+      "script_type": "sql",
+      "description": "Add check constraint to user_sessions",
+      "script_content": "ALTER TABLE user_sessions ADD CONSTRAINT check_user_sessions CHECK (session_type IN ('web', 'mobile', 'api', 'admin'));",
+      "rollback_script": "ALTER TABLE user_sessions DROP CONSTRAINT check_user_sessions;",
+      "dependencies": [],
+      "validation_query": "SELECT COUNT(*) FROM information_schema.table_constraints WHERE table_name = 'user_sessions' AND constraint_type = 'CHECK';"
+    }
+  ],
+  "risk_assessment": {
+    "overall_risk": "medium",
+    "deployment_risk": "safe_independent_deployment",
+    "rollback_complexity": "low",
+    "testing_requirements": [
+      "integration_testing",
+      "regression_testing",
+      "data_migration_testing"
+    ]
+  },
+  "recommendations": [
+    "Conduct thorough testing with realistic data volumes",
+    "Implement monitoring for migration success metrics",
+    "Test all migration scripts in staging environment",
+    "Implement migration progress monitoring",
+    "Create detailed communication plan for stakeholders",
+    "Implement feature flags for gradual rollout"
+  ]
+}

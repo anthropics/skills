@@ -1,0 +1,7 @@
+interface:
+  display_name: "Doc Init"
+  short_description: "初始化项目文档体系"
+  default_prompt: "Use $doc-init to initialize the documentation system for this project."
+
+policy:
+  allow_implicit_invocation: true

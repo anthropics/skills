@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Materials Science Reader Package Manifest",
+  "type": "object",
+  "required": [
+    "package_type",
+    "skill_version",
+    "source_type",
+    "paper_title",
+    "doi_or_url",
+    "generated_at",
+    "required_files",
+    "handoff_targets",
+    "evidence_boundary"
+  ],
+  "properties": {
+    "package_type": {
+      "type": "string",
+      "const": "materials-reader-package"
+    },
+    "skill_version": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string"
+    },
+    "paper_title": {
+      "type": "string"
+    },
+    "doi_or_url": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "required_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handoff_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_boundary": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

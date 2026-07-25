@@ -1,0 +1,601 @@
+name: Spec Consistency
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  # Suffix by event_name so push and pull_request events on the same ref
+  # don't fight over the same group. Without the suffix, GHA cancels one
+  # of the two — usually leaving the cancelled run in a `failure` / stuck
+  # `queued` state that triggers GitHub failure-notification emails to
+  # subscribers even though the latest push event run actually succeeded.
+  group: spec-consistency-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  spec-consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # v3.7.1 byte-equivalence SHA gate derives the v3.6.7 base commit
+          # via `git log -1 -- scripts/v3_6_7_inversion_manifest.json`. A
+          # shallow clone (default fetch-depth: 1) would render that lookup
+          # vacuous. Deepening the clone here lets the lint hash the base
+          # block directly without falling back to `git fetch --unshallow`.
+          # Spec: 2026-04-30-ars-v3.6.8-trust-provenance-and-drift-transparency-spec.md § Step 0 (round-6 R6-002 + round-7 R7-001).
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install lint dependencies
+        # pytest is installed once here so the unified manifest runner (#156)
+        # and the legacy `python3 -m unittest scripts.test_*` steps share one
+        # pip install. Previously each pytest step did its own `pip install
+        # pytest [pyyaml] [jsonschema]`; consolidating saves ~12 redundant
+        # installs per workflow run.
+        run: pip install -r requirements-dev.txt pytest
+
+      - name: Run spec consistency check
+        run: python3 scripts/check_spec_consistency.py
+
+      - name: Lint CI pytest manifest (#156)
+        # Drift guard for scripts/_ci_pytest_manifest.toml — verifies entry
+        # path existence, id/(path,args) uniqueness, args shape, and that
+        # spec-consistency.yml contains no direct `pytest scripts/test_*.py`
+        # outside the runner. Runs before the runner so a malformed manifest
+        # fails fast.
+        run: python3 scripts/check_ci_pytest_manifest.py
+
+      - name: Ensure jq is available (#349)
+        # The cross-model grounding-guard tests (run via the manifest below) shell out to `jq`
+        # to exercise the canonical .jq filters and REQUIRE it (they fail clearly rather than
+        # skip — a skipped safety test reads as covered). jq is preinstalled on ubuntu-latest,
+        # but make the dependency explicit so a runner-image change can't silently break it.
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+          jq --version
+
+      - name: Run CI pytest manifest (#156)
+        # Single entry point for the pytest invocations spec-consistency.yml used
+        # to run file-by-file. Each manifest entry is wrapped in a
+        # `::group::<id>` annotation so the GitHub UI collapses one block
+        # per invocation. Manifest at scripts/_ci_pytest_manifest.toml.
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/run_ci_pytest_manifest.py
+
+      - name: Check PREPRINT_VENUES list consistency (#105)
+        run: python3 scripts/check_preprint_venues_consistency.py
+
+      - name: Run #105 migration unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_contamination_signals scripts.test_migrate_literature_corpus_to_v3_7_3 scripts.test_semantic_scholar_client -v
+
+      - name: Check data_access_level declarations
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/check_data_access_level.py
+
+      - name: Check instruction-vs-data boundary (#272 guidance layer)
+        # Drift guard for the retrieved-content instruction/data principle:
+        # authoritative canonical block in ground_truth_isolation_pattern.md +
+        # verbatim-inlined copies in the two hot-spot retrieval agents + backpoints.
+        # The mutation test (272-instruction-data-boundary-mutation) runs via the
+        # pytest manifest above. Commit-time documentation check only — not a
+        # runtime gate (see docs/design/2026-06-07-272-...-design.md § 3/§ 5).
+        run: python3 scripts/check_instruction_data_boundary.py
+
+      - name: Check task_type declarations
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/check_task_type.py
+
+      - name: Run compliance validator + fixture unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_compliance_report scripts.test_validate_compliance_fixtures -v
+
+      - name: Check collaboration depth rubric + observer contract
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/check_collaboration_depth_rubric.py
+
+      - name: Run collaboration depth rubric unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_collaboration_depth_rubric -v
+
+      - name: Check rubric weight consistency (quality_rubrics / framework / SKILL rule 14)
+        run: python3 scripts/check_rubric_weight_consistency.py
+
+      - name: Check citation-verification intake wiring (#392)
+        run: python3 scripts/check_392_citation_verification_intake.py
+
+      - name: Check agents/ mirror sync (#413)
+        # The pytest companion `test_check_agents_mirror_sync.py` runs via the
+        # unified manifest.
+        run: python3 scripts/check_agents_mirror_sync.py
+
+      - name: Check revision-patch discipline (#390 Slice B)
+        # The pytest companion `test_check_390_revision_patch_discipline.py`
+        # runs via the unified manifest.
+        run: python3 scripts/check_390_revision_patch_discipline.py
+
+      - name: Check version consistency (CLAUDE.md / SKILL.md / CHANGELOG)
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/check_version_consistency.py
+
+      - name: Check SETUP cross-model example parity (#491)
+        # The pytest companion `test_check_setup_cross_model_parity.py`
+        # runs via the unified manifest (and also under pytest.yml's
+        # scripts/ glob — that 2x overlap is the accepted manifest pattern).
+        run: python3 scripts/check_setup_cross_model_parity.py
+
+      - name: Check model-tiering classification (#517)
+        # The pytest companion `test_check_model_tiering.py` runs via the
+        # unified manifest.
+        run: python3 scripts/check_model_tiering.py
+
+      - name: Run version consistency unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_version_consistency -v
+
+      - name: Run spec consistency unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_spec_consistency -v
+
+      - name: Run check_sprint_contract unit tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_sprint_contract -v
+
+      - name: Validate sprint contract templates
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s globstar nullglob
+          # Widened from 3-segment to N-segment so 4+ segment hotfix entries
+          # (e.g. ## [3.9.4.2]) match without falling through to a predecessor.
+          # Same defect class as #169 (closed by PR #173).
+          ARS_VERSION=$(grep -m1 -oE '## \[[0-9]+(\.[0-9]+)+\]' CHANGELOG.md | grep -oE '[0-9]+(\.[0-9]+)+' || true)
+          if [[ -z "$ARS_VERSION" ]]; then
+            echo "ERROR: could not extract ARS version from CHANGELOG.md (need '## [X.Y.Z]' heading)" >&2
+            exit 1
+          fi
+          for f in shared/contracts/reviewer/*.json; do
+            python3 scripts/check_sprint_contract.py "$f" --ars-version "v${ARS_VERSION}"
+          done
+          # v3.6.6: writer + evaluator template validation loops mirror reviewer loop above.
+          for f in shared/contracts/writer/*.json; do
+            python3 scripts/check_sprint_contract.py "$f" --ars-version "v${ARS_VERSION}"
+          done
+          for f in shared/contracts/evaluator/*.json; do
+            python3 scripts/check_sprint_contract.py "$f" --ars-version "v${ARS_VERSION}"
+          done
+
+      - name: Validate v3.6.6 A/B fixture manifest
+        run: python3 scripts/check_v3_6_6_ab_manifest.py
+
+      - name: Validate literature_corpus schemas and examples
+        run: python3 scripts/check_literature_corpus_schema.py
+
+      - name: Validate corpus consumer protocol (v3.6.5+)
+        run: python3 scripts/check_corpus_consumer_protocol.py
+
+      - name: Validate experiment_provenance[] example shape (#260)
+        # Standalone shape gate (mirrors the non-CI check_repro_lock.py family):
+        # asserts the shipped example's experiment_provenance[] entries are
+        # well-formed against experiment_provenance_entry.schema.json so the
+        # example cannot rot. Cross-array EP/EA invariants + the repro_lock drift
+        # guard are covered by scripts.test_experiment_provenance +
+        # scripts.test_repro_lock_validation_drift (run below + via pytest).
+        run: python3 scripts/check_experiment_provenance.py examples/passport_with_experiment_provenance.yaml
+
+      - name: Run #260 experiment-provenance + repro_lock drift tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_experiment_provenance scripts.test_repro_lock_validation_drift -v
+
+      - name: Validate domain evidence profile documentation surface (#259)
+        run: python3 scripts/check_domain_evidence_profile.py
+
+      - name: Check adapter docs up-to-date
+        run: python3 scripts/sync_adapter_docs.py --check
+
+      - name: Validate passport reset contract
+        run: python3 scripts/check_passport_reset_contract.py --root .
+
+      - name: Run passport reset contract tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_passport_reset_contract -v
+
+      - name: Validate v3.6.7 downstream-agent pattern protection
+        run: python3 scripts/check_v3_6_7_pattern_protection.py
+
+      - name: Run v3.6.7 pattern-protection mutation tests
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_v3_6_7_pattern_protection -v
+
+      - name: Validate v3.7.1 byte-equivalence SHA gate (v3.6.7 boundary)
+        # v3.7.1 work must NOT mutate v3.6.7-tagged PATTERN PROTECTION blocks.
+        # This lint hashes each block at PR HEAD and at the v3.6.7 base commit
+        # (derived via `git log -1 -- scripts/v3_6_7_inversion_manifest.json`)
+        # and asserts equality. Requires fetch-depth: 0 on the checkout step.
+        run: python3 scripts/check_v3_6_8_pattern_protection.py
+
+      - name: Validate v3.7.1 trust-chain frontmatter schema
+        # Step 1 of v3.7.1: enforces three firm rules from spec §3.1
+        # (verified⇒acquired+method, not-acquired⇒no-real-audit-round, no
+        # literal human_read_*) across literature_corpus[] entries.
+        run: python3 scripts/check_v3_6_8_frontmatter_trust_schema.py
+
+      - name: Validate v3.7.1 audit Scope Report block (Step 2 / D2)
+        # Step 2 of v3.7.1: enforces spec §3.2 Scope Report contract on the
+        # cross-model audit prompt template — Section 0 header + four required
+        # content fields + three aggregate-status splits + forbidden
+        # combined-aggregate "PASSED" verb (spec line 152).
+        run: python3 scripts/check_v3_6_8_audit_scope_block.py
+
+      - name: Validate v3.7.1 Cite-Time Provenance Finalizer (Step 3b)
+        # Step 3b of v3.7.1: enforces spec §3.3 4-cell matrix + §3.6 peer-file
+        # join + idempotency + revision-loop preservation on the
+        # `## Cite-Time Provenance Finalizer (v3.7.1)` subsection of
+        # academic-pipeline/agents/pipeline_orchestrator_agent.md.
+        run: python3 scripts/check_v3_6_8_cite_provenance_pipeline.py
+
+      - name: Validate v3.6.8 /ars-mark-read plugin commands (#190)
+        # Step 7 of v3.6.8: enforces the 2 commands (mark-read, unmark-read)
+        # exist, carry the literature_corpus[] validation reference, point at
+        # the human_read_log.yaml peer file (NOT entry frontmatter per §3.1
+        # firm rule 3), and declare model: sonnet routing.
+        run: python3 scripts/check_v3_6_8_mark_read_commands.py
+
+      - name: Run v3.6.8 /ars-mark-read CLI tests (#190)
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_ars_mark_read scripts.test_check_v3_6_8_mark_read_commands -v
+
+      - name: v3.9.0 cross-index triangulation lint
+        # §3.8 rules 5-6 (R3 P2 closure): verifies formatter pass-through
+        # allowlist equals the canonical 9-suffix set (exact-token extraction
+        # from backtick spans, not substring matching) and that refusal rules
+        # 1-10 contain no CONTAMINATED-* tokens (R-L3-2-E invariant).
+        # The pytest companion `test_check_v3_9_0_triangulation.py` runs via
+        # the unified manifest (#156).
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_v3_9_0_triangulation.py
+
+      - name: Firm-rules sync + ID-collision lint (v3.10 PR-A, #127)
+        # Pins the canonical R-L3-2-* (contamination) / R-CIM-* (claim-manifest)
+        # firm-rule wording in shared/references/firm_rules.md against the agent
+        # prompt mirrors, and guards the v3.10 PR-A disambiguation (the two rule
+        # families no longer share the R-L3-2-A/B/C ID). v3.10 PR-B adds a
+        # contradiction guard on the contamination mirrors (no unqualified
+        # "advisory only / never block" claim once strict can block). The pytest
+        # companion `test_check_firm_rules_sync.py` runs via the unified manifest.
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_firm_rules_sync.py
+
+      - name: Judge-prompt-version drift guard (#361)
+        # Recomputes the SHA-256 of the canonical judge-prompt section (between
+        # the JUDGE-PROMPT-CANONICAL markers in claim_ref_alignment_audit_agent.md)
+        # and fails if it drifts from JUDGE_PROMPT_SHA256 in _claim_audit_constants.py.
+        # Forces a prompt edit to re-pin the hash + bump JUDGE_PROMPT_VERSION, so a
+        # judge-prompt change cannot silently leave stale judge-cache entries valid.
+        # The pytest companion `test_check_judge_prompt_version.py` runs via the
+        # unified manifest.
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_judge_prompt_version.py
+
+      - name: v3.10 policy-layer lint (#127 PR-B)
+        # Verifies the v3.10 terminal-policy-layer contract: venue_type /
+        # venue_type_provenance / venue_type_source schema fields (incl. the
+        # explicit `unknown` member + no `_inferred` provenance), the pair
+        # dependency branches, the trusted_source laundering guard, the standalone
+        # terminal_policies schema home (Inv. 11), the marker grammar (severity=
+        # HIGH-BLOCK only inside <!--ref-->, two shapes, policy_hash stamp), the
+        # generic formatter rule 11 + STAMP-ONLY two-gate, and temporal_integrity
+        # accepting only `advisory` (Inv. 3). Runs ALONGSIDE the v3.9.0 lint, not a
+        # rename. The pytest companion `test_check_v3_10_policy.py` runs via the
+        # unified manifest.
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_v3_10_policy.py
+
+      - name: "#394 slice-4 submission-policy lint"
+        # Verifies the submission-package terminality contract: the
+        # terminal_policies submission_package enum {advisory, strict} with no
+        # JSON-Schema default, the orchestrator Submission-Package Terminal
+        # Gate section's load-bearing literals (fix-loop bound, VERIFICATION-
+        # INCOMPLETE, --check-freshness, sole-reader + gate-on-tokens
+        # sentences), the formatter Submission Package Advisories section,
+        # the AST single-homed guard (the verifier never READS
+        # terminal_policies — docstring mentions stay free, gate-1 P2), and
+        # the report schema's closed policy_slug enum. The pytest companion
+        # `test_check_394_submission_policy.py` runs via the unified manifest.
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_394_submission_policy.py
+
+      - name: "#439 format_profile contract lint"
+        # Guards the scholar-declared layout profile feature (8 invariants):
+        # valid standalone Draft 2020-12 schema + locked root (Invariant 11), the
+        # line_spacing.fixed_pt conditional (required iff mode==fixed_pt, AND mode
+        # itself required), NO venue_profile provenance machinery leaked in
+        # (declared-only downgraded to docs, design §3), cut fields stay cut
+        # (design §4), the synthetic example validates, the formatter + intake
+        # prose wiring carry their load-bearing literals (byte-equivalence guard,
+        # fail-closed, venue precedence; write-nothing-when-declined + structural
+        # PCR row), and the POSITIONING ship-contract-not-content boundary (§6).
+        # The pytest companion `test_check_439_format_profile.py` runs via the
+        # unified manifest.
+        env:
+          PYTHONPATH: .
+        run: python scripts/check_439_format_profile.py
+
+      - name: Run v3.9.2 Phase Boundary coverage lint (#133)
+        # Enforces 22 Bucket A agents have ## Phase Boundary (v3.9.2)
+        # block, 16 Bucket B/C/D agents DON'T, and each Bucket A block
+        # contains the four load-bearing phrases (Phase Boundary v3.9.2,
+        # MUST NOT, MAY READ, Enforcement v3.9.2). See
+        # docs/design/2026-05-18-ars-v3.9.2-agent-phase-classification.md.
+        # The pytest companion `test_check_v3_9_2_phase_boundary.py` and the
+        # #133 pipeline-integrity advisory verifier tests run via the unified
+        # manifest (#156).
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/check_v3_9_2_phase_boundary.py
+
+      - name: Run #215 field-norm severity coverage lint
+        # Asserts the three #215 reviewer surfaces (domain_reviewer Step 5,
+        # devils_advocate dimension 9 + CRITICAL fields, calibration Phase 3.5)
+        # carry their scoped field-norm-severity blocks. Block-scoped keyword
+        # checks (not file-wide) so a stray keyword cannot mask a missing rule.
+        # The pytest companion test_check_215_field_norm.py (mutation tests) runs
+        # via the unified manifest (#156). Issue #215 (Kim et al. 2026 W1/§F.3.4).
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/check_215_field_norm.py
+
+      - name: Run #216 surface-form parity gold-set integrity lint
+        # Validates the mixed-provenance §F.3.6 gold set: structural completeness,
+        # provenance honesty (paper_verbatim quotes the paper; counterfactual_rewrite /
+        # maintainer_boundary are labelled as maintainer-authored, never paper-verbatim),
+        # pair invariants (paired items hold claim + verdict constant, differ in framing),
+        # no rotting pdftotext line anchors, and gold<->manifest agreement. NOT an FNR/FPR
+        # detector — there is no deterministic predictor for the surface-form bias.
+        # Companion test_check_surface_form_parity.py (mutation + serializer-strip) runs
+        # via the unified manifest (#156). Issue #216 (Kim et al. 2026 §F.3.6).
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.check_surface_form_parity
+
+      - name: Run #216 surface-form parity coverage lint
+        # Asserts the Devil's Advocate agent carries the Surface-Form Parity self-check
+        # block at verdict time, with every load-bearing clause inside its marker block
+        # (block-scoped + fence-aware), so a stray keyword cannot mask a missing rule.
+        # Companion test_check_216_surface_form.py (6-class mutation suite) runs via the
+        # unified manifest (#156). Issue #216 (Kim et al. 2026 §F.3.6).
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/check_216_surface_form.py
+
+      - name: Run v3.10 #134 write-scope three-way name cross-check lint
+        # THE FAIL-OPEN GUARD for the Slice 1 write-scope hook. Asserts the 23 Bucket A
+        # agent names match across the classification roster, the scope manifest keys,
+        # and the on-disk agent frontmatter `name` fields. A drift would silently fail
+        # the PreToolUse hook OPEN (treat a fenced agent as unconstrained). The pytest
+        # companions test_ars_write_scope_guard.py + test_check_v3_10_134_write_scope.py
+        # (hook decision tests + lint mutation tests) run via the unified manifest (#156).
+        # Spec: docs/design/2026-06-01-ars-134-conductor-rescope-deterministic-write-guard-spec.md
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/check_v3_10_134_write_scope.py
+
+      - name: Validate ARS plugin hooks.json wires the write-scope guard
+        # Pins hooks/hooks.json to (a) be valid JSON, (b) carry a PreToolUse entry whose
+        # matcher covers the structured write tools + Bash, (c) invoke the cross-platform
+        # launcher hooks/run_guard.sh via ${CLAUDE_PLUGIN_ROOT}, AND (d) confirm the launcher
+        # actually execs the guard script (so the launcher->guard chain can't be silently
+        # severed by a future edit). The hook went via run_guard.sh in #454: a bare `python3`
+        # command broke on Windows where python3 is a 0-byte Microsoft Store alias stub.
+        run: |
+          python3 - <<'PY'
+          import json
+          h = json.load(open("hooks/hooks.json"))
+          pre = h.get("hooks", {}).get("PreToolUse", [])
+          assert pre, "hooks.json has no PreToolUse entry"
+          entry = pre[0]
+          matcher = entry.get("matcher", "")
+          for tool in ("Write", "Edit", "MultiEdit", "Bash"):
+              assert tool in matcher, f"PreToolUse matcher missing {tool!r}: {matcher!r}"
+          cmds = " ".join(hk.get("command", "") for hk in entry.get("hooks", []))
+          assert "hooks/run_guard.sh" in cmds, "PreToolUse does not invoke the run_guard.sh launcher"
+          assert "${CLAUDE_PLUGIN_ROOT}" in cmds, "hook command must use ${CLAUDE_PLUGIN_ROOT}"
+          # The launcher must still chain to the guard script — pin it so the chain stays intact.
+          # P2-f: do NOT use a bare substring (a COMMENT mentioning the guard would false-pass and
+          # the launcher->guard chain could be severed while CI stays green). Skip whole-line
+          # comments, then require non-comment EXECUTABLE shapes: (1) the guard path is ASSIGNED
+          # from the launcher's own location, and (2) that assigned path is EXEC'd in the guard
+          # call site's command-substitution. This is a fast smoke pin, not full semantic proof —
+          # the authoritative launcher->guard exec verification is scripts/test_run_guard_launcher.py
+          # (run via the CI pytest manifest), which actually runs the launcher and asserts a real
+          # `deny` is forwarded. So we keep the static check tight enough to catch an obvious
+          # severance (commenting out the exec line) without trying to out-parse the shell:
+          # the exec match is bound to the GUARD_OUT=$( ... run_bounded ... "$GUARD" ) call-site
+          # shape. The assignment line is ANCHORED at line start (^\s*) so an inline comment like
+          # `ls # GUARD_OUT=$(run_bounded "$GUARD")` can't satisfy it, and the run_bounded/"$GUARD"
+          # tokens are confined to a single command substitution (no `)` between them) so
+          # `GUARD_OUT=$( echo run_bounded "$GUARD" )` doesn't false-pass either (gemini r6 P2,
+          # tightening the codex r6 P2 fix).
+          import re
+          guard_assigned = guard_run = False
+          for raw in open("hooks/run_guard.sh"):
+              if raw.lstrip().startswith("#"):
+                  continue  # whole-line comment — never load-bearing
+              # (1) GUARD=...ars_write_scope_guard.py  (assignment, derived from $0 dir)
+              if re.search(r'\bGUARD=.*ars_write_scope_guard\.py', raw):
+                  guard_assigned = True
+              # (2) the guard call site, anchored at line start; run_bounded must be the command
+              #     run inside the substitution (only a pipe `|` may precede it), and "$GUARD" its
+              #     argument — all within one $( ... ) (the [^)]* forbids a closing paren between).
+              if re.search(r'^\s*GUARD_OUT=\$\([^)]*\|\s*run_bounded\b[^)]*"\$GUARD"', raw):
+                  guard_run = True
+          assert guard_assigned, \
+              "run_guard.sh has no non-comment GUARD=...ars_write_scope_guard.py assignment — chain severed"
+          assert guard_run, \
+              'run_guard.sh has no anchored GUARD_OUT=$(... | run_bounded ... "$GUARD") call site — launcher->guard exec chain severed'
+          print("hooks.json PreToolUse write-scope guard wiring OK (via run_guard.sh launcher)")
+          PY
+
+      - name: Run v3.9.4 temporal verification lint (#135)
+        # Verifies check_v3_9_4_temporal_verification.py against all bundled
+        # fixtures in tests/fixtures/v3.9.4-temporal/. Each fixture directory
+        # carries timeline.yaml, citation_provenance.yaml, and
+        # expected_temporal_audit_results.yaml (the verifier's expected output,
+        # used as the lint's --temporal-audit input). The guard protects against
+        # directories that don't have all three files (defensive, forward-compat).
+        # Spec: docs/design/2026-05-18-ars-v3.9.4-temporal-verification-spec.md
+        env:
+          PYTHONPATH: .
+        run: |
+          for fixture in tests/fixtures/v3.9.4-temporal/*/; do
+            if [ -f "$fixture/timeline.yaml" ] && [ -f "$fixture/citation_provenance.yaml" ] && [ -f "$fixture/expected_temporal_audit_results.yaml" ]; then
+              python3 scripts/check_v3_9_4_temporal_verification.py \
+                --timeline "$fixture/timeline.yaml" \
+                --citation-provenance "$fixture/citation_provenance.yaml" \
+                --temporal-audit "$fixture/expected_temporal_audit_results.yaml"
+            fi
+          done
+
+      - name: Run v3.8 annotation-literal sync lint (#103)
+        # Step 8 /simplify reuse P2-1: lint pins that every
+        # ANNOTATION_HIGH_WARN_* literal in scripts/claim_audit_finalizer.py
+        # has a matching bracket-prefix in formatter_agent.md REFUSE rules
+        # 6-10. Without this CI step a finalizer literal rename would
+        # silently break the formatter terminal hard gate.
+        env:
+          PYTHONPATH: .
+        run: |
+          python3 scripts/check_v3_8_annotation_literal_sync.py
+
+      - name: Run v3.8 annotation-literal sync lint tests (#103)
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_v3_8_annotation_literal_sync -v
+
+      - name: Check cross-model grounding-guard doc sync (#346 / #349)
+        # Drift guard: asserts shared/cross_model_verification.md references the canonical jq
+        # filters under scripts/cross_model_verification/ via `jq -f` and still carries the
+        # NOT_SEARCHED + CROSS-MODEL-ERROR safety branches — so a doc edit can't re-inline a
+        # weaker filter or drop a branch while the behavioral tests keep passing against the
+        # untouched .jq files. Behavior of the filters themselves is pinned by the manifest test
+        # 346-349-cross-model-grounding-guards.
+        run: python3 scripts/check_cross_model_verification_sync.py
+
+      - name: Run v3.8 claim_audit pipeline + schema + uncited-assertion + manifest + finalizer + e2e + calibration tests (#103)
+        # The v3.8 #103 test suite covers the L3 claim-faithfulness audit
+        # contract end-to-end:
+        #   - Step 4-6: schema validation (T-S1..T-S8 + the 4 manifest /
+        #     uncited / drift / constraint invariant families), pipeline
+        #     routing (T-P1..T-P11 §4 step 1-6), uncited token rule
+        #     (T-U1..T-U5 D4-c three-condition detector).
+        #   - Step 7 (round-2 review closure): manifest set-diff +
+        #     constraint inheritance + MANIFEST-MISSING fallback
+        #     (T-M1..T-M3 §7.3) + T-CO-1..T-CO-4 carry-overs.
+        #   - Step 8: 8-row finalizer matrix (T-F1a..h + T-F2..T-F5 §7.5).
+        #   - Step 9: end-to-end synthetic-paper test (5 citations, 1
+        #     fabricated; spec §7.6) — exercises detector → pipeline →
+        #     finalizer chain.
+        #   - Step 10: calibration gate (T-C1 FNR<0.15 + FPR<0.10 against
+        #     20-tuple gold set; T-C2 per-class reporting; T-C3 gold-set
+        #     shape integrity; spec §7.7).
+        #   - Step 11 (regression baseline): all 7 modules run together
+        #     against the full diff to guarantee zero regression before
+        #     independent review (spec §7.8 + §13 step 11).
+        # Without this CI step the audit contracts shipped from Steps 4-10
+        # could regress silently. Spec:
+        # docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §7
+        env:
+          PYTHONPATH: .
+        run: |
+          python3 -m unittest \
+            scripts.test_claim_audit_schema \
+            scripts.test_claim_audit_pipeline \
+            scripts.test_uncited_assertion \
+            scripts.test_claim_intent_manifest \
+            scripts.test_claim_audit_finalizer \
+            scripts.test_e2e_claim_audit \
+            scripts.test_claim_audit_calibration \
+            -v
+
+      - name: Run v3.6.7 Step 6 audit schema + helper tests (Phase 6.2 + 6.4)
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_audit_schemas scripts.test__next_verified_at_ms -v
+
+      - name: Run v3.6.7 Step 6 Phase 6.6 orchestrator prompt static checks
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_v3_6_7_phase_6_6 -v
+
+      - name: Validate v3.6.7 Step 8 pattern-eval fixture manifests (Phase 6.8)
+        run: python3 scripts/check_pattern_eval_manifest.py
+
+      - name: "Check policy anchor table structural lint (#108)"
+        run: python3 scripts/check_policy_anchor_table.py
+
+      - name: "Run policy anchor table validator unit tests (#108)"
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_policy_anchor_table -v
+
+      - name: "Check policy anchor disclosure protocol lint (#108)"
+        run: python3 scripts/check_policy_anchor_protocol.py
+
+      - name: "Run policy anchor protocol validator unit tests (#108)"
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_check_policy_anchor_protocol -v
+
+      - name: "Run policy anchor disclosure conformance suite — referee (#108)"
+        env:
+          PYTHONPATH: .
+        run: python3 -m unittest scripts.test_policy_anchor_disclosure -v
+
+      - name: Validate evals gold sets (#184)
+        # Phase 1a citation-extraction gold subset validator.
+        # Enforces 9 invariants (I1-I7, I9, I10) per
+        # docs/design/2026-05-21-v3.10-184-extend-eval-harness-spec.md.
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.check_evals_gold_set evals/gold/citation_extraction
+
+      - name: Validate #268 nested-object Commitment Ledger
+        # Schema 11 parallel-list -> nested-object refactor (#268). N1-N5:
+        # seed extraction-field presence, no retired parallel-list keys,
+        # per-commitment lifecycle coherence, and no surviving index notation
+        # in the Schema 11 prose + re_review_mode_protocol surfaces.
+        # Spec: docs/design/2026-05-31-ars-268-schema11-nested-commitment-ledger-spec.md.
+        env:
+          PYTHONPATH: .
+        run: python3 -m scripts.check_268_nested_commitment_ledger

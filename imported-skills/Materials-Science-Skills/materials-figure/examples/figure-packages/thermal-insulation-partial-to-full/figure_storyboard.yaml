@@ -1,0 +1,27 @@
+layout: 2x2
+title: Thermal-insulation performance package
+panels:
+  - id: A
+    role: property-performance
+    title: Conductivity-density
+    claim: Thermal conductivity is reported against density.
+    evidence: Conductivity-density data.
+    source: conductivity_density.csv
+  - id: B
+    role: mechanism-evidence
+    title: Pore structure
+    claim: Pore structure is associated with insulation performance.
+    evidence: MIP or microscopy evidence.
+    source: pore_structure.csv
+  - id: C
+    role: durability-aging
+    title: Hygrothermal aging
+    claim: Retention is limited to the hygrothermal aging protocol.
+    evidence: Aging cycle data.
+    source: hygrothermal_aging.csv
+  - id: D
+    role: comparison-window
+    title: Application window
+    claim: Application window balances density, insulation, and durability.
+    evidence: Multi-metric scoring table.
+    source: application_window.csv

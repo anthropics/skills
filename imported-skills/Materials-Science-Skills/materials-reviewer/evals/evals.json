@@ -1,0 +1,129 @@
+{
+  "skill_name": "materials-reviewer",
+  "evals": [
+    {
+      "id": "five-axis-review",
+      "prompt": "Review this manuscript about waterborne epoxy modified emulsified asphalt for tack coat application. The paper claims improved bonding strength and moisture resistance. Provide a full reviewer report.",
+      "expected_output": "The assistant must structure the review around the five canonical review axes: originality, importance, interdisciplinary, technical validity, and readability. Each axis should have a dedicated section with a score or qualitative assessment, and the final report should include a summary recommendation. The review must not omit any of the five axes.",
+      "assertions": [
+        {
+          "name": "five_axes_present",
+          "description": "All five review axes (originality, importance, interdisciplinary, technical validity, readability) are explicitly addressed in the review output."
+        },
+        {
+          "name": "per_axis_assessment",
+          "description": "Each axis carries a distinct score or qualitative assessment, not just a single merged paragraph."
+        },
+        {
+          "name": "summary_recommendation",
+          "description": "The review concludes with a summary recommendation (accept/minor/major/reject) consistent with the axis-level assessments."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "domain-specific-criteria",
+      "prompt": "Review this manuscript submitted to Construction and Building Materials about asphalt binder modification with SBS polymer. The paper reports softening point, penetration, and DSR results.",
+      "expected_output": "The assistant must load the asphalt-reviewer-criteria.md reference and apply domain-specific checks: bonding strength evidence, moisture damage assessment (wet/dry conditioning), aging behavior (RTFOT/PAV), and rutting/fatigue parameter reporting from DSR. The review should flag if any of these asphalt-specific critical metrics are missing from the manuscript.",
+      "assertions": [
+        {
+          "name": "asphalt_criteria_loaded",
+          "description": "The response references asphalt-reviewer-criteria.md or applies asphalt-domain-specific checks."
+        },
+        {
+          "name": "bonding_strength_checked",
+          "description": "The review checks whether bonding strength or adhesion metrics are reported."
+        },
+        {
+          "name": "moisture_damage_checked",
+          "description": "The review checks whether moisture damage assessment (wet/dry conditioning, retained strength ratio) is included."
+        },
+        {
+          "name": "aging_checked",
+          "description": "The review checks whether aging protocols (RTFOT, PAV) are reported."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "desk-reject-risk-detection",
+      "prompt": "Review this manuscript: 'We mixed nano-SiO2 into cement paste and measured compressive strength. The strength increased by 5%. We conclude that nano-SiO2 is a promising additive for cementitious materials.' No XRD, no SEM, no mechanism discussion, and only one mix ratio tested.",
+      "expected_output": "The assistant must detect desk-reject risk factors: (1) insufficient novelty — nano-SiO2 in cement is well-established; (2) evidence gap — only one characterization method (compressive strength), no microstructure or mechanism data; (3) single data point — only one mix ratio, no dosage-response curve. The review should explicitly flag these as desk-reject risks and recommend major revision with minimum evidence requirements.",
+      "assertions": [
+        {
+          "name": "novelty_insufficient_flag",
+          "description": "The review explicitly flags that nano-SiO2 in cement is a well-established topic and questions the novelty contribution."
+        },
+        {
+          "name": "evidence_gap_flag",
+          "description": "The review flags the absence of microstructural characterization (XRD, SEM, FTIR) and mechanism discussion."
+        },
+        {
+          "name": "single_datapoint_flag",
+          "description": "The review flags that only one mix ratio was tested without a dosage-response curve."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "overclaim-flagging",
+      "prompt": "Review this manuscript abstract: 'This is the first study to demonstrate a novel green superhydrophobic coating with excellent durability. The material shows outstanding performance and can be widely applied in construction, automotive, and aerospace industries.' No comparative data, no LCA, no long-term aging data, and only lab-scale contact angle measurements are provided.",
+      "expected_output": "The assistant must flag overstated claims: (1) 'first' — unverifiable without exhaustive prior art search, should be softened or removed; (2) 'novel' — needs explicit comparison to prior art; (3) 'green' — no LCA or environmental impact data; (4) 'excellent durability' — no aging or long-term data; (5) 'widely applied in construction, automotive, and aerospace' — no application-specific testing. The review should require each claim to be either backed by evidence or removed.",
+      "assertions": [
+        {
+          "name": "first_claim_flagged",
+          "description": "The review flags 'first' as unverifiable and recommends softening or removal."
+        },
+        {
+          "name": "green_claim_flagged",
+          "description": "The review flags 'green' as unsupported without LCA or environmental impact data."
+        },
+        {
+          "name": "durability_claim_flagged",
+          "description": "The review flags 'excellent durability' as unsupported without aging or long-term data."
+        },
+        {
+          "name": "overbroad_application_flagged",
+          "description": "The review flags the multi-industry application claim as unsupported without application-specific testing."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "figure-statistics-gap",
+      "prompt": "Review this manuscript. Figure 3 shows a bar chart comparing bonding strength of four asphalt mixtures (control, 2% SBS, 4% SBS, 6% SBS). The bars show mean values (0.45, 0.52, 0.61, 0.58 MPa) but no error bars, no indication of replicates, and no statistical test results.",
+      "expected_output": "The assistant must flag the figure-level statistical gaps: (1) no error bars — cannot assess variance or significance; (2) no replicate information — sample size (n) not reported; (3) no statistical test — cannot determine if differences are significant (t-test, ANOVA, etc.). The review should require error bars, replicate count, and statistical significance indicators before the figure can be considered publication-ready.",
+      "assertions": [
+        {
+          "name": "error_bars_missing_flag",
+          "description": "The review explicitly flags the absence of error bars in the bar chart."
+        },
+        {
+          "name": "replicate_info_missing_flag",
+          "description": "The review flags that the number of replicates (n) is not reported."
+        },
+        {
+          "name": "statistical_test_missing_flag",
+          "description": "The review flags that no statistical significance test (t-test, ANOVA, etc.) is reported."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "budgeted-reviewer-routing",
+      "prompt": "Run a pre-submission reviewer audit for a civil materials manuscript with a claimed mechanism and no confirmed revision proof.",
+      "expected_output": "The assistant should load the minimal reviewer core first, then load evidence, claim-strength, mechanism, or weakness-routing material only when the audit requires it. It must keep unsupported mechanism and completion claims visible as gaps rather than inventing proof.",
+      "assertions": [
+        {
+          "name": "shared_contracts_are_on_demand",
+          "description": "The default router does not treat shared stance, evidence, claim-strength, ethics, or weakness-routing files as always-load content."
+        },
+        {
+          "name": "evidence_and_weakness_rows_are_conditional",
+          "description": "Mechanism evidence and paper-production weakness rows are loaded or emitted only when the audit calls for them."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

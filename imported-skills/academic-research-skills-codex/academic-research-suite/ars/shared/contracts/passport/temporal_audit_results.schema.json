@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/temporal_audit_results.schema.json",
+  "title": "Material Passport Temporal Audit Results (phase4_composition/temporal_audit_results.yaml)",
+  "description": "Aggregate schema for v3.9.4 temporal verification findings. NOT a defect_stage of v3.8 claim_audit_result; sibling aggregate (per CC2). Per spec §3.2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "audit_run_id", "report_reference_date", "findings"],
+  "properties": {
+    "schema_version": { "const": "1.0", "description": "Schema-internal version. v3.9.4 ships 1.0." },
+    "audit_run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "ISO-8601 UTC timestamp + 4-hex suffix; joins to citation_provenance.audit_run_id for per-run pairing."
+    },
+    "report_reference_date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Frozen reference date per CC6 — never wall-clock today. Tests freeze this to a fixed date."
+    },
+    "findings": {
+      "type": "array",
+      "description": "Per-finding temporal audit results. Closed enum of 6 finding kinds per spec §3.2.",
+      "items": { "$ref": "#/$defs/temporal_audit_finding" }
+    }
+  },
+  "$defs": {
+    "temporal_audit_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "finding_kind", "severity", "draft_locator", "rationale"],
+      "properties": {
+        "finding_id": { "type": "string", "pattern": "^TF-[0-9]{3,}$" },
+        "finding_kind": {
+          "enum": [
+            "TEMPORAL-ARITHMETIC-IMPOSSIBLE",
+            "TEMPORAL-ANACHRONISTIC-CITATION",
+            "TEMPORAL-COMPARATOR-UNMATERIALIZED",
+            "TEMPORAL-CAUSAL-INVERSION",
+            "TEMPORAL-DEICTIC",
+            "TEMPORAL-METADATA-MISSING"
+          ],
+          "description": "Closed enum of 6 finding kinds per spec §3.2 closed list."
+        },
+        "severity": {
+          "enum": ["HIGH", "MEDIUM", "LOW"],
+          "description": "Closed enum; per-kind defaults in spec §3.2 per-kind required-field map."
+        },
+        "mode": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Failure mode 1-5 (from spec §1.2). Null permitted for TEMPORAL-METADATA-MISSING (verifier-deficiency advisory, not a violation)."
+        },
+        "block_eligible": {
+          "type": "boolean",
+          "description": "Forward-compat flag for v3.10 strict policy. v3.9.4 itself emits no terminal block regardless of this flag (CC1)."
+        },
+        "draft_locator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "line", "sentence"],
+          "properties": {
+            "file": { "type": "string" },
+            "line": { "type": "integer", "minimum": 0 },
+            "sentence": { "type": "string" }
+          }
+        },
+        "matched_span": {
+          "description": "Required for P3/P4/P5 per spec §3.2 per-kind map. Null for P1/P2/METADATA-MISSING.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text", "char_start", "char_end"],
+              "properties": {
+                "text": { "type": "string" },
+                "char_start": { "type": "integer", "minimum": 0 },
+                "char_end": { "type": "integer", "minimum": 0 }
+              }
+            }
+          ]
+        },
+        "bound_refs": {
+          "type": "array",
+          "description": "Citations bound by the finding. Empty when no ref bindings (P1 anchor+event from draft capture, P5 deictic only).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ref_slug", "timeline_entry"],
+            "properties": {
+              "ref_slug": { "type": "string" },
+              "timeline_entry": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "bound_event": {
+          "description": "Event from timeline.yaml events[]. Required for P2 anachronism. Null permitted otherwise.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["event_id", "date"],
+              "properties": {
+                "event_id": { "type": ["string", "null"] },
+                "date": { "type": "string" }
+              }
+            }
+          ]
+        },
+        "bound_dates": {
+          "description": "Left/right date endpoints used by P1 arithmetic + P4 causal predicates. Sources include draft_capture (P1 prose dates), timeline_ref (P4 ref→timeline lookup), citation_provenance.",
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["left", "right"],
+              "properties": {
+                "left": { "$ref": "#/$defs/bound_date_endpoint" },
+                "right": { "$ref": "#/$defs/bound_date_endpoint" }
+              }
+            }
+          ]
+        },
+        "rationale": { "type": "string", "minLength": 1 },
+        "suggested_fix": { "type": ["string", "null"] }
+      },
+      "oneOf": [
+        {
+          "description": "P1 TEMPORAL-ARITHMETIC-IMPOSSIBLE: bound_dates required (anchor + event from Pattern A/B), mode==1.",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-ARITHMETIC-IMPOSSIBLE" },
+            "mode": { "const": 1 },
+            "bound_dates": { "not": { "type": "null" } }
+          },
+          "required": ["finding_kind", "mode", "bound_dates"]
+        },
+        {
+          "description": "P2 TEMPORAL-ANACHRONISTIC-CITATION: bound_refs>=1, bound_event non-null, mode==2.",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-ANACHRONISTIC-CITATION" },
+            "mode": { "const": 2 },
+            "bound_refs": { "minItems": 1 },
+            "bound_event": { "not": { "type": "null" } }
+          },
+          "required": ["finding_kind", "mode", "bound_refs", "bound_event"]
+        },
+        {
+          "description": "P3 TEMPORAL-COMPARATOR-UNMATERIALIZED: bound_refs>=1, matched_span non-null, mode==3.",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-COMPARATOR-UNMATERIALIZED" },
+            "mode": { "const": 3 },
+            "bound_refs": { "minItems": 1 },
+            "matched_span": { "not": { "type": "null" } }
+          },
+          "required": ["finding_kind", "mode", "bound_refs", "matched_span"]
+        },
+        {
+          "description": "P4 TEMPORAL-CAUSAL-INVERSION: bound_dates non-null, matched_span non-null, mode==4.",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-CAUSAL-INVERSION" },
+            "mode": { "const": 4 },
+            "bound_dates": { "not": { "type": "null" } },
+            "matched_span": { "not": { "type": "null" } }
+          },
+          "required": ["finding_kind", "mode", "bound_dates", "matched_span"]
+        },
+        {
+          "description": "P5 TEMPORAL-DEICTIC: bound_refs empty, matched_span non-null, mode==5.",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-DEICTIC" },
+            "mode": { "const": 5 },
+            "bound_refs": { "maxItems": 0 },
+            "matched_span": { "not": { "type": "null" } }
+          },
+          "required": ["finding_kind", "mode", "matched_span"]
+        },
+        {
+          "description": "TEMPORAL-METADATA-MISSING: no per-kind requirements (mode and bindings all permitted null).",
+          "properties": {
+            "finding_kind": { "const": "TEMPORAL-METADATA-MISSING" }
+          },
+          "required": ["finding_kind"]
+        }
+      ]
+    },
+    "bound_date_endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "value", "source"],
+      "properties": {
+        "role": {
+          "enum": ["anchor", "event", "left_arg", "right_arg"],
+          "description": "anchor/event for P1 patterns; left_arg/right_arg for P4 causal."
+        },
+        "value": { "type": "string", "description": "Date string (ISO-8601 day or interval encoding 'YYYY-MM-DD..YYYY-MM-DD' or month/year)." },
+        "source": {
+          "enum": ["draft_capture", "timeline_ref", "citation_provenance"],
+          "description": "draft_capture = extracted from prose; timeline_ref = looked up in timeline.yaml via ref_slug; citation_provenance = looked up in citation_provenance.yaml."
+        },
+        "ref_slug": { "type": ["string", "null"], "description": "Populated only when source == timeline_ref." }
+      }
+    }
+  }
+}

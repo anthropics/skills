@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/version_records.schema.json",
+  "title": "Material Passport Version Records (phase2_investigation/version_records.yaml)",
+  "description": "Aggregate schema for academic citation version-family reconciliation. Per Kong #258. Owned by timeline_extraction_agent; literature_corpus_entry.schema.json remains unmodified.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "version_records"],
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "description": "Schema-internal version. Kong #258 ships 1.0."
+    },
+    "version_records": {
+      "type": "array",
+      "description": "One record per academic work version family, such as preprint -> proceedings -> journal extension.",
+      "items": { "$ref": "#/$defs/version_family_record" }
+    }
+  },
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_:-]*$"
+    },
+    "arxiv_id": {
+      "type": "string",
+      "pattern": "^([A-Za-z][A-Za-z0-9-]*(\\.[A-Za-z0-9-]+)*/\\d{7}(v[1-9]\\d*)?|\\d{4}\\.\\d{4,5}(v[1-9]\\d*)?)$"
+    },
+    "date_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "precision"],
+      "properties": {
+        "value": { "type": ["string", "null"] },
+        "precision": { "enum": ["day", "month", "year", "unknown"] }
+      }
+    },
+    "version_family_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version_family_id", "canonical_slug", "discovery_status", "known_versions"],
+      "properties": {
+        "version_family_id": {
+          "$ref": "#/$defs/key",
+          "description": "Stable family key. Joins to timeline.yaml sources[].version_family_id when present."
+        },
+        "canonical_slug": {
+          "$ref": "#/$defs/key",
+          "description": "Preferred citation slug for the family, not necessarily a concrete version."
+        },
+        "primary_version_key": {
+          "type": ["string", "null"],
+          "description": "Scholar-selected version_key to render by default. Null means user confirmation is pending."
+        },
+        "discovery_status": {
+          "enum": ["candidate", "user_confirmed", "rejected", "needs_review"],
+          "description": "Advisory discovery state. Only user_confirmed should drive final citation standardization."
+        },
+        "reconciliation_note": {
+          "type": ["string", "null"],
+          "description": "Optional scholar-facing note explaining version choice or unresolved ambiguity."
+        },
+        "known_versions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/known_version" }
+        }
+      }
+    },
+    "known_version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version_key", "kind", "title", "year", "metadata_provenance"],
+      "properties": {
+        "version_key": {
+          "$ref": "#/$defs/key",
+          "description": "Stable key for this concrete version within the family."
+        },
+        "citation_key": {
+          "type": ["string", "null"],
+          "description": "Optional join to literature_corpus[].citation_key when this concrete version has its own corpus entry."
+        },
+        "kind": {
+          "enum": [
+            "arxiv_preprint",
+            "proceedings",
+            "journal_article",
+            "book",
+            "book_chapter",
+            "report",
+            "dataset",
+            "other"
+          ]
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "year": { "type": "integer", "minimum": 1000, "maximum": 2100 },
+        "venue": { "type": ["string", "null"] },
+        "doi": {
+          "type": ["string", "null"],
+          "pattern": "^10\\.[0-9]{4,9}/[^\\s]+$"
+        },
+        "arxiv_id": {
+          "anyOf": [
+            { "$ref": "#/$defs/arxiv_id" },
+            { "type": "null" }
+          ]
+        },
+        "url": { "type": ["string", "null"] },
+        "publication_date": {
+          "anyOf": [
+            { "$ref": "#/$defs/date_object" },
+            { "type": "null" }
+          ]
+        },
+        "metadata_provenance": {
+          "enum": [
+            "crossref_lookup",
+            "openalex_lookup",
+            "arxiv_api",
+            "adapter_metadata",
+            "user_override",
+            "manual",
+            "unknown"
+          ]
+        },
+        "source_locator": {
+          "type": ["string", "null"],
+          "description": "Concrete URL, DOI, arXiv locator, local PDF page, or KB pointer used to verify this version."
+        },
+        "claim_scope_note": {
+          "type": ["string", "null"],
+          "description": "What kinds of quoted text or claims are safe to attribute to this concrete version."
+        },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

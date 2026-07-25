@@ -1,0 +1,56 @@
+{
+  "tuple_id": "005-valid-doi-umap-2019",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Becht2019UMAP",
+    "title": "Dimensionality reduction for visualizing single-cell data using UMAP",
+    "authors": [
+      {
+        "family": "Becht",
+        "given": "Etienne"
+      },
+      {
+        "family": "McInnes",
+        "given": "Leland"
+      },
+      {
+        "family": "Healy",
+        "given": "John"
+      },
+      {
+        "family": "Dutertre",
+        "given": "Charles-Antoine"
+      },
+      {
+        "family": "Kwok",
+        "given": "Immanuel W H"
+      },
+      {
+        "family": "Ng",
+        "given": "Lai Guan"
+      },
+      {
+        "family": "Ginhoux",
+        "given": "Florent"
+      },
+      {
+        "family": "Newell",
+        "given": "Evan W"
+      }
+    ],
+    "year": 2019,
+    "doi": "10.1038/nbt.4314",
+    "venue": "Nature Biotechnology",
+    "source_pointer": "https://doi.org/10.1038/nbt.4314",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "becht-2019-umap",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "generated_date": "2026-02-16T12:59:34.530390",
+    "analysis_period": "monthly",
+    "snapshots_analyzed": 2,
+    "date_range": {
+      "start": "2024-01-15T09:00:00",
+      "end": "2024-02-01T14:30:00"
+    },
+    "team_size": 5
+  },
+  "executive_summary": {
+    "overall_status": "excellent",
+    "health_score": 87.3,
+    "status_message": "Code quality is excellent with minimal technical debt.",
+    "key_insights": [
+      "Good progress on debt reduction"
+    ],
+    "total_debt_items": 22,
+    "estimated_effort_hours": 193.5,
+    "high_priority_items": 6,
+    "velocity_impact_percent": 12.3
+  },
+  "current_health": {
+    "overall_score": 87.3,
+    "debt_density": 0.81,
+    "velocity_impact": 12.3,
+    "quality_score": 81.8,
+    "maintainability_score": 72.7,
+    "technical_risk_score": 38.2,
+    "date": "2024-02-01T14:30:00"
+  },
+  "trend_analysis": {
+    "overall_score": {
+      "metric_name": "overall_score",
+      "trend_direction": "improving",
+      "change_rate": 3.7,
+      "correlation_strength": 0.0,
+      "forecast_next_period": 91.0,
+      "confidence_interval": [
+        91.0,
+        91.0
+      ]
+    },
+    "debt_density": {
+      "metric_name": "debt_density",
+      "trend_direction": "improving",
+      "change_rate": -0.31,
+      "correlation_strength": 0.0,
+      "forecast_next_period": 0.5,
+      "confidence_interval": [
+        0.5,
+        0.5
+      ]
+    },
+    "velocity_impact": {
+      "metric_name": "velocity_impact",
+      "trend_direction": "improving",
+      "change_rate": -2.9,
+      "correlation_strength": 0.0,
+      "forecast_next_period": 9.4,
+      "confidence_interval": [
+        9.4,
+        9.4
+      ]
+    },
+    "quality_score": {
+      "metric_name": "quality_score",
+      "trend_direction": "declining",
+      "change_rate": -3.9,
+      "correlation_strength": 0.0,
+      "forecast_next_period": 77.9,
+      "confidence_interval": [
+        77.9,
+        77.9
+      ]
+    },
+    "technical_risk_score": {
+      "metric_name": "technical_risk_score",
+      "trend_direction": "improving",
+      "change_rate": -47.5,
+      "correlation_strength": 0.0,
+      "forecast_next_period": -9.3,
+      "confidence_interval": [
+        -9.3,
+        -9.3
+      ]
+    }
+  },
+  "debt_velocity": [
+    {
+      "period": "2024-01-15 to 2024-02-01",
+      "new_debt_items": 0,
+      "resolved_debt_items": 6,
+      "net_change": -6,
+      "velocity_ratio": 10.0,
+      "effort_hours_added": 0,
+      "effort_hours_resolved": 77.0,
+      "net_effort_change": -77.0
+    }
+  ],
+  "forecasts": {
+    "health_score_3_months": 98.4,
+    "health_score_6_months": 100,
+    "debt_count_3_months": 4,
+    "debt_count_6_months": 0,
+    "risk_score_3_months": 0
+  },
+  "recommendations": [
+    {
+      "priority": "medium",
+      "category": "focus_area",
+      "title": "Focus on Other Debt",
+      "description": "Other represents the largest debt category (16 items). Consider targeted initiatives.",
+      "impact": "medium",
+      "effort": "medium"
+    }
+  ],
+  "visualizations": {
+    "health_timeline": [
+      {
+        "date": "2024-01-15",
+        "overall_score": 83.6,
+        "quality_score": 85.7,
+        "technical_risk": 85.7
+      },
+      {
+        "date": "2024-02-01",
+        "overall_score": 87.3,
+        "quality_score": 81.8,
+        "technical_risk": 38.2
+      }
+    ],
+    "debt_accumulation": [
+      {
+        "date": "2024-01-15",
+        "total_debt": 28,
+        "high_priority": 9,
+        "security_debt": 5
+      },
+      {
+        "date": "2024-02-01",
+        "total_debt": 22,
+        "high_priority": 6,
+        "security_debt": 2
+      }
+    ],
+    "category_distribution": [
+      {
+        "category": "code_quality",
+        "count": 5
+      },
+      {
+        "category": "other",
+        "count": 16
+      },
+      {
+        "category": "maintenance",
+        "count": 1
+      }
+    ],
+    "debt_velocity": [
+      {
+        "period": "2024-01-15 to 2024-02-01",
+        "new_items": 0,
+        "resolved_items": 6,
+        "net_change": -6,
+        "velocity_ratio": 10.0
+      }
+    ],
+    "effort_trend": [
+      {
+        "date": "2024-01-15",
+        "total_effort": 270.5
+      },
+      {
+        "date": "2024-02-01",
+        "total_effort": 193.5
+      }
+    ]
+  },
+  "detailed_metrics": {
+    "debt_breakdown": {
+      "large_function": 1,
+      "duplicate_code": 1,
+      "high_complexity": 1,
+      "missing_docstring": 1,
+      "empty_catch_blocks": 1,
+      "deep_nesting": 1,
+      "long_line": 1,
+      "commented_code": 1,
+      "global_variables": 1,
+      "synchronous_ajax": 1,
+      "hardcoded_values": 1,
+      "no_error_handling": 1,
+      "inefficient_algorithm": 1,
+      "memory_leak_risk": 1,
+      "large_class": 1,
+      "circular_dependency": 1,
+      "broad_exception": 1,
+      "missing_validation": 1,
+      "performance_issue": 1,
+      "css_debt": 1,
+      "accessibility_issue": 1,
+      "configuration_debt": 1
+    },
+    "severity_breakdown": {
+      "high": 6,
+      "medium": 12,
+      "low": 4
+    },
+    "category_breakdown": {
+      "code_quality": 5,
+      "other": 16,
+      "maintenance": 1
+    },
+    "files_analyzed": 27,
+    "debt_density": 0.8148148148148148,
+    "average_effort_per_item": 8.795454545454545
+  }
+}

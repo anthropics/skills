@@ -1,0 +1,18 @@
+fixture_id: 09_korean_revision_not_review
+expected_routing_class: proceed
+expected_destination: academic-paper:revision
+escape_hatch_applied: false
+notes: |
+  Korean boundary case from issue #452 (phrases authored by the native-speaker
+  proposer, @devCharlotte): 수정 (revise) routes to academic-paper, NOT
+  academic-paper-reviewer. Materials: single draft (Phase 4). Intent: explicit
+  revision request matching the 논문 수정 trigger keyword.
+
+  Per Routing Discipline Step 1 (explicit clear intent), route directly to
+  academic-paper revision mode. The Korean verb 수정하다 (revise/fix) expresses
+  author-side editing intent, not referee-side assessment.
+
+  Pass criteria:
+  - Response begins revision work on the draft
+  - Response does NOT simulate a reviewer panel
+  - Response does NOT trigger clarification a-d options

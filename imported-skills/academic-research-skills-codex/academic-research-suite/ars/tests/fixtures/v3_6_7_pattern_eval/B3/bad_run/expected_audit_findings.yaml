@@ -1,0 +1,33 @@
+run_id: 2026-04-30T10-31-00Z-b3b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.5"
+    file: bad_run/deliverable.md
+    line: 9
+    description: >
+      Calendar-anchored retrospective trap (B3): Items 1, 2, and 3 use floating
+      calendar anchors ("in the past 6 months", "since last summer", "in the past
+      year") without reference to the shared event date documented in
+      event_calendar.md (March 2022 QA Policy Reform announcement). The sample
+      shares a common event date; per psychometric_terminology_glossary.md,
+      calendar-anchored phrasing without a named shared anchor produces systematic
+      recall bias and telescoping. Respondents will reconstruct an approximate
+      window relative to today rather than relative to the reform, yielding
+      incomparable recall windows across respondents surveyed at different times.
+    suggested_fix: >
+      Replace all floating anchors with event-anchored phrasing referencing the
+      shared event: "Since the March 2022 QA Policy Reform announcement, how often
+      has your programme revised its self-evaluation report format?" Default to
+      "since [shared event]" or "in the period following [shared event]" per
+      psychometric_terminology_glossary.md event-anchoring requirement.
+generated_at: "2026-04-30T10:31:44.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

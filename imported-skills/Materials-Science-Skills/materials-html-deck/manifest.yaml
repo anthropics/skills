@@ -1,0 +1,204 @@
+version: "3.0.0"
+status: beta
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/principles.md
+  - static/core/toolchain.md
+  - static/core/workflow.md
+  - static/core/output-and-quality.md
+
+axes:
+  deck_type:
+    default: research-report
+    detect: "What kind of HTML academic deck is the user asking for?"
+    values:
+      paper-reading:
+        path: references/deck-structures.md
+        triggers: ["paper", "journal club", "literature", "paper reading", "文献汇报", "精读"]
+      research-report:
+        path: references/deck-structures.md
+        triggers: ["group meeting", "report", "thesis", "project", "组会", "汇报", "开题", "课题汇报"]
+      review-talk:
+        path: references/deck-structures.md
+        triggers: ["review", "综述", "research progress", "研究进展"]
+  paper_type:
+    default: materials
+    detect: "Classify the source paper before designing slides."
+    values:
+      discovery:
+        path: static/fragments/paper_type/discovery.md
+        triggers: ["discovery", "question", "finding", "novel", "发现"]
+      methods:
+        path: static/fragments/paper_type/methods.md
+        triggers: ["method", "algorithm", "protocol", "tool", "方法", "算法"]
+      review:
+        path: static/fragments/paper_type/review.md
+        triggers: ["review", "perspective", "commentary", "综述", "评论"]
+      materials:
+        path: static/fragments/paper_type/materials.md
+        triggers: ["material", "chemistry", "physics", "engineering", "characterization", "性能", "材料", "化学", "物理", "表征", "mechanism", "FTIR", "SEM", "机理"]
+  task:
+    default: html-deck
+    detect: "Does the user want only an outline or a browser-native HTML deck?"
+    values:
+      slide-outline:
+        path: static/fragments/task/slide-outline.md
+        triggers: ["outline", "slide outline", "presentation outline", "大纲"]
+      html-deck:
+        path: static/fragments/task/html-deck.md
+        triggers: ["HTML deck", "browser deck", "presentation", "生成汇报", "制作汇报", "幻灯片"]
+  output_format:
+    default: html-deck
+    detect: "Which deck artifact should be delivered?"
+    values:
+      html-deck:
+        path: references/html-first-academic-deck.md
+        triggers: ["html deck", "browser preview", "deck source", "HTML preview"]
+  verification_level:
+    default: strict-playwright
+    detect: "How should the HTML deck be verified before delivery?"
+    values:
+      strict-playwright:
+        path: references/playwright-verification.md
+        triggers: ["strict", "playwright", "browser QA", "screenshot check"]
+  academic_style:
+    default: assertion-evidence
+    detect: "Which academic HTML style profile should shape the deck?"
+    values:
+      assertion-evidence:
+        path: references/academic-style-library.md
+        triggers: ["assertion evidence", "Tufte", "paper reading", "technical report"]
+      dense-research:
+        path: references/academic-style-library.md
+        triggers: ["dense data", "research report", "trend", "evidence map"]
+      diagrammatic-minimalism:
+        path: references/academic-style-library.md
+        triggers: ["mechanism", "model", "concept", "framework"]
+      diagram-driven-isotype:
+        path: references/academic-style-library.md
+        triggers: ["workflow", "process", "route", "system map"]
+      two-font-consulting:
+        path: references/academic-style-library.md
+        triggers: ["project report", "proposal", "industry", "management"]
+      bento-grid:
+        path: references/academic-style-library.md
+        triggers: ["summary", "matrix", "multi metric", "progress snapshot"]
+  source_type:
+    default: outline
+    detect: "What input format is available?"
+    values:
+      outline:
+        path: references/html-deck-generation.md
+        triggers: ["outline", "markdown", ".md", "大纲"]
+      json:
+        path: references/html-deck-generation.md
+        triggers: ["json", ".json", "JSON outline"]
+      data:
+        path: references/html-deck-generation.md
+        triggers: ["data", "csv", "figure", "数据", "图表"]
+      paper:
+        path: references/html-deck-generation.md
+        triggers: ["paper", "论文", "reading notes"]
+  domain:
+    detect: "Which material domain does the presentation target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      civil:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["civil", "asphalt", "cement", "concrete", "pavement", "construction", "土木", "建筑"]
+      polymers:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["polymer", "resin", "rubber", "thermoplastic", "高分子"]
+      metals:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["metal", "alloy", "steel", "金属", "合金"]
+      ceramics:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["ceramic", "sintering", "陶瓷"]
+      functional:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体"]
+      nano:
+        path: static/fragments/domain/domain-context.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+  template:
+    default: academic
+    detect: "Which visual/structural template should dominate the deck?"
+    values:
+      academic:
+        path: static/fragments/template/academic.md
+        triggers: ["academic", "conference talk", "group meeting", "conference", "学术", "组会", "会议"]
+      defense:
+        path: static/fragments/template/defense.md
+        triggers: ["defense", "thesis", "dissertation", "答辩", "毕业论文"]
+      journal-club:
+        path: static/fragments/template/journal-club.md
+        triggers: ["journal club", "literature", "paper reading", "文献汇报", "精读"]
+
+references:
+  on_demand:
+    - condition: generating an HTML academic deck from an outline, JSON, data, or paper source
+      path: references/html-deck-generation.md
+    - condition: using browser-native HTML as the design source and delivery artifact
+      path: references/html-first-academic-deck.md
+    - condition: running strict Playwright browser verification
+      path: references/playwright-verification.md
+    - condition: applying the curated academic style subset copied from huashu-design
+      path: references/academic-style-library.md
+    - condition: applying visual style, color roles, typography, or layout constraints
+      path: references/visual-style.md
+    - condition: designing or auditing slide composition, visual rhythm, layout, typography, anti-template, archetypes, on-slide text budget
+      path: references/design-and-layout.md
+    - condition: selecting, extracting, cropping, and quality-checking figure/table assets
+      path: references/figure-assets.md
+    - condition: running the self-review/corrective revision loop, severity grading, programmatic checks, final verification
+      path: references/self-review.md
+
+assets:
+  - assets
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+
+handoffs:
+  provides: {}
+  consumes:
+    - handoff: figure-handoff
+      from: materials-figure
+      optional: true
+
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

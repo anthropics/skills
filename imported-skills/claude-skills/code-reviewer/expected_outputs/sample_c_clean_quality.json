@@ -1,0 +1,65 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_c_clean.c",
+  "language": "c",
+  "metrics": {
+    "lines": {
+      "total": 72,
+      "code": 43,
+      "blank": 17,
+      "comment": 12
+    },
+    "functions": 4,
+    "classes": 0,
+    "avg_complexity": 1.8
+  },
+  "quality_score": 100,
+  "grade": "A",
+  "smells": [
+    {
+      "type": "long_function",
+      "severity": "medium",
+      "message": "Function 'safe_input' has 61 lines (max: 50)",
+      "location": "safe_input"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 100 should be a named constant",
+      "location": "line 29"
+    },
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 100 should be a named constant",
+      "location": "line 68"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "safe_input",
+      "parameters": 1,
+      "lines": 61,
+      "complexity": 3
+    },
+    {
+      "name": "checked_alloc",
+      "parameters": 1,
+      "lines": 31,
+      "complexity": 2
+    },
+    {
+      "name": "run_safe_cmd",
+      "parameters": 1,
+      "lines": 15,
+      "complexity": 1
+    },
+    {
+      "name": "main",
+      "parameters": 2,
+      "lines": 9,
+      "complexity": 1
+    }
+  ],
+  "class_details": []
+}

@@ -1,0 +1,83 @@
+{
+  "name": "payment-service",
+  "type": "api",
+  "criticality": "critical",
+  "user_facing": true,
+  "description": "Handles payment processing and transaction management",
+  "team": "payments",
+  "environment": "production",
+  "dependencies": [
+    {
+      "name": "user-service",
+      "type": "api",
+      "criticality": "high"
+    },
+    {
+      "name": "payment-gateway",
+      "type": "external",
+      "criticality": "critical"
+    },
+    {
+      "name": "fraud-detection",
+      "type": "ml",
+      "criticality": "high"
+    }
+  ],
+  "endpoints": [
+    {
+      "path": "/api/v1/payments",
+      "method": "POST",
+      "sla_latency_ms": 500,
+      "expected_tps": 100
+    },
+    {
+      "path": "/api/v1/payments/{id}",
+      "method": "GET", 
+      "sla_latency_ms": 200,
+      "expected_tps": 500
+    },
+    {
+      "path": "/api/v1/payments/{id}/refund",
+      "method": "POST",
+      "sla_latency_ms": 1000,
+      "expected_tps": 10
+    }
+  ],
+  "business_metrics": {
+    "revenue_per_hour": {
+      "metric": "sum(payment_amount * rate(payments_successful_total[1h]))",
+      "target": 50000,
+      "unit": "USD"
+    },
+    "conversion_rate": {
+      "metric": "sum(rate(payments_successful_total[5m])) / sum(rate(payment_attempts_total[5m]))",
+      "target": 0.95,
+      "unit": "percentage"
+    }
+  },
+  "infrastructure": {
+    "container_orchestrator": "kubernetes",
+    "replicas": 6,
+    "cpu_limit": "2000m",
+    "memory_limit": "4Gi",
+    "database": {
+      "type": "postgresql",
+      "connection_pool_size": 20
+    },
+    "cache": {
+      "type": "redis",
+      "cluster_size": 3
+    }
+  },
+  "compliance_requirements": [
+    "PCI-DSS",
+    "SOX",
+    "GDPR"
+  ],
+  "tags": [
+    "payment",
+    "transaction", 
+    "critical-path",
+    "revenue-generating"
+  ]
+}

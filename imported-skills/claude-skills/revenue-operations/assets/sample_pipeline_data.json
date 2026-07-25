@@ -1,0 +1,160 @@
+{
+  "quota": 500000,
+  "stages": ["Discovery", "Qualification", "Proposal", "Negotiation", "Closed Won"],
+  "average_cycle_days": 45,
+  "deals": [
+    {
+      "id": "D001",
+      "name": "Acme Corp",
+      "stage": "Proposal",
+      "value": 85000,
+      "age_days": 32,
+      "close_date": "2025-03-15",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D002",
+      "name": "TechFlow Inc",
+      "stage": "Discovery",
+      "value": 42000,
+      "age_days": 8,
+      "close_date": "2025-04-30",
+      "owner": "rep_2"
+    },
+    {
+      "id": "D003",
+      "name": "GlobalData Systems",
+      "stage": "Negotiation",
+      "value": 120000,
+      "age_days": 55,
+      "close_date": "2025-02-28",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D004",
+      "name": "Pinnacle Software",
+      "stage": "Qualification",
+      "value": 35000,
+      "age_days": 18,
+      "close_date": "2025-04-15",
+      "owner": "rep_3"
+    },
+    {
+      "id": "D005",
+      "name": "Meridian Health",
+      "stage": "Proposal",
+      "value": 95000,
+      "age_days": 40,
+      "close_date": "2025-03-20",
+      "owner": "rep_2"
+    },
+    {
+      "id": "D006",
+      "name": "CloudVault",
+      "stage": "Discovery",
+      "value": 28000,
+      "age_days": 5,
+      "close_date": "2025-05-15",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D007",
+      "name": "Nexus Financial",
+      "stage": "Closed Won",
+      "value": 72000,
+      "age_days": 38,
+      "close_date": "2025-01-31",
+      "owner": "rep_3"
+    },
+    {
+      "id": "D008",
+      "name": "Urban Analytics",
+      "stage": "Negotiation",
+      "value": 58000,
+      "age_days": 42,
+      "close_date": "2025-03-05",
+      "owner": "rep_2"
+    },
+    {
+      "id": "D009",
+      "name": "Redwood Logistics",
+      "stage": "Discovery",
+      "value": 31000,
+      "age_days": 12,
+      "close_date": "2025-05-01",
+      "owner": "rep_3"
+    },
+    {
+      "id": "D010",
+      "name": "Summit Enterprises",
+      "stage": "Qualification",
+      "value": 48000,
+      "age_days": 22,
+      "close_date": "2025-04-10",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D011",
+      "name": "Vertex Solutions",
+      "stage": "Proposal",
+      "value": 110000,
+      "age_days": 95,
+      "close_date": "2025-03-01",
+      "owner": "rep_2"
+    },
+    {
+      "id": "D012",
+      "name": "DataBridge AI",
+      "stage": "Discovery",
+      "value": 55000,
+      "age_days": 3,
+      "close_date": "2025-06-15",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D013",
+      "name": "Atlas Manufacturing",
+      "stage": "Qualification",
+      "value": 67000,
+      "age_days": 28,
+      "close_date": "2025-04-20",
+      "owner": "rep_3"
+    },
+    {
+      "id": "D014",
+      "name": "Horizon Telecom",
+      "stage": "Negotiation",
+      "value": 250000,
+      "age_days": 60,
+      "close_date": "2025-03-10",
+      "owner": "rep_1"
+    },
+    {
+      "id": "D015",
+      "name": "BlueShift Labs",
+      "stage": "Proposal",
+      "value": 43000,
+      "age_days": 35,
+      "close_date": "2025-03-25",
+      "owner": "rep_3"
+    },
+    {
+      "id": "D016",
+      "name": "Crestview Partners",
+      "stage": "Discovery",
+      "value": 38000,
+      "age_days": 15,
+      "close_date": "2025-05-20",
+      "owner": "rep_2"
+    },
+    {
+      "id": "D017",
+      "name": "Ironclad Security",
+      "stage": "Closed Won",
+      "value": 91000,
+      "age_days": 44,
+      "close_date": "2025-02-10",
+      "owner": "rep_1"
+    }
+  ]
+}

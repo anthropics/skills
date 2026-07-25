@@ -1,0 +1,28 @@
+# Round 2 expected pipeline state.
+# Round 1 fixes for C2 + C1 closed; A3 partially fixed (still mis-anchored);
+# D4 still over cap. Two P1 findings remain (synthesis A3 + compiler D4).
+
+round: 2
+target_rounds: 3
+overall_verdict: MATERIAL
+ship_or_block: block
+audit_artifact_appended:
+  - agent: synthesis_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T15-30-00Z-f201
+  - agent: research_architect_agent
+    verdict_status: PASS
+    run_id: 2026-04-30T15-31-00Z-f202
+  - agent: report_compiler_agent
+    verdict_status: MATERIAL
+    run_id: 2026-04-30T15-32-00Z-f203
+findings_summary:
+  total_p1: 2
+  total_p2: 0
+  total_p3: 0
+closed_in_this_round:
+  - F-102
+  - F-104
+expected_user_options:
+  - "revise and re-audit at round 3 (final round before escalation prompt)"
+  - "abort_stage"

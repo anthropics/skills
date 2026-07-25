@@ -1,0 +1,2 @@
+sample_id,material_type,bulk_density_kg_per_m3,skeletal_density_kg_per_m3,porosity_pct,pore_size_nm,thermal_conductivity_w_per_mk,mean_temperature_c,temp_gradient_c,test_standard,specimen_thickness_mm,specimen_diameter_mm,conditioning_rh_pct,conditioning_temp_c,conditioning_time_h,moisture_content_pct,compressive_strength_mpa,strain_at_failure_pct,young_modulus_kpa,measurement_direction,number_of_replicates,notes
+INS-001,silica aerogel,120,1850,93.5,20,0.028,25,10,ASTM C518,25,300,50,23,24,2.5,0.24,10,120,through-plane,3,""

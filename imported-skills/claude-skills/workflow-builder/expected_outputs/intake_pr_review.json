@@ -1,0 +1,37 @@
+{
+  "task": "review my open PRs for bugs",
+  "recommended_topology": "fan-out",
+  "runner_up_topology": "pipeline",
+  "resolved_signals": {
+    "verb_chain": false,
+    "panel": false,
+    "costly": false,
+    "loop_like": false,
+    "merge_like": false,
+    "list_like": true,
+    "units_effective": "known",
+    "stages_effective": "single",
+    "needs_all_effective": "no"
+  },
+  "model_plan": [
+    {
+      "stage": "fan-out stage",
+      "model": "haiku",
+      "why": "independent, mechanical per-item work is cheap on Haiku"
+    },
+    {
+      "stage": "final synthesis",
+      "model": "opus",
+      "why": "combining many results into one report needs strong reasoning"
+    }
+  ],
+  "structured_output": "yes",
+  "budget_guard": "optional; set budget.total if the user gave a token target",
+  "rationale": {
+    "topology": "independent units, one pass each, combined at the end -> parallel fan-out then a final synthesis agent",
+    "runner_up": "pipeline",
+    "structured_output": "default on \u2014 a small JSON schema makes downstream stages reliable at near-zero cost",
+    "budget": "fixed topology with a known/bounded item count \u2014 no runaway risk"
+  },
+  "add_verification": false
+}

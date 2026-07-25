@@ -1,0 +1,87 @@
+{
+  "contract_id": "academic_paper/writer_full/v1",
+  "mode": "writer_full",
+  "stage": "writer_full_drafting",
+  "baseline_version": "v3.6.6",
+  "acceptance_dimensions": [
+    {
+      "id": "D1",
+      "name": "section_completeness",
+      "description": "Every section in the Structure Architect's approved outline is written; no [MATERIAL GAP] placeholders remain unresolved at handoff to citation_compliance.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D2",
+      "name": "citation_density",
+      "description": "Every factual claim carries at least one citation; uncited claims either gain a source or are rewritten with hedging language.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D3",
+      "name": "argument_blueprint_fidelity",
+      "description": "Each section follows the CER chains delivered by argument_builder_agent (the Argument Blueprint runtime artefact); topic sentences match the claim, evidence cites assigned sources, and explanation links back to the section purpose. The Argument Blueprint, not the contract, is the source of CER chains.",
+      "priority": "mandatory"
+    },
+    {
+      "id": "D4",
+      "name": "total_word_count",
+      "description": "Final draft total stays within plus or minus 10 percent of the target declared in the Paper Configuration Record.",
+      "priority": "high"
+    },
+    {
+      "id": "D5",
+      "name": "per_section_word_count",
+      "description": "Each section stays within plus or minus 15 percent of the per-section allocation declared in the Paper Configuration Record.",
+      "priority": "high"
+    },
+    {
+      "id": "D6",
+      "name": "paragraph_structure",
+      "description": "At least 80 percent of body paragraphs follow TEEL (Topic / Evidence / Explanation / Link); inter-section transitions present. Introduction-first and conclusion-last paragraphs are exempt.",
+      "priority": "normal"
+    },
+    {
+      "id": "D7",
+      "name": "register_consistency",
+      "description": "Academic register holds throughout; no colloquial mixing; discipline-appropriate phrasing per the Paper Configuration Record.",
+      "priority": "normal"
+    }
+  ],
+  "pre_commitment_artifacts": {
+    "acceptance_criteria_paraphrase": {
+      "minimum_dimensions": "all"
+    }
+  },
+  "failure_conditions": [
+    {
+      "condition_id": "F1",
+      "severity": 90,
+      "expression": "any mandatory dimension scores 'block'",
+      "action": "writer_decision=escalate_to_evaluator"
+    },
+    {
+      "condition_id": "F4",
+      "severity": 75,
+      "expression": "any mandatory dimension scores 'warn'",
+      "action": "writer_decision=revise_in_phase_4b"
+    },
+    {
+      "condition_id": "F2",
+      "severity": 60,
+      "expression": "any high-priority dimension scores 'block'",
+      "action": "writer_decision=revise_in_phase_4b"
+    },
+    {
+      "condition_id": "F3",
+      "severity": 40,
+      "expression": "any high-priority dimension scores 'warn'",
+      "action": "writer_decision=revise_in_phase_4b"
+    },
+    {
+      "condition_id": "F0",
+      "severity": 10,
+      "expression": "every mandatory dimension scores 'pass'",
+      "action": "writer_decision=accept"
+    }
+  ]
+}

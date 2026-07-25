@@ -1,0 +1,9 @@
+temperature_c,two_theta,phase,intensity
+200,25.3,anatase,420
+300,25.3,anatase,400
+400,25.3,anatase,310
+500,25.3,anatase,150
+500,27.4,rutile,80
+600,25.3,anatase,40
+600,27.4,rutile,260
+700,27.4,rutile,380

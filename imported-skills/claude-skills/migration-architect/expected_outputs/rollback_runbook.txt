@@ -1,0 +1,282 @@
+================================================================================
+ROLLBACK RUNBOOK: rb_921c0bca
+================================================================================
+Migration ID: 23a52ed1507f
+Created: 2026-02-16T13:47:31.108500
+
+EMERGENCY CONTACTS
+----------------------------------------
+Incident Commander: TBD - Assigned during migration
+  Phone: +1-XXX-XXX-XXXX
+  Email: incident.commander@company.com
+  Backup: backup.commander@company.com
+
+Technical Lead: TBD - Migration technical owner
+  Phone: +1-XXX-XXX-XXXX
+  Email: tech.lead@company.com
+  Backup: senior.engineer@company.com
+
+Business Owner: TBD - Business stakeholder
+  Phone: +1-XXX-XXX-XXXX
+  Email: business.owner@company.com
+  Backup: product.manager@company.com
+
+On-Call Engineer: Current on-call rotation
+  Phone: +1-XXX-XXX-XXXX
+  Email: oncall@company.com
+  Backup: backup.oncall@company.com
+
+Executive Escalation: CTO/VP Engineering
+  Phone: +1-XXX-XXX-XXXX
+  Email: cto@company.com
+  Backup: vp.engineering@company.com
+
+ESCALATION MATRIX
+----------------------------------------
+LEVEL_1:
+  Trigger: Single component failure
+  Response Time: 5 minutes
+  Contacts: on_call_engineer, migration_lead
+  Actions: Investigate issue, Attempt automated remediation, Monitor closely
+
+LEVEL_2:
+  Trigger: Multiple component failures or single critical failure
+  Response Time: 2 minutes
+  Contacts: senior_engineer, team_lead, devops_lead
+  Actions: Initiate rollback, Establish war room, Notify stakeholders
+
+LEVEL_3:
+  Trigger: System-wide failure or data corruption
+  Response Time: 1 minutes
+  Contacts: engineering_manager, cto, incident_commander
+  Actions: Emergency rollback, All hands on deck, Executive notification
+
+EMERGENCY:
+  Trigger: Business-critical failure with customer impact
+  Response Time: 0 minutes
+  Contacts: ceo, cto, head_of_operations
+  Actions: Emergency procedures, Customer communication, Media preparation if needed
+
+AUTOMATIC ROLLBACK TRIGGERS
+----------------------------------------
+• Error Rate Spike
+  Condition: error_rate > baseline * 5 for 5 minutes
+  Auto-Execute: Yes
+  Evaluation Window: 5 minutes
+  Contacts: on_call_engineer, migration_lead
+
+• Response Time Degradation
+  Condition: p95_response_time > baseline * 3 for 10 minutes
+  Auto-Execute: No
+  Evaluation Window: 10 minutes
+  Contacts: performance_team, migration_lead
+
+• Service Availability Drop
+  Condition: availability < 95% for 2 minutes
+  Auto-Execute: Yes
+  Evaluation Window: 2 minutes
+  Contacts: sre_team, incident_commander
+
+• Data Integrity Check Failure
+  Condition: data_validation_failures > 0
+  Auto-Execute: Yes
+  Evaluation Window: 1 minutes
+  Contacts: dba_team, data_team
+
+• Migration Progress Stalled
+  Condition: migration_progress unchanged for 30 minutes
+  Auto-Execute: No
+  Evaluation Window: 30 minutes
+  Contacts: migration_team, dba_team
+
+ROLLBACK PHASES
+----------------------------------------
+1. ROLLBACK_CLEANUP
+   Description: Rollback changes made during cleanup phase
+   Urgency: MEDIUM
+   Duration: 570 minutes
+   Risk Level: MEDIUM
+   Prerequisites:
+     ✓ Incident commander assigned and briefed
+     ✓ All team members notified of rollback initiation
+     ✓ Monitoring systems confirmed operational
+     ✓ Backup systems verified and accessible
+   Steps:
+     99. Validate rollback completion
+        Duration: 10 min
+        Type: manual
+        Success Criteria: cleanup fully rolled back, All validation checks pass
+
+   Validation Checkpoints:
+     ☐ cleanup rollback steps completed
+     ☐ System health checks passing
+     ☐ No critical errors in logs
+     ☐ Key metrics within acceptable ranges
+     ☐ Validation command passed: SELECT COUNT(*) FROM {table_name};...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.tables WHE...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.columns WH...
+
+2. ROLLBACK_CONTRACT
+   Description: Rollback changes made during contract phase
+   Urgency: MEDIUM
+   Duration: 570 minutes
+   Risk Level: MEDIUM
+   Prerequisites:
+     ✓ Incident commander assigned and briefed
+     ✓ All team members notified of rollback initiation
+     ✓ Monitoring systems confirmed operational
+     ✓ Backup systems verified and accessible
+     ✓ Previous rollback phase completed successfully
+   Steps:
+     99. Validate rollback completion
+        Duration: 10 min
+        Type: manual
+        Success Criteria: contract fully rolled back, All validation checks pass
+
+   Validation Checkpoints:
+     ☐ contract rollback steps completed
+     ☐ System health checks passing
+     ☐ No critical errors in logs
+     ☐ Key metrics within acceptable ranges
+     ☐ Validation command passed: SELECT COUNT(*) FROM {table_name};...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.tables WHE...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.columns WH...
+
+3. ROLLBACK_MIGRATE
+   Description: Rollback changes made during migrate phase
+   Urgency: MEDIUM
+   Duration: 570 minutes
+   Risk Level: MEDIUM
+   Prerequisites:
+     ✓ Incident commander assigned and briefed
+     ✓ All team members notified of rollback initiation
+     ✓ Monitoring systems confirmed operational
+     ✓ Backup systems verified and accessible
+     ✓ Previous rollback phase completed successfully
+   Steps:
+     99. Validate rollback completion
+        Duration: 10 min
+        Type: manual
+        Success Criteria: migrate fully rolled back, All validation checks pass
+
+   Validation Checkpoints:
+     ☐ migrate rollback steps completed
+     ☐ System health checks passing
+     ☐ No critical errors in logs
+     ☐ Key metrics within acceptable ranges
+     ☐ Validation command passed: SELECT COUNT(*) FROM {table_name};...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.tables WHE...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.columns WH...
+
+4. ROLLBACK_EXPAND
+   Description: Rollback changes made during expand phase
+   Urgency: MEDIUM
+   Duration: 570 minutes
+   Risk Level: MEDIUM
+   Prerequisites:
+     ✓ Incident commander assigned and briefed
+     ✓ All team members notified of rollback initiation
+     ✓ Monitoring systems confirmed operational
+     ✓ Backup systems verified and accessible
+     ✓ Previous rollback phase completed successfully
+   Steps:
+     99. Validate rollback completion
+        Duration: 10 min
+        Type: manual
+        Success Criteria: expand fully rolled back, All validation checks pass
+
+   Validation Checkpoints:
+     ☐ expand rollback steps completed
+     ☐ System health checks passing
+     ☐ No critical errors in logs
+     ☐ Key metrics within acceptable ranges
+     ☐ Validation command passed: SELECT COUNT(*) FROM {table_name};...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.tables WHE...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.columns WH...
+
+5. ROLLBACK_PREPARATION
+   Description: Rollback changes made during preparation phase
+   Urgency: MEDIUM
+   Duration: 570 minutes
+   Risk Level: MEDIUM
+   Prerequisites:
+     ✓ Incident commander assigned and briefed
+     ✓ All team members notified of rollback initiation
+     ✓ Monitoring systems confirmed operational
+     ✓ Backup systems verified and accessible
+     ✓ Previous rollback phase completed successfully
+   Steps:
+     1. Drop migration artifacts
+        Duration: 5 min
+        Type: sql
+        Script:
+          -- Drop migration artifacts
+          DROP TABLE IF EXISTS migration_log;
+          DROP PROCEDURE IF EXISTS migrate_data();
+        Success Criteria: No migration artifacts remain
+
+     99. Validate rollback completion
+        Duration: 10 min
+        Type: manual
+        Success Criteria: preparation fully rolled back, All validation checks pass
+
+   Validation Checkpoints:
+     ☐ preparation rollback steps completed
+     ☐ System health checks passing
+     ☐ No critical errors in logs
+     ☐ Key metrics within acceptable ranges
+     ☐ Validation command passed: SELECT COUNT(*) FROM {table_name};...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.tables WHE...
+     ☐ Validation command passed: SELECT COUNT(*) FROM information_schema.columns WH...
+
+DATA RECOVERY PLAN
+----------------------------------------
+Recovery Method: point_in_time
+Backup Location: /backups/pre_migration_{migration_id}_{timestamp}.sql
+Estimated Recovery Time: 45 minutes
+Recovery Scripts:
+  • pg_restore -d production -c /backups/pre_migration_backup.sql
+  • SELECT pg_create_restore_point('rollback_point');
+  • VACUUM ANALYZE; -- Refresh statistics after restore
+Validation Queries:
+  • SELECT COUNT(*) FROM critical_business_table;
+  • SELECT MAX(created_at) FROM audit_log;
+  • SELECT COUNT(DISTINCT user_id) FROM user_sessions;
+  • SELECT SUM(amount) FROM financial_transactions WHERE date = CURRENT_DATE;
+
+POST-ROLLBACK VALIDATION CHECKLIST
+----------------------------------------
+ 1. ☐ Verify system is responding to health checks
+ 2. ☐ Confirm error rates are within normal parameters
+ 3. ☐ Validate response times meet SLA requirements
+ 4. ☐ Check all critical business processes are functioning
+ 5. ☐ Verify monitoring and alerting systems are operational
+ 6. ☐ Confirm no data corruption has occurred
+ 7. ☐ Validate security controls are functioning properly
+ 8. ☐ Check backup systems are working correctly
+ 9. ☐ Verify integration points with downstream systems
+10. ☐ Confirm user authentication and authorization working
+11. ☐ Validate database schema matches expected state
+12. ☐ Confirm referential integrity constraints
+13. ☐ Check database performance metrics
+14. ☐ Verify data consistency across related tables
+15. ☐ Validate indexes and statistics are optimal
+16. ☐ Confirm transaction logs are clean
+17. ☐ Check database connections and connection pooling
+
+POST-ROLLBACK PROCEDURES
+----------------------------------------
+ 1. Monitor system stability for 24-48 hours post-rollback
+ 2. Conduct thorough post-rollback testing of all critical paths
+ 3. Review and analyze rollback metrics and timing
+ 4. Document lessons learned and rollback procedure improvements
+ 5. Schedule post-mortem meeting with all stakeholders
+ 6. Update rollback procedures based on actual experience
+ 7. Communicate rollback completion to all stakeholders
+ 8. Archive rollback logs and artifacts for future reference
+ 9. Review and update monitoring thresholds if needed
+10. Plan for next migration attempt with improved procedures
+11. Conduct security review to ensure no vulnerabilities introduced
+12. Update disaster recovery procedures if affected by rollback
+13. Review capacity planning based on rollback resource usage
+14. Update documentation with rollback experience and timings

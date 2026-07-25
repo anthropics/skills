@@ -1,0 +1,174 @@
+version: "1.3.0"
+status: stable
+
+context_budget:
+  target_activation_bytes: 16384
+  max_activation_bytes: 18432
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 24
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes: [source_format, output_type, material_family, domain]
+  required_route_scenarios: [default-pasted-full-reader, pdf-civil-full-reader, pdf-evidence-chain-audit, pdf-figure-anchored, wer-ea-intensive-package, literature-matrix-paper, journal-club-paper, microstructure-paper, reader-to-review-handoff, pdf-visual-asset-reading, ceramics-intensive-package, doi-citation-attribution]
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/workflow.md
+
+axes:
+  source_format:
+    detect: |
+      Determine the input form the user provided. Use pdf-text for a
+      selectable-text PDF, scanned-pdf for an image-only or OCR-required PDF,
+      doi-arxiv for a bare DOI or arXiv identifier/link that must be resolved
+      first, html for a publisher or preprint HTML page, and pasted-text when
+      the user pastes prose or notes with no retrievable original layout.
+      If several apply (e.g., a DOI that resolves to a PDF), load the
+      resolution fragment first, then the fragment for the resolved artifact.
+    default: pasted-text
+    multi: true
+    values:
+      pdf-text:
+        path: static/fragments/source/pdf-text.md
+        triggers: ["PDF", "paper file", "full paper", "文献PDF", "PDF file"]
+      scanned-pdf:
+        path: static/fragments/source/scanned-pdf.md
+        triggers: ["scanned", "image-only", "OCR", "scan", "扫描"]
+      doi-arxiv:
+        path: static/fragments/source/doi-arxiv.md
+        triggers: ["DOI", "arXiv", "10.", "arxiv.org", "doi.org"]
+      html:
+        path: static/fragments/source/html.md
+        triggers: ["ScienceDirect", "Springer", "MDPI", "Taylor", "publisher page", "HTML"]
+      pasted-text:
+        path: static/fragments/source/pasted-text.md
+        triggers: ["abstract", "copied text", "pasted", "粘贴", "摘要"]
+  output_type:
+    default: full-reader
+    values:
+      full-reader:
+        path: references/full-reader.md
+        triggers: ["full notes", "精读", "全文阅读", "中英对照"]
+      literature-matrix:
+        path: references/literature-matrix.md
+        triggers: ["matrix", "table", "综述表", "文献矩阵"]
+      evidence-chain-audit:
+        path: references/evidence-chain-audit.md
+        triggers: ["evidence chain", "claim evidence", "audit", "证据链", "证据审计", "审稿风险", "claim-evidence"]
+      fulltext-figure-anchored-reading:
+        path: references/fulltext-figure-anchored-reading.md
+        triggers: ["paper.md", "source_map", "source map", "fulltext", "full-text", "figure card", "table card", "全文精读", "图表锚定"]
+      wer-ea-intensive-reading-package:
+        path: references/wer-ea-intensive-reading-package.md
+        triggers: ["WER-EA reading package", "waterborne epoxy reading package", "30-paper", "translation_notes", "mechanism_evidence_table", "dosage_window_table", "review_handoff", "obsidian_note", "assets", "精读样例包", "水性环氧乳化沥青"]
+      evidence-to-review-handoff:
+        path: references/evidence-to-review-handoff.md
+        triggers: ["source-map-first", "evidence-to-review", "citation handoff", "figure handoff", "citation_handoff", "figure_handoff", "source_anchor_checklist", "review package", "mini-review extraction", "综述交接", "引用交接", "图件交接"]
+      pdf-visual-asset-extraction:
+        path: references/pdf-visual-asset-extraction.md
+        triggers: ["PDF visual assets", "asset_manifest", "contact_sheet", "rendered_pages", "visual_asset_spec", "crop figure", "crop table", "图页核验", "真图裁切"]
+      microstructure-interpretation:
+        path: references/microstructure-interpretation.md
+        triggers: ["SEM", "fluorescence", "AFM", "DSC", "TG", "DTG", "microstructure", "morphology", "显微", "微观形貌"]
+      journal-club:
+        path: references/journal-club-reading.md
+        triggers: ["journal club", "group meeting", "组会", "汇报"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+
+  domain:
+    detect: "Which material domain does the reading target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: ["civil", "asphalt", "cement", "concrete", "pavement", "construction", "土木", "建筑", "道路"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "rubber", "thermoplastic", "高分子"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "金属", "合金"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "sintering", "陶瓷"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米"]
+references:
+  on_demand:
+    terminology-ledger:
+      path: ../_shared/core/terminology-ledger.md
+      when: "Every paper-reading task must load canonical terminology before drafting outputs."
+    ethics:
+      path: ../_shared/core/ethics.md
+      when: "Citation verification, source attribution, copyright, confidential-source, or AI-use boundaries need review."
+    ceramics-intensive-reading:
+      path: references/ceramics-intensive-reading-package.md
+      when: "The user is reading a ceramics paper or needs a ceramics-specific intensive reading protocol."
+    pdf-reading:
+      path: references/pdf-reading.md
+      when: "The user needs PDF reading guidance."
+    source-grounding:
+      path: references/source-grounding.md
+      when: "The user needs source grounding guidance."
+    standard-output-package:
+      path: references/standard-output-package.md
+      when: "The user needs standard output package templates."
+    table-system:
+      path: references/table-system.md
+      when: "The user needs table system templates."
+
+assets:
+  - assets
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+handoffs:
+  provides:
+    reader-package:
+      description: "Bilingual Markdown notes with source anchors"
+      contract: ../../_shared/contracts/reader-package.yaml
+      version: "1.0"
+  consumes:
+    - handoff: citation-handoff
+      from: materials-citation
+      optional: true
+    - handoff: literature-pipeline-handoff
+      from: materials-literature-pipeline
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

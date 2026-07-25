@@ -1,0 +1,64 @@
+route_scenarios:
+  - name: default-manual-package
+    axes:
+      task: dataset-package
+      material_family: neutral
+      domain: materials
+      journal: generic
+      input_source: manual
+    target_bytes: 20480
+    max_bytes: 22528
+
+  - name: asphalt-fair-audit
+    axes:
+      task: fair-audit
+      material_family: civil
+      domain: asphalt
+      journal: cbm
+      input_source: manual
+    on_demand:
+      - fair-rules
+      - asphalt-schema
+    target_bytes: 24576
+    max_bytes: 26624
+
+  - name: doe-record-asphalt-package
+    axes:
+      task: dataset-package
+      material_family: civil
+      domain: asphalt
+      journal: cbm
+      input_source: experiment-record
+    on_demand:
+      - experiment-record-to-dataset
+      - asphalt-schema
+      - operating-stance
+      - availability-rules
+    target_bytes: 30720
+    max_bytes: 32768
+
+  - name: ceramics-availability
+    axes:
+      task: data-availability
+      material_family: ceramics
+      domain: ceramics
+      journal: ccc
+      input_source: manual
+    on_demand:
+      - availability-rules
+      - ceramics-schema
+    target_bytes: 24576
+    max_bytes: 26624
+
+  - name: thermal-template
+    axes:
+      task: experiment-template
+      material_family: neutral
+      domain: thermal-insulation
+      journal: generic
+      input_source: manual
+    on_demand:
+      - insulation-data-template
+      - insulation-schema
+    target_bytes: 24576
+    max_bytes: 26624

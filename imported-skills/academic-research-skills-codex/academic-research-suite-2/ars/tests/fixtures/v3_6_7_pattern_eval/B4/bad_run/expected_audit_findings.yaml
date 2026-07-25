@@ -1,0 +1,36 @@
+run_id: 2026-04-30T10-41-00Z-b4b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.5"
+    file: bad_run/deliverable.md
+    line: 5
+    description: >
+      Leading-frame items (B4): The module title ("Faculty Burden and AI Tool
+      Tensions") and items 1–4 import the chapter argument's signature vocabulary
+      ("burdened", "tension", "mismatch", "challenges") directly into item stems,
+      presupposing the chapter's interpretive frame. Item 1 anchors the response
+      scale on "burdened"; item 2 treats tension as the premise; item 3 asserts
+      a mismatch construct; the open-text item (4) invites only "challenges",
+      excluding positive or neutral experiences. Respondents are steered toward
+      negatively-valenced answers that confirm the chapter's argument before
+      providing any data, violating the neutral/exploratory instrument design
+      mandate in study_protocol.md.
+    suggested_fix: >
+      Replace the module title with a neutral label (e.g., "AI Tool Use and
+      Workload"). Rewrite items using neutral framing: item 1 → "How often do you
+      use AI tools in your teaching or research?"; item 2 → "How has your workload
+      changed since your institution introduced AI tools?"; item 3 → "How adequate
+      is the institutional support you receive for using AI tools?". For the
+      open-text item, invite all valences: "Please describe your experiences
+      (positive, negative, or neutral) with AI tools in your work."
+generated_at: "2026-04-30T10:41:44.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

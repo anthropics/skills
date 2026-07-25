@@ -1,0 +1,6 @@
+{
+  "description": "Users reporting slow page loads on the main website",
+  "service": "web-frontend",
+  "affected_users": "25%",
+  "business_impact": "medium"
+}

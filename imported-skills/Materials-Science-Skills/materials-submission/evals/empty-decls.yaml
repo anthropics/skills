@@ -1,0 +1,9 @@
+# Test manifest for eval: empty declaration fields
+target_journal: cbm
+article_type: research-article
+title: "Test Manuscript Title"
+corresponding_author: "Test Author"
+funding: ""
+conflicts: ""
+data_availability_status: pending
+live_verification_acknowledged: true

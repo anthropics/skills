@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/submission/submission_verification_report.schema.json",
+  "title": "Submission Verification Report",
+  "description": "#394 deterministic submission-package verifier report (spec docs/design/2026-06-10-394-submission-package-verifier-spec.md §7.3). Emitted by scripts/verify_submission_package.py as submission_verification_report.json inside the package directory. Detection is unconditional; terminality is decided by the policy evaluator (orchestrator) reading terminal_policies — the script never reads terminal_policies (§5.3). Slice 1 ships Family C (reference_integrity) only; the check-id/family vocabulary already covers Families A/B/D so later slices are additive, not schema-breaking.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "header",
+    "checks"
+  ],
+  "properties": {
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "extraction_path",
+        "not_checked_count",
+        "package_fingerprint",
+        "inputs_fingerprint",
+        "policy_slug"
+      ],
+      "properties": {
+        "extraction_path": {
+          "type": "string",
+          "enum": [
+            "joined_marker",
+            "best_effort",
+            "none"
+          ],
+          "description": "How in-text citations were extracted (§3.3). joined_marker = <!--ref:slug--> markers joined to citation_keys via a real join source (deterministic-eligible). best_effort = format-aware fallback extraction (\\cite{} / author-year regex) — the whole Family C run downgrades to heuristic class (advisory-only). none = no extraction ran (every extraction-dependent check is not_checked)."
+        },
+        "not_checked_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of checks with status=not_checked. Surfaced in the header so incompleteness is never folded into pass (§1.4 honesty premise / #349 lesson)."
+        },
+        "package_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 over the package manifest, reusing the audit-snapshot hashing convention (scripts/audit_snapshot.py write_manifest, spec §10 open item 3 — adjudicated at slice 1): one line per file `<package-relative-path>:<sha256-hex>`, LC_ALL=C byte-sorted, newline-joined with a trailing newline; the fingerprint is the SHA-256 of that manifest text. The report file itself (submission_verification_report.json) is excluded from the manifest — the report cannot fingerprint its own bytes. Freshness-guard carrier (§5.2): the orchestrator MUST NOT reuse a report whose fingerprint no longer matches the package."
+        },
+        "inputs_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 over the EXTERNAL-INPUTS manifest (slice-4 freshness amendment, gate-2 cross-model review P1): one line per input `<name>:<sha256-hex-of-file-bytes|absent>` for join_map, passport, venue_profile (sorted by name, newline-joined, trailing newline). Family B/C verdicts depend on these inputs, so a report produced under one venue profile (or passport / join map) must never be reused under another — the package_fingerprint alone cannot see that drift. The freshness guard compares this against the inputs the CURRENT invocation carries; mismatch (including a legacy report missing this field) is STALE-REPORT."
+        },
+        "policy_slug": {
+          "enum": [
+            null,
+            "advisory",
+            "strict"
+          ],
+          "description": "The terminal_policies.submission_package value the report was evaluated under (§5.2 freshness guard), as handed down via the --policy CLI argument by the policy evaluator — the orchestrator reads and resolves terminal_policies, the script never does (§5.3); it stamps the already-resolved value mechanically. null = standalone unevaluated run (no --policy flag; the argparse default is None, never 'advisory') — a null-stamped report NEVER satisfies the pipeline freshness guard. 'advisory' / 'strict' = evaluated under that resolved policy (the orchestrator resolves key absence to advisory and ALWAYS passes the flag, so a pipeline report is never null-stamped). Closed enum: exactly the values the CLI stamps (slice-4 lint invariant 5)."
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "family",
+        "signal_class",
+        "strict_eligible",
+        "status",
+        "detail",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[ABCD][1-9][0-9]*$",
+          "description": "Check id per the spec §3 family tables (A1–A7 — A7 is the slice-3 missing-blind-version carrier, B1–B5, C1 orphan in-text citation, C2 uncited reference entry, D*)."
+        },
+        "family": {
+          "type": "string",
+          "enum": [
+            "blind_review_residue",
+            "venue_limits",
+            "reference_integrity",
+            "repro_lock_linkage"
+          ],
+          "description": "Spec §3 check family. Slice 1 emits reference_integrity only."
+        },
+        "signal_class": {
+          "type": "string",
+          "enum": [
+            "deterministic",
+            "heuristic"
+          ],
+          "description": "Whether the signal is a fact about the file (deterministic) or a pattern match that can false-positive (heuristic). A SEPARATE axis from strict_eligible (§3.1 load-bearing): deterministic signal ≠ block-worthy."
+        },
+        "strict_eligible": {
+          "type": "boolean",
+          "description": "Whether a fail on this check is promotable by terminal_policies.submission_package: strict (slice 4). Heuristic checks are NEVER strict-eligible — enforced structurally below, not by default. The bit describes blocking eligibility HAD THE CHECK RUN: the slice-4 policy evaluator keys on status (`fail` blocks; strict-eligible `not_checked` is VERIFICATION-INCOMPLETE) and `strict_eligible: true` NEVER combines with `not_applicable` to block — an untriggered check has nothing to enforce."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "warn",
+            "not_checked",
+            "not_applicable"
+          ],
+          "description": "pass / fail / warn (advisory finding that is never block-worthy, e.g. C2 uncited reference entry — some venues allow further-reading entries, §3.3) / not_checked (the check SHOULD have run but could not; reason in detail; NEVER folded into pass and surfaced in the header count, §1.4) / not_applicable (the check's trigger condition is not met — e.g. the Family A residue scan on a package with no anonymized variant and no declared double-blind review, §3.1; visibly distinct from not_checked so an untriggered family is not reported as incompleteness)."
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable finding. For status=not_checked this carries the reason (e.g. 'missing prose-reference join', 'no machine-readable reference list')."
+        },
+        "location": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Package-relative file path (optionally :line) where the finding sits; null when the finding is package-level."
+        }
+      },
+      "allOf": [
+        {
+          "description": "Heuristic checks are advisory-only STRUCTURALLY (§3.1 / §6): a heuristic signal_class forbids strict_eligible=true. This is a class exclusion, not a default — no emitter and no later policy slice can promote a heuristic check without a schema break.",
+          "if": {
+            "properties": {
+              "signal_class": {
+                "const": "heuristic"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "strict_eligible": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "description": "warn is advisory-only and never policy-promotable (§5.3): a warn outcome forbids strict_eligible=true. Checks whose worst outcome is warn (C2 uncited reference entry) are not strict-eligible by class.",
+          "if": {
+            "properties": {
+              "status": {
+                "const": "warn"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "strict_eligible": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "description": "The id prefix encodes the family (spec §3 tables: A=blind_review_residue, B=venue_limits, C=reference_integrity, D=repro_lock_linkage); the contract binds the redundant pair so an emitter cannot ship a mismatch downstream code keys on.",
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^A"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "family": {
+                "const": "blind_review_residue"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^B"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "family": {
+                "const": "venue_limits"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^C"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "family": {
+                "const": "reference_integrity"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "id": {
+                "pattern": "^D"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "family": {
+                "const": "repro_lock_linkage"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

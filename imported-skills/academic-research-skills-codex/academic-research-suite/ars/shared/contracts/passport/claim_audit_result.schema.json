@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/claim_audit_result.schema.json",
+  "title": "Material Passport Claim Audit Result Entry",
+  "description": "One entry in Material Passport Schema 9 claim_audit_results[] aggregate. Per-claim audit result emitted by claim_ref_alignment_audit_agent (v3.8.0) after the Cite-Time Provenance Finalizer pass at the Stage 4 -> Stage 5 boundary. Cross-field invariants INV-1..INV-19 are lint-enforced in scripts/check_claim_audit_consistency.py — JSON Schema cannot express the conditional matrix relating (judgment, audit_status, defect_stage, ref_retrieval_method). Three sibling entry-types ride in their own aggregates because they cannot satisfy the required-field shape of this schema: uncited_assertion (no ref_slug; §3.3), claim_drift (no judge invocation; §3.4), constraint_violation (uncited HIGH-WARN; §3.5). See docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §3.1 + §5 for full rationale.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "claim_id",
+    "scoped_manifest_id",
+    "claim_text",
+    "ref_slug",
+    "anchor_kind",
+    "anchor_value",
+    "judgment",
+    "audit_status",
+    "defect_stage",
+    "rationale",
+    "judge_model",
+    "judge_run_at",
+    "ref_retrieval_method"
+  ],
+
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^C-[0-9]{3,}$",
+      "description": "Per-claim identifier scoped by scoped_manifest_id. The pair (scoped_manifest_id, claim_id) is the joinable key; bare claim_id alone collides across manifests in the same passport (M-INV-1 permits cross-manifest C-001 reuse)."
+    },
+    "scoped_manifest_id": {
+      "type": "string",
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Points to the owning claim_intent_manifest.manifest_id. INV-15 enforces cross-array integrity. MANIFEST-MISSING fallback uses the sentinel value M-0000-00-00T00:00:00Z-0000."
+    },
+    "claim_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "ref_slug": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Slug from the v3.7.3 <!--ref:slug--> marker the audited citation carries. Uncited claims do NOT emit into this aggregate; they ride in uncited_assertions[] (§3.3) or constraint_violations[] (§3.5)."
+    },
+    "anchor_kind": {
+      "enum": ["quote", "page", "section", "paragraph", "none"],
+      "description": "Carried from the v3.7.3 <!--anchor:<kind>:<value>--> marker. anchor_kind=none triggers INV-6 (firm-rule defense-in-depth surface)."
+    },
+    "anchor_value": {
+      "type": "string",
+      "description": "URL-decoded anchor value. When anchor_kind=none, MUST be the empty sentinel string (INV-6). When anchor_kind != none, INV-16 forbids empty values after whitespace strip."
+    },
+    "judgment": {
+      "enum": ["SUPPORTED", "UNSUPPORTED", "AMBIGUOUS", "RETRIEVAL_FAILED"],
+      "description": "Judge verdict per the §4 step 5 prompt template. RETRIEVAL_FAILED is NOT a judge label — it is set when retrieval / anchorless / tool-failure prevents the judge from running (per error-handling §4 step 9)."
+    },
+    "audit_status": {
+      "enum": ["completed", "inconclusive"],
+      "description": "completed = judge ran (or RETRIEVAL_FAILED with deterministic verdict like retrieval_existence). inconclusive = judge could not run and no deterministic verdict was reached."
+    },
+    "defect_stage": {
+      "comment": "Three categories of finding are intentionally NOT defect_stages of claim_audit_result and use their own §3.3/§3.4/§3.5 entry-type schemas: (a) uncited_assertion findings — no ref_slug to evaluate, see uncited_assertion.schema.json (§3.3); (b) claim_intent drift findings — detected by manifest set-diff not by judge, see claim_drift.schema.json (§3.4) (drift never produces a claim_audit_result row because the judge is never invoked for these — the only signal is intended ≠ emitted manifest-set difference); (c) uncited constraint violations — claim has no ref_slug AND violates an MNC/NC rule, see constraint_violation.schema.json (§3.5) (HIGH-WARN gate-refuse but no ref to bind into a claim_audit_result row). 8 values listed below.",
+      "enum": [
+        "retrieval_existence",
+        "metadata",
+        "source_description",
+        "citation_anchor",
+        "synthesis_overclaim",
+        "negative_constraint_violation",
+        "not_applicable",
+        null
+      ]
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "description": "One-sentence judge rationale, OR a fault-class-tagged audit-infrastructure failure string for ref_retrieval_method=audit_tool_failure (INV-14), OR the canonical 'v3.7.3 R-L3-1-A violation ...' prefix for anchor_kind=none (INV-6)."
+    },
+    "judge_model": { "type": "string", "minLength": 1 },
+    "judge_run_at": { "type": "string", "format": "date-time" },
+    "ref_retrieval_method": {
+      "enum": ["api", "manual_pdf", "failed", "not_attempted", "not_found", "audit_tool_failure"],
+      "description": "Retrieval pathway. failed = paywall (permanent license restriction, LOW-WARN). not_attempted = anchor=none short-circuit (INV-11). not_found = fabricated reference (INV-12, HIGH-WARN). audit_tool_failure = transient infrastructure outage (INV-14, MED-WARN). See §4 step 9 error handling for the failed/audit_tool_failure permanence discriminator."
+    },
+    "upstream_owner_agent": {
+      "enum": [
+        "synthesis_agent",
+        "draft_writer_agent",
+        "report_compiler_agent",
+        null
+      ],
+      "description": "Prose-producing agent that owns the audited claim. Mirrors emitted_by in claim_intent_manifest.schema.json; bibliography_agent is excluded (it never emits claim_audit_results[] entries)."
+    },
+    "violated_constraint_id": {
+      "type": ["string", "null"],
+      "pattern": "^(NC-C[0-9]{3,}-[0-9]+|MNC-[0-9]+)$",
+      "description": "Required when defect_stage=negative_constraint_violation (INV-7). Null otherwise. Canonical parse rule per INV-17: NC-C{n}-{m} encodes the parent claim_id digits as {n} (NO inner hyphen between C and {n})."
+    },
+    "upstream_dispute": {
+      "type": ["string", "null"],
+      "maxLength": 1000,
+      "description": "Free-form dispute log entry. INV-9: meaningful only when defect_stage is a substantive defect (not null, not not_applicable)."
+    },
+    "audit_run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Identifier for the audit run that produced this entry. Excluded from the cache key (see §4 step 3) so different audit runs over the same (claim, ref, anchor, source, constraint-set, judge_model) tuple share the cached verdict."
+    },
+    "sub_claim_breakdown": {
+      "type": "array",
+      "minItems": 2,
+      "description": "Per-sub-claim decomposition (issue #213). Present iff the judge emitted prompt-verdict PARTIAL: >=2 sub-claims with >=1 SUPPORTED and >=1 non-SUPPORTED, normalized to judgment=UNSUPPORTED + defect_stage=source_description. Its presence IS the machine-readable partial-support signal (consumers read this, not defect_stage). Absent on single-claim and fully-unsupported verdicts. The cross-field shape (true-partial + judgment + defect_stage pinning) is INV-19, lint-enforced in scripts/check_claim_audit_consistency.py.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sub_claim_text", "sub_verdict"],
+        "properties": {
+          "sub_claim_text": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "sub_verdict": { "enum": ["SUPPORTED", "UNSUPPORTED", "AMBIGUOUS"] },
+          "evidence_pointer": { "type": ["string", "null"], "maxLength": 1000 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,232 @@
+version: "1.2.0"
+status: beta
+
+context_budget:
+  target_activation_bytes: 20480
+  max_activation_bytes: 22528
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 35
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes: [response_task, comment_type, journal_family, tone, material_family, domain, experiment_type]
+  required_route_scenarios: [default-point-by-point, gate-report-to-response, response-to-writing, response-to-submission, missing-revision-proof]
+
+always_load:
+  - ../_shared/core/direction-profile.md
+  - static/core/contract.md
+  - static/core/workflow.md
+
+axes:
+  response_task:
+    default: point-by-point
+    values:
+      point-by-point:
+        path: references/response-strategy.md
+        triggers: [reviewer, comments, response, point-by-point, 逐条回复, 回复审稿人]
+      response-patterns:
+        path: references/response-patterns.md
+        triggers: [English needs major revision, add more references, novelty, sample size, error bars, raw data, 高频审稿意见]
+      strategy-library:
+        path: references/reviewer-strategy-library.md
+        triggers: [strategy, novelty challenge, method justification, scope boundary, conflicting reviewers, 策略, 新颖性质疑, 方法论证, 范围界定]
+      remediation-plans:
+        path: references/experiment-remediation-plans.md
+        triggers: [experiment plan, remediation, 补救方案, 实验计划, 补充实验, FTIR, SEM, XRD, mechanical testing, durability testing]
+      comment-patterns:
+        path: references/reviewer-comment-patterns.md
+        triggers: [reviewer pattern, common comment, typical concern, 审稿模式, 常见意见, 典型问题, pattern recognition]
+      revision-plan:
+        path: references/experiment-revision.md
+        triggers: [revise, experiment, revision plan, 补实验, 修改方案]
+      document-format:
+        path: references/response-document-format.md
+        triggers: [author response, tracked changes, revision cover letter, response document, 回复文档, 修回格式]
+      language-polish:
+        path: references/language-bank.md
+        triggers: [polish response, language polish, tone, rebuttal language, 语气, 润色回复]
+      risk-audit:
+        path: references/response-risk-checklist.md
+        triggers: [risk, reject, major revision, desk reject, 拒稿风险, 大修]
+
+  comment_type:
+    default: mixed
+    values:
+      mixed:
+        path: static/core/workflow.md
+        triggers: [mixed reviewer comments, multiple concern types]
+      mechanism:
+        path: static/fragments/comment_type/mechanism.md
+        triggers: [mechanism, FTIR, SEM, fluorescence, XRD, TG, 机理, 显微]
+      performance:
+        path: static/fragments/comment_type/performance.md
+        triggers: [strength, bonding, durability, viscosity, performance, 粘结, 耐久, 黏度]
+      writing:
+        path: references/language-bank.md
+        triggers: [grammar, English, clarity, language, 表达, 英文]
+      novelty:
+        path: references/reviewer-strategy-library.md
+        triggers: [novelty, contribution, incremental, 新颖性, 贡献, 创新性]
+      method:
+        path: references/reviewer-strategy-library.md
+        triggers: [method, justification, sample size, statistics, 方法, 论证, 样本量]
+      scope:
+        path: references/reviewer-strategy-library.md
+        triggers: [scope, beyond scope, another journal, 范围, 超出范围]
+
+  journal_family:
+    default: materials
+    values:
+      materials:
+        path: references/response-strategy.md
+        triggers: [materials journal, generic materials journal]
+      cbm-jbe:
+        path: references/response-strategy.md
+        triggers: [CBM, Construction and Building Materials, JBE, Journal of Building Engineering]
+      ccc:
+        path: references/response-strategy.md
+        triggers: [CCC, Cement and Concrete Composites, CCR, Cement and Concrete Research]
+      rmpd-ijpe:
+        path: references/response-strategy.md
+        triggers: [RMPD, IJPE, JRE, pavement, Road Materials and Pavement Design]
+
+  tone:
+    default: academic
+    values:
+      academic:
+        path: static/fragments/tone/academic.md
+        triggers: [professional, courteous, standard response, 礼貌, 专业]
+      firm:
+        path: static/fragments/tone/firm.md
+        triggers: [unreasonable request, impossible experiment, scope boundary, firm, 坚定, 不合理要求]
+
+  material_family:
+    detect: Which materials family is central?
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: [neutral family, profile family fallback, no saved family]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: [civil, construction, building, pavement, 土木, 建筑]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: [polymer, resin, rubber, epoxy, 高分子, 聚合物, 树脂]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: [metal, alloy, steel, aluminum, 金属, 合金, 钢]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: [ceramic, porcelain, refractory, 陶瓷, 耐火]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: [semiconductor, dielectric, piezoelectric, 半导体, 介电, 压电]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: [nano, nanoparticle, 2D material, 纳米, 纳米材料]
+
+  domain:
+    detect: Which material domain does the response target?
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: [general fallback, profile fallback, neutral routing]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: [civil, asphalt, cement, concrete, pavement, construction, 土木, 建筑, 道路]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: [polymer, resin, rubber, thermoplastic, 高分子]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: [metal, alloy, steel, 金属, 合金]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: [ceramic, sintering, 陶瓷]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: [semiconductor, dielectric, piezoelectric, 半导体]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: [nano, nanoparticle, 2D material, 纳米]
+
+  experiment_type:
+    detect: What type of experiment is requested?
+    default: none
+    values:
+      none:
+        path: ../_shared/core/direction-profile.md
+        triggers: [no experiment request, neutral experiment fallback]
+      general:
+        path: references/experiment-remediation-plans.md
+        triggers: [experiment, test, 实验, 测试]
+      mechanism:
+        path: references/experiment-remediation-plans.md
+        triggers: [FTIR, SEM, XRD, TG, mechanism, characterization, 机理, 表征]
+      performance:
+        path: references/experiment-remediation-plans.md
+        triggers: [mechanical, durability, bonding, rheology, 性能, 耐久, 粘结]
+      statistical:
+        path: references/experiment-remediation-plans.md
+        triggers: [replicate, sample size, ANOVA, statistics, 重复, 样本量, 统计]
+      comparison:
+        path: references/experiment-remediation-plans.md
+        triggers: [control, baseline, benchmark, comparison, 对照, 基准, 比较]
+
+references:
+  on_demand:
+    stance:
+      path: ../_shared/core/stance.md
+      when: Detailed collaboration stance or attribution rules are needed.
+    evidence-contract:
+      path: ../_shared/core/evidence-contract.md
+      when: A response builds or audits a claim-evidence ladder.
+    ethics:
+      path: ../_shared/core/ethics.md
+      when: A comment raises integrity, disclosure, authorship, or ethics concerns.
+    weakness-routing:
+      path: ../_shared/paper-production/weakness-routing.md
+      when: The input contains gate-report or weakness-routing rows.
+    response-output-contract:
+      path: static/core/response-contract.md
+      when: A complete response package or revision-proof audit is needed.
+    strategy-library:
+      path: references/reviewer-strategy-library.md
+      when: A comment needs complex strategy beyond direct revision.
+    remediation-plans:
+      path: references/experiment-remediation-plans.md
+      when: A reviewer requests an experiment or additional evidence.
+    comment-patterns:
+      path: references/reviewer-comment-patterns.md
+      when: Recurring reviewer concerns need pattern recognition.
+    response-patterns:
+      path: references/response-patterns.md
+      when: High-frequency comments need reusable response patterns.
+    revision-plan:
+      path: references/experiment-revision.md
+      when: A mechanism or performance comment needs a revision plan.
+    document-format:
+      path: references/response-document-format.md
+      when: The complete response-document format is needed.
+    language-bank:
+      path: references/language-bank.md
+      when: The technical response is complete and needs language polishing.
+    risk-audit:
+      path: references/response-risk-checklist.md
+      when: The response package needs a rejection-risk audit.
+
+assets: [assets]
+scripts: [scripts]
+quality_gates: [release checks pass, evidence-bound claims]
+handoffs:
+  provides:
+    response-handoff:
+      description: "Point-by-point reviewer response rows with manuscript actions and revision proof"
+      contract: ../../_shared/contracts/response-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: gate-report
+      from: materials-research
+      optional: true
+release_checks: [scripts/run_release_checks.py --json, scripts/check_skill_architecture.py --json]

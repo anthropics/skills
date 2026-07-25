@@ -1,0 +1,63 @@
+{
+  "tuple_id": "025-valid-arxiv-bitnet-1-58-2024",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Ma2024BitNet158",
+    "title": "The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits",
+    "authors": [
+      {
+        "family": "Ma",
+        "given": "Shuming"
+      },
+      {
+        "family": "Wang",
+        "given": "Hongyu"
+      },
+      {
+        "family": "Ma",
+        "given": "Lingxiao"
+      },
+      {
+        "family": "Wang",
+        "given": "Lei"
+      },
+      {
+        "family": "Wang",
+        "given": "Wenhui"
+      },
+      {
+        "family": "Huang",
+        "given": "Shaohan"
+      },
+      {
+        "family": "Dong",
+        "given": "Li"
+      },
+      {
+        "family": "Wang",
+        "given": "Ruiping"
+      },
+      {
+        "family": "Xue",
+        "given": "Jilong"
+      },
+      {
+        "family": "Wei",
+        "given": "Furu"
+      }
+    ],
+    "year": 2024,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2402.17764",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2402.17764",
+  "ref_slug": "ma-2024-bitnet158",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

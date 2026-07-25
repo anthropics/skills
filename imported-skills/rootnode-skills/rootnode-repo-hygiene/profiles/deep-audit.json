@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/profile.schema.json",
+  "name": "deep-audit",
+  "description": "Quarterly health check or pre-major-refactor audit. All 14 categories with leak check, commit plan, Cat 14 extension pass (cross-candidate dependency analysis + build-this-first recommendation), and required critic-gate review on every Phase 2 batch. Confidence floor lowered to surface everything. Suitable when investing the time for a thorough pass and intending to act on findings.",
+
+  "categories": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  "include_seven_layer_leak_check": true,
+  "include_commit_plan": true,
+  "critic_gate_threshold": "required",
+  "remediate_routing": true,
+  "confidence_threshold": "low",
+  "cat_14_extension_pass": true,
+
+  "bootstrap_heritage": {}
+}

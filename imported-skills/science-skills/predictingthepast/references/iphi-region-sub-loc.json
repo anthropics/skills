@@ -1,0 +1,412 @@
+[
+  {
+    "name": "Achaia",
+    "lat": 38.099043,
+    "lng": 22.4314905
+  },
+  {
+    "name": "Aeolis",
+    "lat": 38.84330517,
+    "lng": 27.01538508
+  },
+  {
+    "name": "Africa Proconsularis",
+    "lat": 32.5,
+    "lng": 12.5
+  },
+  {
+    "name": "Amorgos and vicinity",
+    "lat": 36.833333,
+    "lng": 25.9
+  },
+  {
+    "name": "Arabia",
+    "lat": 32.5,
+    "lng": 37.5
+  },
+  {
+    "name": "Arabian Peninsula",
+    "lat": 29.5,
+    "lng": 45.5
+  },
+  {
+    "name": "Arachosia, Drangiana",
+    "lat": 32.5,
+    "lng": 62.5
+  },
+  {
+    "name": "Arkadia",
+    "lat": 37.61781583,
+    "lng": 22.17000731
+  },
+  {
+    "name": "Armenia",
+    "lat": 39.5,
+    "lng": 40.5
+  },
+  {
+    "name": "Attica",
+    "lat": 37.97278669,
+    "lng": 23.99374594
+  },
+  {
+    "name": "Babylonia",
+    "lat": 32.5,
+    "lng": 44.5
+  },
+  {
+    "name": "Bactria, Sogdiana",
+    "lat": 36.76782566,
+    "lng": 66.9010688
+  },
+  {
+    "name": "Bithynia",
+    "lat": 40.7561925,
+    "lng": 31.5858565
+  },
+  {
+    "name": "Britannia",
+    "lat": 52.5,
+    "lng": -2.5
+  },
+  {
+    "name": "Byzacena",
+    "lat": 32.5,
+    "lng": 7.5
+  },
+  {
+    "name": "Cappadocia",
+    "lat": 39.25,
+    "lng": 35.75
+  },
+  {
+    "name": "Caria",
+    "lat": 37.042901,
+    "lng": 27.420201
+  },
+  {
+    "name": "Carmania",
+    "lat": 29.0,
+    "lng": 57.5
+  },
+  {
+    "name": "Chios",
+    "lat": 38.414,
+    "lng": 26.053
+  },
+  {
+    "name": "Cilicia",
+    "lat": 36.25,
+    "lng": 33.25
+  },
+  {
+    "name": "Commagene",
+    "lat": 36.526222,
+    "lng": 37.9555335
+  },
+  {
+    "name": "Cos and Calymna",
+    "lat": 36.844,
+    "lng": 27.17
+  },
+  {
+    "name": "Crete",
+    "lat": 35.20052306,
+    "lng": 25.00709816
+  },
+  {
+    "name": "Cyclades, excl. Delos",
+    "lat": 36.92625341,
+    "lng": 25.41590803
+  },
+  {
+    "name": "Cyrenaica",
+    "lat": 32.49965333,
+    "lng": 20.87174333
+  },
+  {
+    "name": "Dacia",
+    "lat": 45.5,
+    "lng": 22.5
+  },
+  {
+    "name": "Delos",
+    "lat": 37.393333,
+    "lng": 25.271111
+  },
+  {
+    "name": "Delphi",
+    "lat": 38.482289,
+    "lng": 22.501169
+  },
+  {
+    "name": "Doric Sporades",
+    "lat": 36.683333,
+    "lng": 24.416667
+  },
+  {
+    "name": "Doris",
+    "lat": 38.75,
+    "lng": 22.25
+  },
+  {
+    "name": "Egypt and Nubia",
+    "lat": 19.21140877,
+    "lng": 30.56732963
+  },
+  {
+    "name": "Eleusis",
+    "lat": 38.041101,
+    "lng": 23.537401
+  },
+  {
+    "name": "Elis",
+    "lat": 37.891781,
+    "lng": 21.375091
+  },
+  {
+    "name": "Epidauria",
+    "lat": 37.6334625,
+    "lng": 23.16015635
+  },
+  {
+    "name": "Epirus",
+    "lat": 39.54648402,
+    "lng": 20.78770214
+  },
+  {
+    "name": "Euboia",
+    "lat": 38.53,
+    "lng": 23.87
+  },
+  {
+    "name": "Galatia",
+    "lat": 39.75,
+    "lng": 32.75
+  },
+  {
+    "name": "Gallia",
+    "lat": 46.70543722,
+    "lng": 1.013706367
+  },
+  {
+    "name": "Germania",
+    "lat": 51.6054836,
+    "lng": 5.795502625
+  },
+  {
+    "name": "Hispania citerior and Lusitania",
+    "lat": 40.18650564,
+    "lng": -3.736305805
+  },
+  {
+    "name": "Hyrcania, Parthia",
+    "lat": 38.5,
+    "lng": 57.5
+  },
+  {
+    "name": "Iberia and Colchis",
+    "lat": 41.833638,
+    "lng": 44.672277
+  },
+  {
+    "name": "Ionia",
+    "lat": 38.06312675,
+    "lng": 27.062852
+  },
+  {
+    "name": "Italy, incl. Magna Graecia",
+    "lat": 41.891775,
+    "lng": 12.486137
+  },
+  {
+    "name": "Lakonia and Messenia",
+    "lat": 37.0557778,
+    "lng": 21.9809211
+  },
+  {
+    "name": "Lesbos, Nesos, and Tenedos",
+    "lat": 39.16075203,
+    "lng": 26.25450897
+  },
+  {
+    "name": "Lycaonia",
+    "lat": 37.25,
+    "lng": 32.75
+  },
+  {
+    "name": "Lycia",
+    "lat": 36.5135325,
+    "lng": 29.129311
+  },
+  {
+    "name": "Lydia",
+    "lat": 38.32544739,
+    "lng": 28.2612252
+  },
+  {
+    "name": "Macedonia",
+    "lat": 41.25,
+    "lng": 21.75
+  },
+  {
+    "name": "Mauretania Caesariensis",
+    "lat": 36.52285575,
+    "lng": 3.6414695
+  },
+  {
+    "name": "Mauretania Tingitana",
+    "lat": 34.0725,
+    "lng": -5.5548
+  },
+  {
+    "name": "Media",
+    "lat": 34.5,
+    "lng": 46.5
+  },
+  {
+    "name": "Megaris, Oropia, and Boiotia",
+    "lat": 38.2544053,
+    "lng": 23.1821091
+  },
+  {
+    "name": "Mesopotamia",
+    "lat": 37.5,
+    "lng": 39.5
+  },
+  {
+    "name": "Moesia superior",
+    "lat": 42.5,
+    "lng": 22.5
+  },
+  {
+    "name": "Mysia",
+    "lat": 39.13121333,
+    "lng": 27.18453033
+  },
+  {
+    "name": "Mysia Kaikos, Pergamon",
+    "lat": 39.13121333,
+    "lng": 27.18453033
+  },
+  {
+    "name": "Mysia Upper Kaikos / Lydia",
+    "lat": 39.61497321,
+    "lng": 27.87494434
+  },
+  {
+    "name": "Northern Aegean",
+    "lat": 40.683333,
+    "lng": 24.65
+  },
+  {
+    "name": "Numidia",
+    "lat": 36.607058,
+    "lng": 2.1918495
+  },
+  {
+    "name": "Osrhoene",
+    "lat": 37.15,
+    "lng": 38.79
+  },
+  {
+    "name": "Palaestina",
+    "lat": 31.25,
+    "lng": 34.75
+  },
+  {
+    "name": "Pamphylia",
+    "lat": 36.990721,
+    "lng": 30.98638
+  },
+  {
+    "name": "Persis",
+    "lat": 30.5,
+    "lng": 51.5
+  },
+  {
+    "name": "Phokis, Lokris, Aitolia, Akarnania, and Ionian Islands",
+    "lat": 38.763022,
+    "lng": 21.06285
+  },
+  {
+    "name": "Phrygia",
+    "lat": 38.75,
+    "lng": 29.75
+  },
+  {
+    "name": "Pisidia",
+    "lat": 37.25,
+    "lng": 30.75
+  },
+  {
+    "name": "Pontus and Paphlagonia",
+    "lat": 41.4407791,
+    "lng": 33.25503893
+  },
+  {
+    "name": "Raetia, Noricum, and Pannonia",
+    "lat": 47.727498,
+    "lng": 10.326578
+  },
+  {
+    "name": "Rhamnous",
+    "lat": 38.22219067,
+    "lng": 24.02740133
+  },
+  {
+    "name": "Rhodes and S. Dodecanese",
+    "lat": 36.195597,
+    "lng": 27.964125
+  },
+  {
+    "name": "Samos",
+    "lat": 37.73,
+    "lng": 26.84
+  },
+  {
+    "name": "Saronic Gulf, Corinthia, and the Argolid",
+    "lat": 37.80840845,
+    "lng": 22.86776751
+  },
+  {
+    "name": "Scythia Minor",
+    "lat": 44.5,
+    "lng": 28.5
+  },
+  {
+    "name": "Sicily, Sardinia",
+    "lat": 37.67337489,
+    "lng": 13.90469368
+  },
+  {
+    "name": "Susiana",
+    "lat": 32.5,
+    "lng": 48.5
+  },
+  {
+    "name": "Syria and Phoenicia",
+    "lat": 33.25,
+    "lng": 35.25
+  },
+  {
+    "name": "Thessaly",
+    "lat": 39.6,
+    "lng": 22.2
+  },
+  {
+    "name": "Thrace",
+    "lat": 41.5,
+    "lng": 25.0
+  },
+  {
+    "name": "Tripolitania",
+    "lat": 33.17039367,
+    "lng": 10.90091267
+  },
+  {
+    "name": "Troas",
+    "lat": 39.813107,
+    "lng": 26.164143
+  }
+]

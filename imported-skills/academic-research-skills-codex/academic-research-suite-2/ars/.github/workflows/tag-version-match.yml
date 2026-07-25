@@ -1,0 +1,44 @@
+name: Tag Version Match
+
+# Pre-release gate (#487): the pushed v* tag must equal the suite version
+# (.claude/CLAUDE.md) and therefore the CHANGELOG latest entry — nothing else
+# compares the tag NAME itself, so tagging v3.15.0 while every doc still says
+# 3.14.0 sailed through every other gate. Runs the full version-consistency
+# lint with --tag so all release-doc invariants (1-11) hold at the moment of
+# tagging, not just on the PR that last touched the docs.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  # House invariant: include github.event_name so push and pull_request runs
+  # on the same ref do not fight over one group.
+  group: tag-version-match-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  tag-version-match:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install lint dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Tag equals suite version (full version-consistency lint)
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/check_version_consistency.py --tag "${GITHUB_REF_NAME}"

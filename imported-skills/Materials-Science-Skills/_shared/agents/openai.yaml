@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Shared"
+  short_description: "Shared references for materials skills."
+  default_prompt: "Use the materials task-specific skills instead of invoking shared references directly."
+  brand_color: "#3F6F5E"
+
+policy:
+  allow_implicit_invocation: false

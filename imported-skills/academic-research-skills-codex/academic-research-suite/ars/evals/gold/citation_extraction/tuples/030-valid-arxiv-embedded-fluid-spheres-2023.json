@@ -1,0 +1,39 @@
+{
+  "tuple_id": "030-valid-arxiv-embedded-fluid-spheres-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Asghar2023FluidSpheres",
+    "title": "Study of Embedded Class-I Fluid Spheres in $f(R,T)$ Gravity with Karmarkar Condition",
+    "authors": [
+      {
+        "family": "Asghar",
+        "given": "Zoya"
+      },
+      {
+        "family": "Shamir",
+        "given": "M. Farasat"
+      },
+      {
+        "family": "Usman",
+        "given": "Ammara"
+      },
+      {
+        "family": "Malik",
+        "given": "Adnan"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2304.10623",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2304.10623",
+  "ref_slug": "asghar-2023-fluidspheres",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

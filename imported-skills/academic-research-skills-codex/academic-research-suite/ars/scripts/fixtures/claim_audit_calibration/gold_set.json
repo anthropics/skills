@@ -1,0 +1,344 @@
+[
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The cohort comprised 200 participants enrolled over 18 months.",
+    "ref_text_excerpt": "Two hundred participants were enrolled across an 18-month recruitment window.",
+    "anchor": {
+      "kind": "page",
+      "value": "5"
+    },
+    "expected_judgment": "SUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Adoption rates rose from 12% to 47% over the study period.",
+    "ref_text_excerpt": "Adoption climbed from approximately 12% at baseline to 47% by month 24.",
+    "anchor": {
+      "kind": "page",
+      "value": "11"
+    },
+    "expected_judgment": "SUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Three randomized controlled trials reported a 25% reduction.",
+    "ref_text_excerpt": "We summarise three RCTs each showing roughly 25% reduction in primary endpoint.",
+    "anchor": {
+      "kind": "section",
+      "value": "3.2"
+    },
+    "expected_judgment": "SUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Intervention X improved outcomes by 40%.",
+    "ref_text_excerpt": "Intervention X was associated with a 40% INCREASE in adverse events; primary endpoint unchanged.",
+    "anchor": {
+      "kind": "page",
+      "value": "8"
+    },
+    "expected_judgment": "UNSUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Survey respondents unanimously supported policy reform.",
+    "ref_text_excerpt": "62% of respondents supported reform; 24% opposed; 14% undecided.",
+    "anchor": {
+      "kind": "page",
+      "value": "14"
+    },
+    "expected_judgment": "UNSUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The model achieved 99% accuracy on out-of-distribution data.",
+    "ref_text_excerpt": "The model achieved 99% accuracy on the held-out test set; out-of-distribution evaluation was not conducted.",
+    "anchor": {
+      "kind": "section",
+      "value": "4.1"
+    },
+    "expected_judgment": "UNSUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Participants reported improvements in well-being.",
+    "ref_text_excerpt": "Participants self-reported mixed outcomes; some dimensions trended positive, others negative or unchanged.",
+    "anchor": {
+      "kind": "section",
+      "value": "5"
+    },
+    "expected_judgment": "AMBIGUOUS"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The intervention showed promising results.",
+    "ref_text_excerpt": "The intervention showed signal but effect direction varied by subgroup; authors note further work needed.",
+    "anchor": {
+      "kind": "page",
+      "value": "22"
+    },
+    "expected_judgment": "AMBIGUOUS"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Earlier studies suggested a similar pattern.",
+    "ref_text_excerpt": "Earlier studies are referenced via citations 12-15 but the pattern's direction is not characterised here.",
+    "anchor": {
+      "kind": "section",
+      "value": "2"
+    },
+    "expected_judgment": "AMBIGUOUS"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The paywalled paper reports a 30% decline.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "3"
+    },
+    "expected_judgment": "RETRIEVAL_FAILED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The cited corpus is broadly representative.",
+    "ref_text_excerpt": "The corpus comprises 1,247 documents spanning 2018-2024 across the major venues of the field.",
+    "anchor": {
+      "kind": "section",
+      "value": "3.1"
+    },
+    "expected_judgment": "SUPPORTED"
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Two-thirds of clinics adopted the protocol within a year.",
+    "ref_text_excerpt": "By month 12, 67% (95% CI 61-73%) of participating clinics had adopted the protocol.",
+    "anchor": {
+      "kind": "page",
+      "value": "7"
+    },
+    "expected_judgment": "SUPPORTED"
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "Treatment X CAUSED improvement in patient outcomes.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "10"
+    },
+    "expected_judgment": "VIOLATED",
+    "constraint_under_test_id": "MNC-1",
+    "constraint_under_test_rule_text": "Do not assert unqualified causal language; use hedged formulations such as 'associated with' or 'correlated with' unless the source documents an experimental causal design."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "The drug DEFINITIVELY prevents disease progression.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "12"
+    },
+    "expected_judgment": "VIOLATED",
+    "constraint_under_test_id": "MNC-1",
+    "constraint_under_test_rule_text": "Do not assert unqualified causal language; use hedged formulations such as 'associated with' or 'correlated with' unless the source documents an experimental causal design."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "Policy reform GUARANTEES improved equity outcomes.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "section",
+      "value": "6"
+    },
+    "expected_judgment": "VIOLATED",
+    "constraint_under_test_id": "MNC-1",
+    "constraint_under_test_rule_text": "Do not assert unqualified causal language; use hedged formulations such as 'associated with' or 'correlated with' unless the source documents an experimental causal design."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "All teaching staff endorsed the new framework.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "9"
+    },
+    "expected_judgment": "VIOLATED",
+    "constraint_under_test_id": "MNC-2",
+    "constraint_under_test_rule_text": "Do not use universal quantifiers such as 'all', 'every', 'always', 'never' without an explicit source-supported denominator."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "Treatment X was associated with improvement in patient outcomes (HR 0.78, 95% CI 0.62-0.98).",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "10"
+    },
+    "expected_judgment": "NOT_VIOLATED",
+    "constraint_under_test_id": "MNC-1",
+    "constraint_under_test_rule_text": "Do not assert unqualified causal language; use hedged formulations such as 'associated with' or 'correlated with' unless the source documents an experimental causal design."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "The drug may slow disease progression in this subgroup.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "12"
+    },
+    "expected_judgment": "NOT_VIOLATED",
+    "constraint_under_test_id": "MNC-1",
+    "constraint_under_test_rule_text": "Do not assert unqualified causal language; use hedged formulations such as 'associated with' or 'correlated with' unless the source documents an experimental causal design."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "Most participating clinics adopted the new framework within twelve months.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "9"
+    },
+    "expected_judgment": "NOT_VIOLATED",
+    "constraint_under_test_id": "MNC-2",
+    "constraint_under_test_rule_text": "Do not use universal quantifiers such as 'all', 'every', 'always', 'never' without an explicit source-supported denominator."
+  },
+  {
+    "tuple_kind": "constraint",
+    "claim_text": "Older adults SHOULD ALWAYS be prescribed therapy Y.",
+    "ref_text_excerpt": null,
+    "anchor": {
+      "kind": "page",
+      "value": "15"
+    },
+    "expected_judgment": "VIOLATED",
+    "constraint_under_test_id": "MNC-2",
+    "constraint_under_test_rule_text": "Do not use universal quantifiers such as 'all', 'every', 'always', 'never' without an explicit source-supported denominator."
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The intervention raised test scores AND the effect held across both age cohorts.",
+    "ref_text_excerpt": "Scores rose by 0.4 SD in the 8-10 cohort (p<.01). The 11-13 cohort was not analyzed separately.",
+    "anchor": {
+      "kind": "page",
+      "value": "5"
+    },
+    "expected_judgment": "UNSUPPORTED",
+    "expected_prompt_verdict": "PARTIAL",
+    "expected_sub_claims": [
+      {
+        "key_tokens": [
+          "test scores"
+        ],
+        "sub_verdict": "SUPPORTED"
+      },
+      {
+        "key_tokens": [
+          "age cohorts"
+        ],
+        "sub_verdict": "UNSUPPORTED"
+      }
+    ]
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The drug reduced mortality in adults AND in pediatric patients.",
+    "ref_text_excerpt": "A 22% mortality reduction was observed in the adult arm. No pediatric population was enrolled in this trial.",
+    "anchor": {
+      "kind": "section",
+      "value": "4.1"
+    },
+    "expected_judgment": "UNSUPPORTED",
+    "expected_prompt_verdict": "PARTIAL",
+    "expected_sub_claims": [
+      {
+        "key_tokens": [
+          "adults"
+        ],
+        "sub_verdict": "SUPPORTED"
+      },
+      {
+        "key_tokens": [
+          "pediatric"
+        ],
+        "sub_verdict": "UNSUPPORTED"
+      }
+    ]
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Enrollment reached 500 participants, who were followed for 24 months.",
+    "ref_text_excerpt": "We enrolled 500 participants. Median follow-up was 9 months; the planned 24-month window was not reached at the interim cut.",
+    "anchor": {
+      "kind": "page",
+      "value": "3"
+    },
+    "expected_judgment": "UNSUPPORTED",
+    "expected_prompt_verdict": "PARTIAL",
+    "expected_sub_claims": [
+      {
+        "key_tokens": [
+          "500",
+          "participants"
+        ],
+        "sub_verdict": "SUPPORTED"
+      },
+      {
+        "key_tokens": [
+          "24 months"
+        ],
+        "sub_verdict": "UNSUPPORTED"
+      }
+    ]
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "The model improved accuracy AND reduced inference latency by half.",
+    "ref_text_excerpt": "Accuracy improved from 81% to 88%. Inference latency was not measured in this study.",
+    "anchor": {
+      "kind": "section",
+      "value": "5.2"
+    },
+    "expected_judgment": "UNSUPPORTED",
+    "expected_prompt_verdict": "PARTIAL",
+    "expected_sub_claims": [
+      {
+        "key_tokens": [
+          "accuracy"
+        ],
+        "sub_verdict": "SUPPORTED"
+      },
+      {
+        "key_tokens": [
+          "latency"
+        ],
+        "sub_verdict": "UNSUPPORTED"
+      }
+    ]
+  },
+  {
+    "tuple_kind": "alignment",
+    "claim_text": "Satisfaction rose to 90% and complaints fell to a record low.",
+    "ref_text_excerpt": "Satisfaction reached 90% in the post-rollout survey. Complaint volume is not reported in this excerpt.",
+    "anchor": {
+      "kind": "page",
+      "value": "7"
+    },
+    "expected_judgment": "UNSUPPORTED",
+    "expected_prompt_verdict": "PARTIAL",
+    "expected_sub_claims": [
+      {
+        "key_tokens": [
+          "satisfaction"
+        ],
+        "sub_verdict": "SUPPORTED"
+      },
+      {
+        "key_tokens": [
+          "complaints"
+        ],
+        "sub_verdict": "UNSUPPORTED"
+      }
+    ]
+  }
+]

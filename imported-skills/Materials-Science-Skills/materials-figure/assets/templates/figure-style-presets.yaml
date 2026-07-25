@@ -1,0 +1,67 @@
+cbm:
+  font_family: Arial
+  dpi: 600
+  preferred_formats: ["TIFF", "PDF", "EPS"]
+  single_column_width_mm: 90
+  double_column_width_mm: 180
+  min_font_size_pt: 6
+  background: "#FFFFFF"
+  axis: "#2F332F"
+  grid: "#E8E2D6"
+  control: "#6B7568"
+  primary: "#B65C38"
+  secondary: "#E0A04B"
+  mechanism: "#3E6F8E"
+  durability: "#5D7F4F"
+  note: "Applied performance, restrained earth tones, clear control comparison."
+
+ccc:
+  font_family: Arial
+  dpi: 600
+  preferred_formats: ["TIFF", "PDF", "EPS"]
+  single_column_width_mm: 90
+  double_column_width_mm: 180
+  min_font_size_pt: 6
+  background: "#FFFFFF"
+  axis: "#26313A"
+  grid: "#DDE6EA"
+  control: "#657B83"
+  primary: "#2F6F8F"
+  secondary: "#8A6FB0"
+  mechanism: "#C46A2B"
+  durability: "#4C8C7A"
+  note: "Mechanism-forward composite-material palette."
+
+rmpd_ijpe:
+  font_family: Arial
+  dpi: 600
+  preferred_formats: ["EPS", "TIFF", "PDF"]
+  single_column_width_mm: 82
+  double_column_width_mm: 169
+  min_font_size_pt: 8
+  background: "#FFFFFF"
+  axis: "#2E2E2E"
+  grid: "#E6E6DE"
+  control: "#717171"
+  primary: "#D08A2D"
+  secondary: "#4E7998"
+  mechanism: "#7A5D3B"
+  durability: "#5B7C3A"
+  note: "Pavement service, traffic, moisture, and aging emphasis."
+
+jbe:
+  font_family: Arial
+  dpi: 600
+  preferred_formats: ["TIFF", "PDF", "EPS"]
+  single_column_width_mm: 90
+  double_column_width_mm: 180
+  min_font_size_pt: 6
+  background: "#FFFFFF"
+  axis: "#30353B"
+  grid: "#E4E7EC"
+  control: "#67717D"
+  primary: "#2E7D6B"
+  secondary: "#D18B47"
+  mechanism: "#536FA3"
+  durability: "#6E8B55"
+  note: "Building-engineering clarity with accessible contrast."

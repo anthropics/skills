@@ -1,0 +1,152 @@
+{
+  "tuple_id": "008-valid-doi-rosettafold-2021",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Baek2021RoseTTAFold",
+    "title": "Accurate prediction of protein structures and interactions using a three-track neural network",
+    "authors": [
+      {
+        "family": "Baek",
+        "given": "Minkyung"
+      },
+      {
+        "family": "DiMaio",
+        "given": "Frank"
+      },
+      {
+        "family": "Anishchenko",
+        "given": "Ivan"
+      },
+      {
+        "family": "Dauparas",
+        "given": "Justas"
+      },
+      {
+        "family": "Ovchinnikov",
+        "given": "Sergey"
+      },
+      {
+        "family": "Lee",
+        "given": "Gyu Rie"
+      },
+      {
+        "family": "Wang",
+        "given": "Jue"
+      },
+      {
+        "family": "Cong",
+        "given": "Qian"
+      },
+      {
+        "family": "Kinch",
+        "given": "Lisa N."
+      },
+      {
+        "family": "Schaeffer",
+        "given": "R. Dustin"
+      },
+      {
+        "family": "Millán",
+        "given": "Claudia"
+      },
+      {
+        "family": "Park",
+        "given": "Hahnbeom"
+      },
+      {
+        "family": "Adams",
+        "given": "Carson"
+      },
+      {
+        "family": "Glassman",
+        "given": "Caleb R."
+      },
+      {
+        "family": "DeGiovanni",
+        "given": "Andy"
+      },
+      {
+        "family": "Pereira",
+        "given": "Jose H."
+      },
+      {
+        "family": "Rodrigues",
+        "given": "Andria V."
+      },
+      {
+        "family": "van Dijk",
+        "given": "Alberdina A."
+      },
+      {
+        "family": "Ebrecht",
+        "given": "Ana C."
+      },
+      {
+        "family": "Opperman",
+        "given": "Diederik J."
+      },
+      {
+        "family": "Sagmeister",
+        "given": "Theo"
+      },
+      {
+        "family": "Buhlheller",
+        "given": "Christoph"
+      },
+      {
+        "family": "Pavkov-Keller",
+        "given": "Tea"
+      },
+      {
+        "family": "Rathinaswamy",
+        "given": "Manoj K."
+      },
+      {
+        "family": "Dalwadi",
+        "given": "Udit"
+      },
+      {
+        "family": "Yip",
+        "given": "Calvin K."
+      },
+      {
+        "family": "Burke",
+        "given": "John E."
+      },
+      {
+        "family": "Garcia",
+        "given": "K. Christopher"
+      },
+      {
+        "family": "Grishin",
+        "given": "Nick V."
+      },
+      {
+        "family": "Adams",
+        "given": "Paul D."
+      },
+      {
+        "family": "Read",
+        "given": "Randy J."
+      },
+      {
+        "family": "Baker",
+        "given": "David"
+      }
+    ],
+    "year": 2021,
+    "doi": "10.1126/science.abj8754",
+    "venue": "Science",
+    "source_pointer": "https://doi.org/10.1126/science.abj8754",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "baek-2021-rosettafold",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

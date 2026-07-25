@@ -1,0 +1,22 @@
+{
+  "scope": "codex-vendored-v3.6.7-block-baseline",
+  "source_repository": "https://github.com/Imbad0202/academic-research-skills.git",
+  "source_commit": "1d0c8625207c9cd8fc46132b1ef930f2cc012236",
+  "generated_for": "academic-research-skills-codex",
+  "generated_date": "2026-05-10",
+  "manifest_sha256": "c075beaf9b0e88f8f404fec17b2950de14f55f1943745c0d33c4e314a5b1986d",
+  "files": {
+    "deep-research/agents/synthesis_agent.md": {
+      "block_sha256": "587cee54955097e3d25426d9e30fdb62f0546248f866bbb5177482a8d5098eda",
+      "block_bytes": 1107
+    },
+    "deep-research/agents/research_architect_agent.md": {
+      "block_sha256": "89ec5e8d4c0a0c9e262563c584f8e60879c6ea5ba65773de406ecdc8094fd3f6",
+      "block_bytes": 1499
+    },
+    "deep-research/agents/report_compiler_agent.md": {
+      "block_sha256": "7764755d26996f0db18dde9fe770aac98a918db09761efe0fca05725598fecbd",
+      "block_bytes": 1165
+    }
+  }
+}

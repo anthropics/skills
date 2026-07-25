@@ -1,0 +1,625 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "product-team",
+  "skill_count": 17,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "agile-product-owner",
+      "path": "product-team/agile-product-owner/skills/agile-product-owner",
+      "description": "Agile product ownership for backlog management and sprint execution. Covers user story writing, acceptance criteria, sprint planning, and velocity tracking. Use when writing user stories, creating acceptance criteria, planning sprints, estimating story points, breaking down epics, or prioritizing the backlog.",
+      "tools": [
+        {
+          "script": "product-team/agile-product-owner/skills/agile-product-owner/scripts/user_story_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/agile-product-owner/skills/agile-product-owner/scripts/user_story_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/agile-product-owner/skills/agile-product-owner/scripts/user_story_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "sprint-planning-guide.md",
+        "user-story-templates.md"
+      ]
+    },
+    {
+      "name": "apple-hig-expert",
+      "path": "product-team/apple-hig-expert/skills/apple-hig-expert",
+      "description": "Audits and designs iOS/macOS/watchOS/visionOS interfaces against the Apple Human Interface Guidelines, including the Liquid Glass design language (announced WWDC25, shipped with iOS 26/macOS Tahoe, Sept 2025). Use when reviewing an Apple-platform mockup or app for HIG compliance, checking contrast or tap-target sizes, or designing native-feeling Apple UI (e.g., 'audit my iOS app against the HIG', 'is this text readable on Liquid Glass?').",
+      "tools": [
+        {
+          "script": "product-team/apple-hig-expert/skills/apple-hig-expert/scripts/hig_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/apple-hig-expert/skills/apple-hig-expert/scripts/hig_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "accessibility.md",
+        "platform-specifics.md",
+        "visual-design.md"
+      ]
+    },
+    {
+      "name": "code-to-prd",
+      "path": "product-team/code-to-prd/skills/code-to-prd",
+      "description": "Reverse-engineer any codebase into a complete Product Requirements Document (PRD). Analyzes routes, components, state management, API integrations, and user interactions to produce business-readable documentation detailed enough for engineers or AI agents to fully reconstruct every page and endpoint. Works with frontend frameworks (React, Vue, Angular, Svelte, Next.js, Nuxt), backend frameworks (NestJS, Django, Express, FastAPI), and fullstack applications. Use when users mention: generate PRD, reverse-engineer requirements, code to documentation, extract product specs from code, document \u2026",
+      "tools": [
+        {
+          "script": "product-team/code-to-prd/skills/code-to-prd/scripts/codebase_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/code-to-prd/skills/code-to-prd/scripts/codebase_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "product-team/code-to-prd/skills/code-to-prd/scripts/prd_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/code-to-prd/skills/code-to-prd/scripts/prd_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "framework-patterns.md",
+        "prd-quality-checklist.md"
+      ]
+    },
+    {
+      "name": "research-summarizer",
+      "path": "product-team/research-summarizer/skills/research-summarizer",
+      "description": "Structured research summarization agent skill for non-dev users. Handles academic papers, web articles, reports, and documentation. Extracts key findings, generates comparative analyses, and produces properly formatted citations. Use when: user wants to summarize a research paper, compare multiple sources, extract citations from documents, or create structured research briefs. Plugin for Claude Code, Codex, Gemini CLI, and OpenClaw.",
+      "tools": [
+        {
+          "script": "product-team/research-summarizer/skills/research-summarizer/scripts/extract_citations.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/research-summarizer/skills/research-summarizer/scripts/extract_citations.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "product-team/research-summarizer/skills/research-summarizer/scripts/format_summary.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/research-summarizer/skills/research-summarizer/scripts/format_summary.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "citation-formats.md",
+        "summary-templates.md"
+      ]
+    },
+    {
+      "name": "competitive-teardown",
+      "path": "product-team/skills/competitive-teardown",
+      "description": "Analyzes competitor products and companies by synthesizing data from pricing pages, app store reviews, job postings, SEO signals, and social media into structured competitive intelligence. Produces feature comparison matrices scored across 12 dimensions, SWOT analyses, positioning maps, UX audits, pricing model breakdowns, action item roadmaps, and stakeholder presentation templates. Use when conducting competitor analysis, comparing products against competitors, researching the competitive landscape, building battle cards for sales, preparing for a product strategy or roadmap session \u2026",
+      "tools": [
+        {
+          "script": "product-team/skills/competitive-teardown/scripts/competitive_matrix_builder.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/competitive-teardown/scripts/competitive_matrix_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "analysis-templates.md",
+        "competitive-analysis-frameworks.md",
+        "data-collection-guide.md",
+        "scoring-rubric.md"
+      ]
+    },
+    {
+      "name": "experiment-designer",
+      "path": "product-team/skills/experiment-designer",
+      "description": "Use when planning product experiments, writing testable hypotheses, estimating sample size, prioritizing tests, or interpreting A/B outcomes with practical statistical rigor.",
+      "tools": [
+        {
+          "script": "product-team/skills/experiment-designer/scripts/sample_size_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/experiment-designer/scripts/sample_size_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "experiment-playbook.md",
+        "statistics-reference.md"
+      ]
+    },
+    {
+      "name": "landing-page-generator",
+      "path": "product-team/skills/landing-page-generator",
+      "description": "Generates high-converting landing pages as complete Next.js/React (TSX) components with Tailwind CSS. Creates hero sections, feature grids, pricing tables, FAQ accordions, testimonial blocks, and CTA sections using proven copy frameworks (PAS, AIDA, BAB). Outputs SEO meta tags, structured data, and performance-optimised code targeting Core Web Vitals (LCP < 1s, CLS < 0.1). Use when the user asks to create a landing page, marketing page, homepage, single-page site, lead capture page, campaign page, promo page, or conversion-optimised web page \u2014 or when they want to A/B test landing page \u2026",
+      "tools": [
+        {
+          "script": "product-team/skills/landing-page-generator/scripts/landing_page_scaffolder.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/landing-page-generator/scripts/landing_page_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "conversion-patterns.md",
+        "copy-frameworks.md",
+        "landing-page-patterns.md",
+        "seo-checklist.md"
+      ]
+    },
+    {
+      "name": "product-analytics",
+      "path": "product-team/skills/product-analytics",
+      "description": "Use when defining product KPIs, building metric dashboards, running cohort or retention analysis, or interpreting feature adoption trends across product stages.",
+      "tools": [
+        {
+          "script": "product-team/skills/product-analytics/scripts/metrics_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-analytics/scripts/metrics_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "dashboard-templates.md",
+        "metrics-frameworks.md"
+      ]
+    },
+    {
+      "name": "product-discovery",
+      "path": "product-team/skills/product-discovery",
+      "description": "Use when validating product opportunities, mapping assumptions, planning discovery sprints, or testing problem-solution fit before committing delivery resources.",
+      "tools": [
+        {
+          "script": "product-team/skills/product-discovery/scripts/assumption_mapper.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-discovery/scripts/assumption_mapper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "discovery-frameworks.md"
+      ]
+    },
+    {
+      "name": "product-manager-toolkit",
+      "path": "product-team/skills/product-manager-toolkit",
+      "description": "Comprehensive toolkit for product managers including RICE prioritization, customer interview analysis, PRD templates, discovery frameworks, and go-to-market strategies. Use when prioritizing features, synthesizing user research, writing requirement documentation, or developing product strategy.",
+      "tools": [
+        {
+          "script": "product-team/skills/product-manager-toolkit/scripts/customer_interview_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-manager-toolkit/scripts/customer_interview_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "product-team/skills/product-manager-toolkit/scripts/rice_prioritizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-manager-toolkit/scripts/rice_prioritizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "frameworks.md",
+        "input-output-examples.md",
+        "prd_templates.md"
+      ]
+    },
+    {
+      "name": "product-skills",
+      "path": "product-team/skills/product-skills",
+      "description": "Use when coordinating product work across the 12 bundled product sub-skills (RICE, OKRs, UX research, design tokens, competitive teardown, analytics, experiments, discovery, roadmaps, spec-to-repo, landing pages, SaaS scaffolding) or the 4 standalone product-team plugins (user stories, Apple HIG, code-to-PRD, research summarizer). Triggers on 'help me prioritize', 'plan a product experiment', 'we ship features nobody uses', 'run the discovery loop', 'is our OST sound'. Forks context to route to one sub-skill via a deterministic signal router and returns a digest; can also drive a \u2026",
+      "tools": [
+        {
+          "script": "product-team/skills/product-skills/scripts/discovery_cadence_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/discovery_cadence_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/discovery_cadence_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "product-team/skills/product-skills/scripts/ost_linter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/ost_linter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/ost_linter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "product-team/skills/product-skills/scripts/product_goal_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/product_goal_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/product_goal_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "ai_product_evals.md",
+        "continuous_discovery_canon.md",
+        "product_operating_model.md"
+      ]
+    },
+    {
+      "name": "product-strategist",
+      "path": "product-team/skills/product-strategist",
+      "description": "Strategic product leadership toolkit for Head of Product covering OKR cascade generation, quarterly planning, competitive landscape analysis, product vision documents, and team scaling proposals. Use when creating quarterly OKR documents, defining product goals or KPIs, building product roadmaps, running competitive analysis, drafting team structure or hiring plans, aligning product strategy across engineering and design, or generating cascaded goal hierarchies from company to team level.",
+      "tools": [
+        {
+          "script": "product-team/skills/product-strategist/scripts/okr_cascade_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-strategist/scripts/okr_cascade_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "examples",
+        "okr_framework.md",
+        "strategy_types.md"
+      ]
+    },
+    {
+      "name": "roadmap-communicator",
+      "path": "product-team/skills/roadmap-communicator",
+      "description": "Use when preparing roadmap narratives, release notes, changelogs, or stakeholder updates tailored for executives, engineering teams, and customers.",
+      "tools": [
+        {
+          "script": "product-team/skills/roadmap-communicator/scripts/changelog_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/roadmap-communicator/scripts/changelog_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "communication-templates.md",
+        "roadmap-templates.md"
+      ]
+    },
+    {
+      "name": "saas-scaffolder",
+      "path": "product-team/skills/saas-scaffolder",
+      "description": "Generates complete, production-ready SaaS project boilerplate including authentication, database schemas, billing integration, API routes, and a working dashboard using Next.js 14+ App Router, TypeScript, Tailwind CSS, shadcn/ui, Drizzle ORM, and Stripe. Use when the user wants to create a new SaaS app, start a subscription-based web project, scaffold a Next.js application, or mentions terms like starter template, boilerplate, new project, or wiring up auth and payments.",
+      "tools": [
+        {
+          "script": "product-team/skills/saas-scaffolder/scripts/project_bootstrapper.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/saas-scaffolder/scripts/project_bootstrapper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "architecture-patterns.md",
+        "auth-billing-guide.md",
+        "saas-architecture-patterns.md",
+        "tech-stack-comparison.md"
+      ]
+    },
+    {
+      "name": "spec-to-repo",
+      "path": "product-team/skills/spec-to-repo",
+      "description": "Use when the user says 'build me an app', 'create a project from this spec', 'scaffold a new repo', 'generate a starter', 'turn this idea into code', 'bootstrap a project', 'I have requirements and need a codebase', or provides a natural-language project specification and expects a complete, runnable repository. Stack-agnostic: Next.js, FastAPI, Rails, Go, Rust, Flutter, and more.",
+      "tools": [
+        {
+          "script": "product-team/skills/spec-to-repo/scripts/validate_project.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/spec-to-repo/scripts/validate_project.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "spec-parsing-guide.md",
+        "stack-templates.md"
+      ]
+    },
+    {
+      "name": "ui-design-system",
+      "path": "product-team/skills/ui-design-system",
+      "description": "UI design system toolkit for Senior UI Designer including design token generation, component documentation, responsive design calculations, and developer handoff tools. Use when creating design systems, generating design tokens, maintaining visual consistency, or facilitating design-dev collaboration and developer handoff.",
+      "tools": [
+        {
+          "script": "product-team/skills/ui-design-system/scripts/design_token_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/ui-design-system/scripts/design_token_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "component-architecture.md",
+        "developer-handoff.md",
+        "responsive-calculations.md",
+        "token-generation.md"
+      ]
+    },
+    {
+      "name": "ux-researcher-designer",
+      "path": "product-team/skills/ux-researcher-designer",
+      "description": "UX research and design toolkit for Senior UX Designer/Researcher including data-driven persona generation, journey mapping, usability testing frameworks, and research synthesis. Use when conducting user research, creating personas, mapping user journeys, planning usability tests, or validating designs.",
+      "tools": [
+        {
+          "script": "product-team/skills/ux-researcher-designer/scripts/persona_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/ux-researcher-designer/scripts/persona_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/ux-researcher-designer/scripts/persona_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "example-personas.md",
+        "journey-mapping-guide.md",
+        "persona-methodology.md",
+        "usability-testing-frameworks.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,205 @@
+{
+  "skill_name": "materials-writing",
+  "evals": [
+    {
+      "id": "argument-chain-before-prose",
+      "prompt": "Write a results and discussion section for a waterborne epoxy modified emulsified asphalt study. The bonding strength increased from 0.43 MPa to 0.55 MPa at 10% epoxy content. FTIR showed oxirane peak decrease at 915 cm⁻¹. SEM showed more continuous interfacial morphology.",
+      "expected_output": "The assistant must establish the argument chain before drafting prose: identify the claim (epoxy improves bonding), the evidence chain (bonding strength data, FTIR peak change, SEM morphology), the mechanism link (oxirane curing → interfacial continuity), and the boundary (10% epoxy, lab conditions). The one-sentence argument must be confirmed with the user before writing full prose. Output must include a planning step — not jump directly to polished paragraphs.",
+      "assertions": [
+        {
+          "name": "argument_chain_established",
+          "description": "The response explicitly states the argument chain (claim → evidence → mechanism → boundary) before drafting prose."
+        },
+        {
+          "name": "confirmation_gate",
+          "description": "The assistant asks for user confirmation of the one-sentence argument before writing full prose."
+        },
+        {
+          "name": "no_prose_without_plan",
+          "description": "The assistant does not output polished paragraphs until the argument chain is confirmed."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "section-aware-tense",
+      "prompt": "Write a results section and a discussion section for a cement hydration study. The results section reports: 'The 28-day compressive strength reached 58.3 MPa. SEM images at 7 days showed C-S-H gel formation. XRD patterns at 28 days confirmed the presence of portlandite and ettringite.' The discussion interprets these findings.",
+      "expected_output": "The assistant must use past tense in the Results section ('reached', 'showed', 'confirmed') and present tense in the Discussion section ('indicates', 'suggests', 'is consistent with'). The output must demonstrate clear tense discipline per section.",
+      "assertions": [
+        {
+          "name": "results_past_tense",
+          "description": "Results section uses past tense for reporting observations and measurements."
+        },
+        {
+          "name": "discussion_present_tense",
+          "description": "Discussion section uses present tense for interpreting findings and making comparisons."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "missing-evidence-flag",
+      "prompt": "Write a conclusion for a study on polymer-modified asphalt. The user provides: 'The modified asphalt showed better rutting resistance than the control. We believe the polymer network is responsible for this improvement. The material should perform well in the field.' No rutting test data, no microscopy or spectroscopy, and no field trial data are provided.",
+      "expected_output": "The assistant must flag missing evidence with [needs evidence: ...] markers rather than hiding the gaps. Specifically: 'better rutting resistance' needs [needs evidence: rutting test data, test standard, replicates]; 'polymer network is responsible' needs [needs evidence: microscopy (SEM/TEM) or spectroscopy evidence of network formation]; 'should perform well in the field' needs [needs evidence: field trial data or accelerated pavement testing]. The assistant must not invent the missing data.",
+      "assertions": [
+        {
+          "name": "needs_evidence_markers",
+          "description": "The response uses [needs evidence: ...] markers for unsupported claims."
+        },
+        {
+          "name": "no_invented_data",
+          "description": "The assistant does not fabricate test values, microscopy descriptions, or field performance data."
+        },
+        {
+          "name": "all_gaps_flagged",
+          "description": "Every claim lacking evidence is flagged, not just the most obvious one."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "domain-phrase-bank-routing",
+      "prompt": "Draft a results and discussion paragraph for a waterborne epoxy resin modified emulsified asphalt (WER-EA) tack coat study. The epoxy content was varied at 0%, 5%, 10%, and 15%. The bonding strength was tested at 25 °C.",
+      "expected_output": "The assistant must detect the domain as 'asphalt' or 'civil' and load the WER-EA phrase bank (references/phrase-banks/wer-ea.md) or the civil-general phrase bank. The output should use domain-appropriate terminology: 'tack coat', 'bonding strength', 'epoxy-to-asphalt ratio', 'curing degree', 'emulsified asphalt residue' — not generic terms like 'adhesive' or 'composite'. The assistant must demonstrate that the correct phrase bank was consulted.",
+      "assertions": [
+        {
+          "name": "domain_detected",
+          "description": "The assistant identifies the domain as asphalt/civil and loads the WER-EA or civil phrase bank."
+        },
+        {
+          "name": "domain_terminology_used",
+          "description": "The output uses domain-appropriate terminology (tack coat, bonding strength, curing degree, emulsified asphalt residue) rather than generic alternatives."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "review-synthesis-vs-borrowed",
+      "prompt": "Write a mini-review on 'Advances in epoxy-modified asphalt for pavement applications'. The user has collected 15 papers on the topic but has not provided a synthesis structure.",
+      "expected_output": "The assistant must distinguish between synthesis structure and borrowed structure. It should propose a synthesis structure (e.g., organized by mechanism, by epoxy type, or by performance metric) rather than a borrowed structure (e.g., listing papers one by one). The response must explain the synthesis axes (e.g., 'epoxy curing mechanism', 'microstructure evolution', 'performance trade-offs') and how the 15 papers map to these axes. The output must not produce a paper-by-paper annotated bibliography.",
+      "assertions": [
+        {
+          "name": "synthesis_structure_proposed",
+          "description": "The assistant proposes a thematic synthesis structure, not a paper-by-paper list."
+        },
+        {
+          "name": "axes_explained",
+          "description": "The response explains the synthesis axes (mechanism, microstructure, performance) and how papers map to them."
+        },
+        {
+          "name": "no_borrowed_structure",
+          "description": "The output does not default to an annotated bibliography or paper-by-paper summary."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "confirmation-gate-before-prose",
+      "prompt": "Draft the Introduction for my paper on waterborne epoxy modified emulsified asphalt tack coat. I compare 10%, 15%, and 20% epoxy and measure bonding strength, viscosity, and storage stability.",
+      "expected_output": "The assistant must pass a confirmation gate before writing full section prose. The gate must surface: (1) the one-sentence argument, (2) the detected paper type, section, and paragraph-message plan, (3) the locked terminology (WER-EA, epoxy content, tack coat, bonding strength, viscosity, storage stability), (4) key assumptions (e.g., that the contribution is the dosage-performance-constructability trade-off), and (5) at most 2-3 targeted questions on genuinely ambiguous points. The assistant must not produce a full Introduction before the gate.",
+      "assertions": [
+        {
+          "name": "one_sentence_argument_present",
+          "description": "The response states a one-sentence argument before producing full prose."
+        },
+        {
+          "name": "terminology_locked",
+          "description": "The response locks canonical terminology before drafting."
+        },
+        {
+          "name": "asks_confirmation",
+          "description": "The assistant explicitly asks the user to confirm or correct the plan before drafting."
+        },
+        {
+          "name": "no_full_section_before_gate",
+          "description": "No full Introduction section is produced before the confirmation gate."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "paragraph-flow-regression",
+      "prompt": "Fix the flow of this results/discussion paragraph: 'The bonding strength of WER-EA tack coat increased from 0.43 MPa to 0.55 MPa at 10% epoxy content. This improvement is due to the oxirane groups reacting with the asphalt interface, forming a more continuous interfacial morphology that improves load transfer. The moisture conditioning retained 75% of the dry strength. Storage stability was acceptable for 7 days.'",
+      "expected_output": "The assistant must identify that the original paragraph carries multiple messages (result, mechanism, durability, storage stability) and split it into single-message paragraphs. Each new paragraph must open with a first sentence that forecasts its message, and transitions must carry the argument forward. The assistant must not invent additional characterization evidence and must produce a paragraph-message map in the section outline.",
+      "assertions": [
+        {
+          "name": "multi_message_split",
+          "description": "The original multi-message paragraph is split into single-message paragraphs."
+        },
+        {
+          "name": "topic_sentences_forecast",
+          "description": "Each paragraph's first sentence forecasts its message."
+        },
+        {
+          "name": "transitions_advance_argument",
+          "description": "Transitions carry the argument forward rather than just continuing the topic."
+        },
+        {
+          "name": "paragraph_message_map",
+          "description": "The section outline shows the paragraph-message mapping."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "context-budget-and-on-demand-core",
+      "prompt": "Route a full manuscript writing request for a waterborne epoxy modified emulsified asphalt study. The request needs an evidence-first draft but does not ask for QA, scoring, or multi-round continuity.",
+      "expected_output": "The router must load the four default core files declared by manifest.yaml, keep the detailed shared stance out of the default context, and load deeper references only when the selected axes or task mode require them. The response must still preserve the no-invention rule, terminology lock, confirmation gate, and six-part output contract.",
+      "assertions": [
+        {
+          "name": "four_file_default_core",
+          "description": "The router follows the manifest context budget and loads contract, direction profile, workflow, and output format as the default core."
+        },
+        {
+          "name": "stance_is_on_demand",
+          "description": "The detailed shared stance is loaded only for evidence-placeholder, attribution, or never-invent guidance that needs it."
+        },
+        {
+          "name": "core_contracts_preserved",
+          "description": "Reducing the default context does not remove the confirmation gate, evidence boundaries, terminology lock, or structured output requirements."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "qa-missing-state-does-not-silently-continue",
+      "prompt": "Run a QA or scored multi-round revision for a manuscript project that has no foundation files and no state.json, and whose active project files cannot be edited directly.",
+      "expected_output": "The workflow must report the missing project inputs and stop before silently drafting, scoring, or continuing the loop, or return a project-level initialization/state patch when the user asks to initialize it. It must never create active state inside the skill package or silently drop state updates.",
+      "assertions": [
+        {
+          "name": "missing_state_is_explicit",
+          "description": "The response explicitly reports missing foundation files or state.json before continuing QA work."
+        },
+        {
+          "name": "no_silent_state_loss",
+          "description": "The response stops or returns a project-level state patch/init instruction instead of silently continuing without state."
+        },
+        {
+          "name": "package_state_is_not_created",
+          "description": "The workflow does not create active state inside the materials-writing skill package."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "companion-routing-triggers-preserved",
+      "prompt": "The user needs intensive reading of 20 source papers and then asks for an experiment-factor matrix for the manuscript.",
+      "expected_output": "The writing router must route source-paper-intensive reading to materials-reader and consume its reader-package/source_map, then route the experiment-matrix request to materials-doe and consume its doe-handoff. It must not pretend those artifacts exist or draft unsupported evidence.",
+      "assertions": [
+        {
+          "name": "reader_route_trigger",
+          "description": "Source-paper-intensive reading is explicitly routed to materials-reader."
+        },
+        {
+          "name": "doe_route_trigger",
+          "description": "Experiment-matrix or factor-design work is explicitly routed to materials-doe."
+        },
+        {
+          "name": "handoff_artifacts_remain_bounded",
+          "description": "The router names reader-package/source_map and doe-handoff as consumed artifacts and marks missing artifacts instead of inventing them."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

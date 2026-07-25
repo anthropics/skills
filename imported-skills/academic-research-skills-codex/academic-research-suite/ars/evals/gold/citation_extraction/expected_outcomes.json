@@ -1,0 +1,1277 @@
+{
+  "001-valid-doi-numpy-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "002-valid-doi-alphafold-2021": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "003-valid-doi-med-palm-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "004-valid-doi-scipy-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "005-valid-doi-umap-2019": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "006-valid-doi-alphazero-2018": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "007-valid-doi-seurat-v4-2021": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "008-valid-doi-rosettafold-2021": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "009-valid-doi-resnet-2016": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "010-valid-doi-moco-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "011-valid-doi-optuna-2019": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "012-valid-doi-vosoughi-fake-news-2018": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "013-valid-doi-bnt162b2-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "014-valid-doi-lancet-covid-zhou-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "015-valid-doi-jama-covid-pharm-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "016-valid-doi-bert-2019": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "017-valid-doi-bart-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "018-valid-doi-graphene-magic-angle-2018": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "019-valid-doi-qubit-mof-2020": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "020-valid-doi-aer-experimenter-demand-2018": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "021-valid-arxiv-mistral-7b-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "022-valid-arxiv-qwen-technical-report-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "023-valid-arxiv-sleeper-agents-2024": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "024-valid-arxiv-bitnet-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "025-valid-arxiv-bitnet-1-58-2024": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "026-valid-arxiv-equiformerv2-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "027-valid-arxiv-transformers-causal-2024": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "028-valid-arxiv-mamba-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "029-valid-arxiv-projective-geometric-algebra-2019": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "030-valid-arxiv-embedded-fluid-spheres-2023": {
+    "lookup_verified": "true",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "openalex": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "semantic_scholar": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "title"
+      },
+      "arxiv": {
+        "status": "matched",
+        "response_summary": null,
+        "queried_by": "id"
+      }
+    }
+  },
+  "031-fabricated-synthetic-genome": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "032-fabricated-phantom-aerosol": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "033-fabricated-ghost-manipulator": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "034-fabricated-vapor-syntax": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "035-fabricated-null-electrolyte": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "036-fabricated-fictive-market": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "037-fabricated-spectral-void-galaxy": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "038-fabricated-phantom-epitope": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "039-fabricated-illusory-gesture": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "040-fabricated-ghost-tremor": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "041-manual-exempt-hofstede-2010-cultures": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "openalex": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "semantic_scholar": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "042-manual-exempt-oecd-2019-ai-principles": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "openalex": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "semantic_scholar": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "043-manual-exempt-brooks-1995-mythical-man-month": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "openalex": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "semantic_scholar": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "044-manual-exempt-turing-1950-computing": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "openalex": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "semantic_scholar": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "045-manual-exempt-kitching-2023-quantum-sensing": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "openalex": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "semantic_scholar": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "046-fabricated-phantom-tensor-quantum-rl": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "047-fabricated-cross-lingual-hallucination": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "048-fabricated-bayesian-spike-sorting": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "049-fabricated-topological-edge-state": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "050-fabricated-counterfactual-spectral-knapsack": {
+    "lookup_verified": "false",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "openalex": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "response_summary": null,
+        "queried_by": "id"
+      },
+      "arxiv": {
+        "status": "skipped",
+        "response_summary": null,
+        "queried_by": null
+      }
+    }
+  },
+  "051-fabricated-title-only-no-identifier": {
+    "lookup_verified": "unresolvable",
+    "resolver_outcomes": {
+      "crossref": {
+        "status": "unmatched",
+        "queried_by": "title",
+        "response_summary": null
+      },
+      "openalex": {
+        "status": "unmatched",
+        "queried_by": "title",
+        "response_summary": null
+      },
+      "semantic_scholar": {
+        "status": "unmatched",
+        "queried_by": "title",
+        "response_summary": null
+      },
+      "arxiv": {
+        "status": "skipped",
+        "queried_by": null,
+        "response_summary": null
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "fastapi-python",
+  "description": "FastAPI + SQLAlchemy 2 + Postgres + async. Team size 1-20, customer-facing or ML-adjacent SaaS, type-safe Python ecosystem. Strong async story, fastest path when ML/data team already in Python.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_min": 1,
+    "team_size_max": 20,
+    "tenancy": "shared-multi-tenant",
+    "data_sensitivity_tier_max": "pii",
+    "pattern": "modular-monolith-or-domain-bounded"
+  },
+  "stack": {
+    "runtime": "python-3.11-or-3.12",
+    "framework": "fastapi-0.110+",
+    "orm": "sqlalchemy-2-async-mode",
+    "migrations": "alembic",
+    "database": "postgresql-16+",
+    "cache": "redis-only-if-justified",
+    "queue_options": ["arq-on-redis", "celery-only-if-team-knows-it", "pg-tasks-for-simple-cases"],
+    "auth_options": ["fastapi-users", "authlib", "clerk-paid"],
+    "validation": "pydantic-v2",
+    "testing": "pytest + pytest-asyncio + httpx-async-test-client + testcontainers",
+    "tracing": "opentelemetry-with-honeycomb-or-tempo",
+    "background_jobs": "arq-or-pg-boss-equivalent",
+    "package_manager": "uv-or-poetry"
+  },
+  "anti_recommendations": {
+    "flask-for-new-projects": "kill — FastAPI is the modern default; Flask has no async story",
+    "django-rest-framework-for-greenfield": "warn — DRF is fine for full-Django shops; FastAPI wins for API-first",
+    "sync-only-database-driver": "kill — async path matters for FastAPI throughput",
+    "no-pydantic-validation": "kill — every request body validated",
+    "celery-without-experience": "kill — operational complexity not worth it under 200 QPS background load",
+    "microservices": "kill at this team size — modular monolith"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 60,
+    "p95_api_latency_ms": 200,
+    "p99_api_latency_ms": 500,
+    "uptime_target": 0.995,
+    "test_coverage_min": 0.75,
+    "security_scan_severity_max": "medium",
+    "rpo_minutes_max": 60,
+    "rto_minutes_max": 240
+  },
+  "named_approver_chain": {
+    "schema_change_production": "tech-lead + on-call",
+    "new-external-service": "tech-lead + cfo",
+    "auth-or-authz-change": "tech-lead + security-owner"
+  },
+  "canon_references": [
+    "Sebastián Ramírez, FastAPI docs (2018-2024)",
+    "SQLAlchemy 2.0 docs — async migration path",
+    "Tiangolo's Pydantic v2 migration notes (2023)",
+    "Martin Kleppmann, DDIA (2017)",
+    "OWASP API Security Top 10 (2023)"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/uncited_assertion.schema.json",
+  "title": "Material Passport Uncited Assertion Entry",
+  "description": "One entry in Material Passport Schema 9 uncited_assertions[] aggregate. Per uncited-assertion finding emitted by claim_ref_alignment_audit_agent §4 step 6 (D4-c three-condition token rule). Rides in its own aggregate because the finding has no ref_slug to evaluate — embedding it in claim_audit_result would either force a sentinel ref_slug value or relax claim_audit_result.required, both fighting that schema's grain. Always LOW-WARN advisory at the finalizer; gate-refuse is reserved for citation-level defects and constraint_violation. Cross-field invariants U-INV-1..U-INV-4 are lint-enforced in scripts/check_claim_audit_consistency.py. See docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §3.3.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "finding_id",
+    "sentence_text",
+    "section_path",
+    "trigger_tokens",
+    "detected_at",
+    "rule_version"
+  ],
+
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "pattern": "^UA-[0-9]{3,}$",
+      "description": "Per-passport unique finding identifier for uncited_assertions[]. U-INV-1 enforces uniqueness."
+    },
+    "sentence_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "section_path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Hierarchical path from document root to the section containing the sentence, e.g. '2. Methods > 2.3 Sampling'."
+    },
+    "trigger_tokens": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Concrete tokens that matched D4-c condition 1 (quantifiers or empirical-claim verbs). E.g. ['67%', 'showed']. U-INV-2 enforces non-empty."
+    },
+    "detected_at": { "type": "string", "format": "date-time" },
+    "rule_version": {
+      "const": "D4-c-v1",
+      "description": "Frozen literal for the v3.8.0 release. U-INV-3 enforces equality. Future rule revisions bump the constant and require re-lint."
+    },
+    "upstream_owner_agent": {
+      "enum": ["synthesis_agent", "draft_writer_agent", "report_compiler_agent", null]
+    },
+    "manifest_claim_id": {
+      "type": ["string", "null"],
+      "pattern": "^C-[0-9]{3,}$",
+      "description": "When the uncited sentence corresponds to a claim_id in the active claim_intent_manifest. Per D4-c last paragraph: manifest membership does NOT exempt a sentence from being flagged. When present, MUST be paired with scoped_manifest_id to disambiguate against C-001 collision across manifests."
+    },
+    "scoped_manifest_id": {
+      "type": ["string", "null"],
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Points to the claim_intent_manifest.manifest_id owning the referenced manifest_claim_id. The (scoped_manifest_id, manifest_claim_id) pair uniquely identifies which manifest's claim this uncited finding corresponds to, since C-001 may collide across manifests in the same passport. Required when manifest_claim_id != null (U-INV-4 cross-array integrity). Null when manifest_claim_id is null (the uncited sentence does not correspond to any manifest claim)."
+    }
+  }
+}

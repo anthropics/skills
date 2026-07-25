@@ -1,0 +1,21 @@
+{
+  "tuple_id": "042-manual-exempt-oecd-2019-ai-principles",
+  "kind": "manual_exempt",
+  "corpus_entry": {
+    "citation_key": "OECD2019AIPrinciples",
+    "title": "Recommendation of the Council on Artificial Intelligence",
+    "authors": [
+      {"literal": "OECD"}
+    ],
+    "year": 2019,
+    "venue": "OECD Legal Instruments (OECD/LEGAL/0449)",
+    "source_pointer": "https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0449",
+    "obtained_via": "manual"
+  },
+  "arxiv_id": null,
+  "ref_slug": "oecd-2019-ai-principles",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

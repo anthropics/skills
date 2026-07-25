@@ -1,0 +1,44 @@
+{
+  "tuple_id": "010-valid-doi-moco-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "He2020MoCo",
+    "title": "Momentum Contrast for Unsupervised Visual Representation Learning",
+    "authors": [
+      {
+        "family": "He",
+        "given": "Kaiming"
+      },
+      {
+        "family": "Fan",
+        "given": "Haoqi"
+      },
+      {
+        "family": "Wu",
+        "given": "Yuxin"
+      },
+      {
+        "family": "Xie",
+        "given": "Saining"
+      },
+      {
+        "family": "Girshick",
+        "given": "Ross"
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1109/CVPR42600.2020.00975",
+    "venue": "2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)",
+    "source_pointer": "https://doi.org/10.1109/CVPR42600.2020.00975",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "he-2020-moco",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

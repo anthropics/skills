@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/submission/venue_profile.schema.json",
+  "title": "Venue Profile",
+  "description": "#394 scholar-declared venue profile (spec docs/design/2026-06-10-394-submission-package-verifier-spec.md §4). The Family B comparison source for scripts/verify_submission_package.py --venue-profile. STANDALONE schema — never embedded in the passport entry schema (the Invariant 11 pattern). Declared values ONLY: the profile is never scraped or inferred from the journal name (the R-L3-2-D no-inference mirror) — a check whose field is null/absent reports NOT-CHECKED, never a guessed limit. Collected (optionally) at intake Step 3 when a target journal is named; storable and re-feedable across runs like any declared input.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "declared_by"
+  ],
+  "properties": {
+    "venue_name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Display only — NEVER used for inference or lookup (R-L3-2-D mirror)."
+    },
+    "word_limit": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Manuscript word ceiling (B1). Compared with a ±2% tolerance for format-conversion noise (spec §3.2)."
+    },
+    "word_count_scope": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "body_only",
+        "body_plus_references",
+        "all",
+        null
+      ],
+      "description": "What the venue's counting rules include. The report declares what was actually counted; null = the verifier counts body_only and says so (the method is declared, never silently assumed venue-exact — spec §3.2/§10 item 4)."
+    },
+    "abstract_word_limit": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Abstract word ceiling (B2). Same ±2% tolerance class as word_limit."
+    },
+    "keyword_range": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "description": "Accepted keyword count range, inclusive (B3). Exact comparison — no tolerance."
+    },
+    "required_sections": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Section names the venue requires (B4), e.g. [\"Data Availability\", \"CRediT\"]. Matched case-insensitively against manuscript headings (declared name contained in a heading)."
+    },
+    "reference_limit": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "description": "Reference-list entry ceiling (B5). Exact comparison."
+    },
+    "acknowledgments_forbidden_in_blind": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Scholar-declared: the venue requires acknowledgments to be removed from the blind-review version. ONLY when true does A4 (acknowledgments present in the anonymized variant) become strict-eligible — by default A4's deterministic signal stays advisory because the de-anonymization judgment is the scholar's (spec §3.1 load-bearing)."
+    },
+    "blind_review": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "double",
+        "single",
+        "open",
+        null
+      ],
+      "description": "Review model. `double` triggers the Family A residue scan even when no anonymized variant is present (slice 3, spec §3.1) — a declared-double-blind package with no blind version is itself a fail."
+    },
+    "declared_by": {
+      "const": "scholar",
+      "description": "The only provenance value that exists (spec §4): the profile is scholar-declared, full stop. The CLI refuses a profile without this stamp rather than consuming values of unknown origin."
+    }
+  }
+}

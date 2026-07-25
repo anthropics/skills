@@ -1,0 +1,112 @@
+{
+  "name": "academic-research-suite",
+  "adapter_version": "0.1.18",
+  "version_file": "VERSION",
+  "generated_for": "codex",
+  "generated_date": "2026-07-13",
+  "source_repositories": [
+    {
+      "name": "academic-research-skills",
+      "url": "https://github.com/Imbad0202/academic-research-skills.git",
+      "commit": "73c898c842afae3f163ac571dfa098c72d7c82af",
+      "included_paths": [
+        "deep-research",
+        "academic-paper",
+        "academic-paper-reviewer",
+        "academic-pipeline",
+        "shared",
+        "scripts",
+        "commands",
+        "agents",
+        "hooks",
+        ".github",
+        "tests",
+        "evals",
+        "audits",
+        "examples (excluding showcase PDFs)",
+        "docs",
+        "docs/design",
+        "docs/migration",
+        "docs/PERFORMANCE.md",
+        "pyproject.toml",
+        ".gitattributes",
+        ".gitleaks.toml",
+        "top-level README, README.zh-TW, README.zh-CN, README.ja-JP, README.ko-KR, QUICKSTART, SECURITY, NOTICE, CONTRIBUTING, MODE_REGISTRY, POSITIONING, CITATION.cff, THIRD_PARTY.md",
+        "requirements-dev.txt",
+        ".command-invariants.toml",
+        "tools/release-discipline",
+        "CHANGELOG.md",
+        "LICENSE"
+      ]
+    },
+    {
+      "name": "experiment-agent",
+      "url": "https://github.com/Imbad0202/experiment-agent.git",
+      "commit": "9b063fa895eaf1f63ac99ac03f924f8d31aa8d26",
+      "included_paths": [
+        "experiment-agent"
+      ]
+    }
+  ],
+  "excluded_patterns": [
+    ".git",
+    ".claude",
+    ".claude-plugin",
+    ".gitignore",
+    ".impeccable/",
+    "skills symlink aliases",
+    "docs/superpowers/",
+    "examples/showcase/*.pdf"
+  ],
+  "inactive_upstream_scripts": [
+    {
+      "path": "skills/academic-research-suite/ars/scripts/check_version_consistency.py",
+      "reason": "Requires upstream .claude/CLAUDE.md suite-version table, which is intentionally not vendored in the Codex package."
+    },
+    {
+      "path": "skills/academic-research-suite/ars/hooks/hooks.json",
+      "reason": "Claude Code plugin hook metadata. Preserved for upstream traceability but not installed or executed by Codex."
+    }
+  ],
+  "historical_artifacts": [
+    {
+      "path": "skills/academic-research-suite/ars/docs/design/2026-04-23-ars-v3.6.2-sprint-contract-design.md",
+      "disclaimer": "Upstream design/plan document, vendored for traceability. NOT a Codex runtime instruction. References to superpowers:* skills, maintainer-local paths, or Claude Code session describe the upstream development environment."
+    },
+    {
+      "path": "skills/academic-research-suite/ars/docs/design/2026-04-23-ars-v3.6.4-literature-corpus-adapters-plan.md",
+      "disclaimer": "Upstream design/plan document, vendored for traceability. NOT a Codex runtime instruction. References to superpowers:* skills, maintainer-local paths, or Claude Code session describe the upstream development environment."
+    }
+  ],
+  "packaging": {
+    "type": "single_codex_suite_skill",
+    "entrypoint": "skills/academic-research-suite/SKILL.md",
+    "vendored_root": "skills/academic-research-suite/ars",
+    "codex_adapter_root": "skills/academic-research-suite/codex",
+    "optional_full_runtime_manifest": "skills/academic-research-suite/codex/full-runtime-manifest.json"
+  },
+  "runtime_notes": [
+    "Claude Code agent-team wording is adapted by SKILL.md into Codex inline role-prompt usage.",
+    "The Codex-only codex/ adapter profile is optional and disabled by default; it provides planner metadata, agent-team templates, hook metadata, and quality gates for explicit full-runtime use.",
+    "The maintainer's local ARS checkout was not used as a write target.",
+    "Upstream slash commands are vendored as prompt recipes and emulated through the Codex SKILL.md alias router; Codex does not register native slash commands.",
+    "Vendored upstream workflow entry files are renamed from SKILL.md to WORKFLOW.md in this Codex package so Codex registers only the root academic-research-suite router skill.",
+    "Vague paper-topic requests without a clear research question are routed to deep-research socratic mode before outline, drafting, or full pipeline execution.",
+    "docs/superpowers/ is intentionally excluded; it contains upstream Claude Code development plans referencing superpowers:* sub-skills which do not exist in the Codex runtime.",
+    "User-facing setup docs include reinstall, /skills verification, and Codex CLI smoke-test guidance for existing-session cache behavior.",
+    "Root README.md and SKILL.md define Codex install/runtime behavior; vendored upstream docs remain traceability/reference material unless explicitly adapted here.",
+    "The v3.7.1 pattern-protection validator is patched to resolve git object paths from the nested Codex vendored root.",
+    "The spec-consistency validator is patched for the Codex distribution: non-vendored .claude/CLAUDE.md is skipped, excluded showcase PDF links are not treated as broken, and WORKFLOW.md replaces internal SKILL.md entry files.",
+    "The shared metadata linter auto-detects this Codex distribution and validates vendored WORKFLOW.md entry files instead of upstream SKILL.md files.",
+    "The Codex package carries scripts/codex_v3_6_7_block_baseline.json so first-time vendored trees can enforce v3.6.7 block byte-equivalence before Git history contains the upstream manifest.",
+    "The Codex audit wrapper is patched to run on macOS stock Bash 3.2+ instead of requiring Bash 4+.",
+    "Vendored test utilities keep macOS stock Python 3.9 compatibility where Codex local validation depends on it.",
+    "ARS v3.16.0 release content is the tracked upstream content; nested upstream .github workflows, release-discipline tools, and root agents mirrors are preserved for traceability and upstream self-tests but are not repo-level CI or Codex entrypoints. Claude/plugin loader files under .claude, .claude-plugin, and upstream skills aliases remain intentionally excluded.",
+    "ARS_MODEL_TIERING is classification-compatible but remains advisory in Codex unless the runtime exposes explicit per-dispatch model selection; unset and unsupported cases keep the active model.",
+    "The upstream model-tiering validator excludes the separately vendored experiment-agent tree from its frozen 39-agent ARS classification sweep.",
+    "Korean intent triggers are propagated into the root Codex router and optional full-runtime planner because vendored WORKFLOW.md frontmatter is not independently registered.",
+    "The live cross-model smoke test remains manual-only and cross-model verification retains the explicit provider, content, credential, and consent gate.",
+    "Codex Desktop plugin packaging uses a materialized skills directory under plugins/academic-research-skills/skills instead of a symlink so Windows plugin caches can register the bundled academic-research-suite skill.",
+    "Cross-model API behavior is disabled by default and requires explicit user request, provider configuration, and user consent before any external upload."
+    ]
+}

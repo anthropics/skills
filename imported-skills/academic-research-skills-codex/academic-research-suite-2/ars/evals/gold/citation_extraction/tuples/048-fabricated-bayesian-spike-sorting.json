@@ -1,0 +1,24 @@
+{
+  "tuple_id": "048-fabricated-bayesian-spike-sorting",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Liu2022SpikeSorting",
+    "title": "Bayesian Spike-Sorting with Heterodyne Filtering on 1024-Channel Cortical Implants",
+    "authors": [
+      {"family": "Liu", "given": "H."},
+      {"family": "Anderson", "given": "J. K."},
+      {"family": "Schmidt", "given": "B."}
+    ],
+    "year": 2022,
+    "doi": "10.99999/ars184.fake.neuro.2022.115",
+    "venue": "Journal of Cortical Neuroengineering",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.neuro.2022.115",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "liu-2022-spike-sorting",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

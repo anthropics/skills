@@ -1,0 +1,250 @@
+{
+  "metadata": {
+    "issue": 257,
+    "task_name": "rq_framing_patterns",
+    "description": "Hand-curated 30-item gold set for Socratic wording-pattern advisory calibration.",
+    "labels": ["wording_cliche", "domain_native"]
+  },
+  "items": [
+    {
+      "id": "cliche-001",
+      "label": "wording_cliche",
+      "text": "Exploring the impact of AI feedback on student motivation.",
+      "expected_pattern_ids": ["WP01"]
+    },
+    {
+      "id": "cliche-002",
+      "label": "wording_cliche",
+      "text": "Investigating the relationship between remote work and employee productivity.",
+      "expected_pattern_ids": ["WP02"]
+    },
+    {
+      "id": "cliche-003",
+      "label": "wording_cliche",
+      "text": "Understanding the role of social media in political participation.",
+      "expected_pattern_ids": ["WP03"]
+    },
+    {
+      "id": "cliche-004",
+      "label": "wording_cliche",
+      "text": "Analyzing how teacher feedback influences student engagement.",
+      "expected_pattern_ids": ["WP04"]
+    },
+    {
+      "id": "cliche-005",
+      "label": "wording_cliche",
+      "text": "Exploring factors influencing electric vehicle adoption among consumers.",
+      "expected_pattern_ids": ["WP05"]
+    },
+    {
+      "id": "cliche-006",
+      "label": "wording_cliche",
+      "text": "A study of mindfulness and academic achievement.",
+      "expected_pattern_ids": ["WP06"]
+    },
+    {
+      "id": "cliche-007",
+      "label": "wording_cliche",
+      "text": "The impact of telehealth on patient satisfaction: a case study.",
+      "expected_pattern_ids": ["WP07"]
+    },
+    {
+      "id": "cliche-008",
+      "label": "wording_cliche",
+      "text": "Challenges and opportunities of generative AI in higher education.",
+      "expected_pattern_ids": ["WP08"]
+    },
+    {
+      "id": "cliche-009",
+      "label": "wording_cliche",
+      "text": "Student perceptions toward online learning platforms.",
+      "expected_pattern_ids": ["WP09"]
+    },
+    {
+      "id": "cliche-010",
+      "label": "wording_cliche",
+      "text": "The effect of leadership style on employee performance.",
+      "expected_pattern_ids": ["WP10"]
+    },
+    {
+      "id": "cliche-011",
+      "label": "wording_cliche",
+      "text": "Exploring the use of blockchain in supply chain management.",
+      "expected_pattern_ids": ["WP12"]
+    },
+    {
+      "id": "cliche-012",
+      "label": "wording_cliche",
+      "text": "Investigating the effectiveness of flipped classrooms for mathematics learning.",
+      "expected_pattern_ids": ["WP13"]
+    },
+    {
+      "id": "cliche-013",
+      "label": "wording_cliche",
+      "text": "Examining the mediating role of trust in online purchase intention.",
+      "expected_pattern_ids": ["WP14"]
+    },
+    {
+      "id": "cliche-014",
+      "label": "wording_cliche",
+      "text": "Factors affecting user satisfaction in mobile banking.",
+      "expected_pattern_ids": ["WP15"]
+    },
+    {
+      "id": "cliche-015",
+      "label": "wording_cliche",
+      "text": "Barriers and facilitators to telemedicine adoption in rural clinics.",
+      "expected_pattern_ids": ["WP16"]
+    },
+    {
+      "id": "cliche-016",
+      "label": "wording_cliche",
+      "text": "The relationship between sleep duration and academic achievement.",
+      "expected_pattern_ids": ["WP11"]
+    },
+    {
+      "id": "cliche-017",
+      "label": "wording_cliche",
+      "text": "A comparative study of online and face-to-face instruction.",
+      "expected_pattern_ids": ["WP17"]
+    },
+    {
+      "id": "cliche-018",
+      "label": "wording_cliche",
+      "text": "Toward a framework for sustainable supply chain management.",
+      "expected_pattern_ids": ["WP18"]
+    },
+    {
+      "id": "cliche-019",
+      "label": "wording_cliche",
+      "text": "The role of artificial intelligence in enhancing student engagement.",
+      "expected_pattern_ids": ["WP19"]
+    },
+    {
+      "id": "cliche-020",
+      "label": "wording_cliche",
+      "text": "Exploring the experiences of international students in higher education.",
+      "expected_pattern_ids": ["WP20"]
+    },
+    {
+      "id": "native-001",
+      "label": "domain_native",
+      "text": "How do municipal procurement rules shape the reuse of decommissioned school buildings in Tainan?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-002",
+      "label": "domain_native",
+      "text": "Which cues do Taiwanese vocational students use when deciding whether a feedback comment is actionable?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-003",
+      "label": "domain_native",
+      "text": "When nurses override sepsis alerts, what local workflow pressures are they responding to?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-004",
+      "label": "domain_native",
+      "text": "Under what conditions do community land trusts resist displacement after transit expansion?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-005",
+      "label": "domain_native",
+      "text": "How did post-2019 accreditation rubrics change departments' evidence-writing routines?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-006",
+      "label": "domain_native",
+      "text": "What tacit repair practices keep open-source maintainers from abandoning stale packages?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-007",
+      "label": "domain_native",
+      "text": "Which parts of a doctoral supervision meeting make students revise their research question?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-008",
+      "label": "domain_native",
+      "text": "How do indigenous language teachers adapt assessment tasks when official textbooks misname local categories?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-009",
+      "label": "domain_native",
+      "text": "What happens to citation choices when lab notebooks are converted into public preregistration records?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-010",
+      "label": "domain_native",
+      "text": "Why do small museums preserve visitor complaints as metadata rather than deleting them?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-011",
+      "label": "domain_native",
+      "text": "How do judges distinguish clerical error from statistical manipulation in procurement audits?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-012",
+      "label": "domain_native",
+      "text": "What makes a warning label usable for elderly patients managing three concurrent medications?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-013",
+      "label": "domain_native",
+      "text": "How do cross-border teams decide which calendar system controls a grant deadline?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-014",
+      "label": "domain_native",
+      "text": "Which frictions in campus IRB portals lead researchers to split a single project into multiple submissions?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-015",
+      "label": "domain_native",
+      "text": "How do planners translate flood memories into zoning boundaries after informal settlements relocate?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-016",
+      "label": "domain_native",
+      "text": "When students cram the night before an exam, which revision habits survive into the next semester?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-017",
+      "label": "domain_native",
+      "text": "Why do some clinics keep paper charts after switching to electronic records, while neighboring clinics do not?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-018",
+      "label": "domain_native",
+      "text": "What design decisions let a rural credit cooperative keep lending when its parent bank withdraws?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-019",
+      "label": "domain_native",
+      "text": "Which classroom routines do teachers drop first when a new grading dashboard arrives mid-term?",
+      "expected_pattern_ids": []
+    },
+    {
+      "id": "native-020",
+      "label": "domain_native",
+      "text": "How do first-generation graduate students learn the unwritten rules of lab authorship?",
+      "expected_pattern_ids": []
+    }
+  ]
+}

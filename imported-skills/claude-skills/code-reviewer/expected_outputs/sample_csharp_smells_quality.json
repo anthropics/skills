@@ -1,0 +1,143 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_csharp_smells.cs",
+  "language": "csharp",
+  "metrics": {
+    "lines": {
+      "total": 79,
+      "code": 43,
+      "blank": 11,
+      "comment": 25
+    },
+    "functions": 7,
+    "classes": 1,
+    "avg_complexity": 1.3
+  },
+  "quality_score": 45,
+  "grade": "F",
+  "smells": [
+    {
+      "type": "csharp_async_void",
+      "severity": "high",
+      "message": "'async void HandleClick' \u2014 only safe for event handlers; prefer 'async Task'",
+      "location": "HandleClick"
+    },
+    {
+      "type": "csharp_blocking_async",
+      "severity": "high",
+      "message": "Blocking call on async operation ('.Result' / '.Wait()' / '.GetAwaiter().GetResult()') \u2014 can deadlock in ASP.NET contexts",
+      "location": "offset 430"
+    },
+    {
+      "type": "csharp_swallowed_exception",
+      "severity": "high",
+      "message": "Empty catch block swallows exceptions silently",
+      "location": "offset 853"
+    },
+    {
+      "type": "csharp_undisposed_idisposable",
+      "severity": "medium",
+      "message": "'HttpClient' looks like IDisposable but is not wrapped in 'using' / 'using var'",
+      "location": "offset 555"
+    },
+    {
+      "type": "csharp_undisposed_idisposable",
+      "severity": "medium",
+      "message": "'SqlCommand' looks like IDisposable but is not wrapped in 'using' / 'using var'",
+      "location": "offset 1289"
+    },
+    {
+      "type": "csharp_new_httpclient",
+      "severity": "medium",
+      "message": "'new HttpClient()' \u2014 prefer IHttpClientFactory or a long-lived static instance to avoid socket exhaustion",
+      "location": "offset 606"
+    },
+    {
+      "type": "csharp_missing_await",
+      "severity": "medium",
+      "message": "Async method called without 'await' \u2014 Task is discarded",
+      "location": "line 42"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System;' appears unused",
+      "location": "System"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Net.Http;' appears unused",
+      "location": "System.Net.Http"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Threading.Tasks;' appears unused",
+      "location": "System.Threading.Tasks"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Data.SqlClient;' appears unused",
+      "location": "System.Data.SqlClient"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Diagnostics.CodeAnalysis;' appears unused",
+      "location": "System.Diagnostics.CodeAnalysis"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "HandleClick",
+      "parameters": 2,
+      "lines": 9,
+      "complexity": 1
+    },
+    {
+      "name": "FetchAsync",
+      "parameters": 0,
+      "lines": 3,
+      "complexity": 1
+    },
+    {
+      "name": "HttpClient",
+      "parameters": 0,
+      "lines": 3,
+      "complexity": 1
+    },
+    {
+      "name": "HttpClient",
+      "parameters": 0,
+      "lines": 24,
+      "complexity": 3
+    },
+    {
+      "name": "Pointers",
+      "parameters": 0,
+      "lines": 11,
+      "complexity": 1
+    },
+    {
+      "name": "GetName",
+      "parameters": 2,
+      "lines": 5,
+      "complexity": 1
+    },
+    {
+      "name": "SqlCommand",
+      "parameters": 2,
+      "lines": 6,
+      "complexity": 1
+    }
+  ],
+  "class_details": [
+    {
+      "name": "UserService",
+      "methods": 4,
+      "lines": 61
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "summary": {
+    "total_sprints": 6,
+    "velocity_stats": {
+      "mean": 20.166666666666668,
+      "median": 20.0,
+      "min": 17,
+      "max": 24,
+      "total_points": 121
+    },
+    "commitment_analysis": {
+      "average_commitment_ratio": 0.9075307422046552,
+      "commitment_consistency": 0.17889820455801825,
+      "sprints_under_committed": 3,
+      "sprints_over_committed": 2
+    },
+    "scope_change_analysis": {
+      "average_scope_change": 0.22586752619361317,
+      "scope_change_volatility": 0.1828476660567787
+    },
+    "rolling_averages": {
+      "3": [
+        null,
+        null,
+        19.333333333333332,
+        20.666666666666668,
+        19.333333333333332,
+        21.0
+      ],
+      "5": [
+        null,
+        null,
+        19.333333333333332,
+        20.0,
+        19.4,
+        20.6
+      ],
+      "8": [
+        null,
+        null,
+        19.333333333333332,
+        20.0,
+        19.4,
+        20.166666666666668
+      ]
+    },
+    "volatility": {
+      "volatility": "low",
+      "coefficient_of_variation": 0.13088153980052333,
+      "standard_deviation": 2.6394443859772205,
+      "mean_velocity": 20.166666666666668,
+      "velocity_range": 7,
+      "range_ratio": 0.3471074380165289,
+      "min_velocity": 17,
+      "max_velocity": 24
+    }
+  },
+  "trend_analysis": {
+    "trend": "stable",
+    "slope": 0.6,
+    "relative_slope": 0.029752066115702476,
+    "correlation": 0.42527784332026836,
+    "confidence": 0.42527784332026836,
+    "recent_sprints_analyzed": 6,
+    "average_velocity": 20.166666666666668
+  },
+  "forecasting": {
+    "sprints_ahead": 6,
+    "historical_sprints_used": 6,
+    "mean_velocity": 20.166666666666668,
+    "velocity_std_dev": 2.6394443859772205,
+    "forecasted_totals": {
+      "50%": 121.00756172377734,
+      "70%": 124.35398229685968,
+      "85%": 127.68925669583572,
+      "95%": 131.66775744677182
+    },
+    "average_per_sprint": 20.166666666666668,
+    "expected_total": 121.0
+  },
+  "anomalies": [],
+  "recommendations": [
+    "Good velocity stability. Continue current practices."
+  ]
+}

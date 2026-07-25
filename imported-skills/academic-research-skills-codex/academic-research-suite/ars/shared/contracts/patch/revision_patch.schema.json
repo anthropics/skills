@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/patch/revision_patch.schema.json",
+  "title": "Revision Patch Document",
+  "description": "#89 Item 7 patch document (spec docs/design/2026-06-10-390-diff-patch-revision-mode-spec.md §3.2). The writer's revision deliverable: a closed-vocabulary list of block operations against an anchored base draft. Every hash in this document — base_draft_hash and every per-op old_hash — is a mechanical copy from the script-generated block manifest (§3.1); the writer never computes hashes. The DOC-BODY-START insert_after shape is the ONLY legal hash-less op: it names a position (after frontmatter, before the first body block), not an anchor block, so there is no content to precondition on. Schema validation is the apply script's step zero; everything the schema cannot see (target existence, hash staleness, per-block single-op rule, marker-free new_text) is Phase 1's job (§3.3).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["patch_format_version", "revision_round", "base_draft_hash", "ops", "emitted_by"],
+  "properties": {
+    "patch_format_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Pinned so a future Item 9 revision contract can audit exactly what shape it gates (spec §7)."
+    },
+    "revision_round": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "1-based revision round this patch belongs to. Each patch is generated per-round against the current base (§3.1 trigger point c)."
+    },
+    "base_draft_hash": {
+      "$ref": "#/$defs/hash12",
+      "description": "First 12 hex chars of SHA-256 over the anchored base file's raw bytes — copied from the block manifest's base_draft_hash, never computed by the writer. Document-level staleness gate: any mismatch rejects the whole patch (§3.3 Phase 1)."
+    },
+    "ops": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Block operations, defined simultaneously against the base — array order is not semantic; the apply script splices in base-document order (§3.2). Each block_id may appear in at most one op, in any role (Phase 1 enforces; the schema cannot see across items).",
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/replace_block"},
+          {"$ref": "#/$defs/insert_after_anchored"},
+          {"$ref": "#/$defs/insert_after_doc_body_start"},
+          {"$ref": "#/$defs/delete_block"}
+        ]
+      }
+    },
+    "emitted_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Emitting agent (e.g. draft_writer_agent). Provenance surface only; the role split itself is enforced by the #134 write guard, not by this field (§3.5)."
+    }
+  },
+  "$defs": {
+    "hash12": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{12}$"
+    },
+    "block_id": {
+      "type": "string",
+      "pattern": "^B[0-9]{4,}$"
+    },
+    "roadmap_item_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "description": "Schema 7 RoadmapItem IDs this op addresses. Presence is machine-checked; semantic fit is an LLM/human-layer judgment (§3.2 — Anti-Pattern 7 made visible, not impossible)."
+    },
+    "new_text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Replacement / inserted markdown. MUST NOT contain <!--block: markers (ID assignment is the apply script's exclusive authority) and MUST carry v3.7.1/v3.7.3 citation markers for any citation it introduces (§3.2). Segmented by the shared parser; multi-block text receives fresh IDs at apply time."
+    },
+    "replace_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "block_id", "old_hash", "new_text", "roadmap_item_ids"],
+      "properties": {
+        "op": {"const": "replace_block"},
+        "block_id": {"$ref": "#/$defs/block_id"},
+        "old_hash": {"$ref": "#/$defs/hash12"},
+        "new_text": {"$ref": "#/$defs/new_text"},
+        "roadmap_item_ids": {"$ref": "#/$defs/roadmap_item_ids"}
+      }
+    },
+    "insert_after_anchored": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "block_id", "old_hash", "new_text", "roadmap_item_ids"],
+      "properties": {
+        "op": {"const": "insert_after"},
+        "block_id": {"$ref": "#/$defs/block_id"},
+        "old_hash": {"$ref": "#/$defs/hash12"},
+        "new_text": {"$ref": "#/$defs/new_text"},
+        "roadmap_item_ids": {"$ref": "#/$defs/roadmap_item_ids"}
+      }
+    },
+    "insert_after_doc_body_start": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "block_id", "new_text", "roadmap_item_ids"],
+      "properties": {
+        "op": {"const": "insert_after"},
+        "block_id": {"const": "DOC-BODY-START"},
+        "new_text": {"$ref": "#/$defs/new_text"},
+        "roadmap_item_ids": {"$ref": "#/$defs/roadmap_item_ids"}
+      }
+    },
+    "delete_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "block_id", "old_hash", "roadmap_item_ids"],
+      "properties": {
+        "op": {"const": "delete_block"},
+        "block_id": {"$ref": "#/$defs/block_id"},
+        "old_hash": {"$ref": "#/$defs/hash12"},
+        "roadmap_item_ids": {"$ref": "#/$defs/roadmap_item_ids"}
+      }
+    }
+  }
+}

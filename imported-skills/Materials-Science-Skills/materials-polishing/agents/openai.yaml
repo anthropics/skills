@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Polishing"
+  short_description: "Reviewer-safe English polishing for materials manuscripts."
+  brand_color: "#6B5B3E"
+  default_prompt: "Use $materials-polishing to polish this materials paragraph without overclaiming."
+
+policy:
+  allow_implicit_invocation: true

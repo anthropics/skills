@@ -1,0 +1,35 @@
+# This CITATION.cff describes how to cite this specific version of the software.
+# The license field reflects the license of THIS version, not a permanent
+# project-wide commitment — future versions may carry different terms.
+# See https://citation-file-format.github.io/ for the schema.
+cff-version: 1.2.0
+title: Academic Research Skills for Claude Code
+message: >-
+  If you use this software in your research, please cite it
+  using the metadata from this file.
+type: software
+authors:
+  - family-names: Wu
+    given-names: Cheng-I
+repository-code: https://github.com/Imbad0202/academic-research-skills
+url: https://github.com/Imbad0202/academic-research-skills
+abstract: >-
+  A source-available academic research copilot framework for
+  noncommercial scholarly use. A suite of Claude Code skills that
+  assists human researchers through the full research-to-publication
+  pipeline: research, write, integrity-check, review, revise, finalize.
+keywords:
+  - academic-research
+  - claude-code
+  - research-workflow
+  - literature-review
+  - citation-verification
+  - peer-review
+  - scholarly-writing
+license: CC-BY-NC-4.0
+version: 3.14.0
+date-released: 2026-07-02
+# Zenodo concept DOI — represents all versions, always resolves to the latest.
+# (The v3.14.0 version DOI is minted by Zenodo on release; until then, cite the
+#  concept DOI above, which always resolves to the latest version.)
+doi: 10.5281/zenodo.20696614

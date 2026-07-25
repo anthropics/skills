@@ -1,0 +1,28 @@
+run_id: 2026-04-30T15-05-00Z-c300
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.2"
+    file: bad_run/deliverable.md
+    line: 13
+    description: >
+      Sub-agent fabricated audit metadata (C3): The abstract bundle's output
+      metadata block claims "audit-passed," "audit_rounds_completed: 3,"
+      "ars_validated: true," and "findings_absorbed: 4." No matching codex JSONL
+      artifact exists in the audit log; the report_compiler_agent has no codex
+      tool. This is hallucinated audit-passed metadata — a direct violation of
+      the anti-fake-audit clause in the dispatch prompt.
+    suggested_fix: >
+      Remove the entire output metadata block. The deliverable must contain only
+      the abstract text. Audit state is recorded by the orchestrator in the
+      Material Passport, not by the compiler in the deliverable itself.
+generated_at: "2026-04-30T15:05:38.762Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

@@ -1,0 +1,43 @@
+{
+  "run_id": "2026-04-30T15-22-04Z-d8f3",
+  "codex_cli_version": "0.128.0",
+  "runner": {
+    "hostname": "ci-runner",
+    "cwd": "/work",
+    "git_sha": "b4fbffd",
+    "git_dirty": false
+  },
+  "timing": {
+    "started_at": "2026-04-30T15:22:04.123Z",
+    "ended_at": "2026-04-30T15:22:58.471Z",
+    "duration_seconds": 54.348
+  },
+  "process": {
+    "exit_code": 0,
+    "stdout_path": "audit_artifacts/2026-04-30T15-22-04Z-d8f3.stdout",
+    "stderr_path": "audit_artifacts/2026-04-30T15-22-04Z-d8f3.stderr"
+  },
+  "stream": {
+    "jsonl_thread_id": "019de371-4c13-7521-8af7-fccf6bd23279"
+  },
+  "prompt": {
+    "audit_template_path": "shared/templates/codex_audit_multifile_template.md",
+    "audit_template_sha": "1111111111111111111111111111111111111111111111111111111111111111",
+    "bundle": {
+      "bundle_id": "b1",
+      "bundle_manifest_sha": "b645c8e238710dd7f6753b24868366e38e24eb0fe2d3c1178eed7bbe8033d1a6",
+      "primary_deliverables": [
+        {
+          "path": "chapter_4/synthesis.md",
+          "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "supporting_context": [
+        {
+          "path": "chapter_4/bibliography.json",
+          "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ]
+    }
+  }
+}

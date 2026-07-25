@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/experiment_provenance_entry.schema.json",
+  "title": "Material Passport Experiment Provenance Entry",
+  "description": "One entry in Material Passport Schema 9 experiment_provenance[] aggregate (#260). Scholar-entered at Stage 1 intake — NOT writer-emitted. Records the intake + disclosure layer for an experiment the scholar ran EXTERNALLY and brought results back from. ARS does not run experiments, does not auto-fill provenance, and does not judge whether an experiment was correctly designed/run/statistically-adequate/reproducible by ARS (POSITIONING non-goals, carried verbatim into the integrity gate wording). The entry backs manuscript claims that cite it via claim_intent_manifest.planned_experiment_ids[]. Cross-array invariants EP-INV-1..EP-INV-4 (in-passport experiment_id uniqueness, planned_experiment_ids resolution, empirical-kind gating, declaration symmetry) are lint-enforced in scripts/check_claim_audit_consistency.py — JSON Schema cannot express cross-array integrity. Shape-only validation also available standalone via scripts/check_experiment_provenance.py. The nested repro_lock sub-shape re-declares (does NOT $ref) the inline-object design from shared/artifact_reproducibility_pattern.md; the canonical field set is single-sourced in scripts/repro_lock_validation.py and a drift test asserts the two copies stay in sync. See docs/design/2026-06-08-260-experiment-provenance-intake-spec.md.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "experiment_id",
+    "title",
+    "repro_lock",
+    "planned_vs_executed",
+    "negative_results",
+    "known_limitations"
+  ],
+
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "description": "Scholar-chosen identifier, flat within ONE Material Passport (a passport is one run). EP-INV-1 enforces in-passport uniqueness. Cross-passport consumers treat the durable key as (passport_hash, experiment_id). FROZEN at Stage 1 intake (D3 intake-freeze): once experiment_intake_declaration.status == experiments_declared is set, this is the stable key space writers reference via planned_experiment_ids. A post-intake rename is a re-intake event (re-run the manifest emitters), NOT a silent edit — EP-INV-2 FAILs a passport whose planned_experiment_ids dangle after a rename."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Human-readable label for the experiment (e.g. 'Ablation: remove attention head pruning')."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 4000,
+      "description": "Optional free-form description of what the experiment tested and why."
+    },
+    "repro_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Per-experiment reproducibility lock — the SAME inline-object shape as the passport-level repro_lock (shared/artifact_reproducibility_pattern.md), nested here so each experiment carries its own configuration trail. Re-declared (not $ref'd) because the source is an inline-prose object, not a schema file; the canonical required-field set is single-sourced in scripts/repro_lock_validation.py with a drift test. Documents configuration, NOT a deterministic replay guarantee.",
+      "required": [
+        "schema_version",
+        "stochasticity_declaration",
+        "ars_version",
+        "model",
+        "prompts",
+        "materials",
+        "external_protocols",
+        "cross_model"
+      ],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "stochasticity_declaration": { "type": "string", "minLength": 1 },
+        "ars_version": { "type": "string", "minLength": 1 },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["family", "id", "weight_stable"],
+          "properties": {
+            "family": { "type": "string", "minLength": 1 },
+            "id": { "type": "string", "minLength": 1 },
+            "weight_stable": { "type": "boolean" }
+          }
+        },
+        "prompts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hash_timing", "skill_md_hash", "agents_bundle_hash"],
+          "properties": {
+            "hash_timing": { "const": "skill-load" },
+            "skill_md_hash": { "type": "string", "minLength": 1 },
+            "agents_bundle_hash": { "type": "string", "minLength": 1 }
+          }
+        },
+        "materials": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["list_hash", "count"],
+          "properties": {
+            "list_hash": { "type": "string", "minLength": 1 },
+            "count": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "external_protocols": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["s2_api_protocol_version", "s2_snapshot_available"],
+          "properties": {
+            "s2_api_protocol_version": { "type": "string", "minLength": 1 },
+            "s2_snapshot_available": { "type": "boolean" }
+          }
+        },
+        "cross_model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "secondary_model_id"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "secondary_model_id": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "planned_vs_executed": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Per-result-unit record of what the scholar PLANNED to measure vs what was actually EXECUTED. minItems 1 — an experiment_provenance entry with no planned_vs_executed unit is a degenerate declaration that backs no claim. The integrity gate (D6 check-2) reads executed:false + skip_reason and feeds the all-skipped derivation rule (every entry executed:false ⟹ a claim resting on this experiment is NOT_SUPPORTED_BY_PROVENANCE).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["planned", "executed"],
+        "properties": {
+          "planned": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What the scholar planned to measure (e.g. 'F1 on held-out test set with head-pruning removed')."
+          },
+          "executed": {
+            "type": "boolean",
+            "description": "Whether this planned unit was actually run. executed:false MUST carry skip_reason (gate check, D6 check-2)."
+          },
+          "skip_reason": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required-by-gate when executed:false (D6 check-2, not a schema conditional so a malformed skip surfaces at the gate with full context). Why the planned unit was not run."
+          },
+          "result_file": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Pointer to the scholar's reported result artifact (path/URI). The experiment_alignment_result.result_pointer points INTO this (e.g. result_file + metric) — experiment_id alone is too coarse for a claim like 'F1 improved 4.2%'."
+          },
+          "metric": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Optional metric name the reported result reports (e.g. 'macro-F1')."
+          },
+          "value": {
+            "description": "Optional reported value for the metric (number or string)."
+          }
+        }
+      }
+    },
+    "negative_results": {
+      "type": "array",
+      "description": "Declared null/absent/contradicting findings. The KEY MUST be present (D6 check-0 absent-key rule, ported from #261 C3); an empty [] is well-formed and routes to the check-4 advisory. An ABSENT key is malformed → gate FAIL. A manuscript claim that contradicts a negative_results entry is NOT_SUPPORTED_BY_PROVENANCE (D4 derivation rule), not merely a disclosure advisory.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description"],
+        "properties": {
+          "description": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "result_file": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "known_limitations": {
+      "type": "array",
+      "description": "Declared material limitations of the experiment. The KEY MUST be present (D6 check-0 absent-key rule); empty [] is well-formed and routes to the check-4 advisory; an ABSENT key is malformed → gate FAIL. Surfaced in Limitations prose (D6 check-4 advisory).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description"],
+        "properties": {
+          "description": { "type": "string", "minLength": 1, "maxLength": 2000 }
+        }
+      }
+    }
+  }
+}

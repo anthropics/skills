@@ -1,0 +1,215 @@
+{
+  "tuple_id": "022-valid-arxiv-qwen-technical-report-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Bai2023Qwen",
+    "title": "Qwen Technical Report",
+    "authors": [
+      {
+        "family": "Bai",
+        "given": "Jinze"
+      },
+      {
+        "family": "Bai",
+        "given": "Shuai"
+      },
+      {
+        "family": "Chu",
+        "given": "Yunfei"
+      },
+      {
+        "family": "Cui",
+        "given": "Zeyu"
+      },
+      {
+        "family": "Dang",
+        "given": "Kai"
+      },
+      {
+        "family": "Deng",
+        "given": "Xiaodong"
+      },
+      {
+        "family": "Fan",
+        "given": "Yang"
+      },
+      {
+        "family": "Ge",
+        "given": "Wenbin"
+      },
+      {
+        "family": "Han",
+        "given": "Yu"
+      },
+      {
+        "family": "Huang",
+        "given": "Fei"
+      },
+      {
+        "family": "Hui",
+        "given": "Binyuan"
+      },
+      {
+        "family": "Ji",
+        "given": "Luo"
+      },
+      {
+        "family": "Li",
+        "given": "Mei"
+      },
+      {
+        "family": "Lin",
+        "given": "Junyang"
+      },
+      {
+        "family": "Lin",
+        "given": "Runji"
+      },
+      {
+        "family": "Liu",
+        "given": "Dayiheng"
+      },
+      {
+        "family": "Liu",
+        "given": "Gao"
+      },
+      {
+        "family": "Lu",
+        "given": "Chengqiang"
+      },
+      {
+        "family": "Lu",
+        "given": "Keming"
+      },
+      {
+        "family": "Ma",
+        "given": "Jianxin"
+      },
+      {
+        "family": "Men",
+        "given": "Rui"
+      },
+      {
+        "family": "Ren",
+        "given": "Xingzhang"
+      },
+      {
+        "family": "Ren",
+        "given": "Xuancheng"
+      },
+      {
+        "family": "Tan",
+        "given": "Chuanqi"
+      },
+      {
+        "family": "Tan",
+        "given": "Sinan"
+      },
+      {
+        "family": "Tu",
+        "given": "Jianhong"
+      },
+      {
+        "family": "Wang",
+        "given": "Peng"
+      },
+      {
+        "family": "Wang",
+        "given": "Shijie"
+      },
+      {
+        "family": "Wang",
+        "given": "Wei"
+      },
+      {
+        "family": "Wu",
+        "given": "Shengguang"
+      },
+      {
+        "family": "Xu",
+        "given": "Benfeng"
+      },
+      {
+        "family": "Xu",
+        "given": "Jin"
+      },
+      {
+        "family": "Yang",
+        "given": "An"
+      },
+      {
+        "family": "Yang",
+        "given": "Hao"
+      },
+      {
+        "family": "Yang",
+        "given": "Jian"
+      },
+      {
+        "family": "Yang",
+        "given": "Shusheng"
+      },
+      {
+        "family": "Yao",
+        "given": "Yang"
+      },
+      {
+        "family": "Yu",
+        "given": "Bowen"
+      },
+      {
+        "family": "Yuan",
+        "given": "Hongyi"
+      },
+      {
+        "family": "Yuan",
+        "given": "Zheng"
+      },
+      {
+        "family": "Zhang",
+        "given": "Jianwei"
+      },
+      {
+        "family": "Zhang",
+        "given": "Xingxuan"
+      },
+      {
+        "family": "Zhang",
+        "given": "Yichang"
+      },
+      {
+        "family": "Zhang",
+        "given": "Zhenru"
+      },
+      {
+        "family": "Zhou",
+        "given": "Chang"
+      },
+      {
+        "family": "Zhou",
+        "given": "Jingren"
+      },
+      {
+        "family": "Zhou",
+        "given": "Xiaohuan"
+      },
+      {
+        "family": "Zhu",
+        "given": "Tianhang"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2309.16609",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2309.16609",
+  "ref_slug": "bai-2023-qwen",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,203 @@
+name: materials-figure
+version: 2.1.0
+status: stable
+description: >
+  Declarative manifest for the static/dynamic split. SKILL.md uses this to
+  decide which fragments to load for a given figure request. The main axis is
+  the Python backend (mandatory for all figure work), which is a blocking gate:
+  it must be checked before any figure is drawn. The large body of design,
+  API, pattern, and QA material stays in on-demand references.
+
+# Minimal always_load: the profile protocol, figure contract, operating stance,
+# and 8-step workflow. materials_kb.yaml loads on demand only when a figure
+# contains materials-science entities (XRD/FTIR/performance).
+always_load:
+  - ../_shared/core/direction-profile.md
+  - static/core/contract.md
+  - static/core/stance.md
+  - static/core/workflow.md
+
+axes:
+  backend:
+    detect: |
+      BLOCKING GATE. The Python backend is mandatory for all figure drawing,
+      previewing, exporting, and visual QA. Before rendering, check Python and
+      required plotting packages (matplotlib, numpy, PIL; seaborn for
+      heatmaps/statistical plots). If the runtime or packages are unavailable,
+      stop before rendering and report the exact blocker. Do not generate mock
+      data, write plotting scripts, create previews, or render placeholder
+      figures until the claim, source-data anchor, and figure contract are
+      clear.
+    default: python
+    values:
+      python:
+        path: static/fragments/backend/python.md
+        triggers: ["Python", "matplotlib", "seaborn", "plot.py", "pyplot", ".py", "figure", "plot", "chart"]
+    multi: false
+
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+      thermal-insulation:
+        path: static/fragments/domain/thermal-insulation.md
+        triggers: ["thermal insulation", "aerogel", "foam", "insulation", "隔热", "保温"]
+
+  domain:
+    detect: "Which material domain does the figure target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: ["civil", "asphalt", "cement", "concrete", "pavement", "construction", "土木", "建筑", "道路"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "rubber", "thermoplastic", "高分子", "聚合物"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "corrosion", "金属", "合金"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "sintering", "alumina", "zirconia", "carbide", "陶瓷"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米"]
+
+references:
+  on_demand:
+    - condition: figure contains XRD peaks/phases, FTIR wavenumbers/functional groups, or performance values requiring validation against known material relations
+      path: static/core/materials_kb.yaml
+    - condition: create a complete figure package or audit a package
+      path: references/figure-package-protocol.md
+    - condition: before final delivery, journal-ready package, microscopy image plate, or statistics-heavy figure
+      path: references/figure-qa-contract.md
+    - condition: production export, DPI, TIFF/EPS/PDF, final size, font size, scale bars
+      path: references/figure-production-spec.md
+    - condition: XRD, FTIR, TG/DTG, SEM, TEM, fluorescence, rheology characterization plots
+      path: references/characterization-figures.md
+    - condition: strength, bonding, viscosity, performance curves
+      path: references/performance-figures.md
+    - condition: mechanism, curing, interface schematics
+      path: references/mechanism-figures.md
+    - condition: retention, water, aging, freeze, durability figures
+      path: references/durability-figures.md
+    - condition: radar, matrix, summary, trade-off comprehensive evaluation figures
+      path: references/summary-figures.md
+    - condition: fixed materials figure archetypes, process-structure-property mapping, mechanism evidence chains
+      path: references/materials-figure-atlas.md
+    - condition: end-to-end figure tutorials, step-by-step plotting walkthroughs
+      path: references/tutorials.md
+    - condition: chart families, visual hierarchy, and materials plotting recipes
+      path: references/chart-atlas.md
+    - condition: design theory and visual communication principles
+      path: references/figure-design-theory.md
+    - condition: WER-EA review figures, mechanism map, evidence heatmap, dosage-window figure
+      path: references/wer-ea-review-figure-contract.md
+    - condition: review-figure intake from reader handoff rows, citation matrices, figure handoff CSVs
+      path: references/review-figure-intake.md
+    - condition: caption claims, panel-level evidence limits, or caption boundary audit
+      path: references/caption_boundary.md
+    - condition: materials knowledge validation, XRD peak verification, FTIR wavenumber validation, performance value range checking
+      path: references/materials-validation.md
+    - condition: multi-figure storyboard, manuscript-level narrative composition, evidence dependencies, cross-figure non-redundancy
+      path: references/multi-figure-storyboard.md
+    - condition: Python API reference, PALETTE_MATERIALS, helper functions, export utilities
+      path: references/api.md
+    - condition: common materials plotting patterns, XRD overlay, FTIR tracking, mechanism schematic, image plate
+      path: references/common-patterns.md
+    - condition: ceramics review figures, Weibull plots, sintering curves, XRD patterns, or impedance spectra
+      path: references/ceramics-review-figure-contract.md
+    - condition: ceramics figure atlas, sintering-Weibull-XRD-conductivity figure library, or atlas data templates
+      path: references/ceramics-figure-atlas.md
+    - condition: WER-EA figure atlas, reusable review-figure library, atlas data templates, or figure-planning examples
+      path: references/wer-ea-figure-atlas.md
+    - condition: polymer figures, thermoplastic/thermoset/rubber/composite plots, or polymer processing figure packages
+      path: references/polymers-figure-package.md
+    - condition: metals figures, alloy/steel/aluminum/titanium/welding/heat-treatment plots, or metals figure packages
+      path: references/metals-figure-package.md
+    - condition: functional materials figures, semiconductor/dielectric/piezoelectric/photonic plots, or functional figure packages
+      path: references/functional-figure-package.md
+    - condition: nanomaterials figures, nanoparticle/nanotube/graphene/2D material plots, or nano figure packages
+      path: references/nano-figure-package.md
+    - condition: review-first visual inspiration and paper-derived patterns
+      path: references/paper-derived-visual-patterns.md
+    - condition: visual asset roadmap and asset production guide
+      path: references/visual-asset-roadmap.md
+    - condition: table system templates for comparison matrices
+      path: references/table-system.md
+    - condition: figure QA, font, font size, legend, units, resolution, or editable SVG text checks
+      path: references/figure_qa_report.md
+    - condition: gallery figures, visual examples, style presets, demo figures, or composite layout reference
+      path: references/figure-gallery.md
+    - condition: LLM-driven figure creation, CSV/TSV data plotting, one-click figure generation, chart recommendation
+      path: references/automatic-figure-package.md
+    - condition: 2026 materials-paper figure archetype observations, page-level layout patterns, or recommended accent palettes
+      path: references/materials-2026-observations.md
+    - condition: writing, auditing, or restyling a figure/panel legend
+      path: references/figure-legend-conventions.md
+    - condition: source-level walkthrough using retained materials4papers data or scripts
+      path: references/demos.md
+
+assets:
+  - assets
+
+scripts:
+  - scripts
+  - scripts/validate_materials_claims.py
+  - scripts/check_storyboard.py
+
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+
+handoffs:
+  provides:
+    figure-handoff:
+      description: "Figure planning and evidence mapping"
+      contract: ../../_shared/contracts/figure-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: citation-handoff
+      from: materials-citation
+      optional: true
+    - handoff: reader-package
+      from: materials-reader
+      optional: true
+    - handoff: data-package
+      from: materials-data
+      optional: true
+    - handoff: doe-handoff
+      from: materials-doe
+      optional: true
+
+release_checks:
+  # Commands are relative to the plugins/materials-skills plugin root.
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

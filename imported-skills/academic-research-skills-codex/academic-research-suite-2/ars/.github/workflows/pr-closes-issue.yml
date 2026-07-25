@@ -1,0 +1,62 @@
+name: PR Closes-Issue Check
+
+# Require every PR targeting main to reference at least one issue via
+# the GitHub auto-close keywords. Aligns 99 PR / 43 issue asymmetry —
+# every change should be traceable to a stated problem.
+#
+# Accepted keywords (case-insensitive, must use #N format):
+#   Closes #N, Close #N, Closed #N
+#   Fixes #N, Fix #N, Fixed #N
+#   Resolves #N, Resolve #N, Resolved #N
+#
+# Per feedback_github_pr_close_issue_keywords: keyword must be
+# immediately followed by #N (no intervening words), otherwise GitHub
+# auto-close does not fire.
+#
+# Override: include [skip-closes-check] in PR body with justification.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+concurrency:
+  group: pr-closes-issue-${{ github.event.pull_request.number }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  closes-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR body
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${PR_BODY:-}" ]; then
+            echo "::error::PR body is empty. Add a 'Closes #N' reference (or [skip-closes-check] with justification)."
+            exit 1
+          fi
+
+          if echo "$PR_BODY" | grep -qF '[skip-closes-check]'; then
+            echo "Override [skip-closes-check] present — skipping."
+            exit 0
+          fi
+
+          # Strict GitHub auto-close pattern: keyword + space + #N (no intervening tokens)
+          PATTERN='(^|[^a-zA-Z])(Clos(e|es|ed)|Fix(es|ed)?|Resolv(e|es|ed))[[:space:]]+#[0-9]+'
+          if echo "$PR_BODY" | grep -qiE "$PATTERN"; then
+            echo "Found valid closes-issue reference."
+            echo "$PR_BODY" | grep -iE "$PATTERN" | head -5
+            exit 0
+          fi
+
+          echo "::error::PR body must contain a GitHub auto-close keyword followed by #N."
+          echo "::error::Examples: 'Closes #134', 'Fixes #138', 'Resolves #102'"
+          echo "::error::Bypass: add [skip-closes-check] + justification to the PR body."
+          exit 1

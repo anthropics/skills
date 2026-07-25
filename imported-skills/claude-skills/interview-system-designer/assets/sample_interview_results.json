@@ -1,0 +1,382 @@
+[
+  {
+    "candidate_id": "candidate_001",
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_alice",
+    "date": "2024-01-15T09:00:00Z",
+    "scores": {
+      "coding_fundamentals": 3.5,
+      "system_design": 4.0,
+      "technical_leadership": 3.0,
+      "communication": 3.5,
+      "problem_solving": 4.0
+    },
+    "overall_recommendation": "Hire",
+    "gender": "male",
+    "ethnicity": "asian",
+    "years_experience": 6,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_001", 
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_bob",
+    "date": "2024-01-15T11:00:00Z",
+    "scores": {
+      "system_design": 3.5,
+      "technical_leadership": 3.5,
+      "mentoring": 3.0,
+      "cross_team_collaboration": 4.0,
+      "strategic_thinking": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "male",
+    "ethnicity": "asian", 
+    "years_experience": 6,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_002",
+    "role": "Senior Software Engineer", 
+    "interviewer_id": "interviewer_alice",
+    "date": "2024-01-16T09:00:00Z",
+    "scores": {
+      "coding_fundamentals": 2.5,
+      "system_design": 3.0,
+      "technical_leadership": 2.0,
+      "communication": 3.0,
+      "problem_solving": 3.0
+    },
+    "overall_recommendation": "No Hire",
+    "gender": "female",
+    "ethnicity": "hispanic",
+    "years_experience": 5,
+    "university_tier": "tier_2",
+    "previous_company_size": "startup"
+  },
+  {
+    "candidate_id": "candidate_002",
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_charlie", 
+    "date": "2024-01-16T11:00:00Z",
+    "scores": {
+      "system_design": 2.0,
+      "technical_leadership": 2.5,
+      "mentoring": 2.0,
+      "cross_team_collaboration": 3.0,
+      "strategic_thinking": 2.5
+    },
+    "overall_recommendation": "No Hire",
+    "gender": "female",
+    "ethnicity": "hispanic",
+    "years_experience": 5,
+    "university_tier": "tier_2",
+    "previous_company_size": "startup"
+  },
+  {
+    "candidate_id": "candidate_003",
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_david",
+    "date": "2024-01-17T14:00:00Z", 
+    "scores": {
+      "coding_fundamentals": 4.0,
+      "system_design": 3.5,
+      "technical_leadership": 4.0,
+      "communication": 4.0,
+      "problem_solving": 3.5
+    },
+    "overall_recommendation": "Strong Hire",
+    "gender": "male",
+    "ethnicity": "white",
+    "years_experience": 8,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_003",
+    "role": "Senior Software Engineer", 
+    "interviewer_id": "interviewer_alice",
+    "date": "2024-01-17T16:00:00Z",
+    "scores": {
+      "system_design": 4.0,
+      "technical_leadership": 4.0,
+      "mentoring": 3.5,
+      "cross_team_collaboration": 4.0,
+      "strategic_thinking": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "male",
+    "ethnicity": "white",
+    "years_experience": 8,
+    "university_tier": "tier_1", 
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_004",
+    "role": "Product Manager",
+    "interviewer_id": "interviewer_emma",
+    "date": "2024-01-18T10:00:00Z",
+    "scores": {
+      "product_strategy": 3.0,
+      "user_research": 3.5,
+      "data_analysis": 4.0,
+      "stakeholder_management": 3.0,
+      "communication": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "female",
+    "ethnicity": "black",
+    "years_experience": 4,
+    "university_tier": "tier_2",
+    "previous_company_size": "medium"
+  },
+  {
+    "candidate_id": "candidate_005", 
+    "role": "Product Manager",
+    "interviewer_id": "interviewer_frank",
+    "date": "2024-01-19T13:00:00Z",
+    "scores": {
+      "product_strategy": 2.5,
+      "user_research": 2.0,
+      "data_analysis": 3.0,
+      "stakeholder_management": 2.5,
+      "communication": 3.0
+    },
+    "overall_recommendation": "No Hire",
+    "gender": "male",
+    "ethnicity": "white",
+    "years_experience": 3,
+    "university_tier": "tier_3",
+    "previous_company_size": "startup"
+  },
+  {
+    "candidate_id": "candidate_006",
+    "role": "Junior Software Engineer",
+    "interviewer_id": "interviewer_alice", 
+    "date": "2024-01-20T09:00:00Z",
+    "scores": {
+      "coding_fundamentals": 3.0,
+      "debugging": 3.5,
+      "testing_basics": 3.0,
+      "collaboration": 4.0,
+      "learning_agility": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "female",
+    "ethnicity": "asian",
+    "years_experience": 1,
+    "university_tier": "bootcamp",
+    "previous_company_size": "none"
+  },
+  {
+    "candidate_id": "candidate_007",
+    "role": "Junior Software Engineer",
+    "interviewer_id": "interviewer_bob",
+    "date": "2024-01-21T10:30:00Z",
+    "scores": {
+      "coding_fundamentals": 2.0,
+      "debugging": 2.5, 
+      "testing_basics": 2.0,
+      "collaboration": 3.0,
+      "learning_agility": 3.0
+    },
+    "overall_recommendation": "No Hire",
+    "gender": "male",
+    "ethnicity": "hispanic",
+    "years_experience": 0,
+    "university_tier": "tier_2",
+    "previous_company_size": "none"
+  },
+  {
+    "candidate_id": "candidate_008",
+    "role": "Staff Frontend Engineer",
+    "interviewer_id": "interviewer_grace",
+    "date": "2024-01-22T14:00:00Z", 
+    "scores": {
+      "frontend_architecture": 4.0,
+      "system_design": 4.0,
+      "technical_leadership": 4.0,
+      "team_building": 3.5,
+      "strategic_thinking": 3.5
+    },
+    "overall_recommendation": "Strong Hire",
+    "gender": "female",
+    "ethnicity": "white",
+    "years_experience": 9,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_008",
+    "role": "Staff Frontend Engineer",
+    "interviewer_id": "interviewer_henry",
+    "date": "2024-01-22T16:00:00Z",
+    "scores": {
+      "frontend_architecture": 3.5,
+      "technical_leadership": 4.0,
+      "team_building": 4.0,
+      "cross_functional_collaboration": 4.0,
+      "organizational_impact": 3.5
+    },
+    "overall_recommendation": "Hire", 
+    "gender": "female",
+    "ethnicity": "white",
+    "years_experience": 9,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_009",
+    "role": "Data Scientist",
+    "interviewer_id": "interviewer_ivan",
+    "date": "2024-01-23T11:00:00Z",
+    "scores": {
+      "statistical_analysis": 3.5,
+      "machine_learning": 4.0,
+      "data_engineering": 3.0,
+      "business_acumen": 3.5,
+      "communication": 3.0
+    },
+    "overall_recommendation": "Hire",
+    "gender": "male",
+    "ethnicity": "indian",
+    "years_experience": 5,
+    "university_tier": "tier_1",
+    "previous_company_size": "medium"
+  },
+  {
+    "candidate_id": "candidate_010",
+    "role": "DevOps Engineer", 
+    "interviewer_id": "interviewer_jane",
+    "date": "2024-01-24T15:00:00Z",
+    "scores": {
+      "infrastructure_automation": 3.5,
+      "ci_cd_design": 4.0,
+      "monitoring_observability": 3.0,
+      "security_implementation": 3.5,
+      "incident_management": 4.0
+    },
+    "overall_recommendation": "Hire",
+    "gender": "female",
+    "ethnicity": "black",
+    "years_experience": 6,
+    "university_tier": "tier_2",
+    "previous_company_size": "startup"
+  },
+  {
+    "candidate_id": "candidate_011",
+    "role": "UX Designer",
+    "interviewer_id": "interviewer_karl",
+    "date": "2024-01-25T10:00:00Z",
+    "scores": {
+      "design_process": 4.0,
+      "user_research": 3.5, 
+      "design_systems": 4.0,
+      "cross_functional_collaboration": 3.5,
+      "design_leadership": 3.0
+    },
+    "overall_recommendation": "Hire",
+    "gender": "non_binary",
+    "ethnicity": "white",
+    "years_experience": 7,
+    "university_tier": "tier_1",
+    "previous_company_size": "medium"
+  },
+  {
+    "candidate_id": "candidate_012",
+    "role": "Engineering Manager",
+    "interviewer_id": "interviewer_lisa",
+    "date": "2024-01-26T13:30:00Z",
+    "scores": {
+      "people_leadership": 4.0,
+      "technical_background": 3.5,
+      "strategic_thinking": 3.5,
+      "performance_management": 4.0, 
+      "cross_functional_leadership": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "male",
+    "ethnicity": "white",
+    "years_experience": 8,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_013",
+    "role": "Senior Software Engineer", 
+    "interviewer_id": "interviewer_alice",
+    "date": "2024-01-27T09:00:00Z",
+    "scores": {
+      "coding_fundamentals": 4.0,
+      "system_design": 4.0,
+      "technical_leadership": 4.0,
+      "communication": 4.0,
+      "problem_solving": 4.0
+    },
+    "overall_recommendation": "Strong Hire",
+    "gender": "female",
+    "ethnicity": "asian",
+    "years_experience": 7,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_013",
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_charlie", 
+    "date": "2024-01-27T11:00:00Z",
+    "scores": {
+      "system_design": 3.5,
+      "technical_leadership": 3.5,
+      "mentoring": 4.0,
+      "cross_team_collaboration": 4.0,
+      "strategic_thinking": 3.5
+    },
+    "overall_recommendation": "Hire",
+    "gender": "female",
+    "ethnicity": "asian",
+    "years_experience": 7,
+    "university_tier": "tier_1",
+    "previous_company_size": "large"
+  },
+  {
+    "candidate_id": "candidate_014",
+    "role": "Senior Software Engineer",
+    "interviewer_id": "interviewer_david", 
+    "date": "2024-01-28T14:00:00Z",
+    "scores": {
+      "coding_fundamentals": 1.5,
+      "system_design": 2.0,
+      "technical_leadership": 1.0,
+      "communication": 2.0,
+      "problem_solving": 2.0
+    },
+    "overall_recommendation": "Strong No Hire",
+    "gender": "male",
+    "ethnicity": "white",
+    "years_experience": 4,
+    "university_tier": "tier_3",
+    "previous_company_size": "startup"
+  },
+  {
+    "candidate_id": "candidate_015",
+    "role": "Product Manager",
+    "interviewer_id": "interviewer_emma",
+    "date": "2024-01-29T11:00:00Z",
+    "scores": {
+      "product_strategy": 4.0,
+      "user_research": 3.5,
+      "data_analysis": 4.0,
+      "stakeholder_management": 4.0,
+      "communication": 3.5
+    }, 
+    "overall_recommendation": "Strong Hire",
+    "gender": "male",
+    "ethnicity": "black",
+    "years_experience": 5,
+    "university_tier": "tier_2",
+    "previous_company_size": "medium"
+  }
+]

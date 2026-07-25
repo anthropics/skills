@@ -1,0 +1,28 @@
+run_id: 2026-04-30T10-01-00Z-a1b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.4"
+    file: bad_run/deliverable.md
+    line: 7
+    description: >
+      Legal-effect drift (A1): Section 2.1 characterises Decree §12's primary effect
+      as "revoked immediately" with no grace period, while Section 2.3 describes
+      the same decree as imposing a "90-day suspension" before reinstatement
+      eligibility. These two characterisations are mutually incompatible; the decree
+      text specifies suspension + 90-day window, not immediate revocation.
+    suggested_fix: >
+      Pre-list Decree §12's effect inventory before drafting any section: effect =
+      "suspension, 90-day effective date, 24-month reinstatement window." Replace
+      "revoked immediately" in Section 2.1 with the suspension characterisation
+      consistent with Section 2.3 and the source text.
+generated_at: "2026-04-30T10:01:44.211Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

@@ -1,0 +1,239 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Materials Science Experiment Record"
+description: "Universal experiment record contract shared across materials-doe, materials-data, and materials-writing."
+type: object
+required:
+  - version
+  - record_type
+  - study_id
+  - created_by
+  - created_at
+  - response_variables
+  - factors
+  - design
+properties:
+  version:
+    type: string
+    pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    description: "Contract version."
+  record_type:
+    type: string
+    enum:
+      - experiment-design
+      - observational-study
+      - characterization-run
+  study_id:
+    type: string
+    minLength: 1
+  title:
+    type: string
+  created_by:
+    type: string
+    minLength: 1
+  created_at:
+    type: string
+    format: date
+  direction_profile:
+    type: object
+    properties:
+      material_family:
+        type: string
+      domain:
+        type: string
+      application:
+        type: string
+    additionalProperties: true
+  objectives:
+    type: array
+    items:
+      type: object
+      required:
+        - description
+        - response_variable
+      properties:
+        description:
+          type: string
+        response_variable:
+          type: string
+        optimization:
+          type: string
+          enum:
+            - maximize
+            - minimize
+            - target
+        target_value:
+          type: ["number", "null"]
+  response_variables:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - name
+        - unit
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        measurement_method:
+          type: string
+        replicate_count:
+          type: integer
+          minimum: 1
+  factors:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+        unit:
+          type: string
+        type:
+          type: string
+          enum:
+            - continuous
+            - categorical
+            - ordinal
+        levels:
+          type: array
+          minItems: 1
+  design:
+    type: object
+    required:
+      - type
+      - runs
+    properties:
+      type:
+        type: string
+        enum:
+          - full-factorial
+          - fractional-factorial
+          - Taguchi
+          - RSM
+          - Box-Behnken
+          - Central-Composite
+          - Plackett-Burman
+          - mixture
+          - custom
+      notes:
+        type: string
+      runs:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          required:
+            - run_id
+            - factor_levels
+          properties:
+            run_id:
+              type: string
+            factor_levels:
+              type: object
+              additionalProperties: true
+            randomization_order:
+              type: integer
+            block:
+              type: ["integer", "string"]
+            notes:
+              type: string
+  materials:
+    type: array
+    items:
+      type: object
+      required:
+        - role
+        - name
+      properties:
+        role:
+          type: string
+        name:
+          type: string
+        supplier:
+          type: ["string", "null"]
+        lot:
+          type: ["string", "null"]
+        specification:
+          type: ["string", "null"]
+        dosage:
+          type: ["number", "null"]
+  processing:
+    type: array
+    items:
+      type: object
+      required:
+        - step
+      properties:
+        step:
+          type: string
+        equipment:
+          type: string
+        parameters:
+          type: object
+          additionalProperties: true
+  characterization:
+    type: array
+    items:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        technique:
+          type: string
+        standard:
+          type: string
+        specimen_geometry:
+          type: string
+        conditioning:
+          type: string
+        instrument:
+          type: ["string", "null"]
+        parameters:
+          type: object
+          additionalProperties: true
+  evidence_links:
+    type: array
+    items:
+      type: object
+      required:
+        - claim
+      properties:
+        claim:
+          type: string
+        evidence_type:
+          type: string
+          enum:
+            - quantitative
+            - qualitative
+            - mechanistic
+            - computational
+        figure_or_table:
+          type: string
+        mechanism_evidence:
+          type: string
+        boundary:
+          type: string
+  terminology:
+    type: array
+    items:
+      type: object
+      required:
+        - canonical
+      properties:
+        canonical:
+          type: string
+        abbreviation:
+          type: string
+        variants:
+          type: array
+          items:
+            type: string
+additionalProperties: true

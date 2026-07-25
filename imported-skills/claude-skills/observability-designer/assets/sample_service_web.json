@@ -1,0 +1,113 @@
+{
+  "name": "customer-portal",
+  "type": "web",
+  "criticality": "high",
+  "user_facing": true,
+  "description": "Customer-facing web application for account management and billing",
+  "team": "frontend",
+  "environment": "production",
+  "dependencies": [
+    {
+      "name": "user-service",
+      "type": "api",
+      "criticality": "high"
+    },
+    {
+      "name": "billing-service",
+      "type": "api", 
+      "criticality": "high"
+    },
+    {
+      "name": "notification-service",
+      "type": "api",
+      "criticality": "medium"
+    },
+    {
+      "name": "cdn",
+      "type": "external",
+      "criticality": "medium"
+    }
+  ],
+  "pages": [
+    {
+      "path": "/dashboard",
+      "sla_load_time_ms": 2000,
+      "expected_concurrent_users": 1000
+    },
+    {
+      "path": "/billing",
+      "sla_load_time_ms": 3000,
+      "expected_concurrent_users": 200
+    },
+    {
+      "path": "/settings",
+      "sla_load_time_ms": 1500,
+      "expected_concurrent_users": 100
+    }
+  ],
+  "business_metrics": {
+    "daily_active_users": {
+      "metric": "count(user_sessions_started_total[1d])",
+      "target": 10000,
+      "unit": "users"
+    },
+    "session_duration": {
+      "metric": "avg(user_session_duration_seconds)",
+      "target": 300,
+      "unit": "seconds"
+    },
+    "bounce_rate": {
+      "metric": "sum(rate(page_views_bounced_total[1h])) / sum(rate(page_views_total[1h]))",
+      "target": 0.3,
+      "unit": "percentage"
+    }
+  },
+  "infrastructure": {
+    "container_orchestrator": "kubernetes",
+    "replicas": 4,
+    "cpu_limit": "1000m",
+    "memory_limit": "2Gi",
+    "storage": {
+      "type": "nfs",
+      "size": "50Gi"
+    },
+    "ingress": {
+      "type": "nginx",
+      "ssl_termination": true,
+      "rate_limiting": {
+        "requests_per_second": 100,
+        "burst": 200
+      }
+    }
+  },
+  "monitoring": {
+    "synthetic_checks": [
+      {
+        "name": "login_flow",
+        "url": "/auth/login",
+        "frequency": "1m",
+        "locations": ["us-east", "eu-west", "ap-south"]
+      },
+      {
+        "name": "checkout_flow", 
+        "url": "/billing/checkout",
+        "frequency": "5m",
+        "locations": ["us-east", "eu-west"]
+      }
+    ],
+    "rum": {
+      "enabled": true,
+      "sampling_rate": 0.1
+    }
+  },
+  "compliance_requirements": [
+    "GDPR",
+    "CCPA"
+  ],
+  "tags": [
+    "frontend",
+    "customer-facing",
+    "billing",
+    "high-traffic"
+  ]
+}

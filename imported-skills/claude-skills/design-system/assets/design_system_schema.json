@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alirezarezvani/claude-skills/blob/main/markdown-html/skills/design-system/assets/design_system_schema.json",
+  "title": "markdown-html design-system customization config",
+  "description": "JSON schema for the design-system config written by onboard.py and consumed by every markdown-html converter via config_loader.py. Lives at ~/.config/markdown-html/design-system.json (global) or ./.markdown-html/design-system.json (project).",
+  "type": "object",
+  "required": ["version", "skill", "default_output_dir", "brand", "typography", "design_style", "code_theme", "toc"],
+  "properties": {
+    "version": {"type": "integer", "const": 1, "description": "Schema version. Bump on breaking changes to the layout."},
+    "skill": {"type": "string", "const": "design-system"},
+    "default_output_dir": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Where converters save generated HTML by default. Must be a writable path. The orchestrator's output_path_resolver.py also accepts a --out override per conversion."
+    },
+    "brand": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "primary": {"type": "string", "pattern": "^#?[0-9a-fA-F]{6}$", "description": "Primary brand color, HEX."},
+        "accent": {"type": ["string", "null"], "pattern": "^#?[0-9a-fA-F]{6}$|^$", "description": "Optional accent color. If null/empty, brand_palette_validator derives it from the primary via hue-shift + lighten."},
+        "bg": {"type": ["string", "null"], "description": "Optional background override. If null, derived from primary."},
+        "text": {"type": ["string", "null"], "description": "Optional body text override. If null, derived (off-white on dark bg, near-black on light bg)."}
+      }
+    },
+    "typography": {
+      "type": "object",
+      "required": ["heading_font", "body_font"],
+      "properties": {
+        "heading_font": {"type": "string", "description": "Google Font family for headings. e.g., Inter, Source Serif 4, Playfair Display."},
+        "body_font": {"type": "string", "description": "Google Font family for body text."},
+        "scale_ratio": {"type": "number", "minimum": 1.0, "maximum": 2.0, "description": "Modular type-scale ratio. 1.25 = major third (default), 1.333 = perfect fourth, 1.5 = perfect fifth."}
+      }
+    },
+    "design_style": {
+      "type": "string",
+      "enum": ["editorial", "technical", "minimal", "playful"],
+      "description": "Layout density preset consumed by every converter. editorial = magazine-like with wide margins and pull-quotes; technical = docs-like with sticky TOC and code emphasis; minimal = sparse with maximum whitespace; playful = product-marketing with color blocks and varied scale."
+    },
+    "code_theme": {
+      "type": "string",
+      "enum": ["light", "dark", "auto"],
+      "description": "Prism.js theme selection. auto = follows prefers-color-scheme."
+    },
+    "toc": {
+      "type": "object",
+      "required": ["behavior"],
+      "properties": {
+        "behavior": {"type": "string", "enum": ["sticky-sidebar", "collapsible-top", "inline", "none"]},
+        "max_depth": {"type": "integer", "minimum": 1, "maximum": 6, "description": "Deepest heading level included in the TOC."}
+      }
+    },
+    "company_name": {"type": "string", "description": "Optional, shown in footer of every generated HTML."},
+    "logo_url": {"type": "string", "description": "Optional. Base64-embedded at render time by default; pass --logo-mode link to inline the URL instead."},
+    "derived_palette": {
+      "type": "object",
+      "description": "12 CSS custom properties derived from the brand input by brand_palette_validator.derive_palette(). Stored here so every converter has identical tokens without re-deriving. Keys are CSS variable names; values are HEX or rgba() strings.",
+      "properties": {
+        "--md-bg": {"type": "string"},
+        "--md-surface": {"type": "string"},
+        "--md-border": {"type": "string"},
+        "--md-text": {"type": "string"},
+        "--md-text-muted": {"type": "string"},
+        "--md-accent": {"type": "string"},
+        "--md-accent-soft": {"type": "string"},
+        "--md-code-bg": {"type": "string"},
+        "--md-link": {"type": "string"},
+        "--md-link-hover": {"type": "string"},
+        "--md-success": {"type": "string"},
+        "--md-warn": {"type": "string"}
+      }
+    },
+    "setup_completed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "ISO-8601 timestamp written by onboard.py on successful completion. The orchestrator refuses to convert if this is null."
+    }
+  }
+}

@@ -1,0 +1,45 @@
+schema_version: '1.0'
+audit_run_id: 2026-05-18T12:34:56Z-a1b2
+report_reference_date: '2026-05-18'
+findings:
+- finding_id: TF-001
+  finding_kind: TEMPORAL-METADATA-MISSING
+  severity: LOW
+  mode: null
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: This differs from the 1998 edition of the standard.<!--ref:standard-2020ed-->
+  matched_span: null
+  bound_refs:
+  - ref_slug: standard-2020ed
+    timeline_entry: standard-2020ed
+  bound_event: null
+  bound_dates: null
+  rationale: standard-2020ed has no effective_date_range; anachronism check cannot
+    run.
+  suggested_fix: null
+- finding_id: TF-002
+  finding_kind: TEMPORAL-COMPARATOR-UNMATERIALIZED
+  severity: MEDIUM
+  mode: 3
+  block_eligible: false
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: This differs from the 1998 edition of the standard.<!--ref:standard-2020ed-->
+  matched_span:
+    text: 1998 edition
+    char_start: 22
+    char_end: 34
+  bound_refs:
+  - ref_slug: standard-2020ed
+    timeline_entry: standard-2020ed
+  bound_event: null
+  bound_dates: null
+  rationale: Comparator '1998 edition' (Form B, year=1998) references version family
+    'standard-family' but no timeline entry exists for that year. v3.9.4 reports this
+    as claim-unsupported; v3.10 CC5 may escalate to phantom.
+  suggested_fix: Either add a timeline entry for the 1998 version of standard-family,
+    or rewrite the prose to remove the comparator claim.

@@ -1,0 +1,9 @@
+Hi, I'm working on a paper about AI in higher education quality assurance.
+
+I've already drafted an abstract and collected about 25 papers from Google Scholar and Semantic Scholar. Could you take a look and see what you can do?
+
+**Abstract draft (250 words):**
+
+> AI-augmented quality assurance is reshaping how higher education institutions evaluate teaching, learning, and institutional performance. This paper surveys the emerging landscape of AI applications in higher education quality assurance, focusing on three areas: (1) automated assessment of student learning outcomes, (2) institutional accreditation evidence collection, and (3) faculty teaching evaluation. Drawing on 25 recent studies (2022-2026) across Asia-Pacific, Europe, and North America, we identify three convergent patterns and two divergent ones. The convergent patterns are: rising adoption of LLM-based formative feedback tools in undergraduate teaching; standardization of AI-assisted evidence inventories in accreditation; and growing concern over algorithmic bias in faculty evaluation. The divergent patterns are: regulatory regimes vary substantially between EU AI Act compliance and US state-level patchwork; institutional governance models split into centralized AI offices versus distributed faculty-led pilots. We argue that quality assurance frameworks must explicitly distinguish AI as evidence source versus AI as evaluator, and that this distinction has implications for both training data governance and institutional accreditation standards. The paper concludes with three recommendations for HEI quality assurance offices considering AI adoption.
+
+**Literature collection:** 25 papers, mix of journal articles and conference papers, attached as PDFs in `~/Documents/HE-QA-AI-papers/`. Topics include: LLM in formative assessment (8 papers), AI ethics in higher ed (5), accreditation automation (4), bias in faculty evaluation (4), institutional governance (4).

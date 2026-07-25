@@ -1,0 +1,34 @@
+{
+  "summary": {
+    "files_scanned": 1,
+    "files_with_issues": 1,
+    "total_issues": 9,
+    "critical": 3,
+    "serious": 4,
+    "moderate": 2,
+    "minor": 0,
+    "verdict": "FAIL"
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "category": "IMG-ALT",
+      "file": "sample-component.tsx",
+      "line": 7,
+      "code": "<img src={user.avatar} />",
+      "wcag": "1.1.1",
+      "message": "Image missing alt attribute",
+      "fix": "Add alt text: alt=\"description of image\""
+    },
+    {
+      "severity": "critical",
+      "category": "KB-CLICK",
+      "file": "sample-component.tsx",
+      "line": 5,
+      "code": "<div className=\"card\" onClick={() => onEdit(user.id)}>",
+      "wcag": "2.1.1",
+      "message": "Click handler on non-interactive element without keyboard support",
+      "fix": "Use <button> or add role=\"button\", tabIndex={0}, onKeyDown"
+    }
+  ]
+}

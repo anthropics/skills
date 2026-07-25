@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Figure"
+  short_description: "Journal-ready figure planning and lightweight SVG plotting."
+  brand_color: "#7A5D42"
+  default_prompt: "Use $materials-figure to design a journal-ready figure package for these materials data."
+
+policy:
+  allow_implicit_invocation: true

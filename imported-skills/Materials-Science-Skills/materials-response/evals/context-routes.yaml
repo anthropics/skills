@@ -1,0 +1,102 @@
+route_scenarios:
+  - name: default-point-by-point
+    axes:
+      response_task: point-by-point
+      comment_type: mixed
+      journal_family: materials
+      tone: academic
+      material_family: civil
+      domain: civil
+      experiment_type: none
+    target_bytes: 36000
+    max_bytes: 40000
+
+  - name: gate-report-to-response
+    axes:
+      response_task: risk-audit
+      comment_type: scope
+      journal_family: ccc
+      tone: firm
+      material_family: neutral
+      domain: general
+      experiment_type: none
+    on_demand:
+      - weakness-routing
+      - evidence-contract
+      - response-output-contract
+    target_bytes: 42000
+    max_bytes: 46000
+
+  - name: response-to-writing
+    axes:
+      response_task: revision-plan
+      comment_type: mechanism
+      journal_family: cbm-jbe
+      tone: academic
+      material_family: civil
+      domain: civil
+      experiment_type: mechanism
+    on_demand:
+      - evidence-contract
+      - remediation-plans
+    companions:
+      - skill: materials-writing
+        required_axes:
+          - paper_type
+          - section
+          - language
+          - journal_family
+          - material_family
+          - domain
+          - input_source
+        axes:
+          paper_type: experimental-manuscript
+          section: results-discussion
+          language: en
+          journal_family: CBM
+          material_family: civil
+          domain: civil
+          input_source: manual
+    target_bytes: 90000
+    max_bytes: 100000
+
+  - name: response-to-submission
+    axes:
+      response_task: document-format
+      comment_type: writing
+      journal_family: cbm-jbe
+      tone: academic
+      material_family: civil
+      domain: civil
+      experiment_type: none
+    on_demand:
+      - response-output-contract
+      - document-format
+    companions:
+      - skill: materials-submission
+        required_axes:
+          - task
+          - journal
+          - article_type
+        axes:
+          task: full-package
+          journal: cbm
+          article_type: research-article
+    target_bytes: 70000
+    max_bytes: 78000
+
+  - name: missing-revision-proof
+    axes:
+      response_task: risk-audit
+      comment_type: performance
+      journal_family: ccc
+      tone: academic
+      material_family: neutral
+      domain: general
+      experiment_type: performance
+    on_demand:
+      - evidence-contract
+      - response-output-contract
+      - risk-audit
+    target_bytes: 42000
+    max_bytes: 42000

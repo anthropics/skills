@@ -1,0 +1,167 @@
+version: "1.1.0"
+status: stable
+
+context_budget:
+  target_activation_bytes: 16384
+  max_activation_bytes: 18432
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 30
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes: [review_depth, journal_family, review_scope, material_family, domain]
+  required_route_scenarios: [default-standard-full, quick-precheck-figures, methodology-asphalt, mechanism-polymers, paper-production-weakness-rows]
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/workflow.md
+
+axes:
+  review_depth:
+    default: standard
+    values:
+      quick-scan:
+        path: references/qa-checklist.md
+        triggers: ["quick review", "desk reject risk", "precheck", "screening"]
+      standard:
+        path: references/review-axes.md
+        triggers: ["peer review", "review report", "pre-submission", "audit"]
+      detailed:
+        path: references/report-structure.md
+        triggers: ["detailed review", "full referee report", "major revision risk"]
+
+  journal_family:
+    default: materials
+    values:
+      materials:
+        path: static/core/workflow.md
+        triggers: ["materials journal", "generic materials journal"]
+      CBM:
+        path: references/editorial-criteria.md
+        triggers: ["CBM", "Construction and Building Materials"]
+      CCC:
+        path: references/editorial-criteria.md
+        triggers: ["CCC", "Cement and Concrete Composites", "Cement and Concrete Research"]
+      RMPD:
+        path: references/editorial-criteria.md
+        triggers: ["RMPD", "Road Materials and Pavement Design", "IJPE", "JRE", "pavement"]
+      JBE:
+        path: references/editorial-criteria.md
+        triggers: ["JBE", "Journal of Building Engineering", "CSCM", "building"]
+
+  review_scope:
+    default: full-manuscript
+    values:
+      full-manuscript:
+        path: static/fragments/review_scope/full-manuscript.md
+        triggers: ["full review", "complete manuscript", "comprehensive", "全文审稿", "完整"]
+      figures-tables:
+        path: static/fragments/review_scope/figures-tables.md
+        triggers: ["figure review", "table review", "visual check", "图表审稿", "图片"]
+      methodology:
+        path: static/fragments/review_scope/methodology.md
+        triggers: ["method review", "experimental design", "statistical", "方法审稿", "实验设计"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+
+  domain:
+    detect: "Which material domain does the manuscript target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      civil:
+        path: static/fragments/domain/civil.md
+        triggers: ["civil", "asphalt", "cement", "concrete", "pavement", "construction", "土木", "建筑", "道路"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "rubber", "elastomer", "高分子", "聚合物"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "corrosion", "金属", "合金"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "sintering", "alumina", "zirconia", "carbide", "陶瓷"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米"]
+      mechanism:
+        path: references/mechanism-evidence-checklist.md
+        triggers: ["mechanism", "FTIR", "SEM", "fluorescence", "rheology", "XRD", "TG"]
+      thermal-insulation:
+        path: references/insulation-reviewer-criteria.md
+        triggers: ["thermal insulation", "aerogel", "foam", "insulation", "隔热", "保温"]
+
+references:
+  on_demand:
+    stance:
+      path: ../_shared/core/stance.md
+      when: A review needs detailed collaboration stance or uncertainty handling.
+    evidence-contract:
+      path: ../_shared/core/evidence-contract.md
+      when: A review audits claim-evidence alignment or evidence completeness.
+    claim-strength-ladder:
+      path: ../_shared/core/claim-strength-ladder.md
+      when: A review audits novelty, mechanism, durability, or application overclaims.
+    ethics:
+      path: ../_shared/core/ethics.md
+      when: A review raises integrity, attribution, authorship, or disclosure concerns.
+    weakness-routing:
+      path: ../_shared/paper-production/weakness-routing.md
+      when: A paper-production review needs structured revision routing rows.
+    mechanism-evidence:
+      path: references/mechanism-evidence-checklist.md
+      when: A review evaluates chemical, phase, morphology, rheology, or interface mechanisms.
+    asphalt-criteria:
+      path: references/asphalt-reviewer-criteria.md
+      when: A review targets asphalt, emulsified asphalt, tack coat, or pavement materials.
+    polymers-criteria:
+      path: references/polymers-reviewer-criteria.md
+      when: A review targets polymers, resins, rubbers, or polymer composites.
+    functional-reviewer-criteria:
+      path: references/functional-reviewer-criteria.md
+      when: The manuscript targets functional, electronic, dielectric, piezoelectric, or semiconductor materials.
+    nano-reviewer-criteria:
+      path: references/nano-reviewer-criteria.md
+      when: The manuscript targets nanomaterials, nanoparticles, 2D materials, or nanocomposites.
+
+assets: []
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+
+handoffs:
+  provides: {}
+  consumes: []
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

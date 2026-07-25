@@ -1,0 +1,149 @@
+{
+  "skill_name": "materials-paper-to-patent",
+  "evals": [
+    {
+      "id": "claim-structure-valid",
+      "prompt": "Convert this paper about waterborne epoxy modified emulsified asphalt into a Chinese invention patent. The paper describes: (1) a two-component system with waterborne epoxy resin and curing agent; (2) emulsified asphalt at 60% solid content; (3) epoxy-to-asphalt ratio of 10-30%; (4) mixing at 25 °C for 5 min. Draft the independent claim.",
+      "expected_output": "The assistant must draft an independent claim that includes all necessary technical features: (a) the two-component nature (waterborne epoxy resin + curing agent); (b) the emulsified asphalt component with solid content; (c) the epoxy-to-asphalt ratio range; (d) the mixing conditions. The claim must be a single sentence with proper preamble ('A ... composition, characterized in that ...') and must not include optional or preferred features that belong in dependent claims.",
+      "assertions": [
+        {
+          "name": "preamble_correct",
+          "description": "The independent claim has a proper preamble identifying the invention type (composition/method/device)."
+        },
+        {
+          "name": "essential_features_present",
+          "description": "All four essential technical features (two-component epoxy, emulsified asphalt, ratio range, mixing conditions) appear in the independent claim."
+        },
+        {
+          "name": "no_optional_in_independent",
+          "description": "The independent claim does not include optional, preferred, or non-essential features that belong in dependent claims."
+        },
+        {
+          "name": "single_sentence",
+          "description": "The independent claim is structured as a single sentence per Chinese patent convention."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "dependent-claim-reference",
+      "prompt": "Draft a full claim set for the waterborne epoxy modified emulsified asphalt patent. The independent claim covers the basic composition. Add dependent claims for: (a) preferred epoxy-to-asphalt ratio of 15-25%; (b) addition of silane coupling agent at 0.5-2 wt%; (c) curing agent being polyamide or polyether amine; (d) solid content of emulsified asphalt being 55-65%.",
+      "expected_output": "The assistant must draft dependent claims that correctly reference back to the independent claim (Claim 1). Each dependent claim must use proper reference language ('The composition according to claim 1, wherein ...') and must further limit the scope of the referenced claim. The dependent claims must be numbered sequentially and must not introduce new independent subject matter.",
+      "assertions": [
+        {
+          "name": "correct_reference_format",
+          "description": "Each dependent claim correctly references the independent claim using the proper format ('according to claim 1, wherein...')."
+        },
+        {
+          "name": "sequential_numbering",
+          "description": "Claims are numbered sequentially with the independent claim as Claim 1 and dependent claims as Claims 2, 3, 4, etc."
+        },
+        {
+          "name": "scope_limitation",
+          "description": "Each dependent claim further limits the scope of claim 1 by narrowing a parameter range or adding a specific feature."
+        },
+        {
+          "name": "no_new_independent_subject",
+          "description": "Dependent claims do not introduce new independent subject matter or broaden the scope of claim 1."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "anti-pattern-detection",
+      "prompt": "Convert this computational materials science paper into a patent. The paper describes a machine learning model that predicts the compressive strength of concrete based on mix design parameters. The model uses a random forest algorithm trained on 5000 data points and achieves R² = 0.95. It runs on a standard computer.",
+      "expected_output": "The assistant must detect patent anti-patterns: (1) algorithm-software fallback — pure ML prediction models are typically classified as 'rules and methods for mental activities' under Chinese patent law (Article 25) and are not patentable subject matter unless tied to a specific technical process or device; (2) missing technical features — the invention lacks a concrete technical solution (e.g., a specific sensor + controller system, or a manufacturing process that uses the prediction). The assistant should warn the user and suggest reframing as a method for manufacturing concrete with the ML model as part of a quality control system.",
+      "assertions": [
+        {
+          "name": "algorithm_software_anti_pattern_detected",
+          "description": "The assistant flags the ML prediction model as likely falling under the algorithm-software anti-pattern for patentability."
+        },
+        {
+          "name": "patentability_warning_issued",
+          "description": "The assistant explicitly warns about Chinese patent law Article 25 (rules and methods for mental activities) and the risk of rejection."
+        },
+        {
+          "name": "reframing_suggestion_provided",
+          "description": "The assistant suggests reframing the invention as a technical process (e.g., manufacturing method with embedded quality control) rather than a pure algorithm."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "unit-consistency",
+      "prompt": "Draft a Chinese patent for a high-temperature ceramic composite. The paper uses: sintering temperature 1600 °C, holding time 2 h, heating rate 5 °C/min, pressure 30 MPa, particle size 0.5 μm, and flexural strength 450 MPa. The patent draft should use Chinese conventions for units.",
+      "expected_output": "The assistant must ensure unit consistency throughout the patent: (1) temperature in °C (not K or °F); (2) time in h, min, or s consistently; (3) pressure in MPa (not Pa, kPa, or atm); (4) particle size in μm (not nm or mm, unless conversion is explicitly stated); (5) strength in MPa. The assistant must check that the same quantity is always expressed in the same unit across the specification, claims, and examples. If the source paper uses mixed units, the assistant should normalize them.",
+      "assertions": [
+        {
+          "name": "temperature_unit_consistent",
+          "description": "All temperature values use °C consistently throughout the patent text."
+        },
+        {
+          "name": "pressure_unit_consistent",
+          "description": "All pressure values use MPa consistently; no mixing of Pa, kPa, atm, or bar."
+        },
+        {
+          "name": "length_unit_consistent",
+          "description": "All particle size or dimension values use consistent units (e.g., μm) without unmotivated switching."
+        },
+        {
+          "name": "unit_normalization_applied",
+          "description": "If the source uses mixed units for the same quantity type, the assistant normalizes them to a single unit system."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "invention-type-alignment",
+      "prompt": "Convert this paper about a novel SBS-modified asphalt mixture production process into a patent. The paper describes: (1) pre-heating asphalt to 170 °C; (2) adding SBS at 4 wt% under high-shear mixing at 4000 rpm for 60 min; (3) adding sulfur as crosslinking agent at 0.1 wt%; (4) continuing mixing at 3000 rpm for 30 min; (5) cooling to 140 °C. The paper also describes the final material properties (penetration, softening point, ductility).",
+      "expected_output": "The assistant must classify the invention type as process-material (a method of making a modified material) and ensure the claim structure aligns: the independent claim should be a process claim ('A method for preparing SBS-modified asphalt, characterized in that it comprises the following steps...'), and dependent claims can cover specific process parameters. A product-by-process claim for the resulting material may also be appropriate. The assistant must not misclassify as device or system — there is no apparatus invention here. The invention type classification should be consistent with the static/fragments/invention/ directory structure.",
+      "assertions": [
+        {
+          "name": "invention_type_classified",
+          "description": "The assistant explicitly classifies the invention as process-material type."
+        },
+        {
+          "name": "claim_type_matches_invention",
+          "description": "The independent claim is a process claim ('method for preparing...'), matching the process-material classification."
+        },
+        {
+          "name": "no_device_misclassification",
+          "description": "The assistant does not misclassify the invention as device, apparatus, or system type."
+        },
+        {
+          "name": "product_by_process_considered",
+          "description": "The assistant considers or drafts a product-by-process claim for the resulting material where appropriate."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "disclosure-light-claims-strict",
+      "prompt": "Analyze a source-grounded materials disclosure, then explain how the route changes for claims-only drafting and a complete patent package.",
+      "expected_output": "Disclosure analysis stays light and stops before formal claims. Claim-set and full-draft routes load the patent knowledge base, Chinese drafting guide, detailed stage gates, and claim checklist before formal Chinese claims or specification drafting. Unsupported features never enter formal claims, and needs-confirmation features become inventor questions. Any unresolved needs-confirmation item or inventor question forces overall status incomplete-draft until resolved; review-draft or completed package status is not allowed.",
+      "assertions": [
+        {
+          "name": "disclosure_analysis_stays_light",
+          "description": "Disclosure analysis does not load the full patent knowledge base or output package contract."
+        },
+        {
+          "name": "formal_claims_load_kb",
+          "description": "Claim-set and full-draft routes load patent_kb.yaml and the claim checklist before drafting."
+        },
+        {
+          "name": "formal_chinese_drafting_loads_guide",
+          "description": "Claim-set and full-draft routes load the Chinese drafting guide before formal Chinese claims or specification drafting."
+        },
+        {
+          "name": "unsupported_features_are_excluded",
+          "description": "Unsupported features are excluded from formal claims and needs-confirmation features become inventor questions."
+        },
+        {
+          "name": "unresolved_confirmation_blocks_completion",
+          "description": "Any unresolved needs-confirmation item or inventor question forces overall status incomplete-draft until resolved; review-draft or completed package status is not allowed."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

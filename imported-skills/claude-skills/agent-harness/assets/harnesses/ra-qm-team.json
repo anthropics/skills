@@ -1,0 +1,848 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "ra-qm-team",
+  "skill_count": 19,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "eu-ai-act-specialist",
+      "path": "ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist",
+      "description": "EU AI Act (Regulation (EU) 2024/1689) operational compliance for compliance teams. Three Article-level decisions: (1) What's the risk tier of this AI system \u2014 prohibited (Art. 5), high-risk (Art. 6 + Annex III), limited-risk (Art. 50), or minimal-risk? (2) For high-risk systems, what's the Article 43 conformity assessment route (Module A internal control vs Module H full QMS + notified body) and what goes in the Annex IV technical documentation? (3) Per organizational role (provider / deployer / importer / distributor / authorized representative), what are the active obligations and \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/ai_act_obligation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/ai_act_obligation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/ai_system_risk_classifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/ai_system_risk_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/conformity_assessment_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-eu-ai-act/skills/eu-ai-act-specialist/scripts/conformity_assessment_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cross_framework_mapping_ai_act.md",
+        "eu_ai_act_titles.md",
+        "gpai_obligations.md",
+        "high_risk_systems_annex_iii.md"
+      ]
+    },
+    {
+      "name": "iso42001-specialist",
+      "path": "ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist",
+      "description": "ISO/IEC 42001:2023 AI Management System (AIMS) specialist for compliance teams running internal audits. Three decisions: (1) Where are the gaps against Clauses 4-10 and what do we close first? (2) What goes in the AI risk register and which Annex A controls treat each risk? (3) What's the 12-month internal audit plan that satisfies Clause 9.2? Use when preparing for certification, scoping internal audit cycles, or onboarding AI systems into an existing ISMS (27001) / QMS (13485) program. NOT an executive AI strategy skill (see chief-ai-officer-advisor). NOT EU AI Act compliance (see \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/ai_risk_register_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/ai_risk_register_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/aims_audit_scheduler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/aims_audit_scheduler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/aims_gap_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/compliance-team-iso42001/skills/iso42001-specialist/scripts/aims_gap_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "aims_controls_annex_a.md",
+        "aims_implementation_guide.md",
+        "cross_framework_mapping_ai.md",
+        "iso42001_clauses.md"
+      ]
+    },
+    {
+      "name": "agent-decision-receipts",
+      "path": "ra-qm-team/skills/agent-decision-receipts",
+      "description": "Mint a tamper-evident, post-quantum-signed receipt for a consequential agent action (deploy, delete, pay, grant-access, model decision) so it can be verified later from the certificate alone. Use when an autonomous agent takes a side-effecting action that may need to be proven later, or when satisfying EU AI Act Article 12 record-keeping. Three decisions: whether an action needs a receipt, minting it, verifying it. Signing is delegated to the open-source OpenAgentOntology package. Not after-the-fact log analysis; not a hosted notary; not a legal opinion.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/agent-decision-receipts/scripts/build_action_manifest.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/agent-decision-receipts/scripts/build_action_manifest.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "receipt-fields.md"
+      ]
+    },
+    {
+      "name": "capa-officer",
+      "path": "ra-qm-team/skills/capa-officer",
+      "description": "CAPA system management for medical device QMS. Covers root cause analysis, corrective action planning, effectiveness verification, and CAPA metrics. Use when running CAPA investigations, 5-Why analysis, fishbone diagrams, root cause determination, corrective action tracking, effectiveness verification, or CAPA program optimization.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/capa-officer/scripts/capa_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/capa-officer/scripts/capa_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 ra-qm-team/skills/capa-officer/scripts/capa_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/capa-officer/scripts/root_cause_analyzer.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/capa-officer/scripts/root_cause_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "effectiveness-verification-guide.md",
+        "rca-methodologies.md"
+      ]
+    },
+    {
+      "name": "eu-ai-act-specialist",
+      "path": "ra-qm-team/skills/eu-ai-act-specialist",
+      "description": "EU AI Act (Regulation (EU) 2024/1689) operational compliance for compliance teams. Three Article-level decisions: (1) What's the risk tier of this AI system \u2014 prohibited (Art. 5), high-risk (Art. 6 + Annex III), limited-risk (Art. 50), or minimal-risk? (2) For high-risk systems, what's the Article 43 conformity assessment route (Module A internal control vs Module H full QMS + notified body) and what goes in the Annex IV technical documentation? (3) Per organizational role (provider / deployer / importer / distributor / authorized representative), what are the active obligations and \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/eu-ai-act-specialist/scripts/ai_act_obligation_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/eu-ai-act-specialist/scripts/ai_act_obligation_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/eu-ai-act-specialist/scripts/ai_system_risk_classifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/eu-ai-act-specialist/scripts/ai_system_risk_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/eu-ai-act-specialist/scripts/conformity_assessment_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/eu-ai-act-specialist/scripts/conformity_assessment_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cross_framework_mapping_ai_act.md",
+        "eu_ai_act_titles.md",
+        "gpai_obligations.md",
+        "high_risk_systems_annex_iii.md"
+      ]
+    },
+    {
+      "name": "fda-consultant-specialist",
+      "path": "ra-qm-team/skills/fda-consultant-specialist",
+      "description": "FDA regulatory consultant for medical device companies. Provides 510(k)/PMA/De Novo pathway guidance, QMSR (21 CFR 820, which incorporates ISO 13485:2016 by reference since 2026-02-02; formerly QSR) compliance, HIPAA assessments, and device cybersecurity. Use when user mentions FDA submission, 510(k), PMA, De Novo, QMSR, QSR, ISO 13485 for FDA, premarket, predicate device, substantial equivalence, HIPAA medical device, or FDA cybersecurity.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/fda-consultant-specialist/scripts/fda_submission_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/fda-consultant-specialist/scripts/fda_submission_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/fda-consultant-specialist/scripts/hipaa_risk_assessment.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/fda-consultant-specialist/scripts/hipaa_risk_assessment.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/fda-consultant-specialist/scripts/qsr_compliance_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/fda-consultant-specialist/scripts/qsr_compliance_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "device_cybersecurity_guidance.md",
+        "fda_capa_requirements.md",
+        "fda_submission_guide.md",
+        "hipaa_compliance_framework.md",
+        "qsr_compliance_requirements.md"
+      ]
+    },
+    {
+      "name": "gdpr-dsgvo-expert",
+      "path": "ra-qm-team/skills/gdpr-dsgvo-expert",
+      "description": "GDPR and German DSGVO compliance automation. Scans codebases for privacy risks, generates DPIA documentation, tracks data subject rights requests with Art. 12(3) one-month deadlines. Use when running GDPR compliance assessments, privacy audits, data protection planning, DPIA generation, or data subject rights (DSAR) management (e.g., 'check this service for GDPR risks', 'track an access request deadline'). Final compliance determinations route to the DPO or legal counsel.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/gdpr-dsgvo-expert/scripts/data_subject_rights_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/gdpr-dsgvo-expert/scripts/data_subject_rights_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/gdpr-dsgvo-expert/scripts/dpia_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/gdpr-dsgvo-expert/scripts/dpia_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/gdpr-dsgvo-expert/scripts/gdpr_compliance_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/gdpr-dsgvo-expert/scripts/gdpr_compliance_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "dpia_methodology.md",
+        "gdpr_audit_playbook.md",
+        "gdpr_compliance_guide.md",
+        "german_bdsg_requirements.md"
+      ]
+    },
+    {
+      "name": "information-security-manager-iso27001",
+      "path": "ra-qm-team/skills/information-security-manager-iso27001",
+      "description": "ISO 27001 ISMS implementation and cybersecurity governance for HealthTech and MedTech companies. Use when designing an ISMS, running security risk assessments, implementing controls, pursuing ISO 27001 certification, preparing security audits, responding to security incidents, or verifying compliance. Covers ISO 27001, ISO 27002, healthcare security, and medical device cybersecurity.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/information-security-manager-iso27001/scripts/compliance_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/information-security-manager-iso27001/scripts/compliance_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/information-security-manager-iso27001/scripts/risk_assessment.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/information-security-manager-iso27001/scripts/risk_assessment.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "incident-response.md",
+        "iso27001-controls.md",
+        "risk-assessment-guide.md"
+      ]
+    },
+    {
+      "name": "isms-audit-expert",
+      "path": "ra-qm-team/skills/isms-audit-expert",
+      "description": "Information Security Management System (ISMS) audit expert for ISO 27001 compliance verification, security control assessment, and certification support. Use when the user mentions ISO 27001, ISMS audit, Annex A controls, Statement of Applicability (SOA), gap analysis, nonconformity management, internal audit, surveillance audit, or security certification preparation. Helps review control implementation evidence, document audit findings, classify nonconformities, generate risk-based audit plans, map controls to Annex A requirements, prepare Stage 1 and Stage 2 audit documentation, and \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/isms-audit-expert/scripts/isms_audit_scheduler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/isms-audit-expert/scripts/isms_audit_scheduler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "cloud-security-audit.md",
+        "iso27001-audit-methodology.md",
+        "iso27001_audit_playbook.md",
+        "security-control-testing.md"
+      ]
+    },
+    {
+      "name": "iso42001-specialist",
+      "path": "ra-qm-team/skills/iso42001-specialist",
+      "description": "ISO/IEC 42001:2023 AI Management System (AIMS) specialist for compliance teams running internal audits. Three decisions: (1) Where are the gaps against Clauses 4-10 and what do we close first? (2) What goes in the AI risk register and which Annex A controls treat each risk? (3) What's the 12-month internal audit plan that satisfies Clause 9.2? Use when preparing for certification, scoping internal audit cycles, or onboarding AI systems into an existing ISMS (27001) / QMS (13485) program. NOT an executive AI strategy skill (see chief-ai-officer-advisor). NOT EU AI Act compliance (see \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/iso42001-specialist/scripts/ai_risk_register_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/iso42001-specialist/scripts/ai_risk_register_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/iso42001-specialist/scripts/aims_audit_scheduler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/iso42001-specialist/scripts/aims_audit_scheduler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/iso42001-specialist/scripts/aims_gap_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/iso42001-specialist/scripts/aims_gap_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "aims_controls_annex_a.md",
+        "aims_implementation_guide.md",
+        "cross_framework_mapping_ai.md",
+        "iso42001_clauses.md"
+      ]
+    },
+    {
+      "name": "mdr-745-specialist",
+      "path": "ra-qm-team/skills/mdr-745-specialist",
+      "description": "EU MDR 2017/745 compliance specialist for medical device classification, technical documentation, clinical evidence, and post-market surveillance. Covers Annex VIII classification rules, Annex II/III technical files, Annex XIV clinical evaluation, Art. 86 PSUR schedules, and EUDAMED integration. Use when classifying a medical device under MDR, building or gap-checking a technical file, planning clinical evaluation or PMS/PSUR cadence, or preparing for notified body review (e.g., 'what class is my device under MDR', 'review my PSUR schedule').",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/mdr-745-specialist/scripts/mdr_gap_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/mdr-745-specialist/scripts/mdr_gap_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "clinical-evidence-requirements.md",
+        "mdr-classification-guide.md",
+        "technical-documentation-templates.md"
+      ]
+    },
+    {
+      "name": "qms-audit-expert",
+      "path": "ra-qm-team/skills/qms-audit-expert",
+      "description": "ISO 13485 internal audit expertise for medical device QMS. Covers audit planning, execution, nonconformity classification, and CAPA verification. Use when planning internal audits, executing audits, classifying findings, preparing for external audits, or managing an audit program.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/qms-audit-expert/scripts/audit_schedule_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/qms-audit-expert/scripts/audit_schedule_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "iso13485-audit-guide.md",
+        "iso13485_audit_playbook.md",
+        "nonconformity-classification.md"
+      ]
+    },
+    {
+      "name": "quality-documentation-manager",
+      "path": "ra-qm-team/skills/quality-documentation-manager",
+      "description": "Document control system management for medical device QMS. Covers document numbering, version control, change management, and 21 CFR Part 11 compliance. Use when working on document control procedures, change control workflows, document numbering, version management, electronic signature compliance, or regulatory documentation review.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/quality-documentation-manager/scripts/document_validator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-documentation-manager/scripts/document_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-documentation-manager/scripts/document_validator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/quality-documentation-manager/scripts/document_version_control.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-documentation-manager/scripts/document_version_control.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "21cfr11-compliance-guide.md",
+        "document-control-procedures.md"
+      ]
+    },
+    {
+      "name": "quality-manager-qmr",
+      "path": "ra-qm-team/skills/quality-manager-qmr",
+      "description": "Senior Quality Manager Responsible Person (QMR) for HealthTech and MedTech companies. Provides quality system governance, management review leadership, regulatory compliance oversight, and quality performance monitoring per ISO 13485 Clause 5.5.2. Use when leading management reviews, setting quality policy and objectives, monitoring quality KPIs and cost of quality, or exercising QMR governance and regulatory oversight responsibilities.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/quality-manager-qmr/scripts/management_review_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-manager-qmr/scripts/management_review_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-manager-qmr/scripts/management_review_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/quality-manager-qmr/scripts/quality_effectiveness_monitor.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-manager-qmr/scripts/quality_effectiveness_monitor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "management-review-guide.md",
+        "quality-kpi-framework.md"
+      ]
+    },
+    {
+      "name": "quality-manager-qms-iso13485",
+      "path": "ra-qm-team/skills/quality-manager-qms-iso13485",
+      "description": "ISO 13485 Quality Management System implementation and maintenance for medical device organizations. Provides QMS design, documentation control, internal auditing, CAPA management, and certification support. Use when working with medical device quality systems, preparing for ISO 13485 audits, managing regulatory compliance documentation, setting up corrective actions, or building audit preparation programs. Useful for quality management, audit preparation, regulatory compliance, medical device documentation, and corrective action workflows.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/quality-manager-qms-iso13485/scripts/qms_audit_checklist.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/quality-manager-qms-iso13485/scripts/qms_audit_checklist.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "iso13485-clause-requirements.md",
+        "qms-process-templates.md"
+      ]
+    },
+    {
+      "name": "ra-qm-skills",
+      "path": "ra-qm-team/skills/ra-qm-skills",
+      "description": "Router/index for the 15 regulatory & quality-management skills bundled in this plugin (ISO 13485 QMS, EU MDR 2017/745, FDA submissions under QMSR, ISO 14971 risk, CAPA, document control, ISO 27001/ISMS, ISO 42001 AIMS, EU AI Act, GDPR/DSGVO, SOC 2, auditing). Use when a compliance request doesn't obviously match one skill and you need to pick the right one (e.g., 'prepare us for an ISO 13485 audit', 'is my AI system high-risk under the AI Act').",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "regulatory-affairs-head",
+      "path": "ra-qm-team/skills/regulatory-affairs-head",
+      "description": "Senior Regulatory Affairs Manager for HealthTech and MedTech companies. Prepares FDA 510(k), De Novo, and PMA submission packages; analyzes regulatory pathways for new medical devices; drafts responses to FDA deficiency letters and Notified Body queries; develops CE marking technical documentation under EU MDR 2017/745; coordinates multi-market approval strategies across FDA, EU, Health Canada, PMDA, and NMPA; and maintains regulatory intelligence on evolving standards. Use when users need to plan or execute FDA submissions, navigate 510(k) or PMA approval processes, achieve CE marking \u2026",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/regulatory-affairs-head/scripts/regulatory_pathway_analyzer.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/regulatory-affairs-head/scripts/regulatory_pathway_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/regulatory-affairs-head/scripts/regulatory_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/regulatory-affairs-head/scripts/regulatory_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "eu-mdr-submission-guide.md",
+        "fda-submission-guide.md",
+        "global-regulatory-pathways.md",
+        "iso-regulatory-requirements.md"
+      ]
+    },
+    {
+      "name": "risk-management-specialist",
+      "path": "ra-qm-team/skills/risk-management-specialist",
+      "description": "Medical device risk management specialist implementing ISO 14971 throughout product lifecycle. Provides risk analysis, risk evaluation, risk control, and post-production information analysis. Use when user mentions risk management, ISO 14971, risk analysis, FMEA, fault tree analysis, hazard identification, risk control, risk matrix, benefit-risk analysis, residual risk, risk acceptability, or post-market risk.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/risk-management-specialist/scripts/fmea_analyzer.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/risk-management-specialist/scripts/fmea_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/risk-management-specialist/scripts/risk_matrix_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/risk-management-specialist/scripts/risk_matrix_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "iso14971-implementation-guide.md",
+        "risk-analysis-methods.md",
+        "risk-assessment-templates.md"
+      ]
+    },
+    {
+      "name": "soc2-compliance",
+      "path": "ra-qm-team/skills/soc2-compliance",
+      "description": "Use when the user asks to prepare for SOC 2 audits, map Trust Service Criteria, build control matrices, collect audit evidence, perform gap analysis, or assess SOC 2 Type I vs Type II readiness.",
+      "tools": [
+        {
+          "script": "ra-qm-team/skills/soc2-compliance/scripts/control_matrix_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/soc2-compliance/scripts/control_matrix_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/soc2-compliance/scripts/evidence_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/soc2-compliance/scripts/evidence_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "ra-qm-team/skills/soc2-compliance/scripts/gap_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 ra-qm-team/skills/soc2-compliance/scripts/gap_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "evidence_collection_guide.md",
+        "soc2_audit_playbook.md",
+        "trust_service_criteria.md",
+        "type1_vs_type2.md"
+      ]
+    }
+  ]
+}

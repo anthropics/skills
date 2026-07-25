@@ -1,0 +1,29 @@
+layout: 2x2
+title: Materials multi-panel figure
+caption_boundary: references/caption_boundary.md
+qa_contract: references/figure_qa_report.md
+panels:
+  - id: A
+    role: property-performance
+    title: Property response
+    claim: "[Property] changes within the tested [composition/process] window."
+    evidence: "[Source data, statistics, and test condition]"
+    source: source_data_panel_A.csv
+  - id: B
+    role: mechanism-evidence
+    title: Mechanism evidence
+    claim: "[Characterization] supports [bounded mechanism]."
+    evidence: "[FTIR/XRD/SEM/DSC/TGA/rheology evidence]"
+    source: source_data_panel_B.csv
+  - id: C
+    role: durability-aging
+    title: Durability retention
+    claim: "[Property] retention is reported under [aging protocol]."
+    evidence: "[Aging, freeze-thaw, hygrothermal, UV, or fatigue data]"
+    source: source_data_panel_C.csv
+  - id: D
+    role: comparison-window
+    title: Application window
+    claim: "[Material design window] balances [metric 1] and [metric 2]."
+    evidence: "[Scoring criteria and measured metrics]"
+    source: source_data_panel_D.csv

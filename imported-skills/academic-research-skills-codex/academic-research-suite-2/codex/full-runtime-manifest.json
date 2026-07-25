@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "adapter": {
+    "name": "academic-research-suite-codex-full-runtime",
+    "package": "academic-research-suite",
+    "profile": "full-runtime",
+    "default_enabled": false,
+    "enabled_when": {
+      "full_runtime": "ARS_CODEX_FULL_RUNTIME=1",
+      "agent_team": "ARS_CODEX_AGENT_TEAM=1",
+      "hooks": "ARS_CODEX_HOOKS=1"
+    },
+    "fallback_when_disabled": "Use the root SKILL.md router and run ARS agent prompts inline in the current Codex conversation."
+  },
+  "paths": {
+    "root_skill": "skills/academic-research-suite/SKILL.md",
+    "vendored_root": "skills/academic-research-suite/ars",
+    "adapter_root": "skills/academic-research-suite/codex",
+    "hook_pack": "skills/academic-research-suite/codex/hooks/hooks.json",
+    "quality_gate_runner": "skills/academic-research-suite/codex/scripts/ars_codex_quality_gates.py",
+    "runtime_planner": "skills/academic-research-suite/codex/scripts/ars_codex_full_runtime.py"
+  },
+  "commands": [
+    {"aliases": ["/ars-plan", "ars-plan"], "recipe": "ars/commands/ars-plan.md", "workflow": "academic-paper", "mode": "plan", "model_hint": "sonnet"},
+    {"aliases": ["/ars-outline", "ars-outline"], "recipe": "ars/commands/ars-outline.md", "workflow": "academic-paper", "mode": "outline-only", "model_hint": "sonnet"},
+    {"aliases": ["/ars-abstract", "ars-abstract"], "recipe": "ars/commands/ars-abstract.md", "workflow": "academic-paper", "mode": "abstract-only", "model_hint": "sonnet"},
+    {"aliases": ["/ars-lit-review", "ars-lit-review"], "recipe": "ars/commands/ars-lit-review.md", "workflow": "academic-paper", "mode": "lit-review", "model_hint": "sonnet"},
+    {"aliases": ["/ars-3w", "ars-3w"], "recipe": "ars/commands/ars-3w.md", "workflow": "deep-research", "mode": "three-way-scan", "model_hint": "sonnet"},
+    {"aliases": ["/ars-citation-check", "ars-citation-check"], "recipe": "ars/commands/ars-citation-check.md", "workflow": "academic-paper", "mode": "citation-check", "model_hint": "sonnet"},
+    {"aliases": ["/ars-disclosure", "ars-disclosure"], "recipe": "ars/commands/ars-disclosure.md", "workflow": "academic-paper", "mode": "disclosure", "model_hint": "sonnet"},
+    {"aliases": ["/ars-format-convert", "ars-format-convert"], "recipe": "ars/commands/ars-format-convert.md", "workflow": "academic-paper", "mode": "format-convert", "model_hint": "sonnet"},
+    {"aliases": ["/ars-revision-coach", "ars-revision-coach"], "recipe": "ars/commands/ars-revision-coach.md", "workflow": "academic-paper", "mode": "revision-coach", "model_hint": "opus"},
+    {"aliases": ["/ars-revision", "ars-revision"], "recipe": "ars/commands/ars-revision.md", "workflow": "academic-paper", "mode": "revision", "model_hint": "sonnet"},
+    {"aliases": ["/ars-rebuttal-audit", "ars-rebuttal-audit"], "recipe": "ars/commands/ars-rebuttal-audit.md", "workflow": "academic-paper", "mode": "rebuttal-audit", "model_hint": "sonnet"},
+    {"aliases": ["/ars-full", "ars-full"], "recipe": "ars/commands/ars-full.md", "workflow": "academic-pipeline", "mode": "pipeline", "model_hint": "opus"},
+    {"aliases": ["/ars-reviewer", "ars-reviewer"], "recipe": "ars/commands/ars-reviewer.md", "workflow": "academic-paper-reviewer", "mode": "full", "model_hint": "opus"},
+    {"aliases": ["/ars-mark-read", "ars-mark-read"], "recipe": "ars/commands/ars-mark-read.md", "workflow": "academic-pipeline", "mode": "mark-read", "model_hint": "sonnet"},
+    {"aliases": ["/ars-unmark-read", "ars-unmark-read"], "recipe": "ars/commands/ars-unmark-read.md", "workflow": "academic-pipeline", "mode": "unmark-read", "model_hint": "sonnet"},
+    {"aliases": ["/ars-cache-invalidate", "ars-cache-invalidate"], "recipe": "ars/commands/ars-cache-invalidate.md", "workflow": "academic-pipeline", "mode": "cache-invalidate", "model_hint": "sonnet"}
+  ],
+  "workflows": {
+    "deep-research": {
+      "workflow_path": "ars/deep-research/WORKFLOW.md",
+      "modes": ["full", "quick", "socratic", "review", "lit-review", "three-way-scan", "fact-check", "systematic-review"],
+      "agent_template": "codex/agents/deep-research-team.md",
+      "agent_prompts": [
+        "research_question_agent.md",
+        "research_architect_agent.md",
+        "bibliography_agent.md",
+        "source_verification_agent.md",
+        "synthesis_agent.md",
+        "meta_analysis_agent.md",
+        "editor_in_chief_agent.md",
+        "devils_advocate_agent.md",
+        "risk_of_bias_agent.md",
+        "ethics_review_agent.md",
+        "socratic_mentor_agent.md",
+        "report_compiler_agent.md",
+        "monitoring_agent.md",
+        "timeline_extraction_agent.md"
+      ]
+    },
+    "academic-paper": {
+      "workflow_path": "ars/academic-paper/WORKFLOW.md",
+      "modes": ["full", "plan", "outline-only", "revision", "revision-coach", "abstract-only", "lit-review", "format-convert", "citation-check", "disclosure", "rebuttal-audit"],
+      "agent_template": "codex/agents/academic-paper-team.md",
+      "agent_prompts": [
+        "intake_agent.md",
+        "literature_strategist_agent.md",
+        "structure_architect_agent.md",
+        "argument_builder_agent.md",
+        "draft_writer_agent.md",
+        "citation_compliance_agent.md",
+        "abstract_bilingual_agent.md",
+        "peer_reviewer_agent.md",
+        "formatter_agent.md",
+        "socratic_mentor_agent.md",
+        "visualization_agent.md",
+        "revision_coach_agent.md"
+      ]
+    },
+    "academic-paper-reviewer": {
+      "workflow_path": "ars/academic-paper-reviewer/WORKFLOW.md",
+      "modes": ["full", "re-review", "quick", "methodology-focus", "guided", "calibration"],
+      "agent_template": "codex/agents/paper-reviewer-panel.md",
+      "independent_before_synthesis": true,
+      "agent_prompts": [
+        "field_analyst_agent.md",
+        "eic_agent.md",
+        "methodology_reviewer_agent.md",
+        "domain_reviewer_agent.md",
+        "perspective_reviewer_agent.md",
+        "devils_advocate_reviewer_agent.md",
+        "editorial_synthesizer_agent.md"
+      ]
+    },
+    "academic-pipeline": {
+      "workflow_path": "ars/academic-pipeline/WORKFLOW.md",
+      "modes": ["pipeline", "resume_from_passport"],
+      "agent_template": "codex/agents/academic-pipeline-orchestrator.md",
+      "agent_prompts": [
+        "pipeline_orchestrator_agent.md",
+        "state_tracker_agent.md",
+        "integrity_verification_agent.md",
+        "claim_ref_alignment_audit_agent.md",
+        "collaboration_depth_agent.md"
+      ]
+    },
+    "experiment-agent": {
+      "workflow_path": "ars/experiment-agent/WORKFLOW.md",
+      "modes": ["study-protocol", "code-experiment", "statistical-interpretation", "reproducibility"],
+      "agent_template": "codex/agents/experiment-team.md",
+      "agent_prompts": ["study_manager_agent.md", "code_runner_agent.md"]
+    }
+  },
+  "agent_team_rules": {
+    "spawn_condition": "ARS_CODEX_FULL_RUNTIME=1 and ARS_CODEX_AGENT_TEAM=1",
+    "inline_fallback": "When either flag is absent, read the same agent prompt files and execute phases inline.",
+    "reviewer_independence": [
+      "For academic-paper-reviewer full and methodology-focus modes, create independent reviewer work products before editorial synthesis.",
+      "Reviewer prompts may receive the manuscript and public rubric, but not another reviewer's draft output before their own section is complete.",
+      "The synthesizer must build a finding matrix and preserve minority, dissenting, devil's advocate, and methodology findings unless explicitly resolved by severity and evidence."
+    ],
+    "minority_preservation": "Synthesis may prioritize by severity, but must not erase a reviewer-specific concern by majority vote alone.",
+    "model_mapping": "Claude model hints are advisory. Codex uses the active model unless an explicit user/runtime override exists.",
+    "model_tiering": "ARS_MODEL_TIERING is surfaced as advisory metadata. Apply the upstream judgment/execution classification only when the runtime provides an explicit per-dispatch model override; otherwise announce a no-op and keep the active model."
+  },
+  "quality_gates": [
+    {"id": "single_root_skill", "kind": "packaging", "runner": "manifest", "parity": "full"},
+    {"id": "alias_coverage", "kind": "routing", "runner": "manifest", "parity": "near"},
+    {"id": "vague_topic_socratic", "kind": "routing", "runner": "router", "parity": "near"},
+    {"id": "phase_boundary", "kind": "routing", "runner": "upstream:ars/scripts/check_v3_9_2_phase_boundary.py", "parity": "near"},
+    {"id": "model_tiering_classification", "kind": "agent-team", "runner": "upstream:ars/scripts/check_model_tiering.py", "parity": "partial"},
+    {"id": "passport_reset_contract", "kind": "material-passport", "runner": "upstream:ars/scripts/check_passport_reset_contract.py", "parity": "near"},
+    {"id": "citation_claim_audit", "kind": "integrity", "runner": "upstream:ars/scripts/claim_audit_pipeline.py", "parity": "partial"},
+    {"id": "temporal_integrity", "kind": "integrity", "runner": "upstream:ars/scripts/temporal_integrity_audit.py", "parity": "near"},
+    {"id": "reviewer_independence", "kind": "agent-team", "runner": "fixture", "parity": "near"},
+    {"id": "hook_safety", "kind": "hooks", "runner": "hook-safety", "parity": "partial"},
+    {"id": "upstream_lock", "kind": "provenance", "runner": "manifest", "parity": "near"}
+  ],
+  "known_degradations": [
+    "Codex does not install Claude Code slash commands. Aliases are parsed by the root skill and full-runtime planner.",
+    "Codex agent-team spawning is opt-in and planner-driven; inline mode remains the default.",
+    "Claude SessionStart and SubagentStop hooks are not installed automatically. The Codex hook pack is local, safe-by-default, and must be explicitly enabled.",
+    "Claude model hints opus/sonnet are recorded as metadata; Codex cannot guarantee identical model routing.",
+    "ARS model tiering is classification-compatible but remains advisory unless the Codex runtime exposes explicit per-dispatch model selection.",
+    "External cross-model reviewers require explicit API configuration and are not silently simulated."
+  ]
+}

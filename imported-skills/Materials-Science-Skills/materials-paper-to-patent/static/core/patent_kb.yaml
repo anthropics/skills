@@ -1,0 +1,164 @@
+# civil patent knowledge base for materials-paper-to-patent
+# Versioned alongside the script. Bump kb_version on any change.
+kb_version: 1.0.0
+last_updated: 2026-06-20
+
+patent_law:
+  - article: "第22条"
+    title: "新颖性、创造性、实用性"
+    keywords: [新颖, 创造性, 实用性, 现有技术, 抵触申请]
+    exam_focus: "三性判断是发明专利授权的实质条件"
+  - article: "第26条第3款"
+    title: "说明书应当对发明作出清楚、完整的说明"
+    keywords: [清楚, 完整, 充分公开, 本领域技术人员, 能够实现]
+    exam_focus: "本领域技术人员阅读后能够实现"
+  - article: "第26条第4款"
+    title: "权利要求书应当以说明书为依据"
+    keywords: [权利要求, 说明书, 支持, 清楚, 简要]
+    exam_focus: "权利要求应得到说明书支持，且清楚、简要"
+  - article: "第31条第1款"
+    title: "一件发明专利申请应当限于一项发明"
+    keywords: [单一性, 一项发明, 同一总的发明构思]
+    exam_focus: "避免无关技术特征堆叠"
+  - article: "第33条"
+    title: "修改不得超出原说明书和权利要求书记载的范围"
+    keywords: [修改, 超出范围, 原始记载]
+    exam_focus: "答复审查意见时不得引入新内容"
+  - article: "实施细则第20条"
+    title: "独立权利要求应当记载解决技术问题的必要技术特征"
+    keywords: [独立权利要求, 必要技术特征, 其特征在于]
+    exam_focus: "独立权利要求应包含解决技术问题的全部必要技术特征"
+
+cnipa_examination_guidelines:
+  - part: "第二部分第二章"
+    title: "权利要求书"
+    trigger_keywords: [独立权利要求, 从属权利要求, 引用, 必要技术特征]
+  - part: "第二部分第三章"
+    title: "说明书"
+    trigger_keywords: [技术领域, 背景技术, 发明内容, 附图说明, 具体实施方式]
+  - part: "第二部分第六章"
+    title: "新颖性判断"
+    trigger_keywords: [对比文件, 技术方案, 相同主题, 公开]
+  - part: "第二部分第八章"
+    title: "创造性判断"
+    trigger_keywords: [突出的实质性特点, 显著进步, 最接近的现有技术, 区别特征, 技术效果]
+  - part: "第二部分第十章"
+    title: "说明书充分公开"
+    trigger_keywords: [充分公开, 本领域技术人员, 解决技术问题, 技术效果]
+
+invention_type_patterns:
+  process-material:
+    typical_independent_claim_verbs: [包括, 包含, 其特征在于, 步骤如下, 其改进在于]
+    typical_method_steps: [提供, 混合, 搅拌, 浇注, 振捣, 养护, 测试, 表征, 制备]
+    typical_product_terms: [组合物, 复合材料, 浆体, 浆料, 涂层, 砂浆, 混凝土, 沥青混合料]
+    typical_range_units: [wt%, vol%, mol%, 份, 摩尔比, 质量比]
+    background_art_phrases:
+      - "现有的 X 存在 Y 的问题"
+      - "传统方法在 Z 方面存在不足"
+    invention_concept_template: "针对 X 的 Y 问题，提供一种 Z，其特征在于包括 A、B、C"
+    figure_handoff_to: "materials-figure"
+  apparatus-system:
+    typical_independent_claim_verbs: [包括, 设置有, 其特征在于, 包含, 连接有]
+    typical_system_components: [基体, 增强相, 连接件, 传感器, 壳体, 框架]
+    typical_range_units: [mm, cm, m, mm², mm³, L, mL]
+    figure_handoff_to: "materials-figure"
+  algorithm-software:
+    typical_independent_claim_verbs: [其特征在于, 包括步骤, 包括单元, 其改进在于]
+    typical_steps: [获取, 预处理, 提取, 判定, 输出, 训练, 推理, 分类, 回归]
+    typical_inputs: [图像, 文本, 信号, 张量, 特征向量]
+    typical_outputs: [检测结果, 分类结果, 估计状态, 目标位置, 控制指令]
+    figure_handoff_to: "internal-svg"
+  mixed:
+    typical_independent_claim_verbs: [包括, 设置有, 其特征在于]
+    figure_handoff_to: "materials-figure"
+
+claim_anti_patterns:
+  - id: "pure_functional_limitation"
+    description: "纯功能限定"
+    severity: error
+    regex: "用于[^，。；]{0,30}的(?:装置|方法|系统|设备)"
+    fix_hint: "应改为结构/步骤限定"
+  - id: "missing_其特征在于"
+    description: "独立权利要求缺少'其特征在于'"
+    severity: error
+    check_on: independent_claim
+    fix_hint: "独立权利要求必须包含'其特征在于'引导的必要技术特征"
+  - id: "no_technical_features"
+    description: "独立权利要求无技术特征"
+    severity: error
+    check_on: independent_claim
+    fix_hint: "独立权利要求必须包含解决技术问题的全部必要技术特征"
+  - id: "bad_dependent_reference"
+    description: "从属项引用前置项错误"
+    severity: error
+    check_on: dependent_claim
+    fix_hint: "从属项必须引用在前权利要求，编号连续、不跳号"
+  - id: "no_spec_support"
+    description: "权利要求无说明书支持"
+    severity: error
+    check_on: all_claims
+    fix_hint: "权利要求特征必须能在说明书找到对应段落"
+  - id: "commercial_method_exclusion"
+    description: "商业方法除外"
+    severity: warning
+    keywords: [商业模式, 营销方案, 商业方法, 商业策略]
+    fix_hint: "纯商业方法不属于专利保护客体；如必要，添加技术特征"
+  - id: "future_work_in_claim"
+    description: "权利要求中含未来研究内容"
+    severity: error
+    keywords: [拟将, 计划, 未来, 后续研究, 展望]
+    fix_hint: "权利要求不得包含尚未实现的内容"
+  - id: "aspiration_in_claim"
+    description: "权利要求中含主观愿望"
+    severity: warning
+    keywords: [理想, 完美, 最佳, 最优, 尽可能]
+    fix_hint: "权利要求应使用客观技术参数，避免主观表达"
+  - id: "vague_result"
+    description: "末端步骤使用模糊结果"
+    severity: error
+    check_on: method_claim
+    regex: "(?:技术结果|处理结果|最终结果|好的结果)"
+    fix_hint: "末端步骤必须命名具体技术输出（如抗压强度 50 MPa、孔径 10-50 nm）"
+
+unit_aliases:
+  strength: {canonical: "MPa", aliases: [兆帕, MPa, Mpa, N/mm²]}
+  modulus: {canonical: "GPa", aliases: [吉帕, GPa, Gpa, kN/mm²]}
+  composition: {canonical: "wt%", aliases: [wt%, wt. %, 质量分数, 重量百分比, 质量百分含量]}
+  temperature: {canonical: "°C", aliases: [℃, 摄氏度, °C, 度]}
+  time: {canonical: "h", aliases: [小时, h, hr, hrs]}
+  size: {canonical: "nm", aliases: [纳米, nm, 毫微米]}
+  size_micro: {canonical: "μm", aliases: [微米, μm, um, µ]}
+
+material_domain_links:
+  civil_cement_concrete:
+    typical_phases: [CSH, CH, C2S, C3S, AFt, AFm, CaCO3, ettringite]
+    typical_xrd_peaks_2theta: [9.1, 18.0, 28.0, 29.4, 32.2, 34.1, 39.4, 42.5, 47.1, 50.8]
+    typical_performance: [compressive_strength, flexural_strength, chloride_diffusion, carbonation_depth, frost_resistance]
+    typical_process_params: [w_b_ratio, curing_temperature, curing_duration, water_reducer_dosage, scm_replacement]
+    common_claim_categories: [composition, mix_proportion, process_method, performance_index]
+  civil_asphalt:
+    typical_phases: [asphaltene, maltene, aggregate, filler]
+    typical_performance: [rutting_depth, fatigue_life, low_temperature_cracking, moisture_damage]
+    typical_process_params: [mixing_temperature, compaction_temperature, air_voids, aggregate_gradation, binder_content]
+    common_claim_categories: [mix_proportion, process_method, additive_type, performance_index]
+  civil_insulation:
+    typical_phases: [closed_cell, open_cell, fiber_network]
+    typical_performance: [thermal_conductivity, density, compressive_strength, water_absorption, fire_rating]
+    typical_process_params: [foaming_ratio, expansion_temperature, density_target]
+    common_claim_categories: [composition, process_method, microstructure, performance_index]
+  ceramics_structural:
+    typical_phases: [t-ZrO2, m-ZrO2, Al2O3, SiC, Si3N4, mullite]
+    typical_xrd_peaks_2theta: [30.2, 34.8, 35.3, 50.2, 60.0]
+    typical_performance: [fracture_toughness, flexural_strength, weibull_modulus, hardness]
+    typical_process_params: [sintering_temperature, sintering_duration, holding_time, pressure]
+    common_claim_categories: [composition, sintering_process, microstructure, performance_index]
+  polymer_composite:
+    typical_phases: [epoxy_matrix, fiber_reinforcement, filler]
+    typical_performance: [tensile_strength, fatigue_life, glass_transition_temp, interlaminar_shear]
+    typical_process_params: [curing_temperature, curing_duration, fiber_volume_fraction, layup_sequence]
+    common_claim_categories: [composition, layup_process, curing_process, performance_index]
+  metal_alloy:
+    typical_phases: [alpha, beta, gamma, precipitate, inclusion]
+    typical_performance: [yield_strength, ultimate_tensile, elongation, fatigue_limit, fracture_toughness]
+    typical_process_params: [heat_treatment_temperature, holding_time, cooling_rate, rolling_reduction]
+    common_claim_categories: [composition, heat_treatment, processing_route, performance_index]

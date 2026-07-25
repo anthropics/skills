@@ -1,0 +1,45 @@
+{
+  "tuple_id": "009-valid-doi-resnet-2016",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "He2016ResNet",
+    "title": "Deep Residual Learning for Image Recognition",
+    "authors": [
+      {
+        "family": "He",
+        "given": "Kaiming"
+      },
+      {
+        "family": "Zhang",
+        "given": "Xiangyu"
+      },
+      {
+        "family": "Ren",
+        "given": "Shaoqing"
+      },
+      {
+        "family": "Sun",
+        "given": "Jian"
+      }
+    ],
+    "year": 2016,
+    "doi": "10.1109/CVPR.2016.90",
+    "venue": "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+    "source_pointer": "https://doi.org/10.1109/CVPR.2016.90",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "he-2016-resnet",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

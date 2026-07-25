@@ -1,0 +1,53 @@
+# Research State Template
+#
+# This is the machine-readable shape for the shared research state.
+# Each section is populated by its producer skill and validated by materials-research.
+#
+# Field conventions:
+# - Empty lists ([]) mean "not yet populated", not "none exist".
+# - Empty strings ("") mean "not yet set".
+# - Use the same field names as the static contract docs.
+
+project:
+  project_id: ""
+  title: ""
+  material_family: ""       # civil, polymers, metals, ceramics, functional, nano
+  domain: ""                # e.g. asphalt-pavement, cement-concrete, thermosets
+  research_question: ""
+  target_output: ""         # manuscript, review, report, presentation
+
+# Populated by: materials-literature-pipeline, materials-citation, materials-reader
+source_map:
+  candidates: []            # from literature-pipeline-handoff; keep candidate table fields and source_depth caveats
+  reader_packages: []       # from materials-reader
+  citation_handoffs: []     # from materials-citation
+
+# Populated by: materials-doe
+doe_map:
+  design_id: ""             # stable DOE design identifier
+  factors: []               # [{name, levels, type(categorical/continuous)}]
+  responses: []             # [{name, units, target}]
+  planned_runs: []          # [{run_id, factor_levels, replicates}]
+
+# Populated by: materials-data
+data_map:
+  package_id: ""
+  fair_status: ""           # complete, partial, missing
+  metadata_gaps: []         # [{field, reason, resolution}]
+
+# Populated by: materials-figure
+figure_map:
+  figure_ids: []            # [{figure_id, type, caption_boundary}]
+  source_anchors: []        # [{figure_id, data_package_ids, source_ids}]
+  caption_boundaries: []    # [{figure_id, allowed_claims, forbidden_claims}]
+
+# Populated by: materials-writing, materials-reviewer
+claim_map:
+  claims: []                # [{claim_id, text, confidence, support_chain}]
+  forbidden_claims: []      # [{claim_text, reason, gate}]
+  confidence_labels: []     # [{claim_id, label(strong/moderate/tentative/unsupported)}]
+
+# Populated by: materials-research, materials-reviewer
+risk_map:
+  reviewer_risks: []        # [{risk_id, description, severity, evidence_gap}]
+  next_actions: []          # [{risk_id, action, owner_skill, deadline}]

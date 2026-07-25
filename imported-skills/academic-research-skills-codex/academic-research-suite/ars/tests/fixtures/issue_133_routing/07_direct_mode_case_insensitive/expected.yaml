@@ -1,0 +1,16 @@
+fixture_id: 07_direct_mode_case_insensitive
+expected_routing_class: proceed
+expected_destination: academic-paper:abstract
+escape_hatch_applied: true
+direct_mode_stripped_message: "write an abstract for my paper about quantum error correction at scale"
+notes: |
+  `[Direct-Mode]` capitalized variant — case-insensitive byte-0 match per protocol doc.
+  Strip and proceed.
+
+  Stripped message ("write an abstract...") maps to academic-paper abstract mode via
+  Step 1 explicit-intent handling.
+
+  Pass criteria:
+  - Capitalized `[Direct-Mode]` accepted as escape hatch
+  - Routes to abstract workflow
+  - No clarification fires

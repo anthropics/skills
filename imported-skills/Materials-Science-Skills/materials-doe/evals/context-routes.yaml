@@ -1,0 +1,94 @@
+route_scenarios:
+  - name: default-classical-note
+    axes:
+      design_mode: classical
+      material_family: neutral
+      domain: general
+      output: note
+      output_format: yaml-record
+    target_bytes: 22000
+    max_bytes: 24000
+
+  - name: taguchi-asphalt-matrix
+    axes:
+      design_mode: orthogonal
+      material_family: civil
+      domain: asphalt
+      output: matrix
+      output_format: yaml-record
+    target_bytes: 40000
+    max_bytes: 43000
+
+  - name: rsm-polymer-record
+    axes:
+      design_mode: response-surface
+      material_family: polymers
+      domain: polymers
+      output: analysis-plan
+      output_format: yaml-record
+    on_demand:
+      - classical-validity
+    target_bytes: 45000
+    max_bytes: 49000
+
+  - name: constrained-mixture-matrix
+    axes:
+      design_mode: mixture-design
+      material_family: civil
+      domain: cement-concrete
+      output: matrix
+      output_format: yaml-record
+    target_bytes: 47000
+    max_bytes: 51000
+
+  - name: doe-to-data-handoff
+    axes:
+      design_mode: orthogonal
+      material_family: civil
+      domain: asphalt
+      output: matrix
+      output_format: yaml-record
+    companions:
+      - skill: materials-data
+        required_axes:
+          - task
+          - material_family
+          - domain
+          - input_source
+        axes:
+          task: experiment-template
+          material_family: civil
+          domain: asphalt
+          input_source: experiment-record
+        on_demand:
+          - experiment-record-to-dataset
+    target_bytes: 62000
+    max_bytes: 68000
+
+  - name: doe-to-writing-methods
+    axes:
+      design_mode: response-surface
+      material_family: civil
+      domain: cement-concrete
+      output: analysis-plan
+      output_format: yaml-record
+    companions:
+      - skill: materials-writing
+        required_axes:
+          - paper_type
+          - section
+          - language
+          - journal_family
+          - material_family
+          - domain
+          - input_source
+        axes:
+          paper_type: experimental-manuscript
+          section: methods-from-record
+          language: en
+          journal_family: materials
+          material_family: civil
+          domain: civil
+          input_source: experiment-record
+    target_bytes: 96000
+    max_bytes: 104000

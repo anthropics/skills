@@ -1,0 +1,459 @@
+{
+ "metadata": {
+  "issue": 501,
+  "task_name": "rq_framing_offlist_heldout",
+  "description": "Held-out set of AI-typical RQ phrasings outside the WP01-WP20 surface forms (and outside the four in-prompt off-list examples), plus specialist-written hard negatives. Ground truth for the RUNTIME LLM judge of the Socratic wording-pattern advisory — not for the offline regex detector (that is evals/gold/rq_framing_patterns/).",
+  "language": "English-only (AI-typical phrasing is language-specific; see PR #468 discussion)",
+  "generator_model": "gpt-5.6-sol (Codex CLI 0.144.1)",
+  "generated_at": "2026-07-11",
+  "labels": [
+   "shell",
+   "domain_native"
+  ],
+  "tiers": {
+   "family_variant": "shell whose meaning belongs to a listed WP family but whose surface form differs (interrogative or synonym-verb rewording); tier is descriptive metadata, label is the ground truth",
+   "off_list": "shell matching no listed family (decorated compound titles, novel frames)"
+  },
+  "construction": "see README.md in this directory",
+  "counts": {
+   "shell": 32,
+   "shell_family_variant": 23,
+   "shell_off_list": 9,
+   "domain_native": 16
+  }
+ },
+ "items": [
+  {
+   "id": "nat-001",
+   "text": "How does technology integration affect student engagement in higher education?",
+   "field": "education",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP19",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-049",
+   "text": "How can machine learning improve predictive maintenance in manufacturing systems?",
+   "field": "engineering",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP19",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-045",
+   "text": "What challenges affect the implementation of climate adaptation policies in coastal communities?",
+   "field": "environmental policy",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-012",
+   "text": "How effective are nurse-led educational interventions in improving patient self-management?",
+   "field": "healthcare/nursing",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP13",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-018",
+   "text": "How does information system quality affect employee productivity?",
+   "field": "information systems",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP10",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-061",
+   "text": "The use of politeness strategies in workplace communication",
+   "field": "linguistics",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP12",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-028",
+   "text": "How do flexible work arrangements affect job satisfaction and productivity?",
+   "field": "management",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP10",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-037",
+   "text": "How does sleep quality influence mood and cognitive performance?",
+   "field": "psychology",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP10",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-077",
+   "text": "What barriers prevent rural populations from accessing preventive healthcare services?",
+   "field": "public health",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP16",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-065",
+   "text": "How does socioeconomic status affect access to higher education?",
+   "field": "sociology",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP04",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-004",
+   "text": "How do collaborative learning strategies influence critical thinking skills in university students?",
+   "field": "education",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP04",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-053",
+   "text": "How can sensor technology improve structural health monitoring?",
+   "field": "engineering",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP19",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-048",
+   "text": "What factors explain differences in urban sustainability policy outcomes?",
+   "field": "environmental policy",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-014",
+   "text": "The impact of communication quality on patient satisfaction in acute care settings",
+   "field": "healthcare/nursing",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP01",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-021",
+   "text": "What factors contribute to the success of digital transformation initiatives?",
+   "field": "information systems",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "nat-044",
+   "text": "How do local governments promote household recycling behavior?",
+   "field": "environmental policy",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "el-001",
+   "text": "In what ways does online learning shape student motivation and learning outcomes?",
+   "field": "education",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP01",
+   "provenance": "de-cliche_rewrite_of_nat-003"
+  },
+  {
+   "id": "el-003",
+   "text": "What shapes medication adherence among people living with chronic illnesses?",
+   "field": "healthcare/nursing",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "de-cliche_rewrite_of_nat-011"
+  },
+  {
+   "id": "el-005",
+   "text": "What shapes users’ decisions to adopt mobile payment systems?",
+   "field": "information systems",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP15",
+   "provenance": "de-cliche_rewrite_of_nat-017"
+  },
+  {
+   "id": "el-007",
+   "text": "How do different leadership styles shape employee motivation and performance?",
+   "field": "management",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP10",
+   "provenance": "de-cliche_rewrite_of_nat-025"
+  },
+  {
+   "id": "el-010",
+   "text": "What conditions give rise to academic procrastination among college students?",
+   "field": "psychology",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "de-cliche_rewrite_of_nat-036"
+  },
+  {
+   "id": "el-013",
+   "text": "How does material choice bear on the durability of concrete structures?",
+   "field": "engineering",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP04",
+   "provenance": "de-cliche_rewrite_of_nat-051"
+  },
+  {
+   "id": "el-016",
+   "text": "How does social media shape political participation among young adults?",
+   "field": "sociology",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP01",
+   "provenance": "de-cliche_rewrite_of_nat-066"
+  },
+  {
+   "id": "el-017",
+   "text": "What underlies vaccine hesitancy among parents?",
+   "field": "public health",
+   "label": "shell",
+   "tier": "family_variant",
+   "closest_family": "WP05",
+   "provenance": "de-cliche_rewrite_of_nat-073"
+  },
+  {
+   "id": "ti-001",
+   "text": "Teaching for All: Rethinking Teachers’ Adoption of Inclusive Practices",
+   "field": "education",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-005"
+  },
+  {
+   "id": "ti-002",
+   "text": "The Weight of Care: Nurse Workload and the Quality of Patient Care",
+   "field": "healthcare/nursing",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-009"
+  },
+  {
+   "id": "ti-004",
+   "text": "Beyond Awareness: Cybersecurity Training and Employee Security Behavior",
+   "field": "information systems",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-019"
+  },
+  {
+   "id": "ti-007",
+   "text": "Difference at Work: Workplace Diversity and Team Performance",
+   "field": "management",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-030"
+  },
+  {
+   "id": "ti-008",
+   "text": "The Long Reach of Childhood: Early Experiences and Adult Relationship Satisfaction",
+   "field": "psychology",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-035"
+  },
+  {
+   "id": "ti-010",
+   "text": "Regulating for Advantage: Environmental Rules, Business Innovation, and Competitiveness",
+   "field": "environmental policy",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-043"
+  },
+  {
+   "id": "ti-012",
+   "text": "Words in the Making: Vocabulary Acquisition Among Second-Language Learners",
+   "field": "linguistics",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-060"
+  },
+  {
+   "id": "ti-013",
+   "text": "Aging Apart: Social Isolation Among Older Adults",
+   "field": "sociology",
+   "label": "shell",
+   "tier": "off_list",
+   "closest_family": "none",
+   "provenance": "catchy_title_rewrite_of_nat-068"
+  },
+  {
+   "id": "nat-059",
+   "text": "How do bilingual speakers switch between languages in everyday conversation?",
+   "field": "linguistics",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "natural_generation"
+  },
+  {
+   "id": "dn-001",
+   "text": "Does retrieval practice delivered through weekly low-stakes quizzes improve delayed retention in Grade 9 biology, and is the effect mediated by students' metacognitive calibration measured with judgment-of-learning accuracy?",
+   "field": "education",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-002",
+   "text": "How does lesson-study participation reshape pedagogical content knowledge among novice secondary mathematics teachers, as assessed with the Mathematical Quality of Instruction instrument?",
+   "field": "education",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-003",
+   "text": "Among medical-surgical nurses at a tertiary teaching hospital, does missed nursing care measured by the MISSCARE Survey mediate the association between patient-to-nurse ratios and 30-day readmission?",
+   "field": "healthcare/nursing",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-005",
+   "text": "How do algorithmic transparency and perceived platform governance interact to shape continuance intention among Shopee sellers, using constructs from the DeLone and McLean IS Success Model?",
+   "field": "information systems",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-006",
+   "text": "Does technostress mediate the effect of mandatory Microsoft Teams use on task performance among Taiwanese civil servants, as measured by the Technostress Creators scale?",
+   "field": "information systems",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-007",
+   "text": "When does CEO narcissism, operationalized through unobtrusive indicators in annual reports, translate into corporate risk-taking through top-management-team power centralization?",
+   "field": "management",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-008",
+   "text": "Does paradoxical leadership reduce defensive silence in Taiwanese semiconductor teams by increasing psychological safety, and is this indirect effect contingent on power-distance orientation?",
+   "field": "management",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-009",
+   "text": "Does intolerance of uncertainty mediate the association between repetitive negative thinking and generalized anxiety symptoms among first-year university students, using the IUS-12 and GAD-7?",
+   "field": "psychology",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-011",
+   "text": "Did the European Union Emissions Trading System's Market Stability Reserve reduce allowance-price volatility without inducing carbon leakage in cement production?",
+   "field": "environmental policy",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-012",
+   "text": "How does procedural justice in Indigenous consultation affect the social legitimacy of offshore wind projects in Taiwan's Changhua fishing communities?",
+   "field": "environmental policy",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-013",
+   "text": "How does laser energy density affect lack-of-fusion porosity and high-cycle fatigue life in laser powder bed fusion of Ti-6Al-4V, as quantified by X-ray micro-computed tomography?",
+   "field": "engineering",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-014",
+   "text": "Can model-predictive control using state-of-charge and short-horizon photovoltaic forecasts reduce battery degradation in an islanded lithium-ion microgrid relative to droop control?",
+   "field": "engineering",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-016",
+   "text": "Do L1 Japanese learners of English acquire the telicity constraints of the progressive through lexical aspect, or does persistent transfer from Japanese imperfective marking better explain their acceptability judgments?",
+   "field": "linguistics",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-018",
+   "text": "How do weak-tie referrals and cultural matching jointly reproduce occupational closure in Taipei's platform-based freelance design market?",
+   "field": "sociology",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  },
+  {
+   "id": "dn-019",
+   "text": "Among men who have sex with men attending community clinics in Taipei, does anticipated HIV stigma mediate the relationship between PrEP knowledge and initiation, using the HIV Stigma Mechanisms Measure?",
+   "field": "public health",
+   "label": "domain_native",
+   "tier": "n/a",
+   "closest_family": "none",
+   "provenance": "specialist_generation"
+  }
+ ]
+}

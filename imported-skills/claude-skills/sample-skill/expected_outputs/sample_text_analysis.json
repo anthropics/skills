@@ -1,0 +1,13 @@
+{
+  "file": "assets/sample_text.txt",
+  "file_size": 855,
+  "total_words": 116,
+  "unique_words": 87,
+  "total_characters": 855,
+  "lines": 19,
+  "average_word_length": 4.7,
+  "most_frequent": {
+    "word": "the",
+    "count": 5
+  }
+}

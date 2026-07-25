@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drayline.io/rootnode-repo-hygiene/profile.schema.json",
+  "title": "rootnode-repo-hygiene Profile",
+  "description": "Profile configuration for the rootnode-repo-hygiene Skill. Defines which categories to scan, which cross-category passes to run, and how Phase 2 composes with rootnode-critic-gate and rootnode-cc-design REMEDIATE.",
+  "type": "object",
+  "required": [
+    "categories",
+    "include_seven_layer_leak_check",
+    "include_commit_plan",
+    "critic_gate_threshold",
+    "remediate_routing"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema reference for IDE tooling. Profile validation ignores this field."
+    },
+    "name": {
+      "type": "string",
+      "description": "Optional human-readable profile name for self-documentation. Not consumed by Phase 1 or Phase 2 logic."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional human-readable description of the profile's intent. Not consumed by Phase 1 or Phase 2 logic."
+    },
+    "categories": {
+      "type": "array",
+      "description": "Sweep categories to scan during Phase 1. Categories 1-10 are executable in Phase 2; categories 11-14 are recommendation-only and route to rootnode-cc-design REMEDIATE mode.",
+      "items": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 14
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "include_seven_layer_leak_check": {
+      "type": "boolean",
+      "description": "When true, Phase 1 runs the cross-category 7-layer placement leak check after the category sweep. Leak findings (L-{n}) route to REMEDIATE alongside Cat 11-14 findings."
+    },
+    "include_commit_plan": {
+      "type": "boolean",
+      "description": "When true, Phase 1 produces a Recommended commit plan section (Options A/B/C plus defer-to-downstream detection). Phase 2 executes the chosen plan after batches complete."
+    },
+    "critic_gate_threshold": {
+      "type": "string",
+      "enum": ["required", "optional"],
+      "description": "Phase 2 composition with rootnode-critic-gate. 'required' halts Phase 2 entry if critic-gate is not installed; every batch goes through critic review. 'optional' allows per-batch user choice when critic-gate is installed."
+    },
+    "remediate_routing": {
+      "type": "boolean",
+      "description": "When true, Phase 1 produces a 'Routing recommendations' section naming structural findings (Cat 11-14 + leaks) for rootnode-cc-design REMEDIATE handoff. When false, structural findings remain in the report without an automated downstream pathway."
+    },
+    "bootstrap_heritage": {
+      "type": "object",
+      "description": "Bootstrap heritage carve-out for Cat 1 calibration. When present, Cat 1 lists inherited files in an inventory subsection and surfaces findings only under sharpened conditions (modified-recently, in-engine references, etc.). When absent or empty, Cat 1 runs without calibration.",
+      "additionalProperties": false,
+      "properties": {
+        "inherited_files": {
+          "type": "array",
+          "description": "Explicit list of file paths inherited from the parent project (relative to repo root).",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "inherited_directories": {
+          "type": "array",
+          "description": "Glob patterns identifying directories or file groups inherited from the parent project.",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "package_json_name": {
+          "type": "string",
+          "description": "Parent project's package.json name field. Used to detect identity-string carryover."
+        },
+        "modified_recently_threshold": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD). Inherited files modified after this date are surfaced as findings. Files modified at or before this date are treated as unmodified inherited content."
+        },
+        "parent_project_name": {
+          "type": "string",
+          "description": "Parent project name as used in documentation and code references. Used to detect string-level identity carryover."
+        }
+      }
+    },
+    "confidence_threshold": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Minimum confidence tier to surface in the report. 'high' suppresses medium and low; 'medium' suppresses low; 'low' surfaces all. Cat 14 candidates are not subject to this filter (they carry complexity, not confidence)."
+    },
+    "cat_14_extension_pass": {
+      "type": "boolean",
+      "description": "When true, Cat 14 runs an extension pass after the main scan: cross-candidate dependency analysis, order-of-build recommendation, and a single 'build this first' recommendation. Used by deep-audit; opt-in for custom profiles."
+    }
+  }
+}

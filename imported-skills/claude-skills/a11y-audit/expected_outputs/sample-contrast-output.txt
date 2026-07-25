@@ -1,0 +1,39 @@
+Contrast Check: #777777 on #ffffff
+
+  Foreground: #777777 (r=119, g=119, b=119)
+  Background: #ffffff (r=255, g=255, b=255)
+  Contrast Ratio: 4.48:1
+
+  Normal text (4.5:1 required):
+    AA:  FAIL (4.48 < 4.5)
+    AAA: FAIL (4.48 < 7.0)
+
+  Large text (3.0:1 required):
+    AA:  PASS (4.48 >= 3.0)
+    AAA: FAIL (4.48 < 4.5)
+
+  UI components (3.0:1 required):
+    AA:  PASS (4.48 >= 3.0)
+
+  Verdict: FAIL — does not meet AA for normal text
+
+---
+
+Contrast Check: #1a1a2e on #ffffff
+
+  Foreground: #1a1a2e (r=26, g=26, b=46)
+  Background: #ffffff (r=255, g=255, b=255)
+  Contrast Ratio: 17.06:1
+
+  Normal text (4.5:1 required):
+    AA:  PASS
+    AAA: PASS
+
+  Large text (3.0:1 required):
+    AA:  PASS
+    AAA: PASS
+
+  UI components (3.0:1 required):
+    AA:  PASS
+
+  Verdict: PASS — meets AAA for all categories

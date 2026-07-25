@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "agent-harness domain manifest (agent-harness/manifest.v1)",
+  "description": "Machine-readable inventory of one domain folder: every skill, its tools, its verification checks, and its agentic signals. Produced by harness_manifest_builder.py; consumed by goal_compiler.py. Regenerate after any skill change — never hand-edit.",
+  "type": "object",
+  "required": ["schema", "domain", "skill_count", "loop_defaults", "skills"],
+  "properties": {
+    "schema": { "const": "agent-harness/manifest.v1" },
+    "domain": { "type": "string", "description": "Domain folder relative to repo root, e.g. 'engineering-team'." },
+    "skill_count": { "type": "integer", "minimum": 0 },
+    "generated_at": { "type": "string", "description": "UTC ISO-8601; omitted when built with --no-timestamp for diff-stable commits." },
+    "loop_defaults": {
+      "type": "object",
+      "required": ["max_attempts_per_task", "max_loop_iterations", "escalate_on"],
+      "properties": {
+        "max_attempts_per_task": { "type": "integer", "minimum": 1 },
+        "max_loop_iterations": { "type": "integer", "minimum": 1 },
+        "escalate_on": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path", "description", "tools", "agentic_signals"],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string", "description": "Skill dir (contains SKILL.md) relative to repo root." },
+          "description": { "type": "string", "maxLength": 600 },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["script", "wired", "supports_sample", "verification"],
+              "properties": {
+                "script": { "type": "string" },
+                "wired": { "type": "boolean", "description": "True if the script basename appears in the skill's SKILL.md (A3 wiring)." },
+                "supports_sample": { "type": "boolean" },
+                "verification": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["cmd", "expect_exit", "kind"],
+                    "properties": {
+                      "cmd": { "type": "string" },
+                      "expect_exit": { "type": "integer" },
+                      "kind": { "enum": ["smoke", "sample", "manual-evidence"] }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "agentic_signals": {
+            "type": "object",
+            "description": "Static evidence of agentic structure in SKILL.md (maps to audit dimensions AR1/AR4/AR5/AR6).",
+            "required": ["goal_intake", "refusal_gate", "verification", "loop_discipline", "close_out"],
+            "additionalProperties": { "type": "boolean" }
+          },
+          "references": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

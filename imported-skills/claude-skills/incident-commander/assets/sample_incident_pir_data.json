@@ -1,0 +1,74 @@
+{
+  "incident_id": "INC-2024-0315-001",
+  "title": "Payment API Database Connection Pool Exhaustion",
+  "description": "Database connection pool exhaustion caused widespread 500 errors in payment processing API, preventing users from completing purchases. Root cause was an inefficient database query introduced in deployment v2.3.1.",
+  "severity": "sev2",
+  "start_time": "2024-03-15T14:30:00Z",
+  "end_time": "2024-03-15T15:35:00Z",
+  "duration": "1h 5m",
+  "affected_services": ["payment-api", "checkout-service", "subscription-billing"],
+  "customer_impact": "80% of users unable to complete payments or checkout. Approximately 2,400 failed payment attempts during the incident. Users experienced immediate 500 errors when attempting to pay.",
+  "business_impact": "Estimated revenue loss of $45,000 during outage period. No SLA breaches as resolution was within 2-hour window. 12 customer escalations through support channels.",
+  "incident_commander": "Mike Rodriguez",
+  "responders": [
+    "Sarah Chen - On-call Engineer, Primary Responder",
+    "Tom Wilson - Database Team Lead",
+    "Lisa Park - Database Engineer",
+    "Mike Rodriguez - Incident Commander",
+    "David Kumar - DevOps Engineer"
+  ],
+  "status": "resolved",
+  "detection_details": {
+    "detection_method": "automated_monitoring",
+    "detection_time": "2024-03-15T14:30:00Z",
+    "alert_source": "Datadog error rate threshold",
+    "time_to_detection": "immediate"
+  },
+  "response_details": {
+    "time_to_response": "5 minutes",
+    "time_to_escalation": "10 minutes",
+    "time_to_resolution": "65 minutes",
+    "war_room_established": "2024-03-15T14:45:00Z",
+    "executives_notified": false,
+    "status_page_updated": true
+  },
+  "technical_details": {
+    "root_cause": "Inefficient database query introduced in deployment v2.3.1 caused each payment validation to take 15 seconds instead of normal 0.1 seconds, exhausting the 200-connection database pool",
+    "affected_regions": ["us-west", "us-east", "eu-west"],
+    "error_metrics": {
+      "peak_error_rate": "45%",
+      "normal_error_rate": "0.1%",
+      "connection_pool_max": 200,
+      "connections_exhausted_at": "100%"
+    },
+    "resolution_method": "rollback",
+    "rollback_target": "v2.2.9",
+    "rollback_duration": "7 minutes"
+  },
+  "communication_log": [
+    {
+      "timestamp": "2024-03-15T14:50:00Z",
+      "type": "status_page",
+      "message": "Investigating payment processing issues",
+      "audience": "customers"
+    },
+    {
+      "timestamp": "2024-03-15T15:35:00Z", 
+      "type": "status_page",
+      "message": "Payment processing issues resolved",
+      "audience": "customers"
+    }
+  ],
+  "lessons_learned_preview": [
+    "Deployment v2.3.1 code review missed performance implications of query change",
+    "Load testing didn't include realistic database query patterns",
+    "Connection pool monitoring could have provided earlier warning",
+    "Rollback procedure worked effectively - 7 minute rollback time"
+  ],
+  "preliminary_action_items": [
+    "Fix inefficient query for v2.3.2 deployment",
+    "Add database query performance checks to CI pipeline", 
+    "Improve load testing to include database performance scenarios",
+    "Add connection pool utilization alerts"
+  ]
+}

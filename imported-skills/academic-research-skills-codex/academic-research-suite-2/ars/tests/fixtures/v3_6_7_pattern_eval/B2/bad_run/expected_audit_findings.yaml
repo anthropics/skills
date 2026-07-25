@@ -1,0 +1,35 @@
+run_id: 2026-04-30T10-21-00Z-b2b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.5"
+    file: bad_run/deliverable.md
+    line: 15
+    description: >
+      Pseudo-reverse-coded item (B2): Item 5 ("I find my work intrinsically
+      meaningful, regardless of institutional support") is labelled reverse-coded
+      and included in the PIS composite score, but it probes intrinsic motivation
+      — a distinct construct — not the absence of perceived institutional support.
+      A respondent can strongly agree with both item 1 ("My institution provides
+      resources") and item 5 simultaneously without acquiescence bias, because the
+      two items measure different constructs. Reverse-scoring item 5 and adding it
+      to the PIS sum produces a meaningless composite and drops scale reliability
+      (Cronbach's alpha will be attenuated; factor loadings incoherent per
+      psychometric_terminology_glossary.md).
+    suggested_fix: >
+      Remove item 5 from the PIS scale or move it to a separate intrinsic
+      motivation subscale. Provide a one-line construct-equivalence justification
+      for each item labelled reverse-coded: "Item X is true reverse-coded relative
+      to focal items Y because it probes the same construct (PIS) on the same
+      Likert dimension (agreement)." Item 5 cannot produce that justification and
+      must be reclassified as a contrast item.
+generated_at: "2026-04-30T10:21:44.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

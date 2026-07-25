@@ -1,0 +1,160 @@
+{
+  "tuple_id": "002-valid-doi-alphafold-2021",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Jumper2021AlphaFold",
+    "title": "Highly accurate protein structure prediction with AlphaFold",
+    "authors": [
+      {
+        "family": "Jumper",
+        "given": "John"
+      },
+      {
+        "family": "Evans",
+        "given": "Richard"
+      },
+      {
+        "family": "Pritzel",
+        "given": "Alexander"
+      },
+      {
+        "family": "Green",
+        "given": "Tim"
+      },
+      {
+        "family": "Figurnov",
+        "given": "Michael"
+      },
+      {
+        "family": "Ronneberger",
+        "given": "Olaf"
+      },
+      {
+        "family": "Tunyasuvunakool",
+        "given": "Kathryn"
+      },
+      {
+        "family": "Bates",
+        "given": "Russ"
+      },
+      {
+        "family": "Žídek",
+        "given": "Augustin"
+      },
+      {
+        "family": "Potapenko",
+        "given": "Anna"
+      },
+      {
+        "family": "Bridgland",
+        "given": "Alex"
+      },
+      {
+        "family": "Meyer",
+        "given": "Clemens"
+      },
+      {
+        "family": "Kohl",
+        "given": "Simon A. A."
+      },
+      {
+        "family": "Ballard",
+        "given": "Andrew J."
+      },
+      {
+        "family": "Cowie",
+        "given": "Andrew"
+      },
+      {
+        "family": "Romera-Paredes",
+        "given": "Bernardino"
+      },
+      {
+        "family": "Nikolov",
+        "given": "Stanislav"
+      },
+      {
+        "family": "Jain",
+        "given": "Rishub"
+      },
+      {
+        "family": "Adler",
+        "given": "Jonas"
+      },
+      {
+        "family": "Back",
+        "given": "Trevor"
+      },
+      {
+        "family": "Petersen",
+        "given": "Stig"
+      },
+      {
+        "family": "Reiman",
+        "given": "David"
+      },
+      {
+        "family": "Clancy",
+        "given": "Ellen"
+      },
+      {
+        "family": "Zielinski",
+        "given": "Michal"
+      },
+      {
+        "family": "Steinegger",
+        "given": "Martin"
+      },
+      {
+        "family": "Pacholska",
+        "given": "Michalina"
+      },
+      {
+        "family": "Berghammer",
+        "given": "Tamas"
+      },
+      {
+        "family": "Bodenstein",
+        "given": "Sebastian"
+      },
+      {
+        "family": "Silver",
+        "given": "David"
+      },
+      {
+        "family": "Vinyals",
+        "given": "Oriol"
+      },
+      {
+        "family": "Senior",
+        "given": "Andrew W."
+      },
+      {
+        "family": "Kavukcuoglu",
+        "given": "Koray"
+      },
+      {
+        "family": "Kohli",
+        "given": "Pushmeet"
+      },
+      {
+        "family": "Hassabis",
+        "given": "Demis"
+      }
+    ],
+    "year": 2021,
+    "doi": "10.1038/s41586-021-03819-2",
+    "venue": "Nature",
+    "source_pointer": "https://doi.org/10.1038/s41586-021-03819-2",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "jumper-2021-alphafold",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

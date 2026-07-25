@@ -1,0 +1,62 @@
+name: pytest
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'shared/contracts/**'
+      - 'conftest.py'
+      - 'pyproject.toml'
+      - 'requirements-dev.txt'
+      - '.github/workflows/pytest.yml'
+      - 'academic-pipeline/references/adapters/**'
+      - 'academic-pipeline/references/literature_corpus_consumers.md'
+      - 'deep-research/agents/bibliography_agent.md'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/**'
+      - 'shared/contracts/**'
+      - 'conftest.py'
+      - 'pyproject.toml'
+      - 'requirements-dev.txt'
+      - '.github/workflows/pytest.yml'
+      - 'academic-pipeline/references/adapters/**'
+      - 'academic-pipeline/references/literature_corpus_consumers.md'
+      - 'deep-research/agents/bibliography_agent.md'
+
+concurrency:
+  # Suffix by event_name so push (branches: [main]) and pull_request
+  # events don't fight over the same group on the rare case both fire.
+  group: pytest-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt pytest
+
+      - name: Run test suite
+        env:
+          PYTHONPATH: .
+          # actions/checkout does not set origin/HEAD, so the v3.6.8
+          # pattern-protection lint cannot resolve the default branch via
+          # `git symbolic-ref`. Provide its documented env fallback.
+          GITHUB_DEFAULT_BRANCH: main
+        run: pytest scripts/ tests/

@@ -1,0 +1,495 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "research-ops",
+  "skill_count": 5,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "clinical-research",
+      "path": "research-ops/skills/clinical-research",
+      "description": "Use when designing a prospective clinical study before submission \u2014 selecting and classifying endpoints (primary / key-secondary / exploratory, with surrogate-endpoint flagging), estimating sample size and power for two-arm designs (means / proportions / survival), or scoring a study plan for feasibility and a GO / GO-WITH-CONDITIONS / REDESIGN / NO-GO phase-gate decision. Every output is an ESTIMATE plus a named human owner (clinician / biostatistician / regulatory owner) \u2014 never clinical fact, never a finished protocol. Distinct from ra-qm-team, which handles the regulatory/QM submission \u2026",
+      "tools": [
+        {
+          "script": "research-ops/skills/clinical-research/scripts/ar_evaluator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/ar_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/ar_evaluator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/clinical-research/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/clinical-research/scripts/endpoint_selector.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/endpoint_selector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/endpoint_selector.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/clinical-research/scripts/onboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/onboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/clinical-research/scripts/phase_gate_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/phase_gate_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/phase_gate_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/clinical-research/scripts/sample_size_estimator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/sample_size_estimator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/clinical-research/scripts/sample_size_estimator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "endpoint_and_power.md",
+        "study_design_canon.md",
+        "trial_operations.md"
+      ]
+    },
+    {
+      "name": "market-research",
+      "path": "research-ops/skills/market-research",
+      "description": "Use when doing upstream market-research methodology \u2014 sizing a market as TAM/SAM/SOM computed BOTH top-down and bottoms-up (never a single unsourced number), planning a survey sample size with finite-population correction and per-segment minimums, or scoring candidate market segments against Kotler's measurable/substantial/accessible/differentiable/actionable criteria. Outputs always show the method and the assumptions. For market-research analysts and product-marketing at the sizing/survey/segmentation moment. Distinct from marketing-skill (campaign analytics, attribution, demand-gen) \u2014 \u2026",
+      "tools": [
+        {
+          "script": "research-ops/skills/market-research/scripts/ar_evaluator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/ar_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/ar_evaluator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/market-research/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/market-research/scripts/market_sizer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/market_sizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/market_sizer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/market-research/scripts/onboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/onboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/market-research/scripts/sample_size_planner.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/sample_size_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/sample_size_planner.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/market-research/scripts/segmentation_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/segmentation_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/market-research/scripts/segmentation_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "market_sizing_canon.md",
+        "segmentation_and_ci.md",
+        "survey_methodology.md"
+      ]
+    },
+    {
+      "name": "product-research",
+      "path": "research-ops/skills/product-research",
+      "description": "Use when planning and synthesizing product/user research as a method-and-repository discipline \u2014 selecting the right method for the goal (generative interviews vs usability test vs concept test vs validation), computing method-based saturation/sample size with an explicit confidence level, or synthesizing coded observations into insights while flagging single-source anecdotes. Never fabricates user insight; an insight requires recurrence across independent participants. Distinct from product-team/ux-researcher-designer (persona/journey artifacts), product-discovery (discovery-sprint \u2026",
+      "tools": [
+        {
+          "script": "research-ops/skills/product-research/scripts/ar_evaluator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/ar_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/ar_evaluator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/product-research/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/product-research/scripts/insight_synthesizer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/insight_synthesizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/insight_synthesizer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/product-research/scripts/onboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/onboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/product-research/scripts/saturation_planner.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/saturation_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/saturation_planner.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/product-research/scripts/study_designer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/study_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/product-research/scripts/study_designer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "repository_and_synthesis.md",
+        "research_methods_canon.md",
+        "sampling_and_saturation.md"
+      ]
+    },
+    {
+      "name": "research-finance",
+      "path": "research-ops/skills/research-finance",
+      "description": "Use when managing the money for an internal R&D program or portfolio \u2014 building a multi-period program budget with the F&A (indirect) split, tracking burn rate and runway against value-inflection milestones, or routing R&D cost items to a capitalize-vs-expense determination. Every budget output surfaces its assumptions block; capitalize-vs-expense is decision-support only and routes to a named finance owner \u2014 it never books an entry or decides accounting treatment. Distinct from finance/financial-analysis (corporate DCF, close, valuation) and research/grants (funding discovery \u2014 this \u2026",
+      "tools": [
+        {
+          "script": "research-ops/skills/research-finance/scripts/ar_evaluator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/ar_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/ar_evaluator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/research-finance/scripts/burn_runway_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/burn_runway_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/burn_runway_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/research-finance/scripts/capex_vs_opex_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/capex_vs_opex_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/capex_vs_opex_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/research-finance/scripts/config_loader.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/config_loader.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/config_loader.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/research-finance/scripts/onboard.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/onboard.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "research-ops/skills/research-finance/scripts/program_budget_planner.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/program_budget_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 research-ops/skills/research-finance/scripts/program_budget_planner.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "burn_and_portfolio.md",
+        "indirect_rate_modeling.md",
+        "rd_program_finance_canon.md"
+      ]
+    },
+    {
+      "name": "research-ops-skills",
+      "path": "research-ops/skills/research-ops-skills",
+      "description": "Use when planning, funding, scoping, or synthesizing enterprise research across workstreams \u2014 clinical study design, R&D program finance, market sizing/surveys, or product/user research. Triggers on \"design this clinical study\", \"what sample size\", \"R&D budget\", \"burn rate\", \"capitalize or expense\", \"TAM SAM SOM\", \"market sizing\", \"survey design\", \"segment the market\", \"plan user interviews\", \"usability test\", \"synthesize research insights\". Forks context to route to one of four Research-Operations sub-skills (clinical-research, research-finance, market-research, product-research) and \u2026",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": []
+    }
+  ]
+}

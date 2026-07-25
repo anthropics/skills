@@ -1,0 +1,24 @@
+{
+  "tuple_id": "050-fabricated-counterfactual-spectral-knapsack",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Brown2024CounterfactualSpectralKnapsack",
+    "title": "Counterfactual Causal Effect Estimation with Spectral Knapsack Priors for Heterogeneous Network Treatment Allocation",
+    "authors": [
+      {"family": "Brown", "given": "D."},
+      {"family": "Moretti", "given": "L. V."},
+      {"family": "Park", "given": "J."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.causal.2024.203",
+    "venue": "Annals of Computational Causal Inference",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.causal.2024.203",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "brown-2024-counterfactual-spectral-knapsack",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

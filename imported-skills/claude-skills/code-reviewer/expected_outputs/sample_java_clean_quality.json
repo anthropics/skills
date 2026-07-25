@@ -1,0 +1,53 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_java_clean.java",
+  "language": "java",
+  "metrics": {
+    "lines": {
+      "total": 56,
+      "code": 33,
+      "blank": 9,
+      "comment": 14
+    },
+    "functions": 3,
+    "classes": 1,
+    "avg_complexity": 2.0
+  },
+  "quality_score": 100,
+  "grade": "A",
+  "smells": [
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 1000 should be a named constant",
+      "location": "line 49"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "UserService",
+      "parameters": 1,
+      "lines": 5,
+      "complexity": 1
+    },
+    {
+      "name": "getName",
+      "parameters": 2,
+      "lines": 17,
+      "complexity": 3
+    },
+    {
+      "name": "process",
+      "parameters": 0,
+      "lines": 10,
+      "complexity": 2
+    }
+  ],
+  "class_details": [
+    {
+      "name": "UserService",
+      "methods": 3,
+      "lines": 38
+    }
+  ]
+}

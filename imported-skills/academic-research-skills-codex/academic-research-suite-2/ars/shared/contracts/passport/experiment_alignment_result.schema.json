@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/experiment_alignment_result.schema.json",
+  "title": "Material Passport Experiment Alignment Result Entry",
+  "description": "One entry in Material Passport Schema 9 experiment_alignment_results[] aggregate (#260) — the FOURTH ref_slug-less claim-finding aggregate, alongside uncited_assertions[] / claim_drifts[] / constraint_violations[]. An experiment-backed claim has no <!--ref:slug--> citation marker, so it cannot satisfy claim_audit_result.required (which mandates ref_slug); it rides its own aggregate by the same precedent the three siblings established. PRODUCER = the integrity verification agent, computed AT the integrity gate (Stage 2.5 sampling / Stage 4.5 full) — NOT the claim_ref_alignment_audit_agent. This mirrors #261's Phase C3 (figure-fidelity verdict computed by the integrity agent at the gate, not pre-computed upstream): producing the verdict at the same stage that blocks on it avoids the stage-ordering race where a verdict produced at the Stage 4->5 boundary would land AFTER the Stage 4.5 gate already ran. A claim referencing an experiment_id with NO matching experiment_provenance[] entry is a STRUCTURAL failure (EP-INV-2 / EA-INV-2), never a judge verdict — PROVENANCE_MISSING is deliberately NOT in the verdict enum. Cross-array invariants EA-INV-1..EA-INV-2 are lint-enforced in scripts/check_claim_audit_consistency.py. See docs/design/2026-06-08-260-experiment-provenance-intake-spec.md D4.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "finding_id",
+    "scoped_manifest_id",
+    "claim_id",
+    "claim_text",
+    "experiment_id",
+    "result_pointer",
+    "manuscript_locator",
+    "alignment_verdict",
+    "rationale",
+    "judge_model",
+    "judge_run_at",
+    "rule_version"
+  ],
+
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "pattern": "^EA-[0-9]{3,}$",
+      "description": "Per-passport unique finding identifier for experiment_alignment_results[]. EA-INV-1 enforces uniqueness. EA- prefix mirrors the UA-/DR-/CV- sibling-aggregate convention."
+    },
+    "scoped_manifest_id": {
+      "type": "string",
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Points to the owning claim_intent_manifest.manifest_id. The pair (scoped_manifest_id, claim_id) is the joinable key — bare claim_id collides across manifests in the same passport. EA-INV-2 enforces cross-array resolution to a real manifest claim."
+    },
+    "claim_id": {
+      "type": "string",
+      "pattern": "^C-[0-9]{3,}$",
+      "description": "Per-manifest claim identifier scoped by scoped_manifest_id."
+    },
+    "claim_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The experiment_provenance[].experiment_id this claim is judged against. EA-INV-2 enforces resolution to a real experiment_provenance[] entry; a dangling id is a structural FAIL, never modelled as a verdict."
+    },
+    "result_pointer": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Points INTO the provenance entry's reported results (e.g. a planned_vs_executed result_file + metric, or a JSON-Pointer-style locator) — experiment_id alone is too coarse for a claim like 'F1 improved 4.2%'."
+    },
+    "manuscript_locator": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Section path to the claim sentence (e.g. '4. Results > 4.2 Ablations') so a failing alignment can be fixed in the manuscript."
+    },
+    "alignment_verdict": {
+      "enum": ["ALIGNED", "OVERSTATED", "NOT_SUPPORTED_BY_PROVENANCE", "PROVENANCE_INSUFFICIENT"],
+      "description": "MECE, experiment-specific verdict (deliberately NOT reusing claim_audit_result.judgment names to avoid two UNSUPPORTED semantics). ALIGNED = supported by declared provenance. OVERSTATED = provenance supports a weaker version (claim says more than results show). NOT_SUPPORTED_BY_PROVENANCE = experiment ran but results do not support the claim (no relevant result / contradicts / irrelevant / contradicts a declared negative_results[] entry / every planned_vs_executed[] entry for the referenced experiment is executed:false). PROVENANCE_INSUFFICIENT = the entry exists but lacks detail to judge. PROVENANCE_MISSING is NOT here — a dangling experiment_id is an EP-INV-2/EA-INV-2 structural FAIL."
+    },
+    "rationale": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "judge_model": { "type": "string", "minLength": 1 },
+    "judge_run_at": { "type": "string", "format": "date-time" },
+    "rule_version": {
+      "const": "EA-v1",
+      "description": "Frozen literal for the #260 release. Future rule revisions bump the constant and require re-lint."
+    }
+  }
+}

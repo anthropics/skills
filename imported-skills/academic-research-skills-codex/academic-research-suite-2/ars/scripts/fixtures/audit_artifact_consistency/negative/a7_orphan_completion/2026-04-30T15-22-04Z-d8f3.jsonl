@@ -1,0 +1,3 @@
+{"type": "thread.started", "thread_id": "019de371-4c13-7521-8af7-fccf6bd23279"}
+{"type": "item.completed", "item": {"id": "orphan_id", "type": "command_execution"}}
+{"type": "turn.completed", "usage": {"input_tokens": 1, "cached_input_tokens": 0, "output_tokens": 1, "reasoning_output_tokens": 0}}

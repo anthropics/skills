@@ -1,0 +1,9 @@
+{
+  "name": "baoyu-post-to-weibo-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "baoyu-chrome-cdp": "^0.1.1",
+    "baoyu-md": "^0.1.1"
+  }
+}

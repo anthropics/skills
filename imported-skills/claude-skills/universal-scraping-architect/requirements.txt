@@ -1,0 +1,7 @@
+# Universal Scraping Architect — runtime dependencies (BYOK, free-tier compatible).
+# Dependencies are declared here for pre-install review rather than installed ad hoc.
+# Firecrawl is only needed for Mode 1 (API-driven); the local/BS4 path needs the rest.
+firecrawl
+pandas
+requests
+beautifulsoup4

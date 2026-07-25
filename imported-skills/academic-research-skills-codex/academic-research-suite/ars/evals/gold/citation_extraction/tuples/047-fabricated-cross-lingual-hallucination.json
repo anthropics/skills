@@ -1,0 +1,23 @@
+{
+  "tuple_id": "047-fabricated-cross-lingual-hallucination",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Madsen2023HallucinationSuppression",
+    "title": "Cross-Lingual Hallucination Suppression via Adaptive Embedding Pruning in 7B Parameter Models",
+    "authors": [
+      {"family": "Madsen", "given": "T. Q."},
+      {"family": "Alvarado", "given": "P. N."}
+    ],
+    "year": 2023,
+    "doi": "10.99999/ars184.fake.nlp.2023.042",
+    "venue": "Transactions of the Multilingual NLP Society",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.nlp.2023.042",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "madsen-2023-hallucination-suppression",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

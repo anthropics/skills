@@ -1,0 +1,7 @@
+# Test manifest for eval: live verification not acknowledged
+target_journal: cbm
+article_type: research-article
+title: "Test Manuscript Title"
+corresponding_author: "Test Author"
+data_availability_status: ready
+live_verification_acknowledged: false

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/claim_drift.schema.json",
+  "title": "Material Passport Claim Drift Entry",
+  "description": "One entry in Material Passport Schema 9 claim_drifts[] aggregate. Per claim-intent-drift finding emitted by claim_ref_alignment_audit_agent §4 step 5 manifest set-diff. Rides in its own aggregate because claim-intent drift is detected by manifest set-diff (intended ≠ emitted), NOT by judge invocation — embedding drift findings as a defect_stage of claim_audit_result would force judgment=UNSUPPORTED to be recorded without the judge ever evaluating that claim, contaminating both the schema semantics and the calibration FNR/FPR metrics. Always LOW-WARN advisory at the finalizer (per D4-a — gate-refuse is reserved for explicit author negative constraints, not drift signals). Cross-field invariants D-INV-1..D-INV-4 are lint-enforced in scripts/check_claim_audit_consistency.py. See docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §3.4.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "finding_id",
+    "drift_kind",
+    "claim_text",
+    "detected_at",
+    "rule_version"
+  ],
+
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "pattern": "^CD-[0-9]{3,}$",
+      "description": "Per-passport unique finding identifier for claim_drifts[]. D-INV-1 enforces uniqueness."
+    },
+    "drift_kind": {
+      "enum": ["EMITTED_NOT_INTENDED", "INTENDED_NOT_EMITTED"],
+      "description": "EMITTED_NOT_INTENDED: an emitted claim that was not in the manifest (the drafted prose introduced a claim the writer did not pre-commit to). INTENDED_NOT_EMITTED: a manifest claim that did not appear in the emitted prose (the writer dropped a pre-committed claim during drafting). Both are advisory — gate-refuse is reserved for negative_constraint_violation."
+    },
+    "claim_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "description": "For EMITTED_NOT_INTENDED, the emitted sentence; for INTENDED_NOT_EMITTED, the manifest claim_text."
+    },
+    "manifest_claim_id": {
+      "type": ["string", "null"],
+      "pattern": "^C-[0-9]{3,}$",
+      "description": "For INTENDED_NOT_EMITTED, the dropped manifest claim_id (REQUIRED, conditional on drift_kind — enforced by D-INV-2). For EMITTED_NOT_INTENDED, null (drifted claim has no manifest_claim_id since it was never in the manifest). When present, MUST be paired with scoped_manifest_id."
+    },
+    "scoped_manifest_id": {
+      "type": ["string", "null"],
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Points to the claim_intent_manifest.manifest_id owning the referenced manifest_claim_id. Required when drift_kind=INTENDED_NOT_EMITTED (paired with manifest_claim_id per D-INV-2 cross-array integrity, disambiguating C-001 collision across manifests). Null when drift_kind=EMITTED_NOT_INTENDED (the drifted claim has no manifest origin)."
+    },
+    "section_path": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "description": "For EMITTED_NOT_INTENDED, hierarchical path from document root to the section containing the drifted sentence (mirrors uncited_assertion.section_path). Null for INTENDED_NOT_EMITTED (dropped claim has no draft location)."
+    },
+    "detected_at": { "type": "string", "format": "date-time" },
+    "rule_version": {
+      "const": "D4-a-v1",
+      "description": "Frozen literal for the v3.8.0 release. D-INV-3 enforces equality. Future rule revisions bump the constant and require re-lint."
+    },
+    "upstream_owner_agent": {
+      "enum": ["synthesis_agent", "draft_writer_agent", "report_compiler_agent", null]
+    }
+  }
+}

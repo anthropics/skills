@@ -1,0 +1,23 @@
+{
+  "tuple_id": "037-fabricated-spectral-void-galaxy",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Reyes2023SpectralVoidGalaxy",
+    "title": "Spectral Signatures of Void Galaxies That Do Not Exist",
+    "authors": [
+      {"family": "Reyes", "given": "M."},
+      {"family": "Haldorsen", "given": "B."}
+    ],
+    "year": 2023,
+    "doi": "10.99999/ars184.fake.astro.2023.058",
+    "venue": "Journal of Phantom Astrophysics",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.astro.2023.058",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "reyes-2023-spectral-void-galaxy",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

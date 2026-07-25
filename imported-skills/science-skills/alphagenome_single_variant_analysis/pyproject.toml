@@ -1,0 +1,15 @@
+[project]
+name = "alphagenome-single-variant-analysis"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "alphagenome>=0.6.1",
+    "absl-py",
+    "python-dotenv",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "scipy",
+    "seaborn",
+]

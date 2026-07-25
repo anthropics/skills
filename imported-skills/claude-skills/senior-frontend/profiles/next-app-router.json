@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "next-app-router",
+  "description": "Next.js 14+ App Router with React Server Components default. Customer-facing SaaS, content-heavy with some personalization, SEO matters. Hybrid SSR/RSC/SSG per route.",
+  "version": "1.0.0",
+  "constraints": {
+    "primary_device": ["mobile-4g", "desktop-fiber"],
+    "rendering": "rsc-default",
+    "seo_dependent": true,
+    "auth_walled_only": false,
+    "team_size_min": 3,
+    "team_size_max": 50
+  },
+  "stack": {
+    "framework": "next.js-14+",
+    "language": "typescript",
+    "styling": "tailwind-with-design-tokens",
+    "component_library_options": ["shadcn-ui", "radix-primitives", "ark-ui"],
+    "state_client": "zustand-or-jotai-for-client-state",
+    "state_server": "rsc-with-server-actions",
+    "data_fetching": "rsc-async-components + react-query-for-client-only",
+    "forms": "react-hook-form + zod",
+    "testing": "vitest + react-testing-library + playwright-e2e",
+    "icons": "lucide-react",
+    "fonts": "next-font-google-or-self-hosted"
+  },
+  "anti_recommendations": {
+    "use-client-everywhere": "kill — defeats the RSC value; reserve 'use client' for actual interactivity",
+    "global-state-in-context-everywhere": "kill — props down + server state up; Context is for tree-scoped state only",
+    "csr-only-on-seo-routes": "kill — RSC or SSR on routes that matter for SEO",
+    "redux-without-justification": "warn — RTK is fine if you've shipped it; new project should default to Zustand/Jotai",
+    "css-in-js-runtime": "kill — styled-components runtime mode breaks RSC; use tailwind or zero-runtime alternatives",
+    "default-imports-for-icons": "kill — tree-shake hostile; use named imports from lucide"
+  },
+  "success_thresholds": {
+    "lcp_ms_mobile_4g_p75": 2000,
+    "inp_ms_p75": 150,
+    "cls_p75": 0.05,
+    "bundle_kb_gzip_per_route_max": 150,
+    "framework_overhead_kb_gzip_max": 90,
+    "lighthouse_perf_min": 85,
+    "lighthouse_a11y_min": 95,
+    "lighthouse_seo_min": 95,
+    "test_coverage_min": 0.6
+  },
+  "ci_gates": [
+    "bundlewatch-per-route",
+    "lighthouse-ci",
+    "a11y-axe-checks",
+    "playwright-smoke",
+    "typecheck-strict"
+  ],
+  "canon_references": [
+    "Dan Abramov, RSC spec (Vercel, 2023)",
+    "Web Almanac (HTTP Archive, 2025) on Next.js distribution",
+    "Tim Kadlec, Performance Budgets (2013)",
+    "Brad Frost, Atomic Design (2016) — for design system layering",
+    "shadcn/ui project (2023+) — copy-paste components"
+  ]
+}

@@ -1,0 +1,23 @@
+# Auto-generated from experiment-record.yaml
+# Review and replace placeholders before submission.
+
+study:
+  study_id: "{{ record.study_id }}"
+  title: "{{ record.title }}"
+  material_domain: "{{ record.direction_profile.domain }}"
+  material_family: "{{ record.direction_profile.material_family }}"
+  application: "{{ record.direction_profile.application }}"
+
+experiment_design:
+  record_type: "{{ record.record_type }}"
+  design_type: "{{ record.design.type }}"
+  run_count: {{ record.design.runs | length }}
+  factors: {{ record.factors }}
+  response_variables: {{ record.response_variables }}
+  objectives: {{ record.objectives }}
+
+materials: {{ record.materials }}
+processing: {{ record.processing }}
+characterization: {{ record.characterization }}
+
+linked_record: "experiment_record_link.yaml"

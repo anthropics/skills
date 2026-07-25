@@ -1,0 +1,6 @@
+[FAIL] <sample>
+  FAIL (line 1): `meta` contains a template string — it must be a pure literal (use plain quoted strings).
+  FAIL (line 6): Date.now() is banned (breaks resume) — pass timestamps via `args`.
+  WARN (file): No `.filter(Boolean)` found — skipped/failed agents insert `null`; filter results before using them.
+  WARN (line 7): `while (true)` loop — add a counter or budget.remaining() guard or it hits the 1000-agent cap.
+  WARN (line 8): parallel([ agent(...) , ... ]) passes bare promises — use thunks: `[() => agent(...), ...]`.

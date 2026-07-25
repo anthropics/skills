@@ -1,0 +1,130 @@
+name: Platform Port Reminder
+
+# Surface the Platform ports policy when a PR adds a NEW top-level directory.
+#
+# Why: PR #470 (a Hermes platform port) violated several conditions of the
+# "Platform ports (community-maintained only)" policy in CONTRIBUTING.md
+# simply because the contributor did not know the policy existed. The repo
+# had no mechanism to surface it. This is that mechanism.
+#
+# What it does: when a PR adds a top-level directory that did not exist on
+# the base branch, it emits ONE `::warning::` plus a job summary linking to
+# CONTRIBUTING.md#platform-ports-community-maintained-only. That's it.
+#
+# What it deliberately does NOT do:
+#   - It never blocks merge (always exits 0; `::warning::`, not `::error::`).
+#   - It never posts a PR comment (would require `pull_request_target`, the
+#     classic "pwn request" privilege-escalation shape for fork PRs).
+#   - It does NOT re-list the policy conditions here — the policy text in
+#     CONTRIBUTING.md is the single source of truth (a hand-copied list would
+#     drift, which is the same failure that produced #470's confusion).
+#   - It does NOT verify the human conditions (named maintainer / design issue
+#     / real end-to-end evidence) — those are judgment calls a machine can't
+#     check, and a "lint must pass" gate would give false green and be trivially
+#     bypassable. Remind, don't block. The merge decision stays with the maintainer.
+#
+# A new directory is detected by base-tree comparison, not a hardcoded
+# allowlist (an allowlist drifts as the repo legitimately grows). False
+# positives (a warning the maintainer ignores) are cheap; false negatives are
+# the status quo. The effort is calibrated to that asymmetry.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+concurrency:
+  group: platform-port-reminder-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # Full history so the PR base SHA is reachable for the diff below;
+          # a shallow checkout may not contain origin/main.
+          fetch-depth: 0
+
+      - name: Warn on new top-level directory
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          # Compare from the merge base, not the moving base tip. If main advances
+          # while this PR is open (e.g. a directory is deleted on main), a two-dot
+          # "$BASE_SHA" "$HEAD_SHA" diff would report that as something the PR
+          # added — a false warning. The merge base isolates exactly what THIS PR
+          # introduced. fetch-depth: 0 above guarantees the merge base is present.
+          merge_base=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+
+          # Top-level directories that existed before this PR. This is the source
+          # of truth for "what already exists" — no hardcoded allowlist to drift.
+          # Computed at the same merge base as the diff below, so the two agree.
+          base_dirs=$(git ls-tree -d --name-only "$merge_base")
+
+          # Files ADDED by this PR. --no-renames keeps an added platform dir
+          # from being reported as a rename (R old new), which the A filter
+          # would otherwise miss. --diff-filter=A restricts to additions.
+          added=$(git diff --no-renames --diff-filter=A --name-only "$merge_base" "$HEAD_SHA" || true)
+
+          # First path segment of each added file = its top-level dir.
+          # Accumulate newline-separated (not space-separated): a directory name
+          # could in principle contain a space, which would corrupt both the
+          # dedup test and any whitespace-splitting downstream.
+          new_top_dirs=""
+          while IFS= read -r path; do
+            [ -z "$path" ] && continue
+            top="${path%%/*}"
+            # A file added at repo root (no slash) is not a new directory.
+            [ "$top" = "$path" ] && continue
+            # Already present on base? not new. `-e` marks $top as the pattern
+            # so a dir name starting with `-` is not parsed as a grep flag
+            # (which would error and, under set -e, fail the check — a red X
+            # would violate the never-block promise).
+            if printf '%s\n' "$base_dirs" | grep -qxF -e "$top"; then
+              continue
+            fi
+            # Newline-delimited contains-test, robust to spaces in names.
+            case $'\n'"$new_top_dirs"$'\n' in
+              *$'\n'"$top"$'\n'*) ;;                # already collected
+              *) new_top_dirs="${new_top_dirs}${top}"$'\n' ;;
+            esac
+          done <<< "$added"
+
+          new_top_dirs=$(printf '%s' "$new_top_dirs" | sed '/^$/d' | sort -u || true)
+
+          if [ -z "$new_top_dirs" ]; then
+            echo "No new top-level directory added. Nothing to remind."
+            exit 0
+          fi
+
+          POLICY_URL="https://github.com/${GITHUB_REPOSITORY}/blob/main/CONTRIBUTING.md#platform-ports-community-maintained-only"
+
+          echo "::warning::This PR adds a new top-level directory ($(printf '%s' "$new_top_dirs" | tr '\n' ' ')). If this is a platform port, see the Platform ports policy in CONTRIBUTING.md and open a design issue first: ${POLICY_URL}"
+
+          {
+            echo "### Platform port reminder"
+            echo ""
+            echo "This PR adds a new top-level directory:"
+            echo ""
+            printf '%s\n' "$new_top_dirs" | sed 's/^/- `/; s/$/`/'
+            echo ""
+            echo "If this is a **platform port** (adapting the suite to another agent"
+            echo "platform), please read the [Platform ports policy](${POLICY_URL})"
+            echo "and **open a design issue first**."
+            echo ""
+            echo "_This is a reminder, not a blocker — it does not affect whether this"
+            echo "PR can merge. A new directory for an unrelated reason is fine; ignore"
+            echo "this notice._"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Never block: this is advisory only.
+          exit 0

@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://drayline.io/rootnode/handoff-trigger-check/profile.schema.json",
+  "title": "Handoff Trigger Check Profile",
+  "description": "Configuration for a named profile that determines pass/fail thresholds and behavior of the rootnode-handoff-trigger-check Skill. Profiles are portable across users and projects; ship one per availability/risk-tolerance pattern.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "description",
+    "threshold_rule",
+    "budget_safety_margin",
+    "budget_data_source"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the profile schema this file conforms to. Used by profile builders and migration tools to detect when a profile was authored against an older schema. Current version: 1.0.0."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$",
+      "description": "Profile identifier in kebab-case. Used in the Skill's output to record which profile was applied."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Human-readable description of when this profile applies. Example: 'Aaron at desk, full review capability available, real-time corrections possible.'"
+    },
+    "threshold_rule": {
+      "type": "string",
+      "enum": ["all_must_pass", "min_count", "weighted"],
+      "description": "How the per-condition results combine into the overall verdict."
+    },
+    "min_pass_count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 7,
+      "description": "Minimum number of conditions that must pass when threshold_rule is 'min_count'. Required if threshold_rule is 'min_count'; ignored otherwise."
+    },
+    "required_conditions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "spec_stability",
+          "verification_surface",
+          "invariants_documented",
+          "pump_primer_done",
+          "work_decomposes",
+          "rollback_tolerable",
+          "budget_headroom"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Conditions that MUST pass regardless of other settings. Even with min_count threshold, if a required condition fails, overall verdict is FAIL."
+    },
+    "condition_weights": {
+      "type": "object",
+      "description": "Per-condition weights (when threshold_rule is 'weighted'). Sum of weights must equal 1.0. Required if threshold_rule is 'weighted'.",
+      "properties": {
+        "spec_stability": { "type": "number", "minimum": 0, "maximum": 1 },
+        "verification_surface": { "type": "number", "minimum": 0, "maximum": 1 },
+        "invariants_documented": { "type": "number", "minimum": 0, "maximum": 1 },
+        "pump_primer_done": { "type": "number", "minimum": 0, "maximum": 1 },
+        "work_decomposes": { "type": "number", "minimum": 0, "maximum": 1 },
+        "rollback_tolerable": { "type": "number", "minimum": 0, "maximum": 1 },
+        "budget_headroom": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "weighted_pass_threshold": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "When threshold_rule is 'weighted', the minimum weighted score for PASS verdict (e.g., 0.85)."
+    },
+    "budget_safety_margin": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 5.0,
+      "description": "Multiplier applied to estimated token cost before comparing to budget. Higher = more conservative. Aaron-sleeping should be ≥1.3; Aaron-desk can be 1.05-1.1 since corrections are real-time."
+    },
+    "budget_data_source": {
+      "type": "string",
+      "enum": ["telemetry_feed", "manual_input", "registry_path", "no_check"],
+      "description": "Where the Skill gets remaining-budget data. 'telemetry_feed' = live data from orchestrator. 'manual_input' = caller provides estimate. 'registry_path' = read from a known config file. 'no_check' = skip condition 7 (use only when budget genuinely doesn't apply, e.g., self-hosted runtime with no token cost)."
+    },
+    "telemetry_feed_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Required when budget_data_source is 'telemetry_feed'. URL the Skill caller fetches budget state from."
+    },
+    "registry_path": {
+      "type": "string",
+      "description": "Required when budget_data_source is 'registry_path'. Filesystem path to the budget registry file."
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional. Free-text notes about when/how this profile is used. Useful for audit trail."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "threshold_rule": { "const": "min_count" } }
+      },
+      "then": {
+        "required": ["min_pass_count"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "threshold_rule": { "const": "weighted" } }
+      },
+      "then": {
+        "required": ["condition_weights", "weighted_pass_threshold"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "budget_data_source": { "const": "telemetry_feed" } }
+      },
+      "then": {
+        "required": ["telemetry_feed_url"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "budget_data_source": { "const": "registry_path" } }
+      },
+      "then": {
+        "required": ["registry_path"]
+      }
+    }
+  ]
+}

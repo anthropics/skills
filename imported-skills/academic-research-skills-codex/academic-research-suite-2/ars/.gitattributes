@@ -1,0 +1,6 @@
+# Shell scripts MUST stay LF, even on Windows checkouts. The PreToolUse hook launcher
+# (hooks/run_guard.sh) and the SessionStart announce hook (scripts/announce-ars-loaded.sh)
+# are executed via Git Bash on Windows; a CRLF checkout would break them on the hot path
+# (#454). Scope the rule to *.sh so existing line-ending behavior for other files is
+# untouched.
+*.sh text eol=lf

@@ -1,0 +1,490 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/literature_corpus_entry.schema.json",
+  "title": "Material Passport Literature Corpus Entry",
+  "description": "One entry in Material Passport Schema 9 literature_corpus[]. Represents a single piece of literature the user has included in their corpus. Produced by user-written adapters; see academic-pipeline/references/adapters/overview.md. ARS does NOT produce these entries itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "citation_key",
+    "title",
+    "authors",
+    "year",
+    "source_pointer"
+  ],
+  "properties": {
+    "citation_key": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9_:-]*$",
+      "description": "Stable unique identifier for this entry within the passport. Typically BibTeX citekey (e.g., 'chen2024ai'). MUST be unique within literature_corpus[]. Uniqueness is enforced by the CI lint, not by JSON Schema."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/csl_name"
+      },
+      "description": "CSL-JSON name format. Each item is either a personal name ({family, given, ...}) or a corporate/institution name ({literal}). See CSL-JSON spec at https://docs.citationstyles.org/en/stable/specification.html#names."
+    },
+    "year": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 2100,
+      "description": "Publication year. If the adapter cannot determine a year, the entry MUST be rejected (go to rejection_log.yaml) rather than coerced to a placeholder."
+    },
+    "source_pointer": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable URI locating this work in the user's own KB. Examples: 'zotero://select/items/0_ABCD1234', 'obsidian://open?vault=kb&file=Chen2024', 'file:///path/to/refs/chen2024.pdf', 'https://doi.org/10.1234/xyz'. ARS does NOT dereference this; consumers that want the full text fetch it from the pointer themselves."
+    },
+    "venue": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doi": {
+      "type": "string",
+      "pattern": "^10\\.[0-9]{4,9}/[^\\s]+$",
+      "description": "DOI without leading 'doi:' or URL prefix."
+    },
+    "arxiv_id": {
+      "type": "string",
+      "pattern": "^([A-Za-z][A-Za-z0-9-]*(\\.[A-Za-z0-9-]+)*/\\d{7}(v[1-9]\\d*)?|\\d{4}\\.\\d{4,5}(v[1-9]\\d*)?)$",
+      "description": "Optional arXiv identifier for arXiv-hosted works. Accepts legacy IDs such as 'hep-th/9711200', 'math.AG/0703087', and new-style IDs such as '2401.12345' or '2401.12345v2'."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "User-assigned tags from the source KB. Adapter-specific; treat as free-form."
+    },
+    "obtained_via": {
+      "type": "string",
+      "enum": [
+        "zotero-api",
+        "zotero-bbt-export",
+        "obsidian-vault",
+        "folder-scan",
+        "manual",
+        "other"
+      ],
+      "description": "Strongly recommended. Which adapter produced this entry. 'other' is permitted for user-written custom adapters; those SHOULD also set adapter_name. Note: v3.6.4 reference implementations only use 'zotero-bbt-export', 'obsidian-vault', and 'folder-scan'. The remaining enum values ('zotero-api', 'manual') are reserved for user-written adapters and are permitted in the schema so such adapters remain valid without schema extension."
+    },
+    "obtained_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Strongly recommended. ISO 8601 timestamp when the adapter produced this entry."
+    },
+    "adapter_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional. Required when obtained_via='other'."
+    },
+    "adapter_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "abstract": {
+      "type": "string",
+      "description": "PRIVATE FIELD. May contain publisher-copyrighted material. Do NOT share passports containing this field publicly without confirming your right to do so. ARS consumers treat this as optional input; absence never causes failure."
+    },
+    "user_notes": {
+      "type": "string",
+      "description": "PRIVATE FIELD. User's own annotations from their KB. May contain copyrighted excerpts. Same sharing caveat as abstract."
+    },
+    "source_acquired": {
+      "type": "boolean",
+      "description": "v3.7.1 trust-chain field (spec § 3.1, D1). True when the original source artifact (PDF / HTML / dataset) is actually retrieved into the user's KB or workspace. Distinguishes 'we have the file' from 'we cite the bibliography record'. Adapter-set or AI-set; user-orthogonal (the user-set human-read signal is recorded in the §3.6 peer file, NOT here)."
+    },
+    "source_acquisition_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "v3.7.1 trust-chain field. ISO 8601 timestamp when the original source was acquired. Only meaningful when source_acquired=true."
+    },
+    "source_acquisition_path": {
+      "type": "string",
+      "minLength": 1,
+      "description": "v3.7.1 trust-chain field. Repo-relative or absolute path to the acquired source file. Only meaningful when source_acquired=true."
+    },
+    "source_verified_against_original": {
+      "type": "boolean",
+      "description": "v3.7.1 trust-chain field. True when an AI agent has cross-checked the bibliography entry's authors / year / title / venue against the actual content of the acquired source (NOT just a derivative bibliography). Per spec §3.1 firm rule #1, this MUST NOT be true unless source_acquired=true AND source_verification_method names a real method (not 'none')."
+    },
+    "source_verification_method": {
+      "type": "string",
+      "enum": [
+        "codex_audit",
+        "manual_grep",
+        "vision_check",
+        "none"
+      ],
+      "description": "v3.7.1 trust-chain field. Method used to verify the entry against the original source. 'none' means no verification was performed; entries with 'none' MUST NOT set source_verified_against_original=true (spec §3.1 firm rule #1, round-2 R2-007 amend: 'none' is a valid enum but is forbidden in conjunction with verified=true)."
+    },
+    "description_source": {
+      "type": "string",
+      "pattern": "^(original_pdf|bibliography_v[0-9]+|secondary_summary)$",
+      "description": "v3.7.1 trust-chain field. Origin of the descriptive metadata (title / authors / abstract). 'original_pdf' = read directly off the acquired source; 'bibliography_v<n>' (any non-negative integer n) = lifted from a derivative bibliography revision; 'secondary_summary' = paraphrased from another work. Surfaces description provenance independently of source acquisition. Spec § 3.1 yaml uses the literal `bibliography_v<n>` template, so the pattern accepts any integer n rather than hard-coding a finite revision count."
+    },
+    "description_last_audit": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "v3.7.1 trust-chain field. Round identifier of the most recent codex / cross-model audit that examined this entry's description, or null / the literal string 'none' when no such audit has run. The field-level type permits both null and 'none' broadly, but per spec §3.1 firm rule #2 the rule-#2 then-branch in `allOf` tightens this to the LITERAL STRING 'none' only when source_acquired=false (no original means audit cannot be substantive — round-6 codex P2 closure). null remains valid only when source_acquired=true and the entry is simply unaudited."
+    },
+    "contamination_signals_backfilled_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "v3.7.3 backfill provenance (issue #105). ISO-8601 UTC timestamp set by scripts/migrate_literature_corpus_to_v3_7_3.py when contamination_signals was computed post-hoc on a pre-v3.7.3 entry rather than at ingest time. Absence means signals were either computed at ingest by bibliography_agent v3.7.3+ or have not been computed yet. Backward compat: pre-v3.7.3 entries lack both contamination_signals and this field; ingest-time entries (v3.7.3+) lack only this field."
+    },
+    "contamination_signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "v3.7.3 + v3.9.0 + v3.11 contaminated-source advisory field (spec v3.7.3 §3.2 + v3.9.0 §3.4–§3.5 + v3.11 #182 Delta 1). Up to five optional boolean signals computed at ingest time by bibliography_agent: v3.7.3 Vector 1 (preprint_post_llm_inflection — heuristic), v3.7.3 Vector 2 (semantic_scholar_unmatched — S2 lookup), v3.9.0 (openalex_unmatched + crossref_unmatched — triangulation extension), v3.11 (arxiv_unmatched — four-index triangulation extension). Surfaces at cite-time finalizer as CONTAMINATED-... marker annotation suffix; advisory only — does NOT block emission. Absence of the object means signals were not computed (legacy entries or check skipped). Presence with all populated *_unmatched fields false means lookup-based contamination evidence is absent for the queried indexes; `preprint_post_llm_inflection: true` is an independent contamination signal that remains active regardless of lookup field values. Manual entries are exempt from the four lookup fields per spec v3.9.0 §3.1 + v3.11 not-rule but still carry preprint_post_llm_inflection (heuristic). External motivation: Zhao et al. arXiv:2605.07723 (2026-05) documents post-2024-mid hallucination inflection in preprint corpora and §3 cross-index triangulation as viable false-positive reduction.",
+      "properties": {
+        "preprint_post_llm_inflection": {
+          "type": "boolean",
+          "description": "True when entry year >= 2024 AND venue is a preprint server. The v3.7.3 closed list of 10 servers (expanded from 6 to 10 per codex F6 / gemini review closure): arXiv, bioRxiv, medRxiv, SSRN, Research Square, Preprints.org, ChemRxiv, EarthArXiv, OSF Preprints (covers SocArXiv / PsyArXiv / other OSF-hosted services), TechRxiv. Per spec §3.2 Vector 1; threshold year derived from Zhao et al. 2026-05 mid-2024 inflection point analysis. Adapters that compute this signal MUST use the full 10-venue list; partial implementations from the schema description alone would suppress CONTAMINATED-PREPRINT advisories on the 4 newer venues (v3.7.3 codex round-4 F13 closure)."
+        },
+        "semantic_scholar_unmatched": {
+          "type": "boolean",
+          "description": "True when a Semantic Scholar API lookup (per references/semantic_scholar_api_protocol.md) returned no match by either DOI or title. The check fires only when obtained_via != 'manual' (user-curated entries are exempted; user has vouched). Per spec §3.2 Vector 2."
+        },
+        "openalex_unmatched": {
+          "type": "boolean",
+          "description": "True when an OpenAlex API lookup (per references/openalex_api_protocol.md) returned no match by DOI (with title cross-check) or title. Mirrors semantic_scholar_unmatched semantics. The check fires only when obtained_via != 'manual'. Per spec v3.9.0 §3.4."
+        },
+        "crossref_unmatched": {
+          "type": "boolean",
+          "description": "True when a Crossref API lookup (per references/crossref_api_protocol.md) returned no match by DOI (with title cross-check) or title. Mirrors semantic_scholar_unmatched semantics. The check fires only when obtained_via != 'manual'. Per spec v3.9.0 §3.5."
+        },
+        "arxiv_unmatched": {
+          "type": "boolean",
+          "description": "True when an arXiv API lookup (per references/arxiv_api_protocol.md) returned no match by arXiv ID (with title cross-check) or title. Mirrors semantic_scholar_unmatched / crossref_unmatched / openalex_unmatched semantics, extending the v3.9.0 triplet to a four-index triangulation. The check fires only when obtained_via != 'manual'. Per spec v3.11 #182 Delta 1. Note: this is the raw triangulation signal; the #182 Delta 4 unified summary narrows the existence-gate `false` to ID-keyed unmatched (a title-only arxiv_unmatched with no resolvable arXiv ID is a coverage-gap signal, not fabrication evidence, per C-V6(a))."
+        }
+      }
+    },
+    "venue_type": {
+      "type": "string",
+      "enum": [
+        "journal-article",
+        "conference-paper",
+        "book",
+        "chapter",
+        "dissertation",
+        "preprint",
+        "report",
+        "dataset",
+        "other",
+        "unknown"
+      ],
+      "description": "v3.10 (spec §3 PR-B item 2). The kind of work this entry is, used by the strict_articles_only terminal policy to scope HIGH-BLOCK to journal-article / conference-paper. ADAPTER-DECLARED ONLY (Invariant 5): an adapter sets this from reliable source-type metadata (e.g. a Zotero item type). `unknown` is an explicit enum member so adapters told to emit `unknown` when they cannot reliably determine the type still validate (R1 P0-D; 'absence-means-unknown' was rejected as harder to test). MUST NOT be inferred from the free-form `venue` string or from OpenAlex / Crossref `type` fields (R-L3-2-D). Absence is still allowed (legacy entries predating v3.10). When present, venue_type_provenance MUST also be present (pair dependency in allOf)."
+    },
+    "venue_type_provenance": {
+      "type": "string",
+      "enum": [
+        "adapter_declared",
+        "user_declared",
+        "trusted_source_declared",
+        "unknown"
+      ],
+      "description": "v3.10 (spec §3 PR-B item 3). How venue_type was established. `adapter_declared`: an adapter read it from structured source-type metadata. `user_declared`: the user set it. `trusted_source_declared`: a matched-record declared-metadata source (a publisher feed / a registry record the entry positively matched) declared it — REQUIRES venue_type_source (see allOf). `unknown`: provenance could not be established. The API-inferred values `openalex_inferred` / `crossref_inferred` are DELIBERATELY ABSENT from this enum (R-L3-2-D): an index `type` field is inference, not declared metadata, even on a matched record. Pair dependencies (allOf): venue_type present ⟺ venue_type_provenance present (bidirectional, R2-P2); venue_type == unknown ⟹ venue_type_provenance == unknown (one-way, NOT biconditional — a KNOWN venue_type MAY carry `unknown` provenance so an adapter that parses the type but cannot establish provenance keeps the type rather than discarding it, R2-P0 data-loss fix)."
+    },
+    "venue_type_source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "v3.10 (spec §3 PR-B item 4). Names WHICH trusted source declared venue_type. REQUIRED iff venue_type_provenance == trusted_source_declared (allOf; closes the optional-bypass — a trusted_source_declared with no named source FAILS the lint). MUST name a matched-record declared-metadata source (a publisher feed / registry record), NOT one of the three lookup indexes (Semantic Scholar / OpenAlex / Crossref) that produced the k=3 unmatched signal — the laundering guard (R2-P1) is enforced by check_v3_10_policy.py, which asserts venue_type_source is non-empty and ∉ {the three lookup index names} when provenance is trusted_source_declared. The schema enforces presence + non-emptiness; the index-name exclusion is a lint-level assertion (a closed enum of forbidden names is not expressible as a JSON-Schema string constraint without enumerating an open-ended set of legitimate sources)."
+    }
+  },
+  "allOf": [
+    {
+      "description": "When obtained_via='other' (user-written custom adapter), adapter_name MUST be set so consumers can attribute the entry. Reference adapters (folder-scan, zotero-bbt-export, obsidian-vault) and other enum values do not trigger this constraint.",
+      "if": {
+        "properties": {
+          "obtained_via": {
+            "const": "other"
+          }
+        },
+        "required": [
+          "obtained_via"
+        ]
+      },
+      "then": {
+        "required": [
+          "adapter_name"
+        ]
+      }
+    },
+    {
+      "description": "v3.7.1 spec §3.1 firm rule #1 (round-2 R2-007 amend): source_verified_against_original=true REQUIRES source_acquired=true AND source_verification_method ∈ {codex_audit, manual_grep, vision_check}. The 'none' method is enumerated for shape uniformity but is FORBIDDEN in conjunction with verified=true.",
+      "if": {
+        "properties": {
+          "source_verified_against_original": {
+            "const": true
+          }
+        },
+        "required": [
+          "source_verified_against_original"
+        ]
+      },
+      "then": {
+        "required": [
+          "source_acquired",
+          "source_verification_method"
+        ],
+        "properties": {
+          "source_acquired": {
+            "const": true
+          },
+          "source_verification_method": {
+            "enum": [
+              "codex_audit",
+              "manual_grep",
+              "vision_check"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "description": "v3.7.1 spec §3.1 firm rule #2 (round-6 codex P2 closure): source_acquired=false REQUIRES `description_last_audit: \"none\"` — the literal sentinel string, NOT null. Spec line 120 reads 'REQUIRES description_last_audit: none' (literal 'none'); spec line 111 yaml shows the value vocabulary as `<round_id> | none` with no null alternative. Round-1 closure made the field strictly required (presence enforced); round-6 closure removes the null alternative the field-level type permitted, since spec firm rule #2 mandates the literal sentinel. The top-level `type: [string, null]` on the field stays — null is still legal when source_acquired=true and the entry simply hasn't been audited yet — but the rule-#2 then-branch tightens to the literal string only.",
+      "if": {
+        "properties": {
+          "source_acquired": {
+            "const": false
+          }
+        },
+        "required": [
+          "source_acquired"
+        ]
+      },
+      "then": {
+        "required": [
+          "description_last_audit"
+        ],
+        "properties": {
+          "description_last_audit": {
+            "type": "string",
+            "const": "none"
+          }
+        }
+      }
+    },
+    {
+      "description": "v3.7.3 spec §3.2 cross-field rule (gemini review F5 closure): preprint_post_llm_inflection=true REQUIRES year>=2024. The flag's definition is `year >= 2024 AND venue is a preprint server`, so setting the flag true with a pre-2024 year is logically contradictory and the schema rejects it. The reverse (year>=2024 AND flag=false) is legal — flag may be false because the venue is not a preprint server.",
+      "if": {
+        "properties": {
+          "contamination_signals": {
+            "type": "object",
+            "properties": {
+              "preprint_post_llm_inflection": {
+                "const": true
+              }
+            },
+            "required": [
+              "preprint_post_llm_inflection"
+            ]
+          }
+        },
+        "required": [
+          "contamination_signals"
+        ]
+      },
+      "then": {
+        "properties": {
+          "year": {
+            "minimum": 2024
+          }
+        }
+      }
+    },
+    {
+      "description": "v3.9.0 spec §3.1 extends v3.7.3 §3.2 manual-entry exemption (codex round-3 F11 closure) symmetrically; v3.11 #182 Delta 1 extends it further to arxiv_unmatched: when obtained_via='manual' the bibliography_agent SKIPS all four lookups (Semantic Scholar / OpenAlex / Crossref / arXiv) and OMITS the four *_unmatched fields. The schema enforces this contract: a manual entry MUST NOT carry any of semantic_scholar_unmatched / openalex_unmatched / crossref_unmatched / arxiv_unmatched. Setting any to true on a manual entry would surface CONTAMINATED-* on a user-vouched reference. The asymmetry: preprint_post_llm_inflection IS still computed for manual entries (pure heuristic, no lookup) and is not in the exemption scope.",
+      "if": {
+        "properties": {
+          "obtained_via": {
+            "const": "manual"
+          }
+        },
+        "required": [
+          "obtained_via"
+        ]
+      },
+      "then": {
+        "not": {
+          "properties": {
+            "contamination_signals": {
+              "type": "object",
+              "anyOf": [
+                {
+                  "required": [
+                    "semantic_scholar_unmatched"
+                  ]
+                },
+                {
+                  "required": [
+                    "openalex_unmatched"
+                  ]
+                },
+                {
+                  "required": [
+                    "crossref_unmatched"
+                  ]
+                },
+                {
+                  "required": [
+                    "arxiv_unmatched"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "contamination_signals"
+          ]
+        }
+      }
+    },
+    {
+      "description": "v3.10 spec §3 PR-B item 3 pair dependency (forward): venue_type present ⟹ venue_type_provenance present. No orphan type without provenance — a declared type must say how it was established.",
+      "if": {
+        "required": [
+          "venue_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "venue_type_provenance"
+        ]
+      }
+    },
+    {
+      "description": "v3.10 spec §3 PR-B item 3 pair dependency (reverse, R2-P2): venue_type_provenance present ⟹ venue_type present. No orphan provenance without a type.",
+      "if": {
+        "required": [
+          "venue_type_provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "venue_type"
+        ]
+      }
+    },
+    {
+      "description": "v3.10 spec §3 PR-B item 3 (one-way, NOT biconditional): venue_type == unknown ⟹ venue_type_provenance == unknown. A literal-unknown type can only carry unknown provenance. The reverse is deliberately NOT enforced — a KNOWN venue_type (e.g. journal-article) MAY carry venue_type_provenance: unknown (R2-P0 data-loss fix: an adapter that parses the type but cannot establish provenance keeps the type rather than discarding it; strict_articles_only already requires declared provenance to hard-block, so a known-type + unknown-provenance entry safely stays advisory).",
+      "if": {
+        "properties": {
+          "venue_type": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "venue_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "venue_type_provenance": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "venue_type_provenance"
+        ]
+      }
+    },
+    {
+      "description": "v3.10 spec §3 PR-B item 4 (R2-P1 required-source): venue_type_provenance == trusted_source_declared ⟹ venue_type_source REQUIRED. Closes the optional-bypass — a trusted_source_declared with no named source FAILS validation. The laundering guard (venue_type_source ∉ {three lookup index names}) is a lint-level assertion in check_v3_10_policy.py, not a schema constraint.",
+      "if": {
+        "properties": {
+          "venue_type_provenance": {
+            "const": "trusted_source_declared"
+          }
+        },
+        "required": [
+          "venue_type_provenance"
+        ]
+      },
+      "then": {
+        "required": [
+          "venue_type_source"
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "csl_name": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/csl_personal_name"
+        },
+        {
+          "$ref": "#/$defs/csl_literal_name"
+        }
+      ]
+    },
+    "csl_personal_name": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family"
+      ],
+      "properties": {
+        "family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "given": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        },
+        "dropping-particle": {
+          "type": "string"
+        },
+        "non-dropping-particle": {
+          "type": "string"
+        },
+        "comma-suffix": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "static-ordering": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "parse-names": {
+          "type": [
+            "string",
+            "boolean"
+          ]
+        }
+      }
+    },
+    "csl_literal_name": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "literal"
+      ],
+      "properties": {
+        "literal": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

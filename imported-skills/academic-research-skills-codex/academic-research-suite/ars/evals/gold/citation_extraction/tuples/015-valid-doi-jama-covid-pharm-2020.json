@@ -1,0 +1,40 @@
+{
+  "tuple_id": "015-valid-doi-jama-covid-pharm-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Sanders2020COVIDPharm",
+    "title": "Pharmacologic Treatments for Coronavirus Disease 2019 (COVID-19)",
+    "authors": [
+      {
+        "family": "Sanders",
+        "given": "James M."
+      },
+      {
+        "family": "Monogue",
+        "given": "Marguerite L."
+      },
+      {
+        "family": "Jodlowski",
+        "given": "Tomasz Z."
+      },
+      {
+        "family": "Cutrell",
+        "given": "James B."
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1001/jama.2020.6019",
+    "venue": "JAMA",
+    "source_pointer": "https://doi.org/10.1001/jama.2020.6019",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "sanders-2020-covidpharm",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

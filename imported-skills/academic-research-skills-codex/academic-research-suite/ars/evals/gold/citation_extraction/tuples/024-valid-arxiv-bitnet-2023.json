@@ -1,0 +1,68 @@
+{
+  "tuple_id": "024-valid-arxiv-bitnet-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Wang2023BitNet",
+    "title": "BitNet: Scaling 1-bit Transformers for Large Language Models",
+    "authors": [
+      {
+        "family": "Wang",
+        "given": "Hongyu"
+      },
+      {
+        "family": "Ma",
+        "given": "Shuming"
+      },
+      {
+        "family": "Dong",
+        "given": "Li"
+      },
+      {
+        "family": "Huang",
+        "given": "Shaohan"
+      },
+      {
+        "family": "Wang",
+        "given": "Huaijie"
+      },
+      {
+        "family": "Ma",
+        "given": "Lingxiao"
+      },
+      {
+        "family": "Yang",
+        "given": "Fan"
+      },
+      {
+        "family": "Wang",
+        "given": "Ruiping"
+      },
+      {
+        "family": "Wu",
+        "given": "Yi"
+      },
+      {
+        "family": "Wei",
+        "given": "Furu"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2310.11453",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2310.11453",
+  "ref_slug": "wang-2023-bitnet",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

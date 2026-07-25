@@ -1,0 +1,29 @@
+{
+  "tuple_id": "046-fabricated-phantom-tensor-quantum-rl",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Chen2024PhantomTensor",
+    "title": "Phantom Tensor Decomposition for Quantum-Aware Reinforcement Learning in Sparse Reward Settings",
+    "authors": [
+      {"family": "Chen", "given": "X. Y."},
+      {"family": "Patel", "given": "S."},
+      {"family": "Tanaka", "given": "K."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.qrl.2024.001",
+    "venue": "Journal of Quantum Reinforcement Learning",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.qrl.2024.001",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "chen-2024-phantom-tensor",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": {
+    "verdict": "false",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": true
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/submission/format_profile.schema.json",
+  "title": "Format Profile",
+  "description": "#439 scholar-declared document LAYOUT profile (spec docs/design/2026-06-15-439-format-profile-design.md). Consumed by the Phase 7 formatter_agent (a RENDERER, 'how should this look'), NOT a verifier — kept separate from venue_profile by design (decision B). Declared-only rule (downgraded, §3): the formatter follows ONLY the supplied fields and NEVER infers a missing layout field from the venue name, institution, language/locale, or filename — the reason is consistency/reproducibility, NOT integrity, so this carries NO provenance machinery (no declared_by const, no _inferred lint). Omission of a field = NOT-DECLARED = the formatter uses its current prose default for that aspect (byte-equivalent to pre-#439 when the whole profile is absent, §5a). Venue compliance constraints take precedence over these rendering preferences (§3a). Each field is best-effort per output target (DOCX/PDF/LaTeX), §5c.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "body_font": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Body text font family, e.g. 'SimSun' / 'Times New Roman'. Display value only — never used to infer other fields."
+        },
+        "size_pt": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Body font size in points, e.g. 12 or 10.5 (五号)."
+        }
+      },
+      "description": "Body text font. Omit the object or any sub-field to leave the formatter's current default for that aspect."
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "font_family": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size_pt": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "placement": {
+          "type": "string",
+          "enum": ["above", "below"],
+          "description": "Caption position relative to the figure/table. One global value in the first field set; per-object-type split (figures-below / tables-above) is a documented open item, added only on a declared need."
+        },
+        "alignment": {
+          "type": "string",
+          "enum": ["left", "center", "right"]
+        },
+        "latin_font_family": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Font for Latin-script tokens inside an otherwise-CJK caption, e.g. 'Fig.' set in Times New Roman (the honest model of the #436 bilingual case). Does NOT model caption ordering / numbering / separator rules — semantic caption content stays upstream."
+        }
+      },
+      "description": "Figure/table caption styling."
+    },
+    "line_spacing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["single", "onehalf", "double", "fixed_pt"]
+        },
+        "fixed_pt": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Fixed line spacing in points, e.g. 20. Required iff mode == fixed_pt; present with any other mode is a schema-INVALID profile (rejected, not ignored)."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "mode": { "const": "fixed_pt" } }
+          },
+          "then": {
+            "required": ["fixed_pt"]
+          },
+          "else": {
+            "not": { "required": ["fixed_pt"] }
+          }
+        }
+      ],
+      "description": "Line spacing. mode==fixed_pt requires fixed_pt; any other mode forbids it."
+    },
+    "margins_cm": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "top": { "type": "number", "exclusiveMinimum": 0 },
+        "bottom": { "type": "number", "exclusiveMinimum": 0 },
+        "left": { "type": "number", "exclusiveMinimum": 0 },
+        "right": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "description": "Page margins in centimeters (cm only by intent — CJK thesis use case; unit-bearing values deferred)."
+    },
+    "table_border_style": {
+      "type": "string",
+      "enum": ["three_line", "full_grid", "none"],
+      "description": "Table border convention. 'three_line' is the common academic three-line (booktabs-style) table."
+    }
+  }
+}

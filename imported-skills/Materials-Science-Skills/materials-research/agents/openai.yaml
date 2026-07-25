@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Research"
+  short_description: "Router for full-cycle materials research and companion skills."
+  brand_color: "#3F6F5E"
+  default_prompt: "Use $materials-research to route this materials task and check its journal-ready evidence chain."
+
+policy:
+  allow_implicit_invocation: true

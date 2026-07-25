@@ -1,0 +1,32 @@
+# Index — {{VAULT_NAME}}
+
+_Initialized {{DATE}} • 0 pages_
+
+> Content-oriented catalog of every page in `wiki/`. Updated by
+> `scripts/update_index.py` or during `/wiki-ingest`. Answer queries
+> by reading this file first, then drilling into relevant pages.
+>
+> Topic: **{{TOPIC}}**
+
+## Synthesis (0)
+_No pages yet. Will appear here as you ingest sources and build high-level theses._
+
+## Concept (0)
+_No pages yet. Will populate with ideas, theories, methods as sources are ingested._
+
+## Entity (0)
+_No pages yet. People, organizations, places, products mentioned in your sources will show up here._
+
+## Source (0)
+_No pages yet. Each ingested source gets one summary page here._
+
+## Comparison (0)
+_No pages yet. Cross-source or cross-concept analyses will live here._
+
+---
+
+### First steps
+
+1. Drop a source into `raw/`
+2. Run `/wiki-ingest raw/<your-file>` in your LLM CLI
+3. Watch this index populate

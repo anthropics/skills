@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "astro-or-static",
+  "description": "Content-first marketing / docs / blog / pricing site. Heavy read, near-zero write. SEO-critical. Islands Architecture (Astro) or pure SSG (11ty, Hugo, Next.js static export). Every JS byte must justify itself.",
+  "version": "1.0.0",
+  "constraints": {
+    "primary_device": ["mobile-4g", "desktop-fiber"],
+    "rendering": "static-generation-with-island-hydration",
+    "seo_dependent": true,
+    "auth_walled_only": false,
+    "team_size_min": 1,
+    "team_size_max": 5,
+    "read_write_ratio_min": 100
+  },
+  "stack": {
+    "framework_options_ranked": ["astro", "11ty", "hugo", "next-static-export"],
+    "language": "typescript-or-markdown-first",
+    "styling": "tailwind-or-css-modules",
+    "content": "mdx-in-repo or headless-cms (sanity, contentful, payload)",
+    "client_js": "islands-only-default-zero",
+    "image_pipeline": "framework-native (astro:assets, next/image, hugo image processing)",
+    "forms": "edge-function-to-webhook or formspree",
+    "analytics": "plausible-or-fathom-or-self-host-umami",
+    "testing": "playwright-e2e + lighthouse-ci"
+  },
+  "anti_recommendations": {
+    "spa-for-marketing": "kill — SEO catastrophe in 2026 search/AI-search algorithms",
+    "react-app-on-every-page": "kill — defeats Islands Architecture",
+    "third-party-tag-soup": "kill — every script adds LCP + INP",
+    "google-tag-manager-on-marketing": "warn — measure CWV regression before adding",
+    "custom-cms-build": "kill — use headless CMS or MDX, not a build project",
+    "next-app-router-for-static-marketing": "warn — RSC complexity tax with no payoff on near-zero-write surface"
+  },
+  "success_thresholds": {
+    "lcp_ms_mobile_4g_p75": 1200,
+    "inp_ms_p75": 100,
+    "cls_p75": 0.05,
+    "ttfb_ms_p75": 250,
+    "page_weight_kb_total_max": 250,
+    "js_kb_per_page_gzip_max": 30,
+    "lighthouse_perf_min": 95,
+    "lighthouse_a11y_min": 95,
+    "lighthouse_seo_min": 98,
+    "lighthouse_best_practices_min": 95
+  },
+  "ci_gates": [
+    "lighthouse-ci-all-four-categories",
+    "no-broken-links",
+    "image-budget-per-page",
+    "axe-a11y-checks"
+  ],
+  "canon_references": [
+    "Astro team, Islands Architecture (Eisenberg, 2021) — partial hydration",
+    "Web Almanac (HTTP Archive, 2025) on marketing-site weight distribution",
+    "Patrick Stox, JS and SEO (Ahrefs, 2023)",
+    "Addy Osmani, Web Performance for the Modern Web (2024)",
+    "Brad Frost, Atomic Design (2016) — content-first layering"
+  ]
+}

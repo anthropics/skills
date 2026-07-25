@@ -1,0 +1,50 @@
+# Repository hygiene scan (#151): gitleaks over the full git history with
+# the upstream default ruleset. Catches accidentally committed credentials
+# (API keys, tokens, private-key blocks, high-entropy secrets) before they
+# reach main. What it detects is documented at the level of the upstream
+# tool's docs — https://github.com/gitleaks/gitleaks — no repo-specific
+# rules; the only local configuration is the false-positive allowlist in
+# .gitleaks.toml (citation keys misread as generic-api-key).
+#
+# The binary is version-pinned and checksum-verified rather than pulled via
+# a marketplace action: gitleaks-action requires a license key for org
+# accounts, and a pinned release binary keeps the supply chain auditable.
+
+name: repository-hygiene
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: repository-hygiene-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the scan covers every commit, not just the PR diff,
+          # so a secret buried in an intermediate commit cannot slip through.
+          fetch-depth: 0
+
+      - name: Run gitleaks (pinned, checksum-verified)
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+          GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+        run: |
+          set -euo pipefail
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            -o /tmp/gitleaks.tgz
+          echo "${GITLEAKS_SHA256}  /tmp/gitleaks.tgz" | sha256sum --check --strict
+          tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
+          # --redact keeps any genuine hit out of public CI logs.
+          /tmp/gitleaks detect --source . --config .gitleaks.toml --no-banner --redact --exit-code 1

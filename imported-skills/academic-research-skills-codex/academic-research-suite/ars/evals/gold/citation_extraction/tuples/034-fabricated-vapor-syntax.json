@@ -1,0 +1,23 @@
+{
+  "tuple_id": "034-fabricated-vapor-syntax",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Sharma2022VaporSyntax",
+    "title": "Vapor Syntax Trees: A Nonexistent Grammar Formalism for Dead Languages",
+    "authors": [
+      {"family": "Sharma", "given": "P."},
+      {"family": "Eriksson", "given": "L."}
+    ],
+    "year": 2022,
+    "doi": "10.99999/ars184.fake.ling.2022.205",
+    "venue": "Journal of Vapor Linguistics",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.ling.2022.205",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "sharma-2022-vapor-syntax",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

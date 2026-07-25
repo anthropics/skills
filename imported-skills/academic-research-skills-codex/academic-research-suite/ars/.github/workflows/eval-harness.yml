@@ -1,0 +1,181 @@
+name: Eval Harness
+
+# #184 Delta 3 — fire the multi-task eval harness on PRs (and main pushes) that
+# touch scoring / generation logic or the gold sets themselves. Posts a markdown
+# comment with the run metrics and blocks on un-acknowledged regressions.
+
+on:
+  pull_request:
+    paths:
+      # Delta 3 path filter — resolver clients + verification surfaces -> citation_extraction
+      - "scripts/verification_gate/**"
+      - "scripts/arxiv_client.py"
+      - "scripts/verification_cache.py"
+      - "scripts/crossref_client.py"
+      - "scripts/openalex_client.py"
+      - "scripts/citation_verification_summary.py"
+      - "scripts/claim_audit_*.py"
+      # epistemic-status surfaces -> status_classification + summarization_adequacy (Phase 2)
+      - "scripts/epistemic_status_extractor.py"
+      - "scripts/check_silent_upgrade.py"
+      - "shared/references/epistemic_status_vocabulary.md"
+      # writer prompts governing prose register -> status_classification + summarization_adequacy
+      - "deep-research/agents/synthesis_agent.md"
+      - "academic-paper/agents/draft_writer_agent.md"
+      - "deep-research/agents/report_compiler_agent.md"
+      # rq_framing_patterns scoring runner -> the harness dispatches to it, so
+      # changes there must re-run the eval harness (else RQ scoring can drift
+      # without the gate noticing).
+      - "scripts/check_rq_framing_patterns.py"
+      # the harness itself + gold sets
+      - "evals/gold/**"
+      - "scripts/run_evals.py"
+      - "scripts/check_ranking_lift.py"
+      - "shared/evals_lift_report.schema.json"
+      - ".github/workflows/eval-harness.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/verification_gate/**"
+      - "scripts/arxiv_client.py"
+      - "scripts/verification_cache.py"
+      - "scripts/crossref_client.py"
+      - "scripts/openalex_client.py"
+      - "scripts/citation_verification_summary.py"
+      - "scripts/claim_audit_*.py"
+      - "scripts/epistemic_status_extractor.py"
+      - "scripts/check_silent_upgrade.py"
+      - "shared/references/epistemic_status_vocabulary.md"
+      - "deep-research/agents/synthesis_agent.md"
+      - "academic-paper/agents/draft_writer_agent.md"
+      - "deep-research/agents/report_compiler_agent.md"
+      - "scripts/check_rq_framing_patterns.py"
+      - "evals/gold/**"
+      - "scripts/run_evals.py"
+      - "scripts/check_ranking_lift.py"
+      - "shared/evals_lift_report.schema.json"
+      - ".github/workflows/eval-harness.yml"
+
+concurrency:
+  # House invariant: include github.event_name so push and pull_request runs on
+  # the same ref do not fight over one group (avoids spurious cancelled-run
+  # failure emails).
+  group: eval-harness-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  eval-harness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt pytest
+
+      - name: Run eval harness (Phase-2 tasks auto-skipped by discovery)
+        id: run
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          # run_evals discovers only present manifests, so Phase-2 gold sets that
+          # have not landed (status_classification / summarization_adequacy) are
+          # simply absent from the run — no separate skip-guard needed.
+          report="eval_report.json"
+          python -m scripts.run_evals --output "$report"
+          # Absolute-threshold verdict (no exit here): which measured tasks failed
+          # their aggregate threshold. Phase 1b has no main baseline, so this is an
+          # ABSOLUTE gate, not a lift comparison. Logic lives in a unit-tested
+          # module (scripts/_eval_threshold_gate.py), not an inline heredoc.
+          failed=$(python -m scripts._eval_threshold_gate "$report")
+          echo "failed_tasks=${failed}" >> "$GITHUB_OUTPUT"
+          if [ -n "$failed" ]; then
+            echo "::notice title=Eval below threshold::${failed}"
+          fi
+          # Comment body: one-line verdict + per-task table + raw JSON folded
+          # into <details>. Display layer only — rendered by a unit-tested
+          # module (scripts/render_eval_comment.py), not inline shell; the
+          # threshold verdict above is untouched.
+          python -m scripts.render_eval_comment "$report" > eval_comment.md
+
+      - name: Post PR comment
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('eval_comment.md', 'utf8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+
+      - name: Eval gate (absolute threshold + ack contract)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          FAILED_TASKS: ${{ steps.run.outputs.failed_tasks }}
+        run: |
+          set -euo pipefail
+          # Single integrated gate. Phase 1b has no main baseline, so this gate is
+          # honestly ABSOLUTE-threshold only (the lift gate proper,
+          # scripts/check_ranking_lift.py, activates once a baseline exists).
+          #   - no failed task                                    -> pass
+          #   - failed + [eval-regression-acknowledged] + >=1
+          #     OPEN issue URL in THIS repo                       -> pass (noted)
+          #   - failed + no valid ack                             -> ::error:: + fail
+          failed="${FAILED_TASKS:-}"
+          if [ -z "$failed" ]; then
+            echo "All measured tasks meet their absolute threshold; gate passes."
+            exit 0
+          fi
+
+          body="${PR_BODY:-}"
+          if ! printf '%s' "$body" | grep -q '\[eval-regression-acknowledged\]'; then
+            echo "::error::tasks below threshold (${failed}) but PR body lacks [eval-regression-acknowledged]."
+            exit 1
+          fi
+
+          # Accept only issue URLs that point at THIS repo (owner/name), then
+          # require >=1 of them to be OPEN. A foreign repo's issue does not count.
+          repo="${GITHUB_REPOSITORY}"
+          # Escape the literal dot in github.com and bound the issue number on
+          # the right so 'github.com' is not a wildcard and a trailing path
+          # segment cannot smuggle extra digits. ${repo} has no regex metachars.
+          urls=$(printf '%s' "$body" \
+            | grep -oE "https://github\.com/${repo}/issues/[0-9]+([^0-9]|$)" \
+            | grep -oE "https://github\.com/${repo}/issues/[0-9]+" || true)
+          if [ -z "$urls" ]; then
+            echo "::error::[eval-regression-acknowledged] present but no ${repo} issue URL found."
+            exit 1
+          fi
+          open_found=0
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            num="${url##*/}"
+            state=$(gh api "/repos/${repo}/issues/${num}" --jq '.state' 2>/dev/null || echo "missing")
+            if [ "$state" = "open" ]; then
+              open_found=1
+            fi
+          done <<< "$urls"
+          if [ "$open_found" -ne 1 ]; then
+            echo "::error::no OPEN ${repo} tracking issue among the declared URL(s)."
+            exit 1
+          fi
+          echo "Below-threshold tasks acknowledged with >=1 OPEN same-repo issue; gate satisfied."

@@ -1,0 +1,421 @@
+{
+  "timestamp": "2026-02-16T15:42:09.730696",
+  "project_path": "test-project",
+  "dependencies": [
+    {
+      "name": "express",
+      "version": "4.18.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": [
+        {
+          "id": "CVE-2022-24999",
+          "summary": "Open redirect in express",
+          "severity": "MEDIUM",
+          "cvss_score": 6.1,
+          "affected_versions": "<4.18.2",
+          "fixed_version": "4.18.2",
+          "published_date": "2022-11-26",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-24999"
+          ]
+        },
+        {
+          "id": "CVE-2022-24999",
+          "summary": "Open redirect in express",
+          "severity": "MEDIUM",
+          "cvss_score": 6.1,
+          "affected_versions": "<4.18.2",
+          "fixed_version": "4.18.2",
+          "published_date": "2022-11-26",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2022-24999"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lodash",
+      "version": "4.17.20",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": [
+        {
+          "id": "CVE-2021-23337",
+          "summary": "Prototype pollution in lodash",
+          "severity": "HIGH",
+          "cvss_score": 7.2,
+          "affected_versions": "<4.17.21",
+          "fixed_version": "4.17.21",
+          "published_date": "2021-02-15",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-23337"
+          ]
+        },
+        {
+          "id": "CVE-2021-23337",
+          "summary": "Prototype pollution in lodash",
+          "severity": "HIGH",
+          "cvss_score": 7.2,
+          "affected_versions": "<4.17.21",
+          "fixed_version": "4.17.21",
+          "published_date": "2021-02-15",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2021-23337"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "axios",
+      "version": "1.5.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": [
+        {
+          "id": "CVE-2023-45857",
+          "summary": "Cross-site request forgery in axios",
+          "severity": "MEDIUM",
+          "cvss_score": 6.1,
+          "affected_versions": ">=1.0.0 <1.6.0",
+          "fixed_version": "1.6.0",
+          "published_date": "2023-10-11",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-45857"
+          ]
+        },
+        {
+          "id": "CVE-2023-45857",
+          "summary": "Cross-site request forgery in axios",
+          "severity": "MEDIUM",
+          "cvss_score": 6.1,
+          "affected_versions": ">=1.0.0 <1.6.0",
+          "fixed_version": "1.6.0",
+          "published_date": "2023-10-11",
+          "references": [
+            "https://nvd.nist.gov/vuln/detail/CVE-2023-45857"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "jsonwebtoken",
+      "version": "8.5.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "bcrypt",
+      "version": "5.1.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "mongoose",
+      "version": "6.10.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "cors",
+      "version": "2.8.5",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "helmet",
+      "version": "6.1.5",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "winston",
+      "version": "3.8.2",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "dotenv",
+      "version": "16.0.3",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "express-rate-limit",
+      "version": "6.7.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "multer",
+      "version": "1.4.5-lts.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "sharp",
+      "version": "0.32.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "nodemailer",
+      "version": "6.9.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "socket.io",
+      "version": "4.6.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "redis",
+      "version": "4.6.5",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "moment",
+      "version": "2.29.4",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "chalk",
+      "version": "4.1.2",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "commander",
+      "version": "9.4.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "nodemon",
+      "version": "2.0.22",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "jest",
+      "version": "29.5.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "supertest",
+      "version": "6.3.3",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "eslint",
+      "version": "8.40.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "eslint-config-airbnb-base",
+      "version": "15.0.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "eslint-plugin-import",
+      "version": "2.27.5",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "webpack",
+      "version": "5.82.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "webpack-cli",
+      "version": "5.1.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "babel-loader",
+      "version": "9.1.2",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "@babel/core",
+      "version": "7.22.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "@babel/preset-env",
+      "version": "7.22.2",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "css-loader",
+      "version": "6.7.4",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "style-loader",
+      "version": "3.3.3",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "html-webpack-plugin",
+      "version": "5.5.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "mini-css-extract-plugin",
+      "version": "2.7.6",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "postcss",
+      "version": "8.4.23",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "postcss-loader",
+      "version": "7.3.0",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "autoprefixer",
+      "version": "10.4.14",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "cross-env",
+      "version": "7.0.3",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    },
+    {
+      "name": "rimraf",
+      "version": "5.0.1",
+      "ecosystem": "npm",
+      "direct": true,
+      "license": null,
+      "vulnerabilities": []
+    }
+  ],
+  "vulnerabilities_found": 6,
+  "high_severity_count": 2,
+  "medium_severity_count": 4,
+  "low_severity_count": 0,
+  "ecosystems": [
+    "npm"
+  ],
+  "scan_summary": {
+    "total_dependencies": 39,
+    "unique_dependencies": 39,
+    "ecosystems_found": 1,
+    "vulnerable_dependencies": 3,
+    "vulnerability_breakdown": {
+      "high": 2,
+      "medium": 4,
+      "low": 0
+    }
+  },
+  "recommendations": [
+    "URGENT: Address 2 high-severity vulnerabilities immediately",
+    "Schedule fixes for 4 medium-severity vulnerabilities within 30 days",
+    "Update express from 4.18.1 to 4.18.2 to fix CVE-2022-24999",
+    "Update express from 4.18.1 to 4.18.2 to fix CVE-2022-24999",
+    "Update lodash from 4.17.20 to 4.17.21 to fix CVE-2021-23337",
+    "Update lodash from 4.17.20 to 4.17.21 to fix CVE-2021-23337",
+    "Update axios from 1.5.0 to 1.6.0 to fix CVE-2023-45857",
+    "Update axios from 1.5.0 to 1.6.0 to fix CVE-2023-45857"
+  ]
+}

@@ -1,0 +1,27 @@
+schema_version: "1.0"
+sources:
+  - citation_key: handbook-2026ed
+    type: institutional-document
+    published_date:
+      value: "2026-09-15"
+      precision: day
+      open_ended: false
+      provenance:
+        method: crossref_lookup
+        confidence: high
+    effective_date_range:
+      start:
+        value: "2026-09-15"
+        precision: day
+        open_ended: false
+        provenance:
+          method: crossref_lookup
+          confidence: high
+      end:
+        value: null
+        precision: unknown
+        open_ended: true
+        provenance:
+          method: user_override
+          confidence: high
+events: []

@@ -1,0 +1,545 @@
+{
+  "metadata": {
+    "service": {
+      "name": "payment-service",
+      "type": "api",
+      "criticality": "critical",
+      "user_facing": true,
+      "description": "Handles payment processing and transaction management",
+      "team": "payments",
+      "environment": "production",
+      "dependencies": [
+        {
+          "name": "user-service",
+          "type": "api",
+          "criticality": "high"
+        },
+        {
+          "name": "payment-gateway",
+          "type": "external",
+          "criticality": "critical"
+        },
+        {
+          "name": "fraud-detection",
+          "type": "ml",
+          "criticality": "high"
+        }
+      ],
+      "endpoints": [
+        {
+          "path": "/api/v1/payments",
+          "method": "POST",
+          "sla_latency_ms": 500,
+          "expected_tps": 100
+        },
+        {
+          "path": "/api/v1/payments/{id}",
+          "method": "GET",
+          "sla_latency_ms": 200,
+          "expected_tps": 500
+        },
+        {
+          "path": "/api/v1/payments/{id}/refund",
+          "method": "POST",
+          "sla_latency_ms": 1000,
+          "expected_tps": 10
+        }
+      ],
+      "business_metrics": {
+        "revenue_per_hour": {
+          "metric": "sum(payment_amount * rate(payments_successful_total[1h]))",
+          "target": 50000,
+          "unit": "USD"
+        },
+        "conversion_rate": {
+          "metric": "sum(rate(payments_successful_total[5m])) / sum(rate(payment_attempts_total[5m]))",
+          "target": 0.95,
+          "unit": "percentage"
+        }
+      },
+      "infrastructure": {
+        "container_orchestrator": "kubernetes",
+        "replicas": 6,
+        "cpu_limit": "2000m",
+        "memory_limit": "4Gi",
+        "database": {
+          "type": "postgresql",
+          "connection_pool_size": 20
+        },
+        "cache": {
+          "type": "redis",
+          "cluster_size": 3
+        }
+      },
+      "compliance_requirements": [
+        "PCI-DSS",
+        "SOX",
+        "GDPR"
+      ],
+      "tags": [
+        "payment",
+        "transaction",
+        "critical-path",
+        "revenue-generating"
+      ]
+    },
+    "generated_at": "2026-02-16T14:01:57.572080Z",
+    "framework_version": "1.0"
+  },
+  "slis": [
+    {
+      "name": "Availability",
+      "description": "Percentage of successful requests",
+      "type": "ratio",
+      "good_events": "sum(rate(http_requests_total{service=\"payment-service\",code!~\"5..\"}))",
+      "total_events": "sum(rate(http_requests_total{service=\"payment-service\"}))",
+      "unit": "percentage"
+    },
+    {
+      "name": "Request Latency P95",
+      "description": "95th percentile of request latency",
+      "type": "threshold",
+      "query": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{service=\"payment-service\"}[5m]))",
+      "unit": "seconds"
+    },
+    {
+      "name": "Error Rate",
+      "description": "Rate of 5xx errors",
+      "type": "ratio",
+      "good_events": "sum(rate(http_requests_total{service=\"payment-service\",code!~\"5..\"}))",
+      "total_events": "sum(rate(http_requests_total{service=\"payment-service\"}))",
+      "unit": "percentage"
+    },
+    {
+      "name": "Request Throughput",
+      "description": "Requests per second",
+      "type": "gauge",
+      "query": "sum(rate(http_requests_total{service=\"payment-service\"}[5m]))",
+      "unit": "requests/sec"
+    },
+    {
+      "name": "User Journey Success Rate",
+      "description": "Percentage of successful complete user journeys",
+      "type": "ratio",
+      "good_events": "sum(rate(user_journey_total{service=\"payment-service\",status=\"success\"}[5m]))",
+      "total_events": "sum(rate(user_journey_total{service=\"payment-service\"}[5m]))",
+      "unit": "percentage"
+    },
+    {
+      "name": "Feature Availability",
+      "description": "Percentage of time key features are available",
+      "type": "ratio",
+      "good_events": "sum(rate(feature_checks_total{service=\"payment-service\",status=\"available\"}[5m]))",
+      "total_events": "sum(rate(feature_checks_total{service=\"payment-service\"}[5m]))",
+      "unit": "percentage"
+    }
+  ],
+  "slos": [
+    {
+      "name": "Availability SLO",
+      "description": "Service level objective for percentage of successful requests",
+      "sli_name": "Availability",
+      "target_value": 0.9999,
+      "target_display": "99.99%",
+      "operator": ">=",
+      "time_windows": [
+        "1h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "measurement_window": "30d",
+      "service": "payment-service",
+      "criticality": "critical"
+    },
+    {
+      "name": "Request Latency P95 SLO",
+      "description": "Service level objective for 95th percentile of request latency",
+      "sli_name": "Request Latency P95",
+      "target_value": 100,
+      "target_display": "0.1s",
+      "operator": "<=",
+      "time_windows": [
+        "1h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "measurement_window": "30d",
+      "service": "payment-service",
+      "criticality": "critical"
+    },
+    {
+      "name": "Error Rate SLO",
+      "description": "Service level objective for rate of 5xx errors",
+      "sli_name": "Error Rate",
+      "target_value": 0.001,
+      "target_display": "0.1%",
+      "operator": "<=",
+      "time_windows": [
+        "1h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "measurement_window": "30d",
+      "service": "payment-service",
+      "criticality": "critical"
+    },
+    {
+      "name": "User Journey Success Rate SLO",
+      "description": "Service level objective for percentage of successful complete user journeys",
+      "sli_name": "User Journey Success Rate",
+      "target_value": 0.9999,
+      "target_display": "99.99%",
+      "operator": ">=",
+      "time_windows": [
+        "1h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "measurement_window": "30d",
+      "service": "payment-service",
+      "criticality": "critical"
+    },
+    {
+      "name": "Feature Availability SLO",
+      "description": "Service level objective for percentage of time key features are available",
+      "sli_name": "Feature Availability",
+      "target_value": 0.9999,
+      "target_display": "99.99%",
+      "operator": ">=",
+      "time_windows": [
+        "1h",
+        "1d",
+        "7d",
+        "30d"
+      ],
+      "measurement_window": "30d",
+      "service": "payment-service",
+      "criticality": "critical"
+    }
+  ],
+  "error_budgets": [
+    {
+      "slo_name": "Availability SLO",
+      "error_budget_rate": 9.999999999998899e-05,
+      "error_budget_percentage": "0.010%",
+      "budgets_by_window": {
+        "1h": "0.4 seconds",
+        "1d": "8.6 seconds",
+        "7d": "1.0 minutes",
+        "30d": "4.3 minutes"
+      },
+      "burn_rate_alerts": [
+        {
+          "name": "Availability Burn Rate 2% Alert",
+          "description": "Alert when Availability is consuming error budget at 14.4x rate",
+          "severity": "critical",
+          "short_window": "5m",
+          "long_window": "1h",
+          "burn_rate_threshold": 14.4,
+          "budget_consumed": "2%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 14.4) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 14.4)",
+          "annotations": {
+            "summary": "High burn rate detected for Availability",
+            "description": "Error budget consumption rate is 14.4x normal, will exhaust 2% of monthly budget"
+          }
+        },
+        {
+          "name": "Availability Burn Rate 5% Alert",
+          "description": "Alert when Availability is consuming error budget at 6x rate",
+          "severity": "warning",
+          "short_window": "30m",
+          "long_window": "6h",
+          "burn_rate_threshold": 6,
+          "budget_consumed": "5%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 6) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 6)",
+          "annotations": {
+            "summary": "High burn rate detected for Availability",
+            "description": "Error budget consumption rate is 6x normal, will exhaust 5% of monthly budget"
+          }
+        },
+        {
+          "name": "Availability Burn Rate 10% Alert",
+          "description": "Alert when Availability is consuming error budget at 3x rate",
+          "severity": "info",
+          "short_window": "2h",
+          "long_window": "1d",
+          "burn_rate_threshold": 3,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 3) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 3)",
+          "annotations": {
+            "summary": "High burn rate detected for Availability",
+            "description": "Error budget consumption rate is 3x normal, will exhaust 10% of monthly budget"
+          }
+        },
+        {
+          "name": "Availability Burn Rate 10% Alert",
+          "description": "Alert when Availability is consuming error budget at 1x rate",
+          "severity": "info",
+          "short_window": "6h",
+          "long_window": "3d",
+          "burn_rate_threshold": 1,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 1) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 1)",
+          "annotations": {
+            "summary": "High burn rate detected for Availability",
+            "description": "Error budget consumption rate is 1x normal, will exhaust 10% of monthly budget"
+          }
+        }
+      ]
+    },
+    {
+      "slo_name": "User Journey Success Rate SLO",
+      "error_budget_rate": 9.999999999998899e-05,
+      "error_budget_percentage": "0.010%",
+      "budgets_by_window": {
+        "1h": "0.4 seconds",
+        "1d": "8.6 seconds",
+        "7d": "1.0 minutes",
+        "30d": "4.3 minutes"
+      },
+      "burn_rate_alerts": [
+        {
+          "name": "User Journey Success Rate Burn Rate 2% Alert",
+          "description": "Alert when User Journey Success Rate is consuming error budget at 14.4x rate",
+          "severity": "critical",
+          "short_window": "5m",
+          "long_window": "1h",
+          "burn_rate_threshold": 14.4,
+          "budget_consumed": "2%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 14.4) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 14.4)",
+          "annotations": {
+            "summary": "High burn rate detected for User Journey Success Rate",
+            "description": "Error budget consumption rate is 14.4x normal, will exhaust 2% of monthly budget"
+          }
+        },
+        {
+          "name": "User Journey Success Rate Burn Rate 5% Alert",
+          "description": "Alert when User Journey Success Rate is consuming error budget at 6x rate",
+          "severity": "warning",
+          "short_window": "30m",
+          "long_window": "6h",
+          "burn_rate_threshold": 6,
+          "budget_consumed": "5%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 6) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 6)",
+          "annotations": {
+            "summary": "High burn rate detected for User Journey Success Rate",
+            "description": "Error budget consumption rate is 6x normal, will exhaust 5% of monthly budget"
+          }
+        },
+        {
+          "name": "User Journey Success Rate Burn Rate 10% Alert",
+          "description": "Alert when User Journey Success Rate is consuming error budget at 3x rate",
+          "severity": "info",
+          "short_window": "2h",
+          "long_window": "1d",
+          "burn_rate_threshold": 3,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 3) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 3)",
+          "annotations": {
+            "summary": "High burn rate detected for User Journey Success Rate",
+            "description": "Error budget consumption rate is 3x normal, will exhaust 10% of monthly budget"
+          }
+        },
+        {
+          "name": "User Journey Success Rate Burn Rate 10% Alert",
+          "description": "Alert when User Journey Success Rate is consuming error budget at 1x rate",
+          "severity": "info",
+          "short_window": "6h",
+          "long_window": "3d",
+          "burn_rate_threshold": 1,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 1) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 1)",
+          "annotations": {
+            "summary": "High burn rate detected for User Journey Success Rate",
+            "description": "Error budget consumption rate is 1x normal, will exhaust 10% of monthly budget"
+          }
+        }
+      ]
+    },
+    {
+      "slo_name": "Feature Availability SLO",
+      "error_budget_rate": 9.999999999998899e-05,
+      "error_budget_percentage": "0.010%",
+      "budgets_by_window": {
+        "1h": "0.4 seconds",
+        "1d": "8.6 seconds",
+        "7d": "1.0 minutes",
+        "30d": "4.3 minutes"
+      },
+      "burn_rate_alerts": [
+        {
+          "name": "Feature Availability Burn Rate 2% Alert",
+          "description": "Alert when Feature Availability is consuming error budget at 14.4x rate",
+          "severity": "critical",
+          "short_window": "5m",
+          "long_window": "1h",
+          "burn_rate_threshold": 14.4,
+          "budget_consumed": "2%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 14.4) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 14.4)",
+          "annotations": {
+            "summary": "High burn rate detected for Feature Availability",
+            "description": "Error budget consumption rate is 14.4x normal, will exhaust 2% of monthly budget"
+          }
+        },
+        {
+          "name": "Feature Availability Burn Rate 5% Alert",
+          "description": "Alert when Feature Availability is consuming error budget at 6x rate",
+          "severity": "warning",
+          "short_window": "30m",
+          "long_window": "6h",
+          "burn_rate_threshold": 6,
+          "budget_consumed": "5%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 6) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 6)",
+          "annotations": {
+            "summary": "High burn rate detected for Feature Availability",
+            "description": "Error budget consumption rate is 6x normal, will exhaust 5% of monthly budget"
+          }
+        },
+        {
+          "name": "Feature Availability Burn Rate 10% Alert",
+          "description": "Alert when Feature Availability is consuming error budget at 3x rate",
+          "severity": "info",
+          "short_window": "2h",
+          "long_window": "1d",
+          "burn_rate_threshold": 3,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 3) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 3)",
+          "annotations": {
+            "summary": "High burn rate detected for Feature Availability",
+            "description": "Error budget consumption rate is 3x normal, will exhaust 10% of monthly budget"
+          }
+        },
+        {
+          "name": "Feature Availability Burn Rate 10% Alert",
+          "description": "Alert when Feature Availability is consuming error budget at 1x rate",
+          "severity": "info",
+          "short_window": "6h",
+          "long_window": "3d",
+          "burn_rate_threshold": 1,
+          "budget_consumed": "10%",
+          "condition": "((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_short > 1) and ((1 - (sum(rate(http_requests_total{service='payment-service',code!~'5..'})) / sum(rate(http_requests_total{service='payment-service'}))))_long > 1)",
+          "annotations": {
+            "summary": "High burn rate detected for Feature Availability",
+            "description": "Error budget consumption rate is 1x normal, will exhaust 10% of monthly budget"
+          }
+        }
+      ]
+    }
+  ],
+  "sla_recommendations": {
+    "applicable": true,
+    "service": "payment-service",
+    "commitments": [
+      {
+        "metric": "Availability",
+        "target": 0.9989,
+        "target_display": "99.89%",
+        "measurement_window": "monthly",
+        "measurement_method": "Uptime monitoring with 1-minute granularity"
+      },
+      {
+        "metric": "Feature Availability",
+        "target": 0.9989,
+        "target_display": "99.89%",
+        "measurement_window": "monthly",
+        "measurement_method": "Uptime monitoring with 1-minute granularity"
+      }
+    ],
+    "penalties": [
+      {
+        "breach_threshold": "< 99.99%",
+        "credit_percentage": 10
+      },
+      {
+        "breach_threshold": "< 99.9%",
+        "credit_percentage": 25
+      },
+      {
+        "breach_threshold": "< 99%",
+        "credit_percentage": 50
+      }
+    ],
+    "measurement_methodology": "External synthetic monitoring from multiple geographic locations",
+    "exclusions": [
+      "Planned maintenance windows (with 72h advance notice)",
+      "Customer-side network or infrastructure issues",
+      "Force majeure events",
+      "Third-party service dependencies beyond our control"
+    ]
+  },
+  "monitoring_recommendations": {
+    "metrics": {
+      "collection": "Prometheus with service discovery",
+      "retention": "90 days for raw metrics, 1 year for aggregated",
+      "alerting": "Prometheus Alertmanager with multi-window burn rate alerts"
+    },
+    "logging": {
+      "format": "Structured JSON logs with correlation IDs",
+      "aggregation": "ELK stack or equivalent with proper indexing",
+      "retention": "30 days for debug logs, 90 days for error logs"
+    },
+    "tracing": {
+      "sampling": "Adaptive sampling with 1% base rate",
+      "storage": "Jaeger or Zipkin with 7-day retention",
+      "integration": "OpenTelemetry instrumentation"
+    }
+  },
+  "implementation_guide": {
+    "prerequisites": [
+      "Service instrumented with metrics collection (Prometheus format)",
+      "Structured logging with correlation IDs",
+      "Monitoring infrastructure (Prometheus, Grafana, Alertmanager)",
+      "Incident response processes and escalation policies"
+    ],
+    "implementation_steps": [
+      {
+        "step": 1,
+        "title": "Instrument Service",
+        "description": "Add metrics collection for all defined SLIs",
+        "estimated_effort": "1-2 days"
+      },
+      {
+        "step": 2,
+        "title": "Configure Recording Rules",
+        "description": "Set up Prometheus recording rules for SLI calculations",
+        "estimated_effort": "4-8 hours"
+      },
+      {
+        "step": 3,
+        "title": "Implement Burn Rate Alerts",
+        "description": "Configure multi-window burn rate alerting rules",
+        "estimated_effort": "1 day"
+      },
+      {
+        "step": 4,
+        "title": "Create SLO Dashboard",
+        "description": "Build Grafana dashboard for SLO tracking and error budget monitoring",
+        "estimated_effort": "4-6 hours"
+      },
+      {
+        "step": 5,
+        "title": "Test and Validate",
+        "description": "Test alerting and validate SLI measurements against expectations",
+        "estimated_effort": "1-2 days"
+      },
+      {
+        "step": 6,
+        "title": "Documentation and Training",
+        "description": "Document runbooks and train team on SLO monitoring",
+        "estimated_effort": "1 day"
+      }
+    ],
+    "validation_checklist": [
+      "All SLIs produce expected metric values",
+      "Burn rate alerts fire correctly during simulated outages",
+      "Error budget calculations match manual verification",
+      "Dashboard displays accurate SLO achievement rates",
+      "Alert routing reaches correct escalation paths",
+      "Runbooks are complete and tested"
+    ]
+  }
+}

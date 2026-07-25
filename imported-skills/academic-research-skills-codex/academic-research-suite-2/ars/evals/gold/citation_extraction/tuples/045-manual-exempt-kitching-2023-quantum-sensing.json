@@ -1,0 +1,28 @@
+{
+  "tuple_id": "045-manual-exempt-kitching-2023-quantum-sensing",
+  "kind": "manual_exempt",
+  "corpus_entry": {
+    "citation_key": "Kitching2023QuantumSensing",
+    "title": "Independent Panel Report for Technical Assessment of NASA and External Quantum Sensing Capabilities",
+    "authors": [
+      {"family": "Kitching", "given": "John"},
+      {"family": "Kumar", "given": "Prem"},
+      {"family": "Berkeland", "given": "Dana"},
+      {"family": "Braje", "given": "Danielle"},
+      {"family": "Burke", "given": "John"},
+      {"family": "Guha", "given": "Saikat"},
+      {"family": "Metcalf", "given": "A J"},
+      {"family": "Walsworth", "given": "Ronald"}
+    ],
+    "year": 2023,
+    "venue": "NASA Technical Memorandum (NASA/TM-20230018123)",
+    "source_pointer": "https://ntrs.nasa.gov/citations/20230018123",
+    "obtained_via": "manual"
+  },
+  "arxiv_id": null,
+  "ref_slug": "kitching-2023-quantum-sensing",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

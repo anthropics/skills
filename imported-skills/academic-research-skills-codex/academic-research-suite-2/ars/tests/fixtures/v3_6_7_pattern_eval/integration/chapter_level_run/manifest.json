@@ -1,0 +1,14 @@
+{
+  "fixture_kind": "integration",
+  "patterns_triggered": ["A3", "C2", "D4", "C1"],
+  "rounds": [
+    {"round": 1, "target_rounds": 3, "expected_verdict": "MATERIAL"},
+    {"round": 2, "target_rounds": 3, "expected_verdict": "MATERIAL"},
+    {"round": 3, "target_rounds": 3, "expected_verdict": "MATERIAL"}
+  ],
+  "escalation": {
+    "user_choice": "ship_with_known_residue",
+    "expected_acknowledgement_finding_ids": ["F-101", "F-103"]
+  },
+  "rationale_doc": "docs/design/2026-04-30-ars-v3.6.7-step-6-orchestrator-hooks-spec.md#73-chapter-level-integration-fixture"
+}

@@ -1,0 +1,53 @@
+{
+  "mode": "flow",
+  "as_of": "2026-06-10",
+  "counts": {
+    "total": 14,
+    "done": 11,
+    "wip": 2
+  },
+  "cycle_time_days": {
+    "p50": 9,
+    "p85": 14,
+    "p95": 16,
+    "basis": "created\u2192resolved (approximation; Jira exports rarely carry an in-progress timestamp)"
+  },
+  "throughput": {
+    "done_per_week": 2.08,
+    "weeks_observed": 5.3
+  },
+  "sle": {
+    "days": 14,
+    "conformance_pct": 90.9
+  },
+  "work_item_age": [
+    {
+      "key": "PHX-112",
+      "summary": "Realtime presence indicators",
+      "age_days": 15
+    },
+    {
+      "key": "PHX-113",
+      "summary": "Usage analytics dashboard",
+      "age_days": 2
+    }
+  ],
+  "aging_wip_alerts": [
+    {
+      "key": "PHX-112",
+      "summary": "Realtime presence indicators",
+      "age_days": 15
+    }
+  ],
+  "warnings": [],
+  "forecast": {
+    "items": 20,
+    "method": "Monte Carlo over historical weekly throughput (10k trials, seeded)",
+    "weeks": {
+      "p50": 9,
+      "p70": 10,
+      "p85": 10,
+      "p95": 10
+    }
+  }
+}

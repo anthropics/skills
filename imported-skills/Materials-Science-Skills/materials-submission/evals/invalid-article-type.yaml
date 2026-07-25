@@ -1,0 +1,7 @@
+# Test manifest for eval: invalid article type for the selected journal
+target_journal: cbm
+article_type: editorial
+title: "Test Manuscript Title"
+corresponding_author: "Test Author"
+data_availability_status: ready
+live_verification_acknowledged: true

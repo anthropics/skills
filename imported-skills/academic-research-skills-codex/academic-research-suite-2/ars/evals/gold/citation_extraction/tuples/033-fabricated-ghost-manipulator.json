@@ -1,0 +1,24 @@
+{
+  "tuple_id": "033-fabricated-ghost-manipulator",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Tanaka2024GhostManipulator",
+    "title": "Ghost Manipulator Control under Nonexistent Contact Dynamics",
+    "authors": [
+      {"family": "Tanaka", "given": "R."},
+      {"family": "Bauer", "given": "S."},
+      {"family": "Nguyen", "given": "T."}
+    ],
+    "year": 2024,
+    "doi": "10.99999/ars184.fake.robo.2024.087",
+    "venue": "Transactions on Phantom Robotics",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.robo.2024.087",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "tanaka-2024-ghost-manipulator",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

@@ -1,0 +1,21 @@
+{
+  "tuple_id": "043-manual-exempt-brooks-1995-mythical-man-month",
+  "kind": "manual_exempt",
+  "corpus_entry": {
+    "citation_key": "Brooks1995MythicalManMonth",
+    "title": "The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition",
+    "authors": [
+      {"family": "Brooks", "given": "Frederick P.", "suffix": "Jr."}
+    ],
+    "year": 1995,
+    "venue": "Addison-Wesley",
+    "source_pointer": "urn:isbn:9780201835953",
+    "obtained_via": "manual"
+  },
+  "arxiv_id": null,
+  "ref_slug": "brooks-1995-mythical-man-month",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

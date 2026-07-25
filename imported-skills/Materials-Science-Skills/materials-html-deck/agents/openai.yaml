@@ -1,0 +1,12 @@
+interface:
+  display_name: "Materials HTML Deck"
+  short_description: "High-fidelity HTML academic deck generation for materials research."
+  default_prompt: "Use $materials-html-deck to generate a verified browser-native academic deck."
+  brand_color: "#3F6F5E"
+
+policy:
+  allow_implicit_invocation: true
+
+agents:
+  openai:
+    default_prompt: "Use $materials-html-deck to build a strict-verified HTML academic deck from the source. Classify paper type, select evidence figures, and deliver the retained HTML directory."

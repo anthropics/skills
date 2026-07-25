@@ -1,0 +1,9 @@
+{
+  "scope": "v3.6.7-only",
+  "rationale_doc": "docs/design/2026-04-30-ars-v3.6.7-step-6-orchestrator-hooks-spec.md#6-partial-inversion-rule-downstream-agent-prompt-edits",
+  "files": [
+    "deep-research/agents/synthesis_agent.md",
+    "deep-research/agents/research_architect_agent.md",
+    "deep-research/agents/report_compiler_agent.md"
+  ]
+}

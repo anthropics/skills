@@ -1,0 +1,44 @@
+============================================================
+INCIDENT CLASSIFICATION REPORT
+============================================================
+
+CLASSIFICATION:
+  Severity: SEV1
+  Confidence: 100.0%
+  Reasoning: Classified as SEV1 based on: keywords: timeout, 500 error; user impact: 80%
+  Timestamp: 2026-02-16T12:41:46.644096+00:00
+
+RECOMMENDED RESPONSE:
+  Primary Team: Analytics Team
+  Supporting Teams: SRE, API Team, Backend Engineering, Finance Engineering, Payments Team, DevOps, Compliance Team, Database Team, Platform Team, Data Engineering
+  Response Time: 5 minutes
+
+INITIAL ACTIONS:
+  1. Establish incident command (Priority 1)
+     Timeout: 5 minutes
+     Page incident commander and establish war room
+
+  2. Create incident ticket (Priority 1)
+     Timeout: 2 minutes
+     Create tracking ticket with all known details
+
+  3. Update status page (Priority 2)
+     Timeout: 15 minutes
+     Post initial status page update acknowledging incident
+
+  4. Notify executives (Priority 2)
+     Timeout: 15 minutes
+     Alert executive team of customer-impacting outage
+
+  5. Engage subject matter experts (Priority 3)
+     Timeout: 10 minutes
+     Page relevant SMEs based on affected systems
+
+COMMUNICATION:
+  Subject: 🚨 [SEV1] payment-api - Database connection timeouts causing 500 errors fo...
+  Urgency: SEV1
+  Recipients: on-call, engineering-leadership, executives, customer-success
+  Channels: pager, phone, slack, email, status-page
+  Update Frequency: Every 15 minutes
+
+============================================================

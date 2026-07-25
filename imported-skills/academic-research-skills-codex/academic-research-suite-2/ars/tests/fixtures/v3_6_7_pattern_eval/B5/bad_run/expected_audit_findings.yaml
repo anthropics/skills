@@ -1,0 +1,35 @@
+run_id: 2026-04-30T10-51-00Z-b5b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.1"
+    file: bad_run/deliverable.md
+    line: 7
+    description: >
+      Option-list mismatch with primary source (B5): The verified primary-source
+      list in primary_sources.md enumerates 5 accreditation standard categories.
+      Item 1 presents only 4 options and replaces category 4 ("Community
+      engagement and social responsibility") and category 5 ("Internationalisation
+      and global partnerships") with a fabricated option ("Faculty professional
+      development and career support") that does not appear in Article 7.
+      Item 2 presents only 3 of the 5 verified categories, omitting categories 1
+      ("Teaching quality") and 2 ("Research output") entirely. Both items subset
+      and/or over-set the primary source list, biasing respondent ranking toward
+      the options the instrument presents rather than the complete regulatory list.
+    suggested_fix: >
+      Enumerate all 5 verified categories verbatim from primary_sources.md for
+      every item that uses this list as response options. Remove "Faculty
+      professional development and career support" (not in Article 7). Add the
+      missing categories to item 2. Declare the source list explicitly at the
+      top of each item: "Source: Article 7, Ministry of Education Higher
+      Education Evaluation Regulations (verified 2024-03-15)."
+generated_at: "2026-04-30T10:51:44.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

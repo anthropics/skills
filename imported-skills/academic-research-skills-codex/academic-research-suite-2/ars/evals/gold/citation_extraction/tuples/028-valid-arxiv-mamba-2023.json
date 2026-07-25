@@ -1,0 +1,36 @@
+{
+  "tuple_id": "028-valid-arxiv-mamba-2023",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Gu2023Mamba",
+    "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+    "authors": [
+      {
+        "family": "Gu",
+        "given": "Albert"
+      },
+      {
+        "family": "Dao",
+        "given": "Tri"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2312.00752",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2312.00752",
+  "ref_slug": "gu-2023-mamba",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": {
+    "verdict": "true",
+    "labeled_by": "ars-184-phase1a-author",
+    "labeled_at": "2026-05-24T00:00:00Z",
+    "notes": null
+  },
+  "provenance_note": null,
+  "fabrication_intent": false
+}

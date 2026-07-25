@@ -1,0 +1,40 @@
+name: PRISMA-trAIce Freshness
+
+on:
+  schedule:
+    # Monday 09:00 UTC (17:00 Taipei) — weekly upstream drift check
+    - cron: "0 9 * * 1"
+  push:
+    paths:
+      - "shared/prisma_trAIce_protocol.md"
+      - "scripts/check_prisma_trAIce_freshness.py"
+  workflow_dispatch:
+
+concurrency:
+  group: freshness-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install lint dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run freshness check (non-blocking)
+        env:
+          PYTHONPATH: .
+        run: python3 scripts/check_prisma_trAIce_freshness.py
+        # Stale snapshot surfaces a warning on stderr but exits 0. A
+        # non-zero exit means a parse error (missing/malformed
+        # snapshot_date), which SHOULD fail the workflow.

@@ -1,0 +1,27 @@
+{
+  "tuple_id": "029-valid-arxiv-projective-geometric-algebra-2019",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Gunn2019ProjectiveGA",
+    "title": "Projective geometric algebra: A new framework for doing euclidean geometry",
+    "authors": [
+      {
+        "family": "Gunn",
+        "given": "Charles G."
+      }
+    ],
+    "year": 2019,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/1901.05873",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "1901.05873",
+  "ref_slug": "gunn-2019-projectivega",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

@@ -1,0 +1,32 @@
+run_id: 2026-04-30T10-11-00Z-b1b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.5"
+    file: bad_run/deliverable.md
+    line: 10
+    description: >
+      Confidentiality-vs-anonymity conflation (B1): The consent script claims
+      responses are "anonymous" (line 10) while simultaneously collecting
+      institutional email addresses for follow-up contact (line 11). Per
+      irb_terminology_glossary.md, anonymity requires that no identity key is
+      collected; collecting email for follow-up constitutes confidentiality, not
+      anonymity. Additionally, "anonymized data" at line 17 misuses the term —
+      data linked to an email address that is retained for 12 months is
+      pseudonymized (email = reversible identifier), not anonymized.
+    suggested_fix: >
+      Replace "anonymous" with "confidential" throughout the consent script.
+      Remove the claim of anonymity. Add a sentence clarifying that email is
+      collected for follow-up purposes, that identified data will be held for
+      12 months, and that only the named team has access. Verify all terms
+      against shared/references/irb_terminology_glossary.md before output.
+generated_at: "2026-04-30T10:11:44.000Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

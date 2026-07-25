@@ -1,0 +1,36 @@
+{
+  "tuple_id": "012-valid-doi-vosoughi-fake-news-2018",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Vosoughi2018FakeNews",
+    "title": "The spread of true and false news online",
+    "authors": [
+      {
+        "family": "Vosoughi",
+        "given": "Soroush"
+      },
+      {
+        "family": "Roy",
+        "given": "Deb"
+      },
+      {
+        "family": "Aral",
+        "given": "Sinan"
+      }
+    ],
+    "year": 2018,
+    "doi": "10.1126/science.aap9559",
+    "venue": "Science",
+    "source_pointer": "https://doi.org/10.1126/science.aap9559",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "vosoughi-2018-fakenews",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

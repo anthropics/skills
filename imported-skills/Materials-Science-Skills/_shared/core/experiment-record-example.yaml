@@ -1,0 +1,150 @@
+version: "1.0.0"
+record_type: experiment-design
+study_id: "study-2026-001"
+title: "RSM optimization of binder formulation"
+created_by: "materials-doe"
+created_at: "2026-06-27"
+
+direction_profile:
+  material_family: civil
+  domain: asphalt
+  application: tack-coat
+
+objectives:
+  - description: "maximize pull-off strength"
+    response_variable: pull_off_strength
+    optimization: maximize
+
+response_variables:
+  - name: pull_off_strength
+    unit: MPa
+    measurement_method: "pull-off test per ASTM D7234"
+    replicate_count: 3
+  - name: storage_stability_index
+    unit: "%"
+    measurement_method: "ASTM D244 storage stability"
+    replicate_count: 3
+
+factors:
+  - name: modifier_dosage
+    unit: "% by residue weight"
+    type: continuous
+    levels: [2, 4, 6, 8, 10]
+  - name: curing_temperature
+    unit: "degC"
+    type: continuous
+    levels: [25, 40, 55]
+
+design:
+  type: "Box-Behnken"
+  runs:
+    - run_id: R1
+      factor_levels:
+        modifier_dosage: 2
+        curing_temperature: 25
+      randomization_order: 3
+      block: 1
+      notes: ""
+    - run_id: R2
+      factor_levels:
+        modifier_dosage: 2
+        curing_temperature: 40
+      randomization_order: 1
+      block: 1
+      notes: ""
+    - run_id: R3
+      factor_levels:
+        modifier_dosage: 2
+        curing_temperature: 55
+      randomization_order: 5
+      block: 1
+      notes: ""
+    - run_id: R4
+      factor_levels:
+        modifier_dosage: 6
+        curing_temperature: 25
+      randomization_order: 2
+      block: 1
+      notes: ""
+    - run_id: R5
+      factor_levels:
+        modifier_dosage: 6
+        curing_temperature: 40
+      randomization_order: 4
+      block: 1
+      notes: "center point"
+    - run_id: R6
+      factor_levels:
+        modifier_dosage: 6
+        curing_temperature: 55
+      randomization_order: 7
+      block: 1
+      notes: ""
+    - run_id: R7
+      factor_levels:
+        modifier_dosage: 10
+        curing_temperature: 25
+      randomization_order: 6
+      block: 1
+      notes: ""
+    - run_id: R8
+      factor_levels:
+        modifier_dosage: 10
+        curing_temperature: 40
+      randomization_order: 8
+      block: 1
+      notes: ""
+    - run_id: R9
+      factor_levels:
+        modifier_dosage: 10
+        curing_temperature: 55
+      randomization_order: 9
+      block: 1
+      notes: ""
+
+materials:
+  - role: binder
+    name: "70# base asphalt"
+    supplier: null
+    lot: null
+    specification: "penetration 60-80 (0.1 mm)"
+  - role: modifier
+    name: "waterborne epoxy resin"
+    supplier: null
+    dosage: null
+
+processing:
+  - step: mixing
+    equipment: "high-shear mixer"
+    parameters:
+      temperature: 140
+      temperature_unit: degC
+      speed: 1500
+      speed_unit: rpm
+      time: 30
+      time_unit: min
+
+characterization:
+  - name: pull_off_strength
+    standard: "ASTM D7234"
+    specimen_geometry: "50 mm diameter dolly on asphalt film"
+    conditioning: "25 degC / 50% RH / 7 d"
+    instrument: "universal testing machine"
+  - name: ftir
+    technique: "FTIR-ATR"
+    instrument: null
+    parameters: {}
+
+evidence_links:
+  - claim: "modifier dosage improves pull-off strength"
+    evidence_type: quantitative
+    figure_or_table: "Fig. 3a"
+    mechanism_evidence: "FTIR peak shift at 915 cm-1"
+    boundary: "valid for 2-10% modifier dosage range"
+
+terminology:
+  - canonical: "waterborne epoxy modified emulsified asphalt"
+    abbreviation: "WEMEA"
+    variants: ["WER-EA", "epoxy-asphalt emulsion"]
+  - canonical: "pull-off strength"
+    unit: "MPa"

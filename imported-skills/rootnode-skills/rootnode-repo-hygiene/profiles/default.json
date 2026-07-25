@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/profile.schema.json",
+  "name": "default",
+  "description": "Standard sweep across all 14 categories with the 7-layer leak check and commit plan. Critic-gate is optional (per-batch user choice). Suitable for standard hygiene sweeps, pre-distribution checks, and post-feature cleanup.",
+
+  "categories": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+  "include_seven_layer_leak_check": true,
+  "include_commit_plan": true,
+  "critic_gate_threshold": "optional",
+  "remediate_routing": true,
+  "confidence_threshold": "medium",
+  "cat_14_extension_pass": false,
+
+  "bootstrap_heritage": {}
+}

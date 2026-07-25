@@ -1,0 +1,5 @@
+expected_path: B
+expected_phase: B10
+expected_block_message: "[AUDIT GATE: proposal blocked — MATERIAL finding (D4 word-count overcap). Abstract is 255 words by whitespace-split, exceeding the 250-word hard cap by 5 words. Trim to ≤ 242 words and resubmit.]"
+expected_passport_mutation: appended
+expected_run_id_format: "matches §3.7 family F F1 regex"

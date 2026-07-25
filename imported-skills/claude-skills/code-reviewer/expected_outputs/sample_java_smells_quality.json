@@ -1,0 +1,83 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_java_smells.java",
+  "language": "java",
+  "metrics": {
+    "lines": {
+      "total": 57,
+      "code": 29,
+      "blank": 10,
+      "comment": 18
+    },
+    "functions": 3,
+    "classes": 1,
+    "avg_complexity": 2.0
+  },
+  "quality_score": 68,
+  "grade": "D",
+  "smells": [
+    {
+      "type": "magic_number",
+      "severity": "low",
+      "message": "Magic number 1000 should be a named constant",
+      "location": "line 44"
+    },
+    {
+      "type": "java_empty_catch",
+      "severity": "high",
+      "message": "Empty catch block swallows exceptions silently",
+      "location": "offset 684"
+    },
+    {
+      "type": "java_print_stack_trace",
+      "severity": "medium",
+      "message": "'printStackTrace()' is not real error handling \u2014 log via a proper logger or rethrow with context",
+      "location": "offset 913"
+    },
+    {
+      "type": "java_swallowed_interrupt",
+      "severity": "high",
+      "message": "InterruptedException caught without 'Thread.currentThread().interrupt()' \u2014 breaks cooperative cancellation",
+      "location": "offset 841"
+    },
+    {
+      "type": "java_unclosed_resource",
+      "severity": "medium",
+      "message": "'FileInputStream' looks like an AutoCloseable but is not in a try-with-resources statement",
+      "location": "offset 366"
+    },
+    {
+      "type": "java_per_use_heavy_object",
+      "severity": "medium",
+      "message": "'new ObjectMapper()' is expensive \u2014 share a singleton instance instead of constructing per call",
+      "location": "offset 451"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "getName",
+      "parameters": 2,
+      "lines": 18,
+      "complexity": 3
+    },
+    {
+      "name": "process",
+      "parameters": 0,
+      "lines": 11,
+      "complexity": 2
+    },
+    {
+      "name": "log",
+      "parameters": 1,
+      "lines": 6,
+      "complexity": 1
+    }
+  ],
+  "class_details": [
+    {
+      "name": "UserService",
+      "methods": 3,
+      "lines": 40
+    }
+  ]
+}

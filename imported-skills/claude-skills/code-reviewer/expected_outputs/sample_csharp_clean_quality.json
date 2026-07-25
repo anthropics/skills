@@ -1,0 +1,135 @@
+{
+  "file": "/home/user/claude-skills/engineering-team/skills/code-reviewer/assets/sample_csharp_clean.cs",
+  "language": "csharp",
+  "metrics": {
+    "lines": {
+      "total": 101,
+      "code": 67,
+      "blank": 14,
+      "comment": 20
+    },
+    "functions": 13,
+    "classes": 3,
+    "avg_complexity": 1.3
+  },
+  "quality_score": 98,
+  "grade": "A",
+  "smells": [
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System;' appears unused",
+      "location": "System"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Net.Http;' appears unused",
+      "location": "System.Net.Http"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Threading.Tasks;' appears unused",
+      "location": "System.Threading.Tasks"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using System.Data.SqlClient;' appears unused",
+      "location": "System.Data.SqlClient"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using Microsoft.Extensions.Logging;' appears unused",
+      "location": "Microsoft.Extensions.Logging"
+    },
+    {
+      "type": "csharp_unused_using",
+      "severity": "low",
+      "message": "'using Microsoft.Extensions.Options;' appears unused",
+      "location": "Microsoft.Extensions.Options"
+    }
+  ],
+  "solid_violations": [],
+  "function_details": [
+    {
+      "name": "HttpClient",
+      "parameters": 0,
+      "lines": 2,
+      "complexity": 1
+    },
+    {
+      "name": "UserService",
+      "parameters": 3,
+      "lines": 8,
+      "complexity": 1
+    },
+    {
+      "name": "Task",
+      "parameters": 1,
+      "lines": 2,
+      "complexity": 2
+    },
+    {
+      "name": "HandleClickAsync",
+      "parameters": 0,
+      "lines": 8,
+      "complexity": 1
+    },
+    {
+      "name": "FetchAsync",
+      "parameters": 0,
+      "lines": 12,
+      "complexity": 2
+    },
+    {
+      "name": "InvalidOperationException",
+      "parameters": 1,
+      "lines": 21,
+      "complexity": 3
+    },
+    {
+      "name": "FirstValue",
+      "parameters": 1,
+      "lines": 4,
+      "complexity": 1
+    },
+    {
+      "name": "GetName",
+      "parameters": 1,
+      "lines": 4,
+      "complexity": 1
+    },
+    {
+      "name": "SqlConnection",
+      "parameters": 1,
+      "lines": 3,
+      "complexity": 1
+    },
+    {
+      "name": "SqlCommand",
+      "parameters": 2,
+      "lines": 7,
+      "complexity": 1
+    }
+  ],
+  "class_details": [
+    {
+      "name": "DbOptions",
+      "methods": 0,
+      "lines": 7
+    },
+    {
+      "name": "UserService",
+      "methods": 8,
+      "lines": 75
+    },
+    {
+      "name": "User",
+      "methods": 0,
+      "lines": 3
+    }
+  ]
+}

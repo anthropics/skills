@@ -1,0 +1,26 @@
+{
+  "_comment": "Opportunity Solution Tree shape — feed to scripts/ost_linter.py. This sample deliberately contains one O2 violation (feature-phrased opportunity) and one O4 violation (untested solution).",
+  "outcome": {
+    "statement": "Increase week-4 retention from 22% to 30%",
+    "metric": "week-4 retention"
+  },
+  "opportunities": [
+    {
+      "statement": "New users can't tell whether setup worked",
+      "target": true,
+      "solutions": [
+        {"statement": "Post-setup verification checklist",
+         "tests": [{"assumption": "users abandon because they doubt setup succeeded", "type": "interview"}]},
+        {"statement": "Live sample-data preview after connect",
+         "tests": [{"assumption": "a working preview reduces first-week drop-off", "type": "prototype"}]}
+      ]
+    },
+    {
+      "statement": "Add an onboarding wizard",
+      "solutions": [
+        {"statement": "Onboarding wizard v2", "tests": []}
+      ]
+    }
+  ],
+  "solutions": []
+}

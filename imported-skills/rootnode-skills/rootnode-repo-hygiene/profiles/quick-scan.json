@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema/profile.schema.json",
+  "name": "quick-scan",
+  "description": "Fast pre-commit triage. Scans only Cat 1 (parent-project references), Cat 2 (permissions), Cat 6 (bypass usage), and Cat 9 (CLAUDE.md bloat). No commit plan, no leak check, high-confidence-only filter. Suitable for weekly maintenance or pre-commit sanity passes where the full sweep is too heavy.",
+
+  "categories": [1, 2, 6, 9],
+  "include_seven_layer_leak_check": false,
+  "include_commit_plan": false,
+  "critic_gate_threshold": "optional",
+  "remediate_routing": false,
+  "confidence_threshold": "high",
+  "cat_14_extension_pass": false,
+
+  "bootstrap_heritage": {}
+}

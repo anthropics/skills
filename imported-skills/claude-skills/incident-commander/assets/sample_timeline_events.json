@@ -1,0 +1,263 @@
+[
+  {
+    "timestamp": "2024-03-15T14:30:00Z",
+    "source": "datadog",
+    "type": "alert",
+    "message": "High error rate detected on payment-api: 45% error rate (threshold: 5%)",
+    "severity": "critical",
+    "actor": "monitoring-system",
+    "metadata": {
+      "alert_id": "ALT-001",
+      "metric_value": "45%",
+      "threshold": "5%"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:32:00Z",
+    "source": "pagerduty",
+    "type": "escalation",
+    "message": "Paged on-call engineer Sarah Chen for payment-api alerts",
+    "severity": "high",
+    "actor": "pagerduty-system",
+    "metadata": {
+      "incident_id": "PD-12345",
+      "responder": "sarah.chen@company.com"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:35:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Sarah Chen acknowledged the alert and is investigating payment-api issues",
+    "severity": "medium",
+    "actor": "sarah.chen",
+    "metadata": {
+      "channel": "#incidents",
+      "message_id": "1234567890.123456"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:38:00Z",
+    "source": "application_logs",
+    "type": "log",
+    "message": "Database connection pool exhausted: 200/200 connections active, unable to acquire new connections",
+    "severity": "critical",
+    "actor": "payment-api",
+    "metadata": {
+      "log_level": "ERROR",
+      "component": "database_pool",
+      "connection_count": 200,
+      "max_connections": 200
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:40:00Z",
+    "source": "slack",
+    "type": "escalation",
+    "message": "Sarah Chen: Escalating to incident commander - database connection pool exhausted, need database team",
+    "severity": "high",
+    "actor": "sarah.chen",
+    "metadata": {
+      "channel": "#incidents",
+      "escalation_reason": "database_expertise_needed"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:42:00Z",
+    "source": "pagerduty",
+    "type": "escalation",
+    "message": "Incident commander Mike Rodriguez assigned to incident PD-12345",
+    "severity": "high",
+    "actor": "pagerduty-system",
+    "metadata": {
+      "incident_commander": "mike.rodriguez@company.com",
+      "role": "incident_commander"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:45:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Mike Rodriguez: War room established in #war-room-payment-api. Engaging database team.",
+    "severity": "high",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "channel": "#incidents",
+      "war_room": "#war-room-payment-api"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:47:00Z",
+    "source": "pagerduty",
+    "type": "escalation",
+    "message": "Database team engineers paged: Tom Wilson, Lisa Park",
+    "severity": "medium",
+    "actor": "pagerduty-system",
+    "metadata": {
+      "team": "database-team",
+      "responders": ["tom.wilson@company.com", "lisa.park@company.com"]
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:50:00Z",
+    "source": "statuspage",
+    "type": "communication",
+    "message": "Status page updated: Investigating payment processing issues",
+    "severity": "medium",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "status": "investigating",
+      "affected_systems": ["payment-api"]
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:52:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Tom Wilson: Joining war room. Looking at database metrics now. Seeing unusual query patterns from recent deployment.",
+    "severity": "medium",
+    "actor": "tom.wilson",
+    "metadata": {
+      "channel": "#war-room-payment-api",
+      "investigation_focus": "database_metrics"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T14:55:00Z",
+    "source": "database_monitoring",
+    "type": "log",
+    "message": "Identified slow query introduced in deployment v2.3.1: payment validation taking 15s per request",
+    "severity": "critical",
+    "actor": "database-monitor",
+    "metadata": {
+      "deployment_version": "v2.3.1",
+      "query_time": "15s",
+      "normal_query_time": "0.1s"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:00:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Tom Wilson: Root cause identified - inefficient query in v2.3.1 deployment. Recommending immediate rollback.",
+    "severity": "high",
+    "actor": "tom.wilson",
+    "metadata": {
+      "channel": "#war-room-payment-api",
+      "root_cause": "inefficient_query",
+      "recommendation": "rollback"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:02:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Mike Rodriguez: Approved rollback to v2.2.9. Sarah initiating rollback procedure.",
+    "severity": "high",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "channel": "#war-room-payment-api",
+      "decision": "rollback_approved",
+      "target_version": "v2.2.9"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:05:00Z",
+    "source": "deployment_system",
+    "type": "action",
+    "message": "Rollback initiated: payment-api v2.3.1 → v2.2.9",
+    "severity": "medium",
+    "actor": "sarah.chen",
+    "metadata": {
+      "from_version": "v2.3.1",
+      "to_version": "v2.2.9",
+      "deployment_type": "rollback"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:12:00Z",
+    "source": "deployment_system",
+    "type": "action",
+    "message": "Rollback completed successfully: payment-api now running v2.2.9 across all regions",
+    "severity": "medium",
+    "actor": "deployment-system",
+    "metadata": {
+      "deployment_status": "completed",
+      "regions": ["us-west", "us-east", "eu-west"]
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:15:00Z",
+    "source": "datadog",
+    "type": "log",
+    "message": "Error rate decreasing: payment-api error rate dropped to 8% and continuing to decline",
+    "severity": "medium",
+    "actor": "monitoring-system",
+    "metadata": {
+      "error_rate": "8%",
+      "trend": "decreasing"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:18:00Z",
+    "source": "database_monitoring",
+    "type": "log",
+    "message": "Connection pool utilization normalizing: 45/200 connections active",
+    "severity": "low",
+    "actor": "database-monitor",
+    "metadata": {
+      "connection_count": 45,
+      "max_connections": 200,
+      "utilization": "22.5%"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:25:00Z",
+    "source": "datadog",
+    "type": "log",
+    "message": "Error rate returned to normal: payment-api error rate now 0.2% (within normal range)",
+    "severity": "low",
+    "actor": "monitoring-system",
+    "metadata": {
+      "error_rate": "0.2%",
+      "status": "normal"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:30:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Mike Rodriguez: All metrics returned to normal. Declaring incident resolved. Thanks to all responders.",
+    "severity": "low",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "channel": "#war-room-payment-api",
+      "status": "resolved"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:35:00Z",
+    "source": "statuspage",
+    "type": "communication",
+    "message": "Status page updated: Payment processing issues resolved. All systems operational.",
+    "severity": "low",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "status": "resolved",
+      "duration": "65 minutes"
+    }
+  },
+  {
+    "timestamp": "2024-03-15T15:40:00Z",
+    "source": "slack",
+    "type": "communication",
+    "message": "Mike Rodriguez: PIR scheduled for tomorrow 10am. Action item: fix the inefficient query in v2.3.2",
+    "severity": "low",
+    "actor": "mike.rodriguez",
+    "metadata": {
+      "channel": "#incidents",
+      "pir_time": "2024-03-16T10:00:00Z",
+      "action_item": "fix_query_v2.3.2"
+    }
+  }
+]

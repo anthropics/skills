@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/audit_artifact_entry.schema.json",
+  "title": "Material Passport Audit Artifact Entry",
+  "description": "One entry in Material Passport Schema 9 audit_artifact[]. Records one cross-model audit run for one downstream agent's deliverable. Two lifecycle states share this schema via oneOf: 'proposal' (wrapper-emitted, pre-verification) and 'persisted' (orchestrator-merged, post-verification). See docs/design/2026-04-30-ars-v3.6.7-step-6-orchestrator-hooks-spec.md §3.1-§3.2 and §3.7 for cross-artifact invariants. Cross-field rules (PASS/MINOR/MATERIAL/AUDIT_FAILED counts; acknowledgement scoping; etc.) are lint-enforced in scripts/check_audit_artifact_consistency.py (Phase 6.3), NOT in this schema.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "stage",
+    "agent",
+    "deliverable_path",
+    "deliverable_sha",
+    "run_id",
+    "bundle_manifest_sha",
+    "artifact_paths",
+    "verdict"
+  ],
+
+  "properties": {
+    "stage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6,
+      "description": "Destination stage the just-completed deliverable is about to enter (per §5.1). v3.6.7 hooks emit stage 2 for synthesis_agent / research_architect_agent exits and stage 5 for report_compiler_agent exit."
+    },
+    "agent": {
+      "type": "string",
+      "enum": [
+        "synthesis_agent",
+        "research_architect_agent",
+        "report_compiler_agent"
+      ],
+      "description": "One of the three v3.6.7 audited agents. Other agent names are reserved for future versions and rejected by Schema 9 lint."
+    },
+    "deliverable_path": {
+      "$ref": "#/$defs/repo_relative_path",
+      "description": "Repo-relative POSIX path to the audited deliverable. No leading '/' and no '..' segments."
+    },
+    "deliverable_sha": {
+      "$ref": "#/$defs/sha256_hex",
+      "description": "SHA-256 (lowercase hex) of the deliverable file at the moment audit was dispatched. Used by orchestrator to detect post-audit deliverable mutation."
+    },
+    "run_id": {
+      "$ref": "#/$defs/run_id",
+      "description": "Canonical run identifier emitted by the wrapper. Format <ISO-8601-Z>-<4-hex>. Per §3.7 family F (F1)."
+    },
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional opaque tag shared by all entries that belong to one logical multi-file audit bundle (§4.5). When present MUST equal the sidecar's prompt.bundle.bundle_id (§3.7 B9, lint-enforced)."
+    },
+    "bundle_manifest_sha": {
+      "$ref": "#/$defs/sha256_hex",
+      "description": "SHA-256 over the canonical bundle manifest of primary + supporting + template files (§3.6)."
+    },
+    "artifact_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jsonl", "sidecar", "verdict"],
+      "properties": {
+        "jsonl": {
+          "allOf": [
+            { "$ref": "#/$defs/repo_relative_path" },
+            { "type": "string", "pattern": "\\.jsonl$" }
+          ]
+        },
+        "sidecar": {
+          "allOf": [
+            { "$ref": "#/$defs/repo_relative_path" },
+            { "type": "string", "pattern": "\\.meta\\.json$" }
+          ]
+        },
+        "verdict": {
+          "allOf": [
+            { "$ref": "#/$defs/repo_relative_path" },
+            { "type": "string", "pattern": "\\.verdict\\.yaml$" }
+          ]
+        }
+      },
+      "description": "All three paths are repo-relative POSIX (no leading '/', no '..' segments). Path B uses these to locate JSONL/sidecar/verdict evidence; an absolute or escaping path would let a forged proposal point verification outside the repo."
+    },
+    "verdict": { "$ref": "#/$defs/verdict_block" },
+    "acknowledgement": { "$ref": "#/$defs/acknowledgement_block" }
+  },
+
+  "allOf": [
+    {
+      "title": "[A2] AUDIT_FAILED requires verdict.failure_reason; mirrors audit_verdict.schema.json",
+      "description": "Entry-side mirror of the verdict-file rule (§3.7 A2). Without this, a wrapper-emitted AUDIT_FAILED proposal missing failure_reason passes Path B4 schema validation; Path B5 then short-circuits and tries to surface a non-existent reason in the BLOCK message. Mirror keeps the rule enforceable at the first artifact orchestrator reads (entry), not just at the verdict file.",
+      "if": {
+        "properties": {
+          "verdict": {
+            "properties": { "status": { "const": "AUDIT_FAILED" } },
+            "required": ["status"]
+          }
+        },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "verdict": { "required": ["failure_reason"] }
+        }
+      }
+    },
+    {
+      "title": "[A2 inverse] non-AUDIT_FAILED proposals MUST NOT carry failure_reason",
+      "if": {
+        "properties": {
+          "verdict": {
+            "properties": {
+              "status": { "type": "string", "enum": ["PASS", "MINOR", "MATERIAL"] }
+            },
+            "required": ["status"]
+          }
+        },
+        "required": ["verdict"]
+      },
+      "then": {
+        "properties": {
+          "verdict": { "not": { "required": ["failure_reason"] } }
+        }
+      }
+    }
+  ],
+
+  "oneOf": [
+    {
+      "title": "proposal",
+      "description": "Wrapper-emitted, pre-verification. verdict.verified_at and verdict.verified_by MUST be absent (Pattern C3 attack surface defense per §3.2 / §3.7 E3+E4). acknowledgement is forbidden — orchestrator-only write per §5.4 / §3.7 A4.",
+      "not": { "required": ["acknowledgement"] },
+      "properties": {
+        "verdict": {
+          "type": "object",
+          "not": {
+            "anyOf": [
+              { "required": ["verified_at"] },
+              { "required": ["verified_by"] }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "persisted",
+      "description": "Orchestrator-merged, post-verification. AUDIT_FAILED excluded — see §3.2 'Why persisted excludes AUDIT_FAILED' rationale. acknowledgement is allowed only on MATERIAL entries — schema-level if/then below blocks the hand-edit attack where someone adds an acknowledgement block to a non-MATERIAL persisted entry to claim residue acknowledgement that was never solicited (§3.7 A4).",
+      "properties": {
+        "verdict": {
+          "type": "object",
+          "required": ["verified_at", "verified_by"],
+          "properties": {
+            "status": { "enum": ["PASS", "MINOR", "MATERIAL"] },
+            "verified_at": {
+              "$ref": "#/$defs/rfc3339_ms_utc",
+              "description": "RFC 3339 UTC datetime, millisecond precision (mirrors §3.4 sidecar timing precision so D1 latest-by-verified_at ordering has resolution >= 1 ms; see §5.4 monotonic-bump rule)."
+            },
+            "verified_by": {
+              "const": "pipeline_orchestrator_agent"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "title": "[A4] acknowledgement requires verdict.status == MATERIAL",
+          "if": {
+            "properties": {
+              "verdict": {
+                "properties": { "status": { "enum": ["PASS", "MINOR"] } },
+                "required": ["status"]
+              }
+            },
+            "required": ["verdict"]
+          },
+          "then": {
+            "not": { "required": ["acknowledgement"] }
+          }
+        }
+      ]
+    }
+  ],
+
+  "$defs": {
+    "repo_relative_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/][^\\s]*$",
+      "not": { "pattern": "(^|/)\\.\\.(/|$)" },
+      "description": "Repo-relative POSIX path (no leading '/', no '..' segments). Sibling audit/* schemas duplicate this pattern; keep the regex pair in sync. Layer 3 lint reads these paths from disk for SHA-256 / git_sha verification — accepting absolute or escaping paths would let a forged proposal hash arbitrary files."
+    },
+    "sha256_hex": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Lowercase hex SHA-256 digest. Sibling audit/* schemas duplicate this pattern (cross-file $ref is operationally awkward without a registry resolver); keep regex in sync via §3.7 family F naming-convention review."
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "<ISO-8601-Z>-<4-hex>. F1 in §3.7 naming family. Sibling audit/* schemas duplicate this pattern."
+    },
+    "rfc3339_ms_utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$",
+      "description": "RFC 3339 UTC datetime with millisecond precision. Format keyword is advisory (validator must enable format_checker); regex is the load-bearing constraint."
+    },
+    "verdict_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "round", "target_rounds", "finding_counts"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["PASS", "MINOR", "MATERIAL", "AUDIT_FAILED"],
+          "description": "Proposal-arm enum; persisted arm narrows to {PASS,MINOR,MATERIAL} via oneOf override (§3.2 Lifecycle-conditional fields)."
+        },
+        "failure_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500,
+          "pattern": "^[^\\n\\r]+$",
+          "description": "One-line human-readable reason. Required iff status == AUDIT_FAILED (cross-field rule, lint-enforced per §3.7 A2)."
+        },
+        "round": { "type": "integer", "minimum": 1 },
+        "target_rounds": { "type": "integer", "minimum": 1 },
+        "finding_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["p1", "p2", "p3"],
+          "properties": {
+            "p1": { "type": "integer", "minimum": 0 },
+            "p2": { "type": "integer", "minimum": 0 },
+            "p3": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verified_by": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "acknowledgement_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_ids", "acknowledged_at", "acknowledged_by"],
+      "properties": {
+        "finding_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Non-empty array; full coverage of every current findings[].id is enforced by lint (§3.7 B10)."
+        },
+        "acknowledged_at": {
+          "$ref": "#/$defs/rfc3339_ms_utc",
+          "description": "RFC 3339 UTC, millisecond precision. Equals verdict.verified_at by construction (§3.7 B8)."
+        },
+        "acknowledged_by": { "const": "user" }
+      }
+    }
+  }
+}

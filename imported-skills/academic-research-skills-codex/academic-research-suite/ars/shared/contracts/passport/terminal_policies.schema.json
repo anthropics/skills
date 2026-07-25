@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/terminal_policies.schema.json",
+  "title": "Material Passport Terminal Policies",
+  "description": "v3.10 passport-level terminal-policy block (spec docs/design/2026-05-31-ars-v3.10-policy-layer-rescope-spec.md §3 PR-B item 1, D1). Opt-in policies that promote an otherwise-advisory provenance signal into a non-acknowledgeable terminal HIGH-BLOCK at the citation-emission boundary. This is a PASSPORT-LEVEL block (one per passport), NOT an entry-level field — it MUST NOT be hosted inside literature_corpus_entry.schema.json (Invariant 11; entry-level != passport-level). Backward compat: the whole object is OPTIONAL; an absent terminal_policies block means all-advisory = byte-equivalent v3.9.0 behavior (Invariant 7). Per-key absence is also advisory, but that default is applied by the finalizer/evaluator at runtime, NOT by a JSON-Schema `default` keyword (JSON-Schema `default` is non-operational — it does not inject a value during validation; R1 P1).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "contamination_triangulation": {
+      "type": "string",
+      "enum": [
+        "advisory",
+        "strict",
+        "strict_articles_only"
+      ],
+      "description": "Policy for the v3.9.0 cross-index triangulation contamination signal (k=3 = all three lookup indexes unmatched). `advisory` (the absent-key default): k=3 stays an advisory CONTAMINATED-TRIANGULATION-UNMATCHED suffix, byte-equivalent v3.9.0. `strict`: k=3 promotes to a non-acknowledgeable terminal HIGH-BLOCK for EVERY affected ref (no venue/DOI scoping). `strict_articles_only`: a deliberate PRECISION mode (R1 P0-F) — k=3 promotes to HIGH-BLOCK ONLY when DOI present AND venue_type ∈ {journal-article, conference-paper} AND venue_type_provenance ∈ {adapter_declared, user_declared, trusted_source_declared}; a DOI-less or unknown-venue journal article STAYS ADVISORY by design (humanities / non-English / regional-journal legitimate coverage gap). This enum is the full v3.9.0 enum and is wired to behavior in v3.10."
+    },
+    "citation_existence": {
+      "type": "string",
+      "enum": [
+        "advisory",
+        "strict"
+      ],
+      "description": "Policy for the v3.11 deterministic citation-existence signal — the `lookup_verified == false` verdict from the citation_verification_summary[] aggregate (INVARIANT C-V6). `false` is NARROWED (C-V6(a)): it requires at least one ID-keyed (DOI/arXiv-ID) resolver returning `unmatched` with no `matched` — a provably-bogus identifier = fabrication evidence; a title-only `unmatched` with no resolvable identifier reduces to `unresolvable` (a coverage gap: regional / non-English / pre-digital paper indexed nowhere), NEVER `false`. Unlike `contamination_triangulation`, `citation_existence` adds NO advisory suffix token to the ref marker (there is no `CITATION-FALSE`-style suffix, and the parser recognizes only the `CONTAMINATED-*` advisory family): the `false` `why` lives in the always-populated `citation_verification_summary[]` aggregate (with full `resolver_outcomes`). `advisory` (the absent-key default): a `false` row stays visible in that aggregate (where it is `/ars-mark-read`-ack-able) and the pipeline completes; the ref marker is byte-equivalent v3.9.x — no terminal token, no new suffix (a key-absent passport behaves identically). `strict`: a `false` row additionally promotes to a non-acknowledgeable terminal HIGH-BLOCK token (`policy=citation_existence reason=lookup_verified_false mode=strict`) appended to the ref marker — additive, it does not alter the base-status token and adds no advisory suffix (the `why` survives in `reason=lookup_verified_false` + the aggregate) — and blocks the citation from reaching final formatted output, symmetric with `contamination_triangulation=strict` (C-V6(c)/(d)). No `strict_articles_only` member: the narrowed `false` already carries the precision the venue-scoped contamination mode needed, so citation_existence needs no venue subdivision. Detection is unconditional (the summary is always populated, C-V6(e)); this key governs ONLY whether a `false` row renders as terminal or advisory. Per-key absence is advisory via the finalizer/evaluator runtime convention, NOT a JSON-Schema `default` (see the object-level description)."
+    },
+    "temporal_integrity": {
+      "type": "string",
+      "enum": [
+        "advisory"
+      ],
+      "description": "Forward-reserved namespace for the v3.9.4 temporal-verification signal. In v3.10 ONLY `advisory` is an accepted value — a `strict` value is deliberately NOT in the enum because no temporal strict behavior is wired in v3.10, and a schema-accepted `strict` with no bound behavior is a false-safety bug (codex 2026-05-31; Invariant 3). Wiring temporal strict is a v3.9.4 follow-up, not #127 (spec §6 out of scope)."
+    },
+    "submission_package": {
+      "type": "string",
+      "enum": [
+        "advisory",
+        "strict"
+      ],
+      "description": "Policy for the #394 deterministic submission-package verifier (spec docs/design/2026-06-10-394-submission-package-verifier-spec.md §5 seam 2, slice 4). Governs the package-level gate the orchestrator runs at Stage 5 FINALIZE, AFTER the formatter produces the output package — explicitly NOT the ref-marker stamp path: the carrier is the verifier's report file (header.package_fingerprint + header.policy_slug, the freshness guard) plus the provenance_summary.md `Submission Package Advisories` section, never a marker token. The orchestrator is the SOLE reader of this key and sole selector of the policy in force (spec §5.3); it hands the resolved value to scripts/verify_submission_package.py via the --policy CLI argument — the script never reads terminal_policies, it mechanically applies the already-resolved value (deterministic evaluation tooling, not a second policy reader). `advisory` (the absent-key default, applied by the orchestrator at runtime — NOT a JSON-Schema `default`, see the object-level description): findings land in the report + the provenance_summary.md advisories section and the pipeline completes; byte-equivalent slice-1..3 behavior for the package files themselves. `strict`: a strict-eligible `fail` (deterministic-class signal only — heuristic/warn findings NEVER promote, structurally, spec §3.1/§6) returns the package to the formatter fix loop (bounded 2 rounds, then surface to the scholar), and a strict-eligible `not_checked` is VERIFICATION-INCOMPLETE — it blocks emission exactly like a fail (fail-closed, spec §5.2: a missing parser must not silently waive the one check class the scholar opted into blocking on). Terminal signals are the CLI's stdout tokens (TERMINAL-BLOCK policy=submission_package / VERIFICATION-INCOMPLETE), never raw exit codes (exit 1 also carries nonterminal advisory/heuristic fails). Report reuse REQUIRES the --check-freshness guard first (fingerprint + policy_slug match; a stale or null-stamped report is never evaluated). No `strict_articles_only` member: venue subdivision is a contamination-policy concern; package checks are venue-scoped via the scholar-declared venue profile instead. Per-key absence is advisory via the orchestrator runtime convention, NOT a JSON-Schema `default` (see the object-level description)."
+    }
+  }
+}

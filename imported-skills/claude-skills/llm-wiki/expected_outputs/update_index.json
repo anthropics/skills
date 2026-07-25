@@ -1,0 +1,11 @@
+{
+  "status": "ok",
+  "vault": "/tmp/test-vault",
+  "total_pages": 2,
+  "by_category": {
+    "concept": 1,
+    "source": 1
+  },
+  "dry_run": false,
+  "index_path": "/tmp/test-vault/wiki/index.md"
+}

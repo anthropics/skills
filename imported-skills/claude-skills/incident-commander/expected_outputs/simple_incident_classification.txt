@@ -1,0 +1,44 @@
+============================================================
+INCIDENT CLASSIFICATION REPORT
+============================================================
+
+CLASSIFICATION:
+  Severity: SEV2
+  Confidence: 100.0%
+  Reasoning: Classified as SEV2 based on: keywords: slow; user impact: 25%
+  Timestamp: 2026-02-16T12:42:41.889774+00:00
+
+RECOMMENDED RESPONSE:
+  Primary Team: UX Engineering
+  Supporting Teams: Product Engineering, Frontend Team
+  Response Time: 15 minutes
+
+INITIAL ACTIONS:
+  1. Assign incident commander (Priority 1)
+     Timeout: 30 minutes
+     Assign IC and establish coordination channel
+
+  2. Create incident tracking (Priority 1)
+     Timeout: 5 minutes
+     Create incident ticket with details and timeline
+
+  3. Assess customer impact (Priority 2)
+     Timeout: 15 minutes
+     Determine scope and severity of user impact
+
+  4. Engage response team (Priority 2)
+     Timeout: 30 minutes
+     Page appropriate technical responders
+
+  5. Begin investigation (Priority 3)
+     Timeout: 15 minutes
+     Start technical analysis and debugging
+
+COMMUNICATION:
+  Subject: ⚠️ [SEV2] web-frontend - Users reporting slow page loads on the main websit...
+  Urgency: SEV2
+  Recipients: on-call, engineering-leadership, product-team
+  Channels: pager, slack, email
+  Update Frequency: Every 30 minutes
+
+============================================================

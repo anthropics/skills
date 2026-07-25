@@ -1,0 +1,1 @@
+"""Materials figure scripts."""

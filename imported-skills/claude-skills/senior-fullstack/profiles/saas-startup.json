@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "saas-startup",
+  "description": "Customer-facing SaaS product, < 10 engineers, < $10M ARR. Pre-product-market-fit or just past it. Cadence: daily+. Cloud ceiling: $3-8K/mo. Hiring against the stack via standard recruiter pipeline.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_max": 10,
+    "team_size_year_one_max": 25,
+    "deployment_cadence": "daily-or-per-pr",
+    "cloud_budget_monthly_usd_ceiling": 8000,
+    "user_facing": true,
+    "data_sensitivity_tier": "pii-only"
+  },
+  "stack_recommendations": {
+    "primary": "next-app-router-postgres",
+    "frontend": {
+      "framework": "next.js-14+",
+      "rendering": "rsc-default",
+      "styling": "tailwind",
+      "state": "server-state-via-rsc-plus-zustand-for-client"
+    },
+    "backend": {
+      "pattern": "modular-monolith",
+      "language": "typescript-or-python",
+      "framework_options": ["next-api-routes", "fastapi", "express"],
+      "database": "postgresql",
+      "cache": "redis-optional",
+      "queue": "defer-until-needed"
+    },
+    "infrastructure": {
+      "hosting": ["vercel", "fly.io", "render", "railway"],
+      "database_hosting": ["neon", "supabase", "rds-postgres-small"],
+      "observability": "single-tool-only-sentry-or-axiom",
+      "feature_flags": "growthbook-self-host-or-defer"
+    }
+  },
+  "anti_recommendations": {
+    "microservices": "kill — wrong team-size shape",
+    "kubernetes": "kill — Vercel/Fly already manages the runtime",
+    "event-sourcing": "kill — pre-PMF YAGNI",
+    "graphql-federation": "kill — no second team to federate with",
+    "kafka": "kill — Postgres LISTEN/NOTIFY or PgQ handles the load at this scale",
+    "service-mesh": "kill — no services to mesh"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 100,
+    "p95_api_latency_ms": 300,
+    "p99_api_latency_ms": 800,
+    "frontend_lcp_ms_mobile_4g": 2500,
+    "frontend_inp_ms": 200,
+    "uptime_target": 0.995,
+    "deployment_time_minutes_max": 15,
+    "test_coverage_min": 0.6
+  },
+  "ci_cd": {
+    "platform": "github-actions",
+    "stages": ["lint", "typecheck", "test", "build", "deploy-preview", "deploy-prod"],
+    "gates": ["test-pass", "no-critical-deps-vulns"]
+  },
+  "named_approver_chain": {
+    "stack_change": "tech-lead",
+    "production-data-migration": "tech-lead + on-call",
+    "external-service-add": "tech-lead + cfo (cost-aware)"
+  },
+  "canon_references": [
+    "Will Larson, An Elegant Puzzle (2019) — team-size-to-architecture mapping",
+    "Sam Newman, Building Microservices 2e (2021), ch. 1 — MonolithFirst",
+    "Tomasz Tunguz, Cloud Cost Discipline essays (2020-2024)",
+    "DORA State of DevOps 2023 — Elite cadence on monolith outperforms Medium cadence on microservices"
+  ]
+}

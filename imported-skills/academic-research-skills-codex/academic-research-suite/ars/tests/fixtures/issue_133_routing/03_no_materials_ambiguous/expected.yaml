@@ -1,0 +1,15 @@
+fixture_id: 03_no_materials_ambiguous
+expected_routing_class: clarify
+expected_destination: clarification_only
+escape_hatch_applied: false
+notes: |
+  Materials: none. Intent: ambiguous ("help me with my paper" — at which stage?).
+
+  Per Routing Discipline Step 3 (no materials + ambiguous), trigger clarification.
+  Per shared/references/intent_clarification_protocol.md worked example 3, the response
+  should enumerate stage-based options (Socratic / pipeline / drafting / reviewer).
+
+  Pass criteria:
+  - Response asks clarification with a-d options
+  - Options cover Socratic mode, pipeline start, drafting, and reviewer modes
+  - Does NOT silently start any phase

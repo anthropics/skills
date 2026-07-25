@@ -1,0 +1,5 @@
+expected_path: B
+expected_phase: B10
+expected_block_message: ""
+expected_passport_mutation: appended
+expected_run_id_format: "matches §3.7 family F F1 regex"

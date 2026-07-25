@@ -1,0 +1,10 @@
+{
+  "query": "sparse autoencoder",
+  "hits": [
+    {
+      "path": "concepts/sparse-autoencoder.md",
+      "score": 1.995,
+      "snippet": "--- title: Sparse Autoencoder category: concept summary: Dictionary-learning method for interpretable features tags: [interpretability] sources: 1 updated: 2026-04-11 --- # Sparse Autoencoder See [[sources/hello]] for th…"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+================================================================================
+INCIDENT TIMELINE RECONSTRUCTION
+================================================================================
+
+OVERVIEW:
+  Time Range: 2024-03-15T14:30:00+00:00 to 2024-03-15T15:40:00+00:00
+  Total Duration: 70 minutes
+  Total Events: 21
+  Phases Detected: 12
+
+PHASES:
+  DETECTION:
+    Start: 2024-03-15T14:30:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Initial detection of the incident through monitoring or observation
+
+  ESCALATION:
+    Start: 2024-03-15T14:32:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Escalation to additional resources or higher severity response
+
+  TRIAGE:
+    Start: 2024-03-15T14:35:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Assessment and initial investigation of the incident
+
+  ESCALATION:
+    Start: 2024-03-15T14:38:00+00:00
+    Duration: 9.0 minutes
+    Events: 5
+    Description: Escalation to additional resources or higher severity response
+
+  TRIAGE:
+    Start: 2024-03-15T14:50:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Assessment and initial investigation of the incident
+
+  ESCALATION:
+    Start: 2024-03-15T14:52:00+00:00
+    Duration: 10.0 minutes
+    Events: 4
+    Description: Escalation to additional resources or higher severity response
+
+  TRIAGE:
+    Start: 2024-03-15T15:05:00+00:00
+    Duration: 7.0 minutes
+    Events: 2
+    Description: Assessment and initial investigation of the incident
+
+  DETECTION:
+    Start: 2024-03-15T15:15:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Initial detection of the incident through monitoring or observation
+
+  RESOLUTION:
+    Start: 2024-03-15T15:18:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Confirmation that the incident has been resolved
+
+  DETECTION:
+    Start: 2024-03-15T15:25:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Initial detection of the incident through monitoring or observation
+
+  RESOLUTION:
+    Start: 2024-03-15T15:30:00+00:00
+    Duration: 5.0 minutes
+    Events: 2
+    Description: Confirmation that the incident has been resolved
+
+  TRIAGE:
+    Start: 2024-03-15T15:40:00+00:00
+    Duration: 0.0 minutes
+    Events: 1
+    Description: Assessment and initial investigation of the incident
+
+KEY METRICS:
+  Time to Mitigation: 0 minutes
+  Time to Resolution: 48.0 minutes
+  Events per Hour: 18.0
+  Unique Sources: 7
+
+INCIDENT NARRATIVE:
+Incident Timeline Summary:
+The incident began at 2024-03-15 14:30:00 UTC and concluded at 2024-03-15 15:40:00 UTC, lasting approximately 70 minutes.
+
+The incident progressed through 12 distinct phases: detection, escalation, triage, escalation, triage, escalation, triage, detection, resolution, detection, resolution, triage.
+
+Key milestones:
+- Detection: 14:30 (0 min)
+- Escalation: 14:32 (0 min)
+- Triage: 14:35 (0 min)
+- Escalation: 14:38 (9 min)
+- Triage: 14:50 (0 min)
+- Escalation: 14:52 (10 min)
+- Triage: 15:05 (7 min)
+- Detection: 15:15 (0 min)
+- Resolution: 15:18 (0 min)
+- Detection: 15:25 (0 min)
+- Resolution: 15:30 (5 min)
+- Triage: 15:40 (0 min)
+
+================================================================================

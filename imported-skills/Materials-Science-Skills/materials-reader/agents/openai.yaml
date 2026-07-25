@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Reader"
+  short_description: "Figure-aware reading notes for materials papers."
+  brand_color: "#456B63"
+  default_prompt: "Use $materials-reader to turn this materials paper into source-grounded reading notes."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,15 @@
+# Final pipeline outcome after ship_with_known_residue acknowledgement.
+
+stage_outcome: shipped_with_known_residue
+proceed_to_next_stage: true
+final_verdict_summary:
+  rounds_used: 3
+  target_rounds: 3
+  closed_findings:
+    - F-102  # C2 — closed in round 2 (year range disambiguation applied)
+    - F-104  # C1 — closed in round 2 (protected hedge re-inserted verbatim)
+  acknowledged_residue:
+    - F-101  # A3 — carried across rounds 1→2→3, acknowledged at round 3 escalation
+    - F-103  # D4 — carried across rounds 1→2→3, acknowledged at round 3 escalation
+  unaddressed: []
+audit_gate_outcome: ship_with_known_residue

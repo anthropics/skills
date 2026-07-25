@@ -1,0 +1,63 @@
+route_scenarios:
+  - name: default-standard-full
+    axes:
+      review_depth: standard
+      journal_family: CBM
+      review_scope: full-manuscript
+      material_family: civil
+      domain: civil
+    target_bytes: 20000
+    max_bytes: 22000
+
+  - name: quick-precheck-figures
+    axes:
+      review_depth: quick-scan
+      journal_family: CBM
+      review_scope: figures-tables
+      material_family: civil
+      domain: civil
+    target_bytes: 20000
+    max_bytes: 22000
+
+  - name: methodology-asphalt
+    axes:
+      review_depth: detailed
+      journal_family: RMPD
+      review_scope: methodology
+      material_family: civil
+      domain: civil
+    on_demand:
+      - asphalt-criteria
+      - evidence-contract
+      - mechanism-evidence
+    target_bytes: 29000
+    max_bytes: 32000
+
+  - name: mechanism-polymers
+    axes:
+      review_depth: detailed
+      journal_family: CCC
+      review_scope: methodology
+      material_family: polymers
+      domain: polymers
+    on_demand:
+      - polymers-criteria
+      - evidence-contract
+      - claim-strength-ladder
+      - mechanism-evidence
+    target_bytes: 31000
+    max_bytes: 34000
+
+  - name: paper-production-weakness-rows
+    axes:
+      review_depth: standard
+      journal_family: CBM
+      review_scope: full-manuscript
+      material_family: civil
+      domain: civil
+    on_demand:
+      - weakness-routing
+      - evidence-contract
+      - claim-strength-ladder
+    target_bytes: 28000
+    max_bytes: 31000

@@ -1,0 +1,138 @@
+{
+  "skill": "materials-submission",
+  "version": "1.1.0",
+  "evals": [
+    {
+      "id": "manifest-validation",
+      "description": "build_submission_package.py rejects a manifest missing title or corresponding_author",
+      "command": "python scripts/build_submission_package.py --manifest evals/missing-fields.yaml --dry-run",
+      "expected": "dry-run with refusal reason 'title is missing'"
+    },
+    {
+      "id": "dry-run-output",
+      "description": "dry-run prints MANIFEST.md preview and file list without creating the directory",
+      "command": "python scripts/build_submission_package.py --manifest evals/valid.yaml --dry-run",
+      "expected": "stdout contains '=== DRY RUN ===' and 'MANIFEST.md'"
+    },
+    {
+      "id": "refusal-live-verification",
+      "description": "live_verification_acknowledged false forces dry-run",
+      "command": "python scripts/build_submission_package.py --manifest evals/not-acknowledged.yaml --dry-run",
+      "expected": "stderr contains 'live_verification_acknowledged is false'"
+    },
+    {
+      "id": "cover-letter-placeholder",
+      "description": "cover letter skeleton contains [LLM: ...] and [LIVE-VERIFICATION: ...] placeholders for empty fields",
+      "command": "python scripts/generate_cover_letter.py --manifest evals/empty-decls.yaml --output -",
+      "expected": "stdout contains '[LLM:' and '[LIVE-VERIFICATION:'"
+    },
+    {
+      "id": "highlights-character-limit",
+      "description": "generate_highlights.py rejects highlights over 85 characters",
+      "command": "python scripts/generate_highlights.py --journal cbm --highlights-file evals/long-highlights.md",
+      "expected": "exit code 1 with 'Highlights exceeding character limit'"
+    },
+    {
+      "id": "invalid-article-type",
+      "description": "build_submission_package.py rejects an article type unavailable to the selected journal",
+      "command": "python scripts/build_submission_package.py --manifest evals/invalid-article-type.yaml --dry-run",
+      "expected": "stderr contains \"article_type 'editorial' not in\""
+    },
+    {
+      "id": "highlights-numeric-heading",
+      "description": "generate_highlights.py ignores decimal section headings when validating ordered highlights",
+      "command": "python scripts/generate_highlights.py --journal cbm --highlights-file evals/numeric-heading-highlights.md",
+      "expected": "stderr contains 'all highlights within limit'"
+    },
+    {
+      "id": "checklist-assembly",
+      "description": "generate_checklist.py produces a checklist with journal-specific items",
+      "command": "python scripts/generate_checklist.py --journal cbm --article-type research-article --output -",
+      "expected": "stdout contains 'Data availability statement' and '[LIVE-VERIFICATION:'"
+    },
+    {
+      "id": "rmpd-no-highlights",
+      "description": "RMPD does not require highlights; generate_highlights.py exits 0 without writing",
+      "command": "python scripts/generate_highlights.py --journal rmpd --abstract 'test' --output -",
+      "expected": "stderr contains 'does not require highlights'"
+    },
+    {
+      "id": "checklist-building-environment",
+      "description": "generate_checklist.py produces a checklist for a non-pilot journal (Building and Environment)",
+      "command": "python scripts/generate_checklist.py --journal building-environment --article-type research-article --output -",
+      "expected": "stdout contains 'Building and Environment' and '[LIVE-VERIFICATION:'"
+    },
+    {
+      "id": "jmca-no-highlights",
+      "description": "JMCA does not require highlights; generate_highlights.py exits 0 without writing",
+      "command": "python scripts/generate_highlights.py --journal jmca --abstract 'test' --output -",
+      "expected": "stderr contains 'does not require highlights'"
+    },
+    {
+      "id": "perspective-jmca-dry-run",
+      "description": "dry-run accepts a perspective article type for JMCA",
+      "command": "python scripts/build_submission_package.py --manifest evals/valid-jmca-perspective.yaml --dry-run",
+      "expected": "stdout contains '=== DRY RUN ===' and 'perspective'"
+    },
+    {
+      "id": "journal-template-schema",
+      "description": "journal templates have complete YAML/Markdown pairs and internally consistent declarations",
+      "command": "python scripts/validate_journal_templates.py",
+      "expected": "stdout contains 'PASS: journal templates valid'"
+    },
+    {
+      "id": "acta-required-artifact",
+      "description": "Acta Materialia checklist requires its graphical abstract",
+      "command": "python scripts/generate_checklist.py --journal acta-materialia --article-type research-article --output -",
+      "expected": "stdout contains 'Graphical abstract'"
+    },
+    {
+      "id": "ceramics-international-checklist",
+      "description": "Ceramics International research checklist is generated",
+      "command": "python scripts/generate_checklist.py --journal ceramics-international --article-type research-article --output -",
+      "expected": "stdout contains 'Ceramics International'"
+    },
+    {
+      "id": "energy-buildings-short-form",
+      "description": "Energy and Buildings accepts its supported short-form route",
+      "command": "python scripts/generate_checklist.py --journal energy-buildings --article-type short-communication --output -",
+      "expected": "stdout contains 'Short communication'"
+    },
+    {
+      "id": "jmca-toc-entry",
+      "description": "JMCA checklist records its revision-stage TOC entry",
+      "command": "python scripts/generate_checklist.py --journal jmca --article-type perspective --output -",
+      "expected": "stdout contains 'TOC entry'"
+    },
+    {
+      "id": "nature-materials-perspective",
+      "description": "Nature Materials accepts a Perspective and includes code availability",
+      "command": "python scripts/generate_checklist.py --journal nature-materials --article-type perspective --output -",
+      "expected": "stdout contains 'Article type: Perspective' and 'Code availability statement'"
+    },
+    {
+      "id": "nature-letter-cover-label",
+      "description": "Nature Materials cover letters use the official Letter label",
+      "command": "python scripts/generate_cover_letter.py --manifest evals/valid-nature-letter.yaml --output -",
+      "expected": "stdout contains 'as a Letter in Nature Materials'"
+    },
+    {
+      "id": "invalid-acta-review",
+      "description": "Acta Materialia rejects the unsupported standard review route",
+      "command": "python scripts/build_submission_package.py --manifest evals/invalid-acta-review.yaml --dry-run",
+      "expected": "stderr contains \"article_type 'review-article' not in\""
+    },
+    {
+      "id": "invalid-building-environment-case-study",
+      "description": "Building and Environment rejects the unsupported case-study route",
+      "command": "python scripts/build_submission_package.py --manifest evals/invalid-building-environment-case-study.yaml --dry-run",
+      "expected": "stderr contains \"article_type 'case-study' not in\""
+    },
+    {
+      "id": "template-driven-rendering-regressions",
+      "description": "required_fields, article-type exclusions, and declaration switches control generated outputs",
+      "command": "python scripts/test_template_driven_outputs.py",
+      "expected": "stdout or stderr contains 'OK'"
+    }
+  ]
+}

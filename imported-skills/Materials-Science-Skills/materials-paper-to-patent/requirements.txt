@@ -1,0 +1,4 @@
+pypdf>=4.0
+python-docx>=1.1
+matplotlib>=3.8
+pyyaml>=6.0

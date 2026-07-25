@@ -1,0 +1,170 @@
+[
+  {
+    "role": "Senior Software Engineer",
+    "level": "senior",
+    "team": "platform",
+    "department": "engineering",
+    "competencies": [
+      "system_design",
+      "coding_fundamentals", 
+      "technical_leadership",
+      "mentoring",
+      "cross_team_collaboration"
+    ],
+    "requirements": {
+      "years_experience": "5-8",
+      "technical_skills": ["Python", "Java", "Docker", "Kubernetes", "AWS"],
+      "leadership_experience": true,
+      "mentoring_required": true
+    },
+    "hiring_bar": "high",
+    "interview_focus": ["technical_depth", "system_architecture", "leadership_potential"]
+  },
+  {
+    "role": "Product Manager", 
+    "level": "mid",
+    "team": "growth",
+    "department": "product",
+    "competencies": [
+      "product_strategy",
+      "user_research",
+      "data_analysis", 
+      "stakeholder_management",
+      "cross_functional_leadership"
+    ],
+    "requirements": {
+      "years_experience": "3-5",
+      "domain_knowledge": ["user_analytics", "experimentation", "product_metrics"],
+      "leadership_experience": false,
+      "technical_background": "preferred"
+    },
+    "hiring_bar": "medium-high",
+    "interview_focus": ["product_sense", "analytical_thinking", "execution_ability"]
+  },
+  {
+    "role": "Staff Frontend Engineer",
+    "level": "staff", 
+    "team": "consumer",
+    "department": "engineering",
+    "competencies": [
+      "frontend_architecture",
+      "system_design",
+      "technical_leadership",
+      "team_building",
+      "cross_functional_collaboration"
+    ],
+    "requirements": {
+      "years_experience": "8+",
+      "technical_skills": ["React", "TypeScript", "GraphQL", "Webpack", "Performance Optimization"],
+      "leadership_experience": true,
+      "architecture_experience": true
+    },
+    "hiring_bar": "very-high",
+    "interview_focus": ["architectural_vision", "technical_strategy", "organizational_impact"]
+  },
+  {
+    "role": "Data Scientist",
+    "level": "mid",
+    "team": "ml_platform", 
+    "department": "data",
+    "competencies": [
+      "statistical_analysis",
+      "machine_learning",
+      "data_engineering",
+      "business_acumen",
+      "communication"
+    ],
+    "requirements": {
+      "years_experience": "3-6",
+      "technical_skills": ["Python", "SQL", "TensorFlow", "Spark", "Statistics"],
+      "domain_knowledge": ["ML algorithms", "experimentation", "data_pipelines"],
+      "leadership_experience": false
+    },
+    "hiring_bar": "high",
+    "interview_focus": ["technical_depth", "problem_solving", "business_impact"]
+  },
+  {
+    "role": "DevOps Engineer",
+    "level": "senior",
+    "team": "infrastructure",
+    "department": "engineering", 
+    "competencies": [
+      "infrastructure_automation",
+      "ci_cd_design",
+      "monitoring_observability",
+      "security_implementation",
+      "incident_management"
+    ],
+    "requirements": {
+      "years_experience": "5-7",
+      "technical_skills": ["Kubernetes", "Terraform", "AWS", "Docker", "Monitoring"],
+      "security_background": "required",
+      "leadership_experience": "preferred"
+    },
+    "hiring_bar": "high",
+    "interview_focus": ["system_reliability", "automation_expertise", "operational_excellence"]
+  },
+  {
+    "role": "UX Designer", 
+    "level": "senior",
+    "team": "design_systems",
+    "department": "design",
+    "competencies": [
+      "design_process",
+      "user_research",
+      "design_systems",
+      "cross_functional_collaboration",
+      "design_leadership"
+    ],
+    "requirements": {
+      "years_experience": "5-8",
+      "portfolio_quality": "high",
+      "research_experience": true,
+      "systems_thinking": true
+    },
+    "hiring_bar": "high", 
+    "interview_focus": ["design_process", "systems_thinking", "user_advocacy"]
+  },
+  {
+    "role": "Engineering Manager",
+    "level": "senior",
+    "team": "backend",
+    "department": "engineering",
+    "competencies": [
+      "people_leadership",
+      "technical_background", 
+      "strategic_thinking",
+      "performance_management",
+      "cross_functional_leadership"
+    ],
+    "requirements": {
+      "years_experience": "6-10",
+      "management_experience": "2+ years",
+      "technical_background": "required",
+      "hiring_experience": true
+    },
+    "hiring_bar": "very-high",
+    "interview_focus": ["people_leadership", "technical_judgment", "organizational_impact"]
+  },
+  {
+    "role": "Junior Software Engineer",
+    "level": "junior",
+    "team": "web",
+    "department": "engineering",
+    "competencies": [
+      "coding_fundamentals",
+      "debugging",
+      "testing_basics",
+      "collaboration",
+      "learning_agility"
+    ],
+    "requirements": {
+      "years_experience": "0-2", 
+      "technical_skills": ["JavaScript", "HTML/CSS", "Git", "Basic Algorithms"],
+      "education": "CS degree or bootcamp",
+      "growth_mindset": true
+    },
+    "hiring_bar": "medium",
+    "interview_focus": ["coding_ability", "problem_solving", "potential_assessment"]
+  }
+]

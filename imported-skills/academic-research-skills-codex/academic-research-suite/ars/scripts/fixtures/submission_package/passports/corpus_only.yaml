@@ -1,0 +1,9 @@
+# A passport carrying a declared literature_corpus[] but NO
+# citation_verification_summary[] — supplies a reference list, not a join.
+literature_corpus:
+  - citation_key: smith2024
+    title: Feedback loops in institutional accreditation
+    year: 2024
+    authors:
+      - family: Smith
+        given: Jordan

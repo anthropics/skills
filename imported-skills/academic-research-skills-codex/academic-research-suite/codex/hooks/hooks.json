@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "name": "academic-research-suite-codex-hooks",
+  "default_enabled": false,
+  "enabled_when": "ARS_CODEX_HOOKS=1",
+  "install_scope": "manual",
+  "hooks": [
+    {
+      "id": "ars-codex-session-announce",
+      "event": "SessionStart",
+      "command": "python3 skills/academic-research-suite/codex/scripts/ars_codex_hook.py announce",
+      "mutates_files": false,
+      "reads_environment": false,
+      "network": false,
+      "description": "Prints ARS Codex full-runtime alias/profile metadata without reading secrets or user files."
+    }
+  ]
+}

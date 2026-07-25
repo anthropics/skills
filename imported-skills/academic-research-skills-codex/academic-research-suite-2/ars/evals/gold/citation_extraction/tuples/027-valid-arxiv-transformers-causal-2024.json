@@ -1,0 +1,35 @@
+{
+  "tuple_id": "027-valid-arxiv-transformers-causal-2024",
+  "kind": "valid_arxiv",
+  "corpus_entry": {
+    "citation_key": "Nichani2024TransformersCausal",
+    "title": "How Transformers Learn Causal Structure with Gradient Descent",
+    "authors": [
+      {
+        "family": "Nichani",
+        "given": "Eshaan"
+      },
+      {
+        "family": "Damian",
+        "given": "Alex"
+      },
+      {
+        "family": "Lee",
+        "given": "Jason D."
+      }
+    ],
+    "year": 2024,
+    "venue": "arXiv",
+    "source_pointer": "https://arxiv.org/abs/2402.14735",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": "2402.14735",
+  "ref_slug": "nichani-2024-transformerscausal",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

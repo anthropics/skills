@@ -1,0 +1,27 @@
+layout: 2x2
+title: WER-EA mechanism-performance evidence package
+panels:
+  - id: A
+    role: mechanism-evidence
+    title: Mechanism map
+    claim: Mechanism is associated with interfacial curing and asphalt compatibility.
+    evidence: FTIR/XRD/SEM evidence chain.
+    source: mechanism.csv
+  - id: B
+    role: property-performance
+    title: Performance window
+    claim: Performance changes inside the tested dosage window.
+    evidence: Bonding and retention data.
+    source: performance.csv
+  - id: C
+    role: review-evidence-map
+    title: Evidence heatmap
+    claim: Evidence heatmap separates strong and weak source layers.
+    evidence: Screened citation matrix.
+    source: evidence.csv
+  - id: D
+    role: review-evidence-map
+    title: Literature screening
+    claim: Literature screening identifies source gaps before writing.
+    evidence: Search and screening table.
+    source: screening.csv

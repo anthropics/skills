@@ -1,0 +1,16 @@
+phase,formula,two_theta_deg,relative_intensity,hkl
+C3S,Ca3SiO5,23.0,45,001
+C3S,Ca3SiO5,29.4,30,111
+C3S,Ca3SiO5,32.2,100,211
+C3S,Ca3SiO5,34.3,20,022
+C3S,Ca3SiO5,44.1,15,131
+C3S,Ca3SiO5,51.0,12,222
+CH,Ca(OH)2,18.1,100,001
+CH,Ca(OH)2,34.1,30,101
+CH,Ca(OH)2,47.2,15,102
+CH,Ca(OH)2,50.8,10,110
+Calcite,CaCO3,23.1,30,012
+Calcite,CaCO3,29.5,100,104
+Calcite,CaCO3,39.5,15,006
+Calcite,CaCO3,47.6,12,018
+Calcite,CaCO3,48.6,8,116

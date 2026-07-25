@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "django-monolith",
+  "description": "Django 5 + Django REST Framework + Postgres. Team size 2-25, content-heavy CRUD, admin needs (auctions, marketplaces, content sites). Batteries-included beats hand-rolling.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_min": 2,
+    "team_size_max": 25,
+    "tenancy": "shared-multi-tenant",
+    "data_sensitivity_tier_max": "pii",
+    "pattern": "modular-monolith",
+    "admin_panel_needed": true
+  },
+  "stack": {
+    "framework": "django-5",
+    "language": "python-3.11-or-3.12",
+    "api_layer_options": ["django-rest-framework", "django-ninja-when-async-needed"],
+    "orm": "django-orm",
+    "database": "postgresql-16+",
+    "cache": "redis-via-django-cache",
+    "queue": "celery-or-django-rq",
+    "auth": "django-built-in-auth + django-allauth-for-social",
+    "templates_when_html_needed": "django-templates-or-htmx",
+    "testing": "pytest + pytest-django + factory-boy",
+    "admin": "django-admin-customized"
+  },
+  "anti_recommendations": {
+    "fastapi-on-top-of-django": "kill — pick one; don't run two frameworks",
+    "no-celery-but-spawning-threads": "kill — use celery or arq for background work",
+    "no-rate-limiting": "kill — DRF + django-ratelimit is mandatory",
+    "raw-sql-without-justification": "warn — Django ORM is good enough at this scale",
+    "microservices": "kill — Django excels as a modular monolith",
+    "deleting-django-admin": "warn — admin is one of Django's strongest value props"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 100,
+    "p95_api_latency_ms": 350,
+    "p99_api_latency_ms": 800,
+    "uptime_target": 0.99,
+    "test_coverage_min": 0.7,
+    "security_scan_severity_max": "medium",
+    "rpo_minutes_max": 60,
+    "rto_minutes_max": 240
+  },
+  "named_approver_chain": {
+    "schema_change_production": "tech-lead + on-call",
+    "new-external-service": "tech-lead + cfo",
+    "auth-or-authz-change": "tech-lead + security-owner"
+  },
+  "canon_references": [
+    "Django 5 docs (Django Software Foundation, 2024)",
+    "DRF docs (Tom Christie, 2014-2024)",
+    "Two Scoops of Django 3.x (Daniel + Audrey Roy Greenfeld, 2020)",
+    "Adam Johnson, Django blog (2018-2024)",
+    "Carlton Gibson on async Django (2023-2024)"
+  ]
+}

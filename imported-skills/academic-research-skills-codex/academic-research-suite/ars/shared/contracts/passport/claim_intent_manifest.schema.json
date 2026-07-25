@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Imbad0202/academic-research-skills/shared/contracts/passport/claim_intent_manifest.schema.json",
+  "title": "Material Passport Claim Intent Manifest Entry",
+  "description": "One entry in Material Passport Schema 9 claim_intent_manifests[] aggregate. Emitted by synthesis_agent / draft_writer_agent / report_compiler_agent after paper-visible context loads but before prose generation, per the 'Claim Intent Manifest Emission (v3.8)' sibling section added to each writing-stage agent. Acts as the pre-commitment baseline for the manifest set-diff in claim_ref_alignment_audit_agent §4 step 5 (intended vs emitted vs supported claims). Cross-field invariants M-INV-1..M-INV-4 are lint-enforced in scripts/check_claim_audit_consistency.py. See docs/design/2026-05-15-issue-103-claim-alignment-audit-spec.md §3.2.",
+
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "manifest_version",
+    "manifest_id",
+    "emitted_by",
+    "emitted_at",
+    "claims",
+    "manifest_negative_constraints"
+  ],
+
+  "properties": {
+    "manifest_version": {
+      "const": "1.0",
+      "description": "Schema-internal version. v3.8.0 release ships 1.0. Future drafts bump this constant to drive an explicit migration."
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^M-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z-[0-9a-f]{4}$",
+      "description": "Discriminator scoping all claim_id values inside this manifest. Format: M-<ISO-8601-Z>-<4-hex>. Required because a single passport may contain multiple claim_intent_manifests[] entries (e.g., one from synthesis_agent and one from draft_writer_agent on the same run); bare C-001 alone would collide. The pair (manifest_id, claim_id) is the joinable key — see claim_audit_result.scoped_manifest_id + INV-15 / D-INV-2 cross-array integrity. M-INV-4 enforces uniqueness across all claim_intent_manifests[] entries in the same passport."
+    },
+    "emitted_by": {
+      "enum": ["synthesis_agent", "draft_writer_agent", "report_compiler_agent"],
+      "description": "The writing-stage agent that emitted this manifest. Bibliography / audit / orchestrator agents do NOT emit manifests — only the three prose-producing agents pre-commit to claim intent."
+    },
+    "emitted_at": { "type": "string", "format": "date-time" },
+    "session_id": {
+      "type": "string",
+      "description": "Optional opaque identifier for the dispatch run. Useful for cross-referencing with orchestrator logs; not part of the joinable key."
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "description": "MUST list at least one substantive claim per R-CIM-A — an empty manifest is a degenerate pre-commitment that produces no drift signal (set-diff has nothing in Intended set) and silently defeats D6.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "claim_text", "intended_evidence_kind", "planned_refs"],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^C-[0-9]{3,}$",
+            "description": "Per-manifest claim identifier. Unique within this manifest (M-INV-1); cross-manifest collisions are PERMITTED and disambiguated via the scoping pair (manifest_id, claim_id)."
+          },
+          "claim_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "intended_evidence_kind": {
+            "enum": ["empirical", "theoretical", "definitional", "normative"],
+            "description": "What kind of evidence the writer intends to back this claim with. Used by the audit agent's manifest cross-reference to discriminate drift from refinement."
+          },
+          "planned_refs": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 0,
+            "description": "Ref slugs the writer intends to cite. Empty array MUST be permitted — definitional/normative claims may legitimately have no planned refs at manifest time."
+          },
+          "planned_experiment_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Passport-local experiment_provenance[].experiment_id values the writer intends to support this claim with (#260, D1). OPTIONAL-ABSENT — present only on experiment-backed claims; literature-only / definitional / theoretical / normative claims omit it entirely (do NOT carry a meaningless empty array). minItems 1 because an empty array is meaningless — omit the field instead. EP-INV-2 enforces every value resolves to exactly one experiment_provenance[] entry (doubles as the rename + forward-reference dangling-pointer guard). EP-INV-3 enforces presence ⟹ this claim's intended_evidence_kind == 'empirical' (mixed literature+experiment allowed: a claim MAY carry BOTH planned_refs and planned_experiment_ids). A mixed-evidence claim is audited by both paths and combined worst-verdict-wins (D4)."
+          },
+          "negative_constraints": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["constraint_id", "rule"],
+              "properties": {
+                "constraint_id": {
+                  "type": "string",
+                  "pattern": "^NC-C[0-9]{3,}-[0-9]+$",
+                  "description": "Claim-level negative constraint. Format NC-C{n}-{m} where {n} matches the parent claim_id digits (M-INV-2 + INV-17). NO inner hyphen between 'C' and '{n}' — the joinable key is the digit sequence after stripping the leading 'C'."
+                },
+                "rule": { "type": "string", "minLength": 1, "maxLength": 500 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "manifest_negative_constraints": {
+      "type": "array",
+      "description": "Globally-scoped constraints. Apply to all claims in this manifest regardless of whether the claim entry redeclares them (M-INV-3 — claim-level can ADD, never DROP global).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["constraint_id", "rule"],
+        "properties": {
+          "constraint_id": {
+            "type": "string",
+            "pattern": "^MNC-[0-9]+$",
+            "description": "Manifest-level negative constraint. Format MNC-{m}. Globally applied; cannot be overridden by claim-level NC."
+          },
+          "rule": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+# Synthetic example of a scholar-declared format_profile (#439, design §6/§8).
+#
+# This is a FICTIONAL profile for documentation and lint coverage ONLY. It is NOT
+# any real institution's or journal's template — per the §6 boundary, ARS ships
+# the contract, never a real school's profile content. The values below are
+# illustrative defaults, not a recommendation.
+#
+# Validates against format_profile.schema.json. Every field is optional; a real
+# profile declares only what it needs and omits the rest (omission = NOT-DECLARED
+# = the formatter keeps its current default for that aspect).
+
+body_font:
+  family: ExampleSerif
+  size_pt: 12
+
+caption:
+  font_family: ExampleSerif
+  size_pt: 10.5
+  placement: below
+  alignment: center
+  latin_font_family: ExampleLatin   # e.g. a Latin token like "Fig." inside a CJK caption
+
+line_spacing:
+  mode: fixed_pt
+  fixed_pt: 20
+
+margins_cm:
+  top: 2.5
+  bottom: 2.5
+  left: 3.0
+  right: 2.5
+
+table_border_style: three_line

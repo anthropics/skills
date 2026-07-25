@@ -1,0 +1,143 @@
+# Figure Storyboard — Multi-Figure Narrative Orchestration
+#
+# Manages the multi-figure narrative for a single manuscript: the narrative arc
+# (ordered figures and their roles), cross-figure evidence dependencies,
+# no-redundancy across panels, and shared style consistency.
+#
+# Scope: this template orchestrates FIGURES within a manuscript (fig1, fig2, ...).
+# It is distinct from the single-figure multi-panel storyboard
+# (assets/templates/figure_storyboard.yaml) which orders PANELS within one figure
+# (A, B, C, D). The two compose: each figure listed here may itself use the
+# panel-level storyboard internally.
+#
+# Fill in every field below. Run check_storyboard.py to validate:
+#   python scripts/check_storyboard.py figure_storyboard.yaml --json
+
+# ---------------------------------------------------------------------------
+# Manuscript metadata
+# ---------------------------------------------------------------------------
+
+# Manuscript title (free text; used in reports).
+title: "Manuscript title here"
+
+# Manuscript type. Drives which roles are required (see validation below).
+# Allowed values: research | review | case-study
+manuscript_type: "research"
+
+# Target journal family. Should match a preset key in
+# assets/templates/figure-style-presets.yaml (cbm, ccc, rmpd_ijpe, jbe) so the
+# style_consistency constraint can resolve the shared palette.
+target_journal: "cbm"
+
+# ---------------------------------------------------------------------------
+# Narrative arc
+# ---------------------------------------------------------------------------
+# Ordered list of figures. Order defines reading order; each figure declares a
+# narrative role, the single-sentence claim it defends, the path to its
+# figure_contract.md, and which earlier figures its evidence builds on.
+#
+# figure_id            short stable identifier used by evidence_depends_on
+# figure_name          human-readable name (also matched inside contract text)
+# role                 narrative role; see VALID_ROLES below
+#                      establish_system   - introduce the material/system/setup
+#                      prove_mechanism    - defend the underlying mechanism
+#                      show_performance   - report performance metrics
+#                      validate_durability- show performance persists over time/conditions
+#                      summarize          - synthesize findings or trade-offs
+#                      compare            - compare systems/conditions side by side
+#                      method_development - present a new method or protocol
+# claim                one-sentence core claim this figure must defend
+# contract_path        path to this figure's figure_contract.md (relative to
+#                      this storyboard file)
+# evidence_depends_on  list of figure_ids whose evidence this figure builds on;
+#                      must form a DAG (no cycles)
+
+narrative_arc:
+  - figure_id: "fig1"
+    figure_name: "system_setup"
+    role: "establish_system"
+    claim: "The emulsion system achieves a stable bonding interface across the tested dosage window."
+    contract_path: "fig1/figure_contract.md"
+    evidence_depends_on: []
+
+  - figure_id: "fig2"
+    figure_name: "mechanism"
+    role: "prove_mechanism"
+    claim: "FTIR and rheology evidence link the dosage window to a cross-linking mechanism established in fig1."
+    contract_path: "fig2/figure_contract.md"
+    evidence_depends_on: ["fig1"]
+
+  - figure_id: "fig3"
+    figure_name: "performance"
+    role: "show_performance"
+    claim: "Bond strength and viscosity performance are attributed to the fig2 mechanism."
+    contract_path: "fig3/figure_contract.md"
+    evidence_depends_on: ["fig2"]
+
+  - figure_id: "fig4"
+    figure_name: "durability"
+    role: "validate_durability"
+    claim: "Aging retention validates that the fig3 performance persists under moisture and thermal cycling."
+    contract_path: "fig4/figure_contract.md"
+    evidence_depends_on: ["fig3"]
+
+# ---------------------------------------------------------------------------
+# Cross-figure constraints
+# ---------------------------------------------------------------------------
+# Declared once here so check_storyboard.py can enforce them across all figures.
+# Each constraint has a type and a human-readable rule/description.
+#
+# Constraint types:
+#   style_consistency     - all figures share palette, fonts, rcParams
+#   evidence_flow         - later figures' evidence chains cite earlier claims
+#   no_redundancy         - no two figures show the same data panel
+#   claim_progression     - later claims build on earlier evidence (no repetition)
+#   role_coverage         - manuscript type requires certain roles to appear
+#   acyclic_dependency    - evidence_depends_on graph must be acyclic (DAG)
+
+cross_figure_constraints:
+  - type: "style_consistency"
+    # shared_palette must match a key in figure-style-presets.yaml.
+    shared_palette: "cbm"
+    shared_fonts: true
+    shared_rcparams: true
+    description: "All figures share the cbm color palette and font stack."
+
+  - type: "evidence_flow"
+    rule: "Later figures' evidence chains must cite earlier figures' claims."
+    description: "fig2 evidence chain references fig1; fig3 references fig2; fig4 references fig3."
+
+  - type: "no_redundancy"
+    rule: "No two figures show the same data panel."
+    description: "Cross-check panel data sources (evidence source + source anchor) across figures."
+
+  - type: "claim_progression"
+    rule: "Later figures' claims must build on earlier figures' evidence."
+    description: "The narrative arc shows progression, not repetition."
+
+  - type: "role_coverage"
+    rule: "Manuscript type determines which roles must appear."
+    description: "Research needs establish->prove->show; review needs establish->summarize."
+
+  - type: "acyclic_dependency"
+    rule: "evidence_depends_on must form a directed acyclic graph."
+    description: "A figure cannot (directly or transitively) depend on itself."
+
+# ---------------------------------------------------------------------------
+# Validation rules consumed by check_storyboard.py
+# ---------------------------------------------------------------------------
+# required_roles_*: roles that MUST appear in narrative_arc for each type.
+#   - research:     establish_system -> prove_mechanism -> show_performance
+#   - review:       establish_system -> summarize
+#   - case-study:   establish_system -> show_performance
+# min_figures / max_figures: bounds on narrative_arc length.
+# allow_cycles: if false, evidence_depends_on cycles are errors; if true, only
+#   warnings (rarely needed; leave false).
+
+validation:
+  required_roles_research: ["establish_system", "prove_mechanism", "show_performance"]
+  required_roles_review: ["establish_system", "summarize"]
+  required_roles_case_study: ["establish_system", "show_performance"]
+  min_figures: 1
+  max_figures: 12
+  allow_cycles: false

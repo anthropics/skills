@@ -1,0 +1,20 @@
+schema_version: "1.0"
+sources:
+  - citation_key: handbook-2020ed
+    type: institutional-document
+    effective_date_range:
+      start:
+        value: "2020-10-01"
+        precision: day
+        open_ended: false
+        provenance:
+          method: user_override
+          confidence: high
+      end:
+        value: "2024-09-30"
+        precision: day
+        open_ended: false
+        provenance:
+          method: user_override
+          confidence: high
+events: []

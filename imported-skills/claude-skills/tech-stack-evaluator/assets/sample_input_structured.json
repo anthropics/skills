@@ -1,0 +1,39 @@
+{
+  "comparison": {
+    "technologies": [
+      {
+        "name": "PostgreSQL",
+        "performance": {"score": 85},
+        "scalability": {"score": 90},
+        "developer_experience": {"score": 75},
+        "ecosystem": {"score": 95},
+        "learning_curve": {"score": 70},
+        "documentation": {"score": 90},
+        "community_support": {"score": 95},
+        "enterprise_readiness": {"score": 95}
+      },
+      {
+        "name": "MongoDB",
+        "performance": {"score": 80},
+        "scalability": {"score": 95},
+        "developer_experience": {"score": 85},
+        "ecosystem": {"score": 85},
+        "learning_curve": {"score": 80},
+        "documentation": {"score": 85},
+        "community_support": {"score": 85},
+        "enterprise_readiness": {"score": 75}
+      }
+    ],
+    "use_case": "SaaS application with complex queries",
+    "weights": {
+      "performance": 20,
+      "scalability": 20,
+      "developer_experience": 15,
+      "ecosystem": 15,
+      "learning_curve": 10,
+      "documentation": 10,
+      "community_support": 5,
+      "enterprise_readiness": 5
+    }
+  }
+}

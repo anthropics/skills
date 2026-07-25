@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "go-or-rust-microservice",
+  "description": "Single high-throughput service in Go (Gin/Echo/Chi) or Rust (Axum/Actix). Extracted from a modular monolith because (a) team owns it, (b) bounded context is provably-independent, (c) throughput / latency target requires it. NOT a default — earn your way in.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_min": 30,
+    "tenancy": "shared-multi-tenant-or-isolated",
+    "data_sensitivity_tier_max": "phi",
+    "pattern": "extracted-service-not-greenfield-microservices",
+    "qps_p99_min": 1000,
+    "platform_team_exists": true
+  },
+  "stack_go": {
+    "runtime": "go-1.22+",
+    "framework_options": ["chi", "gin", "echo", "stdlib-net-http"],
+    "orm_options": ["sqlc-preferred", "pgx-direct"],
+    "database": "postgresql-or-spanner-or-cockroachdb",
+    "cache": "redis-or-internal-cache-tier",
+    "tracing": "opentelemetry-go-sdk",
+    "testing": "stdlib-testing + testify + testcontainers"
+  },
+  "stack_rust": {
+    "runtime": "rust-stable-1.78+",
+    "framework_options": ["axum", "actix-web"],
+    "orm_options": ["sqlx-preferred", "diesel-only-if-team-knows-it"],
+    "database": "postgresql-or-spanner-or-cockroachdb",
+    "tracing": "opentelemetry-rust-sdk",
+    "testing": "cargo-test + insta-snapshots"
+  },
+  "anti_recommendations": {
+    "rewrite-from-monolith-without-bounded-context": "kill — extract a service only when the second team needs to own it",
+    "rust-because-its-safer": "warn — Rust learning curve is 6-12 months; do not pick without an on-team senior",
+    "go-without-context-everywhere": "kill — context.Context on every handler + DB call mandatory",
+    "no-circuit-breakers": "kill — extracted services need hystrix/gobreaker or equivalent",
+    "no-bulkhead-isolation": "kill — connection pool isolation per dependency",
+    "shared-database-across-services": "kill — defeats the point of the extraction"
+  },
+  "success_thresholds": {
+    "p50_api_latency_ms": 20,
+    "p95_api_latency_ms": 80,
+    "p99_api_latency_ms": 200,
+    "uptime_target": 0.999,
+    "test_coverage_min": 0.8,
+    "security_scan_severity_max": "low",
+    "rpo_minutes_max": 5,
+    "rto_minutes_max": 30,
+    "throughput_rps_min": 1000
+  },
+  "named_approver_chain": {
+    "service_extraction_decision": "principal-engineer + platform-team-lead + product-owner",
+    "schema_change_production": "service-owner + DBA + on-call + change-advisory-board",
+    "new-external-service": "principal-engineer + security-review + finance"
+  },
+  "canon_references": [
+    "Sam Newman, Building Microservices 2e (2021), ch. 3 'Splitting the Monolith'",
+    "Susan Fowler, Production-Ready Microservices (2017) — eight pillars",
+    "Niall Murphy + Betsy Beyer, SRE (2016) — circuit breakers + bulkheads",
+    "Tigran Bregadze, Production Rust at scale (talks, 2023-2024)",
+    "Pat Helland, Life beyond Distributed Transactions (2007)"
+  ]
+}

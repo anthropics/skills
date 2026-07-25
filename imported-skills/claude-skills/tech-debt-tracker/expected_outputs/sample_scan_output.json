@@ -1,0 +1,2034 @@
+{
+  "scan_metadata": {
+    "directory": "assets/sample_codebase",
+    "scan_date": "2026-02-16T12:59:28.141103",
+    "scanner_version": "1.0.0",
+    "config": {
+      "max_function_length": 50,
+      "max_complexity": 10,
+      "max_nesting_depth": 4,
+      "max_file_size_lines": 500,
+      "min_duplicate_lines": 3,
+      "ignore_patterns": [
+        "*.pyc",
+        "__pycache__",
+        ".git",
+        ".svn",
+        "node_modules",
+        "build",
+        "dist",
+        "*.min.js",
+        "*.map"
+      ],
+      "file_extensions": {
+        "python": [
+          ".py"
+        ],
+        "javascript": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ],
+        "java": [
+          ".java"
+        ],
+        "csharp": [
+          ".cs"
+        ],
+        "cpp": [
+          ".cpp",
+          ".cc",
+          ".cxx",
+          ".c",
+          ".h",
+          ".hpp"
+        ],
+        "ruby": [
+          ".rb"
+        ],
+        "php": [
+          ".php"
+        ],
+        "go": [
+          ".go"
+        ],
+        "rust": [
+          ".rs"
+        ],
+        "kotlin": [
+          ".kt"
+        ]
+      },
+      "comment_patterns": {
+        "todo": "(?i)(TODO|FIXME|HACK|XXX|BUG)[\\s:]*(.+)",
+        "commented_code": "^\\s*#.*[=(){}\\[\\];].*",
+        "magic_numbers": "\\b\\d{2,}\\b",
+        "long_strings": "[\"\\'](.{100,})[\"\\']"
+      },
+      "severity_weights": {
+        "critical": 10,
+        "high": 7,
+        "medium": 5,
+        "low": 2,
+        "info": 1
+      }
+    }
+  },
+  "summary": {
+    "total_files_scanned": 3,
+    "total_lines_scanned": 986,
+    "total_debt_items": 122,
+    "health_score": 0,
+    "debt_density": 40.67,
+    "priority_breakdown": {
+      "medium": 81,
+      "low": 41
+    },
+    "type_breakdown": {
+      "high_complexity": 3,
+      "large_function": 2,
+      "duplicate_code": 68,
+      "too_many_parameters": 2,
+      "empty_catch": 1,
+      "hardcoded_paths": 5,
+      "missing_docstring": 22,
+      "long_line": 2,
+      "todo_comment": 17
+    }
+  },
+  "debt_items": [
+    {
+      "id": "DEBT-0005",
+      "type": "high_complexity",
+      "description": "Function 'create_user' has high complexity: 26",
+      "file_path": "src/user_service.py",
+      "line_number": 24,
+      "severity": "high",
+      "metadata": {
+        "function_name": "create_user",
+        "complexity": 26
+      },
+      "detected_date": "2026-02-16T12:59:28.115457",
+      "status": "identified",
+      "priority_score": 9,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0004",
+      "type": "high_complexity",
+      "description": "Function 'process_payment' has high complexity: 36",
+      "file_path": "src/payment_processor.py",
+      "line_number": 20,
+      "severity": "high",
+      "metadata": {
+        "function_name": "process_payment",
+        "complexity": 36
+      },
+      "detected_date": "2026-02-16T12:59:28.125126",
+      "status": "identified",
+      "priority_score": 9,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0010",
+      "type": "high_complexity",
+      "description": "Function 'validate_credit_card' has high complexity: 16",
+      "file_path": "src/payment_processor.py",
+      "line_number": 244,
+      "severity": "high",
+      "metadata": {
+        "function_name": "validate_credit_card",
+        "complexity": 16
+      },
+      "detected_date": "2026-02-16T12:59:28.126081",
+      "status": "identified",
+      "priority_score": 9,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0003",
+      "type": "large_function",
+      "description": "Function 'create_user' is too long: 101 lines",
+      "file_path": "src/user_service.py",
+      "line_number": 24,
+      "severity": "medium",
+      "metadata": {
+        "function_name": "create_user",
+        "length": 101
+      },
+      "detected_date": "2026-02-16T12:59:28.114676",
+      "status": "identified",
+      "priority_score": 7,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0003",
+      "type": "large_function",
+      "description": "Function 'process_payment' is too long: 196 lines",
+      "file_path": "src/payment_processor.py",
+      "line_number": 20,
+      "severity": "medium",
+      "metadata": {
+        "function_name": "process_payment",
+        "length": 196
+      },
+      "detected_date": "2026-02-16T12:59:28.124441",
+      "status": "identified",
+      "priority_score": 7,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0055",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 28,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140697",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0056",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 138,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140705",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0057",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 29,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140709",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0058",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 139,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140712",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0059",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 87,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140716",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0060",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 88,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140718",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0061",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 90,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140721",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0062",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 91,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140723",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0063",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 122,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140726",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0064",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 123,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140729",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0065",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 190,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140733",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0066",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 191,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140735",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0067",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 251,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140739",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0068",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 252,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140741",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0069",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 255,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140743",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0070",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 256,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140745",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0071",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 28,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140751",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0072",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 29,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140754",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0073",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 31,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140756",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0074",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 32,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140758",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0075",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 34,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140761",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0076",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 35,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140763",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0077",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 37,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140766",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0078",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 38,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140768",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0079",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 83,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140771",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0080",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 84,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140774",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0081",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 102,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140777",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0082",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 145,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140779",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0083",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 114,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140782",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0084",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 156,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140784",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0085",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 115,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140786",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0086",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 157,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140788",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0087",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 116,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140790",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0088",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 158,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140793",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0089",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 117,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140795",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0090",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 159,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140797",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0091",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 119,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140800",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0092",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 120,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140802",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0093",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 121,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140804",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0094",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 162,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140806",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0095",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 122,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140808",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0096",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 163,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140813",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0097",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 161,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140816",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0098",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 203,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140818",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0099",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 213,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140822",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0100",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 214,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140824",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0101",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 223,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140827",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0102",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 224,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140829",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0103",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 235,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140832",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0104",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 236,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140834",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0105",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 265,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140837",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0106",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 266,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140839",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0107",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 306,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140842",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0108",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/payment_processor.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 307,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140844",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0109",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 99,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140849",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0110",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 100,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140851",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0111",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 111,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140854",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0112",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 136,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140856",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0113",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 112,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140858",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0114",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 137,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140861",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0115",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 147,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140863",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0116",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 148,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140866",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0117",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 221,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140870",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0118",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 222,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140872",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0119",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 234,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140874",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0120",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 271,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140876",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0121",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 235,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140878",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0122",
+      "type": "duplicate_code",
+      "description": "Duplicate code block found in 2 files",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 272,
+        "duplicate_count": 2,
+        "other_files": []
+      },
+      "detected_date": "2026-02-16T12:59:28.140885",
+      "status": "identified",
+      "priority_score": 6,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0006",
+      "type": "too_many_parameters",
+      "description": "Function 'create_user' has too many parameters: 14",
+      "file_path": "src/user_service.py",
+      "line_number": 24,
+      "severity": "medium",
+      "metadata": {
+        "function_name": "create_user",
+        "parameter_count": 14
+      },
+      "detected_date": "2026-02-16T12:59:28.115465",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0025",
+      "type": "empty_catch",
+      "description": "Code smell detected: empty_catch",
+      "file_path": "src/user_service.py",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 170,
+        "pattern": "except:\n            pass\n            "
+      },
+      "detected_date": "2026-02-16T12:59:28.120298",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0005",
+      "type": "too_many_parameters",
+      "description": "Function 'process_payment' has too many parameters: 12",
+      "file_path": "src/payment_processor.py",
+      "line_number": 20,
+      "severity": "medium",
+      "metadata": {
+        "function_name": "process_payment",
+        "parameter_count": 12
+      },
+      "detected_date": "2026-02-16T12:59:28.125130",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0050",
+      "type": "hardcoded_paths",
+      "description": "Code smell detected: hardcoded_paths",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 166,
+        "pattern": "'/users/'"
+      },
+      "detected_date": "2026-02-16T12:59:28.139558",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0051",
+      "type": "hardcoded_paths",
+      "description": "Code smell detected: hardcoded_paths",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 233,
+        "pattern": "'/users/'"
+      },
+      "detected_date": "2026-02-16T12:59:28.139584",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0052",
+      "type": "hardcoded_paths",
+      "description": "Code smell detected: hardcoded_paths",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 252,
+        "pattern": "'/users/'"
+      },
+      "detected_date": "2026-02-16T12:59:28.139595",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0053",
+      "type": "hardcoded_paths",
+      "description": "Code smell detected: hardcoded_paths",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 270,
+        "pattern": "'/users/'"
+      },
+      "detected_date": "2026-02-16T12:59:28.139606",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0054",
+      "type": "hardcoded_paths",
+      "description": "Code smell detected: hardcoded_paths",
+      "file_path": "src/frontend.js",
+      "severity": "medium",
+      "metadata": {
+        "line_number": 355,
+        "pattern": "'/auth/login'"
+      },
+      "detected_date": "2026-02-16T12:59:28.139636",
+      "status": "identified",
+      "priority_score": 5,
+      "priority": "medium"
+    },
+    {
+      "id": "DEBT-0001",
+      "type": "missing_docstring",
+      "description": "Class 'UserService' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 17,
+      "severity": "low",
+      "metadata": {
+        "class_name": "UserService"
+      },
+      "detected_date": "2026-02-16T12:59:28.114513",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0002",
+      "type": "missing_docstring",
+      "description": "Function '__init__' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 18,
+      "severity": "low",
+      "metadata": {
+        "function_name": "__init__"
+      },
+      "detected_date": "2026-02-16T12:59:28.114546",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0004",
+      "type": "missing_docstring",
+      "description": "Function 'create_user' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 24,
+      "severity": "low",
+      "metadata": {
+        "function_name": "create_user"
+      },
+      "detected_date": "2026-02-16T12:59:28.114684",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0007",
+      "type": "missing_docstring",
+      "description": "Function 'validate_email' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 126,
+      "severity": "low",
+      "metadata": {
+        "function_name": "validate_email"
+      },
+      "detected_date": "2026-02-16T12:59:28.116045",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0008",
+      "type": "missing_docstring",
+      "description": "Function 'authenticate_user' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 136,
+      "severity": "low",
+      "metadata": {
+        "function_name": "authenticate_user"
+      },
+      "detected_date": "2026-02-16T12:59:28.116159",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0009",
+      "type": "missing_docstring",
+      "description": "Function 'get_user' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 162,
+      "severity": "low",
+      "metadata": {
+        "function_name": "get_user"
+      },
+      "detected_date": "2026-02-16T12:59:28.116637",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0010",
+      "type": "missing_docstring",
+      "description": "Function 'update_user' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 166,
+      "severity": "low",
+      "metadata": {
+        "function_name": "update_user"
+      },
+      "detected_date": "2026-02-16T12:59:28.116694",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0011",
+      "type": "missing_docstring",
+      "description": "Function 'delete_user' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 194,
+      "severity": "low",
+      "metadata": {
+        "function_name": "delete_user"
+      },
+      "detected_date": "2026-02-16T12:59:28.117074",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0012",
+      "type": "missing_docstring",
+      "description": "Function 'search_users' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 199,
+      "severity": "low",
+      "metadata": {
+        "function_name": "search_users"
+      },
+      "detected_date": "2026-02-16T12:59:28.117131",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0013",
+      "type": "missing_docstring",
+      "description": "Function 'export_users' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 211,
+      "severity": "low",
+      "metadata": {
+        "function_name": "export_users"
+      },
+      "detected_date": "2026-02-16T12:59:28.117460",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0014",
+      "type": "missing_docstring",
+      "description": "Function 'import_users' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 215,
+      "severity": "low",
+      "metadata": {
+        "function_name": "import_users"
+      },
+      "detected_date": "2026-02-16T12:59:28.117523",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0015",
+      "type": "missing_docstring",
+      "description": "Function 'calculate_user_score' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 224,
+      "severity": "low",
+      "metadata": {
+        "function_name": "calculate_user_score"
+      },
+      "detected_date": "2026-02-16T12:59:28.117609",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0016",
+      "type": "missing_docstring",
+      "description": "Function 'get_user_service' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 256,
+      "severity": "low",
+      "metadata": {
+        "function_name": "get_user_service"
+      },
+      "detected_date": "2026-02-16T12:59:28.118051",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0017",
+      "type": "missing_docstring",
+      "description": "Function 'hash_password' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 261,
+      "severity": "low",
+      "metadata": {
+        "function_name": "hash_password"
+      },
+      "detected_date": "2026-02-16T12:59:28.118083",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0018",
+      "type": "missing_docstring",
+      "description": "Function 'validate_password' missing docstring",
+      "file_path": "src/user_service.py",
+      "line_number": 267,
+      "severity": "low",
+      "metadata": {
+        "function_name": "validate_password"
+      },
+      "detected_date": "2026-02-16T12:59:28.118172",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0001",
+      "type": "missing_docstring",
+      "description": "Class 'PaymentProcessor' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 12,
+      "severity": "low",
+      "metadata": {
+        "class_name": "PaymentProcessor"
+      },
+      "detected_date": "2026-02-16T12:59:28.124344",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0002",
+      "type": "missing_docstring",
+      "description": "Function '__init__' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 14,
+      "severity": "low",
+      "metadata": {
+        "function_name": "__init__"
+      },
+      "detected_date": "2026-02-16T12:59:28.124356",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0006",
+      "type": "missing_docstring",
+      "description": "Function 'send_payment_confirmation_email' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 217,
+      "severity": "low",
+      "metadata": {
+        "function_name": "send_payment_confirmation_email"
+      },
+      "detected_date": "2026-02-16T12:59:28.125733",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0007",
+      "type": "missing_docstring",
+      "description": "Function 'refund_payment' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 227,
+      "severity": "low",
+      "metadata": {
+        "function_name": "refund_payment"
+      },
+      "detected_date": "2026-02-16T12:59:28.125816",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0008",
+      "type": "missing_docstring",
+      "description": "Function 'get_transaction' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 239,
+      "severity": "low",
+      "metadata": {
+        "function_name": "get_transaction"
+      },
+      "detected_date": "2026-02-16T12:59:28.125889",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0009",
+      "type": "missing_docstring",
+      "description": "Function 'validate_credit_card' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 244,
+      "severity": "low",
+      "metadata": {
+        "function_name": "validate_credit_card"
+      },
+      "detected_date": "2026-02-16T12:59:28.125917",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0011",
+      "type": "missing_docstring",
+      "description": "Function 'get_payment_processor' missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 311,
+      "severity": "low",
+      "metadata": {
+        "function_name": "get_payment_processor"
+      },
+      "detected_date": "2026-02-16T12:59:28.126436",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0044",
+      "type": "long_line",
+      "description": "Line too long: 140 characters",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 161,
+        "length": 140
+      },
+      "detected_date": "2026-02-16T12:59:28.128066",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0045",
+      "type": "long_line",
+      "description": "Line too long: 122 characters",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 180,
+        "length": 122
+      },
+      "detected_date": "2026-02-16T12:59:28.128072",
+      "status": "identified",
+      "priority_score": 2,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0019",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Move this to configuration file",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 12,
+        "comment": "TODO: Move this to configuration file"
+      },
+      "detected_date": "2026-02-16T12:59:28.118649",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0020",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: FIXME: This should be in environment variables",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 14,
+        "comment": "FIXME: This should be in environment variables"
+      },
+      "detected_date": "2026-02-16T12:59:28.118681",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0021",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: HACK: Using dict for now, should be proper database connection",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 21,
+        "comment": "HACK: Using dict for now, should be proper database connection"
+      },
+      "detected_date": "2026-02-16T12:59:28.118720",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0022",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Implement proper user ID generation",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 88,
+        "comment": "TODO: Implement proper user ID generation"
+      },
+      "detected_date": "2026-02-16T12:59:28.119140",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0023",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: XXX: This is terrible for production",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 89,
+        "comment": "XXX: This is terrible for production"
+      },
+      "detected_date": "2026-02-16T12:59:28.119154",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0024",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Implement soft delete instead",
+      "file_path": "src/user_service.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 196,
+        "comment": "TODO: Implement soft delete instead"
+      },
+      "detected_date": "2026-02-16T12:59:28.119807",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0037",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: These should come from environment or config",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 15,
+        "comment": "TODO: These should come from environment or config"
+      },
+      "detected_date": "2026-02-16T12:59:28.126594",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0038",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: FIXME: This should query a discount service",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 67,
+        "comment": "FIXME: This should query a discount service"
+      },
+      "detected_date": "2026-02-16T12:59:28.126782",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0039",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: HACK: Using print instead of actual email service",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 219,
+        "comment": "HACK: Using print instead of actual email service"
+      },
+      "detected_date": "2026-02-16T12:59:28.127356",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0040",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Implement actual email sending",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 224,
+        "comment": "TODO: Implement actual email sending"
+      },
+      "detected_date": "2026-02-16T12:59:28.127385",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0041",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Implement refund for different providers",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 229,
+        "comment": "TODO: Implement refund for different providers"
+      },
+      "detected_date": "2026-02-16T12:59:28.127402",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0042",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: XXX: This doesn't actually process the refund",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 236,
+        "comment": "XXX: This doesn't actually process the refund"
+      },
+      "detected_date": "2026-02-16T12:59:28.127434",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0043",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: FIXME: Implement actual transaction lookup",
+      "file_path": "src/payment_processor.py",
+      "severity": "low",
+      "metadata": {
+        "line_number": 241,
+        "comment": "FIXME: Implement actual transaction lookup"
+      },
+      "detected_date": "2026-02-16T12:59:28.127455",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0046",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: TODO: Move configuration to separate file",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 3,
+        "comment": "TODO: Move configuration to separate file"
+      },
+      "detected_date": "2026-02-16T12:59:28.138142",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0047",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: FIXME: Should be in environment",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 5,
+        "comment": "FIXME: Should be in environment"
+      },
+      "detected_date": "2026-02-16T12:59:28.138158",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0048",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: HACK: Polyfill for older browsers - should use proper build system",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 12,
+        "comment": "HACK: Polyfill for older browsers - should use proper build system"
+      },
+      "detected_date": "2026-02-16T12:59:28.138174",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    },
+    {
+      "id": "DEBT-0049",
+      "type": "todo_comment",
+      "description": "TODO/FIXME comment: XXX: This method is never used",
+      "file_path": "src/frontend.js",
+      "severity": "low",
+      "metadata": {
+        "line_number": 287,
+        "comment": "XXX: This method is never used"
+      },
+      "detected_date": "2026-02-16T12:59:28.139089",
+      "status": "identified",
+      "priority_score": 1,
+      "priority": "low"
+    }
+  ],
+  "file_statistics": {
+    "src/user_service.py": {
+      "path": "src/user_service.py",
+      "lines": 276,
+      "size_kb": 9.275390625,
+      "language": "python",
+      "debt_count": 16
+    },
+    "src/payment_processor.py": {
+      "path": "src/payment_processor.py",
+      "lines": 315,
+      "size_kb": 13.041015625,
+      "language": "python",
+      "debt_count": 38
+    },
+    "src/frontend.js": {
+      "path": "src/frontend.js",
+      "lines": 395,
+      "size_kb": 14.5419921875,
+      "language": "javascript",
+      "debt_count": 14
+    }
+  },
+  "recommendations": [
+    "Extract duplicate code into reusable functions or modules. This reduces maintenance burden and potential for inconsistent changes.",
+    "High debt density detected. Consider establishing coding standards and regular code review processes to prevent debt accumulation."
+  ]
+}

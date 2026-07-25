@@ -1,0 +1,310 @@
+{
+  "migration_id": "21031930da18",
+  "source_system": "Legacy User Service (Java Spring Boot 2.x)",
+  "target_system": "New User Service (Node.js + TypeScript)",
+  "migration_type": "service",
+  "complexity": "critical",
+  "estimated_duration_hours": 500,
+  "phases": [
+    {
+      "name": "intercept",
+      "description": "Execute intercept phase",
+      "duration_hours": 100,
+      "dependencies": [],
+      "validation_criteria": [
+        "Intercept phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete intercept activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "implement",
+      "description": "Execute implement phase",
+      "duration_hours": 100,
+      "dependencies": [
+        "intercept"
+      ],
+      "validation_criteria": [
+        "Implement phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete implement activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "redirect",
+      "description": "Execute redirect phase",
+      "duration_hours": 100,
+      "dependencies": [
+        "implement"
+      ],
+      "validation_criteria": [
+        "Redirect phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete redirect activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "validate",
+      "description": "Execute validate phase",
+      "duration_hours": 100,
+      "dependencies": [
+        "redirect"
+      ],
+      "validation_criteria": [
+        "Validate phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete validate activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    },
+    {
+      "name": "retire",
+      "description": "Execute retire phase",
+      "duration_hours": 100,
+      "dependencies": [
+        "validate"
+      ],
+      "validation_criteria": [
+        "Retire phase completed successfully"
+      ],
+      "rollback_triggers": [
+        "Critical system failure",
+        "Data corruption detected",
+        "Performance degradation > 50%",
+        "Business process failure"
+      ],
+      "tasks": [
+        "Complete retire activities"
+      ],
+      "risk_level": "medium",
+      "resources_required": [
+        "Technical team availability",
+        "System access and permissions",
+        "Monitoring and alerting systems",
+        "Communication channels"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "category": "technical",
+      "description": "Service compatibility issues",
+      "probability": "medium",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Implement comprehensive integration testing",
+      "owner": "Development Team"
+    },
+    {
+      "category": "technical",
+      "description": "Performance degradation",
+      "probability": "medium",
+      "impact": "medium",
+      "severity": "medium",
+      "mitigation": "Conduct load testing and performance benchmarking",
+      "owner": "DevOps Team"
+    },
+    {
+      "category": "business",
+      "description": "Feature parity gaps",
+      "probability": "high",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Document feature mapping and acceptance criteria",
+      "owner": "Product Owner"
+    },
+    {
+      "category": "operational",
+      "description": "Monitoring gap during transition",
+      "probability": "medium",
+      "impact": "medium",
+      "severity": "medium",
+      "mitigation": "Set up dual monitoring and alerting systems",
+      "owner": "SRE Team"
+    },
+    {
+      "category": "business",
+      "description": "Zero-downtime requirement increases complexity",
+      "probability": "high",
+      "impact": "medium",
+      "severity": "high",
+      "mitigation": "Implement blue-green deployment or rolling update strategy",
+      "owner": "DevOps Team"
+    },
+    {
+      "category": "compliance",
+      "description": "Regulatory compliance requirements",
+      "probability": "medium",
+      "impact": "high",
+      "severity": "high",
+      "mitigation": "Ensure all compliance checks are integrated into migration process",
+      "owner": "Compliance Team"
+    }
+  ],
+  "success_criteria": [
+    "All data successfully migrated with 100% integrity",
+    "System performance meets or exceeds baseline",
+    "All business processes functioning normally",
+    "No critical security vulnerabilities introduced",
+    "Stakeholder acceptance criteria met",
+    "Documentation and runbooks updated"
+  ],
+  "rollback_plan": {
+    "rollback_phases": [
+      {
+        "phase": "retire",
+        "rollback_actions": [
+          "Revert retire changes",
+          "Restore pre-retire state",
+          "Validate retire rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-retire state",
+          "All retire changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 1500
+      },
+      {
+        "phase": "validate",
+        "rollback_actions": [
+          "Revert validate changes",
+          "Restore pre-validate state",
+          "Validate validate rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-validate state",
+          "All validate changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 1500
+      },
+      {
+        "phase": "redirect",
+        "rollback_actions": [
+          "Revert redirect changes",
+          "Restore pre-redirect state",
+          "Validate redirect rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-redirect state",
+          "All redirect changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 1500
+      },
+      {
+        "phase": "implement",
+        "rollback_actions": [
+          "Revert implement changes",
+          "Restore pre-implement state",
+          "Validate implement rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-implement state",
+          "All implement changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 1500
+      },
+      {
+        "phase": "intercept",
+        "rollback_actions": [
+          "Revert intercept changes",
+          "Restore pre-intercept state",
+          "Validate intercept rollback success"
+        ],
+        "validation_criteria": [
+          "System restored to pre-intercept state",
+          "All intercept changes successfully reverted",
+          "System functionality confirmed"
+        ],
+        "estimated_time_minutes": 1500
+      }
+    ],
+    "rollback_triggers": [
+      "Critical system failure",
+      "Data corruption detected",
+      "Migration timeline exceeded by > 50%",
+      "Business-critical functionality unavailable",
+      "Security breach detected",
+      "Stakeholder decision to abort"
+    ],
+    "rollback_decision_matrix": {
+      "low_severity": "Continue with monitoring",
+      "medium_severity": "Assess and decide within 15 minutes",
+      "high_severity": "Immediate rollback initiation",
+      "critical_severity": "Emergency rollback - all hands"
+    },
+    "rollback_contacts": [
+      "Migration Lead",
+      "Technical Lead",
+      "Business Owner",
+      "On-call Engineer"
+    ]
+  },
+  "stakeholders": [
+    "Business Owner",
+    "Technical Lead",
+    "DevOps Team",
+    "QA Team",
+    "Security Team",
+    "End Users"
+  ],
+  "created_at": "2026-02-16T13:47:34.565896"
+}

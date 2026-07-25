@@ -1,0 +1,2022 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "engineering-team",
+  "skill_count": 52,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "a11y-audit",
+      "path": "engineering-team/a11y-audit/skills/a11y-audit",
+      "description": "Accessibility audit skill for scanning, fixing, and verifying WCAG 2.2 Level A and AA compliance across React, Next.js, Vue, Angular, Svelte, and plain HTML codebases. Use when auditing accessibility, fixing a11y violations, checking color contrast, generating compliance reports, or integrating accessibility checks into CI/CD pipelines.",
+      "tools": [
+        {
+          "script": "engineering-team/a11y-audit/skills/a11y-audit/scripts/a11y_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/a11y-audit/skills/a11y-audit/scripts/a11y_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/a11y-audit/skills/a11y-audit/scripts/contrast_checker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/a11y-audit/skills/a11y-audit/scripts/contrast_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/a11y-audit/skills/a11y-audit/scripts/contrast_checker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "aria-patterns.md",
+        "audit-report-template.md",
+        "ci-cd-integration.md",
+        "color-contrast-guide.md",
+        "examples-by-framework.md",
+        "framework-a11y-patterns.md",
+        "testing-checklist.md",
+        "wcag-22-new-criteria.md",
+        "wcag-quick-ref.md"
+      ]
+    },
+    {
+      "name": "google-workspace-cli",
+      "path": "engineering-team/google-workspace-cli/skills/google-workspace-cli",
+      "description": "Google Workspace administration via the gws CLI (github.com/googleworkspace/cli). Install, authenticate, and automate Gmail, Drive, Sheets, Calendar, Docs, Chat, and Tasks. Run security audits and use local recipe templates and persona bundles. Use for Google Workspace admin, gws CLI setup, Gmail automation, Drive management, or Calendar scheduling.",
+      "tools": [
+        {
+          "script": "engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/auth_setup_guide.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/auth_setup_guide.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/gws_doctor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/gws_doctor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/gws_recipe_runner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/gws_recipe_runner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/output_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/output_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/workspace_audit.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/google-workspace-cli/skills/google-workspace-cli/scripts/workspace_audit.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "gws-command-reference.md",
+        "recipes-cookbook.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "name": "browserstack",
+      "path": "engineering-team/playwright-pro/skills/browserstack",
+      "description": ">- Run tests on BrowserStack. Use when user mentions \"browserstack\", \"cross-browser\", \"cloud testing\", \"browser matrix\", \"test on safari\", \"test on firefox\", or \"browser compatibility\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "coverage",
+      "path": "engineering-team/playwright-pro/skills/coverage",
+      "description": ">- Analyze test coverage gaps. Use when user says \"test coverage\", \"what's not tested\", \"coverage gaps\", \"missing tests\", \"coverage report\", or \"what needs testing\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "fix",
+      "path": "engineering-team/playwright-pro/skills/fix",
+      "description": ">- Fix failing or flaky Playwright tests. Use when user says \"fix test\", \"flaky test\", \"test failing\", \"debug test\", \"test broken\", \"test passes sometimes\", or \"intermittent failure\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "generate",
+      "path": "engineering-team/playwright-pro/skills/generate",
+      "description": ">- Generate Playwright tests. Use when user says \"write tests\", \"generate tests\", \"add tests for\", \"test this component\", \"e2e test\", \"create test for\", \"test this page\", or \"test this feature\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "init",
+      "path": "engineering-team/playwright-pro/skills/init",
+      "description": ">- Set up Playwright in a project. Use when user says \"set up playwright\", \"add e2e tests\", \"configure playwright\", \"testing setup\", \"init playwright\", or \"add test infrastructure\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "migrate",
+      "path": "engineering-team/playwright-pro/skills/migrate",
+      "description": ">- Migrate from Cypress or Selenium to Playwright. Use when user mentions \"cypress\", \"selenium\", \"migrate tests\", \"convert tests\", \"switch to playwright\", \"move from cypress\", or \"replace selenium\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "playwright-pro",
+      "path": "engineering-team/playwright-pro/skills/pw",
+      "description": "Production-grade Playwright testing toolkit. Use when the user mentions Playwright tests, end-to-end testing, browser automation, fixing flaky tests, test migration, CI/CD testing, or test suites. Generate tests, fix flaky failures, migrate from Cypress/Selenium, sync with TestRail, run on BrowserStack. 55 templates, 3 agents, smart reporting.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "report",
+      "path": "engineering-team/playwright-pro/skills/report",
+      "description": ">- Generate test report. Use when user says \"test report\", \"results summary\", \"test status\", \"show results\", \"test dashboard\", or \"how did tests go\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "review",
+      "path": "engineering-team/playwright-pro/skills/review",
+      "description": ">- Review Playwright tests for quality. Use when user says \"review tests\", \"check test quality\", \"audit tests\", \"improve tests\", \"test code review\", or \"playwright best practices check\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "testrail",
+      "path": "engineering-team/playwright-pro/skills/testrail",
+      "description": ">- Sync tests with TestRail. Use when user mentions \"testrail\", \"test management\", \"test cases\", \"test run\", \"sync test cases\", \"push results to testrail\", or \"import from testrail\".",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "extract",
+      "path": "engineering-team/self-improving-agent/skills/extract",
+      "description": "Turn a proven pattern or debugging solution into a standalone reusable skill with SKILL.md, reference docs, and examples. Use when the user runs /si:extract or asks to package a recurring solution from memory into a skill.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "memory-review",
+      "path": "engineering-team/self-improving-agent/skills/memory-review",
+      "description": "Analyze auto-memory for promotion candidates, stale entries, consolidation opportunities, and health metrics. Use when the user runs /si:memory-review or asks what has been learned and what should be promoted or pruned.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "memory-status",
+      "path": "engineering-team/self-improving-agent/skills/memory-status",
+      "description": "Memory health dashboard showing line counts, topic files, capacity, stale entries, and recommendations. Use when the user runs /si:memory-status or asks how full or healthy the agent memory is.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "promote",
+      "path": "engineering-team/self-improving-agent/skills/promote",
+      "description": "Graduate a proven pattern from auto-memory (MEMORY.md) to CLAUDE.md or .claude/rules/ for permanent enforcement. Use when the user runs /si:promote or asks to make a learned behavior permanent.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "remember",
+      "path": "engineering-team/self-improving-agent/skills/remember",
+      "description": "Explicitly save important knowledge to auto-memory with timestamp and context. Use when a discovery is too important to rely on auto-capture.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "self-improving-agent",
+      "path": "engineering-team/self-improving-agent/skills/self-improving-agent",
+      "description": "Curate Claude Code's auto-memory into durable project knowledge. Analyze MEMORY.md for patterns, promote proven learnings to CLAUDE.md and .claude/rules/, extract recurring solutions into reusable skills. Use when: (1) reviewing what Claude has learned about your project, (2) graduating a pattern from notes to enforced rules, (3) turning a debugging solution into a skill, (4) checking memory health and capacity.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "adversarial-reviewer",
+      "path": "engineering-team/skills/adversarial-reviewer",
+      "description": "Adversarial code review that breaks the self-review monoculture. Use when you want a genuinely critical review of recent changes, before merging a PR, or when you suspect Claude is being too agreeable about code quality. Forces perspective shifts through hostile reviewer personas that catch blind spots the author's mental model shares with the reviewer.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "ai-security",
+      "path": "engineering-team/skills/ai-security",
+      "description": "Use when assessing AI/ML systems for prompt injection, jailbreak vulnerabilities, model inversion risk, data poisoning exposure, or agent tool abuse. Covers MITRE ATLAS technique mapping, injection signature detection, and adversarial robustness scoring.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/ai-security/scripts/ai_threat_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/ai-security/scripts/ai_threat_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "atlas-coverage.md"
+      ]
+    },
+    {
+      "name": "aws-solution-architect",
+      "path": "engineering-team/skills/aws-solution-architect",
+      "description": "Design AWS architectures for startups using serverless patterns and IaC templates. Use when asked to design serverless architecture, create CloudFormation templates, optimize AWS costs, set up CI/CD pipelines, or migrate to AWS. Covers Lambda, API Gateway, DynamoDB, ECS, Aurora, and cost optimization.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/aws-solution-architect/scripts/architecture_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/aws-solution-architect/scripts/architecture_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/aws-solution-architect/scripts/cost_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/aws-solution-architect/scripts/cost_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/aws-solution-architect/scripts/serverless_stack.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/aws-solution-architect/scripts/serverless_stack.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_patterns.md",
+        "best_practices.md",
+        "service_selection.md"
+      ]
+    },
+    {
+      "name": "azure-cloud-architect",
+      "path": "engineering-team/skills/azure-cloud-architect",
+      "description": "Design Azure architectures for startups and enterprises. Use when asked to design Azure infrastructure, create Bicep/ARM templates, optimize Azure costs, set up Azure DevOps pipelines, or migrate to Azure. Covers AKS, App Service, Azure Functions, Cosmos DB, and cost optimization.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/azure-cloud-architect/scripts/architecture_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/azure-cloud-architect/scripts/architecture_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/azure-cloud-architect/scripts/bicep_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/azure-cloud-architect/scripts/bicep_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/azure-cloud-architect/scripts/cost_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/azure-cloud-architect/scripts/cost_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_patterns.md",
+        "best_practices.md",
+        "service_selection.md"
+      ]
+    },
+    {
+      "name": "cloud-security",
+      "path": "engineering-team/skills/cloud-security",
+      "description": "Use when assessing cloud infrastructure for security misconfigurations, IAM privilege escalation paths, S3 public exposure, open security group rules, or IaC security gaps. Covers AWS, Azure, and GCP posture assessment with MITRE ATT&CK mapping.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/cloud-security/scripts/cloud_posture_check.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/cloud-security/scripts/cloud_posture_check.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cspm-checks.md"
+      ]
+    },
+    {
+      "name": "code-reviewer",
+      "path": "engineering-team/skills/code-reviewer",
+      "description": "Code review automation for TypeScript, JavaScript, Python, Go, Swift, Kotlin, C#, .NET, Java, C, C++, Rust, Ruby, PHP, and Dart/Flutter. Analyzes PRs for complexity and risk, checks code quality for SOLID violations and code smells, generates review reports. Use when reviewing pull requests, analyzing code quality, identifying issues, generating review checklists.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/code-reviewer/scripts/code_quality_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/code-reviewer/scripts/code_quality_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/code-reviewer/scripts/pr_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/code-reviewer/scripts/pr_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/code-reviewer/scripts/review_report_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/code-reviewer/scripts/review_report_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "email-template-builder",
+      "path": "engineering-team/skills/email-template-builder",
+      "description": "Build complete transactional email systems: React Email templates, provider integration (Resend, Postmark, SendGrid, AWS SES), preview server, i18n support, dark mode, spam optimization, analytics tracking. Use when adding transactional email to a new product, migrating between email providers, refactoring legacy email templates for accessibility, or adding internationalization to existing templates.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "engineering-skills",
+      "path": "engineering-team/skills/engineering-skills",
+      "description": "Index of the engineering-team skills bundle for Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, and 6 more tools. Architecture, frontend, backend, QA, DevOps, security, AI/ML, data engineering, Playwright, Stripe, AWS, MS365 (stdlib-only Python tools). Use when browsing or choosing among engineering-team role skills \u2014 load only the one specialist SKILL.md you need, never bulk-load the bundle.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "epic-design",
+      "path": "engineering-team/skills/epic-design",
+      "description": "> Build immersive, cinematic 2.5D interactive websites using scroll storytelling, parallax depth, text animations, and premium scroll effects \u2014 no WebGL required. Use this skill for any web design task: landing pages, product sites, hero sections, scroll animations, parallax, sticky sections, section overlaps, floating products between sections, clip-path reveals, text that flies in from sides, words that light up on scroll, curtain drops, iris opens, card stacks, bleed typography, and any site that should feel cinematic or premium. Trigger on phrases like \"make it feel alive\", \"Apple-style \u2026",
+      "tools": [
+        {
+          "script": "engineering-team/skills/epic-design/scripts/inspect-assets.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/epic-design/scripts/inspect-assets.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "accessibility.md",
+        "asset-pipeline.md",
+        "depth-system.md",
+        "directional-reveals.md",
+        "examples.md",
+        "inter-section-effects.md",
+        "motion-system.md",
+        "performance.md",
+        "text-animations.md"
+      ]
+    },
+    {
+      "name": "gcp-cloud-architect",
+      "path": "engineering-team/skills/gcp-cloud-architect",
+      "description": "Design GCP architectures for startups and enterprises. Use when asked to design Google Cloud infrastructure, deploy to GKE or Cloud Run, configure BigQuery pipelines, optimize GCP costs, or migrate to GCP. Covers Cloud Run, GKE, Cloud Functions, Cloud SQL, BigQuery, and cost optimization.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/gcp-cloud-architect/scripts/architecture_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/gcp-cloud-architect/scripts/architecture_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/gcp-cloud-architect/scripts/cost_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/gcp-cloud-architect/scripts/cost_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/gcp-cloud-architect/scripts/deployment_manager.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/gcp-cloud-architect/scripts/deployment_manager.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_patterns.md",
+        "best_practices.md",
+        "service_selection.md"
+      ]
+    },
+    {
+      "name": "incident-commander",
+      "path": "engineering-team/skills/incident-commander",
+      "description": "Comprehensive incident response framework from detection through resolution and post-incident review. Battle-tested SRE/DevOps practices: severity classification, timeline reconstruction, structured post-incident analysis. Use when declaring an incident, coordinating multi-team response during an outage, leading a post-mortem, or setting up on-call practices for a new service.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/incident-commander/scripts/incident_classifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/incident-commander/scripts/incident_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/incident-commander/scripts/pir_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/incident-commander/scripts/pir_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/incident-commander/scripts/timeline_reconstructor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/incident-commander/scripts/timeline_reconstructor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "communication_templates.md",
+        "incident-response-framework.md",
+        "incident_severity_matrix.md",
+        "rca_frameworks_guide.md",
+        "reference-information.md",
+        "sla-management-guide.md"
+      ]
+    },
+    {
+      "name": "incident-response",
+      "path": "engineering-team/skills/incident-response",
+      "description": "Use when a security incident has been detected or declared and needs classification, triage, escalation path determination, and forensic evidence collection. Covers SEV1-SEV4 classification, false positive filtering, incident taxonomy, and NIST SP 800-61 lifecycle.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/incident-response/scripts/incident_triage.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/incident-response/scripts/incident_triage.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/skills/incident-response/scripts/incident_triage.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "regulatory-deadlines.md"
+      ]
+    },
+    {
+      "name": "ms365-tenant-manager",
+      "path": "engineering-team/skills/ms365-tenant-manager",
+      "description": "Microsoft 365 tenant administration for Global Administrators. Automate M365 tenant setup, Office 365 admin tasks, Azure AD user management, Exchange Online configuration, Teams administration, and security policies. Generate PowerShell scripts for bulk operations, Conditional Access policies, license management, and compliance reporting. Use for M365 tenant manager, Office 365 admin, Azure AD users, Global Administrator, tenant configuration, or Microsoft 365 automation.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/ms365-tenant-manager/scripts/powershell_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/ms365-tenant-manager/scripts/powershell_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/ms365-tenant-manager/scripts/tenant_setup.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/ms365-tenant-manager/scripts/tenant_setup.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/ms365-tenant-manager/scripts/user_management.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/ms365-tenant-manager/scripts/user_management.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "powershell-templates.md",
+        "security-policies.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "name": "named-persona-adversarial-review",
+      "path": "engineering-team/skills/named-persona-adversarial-review",
+      "description": "Code review through the lens of real engineers' documented philosophies (Torvalds, Thompson, Carmack, Kent Beck, Jobs, Cagan). Complements abstract-role adversarial review with named, sourced perspectives. Use when automated review findings feel generic, when a PR has architectural or UX impact, or when the author wants pre-submit hardening beyond standard checks.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "persona_principles.md"
+      ]
+    },
+    {
+      "name": "red-team",
+      "path": "engineering-team/skills/red-team",
+      "description": "Use when planning or executing authorized red team engagements, attack path analysis, or offensive security simulations. Covers MITRE ATT&CK kill-chain planning, technique scoring, choke point identification, OPSEC risk assessment, and crown jewel targeting.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/red-team/scripts/engagement_planner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/red-team/scripts/engagement_planner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "attack-path-methodology.md"
+      ]
+    },
+    {
+      "name": "security-pen-testing",
+      "path": "engineering-team/skills/security-pen-testing",
+      "description": "Use when the user asks to perform security audits, penetration testing, vulnerability scanning, OWASP Top 10 checks, or offensive security assessments. Covers static analysis, dependency scanning, secret detection, API security testing, and pen test report generation.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/security-pen-testing/scripts/dependency_auditor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/security-pen-testing/scripts/dependency_auditor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/security-pen-testing/scripts/pentest_report_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/security-pen-testing/scripts/pentest_report_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/skills/security-pen-testing/scripts/pentest_report_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/security-pen-testing/scripts/vulnerability_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/security-pen-testing/scripts/vulnerability_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "attack_patterns.md",
+        "owasp_top_10_checklist.md",
+        "responsible_disclosure.md"
+      ]
+    },
+    {
+      "name": "senior-architect",
+      "path": "engineering-team/skills/senior-architect",
+      "description": "This skill should be used when the user asks to \"design system architecture\", \"evaluate microservices vs monolith\", \"create architecture diagrams\", \"analyze dependencies\", \"choose a database\", \"plan for scalability\", \"make technical decisions\", or \"review system design\". Use for architecture decision records (ADRs), tech stack evaluation, system design reviews, dependency analysis, and generating architecture diagrams in Mermaid, PlantUML, or ASCII format.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-architect/scripts/architecture_diagram_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-architect/scripts/architecture_diagram_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-architect/scripts/dependency_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-architect/scripts/dependency_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-architect/scripts/project_architect.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-architect/scripts/project_architect.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_patterns.md",
+        "system_design_workflows.md",
+        "tech_decision_guide.md"
+      ]
+    },
+    {
+      "name": "senior-backend",
+      "path": "engineering-team/skills/senior-backend",
+      "description": "Designs and implements backend systems including REST APIs, microservices, database architectures, authentication flows, and security hardening. Use when the user asks to \"design REST APIs\", \"optimize database queries\", \"implement authentication\", \"build microservices\", \"review backend code\", \"set up GraphQL\", \"handle database migrations\", or \"load test APIs\". Covers Node.js/Express/Fastify development, PostgreSQL optimization, API security, and backend architecture patterns.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-backend/scripts/api_load_tester.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-backend/scripts/api_load_tester.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-backend/scripts/api_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-backend/scripts/api_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-backend/scripts/backend_decision_engine.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-backend/scripts/backend_decision_engine.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/skills/senior-backend/scripts/backend_decision_engine.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-backend/scripts/database_migration_tool.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-backend/scripts/database_migration_tool.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "api_design_patterns.md",
+        "backend_security_practices.md",
+        "composition_map.md",
+        "database_optimization_guide.md",
+        "forcing_questions.md"
+      ]
+    },
+    {
+      "name": "senior-computer-vision",
+      "path": "engineering-team/skills/senior-computer-vision",
+      "description": "Computer vision engineering skill for object detection, image segmentation, and visual AI systems. Covers CNN and Vision Transformer architectures, YOLO/Faster R-CNN/DETR detection, Mask R-CNN/SAM segmentation, and production deployment with ONNX/TensorRT. Includes PyTorch, torchvision, Ultralytics, Detectron2, and MMDetection frameworks. Use when building detection pipelines, training custom models, optimizing inference, or deploying vision systems.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-computer-vision/scripts/dataset_pipeline_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-computer-vision/scripts/dataset_pipeline_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-computer-vision/scripts/inference_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-computer-vision/scripts/inference_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-computer-vision/scripts/vision_model_trainer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-computer-vision/scripts/vision_model_trainer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "computer_vision_architectures.md",
+        "object_detection_optimization.md",
+        "production_vision_systems.md",
+        "reference-docs-and-commands.md"
+      ]
+    },
+    {
+      "name": "senior-data-engineer",
+      "path": "engineering-team/skills/senior-data-engineer",
+      "description": "Data engineering skill for building scalable data pipelines, ETL/ELT systems, and data infrastructure. Expertise in Python, SQL, Spark, Airflow, dbt, Kafka, and modern data stack. Includes data modeling, pipeline orchestration, data quality, and DataOps. Use when designing data architectures, building data pipelines, optimizing data workflows, implementing data governance, or troubleshooting data issues.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-data-engineer/scripts/data_quality_validator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-engineer/scripts/data_quality_validator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-data-engineer/scripts/etl_performance_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-engineer/scripts/etl_performance_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-data-engineer/scripts/pipeline_orchestrator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-engineer/scripts/pipeline_orchestrator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "data_modeling_patterns.md",
+        "data_pipeline_architecture.md",
+        "dataops_best_practices.md",
+        "troubleshooting.md",
+        "workflows.md"
+      ]
+    },
+    {
+      "name": "senior-data-scientist",
+      "path": "engineering-team/skills/senior-data-scientist",
+      "description": "World-class senior data scientist skill specialising in statistical modeling, experiment design, causal inference, and predictive analytics. Covers A/B testing (sample sizing, two-proportion z-tests, Bonferroni correction), difference-in-differences, feature engineering pipelines (Scikit-learn, XGBoost), cross-validated model evaluation (AUC-ROC, AUC-PR, SHAP), and MLflow experiment tracking \u2014 using Python (NumPy, Pandas, Scikit-learn), R, and SQL. Use when designing or analysing controlled experiments, building and evaluating classification or regression models, performing causal analysis \u2026",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-data-scientist/scripts/experiment_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-scientist/scripts/experiment_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-data-scientist/scripts/feature_engineering_pipeline.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-scientist/scripts/feature_engineering_pipeline.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-data-scientist/scripts/model_evaluation_suite.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-data-scientist/scripts/model_evaluation_suite.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "experiment_design_frameworks.md",
+        "feature_engineering_patterns.md",
+        "statistical_methods_advanced.md"
+      ]
+    },
+    {
+      "name": "senior-devops",
+      "path": "engineering-team/skills/senior-devops",
+      "description": "Comprehensive DevOps skill for CI/CD, infrastructure automation, containerization, and cloud platforms (AWS, GCP, Azure). Includes pipeline setup, infrastructure as code, deployment automation, and monitoring. Use when setting up pipelines, deploying applications, managing infrastructure, implementing monitoring, or optimizing deployment processes.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-devops/scripts/deployment_manager.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-devops/scripts/deployment_manager.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-devops/scripts/pipeline_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-devops/scripts/pipeline_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-devops/scripts/terraform_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-devops/scripts/terraform_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cicd_pipeline_guide.md",
+        "deployment_strategies.md",
+        "infrastructure_as_code.md"
+      ]
+    },
+    {
+      "name": "senior-frontend",
+      "path": "engineering-team/skills/senior-frontend",
+      "description": "Frontend development skill for React, Next.js, TypeScript, and Tailwind CSS applications. Use when building React components, optimizing Next.js performance, analyzing bundle sizes, scaffolding frontend projects, implementing accessibility, or reviewing frontend code quality.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-frontend/scripts/bundle_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-frontend/scripts/bundle_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-frontend/scripts/component_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-frontend/scripts/component_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-frontend/scripts/frontend_decision_engine.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-frontend/scripts/frontend_decision_engine.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/skills/senior-frontend/scripts/frontend_decision_engine.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-frontend/scripts/frontend_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-frontend/scripts/frontend_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "composition_map.md",
+        "forcing_questions.md",
+        "frontend_best_practices.md",
+        "nextjs_optimization_guide.md",
+        "react_patterns.md"
+      ]
+    },
+    {
+      "name": "senior-fullstack",
+      "path": "engineering-team/skills/senior-fullstack",
+      "description": "Fullstack development toolkit with project scaffolding for Next.js, FastAPI, MERN, and Django stacks, code quality analysis with security and complexity scoring, and stack selection guidance. Use when the user asks to \"scaffold a new project\", \"create a Next.js app\", \"set up FastAPI with React\", \"analyze code quality\", \"audit my codebase\", \"what stack should I use\", \"generate project boilerplate\", or mentions fullstack development, project setup, or tech stack comparison.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-fullstack/scripts/code_quality_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-fullstack/scripts/code_quality_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-fullstack/scripts/fullstack_decision_engine.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-fullstack/scripts/fullstack_decision_engine.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 engineering-team/skills/senior-fullstack/scripts/fullstack_decision_engine.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-fullstack/scripts/project_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-fullstack/scripts/project_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_patterns.md",
+        "composition_map.md",
+        "development_workflows.md",
+        "forcing_questions.md",
+        "tech_stack_guide.md"
+      ]
+    },
+    {
+      "name": "senior-ml-engineer",
+      "path": "engineering-team/skills/senior-ml-engineer",
+      "description": "ML engineering skill for productionizing models, building MLOps pipelines, and integrating LLMs. Covers model deployment, feature stores, drift monitoring, RAG systems, and cost optimization. Use when the user asks about deploying ML models to production, setting up MLOps infrastructure (MLflow, Kubeflow, Kubernetes, Docker), monitoring model performance or drift, building RAG pipelines, or integrating LLM APIs with retry logic and cost controls. Focused on production and operational concerns rather than model research or initial training.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-ml-engineer/scripts/ml_monitoring_suite.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-ml-engineer/scripts/ml_monitoring_suite.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-ml-engineer/scripts/model_deployment_pipeline.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-ml-engineer/scripts/model_deployment_pipeline.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-ml-engineer/scripts/rag_system_builder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-ml-engineer/scripts/rag_system_builder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "llm_integration_guide.md",
+        "mlops_production_patterns.md",
+        "rag_system_architecture.md"
+      ]
+    },
+    {
+      "name": "senior-prompt-engineer",
+      "path": "engineering-team/skills/senior-prompt-engineer",
+      "description": "Use when the user asks to optimize prompts, design prompt templates, evaluate LLM outputs with an eval set, measure RAG retrieval quality, validate agent/tool configurations, analyze token usage, or design structured-output contracts. Covers eval-driven prompt iteration, RAG metrics (relevance, faithfulness, coverage), agent workflow validation, and token/cost budgeting \u2014 all model-agnostic, with three stdlib Python tools.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-prompt-engineer/scripts/agent_orchestrator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-prompt-engineer/scripts/agent_orchestrator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-prompt-engineer/scripts/prompt_optimizer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-prompt-engineer/scripts/prompt_optimizer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-prompt-engineer/scripts/rag_evaluator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-prompt-engineer/scripts/rag_evaluator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "agentic_system_design.md",
+        "llm_evaluation_frameworks.md",
+        "prompt_engineering_patterns.md"
+      ]
+    },
+    {
+      "name": "senior-qa",
+      "path": "engineering-team/skills/senior-qa",
+      "description": "Generates unit tests, integration tests, and E2E tests for React/Next.js applications. Scans components to create Jest + React Testing Library test stubs, analyzes Istanbul/LCOV coverage reports to surface gaps, scaffolds Playwright test files from Next.js routes, mocks API calls with MSW, creates test fixtures, and configures test runners. Use when the user asks to \"generate tests\", \"write unit tests\", \"analyze test coverage\", \"scaffold E2E tests\", \"set up Playwright\", \"configure Jest\", \"implement testing patterns\", or \"improve test quality\".",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-qa/scripts/coverage_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-qa/scripts/coverage_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-qa/scripts/e2e_test_scaffolder.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-qa/scripts/e2e_test_scaffolder.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-qa/scripts/test_suite_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-qa/scripts/test_suite_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "qa_best_practices.md",
+        "test_automation_patterns.md",
+        "testing_strategies.md"
+      ]
+    },
+    {
+      "name": "senior-secops",
+      "path": "engineering-team/skills/senior-secops",
+      "description": "Senior SecOps engineer skill for application security, vulnerability management, compliance verification, and secure development practices. Runs SAST/DAST scans, generates CVE remediation plans, checks dependency vulnerabilities, creates security policies, enforces secure coding patterns, and automates compliance checks against SOC2, PCI-DSS, HIPAA, and GDPR. Use when conducting a security review or audit, responding to a CVE or security incident, hardening infrastructure, implementing authentication or secrets management, running penetration test prep, checking OWASP Top 10 exposure, or \u2026",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-secops/scripts/compliance_checker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-secops/scripts/compliance_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-secops/scripts/security_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-secops/scripts/security_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-secops/scripts/vulnerability_assessor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-secops/scripts/vulnerability_assessor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "compliance_requirements.md",
+        "security_standards.md",
+        "vulnerability_management_guide.md"
+      ]
+    },
+    {
+      "name": "senior-security",
+      "path": "engineering-team/skills/senior-security",
+      "description": "Use when the user asks for STRIDE threat modeling, DREAD risk scoring, data-flow-diagram threat analysis, or a quick secret scan \u2014 or when a security request needs routing to the right specialist skill (pen-testing, incident response, cloud posture, red team, AI security, threat hunting, secure code review). This skill owns threat modeling; everything else routes to a sibling.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/senior-security/scripts/secret_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-security/scripts/secret_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/senior-security/scripts/threat_modeler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/senior-security/scripts/threat_modeler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cryptography-implementation.md",
+        "security-architecture-patterns.md",
+        "threat-modeling-guide.md"
+      ]
+    },
+    {
+      "name": "stripe-integration-expert",
+      "path": "engineering-team/skills/stripe-integration-expert",
+      "description": "Production-grade Stripe integrations: subscriptions with trials and proration, one-time payments, usage-based billing, checkout sessions, idempotent webhook handlers, customer portal, and invoicing. Covers Next.js, Express, and Django patterns. Use when integrating Stripe for the first time, debugging webhook reliability issues, migrating from a different payment provider, or adding usage-based billing to an existing subscription product.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "tdd-guide",
+      "path": "engineering-team/skills/tdd-guide",
+      "description": "Test-driven development skill for writing unit tests, generating test fixtures and mocks, analyzing coverage gaps, and guiding red-green-refactor workflows across Jest, Pytest, JUnit, Vitest, and Mocha. Use when the user asks to write tests, improve test coverage, practice TDD, generate mocks or stubs, or mentions testing frameworks like Jest, pytest, or JUnit.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/coverage_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/coverage_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/fixture_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/fixture_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/format_detector.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/format_detector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/framework_adapter.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/framework_adapter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/metrics_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/metrics_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/output_formatter.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/output_formatter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/tdd_workflow.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/tdd_workflow.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tdd-guide/scripts/test_generator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tdd-guide/scripts/test_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "ci-integration.md",
+        "framework-guide.md",
+        "tdd-best-practices.md"
+      ]
+    },
+    {
+      "name": "tech-stack-evaluator",
+      "path": "engineering-team/skills/tech-stack-evaluator",
+      "description": "Technology stack evaluation and comparison with TCO analysis, security assessment, and ecosystem health scoring. Use when comparing frameworks, evaluating technology stacks, calculating total cost of ownership, assessing migration paths, or analyzing ecosystem viability.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/ecosystem_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/ecosystem_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/format_detector.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/format_detector.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/migration_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/migration_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/report_generator.py",
+          "wired": false,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/report_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/security_assessor.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/security_assessor.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/stack_comparator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/stack_comparator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "engineering-team/skills/tech-stack-evaluator/scripts/tco_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/tech-stack-evaluator/scripts/tco_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "examples.md",
+        "metrics.md",
+        "workflows.md"
+      ]
+    },
+    {
+      "name": "threat-detection",
+      "path": "engineering-team/skills/threat-detection",
+      "description": "Use when hunting for threats in an environment, analyzing IOCs, or detecting behavioral anomalies in telemetry. Covers hypothesis-driven threat hunting, IOC sweep generation, z-score anomaly detection, and MITRE ATT&CK-mapped signal prioritization.",
+      "tools": [
+        {
+          "script": "engineering-team/skills/threat-detection/scripts/threat_signal_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/skills/threat-detection/scripts/threat_signal_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "hunt-playbooks.md"
+      ]
+    },
+    {
+      "name": "snowflake-development",
+      "path": "engineering-team/snowflake-development/skills/snowflake-development",
+      "description": "Use when writing Snowflake SQL, building data pipelines with Dynamic Tables or Streams/Tasks, using Cortex AI functions, creating Cortex Agents, writing Snowpark Python, configuring dbt for Snowflake, or troubleshooting Snowflake errors.",
+      "tools": [
+        {
+          "script": "engineering-team/snowflake-development/skills/snowflake-development/scripts/snowflake_query_helper.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 engineering-team/snowflake-development/skills/snowflake-development/scripts/snowflake_query_helper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "cortex_ai_and_agents.md",
+        "snowflake_sql_and_pipelines.md",
+        "troubleshooting.md"
+      ]
+    }
+  ]
+}

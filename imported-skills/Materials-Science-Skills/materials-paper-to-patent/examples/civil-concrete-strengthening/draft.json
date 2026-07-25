@@ -1,0 +1,139 @@
+{
+  "title": "一种高强高韧水泥基复合材料及其制备方法",
+  "metadata": {
+    "jurisdiction": "CNIPA",
+    "invention_type": "process-material",
+    "language_mode": "zh",
+    "applicant": "[TO CONFIRM: 申请人]",
+    "inventors": ["[TO CONFIRM: 发明人1]", "[TO CONFIRM: 发明人2]"]
+  },
+  "source_analysis": {
+    "source_format": "pasted-text",
+    "formula_count_in_source": 0,
+    "contains_core_formulas": false
+  },
+  "source_map": [
+    {
+      "id": "P001",
+      "type": "paragraph",
+      "locator": "abstract-para-1",
+      "text": "本文报道一种水灰比为0.35、28天抗压强度为50MPa的水泥基复合材料。"
+    },
+    {
+      "id": "P002",
+      "type": "paragraph",
+      "locator": "methods-para-1",
+      "text": "将水泥、骨料和水按比例混合，水灰比w/b为0.35，骨料为碎石，标准养护28天，测得抗压强度50MPa。"
+    },
+    {
+      "id": "P003",
+      "type": "paragraph",
+      "locator": "results-para-1",
+      "text": "XRD分析显示水化硅酸钙(CSH)为主要水化产物。"
+    }
+  ],
+  "terminology_ledger": [
+    {"canonical": "水泥基复合材料", "aliases": ["混凝土", "砂浆"]},
+    {"canonical": "水灰比", "aliases": ["w/b", "水胶比"]}
+  ],
+  "formula_inventory": [],
+  "figure_inventory": [
+    {
+      "id": "F001",
+      "caption": "工艺流程图",
+      "type": "flowchart",
+      "source": "P002"
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "id": "EV001",
+      "feature": "水灰比为0.35",
+      "source_ids": ["P001", "P002"],
+      "support_status": "explicit",
+      "technical_role": "必要技术特征",
+      "effect": "降低孔隙率，提高强度",
+      "proposed_destination": "claim-1"
+    },
+    {
+      "id": "EV002",
+      "feature": "28天抗压强度为50MPa",
+      "source_ids": ["P001", "P002"],
+      "support_status": "explicit",
+      "technical_role": "技术效果",
+      "effect": "达到高强等级",
+      "proposed_destination": "claim-1"
+    },
+    {
+      "id": "EV003",
+      "feature": "骨料为碎石",
+      "source_ids": ["P002"],
+      "support_status": "explicit",
+      "technical_role": "附加技术特征",
+      "effect": "提高界面粘结",
+      "proposed_destination": "claim-2"
+    }
+  ],
+  "invention_concept": {
+    "problem": "普通混凝土强度不足，难以满足高强结构需要",
+    "solution": "通过低水灰比和碎石骨料制备水泥基复合材料",
+    "beneficial_effects": "28天抗压强度达50MPa"
+  },
+  "claims": [
+    {
+      "number": 1,
+      "type": "independent",
+      "text": "一种水泥基复合材料，其特征在于：包括水泥、骨料和水；所述水灰比w/b为0.30-0.40；28天标准养护后的抗压强度为50-60MPa。",
+      "feature_map": ["EV001", "EV002"]
+    },
+    {
+      "number": 2,
+      "type": "dependent",
+      "depends_on": [1],
+      "text": "根据权利要求1所述的水泥基复合材料，其特征在于：所述骨料为碎石。",
+      "feature_map": ["EV003"]
+    }
+  ],
+  "claim_feature_map": [
+    {"claim_number": 1, "feature": "EV001", "support": "explicit"},
+    {"claim_number": 1, "feature": "EV002", "support": "explicit"},
+    {"claim_number": 2, "feature": "EV003", "support": "explicit"}
+  ],
+  "figures": [
+    {"number": 1, "type": "flowchart", "caption": "图1为本发明水泥基复合材料的制备工艺流程图。", "source": "F001", "complete_claim_flow": true}
+  ],
+  "abstract_figure_number": 1,
+  "specification": {
+    "技术领域": "本发明涉及建筑材料领域，具体涉及一种水泥基复合材料及其制备方法。",
+    "背景技术": "现有的普通混凝土水泥含量低，水灰比高，骨料通常采用卵石，导致强度不足，难以满足高层建筑和大跨度结构的需求。",
+    "发明内容": {
+      "problem": "针对普通混凝土强度不足的问题。",
+      "solution": "提供一种水泥基复合材料，其特征在于：包括水泥、骨料和水；所述水灰比w/b为0.30-0.40；所述骨料为碎石。",
+      "beneficial_effects": "28天标准养护后抗压强度达50-60MPa。"
+    },
+    "具体实施方式": "实施例1：取硅酸盐水泥500g、碎石骨料1500g、水175g，水灰比w/b=0.35，搅拌3min，浇注入100mm立方体试模，振捣2min，标准养护28天，测得抗压强度为55MPa。",
+    "figure_descriptions": [
+      {
+        "number": 1,
+        "caption": "图1为本发明水泥基复合材料的制备工艺流程图。",
+        "description": "按配比称量水泥、骨料和水 → 搅拌 → 浇注振捣 → 标准养护 → 抗压强度测试。",
+        "source": "F001",
+        "figure_type": "flowchart"
+      }
+    ],
+    "equations": []
+  },
+  "abstract": "本发明公开一种水泥基复合材料及其制备方法。该材料包括水泥、骨料和水，水灰比w/b为0.30-0.40，骨料为碎石。28天标准养护后抗压强度达50-60MPa。",
+  "quality_assessment": {
+    "status": "review-draft",
+    "scores": {
+      "evidence_support": 4,
+      "claim_architecture": 4,
+      "terminology_consistency": 4,
+      "enablement_detail": 3,
+      "technical_effect_reasoning": 3,
+      "formula_coverage": 4,
+      "figure_alignment": 4
+    }
+  }
+}

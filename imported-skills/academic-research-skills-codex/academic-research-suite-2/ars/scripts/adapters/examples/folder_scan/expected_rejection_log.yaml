@@ -1,0 +1,18 @@
+adapter_name: folder_scan.py
+adapter_version: 1.1.0
+generated_at: '1970-01-01T00:00:00Z'
+input_source: '/FIXTURE/STRIPPED'
+rejected:
+- missing_fields:
+  - authors
+  - year
+  raw: paper1.pdf
+  reason: authors_unparseable
+  source: paper1.pdf
+- missing_fields:
+  - authors
+  raw: 中文檔名_2024.pdf
+  reason: authors_unparseable
+  source: 中文檔名_2024.pdf
+summary:
+  total_rejected: 2

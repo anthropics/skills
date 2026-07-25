@@ -1,0 +1,15 @@
+# Deliberately violated by the venue_violations fixture: every Family B
+# check fails against these limits (mutation discipline — each check has a
+# fixture that fails it).
+venue_name: Tight Limits Quarterly
+word_limit: 10
+word_count_scope: body_only
+abstract_word_limit: 5
+keyword_range:
+  min: 1
+  max: 2
+required_sections:
+  - Data Availability
+reference_limit: 1
+blind_review: single
+declared_by: scholar

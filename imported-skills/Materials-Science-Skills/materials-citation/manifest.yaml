@@ -1,0 +1,168 @@
+version: "1.1.0"
+status: stable
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/citation-contract.md
+  - static/core/workflow.md
+
+axes:
+  task:
+    default: citation-map
+    values:
+      search-plan:
+        path: references/journal-search-profiles.md
+        triggers: ["search", "database", "keyword", "检索", "关键词", "文献检索"]
+      citation-map:
+        path: references/claim-citation-mapping.md
+        triggers: ["citation matrix", "claim", "reference", "引用", "证据链", "文献矩阵"]
+      reference-gap:
+        path: references/reference-gap-audit.md
+        triggers: ["gap", "missing citation", "weak reference", "引用不足", "文献缺口"]
+      wer-ea-screening:
+        path: references/wer-ea-screening-and-source-quality.md
+        triggers: ["WER-EA screening", "waterborne epoxy emulsified asphalt screening", "evidence layer", "source role", "水性环氧乳化沥青筛选", "证据层"]
+      source-quality:
+        path: references/wer-ea-screening-and-source-quality.md
+        triggers: ["source quality", "primary experimental evidence", "weak background", "exclusion flag", "文献质量", "来源角色"]
+      reviewer-safe-package:
+        path: references/reference-gap-audit.md
+        triggers: ["reviewer-safe citation package", "reviewer risk", "citation package", "审稿安全", "引用风险"]
+      academic-search-mcp:
+        path: references/academic-search-mcp.md
+        triggers: ["academic-search MCP", "MCP", "automatic search", "自动检索", "文献检索MCP", "学术检索"]
+      ceramics-screening:
+        path: references/ceramics-screening-and-source-quality.md
+        triggers: ["ceramics screening", "phase identification evidence", "sintering evidence", "Weibull source quality", "陶瓷筛选", "陶瓷证据层"]
+      civil-screening:
+        path: references/civil-screening-and-source-quality.md
+        triggers: ["civil screening", "construction materials screening", "concrete evidence", "mix design evidence", "土木筛选", "建筑材料证据层"]
+      polymers-screening:
+        path: references/polymers-screening-and-source-quality.md
+        triggers: ["polymer screening", "composite screening", "filler dispersion evidence", "curing evidence", "高分子筛选", "聚合物证据层"]
+      metals-screening:
+        path: references/metals-screening-and-source-quality.md
+        triggers: ["metal screening", "alloy screening", "heat treatment evidence", "microstructure evidence", "金属筛选", "合金证据层"]
+      functional-screening:
+        path: references/functional-screening-and-source-quality.md
+        triggers: ["functional screening", "electronic materials screening", "device performance evidence", "dielectric evidence", "功能材料筛选", "电子材料证据层"]
+      nano-screening:
+        path: references/nano-screening-and-source-quality.md
+        triggers: ["nano screening", "nanomaterial screening", "size distribution evidence", "2D material evidence", "纳米筛选", "纳米材料证据层"]
+      semiconductors-screening:
+        path: references/semiconductors-screening-and-source-quality.md
+        triggers: ["semiconductors screening", "thin-film device evidence", "Hall mobility evidence", "carrier transport evidence", "半导体筛选", "薄膜器件证据"]
+      dielectrics-screening:
+        path: references/dielectrics-piezoelectrics-screening-and-source-quality.md
+        triggers: ["dielectric screening", "piezoelectric screening", "ferroelectric evidence", "P-E loop evidence", "介电筛选", "压电证据"]
+      photonic-screening:
+        path: references/photonic-optoelectronic-screening-and-source-quality.md
+        triggers: ["photonic screening", "optoelectronic screening", "EQE evidence", "PLQY evidence", "光电子筛选", "光电证据"]
+      nanoparticles-screening:
+        path: references/nanoparticles-screening-and-source-quality.md
+        triggers: ["nanoparticle screening", "colloidal nanomaterial screening", "nanoparticle size distribution", "nanoparticle catalysis evidence", "纳米颗粒筛选", "胶体纳米证据"]
+      nano-thin-films-screening:
+        path: references/nano-thin-films-screening-and-source-quality.md
+        triggers: ["nano thin film screening", "nanostructured coating screening", "thickness evidence", "barrier coating evidence", "纳米薄膜筛选", "纳米涂层证据"]
+      2d-materials-screening:
+        path: references/2d-materials-screening-and-source-quality.md
+        triggers: ["2D materials screening", "graphene screening", "TMD screening", "layer number evidence", "二维材料筛选", "石墨烯证据"]
+      nanocomposites-screening:
+        path: references/nanocomposites-screening-and-source-quality.md
+        triggers: ["nanocomposite screening", "nanofiller dispersion evidence", "nanocomposite mechanical evidence", "percolation threshold evidence", "纳米复合材料筛选", "纳米复合证据"]
+  journal_family:
+    default: materials
+    values:
+      cbm-jbe:
+        path: references/journal-search-profiles.md
+        triggers: ["CBM", "Construction and Building Materials", "JBE", "Journal of Building Engineering"]
+      ccc:
+        path: references/journal-search-profiles.md
+        triggers: ["CCC", "Cement and Concrete Composites"]
+      rmpd-ijpe:
+        path: references/journal-search-profiles.md
+        triggers: ["RMPD", "Road Materials and Pavement Design", "IJPE", "International Journal of Pavement Engineering"]
+  material_domain:
+    detect: "Which material domain does the literature search target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      asphalt:
+        path: static/fragments/domain/asphalt.md
+        triggers: ["asphalt", "emulsified asphalt", "waterborne epoxy", "bitumen", "pavement", "沥青", "乳化沥青", "水性环氧"]
+      cement-concrete:
+        path: static/fragments/domain/cement-concrete.md
+        triggers: ["cement", "concrete", "hydration", "mortar", "水泥", "混凝土"]
+      materials:
+        path: static/fragments/domain/materials.md
+        triggers: ["materials", "construction materials", "土木材料", "建筑材料"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "sintering", "alumina", "zirconia", "carbide", "陶瓷"]
+      thermal-insulation:
+        path: static/fragments/domain/thermal-insulation.md
+        triggers: ["thermal insulation", "aerogel", "foam", "insulation", "隔热", "保温"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "thermoplastic", "thermoset", "rubber", "composite", "高分子", "聚合物", "橡胶"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "titanium", "superalloy", "金属", "合金", "钢", "铝合金"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "nanotube", "graphene", "2D material", "quantum dot", "纳米", "纳米材料"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "ferroelectric", "photonic", "半导体", "介电", "压电"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+
+references: {}
+
+assets:
+  - assets
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+
+handoffs:
+  provides:
+    citation-handoff:
+      description: "Citation matrix and claim-source mapping"
+      contract: ../../_shared/contracts/citation-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: literature-pipeline-handoff
+      from: materials-literature-pipeline
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

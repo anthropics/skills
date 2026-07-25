@@ -1,0 +1,26 @@
+{
+  "stage": 2,
+  "agent": "synthesis_agent",
+  "deliverable_path": "chapter_4/synthesis.md",
+  "deliverable_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "run_id": "2026-04-30T15-22-04Z-d8f3",
+  "bundle_id": "b1",
+  "bundle_manifest_sha": "b645c8e238710dd7f6753b24868366e38e24eb0fe2d3c1178eed7bbe8033d1a6",
+  "artifact_paths": {
+    "jsonl": "2026-04-30T15-22-04Z-d8f3.jsonl",
+    "sidecar": "2026-04-30T15-22-04Z-d8f3.meta.json",
+    "verdict": "2026-04-30T15-22-04Z-d8f3.verdict.yaml"
+  },
+  "verdict": {
+    "status": "MINOR",
+    "round": 2,
+    "target_rounds": 3,
+    "finding_counts": {
+      "p1": 0,
+      "p2": 0,
+      "p3": 1
+    },
+    "verified_at": "2026-04-30T15:23:11.847Z",
+    "verified_by": "pipeline_orchestrator_agent"
+  }
+}

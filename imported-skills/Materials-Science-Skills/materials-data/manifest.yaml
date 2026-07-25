@@ -1,0 +1,216 @@
+version: "1.2.0"
+status: stable
+
+context_budget:
+  target_activation_bytes: 16384
+  max_activation_bytes: 18432
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 12
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes: [task, material_family, domain, journal, input_source]
+  required_route_scenarios: [default-manual-package, asphalt-fair-audit, doe-record-asphalt-package, ceramics-availability, thermal-template]
+
+always_load:
+  - static/core/contract.md
+  - ../_shared/core/direction-profile.md
+  - static/core/workflow.md
+
+axes:
+  task:
+    default: dataset-package
+    values:
+      experiment-template:
+        path: references/dataset-package.md
+        triggers: ["experiment data", "test matrix", "data template", "raw data", "spreadsheet", "CSV"]
+      fair-audit:
+        path: references/fair-checklist.md
+        triggers: ["FAIR", "audit", "data quality", "reproducible", "metadata check"]
+      dataset-package:
+        path: references/dataset-package.md
+        triggers: ["dataset package", "data package", "supplementary data", "submission data", "repository"]
+      data-availability:
+        path: references/data-availability-statements.md
+        triggers: ["data availability", "availability statement", "data statement", "declaration"]
+  material_family:
+    detect: "Which materials family is central?"
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["neutral family", "profile family fallback", "no saved family"]
+      civil:
+        path: ../materials-research/static/fragments/domain/civil-family.md
+        triggers: ["civil", "construction", "building", "pavement", "土木", "建筑"]
+      polymers:
+        path: ../materials-research/static/fragments/domain/polymers-family.md
+        triggers: ["polymer", "resin", "rubber", "epoxy", "高分子", "聚合物", "树脂"]
+      metals:
+        path: ../materials-research/static/fragments/domain/metals-family.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "金属", "合金", "钢"]
+      ceramics:
+        path: ../materials-research/static/fragments/domain/ceramics-family.md
+        triggers: ["ceramic", "porcelain", "refractory", "陶瓷", "耐火"]
+      functional:
+        path: ../materials-research/static/fragments/domain/functional-family.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "半导体", "介电", "压电"]
+      nano:
+        path: ../materials-research/static/fragments/domain/nano-family.md
+        triggers: ["nano", "nanoparticle", "2D material", "纳米", "纳米材料"]
+
+  domain:
+    detect: "Which material domain does the data package target?"
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers: ["general fallback", "profile fallback", "neutral routing"]
+      asphalt:
+        path: static/fragments/domain/asphalt.md
+        triggers: ["asphalt", "emulsified asphalt", "waterborne epoxy", "bitumen", "pavement", "沥青", "乳化沥青", "水性环氧"]
+      cement-concrete:
+        path: static/fragments/domain/cement-concrete.md
+        triggers: ["cement", "concrete", "mortar", "hydration", "UHPC", "geopolymer", "水泥", "混凝土", "砂浆"]
+      materials:
+        path: static/fragments/domain/materials.md
+        triggers: ["materials", "construction materials", "土木材料", "建筑材料"]
+      polymers:
+        path: static/fragments/domain/polymers.md
+        triggers: ["polymer", "resin", "thermoplastic", "thermoset", "rubber", "composite", "高分子", "聚合物", "橡胶"]
+      metals:
+        path: static/fragments/domain/metals.md
+        triggers: ["metal", "alloy", "steel", "aluminum", "titanium", "superalloy", "金属", "合金", "钢", "铝合金"]
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        triggers: ["ceramic", "sintering", "alumina", "zirconia", "carbide", "陶瓷"]
+      functional:
+        path: static/fragments/domain/functional.md
+        triggers: ["semiconductor", "dielectric", "piezoelectric", "ferroelectric", "photonic", "optoelectronic", "半导体", "介电", "压电"]
+      nano:
+        path: static/fragments/domain/nano.md
+        triggers: ["nano", "nanoparticle", "nanotube", "graphene", "2D material", "quantum dot", "纳米", "纳米材料"]
+      thermal-insulation:
+        path: static/fragments/domain/thermal-insulation.md
+        triggers: ["thermal insulation", "aerogel", "foam", "insulation", "隔热", "保温"]
+  journal:
+    default: generic
+    values:
+      cbm:
+        path: references/data-availability-statements.md
+        triggers: ["CBM", "Construction and Building Materials"]
+      ccc:
+        path: references/data-availability-statements.md
+        triggers: ["CCC", "Cement and Concrete Composites"]
+      jbe:
+        path: references/data-availability-statements.md
+        triggers: ["JBE", "Journal of Building Engineering"]
+      rmpd-ijpe:
+        path: references/data-availability-statements.md
+        triggers: ["RMPD", "Road Materials and Pavement Design", "IJPE", "International Journal of Pavement Engineering"]
+      jre:
+        path: references/data-availability-statements.md
+        triggers: ["JRE", "Journal of Road Engineering"]
+      generic:
+        path: references/data-availability-statements.md
+        triggers: ["journal", "submission", "SCI"]
+
+  input_source:
+    detect: "Is the dataset built from an experiment record or manually?"
+    default: manual
+    values:
+      manual:
+        path: static/core/workflow.md
+        triggers: ["manual", "from scratch", "no record"]
+      experiment-record:
+        path: static/core/experiment-record-input.md
+        triggers: ["experiment record", "doe output", "from doe", "yaml"]
+
+references:
+  on_demand:
+    operating-stance:
+      path: ../_shared/core/stance.md
+      when: "Detailed collaboration stance, uncertainty handling, or shared placeholder conventions are needed."
+    ethics:
+      path: ../_shared/core/ethics.md
+      when: "Citation, source attribution, copyright, confidential-data, or AI-use boundaries need review."
+    data-contract:
+      path: static/core/data-contract.md
+      when: "A legacy integration explicitly requests the data contract file."
+    availability-rules:
+      path: static/fragments/data_task/availability-statement.md
+      when: "The user needs data availability rules."
+    repository-rules:
+      path: static/fragments/data_task/repository-plan.md
+      when: "The user needs repository planning rules."
+    fair-rules:
+      path: static/fragments/data_task/fair-check.md
+      when: "The user needs FAIR check rules."
+    experiment-template:
+      path: references/dataset-package.md
+      when: "The user needs experiment data templates."
+    fair-audit:
+      path: references/fair-checklist.md
+      when: "The user requests a FAIR audit."
+    data-availability:
+      path: references/data-availability-statements.md
+      when: "The user needs journal-specific statements."
+    asphalt-schema:
+      path: references/asphalt-data-schema.md
+      when: "The task involves asphalt data."
+    polymers-schema:
+      path: references/polymers-data-schema.md
+      when: "The task involves polymer, thermoplastic, thermoset, rubber, or composite data."
+    metals-schema:
+      path: references/metals-data-schema.md
+      when: "The task involves metals, alloys, steel, aluminum, titanium, or superalloy data."
+    nano-schema:
+      path: references/nano-data-schema.md
+      when: "The task involves nanoparticle, nanocomposite, 2D material, thin film, or nanomaterial data."
+    functional-schema:
+      path: references/functional-data-schema.md
+      when: "The task involves semiconductor, dielectric, piezoelectric, ferroelectric, or photonic data."
+    cement-schema:
+      path: references/cement-concrete-data-schema.md
+      when: "The task involves cement data."
+    civil-schema:
+      path: references/civil-data-schema.md
+      when: "The task involves civil, construction, soil, aggregate, asphalt, or pavement data."
+    ceramics-schema:
+      path: references/ceramics-data-schema.md
+      when: "The task involves ceramic, refractory, or sintered inorganic material data."
+    insulation-schema:
+      path: references/thermal-insulation-data-schema.md
+      when: "The task involves thermal insulation, foam, aerogel, or VIP data."
+    ceramics-data-template:
+      path: assets/templates/experiment-data-template-ceramics.csv
+      when: "The user needs a ceramics experiment data template."
+    insulation-data-template:
+      path: assets/templates/experiment-data-template-insulation.csv
+      when: "The user needs a thermal insulation experiment data template."
+
+    experiment-record-to-dataset:
+      path: references/experiment-record-to-dataset.md
+      when: "The dataset package is built from an experiment record."
+    table-system:
+      path: references/table-system.md
+      when: "The user needs table system templates."
+assets:
+  - assets
+scripts:
+  - scripts
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the skill evidence contract
+handoffs:
+  provides:
+    data-package:
+      description: "FAIR dataset package with metadata and data availability"
+      contract: ../../_shared/contracts/data-package.yaml
+      version: "1.0"
+  consumes:
+    - handoff: doe-handoff
+      from: materials-doe
+      optional: true
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

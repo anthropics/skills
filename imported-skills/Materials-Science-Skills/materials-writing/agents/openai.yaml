@@ -1,0 +1,8 @@
+interface:
+  display_name: "Materials Science Writing"
+  short_description: "Researcher-grade drafting for materials manuscripts."
+  default_prompt: "Use $materials-writing to build a claim-evidence-boundary writing plan and draft this manuscript section."
+  brand_color: "#6A6F4C"
+
+policy:
+  allow_implicit_invocation: true

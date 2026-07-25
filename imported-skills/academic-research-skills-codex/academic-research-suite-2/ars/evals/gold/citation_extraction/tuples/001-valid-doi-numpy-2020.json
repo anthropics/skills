@@ -1,0 +1,128 @@
+{
+  "tuple_id": "001-valid-doi-numpy-2020",
+  "kind": "valid_doi",
+  "corpus_entry": {
+    "citation_key": "Harris2020NumPy",
+    "title": "Array programming with NumPy",
+    "authors": [
+      {
+        "family": "Harris",
+        "given": "Charles R."
+      },
+      {
+        "family": "Millman",
+        "given": "K. Jarrod"
+      },
+      {
+        "family": "van der Walt",
+        "given": "Stéfan J."
+      },
+      {
+        "family": "Gommers",
+        "given": "Ralf"
+      },
+      {
+        "family": "Virtanen",
+        "given": "Pauli"
+      },
+      {
+        "family": "Cournapeau",
+        "given": "David"
+      },
+      {
+        "family": "Wieser",
+        "given": "Eric"
+      },
+      {
+        "family": "Taylor",
+        "given": "Julian"
+      },
+      {
+        "family": "Berg",
+        "given": "Sebastian"
+      },
+      {
+        "family": "Smith",
+        "given": "Nathaniel J."
+      },
+      {
+        "family": "Kern",
+        "given": "Robert"
+      },
+      {
+        "family": "Picus",
+        "given": "Matti"
+      },
+      {
+        "family": "Hoyer",
+        "given": "Stephan"
+      },
+      {
+        "family": "van Kerkwijk",
+        "given": "Marten H."
+      },
+      {
+        "family": "Brett",
+        "given": "Matthew"
+      },
+      {
+        "family": "Haldane",
+        "given": "Allan"
+      },
+      {
+        "family": "del Río",
+        "given": "Jaime Fernández"
+      },
+      {
+        "family": "Wiebe",
+        "given": "Mark"
+      },
+      {
+        "family": "Peterson",
+        "given": "Pearu"
+      },
+      {
+        "family": "Gérard-Marchant",
+        "given": "Pierre"
+      },
+      {
+        "family": "Sheppard",
+        "given": "Kevin"
+      },
+      {
+        "family": "Reddy",
+        "given": "Tyler"
+      },
+      {
+        "family": "Weckesser",
+        "given": "Warren"
+      },
+      {
+        "family": "Abbasi",
+        "given": "Hameer"
+      },
+      {
+        "family": "Gohlke",
+        "given": "Christoph"
+      },
+      {
+        "family": "Oliphant",
+        "given": "Travis E."
+      }
+    ],
+    "year": 2020,
+    "doi": "10.1038/s41586-020-2649-2",
+    "venue": "Nature",
+    "source_pointer": "https://doi.org/10.1038/s41586-020-2649-2",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "harris-2020-numpy",
+  "anchor": {
+    "kind": "page",
+    "value": "1"
+  },
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": false
+}

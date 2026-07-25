@@ -1,0 +1,17 @@
+contract: patent-draft-handoff
+contract_version: "1.0"
+status: blocked
+source_map_path: work/01-source-map.json
+invention_type: process-material
+claim_feature_map_path: work/05-claim-map.json
+support_states:
+  explicit: []
+  inherent: []
+  needs-confirmation: []
+  unsupported: []
+validation:
+  draft: not-run
+  claims: not-run
+  package: not-run
+inventor_questions: []
+artifacts: {}

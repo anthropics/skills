@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "issue": 216,
+    "task_name": "surface_form_parity",
+    "task_type": "regression-fixture",
+    "description": "Mixed-provenance regression fixture for the §F.3.6 reviewer-type (surface-form) asymmetry, anchored to first-party verbatim examples from Kim et al. 2026 (arXiv:2605.20668v1). The documented failure is an AI meta-reviewer applying TWO standards keyed off PROSE STYLE: it demands literal precision and penalises informal/vague human wording, and credits technical specificity in AI wording. The hook is framing_style (informal_vague vs technical_precise), NOT the author label — so this fixture targets SURFACE-FORM parity, not authorship parity. NOT a calibrated detector: there is no deterministic predictor for this bias, n is tiny, and the paper's 29-FN-human / 10-FP-AI split is DIRECTIONAL (§H), not a calibration target. The validator checks data integrity + provenance honesty + pair invariants ONLY — it does not compute FNR/FPR or assert distributional asymmetry. counterfactual_rewrite items are maintainer-authored minimal-difference variants (NOT first-party); they exist so the prompt discipline 'do not let framing style flip a correctness verdict' has paired, traceable test material.",
+    "source_paper": {
+      "citation": "Kim, S., Yoon, D., Gashteovski, K., Suk, J., Baek, J., et al. (2026). On the limits and opportunities of AI reviewers: Reviewing the reviews of Nature-family papers with 45 expert scientists. arXiv:2605.20668v1 [cs.CL].",
+      "arxiv_id": "2605.20668v1",
+      "note": "Author list and section anchors verified first-party against the PDF, not the KB summary (the summary's author list drifted; PDF is authoritative)."
+    },
+    "framing_style_vocabulary": {
+      "informal_vague": "Colloquial or imprecise wording, loosely scoped concern, no named technical artifact (the human-reviewer surface form the paper shows the AI meta-reviewer over-penalises). E.g. 'no really, ... should be further elaborated'; 'figures are not referred to ... making it unclear'.",
+      "technical_precise": "Wording that names a specific technical concept, code element, dataset artifact, or mathematical framework (the AI-reviewer surface form the paper shows the AI meta-reviewer over-credits). E.g. 'the identifiability problem inherent in compositional data'; 'Git LFS pointer files instead of actual .mat datasets'."
+    },
+    "provenance_type_vocabulary": {
+      "paper_verbatim": "A real example drawn directly from the paper's §F.3.6 text, with a verbatim quote anchor that appears in the paper.",
+      "counterfactual_rewrite": "A maintainer-authored minimal-difference variant of a paper_verbatim case: the SAME canonical_claim and SAME expected_correctness, rewritten in the OPPOSITE framing_style, with truth conditions preserved. Carries derived_from. NOT first-party — never cite it as paper-verbatim.",
+      "maintainer_boundary": "A maintainer-authored boundary/exception case whose review_item_text is synthetic (the paper states the mechanism but gives no verbatim item for this boundary). It is anchored to the paper's mechanism sentence, NOT to a verbatim review item. NOT first-party content — it documents the UNLESS clause of the parity rule. Carries mechanism_anchor instead of a verbatim review quote."
+    },
+    "asymmetry_direction_note": "Paper §F.3.6: of 41 correctness false negatives, 29 involved human reviewers and 12 AI; of 13 false positives, 10 involved AI reviewers. Mechanism (§F.3.6 'Asymmetry mechanism'): a learned prior that specificity correlates with correctness, misfiring in both directions. These counts are DIRECTIONAL observations, NOT thresholds this fixture targets.",
+    "judge_blind_fields": ["pair_id", "framing_style", "provenance_type", "expected_correctness", "expert_verdict", "meta_reviewer_verdict", "asymmetry_direction"]
+  },
+  "items": [
+    {
+      "id": "sfp-001",
+      "pair_id": "pair-01",
+      "provenance_type": "paper_verbatim",
+      "framing_style": "informal_vague",
+      "asymmetry_direction": "stricter-on-human",
+      "provenance": {
+        "section": "§F.3.6 Example (stricter on human items): vague human concern dismissed",
+        "paper_citation": "Paper 50 · Human reviewer 2",
+        "reviewer_source": "human",
+        "verbatim_anchor": "[Reproducibility] no really, as the limitation of data sizes, detailed evaluation of using the proposed sensors, should be further elaborated."
+      },
+      "canonical_claim": "The evaluation of the proposed sensors is under-elaborated and should be expanded given the data-size limitation.",
+      "review_item_text": "[Reproducibility] no really, as the limitation of data sizes, detailed evaluation of using the proposed sensors, should be further elaborated.",
+      "meta_reviewer_verdict": "Not Correct",
+      "expected_correctness": "Correct",
+      "expert_verdict": "Both experts rated this Correct.",
+      "failure_note": "The AI meta-reviewer penalised the human reviewer's informal language ('no really') and vague framing, treating stylistic imprecision as a factual failing.",
+      "exception": false
+    },
+    {
+      "id": "sfp-001-cf",
+      "pair_id": "pair-01",
+      "provenance_type": "counterfactual_rewrite",
+      "derived_from": "sfp-001",
+      "framing_style": "technical_precise",
+      "asymmetry_direction": "stricter-on-human",
+      "provenance": {
+        "section": "maintainer-authored counterfactual of §F.3.6 Paper 50",
+        "paper_citation": "derived from Paper 50 · Human reviewer 2",
+        "reviewer_source": "maintainer_rewrite",
+        "verbatim_anchor": null
+      },
+      "canonical_claim": "The evaluation of the proposed sensors is under-elaborated and should be expanded given the data-size limitation.",
+      "review_item_text": "[Reproducibility] The sensor evaluation is insufficiently characterised: given the limited sample size, the manuscript should report per-sensor evaluation protocols and a sensitivity analysis over data-size regimes.",
+      "meta_reviewer_verdict": null,
+      "expected_correctness": "Correct",
+      "expert_verdict": "Same substantive concern as sfp-001, rewritten in technical_precise style; truth conditions preserved.",
+      "semantic_equivalence_rationale": "Both items assert the same checkable claim — the sensor evaluation is under-elaborated relative to the data-size limitation. Only the prose register differs (colloquial 'no really ... should be further elaborated' vs named 'per-sensor evaluation protocols / sensitivity analysis'). A correctness verdict that flips between these two is keying off style, not substance — the exact §F.3.6 failure this fixture guards against.",
+      "exception": false
+    },
+    {
+      "id": "sfp-002",
+      "pair_id": null,
+      "provenance_type": "paper_verbatim",
+      "framing_style": "informal_vague",
+      "asymmetry_direction": "stricter-on-human",
+      "provenance": {
+        "section": "§F.3.6 Example (stricter on human items): informal scope question dismissed",
+        "paper_citation": "Paper 51 · Human reviewer 2",
+        "reviewer_source": "human",
+        "verbatim_anchor": "[Figures] Several figures are not referred to in the main text, making it unclear how they support the study's claims."
+      },
+      "canonical_claim": "Several figures are not meaningfully discussed in the main text, so it is unclear how they support the study's claims.",
+      "review_item_text": "[Figures] Several figures are not referred to in the main text, making it unclear how they support the study's claims.",
+      "meta_reviewer_verdict": "Not Correct",
+      "expected_correctness": "Correct",
+      "expert_verdict": "Both experts rated this Correct: the reviewer's concern was that the figures were not meaningfully discussed, not whether they were technically cited.",
+      "failure_note": "The AI meta-reviewer rated this Not Correct because all six main figures are technically cited, demanding literal precision from the human reviewer that it does not require from AI reviewers.",
+      "exception": false
+    },
+    {
+      "id": "sfp-003",
+      "pair_id": "pair-03",
+      "provenance_type": "paper_verbatim",
+      "framing_style": "technical_precise",
+      "asymmetry_direction": "lenient-on-ai",
+      "provenance": {
+        "section": "§F.3.6 Example (more lenient on AI items): mathematical-impossibility claim accepted",
+        "paper_citation": "Paper 80 · Gemini reviewer",
+        "reviewer_source": "ai",
+        "verbatim_anchor": "the identifiability problem inherent in compositional data"
+      },
+      "canonical_claim": "The paper's compositional-data analysis is invalidated by an identifiability problem inherent to compositional data.",
+      "review_item_text": "This analysis is undermined by the identifiability problem inherent in compositional data, which the proposed approach does not resolve.",
+      "meta_reviewer_verdict": "Correct",
+      "expected_correctness": "Not Correct",
+      "expert_verdict": "Both experts rated this Not Correct: the paper's specific bias-correction methodology addresses the concern, but the AI meta-reviewer did not check.",
+      "failure_note": "The AI meta-reviewer accepted a claim that names a specific mathematical framework ('identifiability problem') as valid without verifying it against the paper, crediting technical specificity.",
+      "exception": false
+    },
+    {
+      "id": "sfp-003-cf",
+      "pair_id": "pair-03",
+      "provenance_type": "counterfactual_rewrite",
+      "derived_from": "sfp-003",
+      "framing_style": "informal_vague",
+      "asymmetry_direction": "lenient-on-ai",
+      "provenance": {
+        "section": "maintainer-authored counterfactual of §F.3.6 Paper 80",
+        "paper_citation": "derived from Paper 80 · Gemini reviewer",
+        "reviewer_source": "maintainer_rewrite",
+        "verbatim_anchor": null
+      },
+      "canonical_claim": "The paper's compositional-data analysis is invalidated by an identifiability problem inherent to compositional data.",
+      "review_item_text": "I don't really buy this analysis — the data just doesn't seem like it can pin down what they claim, and they kind of gloss over it.",
+      "meta_reviewer_verdict": null,
+      "expected_correctness": "Not Correct",
+      "expert_verdict": "Same substantive (incorrect) claim as sfp-003, rewritten in informal_vague style; truth conditions preserved — it remains Not Correct because the paper's bias-correction methodology addresses the concern.",
+      "semantic_equivalence_rationale": "Both items assert the same underlying claim — the analysis is undermined by a compositional-data identifiability issue. sfp-003 dresses it in a named mathematical framework; this variant states it colloquially. The expected verdict is Not Correct for BOTH because the paper addresses the concern. A judge that accepts the precise version but rejects the vague one (or vice versa) is keying off style, not the paper evidence — the §F.3.6 lenient-on-AI failure inverted to expose the prior directly.",
+      "exception": false
+    },
+    {
+      "id": "sfp-004",
+      "pair_id": null,
+      "provenance_type": "paper_verbatim",
+      "framing_style": "technical_precise",
+      "asymmetry_direction": "lenient-on-ai",
+      "provenance": {
+        "section": "§F.3.6 Example (more lenient on AI items): data-availability complaint accepted",
+        "paper_citation": "Paper 67 · GPT reviewer",
+        "reviewer_source": "ai",
+        "verbatim_anchor": "the code bundle contains Git LFS pointer files instead of actual .mat datasets"
+      },
+      "canonical_claim": "The paper does not provide sufficient access to underlying data; the code bundle ships Git LFS pointer files instead of the actual .mat datasets.",
+      "review_item_text": "The paper does not provide sufficient access to the underlying data: the code bundle contains Git LFS pointer files instead of actual .mat datasets, so the work is not reproducible.",
+      "meta_reviewer_verdict": "Correct",
+      "expected_correctness": "Not Correct",
+      "expert_verdict": "Both experts rated this Not Correct: the paper's data availability statement covers access on request, and the LFS pointers are an artifact of the repository setup rather than a missing artifact.",
+      "failure_note": "The AI meta-reviewer found the reference to 'Git LFS pointer files' specifically persuasive, crediting a named code-artifact detail without checking the data-availability statement.",
+      "exception": false
+    },
+    {
+      "id": "sfp-005-ambiguous",
+      "pair_id": null,
+      "provenance_type": "maintainer_boundary",
+      "framing_style": "informal_vague",
+      "asymmetry_direction": "stricter-on-human",
+      "provenance": {
+        "section": "§F.3.6 Asymmetry mechanism (maintainer-authored boundary case)",
+        "paper_citation": "§F.3.6 'Asymmetry mechanism' — anchored to the stated mechanism, NOT a verbatim review item; review_item_text is synthetic",
+        "reviewer_source": "maintainer_synthetic",
+        "verbatim_anchor": null,
+        "mechanism_anchor": "For human items, it demands\nliteral precision and penalises informal language, vagueness, or imprecise scope."
+      },
+      "canonical_claim": "(Boundary) A human review item whose vagueness genuinely makes the concern unevaluable — the legitimate case where informal/vague wording is NOT merely a style penalty.",
+      "review_item_text": "The methods feel off somehow and the results don't sit right with me.",
+      "meta_reviewer_verdict": "Not Correct",
+      "expected_correctness": "Ambiguous",
+      "expert_verdict": "No stable verdict: the wording is so unscoped that no checkable claim can be extracted. This is the exception the parity rule must NOT over-correct into — down-rating here is legitimate because ambiguity changes the truth conditions (the item is unevaluable), not because the style is informal.",
+      "exception": true,
+      "exception_reason": "Surface-Form Parity says 'do not down-rate informal/vague wording UNLESS ambiguity changes truth conditions or makes the item unevaluable.' This case documents the UNLESS clause: a genuinely unevaluable vague item where a Not-Correct/ambiguous outcome is correct. Retained so the parity rule cannot be misread as 'never penalise vagueness' — without it, a lint or judge could over-correct into accepting empty concerns."
+    }
+  ]
+}

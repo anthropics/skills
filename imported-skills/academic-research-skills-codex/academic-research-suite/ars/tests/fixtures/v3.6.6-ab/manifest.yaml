@@ -1,0 +1,100 @@
+# ARS v3.6.6 A/B evidence fixture manifest.
+#
+# This manifest instantiates the §6.2 schema declared in
+# docs/design/2026-04-27-ars-v3.6.6-generator-evaluator-contract-design.md.
+# It is the single source of truth for what files compose the v3.6.6 A/B
+# fixture (§6.5 invariant 1).
+#
+# State at this commit: STUB. The manifest is populated with the full §6.2
+# schema shape and seven paper entries (six paper-A + one paper-C); every
+# declared spec_branch-mode-required path exists as a placeholder file
+# explaining its expected populated content. Real fixture data (existing
+# deep-research synthesis reports for paper-A; v3.6.5 session log for
+# paper-C) lands in follow-up commits on this branch before the spec PR
+# merges to main, per §6 r1 P1 #1 b3 lineage and §6.5 PR-merge-boundary
+# discipline.
+
+fixture_version: "0.1.0"
+manifest_lint_mode: spec_branch
+
+documentation_paths:
+  - README.md
+
+papers:
+  - paper_id: paperA-imrad-01
+    role: paper-A
+    paper_type: imrad_empirical
+    topic_label: "Stub paper-A IMRaD empirical #1 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-imrad-01/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-imrad-01/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-imrad-01/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-imrad-01-v3.6.5.txt
+
+  - paper_id: paperA-imrad-02
+    role: paper-A
+    paper_type: imrad_empirical
+    topic_label: "Stub paper-A IMRaD empirical #2 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-imrad-02/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-imrad-02/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-imrad-02/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-imrad-02-v3.6.5.txt
+
+  - paper_id: paperA-litreview-01
+    role: paper-A
+    paper_type: literature_review
+    topic_label: "Stub paper-A literature review #1 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-litreview-01/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-litreview-01/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-litreview-01/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-litreview-01-v3.6.5.txt
+
+  - paper_id: paperA-litreview-02
+    role: paper-A
+    paper_type: literature_review
+    topic_label: "Stub paper-A literature review #2 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-litreview-02/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-litreview-02/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-litreview-02/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-litreview-02-v3.6.5.txt
+
+  - paper_id: paperA-casestudy-01
+    role: paper-A
+    paper_type: case_study
+    topic_label: "Stub paper-A case study #1 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-casestudy-01/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-casestudy-01/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-casestudy-01/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-casestudy-01-v3.6.5.txt
+
+  - paper_id: paperA-casestudy-02
+    role: paper-A
+    paper_type: case_study
+    topic_label: "Stub paper-A case study #2 (replace with real synthesis report)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperA-casestudy-02/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperA-casestudy-02/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperA-casestudy-02/v3.6.5/evaluator_review.md
+    judge_output_baseline: codex-judge/paperA-casestudy-02-v3.6.5.txt
+
+  - paper_id: paperC-known-fail-01
+    role: paper-C
+    paper_type: known_fail_hallucinated_citation
+    topic_label: "Stub paper-C v3.6.5 known-fail (replace with real session log + Stage 3 excerpt)"
+    input_artefacts:
+      paper_configuration_record: inputs/paperC-known-fail-01/paper_configuration_record.md
+    baseline_output:
+      writer_draft: baseline/paperC-known-fail-01/v3.6.5/writer_draft.md
+      evaluator_review: baseline/paperC-known-fail-01/v3.6.5/evaluator_review.md
+    known_failure_mode: "v3.6.5_in_pair_evaluator_missed_hallucinated_citation_caught_by_stage_3"
+    failure_evidence: inputs/paperC-known-fail-01/stage3_reviewer_excerpt.md

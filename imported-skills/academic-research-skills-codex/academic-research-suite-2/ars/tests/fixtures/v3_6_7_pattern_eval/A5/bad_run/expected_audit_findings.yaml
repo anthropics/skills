@@ -1,0 +1,32 @@
+run_id: 2026-04-30T10-09-00Z-a5b0
+verdict_status: MATERIAL
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 1
+  p2: 0
+  p3: 0
+findings:
+  - id: F-001
+    severity: P1
+    dimension: "3.2"
+    file: bad_run/deliverable.md
+    line: 6
+    description: >
+      Sibling-document fabrication (A5): The deliverable makes declarative claims
+      about the arguments of Chapter 4 (lines 6-9) and Chapter 5 (lines 14-17),
+      including specific quantitative claims (governance structures "systematically
+      outperform on all four dimensions"; multi-level model finding of 30% regional
+      variance and 45% governance quality variance). Neither Chapter 4 nor Chapter 5
+      drafts are present in the ground-truth prior_artifacts directory — only
+      Chapter 2 exists. The agent fabricated plausible-sounding sibling chapter
+      content rather than using conditional language or flagging the gap.
+    suggested_fix: >
+      Replace declarative claims about Chapter 4 and Chapter 5 with conditional
+      language: "if Chapter 4 argues that governance structures correlate with
+      accreditation performance, this chapter's regulatory framing could dialogue
+      by specifying the compliance mechanisms underlying that relationship." Flag
+      that Chapter 4 and Chapter 5 drafts were not provided in ground truth.
+generated_at: "2026-04-30T10:09:17.856Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

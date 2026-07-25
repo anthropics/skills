@@ -1,0 +1,1893 @@
+{
+  "schema": "agent-harness/manifest.v1",
+  "domain": "c-level-advisor",
+  "skill_count": 68,
+  "loop_defaults": {
+    "max_attempts_per_task": 3,
+    "max_loop_iterations": 12,
+    "escalate_on": [
+      "attempts_exhausted",
+      "no_verification_available",
+      "destructive_or_irreversible_action",
+      "goal_drift_detected"
+    ]
+  },
+  "skills": [
+    {
+      "name": "arquiteto-de-empresa",
+      "path": "c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa",
+      "description": "Arquiteto de Empresa: constr\u00f3i um neg\u00f3cio do zero como bundle OKF (Open Knowledge Format) \u2014 uma \u00e1rvore de arquivos .md version\u00e1veis com frontmatter type, links formando grafo, e index.md/log.md reservados, leg\u00edvel por humanos e por agentes. Conduz o fundador por uma entrevista de 12 fases (funda\u00e7\u00e3o, estrat\u00e9gia, mercado, financeiro, comercial, marketing, produto, opera\u00e7\u00f5es, tech, pessoas, jur\u00eddico, governan\u00e7a), uma fase por vez, poucas perguntas por bloco, e gera os conceitos como markdown conformante. Acione quando o usu\u00e1rio quiser criar, estruturar ou documentar uma empresa inteira em \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/index_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/index_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/index_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/okf_linter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/okf_linter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/okf_linter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/arquiteto-de-empresa/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "okf_conformance.md",
+        "phase_playbook.md",
+        "type_vocabulary.md"
+      ]
+    },
+    {
+      "name": "boardroom",
+      "path": "c-level-advisor/c-level-agents/skills/boardroom",
+      "description": "/cs:boardroom <brief> \u2014 6-phase multi-role deliberation across the C-suite with Phase 2 isolation, critic pre-screen, and synthesis. Outputs a board memo. Use when a decision spans multiple executive domains \u2014 e.g. a pricing change touching finance, positioning, and product, or a raise-vs-cut runway call.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": []
+    },
+    {
+      "name": "brief",
+      "path": "c-level-advisor/c-level-agents/skills/brief",
+      "description": "/cs:brief <topic> \u2014 Generate a one-page strategy brief from an office-hours intake. First step in the strategic sprint pipeline. Use when a strategic question needs to be framed before boardroom deliberation \u2014 e.g. locking options, assumptions, and success criteria for a pricing change or a market-entry decision.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": []
+    },
+    {
+      "name": "c-level-agents",
+      "path": "c-level-advisor/c-level-agents/skills/c-level-agents",
+      "description": "Founder-mode executive team. 13 cs-* C-suite agents (CFO, CMO, CRO, CPO, COO, CHRO, CISO, GC, CDO, CAIO, CCO, VPE, Chief of Staff) and 21 /cs:* slash commands for forcing-question office hours, multi-role boardroom deliberation, strategic sprint pipeline, and meta routing. Use when the founder needs a virtual executive team, when invoking /cs:* commands, or when orchestrating multi-role decisions.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "caio-review",
+      "path": "c-level-advisor/c-level-agents/skills/caio-review",
+      "description": "/cs:caio-review <plan> \u2014 Eval-demanding Chief AI Officer interrogation of any plan that involves AI: model selection, risk classification, cost economics, or AI hiring. Use when shipping an AI feature without an eval set, choosing between API, fine-tune, and self-hosted, or classifying a use case under the EU AI Act.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cco-review",
+      "path": "c-level-advisor/c-level-agents/skills/cco-review",
+      "description": "/cs:cco-review <plan> \u2014 Retention-obsessed Chief Customer Officer interrogation of any plan that touches customer retention, segmentation, CS team sizing, or CS team hiring. Use when gross retention is slipping, before approving CSM headcount, or when deciding which customer segments to keep or fire.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": []
+    },
+    {
+      "name": "cdo-review",
+      "path": "c-level-advisor/c-level-agents/skills/cdo-review",
+      "description": "/cs:cdo-review <plan> \u2014 Decision-driven Chief Data Officer interrogation of any plan that touches training data, data architecture, data productization, or data team hiring. Use when validating training-data rights before model work, choosing warehouse vs lakehouse vs mesh, or valuing data assets for productization or M&A.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cfo-review",
+      "path": "c-level-advisor/c-level-agents/skills/cfo-review",
+      "description": "/cs:cfo-review <plan> \u2014 Numerate-skeptic interrogation of any plan that touches money. Unit economics, runway, dilution, capital allocation. Use when a plan commits meaningful spend \u2014 e.g. a hiring wave, a fundraise decision, or a new channel budget.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "ciso-review",
+      "path": "c-level-advisor/c-level-agents/skills/ciso-review",
+      "description": "/cs:ciso-review <plan> \u2014 Risk-paranoid interrogation of any plan that touches data, compliance, or production access. Use when launching features that handle customer data, before a SOC 2 / ISO audit, or after any incident or near-miss.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cmo-review",
+      "path": "c-level-advisor/c-level-agents/skills/cmo-review",
+      "description": "/cs:cmo-review <plan> \u2014 Narrative-first interrogation of positioning, ICP, message house, and channel mix. Use when launching a campaign or repositioning, or when CAC is rising and the one-sentence positioning test fails.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cpo-review",
+      "path": "c-level-advisor/c-level-agents/skills/cpo-review",
+      "description": "/cs:cpo-review <plan> \u2014 JTBD-driven interrogation of product roadmap, PMF signal, and portfolio focus. Use when committing a quarter's roadmap, deciding whether to kill a feature, or claiming PMF without a retention curve.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cro-review",
+      "path": "c-level-advisor/c-level-agents/skills/cro-review",
+      "description": "/cs:cro-review <plan> \u2014 Pipeline-paranoid interrogation of revenue, win rate, NRR, and ramp time. Use when the forecast misses pipeline coverage, win rates drop, or before scaling the sales team.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cross-eval",
+      "path": "c-level-advisor/c-level-agents/skills/cross-eval",
+      "description": "/cs:cross-eval <memo> \u2014 Multi-model consensus on a board memo or strategy brief. Claude + Codex + Gemini cross-review with graceful degradation. Use when a high-stakes memo needs an independent sanity check before the boardroom \u2014 e.g. a bet-the-company pivot or fundraise terms.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "cto-review",
+      "path": "c-level-advisor/c-level-agents/skills/cto-review",
+      "description": "/cs:cto-review <plan> \u2014 Architecture and scaling interrogation. Tech debt, scaling cliffs, team scaling, build-vs-buy. Use when committing to an architecture, planning for 10x load, or weighing a rebuild against a vendor.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "decide",
+      "path": "c-level-advisor/c-level-agents/skills/decide",
+      "description": "/cs:decide <memo> \u2014 Log a decision to two-layer memory via decision-logger. Approved memo becomes durable; raw transcripts kept for reference. Use when the founder has approved a boardroom memo and the decision must become durable company memory \u2014 e.g. right after /cs:boardroom concludes.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "execute",
+      "path": "c-level-advisor/c-level-agents/skills/execute",
+      "description": "/cs:execute <decision> \u2014 Generate a 90-day execution plan with weekly milestones, DRIs, and check-in cadence from an approved decision. Use when a logged decision needs to become an operating plan \u2014 e.g. turning an approved market-entry call into weekly milestones with DRIs.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "founder-mode",
+      "path": "c-level-advisor/c-level-agents/skills/founder-mode",
+      "description": "/cs:founder-mode <question> \u2014 Auto-routes any founder question to the right C-role advisor or to /cs:boardroom for multi-role topics. The single-command entry point. Use when a founder asks any strategic question without knowing which advisor or command fits \u2014 e.g. 'runway pressure' routes to the CFO, 'gross retention dropped' routes to the CCO.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "freeze",
+      "path": "c-level-advisor/c-level-agents/skills/freeze",
+      "description": "/cs:freeze <decision> <days> \u2014 Lock a strategic decision for a cooldown period to prevent impulse reversal. Mirrors gstack's safety primitives for the business layer. Use when an irreversible decision was made under pressure \u2014 e.g. a layoff plan or multi-year contract \u2014 and deserves a cooling-off lock before execution.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "gc-review",
+      "path": "c-level-advisor/c-level-agents/skills/gc-review",
+      "description": "/cs:gc-review <plan> \u2014 General Counsel interrogation of contracts, IP, regulatory, term sheets, and employment-law surface. Use when reviewing a term sheet before signing, redlining a customer MSA, or checking IP assignment and regulatory exposure on a new product.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "office-hours",
+      "path": "c-level-advisor/c-level-agents/skills/office-hours",
+      "description": "/cs:office-hours <topic> \u2014 YC-style 6-question founder interrogation before any advice. Forces clarity on problem, customer, distribution, defensibility, capital, and founder fit. Use when a founder question is too vague to route \u2014 e.g. 'should we grow faster?' \u2014 or before drafting a strategy brief.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "onboard",
+      "path": "c-level-advisor/c-level-agents/skills/onboard",
+      "description": "/cs:onboard \u2014 Founder interview that populates ~/.claude/company-context.md using the canonical 7-dimension cs-onboard schema. The first command to run when starting with c-level-agents. Use when setting up the virtual C-suite for a new company, or when advisors lack company context \u2014 e.g. before a first /cs:boardroom or after a fundraise changes the numbers.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "post-mortem",
+      "path": "c-level-advisor/c-level-agents/skills/post-mortem",
+      "description": "/cs:post-mortem <decision> \u2014 Honest retrospective on an executed decision, scored against original assumptions and dissent. Closes the strategic sprint loop. Use when a decision hits its 90-day review checkpoint or its kill criteria trigger \u2014 e.g. scoring last quarter's pricing change against its pre-committed success metrics.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "vpe-review",
+      "path": "c-level-advisor/c-level-agents/skills/vpe-review",
+      "description": "/cs:vpe-review <plan> \u2014 Throughput-first VP of Engineering interrogation of any plan that touches delivery, eng hiring, team structure, or production discipline. Use when cycle time balloons, DORA metrics slide, or before committing to an eng hiring wave or a reorg.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": true,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "chief-ai-officer-advisor",
+      "path": "c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor",
+      "description": "Chief AI Officer advisory for startups: model build-vs-buy decisions (API vs fine-tune vs in-house), AI risk classification under EU AI Act + US state patchwork, AI cost economics (API-to-self-hosted breakeven), and AI team org evolution. Use when deciding whether to call an API or fine-tune, classifying AI use cases for regulatory risk, calculating when self-hosting pays off, sequencing AI hires, or when user mentions CAIO, AI strategy, model selection, foundation model, fine-tuning, EU AI Act, NIST AI RMF, AI governance, model risk, or AI economics. Strategic only \u2014 does not duplicate \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/ai_cost_economics.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/ai_cost_economics.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/ai_risk_classifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/ai_risk_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/model_buildvsbuy_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-ai-officer-advisor/skills/chief-ai-officer-advisor/scripts/model_buildvsbuy_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai_cost_economics.md",
+        "ai_risk_governance.md",
+        "ai_team_org_evolution.md",
+        "model_buildvsbuy_strategy.md"
+      ]
+    },
+    {
+      "name": "chief-customer-officer-advisor",
+      "path": "c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor",
+      "description": "Chief Customer Officer advisory for startups: retention decomposition (gross retention vs NRR honesty, churn root-cause taxonomy), customer segmentation strategy (differential investment across tiers + ICP fit scoring), CS team coverage model (pooled vs named CSM thresholds + ratio math), and CS team org evolution (CS vs Support vs AM distinctions). Use when designing retention strategy, segmenting customers for differential investment, sizing CS team, or sequencing CS hires. Strategic only \u2014 does not duplicate engineering/business-growth tactical skills.",
+      "tools": [
+        {
+          "script": "c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/cs_coverage_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/cs_coverage_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/customer_segmentation_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/customer_segmentation_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/retention_decomposition_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-customer-officer-advisor/skills/chief-customer-officer-advisor/scripts/retention_decomposition_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cs_coverage_model.md",
+        "cs_team_org_evolution.md",
+        "customer_segmentation_strategy.md",
+        "retention_decomposition.md"
+      ]
+    },
+    {
+      "name": "chief-data-officer-advisor",
+      "path": "c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor",
+      "description": "Chief Data Officer advisory for startups: AI training data rights and consent provenance, data product strategy (warehouse vs lakehouse vs mesh, build-vs-buy), B2B customer-data-as-asset valuation and M&A readiness, data team org evolution. Use when deciding whether to train models on customer data, choosing data architecture, valuing data for fundraising or M&A, sequencing data hires, or when user mentions CDO, chief data officer, data strategy, data mesh, lakehouse, training data, data product, data monetization, or customer data asset. NOT a tactical data engineering skill \u2014 strategic \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/ai_training_data_audit.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/ai_training_data_audit.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/data_asset_valuator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/data_asset_valuator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/data_product_strategy_picker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/chief-data-officer-advisor/skills/chief-data-officer-advisor/scripts/data_product_strategy_picker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai_training_data_rights.md",
+        "customer_data_as_asset.md",
+        "data_product_strategy.md",
+        "data_team_org_evolution.md"
+      ]
+    },
+    {
+      "name": "board-prep",
+      "path": "c-level-advisor/executive-mentor/skills/board-prep",
+      "description": "Board meeting preparation for the adversarial scenario, not the friendly one. Forces numbers-cold mastery, anticipates hard questions, builds a narrative that acknowledges weakness without losing the room. Use when preparing for a board meeting, an investor update, fundraising presentation, or any high-stakes adversarial review where every number must live in your head not just on a slide.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "challenge",
+      "path": "c-level-advisor/executive-mentor/skills/challenge",
+      "description": "Pre-mortem plan analysis. Imagine the plan failed 12 months from now and work backwards to find the weaknesses. Surfaces assumptions, dependencies, and execution risks before committing resources. Use when before significant resource commitment, before presenting to a board or investors, when feedback has been one-sidedly positive, or when there is pressure to move fast and figure it out later.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "executive-mentor",
+      "path": "c-level-advisor/executive-mentor/skills/executive-mentor",
+      "description": "Adversarial thinking partner for founders and executives. Stress-tests plans, prepares for brutal board meetings, dissects decisions with no good options, and forces honest post-mortems. Use when you need someone to find the holes before the board does, make a decision you've been avoiding, or understand what actually went wrong.",
+      "tools": [
+        {
+          "script": "c-level-advisor/executive-mentor/skills/executive-mentor/scripts/decision_matrix_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/executive-mentor/skills/executive-mentor/scripts/decision_matrix_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/executive-mentor/skills/executive-mentor/scripts/decision_matrix_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/executive-mentor/skills/executive-mentor/scripts/stakeholder_mapper.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/executive-mentor/skills/executive-mentor/scripts/stakeholder_mapper.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/executive-mentor/skills/executive-mentor/scripts/stakeholder_mapper.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "board_dynamics.md",
+        "crisis_playbook.md",
+        "hard_things.md"
+      ]
+    },
+    {
+      "name": "hard-call",
+      "path": "c-level-advisor/executive-mentor/skills/hard-call",
+      "description": "/em:hard-call \u2014 Framework for decisions with no good options. Use when every option is painful and a structured 10/10/10 + regret-minimization pass is needed \u2014 e.g. choosing between a layoff and a down round, or killing a beloved product line.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "postmortem",
+      "path": "c-level-advisor/executive-mentor/skills/postmortem",
+      "description": "/em:postmortem \u2014 Honest analysis of what went wrong. Use after a failed launch, missed quarter, or bad hire to run a blameless 5-Whys retrospective with a change register \u2014 e.g. dissecting why the Q3 release slipped six weeks.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "stress-test",
+      "path": "c-level-advisor/executive-mentor/skills/stress-test",
+      "description": "/em:stress-test \u2014 Business assumption stress testing. Use before betting on a plan whose core assumptions are unvalidated \u2014 e.g. stress-testing 'enterprise buyers will tolerate a 6-month pilot' or a hockey-stick revenue model.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "general-counsel-advisor",
+      "path": "c-level-advisor/general-counsel-advisor/skills/general-counsel-advisor",
+      "description": "General Counsel advisory for startups: contract review (MSA, SaaS, NDA, DPA, employment), IP strategy, term sheet decoding, and regulatory landscape mapping. Use when reviewing any contract or term sheet, deciding when to engage outside counsel, defining IP strategy, evaluating regulatory exposure (HIPAA, GDPR, FDA, fintech), or when user mentions general counsel, GC, legal review, contract risk, term sheet, IP assignment, or regulatory exposure. NOT a substitute for licensed counsel \u2014 surfaces questions to bring to qualified attorneys.",
+      "tools": [
+        {
+          "script": "c-level-advisor/general-counsel-advisor/skills/general-counsel-advisor/scripts/contract_risk_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/general-counsel-advisor/skills/general-counsel-advisor/scripts/contract_risk_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/general-counsel-advisor/skills/general-counsel-advisor/scripts/term_sheet_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/general-counsel-advisor/skills/general-counsel-advisor/scripts/term_sheet_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "contracts_playbook.md",
+        "ip_and_regulatory.md",
+        "term_sheet_decoder.md"
+      ]
+    },
+    {
+      "name": "agent-protocol",
+      "path": "c-level-advisor/skills/agent-protocol",
+      "description": "Inter-agent communication protocol for C-suite agent teams. Defines invocation syntax, loop prevention, isolation rules, and response formats. Use when C-suite agents need to query each other, coordinate cross-functional analysis, or run board meetings with multiple agent roles.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "invocation-patterns.md"
+      ]
+    },
+    {
+      "name": "arquiteto-de-empresa",
+      "path": "c-level-advisor/skills/arquiteto-de-empresa",
+      "description": "Arquiteto de Empresa: constr\u00f3i um neg\u00f3cio do zero como bundle OKF (Open Knowledge Format) \u2014 uma \u00e1rvore de arquivos .md version\u00e1veis com frontmatter type, links formando grafo, e index.md/log.md reservados, leg\u00edvel por humanos e por agentes. Conduz o fundador por uma entrevista de 12 fases (funda\u00e7\u00e3o, estrat\u00e9gia, mercado, financeiro, comercial, marketing, produto, opera\u00e7\u00f5es, tech, pessoas, jur\u00eddico, governan\u00e7a), uma fase por vez, poucas perguntas por bloco, e gera os conceitos como markdown conformante. Acione quando o usu\u00e1rio quiser criar, estruturar ou documentar uma empresa inteira em \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/arquiteto-de-empresa/scripts/index_generator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/index_generator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/index_generator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/arquiteto-de-empresa/scripts/okf_linter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/okf_linter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/okf_linter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/arquiteto-de-empresa/scripts/scaffold_bundle.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "okf_conformance.md",
+        "phase_playbook.md",
+        "type_vocabulary.md"
+      ]
+    },
+    {
+      "name": "board-deck-builder",
+      "path": "c-level-advisor/skills/board-deck-builder",
+      "description": "Assembles comprehensive board and investor update decks by pulling perspectives from all C-suite roles. Use when preparing board meetings, investor updates, quarterly business reviews, or fundraising narratives. Covers structure, narrative framework, bad news delivery, and common mistakes.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "deck-frameworks.md"
+      ]
+    },
+    {
+      "name": "board-meeting",
+      "path": "c-level-advisor/skills/board-meeting",
+      "description": "Multi-agent board meeting protocol for strategic decisions. Runs a structured 6-phase deliberation: context loading, independent C-suite contributions (isolated, no cross-pollination), critic analysis, synthesis, founder review, and decision extraction. Use when the user invokes /cs:boardroom, calls a board meeting, or wants structured multi-perspective executive deliberation on a strategic question.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "meeting-facilitation.md"
+      ]
+    },
+    {
+      "name": "c-level-skills",
+      "path": "c-level-advisor/skills/c-level-skills",
+      "description": "Index and router for the C-level advisory bundle: 33 skills covering 14 C-suite roles, orchestration, cross-cutting capabilities, and culture. Use when exploring what the c-level-advisor bundle contains, deciding which advisor skill fits a question, or finding the entry points (cs-onboard interview, chief-of-staff routing, board-meeting protocol).",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "ceo-advisor",
+      "path": "c-level-advisor/skills/ceo-advisor",
+      "description": "Executive leadership guidance for strategic decision-making, organizational development, and stakeholder management. Use when planning strategy, preparing board presentations, managing investors, developing organizational culture, making executive decisions, fundraising, or when user mentions CEO, strategic planning, board meetings, investor updates, organizational leadership, or executive strategy.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/ceo-advisor/scripts/financial_scenario_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/ceo-advisor/scripts/financial_scenario_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/ceo-advisor/scripts/strategy_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/ceo-advisor/scripts/strategy_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "board_governance_investor_relations.md",
+        "executive_decision_framework.md",
+        "leadership_organizational_culture.md"
+      ]
+    },
+    {
+      "name": "cfo-advisor",
+      "path": "c-level-advisor/skills/cfo-advisor",
+      "description": "Financial leadership for startups and scaling companies. Financial modeling, unit economics, fundraising strategy, cash management, and board financial packages. Use when building financial models, analyzing unit economics, planning fundraising, managing cash runway, preparing board materials, or when user mentions CFO, burn rate, runway, fundraising, unit economics, LTV, CAC, term sheets, or financial strategy.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/cfo-advisor/scripts/burn_rate_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cfo-advisor/scripts/burn_rate_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cfo-advisor/scripts/fundraising_model.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cfo-advisor/scripts/fundraising_model.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cfo-advisor/scripts/unit_economics_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cfo-advisor/scripts/unit_economics_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "cash_management.md",
+        "financial_planning.md",
+        "fundraising_playbook.md"
+      ]
+    },
+    {
+      "name": "change-management",
+      "path": "c-level-advisor/skills/change-management",
+      "description": "Framework for rolling out organizational changes without chaos. Covers the ADKAR model adapted for startups, communication templates, resistance patterns, and change fatigue management. Handles process changes, org restructures, strategy pivots, and culture changes. Use when announcing a reorg, switching tools, pivoting strategy, killing a product, changing leadership, or when user mentions change management, change rollout, managing resistance, org change, reorg, or pivot communication.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "change-playbook.md"
+      ]
+    },
+    {
+      "name": "chief-ai-officer-advisor",
+      "path": "c-level-advisor/skills/chief-ai-officer-advisor",
+      "description": "Chief AI Officer advisory for startups: model build-vs-buy decisions (API vs fine-tune vs in-house), AI risk classification under EU AI Act + US state patchwork, AI cost economics (API-to-self-hosted breakeven), and AI team org evolution. Use when deciding whether to call an API or fine-tune, classifying AI use cases for regulatory risk, calculating when self-hosting pays off, sequencing AI hires, or when user mentions CAIO, AI strategy, model selection, foundation model, fine-tuning, EU AI Act, NIST AI RMF, AI governance, model risk, or AI economics. Strategic only \u2014 does not duplicate \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/chief-ai-officer-advisor/scripts/ai_cost_economics.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-ai-officer-advisor/scripts/ai_cost_economics.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-ai-officer-advisor/scripts/ai_risk_classifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-ai-officer-advisor/scripts/ai_risk_classifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-ai-officer-advisor/scripts/model_buildvsbuy_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-ai-officer-advisor/scripts/model_buildvsbuy_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai_cost_economics.md",
+        "ai_risk_governance.md",
+        "ai_team_org_evolution.md",
+        "model_buildvsbuy_strategy.md"
+      ]
+    },
+    {
+      "name": "chief-customer-officer-advisor",
+      "path": "c-level-advisor/skills/chief-customer-officer-advisor",
+      "description": "Chief Customer Officer advisory for startups: retention decomposition (gross retention vs NRR honesty, churn root-cause taxonomy), customer segmentation strategy (differential investment across tiers + ICP fit scoring), CS team coverage model (pooled vs named CSM thresholds + ratio math), and CS team org evolution (CS vs Support vs AM distinctions). Use when designing retention strategy, segmenting customers for differential investment, sizing CS team, or sequencing CS hires. Strategic only \u2014 does not duplicate engineering/business-growth tactical skills.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/chief-customer-officer-advisor/scripts/cs_coverage_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-customer-officer-advisor/scripts/cs_coverage_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-customer-officer-advisor/scripts/customer_segmentation_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-customer-officer-advisor/scripts/customer_segmentation_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-customer-officer-advisor/scripts/retention_decomposition_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-customer-officer-advisor/scripts/retention_decomposition_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "cs_coverage_model.md",
+        "cs_team_org_evolution.md",
+        "customer_segmentation_strategy.md",
+        "retention_decomposition.md"
+      ]
+    },
+    {
+      "name": "chief-data-officer-advisor",
+      "path": "c-level-advisor/skills/chief-data-officer-advisor",
+      "description": "Chief Data Officer advisory for startups: AI training data rights and consent provenance, data product strategy (warehouse vs lakehouse vs mesh, build-vs-buy), B2B customer-data-as-asset valuation and M&A readiness, data team org evolution. Use when deciding whether to train models on customer data, choosing data architecture, valuing data for fundraising or M&A, sequencing data hires, or when user mentions CDO, chief data officer, data strategy, data mesh, lakehouse, training data, data product, data monetization, or customer data asset. NOT a tactical data engineering skill \u2014 strategic \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/chief-data-officer-advisor/scripts/ai_training_data_audit.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-data-officer-advisor/scripts/ai_training_data_audit.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-data-officer-advisor/scripts/data_asset_valuator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-data-officer-advisor/scripts/data_asset_valuator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chief-data-officer-advisor/scripts/data_product_strategy_picker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chief-data-officer-advisor/scripts/data_product_strategy_picker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ai_training_data_rights.md",
+        "customer_data_as_asset.md",
+        "data_product_strategy.md",
+        "data_team_org_evolution.md"
+      ]
+    },
+    {
+      "name": "chief-of-staff",
+      "path": "c-level-advisor/skills/chief-of-staff",
+      "description": "C-suite orchestration layer. Routes founder questions to the right advisor role(s), triggers multi-role board meetings for complex decisions, synthesizes outputs, and tracks decisions. Every C-suite interaction starts here. Loads company context automatically. Use when a founder question needs routing to the right advisor \u2014 e.g. 'should we raise now or cut burn?' \u2014 or when a multi-domain decision needs a board meeting convened.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "routing-matrix.md",
+        "synthesis-framework.md"
+      ]
+    },
+    {
+      "name": "chro-advisor",
+      "path": "c-level-advisor/skills/chro-advisor",
+      "description": "People leadership for scaling companies. Hiring strategy, compensation design, org structure, culture, and retention. Use when building hiring plans, designing comp frameworks, restructuring teams, managing performance, building culture, or when user mentions CHRO, HR, people strategy, talent, headcount, compensation, org design, retention, or performance management.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/chro-advisor/scripts/comp_benchmarker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chro-advisor/scripts/comp_benchmarker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/chro-advisor/scripts/hiring_plan_modeler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/chro-advisor/scripts/hiring_plan_modeler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "comp_frameworks.md",
+        "org_design.md",
+        "people_strategy.md"
+      ]
+    },
+    {
+      "name": "ciso-advisor",
+      "path": "c-level-advisor/skills/ciso-advisor",
+      "description": "Security leadership for growth-stage companies. Risk quantification in dollars, compliance roadmap (SOC 2/ISO 27001/HIPAA/GDPR), security architecture strategy, incident response leadership, and board-level security reporting. Use when building security programs, justifying security budget, selecting compliance frameworks, managing incidents, assessing vendor risk, or when user mentions CISO, security strategy, compliance roadmap, zero trust, or board security reporting.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/ciso-advisor/scripts/compliance_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/ciso-advisor/scripts/compliance_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/ciso-advisor/scripts/risk_quantifier.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/ciso-advisor/scripts/risk_quantifier.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "compliance_roadmap.md",
+        "incident_response.md",
+        "security_strategy.md"
+      ]
+    },
+    {
+      "name": "cmo-advisor",
+      "path": "c-level-advisor/skills/cmo-advisor",
+      "description": "Marketing leadership for scaling companies. Brand positioning, growth model design, marketing budget allocation, and marketing org design. Use when designing brand strategy, selecting growth models (PLG vs sales-led vs community-led), allocating marketing budgets, building marketing teams, or when user mentions CMO, brand strategy, growth model, CAC, LTV, channel mix, or marketing ROI.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/cmo-advisor/scripts/growth_model_simulator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cmo-advisor/scripts/growth_model_simulator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cmo-advisor/scripts/marketing_budget_modeler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cmo-advisor/scripts/marketing_budget_modeler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "brand_positioning.md",
+        "growth_frameworks.md",
+        "marketing_org.md"
+      ]
+    },
+    {
+      "name": "company-os",
+      "path": "c-level-advisor/skills/company-os",
+      "description": "The meta-framework for how a company runs \u2014 the connective tissue between all C-suite roles. Covers operating system selection (EOS, Scaling Up, OKR-native, hybrid), accountability charts, scorecards, meeting pulse, issue resolution, and 90-day rocks. Use when setting up company operations, selecting a management framework, designing meeting rhythms, building accountability systems, implementing OKRs, or when user mentions EOS, Scaling Up, operating system, L10 meetings, rocks, scorecard, accountability chart, or quarterly planning.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "implementation-guide.md",
+        "os-comparison.md"
+      ]
+    },
+    {
+      "name": "competitive-intel",
+      "path": "c-level-advisor/skills/competitive-intel",
+      "description": "Systematic competitor tracking that feeds CMO positioning, CRO battlecards, and CPO roadmap decisions. Use when analyzing competitors, building sales battlecards, tracking market moves, positioning against alternatives, or when user mentions competitive intelligence, competitive analysis, competitor research, battlecards, win/loss, or market positioning.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "ci-playbook.md"
+      ]
+    },
+    {
+      "name": "context-engine",
+      "path": "c-level-advisor/skills/context-engine",
+      "description": "Loads and manages company context for all C-suite advisor skills. Reads ~/.claude/company-context.md, detects stale context (>90 days), enriches context during conversations, and enforces privacy/anonymization rules before external API calls. Use when starting any C-suite advisor session, when context looks stale or missing, or before sending company data to an external service.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "anonymization-protocol.md"
+      ]
+    },
+    {
+      "name": "coo-advisor",
+      "path": "c-level-advisor/skills/coo-advisor",
+      "description": "Operations leadership for scaling companies. Process design, OKR execution, operational cadence, and scaling playbooks. Use when designing operations, setting up OKRs, building processes, scaling teams, analyzing bottlenecks, planning operational cadence, or when user mentions COO, operations, process improvement, OKRs, scaling, operational efficiency, or execution.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/coo-advisor/scripts/okr_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/coo-advisor/scripts/okr_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/coo-advisor/scripts/ops_efficiency_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/coo-advisor/scripts/ops_efficiency_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
+      },
+      "references": [
+        "ops_cadence.md",
+        "process_frameworks.md",
+        "scaling_playbook.md"
+      ]
+    },
+    {
+      "name": "cpo-advisor",
+      "path": "c-level-advisor/skills/cpo-advisor",
+      "description": "Product leadership for scaling companies. Product vision, portfolio strategy, product-market fit, and product org design. Use when setting product vision, managing a product portfolio, measuring PMF, designing product teams, prioritizing at the portfolio level, reporting to the board on product, or when user mentions CPO, product strategy, product-market fit, product organization, portfolio prioritization, or roadmap strategy.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/cpo-advisor/scripts/pmf_scorer.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cpo-advisor/scripts/pmf_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/cpo-advisor/scripts/pmf_scorer.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cpo-advisor/scripts/portfolio_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cpo-advisor/scripts/portfolio_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "pmf_playbook.md",
+        "product_org_design.md",
+        "product_strategy.md"
+      ]
+    },
+    {
+      "name": "cro-advisor",
+      "path": "c-level-advisor/skills/cro-advisor",
+      "description": "Revenue leadership for B2B SaaS companies. Revenue forecasting, sales model design, pricing strategy, net revenue retention, and sales team scaling. Use when designing the revenue engine, setting quotas, modeling NRR, evaluating pricing, building board forecasts, or when user mentions CRO, chief revenue officer, revenue strategy, sales model, ARR growth, NRR, expansion revenue, churn, pricing strategy, or sales capacity.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/cro-advisor/scripts/churn_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cro-advisor/scripts/churn_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cro-advisor/scripts/revenue_forecast_model.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cro-advisor/scripts/revenue_forecast_model.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "nrr_playbook.md",
+        "pricing_strategy.md",
+        "sales_playbook.md"
+      ]
+    },
+    {
+      "name": "cs-onboard",
+      "path": "c-level-advisor/skills/cs-onboard",
+      "description": "Founder onboarding interview that captures company context across 7 dimensions. Invoke with /cs:setup for initial interview or /cs:update for quarterly refresh. Generates ~/.claude/company-context.md used by all C-suite advisor skills. Use when setting up the C-suite advisors for the first time, or when company context is missing or more than 90 days old \u2014 e.g. after a fundraise or pivot.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "interview-guide.md"
+      ]
+    },
+    {
+      "name": "cto-advisor",
+      "path": "c-level-advisor/skills/cto-advisor",
+      "description": "Technical leadership guidance for engineering teams, architecture decisions, and technology strategy. Use when assessing technical debt, scaling engineering teams, evaluating technologies, making architecture decisions, establishing engineering metrics, or when user mentions CTO, tech debt, technical debt, team scaling, architecture decisions, technology evaluation, engineering metrics, DORA metrics, or technology strategy.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/cto-advisor/scripts/team_scaling_calculator.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cto-advisor/scripts/team_scaling_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/cto-advisor/scripts/team_scaling_calculator.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/cto-advisor/scripts/tech_debt_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/cto-advisor/scripts/tech_debt_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "architecture_decision_records.md",
+        "engineering_metrics.md",
+        "technology_evaluation_framework.md"
+      ]
+    },
+    {
+      "name": "culture-architect",
+      "path": "c-level-advisor/skills/culture-architect",
+      "description": "Build, measure, and evolve company culture as operational behavior \u2014 not wall posters. Covers mission/vision/values workshops, values-to-behaviors translation, culture code creation, culture health assessment, and cultural rituals by stage. Use when building company values, assessing culture health, designing cultural rituals, creating culture codes, handling culture clashes, or when user mentions culture, values, culture debt, founder culture, or culture code.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "culture-playbook.md"
+      ]
+    },
+    {
+      "name": "decision-logger",
+      "path": "c-level-advisor/skills/decision-logger",
+      "description": "Two-layer memory architecture for board meeting decisions. Manages raw transcripts (Layer 1) and approved decisions (Layer 2). Use when logging decisions after a board meeting, reviewing past decisions with /cs:decisions, or checking overdue action items with /cs:review. Invoked automatically by the board-meeting skill after Phase 5 founder approval.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/decision-logger/scripts/decision_tracker.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/decision-logger/scripts/decision_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": []
+    },
+    {
+      "name": "founder-coach",
+      "path": "c-level-advisor/skills/founder-coach",
+      "description": "Personal leadership development for founders and first-time CEOs. Covers founder archetype identification, delegation frameworks, energy management, CEO calendar audits, leadership style evolution, blind spot identification, imposter syndrome, founder mental health, and succession planning. Use when a founder feels like the bottleneck, struggles to delegate, is burning out, transitioning from IC to executive, managing a board, or when user mentions founder mode, CEO growth, leadership development, delegation, burnout, or imposter syndrome.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "founder-toolkit.md",
+        "leadership-growth.md"
+      ]
+    },
+    {
+      "name": "general-counsel-advisor",
+      "path": "c-level-advisor/skills/general-counsel-advisor",
+      "description": "General Counsel advisory for startups: contract review (MSA, SaaS, NDA, DPA, employment), IP strategy, term sheet decoding, and regulatory landscape mapping. Use when reviewing any contract or term sheet, deciding when to engage outside counsel, defining IP strategy, evaluating regulatory exposure (HIPAA, GDPR, FDA, fintech), or when user mentions general counsel, GC, legal review, contract risk, term sheet, IP assignment, or regulatory exposure. NOT a substitute for licensed counsel \u2014 surfaces questions to bring to qualified attorneys.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/general-counsel-advisor/scripts/contract_risk_scanner.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/general-counsel-advisor/scripts/contract_risk_scanner.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/general-counsel-advisor/scripts/term_sheet_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/general-counsel-advisor/scripts/term_sheet_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "contracts_playbook.md",
+        "ip_and_regulatory.md",
+        "term_sheet_decoder.md"
+      ]
+    },
+    {
+      "name": "internal-narrative",
+      "path": "c-level-advisor/skills/internal-narrative",
+      "description": "Build and maintain one coherent company story across all audiences \u2014 employees, investors, customers, candidates, and partners. Detects narrative contradictions and ensures the same truth is framed for each audience's needs. Use when preparing investor updates, all-hands presentations, board communications, recruiting narratives, crisis communications, or when user mentions company narrative, messaging consistency, storytelling, all-hands, investor update, or crisis communication.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "narrative-frameworks.md"
+      ]
+    },
+    {
+      "name": "intl-expansion",
+      "path": "c-level-advisor/skills/intl-expansion",
+      "description": "International market expansion strategy. Market selection, entry modes, localization, regulatory compliance, and go-to-market by region. Use when expanding to new countries, evaluating international markets, planning localization, or building regional teams.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "market-entry-playbook.md",
+        "regional-guide.md"
+      ]
+    },
+    {
+      "name": "ma-playbook",
+      "path": "c-level-advisor/skills/ma-playbook",
+      "description": "M&A strategy for acquiring companies or being acquired. Due diligence, valuation, integration, and deal structure. Use when evaluating acquisitions, preparing for acquisition, M&A due diligence, integration planning, or deal negotiation.",
+      "tools": [],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": true,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "due-diligence-checklist.md",
+        "integration-playbook.md"
+      ]
+    },
+    {
+      "name": "org-health-diagnostic",
+      "path": "c-level-advisor/skills/org-health-diagnostic",
+      "description": "Cross-functional organizational health check combining signals from all C-suite roles. Scores 8 dimensions on a traffic-light scale with drill-down recommendations. Use when assessing overall company health, preparing for board reviews, identifying at-risk functions, or when user mentions org health, health check, or health dashboard.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/org-health-diagnostic/scripts/health_scorer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/org-health-diagnostic/scripts/health_scorer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": true
+      },
+      "references": [
+        "health-benchmarks.md"
+      ]
+    },
+    {
+      "name": "scenario-war-room",
+      "path": "c-level-advisor/skills/scenario-war-room",
+      "description": "Cross-functional what-if modeling for cascading multi-variable scenarios. Unlike single-assumption stress testing, this models compound adversity across all business functions simultaneously. Use when facing complex risk scenarios, strategic decisions with major downside, or when the user asks 'what if X AND Y both happen?",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/scenario-war-room/scripts/scenario_modeler.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/scenario-war-room/scripts/scenario_modeler.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": false,
+        "close_out": false
+      },
+      "references": [
+        "scenario-planning.md"
+      ]
+    },
+    {
+      "name": "strategic-alignment",
+      "path": "c-level-advisor/skills/strategic-alignment",
+      "description": "Cascades strategy from boardroom to individual contributor. Detects and fixes misalignment between company goals and team execution. Covers strategy articulation, cascade mapping, orphan goal detection, silo identification, communication gap analysis, and realignment protocols. Use when teams are pulling in different directions, OKRs don't connect, departments optimize locally at company expense, or when user mentions alignment, strategy cascade, silo, conflicting OKRs, or strategy communication.",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/strategic-alignment/scripts/alignment_checker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/strategic-alignment/scripts/alignment_checker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 c-level-advisor/skills/strategic-alignment/scripts/alignment_checker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "alignment-playbook.md"
+      ]
+    },
+    {
+      "name": "vpe-advisor",
+      "path": "c-level-advisor/skills/vpe-advisor",
+      "description": "VP of Engineering advisory for startups: delivery throughput (DORA 4 metrics + bottleneck identification), engineering hiring funnel (sourcing \u2192 screen \u2192 onsite \u2192 offer conversion + time-to-fill + pipeline gap), engineering team structure (squad/tribe/chapter design + tech-lead manager-trigger thresholds), and production discipline (on-call, deployment cadence, postmortem culture). Use when sprint velocity is dropping, eng hiring is broken, team structure is unclear, or deciding when to add a tech-lead manager. NOT a CTO skill (which owns architecture) \u2014 VPE owns delivery operations and how \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/skills/vpe-advisor/scripts/delivery_throughput_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/vpe-advisor/scripts/delivery_throughput_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/vpe-advisor/scripts/eng_hiring_funnel_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/vpe-advisor/scripts/eng_hiring_funnel_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/skills/vpe-advisor/scripts/eng_team_structure_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/skills/vpe-advisor/scripts/eng_team_structure_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "delivery_throughput.md",
+        "eng_team_structure.md",
+        "engineering_hiring_funnel.md",
+        "production_discipline.md"
+      ]
+    },
+    {
+      "name": "vpe-advisor",
+      "path": "c-level-advisor/vpe-advisor/skills/vpe-advisor",
+      "description": "VP of Engineering advisory for startups: delivery throughput (DORA 4 metrics + bottleneck identification), engineering hiring funnel (sourcing \u2192 screen \u2192 onsite \u2192 offer conversion + time-to-fill + pipeline gap), engineering team structure (squad/tribe/chapter design + tech-lead manager-trigger thresholds), and production discipline (on-call, deployment cadence, postmortem culture). Use when sprint velocity is dropping, eng hiring is broken, team structure is unclear, or deciding when to add a tech-lead manager. NOT a CTO skill (which owns architecture) \u2014 VPE owns delivery operations and how \u2026",
+      "tools": [
+        {
+          "script": "c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/delivery_throughput_analyzer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/delivery_throughput_analyzer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/eng_hiring_funnel_calculator.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/eng_hiring_funnel_calculator.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        },
+        {
+          "script": "c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/eng_team_structure_designer.py",
+          "wired": true,
+          "supports_sample": false,
+          "verification": [
+            {
+              "cmd": "python3 c-level-advisor/vpe-advisor/skills/vpe-advisor/scripts/eng_team_structure_designer.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            }
+          ]
+        }
+      ],
+      "agentic_signals": {
+        "goal_intake": false,
+        "refusal_gate": false,
+        "verification": false,
+        "loop_discipline": true,
+        "close_out": false
+      },
+      "references": [
+        "delivery_throughput.md",
+        "eng_team_structure.md",
+        "engineering_hiring_funnel.md",
+        "production_discipline.md"
+      ]
+    }
+  ]
+}

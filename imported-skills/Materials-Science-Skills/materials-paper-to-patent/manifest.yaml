@@ -1,0 +1,166 @@
+name: materials-paper-to-patent
+version: 1.0.0
+status: beta
+description: >
+  Agent-neutral routing manifest for converting materials science research
+  disclosures into evidence-grounded Chinese invention patent drafts. Default
+  invention type is process-material; supports algorithm/apparatus/mixed via
+  manifest detection.
+
+context_budget:
+  target_activation_bytes: 20480
+  max_activation_bytes: 22528
+  max_always_load: 3
+  max_skill_lines: 55
+  max_workflow_lines: 40
+  route_scenarios_file: evals/context-routes.yaml
+  required_route_axes:
+    - source_format
+    - task_mode
+    - invention_type
+  required_route_scenarios:
+    - disclosure-analysis-light
+    - claim-set-with-kb
+    - reader-to-patent
+    - reader-figure-full-draft
+    - unsupported-feature-block
+
+always_load:
+  - ../_shared/core/direction-profile.md
+  - static/core/contract.md
+  - static/core/workflow.md
+
+axes:
+  source_format:
+    detect: >
+      Use pdf-text for a selectable-text PDF, scanned-pdf for an image-only or
+      OCR-required PDF, pasted-text for user-provided prose, and mixed-project
+      when the workspace also contains source code, supplementary files,
+      inventor notes, figures, or an existing patent.
+    values:
+      pdf-text:
+        path: static/fragments/source/pdf-text.md
+        triggers: ["selectable pdf", "text-based pdf", "pdf text", "可复制文本", "可编辑pdf"]
+      scanned-pdf:
+        path: static/fragments/source/scanned-pdf.md
+        triggers: ["scanned pdf", "image-only pdf", "ocr pdf", "扫描版", "图片pdf"]
+      pasted-text:
+        path: static/fragments/source/pasted-text.md
+        triggers: ["pasted text", "manuscript text", "abstract paste", "粘贴文本", "用户输入"]
+      mixed-project:
+        path: static/fragments/source/mixed-project.md
+        triggers: ["mixed project", "supplementary files", "inventor notes", "源码+论文", "混合项目"]
+    default: pdf-text
+    multi: true
+
+  task_mode:
+    detect: >
+      Use full-draft for a complete application package, claim-set for claims
+      only, disclosure-analysis for patentability-oriented technical
+      extraction, and paper-patent-audit for comparison with an existing
+      patent.
+    values:
+      full-draft:
+        path: static/fragments/task/full-draft.md
+        triggers: ["full draft", "complete application", "全套申请", "完整申请"]
+      claim-set:
+        path: static/fragments/task/claim-set.md
+        triggers: ["claim set", "claims only", "权利要求", "仅权利要求"]
+      disclosure-analysis:
+        path: static/fragments/task/disclosure-analysis.md
+        triggers: ["disclosure analysis", "patentability extraction", "披露分析", "可专利性分析"]
+      paper-patent-audit:
+        path: static/fragments/task/paper-patent-audit.md
+        triggers: ["paper patent audit", "patent comparison", "对比审计", "论文专利对比"]
+    default: full-draft
+    multi: false
+
+  invention_type:
+    detect: >
+      Determine the dominant technical subject. Use process-material for
+      synthesis, formulation, processing, manufacturing, or material
+      preparation (default for civil materials); algorithm-software for data
+      processing, AI, signal processing, control, or computer-implemented
+      methods; apparatus-system for physical structures or cooperating
+      devices; and mixed when no single category is sufficient.
+    values:
+      algorithm-software:
+        path: static/fragments/invention/algorithm-software.md
+        triggers: ["algorithm", "software", "ai model", "算法", "软件"]
+      apparatus-system:
+        path: static/fragments/invention/apparatus-system.md
+        triggers: ["apparatus", "device", "system", "装置", "设备", "系统"]
+      process-material:
+        path: static/fragments/invention/process-material.md
+        triggers: ["process", "material", "preparation", "工艺", "材料", "制备"]
+      mixed:
+        path: static/fragments/invention/mixed.md
+        triggers: ["mixed invention", "compound type", "复合类型", "混合发明"]
+    default: process-material
+    multi: false
+
+references:
+  on_demand:
+    principles:
+      path: static/core/principles.md
+      when: "The task needs the full evidence-translation and materials-honesty principles."
+    stage-gates:
+      path: references/stage-gates.md
+      when: "The task drafts or audits formal claims or a full patent package."
+    output-contract:
+      path: static/core/output-contract.md
+      when: "The task produces or audits the complete patent package."
+    patent-kb:
+      path: static/core/patent_kb.yaml
+      when: "The task drafts or validates formal claims."
+    cn-drafting-guide:
+      path: references/cn-patent-drafting-guide.md
+      when: "Chinese claims or specification language is drafted or audited."
+    draft-schema:
+      path: references/draft-schema.md
+      when: "The structured draft is populated or validated."
+    corpus-patterns:
+      path: references/corpus-derived-patterns.md
+      when: "Paired examples are used to study supported transformations."
+    corpus-pair-audit:
+      path: references/corpus-pair-audit.md
+      when: "A supplied paper is compared with an existing patent."
+    claim-checklist:
+      path: references/claim-checklist.md
+      when: "Formal claims are drafted or validated."
+
+assets:
+  - examples/civil-concrete-strengthening
+
+scripts:
+  - scripts/extract_pdf_text.py
+  - scripts/init_patent_project.py
+  - scripts/audit_claims.py
+  - scripts/validate_patent_draft.py
+  - scripts/validate_patent_claims.py
+  - scripts/build_patent_package.py
+  - scripts/render_patent_docx.py
+  - scripts/render_flowchart_svg.py
+  - scripts/math_to_omml.py
+
+quality_gates:
+  - release gate must report no issues for this skill
+  - claims must stay inside the civil patent knowledge base
+
+handoffs:
+  provides:
+    patent-draft-handoff:
+      description: "Source-grounded patent draft state, claim support map, validation status, and inventor questions"
+      contract: ../../_shared/contracts/patent-draft-handoff.yaml
+      version: "1.0"
+  consumes:
+    - handoff: reader-package
+      from: materials-reader
+      optional: true
+    - handoff: figure-handoff
+      from: materials-figure
+      optional: true
+
+release_checks:
+  - scripts/run_release_checks.py --json
+  - scripts/check_skill_architecture.py --json

@@ -1,0 +1,49 @@
+task_name: citation_extraction
+manifest_version: "1.0.0"
+ars_min_version: "3.10.0"
+task_type: outcome-gradable
+outcome_gradable: true
+description: |
+  Phase 1 gold subset for #182 verification_gate.verify_citation.
+  Measures the lookup_verified 3-class enum classification accuracy
+  across 51 hand-curated tuples. One of them (the OQ-5 by-design
+  false-negative: a no-identifier fabrication) exercises the C-V6(a)
+  coverage-gap path: a title-only unmatched stays unresolvable, never
+  false, because no resolvable identifier exists to key the lookup on.
+  The complementary real-but-unindexed canary (a verified genuine paper
+  unmatched across all four resolvers) remains unfilled — see issue #250.
+target:
+  entrypoint: verification_gate.verify_citation
+  predicted_field: lookup_verified
+  expected_outcomes_path: expected_outcomes.json
+  tuple_dir: tuples
+sample_n: 51
+labels: ["true", "false", "unresolvable"]
+thresholds:
+  aggregate:
+    metric: accuracy
+    direction: higher_is_better
+    comparison: ">="
+    threshold_value: 0.90
+  per_class:
+    metric: accuracy
+    direction: higher_is_better
+    comparison: ">="
+    threshold_value: 0.85
+    classes: ["true", "false", "unresolvable"]
+tuple_distribution:
+  - kind: valid_doi
+    n: 20
+    expected_lookup_verified: "true"
+  - kind: valid_arxiv
+    n: 10
+    expected_lookup_verified: "true"
+  - kind: manual_exempt
+    n: 5
+    expected_lookup_verified: "unresolvable"
+  - kind: fabricated
+    n: 15
+    expected_lookup_verified: "false"
+  - kind: fabricated_title_only
+    n: 1
+    expected_lookup_verified: "unresolvable"

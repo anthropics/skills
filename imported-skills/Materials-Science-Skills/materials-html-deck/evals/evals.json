@@ -1,0 +1,57 @@
+{
+  "skill_name": "materials-html-deck",
+  "evals": [
+    {
+      "id": "html-deck-generation",
+      "prompt": "Generate a browser-native HTML academic deck from a slide outline for a materials science journal club presentation. The outline has 10 slides with Chinese titles, bullet points, and speaker notes. Use the build_deck.mjs path.",
+      "expected_output": "The assistant must use scripts/build_deck.mjs to generate retained HTML deck source, run strict Playwright verification, and deliver an HTML directory with index.html, slides, screenshots, QA report, speaker notes, and asset manifest. If dependencies are missing, the assistant must report the blocker and provide install instructions.",
+      "assertions": [
+        {
+          "name": "script_used",
+          "description": "The assistant uses scripts/build_deck.mjs for HTML deck generation."
+        },
+        {
+          "name": "html_outputs_present",
+          "description": "The output directory includes index.html, slides, screenshots, QA report, and asset manifest."
+        },
+        {
+          "name": "blocker_reported_if_missing",
+          "description": "If Playwright or the script is unavailable, the assistant reports the blocker and install instructions."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "slide-content-mapping",
+      "prompt": "Generate an HTML deck from this outline:\n\n# 水性环氧改性乳化沥青的粘结性能研究\n\n## 工程问题\n- 传统粘层材料粘结强度不足\n- 水分损害导致层间失效\n\n## 材料体系\n- 水性环氧树脂 (WER) 掺量: 5%, 10%, 15%\n- 乳化沥青 (EA): 阳离子慢裂型\n\n## 关键结果\n- 10% WER 掺量粘结强度提升 28%\n- 拉拔试验: 0.55 MPa vs 0.43 MPa (对照组)",
+      "expected_output": "The assistant must preserve content exactly, keep Chinese titles, map claims to slide titles or evidence cards, and keep all numerical values unchanged.",
+      "assertions": [
+        {
+          "name": "content_preserved",
+          "description": "Technical terms and numerical data are preserved exactly."
+        },
+        {
+          "name": "chinese_preserved",
+          "description": "Chinese slide titles and content remain Chinese by default."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "image-placement",
+      "prompt": "Generate an HTML academic deck with images: Figure 1 at figures/fig1.png, Figure 2 at figures/fig2.png, and Figure 3 at figures/fig3.png. Place them on the correct evidence slides and run strict verification.",
+      "expected_output": "The assistant must place each image in the HTML slide source, preserve captions/source notes, verify local media, and report missing files rather than inventing replacements.",
+      "assertions": [
+        {
+          "name": "images_placed_on_correct_slides",
+          "description": "Each image appears on its designated slide."
+        },
+        {
+          "name": "missing_images_reported",
+          "description": "Missing image files are reported by strict verification."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

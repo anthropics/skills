@@ -1,0 +1,23 @@
+{
+  "forecast_periods": [
+    {"period": "2024-Q1", "forecast": 420000, "actual": 445000},
+    {"period": "2024-Q2", "forecast": 480000, "actual": 460000},
+    {"period": "2024-Q3", "forecast": 510000, "actual": 525000},
+    {"period": "2024-Q4", "forecast": 550000, "actual": 510000},
+    {"period": "2025-Q1", "forecast": 520000, "actual": 540000},
+    {"period": "2025-Q2", "forecast": 580000, "actual": 560000}
+  ],
+  "category_breakdowns": {
+    "by_rep": [
+      {"category": "Sarah Chen", "forecast": 210000, "actual": 225000},
+      {"category": "Marcus Johnson", "forecast": 185000, "actual": 160000},
+      {"category": "Priya Patel", "forecast": 125000, "actual": 135000},
+      {"category": "Alex Rivera", "forecast": 60000, "actual": 40000}
+    ],
+    "by_segment": [
+      {"category": "Enterprise", "forecast": 320000, "actual": 310000},
+      {"category": "Mid-Market", "forecast": 180000, "actual": 175000},
+      {"category": "SMB", "forecast": 80000, "actual": 75000}
+    ]
+  }
+}

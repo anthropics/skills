@@ -1,0 +1,10 @@
+{
+  "vault": "/tmp/test-vault",
+  "total_pages": 2,
+  "orphans": [],
+  "broken_links": [],
+  "stale": [],
+  "missing_frontmatter": [],
+  "duplicate_titles": {},
+  "log_gap": null
+}

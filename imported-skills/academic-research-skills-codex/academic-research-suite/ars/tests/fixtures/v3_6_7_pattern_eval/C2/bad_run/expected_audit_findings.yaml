@@ -1,0 +1,27 @@
+run_id: 2026-04-30T15-03-00Z-c200
+verdict_status: MINOR
+round: 1
+target_rounds: 3
+finding_counts:
+  p1: 0
+  p2: 0
+  p3: 1
+findings:
+  - id: F-001
+    severity: P3
+    dimension: "3.7"
+    file: bad_run/deliverable.md
+    line: 9
+    description: >
+      Reflexivity temporal ambiguity (C2): The disclosure phrase "during this period"
+      is a deictic temporal reference with no anchoring year range in abstract context.
+      The upstream disclosure.md specifies "from 2020 to 2023." Without explicit bounds
+      a reader cannot determine whether the evaluator role is current or historical,
+      affecting how the disclosure is weighted under standard COI reading.
+    suggested_fix: >
+      Replace "during this period" with "from 2020 to 2023" or use the "former"
+      prefix: "as a former external evaluator on the National Quality Assurance
+      Committee (2020–2023)."
+generated_at: "2026-04-30T15:03:22.917Z"
+generated_by: scripts/run_codex_audit.sh
+generator_version: 1.0.0

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "name": "strict",
+  "description": "Strictest gate. All conditions must pass; high budget margin. Use for unattended overnight runs or any execution where no human-in-the-loop is available for mid-run intervention. Independent re-derivation (rootnode-critic-gate) is assumed for any engine evolution proposals during this mode.",
+  "threshold_rule": "all_must_pass",
+  "min_pass_count": 7,
+  "required_conditions": [
+    "spec_stability",
+    "verification_surface",
+    "invariants_documented",
+    "pump_primer_done",
+    "work_decomposes",
+    "rollback_tolerable",
+    "budget_headroom"
+  ],
+  "budget_safety_margin": 1.3,
+  "budget_data_source": "manual_input",
+  "notes": "Strictest profile. All 7 conditions required because no real-time correction available. Budget margin high (1.3x) because mid-run budget exhaustion has no recovery path under unattended operation. Failures wait for next supervised review window. Reconsider if telemetry becomes available — strict mode benefits most from automatic budget detection. Pair with rootnode-critic-gate strict profile for end-to-end strict execution."
+}

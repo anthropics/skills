@@ -1,0 +1,24 @@
+{
+  "tuple_id": "035-fabricated-null-electrolyte",
+  "kind": "fabricated",
+  "corpus_entry": {
+    "citation_key": "Petrov2023NullElectrolyte",
+    "title": "Null Electrolyte Interfaces in Imaginary Solid-State Batteries",
+    "authors": [
+      {"family": "Petrov", "given": "D."},
+      {"family": "Yamamoto", "given": "K."},
+      {"family": "Costa", "given": "R."}
+    ],
+    "year": 2023,
+    "doi": "10.99999/ars184.fake.matsci.2023.169",
+    "venue": "Journal of Imaginary Materials Science",
+    "source_pointer": "https://doi.org/10.99999/ars184.fake.matsci.2023.169",
+    "obtained_via": "folder-scan"
+  },
+  "arxiv_id": null,
+  "ref_slug": "petrov-2023-null-electrolyte",
+  "anchor": {"kind": "page", "value": "1"},
+  "human_expert_verdict": null,
+  "provenance_note": null,
+  "fabrication_intent": true
+}

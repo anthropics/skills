@@ -1,0 +1,821 @@
+{
+  "team_info": {
+    "name": "Phoenix Development Team",
+    "size": 5,
+    "scrum_master": "Sarah Chen",
+    "product_owner": "Mike Rodriguez"
+  },
+  "sprints": [
+    {
+      "sprint_number": 1,
+      "sprint_name": "Sprint Alpha",
+      "start_date": "2024-01-08",
+      "end_date": "2024-01-19",
+      "planned_points": 23,
+      "completed_points": 18,
+      "added_points": 3,
+      "removed_points": 2,
+      "carry_over_points": 5,
+      "team_capacity": 40,
+      "working_days": 10,
+      "team_size": 5,
+      "stories": [
+        {
+          "id": "US-101",
+          "title": "User authentication system",
+          "points": 8,
+          "status": "completed",
+          "assigned_to": "John Doe",
+          "created_date": "2024-01-08",
+          "completed_date": "2024-01-16",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-102", 
+          "title": "Dashboard layout implementation",
+          "points": 5,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-01-08",
+          "completed_date": "2024-01-18",
+          "blocked_days": 1,
+          "priority": "medium"
+        },
+        {
+          "id": "US-103",
+          "title": "API integration for user data",
+          "points": 5,
+          "status": "completed", 
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-01-08",
+          "completed_date": "2024-01-19",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-104",
+          "title": "Advanced filtering options",
+          "points": 5,
+          "status": "in_progress",
+          "assigned_to": "Alice Brown",
+          "created_date": "2024-01-08",
+          "blocked_days": 2,
+          "priority": "low"
+        }
+      ],
+      "blockers": [
+        {
+          "id": "B-001",
+          "description": "Third-party API documentation incomplete",
+          "created_date": "2024-01-10",
+          "resolved_date": "2024-01-12",
+          "resolution_days": 2,
+          "affected_stories": ["US-103"],
+          "category": "external"
+        }
+      ],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.92,
+          "engagement_score": 0.85
+        },
+        "sprint_planning": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.90
+        },
+        "sprint_review": {
+          "attendance_rate": 0.96,
+          "engagement_score": 0.88
+        },
+        "retrospective": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.95
+        }
+      }
+    },
+    {
+      "sprint_number": 2,
+      "sprint_name": "Sprint Beta",
+      "start_date": "2024-01-22",
+      "end_date": "2024-02-02",
+      "planned_points": 21,
+      "completed_points": 21,
+      "added_points": 1,
+      "removed_points": 1,
+      "carry_over_points": 3,
+      "team_capacity": 38,
+      "working_days": 9,
+      "team_size": 5,
+      "stories": [
+        {
+          "id": "US-105",
+          "title": "Email notification system",
+          "points": 8,
+          "status": "completed",
+          "assigned_to": "John Doe",
+          "created_date": "2024-01-22",
+          "completed_date": "2024-01-30",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-106",
+          "title": "User profile management",
+          "points": 5,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-01-22",
+          "completed_date": "2024-02-01",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-107",
+          "title": "Data export functionality",
+          "points": 3,
+          "status": "completed",
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-01-22",
+          "completed_date": "2024-01-31",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-104",
+          "title": "Advanced filtering options",
+          "points": 5,
+          "status": "completed",
+          "assigned_to": "Alice Brown",
+          "created_date": "2024-01-08",
+          "completed_date": "2024-02-02",
+          "blocked_days": 0,
+          "priority": "low"
+        }
+      ],
+      "blockers": [],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.94,
+          "engagement_score": 0.88
+        },
+        "sprint_planning": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.92
+        },
+        "sprint_review": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.90
+        },
+        "retrospective": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.93
+        }
+      }
+    },
+    {
+      "sprint_number": 3,
+      "sprint_name": "Sprint Gamma",
+      "start_date": "2024-02-05",
+      "end_date": "2024-02-16",
+      "planned_points": 24,
+      "completed_points": 19,
+      "added_points": 4,
+      "removed_points": 3,
+      "carry_over_points": 5,
+      "team_capacity": 42,
+      "working_days": 10,
+      "team_size": 5,
+      "stories": [
+        {
+          "id": "US-108",
+          "title": "Real-time chat implementation",
+          "points": 13,
+          "status": "in_progress",
+          "assigned_to": "John Doe",
+          "created_date": "2024-02-05",
+          "blocked_days": 3,
+          "priority": "high"
+        },
+        {
+          "id": "US-109",
+          "title": "Mobile responsive design",
+          "points": 8,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-02-05",
+          "completed_date": "2024-02-14",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-110",
+          "title": "Performance optimization",
+          "points": 3,
+          "status": "completed",
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-02-05",
+          "completed_date": "2024-02-13",
+          "blocked_days": 1,
+          "priority": "medium"
+        }
+      ],
+      "blockers": [
+        {
+          "id": "B-002",
+          "description": "WebSocket library compatibility issue",
+          "created_date": "2024-02-07",
+          "resolved_date": "2024-02-11",
+          "resolution_days": 4,
+          "affected_stories": ["US-108"],
+          "category": "technical"
+        },
+        {
+          "id": "B-003",
+          "description": "Database migration pending approval",
+          "created_date": "2024-02-09",
+          "resolution_days": 0,
+          "affected_stories": ["US-110"],
+          "category": "process"
+        }
+      ],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.88,
+          "engagement_score": 0.82
+        },
+        "sprint_planning": {
+          "attendance_rate": 0.96,
+          "engagement_score": 0.85
+        },
+        "sprint_review": {
+          "attendance_rate": 0.92,
+          "engagement_score": 0.83
+        },
+        "retrospective": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.87
+        }
+      }
+    },
+    {
+      "sprint_number": 4,
+      "sprint_name": "Sprint Delta", 
+      "start_date": "2024-02-19",
+      "end_date": "2024-03-01",
+      "planned_points": 20,
+      "completed_points": 22,
+      "added_points": 2,
+      "removed_points": 0,
+      "carry_over_points": 2,
+      "team_capacity": 40,
+      "working_days": 10,
+      "team_size": 5,
+      "stories": [
+        {
+          "id": "US-108",
+          "title": "Real-time chat implementation",
+          "points": 13,
+          "status": "completed",
+          "assigned_to": "John Doe",
+          "created_date": "2024-02-05",
+          "completed_date": "2024-02-28",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-111",
+          "title": "Search functionality enhancement",
+          "points": 5,
+          "status": "completed",
+          "assigned_to": "Alice Brown",
+          "created_date": "2024-02-19",
+          "completed_date": "2024-02-26",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-112",
+          "title": "Unit test coverage improvement",
+          "points": 3,
+          "status": "completed",
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-02-19",
+          "completed_date": "2024-02-27",
+          "blocked_days": 0,
+          "priority": "low"
+        },
+        {
+          "id": "US-113",
+          "title": "Error handling improvements",
+          "points": 1,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-02-25",
+          "completed_date": "2024-03-01",
+          "blocked_days": 0,
+          "priority": "medium"
+        }
+      ],
+      "blockers": [],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.96,
+          "engagement_score": 0.90
+        },
+        "sprint_planning": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.94
+        },
+        "sprint_review": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.92
+        },
+        "retrospective": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.95
+        }
+      }
+    },
+    {
+      "sprint_number": 5,
+      "sprint_name": "Sprint Epsilon",
+      "start_date": "2024-03-04",
+      "end_date": "2024-03-15",
+      "planned_points": 25,
+      "completed_points": 17,
+      "added_points": 6,
+      "removed_points": 8,
+      "carry_over_points": 8,
+      "team_capacity": 35,
+      "working_days": 9,
+      "team_size": 4,
+      "stories": [
+        {
+          "id": "US-114",
+          "title": "Advanced analytics dashboard",
+          "points": 13,
+          "status": "blocked",
+          "assigned_to": "John Doe",
+          "created_date": "2024-03-04",
+          "blocked_days": 7,
+          "priority": "high"
+        },
+        {
+          "id": "US-115",
+          "title": "User permissions system",
+          "points": 8,
+          "status": "in_progress",
+          "assigned_to": "Alice Brown",
+          "created_date": "2024-03-04",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-116",
+          "title": "API rate limiting",
+          "points": 2,
+          "status": "completed",
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-03-04",
+          "completed_date": "2024-03-08",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-117",
+          "title": "Documentation updates",
+          "points": 2,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-03-04", 
+          "completed_date": "2024-03-10",
+          "blocked_days": 0,
+          "priority": "low"
+        }
+      ],
+      "blockers": [
+        {
+          "id": "B-004",
+          "description": "Analytics service downtime",
+          "created_date": "2024-03-05",
+          "resolution_days": 0,
+          "affected_stories": ["US-114"],
+          "category": "external"
+        },
+        {
+          "id": "B-005",
+          "description": "Team member on sick leave",
+          "created_date": "2024-03-07",
+          "resolved_date": "2024-03-15",
+          "resolution_days": 8,
+          "affected_stories": ["US-115"],
+          "category": "team"
+        }
+      ],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.75,
+          "engagement_score": 0.70
+        },
+        "sprint_planning": {
+          "attendance_rate": 0.80,
+          "engagement_score": 0.75
+        },
+        "sprint_review": {
+          "attendance_rate": 0.85,
+          "engagement_score": 0.78
+        },
+        "retrospective": {
+          "attendance_rate": 0.95,
+          "engagement_score": 0.88
+        }
+      }
+    },
+    {
+      "sprint_number": 6,
+      "sprint_name": "Sprint Zeta",
+      "start_date": "2024-03-18",
+      "end_date": "2024-03-29",
+      "planned_points": 22,
+      "completed_points": 24,
+      "added_points": 2,
+      "removed_points": 0,
+      "carry_over_points": 6,
+      "team_capacity": 45,
+      "working_days": 10,
+      "team_size": 5,
+      "stories": [
+        {
+          "id": "US-115",
+          "title": "User permissions system",
+          "points": 8,
+          "status": "completed",
+          "assigned_to": "Alice Brown",
+          "created_date": "2024-03-04",
+          "completed_date": "2024-03-25",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-118",
+          "title": "Backup and recovery system",
+          "points": 8,
+          "status": "completed",
+          "assigned_to": "John Doe",
+          "created_date": "2024-03-18",
+          "completed_date": "2024-03-28",
+          "blocked_days": 0,
+          "priority": "high"
+        },
+        {
+          "id": "US-119",
+          "title": "UI theme customization",
+          "points": 5,
+          "status": "completed",
+          "assigned_to": "Jane Smith",
+          "created_date": "2024-03-18",
+          "completed_date": "2024-03-26",
+          "blocked_days": 0,
+          "priority": "medium"
+        },
+        {
+          "id": "US-120",
+          "title": "Performance monitoring",
+          "points": 3,
+          "status": "completed",
+          "assigned_to": "Bob Wilson",
+          "created_date": "2024-03-18",
+          "completed_date": "2024-03-24",
+          "blocked_days": 0,
+          "priority": "low"
+        }
+      ],
+      "blockers": [],
+      "ceremonies": {
+        "daily_standup": {
+          "attendance_rate": 0.98,
+          "engagement_score": 0.93
+        },
+        "sprint_planning": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.96
+        },
+        "sprint_review": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.94
+        },
+        "retrospective": {
+          "attendance_rate": 1.0,
+          "engagement_score": 0.97
+        }
+      }
+    }
+  ],
+  "retrospectives": [
+    {
+      "sprint_number": 1,
+      "date": "2024-01-19",
+      "facilitator": "Sarah Chen",
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown", "Sarah Chen"],
+      "duration_minutes": 75,
+      "went_well": [
+        "Team collaboration was excellent during planning",
+        "Daily standups were efficient and focused", 
+        "Good technical problem-solving on authentication system",
+        "New team member integrated well",
+        "Clear user story definitions"
+      ],
+      "to_improve": [
+        "Story estimation accuracy needs work",
+        "Too many blockers appeared mid-sprint",
+        "API documentation was incomplete at start",
+        "Need better communication with external teams"
+      ],
+      "action_items": [
+        {
+          "id": "AI-001",
+          "description": "Schedule estimation workshop for next sprint planning",
+          "owner": "Sarah Chen",
+          "priority": "high",
+          "due_date": "2024-01-26",
+          "status": "completed",
+          "created_sprint": 1,
+          "completed_sprint": 2,
+          "category": "process",
+          "effort_estimate": "medium"
+        },
+        {
+          "id": "AI-002", 
+          "description": "Establish direct communication channel with API team",
+          "owner": "Bob Wilson",
+          "priority": "medium",
+          "due_date": "2024-01-30",
+          "status": "completed",
+          "created_sprint": 1,
+          "completed_sprint": 2,
+          "category": "communication",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-003",
+          "description": "Create blocker escalation process documentation",
+          "owner": "Sarah Chen",
+          "priority": "medium",
+          "due_date": "2024-02-02",
+          "status": "in_progress",
+          "created_sprint": 1,
+          "category": "process",
+          "effort_estimate": "low"
+        }
+      ]
+    },
+    {
+      "sprint_number": 2,
+      "date": "2024-02-02",
+      "facilitator": "Sarah Chen",
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown", "Sarah Chen"],
+      "duration_minutes": 60,
+      "went_well": [
+        "Perfect sprint execution - completed all planned work",
+        "No blockers encountered",
+        "Estimation workshop improved accuracy significantly",
+        "Team velocity is stabilizing",
+        "Good ceremony attendance and engagement"
+      ],
+      "to_improve": [
+        "Could have taken on more work given the smooth execution",
+        "Need to celebrate successes more",
+        "Sprint review could be more interactive",
+        "Documentation still lagging behind development"
+      ],
+      "action_items": [
+        {
+          "id": "AI-004",
+          "description": "Implement team celebration ritual for successful sprints",
+          "owner": "Jane Smith",
+          "priority": "low",
+          "due_date": "2024-02-09",
+          "status": "completed",
+          "created_sprint": 2,
+          "completed_sprint": 3,
+          "category": "team_dynamics",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-005",
+          "description": "Create documentation sprint for next iteration",
+          "owner": "Alice Brown",
+          "priority": "medium",
+          "due_date": "2024-02-16",
+          "status": "cancelled",
+          "created_sprint": 2,
+          "category": "process",
+          "effort_estimate": "high"
+        }
+      ]
+    },
+    {
+      "sprint_number": 3,
+      "date": "2024-02-16",
+      "facilitator": "John Doe",
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown"],
+      "duration_minutes": 90,
+      "went_well": [
+        "Good adaptation when faced with technical challenges",
+        "Team helped each other overcome blockers",
+        "Mobile design work exceeded expectations",
+        "Performance improvements had measurable impact"
+      ],
+      "to_improve": [
+        "WebSocket integration took longer than expected",
+        "Too much scope change during the sprint",
+        "Daily standup attendance dropped",
+        "Need better technical spike planning",
+        "Database migration process is too slow"
+      ],
+      "action_items": [
+        {
+          "id": "AI-006",
+          "description": "Schedule technical spike for complex integrations",
+          "owner": "John Doe",
+          "priority": "high",
+          "due_date": "2024-02-23",
+          "status": "completed",
+          "created_sprint": 3,
+          "completed_sprint": 4,
+          "category": "technical",
+          "effort_estimate": "medium"
+        },
+        {
+          "id": "AI-007",
+          "description": "Review scope change process with Product Owner",
+          "owner": "Sarah Chen",
+          "priority": "medium",
+          "due_date": "2024-02-26",
+          "status": "completed",
+          "created_sprint": 3,
+          "completed_sprint": 4,
+          "category": "process",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-008",
+          "description": "Improve database migration approval workflow",
+          "owner": "Bob Wilson",
+          "priority": "medium",
+          "due_date": "2024-03-08",
+          "status": "blocked",
+          "created_sprint": 3,
+          "category": "process",
+          "effort_estimate": "high"
+        }
+      ]
+    },
+    {
+      "sprint_number": 4,
+      "date": "2024-03-01",
+      "facilitator": "Sarah Chen", 
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown", "Sarah Chen"],
+      "duration_minutes": 45,
+      "went_well": [
+        "Exceeded sprint goal by completing extra work",
+        "Real-time chat finally delivered with high quality",
+        "Technical spikes prevented major blockers",
+        "Team ceremonies back to full engagement",
+        "Search functionality delivered ahead of schedule"
+      ],
+      "to_improve": [
+        "Sprint retrospective was rushed due to time constraints",
+        "Need better capacity planning for variable team sizes",
+        "Unit test coverage still below target"
+      ],
+      "action_items": [
+        {
+          "id": "AI-009",
+          "description": "Block more time for retrospectives in calendar",
+          "owner": "Sarah Chen",
+          "priority": "low",
+          "due_date": "2024-03-08",
+          "status": "completed",
+          "created_sprint": 4,
+          "completed_sprint": 5,
+          "category": "process",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-010",
+          "description": "Establish unit test coverage gates in CI/CD",
+          "owner": "Bob Wilson",
+          "priority": "high",
+          "due_date": "2024-03-15",
+          "status": "in_progress",
+          "created_sprint": 4,
+          "category": "technical",
+          "effort_estimate": "medium"
+        }
+      ]
+    },
+    {
+      "sprint_number": 5,
+      "date": "2024-03-15",
+      "facilitator": "Alice Brown",
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown"],
+      "duration_minutes": 105,
+      "went_well": [
+        "Team adapted well to reduced capacity",
+        "Good support for team member on sick leave",
+        "Documentation work was delivered on time",
+        "Rate limiting implementation was smooth"
+      ],
+      "to_improve": [
+        "External service dependencies caused major delays",
+        "Too much scope change again - need better discipline",
+        "Team capacity planning needs improvement",
+        "Daily standup attendance dropped significantly",
+        "Analytics service reliability is a recurring issue"
+      ],
+      "action_items": [
+        {
+          "id": "AI-011",
+          "description": "Create external service dependency register",
+          "owner": "John Doe",
+          "priority": "high",
+          "due_date": "2024-03-22",
+          "status": "not_started",
+          "created_sprint": 5,
+          "category": "process",
+          "effort_estimate": "medium"
+        },
+        {
+          "id": "AI-012",
+          "description": "Escalate analytics service reliability issues",
+          "owner": "Sarah Chen",
+          "priority": "high",
+          "due_date": "2024-03-18",
+          "status": "completed",
+          "created_sprint": 5,
+          "completed_sprint": 6,
+          "category": "external",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-013",
+          "description": "Implement capacity planning buffer for sick leave",
+          "owner": "Sarah Chen",
+          "priority": "medium",
+          "due_date": "2024-03-29",
+          "status": "in_progress",
+          "created_sprint": 5,
+          "category": "process",
+          "effort_estimate": "medium"
+        }
+      ]
+    },
+    {
+      "sprint_number": 6,
+      "date": "2024-03-29",
+      "facilitator": "Sarah Chen",
+      "attendees": ["John Doe", "Jane Smith", "Bob Wilson", "Alice Brown", "Sarah Chen"],
+      "duration_minutes": 70,
+      "went_well": [
+        "Excellent sprint execution with team back to full capacity",
+        "Delivered more points than planned",
+        "No blockers encountered",
+        "Strong ceremony engagement across all events",
+        "Backup system implementation was flawless",
+        "Team morale has improved significantly"
+      ],
+      "to_improve": [
+        "Need to maintain this momentum",
+        "Could optimize sprint planning efficiency",
+        "Theme customization feature needs user feedback",
+        "Performance monitoring setup could be automated"
+      ],
+      "action_items": [
+        {
+          "id": "AI-014",
+          "description": "Gather user feedback on theme customization",
+          "owner": "Jane Smith",
+          "priority": "medium",
+          "due_date": "2024-04-05",
+          "status": "not_started",
+          "created_sprint": 6,
+          "category": "external",
+          "effort_estimate": "low"
+        },
+        {
+          "id": "AI-015",
+          "description": "Automate performance monitoring setup",
+          "owner": "Bob Wilson",
+          "priority": "low",
+          "due_date": "2024-04-12",
+          "status": "not_started",
+          "created_sprint": 6,
+          "category": "technical",
+          "effort_estimate": "medium"
+        }
+      ]
+    }
+  ]
+}

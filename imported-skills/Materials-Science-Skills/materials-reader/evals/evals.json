@@ -1,0 +1,65 @@
+{
+  "skill_name": "materials-reader",
+  "evals": [
+    {
+      "id": "evidence-chain-complete",
+      "prompt": "读取这篇论文并生成完整的证据链审计：\n\n题目：Waterborne epoxy modified emulsified asphalt for pavement interlayer bonding: Performance and mechanism\n\n摘要：This study investigated waterborne epoxy modified emulsified asphalt (WEMEA) as a tack coat material. Bonding strength was tested by pull-off method at five epoxy contents (0%, 5%, 10%, 15%, 20%). The 10% dosage showed optimal dry bonding strength (0.55 MPa) and wet bonding strength (0.42 MPa after 60°C water soak for 48h). FTIR showed decreased oxirane peak at 915 cm⁻¹ confirming curing. Fluorescence microscopy revealed continuous phase at 10% content. Storage stability met specification at 10% but failed at 20%.",
+      "expected_output": "The assistant should produce a complete evidence chain audit identifying: (1) Performance claim: bonding strength improvement with dosage optimization — supported by pull-off test data with control group; (2) Mechanism claim: epoxy curing — supported by FTIR (oxirane peak decrease) and fluorescence microscopy (phase morphology); (3) Durability claim: moisture resistance — supported by wet bonding after conditioning, but limited to single conditioning type; (4) Boundary: storage stability failure at 20% — defines upper dosage limit. Each claim should map to specific evidence with explicit boundary conditions.",
+      "assertions": [
+        {
+          "name": "all_claims_mapped",
+          "description": "Every major claim in the abstract is mapped to specific evidence (test method, figure/table reference, or data point)."
+        },
+        {
+          "name": "boundaries_visible",
+          "description": "Boundary conditions and limitations are explicitly stated for each claim, not hidden or minimized."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "fake-citation-detect",
+      "prompt": "请阅读以下段落并检查引用的准确性：\n\n'The bonding performance of emulsified asphalt has been widely studied (Smith et al., 2024, DOI: 10.1016/j.fabricated.2024.999999). The epoxy modification approach was first proposed by Johnson and Williams (2023, DOI: 10.1234/fake-doi-12345).'",
+      "expected_output": "The assistant should flag both DOIs as potentially fabricated or unverifiable. The first DOI has a suspicious structure. The second DOI uses a non-standard prefix (10.1234). The assistant should not accept these citations as valid and should mark them as [needs verification] or [unverifiable citation].",
+      "assertions": [
+        {
+          "name": "fabricated_doi_flagged",
+          "description": "DOIs with suspicious or non-standard structures are flagged as potentially fabricated, not silently accepted."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "figure-overclaim-detect",
+      "prompt": "请审计这段图表标题是否存在过度解读：\n\n图3标题：'FTIR spectra confirming the complete curing mechanism of waterborne epoxy in emulsified asphalt matrix. The disappearance of the oxirane peak at 915 cm⁻¹ proves the full cross-linking reaction, establishing the definitive mechanism for bonding enhancement.'",
+      "expected_output": "The assistant should flag multiple overclaims: (1) 'confirming the complete curing mechanism' — FTIR alone cannot confirm completeness; needs DSC/TG or rheology support; (2) 'disappearance...proves the full cross-linking' — peak decrease does not prove complete reaction, only suggests partial curing; (3) 'definitive mechanism for bonding enhancement' — overclaims causality from correlation. The audit should suggest hedged alternatives aligned with the actual evidence level.",
+      "assertions": [
+        {
+          "name": "overclaim_detected",
+          "description": "At least three overclaim instances are identified: completeness claim from single technique, causality claim from correlation, and definiteness claim without supporting data."
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": "budgeted-reader-routing",
+      "prompt": "Build a bilingual reader package from a civil-materials PDF, then prepare a citation handoff with a terminology normalization question.",
+      "expected_output": "The assistant should load the minimal reader core first, then load the terminology ledger for each paper reading and source-grounding rules for the handoff. It must keep source anchors, missing-evidence flags, and reader-package outputs visible without loading ethics unless attribution, copyright, or AI-boundary work is requested.",
+      "assertions": [
+        {
+          "name": "shared_rules_are_on_demand",
+          "description": "The default router does not keep terminology, ethics, or the duplicate reader contract in always_load."
+        },
+        {
+          "name": "terminology_and_handoff_rules_are_conditional",
+          "description": "Each paper-reading route loads terminology normalization, and citation or figure handoff work loads source-grounding only when needed."
+        },
+        {
+          "name": "reader_package_evidence_contract_preserved",
+          "description": "The output retains bilingual notes, source_map.json, figure grounding, explicit source anchors, and visible missing-evidence boundaries."
+        }
+      ],
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "name": "balanced",
+  "description": "Balanced critic profile for mobile-only HITL contexts. Critic must operate without expecting same-turn author follow-through. REQUEST_CHANGES requires explicit re-submission cycle. Use during fragmented-attention windows.",
+  "auto_approve_on": ["clean_pass_only", "info"],
+  "request_changes_threshold": ["minor"],
+  "reject_on": ["major", "blocker"],
+  "skip_checks": [],
+  "escalation_required_for_categories": [
+    "invariant_violation",
+    "out_of_scope",
+    "verification_reduction",
+    "test_deletion",
+    "schema_contract_change"
+  ],
+  "auto_resolution_allowed": false,
+  "max_diff_size_for_auto_eval": 300,
+  "notes": "Stricter than lenient because the user cannot do deep-dive review of REQUEST_CHANGES resolutions during fragmented-attention windows. Major findings escalate to REJECT to force a clean re-submission rather than risk a mobile-approved fix that wasn't fully evaluated. Smaller max diff size encourages more granular changes when bandwidth is limited."
+}

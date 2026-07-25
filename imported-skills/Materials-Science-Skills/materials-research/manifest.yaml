@@ -1,0 +1,724 @@
+version: 1.2.0
+status: stable
+# Minimal always_load: profile precedence and the core workflow. The detailed
+# shared stance, evidence contract, research-state contract, and weakness
+# routing load on demand — see the on_demand entries below.
+context_budget:
+  target_activation_bytes: 32768
+  max_activation_bytes: 34816
+  max_always_load: 2
+  max_skill_lines: 50
+  max_workflow_lines: 25
+
+always_load:
+- ../_shared/core/direction-profile.md
+- static/core/workflow.md
+axes:
+  task:
+    detect: What deliverable does the user want?
+    default: manuscript-writing
+    values:
+      research-positioning:
+        path: static/fragments/task/research-positioning.md
+        triggers:
+        - research topic
+        - novelty
+        - gap
+        - paper angle
+        - research question
+        - 选题
+        - 创新点
+        - 研究问题
+        - 论文角度
+        - 研究方向
+      reading:
+        path: static/fragments/task/reading.md
+        triggers:
+        - read paper
+        - translate paper
+        - paper notes
+        - 精读
+        - 文献阅读
+        - 文献翻译
+      literature-review:
+        path: static/fragments/task/literature-review.md
+        triggers:
+        - review
+        - 综述
+        - literature review
+        - research progress
+        - 研究进展
+      citation-mapping:
+        path: static/fragments/task/citation-mapping.md
+        triggers:
+        - citation
+        - reference
+        - citation matrix
+        - literature search
+        - claim-source
+        - 引用
+        - 参考文献
+        - 文献检索
+        - 引用矩阵
+        - 证据映射
+      manuscript-writing:
+        path: static/fragments/task/manuscript-writing.md
+        triggers:
+        - abstract
+        - introduction
+        - discussion
+        - paper
+        - manuscript
+        - 摘要
+        - 引言
+        - 讨论
+        - 论文写作
+      journal-targeting:
+        path: static/fragments/task/journal-targeting.md
+        triggers:
+        - journal
+        - submission
+        - target
+        - 投稿
+        - 选刊
+        - 期刊
+      experiment-design:
+        path: static/fragments/task/experiment-design.md
+        triggers:
+        - experiment
+        - test matrix
+        - 实验方案
+        - 实验矩阵
+        - 试验设计
+        - DOE
+        - factorial
+        - response surface
+        - RSM
+        - Taguchi
+        - 正交试验
+        - 响应面
+        - 因子设计
+      data-analysis:
+        path: static/fragments/task/data-analysis.md
+        triggers:
+        - data
+        - result
+        - interpret
+        - statistics
+        - 数据
+        - 结果分析
+        - 数据分析
+        - 强度
+        - 粘度
+        - 黏度
+        - 储存稳定性
+      data-fair:
+        path: static/fragments/task/data-fair.md
+        triggers:
+        - FAIR
+        - dataset package
+        - data availability
+        - metadata
+        - raw data
+        - processed data
+        - supplementary data
+      figure-table:
+        path: static/fragments/task/figure-table.md
+        triggers:
+        - figure
+        - table
+        - plot
+        - 图
+        - 表
+        - 作图
+        - 论文图表
+      submission-package:
+        path: static/fragments/task/submission-package.md
+        triggers:
+        - submission package
+        - cover letter
+        - highlights
+        - graphical abstract
+        - declaration
+        - 投稿包
+        - 投稿信
+        - 亮点
+        - 图文摘要
+        - 声明
+      reviewer-response:
+        path: static/fragments/task/reviewer-response.md
+        triggers:
+        - response to reviewer
+        - reviewer response
+        - rebuttal
+        - revision response
+        - 审稿回复
+        - 回复审稿人
+        - 返修
+        - 大修
+        - 小修
+        - rebuttal letter
+      presentation:
+        path: static/fragments/task/presentation.md
+        triggers:
+        - slides
+        - journal club
+        - 组会
+        - 汇报
+        - 幻灯片
+      html-deck-generation:
+        path: static/fragments/task/html-deck-generation.md
+        triggers:
+        - html deck
+        - generate html deck
+        - browser slides
+        - academic deck
+        - 生成HTML deck
+        - 生成PPT
+        - 制作PPT
+      reviewer-audit:
+        path: static/fragments/task/reviewer-audit.md
+        triggers:
+        - reviewer
+        - risk
+        - desk reject
+        - 审稿
+        - 拒稿风险
+        - 预审
+  paper_stage:
+    detect: Where is the manuscript or review workflow in the paper-production lifecycle?
+    default: idea
+    values:
+      idea:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - idea
+        - topic
+        - scope
+        - angle
+        - research question
+        - 选题
+        - 研究问题
+      screening:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - screening
+        - literature search
+        - source quality
+        - citation matrix
+        - 文献筛选
+        - 检索
+      reading:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - reader-package
+        - source_map
+        - evidence chain
+        - 精读
+        - 证据链
+      drafting:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - draft
+        - manuscript
+        - review outline
+        - section draft
+        - 初稿
+        - 论文写作
+      revision:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - reviewer
+        - revision
+        - weakness route
+        - gate report
+        - 返修
+        - 审稿意见
+      submission:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - submission
+        - cover letter
+        - highlights
+        - declaration
+        - 投稿
+        - 投稿包
+  workflow_mode:
+    detect: Whether the user needs one output, a full paper-production pipeline, or
+      a reviewer-risk loop.
+    default: single-task
+    values:
+      single-task:
+        path: static/core/workflow.md
+        triggers:
+        - single task
+        - quick
+        - one section
+        - one table
+      paper-production:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - paper production
+        - full workflow
+        - mini-review
+        - experimental manuscript
+        - 论文生产
+        - 小综述
+        - 实验论文
+      review-loop:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - review loop
+        - weakness routing
+        - regression check
+        - reviewer risk
+        - 弱点路由
+        - 回流
+  output_package:
+    detect: What concrete package should the orchestrator produce or request from
+      companion skills?
+    default: note
+    values:
+      note:
+        path: static/core/workflow.md
+        triggers:
+        - note
+        - summary
+        - plan
+        - 说明
+      matrix:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - matrix
+        - claim-source
+        - evidence table
+        - 矩阵
+        - 证据表
+      reader-package:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - reader-package
+        - source_map.json
+        - citation_handoff.csv
+        - figure_handoff.csv
+      manuscript:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - manuscript
+        - paper draft
+        - section draft
+        - 论文初稿
+      figure-package:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - figure package
+        - figure_contract.md
+        - caption_boundary
+        - 图包
+      gate-report:
+        path: ../_shared/paper-production/paper-gate-report-template.md
+        triggers:
+        - gate report
+        - quality gate
+        - paper gate
+        - 质量门禁
+      submission-package:
+        path: references/paper-production-orchestrator.md
+        triggers:
+        - submission package
+        - cover letter
+        - highlights
+        - 投稿包
+  material_family:
+    detect: Which materials family is central?
+    default: neutral
+    values:
+      neutral:
+        path: ../_shared/core/direction-profile.md
+        triggers:
+        - neutral family
+        - profile family fallback
+        - no saved family
+      civil:
+        path: static/fragments/domain/civil-family.md
+        trigger_file: ../../_shared/triggers/family/civil.yaml
+      polymers:
+        path: static/fragments/domain/polymers-family.md
+        trigger_file: ../../_shared/triggers/family/polymers.yaml
+      metals:
+        path: static/fragments/domain/metals-family.md
+        trigger_file: ../../_shared/triggers/family/metals.yaml
+      ceramics:
+        path: static/fragments/domain/ceramics-family.md
+        trigger_file: ../../_shared/triggers/family/ceramics.yaml
+      functional:
+        path: static/fragments/domain/functional-family.md
+        trigger_file: ../../_shared/triggers/family/functional.yaml
+      nano:
+        path: static/fragments/domain/nano-family.md
+        trigger_file: ../../_shared/triggers/family/nano.yaml
+  domain:
+    detect: Which materials field is central?
+    default: general
+    values:
+      general:
+        path: ../_shared/core/direction-profile.md
+        triggers:
+        - general fallback
+        - profile fallback
+        - neutral routing
+      asphalt-pavement:
+        path: static/fragments/domain/asphalt-pavement.md
+        trigger_file: ../../_shared/triggers/domain/asphalt-pavement.yaml
+        coverage_tier: full
+      cement-concrete:
+        path: static/fragments/domain/cement-concrete.md
+        trigger_file: ../../_shared/triggers/domain/cement-concrete.yaml
+        coverage_tier: full
+      construction-materials:
+        path: static/fragments/domain/construction-materials.md
+        trigger_file: ../../_shared/triggers/domain/construction-materials.yaml
+        coverage_tier: full
+      steel-metal:
+        path: static/fragments/domain/steel-metal.md
+        trigger_file: ../../_shared/triggers/domain/steel-metal.yaml
+        coverage_tier: full
+      geotechnical-materials:
+        path: static/fragments/domain/geotechnical-materials.md
+        trigger_file: ../../_shared/triggers/domain/geotechnical-materials.yaml
+        coverage_tier: full
+      timber-masonry:
+        path: static/fragments/domain/timber-masonry.md
+        trigger_file: ../../_shared/triggers/domain/timber-masonry.yaml
+        coverage_tier: full
+      waterproofing-sealants:
+        path: static/fragments/domain/waterproofing-sealants.md
+        trigger_file: ../../_shared/triggers/domain/waterproofing-sealants.yaml
+        coverage_tier: full
+      sustainability-durability:
+        path: static/fragments/domain/sustainability-durability.md
+        trigger_file: ../../_shared/triggers/domain/sustainability-durability.yaml
+        coverage_tier: full
+      civil-generic:
+        path: static/fragments/domain/civil-generic.md
+        trigger_file: ../../_shared/triggers/domain/civil-generic.yaml
+        coverage_tier: full
+      thermoplastics:
+        path: static/fragments/domain/thermoplastics.md
+        trigger_file: ../../_shared/triggers/domain/thermoplastics.yaml
+        coverage_tier: full
+      thermosets:
+        path: static/fragments/domain/thermosets.md
+        trigger_file: ../../_shared/triggers/domain/thermosets.yaml
+        coverage_tier: full
+      rubber-elastomers:
+        path: static/fragments/domain/rubber-elastomers.md
+        trigger_file: ../../_shared/triggers/domain/rubber-elastomers.yaml
+        coverage_tier: full
+      polymer-composites:
+        path: static/fragments/domain/polymer-composites.md
+        trigger_file: ../../_shared/triggers/domain/polymer-composites.yaml
+        coverage_tier: full
+      ferrous-alloys:
+        path: static/fragments/domain/ferrous-alloys.md
+        trigger_file: ../../_shared/triggers/domain/ferrous-alloys.yaml
+        coverage_tier: full
+      nonferrous-alloys:
+        path: static/fragments/domain/nonferrous-alloys.md
+        trigger_file: ../../_shared/triggers/domain/nonferrous-alloys.yaml
+        coverage_tier: full
+      high-temperature-alloys:
+        path: static/fragments/domain/high-temperature-alloys.md
+        trigger_file: ../../_shared/triggers/domain/high-temperature-alloys.yaml
+        coverage_tier: full
+      additive-metals:
+        path: static/fragments/domain/additive-metals.md
+        trigger_file: ../../_shared/triggers/domain/additive-metals.yaml
+        coverage_tier: full
+      structural-ceramics:
+        path: static/fragments/domain/structural-ceramics.md
+        trigger_file: ../../_shared/triggers/domain/structural-ceramics.yaml
+        coverage_tier: full
+      functional-ceramics:
+        path: static/fragments/domain/functional-ceramics.md
+        trigger_file: ../../_shared/triggers/domain/functional-ceramics.yaml
+        coverage_tier: full
+      refractories:
+        path: static/fragments/domain/refractories.md
+        trigger_file: ../../_shared/triggers/domain/refractories.yaml
+        coverage_tier: full
+      bioceramics:
+        path: static/fragments/domain/bioceramics.md
+        trigger_file: ../../_shared/triggers/domain/bioceramics.yaml
+        coverage_tier: full
+      semiconductors:
+        path: static/fragments/domain/semiconductors.md
+        trigger_file: ../../_shared/triggers/domain/semiconductors.yaml
+        coverage_tier: full
+      dielectrics-piezoelectrics:
+        path: static/fragments/domain/dielectrics-piezoelectrics.md
+        trigger_file: ../../_shared/triggers/domain/dielectrics-piezoelectrics.yaml
+        coverage_tier: full
+      photonic-optoelectronic:
+        path: static/fragments/domain/photonic-optoelectronic.md
+        trigger_file: ../../_shared/triggers/domain/photonic-optoelectronic.yaml
+        coverage_tier: full
+      nanoparticles:
+        path: static/fragments/domain/nanoparticles.md
+        trigger_file: ../../_shared/triggers/domain/nanoparticles.yaml
+        coverage_tier: full
+      nano-thin-films:
+        path: static/fragments/domain/nano-thin-films.md
+        trigger_file: ../../_shared/triggers/domain/nano-thin-films.yaml
+        coverage_tier: full
+      2d-materials:
+        path: static/fragments/domain/2d-materials.md
+        trigger_file: ../../_shared/triggers/domain/2d-materials.yaml
+        coverage_tier: full
+      nanocomposites:
+        path: static/fragments/domain/nanocomposites.md
+        trigger_file: ../../_shared/triggers/domain/nanocomposites.yaml
+        coverage_tier: full
+      thermal-insulation:
+        path: static/fragments/domain/thermal-insulation.md
+        trigger_file: ../../_shared/triggers/domain/thermal-insulation.yaml
+        coverage_tier: full
+  journal:
+    detect: Which target journal or journal family is named?
+    default: generic
+    values:
+      cbm:
+        path: static/fragments/journal/cbm.md
+        trigger_file: ../../_shared/triggers/journal/cbm.yaml
+      cbm-transportation:
+        path: static/fragments/journal/cbm-transportation.md
+        trigger_file: ../../_shared/triggers/journal/cbm-transportation.yaml
+      ccc:
+        path: static/fragments/journal/ccc.md
+        trigger_file: ../../_shared/triggers/journal/ccc.yaml
+      cscm:
+        path: static/fragments/journal/cscm.md
+        trigger_file: ../../_shared/triggers/journal/cscm.yaml
+      jbe:
+        path: static/fragments/journal/jbe.md
+        trigger_file: ../../_shared/triggers/journal/jbe.yaml
+      rmpd-ijpe:
+        path: static/fragments/journal/rmpd-ijpe.md
+        trigger_file: ../../_shared/triggers/journal/rmpd-ijpe.yaml
+      jre:
+        path: static/fragments/journal/jre.md
+        trigger_file: ../../_shared/triggers/journal/jre.yaml
+      generic:
+        path: static/fragments/journal/generic.md
+        trigger_file: ../../_shared/triggers/journal/generic.yaml
+      jacers:
+        path: static/fragments/journal/jacers.md
+        trigger_file: ../../_shared/triggers/journal/jacers.yaml
+      ceramics-international:
+        path: static/fragments/journal/ceramics-international.md
+        trigger_file: ../../_shared/triggers/journal/ceramics-international.yaml
+      energy-buildings:
+        path: static/fragments/journal/energy-buildings.md
+        trigger_file: ../../_shared/triggers/journal/energy-buildings.yaml
+      building-environment:
+        path: static/fragments/journal/building-environment.md
+        trigger_file: ../../_shared/triggers/journal/building-environment.yaml
+      ceramics:
+        path: static/fragments/domain/ceramics.md
+        trigger_file: ../../_shared/triggers/journal/ceramics.yaml
+      thermal-insulation:
+        path: static/fragments/domain/thermal-insulation.md
+        trigger_file: ../../_shared/triggers/journal/thermal-insulation.yaml
+      nature-materials:
+        path: static/fragments/journal/nature-materials.md
+        trigger_file: ../../_shared/triggers/journal/nature-materials.yaml
+      advanced-materials:
+        path: static/fragments/journal/advanced-materials.md
+        trigger_file: ../../_shared/triggers/journal/advanced-materials.yaml
+      acs-nano:
+        path: static/fragments/journal/acs-nano.md
+        trigger_file: ../../_shared/triggers/journal/acs-nano.yaml
+      nano-letters:
+        path: static/fragments/journal/nano-letters.md
+        trigger_file: ../../_shared/triggers/journal/nano-letters.yaml
+      advanced-functional-materials:
+        path: static/fragments/journal/advanced-functional-materials.md
+        trigger_file: ../../_shared/triggers/journal/advanced-functional-materials.yaml
+      jmca:
+        path: static/fragments/journal/jmca.md
+        trigger_file: ../../_shared/triggers/journal/jmca.yaml
+      progress-polymer-science:
+        path: static/fragments/journal/progress-polymer-science.md
+        trigger_file: ../../_shared/triggers/journal/progress-polymer-science.yaml
+      acta-materialia:
+        path: static/fragments/journal/acta-materialia.md
+        trigger_file: ../../_shared/triggers/journal/acta-materialia.yaml
+references:
+  on_demand:
+    stance:
+      path: ../_shared/core/stance.md
+      when: Detailed evidence placeholders, attribution, or collaborator stance
+        rules are needed beyond the router's compact evidence boundary.
+    evidence-contract:
+      path: ../_shared/core/evidence-contract.md
+      when: The task requires building or auditing a claim-evidence ladder, or
+        checking claim strength against the evidence hierarchy.
+    asphalt-waterborne-epoxy:
+      path: references/asphalt-waterborne-epoxy.md
+      when: The task concerns waterborne epoxy modified emulsified asphalt, bonding,
+        interface mechanism, or asphalt emulsion test design.
+    journal-shortlist:
+      path: references/journal-shortlist.md
+      when: The user asks where to submit, how to compare journals, or how to position
+        a manuscript across materials journals.
+    reviewer-risk-checklist:
+      path: references/reviewer-risk-checklist.md
+      when: The user asks for pre-submission review, desk-reject risk, reviewer simulation,
+        or claim-evidence audit.
+    output-templates:
+      path: references/output-templates.md
+      when: The user asks for abstract, highlights, title, cover letter, graphical
+        abstract, PPT, or structured manuscript templates.
+    data-to-manuscript:
+      path: references/data-to-manuscript.md
+      when: The user provides data, tables, or result descriptions and asks for interpretation,
+        figures, result paragraphs, or claim-evidence mapping.
+    statistical-methods:
+      path: references/statistical-methods.md
+      when: The task involves significance, ANOVA, t tests, uncertainty, replicate
+        count, dosage optimization, or statistical wording.
+    test-standards-mapping:
+      path: references/test-standards-mapping.md
+      when: The task involves ASTM, EN, JTG, GB, AASHTO, RILEM, test standards, or
+        method comparability.
+    standards-mapping:
+      path: references/standards-mapping.md
+      when: The task requires converting GB/T, JTG, or JTJ methods into ASTM/EN/ISO/AASHTO-aware
+        manuscript language.
+    characterization-guide:
+      path: references/characterization-guide.md
+      when: The task asks how to perform, report, or interpret FTIR, SEM, fluorescence
+        microscopy, XRD, TG/DTG, DSC, AFM, or rheology tests.
+    sustainability-claims-guide:
+      path: references/sustainability-claims-guide.md
+      when: The task involves sustainability, low carbon, LCA, environmental impact,
+        recycled materials, waste utilization, or service-life environmental claims.
+    ceramics-guide:
+      path: references/ceramics-guide.md
+      when: The task involves ceramics characterization, mechanical testing, or sintering.
+    thermal-insulation-guide:
+      path: references/thermal-insulation-guide.md
+      when: The task involves thermal conductivity measurement, insulation testing,
+        or hygrothermal aging.
+    ceramics-narrative:
+      path: ../materials-writing/references/ceramics-narrative.md
+      when: The user is writing a ceramics manuscript.
+    insulation-narrative:
+      path: ../materials-writing/references/insulation-narrative.md
+      when: The user is writing a thermal insulation manuscript.
+    reviewer-ceramics-criteria:
+      path: ../materials-reviewer/references/ceramics-reviewer-criteria.md
+      when: The user needs reviewer criteria for ceramics.
+    reviewer-insulation-criteria:
+      path: ../materials-reviewer/references/insulation-reviewer-criteria.md
+      when: The user needs reviewer criteria for thermal insulation.
+    thesis-timeline:
+      path: references/thesis-timeline.md
+      when: The user asks for master's thesis planning, semester roadmap, paper timeline,
+        weekly research plan, or how to progress from review to experiment to submission.
+    companion-modules:
+      path: references/companion-modules.md
+      when: The task should be handed off to materials-reader, materials-citation,
+        materials-writing, materials-polishing, materials-response, materials-reviewer,
+        materials-html-deck, materials-figure, or materials-doe.
+    paper-production-orchestrator:
+      path: references/paper-production-orchestrator.md
+      when: The user asks for WER-EA mini-review production, experimental manuscript
+        planning, paper gates, weakness routing, reviewer-risk loops, or end-to-end
+        paper-production control.
+    shared-weakness-routing:
+      path: ../_shared/paper-production/weakness-routing.md
+      when: A reviewer comment, self-review issue, or paper gate failure must be routed
+        to a companion skill.
+    pressure-test-suite:
+      path: references/pressure-test-suite.md
+      when: The task asks for pressure tests, failure modes, regression coverage,
+        skill validation, or reviewer-safe behavior checks across modules.
+    research-state-contract:
+      path: ../_shared/core/research-state-contract.md
+      when: The task spans literature, DOE, data, figures,
+        writing, or reviewer-risk traceability.
+    journal-cbm-facts:
+      path: ../_shared/journal-formats/cbm.md
+      when: The target journal is CBM, Construction and Building Materials, or the
+        user asks about CBM formatting requirements.
+    journal-ccc-facts:
+      path: ../_shared/journal-formats/ccc.md
+      when: The target journal is CCC, Cement and Concrete Composites, or the user
+        asks about CCC formatting requirements.
+    journal-rmpd-facts:
+      path: ../_shared/journal-formats/rmpd.md
+      when: The target journal is RMPD, IJPE, Road Materials and Pavement Design,
+        or International Journal of Pavement Engineering.
+    journal-jbe-facts:
+      path: ../_shared/journal-formats/jbe.md
+      when: The target journal is JBE, Journal of Building Engineering, or the user
+        asks about JBE formatting requirements.
+companion_skills:
+  reader: materials-reader
+  citation: materials-citation
+  writing: materials-writing
+  polishing: materials-polishing
+  response: materials-response
+  reviewer: materials-reviewer
+  html_deck: materials-html-deck
+  figure: materials-figure
+  data: materials-data
+  doe: materials-doe
+  literature_pipeline: materials-literature-pipeline
+assets: []
+scripts:
+- scripts
+quality_gates:
+- release gate must report no issues for this skill
+- claims must stay inside the skill evidence contract
+handoffs:
+  provides:
+    gate-report:
+      description: Stage gate report with weakness routing
+      contract: ../../_shared/contracts/gate-report.yaml
+      version: '1.0'
+  consumes:
+  - handoff: citation-handoff
+    from: materials-citation
+    optional: false
+  - handoff: reader-package
+    from: materials-reader
+    optional: false
+  - handoff: figure-handoff
+    from: materials-figure
+    optional: false
+  - handoff: data-package
+    from: materials-data
+    optional: false
+  - handoff: doe-handoff
+    from: materials-doe
+    optional: true
+  - handoff: literature-pipeline-handoff
+    from: materials-literature-pipeline
+    optional: true
+  - handoff: response-handoff
+    from: materials-response
+    optional: true
+  - handoff: patent-draft-handoff
+    from: materials-paper-to-patent
+    optional: true
+  - handoff: gate-report
+    from: materials-research
+    optional: true
+  - handoff: submission-package
+    from: materials-submission
+    optional: true
+release_checks:
+- scripts/run_release_checks.py --json
+- scripts/check_skill_architecture.py --json

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "remix-or-sveltekit",
+  "description": "Server-rendered framework with progressive enhancement (Remix v2 / SvelteKit). Low-JS-first. SEO-dependent. Mobile-4G or low-end Android primary device. Teams that find RSC complexity tax not worth it.",
+  "version": "1.0.0",
+  "constraints": {
+    "primary_device": ["mobile-4g", "low-end-android"],
+    "rendering": "server-rendered-progressive-enhancement",
+    "seo_dependent": true,
+    "auth_walled_only": false,
+    "team_size_min": 2,
+    "team_size_max": 30
+  },
+  "stack": {
+    "framework_options": ["remix-v2", "sveltekit"],
+    "language": "typescript",
+    "styling": "tailwind-or-vanilla-extract",
+    "component_pattern": "platform-first-html-then-enhance",
+    "state": "url-query-params-and-cookies-as-state",
+    "data_fetching": "framework-loaders-and-actions",
+    "forms": "platform-form-with-progressive-enhancement-not-react-hook-form",
+    "testing": "vitest + playwright-e2e"
+  },
+  "anti_recommendations": {
+    "swr-or-react-query": "kill — duplicates framework loaders; pick one",
+    "client-router-on-top": "kill — defeats the framework's purpose",
+    "heavy-client-state-libs": "warn — Remix/SvelteKit philosophy is URL-as-state; avoid Zustand/Jotai unless justified",
+    "rsc-style-data-flow": "kill — wrong framework if you want RSC; switch to Next App Router",
+    "no-progressive-enhancement": "kill — defeats the framework's value prop"
+  },
+  "success_thresholds": {
+    "lcp_ms_mobile_4g_p75": 1500,
+    "inp_ms_p75": 100,
+    "cls_p75": 0.05,
+    "bundle_kb_gzip_per_route_max": 80,
+    "framework_overhead_kb_gzip_max": 40,
+    "lighthouse_perf_min": 90,
+    "lighthouse_a11y_min": 95,
+    "lighthouse_seo_min": 95,
+    "test_coverage_min": 0.6,
+    "javascript_disabled_works": true
+  },
+  "ci_gates": [
+    "bundlewatch-per-route",
+    "lighthouse-ci",
+    "a11y-axe-checks",
+    "no-js-smoke-test-can-submit-forms"
+  ],
+  "canon_references": [
+    "Ryan Florence + Michael Jackson, Remix data-loading philosophy (2021-2024)",
+    "Rich Harris, Frameworks Without Hydration (2023+, SvelteKit/Svelte 5)",
+    "Jeremy Keith, Resilient Web Design (2016) — progressive enhancement",
+    "Alex Russell, The Performance Inequality Gap (2021-2024)",
+    "Tim Berners-Lee, principles of the web (1989-1990) — content-first"
+  ]
+}

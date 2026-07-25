@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "name": "example-router",
+  "description": "Example routing rules demonstrating time windows, geofence, calendar predicates, custom signals, and compound triggers. Routes to three example profiles (lenient, balanced, strict). Replace with your own profiles and rules.",
+  "default_profile": "lenient",
+  "rules": [
+    {
+      "rule_id": "do-not-disturb-active",
+      "priority": 5,
+      "description": "When DND signal is active, route to strict mode regardless of time. Highest priority because DND should override everything except manual override.",
+      "trigger": {
+        "type": "custom_signal",
+        "signal_name": "do_not_disturb",
+        "expected_value": true
+      },
+      "profile": "strict"
+    },
+    {
+      "rule_id": "unattended-window",
+      "priority": 10,
+      "description": "Strict mode during unattended hours (e.g., overnight). Replace times with your actual unattended window.",
+      "trigger": {
+        "type": "time_window",
+        "time_zone": "America/Phoenix",
+        "days_of_week": ["all"],
+        "start_time": "22:00",
+        "end_time": "06:00"
+      },
+      "profile": "strict"
+    },
+    {
+      "rule_id": "weekday-mobile-hitl-at-office",
+      "priority": 20,
+      "description": "Balanced (mobile-only HITL) mode during weekday work hours when at office. Compound trigger combines time window AND geofence — neither alone is sufficient.",
+      "trigger": {
+        "type": "compound",
+        "logic": "AND",
+        "conditions": [
+          {
+            "type": "time_window",
+            "time_zone": "America/Phoenix",
+            "days_of_week": ["mon", "tue", "wed", "thu", "fri"],
+            "start_time": "06:00",
+            "end_time": "17:00"
+          },
+          {
+            "type": "geofence",
+            "location": "at_office"
+          }
+        ]
+      },
+      "profile": "balanced"
+    },
+    {
+      "rule_id": "weekday-mobile-hitl-in-transit",
+      "priority": 21,
+      "description": "Balanced mode during weekday work-hour transit (commute). Catches the case where the user is on the way to/from office during work hours — still mobile-only HITL.",
+      "trigger": {
+        "type": "compound",
+        "logic": "AND",
+        "conditions": [
+          {
+            "type": "time_window",
+            "time_zone": "America/Phoenix",
+            "days_of_week": ["mon", "tue", "wed", "thu", "fri"],
+            "start_time": "06:00",
+            "end_time": "17:00"
+          },
+          {
+            "type": "geofence",
+            "location": "in_transit"
+          }
+        ]
+      },
+      "profile": "balanced"
+    },
+    {
+      "rule_id": "deep-focus-block",
+      "priority": 30,
+      "description": "When a calendar event with category 'focus' is in progress, treat as lenient mode regardless of time. Calendar-declared deep-work blocks signal full presence.",
+      "trigger": {
+        "type": "calendar",
+        "predicate": "event_in_progress",
+        "category": "focus"
+      },
+      "profile": "lenient"
+    }
+  ],
+  "manual_override": null,
+  "notes": "Example config aligned with three example profiles (lenient, balanced, strict). Priorities use sparse numbering (5, 10, 20, 21, 30) to leave room for inserting new rules without renumbering. DND signal at priority 5 because it should beat the unattended-window rule (which is at 10) — DND can be activated mid-day when the user wants a hard quiet period. Calendar focus blocks at 30 (lowest) because they're additive context, not overriding context. Replace the time_zone, geofence labels, and rule conditions with values appropriate to your work pattern."
+}

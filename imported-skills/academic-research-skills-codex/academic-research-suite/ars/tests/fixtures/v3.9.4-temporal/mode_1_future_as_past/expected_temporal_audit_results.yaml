@@ -1,0 +1,31 @@
+schema_version: '1.0'
+audit_run_id: 2026-05-18T12:34:56Z-a1b2
+report_reference_date: '2026-05-18'
+findings:
+- finding_id: TF-001
+  finding_kind: TEMPORAL-ARITHMETIC-IMPOSSIBLE
+  severity: HIGH
+  mode: 1
+  block_eligible: true
+  draft_locator:
+    file: phase4_composition/draft.md
+    line: 1
+    sentence: As of March 2025, the report noted that the system had already completed
+      June 2025 deliverables.
+  matched_span: null
+  bound_refs: []
+  bound_event: null
+  bound_dates:
+    left:
+      role: anchor
+      value: 2025-03-01..2025-03-31
+      source: draft_capture
+      ref_slug: null
+    right:
+      role: event
+      value: 2025-06-01..2025-06-30
+      source: draft_capture
+      ref_slug: null
+  rationale: 'Pattern A: anchor ''March 2025'' (2025-03-01..2025-03-31) before event
+    ''June 2025'' (2025-06-01..2025-06-30); event has not yet occurred at anchor time'
+  suggested_fix: Restate the claim to match the anchor's true time horizon, or hedge.

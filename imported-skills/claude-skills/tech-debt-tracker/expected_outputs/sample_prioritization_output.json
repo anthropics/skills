@@ -1,0 +1,1686 @@
+{
+  "metadata": {
+    "analysis_date": "2026-02-16T12:59:31.382843",
+    "framework_used": "cost_of_delay",
+    "team_size": 5,
+    "sprint_capacity_hours": 80,
+    "total_items_analyzed": 20
+  },
+  "prioritized_backlog": [
+    {
+      "id": "DEBT-0008",
+      "type": "magic_numbers",
+      "description": "Magic number 1800 used for lock timeout",
+      "file_path": "src/user_service.py",
+      "line_number": 98,
+      "severity": "low",
+      "metadata": {
+        "value": 1800,
+        "context": "account_lockout_duration"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 1,
+        "hours_estimate": 5.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 2,
+        "revenue_impact": 2,
+        "team_velocity_impact": 3,
+        "quality_impact": 3,
+        "security_impact": 2
+      },
+      "interest_rate": {
+        "daily_cost": 2.4,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 2.1,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.8
+    },
+    {
+      "id": "DEBT-0010",
+      "type": "long_line",
+      "description": "Line too long: 156 characters",
+      "file_path": "src/frontend.js",
+      "line_number": 127,
+      "severity": "low",
+      "metadata": {
+        "length": 156,
+        "recommended_max": 120
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 1,
+        "hours_estimate": 0.375,
+        "risk_factor": 1.0,
+        "skill_level_required": "junior",
+        "confidence": 0.95
+      },
+      "business_impact": {
+        "customer_impact": 2,
+        "revenue_impact": 2,
+        "team_velocity_impact": 3,
+        "quality_impact": 3,
+        "security_impact": 2
+      },
+      "interest_rate": {
+        "daily_cost": 2.4,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 0.16,
+      "category": "code_quality",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.8
+    },
+    {
+      "id": "DEBT-0011",
+      "type": "commented_code",
+      "description": "Dead code left in comments",
+      "file_path": "src/frontend.js",
+      "line_number": 285,
+      "severity": "low",
+      "metadata": {
+        "lines_of_commented_code": 8
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 1,
+        "hours_estimate": 5.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 2,
+        "revenue_impact": 2,
+        "team_velocity_impact": 3,
+        "quality_impact": 3,
+        "security_impact": 2
+      },
+      "interest_rate": {
+        "daily_cost": 2.4,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 2.1,
+      "category": "maintenance",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.8
+    },
+    {
+      "id": "DEBT-0007",
+      "type": "empty_catch_blocks",
+      "description": "Empty catch block in update_user method",
+      "file_path": "src/user_service.py",
+      "line_number": 156,
+      "severity": "medium",
+      "metadata": {
+        "method_name": "update_user",
+        "exception_type": "generic"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0009",
+      "type": "deep_nesting",
+      "description": "Deep nesting detected: 6 levels in preferences handling",
+      "file_path": "src/frontend.js",
+      "line_number": 32,
+      "severity": "medium",
+      "metadata": {
+        "nesting_level": 6,
+        "recommended_max": 4
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0012",
+      "type": "global_variables",
+      "description": "Global variable userCache should be encapsulated",
+      "file_path": "src/frontend.js",
+      "line_number": 7,
+      "severity": "medium",
+      "metadata": {
+        "variable_name": "userCache",
+        "scope": "global"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0014",
+      "type": "hardcoded_values",
+      "description": "Tax rates hardcoded in payment processing logic",
+      "file_path": "src/payment_processor.py",
+      "line_number": 45,
+      "severity": "medium",
+      "metadata": {
+        "values": [
+          "0.08",
+          "0.085",
+          "0.0625",
+          "0.06"
+        ],
+        "context": "tax_calculation"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0016",
+      "type": "inefficient_algorithm",
+      "description": "O(n) user search could be optimized with indexing",
+      "file_path": "src/user_service.py",
+      "line_number": 178,
+      "severity": "medium",
+      "metadata": {
+        "current_complexity": "O(n)",
+        "recommended_complexity": "O(log n)",
+        "method_name": "search_users"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0017",
+      "type": "memory_leak_risk",
+      "description": "Event listeners attached without cleanup",
+      "file_path": "src/frontend.js",
+      "line_number": 145,
+      "severity": "medium",
+      "metadata": {
+        "event_type": "click",
+        "cleanup_missing": true
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 10.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 3,
+        "team_velocity_impact": 5,
+        "quality_impact": 5,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 4.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 7.01,
+      "category": "other",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.72
+    },
+    {
+      "id": "DEBT-0001",
+      "type": "large_function",
+      "description": "create_user function in user_service.py is 89 lines long",
+      "file_path": "src/user_service.py",
+      "line_number": 13,
+      "severity": "high",
+      "metadata": {
+        "function_name": "create_user",
+        "length": 89,
+        "recommended_max": 50
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 15.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.7
+      },
+      "business_impact": {
+        "customer_impact": 4,
+        "revenue_impact": 6,
+        "team_velocity_impact": 10,
+        "quality_impact": 8,
+        "security_impact": 3
+      },
+      "interest_rate": {
+        "daily_cost": 7.4,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.03
+      },
+      "cost_of_delay": 19.48,
+      "category": "code_quality",
+      "impact_tags": [
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 4.26
+    },
+    {
+      "id": "DEBT-0005",
+      "type": "missing_docstring",
+      "description": "PaymentProcessor class missing docstring",
+      "file_path": "src/payment_processor.py",
+      "line_number": 8,
+      "severity": "low",
+      "metadata": {
+        "class_name": "PaymentProcessor"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 1,
+        "hours_estimate": 1.25,
+        "risk_factor": 1.0,
+        "skill_level_required": "junior",
+        "confidence": 0.9
+      },
+      "business_impact": {
+        "customer_impact": 1,
+        "revenue_impact": 1,
+        "team_velocity_impact": 2,
+        "quality_impact": 2,
+        "security_impact": 1
+      },
+      "interest_rate": {
+        "daily_cost": 1.6,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 0.35,
+      "category": "code_quality",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 4.1
+    },
+    {
+      "id": "DEBT-0013",
+      "type": "synchronous_ajax",
+      "description": "Synchronous AJAX call blocks UI thread",
+      "file_path": "src/frontend.js",
+      "line_number": 189,
+      "severity": "high",
+      "metadata": {
+        "method": "XMLHttpRequest",
+        "async": false
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 15.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 4,
+        "revenue_impact": 4,
+        "team_velocity_impact": 7,
+        "quality_impact": 7,
+        "security_impact": 4
+      },
+      "interest_rate": {
+        "daily_cost": 5.6,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 14.73,
+      "category": "other",
+      "impact_tags": [
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 3.73
+    },
+    {
+      "id": "DEBT-0015",
+      "type": "no_error_handling",
+      "description": "API calls without proper error handling",
+      "file_path": "src/payment_processor.py",
+      "line_number": 78,
+      "severity": "high",
+      "metadata": {
+        "api_endpoint": "stripe",
+        "error_scenarios": [
+          "network_failure",
+          "invalid_response"
+        ]
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 15.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 4,
+        "revenue_impact": 4,
+        "team_velocity_impact": 7,
+        "quality_impact": 7,
+        "security_impact": 4
+      },
+      "interest_rate": {
+        "daily_cost": 5.6,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 14.73,
+      "category": "other",
+      "impact_tags": [
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 3.73
+    },
+    {
+      "id": "DEBT-0019",
+      "type": "outdated_dependency",
+      "description": "jQuery version 2.1.4 has known security vulnerabilities",
+      "file_path": "package.json",
+      "line_number": 15,
+      "severity": "high",
+      "metadata": {
+        "package": "jquery",
+        "current_version": "2.1.4",
+        "latest_version": "3.6.4",
+        "vulnerabilities": [
+          "CVE-2020-11022",
+          "CVE-2020-11023"
+        ]
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 15.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 4,
+        "revenue_impact": 4,
+        "team_velocity_impact": 7,
+        "quality_impact": 7,
+        "security_impact": 4
+      },
+      "interest_rate": {
+        "daily_cost": 5.6,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 14.73,
+      "category": "other",
+      "impact_tags": [
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 3.73
+    },
+    {
+      "id": "DEBT-0018",
+      "type": "sql_injection_risk",
+      "description": "Potential SQL injection in user query",
+      "file_path": "src/database.py",
+      "line_number": 25,
+      "severity": "critical",
+      "metadata": {
+        "query_type": "dynamic",
+        "user_input": "unsanitized"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 3,
+        "hours_estimate": 20.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 5,
+        "revenue_impact": 5,
+        "team_velocity_impact": 9,
+        "quality_impact": 9,
+        "security_impact": 5
+      },
+      "interest_rate": {
+        "daily_cost": 7.199999999999999,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 25.26,
+      "category": "other",
+      "impact_tags": [
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 3.24
+    },
+    {
+      "id": "DEBT-0006",
+      "type": "todo_comment",
+      "description": "TODO: Move this to configuration file",
+      "file_path": "src/user_service.py",
+      "line_number": 8,
+      "severity": "low",
+      "metadata": {
+        "comment": "TODO: Move this to configuration file"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 1,
+        "hours_estimate": 0.75,
+        "risk_factor": 1.0,
+        "skill_level_required": "junior",
+        "confidence": 0.9
+      },
+      "business_impact": {
+        "customer_impact": 1,
+        "revenue_impact": 1,
+        "team_velocity_impact": 1,
+        "quality_impact": 1,
+        "security_impact": 1
+      },
+      "interest_rate": {
+        "daily_cost": 0.8,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.01
+      },
+      "cost_of_delay": 0.11,
+      "category": "maintenance",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 3.1
+    },
+    {
+      "id": "DEBT-0002",
+      "type": "duplicate_code",
+      "description": "Password validation logic duplicated in 3 locations",
+      "file_path": "src/user_service.py",
+      "line_number": 45,
+      "severity": "medium",
+      "metadata": {
+        "duplicate_count": 3,
+        "other_files": [
+          "src/auth.py",
+          "src/frontend.js"
+        ]
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 2,
+        "hours_estimate": 15.0,
+        "risk_factor": 1.4,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 3,
+        "revenue_impact": 4,
+        "team_velocity_impact": 6,
+        "quality_impact": 6,
+        "security_impact": 2
+      },
+      "interest_rate": {
+        "daily_cost": 4.8,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.08
+      },
+      "cost_of_delay": 12.69,
+      "category": "code_quality",
+      "impact_tags": [
+        "quick-win"
+      ],
+      "priority_score": 2.39
+    },
+    {
+      "id": "DEBT-0020",
+      "type": "test_debt",
+      "description": "No unit tests for critical payment processing logic",
+      "file_path": "src/payment_processor.py",
+      "line_number": 19,
+      "severity": "high",
+      "metadata": {
+        "coverage": 0,
+        "critical_paths": [
+          "process_payment",
+          "refund_payment"
+        ],
+        "risk_level": "high"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 6,
+        "hours_estimate": 36.0,
+        "risk_factor": 1.0,
+        "skill_level_required": "mid",
+        "confidence": 0.6
+      },
+      "business_impact": {
+        "customer_impact": 7,
+        "revenue_impact": 7,
+        "team_velocity_impact": 10,
+        "quality_impact": 10,
+        "security_impact": 4
+      },
+      "interest_rate": {
+        "daily_cost": 8.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.04
+      },
+      "cost_of_delay": 50.82,
+      "category": "testing",
+      "impact_tags": [
+        "customer-facing",
+        "revenue-impact",
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 1.94
+    },
+    {
+      "id": "DEBT-0004",
+      "type": "high_complexity",
+      "description": "process_payment function has cyclomatic complexity of 24",
+      "file_path": "src/payment_processor.py",
+      "line_number": 19,
+      "severity": "high",
+      "metadata": {
+        "function_name": "process_payment",
+        "complexity": 24,
+        "recommended_max": 10
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 5,
+        "hours_estimate": 30.0,
+        "risk_factor": 1.4,
+        "skill_level_required": "senior",
+        "confidence": 0.5
+      },
+      "business_impact": {
+        "customer_impact": 6,
+        "revenue_impact": 7,
+        "team_velocity_impact": 10,
+        "quality_impact": 10,
+        "security_impact": 4
+      },
+      "interest_rate": {
+        "daily_cost": 8.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.05
+      },
+      "cost_of_delay": 42.36,
+      "category": "code_quality",
+      "impact_tags": [
+        "revenue-impact",
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 1.65
+    },
+    {
+      "id": "DEBT-0003",
+      "type": "security_risk",
+      "description": "Hardcoded API key in payment_processor.py",
+      "file_path": "src/payment_processor.py",
+      "line_number": 10,
+      "severity": "critical",
+      "metadata": {
+        "security_issue": "hardcoded_credentials",
+        "exposure_risk": "high"
+      },
+      "detected_date": "2024-02-10T10:30:00",
+      "status": "identified",
+      "effort_estimate": {
+        "size_points": 7,
+        "hours_estimate": 44.0,
+        "risk_factor": 1.8,
+        "skill_level_required": "senior",
+        "confidence": 0.4
+      },
+      "business_impact": {
+        "customer_impact": 10,
+        "revenue_impact": 10,
+        "team_velocity_impact": 10,
+        "quality_impact": 10,
+        "security_impact": 10
+      },
+      "interest_rate": {
+        "daily_cost": 8.0,
+        "frequency_multiplier": 1.0,
+        "team_impact_multiplier": 1.0,
+        "compound_rate": 0.02
+      },
+      "cost_of_delay": 61.91,
+      "category": "security",
+      "impact_tags": [
+        "security-critical",
+        "customer-facing",
+        "revenue-impact",
+        "velocity-blocker",
+        "quality-risk",
+        "quick-win"
+      ],
+      "priority_score": 1.01
+    }
+  ],
+  "sprint_allocation": {
+    "total_debt_hours": 277.4,
+    "debt_capacity_per_sprint": 16.0,
+    "total_sprints_needed": 17,
+    "high_priority_items": 0,
+    "sprint_plan": [
+      {
+        "sprint_number": 1,
+        "items": [
+          {
+            "id": "DEBT-0008",
+            "type": "magic_numbers",
+            "description": "Magic number 1800 used for lock timeout",
+            "file_path": "src/user_service.py",
+            "line_number": 98,
+            "severity": "low",
+            "metadata": {
+              "value": 1800,
+              "context": "account_lockout_duration"
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 1,
+              "hours_estimate": 5.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 2,
+              "revenue_impact": 2,
+              "team_velocity_impact": 3,
+              "quality_impact": 3,
+              "security_impact": 2
+            },
+            "interest_rate": {
+              "daily_cost": 2.4,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 2.1,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.8
+          },
+          {
+            "id": "DEBT-0010",
+            "type": "long_line",
+            "description": "Line too long: 156 characters",
+            "file_path": "src/frontend.js",
+            "line_number": 127,
+            "severity": "low",
+            "metadata": {
+              "length": 156,
+              "recommended_max": 120
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 1,
+              "hours_estimate": 0.375,
+              "risk_factor": 1.0,
+              "skill_level_required": "junior",
+              "confidence": 0.95
+            },
+            "business_impact": {
+              "customer_impact": 2,
+              "revenue_impact": 2,
+              "team_velocity_impact": 3,
+              "quality_impact": 3,
+              "security_impact": 2
+            },
+            "interest_rate": {
+              "daily_cost": 2.4,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 0.16,
+            "category": "code_quality",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.8
+          },
+          {
+            "id": "DEBT-0011",
+            "type": "commented_code",
+            "description": "Dead code left in comments",
+            "file_path": "src/frontend.js",
+            "line_number": 285,
+            "severity": "low",
+            "metadata": {
+              "lines_of_commented_code": 8
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 1,
+              "hours_estimate": 5.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 2,
+              "revenue_impact": 2,
+              "team_velocity_impact": 3,
+              "quality_impact": 3,
+              "security_impact": 2
+            },
+            "interest_rate": {
+              "daily_cost": 2.4,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 2.1,
+            "category": "maintenance",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.8
+          }
+        ],
+        "total_hours": 10.375,
+        "capacity_used": 0.6484375
+      },
+      {
+        "sprint_number": 2,
+        "items": [
+          {
+            "id": "DEBT-0007",
+            "type": "empty_catch_blocks",
+            "description": "Empty catch block in update_user method",
+            "file_path": "src/user_service.py",
+            "line_number": 156,
+            "severity": "medium",
+            "metadata": {
+              "method_name": "update_user",
+              "exception_type": "generic"
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 2,
+              "hours_estimate": 10.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 3,
+              "revenue_impact": 3,
+              "team_velocity_impact": 5,
+              "quality_impact": 5,
+              "security_impact": 3
+            },
+            "interest_rate": {
+              "daily_cost": 4.0,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 7.01,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.72
+          }
+        ],
+        "total_hours": 10.0,
+        "capacity_used": 0.625
+      },
+      {
+        "sprint_number": 3,
+        "items": [
+          {
+            "id": "DEBT-0009",
+            "type": "deep_nesting",
+            "description": "Deep nesting detected: 6 levels in preferences handling",
+            "file_path": "src/frontend.js",
+            "line_number": 32,
+            "severity": "medium",
+            "metadata": {
+              "nesting_level": 6,
+              "recommended_max": 4
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 2,
+              "hours_estimate": 10.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 3,
+              "revenue_impact": 3,
+              "team_velocity_impact": 5,
+              "quality_impact": 5,
+              "security_impact": 3
+            },
+            "interest_rate": {
+              "daily_cost": 4.0,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 7.01,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.72
+          }
+        ],
+        "total_hours": 10.0,
+        "capacity_used": 0.625
+      },
+      {
+        "sprint_number": 4,
+        "items": [
+          {
+            "id": "DEBT-0012",
+            "type": "global_variables",
+            "description": "Global variable userCache should be encapsulated",
+            "file_path": "src/frontend.js",
+            "line_number": 7,
+            "severity": "medium",
+            "metadata": {
+              "variable_name": "userCache",
+              "scope": "global"
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 2,
+              "hours_estimate": 10.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 3,
+              "revenue_impact": 3,
+              "team_velocity_impact": 5,
+              "quality_impact": 5,
+              "security_impact": 3
+            },
+            "interest_rate": {
+              "daily_cost": 4.0,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 7.01,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.72
+          }
+        ],
+        "total_hours": 10.0,
+        "capacity_used": 0.625
+      },
+      {
+        "sprint_number": 5,
+        "items": [
+          {
+            "id": "DEBT-0014",
+            "type": "hardcoded_values",
+            "description": "Tax rates hardcoded in payment processing logic",
+            "file_path": "src/payment_processor.py",
+            "line_number": 45,
+            "severity": "medium",
+            "metadata": {
+              "values": [
+                "0.08",
+                "0.085",
+                "0.0625",
+                "0.06"
+              ],
+              "context": "tax_calculation"
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 2,
+              "hours_estimate": 10.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 3,
+              "revenue_impact": 3,
+              "team_velocity_impact": 5,
+              "quality_impact": 5,
+              "security_impact": 3
+            },
+            "interest_rate": {
+              "daily_cost": 4.0,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 7.01,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.72
+          }
+        ],
+        "total_hours": 10.0,
+        "capacity_used": 0.625
+      },
+      {
+        "sprint_number": 6,
+        "items": [
+          {
+            "id": "DEBT-0016",
+            "type": "inefficient_algorithm",
+            "description": "O(n) user search could be optimized with indexing",
+            "file_path": "src/user_service.py",
+            "line_number": 178,
+            "severity": "medium",
+            "metadata": {
+              "current_complexity": "O(n)",
+              "recommended_complexity": "O(log n)",
+              "method_name": "search_users"
+            },
+            "detected_date": "2024-02-10T10:30:00",
+            "status": "identified",
+            "effort_estimate": {
+              "size_points": 2,
+              "hours_estimate": 10.0,
+              "risk_factor": 1.0,
+              "skill_level_required": "mid",
+              "confidence": 0.6
+            },
+            "business_impact": {
+              "customer_impact": 3,
+              "revenue_impact": 3,
+              "team_velocity_impact": 5,
+              "quality_impact": 5,
+              "security_impact": 3
+            },
+            "interest_rate": {
+              "daily_cost": 4.0,
+              "frequency_multiplier": 1.0,
+              "team_impact_multiplier": 1.0,
+              "compound_rate": 0.02
+            },
+            "cost_of_delay": 7.01,
+            "category": "other",
+            "impact_tags": [
+              "quick-win"
+            ],
+            "priority_score": 4.72
+          }
+        ],
+        "total_hours": 10.0,
+        "capacity_used": 0.625
+      }
+    ],
+    "recommendations": [
+      "Allocate 16.0 hours per sprint to tech debt",
+      "Focus on 0 high-priority items first",
+      "Estimated 17 sprints to clear current backlog"
+    ]
+  },
+  "insights": {
+    "category_distribution": {
+      "other": 11,
+      "code_quality": 5,
+      "maintenance": 2,
+      "testing": 1,
+      "security": 1
+    },
+    "total_effort_hours": 277.4,
+    "effort_by_category": {
+      "other": 130.0,
+      "code_quality": 61.6,
+      "maintenance": 5.8,
+      "testing": 36.0,
+      "security": 44.0
+    },
+    "priority_distribution": {
+      "medium": 17,
+      "low": 3
+    },
+    "high_risk_items_count": 1,
+    "quick_wins_count": 5,
+    "total_cost_of_delay": 303.6,
+    "average_daily_interest_rate": 4.69,
+    "top_categories_by_effort": [
+      [
+        "other",
+        130.0
+      ],
+      [
+        "code_quality",
+        61.625
+      ],
+      [
+        "security",
+        44.0
+      ]
+    ]
+  },
+  "charts_data": {
+    "priority_effort_scatter": [
+      {
+        "x": 5.0,
+        "y": 4.8,
+        "label": "Magic number 1800 used for lock timeout",
+        "category": "other",
+        "size": 2.1
+      },
+      {
+        "x": 0.375,
+        "y": 4.8,
+        "label": "Line too long: 156 characters",
+        "category": "code_quality",
+        "size": 0.16
+      },
+      {
+        "x": 5.0,
+        "y": 4.8,
+        "label": "Dead code left in comments",
+        "category": "maintenance",
+        "size": 2.1
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "Empty catch block in update_user method",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "Deep nesting detected: 6 levels in preferences han",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "Global variable userCache should be encapsulated",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "Tax rates hardcoded in payment processing logic",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "O(n) user search could be optimized with indexing",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 10.0,
+        "y": 4.72,
+        "label": "Event listeners attached without cleanup",
+        "category": "other",
+        "size": 7.01
+      },
+      {
+        "x": 15.0,
+        "y": 4.26,
+        "label": "create_user function in user_service.py is 89 line",
+        "category": "code_quality",
+        "size": 19.48
+      },
+      {
+        "x": 1.25,
+        "y": 4.1,
+        "label": "PaymentProcessor class missing docstring",
+        "category": "code_quality",
+        "size": 0.35
+      },
+      {
+        "x": 15.0,
+        "y": 3.73,
+        "label": "Synchronous AJAX call blocks UI thread",
+        "category": "other",
+        "size": 14.73
+      },
+      {
+        "x": 15.0,
+        "y": 3.73,
+        "label": "API calls without proper error handling",
+        "category": "other",
+        "size": 14.73
+      },
+      {
+        "x": 15.0,
+        "y": 3.73,
+        "label": "jQuery version 2.1.4 has known security vulnerabil",
+        "category": "other",
+        "size": 14.73
+      },
+      {
+        "x": 20.0,
+        "y": 3.24,
+        "label": "Potential SQL injection in user query",
+        "category": "other",
+        "size": 25.26
+      },
+      {
+        "x": 0.75,
+        "y": 3.1,
+        "label": "TODO: Move this to configuration file",
+        "category": "maintenance",
+        "size": 0.11
+      },
+      {
+        "x": 15.0,
+        "y": 2.39,
+        "label": "Password validation logic duplicated in 3 location",
+        "category": "code_quality",
+        "size": 12.69
+      },
+      {
+        "x": 36.0,
+        "y": 1.94,
+        "label": "No unit tests for critical payment processing logi",
+        "category": "testing",
+        "size": 50.82
+      },
+      {
+        "x": 30.0,
+        "y": 1.65,
+        "label": "process_payment function has cyclomatic complexity",
+        "category": "code_quality",
+        "size": 42.36
+      },
+      {
+        "x": 44.0,
+        "y": 1.01,
+        "label": "Hardcoded API key in payment_processor.py",
+        "category": "security",
+        "size": 61.91
+      }
+    ],
+    "category_effort_distribution": [
+      {
+        "category": "other",
+        "effort": 130.0
+      },
+      {
+        "category": "code_quality",
+        "effort": 61.6
+      },
+      {
+        "category": "maintenance",
+        "effort": 5.8
+      },
+      {
+        "category": "testing",
+        "effort": 36.0
+      },
+      {
+        "category": "security",
+        "effort": 44.0
+      }
+    ],
+    "priority_timeline": [
+      {
+        "item_rank": 1,
+        "description": "Magic number 1800 used for loc",
+        "effort": 5.0,
+        "cumulative_effort": 5.0,
+        "priority_score": 4.8
+      },
+      {
+        "item_rank": 2,
+        "description": "Line too long: 156 characters",
+        "effort": 0.375,
+        "cumulative_effort": 5.4,
+        "priority_score": 4.8
+      },
+      {
+        "item_rank": 3,
+        "description": "Dead code left in comments",
+        "effort": 5.0,
+        "cumulative_effort": 10.4,
+        "priority_score": 4.8
+      },
+      {
+        "item_rank": 4,
+        "description": "Empty catch block in update_us",
+        "effort": 10.0,
+        "cumulative_effort": 20.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 5,
+        "description": "Deep nesting detected: 6 level",
+        "effort": 10.0,
+        "cumulative_effort": 30.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 6,
+        "description": "Global variable userCache shou",
+        "effort": 10.0,
+        "cumulative_effort": 40.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 7,
+        "description": "Tax rates hardcoded in payment",
+        "effort": 10.0,
+        "cumulative_effort": 50.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 8,
+        "description": "O(n) user search could be opti",
+        "effort": 10.0,
+        "cumulative_effort": 60.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 9,
+        "description": "Event listeners attached witho",
+        "effort": 10.0,
+        "cumulative_effort": 70.4,
+        "priority_score": 4.72
+      },
+      {
+        "item_rank": 10,
+        "description": "create_user function in user_s",
+        "effort": 15.0,
+        "cumulative_effort": 85.4,
+        "priority_score": 4.26
+      },
+      {
+        "item_rank": 11,
+        "description": "PaymentProcessor class missing",
+        "effort": 1.25,
+        "cumulative_effort": 86.6,
+        "priority_score": 4.1
+      },
+      {
+        "item_rank": 12,
+        "description": "Synchronous AJAX call blocks U",
+        "effort": 15.0,
+        "cumulative_effort": 101.6,
+        "priority_score": 3.73
+      },
+      {
+        "item_rank": 13,
+        "description": "API calls without proper error",
+        "effort": 15.0,
+        "cumulative_effort": 116.6,
+        "priority_score": 3.73
+      },
+      {
+        "item_rank": 14,
+        "description": "jQuery version 2.1.4 has known",
+        "effort": 15.0,
+        "cumulative_effort": 131.6,
+        "priority_score": 3.73
+      },
+      {
+        "item_rank": 15,
+        "description": "Potential SQL injection in use",
+        "effort": 20.0,
+        "cumulative_effort": 151.6,
+        "priority_score": 3.24
+      },
+      {
+        "item_rank": 16,
+        "description": "TODO: Move this to configurati",
+        "effort": 0.75,
+        "cumulative_effort": 152.4,
+        "priority_score": 3.1
+      },
+      {
+        "item_rank": 17,
+        "description": "Password validation logic dupl",
+        "effort": 15.0,
+        "cumulative_effort": 167.4,
+        "priority_score": 2.39
+      },
+      {
+        "item_rank": 18,
+        "description": "No unit tests for critical pay",
+        "effort": 36.0,
+        "cumulative_effort": 203.4,
+        "priority_score": 1.94
+      },
+      {
+        "item_rank": 19,
+        "description": "process_payment function has c",
+        "effort": 30.0,
+        "cumulative_effort": 233.4,
+        "priority_score": 1.65
+      },
+      {
+        "item_rank": 20,
+        "description": "Hardcoded API key in payment_p",
+        "effort": 44.0,
+        "cumulative_effort": 277.4,
+        "priority_score": 1.01
+      }
+    ],
+    "interest_rate_trend": [
+      {
+        "item_index": 0,
+        "daily_cost": 2.4,
+        "category": "other"
+      },
+      {
+        "item_index": 1,
+        "daily_cost": 2.4,
+        "category": "code_quality"
+      },
+      {
+        "item_index": 2,
+        "daily_cost": 2.4,
+        "category": "maintenance"
+      },
+      {
+        "item_index": 3,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 4,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 5,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 6,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 7,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 8,
+        "daily_cost": 4.0,
+        "category": "other"
+      },
+      {
+        "item_index": 9,
+        "daily_cost": 7.4,
+        "category": "code_quality"
+      },
+      {
+        "item_index": 10,
+        "daily_cost": 1.6,
+        "category": "code_quality"
+      },
+      {
+        "item_index": 11,
+        "daily_cost": 5.6,
+        "category": "other"
+      },
+      {
+        "item_index": 12,
+        "daily_cost": 5.6,
+        "category": "other"
+      },
+      {
+        "item_index": 13,
+        "daily_cost": 5.6,
+        "category": "other"
+      },
+      {
+        "item_index": 14,
+        "daily_cost": 7.199999999999999,
+        "category": "other"
+      },
+      {
+        "item_index": 15,
+        "daily_cost": 0.8,
+        "category": "maintenance"
+      },
+      {
+        "item_index": 16,
+        "daily_cost": 4.8,
+        "category": "code_quality"
+      },
+      {
+        "item_index": 17,
+        "daily_cost": 8.0,
+        "category": "testing"
+      },
+      {
+        "item_index": 18,
+        "daily_cost": 8.0,
+        "category": "code_quality"
+      },
+      {
+        "item_index": 19,
+        "daily_cost": 8.0,
+        "category": "security"
+      }
+    ]
+  },
+  "recommendations": [
+    "Start with 5 quick wins to build momentum and demonstrate immediate value from tech debt reduction efforts.",
+    "Focus initial efforts on 'other' category debt, which represents the largest effort investment (130.0 hours)."
+  ]
+}

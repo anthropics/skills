@@ -1,0 +1,16 @@
+name,age,city,country
+John Doe,25,New York,USA
+Jane Smith,30,London,UK
+Bob Johnson,22,Toronto,Canada
+Alice Brown,28,Sydney,Australia
+Charlie Wilson,35,Berlin,Germany
+
+This CSV file contains sample data with headers and multiple rows.
+It can be used to test the text processor's ability to handle
+structured data formats and count words across different content types.
+
+The file includes:
+- Header row with column names
+- Data rows with mixed text and numbers
+- Various city and country names
+- Different age values for statistical analysis

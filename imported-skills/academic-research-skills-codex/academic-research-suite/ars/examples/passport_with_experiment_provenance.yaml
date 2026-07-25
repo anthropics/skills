@@ -1,0 +1,182 @@
+# Example Material Passport with populated experiment_provenance[] +
+# experiment_alignment_results[] + experiment_intake_declaration (#260).
+#
+# An ML paper that ran TWO experiments externally and brought the results back.
+# Demonstrates the full intake + claim->experiment alignment layer:
+#
+#   - experiment_provenance[]: 2 entries, each with its own nested repro_lock,
+#     planned_vs_executed[], negative_results[], known_limitations[].
+#   - claim_intent_manifests[]: one manifest carrying THREE claims —
+#       * C-001 pure-experiment claim (planned_experiment_ids only),
+#       * C-002 mixed-evidence claim (BOTH planned_refs AND
+#         planned_experiment_ids — allowed by EP-INV-3, audited by both paths),
+#       * C-003 literature-only claim (planned_refs only, no experiment id).
+#   - experiment_alignment_results[]: 2 rows, one per experiment-backed claim
+#     (C-001 ALIGNED; C-003 is literature-only and gets none), including one
+#     OVERSTATED row (C-002 against exp-quantization) so the worst-verdict-wins
+#     gate decision is exercised even though the same claim's citation path is
+#     clean.
+#   - experiment_intake_declaration: status experiments_declared (symmetric to
+#     the non-empty provenance array, EP-INV-4).
+#
+# Shape-validate the provenance entries with:
+#   python scripts/check_experiment_provenance.py examples/passport_with_experiment_provenance.yaml
+# Cross-array invariant check (convert to JSON first — that lint reads JSON):
+#   the test suite (scripts/test_experiment_provenance.py) feeds this example
+#   through check_claim_audit_consistency.validate_passport and asserts 0 findings.
+
+origin_skill: academic-paper
+origin_mode: full
+origin_date: "2026-06-08T09:00:00Z"
+verification_status: VERIFIED
+version_label: "v1.0"
+integrity_pass_date: "2026-06-08T09:30:00Z"
+content_hash: "sha256:e1f2a3b4c5d6789012345678901234567890123456789012345678901234abcd"
+
+experiment_intake_declaration:
+  status: experiments_declared
+  declared_at: "2026-06-08T09:05:00Z"
+  declared_by: scholar
+
+experiment_provenance:
+  - experiment_id: exp-pruning
+    title: "Ablation: remove attention-head pruning from the encoder"
+    description: >-
+      Measures the contribution of the head-pruning step to downstream macro-F1
+      on the held-out test split, holding all other hyperparameters fixed.
+    repro_lock:
+      schema_version: "1.0"
+      stochasticity_declaration: "LLM/training outputs are not byte-reproducible. This lockfile documents configuration, not a deterministic replay guarantee."
+      ars_version: "3.11.1"
+      model:
+        family: custom
+        id: encoder-v2-pruned
+        weight_stable: true
+      prompts:
+        hash_timing: skill-load
+        skill_md_hash: "sha256:a1a2a3a4a5a6789012345678901234567890123456789012345678901234abcd"
+        agents_bundle_hash: "sha256:b1b2b3b4b5b6789012345678901234567890123456789012345678901234abcd"
+      materials:
+        list_hash: "sha256:c1c2c3c4c5c6789012345678901234567890123456789012345678901234abcd"
+        count: 3
+      external_protocols:
+        s2_api_protocol_version: "3.11"
+        s2_snapshot_available: false
+      cross_model:
+        enabled: false
+        secondary_model_id: null
+    planned_vs_executed:
+      - planned: "macro-F1 on held-out test set with head-pruning removed"
+        executed: true
+        result_file: "results/exp-pruning/test_metrics.json"
+        metric: "macro-F1"
+        value: 0.812
+      - planned: "per-class F1 breakdown across all 20 classes"
+        executed: true
+        result_file: "results/exp-pruning/per_class.json"
+        metric: "macro-F1"
+        value: 0.812
+    negative_results:
+      - description: "Pruning showed no measurable effect on inference latency (within noise)."
+        result_file: "results/exp-pruning/latency.json"
+    known_limitations:
+      - description: "Single random seed; variance across seeds not characterized."
+
+  - experiment_id: exp-quantization
+    title: "8-bit post-training quantization of the deployed model"
+    description: >-
+      Measures accuracy retention and memory footprint after applying 8-bit
+      post-training quantization to the released checkpoint.
+    repro_lock:
+      schema_version: "1.0"
+      stochasticity_declaration: "LLM/training outputs are not byte-reproducible. This lockfile documents configuration, not a deterministic replay guarantee."
+      ars_version: "3.11.1"
+      model:
+        family: custom
+        id: encoder-v2-int8
+        weight_stable: true
+      prompts:
+        hash_timing: skill-load
+        skill_md_hash: "sha256:d1d2d3d4d5d6789012345678901234567890123456789012345678901234abcd"
+        agents_bundle_hash: "sha256:e1e2e3e4e5e6789012345678901234567890123456789012345678901234abcd"
+      materials:
+        list_hash: "sha256:f1f2f3f4f5f6789012345678901234567890123456789012345678901234abcd"
+        count: 2
+      external_protocols:
+        s2_api_protocol_version: "3.11"
+        s2_snapshot_available: false
+      cross_model:
+        enabled: false
+        secondary_model_id: null
+    planned_vs_executed:
+      - planned: "macro-F1 retention after 8-bit quantization vs fp32 baseline"
+        executed: true
+        result_file: "results/exp-quantization/accuracy.json"
+        metric: "macro-F1"
+        value: 0.806
+      - planned: "INT4 quantization accuracy sweep"
+        executed: false
+        skip_reason: "INT4 kernel unavailable on the target hardware; deferred to future work."
+    negative_results: []
+    known_limitations:
+      - description: "Quantization evaluated on one hardware target only (A100); CPU path untested."
+
+claim_intent_manifests:
+  - manifest_version: "1.0"
+    manifest_id: "M-2026-06-08T09:10:00Z-1a2b"
+    emitted_by: draft_writer_agent
+    emitted_at: "2026-06-08T09:10:00Z"
+    claims:
+      # C-001 — pure-experiment claim: backed only by exp-pruning.
+      - claim_id: C-001
+        claim_text: "Removing attention-head pruning lowers macro-F1 by 4.2 points on the held-out test set."
+        intended_evidence_kind: empirical
+        planned_refs: []
+        planned_experiment_ids:
+          - exp-pruning
+      # C-002 — mixed-evidence claim: BOTH a literature ref AND an experiment id.
+      - claim_id: C-002
+        claim_text: "8-bit quantization retains state-of-the-art accuracy while halving the memory footprint."
+        intended_evidence_kind: empirical
+        planned_refs:
+          - dettmers2022int8
+        planned_experiment_ids:
+          - exp-quantization
+      # C-003 — literature-only claim: no experiment id, classic citation path.
+      - claim_id: C-003
+        claim_text: "Post-training quantization is a widely adopted deployment-time compression technique."
+        intended_evidence_kind: empirical
+        planned_refs:
+          - dettmers2022int8
+    manifest_negative_constraints: []
+
+experiment_alignment_results:
+  # C-001 against exp-pruning — the claim matches the reported drop. ALIGNED.
+  - finding_id: EA-001
+    scoped_manifest_id: "M-2026-06-08T09:10:00Z-1a2b"
+    claim_id: C-001
+    claim_text: "Removing attention-head pruning lowers macro-F1 by 4.2 points on the held-out test set."
+    experiment_id: exp-pruning
+    result_pointer: "results/exp-pruning/test_metrics.json#macro-F1"
+    manuscript_locator: "4. Results > 4.2 Ablations"
+    alignment_verdict: ALIGNED
+    rationale: "The reported held-out macro-F1 drop matches the 4.2-point claim verbatim."
+    judge_model: gpt-5.5-xhigh
+    judge_run_at: "2026-06-08T09:20:00Z"
+    rule_version: EA-v1
+  # C-002 against exp-quantization — OVERSTATED: provenance supports a weaker
+  # version. "state-of-the-art" overstates what 0.806 macro-F1 shows. This is the
+  # worst-verdict-wins case: C-002's citation path (dettmers2022int8) may be
+  # SUPPORTED, but this OVERSTATED experiment row blocks the claim.
+  - finding_id: EA-002
+    scoped_manifest_id: "M-2026-06-08T09:10:00Z-1a2b"
+    claim_id: C-002
+    claim_text: "8-bit quantization retains state-of-the-art accuracy while halving the memory footprint."
+    experiment_id: exp-quantization
+    result_pointer: "results/exp-quantization/accuracy.json#macro-F1"
+    manuscript_locator: "4. Results > 4.3 Quantization"
+    alignment_verdict: OVERSTATED
+    rationale: "Provenance reports 0.806 macro-F1 (a 0.6-point drop from baseline); 'state-of-the-art accuracy' overstates the retained-accuracy result."
+    judge_model: gpt-5.5-xhigh
+    judge_run_at: "2026-06-08T09:21:00Z"
+    rule_version: EA-v1

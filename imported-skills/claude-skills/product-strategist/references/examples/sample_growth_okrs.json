@@ -1,0 +1,366 @@
+{
+  "metadata": {
+    "strategy": "growth",
+    "quarter": "Q1 2025",
+    "generated_at": "2025-01-15T10:30:00Z",
+    "teams": ["Growth", "Platform", "Mobile", "Data"],
+    "product_contribution": 0.3
+  },
+  "company": {
+    "level": "Company",
+    "quarter": "Q1 2025",
+    "strategy": "growth",
+    "objectives": [
+      {
+        "id": "CO-1",
+        "title": "Accelerate user acquisition and market expansion",
+        "owner": "CEO",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "CO-1-KR1",
+            "title": "Increase MAU from 100,000 to 150,000",
+            "current": 100000,
+            "target": 150000,
+            "unit": "users",
+            "status": "in_progress",
+            "progress": 0.2
+          },
+          {
+            "id": "CO-1-KR2",
+            "title": "Achieve 15% MoM growth rate",
+            "current": 8,
+            "target": 15,
+            "unit": "%",
+            "status": "in_progress",
+            "progress": 0.53
+          },
+          {
+            "id": "CO-1-KR3",
+            "title": "Expand to 3 new markets",
+            "current": 0,
+            "target": 3,
+            "unit": "markets",
+            "status": "not_started",
+            "progress": 0
+          }
+        ]
+      },
+      {
+        "id": "CO-2",
+        "title": "Achieve product-market fit in enterprise segment",
+        "owner": "CEO",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "CO-2-KR1",
+            "title": "Reduce CAC by 25%",
+            "current": 150,
+            "target": 112.5,
+            "unit": "$",
+            "status": "in_progress",
+            "progress": 0.4
+          },
+          {
+            "id": "CO-2-KR2",
+            "title": "Improve activation rate to 60%",
+            "current": 42,
+            "target": 60,
+            "unit": "%",
+            "status": "in_progress",
+            "progress": 0.3
+          }
+        ]
+      },
+      {
+        "id": "CO-3",
+        "title": "Build sustainable growth engine",
+        "owner": "CEO",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "CO-3-KR1",
+            "title": "Increase viral coefficient to 1.2",
+            "current": 0.8,
+            "target": 1.2,
+            "unit": "coefficient",
+            "status": "not_started",
+            "progress": 0
+          },
+          {
+            "id": "CO-3-KR2",
+            "title": "Grow organic acquisition to 40% of total",
+            "current": 25,
+            "target": 40,
+            "unit": "%",
+            "status": "in_progress",
+            "progress": 0.2
+          }
+        ]
+      }
+    ]
+  },
+  "product": {
+    "level": "Product",
+    "quarter": "Q1 2025",
+    "parent": "Company",
+    "objectives": [
+      {
+        "id": "PO-1",
+        "title": "Build viral product features to drive acquisition",
+        "parent_objective": "CO-1",
+        "owner": "Head of Product",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "PO-1-KR1",
+            "title": "Increase product MAU from 100,000 to 115,000 (30% contribution)",
+            "contributes_to": "CO-1-KR1",
+            "current": 100000,
+            "target": 115000,
+            "unit": "users",
+            "status": "in_progress"
+          },
+          {
+            "id": "PO-1-KR2",
+            "title": "Achieve 12% feature adoption rate for sharing features",
+            "contributes_to": "CO-1-KR2",
+            "current": 5,
+            "target": 12,
+            "unit": "%",
+            "status": "in_progress"
+          }
+        ]
+      },
+      {
+        "id": "PO-2",
+        "title": "Validate product hypotheses for enterprise segment",
+        "parent_objective": "CO-2",
+        "owner": "Head of Product",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "PO-2-KR1",
+            "title": "Improve product onboarding efficiency by 30%",
+            "contributes_to": "CO-2-KR1",
+            "current": 0,
+            "target": 30,
+            "unit": "%",
+            "status": "not_started"
+          },
+          {
+            "id": "PO-2-KR2",
+            "title": "Increase product activation rate to 55%",
+            "contributes_to": "CO-2-KR2",
+            "current": 42,
+            "target": 55,
+            "unit": "%",
+            "status": "in_progress"
+          }
+        ]
+      },
+      {
+        "id": "PO-3",
+        "title": "Create product-led growth loops",
+        "parent_objective": "CO-3",
+        "owner": "Head of Product",
+        "status": "active",
+        "key_results": [
+          {
+            "id": "PO-3-KR1",
+            "title": "Launch referral program with 0.3 viral coefficient contribution",
+            "contributes_to": "CO-3-KR1",
+            "current": 0,
+            "target": 0.3,
+            "unit": "coefficient",
+            "status": "not_started"
+          },
+          {
+            "id": "PO-3-KR2",
+            "title": "Increase product-driven organic signups to 35%",
+            "contributes_to": "CO-3-KR2",
+            "current": 20,
+            "target": 35,
+            "unit": "%",
+            "status": "in_progress"
+          }
+        ]
+      }
+    ]
+  },
+  "teams": [
+    {
+      "level": "Team",
+      "team": "Growth",
+      "quarter": "Q1 2025",
+      "parent": "Product",
+      "objectives": [
+        {
+          "id": "GRO-1",
+          "title": "Build viral product features through acquisition and activation",
+          "parent_objective": "PO-1",
+          "owner": "Growth PM",
+          "status": "active",
+          "key_results": [
+            {
+              "id": "GRO-1-KR1",
+              "title": "[Growth] Increase product MAU contribution by 5,000 users",
+              "contributes_to": "PO-1-KR1",
+              "current": 0,
+              "target": 5000,
+              "unit": "users",
+              "status": "in_progress"
+            },
+            {
+              "id": "GRO-1-KR2",
+              "title": "[Growth] Launch 3 viral feature experiments",
+              "contributes_to": "PO-1-KR2",
+              "current": 0,
+              "target": 3,
+              "unit": "experiments",
+              "status": "not_started"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "Team",
+      "team": "Platform",
+      "quarter": "Q1 2025",
+      "parent": "Product",
+      "objectives": [
+        {
+          "id": "PLA-1",
+          "title": "Support growth through infrastructure and reliability",
+          "parent_objective": "PO-1",
+          "owner": "Platform PM",
+          "status": "active",
+          "key_results": [
+            {
+              "id": "PLA-1-KR1",
+              "title": "[Platform] Scale infrastructure to support 200K MAU",
+              "contributes_to": "PO-1-KR1",
+              "current": 100000,
+              "target": 200000,
+              "unit": "users",
+              "status": "in_progress"
+            },
+            {
+              "id": "PLA-1-KR2",
+              "title": "[Platform] Maintain 99.9% uptime during growth",
+              "contributes_to": "PO-1-KR2",
+              "current": 99.5,
+              "target": 99.9,
+              "unit": "%",
+              "status": "in_progress"
+            }
+          ]
+        },
+        {
+          "id": "PLA-2",
+          "title": "Improve onboarding infrastructure efficiency",
+          "parent_objective": "PO-2",
+          "owner": "Platform PM",
+          "status": "active",
+          "key_results": [
+            {
+              "id": "PLA-2-KR1",
+              "title": "[Platform] Reduce onboarding API latency by 40%",
+              "contributes_to": "PO-2-KR1",
+              "current": 0,
+              "target": 40,
+              "unit": "%",
+              "status": "not_started"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "Team",
+      "team": "Mobile",
+      "quarter": "Q1 2025",
+      "parent": "Product",
+      "objectives": [
+        {
+          "id": "MOB-1",
+          "title": "Build viral features through mobile experience",
+          "parent_objective": "PO-1",
+          "owner": "Mobile PM",
+          "status": "active",
+          "key_results": [
+            {
+              "id": "MOB-1-KR1",
+              "title": "[Mobile] Increase mobile MAU by 3,000 users",
+              "contributes_to": "PO-1-KR1",
+              "current": 0,
+              "target": 3000,
+              "unit": "users",
+              "status": "not_started"
+            },
+            {
+              "id": "MOB-1-KR2",
+              "title": "[Mobile] Launch native share feature with 15% adoption",
+              "contributes_to": "PO-1-KR2",
+              "current": 0,
+              "target": 15,
+              "unit": "%",
+              "status": "not_started"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "Team",
+      "team": "Data",
+      "quarter": "Q1 2025",
+      "parent": "Product",
+      "objectives": [
+        {
+          "id": "DAT-1",
+          "title": "Enable growth through analytics and insights",
+          "parent_objective": "PO-1",
+          "owner": "Data PM",
+          "status": "active",
+          "key_results": [
+            {
+              "id": "DAT-1-KR1",
+              "title": "[Data] Build growth dashboard tracking all acquisition metrics",
+              "contributes_to": "PO-1-KR1",
+              "current": 0,
+              "target": 1,
+              "unit": "dashboard",
+              "status": "not_started"
+            },
+            {
+              "id": "DAT-1-KR2",
+              "title": "[Data] Implement experimentation platform for A/B testing",
+              "contributes_to": "PO-1-KR2",
+              "current": 0,
+              "target": 1,
+              "unit": "platform",
+              "status": "not_started"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "alignment_scores": {
+    "vertical_alignment": 100.0,
+    "horizontal_alignment": 75.0,
+    "coverage": 100.0,
+    "balance": 85.0,
+    "overall": 92.0
+  },
+  "summary": {
+    "total_objectives": 11,
+    "total_key_results": 22,
+    "company_objectives": 3,
+    "product_objectives": 3,
+    "team_objectives": 5,
+    "teams_involved": 4
+  }
+}

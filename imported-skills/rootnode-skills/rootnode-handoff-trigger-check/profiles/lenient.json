@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "name": "lenient",
+  "description": "Lenient gate for full-supervision contexts. Real-time corrections available via direct chat with the executing agent. Use during active design and execution sessions when fully present at the workstation.",
+  "threshold_rule": "min_count",
+  "min_pass_count": 5,
+  "required_conditions": [
+    "invariants_documented",
+    "budget_headroom"
+  ],
+  "budget_safety_margin": 1.1,
+  "budget_data_source": "manual_input",
+  "notes": "Lenient profile for active design and execution sessions. Tolerates more design uncertainty than other profiles because corrections are available in real time. Reconsider if rollback cost increases (e.g., production deploys without staging) or if daily token budget changes by more than 30%."
+}

@@ -1,0 +1,20 @@
+{
+  "status": "ok",
+  "source": "plan.md",
+  "steps_found": 4,
+  "score": 4,
+  "max_score": 12,
+  "percentage": 33.3,
+  "has_final_verification": false,
+  "verdict": "MISSING",
+  "step_results": [
+    {"title": "1. Add validation to the form", "score": 0, "level": "none", "has_verify_label": false},
+    {"title": "2. Fix the bug with empty inputs", "score": 0, "level": "none", "has_verify_label": false},
+    {"title": "3. Write test: submit empty form → expect error → verify: test passes", "score": 2, "level": "reasonable", "has_verify_label": true},
+    {"title": "4. Run full test suite → verify: all green", "score": 2, "level": "reasonable", "has_verify_label": true}
+  ],
+  "recommendations": [
+    "2 step(s) have no verification. Add 'verify: [check]' to each.",
+    "No final/end-to-end verification step. Add one at the end."
+  ]
+}

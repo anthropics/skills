@@ -1,0 +1,173 @@
+{
+  "permissionScheme": {
+    "name": "Standard Project Permission Scheme",
+    "description": "Default permission scheme for standard projects. Assigns permissions based on project roles.",
+    "version": "1.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "owner": "IT Admin Team"
+  },
+  "roles": {
+    "projectAdmin": {
+      "description": "Full project administration including configuration and user management",
+      "typicalGroups": ["project-leads", "engineering-managers"]
+    },
+    "developer": {
+      "description": "Create and manage issues, transitions, and attachments",
+      "typicalGroups": ["dept-engineering", "dept-product"]
+    },
+    "user": {
+      "description": "View issues, add comments, and create basic issues",
+      "typicalGroups": ["org-all-employees"]
+    },
+    "viewer": {
+      "description": "Read-only access to project issues and boards",
+      "typicalGroups": ["stakeholders", "external-contractors"]
+    }
+  },
+  "permissions": {
+    "project": {
+      "ADMINISTER_PROJECTS": {
+        "description": "Manage project settings, roles, and permissions",
+        "grantedTo": ["projectAdmin"]
+      },
+      "BROWSE_PROJECTS": {
+        "description": "View the project and its issues",
+        "grantedTo": ["projectAdmin", "developer", "user", "viewer"]
+      },
+      "VIEW_DEV_TOOLS": {
+        "description": "View development panel (commits, branches, PRs)",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "VIEW_READONLY_WORKFLOW": {
+        "description": "View read-only workflow",
+        "grantedTo": ["projectAdmin", "developer", "user", "viewer"]
+      }
+    },
+    "issues": {
+      "CREATE_ISSUES": {
+        "description": "Create new issues in the project",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      },
+      "EDIT_ISSUES": {
+        "description": "Edit issue fields",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "DELETE_ISSUES": {
+        "description": "Delete issues permanently",
+        "grantedTo": ["projectAdmin"]
+      },
+      "ASSIGN_ISSUES": {
+        "description": "Assign issues to team members",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "ASSIGNABLE_USER": {
+        "description": "Be assigned to issues",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "CLOSE_ISSUES": {
+        "description": "Close/resolve issues",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "RESOLVE_ISSUES": {
+        "description": "Set issue resolution",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "TRANSITION_ISSUES": {
+        "description": "Transition issues through workflow",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      },
+      "LINK_ISSUES": {
+        "description": "Create and remove issue links",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "MOVE_ISSUES": {
+        "description": "Move issues between projects",
+        "grantedTo": ["projectAdmin"]
+      },
+      "SCHEDULE_ISSUES": {
+        "description": "Set due dates on issues",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "SET_ISSUE_SECURITY": {
+        "description": "Set security level on issues",
+        "grantedTo": ["projectAdmin"]
+      }
+    },
+    "comments": {
+      "ADD_COMMENTS": {
+        "description": "Add comments to issues",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      },
+      "EDIT_ALL_COMMENTS": {
+        "description": "Edit any comment",
+        "grantedTo": ["projectAdmin"]
+      },
+      "EDIT_OWN_COMMENTS": {
+        "description": "Edit own comments",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      },
+      "DELETE_ALL_COMMENTS": {
+        "description": "Delete any comment",
+        "grantedTo": ["projectAdmin"]
+      },
+      "DELETE_OWN_COMMENTS": {
+        "description": "Delete own comments",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      }
+    },
+    "attachments": {
+      "CREATE_ATTACHMENTS": {
+        "description": "Attach files to issues",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      },
+      "DELETE_ALL_ATTACHMENTS": {
+        "description": "Delete any attachment",
+        "grantedTo": ["projectAdmin"]
+      },
+      "DELETE_OWN_ATTACHMENTS": {
+        "description": "Delete own attachments",
+        "grantedTo": ["projectAdmin", "developer", "user"]
+      }
+    },
+    "worklogs": {
+      "WORK_ON_ISSUES": {
+        "description": "Log work on issues",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "EDIT_ALL_WORKLOGS": {
+        "description": "Edit any worklog",
+        "grantedTo": ["projectAdmin"]
+      },
+      "EDIT_OWN_WORKLOGS": {
+        "description": "Edit own worklogs",
+        "grantedTo": ["projectAdmin", "developer"]
+      },
+      "DELETE_ALL_WORKLOGS": {
+        "description": "Delete any worklog",
+        "grantedTo": ["projectAdmin"]
+      },
+      "DELETE_OWN_WORKLOGS": {
+        "description": "Delete own worklogs",
+        "grantedTo": ["projectAdmin", "developer"]
+      }
+    }
+  },
+  "projectMappings": [
+    {
+      "projectKey": "EXAMPLE",
+      "projectName": "Example Project",
+      "scheme": "Standard Project Permission Scheme",
+      "roleAssignments": {
+        "projectAdmin": ["project-leads"],
+        "developer": ["team-example-devs"],
+        "user": ["org-all-employees"],
+        "viewer": ["stakeholders-example"]
+      }
+    }
+  ],
+  "notes": {
+    "usage": "Copy this template and customize role assignments per project. Use group names that match your Atlassian groups.",
+    "review": "Review permission scheme assignments quarterly as part of access review.",
+    "changes": "Any changes to permission schemes should be documented and approved by IT Admin."
+  }
+}

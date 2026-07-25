@@ -1,0 +1,36 @@
+{
+  "language": "typescript",
+  "framework": "jest",
+  "source_code": "export class PasswordValidator {\n  validate(password: string): boolean {\n    if (password.length < 8) return false;\n    if (!/[A-Z]/.test(password)) return false;\n    if (!/[a-z]/.test(password)) return false;\n    if (!/[0-9]/.test(password)) return false;\n    if (!/[!@#$%^&*]/.test(password)) return false;\n    return true;\n  }\n}",
+  "requirements": {
+    "user_stories": [
+      {
+        "description": "Password must be at least 8 characters long",
+        "action": "validate_password_length",
+        "given": ["User provides password"],
+        "when": "Password is validated",
+        "then": "Reject if less than 8 characters"
+      },
+      {
+        "description": "Password must contain uppercase, lowercase, number, and special character",
+        "action": "validate_password_complexity",
+        "given": ["User provides password"],
+        "when": "Password is validated",
+        "then": "Reject if missing any character type"
+      }
+    ],
+    "acceptance_criteria": [
+      {
+        "id": "AC1",
+        "description": "Valid password: 'Test@123'",
+        "verification_steps": ["Call validate with 'Test@123'", "Should return true"]
+      },
+      {
+        "id": "AC2",
+        "description": "Invalid password: 'test' (too short)",
+        "verification_steps": ["Call validate with 'test'", "Should return false"]
+      }
+    ]
+  },
+  "coverage_threshold": 80
+}

@@ -1,0 +1,150 @@
+{
+  "title": "一种钛合金植入物表面羟基磷灰石生物陶瓷涂层及其制备方法",
+  "metadata": {
+    "jurisdiction": "CNIPA",
+    "invention_type": "process-material",
+    "language_mode": "zh",
+    "applicant": "[TO CONFIRM: 申请人]",
+    "inventors": ["[TO CONFIRM: 发明人1]", "[TO CONFIRM: 发明人2]"]
+  },
+  "source_analysis": {
+    "source_format": "pasted-text",
+    "formula_count_in_source": 0,
+    "contains_core_formulas": false
+  },
+  "source_map": [
+    {
+      "id": "P001",
+      "type": "paragraph",
+      "locator": "abstract-para-1",
+      "text": "本研究采用溶胶-凝胶法在Ti-6Al-4V合金表面制备了羟基磷灰石(HA)涂层，Ca/P比为1.67，涂层厚度为15-25μm，经模拟体液浸泡7天后表面形成类骨磷灰石层。"
+    },
+    {
+      "id": "P002",
+      "type": "paragraph",
+      "locator": "methods-para-1",
+      "text": "以Ca(NO3)2·4H2O和P(C2H5O)3为前驱体，乙醇为溶剂，在Ti-6Al-4V基体上通过浸渍提拉法涂覆，经550°C热处理2h获得HA涂层，涂层厚度通过SEM截面观察确定为15-25μm。"
+    },
+    {
+      "id": "P003",
+      "type": "paragraph",
+      "locator": "results-para-1",
+      "text": "XRD分析确认涂层为纯相HA，无TCP或CaO杂质相；SEM显示涂层表面均匀致密，无裂纹；模拟体液浸泡7天后EDS证实Ca/P比降至1.60，表明生成了缺钙型类骨磷灰石。"
+    }
+  ],
+  "terminology_ledger": [
+    {"canonical": "羟基磷灰石", "aliases": ["HA", "hydroxyapatite"]},
+    {"canonical": "溶胶-凝胶法", "aliases": ["sol-gel"]},
+    {"canonical": "钛合金", "aliases": ["Ti-6Al-4V", "TC4"]}
+  ],
+  "formula_inventory": [],
+  "figure_inventory": [
+    {
+      "id": "F001",
+      "caption": "HA涂层制备工艺流程图",
+      "type": "flowchart",
+      "source": "P002"
+    }
+  ],
+  "evidence_ledger": [
+    {
+      "id": "EV001",
+      "feature": "溶胶-凝胶法在Ti-6Al-4V表面制备HA涂层",
+      "source_ids": ["P001", "P002"],
+      "support_status": "explicit",
+      "technical_role": "必要技术特征",
+      "effect": "获得均匀致密的生物活性涂层",
+      "proposed_destination": "claim-1"
+    },
+    {
+      "id": "EV002",
+      "feature": "热处理温度550°C，保温2h",
+      "source_ids": ["P002"],
+      "support_status": "explicit",
+      "technical_role": "工艺参数",
+      "effect": "保证HA结晶度并避免基体过度氧化",
+      "proposed_destination": "claim-1"
+    },
+    {
+      "id": "EV003",
+      "feature": "涂层厚度15-25μm",
+      "source_ids": ["P001", "P002"],
+      "support_status": "explicit",
+      "technical_role": "附加技术特征",
+      "effect": "兼顾结合强度与生物活性",
+      "proposed_destination": "claim-2"
+    },
+    {
+      "id": "EV004",
+      "feature": "Ca/P比为1.67",
+      "source_ids": ["P001"],
+      "support_status": "explicit",
+      "technical_role": "化学计量特征",
+      "effect": "保证HA的化学计量纯度",
+      "proposed_destination": "claim-1"
+    }
+  ],
+  "invention_concept": {
+    "problem": "现有等离子喷涂HA涂层存在结合强度低、涂层不均匀、高温相变导致杂质相生成等问题",
+    "solution": "采用溶胶-凝胶法结合低温热处理，在钛合金表面制备纯相HA涂层",
+    "beneficial_effects": "涂层均匀致密、纯度高、具有良好的生物活性和结合强度"
+  },
+  "claims": [
+    {
+      "number": 1,
+      "type": "independent",
+      "text": "一种钛合金植入物表面羟基磷灰石生物陶瓷涂层的制备方法，其特征在于：采用溶胶-凝胶法，以钙盐和磷化合物为前驱体，在钛合金基体上涂覆后经450-600°C热处理1-3h，获得Ca/P比为1.60-1.70的羟基磷灰石涂层。",
+      "feature_map": ["EV001", "EV002", "EV004"]
+    },
+    {
+      "number": 2,
+      "type": "dependent",
+      "depends_on": [1],
+      "text": "根据权利要求1所述的方法，其特征在于：所述涂层厚度为15-25μm，表面无裂纹且涂层均匀致密。",
+      "feature_map": ["EV003"]
+    }
+  ],
+  "claim_feature_map": [
+    {"claim_number": 1, "feature": "EV001", "support": "explicit"},
+    {"claim_number": 1, "feature": "EV002", "support": "explicit"},
+    {"claim_number": 1, "feature": "EV004", "support": "explicit"},
+    {"claim_number": 2, "feature": "EV003", "support": "explicit"}
+  ],
+  "figures": [
+    {"number": 1, "type": "flowchart", "caption": "图1为本发明HA涂层制备工艺流程图。", "source": "F001", "complete_claim_flow": true}
+  ],
+  "abstract_figure_number": 1,
+  "specification": {
+    "技术领域": "本发明涉及生物医用材料领域，具体涉及一种钛合金植入物表面羟基磷灰石生物陶瓷涂层及其制备方法。",
+    "背景技术": "钛合金因其良好的力学性能和生物相容性被广泛用于骨科植入物，但其生物惰性导致骨整合周期长。羟基磷灰石(HA)涂层可赋予钛合金表面生物活性，促进骨组织早期固定。现有等离子喷涂技术存在涂层不均匀、结合强度低、高温相变导致TCP等杂质相生成等缺陷。",
+    "发明内容": {
+      "problem": "针对现有等离子喷涂HA涂层质量不稳定、杂质相多的问题。",
+      "solution": "提供一种溶胶-凝胶法制备HA涂层的方法，其特征在于以钙盐和磷化合物为前驱体，在钛合金基体上涂覆后经450-600°C热处理1-3h，获得Ca/P比为1.60-1.70的HA涂层。",
+      "beneficial_effects": "涂层为纯相HA，无TCP或CaO杂质相；涂层均匀致密，厚度为15-25μm；模拟体液浸泡后表面生成类骨磷灰石层，具有良好的生物活性。"
+    },
+    "具体实施方式": "实施例1：将Ca(NO3)2·4H2O和P(C2H5O)3按Ca/P=1.67溶于乙醇中，搅拌2h得溶胶。Ti-6Al-4V基体经打磨、清洗后浸入溶胶，以5cm/min速度提拉涂覆，80°C干燥30min，重复3次后在550°C热处理2h。XRD确认涂层为纯HA，SEM显示涂层厚约20μm，表面致密无裂纹。模拟体液浸泡7天后表面形成缺钙型类骨磷灰石。",
+    "figure_descriptions": [
+      {
+        "number": 1,
+        "caption": "图1为本发明HA涂层制备工艺流程图。",
+        "description": "前驱体配制 → 溶胶制备 → 基体预处理 → 浸渍提拉涂覆 → 干燥 → 重复涂覆 → 热处理 → HA涂层。",
+        "source": "F001",
+        "figure_type": "flowchart"
+      }
+    ],
+    "equations": []
+  },
+  "abstract": "本发明公开一种钛合金植入物表面羟基磷灰石生物陶瓷涂层及其制备方法。采用溶胶-凝胶法，以钙盐和磷化合物为前驱体，在钛合金基体上涂覆后经450-600°C热处理1-3h，获得Ca/P比为1.60-1.70的羟基磷灰石涂层。涂层均匀致密、纯度高，在模拟体液中具有良好的生物活性。",
+  "quality_assessment": {
+    "status": "review-draft",
+    "scores": {
+      "evidence_support": 4,
+      "claim_architecture": 4,
+      "terminology_consistency": 4,
+      "enablement_detail": 3,
+      "technical_effect_reasoning": 3,
+      "formula_coverage": 4,
+      "figure_alignment": 4
+    }
+  }
+}

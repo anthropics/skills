@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "profile_name": "marketing-site",
+  "description": "SEO-dependent public marketing surface (landing pages, blog, docs, pricing). Heavy read, near-zero write. Goal: maximize Core Web Vitals + SEO crawlability. Build separate from the product codebase.",
+  "version": "1.0.0",
+  "constraints": {
+    "team_size_max": 3,
+    "deployment_cadence": "per-pr",
+    "cloud_budget_monthly_usd_ceiling": 200,
+    "user_facing": true,
+    "data_sensitivity_tier": "public-only",
+    "read_write_ratio_min": 100
+  },
+  "stack_recommendations": {
+    "primary": "static-or-mostly-static",
+    "frontend": {
+      "framework_options_ranked": ["astro", "next.js-static-export", "11ty", "hugo"],
+      "rendering": "static-generation-with-island-hydration",
+      "styling": "tailwind-or-css-modules",
+      "cms": "headless-cms-or-mdx-in-repo"
+    },
+    "backend": "no-backend-or-edge-functions-only",
+    "infrastructure": {
+      "hosting": ["cloudflare-pages", "vercel", "netlify"],
+      "cdn": "included-with-host",
+      "analytics": "plausible-or-fathom-or-self-host-umami",
+      "forms": "edge-function-to-webhook-or-formspree"
+    }
+  },
+  "anti_recommendations": {
+    "next-app-router-for-marketing": "warn — RSC over-engineers marketing-site needs; static-first wins on CWV and DX",
+    "spa-for-marketing": "kill — SEO catastrophe; no JS-rendered marketing site ranks competitively in 2026",
+    "custom-backend": "kill — no writes means no backend",
+    "personalization-at-edge": "warn — defer until SEO baseline is established",
+    "third-party-tag-soup": "kill — every third-party script costs LCP and INP",
+    "ga4-default": "warn — GA4 hurts CWV scores; prefer cookieless alternatives"
+  },
+  "success_thresholds": {
+    "lcp_ms_mobile_4g": 1500,
+    "inp_ms": 100,
+    "cls": 0.05,
+    "ttfb_ms": 300,
+    "lighthouse_seo_score_min": 95,
+    "lighthouse_accessibility_score_min": 95,
+    "lighthouse_performance_score_min": 95,
+    "uptime_target": 0.999,
+    "deployment_time_minutes_max": 5
+  },
+  "ci_cd": {
+    "platform": "github-actions-or-host-native",
+    "stages": ["lint", "build", "lighthouse-ci", "deploy-preview", "deploy-prod"],
+    "gates": ["lighthouse-perf >= 95", "lighthouse-seo >= 95", "no-broken-links"]
+  },
+  "named_approver_chain": {
+    "stack_change": "engineering-lead + marketing-lead",
+    "external-service-add": "engineering-lead + marketing-lead + cfo-if-monthly-cost-over-100"
+  },
+  "canon_references": [
+    "Web Almanac (HTTP Archive, 2025) — marketing-site CWV distribution",
+    "Addy Osmani, Web Performance for the Modern Web (2024) — static-first defaults",
+    "Google SearchGuide (2024) — Core Web Vitals as ranking signal",
+    "Plausible Analytics whitepaper (2023) — third-party tag impact on CWV",
+    "Astro framework docs — Islands Architecture (Eisenberg, 2021)"
+  ]
+}

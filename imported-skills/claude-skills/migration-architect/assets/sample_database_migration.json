@@ -1,0 +1,106 @@
+{
+  "type": "database",
+  "pattern": "schema_change",
+  "source": "PostgreSQL 13 Production Database",
+  "target": "PostgreSQL 15 Cloud Database",
+  "description": "Migrate user management system from on-premises PostgreSQL to cloud with schema updates",
+  "constraints": {
+    "max_downtime_minutes": 30,
+    "data_volume_gb": 2500,
+    "dependencies": [
+      "user_service_api",
+      "authentication_service",
+      "notification_service",
+      "analytics_pipeline",
+      "backup_service"
+    ],
+    "compliance_requirements": [
+      "GDPR",
+      "SOX"
+    ],
+    "special_requirements": [
+      "zero_data_loss",
+      "referential_integrity",
+      "performance_baseline_maintained"
+    ]
+  },
+  "tables_to_migrate": [
+    {
+      "name": "users",
+      "row_count": 1500000,
+      "size_mb": 450,
+      "critical": true
+    },
+    {
+      "name": "user_profiles",
+      "row_count": 1500000,
+      "size_mb": 890,
+      "critical": true
+    },
+    {
+      "name": "user_sessions",
+      "row_count": 25000000,
+      "size_mb": 1200,
+      "critical": false
+    },
+    {
+      "name": "audit_logs",
+      "row_count": 50000000,
+      "size_mb": 2800,
+      "critical": false
+    }
+  ],
+  "schema_changes": [
+    {
+      "table": "users",
+      "changes": [
+        {
+          "type": "add_column",
+          "column": "email_verified_at",
+          "data_type": "timestamp",
+          "nullable": true
+        },
+        {
+          "type": "add_column", 
+          "column": "phone_verified_at",
+          "data_type": "timestamp",
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "table": "user_profiles",
+      "changes": [
+        {
+          "type": "modify_column",
+          "column": "bio",
+          "old_type": "varchar(255)",
+          "new_type": "text"
+        },
+        {
+          "type": "add_constraint",
+          "constraint_type": "check",
+          "constraint_name": "bio_length_check",
+          "definition": "LENGTH(bio) <= 2000"
+        }
+      ]
+    }
+  ],
+  "performance_requirements": {
+    "max_query_response_time_ms": 100,
+    "concurrent_connections": 500,
+    "transactions_per_second": 1000
+  },
+  "business_continuity": {
+    "critical_business_hours": {
+      "start": "08:00",
+      "end": "18:00", 
+      "timezone": "UTC"
+    },
+    "preferred_migration_window": {
+      "start": "02:00",
+      "end": "06:00",
+      "timezone": "UTC"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+name: Command Invariants
+
+# Keep hand-written command lists in lockstep with the actual command
+# inventory. The SessionStart announce script drifted twice (PR #193: 10
+# listed vs 12 actual; this workflow's introducing PR: 14 listed vs 16
+# actual — /ars-3w and /ars-rebuttal-audit missing), so the list is now
+# machine-checked instead of hand-maintained.
+#
+# Validator is vendored from release-discipline-toolkit (see
+# tools/release-discipline/README.md); per-repo config lives in
+# .command-invariants.toml at the repo root. Checks:
+#   - every commands/*.md has its /ars-<name> token in the announce script
+#   - no /ars-* token in the announce script lacks a command file
+#   - the announce's stated "Slash commands (N)" count is accurate
+#   - .claude-plugin/plugin.json version == newest CHANGELOG entry
+
+on:
+  push:
+    paths:
+      - 'commands/**'
+      - 'scripts/announce-ars-loaded.sh'
+      - '.command-invariants.toml'
+      - '.claude-plugin/plugin.json'
+      - 'CHANGELOG.md'
+      - 'tools/release-discipline/**'
+      - '.github/workflows/command-invariants.yml'
+  pull_request:
+
+concurrency:
+  group: command-invariants-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  command-invariants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          # tomllib + possessive-quantifier regex need 3.11+
+          python-version: '3.11'
+      - name: Validate command invariants
+        run: |
+          python tools/release-discipline/scripts/check_command_invariants.py \
+            --manifest .command-invariants.toml

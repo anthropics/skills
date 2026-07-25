@@ -1,0 +1,92 @@
+route_scenarios:
+  - name: disclosure-analysis-light
+    axes:
+      source_format: pdf-text
+      task_mode: disclosure-analysis
+      invention_type: process-material
+    target_bytes: 26000
+    max_bytes: 30000
+
+  - name: claim-set-with-kb
+    axes:
+      source_format: pasted-text
+      task_mode: claim-set
+      invention_type: process-material
+    on_demand:
+      - patent-kb
+      - cn-drafting-guide
+      - stage-gates
+      - claim-checklist
+    target_bytes: 43000
+    max_bytes: 48000
+
+  - name: reader-to-patent
+    axes:
+      source_format: pdf-text
+      task_mode: disclosure-analysis
+      invention_type: process-material
+    companions:
+      - skill: materials-reader
+        required_axes:
+          - source_format
+          - output_type
+          - material_family
+          - domain
+        axes:
+          source_format: pdf-text
+          output_type: evidence-chain-audit
+          material_family: civil
+          domain: civil
+    target_bytes: 70000
+    max_bytes: 78000
+
+  - name: reader-figure-full-draft
+    axes:
+      source_format: mixed-project
+      task_mode: full-draft
+      invention_type: process-material
+    on_demand:
+      - patent-kb
+      - cn-drafting-guide
+      - stage-gates
+      - output-contract
+      - draft-schema
+      - claim-checklist
+    companions:
+      - skill: materials-reader
+        required_axes:
+          - source_format
+          - output_type
+          - material_family
+          - domain
+        axes:
+          source_format: pdf-text
+          output_type: full-reader
+          material_family: civil
+          domain: civil
+      - skill: materials-figure
+        required_axes:
+          - backend
+          - material_family
+          - domain
+        axes:
+          backend: python
+          material_family: civil
+          domain: civil
+        on_demand:
+          - references/figure-package-protocol.md
+    target_bytes: 132000
+    max_bytes: 148000
+
+  - name: unsupported-feature-block
+    axes:
+      source_format: pasted-text
+      task_mode: claim-set
+      invention_type: process-material
+    on_demand:
+      - patent-kb
+      - cn-drafting-guide
+      - stage-gates
+      - claim-checklist
+    target_bytes: 43000
+    max_bytes: 48000

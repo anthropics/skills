@@ -1,0 +1,14 @@
+target_journal: nature-materials
+article_type: short-communication
+title: "Test Nature Materials Letter"
+authors:
+  - name: "Test Author"
+    affiliation: "Test University"
+    email: "test@example.com"
+    corresponding: true
+corresponding_author: "Test Author"
+funding: "This work was supported by Test Grant."
+conflicts: "The authors declare no conflict of interest."
+data_availability_status: ready
+code_availability_status: ready
+live_verification_acknowledged: true

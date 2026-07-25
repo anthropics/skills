@@ -1,0 +1,9 @@
+#target_journal: JEurCerSoc
+#material: 3Y-TZP
+#figure_type: mechanical-reliability
+---
+## Core conclusion
+The addition of 0.5 wt% Al₂O₃ to 3Y-TZP improves Weibull modulus without sacrificing strength.
+
+## Evidence chain
+Composition → sintering → density → strength distribution → Weibull modulus → fracture origin analysis

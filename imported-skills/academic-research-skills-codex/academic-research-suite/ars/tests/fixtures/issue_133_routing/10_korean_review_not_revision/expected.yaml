@@ -1,0 +1,18 @@
+fixture_id: 10_korean_review_not_revision
+expected_routing_class: proceed
+expected_destination: academic-paper-reviewer:full
+escape_hatch_applied: false
+notes: |
+  Korean boundary case from issue #452 (phrases authored by the native-speaker
+  proposer, @devCharlotte): 심사 (referee/assess) routes to
+  academic-paper-reviewer, NOT academic-paper. Materials: complete manuscript.
+  Intent: explicit review request matching the 논문 심사 trigger keyword.
+
+  Per Routing Discipline Step 1 (explicit clear intent), route directly to
+  academic-paper-reviewer full mode. The Korean noun 심사 is the standard term
+  for journal refereeing — assessment intent, not editing intent.
+
+  Pass criteria:
+  - Response begins multi-perspective review (field detection, reviewer panel)
+  - Response does NOT start rewriting or revising the manuscript
+  - Response does NOT trigger clarification a-d options
