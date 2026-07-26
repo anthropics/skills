@@ -12,7 +12,7 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 |---|---|
 | **Create** a new document | Write a `docx` (npm) script — see gotchas below |
 | **Edit** an existing document | `unzip` → edit `word/document.xml` → `zip` (docx-js cannot open existing files) |
-| **Read** content | `pandoc -t markdown file.docx` |
+| **Read** content | `pandoc -t markdown file.docx` — or `markitdown file.docx` for Microsoft's own extractor (matches pptx/xlsx behavior) |
 
 > Script paths below are relative to this skill's directory.
 
@@ -43,6 +43,20 @@ ls page-*.jpg   # then Read the images
 ```
 
 `pdftoppm` zero-pads page numbers to the width of the page count (`page-01.jpg`…`page-12.jpg`).
+
+**High-fidelity render (opt-in — Microsoft Word Online engine).** LibreOffice
+substitutes fonts and lays out slightly differently from real Word. For
+client-facing verification or a PDF the user will actually ship, use Microsoft
+Graph instead. Requires `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`,
+`GRAPH_CLIENT_SECRET`, `GRAPH_DRIVE_ID` in the environment:
+
+```bash
+python scripts/cloud/graph_render.py output.docx output.pdf
+pdftoppm -jpeg -r 100 output.pdf page
+```
+
+Falls back with a clear error if creds are missing — the LibreOffice command
+above is always available and remains the default.
 
 ## Editing existing documents
 

@@ -306,6 +306,25 @@ with open("encrypted.pdf", "wb") as output:
 | OCR scanned PDFs | pytesseract | Convert to image first |
 | Fill PDF forms | pdf-lib or pypdf (see FORMS.md) | See FORMS.md |
 
+## High-fidelity rendering (opt-in — Adobe PDF Services)
+
+`reportlab` output and LibreOffice's Office→PDF path are fine for internal QA
+but not for a PDF the user will ship. Adobe PDF Services uses the real Acrobat
+engine — same fonts, same layout, and cleaner rasterization than pdftoppm.
+Requires `ADOBE_CLIENT_ID` and `ADOBE_CLIENT_SECRET` from
+developer.adobe.com/document-services:
+
+```bash
+# Office (docx/pptx/xlsx) → PDF via Acrobat's real conversion
+python scripts/cloud/adobe_render.py create input.docx output.pdf
+
+# PDF → high-fidelity page images (better than pdftoppm for previews)
+python scripts/cloud/adobe_render.py to-image output.pdf page --format png --dpi 200
+```
+
+Falls back with a clear error if creds are missing — `pypdf`, `pdfplumber`,
+`reportlab`, and `pdftoppm` remain the defaults.
+
 ## Next Steps
 
 - For advanced pypdfium2 usage, see REFERENCE.md

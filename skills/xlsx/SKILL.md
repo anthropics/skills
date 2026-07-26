@@ -94,6 +94,20 @@ percentages `0.0%`, **stored as fractions** (`0.15` renders `15.0%`; storing `15
 (`=B5*(1+$B$6)`, never `=B5*1.05`) · formulas consistent across every projection period, since a
 lone edited cell mid-row is the commonest silent error · guard denominators that can be zero.
 
+## High-fidelity render (opt-in — Microsoft Excel Online engine)
+
+For a PDF that matches real Excel — print areas, page breaks, custom number
+formats, conditional formatting — render via Microsoft Graph instead of
+LibreOffice. Requires `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`,
+`GRAPH_CLIENT_SECRET`, `GRAPH_DRIVE_ID`:
+
+```bash
+python scripts/cloud/graph_render.py output.xlsx output.pdf
+```
+
+Falls back with a clear error if creds are missing — LibreOffice via
+`scripts/office/soffice.py --convert-to pdf` remains the default.
+
 ## Dependencies
 
 `openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)

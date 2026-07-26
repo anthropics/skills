@@ -233,6 +233,20 @@ ls -1 "$PWD"/slide-*.jpg
 
 **After fixes, rerun all four commands above** — the PDF must be regenerated from the edited `.pptx` before `pdftoppm` can reflect your changes.
 
+**High-fidelity render (opt-in — Microsoft PowerPoint Online engine).** LibreOffice
+substitutes fonts and mis-renders some transitions, gradients, and SmartArt. For
+QA of client-facing decks or a PDF the user will actually ship, render via
+Microsoft Graph. Requires `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`,
+`GRAPH_CLIENT_SECRET`, `GRAPH_DRIVE_ID`:
+
+```bash
+python scripts/cloud/graph_render.py output.pptx output.pdf
+pdftoppm -jpeg -r 150 output.pdf slide
+```
+
+Falls back with a clear error if creds are missing — the LibreOffice path above
+remains the default.
+
 ## Dependencies
 
 `pptxgenjs` (npm, preinstalled — install only if `require('pptxgenjs')` fails) · `markitdown[pptx]`, `Pillow`, `defusedxml`, `lxml` (pip — text dump, thumbnail, clean, validate) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`) · `pdftoppm` (Poppler)
