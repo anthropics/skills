@@ -126,13 +126,6 @@ main{padding:30px 0 10px}
 .spark{flex:none}
 
 /* ---- table ---- */
-details.tv{margin-top:14px}
-details.tv summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--ink-2);
-  padding:6px 0;list-style:none;display:flex;align-items:center;gap:7px}
-details.tv summary::-webkit-details-marker{display:none}
-details.tv summary::before{content:"\25B8";font-size:.8em;transition:transform .15s}
-details.tv[open] summary::before{transform:rotate(90deg)}
-details.tv summary:focus-visible{outline:2px solid var(--s1);outline-offset:2px;border-radius:3px}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;
   background:var(--surface);margin-top:8px}
 table{border-collapse:collapse;width:100%;font-size:.85rem;font-variant-numeric:tabular-nums}
@@ -204,24 +197,6 @@ footer a{color:var(--s1)}
           <span class="h" id="rankunit"></span>
         </div>
         <div class="zonelist" id="zonelist"></div>
-
-        <details class="tv">
-          <summary>Lihat kesemua metrik sebagai jadual</summary>
-          <div class="tbl-wrap">
-            <table>
-              <caption class="sr-only">Enam metrik bagi tujuh zon VetEC, 2025</caption>
-              <thead><tr>
-                <th scope="col">Zon VetEC</th><th scope="col">Negeri</th>
-                <th scope="col">Output</th><th scope="col">Output/pegawai</th>
-                <th scope="col">Pegawai</th><th scope="col">PPV</th>
-                <th scope="col">Penternak</th><th scope="col">Ladang</th>
-              </tr></thead>
-              <tbody id="ztbody"></tbody>
-              <tfoot><tr><td>JUMLAH</td><td></td><td>266,605</td><td>2,777 purata</td>
-                <td>96</td><td>506</td><td>4,239</td><td>20,734</td></tr></tfoot>
-            </table>
-          </div>
-        </details>
       </div>
     </div>
 
@@ -432,12 +407,6 @@ function drawList(){
   });
 }
 
-function drawTable(){
-  document.getElementById("ztbody").innerHTML = ZONES.map(z=>
-    `<tr><td>${esc(z.z)}</td><td>${esc(z.neg)}</td><td>${nf(z.out[4])}</td>
-     <td>${nf(z.prod[4])}</td><td>${z.peg[4]}</td><td>${z.ppv[4]}</td>
-     <td>${nf(z.pen[4])}</td><td>${nf(z.lad[4])}</td></tr>`).join("");
-}
 
 function setHot(zn){
   hotZone = (hotZone===zn) ? null : zn;
@@ -476,7 +445,7 @@ function drawBottom(){
 
 function render(){
   document.getElementById("mapnote").textContent = curMetric.note;
-  drawMap(); drawList(); drawTable(); drawBottom();
+  drawMap(); drawList(); drawBottom();
 }
 render();
 
