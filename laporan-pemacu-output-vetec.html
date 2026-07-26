@@ -421,7 +421,7 @@ footer::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
       2025</strong>. Itu penurunan <strong>62%</strong> dalam perhatian lapangan bagi setiap
       program. Bahagian seterusnya menunjukkan mengapa ini penting: lawatan ladang ialah tempat
       kerja pengembangan sebenar berlaku. Jika bilangan program terus dinaikkan tanpa menambah
-      keupayaan lawatan, yang bertambah hanyalah bilangan projek di atas kertas.</p>
+      keupayaan lawatan, yang bertambah hanyalah bilangan program di atas kertas.</p>
     </div>
   </div>
 </section>
@@ -642,7 +642,7 @@ footer::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
     <div class="shead">
       <p class="eyebrow">Dapatan 5 &middot; program berbanding output</p>
       <h2>PPV dipacu tahun, bukan zon</h2>
-      <p class="lede">Bilangan projek PPV ialah satu-satunya pemboleh ubah dalam analisis ini
+      <p class="lede">Bilangan program PPV ialah satu-satunya pemboleh ubah dalam analisis ini
       yang berkelakuan berbeza. Perbezaan itu mempunyai implikasi terus kepada reka bentuk KPI.</p>
     </div>
 
@@ -749,7 +749,7 @@ footer::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
         <h4>3. Bilangan PPV tidak sepadan dengan Indeks Kebangsaan</h4>
         <p>Set data ini merekodkan <strong>430 PPV pada 2024</strong>. Laporan Indeks Kebangsaan
         PPV 2024 merekodkan <strong>737 projek bimbingan</strong> pada tahun yang sama. Kedua-dua
-        angka tidak salah &mdash; ia mengukur perkara berbeza, kemungkinan besar projek di bawah
+        angka tidak salah &mdash; ia mengukur perkara berbeza, kemungkinan besar program di bawah
         data asas VetEC berbanding jumlah projek kebangsaan termasuk Industri Asas Tani. Tetapi
         kedua-duanya <strong>tidak boleh digunakan bersilih ganti</strong>, dan takrifan yang
         digunakan perlu dinyatakan setiap kali angka PPV dilaporkan.</p>
@@ -1047,7 +1047,7 @@ const MODELS = [
   {k:"Bilangan ladang dilawat", a:125.11, ap:0.0683, ar2:0.0972,
    b:36.56, bp:0.4414, br2:0.8347, fz:"<0.0001", u:"ladang"},
   {k:"Program Pengembangan (PPV)", a:2.015, ap:0.0605, ar2:0.1028,
-   b:0.915, bp:0.5757, br2:0.1980, fz:"0.354", u:"projek"}
+   b:0.915, bp:0.5757, br2:0.1980, fz:"0.354", u:"program"}
 ];
 
 /* Model Regresi, Jadual 3 — penguraian R-kuasa-dua */
@@ -1086,9 +1086,9 @@ const METRICS = [
   {id:"peg5", label:"Bilangan pegawai 2025", fmt:v=>nf(v),
    note:"Kakitangan teknikal mengikut zon, 2025. Jumlah 96 orang. Zon dengan pegawai paling " +
         "ramai (Utara, 18) bukan zon paling produktif — hujah utama laporan ini."},
-  {id:"ppv5", label:"Projek PPV 2025", fmt:v=>nf(v),
-   note:"Program Pengembangan Veterinar mengikut zon, 2025. Jumlah 506 projek. Zon Timur Laut " +
-        "mendahului dengan 88 projek walaupun mempunyai penternak paling sedikit di negara ini."},
+  {id:"ppv5", label:"Program PPV 2025", fmt:v=>nf(v),
+   note:"Program Pengembangan Veterinar mengikut zon, 2025. Jumlah 506 program. Zon Timur Laut " +
+        "mendahului dengan 88 program walaupun mempunyai penternak paling sedikit di negara ini."},
   {id:"pen5", label:"Penternak data asas 2025", fmt:v=>nf(v),
    note:"Penternak ruminan dalam data asas VetEC, 2025. Jumlah zon 4,239 berbanding jumlah " +
         "kebangsaan 4,240. Angka Tenggara dan Timur Laut berubah mendadak sejak 2024 — lihat amaran data."},
@@ -1526,7 +1526,7 @@ function chartPPV(){
        + `<text class="${on?"vl":"lb"}" x="${W-R+44}" y="${y}"
            ${on?'fill="'+c+'"':''}>${esc(z.z)}</text>`;
   });
-  s += `<text class="ax" x="${L-8}" y="${T+4}" text-anchor="end">projek</text>`
+  s += `<text class="ax" x="${L-8}" y="${T+4}" text-anchor="end">program</text>`
      + `<text class="ax" x="${L}" y="${H-4}">Kesemua tujuh zon menaik serentak —
         ujian-F kesan zon p = 0.354, tidak signifikan</text></svg>`;
 
@@ -1536,7 +1536,7 @@ function chartPPV(){
     <span><i style="background:${mut};opacity:.5"></i>lima zon lain</span></div>`;
   const rows = ord.map(z=>[esc(z.z), ...z.ppv.map(v=>v), pc(z.ppv[4]/z.ppv[0]-1),
     (z.pen5/z.ppv5).toFixed(1)]);
-  put("c-ppv", lgd+s, tbl(["Zon",...YEARS,"Δ 2021→2025","Penternak/projek 2025"], rows));
+  put("c-ppv", lgd+s, tbl(["Zon",...YEARS,"Δ 2021→2025","Penternak/program 2025"], rows));
 }
 
 /* ============ CARTA 9 — KOMPOSISI KOMODITI 2025 ============ */
