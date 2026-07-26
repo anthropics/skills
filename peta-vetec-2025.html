@@ -296,7 +296,8 @@ const METRICS = [
 ];
 
 /* ===== HELPERS ===== */
-const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const nf  = n => n.toLocaleString("ms-MY");
 const pc  = n => (n>=0?"+":"−") + Math.abs(n*100).toFixed(0) + "%";
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
