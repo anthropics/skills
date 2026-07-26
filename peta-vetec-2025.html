@@ -150,7 +150,6 @@ tfoot td{font-weight:700;background:var(--surface-2);border-top:1px solid var(--
 .btm .tbl-wrap{margin-top:14px}
 .btm .cap{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--ink-3);margin:26px 0 0}
-.btm .src{font-size:.78rem;color:var(--ink-3);margin:10px 0 0;max-width:78ch}
 td.up{color:var(--s2);font-weight:700}
 td.down{color:var(--crit);font-weight:700}
 
@@ -239,12 +238,6 @@ footer a{color:var(--s1)}
 
       <p class="cap">Penternak data asas mengikut zon</p>
       <div class="tbl-wrap" id="t-pen"></div>
-
-      <p class="cap">Kesemua enam metrik &mdash; jumlah keseluruhan</p>
-      <div class="tbl-wrap" id="t-all"></div>
-      <p class="src">Semua angka dikira sebagai hasil tambah tujuh zon. Bagi output teknikal
-      2024 ini memberi 234,484; lembaran RUMUSAN dalam set data yang sama menyatakan 234,476
-      &mdash; beza 8 unit yang berpunca daripada persampelan (7) dan pembiakbakaan (1).</p>
     </section>
   </div>
 </main>
@@ -479,21 +472,6 @@ function drawBottom(){
      </tbody><tfoot><tr><td>JUMLAH</td><td>3,571</td><td>4,239</td>
      <td class="up">+668</td><td class="up">+18.7%</td></tr></tfoot></table>`;
 
-  const M=[["Output teknikal","out"],["Bilangan pegawai","peg"],["Program PPV","ppv"],
-           ["Penternak data asas","pen"],["Ladang dilawat","lad"]];
-  const sum=(k,i)=>ZONES.reduce((t,z)=>t+z[k][i],0);
-  let rows=M.map(([lab,k])=>{ const a=sum(k,3), b=sum(k,4);
-    return `<tr><td>${lab}</td><td>${nf(a)}</td><td>${nf(b)}</td>
-      <td class="${cls(a,b)}">${b>=a?"+":"\u2212"}${nf(Math.abs(b-a))}</td>
-      <td class="${cls(a,b)}">${pct(a,b)}</td></tr>`; }).join("");
-  const p24=Math.round(sum("out",3)/sum("peg",3)), p25=Math.round(sum("out",4)/sum("peg",4));
-  rows += `<tr><td>Output setiap pegawai</td><td>${nf(p24)}</td><td>${nf(p25)}</td>
-    <td class="${cls(p24,p25)}">${p25>=p24?"+":"\u2212"}${nf(Math.abs(p25-p24))}</td>
-    <td class="${cls(p24,p25)}">${pct(p24,p25)}</td></tr>`;
-  document.getElementById("t-all").innerHTML =
-    `<table><caption class="sr-only">Enam metrik, jumlah keseluruhan 2024 dan 2025</caption>
-     <thead><tr><th scope="col">Metrik</th><th scope="col">2024</th><th scope="col">2025</th>
-     <th scope="col">Δ</th><th scope="col">Δ %</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 function render(){
