@@ -205,10 +205,9 @@ footer a{color:var(--s1)}
       <p>Peta di atas menggunakan 2021 sebagai asas perbandingan, selaras dengan jalur mini pada
       setiap kad zon. Jadual di bawah pula membandingkan dua tahun terakhir sahaja, kerana
       beberapa pergerakan berlaku sepenuhnya dalam tempoh satu tahun itu.</p>
-      <p>Yang paling ketara: <strong>Zon Tenggara meningkat 524&nbsp;&rarr;&nbsp;1,362 penternak
-      dan Zon Timur Laut menurun 479&nbsp;&rarr;&nbsp;123</strong> antara 2024 dan 2025.</p>
+      <p id="btm-lead"></p>
 
-      <p class="cap">Penternak data asas mengikut zon</p>
+      <p class="cap" id="btm-cap"></p>
       <div class="tbl-wrap" id="t-pen"></div>
     </section>
   </div>
@@ -421,23 +420,54 @@ bar.addEventListener("click", e=>{
   render();
 });
 
-/* ===== BAHAGIAN BAWAH: 2024 BERBANDING 2025 ===== */
+/* ===== BAHAGIAN BAWAH: 2024 BERBANDING 2025, MENGIKUT METRIK DIPILIH ===== */
 function pct(a,b){ const d=b/a-1; return (d>=0?"+":"\u2212")+Math.abs(d*100).toFixed(1)+"%"; }
 function cls(a,b){ return b>=a ? "up" : "down"; }
+function signed(n){ return (n>=0?"+":"\u2212")+nf(Math.abs(n)); }
 
 function drawBottom(){
-  const ord=[...ZONES].sort((x,y)=>y.pen[4]-x.pen[4]);
+  const id=curMetric.id, u=curMetric.unit;
+  const rows=ZONES.map(z=>({z:z.z, a:z[id][3], b:z[id][4]}))
+                  .sort((p,q)=>(q.b/q.a) - (p.b/p.a));
+
+  /* jumlah: purata berwajaran bagi metrik nisbah, hasil tambah bagi yang lain */
+  const sum=(k,i)=>ZONES.reduce((t,z)=>t+z[k][i],0);
+  const tot = id==="prod"
+    ? {a:Math.round(sum("out",3)/sum("peg",3)), b:Math.round(sum("out",4)/sum("peg",4)),
+       lab:"PURATA KESELURUHAN"}
+    : {a:sum(id,3), b:sum(id,4), lab:"JUMLAH"};
+
+  document.getElementById("btm-cap").textContent = curMetric.label + " mengikut zon";
+
+  /* ayat sorotan dijana daripada pergerakan terbesar bagi metrik ini */
+  const naik=rows.filter(r=>r.b>r.a), turun=rows.filter(r=>r.b<r.a);
+  const kapital=t=>t.toLowerCase().split(" ")
+    .map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(" ");
+  const fmt=r=>`<strong>Zon ${esc(kapital(r.z))} ` +
+    `${r.b>=r.a?"meningkat":"menurun"} ${nf(r.a)}&nbsp;&rarr;&nbsp;${nf(r.b)}</strong>`;
+  let lead;
+  if(naik.length && turun.length){
+    lead = `Yang paling ketara: ${fmt(naik[0])} dan ${fmt(turun[turun.length-1])} ` +
+           `antara 2024 dan 2025.`;
+  } else if(naik.length){
+    lead = `Kesemua tujuh zon meningkat antara 2024 dan 2025; yang terbesar ialah ` +
+           `${fmt(naik[0])}.`;
+  } else {
+    lead = `Kesemua tujuh zon menurun antara 2024 dan 2025; yang terbesar ialah ` +
+           `${fmt(turun[turun.length-1])}.`;
+  }
+  document.getElementById("btm-lead").innerHTML = lead;
+
   document.getElementById("t-pen").innerHTML =
-    `<table><caption class="sr-only">Penternak data asas mengikut zon, 2024 dan 2025</caption>
+    `<table><caption class="sr-only">${esc(curMetric.label)} mengikut zon, 2024 dan 2025</caption>
      <thead><tr><th scope="col">Zon VetEC</th><th scope="col">2024</th><th scope="col">2025</th>
      <th scope="col">Δ</th><th scope="col">Δ %</th></tr></thead><tbody>${
-     ord.map(z=>{ const a=z.pen[3], b=z.pen[4];
-       return `<tr><td>${esc(z.z)}</td><td>${nf(a)}</td><td>${nf(b)}</td>
-         <td class="${cls(a,b)}">${b>=a?"+":"\u2212"}${nf(Math.abs(b-a))}</td>
-         <td class="${cls(a,b)}">${pct(a,b)}</td></tr>`; }).join("")}
-     </tbody><tfoot><tr><td>JUMLAH</td><td>3,571</td><td>4,239</td>
-     <td class="up">+668</td><td class="up">+18.7%</td></tr></tfoot></table>`;
-
+     rows.map(r=>`<tr><td>${esc(r.z)}</td><td>${nf(r.a)}</td><td>${nf(r.b)}</td>
+       <td class="${cls(r.a,r.b)}">${signed(r.b-r.a)}</td>
+       <td class="${cls(r.a,r.b)}">${pct(r.a,r.b)}</td></tr>`).join("")}
+     </tbody><tfoot><tr><td>${tot.lab}</td><td>${nf(tot.a)}</td><td>${nf(tot.b)}</td>
+     <td class="${cls(tot.a,tot.b)}">${signed(tot.b-tot.a)}</td>
+     <td class="${cls(tot.a,tot.b)}">${pct(tot.a,tot.b)}</td></tr></tfoot></table>`;
 }
 
 function render(){
