@@ -143,6 +143,17 @@ thead th{background:var(--surface-2);font-weight:700;color:var(--ink-2);font-siz
 tbody tr:last-child td{border-bottom:0}
 tfoot td{font-weight:700;background:var(--surface-2);border-top:1px solid var(--rule)}
 
+/* ---- bahagian bawah: perbandingan 2024-2025 ---- */
+.btm{margin-top:38px;padding-top:30px;border-top:1px solid var(--rule)}
+.btm h2{font-size:1.32rem;color:var(--head);margin-bottom:.4em}
+.btm p{font-size:.92rem;color:var(--ink-2);max-width:78ch}
+.btm .tbl-wrap{margin-top:14px}
+.btm .cap{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin:26px 0 0}
+.btm .src{font-size:.78rem;color:var(--ink-3);margin:10px 0 0;max-width:78ch}
+td.up{color:var(--s2);font-weight:700}
+td.down{color:var(--crit);font-weight:700}
+
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
@@ -215,6 +226,26 @@ footer a{color:var(--s1)}
       </div>
     </div>
 
+    <section class="btm">
+      <h2>Perbandingan 2024 dengan 2025</h2>
+      <p>Peta di atas menggunakan 2021 sebagai asas perbandingan, selaras dengan jalur mini pada
+      setiap kad zon. Jadual di bawah pula membandingkan dua tahun terakhir sahaja, kerana
+      beberapa pergerakan berlaku sepenuhnya dalam tempoh satu tahun itu.</p>
+      <p>Yang paling ketara: <strong>Zon Tenggara meningkat 524&nbsp;&rarr;&nbsp;1,362 penternak
+      dan Zon Timur Laut menurun 479&nbsp;&rarr;&nbsp;123</strong> antara 2024 dan 2025. Kedua-dua
+      pergerakan melibatkan kesemua tujuh komoditi serentak dalam arah yang sama, yang lebih
+      menyerupai pendaftaran semula atau pemindahan pangkalan data daripada perubahan sebenar
+      dalam sektor ternakan.</p>
+
+      <p class="cap">Penternak data asas mengikut zon</p>
+      <div class="tbl-wrap" id="t-pen"></div>
+
+      <p class="cap">Kesemua enam metrik &mdash; jumlah keseluruhan</p>
+      <div class="tbl-wrap" id="t-all"></div>
+      <p class="src">Semua angka dikira sebagai hasil tambah tujuh zon. Bagi output teknikal
+      2024 ini memberi 234,484; lembaran RUMUSAN dalam set data yang sama menyatakan 234,476
+      &mdash; beza 8 unit yang berpunca daripada persampelan (7) dan pembiakbakaan (1).</p>
+    </section>
   </div>
 </main>
 
@@ -431,9 +462,43 @@ bar.addEventListener("click", e=>{
   render();
 });
 
+/* ===== BAHAGIAN BAWAH: 2024 BERBANDING 2025 ===== */
+function pct(a,b){ const d=b/a-1; return (d>=0?"+":"\u2212")+Math.abs(d*100).toFixed(1)+"%"; }
+function cls(a,b){ return b>=a ? "up" : "down"; }
+
+function drawBottom(){
+  const ord=[...ZONES].sort((x,y)=>y.pen[4]-x.pen[4]);
+  document.getElementById("t-pen").innerHTML =
+    `<table><caption class="sr-only">Penternak data asas mengikut zon, 2024 dan 2025</caption>
+     <thead><tr><th scope="col">Zon VetEC</th><th scope="col">2024</th><th scope="col">2025</th>
+     <th scope="col">Δ</th><th scope="col">Δ %</th></tr></thead><tbody>${
+     ord.map(z=>{ const a=z.pen[3], b=z.pen[4];
+       return `<tr><td>${esc(z.z)}</td><td>${nf(a)}</td><td>${nf(b)}</td>
+         <td class="${cls(a,b)}">${b>=a?"+":"\u2212"}${nf(Math.abs(b-a))}</td>
+         <td class="${cls(a,b)}">${pct(a,b)}</td></tr>`; }).join("")}
+     </tbody><tfoot><tr><td>JUMLAH</td><td>3,571</td><td>4,239</td>
+     <td class="up">+668</td><td class="up">+18.7%</td></tr></tfoot></table>`;
+
+  const M=[["Output teknikal","out"],["Bilangan pegawai","peg"],["Program PPV","ppv"],
+           ["Penternak data asas","pen"],["Ladang dilawat","lad"]];
+  const sum=(k,i)=>ZONES.reduce((t,z)=>t+z[k][i],0);
+  let rows=M.map(([lab,k])=>{ const a=sum(k,3), b=sum(k,4);
+    return `<tr><td>${lab}</td><td>${nf(a)}</td><td>${nf(b)}</td>
+      <td class="${cls(a,b)}">${b>=a?"+":"\u2212"}${nf(Math.abs(b-a))}</td>
+      <td class="${cls(a,b)}">${pct(a,b)}</td></tr>`; }).join("");
+  const p24=Math.round(sum("out",3)/sum("peg",3)), p25=Math.round(sum("out",4)/sum("peg",4));
+  rows += `<tr><td>Output setiap pegawai</td><td>${nf(p24)}</td><td>${nf(p25)}</td>
+    <td class="${cls(p24,p25)}">${p25>=p24?"+":"\u2212"}${nf(Math.abs(p25-p24))}</td>
+    <td class="${cls(p24,p25)}">${pct(p24,p25)}</td></tr>`;
+  document.getElementById("t-all").innerHTML =
+    `<table><caption class="sr-only">Enam metrik, jumlah keseluruhan 2024 dan 2025</caption>
+     <thead><tr><th scope="col">Metrik</th><th scope="col">2024</th><th scope="col">2025</th>
+     <th scope="col">Δ</th><th scope="col">Δ %</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
 function render(){
   document.getElementById("mapnote").textContent = curMetric.note;
-  drawMap(); drawList(); drawTable();
+  drawMap(); drawList(); drawTable(); drawBottom();
 }
 render();
 
