@@ -82,6 +82,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
         return {}
 
     results: dict[str, list] = {}
+    loaded_count = 0
 
     for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
         metadata_path = eval_dir / "eval_metadata.json"
@@ -101,15 +102,26 @@ def load_run_results(benchmark_dir: Path) -> dict:
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+            # Skip non-config directories (inputs, outputs, etc.). A config
+            # may contain run-N/grading.json files or one flat grading.json.
+            run_dirs = sorted(config_dir.glob("run-*"))
+            if not run_dirs and not (config_dir / "grading.json").is_file():
                 continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            if run_dirs:
+                run_entries = [
+                    (int(run_dir.name.split("-")[1]), run_dir)
+                    for run_dir in run_dirs
+                ]
+            else:
+                # Treat the config directory itself as run 1 for the
+                # documented single-run layout.
+                run_entries = [(1, config_dir)]
+
+            for run_number, run_dir in run_entries:
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -122,6 +134,8 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 except json.JSONDecodeError as e:
                     print(f"Warning: Invalid JSON in {grading_file}: {e}")
                     continue
+
+                loaded_count += 1
 
                 # Extract metrics
                 result = {
@@ -169,6 +183,9 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 result["notes"] = notes
 
                 results[config].append(result)
+
+    if loaded_count == 0:
+        print(f"Warning: no grading.json files found in {benchmark_dir}")
 
     return results
 
