@@ -91,6 +91,7 @@ def run_single_query(
         )
 
         triggered = False
+        saw_result = False
         start_time = time.time()
         buffer = ""
         # Track state for stream event detection
@@ -168,6 +169,11 @@ def run_single_query(
                             return triggered
 
                     elif event.get("type") == "result":
+                        saw_result = True
+                        if event.get("is_error") or event.get("subtype") not in (None, "success"):
+                            raise RuntimeError(
+                                f"claude evaluation failed: {event.get('subtype', 'unknown')}"
+                            )
                         return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
@@ -175,6 +181,13 @@ def run_single_query(
                 process.kill()
                 process.wait()
 
+        # A crashed/interrupted Claude subprocess is an infrastructure failure,
+        # not evidence that the skill did not trigger. Treating it as False can
+        # make negative-query checks pass and feed bad data to run_loop.
+        if process.returncode not in (0, None) and not saw_result:
+            raise RuntimeError(
+                f"claude subprocess exited with status {process.returncode}"
+            )
         return triggered
     finally:
         if command_file.exists():
@@ -211,6 +224,7 @@ def run_eval(
                 future_to_info[future] = (item, run_idx)
 
         query_triggers: dict[str, list[bool]] = {}
+        query_errors: dict[str, list[str]] = {}
         query_items: dict[str, dict] = {}
         for future in as_completed(future_to_info):
             item, _ = future_to_info[future]
@@ -223,6 +237,7 @@ def run_eval(
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
+                query_errors.setdefault(query, []).append(str(e))
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
@@ -232,12 +247,16 @@ def run_eval(
             did_pass = trigger_rate >= trigger_threshold
         else:
             did_pass = trigger_rate < trigger_threshold
+        errors = query_errors.get(query, [])
+        if errors:
+            did_pass = False
         results.append({
             "query": query,
             "should_trigger": should_trigger,
             "trigger_rate": trigger_rate,
             "triggers": sum(triggers),
             "runs": len(triggers),
+            "errors": errors,
             "pass": did_pass,
         })
 
