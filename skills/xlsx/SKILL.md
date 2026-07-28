@@ -74,6 +74,8 @@ literal `#NAME?` baked into the file you deliver.
 - **`data_only=True` is destructive if you save.** That workbook has no formulas left, so saving replaces every one with a literal — permanently.
 - **`data_only=True` on a file openpyxl just wrote returns `None` everywhere** — run `recalc.py` first. (A formula whose result is `""` also reads back as `None`.)
 - **Merged cells: write the top-left anchor only.** Every other cell in the range is a `MergedCell` whose `.value` is read-only.
+- **Title/banner cells do not overflow reliably.** A fill and long text in `A1` do not consistently span neighboring columns across spreadsheet renderers; merge the banner across the table width instead (for example, `ws.merge_cells(f"A1:{get_column_letter(ws.max_column)}1")`).
+- **Escape literal ampersands in headers and footers.** Excel interprets `&C`, `&L`, `&R`, `&P`, and similar sequences as field codes. Double a literal ampersand (`"Revenue && Costs"`) so it renders as `Revenue & Costs`.
 - **`.xlsm` loses its macros unless you pass `keep_vba=True`** to `load_workbook`.
 - **A sheet name containing a space must be quoted** in a cross-sheet reference: `='Assumptions Inputs'!$B$5`. Unquoted, it evaluates to `#VALUE!`.
 
