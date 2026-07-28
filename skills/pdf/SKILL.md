@@ -166,6 +166,16 @@ story.append(Paragraph("Content for page 2", styles['Normal']))
 doc.build(story)
 ```
 
+#### CJK text and Acrobat compatibility
+
+When a PDF contains Japanese, Chinese, or Korean text, verify the result in
+Adobe Acrobat as well as a browser or Poppler-based viewer. Some HTML/Chromium
+pipelines embed subsetted OpenType-CFF (CID Type 0C) fonts that render in
+Chrome but appear blank in Acrobat. Prefer an embedded TrueType/CIDFontType2
+font when the generation tool supports that choice. If an existing PDF has
+this symptom, re-export it through LibreOffice to retain searchable text; use
+rasterization only as a last resort because it removes text searchability.
+
 #### Subscripts and Superscripts
 
 **IMPORTANT**: Never use Unicode subscript/superscript characters (₀₁₂₃₄₅₆₇₈₉, ⁰¹²³⁴⁵⁶⁷⁸⁹) in ReportLab PDFs. The built-in fonts do not include these glyphs, causing them to render as solid black boxes.
