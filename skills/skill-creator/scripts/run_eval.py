@@ -32,6 +32,40 @@ def find_project_root() -> Path:
     return current
 
 
+def command_clone_prefix(skill_name: str) -> str:
+    """Return the prefix shared by command clones for one evaluated skill."""
+    return f"{skill_name}-skill-"
+
+
+def is_command_clone_reference(reference: str, skill_name: str) -> bool:
+    """Whether a tool reference points at any worker clone for this skill."""
+    return command_clone_prefix(skill_name) in reference
+
+
+def remove_stale_command_clones(project_root: Path, skill_name: str) -> int:
+    """Remove command clones left by interrupted evaluations.
+
+    Clones are generated with the skill-specific prefix, so this sweep cannot
+    remove unrelated user commands. It runs once before workers start and
+    prevents old descriptions from competing with the current evaluation.
+    """
+    commands_dir = project_root / ".claude" / "commands"
+    if not commands_dir.is_dir():
+        return 0
+
+    removed = 0
+    prefix = command_clone_prefix(skill_name)
+    for path in commands_dir.glob(f"{prefix}*.md"):
+        if not path.is_file():
+            continue
+        try:
+            path.unlink()
+            removed += 1
+        except OSError as exc:
+            print(f"Warning: could not remove stale command clone {path}: {exc}", file=sys.stderr)
+    return removed
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -144,12 +178,12 @@ def run_single_query(
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
+                                if is_command_clone_reference(accumulated_json, skill_name):
                                     return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                return is_command_clone_reference(accumulated_json, skill_name)
                             if se_type == "message_stop":
                                 return False
 
@@ -161,9 +195,9 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                            if tool_name == "Skill" and is_command_clone_reference(tool_input.get("skill", ""), skill_name):
                                 triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            elif tool_name == "Read" and is_command_clone_reference(tool_input.get("file_path", ""), skill_name):
                                 triggered = True
                             return triggered
 
@@ -194,6 +228,10 @@ def run_eval(
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
+
+    removed = remove_stale_command_clones(project_root, skill_name)
+    if removed:
+        print(f"Removed {removed} stale command clone(s) for {skill_name}", file=sys.stderr)
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         future_to_info = {}
