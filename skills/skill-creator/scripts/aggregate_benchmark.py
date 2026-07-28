@@ -102,14 +102,23 @@ def load_run_results(benchmark_dir: Path) -> dict:
             if not config_dir.is_dir():
                 continue
             # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+            run_dirs = sorted(config_dir.glob("run-*"))
+            if not run_dirs and (config_dir / "grading.json").exists():
+                # The documented single-run layout stores grading.json directly
+                # in the config directory, which the eval viewer also accepts.
+                run_dirs = [config_dir]
+            if not run_dirs:
                 continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            for run_dir in run_dirs:
+                run_number = (
+                    int(run_dir.name.split("-")[1])
+                    if run_dir is not config_dir
+                    else 1
+                )
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
