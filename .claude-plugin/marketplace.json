@@ -40,6 +40,15 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
+    },
+    {
+      "name": "sdd-skill",
+      "description": "SDD (Spec-Driven Development) — A compact, safety-gated workflow for AI coding agents. Turn unclear requests into controlled, verifiable changes with 6 gates: intake, evidence, delta card, execute, verify, cross-check.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/sdd"
+      ]
     }
     ,
     {
