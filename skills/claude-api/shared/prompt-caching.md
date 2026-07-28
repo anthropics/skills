@@ -204,6 +204,15 @@ For fan-out patterns: send 1 request, await the first streamed token (not the fu
 
 To eliminate the cache-miss latency on the *first* real request, send a **`max_tokens: 0`** request at startup (or on an interval). The API runs prefill — writing the cache at your `cache_control` breakpoint — and returns immediately with `content: []`, `stop_reason: "max_tokens"`, and a populated `usage` block (zero output tokens billed; normal cache-write charge on `cache_creation_input_tokens`).
 
+**Message Batches use a separate cache path.** If the workload will be sent to
+`/v1/messages/batches`, pre-warm with a single-request Message Batch rather
+than a regular `messages.create` call. Do not rely on a cache entry written by
+the Messages API being readable by a later batch submission (or vice versa);
+the batch's first request should carry the same stable prefix and
+`cache_control` breakpoint as the requests you will process. The batch API does
+not accept `max_tokens: 0`, so use a minimal-output batch item and account for
+the normal cache-write charge.
+
 **When to pre-warm** — pre-warming trades a cache-write charge *now* for lower TTFT on the *next* real request. It's worth it when all three hold: (a) first-request latency is user-visible (chat/voice/interactive — not background jobs), (b) the shared prefix is large enough that a cold write is noticeably slow, and (c) there's a moment *before* traffic to fire it — app startup, worker boot, post-deploy, start of a scheduled window.
 
 | Skip pre-warming when… | Because |

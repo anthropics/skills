@@ -115,6 +115,13 @@ For manual control, use `first_page.has_next_page()` / `first_page.get_next_page
 
 ## Batch with Prompt Caching
 
+Batch prompt-cache entries are separate from regular Messages API entries. For
+batch workloads, warm the cache with a **single-request Message Batch** that
+uses the same stable prefix and `cache_control` breakpoint as the production
+batch; a preceding `client.messages.create(...)` request is not a reliable
+warm-up. The Batches API does not accept `max_tokens: 0`, so use the smallest
+useful output budget for the warm-up item and then submit the remaining items.
+
 ```python
 shared_system = [
     {"type": "text", "text": "You are a literary analyst."},
