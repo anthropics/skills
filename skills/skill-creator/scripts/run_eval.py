@@ -6,6 +6,7 @@ for a set of queries. Outputs results as JSON.
 """
 
 import argparse
+import contextlib
 import json
 import os
 import select
@@ -32,6 +33,117 @@ def find_project_root() -> Path:
     return current
 
 
+def command_clone_prefix(skill_name: str, batch_id: str | None = None) -> str:
+    """Return the prefix used by temporary command clones for one eval batch."""
+    if batch_id:
+        return f"{skill_name}-skill-{batch_id}-"
+    return f"{skill_name}-skill-"
+
+
+def is_command_clone_reference(
+    reference: str, skill_name: str, batch_id: str | None = None
+) -> bool:
+    """Whether a tool reference points at a temporary clone for this eval."""
+    return command_clone_prefix(skill_name, batch_id) in reference
+
+
+@contextlib.contextmanager
+def shadow_installed_skill(
+    skill_name: str,
+    project_root: Path,
+    home: Path | None = None,
+):
+    """Temporarily hide installed copies of the skill under evaluation.
+
+    Claude discovers both user- and project-scoped skills. If either copy has
+    the canonical name, the model can invoke it instead of the temporary
+    candidate command, causing a real trigger to be recorded as a miss. Move
+    installed copies outside their ``skills`` directories for the duration of
+    the batch and restore each original path in a ``finally`` block.
+    """
+    home_root = Path.home() if home is None else Path(home)
+    candidates = [
+        home_root / ".claude" / "skills" / skill_name,
+        Path(project_root) / ".claude" / "skills" / skill_name,
+    ]
+    unique_candidates = []
+    seen = set()
+    for candidate in candidates:
+        key = os.path.normcase(os.path.abspath(candidate))
+        if key not in seen:
+            seen.add(key)
+            unique_candidates.append(candidate)
+
+    renamed = []
+    try:
+        for candidate in unique_candidates:
+            if not (candidate.is_dir() or candidate.is_symlink()):
+                continue
+            target = candidate.parent.parent / (
+                f"{candidate.name}.eval-shadow-{uuid.uuid4().hex[:8]}"
+            )
+            candidate.rename(target)
+            renamed.append((candidate, target))
+        yield
+    finally:
+        for original, target in reversed(renamed):
+            target_exists = target.exists() or target.is_symlink()
+            original_exists = original.exists() or original.is_symlink()
+            if not target_exists:
+                continue
+            if original_exists:
+                print(
+                    f"Warning: cannot restore shadowed skill {original}; "
+                    f"path was recreated during evaluation",
+                    file=sys.stderr,
+                )
+                continue
+            target.rename(original)
+
+
+def process_stream_event(
+    event: dict,
+    match_token: str,
+    triggered: bool = False,
+    pending_tool_name: str | None = None,
+    accumulated_json: str = "",
+) -> tuple[bool, str | None, str, bool]:
+    """Apply one Claude stream event to trigger-detection state."""
+    if event.get("type") == "stream_event":
+        stream_event = event.get("event", {})
+        event_type = stream_event.get("type", "")
+
+        if event_type == "content_block_start":
+            content_block = stream_event.get("content_block", {})
+            if content_block.get("type") == "tool_use":
+                tool_name = content_block.get("name", "")
+                pending_tool_name = tool_name if tool_name in ("Skill", "Read") else None
+                accumulated_json = ""
+        elif event_type == "content_block_delta" and pending_tool_name:
+            delta = stream_event.get("delta", {})
+            if delta.get("type") == "input_json_delta":
+                accumulated_json += delta.get("partial_json", "")
+                triggered = triggered or match_token in accumulated_json
+        elif event_type == "content_block_stop":
+            if pending_tool_name and match_token in accumulated_json:
+                triggered = True
+            pending_tool_name = None
+            accumulated_json = ""
+    elif event.get("type") == "assistant":
+        message = event.get("message", {})
+        for content_item in message.get("content", []):
+            if content_item.get("type") != "tool_use":
+                continue
+            tool_name = content_item.get("name", "")
+            tool_input = content_item.get("input", {})
+            if tool_name == "Skill" and match_token in tool_input.get("skill", ""):
+                triggered = True
+            elif tool_name == "Read" and match_token in tool_input.get("file_path", ""):
+                triggered = True
+
+    return triggered, pending_tool_name, accumulated_json, event.get("type") == "result"
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -39,6 +151,7 @@ def run_single_query(
     timeout: int,
     project_root: str,
     model: str | None = None,
+    batch_id: str | None = None,
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
@@ -49,7 +162,9 @@ def run_single_query(
     full assistant message, which only arrives after tool execution.
     """
     unique_id = uuid.uuid4().hex[:8]
-    clean_name = f"{skill_name}-skill-{unique_id}"
+    batch_prefix = f"{batch_id}-" if batch_id else ""
+    clean_name = f"{skill_name}-skill-{batch_prefix}{unique_id}"
+    match_token = command_clone_prefix(skill_name, batch_id)
     project_commands_dir = Path(project_root) / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
@@ -84,6 +199,7 @@ def run_single_query(
 
         process = subprocess.Popen(
             cmd,
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             cwd=project_root,
@@ -125,49 +241,14 @@ def run_single_query(
                     except json.JSONDecodeError:
                         continue
 
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
+                    triggered, pending_tool_name, accumulated_json, finished = process_stream_event(
+                        event,
+                        match_token,
+                        triggered,
+                        pending_tool_name,
+                        accumulated_json,
+                    )
+                    if finished:
                         return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
@@ -194,8 +275,11 @@ def run_eval(
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
+    batch_id = uuid.uuid4().hex[:8]
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+    with shadow_installed_skill(skill_name, project_root), ProcessPoolExecutor(
+        max_workers=num_workers
+    ) as executor:
         future_to_info = {}
         for item in eval_set:
             for run_idx in range(runs_per_query):
@@ -207,6 +291,7 @@ def run_eval(
                     timeout,
                     str(project_root),
                     model,
+                    batch_id,
                 )
                 future_to_info[future] = (item, run_idx)
 
