@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "release_note_styles": {
+    "auto": "Auto-detect from historical GitHub Releases (default)",
+    "bilingual": "Bilingual (Chinese/English) format with section-by-section structure",
+    "simple": "Single-language format with 'Changes' and 'Validation' sections",
+    "changelog": "Raw CHANGELOG entry dump with Full Changelog link"
+  },
+  "examples": {
+    "swift-project": {
+      "repo": "owner/repo",
+      "tag_prefix": "v",
+      "build_command": "swift build -c release",
+      "release_command": null,
+      "test_command": "swift test",
+      "docs": ["CHANGELOG.md", "README.md"],
+      "changelog_format": "keep-a-changelog",
+      "release_note_style": "auto",
+      "ci_mode": "local",
+      "release_branch": true,
+      "auto_merge": false
+    },
+    "node-project": {
+      "repo": "owner/repo",
+      "tag_prefix": "v",
+      "build_command": "npm run build",
+      "release_command": null,
+      "test_command": "npm test",
+      "docs": ["CHANGELOG.md", "README.md"],
+      "changelog_format": "keep-a-changelog",
+      "release_note_style": "auto",
+      "ci_mode": "auto",
+      "release_branch": true,
+      "auto_merge": false
+    },
+    "ci-project": {
+      "repo": "owner/repo",
+      "tag_prefix": "v",
+      "build_command": null,
+      "release_command": null,
+      "test_command": null,
+      "docs": ["CHANGELOG.md"],
+      "changelog_format": "keep-a-changelog",
+      "release_note_style": "changelog",
+      "ci_mode": "ci",
+      "release_branch": false,
+      "auto_merge": false
+    }
+  }
+}

@@ -49,6 +49,15 @@
       "skills": [
         "./skills/sdd"
       ]
+    },
+    {
+      "name": "release-skill",
+      "description": "Universal release automation — auto-detect project type, update CHANGELOG/README, create annotated tags, and generate GitHub Releases with smart release notes. Supports bilingual/simple/changelog/structured-cn styles.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/release"
+      ]
     }
     ,
     {
