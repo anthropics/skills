@@ -1,0 +1,4 @@
+interface:
+  display_name: "FinSkills China A-Shares"
+  short_description: "Query China A-share quotes, history, and company datasets"
+  default_prompt: "Use $finskills-cn-stocks to retrieve and explain current China A-share market data."
