@@ -23,6 +23,7 @@ Paths are relative to this skill's directory. Everything else is plain Python, `
 | `scripts/thumbnail.py deck.pptx [prefix]` | Labeled grid of every slide, for picking template layouts. `.pptx` only. Pass `prefix` — it defaults to `thumbnails`, which overwrites the grids of any other deck done in the same directory |
 | `scripts/add_slide.py unpacked/ slide2.xml [--after slideN.xml]` | Duplicate a slide (or a `slideLayoutN.xml`) with all the package bookkeeping. Also takes a `.pptx` directly with `-o out.pptx` |
 | `scripts/clean.py unpacked/` | Delete slides, media, and rels no longer referenced. Run **after** `<p:sldIdLst>` is final |
+| `scripts/keynote_sanitize.py deck.pptx` | Atomically repair Keynote-incompatible slide-size, notes-master, and printer-settings metadata in place |
 | `scripts/office/validate.py deck.pptx [--original src.pptx]` | Schema, relationship, content-type, chart and slide checks; each failure names its fix. Pass `--original` for any template-derived deck — it baselines the schema checks against the template, so the template's own XSD errors don't read as yours |
 | `scripts/office/soffice.py --headless --convert-to pdf deck.pptx` | LibreOffice wrapper — bare `soffice` hangs in this sandbox |
 
@@ -186,9 +187,14 @@ If grep returns results, fix them before declaring success.
 ### File QA (required)
 
 ```bash
+python scripts/keynote_sanitize.py output.pptx
 python scripts/office/validate.py output.pptx                      # built from scratch
 python scripts/office/validate.py output.pptx --original src.pptx  # built from a template
 ```
+
+Run the sanitizer on every delivered `.pptx`, including files written directly by
+python-pptx or pptxgenjs. It is idempotent and uses an atomic replacement, so a
+failed repair leaves the original deck untouched.
 
 **If the deck came from a template, always pass `--original`.** A template may itself
 contain parts the XSD rejects, so a bare run can report failures you never caused — and
