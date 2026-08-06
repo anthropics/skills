@@ -86,11 +86,11 @@ The top-level `id` is the same value as the `webhook-id` header, and it is per *
 |---|---|
 | `session.status_scheduled` | Session created and ready to accept events |
 | `session.status_run_started` | Agent execution kicked off (every transition to `running`) |
-| `session.status_idled` | Agent awaiting input (tool approval, custom tool result, or next message) |
+| `session.status_idled` | Agent awaiting input (tool approval, custom tool result, or next message) — or paused at its session budget. The webhook payload is thin — list the session's events and check the latest `session.status_idle` event's `stop_reason` (the session object itself has no `stop_reason` field): if it is `budget_reached`, further `user.message` events return a 400 and only a budget change/removal resumes the session (`shared/managed-agents-core.md` § Session budgets) |
 | `session.status_rescheduled` | A transient error occurred; the session is retrying automatically |
 | `session.status_terminated` | Session ended — **on completion or on error**, not error-only |
-| `session.thread_created` | Multiagent: coordinator opened a new subagent thread |
-| `session.thread_idled` | Multiagent: a subagent thread is waiting for input |
+| `session.thread_created` | Multiagent: coordinator opened a new subagent thread, or the session's advisor is being consulted (`shared/managed-agents-multiagent.md` → Advisor) |
+| `session.thread_idled` | Child threads only: a subagent thread is waiting for input — or paused because the session reached its budget cap. When the whole session pauses at the cap, a `session.status_idled` webhook also fires and the stream's `session.status_idle` event carries `stop_reason: budget_reached` — unless another thread is waiting on a tool ask, which outranks the cap at the session level (`shared/managed-agents-core.md` § Session budgets). |
 | `session.thread_terminated` | A thread ended — child completed its work, or the thread was archived. **Child threads only**; the primary thread's end surfaces as `session.status_terminated` |
 | `session.outcome_evaluation_ended` | Outcome grader finished one iteration |
 | `session.updated` | Session properties changed (name, configuration) |
@@ -140,4 +140,4 @@ The top-level `id` is the same value as the `webhook-id` header, and it is per *
   - A `3xx` response. Redirects are never followed; disables immediately, on the first attempt. Reason: `auto-disabled: endpoint URL returned a redirect (3xx)`.
   - The URL resolves to a non-public IP at connect time. Disables immediately. Reason: `auto-disabled: endpoint URL resolved to an invalid address`.
   - Continuous failure for a sustained period. Reason: `auto-disabled after sustained delivery failures`. **The trigger is duration, not a delivery count** — a single `2xx` resets the window, so one flaky event can't disable the endpoint.
-- **Thin payload is intentional.** Don't expect `stop_reason`, `outcome_evaluations`, credential secrets, etc. on the webhook body — fetch the resource.
+- **Thin payload is intentional.** Don't expect `stop_reason` (list the session's events for that — the session object has no `stop_reason` field), `outcome_evaluations`, credential secrets, etc. on the webhook body — fetch the resource.

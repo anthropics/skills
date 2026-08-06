@@ -369,6 +369,12 @@ The advisor tool pairs a faster, lower-cost **executor** model (the top-level `m
 }
 ```
 
+Optional fields on the tool definition:
+
+- `max_uses` — cap on advisor consultations per request. Exceeding it makes the `advisor_tool_result` block's `content` the error object `{"type": "advisor_tool_result_error", "error_code": "max_uses_exceeded"}` — the third member of the content union in the payload-shape table below.
+- `max_tokens` — bounds the advisor's total output (thinking + text) per call. At the cap the result block carries `stop_reason: "max_tokens"` and a truncation note is appended to the advice the executor sees; the server also emits a remaining-tokens budget block in the advisor's prompt so it self-shapes toward the cap.
+- `caching` — cache-control for the advisor's own prompt, same shape as a cache breakpoint: `"caching": {"type": "ephemeral", "ttl": "5m"}` (`ttl` is `"5m"` or `"1h"`, default `"5m"`). Each call writes a cache entry at that TTL so later calls in the conversation read the stable prefix. Omitted = advisor prompt not cached.
+
 **The advisor model must be at least as capable as the executor.** An invalid pairing returns `400 invalid_request_error`. Valid pairs:
 
 | Executor (request `model`) | Valid advisor (tool `model`) |
@@ -385,10 +391,13 @@ The advisor tool pairs a faster, lower-cost **executor** model (the top-level `m
 > |---|---|---|
 > | `advisor_result` | `text`, `stop_reason` | Advisor returns plaintext (e.g. Opus 4.8) |
 > | `advisor_redacted_result` | `encrypted_content`, `stop_reason` | Advisor returns encrypted output — Claude Opus 5, Claude Fable 5, Claude Mythos 5 |
+> | `advisor_tool_result_error` | `error_code` | Consultation failed — `max_uses_exceeded`, `prompt_too_long`, `too_many_requests`, `overloaded`, `unavailable`, `execution_time_exceeded`, or `model_not_found` |
 >
 > So switch on `advisor_tool_result.content` type, not on the block type. Code that reads `.text` unconditionally gets nothing back from an Claude Opus 5 advisor, because the payload is under `encrypted_content` instead — and you cannot read it, only replay it.
 
 Call via `client.beta.messages.create(...)` with `betas=["advisor-tool-2026-03-01"]` (or the `anthropic-beta: advisor-tool-2026-03-01` header). In multi-turn conversations, append the full `response.content` — including any `advisor_tool_result` blocks — back to `messages` on the next turn. If you remove the advisor tool from `tools` on a later turn while the history still contains `advisor_tool_result` blocks, the API returns a 400.
+
+> **Advisor on Managed Agents:** CMA sessions support an advisor too, configured as a `{"type": "advisor", "model"}` entry in the agent's multiagent roster rather than as a tool definition — no `max_uses`/`max_tokens`/`caching` options, and advice is delivered as thread events on the session's event stream rather than `advisor_tool_result` blocks. See `shared/managed-agents-multiagent.md` → Advisor.
 
 ---
 

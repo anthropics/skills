@@ -64,7 +64,7 @@ These appear on the standard event stream (`sessions.events.stream` / `.list`) a
 | `needs_revision` | Agent starts another iteration. |
 | `max_iterations_reached` | No further grader cycles. Agent may run one final revision, then session → `idle`. |
 | `failed` | Session → `idle`. Rubric fundamentally doesn't match the task (e.g. description and rubric contradict). |
-| `interrupted` | Emitted whenever a `user.interrupt` arrives while an outcome is active — **even if evaluation hadn't started**. In that case `outcome_evaluation_start_id` is an empty string rather than an event ID, so don't use it as a lookup key without checking. |
+| `interrupted` | Emitted whenever a `user.interrupt` arrives while an outcome is active — **even if evaluation hadn't started**. In that case `outcome_evaluation_start_id` is an empty string rather than an event ID, so don't use it as a lookup key without checking. (Except an interrupt sent while paused at the session budget, which is accepted and ignored — see `shared/managed-agents-events.md` § Reaching a session budget.) |
 
 ```json
 {
@@ -99,8 +99,8 @@ for ev in session.outcome_evaluations:
 ## Interaction rules & pitfalls
 
 - **One outcome at a time.** Chain by sending the next `user.define_outcome` only after the previous one's terminal `span.outcome_evaluation_end` (`satisfied` / `max_iterations_reached` / `failed` / `interrupted`). The session retains history across chained outcomes.
-- **Steering is allowed but optional.** You *may* send `user.message` events mid-outcome to nudge direction, but the agent already knows to keep working until terminal — don't send "keep going" prompts.
-- **`user.interrupt` pauses the current outcome** — it marks `result: "interrupted"` and leaves the session `idle`, ready for a new outcome or conversational turn.
+- **Steering is allowed but optional.** You *may* send `user.message` events mid-outcome to nudge direction, but the agent already knows to keep working until terminal — don't send "keep going" prompts. (Exception: a session paused at its budget (`stop_reason: budget_reached`) accepts only settle events — a steering `user.message`, or a chained `user.define_outcome`, is a 400 there; see `shared/managed-agents-events.md` § Reaching a session budget.)
+- **`user.interrupt` pauses the current outcome** — it marks `result: "interrupted"` and leaves the session `idle`, ready for a new outcome or conversational turn. (Exception: sent while paused at the session budget, the interrupt is accepted and ignored and the outcome stays active — see `shared/managed-agents-events.md` § Reaching a session budget.)
 - **After terminal, the session is reusable** — continue conversationally or define a new outcome.
 - **Outcome ≠ session-create field.** Don't put `outcome`, `rubric`, or `description` on `sessions.create()` — outcomes are always sent as a `user.define_outcome` event.
 - **Idle-break gate is unchanged.** In your drain loop, keep using `event.type === 'session.status_idle' && event.stop_reason?.type !== 'requires_action'` — do **not** gate on `span.outcome_evaluation_end` alone (on `needs_revision` the session keeps running). See `shared/managed-agents-client-patterns.md` Pattern 5.
