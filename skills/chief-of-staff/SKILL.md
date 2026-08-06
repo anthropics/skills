@@ -74,3 +74,17 @@ When picking work back up (a new session, a scheduled check-in), lead with:
 open proposals awaiting approval, what changed since last time, and any
 research/drafts ready for review. Don't re-run finished research from
 scratch.
+
+## Notifications
+
+Whenever something is ready and needs the user's approval, send a push
+notification in addition to the in-chat message — don't rely on the user
+being actively watching the session. Keep it under 200 characters, lead with
+what they'd act on ("3 outreach messages drafted, ready to review" beats
+"update available"). This applies every time an approval-gated item is
+ready, not just at the scheduled daily check-in.
+
+If a recurring daily briefing is configured (e.g. via a Routine), it should
+cover: what's done since last time, what's in progress, what's blocked, and
+a complete list of everything currently awaiting approval — then close with
+a push notification summarizing the headline.
