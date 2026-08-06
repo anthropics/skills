@@ -9,7 +9,7 @@ metadata:
   tags: writing editing voice quality
   agentskills_spec: "1.0"
   openclaw:
-    emoji: "\u270D\uFE0F"
+    emoji: "✍️"
 ---
 
 # Avoid AI Writing — Audit & Rewrite
