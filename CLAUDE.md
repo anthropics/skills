@@ -59,7 +59,8 @@ This is **Anthropic's Skills Repository**, containing demonstration and referenc
 ├── ANTHROPIC_AUTH_CONFIG.md     # Anthropic authentication setup
 ├── OPENAI_AUTH_CONFIG.md        # OpenAI authentication setup
 ├── TESTING_EXAMPLES.md          # Comprehensive testing examples
-└── TEST_COVERAGE_ANALYSIS.md    # Test coverage documentation
+├── TEST_COVERAGE_ANALYSIS.md    # Test coverage documentation
+└── THIRD_PARTY_NOTICES.md       # Third-party licensing and attribution
 ```
 
 ---
@@ -145,8 +146,8 @@ Configured in `.claude-plugin/marketplace.json`:
 ### Plugin Collections
 1. **document-skills**: docx, pdf, pptx, xlsx
    - Professional document processing suite
-2. **example-skills**: 12 creative, development, and communication skills
-   - Algorithmic art, MCP building, web testing, theme generation
+2. **example-skills**: 16 creative, development, enterprise, and communication skills
+   - Algorithmic art, brand guidelines, business opportunity finder, canvas design, chief-of-staff, doc-coauthoring, frontend design, internal communications, MCP building, sell-your-skill, skill creator, Slack GIF creator, theme factory, venture builder, web artifacts builder, web app testing
 3. **claude-api**: Claude API/SDK reference documentation
 
 ### Installation (Claude Code)
@@ -172,7 +173,7 @@ Configured in `.claude-plugin/marketplace.json`:
 1. **Create feature branch** (already created):
    ```bash
    git checkout -b claude/feature-name
-   # or already on: claude/claude-md-docs-fguesh
+   # or already on: claude/claude-md-docs-y7bp3t
    ```
 
 2. **Edit skills**:
@@ -281,6 +282,7 @@ Configured in `.claude-plugin/marketplace.json`:
 - **OPENAI_AUTH_CONFIG.md**: OpenAI API authentication setup
 - **TESTING_EXAMPLES.md**: Comprehensive testing and evaluation patterns
 - **TEST_COVERAGE_ANALYSIS.md**: Test coverage reporting and metrics
+- **THIRD_PARTY_NOTICES.md**: Attribution and licensing for third-party dependencies
 
 ### CI/CD
 - **.github/workflows/codeql.yml**: Code quality and security analysis
@@ -417,10 +419,11 @@ Run evaluations while drafting assertions. Review results and iterate.
 - **Recent additions**: Business skills, auth configs, security analysis
 
 ### Recent Work
-- Added business-focused skills (opportunity finder, venture builder)
-- Enhanced authentication documentation (Anthropic, OpenAI)
-- Implemented security and code quality workflows
-- Comprehensive test coverage documentation
+- Registered business-focused skills in marketplace plugin
+- Added enterprise skills: chief-of-staff, business-opportunity-finder, venture-builder, sell-your-skill
+- Implemented CI/CD workflows: CodeQL analysis and SLSA provenance generation
+- Added comprehensive authentication documentation (Anthropic, OpenAI)
+- Completed test coverage analysis and examples documentation
 
 ---
 
@@ -478,6 +481,6 @@ Run evaluations while drafting assertions. Review results and iterate.
 
 ---
 
-**Last Updated**: August 6, 2026  
-**Branch**: claude/claude-md-docs-fguesh  
-**Scope**: All skills, core repository structure, development workflows
+**Last Updated**: August 7, 2026  
+**Branch**: claude/claude-md-docs-y7bp3t  
+**Scope**: All skills, core repository structure, development workflows, marketplace plugin configuration
