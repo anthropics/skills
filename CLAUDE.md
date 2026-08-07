@@ -173,7 +173,7 @@ Configured in `.claude-plugin/marketplace.json`:
 1. **Create feature branch** (already created):
    ```bash
    git checkout -b claude/feature-name
-   # or already on: claude/claude-md-docs-y7bp3t
+   # or already on: claude/claude-md-docs-8de5cj
    ```
 
 2. **Edit skills**:
@@ -482,5 +482,5 @@ Run evaluations while drafting assertions. Review results and iterate.
 ---
 
 **Last Updated**: August 7, 2026  
-**Branch**: claude/claude-md-docs-y7bp3t  
+**Branch**: claude/claude-md-docs-8de5cj  
 **Scope**: All skills, core repository structure, development workflows, marketplace plugin configuration
