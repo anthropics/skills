@@ -28,6 +28,7 @@ This is **Anthropic's Skills Repository**, containing demonstration and referenc
 │   │   ├── canvas-design/       # Visual design and poster creation
 │   │   ├── brand-guidelines/    # Anthropic brand styling
 │   │   ├── frontend-design/     # Responsive UI/app design
+│   │   ├── slack-gif-creator/   # Animated GIF creation for Slack
 │   │   ├── theme-factory/       # Theme and color system generation
 │   │   └── web-artifacts-builder/  # Interactive web component creation
 │   │

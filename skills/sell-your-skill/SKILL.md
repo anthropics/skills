@@ -1,6 +1,7 @@
 ---
 name: sell-your-skill
 description: The fastest honest path from zero capital to a first paid client — package a skill the user already has into a priced offer and reach out directly to real buyers, instead of waiting on freelance platforms. Use when the user has little/no money to start with and wants real income soon, not a long-term venture. Blunt about real response/conversion rates and effort required — no sugar-coating.
+license: Apache 2.0
 ---
 
 # Sell Your Skill
