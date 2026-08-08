@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "openclaw-persona-forge",
+      "description": "Forge a complete lobster soul for your OpenClaw AI Agent with identity, SOUL.md, boundary rules, name, and avatar prompt (Chinese version)",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/openclaw-persona-forge"
+      ]
     }
   ]
 }
