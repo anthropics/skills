@@ -6,7 +6,7 @@ Python 3.9+.
 
 ```bash
 cd skills/chairman-agent-system/scripts
-python3 -m unittest discover -s tests -t .     # 58 tests
+python3 -m unittest discover -s tests -t .     # 81 tests
 python3 -m chairman --db org.db init
 ```
 
@@ -34,6 +34,49 @@ invalidates every hash after it. `verify` reports the first break.
 **Termination cascades.** Killing an agent kills its whole subtree — an
 orphaned sub-agent would otherwise keep authority its parent granted with
 nobody accountable for it.
+
+**Tools cannot be called without authorization.** An agent holds a
+`Session`, not callables, and registered functions refuse when invoked
+outside an authorized `session.invoke`. See below.
+
+## The enforcement point
+
+A permission check that code can skip by not calling it holds only by
+convention. `chairman.enforcement` closes that from both ends: agents get a
+`Session` bound to their identity, and `ToolBox.register` wraps the function
+so the direct-call path is protected too.
+
+```python
+box = ToolBox()
+
+@box.register("ledger.balance", Tool.FINANCE, Classification.CONFIDENTIAL)
+def balance(account: str) -> float:
+    ...
+
+session = Session(registry, box, "ledger-analyst")
+session.invoke("ledger.balance", "ACME")   # authorized, runs
+balance("ACME")                            # PermissionDenied
+```
+
+The guard is a `contextvars.ContextVar` set only by `invoke` and released in
+a `finally`, so it survives handler exceptions and does not leak across
+threads or asyncio tasks. It authorizes one name at a time: a tool that
+calls another tool must go through `invoke` for the inner one, so crossing a
+tool boundary always costs an authorization rather than inheriting the
+caller's clearance.
+
+`writes=True` marks a tool as requiring level 3+. Classification may be a
+callable instead of a constant when sensitivity depends on the arguments —
+`read_file("/public/x")` and `read_file("/payroll/y")` are not the same
+request, and pinning the tool to its worst case would either over-refuse or
+under-protect.
+
+Two audit entries land per call, because they are different facts: the
+permission decision, and the execution outcome. A call can be permitted and
+still fail, and `outcome="error"` is not `outcome="denied"`.
+
+`session.available()` lists what the agent may call — useful for building
+the tool list you hand a model.
 
 ## Levels
 
@@ -126,9 +169,12 @@ Being precise about this matters more than the feature list.
 - **No authentication.** `authorize("some-agent", ...)` trusts the caller's
   claim about which agent is acting. This is an authorization engine; it
   assumes something upstream established identity.
-- **No runtime enforcement.** The registry answers "is this permitted?" It
-  cannot stop code that never asks. It is a policy decision point, and
-  something else has to be the enforcement point.
+- **Enforcement is a seatbelt, not a sandbox.** Python offers no true
+  isolation. Someone editing the process can reach `ToolBox._specs`, reset
+  the context variable, or import the undecorated function from the module
+  that defined it. The guard stops the failure that actually happens — code
+  paths that forgot to check — not a hostile caller inside your own
+  interpreter. Tools registered nowhere are governed by nothing.
 - **No budget enforcement.** `budget_usd` is recorded on the proposal and
   never checked against spend.
 - **Agents are records, not processes.** Nothing here spawns a worker or
@@ -144,9 +190,10 @@ chairman/
   audit.py        hash chaining and verification
   store.py        SQLite persistence
   registry.py     lifecycle; the only module that mutates state
+  enforcement.py  Session, ToolBox, the guard — authorization you can't skip
   errors.py       exception hierarchy
   cli.py          argparse front end
-tests/            58 tests, stdlib unittest
+tests/            81 tests, stdlib unittest
 ```
 
 The rules in `permissions.py` are pure functions over plain dataclasses, so

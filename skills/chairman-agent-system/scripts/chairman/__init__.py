@@ -25,6 +25,7 @@ every decision — allowed or denied — lands in a hash-chained audit log.
 """
 
 from .audit import GENESIS_HASH, head_hash, verify_chain
+from .enforcement import Classifier, Session, ToolBox, ToolSpec, active_tools
 from .errors import (
     ChairmanError,
     IncompleteRequest,
@@ -66,6 +67,7 @@ __all__ = [
     "AuditEntry",
     "CHAIRMAN_NAME",
     "ChairmanError",
+    "Classifier",
     "Classification",
     "Decision",
     "Escalation",
@@ -78,11 +80,15 @@ __all__ = [
     "PermissionDenied",
     "Registry",
     "RequestStatus",
+    "Session",
     "StateError",
     "Store",
     "Task",
     "TaskStatus",
     "Tool",
+    "ToolBox",
+    "ToolSpec",
+    "active_tools",
     "authorize_action",
     "can_approve",
     "can_create_subagent",
