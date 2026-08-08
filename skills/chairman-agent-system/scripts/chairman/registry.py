@@ -7,6 +7,7 @@ how a system loses the ability to answer "who tried what, and when".
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Iterable, List, Optional, Sequence, Tuple
 
 from . import permissions
@@ -277,14 +278,12 @@ class Registry:
         )
         self.store.put_agent(agent)
         self.store.put_request(
-            AgentRequest(
-                **{
-                    **request.__dict__,
-                    "status": RequestStatus.APPROVED,
-                    "decided_by": approver_agent.agent_id,
-                    "decided_at": utcnow(),
-                    "decision_reason": reason or decision.reason,
-                }
+            replace(
+                request,
+                status=RequestStatus.APPROVED,
+                decided_by=approver_agent.agent_id,
+                decided_at=utcnow(),
+                decision_reason=reason or decision.reason,
             )
         )
         self.store.append_audit(
@@ -307,14 +306,12 @@ class Registry:
             raise StateError(f"request is already {request.status.value}")
 
         approver_agent = self.require_agent(approver)
-        rejected = AgentRequest(
-            **{
-                **request.__dict__,
-                "status": RequestStatus.REJECTED,
-                "decided_by": approver_agent.agent_id,
-                "decided_at": utcnow(),
-                "decision_reason": reason,
-            }
+        rejected = replace(
+            request,
+            status=RequestStatus.REJECTED,
+            decided_by=approver_agent.agent_id,
+            decided_at=utcnow(),
+            decision_reason=reason,
         )
         self.store.put_request(rejected)
         self.store.append_audit(
@@ -368,7 +365,7 @@ class Registry:
                 f"{agent.name} (level {int(agent.level)})"
             )
 
-        updated = Agent(**{**agent.__dict__, "status": AgentStatus.SUSPENDED})
+        updated = replace(agent, status=AgentStatus.SUSPENDED)
         self.store.put_agent(updated)
         self.store.append_audit(
             actor=actor.name,
@@ -385,7 +382,7 @@ class Registry:
         if agent.status is AgentStatus.TERMINATED:
             raise StateError("a terminated agent cannot be reinstated")
 
-        updated = Agent(**{**agent.__dict__, "status": AgentStatus.ACTIVE})
+        updated = replace(agent, status=AgentStatus.ACTIVE)
         self.store.put_agent(updated)
         self.store.append_audit(
             actor=actor.name,
@@ -421,13 +418,11 @@ class Registry:
         for node in doomed:
             if node.status is AgentStatus.TERMINATED:
                 continue
-            updated = Agent(
-                **{
-                    **node.__dict__,
-                    "status": AgentStatus.TERMINATED,
-                    "terminated_at": stamp,
-                    "termination_reason": reason,
-                }
+            updated = replace(
+                node,
+                status=AgentStatus.TERMINATED,
+                terminated_at=stamp,
+                termination_reason=reason,
             )
             self.store.put_agent(updated)
             out.append(updated)
@@ -508,14 +503,12 @@ class Registry:
             raise NotFound(f"no such task: {task_id}")
         actor = self.require_agent(by)
 
-        updated = Task(
-            **{
-                **task.__dict__,
-                "status": status or task.status,
-                "escalation": escalation or task.escalation,
-                "note": note or task.note,
-                "updated_at": utcnow(),
-            }
+        updated = replace(
+            task,
+            status=status or task.status,
+            escalation=escalation or task.escalation,
+            note=note or task.note,
+            updated_at=utcnow(),
         )
         self.store.put_task(updated)
         self.store.append_audit(
@@ -543,6 +536,22 @@ class Registry:
         ]
 
     # ---------------------------------------------------------------- audit
+
+    def record(
+        self,
+        actor: str,
+        action: str,
+        resource: str,
+        outcome: str,
+        details: Optional[dict] = None,
+    ) -> AuditEntry:
+        """Append an entry for work performed outside the registry itself.
+
+        Used by :mod:`chairman.enforcement` to log execution outcomes, which
+        are a separate fact from the permission decision that preceded them:
+        a call can be permitted and still fail.
+        """
+        return self.store.append_audit(actor, action, resource, outcome, details or {})
 
     def audit_log(self, limit: Optional[int] = None) -> List[AuditEntry]:
         return self.store.list_audit(limit)
