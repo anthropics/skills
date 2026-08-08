@@ -31,7 +31,7 @@ license: Apache 2.0
 ## Two kinds of content in this skill — read this first
 
 **`scripts/` is working code.** A dependency-free Python package that
-enforces the creation, delegation, and audit rules below. It runs, it has 99
+enforces the creation, delegation, and audit rules below. It runs, it has 112
 passing tests, and its refusals are real. Start there: `scripts/README.md`.
 
 **Everything else is specification.** The reference documents describe what a
