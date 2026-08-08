@@ -28,6 +28,23 @@ license: Apache 2.0
 
 # Chairman Agent System - Executive Framework
 
+## Two kinds of content in this skill — read this first
+
+**`scripts/` is working code.** A dependency-free Python package that
+enforces the creation, delegation, and audit rules below. It runs, it has 58
+passing tests, and its refusals are real. Start there: `scripts/README.md`.
+
+**Everything else is specification.** The reference documents describe what a
+full deployment *would require* — encryption at rest, HSM key storage, WORM
+audit storage, SOC 2 controls, incident response drills. None of that is
+implemented by this skill, and reading those documents does not make it true
+of any system. They are requirement checklists to work against, not
+descriptions of running infrastructure.
+
+When reporting on a system built from this skill, say which of the two you
+are describing. Claiming the specification as implemented state is the
+precise failure mode this skill's own standards forbid.
+
 ## Overview
 
 The Chairman operates as the supreme executive authority over all agents within the system. They are characterized by:
@@ -531,6 +548,33 @@ I will NOT authorize this build without complete transparency.
 ```
 
 ---
+
+## Implementation
+
+The rules above are enforced in code under `scripts/`:
+
+```bash
+cd scripts
+python3 -m unittest discover -s tests -t .
+python3 -m chairman --db org.db init
+python3 -m chairman --db org.db chart
+python3 -m chairman --db org.db verify
+```
+
+| Rule stated above | Enforced by |
+|---|---|
+| Full justification before creation | `Registry.request_agent` — refuses incomplete proposals |
+| Approval gate before an agent exists | `Registry.approve_request` |
+| Authority narrows down the tree | `permissions.can_create_subagent` |
+| Tool and clearance limits per level | `permissions.authorize_action` |
+| Span-of-control limits | `permissions.MAX_DIRECT_REPORTS` |
+| Every decision audited, denials included | `Store.append_audit` |
+| Tamper-evident log | `audit.verify_chain` (SHA-256 chain) |
+| Termination cascades to reports | `Registry.terminate` |
+
+`scripts/README.md` documents the limits honestly — what the code enforces,
+and what it explicitly does not (no encryption, no authentication, no runtime
+enforcement, no budget checks).
 
 ## References & Extensions
 
