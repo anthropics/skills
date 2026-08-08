@@ -23,7 +23,7 @@
     },
     {
       "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including business opportunity finding, chief-of-staff operations, skill monetization, venture building, skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
+      "description": "Collection of example skills demonstrating various capabilities including business opportunity finding, chief-of-staff operations, skill monetization, venture building, skill creation, MCP building, multi-agent governance, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
       "source": "./",
       "strict": false,
       "skills": [
@@ -31,6 +31,7 @@
         "./skills/brand-guidelines",
         "./skills/business-opportunity-finder",
         "./skills/canvas-design",
+        "./skills/chairman-agent-system",
         "./skills/chief-of-staff",
         "./skills/doc-coauthoring",
         "./skills/frontend-design",
