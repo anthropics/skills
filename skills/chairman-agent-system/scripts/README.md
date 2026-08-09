@@ -1,12 +1,13 @@
 # chairman — enforced agent governance
 
 A dependency-free Python package that turns the governance rules in
-`../SKILL.md` into code that actually runs. No install step, stdlib only,
-Python 3.9+.
+`../SKILL.md` into code that actually runs. No install step, stdlib only.
+Test suite verified against CPython 3.10, 3.11, 3.12 and 3.13; earlier
+versions are untested rather than known-broken.
 
 ```bash
 cd skills/chairman-agent-system/scripts
-python3 -m unittest discover -s tests -t .     # 81 tests
+python3 -m unittest discover -s tests -t .     # 112 tests
 python3 -m chairman --db org.db init
 ```
 
@@ -78,6 +79,37 @@ still fail, and `outcome="error"` is not `outcome="denied"`.
 `session.available()` lists what the agent may call — useful for building
 the tool list you hand a model.
 
+## A real toolkit
+
+`chairman.toolkit` registers filesystem and repository tools that do actual
+work, so the refusals are real refusals rather than a demonstration.
+
+```python
+box = build_repo_toolkit(Path("/srv/project"))
+session = Session(registry, box, "reviewer")
+session.invoke("fs.read", "README.md")          # PUBLIC, permitted
+session.invoke("fs.read", ".env")               # RESTRICTED, refused
+session.invoke("fs.read", "../../etc/passwd")   # refused: outside the root
+```
+
+Two controls run before any handler:
+
+**Paths are confined to a root.** `..` traversal, absolute paths outside the
+root, and symlinks pointing out of it are refused during classification —
+before authorization is reached. This is deliberately not "return
+RESTRICTED": an out-of-root path is malformed, not merely sensitive, so even
+an agent cleared to RESTRICTED cannot read `/etc/shadow`.
+
+**Sensitivity is derived from the path, not claimed by the caller.**
+`.env`, `*.pem`, `*.key`, `id_rsa*`, `*credentials*` and friends are
+RESTRICTED whether or not the caller knew. `.git/**` is CONFIDENTIAL —
+not secret by nature, but remote URLs carry tokens and rewriting history
+corrupts the repo. `README`/`LICENSE`/`*.md` are PUBLIC. Everything else in
+the root defaults to INTERNAL.
+
+`examples/governed_repo_session.py` runs the whole thing against this
+repository and exits non-zero if the audit chain breaks.
+
 ## Levels
 
 | Level | Name | Max clearance | Can write | Direct reports |
@@ -146,6 +178,7 @@ into an incident note.
 | `chart` | Print the org tree |
 | `check` | Test whether an agent may act (exit 1 on deny) |
 | `assign` / `tasks` | Delegate and list work |
+| `task` | Advance a task's status, escalation, or note |
 | `escalations` | Open items at or above a severity (exit 1 if any) |
 | `suspend` / `terminate` | Lifecycle control |
 | `log` / `verify` | Read and integrity-check the audit chain |
@@ -191,9 +224,11 @@ chairman/
   store.py        SQLite persistence
   registry.py     lifecycle; the only module that mutates state
   enforcement.py  Session, ToolBox, the guard — authorization you can't skip
+  toolkit.py      real filesystem/repo tools, path-confined and path-classified
   errors.py       exception hierarchy
   cli.py          argparse front end
-tests/            81 tests, stdlib unittest
+examples/         a governed session working on this repo
+tests/            112 tests, stdlib unittest
 ```
 
 The rules in `permissions.py` are pure functions over plain dataclasses, so

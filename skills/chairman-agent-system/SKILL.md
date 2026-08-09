@@ -31,7 +31,7 @@ license: Apache 2.0
 ## Two kinds of content in this skill — read this first
 
 **`scripts/` is working code.** A dependency-free Python package that
-enforces the creation, delegation, and audit rules below. It runs, it has 81
+enforces the creation, delegation, and audit rules below. It runs, it has 112
 passing tests, and its refusals are real. Start there: `scripts/README.md`.
 
 **Everything else is specification.** The reference documents describe what a
@@ -572,6 +572,7 @@ python3 -m chairman --db org.db verify
 | Tamper-evident log | `audit.verify_chain` (SHA-256 chain) |
 | Termination cascades to reports | `Registry.terminate` |
 | Tools cannot be invoked unauthorized | `enforcement.Session` + `ToolBox` guard |
+| Data sensitivity derived, not claimed | `toolkit.classify_path` |
 
 `scripts/README.md` documents the limits honestly — what the code enforces,
 and what it explicitly does not (no encryption, no authentication, no budget

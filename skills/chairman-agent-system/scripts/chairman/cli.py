@@ -119,6 +119,21 @@ def cmd_assign(registry: Registry, args) -> int:
     return 0
 
 
+def cmd_task(registry: Registry, args) -> int:
+    task = registry.update_task(
+        args.task_id,
+        by=args.by,
+        status=TaskStatus[args.status.upper()] if args.status else None,
+        escalation=Escalation[args.escalation.upper()] if args.escalation else None,
+        note=args.note,
+    )
+    print(f"{task.task_id}  {task.status.value}  E{int(task.escalation)} "
+          f"({task.escalation.name})")
+    if task.note:
+        print(f"  {task.note}")
+    return 0
+
+
 def cmd_tasks(registry: Registry, args) -> int:
     rows = registry.store.list_tasks()
     if not rows:
@@ -238,6 +253,14 @@ def build_parser() -> argparse.ArgumentParser:
                    choices=[c.name.lower() for c in Classification])
     p.add_argument("--note", default="")
     p.set_defaults(func=cmd_assign)
+
+    p = sub.add_parser("task", help="update a task's status, escalation, or note")
+    p.add_argument("task_id")
+    p.add_argument("--by", required=True)
+    p.add_argument("--status", choices=[s.name.lower() for s in TaskStatus])
+    p.add_argument("--escalation", choices=[e.name.lower() for e in Escalation])
+    p.add_argument("--note", default="")
+    p.set_defaults(func=cmd_task)
 
     p = sub.add_parser("tasks", help="list tasks")
     p.set_defaults(func=cmd_tasks)
