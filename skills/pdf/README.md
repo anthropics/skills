@@ -221,7 +221,7 @@ Before using PDF processing in production:
 ---
 
 **Last Updated**: August 2026  
-**License**: Apache 2.0  
+**License**: See LICENSE.txt (proprietary/source-available)  
 **Repository**: anthropics/skills
 
 **Production-Ready**: Yes. Used in production by Anthropic.

@@ -103,16 +103,16 @@ Unless the user requests otherwise:
 
 ## Current Models (as of Aug 2026)
 
-See **SKILL.md § Current Models** for details. Quick reference:
+See **SKILL.md § Current Models** for authoritative specs. Quick reference:
 
-| Model | Best For | Context | Input/Output Pricing |
+| Model | Best For | Context | Capability Tier |
 |---|---|---|---|
-| Claude Opus 5 | Complex reasoning, long tasks | 200K tokens | Higher cost |
-| Claude Sonnet 5 | Balanced (speed/quality) | 200K tokens | Mid-tier cost |
-| Claude Fable 5 | Speed, simple tasks | 200K tokens | Lowest cost |
-| Claude Haiku 4.5 | Speed, lightweight | 200K tokens | Lowest cost |
+| Claude Opus 5 | Most complex reasoning, long tasks | 1M tokens | Highest capability |
+| Claude Sonnet 5 | Balanced (speed/quality) | 1M tokens | High capability |
+| Claude Fable 5 | Agentic, complex workflows | 1M tokens | High capability |
+| Claude Haiku 4.5 | Speed, lightweight tasks | 200K tokens | Efficient |
 
-**Pricing and details**: Check SKILL.md or `shared/pricing.md` for current rates (they change frequently).
+**Pricing and details**: Check SKILL.md § Current Models or `shared/pricing.md` for up-to-date rates and feature costs.
 
 ## Output Requirement
 

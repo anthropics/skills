@@ -30,8 +30,8 @@ The Claude API skill is comprehensive (546 lines) and covers many topics. This g
 
 ### "How do I use tool calling (function calling)?"
 → Read: **SKILL.md § Tool Use Patterns (Quick Reference)**
-→ Then: `{lang}/tools.md` for language-specific examples
-→ For advanced patterns: `shared/tool-use-patterns.md`
+→ Then: `{lang}/claude-api/tool-use.md` for language-specific examples
+→ For advanced patterns: `shared/tool-use-concepts.md`
 
 ### "I want to use extended thinking or reasoning"
 → Read: **SKILL.md § Thinking & Effort (Quick Reference)**

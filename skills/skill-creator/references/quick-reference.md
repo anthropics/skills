@@ -80,19 +80,22 @@ Helpful patterns and anti-patterns.
 - **Failure modes:** Cases where the skill should gracefully degrade or ask for clarification
 
 **Test Format:**
-Save to `evals/evals.json`:
+Save to `evals/evals.json` following the skill's documented schema:
 ```json
 {
   "skill_name": "your-skill-name",
   "evals": [
     {
+      "id": "test_1",
       "prompt": "A realistic user request that should trigger this skill",
-      "expected_contains": ["output fragment 1", "output fragment 2"],
-      "expected_exact": null
+      "expected_output": "Description of expected behavior or output",
+      "expectations": ["criterion_1", "criterion_2"]
     }
   ]
 }
 ```
+
+Refer to `SKILL.md` and `references/schemas.md` in skill-creator for the authoritative schema.
 
 **Writing Good Tests:**
 - Use realistic language, not overly formal or simplified
