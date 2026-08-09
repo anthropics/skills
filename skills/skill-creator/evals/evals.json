@@ -1,0 +1,45 @@
+{
+  "skill_name": "skill-creator",
+  "description": "Testing the skill creator workflow: creating new skills, iterating based on feedback, and optimizing descriptions.",
+  "evals": [
+    {
+      "id": "eval-1",
+      "name": "simple-workflow-skill",
+      "prompt": "I want to create a skill that helps my team standup meetings flow better. Right now we spend 15 minutes just getting status updates from everyone. I want Claude to help structure these updates into a consistent format and maybe flag blockers automatically. What kind of skill should I build?",
+      "expected_output": "Workflow definition for a standup meeting skill including: intent capture questions, SKILL.md template with trigger conditions, suggested test cases (happy path, edge cases), and evaluation approach (qualitative vs quantitative)",
+      "expectations": [
+        "Captures what the skill does (structure standup updates, flag blockers)",
+        "Identifies when to trigger (standup context, status update requests)",
+        "Provides SKILL.md skeleton with proper frontmatter",
+        "Suggests 2-3 realistic test prompts",
+        "Explains whether quantitative assertions or qualitative feedback makes sense"
+      ]
+    },
+    {
+      "id": "eval-2",
+      "name": "skill-iteration-feedback",
+      "prompt": "I have a draft skill for analyzing conference talk transcripts. I've written the SKILL.md and created test cases. When I ran tests, the skill extracted key points correctly but missed the speaker's main argument in 2 out of 3 test cases. How should I improve it?",
+      "expected_output": "Iterative improvement strategy that: diagnoses the root cause (instructions unclear, missing context patterns), suggests specific rewrites to SKILL.md, explains why the changes generalize beyond the test cases, and recommends whether to expand the test set",
+      "expectations": [
+        "Identifies that the issue is likely missing guidance on identifying main arguments vs details",
+        "Suggests rewriting relevant section of SKILL.md with theory-of-mind explanation",
+        "Recommends testing with additional edge cases (short talks, thesis-driven talks)",
+        "Explains how to avoid overfitting to specific test examples",
+        "Proposes assertion criteria for measuring improvement"
+      ]
+    },
+    {
+      "id": "eval-3",
+      "name": "trigger-optimization",
+      "prompt": "I finished my skill for converting Figma designs to React code. The SKILL.md works well but the skill doesn't trigger reliably. Sometimes users ask for design-to-code conversion but Claude doesn't use the skill. What can I do?",
+      "expected_output": "Description optimization workflow including: evaluation queries (should-trigger and should-not-trigger examples), runner script configuration, iteration guidance, and metrics interpretation",
+      "expectations": [
+        "Generates realistic trigger test queries (not just obvious ones)",
+        "Includes edge cases where users don't explicitly name 'Figma' but clearly need the skill",
+        "Includes should-not-trigger queries (near-misses: CSS changes, image optimization, etc.)",
+        "Explains how to run the optimization loop and interpret scores",
+        "Provides guidance on balancing precision (not over-triggering) with recall (not under-triggering)"
+      ]
+    }
+  ]
+}
