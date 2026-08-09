@@ -1,0 +1,2 @@
+defusedxml>=0.0.1
+pillow>=10.0.0
