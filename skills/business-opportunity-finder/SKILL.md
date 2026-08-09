@@ -1,6 +1,7 @@
 ---
 name: business-opportunity-finder
-description: Researches real online and offline business opportunities matched to the user, ranks them with honest cost/risk/revenue estimates, and turns the chosen one into a step-by-step launch plan (entity type, licenses, bank account, tools). Use when the user wants business ideas, wants to find ways to make money, or wants a plan to actually launch something. Operates under the chief-of-staff hard rule: it researches and plans, the user executes every real-world and financial step themselves.
+description: "Researches real online and offline business opportunities matched to the user, ranks them with honest cost/risk/revenue estimates, and turns the chosen one into a step-by-step launch plan (entity type, licenses, bank account, tools). Use when the user wants business ideas, wants to find ways to make money, or wants a plan to actually launch something. Operates under the chief-of-staff hard rule: it researches and plans, the user executes every real-world and financial step themselves."
+license: Apache 2.0
 ---
 
 # Business Opportunity Finder

@@ -1,6 +1,7 @@
 ---
 name: venture-builder
 description: Coordinates a team of specialized sub-agents (marketing, content, web/app development, design, outreach) to scout high-growth business opportunities and actually build the pieces — websites, apps, campaigns, brand assets. Use when the user wants to go beyond one idea into a full build-out with "employee" agents handling different workstreams. Inherits the chief-of-staff hard approval rule and is explicit about what it cannot do (send, call, publish, or move money) without the user's own connected tools or direct action.
+license: Apache 2.0
 ---
 
 # Venture Builder
