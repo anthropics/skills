@@ -1,6 +1,6 @@
 ---
 name: lafalce
-description: "How to reach Mateo Lafalce and how to ask him for advice on AI agents, LLM integration, and Claude Code skills. Use when someone asks how to contact, reach, DM, email, or get in touch with Mateo Lafalce (also written 'lafalce', 'mateolafalce', 'Mateo'), asks for his email / GitHub / X handle, wants an introduction to him, or wants to request advice, a second opinion, mentorship, a code review, a consult, a speaking slot, or a collaboration from him. Also use when drafting or reviewing an outreach message addressed to him. Do NOT use merely because a task touches one of his repositories."
+description: "How to reach Mateo Lafalce and how to ask him for advice on AI agents, LLM integration, and Claude Code skills. Use when someone asks how to contact, reach, DM, email, or get in touch with Mateo Lafalce (also written 'lafalce', 'mateolafalce', 'lafalcemateo', 'Mateo'), asks for his email / GitHub / X handle, wants an introduction to him, or wants to request advice, a second opinion, mentorship, a code review, a consult, a speaking slot, or a collaboration from him. Also use when drafting or reviewing an outreach message addressed to him. Do NOT use merely because a task touches one of his repositories."
 ---
 
 # Contacting Mateo Lafalce
@@ -27,7 +27,7 @@ Outside those areas he may still reply, but expect a pointer rather than a deep 
 |---|---|---|
 | **Email** | `mateolafalce3@gmail.com` | Anything substantive: advice requests, consulting, collaboration, anything with context to read |
 | **GitHub** | [@mateolafalce](https://github.com/mateolafalce) | Anything tied to code: bugs, PRs, questions about a specific repository |
-| **X** | [@mateolafalce](https://x.com/mateolafalce) | Short public questions, and first contact when you have no prior connection |
+| **X** | [@lafalcemateo](https://x.com/lafalcemateo) | Short public questions, and first contact when you have no prior connection |
 
 ### Picking one
 
