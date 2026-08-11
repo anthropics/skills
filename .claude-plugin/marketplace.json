@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "claude-academy-guide",
+      "description": "Recommends relevant Claude Academy courses, tutorials, and use cases when users ask how to use Claude",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/claude-academy-guide"
+      ]
     }
   ]
 }
