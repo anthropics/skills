@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "discernment-nudge",
+      "description": "Appends two or three short follow-up questions after a substantive answer to help users check key facts, probe the reasoning, and notice missing context",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/discernment-nudge"
+      ]
     }
   ]
 }
