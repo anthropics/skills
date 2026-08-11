@@ -81,7 +81,6 @@ Algorithmic expression: Randomized circle packing or Voronoi tessellation. Start
 - **PARAMETRIC EXPRESSION**: Ideas communicate through mathematical relationships, forces, behaviors - not static composition
 - **ARTISTIC FREEDOM**: The next Claude interprets the philosophy algorithmically - provide creative implementation room
 - **PURE GENERATIVE ART**: This is about making LIVING ALGORITHMS, not static images with randomness
-- **EXPERT CRAFTSMANSHIP**: Repeatedly emphasize the final algorithm must feel meticulously crafted, refined through countless iterations, the product of deep expertise by someone at the absolute top of their field in computational aesthetics
 
 **The algorithmic philosophy should be 4-6 paragraphs long.** Fill it with poetic computational philosophy that brings together the intended vision. Avoid repeating the same points. Output this algorithmic philosophy as a .md file.
 
@@ -109,14 +108,7 @@ With the philosophy AND conceptual framework established, express it through cod
 1. **Read** `templates/viewer.html` using the Read tool
 2. **Study** the exact structure, styling, and Anthropic branding
 3. **Use that file as the LITERAL STARTING POINT** - not just inspiration
-4. **Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)
-5. **Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)
-
-**Avoid:**
-- ❌ Creating HTML from scratch
-- ❌ Inventing custom styling or color schemes
-- ❌ Using system fonts or dark themes
-- ❌ Changing the sidebar structure
+4. **Keep FIXED sections, replace VARIABLE sections** - see WHAT'S FIXED VS VARIABLE below
 
 **Follow these practices:**
 - ✅ Copy the template's exact HTML structure
@@ -327,12 +319,11 @@ Add as many control-group divs as there are parameters.
 **4. Actions (FIXED)** - Always include exactly as shown:
 - Regenerate button
 - Reset button
-- Download PNG button
 
 **Requirements**:
 - Seed controls must work (prev/next/random/jump/display)
 - All parameters must have UI controls
-- Regenerate, Reset, Download buttons must work
+- Regenerate and Reset buttons must work
 - Keep Anthropic branding (UI styling, not art colors)
 
 ### USING THE ARTIFACT
@@ -389,8 +380,7 @@ This skill includes helpful templates and documentation:
 
 - **templates/viewer.html**: REQUIRED STARTING POINT for all HTML artifacts.
   - This is the foundation - contains the exact structure and Anthropic branding
-  - **Keep unchanged**: Layout structure, sidebar organization, Anthropic colors/fonts, seed controls, action buttons
-  - **Replace**: The p5.js algorithm, parameter definitions, and UI controls in Parameters section
+  - See WHAT'S FIXED VS VARIABLE above for what to keep vs replace
   - The extensive comments in the file mark exactly what to keep vs replace
 
 - **templates/generator_template.js**: Reference for p5.js best practices and code structure principles.
