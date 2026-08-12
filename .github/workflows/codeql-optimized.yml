@@ -1,0 +1,117 @@
+# CodeQL code scanning with security and quality analysis
+# Optimized for documentation and skills repository
+#
+# Includes:
+# - Up-to-date action versions with caching
+# - Security and quality queries enabled
+# - SARIF upload for GitHub Security tab
+# - Support for multiple languages
+#
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Run CodeQL every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+
+    permissions:
+      # Required for CodeQL scanning
+      security-events: write
+      # Required to fetch CodeQL packs
+      packages: read
+      # Required in private repos
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: javascript-typescript
+          build-mode: none
+        - language: python
+          build-mode: none
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        # For better performance, fetch only recent history
+        fetch-depth: 0
+
+    # Initialize CodeQL
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+        # Enable security and quality queries
+        queries: security-and-quality
+        # Optionally use custom queries from packs
+        # queries: security-extended,security-and-quality
+
+    # Run custom build steps if needed
+    - name: Run manual build steps
+      if: matrix.build-mode == 'manual'
+      shell: bash
+      run: |
+        echo 'If you are using a "manual" build mode for one or more of the' \
+          'languages you are analyzing, replace this with the commands to build' \
+          'your code, for example:'
+        echo '  make bootstrap'
+        echo '  make release'
+        exit 1
+
+    # Perform CodeQL analysis
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
+        # Upload results to GitHub Security tab
+        upload: always
+
+  # Upload CodeQL results to GitHub Security tab
+  upload-sarif:
+    name: Upload SARIF to Security
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: always()
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Download SARIF files
+        uses: actions/download-artifact@v4
+        with:
+          name: sarif-results
+
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          # Upload all SARIF files from CodeQL analysis
+          sarif_dir: .
+          # Enable autofix support
+          wait-for-processing: true
+
+  # Fail job if critical issues found
+  check-results:
+    name: Check for Critical Issues
+    runs-on: ubuntu-latest
+    needs: analyze
+    if: failure()
+
+    steps:
+      - name: Report CodeQL Failure
+        run: |
+          echo "CodeQL analysis detected critical issues."
+          echo "Please review the Security tab for details."
+          exit 1

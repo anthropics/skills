@@ -1,0 +1,208 @@
+# Linting and validation for documentation and configuration files
+# Checks: YAML syntax, Markdown formatting, JSON schemas, SKILL.md structure
+#
+name: "Lint and Validate"
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'skills/**/*.md'
+      - 'skills/**/*.yml'
+      - 'skills/**/*.yaml'
+      - 'skills/**/*.json'
+      - '*.md'
+      - '.github/workflows/*.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'skills/**/*.md'
+      - 'skills/**/*.yml'
+      - 'skills/**/*.yaml'
+      - 'skills/**/*.json'
+      - '*.md'
+      - '.github/workflows/*.yml'
+
+jobs:
+  yaml-lint:
+    name: YAML Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run yamllint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: |
+            skills/
+            .github/workflows/
+          config_data: |
+            extends: default
+            rules:
+              line-length:
+                max: 120
+                level: warning
+              document-start: disable
+              comments-indentation: {}
+
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run markdownlint
+        uses: nosborn/github-action-markdown-cli@v3.3.0
+        with:
+          files: .
+          config_file: .markdownlintrc.json
+          ignore_files: node_modules/,skills/*/scripts/
+
+  # Validate evals.json schema
+  validate-evals:
+    name: Validate Evaluation Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Validate evals.json files
+        shell: python
+        run: |
+          import json
+          import sys
+          from pathlib import Path
+
+          required_fields = {
+            'root': ['skill_name', 'evals'],
+            'eval': ['id', 'name', 'prompt', 'expected_output', 'expectations']
+          }
+
+          failed = False
+          for evals_file in Path('.').rglob('evals/evals.json'):
+            try:
+              with open(evals_file) as f:
+                data = json.load(f)
+
+              # Check root level
+              for field in required_fields['root']:
+                if field not in data:
+                  print(f"❌ {evals_file}: Missing '{field}' at root level")
+                  failed = True
+
+              # Check each eval
+              if 'evals' in data:
+                for i, eval_item in enumerate(data['evals']):
+                  for field in required_fields['eval']:
+                    if field not in eval_item:
+                      print(f"❌ {evals_file}[eval {i}]: Missing '{field}'")
+                      failed = True
+
+                  # Validate expectations is a list
+                  if not isinstance(eval_item.get('expectations', []), list):
+                    print(f"❌ {evals_file}[eval {i}]: 'expectations' must be a list")
+                    failed = True
+
+              if not failed:
+                print(f"✅ {evals_file}: Valid")
+
+            except json.JSONDecodeError as e:
+              print(f"❌ {evals_file}: Invalid JSON - {e}")
+              failed = True
+            except Exception as e:
+              print(f"❌ {evals_file}: {e}")
+              failed = True
+
+          if failed:
+            sys.exit(1)
+          print("\n✅ All evals.json files are valid")
+
+  # Validate SKILL.md structure
+  validate-skills:
+    name: Validate SKILL.md Structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Validate SKILL.md files
+        shell: python
+        run: |
+          import re
+          import sys
+          from pathlib import Path
+
+          failed = False
+          skill_dirs = [d for d in Path('skills').iterdir() if d.is_dir()]
+
+          for skill_dir in skill_dirs:
+            skill_md = skill_dir / 'SKILL.md'
+            if not skill_md.exists():
+              print(f"⚠️  {skill_dir.name}: No SKILL.md found")
+              continue
+
+            with open(skill_md) as f:
+              content = f.read()
+
+            # Check for YAML frontmatter
+            if not content.startswith('---'):
+              print(f"❌ {skill_dir.name}: Missing YAML frontmatter")
+              failed = True
+              continue
+
+            # Extract frontmatter
+            parts = content.split('---', 2)
+            if len(parts) < 3:
+              print(f"❌ {skill_dir.name}: Invalid frontmatter")
+              failed = True
+              continue
+
+            frontmatter = parts[1]
+
+            # Check required fields
+            required = ['name', 'description']
+            for field in required:
+              if f"{field}:" not in frontmatter:
+                print(f"❌ {skill_dir.name}: Missing '{field}' in frontmatter")
+                failed = True
+
+            # Validate name format (lowercase, hyphens)
+            name_match = re.search(r'name:\s*([a-zA-Z0-9\-]+)', frontmatter)
+            if name_match:
+              name = name_match.group(1)
+              if name != name.lower() or ' ' in name:
+                print(f"⚠️  {skill_dir.name}: Skill name '{name}' should be lowercase with hyphens")
+
+            if not failed:
+              print(f"✅ {skill_dir.name}: Valid structure")
+
+          if failed:
+            sys.exit(1)
+          print("\n✅ All SKILL.md files have valid structure")
+
+  # Summary
+  validation-summary:
+    name: Validation Summary
+    runs-on: ubuntu-latest
+    needs: [yaml-lint, markdown-lint, validate-evals, validate-skills]
+    if: always()
+
+    steps:
+      - name: Check Validation Results
+        run: |
+          if [[ "${{ needs.yaml-lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.markdown-lint.result }}" == "failure" ]] || \
+             [[ "${{ needs.validate-evals.result }}" == "failure" ]] || \
+             [[ "${{ needs.validate-skills.result }}" == "failure" ]]; then
+            echo "❌ One or more validation checks failed"
+            exit 1
+          fi
+          echo "✅ All validation checks passed"
