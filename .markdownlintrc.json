@@ -1,36 +1,33 @@
 {
-  "default": true,
-  "line-length": {
-    "line_length": 120,
-    "code_lines": false,
-    "code_blocks": false
-  },
-  "no-hard-tabs": true,
-  "no-trailing-spaces": true,
-  "no-trailing-punctuation": false,
-  "no-multiple-spaces": true,
-  "no-blanks-blockquote": true,
-  "no-inline-html": false,
-  "ul-indent": {
-    "indent": 2
-  },
-  "list-marker-space": true,
+  "default": false,
+  "MD001": true,
   "MD003": {
     "style": "consistent"
   },
   "MD004": {
     "style": "consistent"
   },
-  "MD013": false,
-  "MD022": false,
-  "MD024": false,
-  "MD025": false,
-  "MD031": false,
-  "MD032": false,
-  "MD033": false,
-  "MD034": false,
-  "MD036": false,
-  "MD040": false,
-  "MD041": false,
-  "MD060": false
+  "MD006": true,
+  "MD009": true,
+  "MD010": true,
+  "MD011": true,
+  "MD014": true,
+  "MD018": true,
+  "MD019": true,
+  "MD021": true,
+  "MD030": true,
+  "MD037": true,
+  "MD038": true,
+  "MD039": true,
+  "MD042": true,
+  "MD043": true,
+  "MD044": true,
+  "MD045": true,
+  "MD046": true,
+  "MD049": true,
+  "MD050": true,
+  "MD051": true,
+  "MD052": true,
+  "MD053": true,
+  "MD054": true
 }

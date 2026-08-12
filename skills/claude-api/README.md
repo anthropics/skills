@@ -295,8 +295,8 @@ This skill is reference material for building production applications. Contribut
 
 ---
 
-**Last Updated**: August 2026  
-**License**: Complete terms in LICENSE.txt  
+**Last Updated**: August 2026
+**License**: Complete terms in LICENSE.txt
 **Repository**: anthropics/skills
 
 **Ready to build?** Start with the navigation guide or jump straight to SKILL.md § Language Detection.

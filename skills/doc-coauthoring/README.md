@@ -212,8 +212,8 @@ This skill works best when:
 
 ---
 
-**Last Updated**: August 2026  
-**License**: Apache 2.0  
+**Last Updated**: August 2026
+**License**: Apache 2.0
 **Repository**: anthropics/skills
 
 **Suggested Next Steps:**
