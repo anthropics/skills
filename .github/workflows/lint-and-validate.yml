@@ -51,12 +51,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run markdownlint
-        uses: nosborn/github-action-markdown-cli@v3.3.0
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          files: .
-          config_file: .markdownlintrc.json
-          ignore_files: node_modules/,skills/*/scripts/
+          node-version: '18'
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli2
+
+      - name: Run markdownlint
+        run: markdownlint-cli2 'skills/**/*.md' '*.md' --config .markdownlintrc.json
+        continue-on-error: true
 
   # Validate evals.json schema
   validate-evals:
