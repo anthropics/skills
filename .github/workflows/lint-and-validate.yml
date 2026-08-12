@@ -5,7 +5,7 @@ name: "Lint and Validate"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - 'skills/**/*.md'
       - 'skills/**/*.yml'
@@ -14,7 +14,7 @@ on:
       - '*.md'
       - '.github/workflows/*.yml'
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - 'skills/**/*.md'
       - 'skills/**/*.yml'
@@ -179,7 +179,8 @@ jobs:
             if name_match:
               name = name_match.group(1)
               if name != name.lower() or ' ' in name:
-                print(f"⚠️  {skill_dir.name}: Skill name '{name}' should be lowercase with hyphens")
+                msg = f"Skill name '{name}' should be lowercase with hyphens"
+                print(f"⚠️  {skill_dir.name}: {msg}")
 
             if not failed:
               print(f"✅ {skill_dir.name}: Valid structure")

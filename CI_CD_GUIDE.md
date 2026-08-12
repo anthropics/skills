@@ -9,7 +9,7 @@ This repository uses GitHub Actions for continuous integration with a focus on c
 ### Workflows
 
 | Workflow | Trigger | Purpose | Tools |
-|----------|---------|---------|-------|
+| --- | --- | --- | --- |
 | **CodeQL Advanced** | Push to main, PRs, weekly schedule | Security scanning for JavaScript/TypeScript and Python | GitHub CodeQL |
 | **Lint and Validate** | Changes to docs/config, PRs | YAML linting, Markdown formatting, JSON schema validation, SKILL.md structure | yamllint, markdownlint, custom validators |
 | **SLSA Generic Generator** | Manual dispatch, releases | Supply chain integrity and provenance generation | SLSA Framework v1.4.0 |
@@ -27,7 +27,7 @@ This repository uses GitHub Actions for continuous integration with a focus on c
 **Query packs enabled:**
 - `security-and-quality` — Detects security vulnerabilities and code quality issues
 
-**Schedule:** 
+**Schedule:**
 - On every push to main
 - On all pull requests
 - Weekly (Monday, 2 AM UTC)

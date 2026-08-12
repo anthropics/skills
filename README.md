@@ -52,7 +52,7 @@ After installing the plugin, you can use the skill by just mentioning it. For in
 
 ## Claude.ai
 
-These example skills are all already available to paid plans in Claude.ai. 
+These example skills are all already available to paid plans in Claude.ai.
 
 To use any skill from this repository or upload custom skills, follow the instructions in [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude#h_a4222fa77b).
 
