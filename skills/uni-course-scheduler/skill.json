@@ -1,7 +1,0 @@
-{
-  "name": "uni-course-scheduler",
-  "description": "AI-powered university course planning assistant. Analyzes course catalogs, recommends courses based on student goals, generates conflict-free weekly timetables with enrollment priority markers, and exports Excel + ICS calendar files. Supports international education systems (US/AU/UK/ECTS/CN).",
-  "url": "https://github.com/ez-hq/uni-course-scheduler",
-  "author": "ez-hq",
-  "manifest": "https://raw.githubusercontent.com/ez-hq/uni-course-scheduler/main/manifest.json"
-}
