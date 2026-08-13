@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Label PR by size
-        uses: sharyaropensource/pr-size-labeler@v1.0.6
+        uses: sharyaropensource/pr-size-labeler@v1.0.7
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           xs_max_size: 10
