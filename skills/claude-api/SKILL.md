@@ -13,7 +13,7 @@ This skill helps you build LLM-powered applications with Claude. Choose the righ
 
 ## Before You Start
 
-Scan the target file (or, if no target file, the prompt and project) for non-Anthropic provider markers — `import openai`, `from openai`, `langchain_openai`, `OpenAI(`, `gpt-4`, `gpt-5`, file names like `agent-openai.py` or `*-generic.py`, or any explicit instruction to keep the code provider-neutral. If you find any, stop and tell the user that this skill produces Claude/Anthropic SDK code; ask whether they want to switch the file to Claude or want a non-Claude implementation. Do not edit a non-Anthropic file with Anthropic SDK calls.
+Scan the target file (or, if no target file, the prompt and project) for non-Anthropic provider markers — `import openai`, `from openai`, `langchain_openai`, `OpenAI(`, `gpt-4`, `gpt-5`, file names like `agent-openai.py` or `*-generic.py`, or any explicit instruction to keep the code provider-neutral. If you find any, stop and tell the user that this skill produces Claude/Anthropic SDK code; ask whether they want to switch the file to Claude or want a non-Claude implementation. Do not edit a non-Anthropic file with Anthropic SDK calls. (Exception: the `prompt-audit` subcommand is non-interactive and does not stop here — it records non-Anthropic provider markers in its report's stated assumptions and never proposes switching a non-Anthropic file to the Anthropic SDK.)
 
 ## Output Requirement
 
@@ -55,13 +55,14 @@ If the User Request at the bottom of this prompt is a bare subcommand string (no
 
 | Subcommand | Action |
 |---|---|
-| `migrate` | Migrate existing Claude API code to a newer model. **Read `shared/model-migration.md` immediately** and follow it in order: Step 0 (confirm scope — ask which files/directories before any edit), Step 1 (classify each file), then the per-target breaking-changes section. Do not summarize the guide — execute it. If the user did not name a target model, ask which model to migrate to in the same turn as the scope question. |
+| `migrate` | Migrate existing Claude API code to a newer model. **Read `shared/model-migration.md` immediately** and follow it in order: Step 0 (confirm scope — ask which files/directories before any edit), Step 1 (classify each file), then the per-target breaking-changes section. Do not summarize the guide — execute it. If the user did not name a target model, ask which model to migrate to in the same turn as the scope question. After the per-target changes are applied, audit the in-scope prompt text, tool descriptions, and request code against `shared/prompt-audit.md` — prompting written for the source model is part of every migration, and it does not announce itself. |
+| `prompt-audit` | Audit existing prompts, skills, and tool descriptions for dated patterns ("cruft") written for older models. **Read `shared/prompt-audit.md` immediately** and follow it in order: Step 0 (establish scope and target model from the request and the repository — state the assumptions in the report, do not stop to ask), inventory, provenance, then the pattern scan. Produce both deliverables in full — the audit report (findings with `file:line`, pattern, why it's obsolete for the target model, confidence) and a proposed diff — without pausing for confirmation; apply edits only if the request explicitly asked for them. Do not summarize the guide — execute it. |
 
 ---
 
 ## Language Detection
 
-Before reading code examples, determine which language the user is working in:
+Before reading code examples, determine which language the user is working in (exception: for the `prompt-audit` subcommand, skip this section's ask steps — the audit is non-interactive and its inventory is language-agnostic; when no language is inferable, proceed without asking and state the assumption in the report):
 
 1. **Look at project files** to infer the language:
 
@@ -483,6 +484,8 @@ The Quick Task Reference below uses the `{lang}/claude-api/FILE.md` path notatio
 → Read `shared/model-migration.md` → Migrating to Fable 5 → Behavioral shifts (prompt-tunable) + Long-running agent recommendations
 **Prompt caching / optimize caching / "why is my cache hit rate low":**
 → Read `shared/prompt-caching.md` (prefix-stability design, breakpoint placement, anti-patterns that silently invalidate cache) + `{lang}/claude-api/README.md` (Prompt Caching section)
+**Auditing or cleaning up prompts, skills, or tool descriptions ("is this prompt outdated", "remove the cruft", "this was written for an older model"):**
+→ Read `shared/prompt-audit.md` — dated-pattern tables with greppable signals, the keep list (what NOT to delete), and the report + proposed-diff output contract
 **Count tokens in a file / prompt / diff ("how many tokens is X"):**
 → Read `shared/token-counting.md` — use `messages.count_tokens`, never `tiktoken`
 
