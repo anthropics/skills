@@ -1,0 +1,22 @@
+name: PR Size Labeler
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Label PR by size
+        uses: sharyaropensource/pr-size-labeler@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          xs_max_size: 10
+          s_max_size: 50
+          m_max_size: 200
+          l_max_size: 500
+          fail_if_xl: false
