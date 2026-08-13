@@ -50,6 +50,16 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "video-explainer-skills",
+      "description": "Turn a research paper into a short narrated explainer video with Manim animation, edge-tts voiceover, synthesized BGM, and a Live2D anime host (Chinese or English)",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/paper-explainer-video",
+        "./skills/paper-explainer-video-en"
+      ]
     }
   ]
 }
