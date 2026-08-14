@@ -4,6 +4,24 @@ description: "Use this skill any time a spreadsheet file is the primary input or
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
+## Environment Setup
+
+The scripts in this skill use Python packages that are not included in the standard library. Create a virtual environment in this skill directory and install the declared dependencies before running them:
+
+```bash
+cd skills/xlsx
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
+
+Run the scripts with the virtual-environment interpreter, for example:
+
+```bash
+.venv/bin/python scripts/recalc.py output.xlsx
+```
+
+Formula recalculation also requires LibreOffice. The `scripts/recalc.py` helper configures its LibreOffice environment automatically.
+
 # Requirements for Outputs
 
 ## All Excel files
