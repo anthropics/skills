@@ -27,11 +27,21 @@ def get_bounding_box_messages(fields_json_stream) -> list[str]:
         rects_and_fields.append(RectAndField(f["label_bounding_box"], "label", f))
         rects_and_fields.append(RectAndField(f["entry_bounding_box"], "entry", f))
 
+    rect_indices_by_page = {}
+    position_in_page = {}
+    for rect_index, rect_and_field in enumerate(rects_and_fields):
+        page_indices = rect_indices_by_page.setdefault(
+            rect_and_field.field["page_number"], []
+        )
+        position_in_page[rect_index] = len(page_indices)
+        page_indices.append(rect_index)
+
     has_error = False
     for i, ri in enumerate(rects_and_fields):
-        for j in range(i + 1, len(rects_and_fields)):
+        same_page_indices = rect_indices_by_page[ri.field["page_number"]]
+        for j in same_page_indices[position_in_page[i] + 1 :]:
             rj = rects_and_fields[j]
-            if ri.field["page_number"] == rj.field["page_number"] and rects_intersect(ri.rect, rj.rect):
+            if rects_intersect(ri.rect, rj.rect):
                 has_error = True
                 if ri.field is rj.field:
                     messages.append(f"FAILURE: intersection between label and entry bounding boxes for `{ri.field['description']}` ({ri.rect}, {rj.rect})")
