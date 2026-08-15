@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -49,6 +48,15 @@
       "strict": false,
       "skills": [
         "./skills/claude-api"
+      ]
+    },
+    {
+      "name": "android-perfetto",
+      "description": "Android Perfetto trace capture and analysis for startup, jank, ANR, memory, CPU scheduling, and binder IPC investigations",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/android-perfetto-skill"
       ]
     }
   ]
