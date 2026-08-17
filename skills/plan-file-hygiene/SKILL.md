@@ -64,6 +64,17 @@ Plans need an explicit end of life:
 - **Delete only what is yours and absorbed.** Deleting is reserved for files you created (this session or a prior run of your own task) whose useful content is either nil or demonstrably merged elsewhere. Archive rather than delete whenever the file records decisions, constraints, or context.
 - **Respect other writers — and untracked always wins.** Never silently delete or archive a file you did not create. In a git repository, check `git status` first — an untracked plan or notes file may be someone's uncommitted work in progress. Untracked-and-not-yours overrides every other rule here, including staleness: flag it in the report, touch nothing.
 
+## Rule 5: Verify after you write
+
+Rule 2 guards against clobbering before you edit; this rule catches what slipped through anyway. After every write to a shared plan file:
+
+1. **Diff old vs. new.** Compare the file's content immediately before your edit against what's on disk now — `git diff` in a repo, or a copy of the pre-edit content otherwise. Read the diff; don't just trust that the edit tool call succeeded.
+2. **Confirm only your change is there.** The diff should show the lines you intended to add, remove, or change, and nothing else. A section you didn't touch showing up as removed-then-re-added is a red flag even if its final content looks right — a full rewrite that happens to reproduce old text still risks losing a concurrent writer's edit that landed between your read and your write.
+3. **On an unexpected deletion, stop and re-read** — don't patch the gap from memory. The file changed under you; redo the edit as a fresh targeted diff against its current content. Papering over a missing section from what you remember it said is the same regenerate-from-memory failure Rule 2 warns about, one step later.
+4. **Note the check in your report**: which lines changed, and that nothing else did.
+
+This is one cheap diff read, and it's the only check that happens after the write has actually landed — treat a shrinking or unexpected diff here with the same suspicion as the pre-write red flags in Rule 2.
+
 ## Report the hygiene pass
 
 After applying these rules, state briefly:
@@ -71,7 +82,8 @@ After applying these rules, state briefly:
 - which file is the current plan;
 - what was merged into it, and from where;
 - what was archived, superseded, or flagged as stale;
-- what was left untouched and why (unrelated, uncommitted, uncertain).
+- what was left untouched and why (unrelated, uncommitted, uncertain);
+- confirmation that the post-write diff (Rule 5) showed only the intended change.
 
 This report is what lets the next session — or the human — trust the directory again.
 
