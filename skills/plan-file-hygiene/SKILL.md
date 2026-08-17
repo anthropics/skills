@@ -75,6 +75,8 @@ Rule 2 guards against clobbering before you edit; this rule catches what slipped
 
 This is one cheap diff read, and it's the only check that happens after the write has actually landed — treat a shrinking or unexpected diff here with the same suspicion as the pre-write red flags in Rule 2.
 
+**Example**: You edit `PLAN.md` to check off item 3. Before writing, the file was 40 lines. After writing, `git diff` shows the expected one-line checkbox flip — plus a 12-line section under `## Research notes` removed, one you never touched. That's not your edit: a parallel session added that section after your read and your whole-file write overwrote it. Stop, re-read the current file (now including the research notes), and reapply just the checkbox change against that current version, so the notes survive.
+
 ## Report the hygiene pass
 
 After applying these rules, state briefly:
@@ -105,3 +107,4 @@ Actions: fold the still-relevant findings from `NOTES.md` into `PLAN.md` as a ta
 - **Concurrent writers on one plan**: give each writer its own `##` section and append-only discipline within it; always re-read immediately before writing.
 - **Several active tasks in one directory**: one `plan-<task-slug>.md` per task; a plan index file is optional and only worth it above three or four active plans.
 - **Ephemeral scratch that must exist mid-task**: name it so discovery finds it (`scratch-<task-slug>.md`) and delete it in the same session that finishes the task — scratch that outlives its session becomes someone else's mystery.
+- **No git, or the file is untracked**: keep a copy of the pre-edit content (in memory for this turn, or a quick shell copy) before writing, and diff against that copy after — the check in Rule 5 doesn't require version control, only a before-snapshot.
