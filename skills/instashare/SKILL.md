@@ -1,12 +1,12 @@
 ---
 name: instashare
-description: InstaShare — upload the current Claude Code chat session to instashare.to and return a public share link. The active session is the most recently modified `~/.claude/projects/<slug>/<uuid>.jsonl`; this skill POSTs that file to the InstaShare API in one shell call and prints the returned URL. Use when the user asks to "share this chat", "make a link to this conversation", "InstaShare this", "publish this session", or similar.
+description: InstaShare — upload the current Claude Code chat session to instashare.to and return a public share link. The session lives at `~/.claude/projects/<slug>/<session-id>.jsonl`; this skill POSTs that file to the InstaShare API in one shell call and prints the returned URL. Use when the user asks to "share this chat", "make a link to this conversation", "InstaShare this", "publish this session", or similar.
 tools: Bash
 ---
 
 # InstaShare
 
-Upload the current Claude Code session JSONL to the InstaShare API and report the public link. One shell call does it — the freshest `.jsonl` by mtime in the project's slug directory is reliably the active session.
+Upload the current Claude Code session JSONL to the InstaShare API and report the public link. One shell call does it — given this session's id, the transcript is `~/.claude/projects/<slug>/<session-id>.jsonl`.
 
 If this session has already been shared in a previous run, the script reuses the existing URL: it reads a sidecar file `<jsonl-path>.instashare.json` (created by the first upload) and `PUT`s the new content to the same slug. The public URL stays the same so any link the user already pasted continues to work and now shows the latest transcript.
 
@@ -18,16 +18,30 @@ Endpoint defaults to `https://instashare.to`. Override with the `INSTASHARE_API_
 
 ## Fill in the session info
 
-The shared page shows a header line like `Opus 4.8 (1M context) with medium effort · Claude Max`. Plan is read from `~/.claude.json` automatically and the model also has a server-side fallback parsed from the transcript, but **effort and the model's context-window marker live only in the running session** — so before you run the snippet, set two variables from *your own* current session:
+Before you run the snippet, set three variables from *your own* current session. They are live-session state that never reaches the transcript, so the script cannot derive them itself.
 
+- `$sessionId` / `session_id` → **which conversation to upload.** See "Identify your session" below. This one is a correctness requirement, not cosmetics.
 - `$sessionModel` / `session_model` → your current model exactly as shown in the status line, including any context-window marker, e.g. `Opus 4.8 (1M context)`.
 - `$sessionEffort` / `session_effort` → your current reasoning effort, e.g. `medium` (the bare word, no "effort" suffix).
 
-If you genuinely don't know one of them, leave it as the empty string — the page degrades gracefully (the server still fills in the model from the transcript; effort/plan are simply omitted). Don't guess or invent values.
+`sessionModel` and `sessionEffort` feed the shared page's header line (`Opus 4.8 (1M context) with medium effort · Claude Max`; plan is read from `~/.claude.json` automatically). If you genuinely don't know one of them, leave it as the empty string — the page degrades gracefully, and the server still parses the base model out of the transcript. Don't guess or invent values.
+
+## Identify your session
+
+**Set `$sessionId` whenever you can.** The script's fallback is the newest `.jsonl` by mtime, and that is a guess, not an identification: Claude Code stores every session for a working directory in the same project folder, so a second session running in the same cwd — another terminal, a background agent, a teammate on the same box — writes to a sibling file that may be newer than yours. Publishing the wrong transcript is silent, and the resulting URL is public before anyone notices.
+
+Ways to get your session id, best first:
+
+- **Your scratchpad path.** If your system prompt lists a scratchpad directory, the session id is the UUID path segment: `…/Temp/claude/<project-slug>/<session-id>/scratchpad`.
+- **Ask the user.** `/status` shows it, and it is in the window title of some terminals.
+
+If you cannot determine it, leave it empty. The script then falls back to mtime **and aborts** if more than one transcript in the folder was touched in the last 30 minutes, rather than picking one at random. On abort, get the id and re-run — do not defeat the guard by widening the window or picking a file by hand.
+
+Whichever path you take, the script echoes `Session file: <name>` before uploading. Check it against your own session id.
 
 ## Run exactly one of these
 
-Pick by platform. The script computes the slug itself, finds the session, scrubs known secret patterns from the body in memory, decides POST-vs-PUT from the sidecar, uploads the scrubbed body, and prints the URL.
+Pick by platform. The script computes the slug itself, resolves the session file from `$sessionId` (aborting rather than guessing when it is unset and the folder looks ambiguous), scrubs known secret patterns from the body in memory, decides POST-vs-PUT from the sidecar, uploads the scrubbed body, and prints the URL.
 
 ### Windows (PowerShell)
 
@@ -37,10 +51,15 @@ $credentialsDir  = Join-Path $env:USERPROFILE ".claude\instashare"
 $credentialsFile = Join-Path $credentialsDir "credentials.json"
 $deviceHostname  = $env:COMPUTERNAME
 
-# Session info shown in the shared-page header. Model and effort are live-session
-# state only the running agent knows — BEFORE running, fill them from the current
-# session (see "Fill in the session info" below); leave '' if unknown (the server
-# falls back to the model parsed from the transcript). Plan is read from disk.
+# Live-session state that never reaches the transcript, so the script cannot
+# derive it — BEFORE running, fill these from the current session (see "Fill in
+# the session info" and "Identify your session" below).
+# $sessionId picks WHICH conversation is uploaded and is a correctness
+# requirement; leave it '' only if you truly cannot determine it, and expect the
+# ambiguity guard below to abort rather than guess.
+# Model/effort are cosmetic: '' degrades gracefully (the server parses the base
+# model from the transcript). Plan is read from disk.
+$sessionId     = ''   # e.g. '3d5e8218-ab51-4dbb-b7a6-58b24a21e788'
 $sessionModel  = ''   # e.g. 'Opus 4.8 (1M context)'
 $sessionEffort = ''   # e.g. 'medium'
 $sessionPlan   = ''
@@ -73,8 +92,32 @@ $cwd = (Get-Location).Path
 # protected '\\' target (it pairs any such literal with a destructive cmdlet).
 $slug = $cwd.Replace(':', '-').Replace('\', '-')
 $projDir = Join-Path $env:USERPROFILE ".claude\projects\$slug"
-$src = Get-ChildItem "$projDir\*.jsonl" -ErrorAction Stop |
-       Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+# Pick the transcript. $sessionId is an identification; mtime is only a guess,
+# because every session sharing this cwd writes into the same project folder and
+# a concurrent one can be newer. So mtime is the fallback, and it refuses to
+# choose when the folder shows signs of a second live session.
+$src = $null
+if ($sessionId) {
+  $candidate = Join-Path $projDir "$sessionId.jsonl"
+  if (-not (Test-Path $candidate)) {
+    Write-Error "No transcript for session '$sessionId' in $projDir. Nothing uploaded."
+    exit 1
+  }
+  $src = Get-Item $candidate
+} else {
+  $all = @(Get-ChildItem "$projDir\*.jsonl" -ErrorAction Stop | Sort-Object LastWriteTime -Descending)
+  if ($all.Count -eq 0) { Write-Error "No session files in $projDir"; exit 1 }
+  $rivals = @($all | Where-Object { $_.LastWriteTime -gt (Get-Date).AddMinutes(-30) })
+  if ($rivals.Count -gt 1) {
+    Write-Error ("Ambiguous session: {0} transcripts in {1} were written in the last 30 minutes ({2}). Another Claude Code session is live in this directory, so the newest file may not be yours. Set `$sessionId and re-run. Nothing uploaded." -f `
+      $rivals.Count, $projDir, (($rivals | ForEach-Object { $_.Name }) -join ', '))
+    exit 1
+  }
+  $src = $all[0]
+}
+Write-Output ("Session file: " + $src.Name)
+
 $body = Get-Content $src.FullName -Raw -Encoding UTF8
 $sidecar = "$($src.FullName).instashare.json"
 
@@ -92,6 +135,11 @@ $patterns = @(
   @{ name = 'google-api-key';    regex = '\bAIza[A-Za-z0-9_\-]{35}\b';                                              replacement = '[REDACTED:google-api-key]' },
   @{ name = 'jwt';               regex = '\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\b'; replacement = '[REDACTED:jwt]' },
   @{ name = 'http-auth';         regex = '(?i)Authorization:\s*(?:Basic|Bearer|Digest|Token|OAuth)\s+[A-Za-z0-9+/=._\-]{8,}'; replacement = 'Authorization: [REDACTED:http-auth]' },
+  # Credentials inside a connection URI: mongodb+srv://user:pass@host, https://user:pass@host, ...
+  # None of the token-shaped rules match these, and `const URI = '...'` misses the *_SECRET= rule.
+  @{ name = 'uri-credentials';   regex = '(?i)\b(mongodb(?:\+srv)?|https?|redis|rediss|amqps?|postgres(?:ql)?|mysql|ftp)://[^:/\s"''\\]+:[^@\s"''\\]{4,}@'; replacement = '$1://[REDACTED:uri-credentials]@' },
+  # CLI basic-auth flag: curl -u user:pass / --user user:pass
+  @{ name = 'basic-auth-flag';   regex = '(?<=\s)(?:-u|--user)\s+["'']?[A-Za-z0-9_\-.@]+:[^\s"'']{6,}["'']?';                 replacement = '-u [REDACTED:basic-auth]' },
   @{ name = 'cookie-header';     regex = '(?i)(?:Cookie|Set-Cookie):\s*[A-Za-z_][A-Za-z0-9_\-]*=[^"''\\\r\n]{10,}'; replacement = '[REDACTED:cookie-header]' },
   @{ name = 'curl-cookie-arg';   regex = '(?<=\s)(?:-b|--cookie)\s+''[A-Za-z_][A-Za-z0-9_\-]*=[^''\\\r\n]{10,}''';  replacement = "-b '[REDACTED:cookie-header]'" },
   # Bare cookie chains (no `Cookie:` header in front) — 3+ name=value pairs separated by `; `.
@@ -200,10 +248,15 @@ credentials_dir="$HOME/.claude/instashare"
 credentials_file="$credentials_dir/credentials.json"
 device_hostname=$(hostname 2>/dev/null || echo unknown)
 
-# Session info shown in the shared-page header. Model and effort are live-session
-# state only the running agent knows — BEFORE running, fill them from the current
-# session (see "Fill in the session info" below); leave empty if unknown (the
-# server falls back to the model parsed from the transcript). Plan is read from disk.
+# Live-session state that never reaches the transcript, so the script cannot
+# derive it — BEFORE running, fill these from the current session (see "Fill in
+# the session info" and "Identify your session" below).
+# session_id picks WHICH conversation is uploaded and is a correctness
+# requirement; leave it empty only if you truly cannot determine it, and expect
+# the ambiguity guard below to abort rather than guess.
+# Model/effort are cosmetic: empty degrades gracefully (the server parses the
+# base model from the transcript). Plan is read from disk.
+session_id=""       # e.g. '3d5e8218-ab51-4dbb-b7a6-58b24a21e788'
 session_model=""    # e.g. 'Opus 4.8 (1M context)'
 session_effort=""   # e.g. 'medium'
 session_plan=""
@@ -231,8 +284,26 @@ fi
 
 cwd="$(pwd)"
 slug=$(echo "$cwd" | sed 's#/#-#g')
-src=$(ls -t "$HOME/.claude/projects/$slug"/*.jsonl 2>/dev/null | head -1)
-[ -z "$src" ] && { echo "No session files in $HOME/.claude/projects/$slug" >&2; exit 1; }
+proj_dir="$HOME/.claude/projects/$slug"
+
+# Pick the transcript. session_id is an identification; mtime is only a guess,
+# because every session sharing this cwd writes into the same project folder and
+# a concurrent one can be newer. So mtime is the fallback, and it refuses to
+# choose when the folder shows signs of a second live session.
+if [ -n "$session_id" ]; then
+  src="$proj_dir/$session_id.jsonl"
+  [ -f "$src" ] || { echo "No transcript for session '$session_id' in $proj_dir. Nothing uploaded." >&2; exit 1; }
+else
+  src=$(ls -t "$proj_dir"/*.jsonl 2>/dev/null | head -1)
+  [ -z "$src" ] && { echo "No session files in $proj_dir" >&2; exit 1; }
+  # -mmin is portable across GNU and BSD find; -newermt is not.
+  rivals=$(find "$proj_dir" -maxdepth 1 -name '*.jsonl' -mmin -30 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$rivals" -gt 1 ]; then
+    echo "Ambiguous session: $rivals transcripts in $proj_dir were written in the last 30 minutes. Another Claude Code session is live in this directory, so the newest file may not be yours. Set session_id and re-run. Nothing uploaded." >&2
+    exit 1
+  fi
+fi
+echo "Session file: $(basename "$src")"
 sidecar="$src.instashare.json"
 tmp=$(mktemp)
 redacted=$(mktemp)
@@ -255,6 +326,11 @@ PATTERNS = [
     ('google-api-key',    r'\bAIza[A-Za-z0-9_\-]{35}\b',                                              '[REDACTED:google-api-key]'),
     ('jwt',               r'\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\b', '[REDACTED:jwt]'),
     ('http-auth',         r'(?i)Authorization:\s*(?:Basic|Bearer|Digest|Token|OAuth)\s+[A-Za-z0-9+/=._\-]{8,}', 'Authorization: [REDACTED:http-auth]'),
+    # Credentials inside a connection URI: mongodb+srv://user:pass@host, https://user:pass@host, ...
+    # None of the token-shaped rules match these, and `URI = '...'` misses the *_SECRET= rule.
+    ('uri-credentials',   r'''(?i)\b(mongodb(?:\+srv)?|https?|redis|rediss|amqps?|postgres(?:ql)?|mysql|ftp)://[^:/\s"'\\]+:[^@\s"'\\]{4,}@''', r'\1://[REDACTED:uri-credentials]@'),
+    # CLI basic-auth flag: curl -u user:pass / --user user:pass
+    ('basic-auth-flag',   r'''(?<=\s)(?:-u|--user)\s+["']?[A-Za-z0-9_\-.@]+:[^\s"']{6,}["']?''', '-u [REDACTED:basic-auth]'),
     ('cookie-header',     r'''(?i)(?:Cookie|Set-Cookie):\s*[A-Za-z_][A-Za-z0-9_\-]*=[^"'\\\r\n]{10,}''', '[REDACTED:cookie-header]'),
     ('curl-cookie-arg',   r"""(?<=\s)(?:-b|--cookie)\s+'[A-Za-z_][A-Za-z0-9_\-]*=[^'\\\r\n]{10,}'""", "-b '[REDACTED:cookie-header]'"),
     # Bare cookie chains (no `Cookie:` header in front) — 3+ name=value pairs
@@ -360,18 +436,20 @@ if not d.get("linked") and d.get("claimUrl"):
 [ -n "$summary" ] && echo "Redacted before upload: $summary"
 ```
 
-The command prints the public URL on the first line and a delete URL on the second. Until the device has been claimed, a third line offers the **claim URL** that links every share from this device to a Google account. After claiming, that line disappears and shares show up immediately at `<api_base>/mine`.
+The command prints `Session file: <name>` first, then the public URL, then a delete URL. Until the device has been claimed, a further line offers the **claim URL** that links every share from this device to a Google account. After claiming, that line disappears and shares show up immediately at `<api_base>/mine`.
 
 ## After the command runs
 
+0. **Check the `Session file:` line against your own session id** before you hand over the link. If it names a different transcript you have published someone else's conversation: give the user the delete URL immediately and say so plainly, then re-run with `$sessionId` set. A share that is live for a minute is still a share.
 1. **Report the public URL** to the user — one line, clickable.
 2. **Show the delete URL** on a second line so they can revoke the share later. Opening it in a browser shows a confirmation page; nothing is removed until they click the "Delete forever" button. The token is one-shot per chat — if it's lost, the chat can't be deleted again.
 3. **If the skill printed a `Make these yours:` line**, mention that opening it (and signing in with Google) attaches *every* share from this device — past and future — to a `/mine` page. This is optional; the public link works without it.
-4. **Note what was redacted, if anything**: when a `Redacted before upload: …` line appears, the skill replaced matches of a curated pattern set (AWS / GitHub / Slack / Stripe / OpenAI / Anthropic / Google keys, JWTs, PEM private-key blocks, HTTP `Authorization: Basic|Bearer|…` headers, `Cookie:` / `Set-Cookie:` header values, curl `-b 'cookie=val; …'` flags, InstaShare's own delete/claim tokens from a previous run of this skill, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` assignments) with `[REDACTED:<kind>]` markers before upload. The scan is best-effort — custom or proprietary token formats won't match — so still suggest reviewing the public link if the chat may contain anything else sensitive.
+4. **Note what was redacted, if anything**: when a `Redacted before upload: …` line appears, the skill replaced matches of a curated pattern set (AWS / GitHub / Slack / Stripe / OpenAI / Anthropic / Google keys, JWTs, PEM private-key blocks, HTTP `Authorization: Basic|Bearer|…` headers, `Cookie:` / `Set-Cookie:` header values, curl `-b 'cookie=val; …'` and `-u user:pass` flags, credentials embedded in connection URIs like `mongodb+srv://user:pass@host`, InstaShare's own delete/claim tokens from a previous run of this skill, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` assignments) with `[REDACTED:<kind>]` markers before upload. The scan is best-effort — custom or proprietary token formats won't match — so still suggest reviewing the public link if the chat may contain anything else sensitive.
+5. **Passwords the patterns can't recognise are your problem, not the script's.** A bare password quoted in prose (`the ES password is hunter2`), a proprietary token format, or a credential the user pasted mid-conversation will upload verbatim. If you know the transcript contains one — because you read it from a memory file, a `.env`, or a secrets manager earlier in the session — add a literal rule for it to `$patterns` before running, and say so when you report the link.
 
 ## How this works
 
-- **The mtime sort identifies the active session.** Claude Code writes to the most recently modified `.jsonl` in the project's slug directory, so a single `ls -t … | head -1` reliably picks it — no separate Glob/Read pre-flight needed.
+- **The session id identifies the session; mtime only guesses at it.** Claude Code names each transcript `<session-id>.jsonl` and files every session for a working directory under the same project slug, so `<slug>/<session-id>.jsonl` is an exact address. `ls -t … | head -1` is not: it silently resolves to whichever session in that folder was written to last, which is a different conversation whenever a second Claude Code session shares the cwd. That failure is invisible — the upload succeeds, returns a URL, and publishes someone else's transcript. Hence `$sessionId` up front, mtime only as a fallback, and an abort when two transcripts in the folder are both recently active.
 - **The slug is the cwd with `/`, `\`, `:` replaced by `-`, case preserved.** That matches the directory Claude Code creates, including any leading dash on macOS/Linux (`/Users/foo` → `-Users-foo`). Lowercasing it or stripping the leading dash will miss the directory on case-preserving filesystems.
 - **The body is the file with common secrets scrubbed in place.** Before POST/PUT the snippet scans `$body` against a curated pattern set (provider API keys, JWTs, PEM private-key blocks, HTTP `Authorization` / `Cookie` / `Set-Cookie` header values, curl `-b 'cookies'` flags, InstaShare's own delete/claim tokens printed by a previous run, and `*_KEY=` / `*_TOKEN=` / `*_SECRET=` / `*_PASSWORD=` style env assignments) and replaces matches with `[REDACTED:<kind>]`. Everything else is uploaded verbatim. Secrets matching one of the patterns therefore never leave the machine — they're scrubbed before the HTTPS body is even constructed. The original `.jsonl` on disk is never modified.
 - **The scan is best-effort.** It targets the well-known token formats listed above. Custom or proprietary tokens, free-form passwords in prose, and high-entropy strings without a recognizable prefix won't match. Still surface the public-link warning so the user can decide whether to share, and recommend reviewing the link if the chat may contain anything else sensitive.
