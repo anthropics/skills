@@ -200,6 +200,8 @@ A cache entry becomes readable only after the first response **begins streaming*
 
 For fan-out patterns: send 1 request, await the first streamed token (not the full response), then fire the remaining N−1. They'll read the cache the first one just wrote.
 
+**Batch API caveat:** this pattern primes the cache for follow-on **Messages** requests only. A cache entry written by a regular Messages request is not reliably read by a Message Batches request submitted afterward, even seconds later with a byte-identical prefix — don't rely on Messages→Batch cache sharing. For batch fan-out, prime with a single-request batch instead, then submit the rest ([prompt caching → cache storage and sharing](https://platform.claude.com/docs/en/build-with-claude/prompt-caching#cache-storage-and-sharing)).
+
 ## Pre-warming the cache
 
 To eliminate the cache-miss latency on the *first* real request, send a **`max_tokens: 0`** request at startup (or on an interval). The API runs prefill — writing the cache at your `cache_control` breakpoint — and returns immediately with `content: []`, `stop_reason: "max_tokens"`, and a populated `usage` block (zero output tokens billed; normal cache-write charge on `cache_creation_input_tokens`).
@@ -231,5 +233,7 @@ client.messages.create(
 **Breakpoint placement:** put `cache_control` on the **last block shared with the real request** (the system prompt or tool definitions) — **not** on the placeholder user message, and **not** via top-level automatic caching (which would key the cache to the placeholder). The placeholder can be any non-whitespace string; it's read during prefill but never answered.
 
 **Rejected combinations:** `max_tokens: 0` is an `invalid_request_error` with `stream: true`, `thinking.type: "enabled"`, `output_config.format`, `tool_choice` of `{"type":"tool"}` or `{"type":"any"}`, or inside a Message Batches request.
+
+**Batch API workloads:** a `max_tokens: 0` pre-warm is itself a regular Messages request, so — same caveat as above — it does not reliably prime the cache for a subsequent Message Batches submission. Prime batch workloads with a single-request batch carrying the shared prefix instead, then submit the rest.
 
 **TTL still applies** — re-warm at least every 5 minutes for the default cache, or use the 1-hour TTL. This replaces the older `max_tokens: 1` workaround (no single-token reply to discard, no output tokens billed, intent is unambiguous).
