@@ -50,6 +50,15 @@
       "skills": [
         "./skills/claude-api"
       ]
+    },
+    {
+      "name": "openclaw-user-profiler",
+      "description": "Build user.md profiles and recommend Claude Code Skills based on roles for OpenClaw AI Agents",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/openclaw-user-profiler"
+      ]
     }
   ]
 }
