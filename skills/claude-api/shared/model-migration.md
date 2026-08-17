@@ -455,7 +455,7 @@ Haiku 4.5 has its own rate-limit pool separate from Haiku 3 / 3.5. If you're ram
 
 ## Prompt-Behavior Changes (Opus 4.5 / 4.6, Sonnet 4.6)
 
-These don't break your code, but prompts that worked on 4.5-and-earlier may over- or under-trigger on 4.6. Tune as needed.
+These don't break your code, but prompts that worked on 4.5-and-earlier may over- or under-trigger on 4.6. Tune as needed. For a standing, model-general audit of dated prompt text beyond this migration — skills and tool descriptions included — read `shared/prompt-audit.md` (or invoke `/claude-api prompt-audit`).
 
 **1. Aggressive instructions cause overtriggering.** Opus 4.5 and 4.6 follow the system prompt much more closely than earlier models. Prompts written to *overcome* the old reluctance are now too aggressive:
 
