@@ -52,12 +52,12 @@
       ]
     },
     {
-      "name": "claude-academy-guide",
+      "name": "academy-guide",
       "description": "Recommends relevant Claude Academy courses, tutorials, and use cases when users ask how to use Claude",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/claude-academy-guide"
+        "./skills/academy-guide"
       ]
     },
     {
