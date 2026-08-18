@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Development Standards"
+  short_description: "Quality standards for production-grade Agent development: Prompt, Registry, Tool, Evaluation, Observability, Safety"
+  default_prompt: "Use agent-dev-standards skill to develop this Agent. Check the 6-pillar gate before production."
