@@ -3,6 +3,7 @@ name: web-security-audit
 description: 对 Web 项目执行全面安全审计与加固评估（白盒源码审计 + 黑盒线上行为验证 + 负面行为测试三件套）。当用户要求"安全审计/安全检查/安全评估/渗透测试/漏洞排查/加固方案/上线风险评估"，或询问"有没有后门/会不会被爆库/有没有 SQL 注入/XSS/CSRF/越权"等安全问题时使用。覆盖 Node.js/Express、Python、PHP 等任意技术栈。执行前必须先确认目标授权（用户自有项目或已获书面授权），全程非破坏性。
 license: MIT
 version: "1.0.0"
+agent_created: true
 ---
 
 # Web 安全审计
@@ -63,4 +64,5 @@ version: "1.0.0"
 ## 资源
 
 - `references/checklist.md`：完整漏洞核查清单 + 敏感路径清单 + 判定规则 + 常见陷阱（审计时按需加载）。
+- `references/platforms.md`：Agent Skills 平台目录速查表（国内外主流工具 skills 目录，编写技能 README 安装章节时复用）。
 - `scripts/probe.sh`：负面行为测试探测脚本（畸形输入 / 敏感路径 / 未知路径，非破坏性）。
