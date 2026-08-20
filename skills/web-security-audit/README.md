@@ -18,12 +18,23 @@ A general-purpose web application **security audit** skill: **white-box (source)
 
 ## Installation
 
-| Platform | How |
-|---|---|
-| Claude Code | `mkdir -p ~/.claude/skills && unzip web-security-audit-claude.zip -d ~/.claude/skills/` |
-| WorkBuddy | Drop into `~/.workbuddy/skills/` |
-| Other compatible platforms | Unzip into the corresponding skills directory |
-| Standalone | This repo is the skill itself; `scripts/probe.sh` runs independently |
+Agent Skills is an open standard — **the same skill folder works on every platform below**. Unzip `web-security-audit/` into your platform's skills directory:
+
+| Platform | Global path | Project path |
+|---|---|---|
+| **Claude Code** | `~/.claude/skills/` | `.claude/skills/` |
+| **OpenAI Codex CLI** | `~/.codex/skills/` | `.codex/skills/` (or `.agents/skills/`) |
+| **Cursor** | `~/.cursor/skills/` | `.cursor/skills/` |
+| **Gemini CLI** | `~/.gemini/skills/` | — |
+| **GitHub Copilot** | `~/.copilot/skills/` | `.github/skills/` |
+| **Windsurf** | `~/.codeium/windsurf/skills/` | `.windsurf/skills/` |
+| **Cline / OpenCode / Kimi Code** | `~/.agents/skills/` | `.agents/skills/` (shared) |
+| **Trae / Trae CN** | `~/.trae/skills/` | `.trae/skills/` |
+| **Qwen Code (Alibaba)** | `~/.qwen/skills/` | `.qwen/skills/` |
+| **WorkBuddy** | `~/.workbuddy/skills/` | — |
+| Standalone | This repo is the skill itself; `scripts/probe.sh` runs independently | — |
+
+> Paths verified against the Agent Skills ecosystem table (2026-03); always confirm with the platform's official docs. Tip: maintaining a single `.agents/skills/` covers Copilot, Cline, Cursor, Codex, Gemini CLI, OpenCode and more.
 
 ## Usage
 
