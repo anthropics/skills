@@ -119,3 +119,4 @@ curl -s -o /dev/null -w "%{http_code}\n" --path-as-is "$BASE/%2e%2e/%2e%2e/serve
 5. **生产库新增列必须自愈迁移**：server 启动时幂等 `ALTER TABLE ... ADD COLUMN`（捕获 duplicate 忽略），否则 `git pull` 后热路径 `SELECT` 新列 → `no such column` 全站崩溃。
 6. **登录限流测试会锁出口 IP**：15 分钟 5 次失败 → 429，可能影响用户自己访问后台；权衡或提前告知。
 7. **错误响应**：500 必须回统一 `{"error":"查询失败"}`，绝不回显 SQL 错误/堆栈。
+8. **CSS 装饰伪元素拦截点击**：覆盖容器全幅的 `::before`/`::after`（典型 `position:absolute; inset:0` 的渐变光晕）**必须加 `pointer-events: none`**，否则会拦截容器内所有 `<a>/<button>` 点击——页面看上去完全正常但按钮失效，难排查。
