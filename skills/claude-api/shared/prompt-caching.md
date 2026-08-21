@@ -200,6 +200,8 @@ A cache entry becomes readable only after the first response **begins streaming*
 
 For fan-out patterns: send 1 request, await the first streamed token (not the full response), then fire the remaining N−1. They'll read the cache the first one just wrote.
 
+**Message Batches don't share this cache with regular Messages requests.** A cache entry written by a synchronous Messages call is not reliably readable by a Batch API request, even with a byte-identical prefix submitted moments later — and the reverse direction doesn't hold either. Treat Messages and Batches as separate caching surfaces: fan out within one transport, not across the two.
+
 ## Pre-warming the cache
 
 To eliminate the cache-miss latency on the *first* real request, send a **`max_tokens: 0`** request at startup (or on an interval). The API runs prefill — writing the cache at your `cache_control` breakpoint — and returns immediately with `content: []`, `stop_reason: "max_tokens"`, and a populated `usage` block (zero output tokens billed; normal cache-write charge on `cache_creation_input_tokens`).
@@ -233,3 +235,5 @@ client.messages.create(
 **Rejected combinations:** `max_tokens: 0` is an `invalid_request_error` with `stream: true`, `thinking.type: "enabled"`, `output_config.format`, `tool_choice` of `{"type":"tool"}` or `{"type":"any"}`, or inside a Message Batches request.
 
 **TTL still applies** — re-warm at least every 5 minutes for the default cache, or use the 1-hour TTL. This replaces the older `max_tokens: 1` workaround (no single-token reply to discard, no output tokens billed, intent is unambiguous).
+
+**Priming for Batch API workloads:** the `max_tokens: 0` pre-warm above only writes the Messages-API cache — Message Batches read from a separate cache that a synchronous Messages call does not reliably populate. To prime for a batch, submit a **single-request batch** with the shared prefix and a **1-hour `cache_control` breakpoint**, wait for that batch item to complete, then submit the rest of the batch(es). Don't rely on Messages↔Batch cache sharing in either direction.
