@@ -465,7 +465,7 @@ Server-side tools run on Anthropic's infrastructure — no client-side execution
 
 ## Reading Guide
 
-After detecting the language, read the relevant files based on what the user needs.
+After detecting the language, read the relevant files based on what the user needs. Every `{lang}/…`, `shared/…`, and `curl/…` path cited in this document is relative to this skill's base directory, and none of those files' content is included above — Read each one on demand before relying on what it covers.
 
 **All SDK languages use the same multi-file layout** — directory `{lang}/claude-api/` containing `README.md` (install, client init, basic request, thinking, caching, stop details, misc), `tool-use.md` (tool definitions, agentic loop, Anthropic-defined tools, structured outputs), `streaming.md`, `batches.md`, `files-api.md`. Not every language has every file (e.g., Ruby has no `batches.md`); if a file is absent, that feature's example is not yet documented for that language — fall back to the cURL shape or WebFetch the SDK repo from `shared/live-sources.md`. **cURL** → `curl/examples.md`.
 
