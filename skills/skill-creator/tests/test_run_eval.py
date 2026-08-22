@@ -194,5 +194,87 @@ class TestNonAsciiSkillFiles(unittest.TestCase):
         )
 
 
+def _tool_start(name, index=0):
+    return json.dumps({
+        "type": "stream_event",
+        "event": {"type": "content_block_start", "index": index,
+                  "content_block": {"type": "tool_use", "id": "t%d" % index,
+                                    "name": name, "input": {}}},
+    })
+
+
+def _input_delta(fragment, index=0):
+    return json.dumps({
+        "type": "stream_event",
+        "event": {"type": "content_block_delta", "index": index,
+                  "delta": {"type": "input_json_delta", "partial_json": fragment}},
+    })
+
+
+def _block_stop(index=0):
+    return json.dumps({
+        "type": "stream_event",
+        "event": {"type": "content_block_stop", "index": index},
+    })
+
+
+def _message_stop():
+    return json.dumps({
+        "type": "stream_event",
+        "event": {"type": "message_stop"},
+    })
+
+
+def _result():
+    return json.dumps({"type": "result", "subtype": "success"})
+
+
+# Assembled from the event shapes in RECORDED_SKILL_CALL, reordered so the Skill
+# call lands after an inspection step. Every capture I took showed Claude
+# invoking the skill first, so this ordering is constructed rather than recorded.
+BASH_THEN_SKILL = (
+    [_tool_start("Bash", 0), _input_delta('{"command": "git status"}', 0), _block_stop(0)]
+    + [_message_stop()]
+    + [_tool_start("Skill", 1), _input_delta('{"skill": "git-rescue"}', 1), _block_stop(1)]
+    + [_result()]
+)
+
+BASH_ONLY = (
+    [_tool_start("Bash", 0), _input_delta('{"command": "git status"}', 0), _block_stop(0)]
+    + [_message_stop()]
+    + [_tool_start("Bash", 1), _input_delta('{"command": "git log"}', 1), _block_stop(1)]
+    + [_result()]
+)
+
+
+class TestScanFullTurn(unittest.TestCase):
+    """Detection gives up at the first non-Skill tool unless scan_full_turn is set."""
+
+    def test_default_mode_misses_a_skill_invoked_after_another_tool(self):
+        self.assertFalse(detect_trigger(BASH_THEN_SKILL, "git-rescue"))
+
+    def test_scan_full_turn_finds_a_skill_invoked_after_another_tool(self):
+        self.assertTrue(
+            detect_trigger(BASH_THEN_SKILL, "git-rescue", scan_full_turn=True)
+        )
+
+    def test_scan_full_turn_still_reports_a_miss_when_no_skill_fires(self):
+        self.assertFalse(detect_trigger(BASH_ONLY, "git-rescue", scan_full_turn=True))
+
+    def test_scan_full_turn_does_not_match_a_different_skill(self):
+        self.assertFalse(
+            detect_trigger(BASH_THEN_SKILL, "ship-pr", scan_full_turn=True)
+        )
+
+    def test_scan_full_turn_leaves_a_first_position_skill_call_detected(self):
+        self.assertTrue(
+            detect_trigger(RECORDED_SKILL_CALL, "git-rescue", scan_full_turn=True)
+        )
+
+    def test_default_mode_is_unchanged_on_the_recorded_transcript(self):
+        self.assertTrue(detect_trigger(RECORDED_SKILL_CALL, "git-rescue"))
+        self.assertFalse(detect_trigger(RECORDED_SKILL_CALL, "git-rescue-skill-abc12345"))
+
+
 if __name__ == "__main__":
     unittest.main()

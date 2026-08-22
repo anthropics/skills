@@ -40,8 +40,9 @@ class TriggerDetector:
     transcripts without spawning Claude.
     """
 
-    def __init__(self, clean_name: str):
+    def __init__(self, clean_name: str, scan_full_turn: bool = False):
         self.clean_name = clean_name
+        self.scan_full_turn = scan_full_turn
         self.pending_tool_name = None
         self.accumulated_json = ""
         self.triggered = False
@@ -68,8 +69,11 @@ class TriggerDetector:
                     if tool_name in ("Skill", "Read"):
                         self.pending_tool_name = tool_name
                         self.accumulated_json = ""
-                    else:
+                    elif not self.scan_full_turn:
                         return False
+                    else:
+                        self.pending_tool_name = None
+                        self.accumulated_json = ""
 
             elif se_type == "content_block_delta" and self.pending_tool_name:
                 delta = se.get("delta", {})
@@ -80,8 +84,12 @@ class TriggerDetector:
 
             elif se_type in ("content_block_stop", "message_stop"):
                 if self.pending_tool_name:
-                    return self.clean_name in self.accumulated_json
-                if se_type == "message_stop":
+                    matched = self.clean_name in self.accumulated_json
+                    if matched or not self.scan_full_turn:
+                        return matched
+                    self.pending_tool_name = None
+                    self.accumulated_json = ""
+                elif se_type == "message_stop" and not self.scan_full_turn:
                     return False
 
         elif event.get("type") == "assistant":
@@ -95,7 +103,8 @@ class TriggerDetector:
                     self.triggered = True
                 elif tool_name == "Read" and self.clean_name in tool_input.get("file_path", ""):
                     self.triggered = True
-                return self.triggered
+                if self.triggered or not self.scan_full_turn:
+                    return self.triggered
 
         elif event.get("type") == "result":
             return self.triggered
@@ -103,9 +112,9 @@ class TriggerDetector:
         return None
 
 
-def detect_trigger(lines, clean_name: str) -> bool:
+def detect_trigger(lines, clean_name: str, scan_full_turn: bool = False) -> bool:
     """Run TriggerDetector over an iterable of lines and return the verdict."""
-    detector = TriggerDetector(clean_name)
+    detector = TriggerDetector(clean_name, scan_full_turn=scan_full_turn)
     for line in lines:
         verdict = detector.feed(line)
         if verdict is not None:
@@ -172,6 +181,7 @@ def run_single_query(
     project_root: str,
     model: str | None = None,
     use_installed: bool = False,
+    scan_full_turn: bool = False,
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
@@ -228,7 +238,7 @@ def run_single_query(
             lines = iter_process_lines(
                 process.stdout, lambda: time.time() - start_time < timeout
             )
-            return detect_trigger(lines, clean_name)
+            return detect_trigger(lines, clean_name, scan_full_turn=scan_full_turn)
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
@@ -250,6 +260,7 @@ def run_eval(
     trigger_threshold: float = 0.5,
     model: str | None = None,
     use_installed: bool = False,
+    scan_full_turn: bool = False,
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
@@ -267,6 +278,7 @@ def run_eval(
                     str(project_root),
                     model,
                     use_installed,
+                    scan_full_turn,
                 )
                 future_to_info[future] = (item, run_idx)
 
@@ -328,6 +340,15 @@ def main():
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     parser.add_argument(
+        "--scan-full-turn",
+        action="store_true",
+        help="Keep looking for the Skill call until the turn ends, instead of "
+             "giving up at the first tool call that is not Skill or Read. Detects "
+             "skills that Claude reaches for after an initial inspection step. "
+             "Slower, because each query runs to completion instead of exiting "
+             "as soon as the first tool block resolves.",
+    )
+    parser.add_argument(
         "--use-installed",
         action="store_true",
         help="Match the skill by its real name instead of writing a uniquely-named "
@@ -368,6 +389,7 @@ def main():
         trigger_threshold=args.trigger_threshold,
         model=args.model,
         use_installed=args.use_installed,
+        scan_full_turn=args.scan_full_turn,
     )
 
     if args.verbose:
