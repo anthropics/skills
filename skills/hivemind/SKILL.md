@@ -1,6 +1,7 @@
 ---
 name: hivemind
-description: Orchestrate free opencode worker agents from Claude Code to cut token costs. Spawn single workers or parallel swarms (scout/coder/tester) that run headless on $0 models, with worktree isolation and compact JSON results. Use when the user wants to delegate grunt work, save Claude quota/tokens, run benchmarks vs opencode, or says "spawn a worker", "swarm", "delegate to opencode", or "/oc".
+description: Orchestrate free opencode workers from Claude Code to cut token costs. Use when delegating grunt work to a single worker or a parallel swarm (scout/coder/tester) with worktree isolation, benchmarking against opencode, or when the user says "spawn a worker", "swarm", "delegate to opencode", or "/oc".
+license: Complete terms in LICENSE.txt
 ---
 
 # Hivemind: Claude Code as Orchestrator, opencode as Free Worker Swarm
@@ -82,6 +83,11 @@ inside this skill dir. Use them for EVERY swarm worker so progress is recoverabl
 `oc-status.mjs` even after orchestrator context loss.
 
 The script auto-manages the shared server: health-checks `127.0.0.1:4096`, spawns `opencode serve` if dead, waits 5s, falls back to cold start. Workers are idempotent against their `--dir`; re-run once on `ok:false` before giving up.
+
+`HIVEMIND_SERVER_URL` overrides that address (default `http://127.0.0.1:4096`). It must be a
+valid URL with a numeric port; anything else fails fast with a single `stage:"args"` JSON line
+rather than reaching the spawned process.
+
 
 ## Golden Rule (non-negotiable)
 
