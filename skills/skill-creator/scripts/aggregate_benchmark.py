@@ -143,7 +143,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 timing_file = run_dir / "timing.json"
                 if result["time_seconds"] == 0.0 and timing_file.exists():
                     try:
-                        with open(timing_file) as tf:
+                        with open(timing_file, encoding="utf-8") as tf:
                             timing_data = json.load(tf)
                         result["time_seconds"] = timing_data.get("total_duration_seconds", 0.0)
                         result["tokens"] = timing_data.get("total_tokens", 0)
@@ -384,13 +384,13 @@ def main():
     output_md = output_json.with_suffix(".md")
 
     # Write benchmark.json
-    with open(output_json, "w") as f:
+    with open(output_json, "w", encoding="utf-8") as f:
         json.dump(benchmark, f, indent=2)
     print(f"Generated: {output_json}")
 
     # Write benchmark.md
     markdown = generate_markdown(benchmark)
-    with open(output_md, "w") as f:
+    with open(output_md, "w", encoding="utf-8") as f:
         f.write(markdown)
     print(f"Generated: {output_md}")
 

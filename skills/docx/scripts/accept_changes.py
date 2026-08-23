@@ -7,11 +7,10 @@ import argparse
 import logging
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
 from office.soffice import get_soffice_env
-
-import tempfile
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +59,7 @@ def accept_changes(
     cmd = [
         "soffice",
         "--headless",
-        f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
+        f"-env:UserInstallation={Path(LIBREOFFICE_PROFILE).as_uri()}",
         "--norestore",
         "vnd.sun.star.script:Standard.Module1.AcceptAllTrackedChanges?language=Basic&location=application",
         str(output_path.absolute()),

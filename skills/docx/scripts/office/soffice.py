@@ -17,6 +17,7 @@ callers that build their own argv (they must pass -env:UserInstallation too).
 
 import contextlib
 import os
+import platform
 import socket
 import subprocess
 import tempfile
@@ -46,8 +47,6 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
         return subprocess.run(["soffice"] + args, env=get_soffice_env(), **kwargs)
 
 
-
-import platform
 
 _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
 

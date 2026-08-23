@@ -167,7 +167,7 @@ def run_single_query(
                     elif event.get("type") == "result":
                         return triggered
 
-                if process.poll() is not None and not buffer:
+                if process.poll() is not None:
                     break
         finally:
             # Clean up process on any exit path (return, exception, timeout)

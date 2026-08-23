@@ -85,13 +85,15 @@ def extract_xml_content(text: str, tag: str) -> str | None:
 
 def _serialize_tool_result(tool_result: Any) -> str:
     """Serialize MCP tool execution results into clean text for Claude."""
+    if hasattr(tool_result, "content"):
+        tool_result = getattr(tool_result, "content")
     if isinstance(tool_result, list):
         parts = []
         for block in tool_result:
             if hasattr(block, "text"):
-                parts.append(block.text)
+                parts.append(getattr(block, "text") or "")
             elif isinstance(block, dict) and "text" in block:
-                parts.append(str(block["text"]))
+                parts.append(str(block.get("text") or ""))
             else:
                 parts.append(str(block))
         return "\n".join(parts)
