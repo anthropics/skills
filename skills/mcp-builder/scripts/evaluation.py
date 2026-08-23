@@ -83,6 +83,23 @@ def extract_xml_content(text: str, tag: str) -> str | None:
     return matches[-1].strip() if matches else None
 
 
+def _serialize_tool_result(tool_result: Any) -> str:
+    """Serialize MCP tool execution results into clean text for Claude."""
+    if isinstance(tool_result, list):
+        parts = []
+        for block in tool_result:
+            if hasattr(block, "text"):
+                parts.append(block.text)
+            elif isinstance(block, dict) and "text" in block:
+                parts.append(str(block["text"]))
+            else:
+                parts.append(str(block))
+        return "\n".join(parts)
+    elif isinstance(tool_result, dict):
+        return json.dumps(tool_result, indent=2)
+    return str(tool_result)
+
+
 async def agent_loop(
     client: Anthropic,
     model: str,
@@ -114,7 +131,7 @@ async def agent_loop(
         tool_start_ts = time.time()
         try:
             tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            tool_response = _serialize_tool_result(tool_result)
         except Exception as e:
             tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
             tool_response += traceback.format_exc()
@@ -144,10 +161,11 @@ async def agent_loop(
         )
         messages.append({"role": "assistant", "content": response.content})
 
-    response_text = next(
-        (block.text for block in response.content if hasattr(block, "text")),
-        None,
-    )
+    text_blocks = [
+        block.text for block in response.content
+        if getattr(block, "type", None) == "text" or hasattr(block, "text")
+    ]
+    response_text = "".join(text_blocks).strip() if text_blocks else None
     return response_text, tool_metrics
 
 

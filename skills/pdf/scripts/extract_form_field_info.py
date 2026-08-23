@@ -45,7 +45,7 @@ def make_field_dict(field, field_id):
 
 
 def get_field_info(reader: PdfReader):
-    fields = reader.get_fields()
+    fields = reader.get_fields() or {}
 
     field_info_by_id = {}
     possible_radio_names = set()
