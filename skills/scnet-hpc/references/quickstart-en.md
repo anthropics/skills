@@ -19,19 +19,7 @@ Check at least `PARTITION`, `PARTITION_CPU`, `GRES_TYPE`, `MIN_GRES`,
 `DEF_MEM_PER_CPU`, `MODULE_LOADS`, `COMPUTE_NODE_OFFLINE`, and
 `KNOWN_LIMITATIONS`.
 
-## 2. Install the skill
-
-```bash
-git clone https://github.com/lql341/scnet-hpc.git
-cd scnet-hpc
-./scripts/install.sh
-```
-
-The repository is designed to be shared by Codex, Claude Code, and OpenCode. Installation
-paths depend on the local agent layout; `install.sh --link` is useful when developing the
-skill from a shared source directory.
-
-## 3. Configure SSH
+## 2. Configure SSH
 
 Download the private key from the SCNet console, then run:
 
@@ -43,7 +31,7 @@ ssh <cluster>
 The script installs the key under `~/.ssh`, adds an SSH config entry, and tests the
 connection. Do not commit private keys, usernames, internal node names, or personal paths.
 
-## 4. Generate a Slurm job
+## 3. Generate a Slurm job
 
 Accelerator job:
 
@@ -81,7 +69,7 @@ ssh <cluster> 'sbatch --test-only ~/scripts/myjob.slurm'
 ssh <cluster> 'sbatch ~/scripts/myjob.slurm'
 ```
 
-## 5. Monitor and debug
+## 4. Monitor and debug
 
 ```bash
 squeue -u "$USER"
@@ -96,7 +84,7 @@ ends with the real program exit code.
 For short experiments, request an interactive allocation with `srun`. Use the partition,
 GRES type, CPU count, and memory limit from the target profile.
 
-## 6. SCNet environment rules
+## 5. SCNet environment rules
 
 - Login nodes are for source management, dependency preparation, file operations, and
   scheduler commands. Whether package indexes and model sites are reachable is cluster-specific.
@@ -107,7 +95,7 @@ GRES type, CPU count, and memory limit from the target profile.
 - Loading a module on a login node does not prove that the runtime works on a compute node.
 - Hygon DCU software capabilities depend on the exact DTK, driver, framework, and `gfx` target.
 
-## 7. Refresh and probe a cluster
+## 6. Refresh and probe a cluster
 
 ```bash
 ./scripts/refresh-cluster.sh --cluster <cluster> --dry-run
