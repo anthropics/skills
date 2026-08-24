@@ -1,6 +1,7 @@
 ---
 name: scnet-hpc
 description: Configure and operate SCNet HPC clusters through SSH and Slurm, including profile-based resource requests, job submission and diagnosis, environment preparation, and accelerator compatibility checks. Use for SCNet access, Slurm CPU/DCU jobs, Hygon DCU/DTK, offline compute nodes, or adding and verifying cluster profiles. Treat other accelerator platforms as unverified until tested on their target compute nodes.
+license: Complete terms in LICENSE.txt
 ---
 
 # SCNet HPC
