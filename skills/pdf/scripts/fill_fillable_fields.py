@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import sys
 
 from pypdf import PdfReader, PdfWriter
@@ -6,9 +7,11 @@ from pypdf import PdfReader, PdfWriter
 from extract_form_field_info import get_field_info
 
 
-
-
 def fill_pdf_fields(input_pdf_path: str, fields_json_path: str, output_pdf_path: str):
+    if Path(input_pdf_path).resolve() == Path(output_pdf_path).resolve():
+        print(f"ERROR: Output PDF path cannot be the same as input PDF path ({output_pdf_path})")
+        sys.exit(1)
+
     with open(fields_json_path) as f:
         fields = json.load(f)
     fields_by_page = {}
