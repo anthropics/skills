@@ -12,6 +12,8 @@ Approach this as the design lead at a small studio known for giving every client
 
 If the brief does not pin down what the product or subject is, pin it yourself before designing: name one concrete subject, its audience, and the page's single job, and state your choice. If there's any information in your memory about the human's preferences, context about what they're building, or designs you've made before – use that as a hint. The subject's own world, its materials, instruments, artifacts, and vernacular, is where distinctive choices come from. Build with the brief's real content and subject matter throughout.
 
+**Working with existing design systems:** When an established design system, brand guideline, or token library exists in the codebase (e.g. Tailwind tokens, shadcn/ui theme variables, component libraries), preserve and extend those existing tokens and conventions rather than introducing conflicting palettes. Express distinctiveness through composition, visual hierarchy, micro-interactions, and intentional typography while respecting the design system's constraints.
+
 ## Design principles
 
 For web designs, the hero is a thesis. Open with the most characteristic thing in the subject's world, in whatever form makes sense for it: a headline, an image, an animation, a live demo, an interactive moment. Be deliberate with your choice: a big number with a small label, supporting stats, and a gradient accent is the template answer, only use if that's truly the best option.
