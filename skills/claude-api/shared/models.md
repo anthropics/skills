@@ -83,21 +83,16 @@ curl https://api.anthropic.com/v1/models/claude-opus-4-8 \
 | Friendly Name     | Alias (use this)    | Full ID                       | Status |
 |-------------------|---------------------|-------------------------------|--------|
 | Claude Opus 4.5   | `claude-opus-4-5`   | `claude-opus-4-5-20251101`    | Active |
-| Claude Opus 4.1   | `claude-opus-4-1`   | `claude-opus-4-1-20250805`    | Deprecated (retires 2026-08-05 — migrate to `claude-opus-5`) |
 | Claude Sonnet 4.5 | `claude-sonnet-4-5` | `claude-sonnet-4-5-20250929`  | Active |
-
-## Deprecated Models (retiring soon)
-
-| Friendly Name     | Alias (use this)    | Full ID                       | Status     | Retires      |
-|-------------------|---------------------|-------------------------------|------------|--------------|
-| Claude Sonnet 4   | `claude-sonnet-4-0` | `claude-sonnet-4-20250514`    | Deprecated | TBD          |
-| Claude Opus 4     | `claude-opus-4-0`   | `claude-opus-4-20250514`      | Deprecated | TBD          |
-| Claude Haiku 3    | —                   | `claude-3-haiku-20240307`     | Deprecated | Apr 19, 2026 |
 
 ## Retired Models (no longer available)
 
 | Friendly Name     | Full ID                       | Retired     |
 |-------------------|-------------------------------|-------------|
+| Claude Opus 4.1   | `claude-opus-4-1-20250805`    | Aug 5, 2026 |
+| Claude Sonnet 4   | `claude-sonnet-4-20250514`    | May 14, 2026 |
+| Claude Opus 4     | `claude-opus-4-20250514`      | May 14, 2026 |
+| Claude Haiku 3    | `claude-3-haiku-20240307`     | Apr 19, 2026 |
 | Claude Sonnet 3.7 | `claude-3-7-sonnet-20250219`  | Feb 19, 2026 |
 | Claude Haiku 3.5  | `claude-3-5-haiku-20241022`   | Feb 19, 2026 |
 | Claude Opus 3     | `claude-3-opus-20240229`      | Jan 5, 2026 |
@@ -123,8 +118,8 @@ When a user asks for a model by name, use this table to find the correct model I
 | "opus 4.7"                                | `claude-opus-4-7`              |
 | "opus 4.6"                                | `claude-opus-4-6`              |
 | "opus 4.5"                                | `claude-opus-4-5`              |
-| "opus 4.1"                                | `claude-opus-4-1` (deprecated, retires 2026-08-05 — suggest `claude-opus-5`) |
-| "opus 4", "opus 4.0"                      | `claude-opus-4-0` (deprecated — suggest `claude-opus-5`) |
+| "opus 4.1"                                | Retired (Aug 5, 2026 — suggest `claude-opus-5`) |
+| "opus 4", "opus 4.0"                      | Retired (May 14, 2026 — suggest `claude-opus-5`) |
 | "sonnet", "balanced"                      | `claude-sonnet-5`           |
 | "sonnet 5"                                | `claude-sonnet-5`           |
 | "sonnet 4.6"                              | `claude-sonnet-4-6`            |
