@@ -1,4 +1,4 @@
-# Files API — Java
+# Files API - Java
 
 ## Files API (Beta)
 

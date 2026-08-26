@@ -1,4 +1,4 @@
-# Streaming — Python
+# Streaming - Python
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ async with async_client.messages.stream(
 
 ### Low-level: `stream=True`
 
-`messages.stream()` (above) is the recommended helper — it accumulates state and exposes `text_stream` / `get_final_message()`. If you only need the raw event iterator and want lower memory use, pass `stream=True` to `messages.create()` instead:
+`messages.stream()` (above) is the recommended helper - it accumulates state and exposes `text_stream` / `get_final_message()`. If you only need the raw event iterator and want lower memory use, pass `stream=True` to `messages.create()` instead:
 
 ```python
 for event in client.messages.create(
@@ -73,7 +73,7 @@ with client.messages.stream(
 
 ## Streaming with Tool Use
 
-The Python tool runner supports streaming: pass `stream=True` to `client.beta.messages.tool_runner(...)` and each iteration yields a stream you consume event-by-event, with `get_final_message()` for the accumulated message per turn (see `shared/tool-use-concepts.md` → Tool Runner vs Manual Loop). Use the manual-loop pattern below only when you're not using the tool runner and need per-token streaming with tools:
+The Python tool runner supports streaming: pass `stream=True` to `client.beta.messages.tool_runner(...)` and each iteration yields a stream you consume event-by-event, with `get_final_message()` for the accumulated message per turn (see `shared/tool-use-concepts.md` -> Tool Runner vs Manual Loop). Use the manual-loop pattern below only when you're not using the tool runner and need per-token streaming with tools:
 
 ```python
 with client.messages.stream(
@@ -171,9 +171,9 @@ except anthropic.APIStatusError as e:
 
 ## Best Practices
 
-1. **Always flush output** — Use `flush=True` to show tokens immediately
-2. **Handle partial responses** — If the stream is interrupted, you may have incomplete content
-3. **Track token usage** — The `message_delta` event contains usage information
-4. **Use timeouts** — Set appropriate timeouts for your application
-5. **Default to streaming** — Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events
-6. **Large `max_tokens` without streaming raises `ValueError`** — The SDK refuses non-streaming requests it estimates will exceed ~10 minutes (idle connections drop). Pass `stream=True` / use `messages.stream()`, or explicitly override `timeout`, to suppress the guard.
+1. **Always flush output** - Use `flush=True` to show tokens immediately
+2. **Handle partial responses** - If the stream is interrupted, you may have incomplete content
+3. **Track token usage** - The `message_delta` event contains usage information
+4. **Use timeouts** - Set appropriate timeouts for your application
+5. **Default to streaming** - Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events
+6. **Large `max_tokens` without streaming raises `ValueError`** - The SDK refuses non-streaming requests it estimates will exceed ~10 minutes (idle connections drop). Pass `stream=True` / use `messages.stream()`, or explicitly override `timeout`, to suppress the guard.

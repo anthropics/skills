@@ -1,4 +1,4 @@
-# Streaming — Go
+# Streaming - Go
 
 ## Streaming
 

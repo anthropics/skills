@@ -1,4 +1,4 @@
-# Managed Agents — Tools & Skills
+# Managed Agents - Tools & Skills
 
 ## Tools
 
@@ -6,9 +6,9 @@
 
 | Type | Who runs it | How it works |
 |---|---|---|
-| **Prebuilt Claude Agent tools** (`agent_toolset_20260401`) | Anthropic, on the session's container (for `cloud` envs; for `self_hosted`, **your** worker supplies and runs them — see `shared/managed-agents-self-hosted-sandboxes.md`) | File ops, bash, web search, etc. Enable all at once or configure individually with `enabled: true/false`. |
+| **Prebuilt Claude Agent tools** (`agent_toolset_20260401`) | Anthropic, on the session's container (for `cloud` envs; for `self_hosted`, **your** worker supplies and runs the file/bash tools - see `shared/managed-agents-self-hosted-sandboxes.md`). `web_search` / `web_fetch` always run on Anthropic's servers, in both environment types. | File ops, bash, web search, etc. Enable all at once or configure individually with `enabled: true/false`; restrict the web tools with `allowed_domains` / `blocked_domains`. |
 | **MCP tools** (`mcp_toolset`) | Anthropic's orchestration layer | Capabilities exposed by connected MCP servers. Grant access per-server via the toolset. |
-| **Custom tools** | **You** — your application handles the call and returns results | Agent emits a `agent.custom_tool_use` event, session goes `idle`, you send back a `user.custom_tool_result` event. |
+| **Custom tools** | **You** - your application handles the call and returns results | Agent emits a `agent.custom_tool_use` event, session goes `idle`, you send back a `user.custom_tool_result` event. |
 
 **Recommendation:** Enable all prebuilt tools via `agent_toolset_20260401`, then disable individually as needed.
 
@@ -59,9 +59,11 @@ Override defaults for individual tools. This example enables everything except b
 
 | Field | Required | Description |
 |---|---|---|
-| `type` | ✅ | `"agent_toolset_20260401"` |
-| `default_config` | ❌ | Applied to all tools. `{ "enabled": bool, "permission_policy": {...} }` |
-| `configs` | ❌ | Per-tool overrides: `[{ "name": "...", "enabled": bool, "permission_policy": {...} }]` |
+| `type` | Yes | `"agent_toolset_20260401"` |
+| `default_config` | No | Applied to all tools. `{ "enabled": bool, "permission_policy": {...} }` |
+| `configs` | No | Per-tool overrides: `[{ "name": "...", "type": "...", "enabled": bool, "permission_policy": {...} }]`. `name` identifies the tool (values from the table above); `type` is optional in requests (same value as `name`; the server infers it) and always present in responses. `web_search` / `web_fetch` entries also accept web settings - see § Web search & web fetch settings below. |
+
+> **Typed SDKs:** each `configs` entry is a member of a union with one member per built-in tool (eight: `BetaManagedAgentsWebFetchToolConfigParams`, `...WebSearchToolConfigParams`, `...BashToolConfigParams`, ...), discriminated by `type`. Python/TypeScript/Ruby dicts and hashes with just `name` + `enabled` + `permission_policy` are unchanged. In Go, Java, C#, and PHP, `configs` is the union itself - build each entry from its per-tool type (Go: `BetaManagedAgentsAgentToolConfigUnionParamsUnion{OfWebFetch: &anthropic.BetaManagedAgentsWebFetchToolConfigParams{...}}` - the arms are `OfBash` / `OfRead` / `OfWrite` / `OfEdit` / `OfGlob` / `OfGrep` / `OfWebFetch` / `OfWebSearch`; Java: `.addConfig(BetaManagedAgentsWebFetchToolConfigParams.builder()...build())`; C#: `new BetaManagedAgentsWebFetchToolConfigParams { Enabled = false }`; PHP: `BetaManagedAgentsWebFetchToolConfigParams::with(enabled: false)`). Code written against an SDK where all tools shared one config type must update how it constructs entries.
 
 ### Permission Policies
 
@@ -111,17 +113,65 @@ To enable only specific tools, flip the default off and opt-in per tool:
 }
 ```
 
+### Web search & web fetch settings (domain filters)
+
+`web_search` and `web_fetch` run on Anthropic's servers regardless of environment type, so an environment's `networking` policy **does not** govern them (see `shared/managed-agents-environments.md` -> Networking). To control what they can reach, set `allowed_domains` (only these hosts) **or** `blocked_domains` (never these hosts) - never both on one entry - on the tool's `configs` entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.
+
+```json
+{
+  "type": "agent_toolset_20260401",
+  "configs": [
+    {
+      "type": "web_search",
+      "name": "web_search",
+      "allowed_domains": ["docs.example.com", "arxiv.org"],
+      "user_location": { "type": "approximate", "country": "US", "timezone": "America/Los_Angeles" }
+    },
+    {
+      "type": "web_fetch",
+      "name": "web_fetch",
+      "blocked_domains": ["ads.example.com"],
+      "max_content_tokens": 50000
+    }
+  ]
+}
+```
+
+| Setting | Applies to | Description |
+|---|---|---|
+| `allowed_domains` | `web_search`, `web_fetch` | The only hosts the tool can reach. Mutually exclusive with `blocked_domains` on the same entry. |
+| `blocked_domains` | `web_search`, `web_fetch` | Hosts the tool cannot reach. |
+| `max_content_tokens` | `web_fetch` | Positive integer cap on fetched *text* content entering context (binary content such as PDFs is not capped). |
+| `user_location` | `web_search` | `{ "type": "approximate", city?, region?, country? (2-letter uppercase ISO 3166-1), timezone? (IANA) }` - at least one of the optional fields. |
+
+**Run-time behavior:** a `web_fetch` call outside its list returns an error result to the agent (`is_error: true` on `agent.tool_result`, content names `url_not_allowed`); `web_search` silently omits results outside its list. In the Console, the agent form has allow/block-list controls for the web tools; `user_location` and `max_content_tokens` are set in the agent's **Raw** view.
+
+**Domain list rules** (violations -> 400 `invalid_request_error` on agent create/update and on session create/update that supplies `tools`; messages name the list and zero-based index, e.g. `allowed_domains.0: IP addresses are not supported...`):
+
+- 1-64 domains per list, each 1-255 chars. Empty list is rejected - omit the field or send `null` for "no restriction". Duplicates within a list are rejected.
+- Plain hostname only: `example.com`, not `https://example.com`, `example.com:443`, or `*.example.com`. Case-insensitive; a single trailing `/` is ignored.
+- A listed domain covers itself **and its subdomains** (`example.com` covers `docs.example.com`; `docs.example.com` does not cover `example.com` or `api.example.com`). `www.` is an ordinary subdomain - list the bare domain to cover both.
+- Rejected: IP addresses in any form; bare TLDs/registry suffixes (`com`, `co.uk`); single-label names (`intranet`); `localhost` and hosts ending in `.localhost`, `.local`, `.internal`, `.localdomain`, `.invalid`; non-ASCII (use `xn--` Punycode).
+- `web_fetch` domains cannot carry a path. `web_search` domains may carry a path suffix (`example.com/blog`, no spaces / `?` / `#` / `$ , | ^ !`), but the provider matches it as a URL pattern - prefer plain hostnames.
+- Provider-dependent rejections at the same time: a domain Anthropic's crawler may not access, an unsupported `user_location.country` (message ends `not a country the search provider supports`), an invalid IANA `timezone`.
+
+The session re-checks the config when it first initializes the tool; if a previously accepted setting is no longer valid it emits `session.error` and goes `idle` without retrying. Fix via a session tools update (`shared/managed-agents-core.md` -> Updating the agent configuration mid-session), update the agent too so new sessions get the fix, then send a new `user.message`.
+
+**Multiagent layering** (see `shared/managed-agents-multiagent.md`): every list on the path to a thread applies at once - a roster agent is bound by its own lists, by those of every agent that called it, and by the coordinator's *current* lists. Allow-lists intersect and block-lists union, so a roster agent can narrow but never widen. Disjoint allow-lists leave the tool available but every call fails `url_not_allowed` (the tool description tells the model) - keep roster allow-lists inside the coordinator's. `max_content_tokens` and `user_location` are **not** combined: own value -> caller's -> coordinator's. `{"type": "self"}` entries follow the coordinator. The outcome grader (`shared/managed-agents-outcomes.md`) runs without the web tools. Updating an idle session's tools changes the coordinator's lists for every thread from its next turn; a roster agent's own lists stay as defined at session create.
+
+**vs. the Messages API `web_search_20260209` / `web_fetch_20260209` tools:** same `allowed_domains` / `blocked_domains` vocabulary, but 64-entry cap, no path on `web_fetch` domains, and no `max_uses`, `citations`, or `cache_control`. If migrating from Messages API, these move from per-request to once-on-the-agent.
+
 ### Custom Tools (Client-Side)
 
 Custom tools are executed by **your application**, not Anthropic. The flow:
 
-1. Agent decides to use the tool → session emits a `agent.custom_tool_use` event with inputs
+1. Agent decides to use the tool -> session emits a `agent.custom_tool_use` event with inputs
 2. Session goes `idle` waiting for you
 3. Your application executes the tool
 4. You send back a `user.custom_tool_result` event with the output
 5. Session resumes `running`
 
-No permission policy needed — you're the one executing.
+No permission policy needed - you're the one executing.
 
 ```json
 {
@@ -146,18 +196,18 @@ No permission policy needed — you're the one executing.
 
 MCP (Model Context Protocol) servers expose standardized third-party capabilities (e.g. Asana, GitHub, Linear). **Configuration is split across agent and vault:**
 
-1. **Agent creation** declares which servers to connect to (`type`, `name`, `url` — no auth). The agent's `mcp_servers` array has no auth field.
+1. **Agent creation** declares which servers to connect to (`type`, `name`, `url` - no auth). The agent's `mcp_servers` array has no auth field.
 2. **Vault** stores the OAuth credentials. Attach via `vault_ids` on session create.
 
 This keeps secrets out of reusable agent definitions. Each vault credential is tied to one MCP server URL; Anthropic matches credentials to servers by URL.
 
-**Agent side — declare servers (no auth):**
+**Agent side - declare servers (no auth):**
 
 | Field | Required | Description |
 |---|---|---|
-| `type` | ✅ | `"url"` |
-| `name` | ✅ | Unique name — referenced by `mcp_toolset.mcp_server_name` |
-| `url` | ✅ | The MCP server's endpoint URL (Streamable HTTP transport) |
+| `type` | Yes | `"url"` |
+| `name` | Yes | Unique name - referenced by `mcp_toolset.mcp_server_name` |
+| `url` | Yes | The MCP server's endpoint URL (Streamable HTTP transport) |
 
 ```json
 {
@@ -170,7 +220,7 @@ This keeps secrets out of reusable agent definitions. Each vault credential is t
 }
 ```
 
-**Session side — attach vault:**
+**Session side - attach vault:**
 
 ```json
 {
@@ -180,43 +230,43 @@ This keeps secrets out of reusable agent definitions. Each vault credential is t
 }
 ```
 
-> 💡 **Per-tool enablement (empirical):** `mcp_toolset` has been observed accepting `default_config: {enabled: false}` + `configs: [{name, enabled: true}]` for an allowlist pattern. The API ref shows only the minimal `{type, mcp_server_name}` form.
+> Tip: **Per-tool enablement:** `mcp_toolset` accepts `default_config: {enabled: false}` + `configs: [{name, enabled: true}]` for an allowlist pattern. MCP `configs` entries take **only** `name` (the bare tool name as the server reports it), `enabled`, and `permission_policy` - no `type` field and none of the web settings that `web_search` / `web_fetch` accept in the agent toolset.
 
-> 💡 **Changing tools/MCP servers on a running session:** `sessions.update()` can replace `agent.tools` and `agent.mcp_servers` while the session is `idle` — a session-local override that doesn't touch the agent object. `vault_ids` is create-only. See `shared/managed-agents-core.md` → Updating the agent configuration mid-session.
+> Tip: **Changing tools/MCP servers on a running session:** `sessions.update()` can replace `agent.tools` and `agent.mcp_servers` while the session is `idle` - a session-local override that doesn't touch the agent object. `vault_ids` is create-only. See `shared/managed-agents-core.md` -> Updating the agent configuration mid-session.
 
-**Large tool outputs.** If a tool returns more than **100,000 characters (roughly 25,000 tokens)**, the output is automatically offloaded to a file in the sandbox — the agent receives a truncated preview plus the file path and can `read` the full content. No configuration required. The threshold is in *characters*, not tokens, and applies to built-in agent tools as well as MCP tools.
+**Large tool outputs.** If a tool returns more than **100,000 characters (roughly 25,000 tokens)**, the output is automatically offloaded to a file in the sandbox - the agent receives a truncated preview plus the file path and can `read` the full content. No configuration required. The threshold is in *characters*, not tokens, and applies to built-in agent tools as well as MCP tools.
 
-**Invalid vault credentials don't block session creation.** If a vault credential is invalid for a declared MCP server, the session still creates successfully; a `session.error` event describes the MCP auth failure, and auth retries on the next `session.status_idle` → `session.status_running` transition.
+**Invalid vault credentials don't block session creation.** If a vault credential is invalid for a declared MCP server, the session still creates successfully; a `session.error` event describes the MCP auth failure, and auth retries on the next `session.status_idle` -> `session.status_running` transition.
 
-> ⚠️ **MCP auth tokens ≠ REST API tokens.** Hosted MCP servers (`mcp.notion.com`, `mcp.linear.app`, etc.) typically require **OAuth bearer tokens**, not the service's native API keys. A Notion `ntn_` integration token authenticates against Notion's REST API but will **not** work as a vault credential for the Notion MCP server. These are different auth systems.
+> Warning: **MCP auth tokens != REST API tokens.** Hosted MCP servers (`mcp.notion.com`, `mcp.linear.app`, etc.) typically require **OAuth bearer tokens**, not the service's native API keys. A Notion `ntn_` integration token authenticates against Notion's REST API but will **not** work as a vault credential for the Notion MCP server. These are different auth systems.
 
-### Vaults — the credential store
+### Vaults - the credential store
 
 **Vaults** store credentials that Anthropic manages on your behalf. Two credential categories:
 
-- **MCP credentials** (`mcp_oauth`, `static_bearer`) — keyed by `mcp_server_url`. When the agent connects to a server at that URL, the token is injected automatically. **Matching is normalized, not byte-exact:** scheme and host are lowercased, and default ports and trailing slashes are stripped, so host casing, an explicit default port, or a trailing slash won't break the match. A different path, subdomain, or *non-default* port will. If nothing matches, the connection is attempted unauthenticated. `mcp_oauth` tokens are auto-refreshed via the standard OAuth 2.0 `refresh_token` grant. This is the only way to authenticate MCP servers.
-- **Environment variables** (`environment_variable`) — keyed by `secret_name` (the env var name). The sandbox sees only an **opaque placeholder**; the real secret is substituted into the outbound request **at egress**. Use this for any service that authenticates through an environment variable: CLIs (`aws`, `gcloud`, `stripe`), SDKs, or direct `curl` calls from the `bash` tool.
+- **MCP credentials** (`mcp_oauth`, `static_bearer`) - keyed by `mcp_server_url`. When the agent connects to a server at that URL, the token is injected automatically. **Matching is normalized, not byte-exact:** scheme and host are lowercased, and default ports and trailing slashes are stripped, so host casing, an explicit default port, or a trailing slash won't break the match. A different path, subdomain, or *non-default* port will. If nothing matches, the connection is attempted unauthenticated. `mcp_oauth` tokens are auto-refreshed via the standard OAuth 2.0 `refresh_token` grant. This is the only way to authenticate MCP servers.
+- **Environment variables** (`environment_variable`) - keyed by `secret_name` (the env var name). The sandbox sees only an **opaque placeholder**; the real secret is substituted into the outbound request **at egress**. Use this for any service that authenticates through an environment variable: CLIs (`aws`, `gcloud`, `stripe`), SDKs, or direct `curl` calls from the `bash` tool.
 
-Secret fields you supply (`token`, `access_token`, `refresh_token`, `client_secret`, `secret_value`) are write-only — never returned in API responses.
+Secret fields you supply (`token`, `access_token`, `refresh_token`, `client_secret`, `secret_value`) are write-only - never returned in API responses.
 
 #### Credentials and the sandbox
 
-Vaults store credentials; those credentials **never enter the sandbox**. This is a deliberate security boundary — code running in the sandbox (including anything the agent writes) cannot read or exfiltrate a vaulted credential, even under prompt injection. Instead, credentials are injected by Anthropic-side proxies **after** a request leaves the sandbox:
+Vaults store credentials; those credentials **never enter the sandbox**. This is a deliberate security boundary - code running in the sandbox (including anything the agent writes) cannot read or exfiltrate a vaulted credential, even under prompt injection. Instead, credentials are injected by Anthropic-side proxies **after** a request leaves the sandbox:
 
 - **MCP tool calls** are routed through an Anthropic-side proxy that fetches the credential from the vault and adds it to the outbound request.
 - **Git operations on attached GitHub repositories** (`git pull`, `git push`, GitHub REST calls) are routed through a git proxy that injects the `github_repository` resource's `authorization_token` the same way.
-- **Environment-variable credentials** appear in the sandbox as an opaque placeholder; the real value replaces the placeholder at egress, on requests to the credential's allowed hosts only. Substitution covers request **headers and body only** — a secret embedded in the **URL path** is never substituted, so path-secret endpoints (e.g. Slack incoming-webhook URLs) can't be vaulted; use header-based auth instead (for Slack: a bot token in `Authorization` via `chat.postMessage`).
+- **Environment-variable credentials** appear in the sandbox as an opaque placeholder; the real value replaces the placeholder at egress, on requests to the credential's allowed hosts only. Substitution covers request **headers and body only** - a secret embedded in the **URL path** is never substituted, so path-secret endpoints (e.g. Slack incoming-webhook URLs) can't be vaulted; use header-based auth instead (for Slack: a bot token in `Authorization` via `chat.postMessage`).
 
-**When vault credentials don't fit** (e.g. self-hosted sandboxes — `environment_variable` is not yet supported there), **register a custom tool:** the agent emits `agent.custom_tool_use`, your orchestrator (which already holds the credential) executes the call and returns `user.custom_tool_result` over the same authenticated event stream. No public endpoint is exposed; the sandbox never sees the secret. See `shared/managed-agents-client-patterns.md` → Pattern 9.
+**When vault credentials don't fit** (e.g. self-hosted sandboxes - `environment_variable` is not yet supported there), **register a custom tool:** the agent emits `agent.custom_tool_use`, your orchestrator (which already holds the credential) executes the call and returns `user.custom_tool_result` over the same authenticated event stream. No public endpoint is exposed; the sandbox never sees the secret. See `shared/managed-agents-client-patterns.md` -> Pattern 9.
 
-**Do not put API keys in the system prompt or user messages as a workaround** — they persist in the session's event history.
+**Do not put API keys in the system prompt or user messages as a workaround** - they persist in the session's event history.
 
 > Formerly known internally as TATs (Tool/Tenant Access Tokens).
 
 **Flow:**
 
-1. Create a vault (`client.beta.vaults.create(...)`) — one per tenant/user, or one shared, depending on your model
-2. Add credentials to it (`client.beta.vaults.credentials.create(...)`) — MCP credentials are keyed by MCP server URL; environment-variable credentials by `secret_name`
+1. Create a vault (`client.beta.vaults.create(...)`) - one per tenant/user, or one shared, depending on your model
+2. Add credentials to it (`client.beta.vaults.credentials.create(...)`) - MCP credentials are keyed by MCP server URL; environment-variable credentials by `secret_name`
 3. Reference the vault on session create via `vault_ids: ["vlt_..."]`
 4. Anthropic auto-refreshes OAuth tokens before they expire and substitutes secrets at runtime
 
@@ -240,7 +290,7 @@ Vaults store credentials; those credentials **never enter the sandbox**. This is
 }
 ```
 
-The `refresh` block is what enables auto-refresh — `token_endpoint` is where Anthropic posts the `refresh_token` grant. `token_endpoint_auth` is a discriminated union:
+The `refresh` block is what enables auto-refresh - `token_endpoint` is where Anthropic posts the `refresh_token` grant. `token_endpoint_auth` is a discriminated union:
 
 | `type` | Shape | Use when |
 |---|---|---|
@@ -248,9 +298,9 @@ The `refresh` block is what enables auto-refresh — `token_endpoint` is where A
 | `"client_secret_basic"` | `{type: "client_secret_basic", client_secret: "..."}` | Confidential client, secret via HTTP Basic auth |
 | `"client_secret_post"` | `{type: "client_secret_post", client_secret: "..."}` | Confidential client, secret in request body |
 
-Omit `refresh` entirely if you only have an access token with no refresh capability — it'll work until it expires, then the agent loses access.
+Omit `refresh` entirely if you only have an access token with no refresh capability - it'll work until it expires, then the agent loses access.
 
-> 💡 **Getting an OAuth token.** How you obtain the initial access and refresh tokens depends on the MCP server — consult its documentation. Once you have them, store them in a vault credential using the shape above; Anthropic auto-refreshes via the `refresh.token_endpoint` from there.
+> Tip: **Getting an OAuth token.** How you obtain the initial access and refresh tokens depends on the MCP server - consult its documentation. Once you have them, store them in a vault credential using the shape above; Anthropic auto-refreshes via the `refresh.token_endpoint` from there.
 
 **Environment-variable credential shape**:
 
@@ -269,35 +319,35 @@ Omit `refresh` entirely if you only have an access token with no refresh capabil
 }
 ```
 
-`networking.allowed_hosts` controls which outbound hosts the secret can be substituted for — `{"type": "limited", "allowed_hosts": [...]}` or `{"type": "unrestricted"}` if you can't enumerate the domains in advance. Limiting is strongly recommended: it prevents the key from ever being sent to unauthorized hosts.
+`networking.allowed_hosts` controls which outbound hosts the secret can be substituted for - `{"type": "limited", "allowed_hosts": [...]}` or `{"type": "unrestricted"}` if you can't enumerate the domains in advance. Limiting is strongly recommended: it prevents the key from ever being sent to unauthorized hosts.
 
-**`injection_location`** (optional, sibling of `networking`) controls **where** in the outbound request the secret is substituted — `{header: bool, body: bool}`. The two are independent: `allowed_hosts` scopes *which hosts* a substituted request can target; `injection_location` scopes *which parts of the request* the secret is substituted into across all of those hosts. Most services read an API key from a request header, so `{"header": true}` is the narrower configuration — request bodies are often assembled from content the agent is working with, making the body the broader exposure surface. A placeholder in a disabled location is **neither substituted nor stripped** — the literal opaque placeholder string is sent to the third party in that location.
+**`injection_location`** (optional, sibling of `networking`) controls **where** in the outbound request the secret is substituted - `{header: bool, body: bool}`. The two are independent: `allowed_hosts` scopes *which hosts* a substituted request can target; `injection_location` scopes *which parts of the request* the secret is substituted into across all of those hosts. Most services read an API key from a request header, so `{"header": true}` is the narrower configuration - request bodies are often assembled from content the agent is working with, making the body the broader exposure surface. A placeholder in a disabled location is **neither substituted nor stripped** - the literal opaque placeholder string is sent to the third party in that location.
 
 | Operation | `injection_location` semantics |
 |---|---|
-| Create credential | Omit the field entirely → both locations enabled. Provide the object → any field you omit defaults to `false` (`{"header": true}` creates a header-only credential). |
-| Update credential | Fields **merge individually** — `{"body": false}` disables body substitution and leaves `header` unchanged. For a running session, the update takes effect on the session's next operation. |
+| Create credential | Omit the field entirely -> both locations enabled. Provide the object -> any field you omit defaults to `false` (`{"header": true}` creates a header-only credential). |
+| Update credential | Fields **merge individually** - `{"body": false}` disables body substitution and leaves `header` unchanged. For a running session, the update takes effect on the session's next operation. |
 
 A credential must have at least one location enabled; a create or update that would disable both returns 400, as does explicit `null` for the object or either field (omit instead). The response always returns both fields with their resolved values.
 
-> ⚠️ **Credentials created in the Console are header-only by default** — unlike the API, where omitting the field enables both. If your client sends the secret in the request body (a form-encoded token request, for example), the placeholder passes through literally and the service rejects it with its own authentication error. Tick body injection in the Console form, or `POST` the credential with `{"injection_location": {"body": true}}`.
+> Warning: **Credentials created in the Console are header-only by default** - unlike the API, where omitting the field enables both. If your client sends the secret in the request body (a form-encoded token request, for example), the placeholder passes through literally and the service rejects it with its own authentication error. Tick body injection in the Console form, or `POST` the credential with `{"injection_location": {"body": true}}`.
 
-> ⚠️ **Two networking layers, both required.** `networking.allowed_hosts` on the credential controls which requests *use the secret*, not which requests are *allowed*. The agent must also be able to reach the domain at the **environment level** (`unrestricted`, or the host listed in the environment's `allowed_hosts` — see `shared/managed-agents-environments.md`). A domain missing from either layer means the secret-substituted request fails.
+> Warning: **Two networking layers, both required.** `networking.allowed_hosts` on the credential controls which requests *use the secret*, not which requests are *allowed*. The agent must also be able to reach the domain at the **environment level** (`unrestricted`, or the host listed in the environment's `allowed_hosts` - see `shared/managed-agents-environments.md`). A domain missing from either layer means the secret-substituted request fails.
 
-> ⚠️ **Client-side validation caveat.** Substitution happens at egress, not inside the sandbox — clients that validate the credential *format* locally before making a network request (e.g. a CLI that checks the key starts with `sk-`) will see the opaque placeholder and may fail at startup. If a client rejects the credential before any network call, that's why.
+> Warning: **Client-side validation caveat.** Substitution happens at egress, not inside the sandbox - clients that validate the credential *format* locally before making a network request (e.g. a CLI that checks the key starts with `sk-`) will see the opaque placeholder and may fail at startup. If a client rejects the credential before any network call, that's why.
 
-> 💡 **Scope the key minimally.** The agent can do anything the key allows; a key with broader permissions than the task needs increases the blast radius if the agent behaves unexpectedly.
+> Tip: **Scope the key minimally.** The agent can do anything the key allows; a key with broader permissions than the task needs increases the blast radius if the agent behaves unexpectedly.
 
-**Not supported with self-hosted sandboxes** — `environment_variable` credentials require Anthropic-managed egress. See `shared/managed-agents-self-hosted-sandboxes.md`.
+**Not supported with self-hosted sandboxes** - `environment_variable` credentials require Anthropic-managed egress. See `shared/managed-agents-self-hosted-sandboxes.md`.
 
 **Constraints (all credential types):**
 
 - **Unique key per vault.** `mcp_server_url` (MCP credentials) and `secret_name` (environment-variable credentials) must be unique among active credentials in a vault; duplicates return a 409.
 - **Keys are immutable.** Secret values, `display_name`, and (on environment-variable credentials) `injection_location` can be updated; to change `mcp_server_url`, `secret_name`, `token_endpoint`, or `client_id`, archive the credential and create a new one. Archiving purges the secret and frees the key for a replacement.
 - **Maximum 20 credentials per vault.**
-- Credentials are stored as provided and **not validated until session runtime** — an invalid credential surfaces as an authentication or downstream error during the session, which is emitted but does not block the session from continuing.
+- Credentials are stored as provided and **not validated until session runtime** - an invalid credential surfaces as an authentication or downstream error during the session, which is emitted but does not block the session from continuing.
 
-**Scoping:** Vaults are workspace-scoped. Anyone with developer+ role in the API workspace can create, read (metadata only — secrets are write-only), and attach vaults. `vault_ids` can be set at session **create** time but not via session update (the SDK docstring says "Not yet supported; requests setting this field are rejected").
+**Scoping:** Vaults are workspace-scoped. Anyone with developer+ role in the API workspace can create, read (metadata only - secrets are write-only), and attach vaults. `vault_ids` can be set at session **create** time but not via session update (the SDK docstring says "Not yet supported; requests setting this field are rejected").
 
 ---
 
@@ -354,19 +404,19 @@ agent = client.beta.agents.create(
 | `skill_id` | Skill name (e.g. `"xlsx"`, `"docx"`, `"pptx"`, `"pdf"`) | Skill ID from Skills API (e.g. `"skill_abc123"`) |
 | `version` | `"latest"` or a specific version number | `"latest"` or a specific version number |
 
-`version` is optional on **both** kinds and defaults to `"latest"` — it is not custom-skill-only.
+`version` is optional on **both** kinds and defaults to `"latest"` - it is not custom-skill-only.
 
 ### Skills from a GitHub repository
 
-Skills can also live in your codebase. When a session mounts a repository via the `github_repository` resource (see `shared/managed-agents-environments.md` → GitHub Repositories), the repository's root `.claude/skills` directory is scanned at session start, and each skill found becomes available to the agent: it sees each discovered skill's name, description, and sandbox path, and reads the skill's `SKILL.md` (plus any scripts/resources it ships) when a task matches.
+Skills can also live in your codebase. When a session mounts a repository via the `github_repository` resource (see `shared/managed-agents-environments.md` -> GitHub Repositories), the repository's root `.claude/skills` directory is scanned at session start, and each skill found becomes available to the agent: it sees each discovered skill's name, description, and sandbox path, and reads the skill's `SKILL.md` (plus any scripts/resources it ships) when a task matches.
 
-**The agent can discover any skill in `.claude/skills/<skill-name>/`** — one directory level deep at the repository root. Skills in the following locations are not discoverable: a bare `.claude/skills/SKILL.md` (no skill directory), anything nested deeper (`.claude/skills/tools/code-review/SKILL.md`), a `skills/` directory outside `.claude`, or a `.claude/skills` inside a package subdirectory (though those can still surface when the agent reads files under that subtree). The `SKILL.md` format is the same as uploaded custom skills.
+**The agent can discover any skill in `.claude/skills/<skill-name>/`** - one directory level deep at the repository root. Skills in the following locations are not discoverable: a bare `.claude/skills/SKILL.md` (no skill directory), anything nested deeper (`.claude/skills/tools/code-review/SKILL.md`), a `skills/` directory outside `.claude`, or a `.claude/skills` inside a package subdirectory (though those can still surface when the agent reads files under that subtree). The `SKILL.md` format is the same as uploaded custom skills.
 
-> ⚠️ **Repository skills are agent instructions — treat them as part of your trust boundary.** Anyone who can commit to a mounted repository (a merged external PR, a compromised dependency, a contributor) can add or edit `.claude/skills/` content, and the platform loads it at session start with no review step — where session tools like `bash` and `web_fetch` give injected instructions real capability. Only mount repositories you trust, and audit `.claude/skills/` before mounting one with external contributors.
+> Warning: **Repository skills are agent instructions - treat them as part of your trust boundary.** Anyone who can commit to a mounted repository (a merged external PR, a compromised dependency, a contributor) can add or edit `.claude/skills/` content, and the platform loads it at session start with no review step - where session tools like `bash` and `web_fetch` give injected instructions real capability. Only mount repositories you trust, and audit `.claude/skills/` before mounting one with external contributors.
 
 Rules:
-- **Cloud sandboxes only** — self-hosted sandboxes don't support `github_repository` resources, so they can't load repository skills.
-- **Scanned once, at session start**, from the repository state checked out then (the resource's `checkout` branch/commit, else the default branch). Commits pushed mid-session are not picked up — start a new session for updated skills. Repositories added to a *running* session are not scanned either.
+- **Cloud sandboxes only** - self-hosted sandboxes don't support `github_repository` resources, so they can't load repository skills.
+- **Scanned once, at session start**, from the repository state checked out then (the resource's `checkout` branch/commit, else the default branch). Commits pushed mid-session are not picked up - start a new session for updated skills. Repositories added to a *running* session are not scanned either.
 - **Coexists with attached skills.** If a repository skill shares a name with an attached skill (or a skill from another mounted repo), both are available, each announced with its own path.
 
 ### Skills API

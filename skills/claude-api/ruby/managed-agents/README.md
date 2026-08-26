@@ -1,8 +1,8 @@
-# Managed Agents — Ruby
+# Managed Agents - Ruby
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for Ruby. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Ruby SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `client.beta.agents.create` and pass it to every subsequent `client.beta.sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent - create once, reference by ID.** Store the agent ID returned by `client.beta.agents.create` and pass it to every subsequent `client.beta.sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI - see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
@@ -22,7 +22,7 @@ client = Anthropic::Client.new
 client = Anthropic::Client.new(api_key: "your-api-key")
 ```
 
-> ⚠️ **Trailing underscores:** The Ruby SDK uses `system_:` and `send_(` (trailing underscore) to avoid shadowing `Kernel#system` and `Kernel#send`. Use these forms throughout managed-agents code.
+> Warning: **Trailing underscores:** The Ruby SDK uses `system_:` and `send_(` (trailing underscore) to avoid shadowing `Kernel#system` and `Kernel#send`. Use these forms throughout managed-agents code.
 
 ---
 
@@ -43,7 +43,7 @@ puts "Environment ID: #{environment.id}" # env_...
 
 ## Create an Agent (required first step)
 
-> ⚠️ **There is no inline agent config.** `model`/`system_`/`tools` live on the agent object, not the session. Always start with `client.beta.agents.create()` — the session takes either `agent: agent.id` or the typed hash form `agent: {type: "agent", id: agent.id, version: agent.version}`.
+> Warning: **There is no inline agent config.** `model`/`system_`/`tools` live on the agent object, not the session. Always start with `client.beta.agents.create()` - the session takes either `agent: agent.id` or the typed hash form `agent: {type: "agent", id: agent.id, version: agent.version}`.
 
 ### Minimal
 
@@ -102,7 +102,7 @@ client.beta.sessions.events.send_(
 )
 ```
 
-> 💡 **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens — stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
+> Tip: **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
 
 ---
 
@@ -137,7 +137,7 @@ stream.each do |event|
 end
 ```
 
-> ℹ️ Event `.type` is a Symbol (compare with `:"agent.message"`, not `"agent.message"`).
+> Note: Event `.type` is a Symbol (compare with `:"agent.message"`, not `"agent.message"`).
 
 ### Reconnecting and Tailing
 
@@ -171,7 +171,7 @@ end
 
 ## Provide Custom Tool Result
 
-> ℹ️ The Ruby managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic` Ruby gem repository for the corresponding params.
+> Note: The Ruby managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic` Ruby gem repository for the corresponding params.
 
 ---
 
@@ -262,7 +262,7 @@ client.beta.sessions.delete(session.id)
 ## MCP Server Integration
 
 ```ruby
-# Agent declares MCP server (no auth here — auth goes in a vault)
+# Agent declares MCP server (no auth here - auth goes in a vault)
 agent = client.beta.agents.create(
   name: "GitHub Assistant",
   model: :"claude-opus-5",

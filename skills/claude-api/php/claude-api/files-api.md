@@ -1,4 +1,4 @@
-# Files API — PHP
+# Files API - PHP
 
 ## Files API
 

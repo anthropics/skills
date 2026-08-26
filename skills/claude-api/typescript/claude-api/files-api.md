@@ -1,4 +1,4 @@
-# Files API — TypeScript
+# Files API - TypeScript
 
 The Files API uploads files for use in Messages API requests. Reference files via `file_id` in content blocks, avoiding re-uploads across multiple API calls.
 

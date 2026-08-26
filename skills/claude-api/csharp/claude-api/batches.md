@@ -1,4 +1,4 @@
-# Message Batches — C#
+# Message Batches - C#
 
 ## Message Batches API
 

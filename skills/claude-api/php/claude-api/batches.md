@@ -1,4 +1,4 @@
-# Message Batches — PHP
+# Message Batches - PHP
 
 ## Message Batches API
 

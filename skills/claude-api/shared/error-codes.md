@@ -56,7 +56,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 - Invalid API key format
 - Revoked or deleted API key
 - OAuth bearer token sent via `x-api-key` instead of `Authorization: Bearer`
-- Both `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` set — the SDK sends both headers and the API rejects the request
+- Both `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` set - the SDK sends both headers and the API rejects the request
 
 **Fix:** Set `ANTHROPIC_API_KEY`, or run `ant auth login` and leave the client constructor empty. For raw HTTP with an OAuth token, use `Authorization: Bearer <token>` (not `x-api-key:`).
 
@@ -94,7 +94,7 @@ This file documents HTTP error codes returned by the Claude API, their common ca
 - Too many tokens in input
 - Image data too large
 
-**Fix:** Reduce input size — truncate conversation history, compress/resize images, or split large documents into chunks.
+**Fix:** Reduce input size - truncate conversation history, compress/resize images, or split large documents into chunks.
 
 ---
 
@@ -109,17 +109,17 @@ Some 400 errors are specifically related to parameter validation:
 
 **Model-specific 400s on Claude Opus 5 / Fable 5 / Opus 4.8 / 4.7:**
 
-- `temperature`, `top_p`, `top_k` are removed — sending any of them returns 400. Delete the parameter; see `shared/model-migration.md` → Per-SDK Syntax Reference.
-- `thinking: {type: "enabled", budget_tokens: N}` is removed — sending it returns 400. Use `thinking: {type: "adaptive"}` instead.
-- **Claude Opus 5:** `thinking: {type: "disabled"}` returns 400 when `effort` is `xhigh` or `max` — it is accepted at `high` or below. Thinking is on by default, so omitting the param runs adaptive rather than disabling it.
+- `temperature`, `top_p`, `top_k` are removed - sending any of them returns 400. Delete the parameter; see `shared/model-migration.md` -> Per-SDK Syntax Reference.
+- `thinking: {type: "enabled", budget_tokens: N}` is removed - sending it returns 400. Use `thinking: {type: "adaptive"}` instead.
+- **Claude Opus 5:** `thinking: {type: "disabled"}` returns 400 when `effort` is `xhigh` or `max` - it is accepted at `high` or below. Thinking is on by default, so omitting the param runs adaptive rather than disabling it.
 - **Fable 5 only:** an explicit `thinking: {type: "disabled"}` returns 400 at any effort (it is accepted on Opus 4.8/4.7). Omit the `thinking` param entirely instead.
-- **Fable 5 only:** if the organization is set to zero data retention (ZDR) — or any retention below the required 30 days — then **all** Fable 5 requests return `400 invalid_request_error`, even with a perfectly valid payload. Check the org's retention configuration before debugging the request body.
+- **Fable 5 only:** if the organization is set to zero data retention (ZDR) - or any retention below the required 30 days - then **all** Fable 5 requests return `400 invalid_request_error`, even with a perfectly valid payload. Check the org's retention configuration before debugging the request body.
 
 **Common mistake with extended thinking on older models (Opus 4.6 and earlier):**
 
 ```
 # Wrong: budget_tokens must be < max_tokens
-thinking: budget_tokens=10000, max_tokens=1000  → Error!
+thinking: budget_tokens=10000, max_tokens=1000  -> Error!
 
 # Correct
 thinking: budget_tokens=10000, max_tokens=16000
@@ -174,7 +174,7 @@ thinking: budget_tokens=10000, max_tokens=16000
 | `temperature`/`top_p`/`top_k` on Claude Opus 5 / Fable 5 / Opus 4.8 / 4.7 | 400 | Remove the parameter (see `shared/model-migration.md`)  |
 | `budget_tokens` on Claude Opus 5 / Fable 5 / Opus 4.8 / 4.7 | 400  | Use `thinking: {type: "adaptive"}`                      |
 | `thinking: {type: "disabled"}` on Fable 5 | 400    | Omit the `thinking` param entirely (accepted on Opus 4.8/4.7) |
-| Org set to ZDR / retention below 30 days (Fable 5) | 400 on every request | Fix the org's data-retention configuration — the payload isn't the problem |
+| Org set to ZDR / retention below 30 days (Fable 5) | 400 on every request | Fix the org's data-retention configuration - the payload isn't the problem |
 | `budget_tokens` >= `max_tokens` (older models) | 400 | Ensure `budget_tokens` < `max_tokens`                  |
 | Typo in model ID                | 404              | Use valid model ID like `claude-opus-5`               |
 | First message is `assistant`    | 400              | First message must be `user`                            |
@@ -196,22 +196,22 @@ thinking: budget_tokens=10000, max_tokens=16000
 | 404 | `NotFoundError` | `NotFoundError` | `NotFoundException` | `AnthropicNotFoundException` | `NotFoundException` |
 | 422 | `UnprocessableEntityError` | `UnprocessableEntityError` | `UnprocessableEntityException` | `AnthropicUnprocessableEntityException` | `UnprocessableEntityException` |
 | 429 | `RateLimitError` | `RateLimitError` | `RateLimitException` | `AnthropicRateLimitException` | `RateLimitException` |
-| ≥500 | `InternalServerError` | `InternalServerError` | `InternalServerException` | `Anthropic5xxException` | `InternalServerException` |
+| >=500 | `InternalServerError` | `InternalServerError` | `InternalServerException` | `Anthropic5xxException` | `InternalServerException` |
 | net | `APIConnectionError` | `APIConnectionError` | `AnthropicIoException` | `AnthropicIOException` | `APIConnectionException` |
 | base | `APIError` (both); `APIStatusError` (Python only) | `APIStatusError` / `APIError` | `AnthropicServiceException` | `AnthropicApiException` | `APIStatusException` / `APIException` |
 
-The Ruby and PHP classes live in a dedicated errors namespace — write `Anthropic::Errors::RateLimitError` and `Anthropic\Core\Exceptions\RateLimitException` (not bare `Anthropic::RateLimitError`). All 4xx C# exceptions also inherit from `Anthropic4xxException`.
+The Ruby and PHP classes live in a dedicated errors namespace - write `Anthropic::Errors::RateLimitError` and `Anthropic\Core\Exceptions\RateLimitException` (not bare `Anthropic::RateLimitError`). All 4xx C# exceptions also inherit from `Anthropic4xxException`.
 
 ### Catch most-specific first, in a chain
 
-Order `catch`/`except`/`rescue` clauses from the most specific subclass to the base class, with a separate clause for each category you handle differently — retryable (429, ≥500, network) vs. non-retryable (4xx). The SDK defines a distinct class per status for exactly this reason; a single broad catch-all discards that information.
+Order `catch`/`except`/`rescue` clauses from the most specific subclass to the base class, with a separate clause for each category you handle differently - retryable (429, >=500, network) vs. non-retryable (4xx). The SDK defines a distinct class per status for exactly this reason; a single broad catch-all discards that information.
 
 ```python
 try:
     msg = client.messages.create(...)
-except anthropic.NotFoundError as e:          # 404 — e.g. bad model ID
+except anthropic.NotFoundError as e:          # 404 - e.g. bad model ID
     ...
-except anthropic.RateLimitError as e:         # 429 — back off and retry
+except anthropic.RateLimitError as e:         # 429 - back off and retry
     ...
 except anthropic.APIStatusError as e:         # any other non-2xx HTTP response
     print(e.status_code, e.message)
@@ -219,9 +219,9 @@ except anthropic.APIConnectionError as e:     # network failure before a respons
     ...
 ```
 
-The same chain shape applies in every SDK: TypeScript `instanceof Anthropic.NotFoundError` → `RateLimitError` → `APIConnectionError` → `APIError` (check `APIConnectionError` before `APIError` — in the TypeScript SDK it's a subclass of `APIError`, unlike Python where it's a sibling); Ruby `rescue Anthropic::Errors::NotFoundError` → `…::RateLimitError` → `…::APIStatusError`; Java `catch (NotFoundException) … catch (RateLimitException) … catch (AnthropicServiceException)`; C# `catch (AnthropicNotFoundException) … catch (AnthropicRateLimitException) … catch (AnthropicApiException)`; PHP `catch (NotFoundException) … catch (RateLimitException) … catch (APIStatusException)`.
+The same chain shape applies in every SDK: TypeScript `instanceof Anthropic.NotFoundError` -> `RateLimitError` -> `APIConnectionError` -> `APIError` (check `APIConnectionError` before `APIError` - in the TypeScript SDK it's a subclass of `APIError`, unlike Python where it's a sibling); Ruby `rescue Anthropic::Errors::NotFoundError` -> `...::RateLimitError` -> `...::APIStatusError`; Java `catch (NotFoundException) ... catch (RateLimitException) ... catch (AnthropicServiceException)`; C# `catch (AnthropicNotFoundException) ... catch (AnthropicRateLimitException) ... catch (AnthropicApiException)`; PHP `catch (NotFoundException) ... catch (RateLimitException) ... catch (APIStatusException)`.
 
-### Go — `errors.As` then branch on status
+### Go - `errors.As` then branch on status
 
 The Go SDK returns a single `*anthropic.Error` for all non-2xx responses. Unwrap it with `errors.As`, then branch on `StatusCode`:
 
@@ -236,7 +236,7 @@ if err != nil {
         case 429:
             // back off and retry
         default:
-            // other API error — apierr.StatusCode, apierr.RequestID
+            // other API error - apierr.StatusCode, apierr.RequestID
         }
     } else {
         // transport-level error (*url.Error wrapping *net.OpError, etc.)
@@ -246,7 +246,7 @@ if err != nil {
 
 ### Error `.type` Field
 
-All `APIStatusError` subclasses now expose a `.type` property (Python: `.type`, TypeScript: `.type`, Java: `.errorType()`, Go: `.Type()`, Ruby: `.type`, PHP: `.type`) that returns the API error type string (e.g., `"invalid_request_error"`, `"authentication_error"`, `"rate_limit_error"`, `"overloaded_error"`). Use this for programmatic error classification when you need finer granularity than the HTTP status code — for example, distinguishing `"billing_error"` from `"permission_error"` (both map to 403).
+All `APIStatusError` subclasses now expose a `.type` property (Python: `.type`, TypeScript: `.type`, Java: `.errorType()`, Go: `.Type()`, Ruby: `.type`, PHP: `.type`) that returns the API error type string (e.g., `"invalid_request_error"`, `"authentication_error"`, `"rate_limit_error"`, `"overloaded_error"`). Use this for programmatic error classification when you need finer granularity than the HTTP status code - for example, distinguishing `"billing_error"` from `"permission_error"` (both map to 403).
 
 ```python
 except anthropic.APIStatusError as e:

@@ -1,4 +1,4 @@
-# Files API — Python
+# Files API - Python
 
 The Files API uploads files for use in Messages API requests. Reference files via `file_id` in content blocks, avoiding re-uploads across multiple API calls.
 
@@ -16,7 +16,7 @@ The Files API uploads files for use in Messages API requests. Reference files vi
 
 ## Upload a File
 
-The `file` argument accepts a `(filename, content, content_type)` tuple, a `pathlib.Path` (or any `PathLike` — read for you, async-safe with `AsyncAnthropic`), or an open binary file object.
+The `file` argument accepts a `(filename, content, content_type)` tuple, a `pathlib.Path` (or any `PathLike` - read for you, async-safe with `AsyncAnthropic`), or an open binary file object.
 
 ```python
 import anthropic
@@ -91,7 +91,7 @@ response = client.beta.messages.create(
 
 ### List Files
 
-Iterate the list result directly — the SDK auto-paginates across all pages. Only use `.data` if you want the first page only.
+Iterate the list result directly - the SDK auto-paginates across all pages. Only use `.data` if you want the first page only.
 
 ```python
 for f in client.beta.files.list():

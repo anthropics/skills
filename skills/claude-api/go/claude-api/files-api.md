@@ -1,4 +1,4 @@
-# Files API — Go
+# Files API - Go
 
 ## Files API (Beta)
 

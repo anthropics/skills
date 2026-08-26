@@ -1,10 +1,10 @@
-# Tool Use — Go
+# Tool Use - Go
 
 For conceptual overview (tool definitions, tool choice, tips), see [shared/tool-use-concepts.md](../../shared/tool-use-concepts.md).
 
 ## Tool Use
 
-### Tool Runner (Beta — Recommended)
+### Tool Runner (Beta - Recommended)
 
 **Beta:** The Go SDK provides `BetaToolRunner` for automatic tool use loops via the `toolrunner` package.
 
@@ -61,7 +61,7 @@ if err != nil {
 }
 
 // RunToCompletion returns *BetaMessage; content is []BetaContentBlockUnion.
-// Narrow via AsAny() switch — note the Beta-namespace types (BetaTextBlock,
+// Narrow via AsAny() switch - note the Beta-namespace types (BetaTextBlock,
 // not TextBlock):
 for _, block := range message.Content {
     switch block := block.AsAny().(type) {
@@ -81,7 +81,7 @@ for _, block := range message.Content {
 
 ### Manual Loop
 
-Prefer the tool runner above. For interception, validation, logging, or human-in-the-loop approval, gate inside the tool's run function or step the runner with `NextMessage()`/`All()` and inspect each message (the runner's public `Params` field lets you adjust the next request) — a manual loop is not required. Drop to a manual loop only when you need control the runner does not expose: define tools with `ToolParam`, check `StopReason`, execute tools yourself, and feed `tool_result` blocks back.
+Prefer the tool runner above. For interception, validation, logging, or human-in-the-loop approval, gate inside the tool's run function or step the runner with `NextMessage()`/`All()` and inspect each message (the runner's public `Params` field lets you adjust the next request) - a manual loop is not required. Drop to a manual loop only when you need control the runner does not expose: define tools with `ToolParam`, check `StopReason`, execute tools yourself, and feed `tool_result` blocks back.
 
 Derived from `anthropic-sdk-go/examples/tools/main.go`.
 
@@ -130,7 +130,7 @@ func main() {
         }
 
         // 2. Append the assistant response to history BEFORE processing tool calls.
-        //    resp.ToParam() converts Message → MessageParam in one call.
+        //    resp.ToParam() converts Message -> MessageParam in one call.
         messages = append(messages, resp.ToParam())
 
         // 3. Walk content blocks. ContentBlockUnion is a flattened struct;
@@ -142,7 +142,7 @@ func main() {
                 fmt.Println(variant.Text)
             case anthropic.ToolUseBlock:
                 // 4. Parse the tool input. Use variant.JSON.Input.Raw() to get the
-                //    raw JSON — block.Input is json.RawMessage, not the parsed value.
+                //    raw JSON - block.Input is json.RawMessage, not the parsed value.
                 var in struct {
                     A int `json:"a"`
                     B int `json:"b"`
@@ -173,7 +173,7 @@ func main() {
 
 | Symbol | Purpose |
 |---|---|
-| `resp.ToParam()` | Convert `Message` response → `MessageParam` for history |
+| `resp.ToParam()` | Convert `Message` response -> `MessageParam` for history |
 | `block.AsAny().(type)` | Type-switch on `ContentBlockUnion` variants |
 | `variant.JSON.Input.Raw()` | Raw JSON string of tool input (for `json.Unmarshal`) |
 | `anthropic.NewToolResultBlock(id, content, isError)` | Build `tool_result` block |
@@ -185,7 +185,7 @@ func main() {
 
 ## Anthropic-Defined Tools
 
-Version-suffixed struct names with `Param` suffix. `Name`/`Type` are `constant.*` types — zero value marshals correctly, so `{}` works. Wrap in `ToolUnionParam` with the matching `Of*` field. Web search and code execution are server-executed; bash and text editor are client-executed (you handle the `tool_use` locally — see `shared/tool-use-concepts.md`).
+Version-suffixed struct names with `Param` suffix. `Name`/`Type` are `constant.*` types - zero value marshals correctly, so `{}` works. Wrap in `ToolUnionParam` with the matching `Of*` field. Web search and code execution are server-executed; bash and text editor are client-executed (you handle the `tool_use` locally - see `shared/tool-use-concepts.md`).
 
 ```go
 Tools: []anthropic.ToolUnionParam{
@@ -200,7 +200,7 @@ Also available: `WebFetchTool20260209Param`, `ToolSearchToolBm25_20251119Param`,
 
 ### Advisor tool (beta)
 
-Server-side — no tool_result round-trip. The advisor model must be ≥ the executor (top-level) model; invalid pairs return 400.
+Server-side - no tool_result round-trip. The advisor model must be >= the executor (top-level) model; invalid pairs return 400.
 
 ```go
 response, err := client.Beta.Messages.New(ctx, anthropic.BetaMessageNewParams{

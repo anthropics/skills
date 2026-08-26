@@ -1,4 +1,4 @@
-# Streaming — Java
+# Streaming - Java
 
 ## Streaming
 
