@@ -1,0 +1,98 @@
+{
+  "name": "hi-medicaid-policy",
+  "kind": "state-policy",
+  "state": "HI",
+  "index": "https://medquest.hawaii.gov/en/plans-providers/fee-for-service/provider-manual.html",
+  "fetchVia": "curl",
+  "out": "policy/hi",
+  "note": "Hawaii Med-QUEST FFS Medicaid Provider Manual — 21 per-chapter PDFs (PMChp##.pdf, AEM /content/dam/ paths) + 6 appendices on a single flat index. curl 200, no login. Most chapters last revised 2011–2015; Ch.12/14 have newer dated filenames.",
+  "docs": [
+    {
+      "title": "Ch.02 — Provider Requirements",
+      "detector": "D3",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp02.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.04 — Claims Payment",
+      "detector": "D4",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp04.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.06 — Medical/Surgical Services (Physician)",
+      "detector": "D4",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp06.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.07 — Laboratory, Pathology & Radiology Services",
+      "detector": "D4",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp07.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.09 — Home Health Services",
+      "detector": "D20",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp09.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.10 — DMEPOS",
+      "detector": "D15",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp10.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.11 — Hospital Services & Dialysis",
+      "detector": "D20",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp11.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.12 — Long Term Care",
+      "detector": "D20",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/plans-and-providers/fee-for-service/Chapter_12_Update%20Final%20V4_L%20kk%20lp.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.15 — Behavioral Health Services",
+      "detector": "D4",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp15.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.16 — Transportation, Meals, Lodging & Translation (NEMT)",
+      "detector": "D19",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp16.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.17 — Rehabilitative Therapy Services",
+      "detector": "D20",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp17.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.18 — Hospice Services",
+      "detector": "D20",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp18.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.19 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp19.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.01 — Medicaid General Information",
+      "detector": "D3,D4",
+      "url": "https://medquest.hawaii.gov/content/dam/formsanddocuments/resources/Provider-Resources/provider-manuals/PMChp01.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Med-QUEST FFS Provider Manual: 21 numbered chapters + 6 appendices on one index page. Stable PMChp##.pdf URL pattern (Ch.08/12/14 break the pattern with dated filenames under /plans-and-providers/fee-for-service/). HI is ~100% managed-care (QUEST Integration health plans) so the FFS manual is the residual/wraparound policy; no separate HCBS/personal-care chapter — LTC + Home Health cover it. NEMT is Ch.16 (covers inter-island air, a HI-specific transport mode). Captured 14 detector-relevant chapters; skipped EPSDT/Transplant/ASC/Dental/Vision/FQHC/appendices.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

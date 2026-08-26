@@ -1,0 +1,80 @@
+{
+  "name": "sc-medicaid-policy",
+  "kind": "state-policy",
+  "state": "SC",
+  "index": "https://www.scdhhs.gov/providers/provider-manual-list",
+  "fetchVia": "curl",
+  "out": "policy/sc",
+  "note": "SCDHHS Healthy Connections provider manuals: one consolidated Admin & Billing Manual + ~25 provider-type manuals. Each type page links a single full-manual PDF at provider.scdhhs.gov/internet/pdf/manuals/<slug>/Manual.pdf (case-insensitive). No separate NEMT manual (brokered, ModivCare) and no standalone Laboratory manual (lab covered inside Physicians). curl 200, no login.",
+  "docs": [
+    {
+      "title": "Provider Administrative and Billing Manual",
+      "detector": "D3,D4",
+      "url": "https://www.scdhhs.gov/sites/dhhs/files/Provider%20Administrative%20and%20Billing%20Guide.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services Provider Manual",
+      "detector": "D19",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Ambulance/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home and Community-Based Services (HCBS / CLTC Waiver) Provider Manual",
+      "detector": "D20",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/cltc/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Provider Manual",
+      "detector": "D20",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Home%20Health/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services Provider Manual",
+      "detector": "D20",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Hospice/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Enhanced Services Provider Manual (Personal Care / Adult Day / In-Home)",
+      "detector": "D20",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Enhanced/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physicians Services Provider Manual (incl. Laboratory & Radiology)",
+      "detector": "D4",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Physicians/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Services Provider Manual",
+      "detector": "D15",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/DME/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services Provider Manual",
+      "detector": "D16,D23",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/pharm/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospital Services Provider Manual",
+      "detector": "D20",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/Hospital/Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Rehabilitative Behavioral Health Services (RBHS) Provider Manual",
+      "detector": "D4",
+      "url": "https://provider.scdhhs.gov/internet/pdf/manuals/RBHS/Manual.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "SCDHHS index lists 26 provider-type manuals (post-2019 reorg split admin/billing out). Captured 11 detector-relevant. PDF slug pattern verified via curl HEAD: Physicians, cltc, Ambulance, DME, Home%20Health, Hospice, Hospital, RBHS, Enhanced, pharm all 200. Index page links go to per-type landing pages, not direct PDFs; the /internet/pdf/manuals/<slug>/Manual.pdf path is the stable direct link. NEMT is broker-administered (no provider manual on this index). Fee schedules at scdhhs.gov/providers/fee-schedules.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

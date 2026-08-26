@@ -1,0 +1,116 @@
+{
+  "name": "dc-medicaid-policy",
+  "kind": "state-policy",
+  "state": "DC",
+  "index": "https://www.dc-medicaid.com/dcwebportal/nonsecure/billingManual",
+  "fetchVia": "browser",
+  "out": "policy/dc",
+  "note": "DC DHCF: per-provider-type MMIS Billing Manuals on dc-medicaid.com (Gainwell portal, getDocument/<id> PDFs) + DCMR Title 29 rulemakings on dhcf.dc.gov. dc-medicaid.com DNS returned SERVFAIL at crawl time (2026-06) — host unreachable via curl AND browser; doc IDs captured from Google cache. dhcf.dc.gov curl 200.",
+  "docs": [
+    {
+      "title": "DC MMIS Billing Manual — Physicians (V7.07)",
+      "detector": "D4",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/36089",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manual — Home Health (V7.00)",
+      "detector": "D20",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/35490",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manual — Long Term Care (V7.05)",
+      "detector": "D20",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/35502",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manual — Outpatient Hospital (V6.07)",
+      "detector": "D4",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/35503",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manual — Inpatient Hospital (V8.01)",
+      "detector": "D20",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/35492",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manual — FQHC (V3.08)",
+      "detector": "D4",
+      "url": "https://www.dc-medicaid.com/dcwebportal/documentInformation/getDocument/35489",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manuals — Transportation (category page)",
+      "detector": "D19",
+      "url": "https://www.dc-medicaid.com/dcwebportal/providerSpecificInformation/getBillingManual?categoryType=Transportation",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manuals — DME (category page)",
+      "detector": "D15",
+      "url": "https://www.dc-medicaid.com/dcwebportal/providerSpecificInformation/getBillingManual?categoryType=DME",
+      "pp": null
+    },
+    {
+      "title": "DC MMIS Billing Manuals — Waivers / EPD / IDD (category page)",
+      "detector": "D20",
+      "url": "https://www.dc-medicaid.com/dcwebportal/providerSpecificInformation/getBillingManual?categoryType=Waivers",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Medicaid Reimbursement for Personal Care Aide Services (Final Rule)",
+      "detector": "D20",
+      "url": "https://dhcf.dc.gov/node/1394966",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — HCBS Waiver for Elderly & Persons w/ Physical Disabilities (EPD)",
+      "detector": "D20",
+      "url": "https://dhcf.dc.gov/node/1501651",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Durable Medical Equipment, Prosthetics, Orthotics & Supplies (DMEPOS)",
+      "detector": "D15",
+      "url": "https://dhcf.dc.gov/node/1503281",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Medicaid Reimbursement for FFS Pharmacy Services (Final Rule)",
+      "detector": "D16,D23",
+      "url": "https://dhcf.dc.gov/node/1318721",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Medicaid Physician & Specialty Service Rate Methodology (Final Rule)",
+      "detector": "D4",
+      "url": "https://dhcf.dc.gov/node/1444906",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Cost-Based Reimbursement for Emergency Medical Ground Transportation",
+      "detector": "D19",
+      "url": "https://dhcf.dc.gov/node/1471031",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Medicaid Provider & Supplier Screening, Enrollment and Termination",
+      "detector": "D3",
+      "url": "https://dhcf.dc.gov/node/1498346",
+      "pp": null
+    },
+    {
+      "title": "DCMR 29 — Home Health Services (Final Rule)",
+      "detector": "D20",
+      "url": "https://dhcf.dc.gov/node/1278006",
+      "pp": null
+    }
+  ],
+  "_comment": "Two sources: (1) dc-medicaid.com Gainwell MMIS portal — ~15 per-provider-type billing manual PDFs at /documentInformation/getDocument/<id>, listed under /nonsecure/billingManual via per-category sub-pages (?categoryType=Transportation|DME|Waivers|Physician|Pharmacy|...). Host DNS SERVFAIL (8.8.8.8) at crawl time so doc IDs taken from search-engine cache; re-verify when DNS recovers. (2) dhcf.dc.gov/page/dhcf-medicaid-regulations — DCMR Title 29 final/emergency rulemaking PDFs (Drupal /node/<id> landing pages → attached PDF). NEMT is brokered via MTM. No standalone Laboratory billing manual found (lab covered inside Physicians/Outpatient). dhcf.dc.gov works via curl; dc-medicaid.com requires browser (and working DNS).",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

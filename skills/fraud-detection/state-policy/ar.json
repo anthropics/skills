@@ -1,0 +1,98 @@
+{
+  "name": "ar-medicaid-policy",
+  "kind": "state-policy",
+  "state": "AR",
+  "index": "https://humanservices.arkansas.gov/divisions-shared-services/medical-services/helpful-information-for-providers/manuals/",
+  "fetchVia": "curl",
+  "out": "policy/ar",
+  "note": "AR DHS/DMS provider manuals — ~62 provider-type sub-pages, each linking shared Section I/III + a program-specific Section II DOCX at /wp-content/uploads/<SLUG>_II.docx. All DOCX (not PDF), curl 200, no login. NET (non-emergency transport) is brokered — no Section II manual.",
+  "docs": [
+    {
+      "title": "Section I — General Policy (all provider types)",
+      "detector": "D3,D4",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/Section_I.docx",
+      "pp": null
+    },
+    {
+      "title": "Section III — Billing (all provider types)",
+      "detector": "D4",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/Section_III.docx",
+      "pp": null
+    },
+    {
+      "title": "Transportation — Section II (Ambulance)",
+      "detector": "D19",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/TRANSP_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Personal Care — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/PERSCARE_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Home Health — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/HOMEHLTH_II.docx",
+      "pp": null
+    },
+    {
+      "title": "ARChoices in Homecare HCBS 2176 Waiver — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/ARCHOICES_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Independent Choices (self-directed personal care) — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/INCHOICE_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/PDN_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Hospice — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/HOSPICE_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Physician / Independent Laboratory / Radiology — Section II",
+      "detector": "D4",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/PHYSICN_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Prosthetics, DME and Orthotics — Section II",
+      "detector": "D15",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/PROSTHET_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy — Section II",
+      "detector": "D16,D23",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/PHARMACY_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Hospital — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/HOSPITAL_II.docx",
+      "pp": null
+    },
+    {
+      "title": "Occupational, Physical, Speech Therapy — Section II",
+      "detector": "D20",
+      "url": "https://humanservices.arkansas.gov/wp-content/uploads/THERAPY_II.docx",
+      "pp": null
+    }
+  ],
+  "_comment": "AR DHS WordPress site. Index lists ~62 provider types across two URL bases (.../billing-manuals-rate-sheets/<slug>-prov/ for A–H, .../manuals/<slug>-prov/ for H–Z). Every type shares Section_I.docx (general) + Section_III.docx (billing); the per-program coverage policy is <SLUG>_II.docx. Lab + Radiology share PHYSICN_II. fetch-reference handler will need a docx→text path (pandoc or libreoffice --convert-to txt). NET is region-brokered (no provider manual). Pharmacy PBM portal at ar.primetherapeutics.com (separate).",
+  "siteArchitecture": "docx-curl",
+  "lastVerified": "2026-06-22"
+}

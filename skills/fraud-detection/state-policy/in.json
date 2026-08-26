@@ -1,0 +1,110 @@
+{
+  "name": "in-medicaid-policy",
+  "kind": "state-policy",
+  "state": "IN",
+  "index": "https://www.in.gov/medicaid/providers/provider-references/bulletins-banner-pages-and-reference-modules/ihcp-provider-reference-modules/",
+  "fetchVia": "curl",
+  "out": "policy/in",
+  "note": "Indiana IHCP Provider Reference Modules — ~60 per-topic PDF modules at /medicaid/providers/files/modules/<slug>.pdf. Direct curl 200, no login. Captured 16 detector-relevant modules.",
+  "docs": [
+    {
+      "title": "Transportation Services",
+      "detector": "D19",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/transportation-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Emergency Services (incl. ambulance)",
+      "detector": "D19",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/emergency-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home- and Community-Based Services Billing Guidelines",
+      "detector": "D20",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/hcbs-billing-guidelines.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services",
+      "detector": "D20",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/home-health-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "DDARS HCBS Waivers (CIH, FS, H&W, TBI)",
+      "detector": "D20",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/ddars-hcbs-waivers.pdf",
+      "pp": null
+    },
+    {
+      "title": "OMPP HCBS Waiver — Indiana PathWays for Aging",
+      "detector": "D20",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/ompp-hcbs-waiver.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services",
+      "detector": "D20",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/hospice-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Evaluation and Management Services",
+      "detector": "D4",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/evaluation-and-management-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Practitioner Reimbursement",
+      "detector": "D4",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/medical-practitioner-reimbursement.pdf",
+      "pp": null
+    },
+    {
+      "title": "Telehealth and Virtual Services",
+      "detector": "D4",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/telehealth-and-virtual-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/laboratory-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable and Home Medical Equipment and Supplies",
+      "detector": "D15",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/durable-and-home-medical-equipment-and-supplies.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/pharmacy-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Injections, Vaccines and Other Physician-Administered Drugs",
+      "detector": "D16",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/injections-vaccines-and-other-physician-administered-drugs.pdf",
+      "pp": null
+    },
+    {
+      "title": "National Correct Coding Initiative",
+      "detector": "D4",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/national-correct-coding-initiative.pdf",
+      "pp": null
+    },
+    {
+      "title": "Provider Enrollment",
+      "detector": "D3",
+      "url": "https://www.in.gov/medicaid/providers/files/modules/provider-enrollment.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "IHCP Provider Reference Modules index lists ~60 module PDFs (general + eligibility + claims + ~35 service-specific + program-specific + 5 HCBS waiver modules). Uniform URL pattern /medicaid/providers/files/modules/<slug>.pdf; both index HTML and PDFs 200 via plain curl. Fee schedules separate at in.gov/medicaid/providers/business-transactions/billing-and-remittance/ihcp-fee-schedules/.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

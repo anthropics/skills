@@ -1,0 +1,104 @@
+{
+  "name": "oh-medicaid-policy",
+  "kind": "state-policy",
+  "state": "OH",
+  "index": "https://medicaid.ohio.gov/resources-for-providers/billing",
+  "fetchVia": "browser",
+  "out": "policy/oh",
+  "note": "Ohio Medicaid: policy lives in OAC Chapter 5160 (codes.ohio.gov, HTML per-rule) + ODM Billing Guidelines PDFs. medicaid.ohio.gov/static/* 404s via curl; dam.assets.ohio.gov works.",
+  "docs": [
+    {
+      "title": "OAC 5160-15 — Transportation Services",
+      "detector": "D19",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-15",
+      "pp": null
+    },
+    {
+      "title": "SCT Transportation Service Billing Guidance",
+      "detector": "D19",
+      "url": "https://medicaid.ohio.gov/static/Providers/Billing/BillingInstructions/SubmittingClaims-SCT.pdf",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-12 — Home Health Services",
+      "detector": "D20",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-12",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-44 — HCBS Waiver General Provisions",
+      "detector": "D20",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-44",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-46 — Ohio Home Care Waiver",
+      "detector": "D20",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-46",
+      "pp": null
+    },
+    {
+      "title": "Nursing Service Sorting Tool — State Plan & Waiver",
+      "detector": "D20",
+      "url": "https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Providers/ProviderTypes/Service_Sorting_Tool_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-4 — Physician Services",
+      "detector": "D4",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-4",
+      "pp": null
+    },
+    {
+      "title": "Telehealth Billing Guidelines (eff. 01/01/2026)",
+      "detector": "D4",
+      "url": "https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Providers/Billing/BillingInstructions/Telehealth_Billing_Guidelines_updates_for_2026_final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Modifiers Recognized by ODM",
+      "detector": "D4",
+      "url": "https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Providers/Billing/BillingInstructions/Modifiers_Recogized_by_ODM_2025_v2.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulatory Surgery Center Billing Guidelines",
+      "detector": "D4",
+      "url": "https://medicaid.ohio.gov/static/Providers/Billing/BillingInstructions/ASC-Billing-Guidelines.pdf",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-10 — Durable Medical Equipment",
+      "detector": "D15",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-10",
+      "pp": null
+    },
+    {
+      "title": "DME Codes/Rates/Fee Schedules FAQ",
+      "detector": "D15",
+      "url": "https://medicaid.ohio.gov/static/Providers/Billing/BillingInstructions/FAQsCodesRatesFeeSchedules.pdf",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-9 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-9",
+      "pp": null
+    },
+    {
+      "title": "Hospital Billing Guidelines (eff. 9/1/2021)",
+      "detector": "D20",
+      "url": "https://medicaid.ohio.gov/static/Providers/Billing/BillingInstructions/HospitalBillingGuidelines-20210901.pdf",
+      "pp": null
+    },
+    {
+      "title": "OAC 5160-1 — General Provisions (provider eligibility/exclusion)",
+      "detector": "D3",
+      "url": "https://codes.ohio.gov/ohio-administrative-code/chapter-5160-1",
+      "pp": null
+    }
+  ],
+  "_comment": "Ohio has no single 'provider manual' — coverage policy is codified in OAC 5160-xx (HTML, one chapter per service type). Billing-guideline PDFs supplement on medicaid.ohio.gov. fetch-reference state-policy handler should treat codes.ohio.gov chapter URLs as HTML→text (each chapter page links per-rule sub-pages). SPBM/pharmacy portal at https://spbm.medicaid.ohio.gov/ (Gainwell) has UPDL but requires login for criteria.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}

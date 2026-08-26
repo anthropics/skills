@@ -1,0 +1,6 @@
+node_modules/
+bun.lock
+bun.lockb
+.data/
+corpora/
+.healthcare/
