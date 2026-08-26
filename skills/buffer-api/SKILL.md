@@ -1,7 +1,7 @@
 ---
 name: buffer-api
 description: "Use the Buffer GraphQL API to schedule and manage social media posts. Use when the user wants to create, schedule, edit, delete, or retrieve posts or drafts in a Buffer queue; distribute content across multiple social platforms (Instagram, Threads, LinkedIn, X/Twitter, Facebook, Google Business, Mastodon, YouTube, Pinterest, Bluesky); add public-URL media (images/video) to scheduled posts; build threads or first-comments for networks that support them; list connected Buffer channels; or check a queued post's status. Do NOT trigger for platform-native posting APIs (e.g. TikTok Direct Post) when Buffer is the intended scheduler; Buffer holds approved integration for auto-posting owned accounts."
-license: MIT
+license: Complete terms in LICENSE.txt
 ---
 
 # Buffer API — Schedule, Manage & Analyze Social Posts
