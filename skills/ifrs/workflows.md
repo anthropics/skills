@@ -1,6 +1,6 @@
 # IFRS Workflows — Step-by-Step Procedures
 
-This file provides detailed, practitioner-level workflows for seven core IFRS process areas. Each workflow includes substeps, decision points, key judgments, and example journal entries.
+This file provides detailed, practitioner-level workflows for seventeen core IFRS process areas. Each workflow includes substeps, decision points, key judgments, and example journal entries.
 
 ---
 
@@ -224,6 +224,26 @@ Dr  Trade Receivables                     200,000
 To record billing to customer.
 ```
 
+#### Advance Payment (contract liability)
+
+**Facts:** On 1 December the entity receives CU 120,000 in advance for a 12-month service contract beginning 1 January. Revenue is recognised evenly over the service period.
+
+```
+On receipt (1 December):
+
+Dr  Cash                                  120,000
+    Cr  Contract Liability                            120,000
+To recognise the obligation to transfer services for consideration already received.
+
+Each month from 1 January (120,000 / 12 = 10,000):
+
+Dr  Contract Liability                     10,000
+    Cr  Revenue                                         10,000
+To recognise revenue as the performance obligation is satisfied over time.
+
+After 12 months the contract liability is nil: 120,000 - (12 x 10,000) = 0.
+```
+
 ---
 
 ### Appendix: Special Topics — Revenue Recognition
@@ -368,7 +388,17 @@ The lease liability is measured at the **present value** of the following paymen
 - Exception: if ownership transfers or a purchase option is reasonably certain to be exercised, depreciate over the useful life of the underlying asset.
 - Apply IAS 36 impairment testing to the ROU asset.
 
-#### Lease Modifications (IFRS 16.44-46):
+#### Lease Remeasurement vs Modification (IFRS 16.39-46):
+
+**Decision point — has the contract itself changed?**
+- **No** (the lease term assessment has changed, or a payment linked to an index or rate has reset) -> this is a **remeasurement**, not a modification. Adjust the ROU asset against the lease liability; recognise in profit or loss only any amount by which the remeasurement would reduce the ROU asset below zero (IFRS 16.39).
+- **Yes** (scope or consideration has changed by agreement) -> apply the modification table below (IFRS 16.44-46).
+
+| Remeasurement trigger | Discount rate |
+|---|---|
+| Change in future payments from a **change in an index or rate** used to determine them (e.g., CPI-linked rent review) | **Unchanged** discount rate (IFRS 16.43) — unless the change is a change in floating interest rates, in which case use a revised rate |
+| Change in the **lease term**, or in the assessment of a **purchase option** | **Revised** discount rate (IFRS 16.40-41) — the rate implicit in the lease for the remainder of the term if readily determinable, otherwise the lessee's incremental borrowing rate at the date of reassessment |
+| Change in the amount expected to be payable under a **residual value guarantee** | **Unchanged** discount rate (IFRS 16.42-43) |
 
 | Modification Type | Treatment |
 |---|---|
@@ -447,27 +477,57 @@ Dr  Depreciation Expense                  43,295
 To recognise depreciation of right-of-use asset.
 ```
 
+#### Full Lease Liability Schedule (PV of 5 payments of CU 50,000 at 5% = CU 216,473.83):
+
+```
+| Year | Opening | Interest @5% | Payment | Closing |
+|---|---|---|---|---|
+| 1 | 216,473.83 | 10,823.69 | 50,000.00 | 177,297.53 |
+| 2 | 177,297.53 |  8,864.88 | 50,000.00 | 136,162.40 |
+| 3 | 136,162.40 |  6,808.12 | 50,000.00 |  92,970.52 |
+| 4 |  92,970.52 |  4,648.53 | 50,000.00 |  47,619.05 |
+| 5 |  47,619.05 |  2,380.95 | 50,000.00 |       0.00 |
+|   |            | **33,526.17** | **250,000.00** | |
+
+Cross-cast: 216,473.83 + 33,526.17 total interest = 250,000.00 = 5 x 50,000. The liability
+amortises exactly to nil.
+```
+
+The ROU asset is depreciated straight-line over the 5-year lease term at CU 43,294.77 per year (216,473.83 / 5), reaching nil at the end of year 5. Total expense is front-loaded: year 1 charges 10,823.69 interest + 43,294.77 depreciation = CU 54,118.46 against a cash payment of CU 50,000, while year 5 charges 2,380.95 + 43,294.77 = CU 45,675.72.
+
 ---
 
 ### Lessor Accounting — Journal Entries and Subsequent Measurement
 
 #### Finance Lease — Lessor
 
-**Facts:** Lessor leases equipment with a fair value/carrying amount of CU 300,000 for 5 years. Annual lease payments of CU 70,000 payable at year-end. Implicit rate = 5.6%. Unguaranteed residual value = CU 0. Net investment in the lease = CU 300,000 (PV of payments).
+**Facts:** Lessor leases equipment with a fair value and carrying amount of CU 300,000 for 5 years. Annual lease payments of CU 70,000 payable at year-end. Unguaranteed residual value = CU 0. Initial direct costs = CU 0. The rate implicit in the lease is therefore the rate that discounts 5 payments of CU 70,000 to CU 300,000 = **5.3686%**. Net investment at commencement = CU 300,000.
 
 ```
 At commencement — initial recognition:
 
 Dr  Lease Receivable (Net Investment)    300,000
     Cr  Equipment (PP&E)                             300,000
-To derecognise the underlying asset and recognise net investment in the finance lease.
+To derecognise the underlying asset and recognise the net investment in the finance lease.
 
-Year 1 — interest income:
+Net investment schedule (finance income at 5.3686%, rounded to the nearest CU):
 
-Interest income = CU 300,000 x 5.6% = CU 16,800
+| Year | Opening | Finance income | Payment | Closing |
+|---|---|---|---|---|
+| 1 | 300,000 | 16,106 | 70,000 | 246,106 |
+| 2 | 246,106 | 13,212 | 70,000 | 189,318 |
+| 3 | 189,318 | 10,164 | 70,000 | 129,482 |
+| 4 | 129,482 |  6,951 | 70,000 |  66,433 |
+| 5 |  66,433 |  3,567 | 70,000 |       0 |
+|   |         | **50,000** | **350,000** | |
 
-Dr  Lease Receivable                      16,800
-    Cr  Interest Income (P&L)                         16,800
+Cross-cast: 300,000 net investment + 50,000 total finance income = 350,000 = 5 x 70,000. The
+net investment amortises exactly to nil.
+
+Year 1 — finance income:
+
+Dr  Lease Receivable                      16,106
+    Cr  Finance Income (P&L)                          16,106
 To recognise finance income on the net investment in the lease.
 
 Year 1 — receipt of lease payment:
@@ -476,7 +536,7 @@ Dr  Cash                                  70,000
     Cr  Lease Receivable                              70,000
 To record receipt of annual lease payment.
 
-Closing net investment = 300,000 + 16,800 - 70,000 = CU 246,800
+Closing net investment = 300,000 + 16,106 - 70,000 = CU 246,106
 ```
 
 **Subsequent measurement:** The lessor recognises interest income over the lease term using the effective interest method applied to the net investment in the lease. The net investment is reduced by each lease payment received.
@@ -871,33 +931,50 @@ All of the following must be met at inception and on an ongoing basis:
 | **LGD** | 40% | 40% |
 | **EAD** | CU 1,000,000 | CU 1,000,000 |
 
-**Stage 1 — 12-month ECL (no significant increase in credit risk):**
+**Step 1 — On initial recognition (Stage 1, 12-month ECL).** Use the 12-month PD at origination.
 
 ```
-12-month ECL = 12-month PD x LGD x EAD
-             = 2.5% x 40% x 1,000,000
-             = CU 10,000
+12-month ECL = 12-month PD at origination x LGD x EAD
+             = 1.0% x 40% x 1,000,000
+             = CU 4,000
+
+Dr  Impairment Loss (P&L)                  4,000
+    Cr  Loss Allowance                                 4,000
+To recognise the 12-month expected credit loss on initial recognition of the loan.
 ```
 
-**Stage 2 — Lifetime ECL (significant increase in credit risk has occurred):**
+**Step 2 — Assess whether credit risk has increased significantly since initial recognition.** The 12-month PD has risen from 1.0% to 2.5% — a 150% relative increase. Combined with the rise in lifetime PD from 6.0% to 15.0%, the entity concludes there has been a significant increase in credit risk. The loan migrates to Stage 2.
 
-Assume the 12-month PD has increased from 1.0% at origination to 2.5%, representing a significant increase in credit risk. The loan migrates to Stage 2.
+**Decision point — has credit risk increased significantly since initial recognition?**
+- **No** -> remain in Stage 1; remeasure at 12-month ECL = 2.5% x 40% x 1,000,000 = CU 10,000 (an incremental charge of CU 6,000 over the CU 4,000 already held).
+- **Yes** -> move to Stage 2; measure lifetime ECL.
+
+**Step 3 — Stage 2, lifetime ECL.**
 
 ```
 Lifetime ECL = Lifetime PD x LGD x EAD
              = 15.0% x 40% x 1,000,000
              = CU 60,000
+
+Incremental charge = 60,000 - 4,000 = CU 56,000
+
+Dr  Impairment Loss (P&L)                 56,000
+    Cr  Loss Allowance                                56,000
+To increase the loss allowance from the 12-month ECL recognised at initial recognition
+(CU 4,000) to lifetime ECL on migration to Stage 2 (CU 60,000).
+
+Loss allowance carried forward = 4,000 + 56,000 = CU 60,000.
 ```
 
 **Impact of stage migration:**
 
-| | Stage 1 | Stage 2 | Increase in Allowance |
+| | On initial recognition (Stage 1) | At the reporting date (Stage 2) | Increase in Allowance |
 |---|---|---|---|
-| **Loss allowance** | CU 10,000 | CU 60,000 | CU 50,000 |
-
-The additional CU 50,000 is recognised as an impairment loss in profit or loss upon migration from Stage 1 to Stage 2.
+| **Loss allowance** | CU 4,000 | CU 60,000 | CU 56,000 |
 
 **Note:** In practice, lifetime ECL calculations are more complex, involving marginal PDs for each future period, discounting to present value, and weighting across multiple economic scenarios. The above is a simplified illustration of the core PD x LGD x EAD framework.
+
+**Two further simplifications in the above.** (i) The ECL is not discounted. IFRS 9 requires expected credit losses to be measured as the present value of cash shortfalls, discounted at the original effective interest rate; a lifetime ECL on a 5-year loan would be materially lower once discounted. (ii) The PDs are single point estimates. IFRS 9.5.5.17 requires ECL to reflect (a) an unbiased and **probability-weighted** amount determined by evaluating a range of possible outcomes, (b) the **time value of money**, and (c) reasonable and supportable information available without undue cost or effort about past events, current conditions and forecasts of future economic conditions — so at least two and usually three economic scenarios are weighted.
 
 ---
 
@@ -905,21 +982,22 @@ The additional CU 50,000 is recognised as an impairment loss in profit or loss u
 
 #### ECL Provision — Initial Recognition and Stage Migration
 
-**Stage 1 — 12-month ECL (initial recognition):**
+**Stage 1 — 12-month ECL (initial recognition), using the 12-month PD at origination of 1.0%:**
 
 ```
-Dr  Impairment Loss (P&L)                10,000
-    Cr  Loss Allowance                                10,000
-To recognise 12-month expected credit loss on initial recognition of the loan.
+Dr  Impairment Loss (P&L)                 4,000
+    Cr  Loss Allowance                                 4,000
+To recognise the 12-month expected credit loss on initial recognition of the loan.
 ```
 
 **Migration to Stage 2 — Lifetime ECL (significant increase in credit risk):**
 
 ```
-Dr  Impairment Loss (P&L)                50,000
-    Cr  Loss Allowance                                50,000
-To recognise additional loss allowance upon migration from Stage 1 (12-month ECL of CU 10,000)
-to Stage 2 (lifetime ECL of CU 60,000). Incremental charge = CU 50,000.
+Dr  Impairment Loss (P&L)                56,000
+    Cr  Loss Allowance                                56,000
+To increase the loss allowance from the 12-month ECL recognised at initial recognition
+(CU 4,000) to lifetime ECL on migration to Stage 2 (CU 60,000).
+Incremental charge = 60,000 - 4,000 = CU 56,000.
 ```
 
 #### Cash Flow Hedge — Journal Entries
@@ -981,7 +1059,7 @@ As at the date of transition (IFRS 1.10):
 
 ---
 
-### Step 3: Apply Mandatory Exceptions (IFRS 1.14-17, B1-B12)
+### Step 3: Apply Mandatory Exceptions (IFRS 1.14-17, B1-B14)
 
 The following exceptions to full retrospective application are **mandatory** (an entity may not apply previous GAAP instead):
 
@@ -992,6 +1070,9 @@ The following exceptions to full retrospective application are **mandatory** (an
 5. **Non-controlling interests** — apply certain requirements of IFRS 10 prospectively (e.g., total comprehensive income allocation between owners and NCI, requirements for changes in ownership that do not result in loss of control).
 6. **Embedded derivatives** — assess whether an embedded derivative is required to be separated based on conditions at the date of transition or at the date the entity became a party to the contract, whichever is later.
 7. **Government loans** — apply IFRS 9 and IAS 20 prospectively to government loans existing at the date of transition.
+8. **Impairment of financial assets** — apply the IFRS 9 impairment requirements retrospectively subject to specified reliefs, using reasonable and supportable information available without undue cost or effort to approximate the credit risk at initial recognition (IFRS 1.B8D-B8G).
+9. **Insurance contracts** — apply the transition requirements in IFRS 17 (IFRS 1.B13). This is a *mandatory exception* in Appendix B, distinct from the optional exemption listed in Step 4.
+10. **Deferred tax related to leases and decommissioning, restoration and similar liabilities** — despite the initial recognition exemption in IAS 12.15 and 24, at the date of transition a first-time adopter **shall** recognise a deferred tax asset (to the extent recovery is probable) and a deferred tax liability for all deductible and taxable temporary differences associated with right-of-use assets and lease liabilities, and with decommissioning, restoration and similar liabilities and the corresponding capitalised amounts (IFRS 1.B14).
 
 ---
 
@@ -1116,13 +1197,15 @@ A **temporary difference** is the difference between the carrying amount and the
 
 - **DTL:** Recognise for **all** taxable temporary differences, **except**:
   - Initial recognition of goodwill (IAS 12.15(a)).
-  - Initial recognition of an asset or liability in a transaction that is not a business combination and, at the time of the transaction, affects neither accounting profit nor taxable profit (the **initial recognition exemption** — IAS 12.15(b)). Note: the 2023 amendment (Pillar Two) and the 2021 amendment narrow this exemption for leases and decommissioning obligations.
+  - Initial recognition of an asset or liability in a transaction that is not a business combination and, at the time of the transaction, affects neither accounting profit nor taxable profit (the **initial recognition exemption** — IAS 12.15(b)). **The exemption does not apply to a transaction that gives rise to equal and offsetting taxable and deductible temporary differences** — most importantly a lease (right-of-use asset and lease liability) and a decommissioning obligation and its capitalised cost. In those cases the entity recognises both the resulting deferred tax asset and the deferred tax liability (IAS 12.15(b)(iii), 22A, 24(c) — *Deferred Tax related to Assets and Liabilities arising from a Single Transaction*, issued May 2021, effective for annual periods beginning on or after 1 January 2023).
   - Investments in subsidiaries, branches, associates, and JVs where the entity can control the timing of reversal and it is probable the TD will not reverse in the foreseeable future (IAS 12.39).
 
 - **DTA:** Recognise only to the extent that it is **probable** that future taxable profits will be available against which the deductible temporary difference can be utilised (IAS 12.24). Consider:
   - Sufficient taxable temporary differences relating to the same taxation authority and the same taxable entity expected to reverse in the same period (or periods into which a tax loss can be carried back or forward).
   - Whether it is probable that the entity will have taxable profits before the DTA expires.
   - Tax planning opportunities.
+
+- **Pillar Two income taxes — mandatory exception.** An entity shall **neither recognise nor disclose** deferred tax assets and liabilities related to Pillar Two income taxes (IAS 12.4A). This is a separate, mandatory exception — it is not an exception to the recognition of deferred tax on temporary differences, and it has nothing to do with the initial recognition exemption. Pillar Two income taxes are those arising from tax law enacted or substantively enacted to implement the OECD Pillar Two model rules, including qualified domestic minimum top-up taxes. The entity must instead disclose: that it has applied the exception (IAS 12.88A); its current tax expense or income related to Pillar Two income taxes, separately (IAS 12.88B); and, for periods in which Pillar Two legislation is enacted or substantively enacted but not yet in effect, known or reasonably estimable information about its exposure, which may be given as an indicative range (IAS 12.88C-88D). *Issued May 2023; the recognition exception applies immediately and retrospectively; the disclosures apply for annual periods beginning on or after 1 January 2023.*
 
 ### Step 5: Measure at Enacted/Substantively Enacted Tax Rates
 
@@ -1144,8 +1227,8 @@ When there is uncertainty over whether the tax authority will accept a particula
 ### Step 7: Present and Disclose
 
 **Presentation:**
-- DTA and DTL are presented as **non-current** items (IAS 12.56).
-- Offset a DTA and DTL only when the entity has a legally enforceable right to set off and the amounts relate to income taxes levied by the same taxation authority on the same taxable entity (IAS 12.74).
+- Deferred tax assets and liabilities are **not classified as current** in a classified statement of financial position. Until IFRS 18 is applied this sits in IAS 1; from annual periods beginning on or after 1 January 2027 the requirement is carried into IFRS 18. Deferred tax balances are never discounted (IAS 12.53).
+- Offset a DTA and DTL only when the entity has a legally enforceable right to set off current tax assets against current tax liabilities, **and** the deferred balances arise from taxes charged by the same authority on either one taxable entity, or several that intend to settle net or realise the balances at the same time (IAS 12.74).
 
 **Key disclosures (IAS 12.79-88):**
 - **Tax rate reconciliation:** Reconcile the tax expense to the accounting profit multiplied by the applicable tax rate(s), explaining each significant reconciling item.
@@ -1294,31 +1377,55 @@ Goodwill = Consideration transferred
 #### At Acquisition Date:
 
 ```
-Recognise identifiable assets and liabilities at fair value:
+Goodwill = Consideration transferred 5,000,000 + NCI 0 + Previously held interest 0
+         - Net identifiable assets at fair value 4,200,000
+         = CU 800,000
 
 Dr  Identifiable Assets (at FV)        6,000,000
+Dr  Goodwill                              800,000
     Cr  Identifiable Liabilities (at FV)            1,800,000
     Cr  Cash (consideration)                        5,000,000
-To record the consideration transferred and recognise net identifiable assets.
-
-Recognise goodwill:
-
-Goodwill = 5,000,000 + 0 + 0 - 4,200,000 = CU 800,000
-
-Dr  Goodwill                              800,000
-    Cr  Retained Earnings / Balancing Entry          800,000
-To recognise goodwill as the excess of consideration over net identifiable assets at fair value.
-```
-
-**Combined entry (as typically recorded):**
-
-```
-Dr  Identifiable Assets (at FV)        6,000,000
-Dr  Goodwill                              800,000
-    Cr  Identifiable Liabilities (at FV)            1,800,000
-    Cr  Cash                                        5,000,000
 To record the acquisition of Entity B, recognising net identifiable assets at fair value
-and goodwill of CU 800,000.
+and goodwill of CU 800,000 as the residual.
+Debits 6,800,000 = credits 6,800,000.
+```
+
+Goodwill is a residual (IFRS 3.32) — the excess of consideration transferred plus NCI plus the acquisition-date fair value of any previously held equity interest over the net of the acquisition-date identifiable assets and liabilities. It is **never** recognised against equity, and there is no "balancing entry": the debit to goodwill is what makes the acquisition entry balance.
+
+**Verification — runnable.** Proves the three arithmetic corrections carried by this file: the acquisition entry above (IFRS 3, workflow 7), the lessor net-investment schedule (IFRS 16, workflow 2) and the ECL sequence (IFRS 9, workflow 4).
+
+```python
+# --- C1  IFRS 3: the entry as shipped does not balance; the corrected single entry does
+assert 6_000_000 != 1_800_000 + 5_000_000                  # shipped entry 1: Dr 6.0m vs Cr 6.8m
+assert (1_800_000 + 5_000_000) - 6_000_000 == 800_000      # the gap is exactly the omitted goodwill
+assert 6_000_000 + 800_000 == 1_800_000 + 5_000_000        # corrected entry: 6.8m = 6.8m
+
+# --- C2  IFRS 16 lessor: 5.6% leaves a residual; the true implicit rate amortises to nil
+pva = lambda p, rate, n: sum(p/(1+rate)**t for t in range(1, n+1))
+assert round(pva(70_000, 0.056, 5), 2) == 298_101.98       # 5.6% does NOT discount to 300,000
+lo, hi = 0.0, 0.5
+for _ in range(200):                                       # solve for the rate implicit in the lease
+    m = (lo + hi)/2
+    lo, hi = (m, hi) if pva(70_000, m, 5) > 300_000 else (lo, m)
+assert round(lo*100, 4) == 5.3686
+bal, interest = 300_000, 0
+for _ in range(5):
+    i = round(bal*lo); interest += i; bal = bal + i - 70_000
+assert bal == 0 and interest == 50_000                     # net investment amortises exactly to nil
+assert 300_000 + interest == 5*70_000                      # and cross-casts to total payments
+
+# --- C3  IFRS 9 ECL: the initial-recognition allowance is 4,000, not 10,000
+assert round(0.010*0.40*1_000_000, 2) == 4_000             # 12-month PD at origination
+assert round(0.025*0.40*1_000_000, 2) == 10_000            # 12-month PD at the reporting date
+assert round(0.150*0.40*1_000_000, 2) == 60_000            # lifetime PD in Stage 2
+assert 60_000 - 4_000 == 56_000                            # incremental charge, not 50,000
+print("OK  C1 imbalance 800,000 proven; C2 residual at 5.6% vs nil at 5.3686%; C3 step 4,000->60,000")
+```
+
+Output:
+
+```
+OK  C1 imbalance 800,000 proven; C2 residual at 5.6% vs nil at 5.3686%; C3 step 4,000->60,000
 ```
 
 #### Acquisition Costs:
@@ -1345,6 +1452,2001 @@ identifiable assets and liabilities are correctly identified and measured.
 ```
 
 **Related workflows:** IAS 12 (deferred tax on fair value adjustments), IAS 36 (annual goodwill impairment testing), IFRS 9 (contingent consideration remeasurement), IFRS 15 (revenue from acquired contracts).
+
+---
+
+## 8. Insurance Contracts (IFRS 17) — CSM Roll-Forward
+
+The contractual service margin (CSM) is the unearned profit in a group of insurance contracts that
+the entity will recognise as it provides insurance contract services (IFRS 17.38). This workflow
+covers the general measurement model for contracts **without** direct participation features.
+
+### Step 1: Establish the Group and the Measurement Model
+
+**Decision point — which measurement model?**
+- Contracts with **direct participation features** (the variable fee approach) -> roll the CSM forward
+  under IFRS 17.45, in which the entity's share of the change in the fair value of the underlying
+  items adjusts the CSM.
+- Eligible for the **premium allocation approach** (coverage period one year or less, or the PAA
+  gives a measurement not materially different) -> no CSM is calculated for the liability for
+  remaining coverage (IFRS 17.53–59).
+- Otherwise -> the **general measurement model**; roll the CSM forward under IFRS 17.44. This
+  workflow.
+
+### Step 2: Measure the Group on Initial Recognition
+
+The carrying amount is the total of the fulfilment cash flows and the CSM (IFRS 17.32). Fulfilment
+cash flows comprise estimates of future cash flows, an adjustment for the time value of money and
+financial risk, and a risk adjustment for non-financial risk.
+
+The CSM is set at the amount that produces **no income or expense on initial recognition**
+(IFRS 17.38). Equivalently, CSM = − (fulfilment cash flows), where a net inflow gives a positive CSM.
+
+**Decision point — are the fulfilment cash flows a net outflow?**
+- **No** -> CSM = the net inflow; no day-one gain is recognised.
+- **Yes** -> the group is **onerous**. CSM is nil, the excess is recognised immediately as a loss in
+  profit or loss, and the entity establishes a **loss component** of the liability for remaining
+  coverage (IFRS 17.47, 49).
+
+### Step 3: Roll the CSM Forward (IFRS 17.44)
+
+The closing CSM equals the opening CSM adjusted, **in this order**, for:
+
+| # | Adjustment | IFRS 17.44 | Direction |
+|---|---|---|---|
+| 1 | Effect of new contracts added to the group | 44(a) | Increase |
+| 2 | Interest accreted, at the discount rates **locked in at initial recognition** | 44(b) via B72(b) | Increase |
+| 3 | Changes in fulfilment cash flows relating to **future** service | 44(c) | Either |
+| 4 | Effect of currency exchange differences on the CSM | 44(d) | Either |
+| 5 | Amount recognised in profit or loss for services transferred in the period | 44(e) via B119 | Decrease |
+
+**Key judgment — future service or not.** Only changes relating to *future* service adjust the CSM.
+Changes relating to *past or current* service (experience adjustments, changes in the liability for
+incurred claims) go straight to profit or loss. Changes arising from the **time value of money and
+financial risk** do not adjust the CSM at all — they are insurance finance income or expenses.
+
+**Decision point — does an unfavourable change in future-service fulfilment cash flows exceed the
+carrying amount of the CSM?**
+- **No** -> the CSM absorbs it; no profit or loss effect.
+- **Yes** -> the CSM is reduced to nil and the excess is a loss in profit or loss; establish or
+  increase the loss component (IFRS 17.48, 49).
+
+### Step 4: Release the CSM to Profit or Loss (IFRS 17.B119)
+
+1. Identify the **coverage units** in the group — the quantity of insurance contract services,
+   determined from the quantity of benefits provided under each contract and its expected coverage
+   period.
+2. Take the CSM **as it stands at the end of the period, before any release**, and spread it evenly
+   over the coverage units — those delivered in the current period together with those still expected
+   in future periods.
+3. Recognise in profit or loss the amount allocated to coverage units provided in the period.
+
+### Worked Example — CSM Roll-Forward (all amounts CU 000)
+
+**Facts.** A group of three-year insurance contracts is recognised on 1 January 20X1. A single
+premium of 900 is received at inception. Expected claims are 240 at the end of each of years 1, 2
+and 3. The locked-in discount rate is 5%. The risk adjustment for non-financial risk is 60 at
+inception, released 25 / 20 / 15 over the three years. Coverage units are equal in each year.
+*Simplifying assumption: the risk adjustment is not remeasured for the time value of money.*
+
+**Initial recognition (1 January 20X1):**
+
+```
+PV of expected claims = 240/1.05 + 240/1.05^2 + 240/1.05^3         = 653.58
+Fulfilment cash flows = 653.58 (claims) + 60 (risk adjustment) - 900 (premium) = (186.42)
+CSM = 186.42     (the net inflow; no day-one gain)
+
+Liability for remaining coverage = 653.58 + 60 + 186.42 = 900.00 = the premium received.
+
+Dr  Cash                                     900.00
+    Cr  Insurance Contract Liability                     900.00
+To recognise the group of insurance contracts on initial recognition. By construction no income
+or expense arises (IFRS 17.38).
+```
+
+**Year 1 events.** Claims of 240 are incurred and paid, exactly as expected. At 31 December 20X1
+the entity revises expected claims for years 2 and 3 upward from 240 to 260 each.
+
+**CSM roll-forward for 20X1:**
+
+```
+| Step | IFRS 17.44 | Amount  |
+|---|---|---|
+| Opening CSM                                             |       | 186.42 |
+| Interest accreted at the locked-in rate 186.42 x 5%      | 44(b) |   9.32 |
+| Change in FCF relating to future service:                | 44(c) | (37.19)|
+|   20/1.05 + 20/1.05^2 = 19.05 + 18.14 = 37.19            |       |        |
+| CSM before allocation                                    |       | 158.55 |
+| Released to profit or loss: 158.55 x 1/3 coverage units   | 44(e) | (52.85)|
+| **Closing CSM**                                          |       |**105.70**|
+```
+
+**Journal entries for 20X1:**
+
+```
+Insurance revenue = CSM released 52.85 + risk adjustment released 25.00
+                  + expected claims for the period 240.00 = 317.85
+
+Dr  Insurance Contract Liability             317.85
+    Cr  Insurance Revenue (P&L)                          317.85
+To recognise insurance revenue for services provided in the period.
+
+Dr  Insurance Service Expense (P&L)          240.00
+    Cr  Insurance Contract Liability                     240.00
+To recognise claims incurred in the period.
+
+Insurance finance expense = unwind on FCF 653.58 x 5% = 32.68
+                          + interest accreted on CSM            =  9.32
+                                                                = 42.00
+
+Dr  Insurance Finance Expense (P&L)           42.00
+    Cr  Insurance Contract Liability                      42.00
+To recognise insurance finance expenses for the period.
+
+Dr  Insurance Contract Liability             240.00
+    Cr  Cash                                             240.00
+To record claims paid.
+```
+
+**Note — no entry for the change in estimate.** The upward revision of future claims increased the
+fulfilment cash flows by 37.19 and reduced the CSM by 37.19. It is a transfer *within* the insurance
+contract liability and has no effect on profit or loss, because the CSM was large enough to absorb it
+(IFRS 17.44(c); contrast IFRS 17.48 where it is not).
+
+**Cross-cast of the closing liability:**
+
+```
+Roll-forward:  900.00 - 317.85 + 240.00 + 42.00 - 240.00 = 624.15
+
+Components at 31 December 20X1:
+  PV of future claims: 260/1.05 + 260/1.05^2 = 247.62 + 235.83   = 483.45
+  Risk adjustment remaining: 60 - 25                             =  35.00
+  CSM                                                            = 105.70
+                                                                 = 624.15   ** agrees **
+```
+
+
+**Verification — runnable.** Rebuilds the CSM roll-forward from the discount rate up and asserts that the closing liability reconciles to its three components.
+
+```python
+d = 0.05                                                  # locked-in discount rate (IFRS 17.44(b))
+pv_claims = sum(240/(1+d)**t for t in range(1, 4))
+csm0 = 900 - pv_claims - 60                               # premium - PV claims - risk adjustment
+assert round(pv_claims, 2) == 653.58
+assert round(csm0, 2) == 186.42
+assert round(pv_claims + 60 + csm0, 2) == 900.00          # no day-one gain (IFRS 17.38)
+
+chg = sum(20/(1+d)**t for t in range(1, 3))               # claims +20 pa for Y2-Y3, PV at end Y1
+csm_before = csm0 + csm0*d - chg                          # 44(b) interest, then 44(c) future service
+release   = csm_before / 3                                # 44(e)/B119: 1 of 3 coverage units
+csm1      = csm_before - release
+assert round(chg, 2) == 37.19 and round(csm_before, 2) == 158.55
+assert round(release, 2) == 52.85 and round(csm1, 2) == 105.70
+
+revenue   = release + 25 + 240                            # CSM + risk adj released + expected claims
+fin_exp   = pv_claims*d + csm0*d                          # unwind on FCF + interest accreted on CSM
+liability = 900 - revenue + 240 + fin_exp - 240           # roll-forward of the contract liability
+pv_1      = pv_claims*(1+d) - 240 + chg                   # PV of future claims at 31 Dec
+assert round(revenue, 2) == 317.85 and round(fin_exp, 2) == 42.00
+assert round(liability, 2) == round(pv_1 + 35 + csm1, 2) == 624.15   # roll == sum of components
+print("OK  closing CSM 105.70; liability 624.15 cross-casts to FCF 483.45 + RA 35.00 + CSM 105.70")
+```
+
+Output:
+
+```
+OK  closing CSM 105.70; liability 624.15 cross-casts to FCF 483.45 + RA 35.00 + CSM 105.70
+```
+
+**Insurance service result for 20X1** = revenue 317.85 − service expenses 240.00 = **77.85**;
+insurance finance expenses **(42.00)**; total effect on profit or loss **35.85**.
+
+### Step 5: Disclose the Roll-Forward
+
+For contracts not measured under the PAA, disclose reconciliations from opening to closing balances
+**separately** for the estimates of the present value of future cash flows, the risk adjustment for
+non-financial risk, and the CSM (IFRS 17.101). The three columns of the cross-cast above are exactly
+those three reconciliations.
+
+**Common pitfalls:**
+- Accreting interest on the CSM at the **current** discount rate. It must be the rate locked in at
+  initial recognition (IFRS 17.44(b), B72(b)).
+- Putting an experience adjustment for the current period through the CSM. Only future service
+  adjusts the CSM.
+- Allocating the CSM over units **before** the other four adjustments. B119(b) allocates the CSM as
+  it stands at the end of the period, after interest accretion and future-service changes.
+
+**Related workflows:** IFRS 9 (investment components and underlying items; insurance finance income
+and expenses interact with financial asset classification), IFRS 18 (insurance finance income and
+expenses are excluded from the financing category and classified in operating — IFRS 18.64(b)),
+IFRS 1 (IFRS 17 transition requirements are a mandatory exception — IFRS 1.B13).
+
+---
+
+## 9. Hedge Accounting (IFRS 9 Chapter 6) — Designation and Effectiveness
+
+### Step 1: Confirm the Instrument and the Item Are Eligible
+
+The relationship must consist only of eligible hedging instruments and eligible hedged items
+(IFRS 9.6.4.1(a)). In outline: derivatives measured at FVTPL are eligible instruments; a
+non-derivative financial asset or liability at FVTPL is eligible only for foreign currency risk.
+Hedged items may be recognised assets or liabilities, unrecognised firm commitments, highly probable
+forecast transactions, or net investments in foreign operations, and may be designated as risk
+components if separately identifiable and reliably measurable.
+
+### Step 2: Prepare the Formal Designation and Documentation
+
+At **inception** — not later — document (IFRS 9.6.4.1(b)):
+
+1. The hedging relationship.
+2. The entity's risk management objective and strategy for undertaking the hedge.
+3. Identification of the hedging instrument.
+4. Identification of the hedged item.
+5. The nature of the risk being hedged.
+6. How the entity will assess whether the relationship meets the effectiveness requirements —
+   including its **analysis of the sources of hedge ineffectiveness** and **how it determines the
+   hedge ratio**.
+
+**Key judgment:** documentation prepared after inception cannot be backdated. Hedge accounting is
+applied prospectively from the date all criteria are met.
+
+### Step 3: Test the Three Effectiveness Requirements (IFRS 9.6.4.1(c))
+
+| # | Requirement | What to demonstrate |
+|---|---|---|
+| 1 | **Economic relationship** | The values of the hedged item and hedging instrument move in opposite directions because of the same risk — established by a qualitative analysis of critical terms, or quantitatively (regression, scenario analysis) where terms are not closely aligned |
+| 2 | **Credit risk does not dominate** | The magnitude of value changes caused by credit risk on either side does not swamp the value changes caused by the hedged risk |
+| 3 | **Hedge ratio** | The ratio designated equals the ratio of the quantity actually hedged to the quantity of the instrument actually used — no deliberate over- or under-hedging to create a particular accounting outcome |
+
+**Note:** IFRS 9 has **no 80–125% bright line**. That was IAS 39. Effectiveness under IFRS 9 is a
+forward-looking qualifying test; ineffectiveness is then *measured* and recognised, not used to
+disqualify.
+
+**Decision point — does the relationship still meet all three?**
+- **Yes** -> continue.
+- **The hedge ratio no longer holds but the risk management objective is unchanged** -> **rebalance**
+  (adjust the designated quantities) and continue (IFRS 9.6.5.5).
+- **No, and rebalancing cannot fix it** -> **discontinue prospectively** (IFRS 9.6.5.6). Voluntary
+  discontinuation while the criteria are still met is **prohibited**.
+
+### Step 4A: Cash Flow Hedge — Measurement and Journal Entries
+
+The cash flow hedge reserve is adjusted to the **lower, in absolute amounts**, of (IFRS 9.6.5.11(a)):
+(i) the cumulative gain or loss on the hedging instrument since inception; and
+(ii) the cumulative change in the fair value (present value) of the hedged expected future cash flows
+since inception.
+
+The portion of the instrument's gain or loss that offsets the change in the reserve goes to **OCI**
+(6.5.11(b)); any remainder is **ineffectiveness in profit or loss** (6.5.11(c)). Note that
+ineffectiveness is measured on a **cumulative** basis, so a period can show nil ineffectiveness even
+where cumulative ineffectiveness is non-zero.
+
+**Decision point — what happens to the reserve balance?** (IFRS 9.6.5.11(d))
+- The forecast transaction results in a **non-financial asset or liability** -> remove the balance
+  from the reserve and include it **directly in the initial cost** of that asset or liability
+  ("basis adjustment"). This is **not** a reclassification adjustment and does not touch OCI
+  (6.5.11(d)(i)).
+- Any other cash flow hedge -> **reclassify to profit or loss** in the same period(s) in which the
+  hedged cash flows affect profit or loss (6.5.11(d)(ii)).
+- The balance is a **loss** and all or part will not be recovered -> reclassify the unrecoverable
+  amount to profit or loss **immediately** (6.5.11(d)(iii)).
+
+**Worked example — cash flow hedge of a forecast commodity purchase.**
+
+**Facts.** On 1 October 20X1 an entity designates a forward contract to buy 1,000 tonnes of copper on
+30 September 20X2 at CU 8,000 per tonne as a hedge of a highly probable forecast purchase of 1,000
+tonnes of a slightly different copper grade on the same date. The grade difference is the documented
+source of ineffectiveness. Year end is 31 December.
+
+```
+31 December 20X1
+  Fair value of the forward contract (cumulative gain)                     291,000
+  Cumulative change in the PV of the hedged expected cash flows            281,000
+  Cash flow hedge reserve = lower of the two, in absolute amounts          281,000
+  Ineffectiveness to profit or loss = 291,000 - 281,000                     10,000
+
+Dr  Derivative Financial Asset               291,000
+    Cr  OCI — Cash Flow Hedge Reserve                    281,000
+    Cr  Gain on Hedge Ineffectiveness (P&L)               10,000
+Debits 291,000 = credits 291,000.
+
+30 September 20X2 — spot settlement
+  Cumulative gain on the forward: 1,000 x (8,500 - 8,000)                  500,000
+  Cumulative change in the PV of hedged cash flows: 1,000 x (8,490 - 8,000) 490,000
+  Reserve must now stand at                                                490,000
+
+  Movement in the period: derivative  500,000 - 291,000 =                  209,000
+                          reserve     490,000 - 281,000 =                  209,000
+                          ineffectiveness for the period                         0
+  (Cumulative ineffectiveness remains 10,000, all recognised in 20X1.)
+
+Dr  Derivative Financial Asset               209,000
+    Cr  OCI — Cash Flow Hedge Reserve                    209,000
+
+Dr  Cash                                     500,000
+    Cr  Derivative Financial Asset                       500,000
+To settle the forward. Carrying amount 291,000 + 209,000 = 500,000, extinguished in full.
+
+Dr  Inventory                              8,490,000
+    Cr  Cash                                           8,490,000
+To record the purchase of 1,000 tonnes at the spot price of CU 8,490.
+
+Dr  OCI — Cash Flow Hedge Reserve            490,000
+    Cr  Inventory                                        490,000
+Basis adjustment under IFRS 9.6.5.11(d)(i). The reserve is removed and included directly in the
+initial cost of the inventory. This is not a reclassification adjustment.
+
+Net cost of inventory = 8,490,000 - 490,000 = 8,000,000 = 1,000 tonnes x CU 8,000, the hedged
+price. The hedge has done exactly what it was designated to do.
+```
+
+### Step 4B: Fair Value Hedge — Measurement and Journal Entries
+
+The gain or loss on the hedging instrument goes to **profit or loss**; the hedging gain or loss on the
+hedged item **adjusts the carrying amount of the hedged item** and also goes to profit or loss
+(IFRS 9.6.5.8). Ineffectiveness is not a separate calculation — it emerges as the net of the two
+amounts in profit or loss.
+
+**Worked example — fair value hedge of fixed-rate debt.**
+
+**Facts.** An entity has CU 10,000,000 of fixed-rate debt at amortised cost. It enters a
+receive-fixed / pay-floating interest rate swap on the same notional and designates it as a fair
+value hedge of the interest rate risk on the debt. During the period market interest rates fall.
+
+```
+Fair value of the swap at the reporting date (asset)                        43,000
+Change in the fair value of the debt attributable to the hedged
+  interest rate risk (a loss, because rates fell)                          (41,500)
+
+Dr  Derivative Financial Asset (swap)          43,000
+    Cr  Gain on Hedging Instrument (P&L)                  43,000
+
+Dr  Loss on Hedged Item (P&L)                  41,500
+    Cr  Borrowings — fair value hedge adjustment          41,500
+
+Net effect on profit or loss = 43,000 - 41,500 = 1,500 gain. This is the ineffectiveness.
+The carrying amount of the debt becomes 10,000,000 + 41,500 = 10,041,500.
+```
+
+**On discontinuation** the CU 41,500 adjustment to the debt is **amortised to profit or loss** using a
+recalculated effective interest rate from the date amortisation begins, which must be no later than
+when the hedged item ceases to be adjusted for hedging gains and losses (IFRS 9.6.5.10).
+
+### Step 5: Discontinuation
+
+| Situation | Cash flow hedge reserve |
+|---|---|
+| Hedged future cash flows **still expected** to occur | Remains in the reserve until the cash flows occur; then 6.5.11(d) applies (IFRS 9.6.5.12(a)) |
+| Hedged future cash flows **no longer expected** to occur | Reclassify to profit or loss **immediately** (IFRS 9.6.5.12(b)) |
+
+**Key judgment:** a cash flow that is no longer *highly probable* may still be *expected* to occur —
+the hedge is discontinued but the reserve is not yet recycled (IFRS 9.6.5.12(b), final sentence).
+
+### Step 6: Net Investment Hedge
+
+Accounted for **similarly to a cash flow hedge**: the effective portion to OCI, the ineffective
+portion to profit or loss (IFRS 9.6.5.13). The cumulative amount is reclassified to profit or loss on
+disposal of the foreign operation, alongside the translation reserve — see workflow 12.
+
+**Common pitfalls:**
+- Applying the IAS 39 80–125% test. It does not exist in IFRS 9.
+- Treating the basis adjustment as a reclassification adjustment. It is not, and it does not appear
+  in OCI (IFRS 9.6.5.11(d)(i)).
+- De-designating a hedge voluntarily to avoid volatility. Prohibited (IFRS 9.6.5.6).
+- Measuring ineffectiveness period by period rather than cumulatively.
+
+**Related workflows:** IFRS 9 (workflow 4 — classification of the hedging instrument), IAS 21
+(workflow 12 — net investment hedges and the translation reserve), IFRS 18 (gains and losses on
+derivatives and designated hedging instruments are classified under IFRS 18.B70–B76, not by the
+general financing rules — IFRS 18.63), IFRS 1 (hedge accounting is a mandatory exception on
+transition — IFRS 1.B4–B6).
+
+---
+
+## 10. Employee Benefits (IAS 19) — Defined Benefit Remeasurement
+
+### Step 1: Determine the Deficit or Surplus (IAS 19.57)
+
+1. Apply the **projected unit credit method** to estimate the ultimate cost of the benefit employees
+   have earned for service in the current and prior periods, attributing benefit to periods of
+   service.
+2. **Discount** that benefit to determine the present value of the defined benefit obligation (DBO)
+   and the current service cost.
+3. **Deduct** the fair value of any plan assets.
+
+### Step 2: Set the Discount Rate (IAS 19.83)
+
+By reference to market yields at the end of the reporting period on **high quality corporate bonds**.
+Where there is no deep market in such bonds in that currency, use market yields on **government
+bonds** denominated in that currency. Currency and term must be consistent with the currency and
+estimated term of the obligation.
+
+**Key judgment:** the same rate is used to discount the DBO **and** to compute net interest
+(IAS 19.123). There is no separate "expected return on plan assets" assumption — that concept was
+removed from IAS 19 in 2011.
+
+### Step 3: Apply the Asset Ceiling
+
+The net defined benefit liability (asset) is the deficit or surplus adjusted for any effect of
+limiting a net defined benefit **asset** to the **asset ceiling** — the present value of economic
+benefits available as refunds from the plan or reductions in future contributions (IAS 19.57(b), 64).
+
+### Step 4: Split the Defined Benefit Cost into Its Three Components (IAS 19.120)
+
+| Component | Contents | Goes to |
+|---|---|---|
+| **Service cost** | Current service cost; past service cost (from a plan amendment or curtailment); any gain or loss on settlement | **Profit or loss** |
+| **Net interest** on the net defined benefit liability (asset) | Net liability (asset) at the start of the period x the discount rate at the start of the period | **Profit or loss** |
+| **Remeasurements** | Actuarial gains and losses on the DBO; return on plan assets **excluding** amounts included in net interest; any change in the effect of the asset ceiling excluding amounts in net interest | **OCI — never reclassified to profit or loss** |
+
+**Timing rules that are easy to get wrong:**
+- Current service cost uses actuarial assumptions determined at the **start** of the annual period
+  (IAS 19.122A); net interest uses the net liability and discount rate at the **start** of the period
+  (IAS 19.123A).
+- **But** if there is a plan amendment, curtailment or settlement, the entity **remeasures** the net
+  liability using current fair values and current assumptions (IAS 19.99), and then determines both
+  current service cost and net interest for the **remainder** of the period on the remeasured basis
+  (IAS 19.122A, 123A).
+
+**Decision point — is the change in the DBO an actuarial gain or loss, or past service cost?**
+- Arises from changes in **actuarial assumptions** or from **experience adjustments** -> actuarial
+  gain or loss -> **OCI** (IAS 19.128).
+- Arises from the **introduction, amendment, curtailment or settlement** of the plan, or a change to
+  the benefits payable -> **past service cost or gain/loss on settlement** -> **profit or loss**
+  (IAS 19.129).
+
+### Worked Example — Full Reconciliation
+
+**Facts (year ended 31 December 20X5).**
+
+```
+At 1 January 20X5:  DBO 10,000,000; plan assets at fair value 8,600,000
+                    Net defined benefit liability 1,400,000
+Discount rate at 1 January 20X5: 4.5%
+During 20X5:  current service cost              620,000
+              contributions paid into the plan  700,000 (paid 31 December)
+              benefits paid by the plan         450,000 (paid 31 December)
+              plan amendment on 31 December giving past service cost 180,000
+At 31 December 20X5 (per the actuary): DBO 11,050,000; plan assets 9,180,000
+```
+
+**Obligation reconciliation:**
+
+```
+Opening DBO                                                    10,000,000
+Interest cost                       10,000,000 x 4.5%             450,000
+Current service cost                                              620,000
+Past service cost (plan amendment)                                180,000
+Benefits paid                                                    (450,000)
+                                                              -----------
+Expected DBO                                                   10,800,000
+Actual DBO per the actuary                                     11,050,000
+                                                              -----------
+Actuarial LOSS on the obligation (remeasurement, OCI)             250,000
+```
+
+**Plan asset reconciliation:**
+
+```
+Opening plan assets                                             8,600,000
+Interest income                      8,600,000 x 4.5%             387,000
+Contributions                                                     700,000
+Benefits paid                                                    (450,000)
+                                                              -----------
+Expected plan assets                                            9,237,000
+Actual plan assets                                              9,180,000
+                                                              -----------
+Return on plan assets BELOW the amount in net interest
+  (remeasurement, OCI)                                             57,000
+```
+
+**Net interest check:** 450,000 interest cost − 387,000 interest income = **63,000** =
+1,400,000 × 4.5%. The single net-interest figure and the two gross figures agree, as IAS 19.123
+requires.
+
+**Summary of the defined benefit cost:**
+
+```
+Profit or loss:  service cost 620,000 + 180,000                   800,000
+                 net interest                                      63,000
+                                                                 --------
+                 total in profit or loss                          863,000
+
+OCI:             actuarial loss on the DBO                        250,000
+                 shortfall in the return on plan assets            57,000
+                                                                 --------
+                 total remeasurement loss in OCI                  307,000
+```
+
+**Journal entries:**
+
+```
+Dr  Employee Benefits Expense — service cost (P&L)     800,000
+    Cr  Net Defined Benefit Liability                             800,000
+To recognise current service cost 620,000 and past service cost 180,000.
+
+Dr  Net Interest Expense (P&L)                          63,000
+    Cr  Net Defined Benefit Liability                              63,000
+To recognise net interest on the net defined benefit liability (1,400,000 x 4.5%).
+
+Dr  OCI — Remeasurement of Defined Benefit Plans       307,000
+    Cr  Net Defined Benefit Liability                             307,000
+To recognise remeasurements: actuarial loss 250,000 and asset return shortfall 57,000.
+
+Dr  Net Defined Benefit Liability                      700,000
+    Cr  Cash                                                      700,000
+To record contributions paid into the plan.
+```
+
+**Cross-cast of the net liability:**
+
+```
+Opening net defined benefit liability                           1,400,000
++ recognised in profit or loss                                    863,000
++ recognised in OCI                                               307,000
+- contributions paid                                             (700,000)
+                                                              -----------
+Closing net defined benefit liability                           1,870,000
+
+Check: closing DBO 11,050,000 - closing plan assets 9,180,000 = 1,870,000  ** agrees **
+```
+
+
+**Verification — runnable.** Rebuilds both reconciliations and asserts the net liability roll-forward closes on the actuary's figures.
+
+```python
+DBO0, PA0, r = 10_000_000, 8_600_000, 0.045                # opening obligation, plan assets, IAS 19.83 rate
+csc, psc, contrib, ben = 620_000, 180_000, 700_000, 450_000
+DBO1, PA1 = 11_050_000, 9_180_000                          # actuary's closing figures
+
+net_interest = (DBO0 - PA0) * r                            # IAS 19.123: net liability x discount rate
+assert net_interest == DBO0*r - PA0*r == 63_000            # net figure == gross cost less gross income
+
+actuarial_loss   = DBO1 - (DBO0 + DBO0*r + csc + psc - ben)
+asset_shortfall  = (PA0 + PA0*r + contrib - ben) - PA1
+assert actuarial_loss == 250_000 and asset_shortfall == 57_000
+
+pl  = csc + psc + net_interest                             # service cost + net interest -> P&L
+oci = actuarial_loss + asset_shortfall                     # remeasurements -> OCI, never recycled
+assert pl == 863_000 and oci == 307_000
+assert (DBO0 - PA0) + pl + oci - contrib == DBO1 - PA1 == 1_870_000
+print("OK  net liability rolls 1,400,000 + 863,000 + 307,000 - 700,000 = 1,870,000")
+```
+
+Output:
+
+```
+OK  net liability rolls 1,400,000 + 863,000 + 307,000 - 700,000 = 1,870,000
+```
+
+**Common pitfalls:**
+- Recycling remeasurements from OCI to profit or loss. IAS 19 does not permit it. Transfer within
+  equity is allowed.
+- Using an expected long-term rate of return on plan assets. Removed in 2011; use the discount rate.
+- Recognising a plan amendment through OCI. It is past service cost — profit or loss (IAS 19.129).
+- Failing to remeasure under IAS 19.99 when an amendment occurs mid-year, and so computing service
+  cost and net interest for the rest of the year on stale assumptions.
+
+**Related workflows:** IAS 12 (workflow 6 — the defined benefit obligation is usually a deductible
+temporary difference, and deferred tax on the OCI remeasurement is itself recognised in OCI),
+IFRS 18 (a defined benefit pension liability does not arise from a transaction involving only the
+raising of finance — IFRS 18.B53(d) — so only its **interest** element reaches the financing category,
+under IFRS 18.61(a); the IASB's own Example II-1 presents "Interest expenses on pension liabilities"
+as a financing line item, while service cost and remeasurements stay out of it),
+IFRS 1 (the employee benefits exemption).
+
+---
+
+## 11. Share-Based Payment (IFRS 2) — Equity-Settled, Market vs Non-Market Conditions
+
+The single most consequential distinction in IFRS 2 is **where a condition is reflected**: in the
+grant-date fair value per instrument, or in the number of instruments expected to vest.
+
+### Step 1: Classify Every Condition Attached to the Award
+
+```
+Is the condition a VESTING condition (does it determine whether the counterparty
+receives the award, and does it require a service period)?
+├─ NO -> NON-VESTING CONDITION (e.g. a requirement to make savings contributions,
+│         a non-compete during the vesting period)
+│         -> reflected in the GRANT-DATE FAIR VALUE (IFRS 2.21A)
+│         -> NO true-up if it fails
+└─ YES
+   ├─ SERVICE CONDITION only (remain employed for a period)
+   │   -> reflected in the NUMBER expected to vest; true-up to actual
+   └─ PERFORMANCE CONDITION
+       ├─ MARKET CONDITION (related to the market price or total shareholder
+       │   return of the entity's equity instruments — e.g. a target share price,
+       │   TSR relative to an index)
+       │   -> reflected in the GRANT-DATE FAIR VALUE (IFRS 2.21)
+       │   -> NO true-up if it fails
+       └─ NON-MARKET CONDITION (e.g. EPS growth, revenue target, an IPO,
+           a regulatory approval)
+           -> reflected in the NUMBER expected to vest (IFRS 2.19-20)
+           -> FULL true-up; cumulative expense reverses to nil if it fails
+```
+
+### Step 2: Measure at Grant-Date Fair Value
+
+Measure the equity instruments granted at their **grant-date** fair value. Vesting conditions
+**other than market conditions** are excluded from that fair value (IFRS 2.19). Market conditions
+**and** all non-vesting conditions **are** included (IFRS 2.21, 21A). The grant-date fair value of an
+otherwise identical award is therefore **lower** where a market condition is attached, because the
+valuation model already discounts for the probability that the share price target will not be met.
+
+### Step 3: Recognise Over the Vesting Period
+
+Recognise the goods or services received over the vesting period, with a corresponding increase in
+equity (IFRS 2.15). At each reporting date recognise an amount based on the **best available estimate
+of the number of equity instruments expected to vest**, and revise that estimate if subsequent
+information indicates it differs (IFRS 2.20).
+
+**Decision point — at vesting date, did the condition fail?**
+- **Non-market vesting condition failed** -> on a cumulative basis **no amount is recognised**; the
+  entire expense previously recognised is reversed (IFRS 2.19, final sentence).
+- **Market condition failed** -> the entity **still recognises** the full expense, provided the
+  counterparty satisfied all other vesting conditions, in particular the service condition
+  (IFRS 2.21). **No reversal.**
+- **Non-vesting condition failed** -> same as a market condition: no reversal (IFRS 2.21A).
+
+### Worked Example — Two Parallel Grants
+
+**Facts.** On 1 January 20X5 an entity grants share options to 100 senior employees. Both grants
+require three years' service, vesting on 31 December 20X7.
+
+```
+Grant A — 50,000 options (500 per employee). Vests only if cumulative EPS growth over
+          20X5-20X7 is at least 15% (a NON-MARKET performance condition).
+          Grant-date fair value, ignoring the EPS condition:              CU 6.00 per option
+
+Grant B — 50,000 options (500 per employee). Vests only if the share price is at least
+          CU 25 on 31 December 20X7 (a MARKET condition).
+          Grant-date fair value, with the market condition built into the
+          valuation model:                                                CU 4.20 per option
+
+Employee numbers expected to complete the three years:
+  at 31 Dec 20X5: 90    at 31 Dec 20X6: 88    actual at 31 Dec 20X7: 86
+
+Outcomes:  EPS condition (Grant A):  20X5 expected to be MET
+                                     20X6 expected NOT to be met
+                                     20X7 actually MET
+           Share price condition (Grant B): NOT met at 31 December 20X7
+```
+
+**Grant A — non-market condition, adjust the number:**
+
+```
+| Year | Cumulative calculation                        | Cumulative | Expense   |
+|---|---|---|---|
+| 20X5 | 90 x 500 x 6.00 x 1/3                        |     90,000 |    90,000 |
+| 20X6 | EPS condition not expected to be met -> nil  |          0 |  (90,000) |
+| 20X7 | 86 x 500 x 6.00 x 3/3 (condition met)        |    258,000 |   258,000 |
+```
+
+**Grant B — market condition, do not adjust for it:**
+
+```
+| Year | Cumulative calculation      | Cumulative | Expense  |
+|---|---|---|---|
+| 20X5 | 90 x 500 x 4.20 x 1/3      |     63,000 |   63,000 |
+| 20X6 | 88 x 500 x 4.20 x 2/3      |    123,200 |   60,200 |
+| 20X7 | 86 x 500 x 4.20 x 3/3      |    180,600 |   57,400 |
+```
+
+The share price target was **missed** and the options do not vest — yet the cumulative expense of
+CU 180,600 stands. The 86 employees rendered the service, and the low probability of hitting CU 25
+was already priced into the CU 4.20 fair value. Reversing the expense would double-count that
+discount.
+
+**Journal entries:**
+
+```
+20X5:
+Dr  Employee Benefits Expense (P&L)          153,000
+    Cr  Equity — Share-Based Payment Reserve             153,000
+Grant A 90,000 + Grant B 63,000.
+
+20X6:
+Dr  Equity — Share-Based Payment Reserve      90,000
+    Cr  Employee Benefits Expense (P&L)                   90,000
+Reversal of Grant A: the non-market EPS condition is no longer expected to be met, so on a
+cumulative basis no amount is recognised (IFRS 2.19).
+
+Dr  Employee Benefits Expense (P&L)           60,200
+    Cr  Equity — Share-Based Payment Reserve              60,200
+Grant B for 20X6.
+
+20X7:
+Dr  Employee Benefits Expense (P&L)          258,000
+    Cr  Equity — Share-Based Payment Reserve             258,000
+Grant A: the EPS condition was met after all and 86 employees completed service. The full
+cumulative charge is reinstated in one period.
+
+Dr  Employee Benefits Expense (P&L)           57,400
+    Cr  Equity — Share-Based Payment Reserve              57,400
+Grant B for 20X7. No reversal despite the market condition failing (IFRS 2.21).
+```
+
+**Cross-cast:**
+
+```
+Share-based payment reserve
+  153,000 - 90,000 + 60,200 + 258,000 + 57,400 = 438,600
+Check: Grant A cumulative 258,000 + Grant B cumulative 180,600 = 438,600   ** agrees **
+```
+
+**Note on the expected vesting period.** Where the length of the vesting period varies with a
+performance condition, the entity estimates it at grant date on the most likely outcome. If the
+condition is a **market condition**, that estimate must be consistent with the assumptions used in
+the valuation and **shall not subsequently be revised**. If it is **not** a market condition, the
+estimate is revised as information changes (IFRS 2.15(b)).
+
+**Common pitfalls:**
+- Building a non-market performance condition into the option-pricing model. It must be reflected in
+  the number of instruments, not the price (IFRS 2.19).
+- Reversing the expense when a TSR or share-price target is missed. Prohibited (IFRS 2.21).
+- Treating an employee savings requirement as a vesting condition. It is a **non-vesting** condition:
+  reflected in fair value, no true-up (IFRS 2.21A).
+- Forgetting that failure of the **service** condition always reverses the expense, on either grant.
+
+**Related workflows:** IFRS 3 (replacement awards issued in a business combination are split between
+consideration transferred and post-combination expense), IAS 12 (the deferred tax asset for a
+share-based payment is measured on the estimated future tax deduction, so it moves with the share
+price, not the IFRS 2 expense; the excess is recognised in equity), IFRS 1 (the share-based payment
+exemption — IFRS 1.D2-D3).
+
+---
+
+## 12. Translation of a Foreign Operation (IAS 21) — CTA and Recycling on Disposal
+
+### Step 1: Determine the Functional Currency of the Foreign Operation
+
+The functional currency is the currency of the primary economic environment in which the entity
+operates. Assess the currency that mainly influences sales prices and the costs of providing goods
+and services; then, as secondary indicators, the currency of financing and of receipts retained.
+For a foreign operation, also consider the degree of autonomy from the reporting entity, the
+proportion of transactions with the reporting entity, whether its cash flows directly affect those of
+the reporting entity, and whether it can service its own debt (IAS 21.9–11).
+
+**Decision point — is the functional currency of the foreign operation the currency of a
+hyperinflationary economy?**
+- **Yes** -> first restate under IAS 29 (workflow 13), then translate **all** amounts, including
+  comparatives, at the **closing rate**.
+- **No** -> proceed to Step 2.
+
+### Step 2: Translate into the Presentation Currency (IAS 21.39)
+
+| Item | Rate |
+|---|---|
+| Assets and liabilities in each statement of financial position presented, **including comparatives** | **Closing rate** at the date of that statement of financial position |
+| Income and expenses in each statement presenting profit or loss and OCI, **including comparatives** | Exchange rates at the **dates of the transactions** (an average rate is a permitted approximation if rates do not fluctuate significantly) |
+| All resulting exchange differences | Recognised in **other comprehensive income** |
+
+**Goodwill and fair value adjustments** arising on the acquisition of the foreign operation are
+treated as **assets and liabilities of the foreign operation**. They are expressed in its functional
+currency and translated at the **closing rate** — so they generate translation differences of their
+own (IAS 21.47).
+
+### Step 3: Accumulate the Cumulative Translation Adjustment
+
+The exchange differences are accumulated in a separate component of equity — the foreign currency
+translation reserve (FCTR), also called the cumulative translation adjustment. The period movement
+has exactly two sources:
+
+```
+CTA movement = Opening net assets x (closing rate - opening rate)
+             + Profit for the period x (closing rate - average rate)
+             (+ equivalent effects for any capital injections or dividends,
+                at closing rate less the rate on the transaction date)
+```
+
+**Monetary items forming part of the net investment.** An exchange difference on a monetary item
+receivable from or payable to a foreign operation for which settlement is neither planned nor likely
+in the foreseeable future is recognised **in profit or loss** in the separate financial statements of
+the entity concerned, but **in OCI** in the consolidated financial statements, and reclassified to
+profit or loss on disposal (IAS 21.32).
+
+### Step 4: Recycle on Disposal (IAS 21.48)
+
+On the **disposal** of a foreign operation, the cumulative amount of exchange differences relating to
+that foreign operation recognised in OCI and accumulated in the separate component of equity is
+**reclassified from equity to profit or loss** as a reclassification adjustment, **when the gain or
+loss on disposal is recognised**.
+
+**Decision point — is it a disposal for IAS 21.48 purposes?**
+- **Loss of control of a subsidiary that includes a foreign operation** — treated as a disposal
+  whether or not a non-controlling interest is retained (IAS 21.48A(a)). Reclassify the cumulative
+  exchange differences to profit or loss. **But** the portion of the cumulative amount that had been
+  **attributed to non-controlling interests is derecognised and is NOT reclassified to profit or
+  loss** (IAS 21.48B).
+- **Partial disposal of an interest in an associate or joint arrangement after which the retained
+  interest is a financial asset** — treated as a disposal (IAS 21.48A(b)).
+- **Partial disposal of a subsidiary while retaining control** -> **no** reclassification;
+  **re-attribute** the proportionate share of the cumulative amount to the non-controlling interests
+  in that foreign operation (IAS 21.48C, first sentence).
+- **Any other partial disposal** (e.g. of an associate while retaining significant influence) ->
+  reclassify only the **proportionate share** of the cumulative amount to profit or loss
+  (IAS 21.48C, second sentence).
+- A partial disposal is **any** reduction in the ownership interest in a foreign operation other than
+  the reductions in IAS 21.48A that are accounted for as disposals (IAS 21.48D).
+
+### Worked Example — Two Years of Translation, Then Disposal
+
+**Facts.** Parent P has presentation currency CU. On 1 January 20X5 it acquires 100% of S, whose
+functional currency is FC. Identifiable net assets at acquisition-date fair value are FC 5,000,000
+and goodwill is FC 1,000,000, so the carrying amount of the foreign operation in FC (net assets
+including goodwill) is FC 6,000,000. S pays no dividends.
+
+```
+Exchange rates (CU per FC 1):
+  1 January 20X5 (acquisition / opening)        0.80
+  Average 20X5                                  0.75
+  31 December 20X5 (closing)                    0.70
+  Average 20X6                                  0.65
+  31 December 20X6 (closing)                    0.60
+
+S's profit:  20X5  FC 800,000     20X6  FC 1,000,000
+```
+
+**Year 20X5:**
+
+```
+Opening net assets incl. goodwill  FC 6,000,000 @ 0.80            CU 4,800,000
+Profit for the year                FC   800,000 @ 0.75 (average)  CU   600,000
+Closing net assets incl. goodwill  FC 6,800,000 @ 0.70            CU 4,760,000
+                                                                  ------------
+CTA for 20X5 = 4,760,000 - 4,800,000 - 600,000                    CU  (640,000)
+
+Proof by source:
+  on opening net assets:  6,000,000 x (0.70 - 0.80) =  (600,000)
+  on the profit:            800,000 x (0.70 - 0.75) =   (40,000)
+                                                       ---------
+                                                       (640,000)   ** agrees **
+```
+
+**Year 20X6:**
+
+```
+Opening net assets incl. goodwill  FC 6,800,000 @ 0.70            CU 4,760,000
+Profit for the year                FC 1,000,000 @ 0.65 (average)  CU   650,000
+Closing net assets incl. goodwill  FC 7,800,000 @ 0.60            CU 4,680,000
+                                                                  ------------
+CTA for 20X6 = 4,680,000 - 4,760,000 - 650,000                    CU  (730,000)
+
+Proof by source:
+  on opening net assets:  6,800,000 x (0.60 - 0.70) =  (680,000)
+  on the profit:          1,000,000 x (0.60 - 0.65) =   (50,000)
+                                                       ---------
+                                                       (730,000)   ** agrees **
+
+Cumulative FCTR at 31 December 20X6 = (640,000) + (730,000) = CU (1,370,000) debit balance.
+```
+
+**Annual entry (20X6 shown):**
+
+```
+Dr  OCI — Foreign Currency Translation Reserve       730,000
+    Cr  Net Assets of Foreign Operation (translation)            730,000
+To recognise the exchange difference on translating the foreign operation into the
+presentation currency (IAS 21.39(c)).
+```
+
+**Disposal on 1 January 20X7.** P sells its entire interest in S for cash of CU 4,200,000. The
+carrying amount of S's net assets including goodwill in the consolidated financial statements is
+CU 4,680,000.
+
+```
+Consideration received                                            4,200,000
+Carrying amount of net assets disposed of, incl. goodwill        (4,680,000)
+Reclassification of the cumulative translation reserve           (1,370,000)
+                                                                 ----------
+Loss on disposal recognised in profit or loss                    (1,850,000)
+
+Dr  Cash                                            4,200,000
+Dr  Loss on Disposal of Foreign Operation (P&L)     1,850,000
+    Cr  Net Assets of S (including goodwill)                    4,680,000
+    Cr  Foreign Currency Translation Reserve                    1,370,000
+Debits 6,050,000 = credits 6,050,000.
+
+The credit to the FCTR clears its accumulated DEBIT balance of 1,370,000 to nil. The
+translation losses that were held in OCI for two years now hit profit or loss (IAS 21.48).
+```
+
+**Note on scale.** The economic loss on the sale in FC terms is modest; almost all of the
+CU 1,850,000 loss is the recycled currency effect of FC depreciating from 0.80 to 0.60. This is why
+a net investment hedge (workflow 9, Step 6) is frequently designated — its gains sit in the same
+reserve and are recycled at the same moment, offsetting the recycled CTA.
+
+**Common pitfalls:**
+- Translating goodwill on a foreign acquisition at the historical rate. It is an asset of the foreign
+  operation, translated at closing rate.
+- Translating the closing statement of financial position at the closing rate but leaving comparatives
+  at the prior closing rate — correct — while also restating comparative income at the current
+  average rate, which is not.
+- Recycling the CTA on a partial disposal that does not result in loss of control.
+- Forgetting that the 2025 amendment *Translation to a Hyperinflationary Presentation Currency*
+  (issued 13 November 2025, effective for annual periods beginning on or after 1 January 2027,
+  earlier application permitted) changes how comparatives are presented when the presentation currency
+  is hyperinflationary. IAS 21.39, 41A, 42(b), 43 and 47A now interact with IAS 29.8 and .34.
+
+**Related workflows:** IAS 29 (workflow 13 — restate before translating), IFRS 9 (workflow 9 — net
+investment hedges), IFRS 3 (goodwill arising on a foreign acquisition), IFRS 1 (the cumulative
+translation differences exemption permits deeming the CTA to be nil at the date of transition).
+
+---
+
+## 13. Financial Reporting in Hyperinflationary Economies (IAS 29) — Restatement
+
+### Step 1: Determine Whether the Economy Is Hyperinflationary
+
+IAS 29 sets **no absolute rate**. It is a matter of judgement, indicated by characteristics of the
+economic environment including (IAS 29.3):
+
+- The general population prefers to keep its wealth in non-monetary assets or a relatively stable
+  foreign currency, and immediately invests local currency to preserve purchasing power.
+- The general population regards monetary amounts in terms of a relatively stable foreign currency
+  rather than the local currency; prices may be quoted in that currency.
+- Sales and purchases on credit take place at prices that compensate for expected loss of purchasing
+  power over the credit period, even if that period is short.
+- Interest rates, wages and prices are linked to a price index.
+- The cumulative inflation rate over three years approaches or exceeds **100%**.
+
+### Step 2: Select the General Price Index
+
+Use a general price index that reflects changes in general purchasing power. Restatement takes both
+mechanical procedure and judgement, and IAS 29.10 makes the priority explicit: **applying that
+procedure and judgement the same way each period matters more than getting the restated figures
+exactly right**. Pick the index and stay with it.
+
+### Step 3: Classify Every Item as Monetary or Non-Monetary
+
+| Class | Definition | Restatement |
+|---|---|---|
+| **Monetary** | Money held, and items to be received or paid in **fixed or determinable amounts of money** — cash, receivables, payables, borrowings | **Not restated.** They are already expressed in the measuring unit current at the end of the reporting period. They are the source of the gain or loss on the net monetary position |
+| **Non-monetary at historical cost** | PP&E, inventory, intangibles, prepayments, equity | Restated by the change in the index from the **date of acquisition or contribution** to the end of the reporting period |
+| **Non-monetary at a current value** | Investment property at fair value, assets revalued at a date within the period | Restated from the **date of the revaluation or fair value measurement**, not the acquisition date |
+
+### Step 4: Restate the Statement of Financial Position
+
+All items are stated in terms of the measuring unit current at the **end of the reporting period**
+(IAS 29.8). Comparatives and any earlier-period information are restated to the same unit
+(IAS 29.34) — the prior year's figures move even though nothing happened to them.
+
+**Constraint:** a restated non-monetary asset is reduced when it exceeds its recoverable amount.
+
+### Step 5: Restate the Statement of Profit or Loss
+
+All items are expressed in the measuring unit current at the end of the reporting period, so every
+income and expense is restated by the change in the index from the date it was **initially recorded**
+(IAS 29.26). Items that flow from a restated balance sheet amount — cost of sales, depreciation —
+must be restated from the date of **the underlying asset**, not the date of the expense.
+
+### Step 6: Compute the Gain or Loss on the Net Monetary Position
+
+Included in **profit or loss** and **separately disclosed** (IAS 29.9). Two equivalent methods:
+
+- **Derived** — the balancing figure that reconciles restated opening equity plus restated
+  transactions to restated closing equity.
+- **Direct** — restate the opening net monetary position and each monetary flow to the closing
+  measuring unit, and compare with the actual closing net monetary position.
+
+Both should agree. Compute one and prove it with the other.
+
+**Rule of thumb:** holding a net monetary **asset** in inflation produces a **loss**; holding a net
+monetary **liability** produces a **gain**.
+
+### Worked Example — One Year of Restatement
+
+**Facts.**
+
+```
+General price index:  1 January 20X3   60      (date of PP&E purchase and share issue)
+                      1 January 20X5  100
+                      Average 20X5    120
+                      31 December 20X5 180
+
+Historical-cost statement of financial position at 1 January 20X5 (FC):
+  Cash                200,000 | Trade payables      400,000
+  Inventory           300,000 | Share capital       600,000
+  PP&E (net)        1,000,000 | Retained earnings   500,000
+  --------------------------- | ---------------------------
+                    1,500,000 |                   1,500,000
+
+Transactions in 20X5, all arising evenly through the year:
+  Cash sales                       900,000
+  Cash operating expenses          500,000
+  Trade payables settled in cash   400,000
+All opening inventory was sold; no closing inventory. Depreciation of PP&E for 20X5 is
+100,000 (historical), leaving net PP&E of 900,000. Historical profit for 20X5 is therefore
+900,000 - 300,000 - 500,000 - 100,000 = nil.
+```
+
+**Restatement factors:** to 180 from 60 = **3.0**; from 100 = **1.8**; from 120 = **1.5**.
+
+**Opening statement of financial position, restated to the 31 December 20X5 measuring unit:**
+
+```
+| Item              | Historical | Index at | Factor | Restated  |
+|---|---|---|---|---|
+| Cash              |    200,000 | monetary |    1.8 |   360,000 |
+| Inventory         |    300,000 |      100 |    1.8 |   540,000 |
+| PP&E (net)        |  1,000,000 |       60 |    3.0 | 3,000,000 |
+| **Total assets**  |  1,500,000 |          |        | **3,900,000** |
+| Trade payables    |    400,000 | monetary |    1.8 |   720,000 |
+| Share capital     |    600,000 |       60 |    3.0 | 1,800,000 |
+| Retained earnings |    500,000 | balancing|        | 1,380,000 |
+| **Total**         |  1,500,000 |          |        | **3,900,000** |
+```
+
+Restated opening retained earnings is the balancing figure: 3,900,000 − 720,000 − 1,800,000 =
+**1,380,000**. Note that the monetary items in the *opening* balance sheet are restated by 1.8,
+because that balance sheet is being expressed in *closing* units.
+
+**Restated statement of profit or loss for 20X5:**
+
+```
+| Item              | Historical | Restated from | Factor |   Restated |
+|---|---|---|---|---|
+| Revenue           |    900,000 | average (120) |    1.5 |  1,350,000 |
+| Cost of sales     |   (300,000)| inventory (100)|   1.8 |   (540,000)|
+| Operating expenses|   (500,000)| average (120) |    1.5 |   (750,000)|
+| Depreciation      |   (100,000)| PP&E (60)     |    3.0 |   (300,000)|
+| **Subtotal**      |   **nil**  |               |        | **(240,000)** |
+| Loss on the net monetary position |    —       |        |    (40,000)|
+| **Restated loss for the year**    |            |        |**(280,000)**|
+```
+
+**Closing statement of financial position, restated:**
+
+```
+Cash: 200,000 + 900,000 - 500,000 - 400,000 = 200,000 (monetary, no restatement)   200,000
+PP&E: 900,000 x 3.0                                                              2,700,000
+Total assets                                                                     2,900,000
+Trade payables (all settled)                                                             0
+Share capital  600,000 x 3.0                                                     1,800,000
+Retained earnings (balancing)                                                    1,100,000
+Total                                                                            2,900,000
+```
+
+**Derivation of the net monetary result:**
+
+```
+Restated closing retained earnings                                1,100,000
+Restated opening retained earnings                               (1,380,000)
+                                                                 ----------
+Restated loss for the year                                         (280,000)
+Restated loss before the net monetary position                     (240,000)
+                                                                 ----------
+LOSS on the net monetary position                                   (40,000)
+```
+
+**Independent proof by the direct method:**
+
+```
+Opening net monetary position: cash 200,000 - payables 400,000 =   (200,000)
+  (a net monetary LIABILITY; settling payables in cash reduces both sides and
+   leaves the net monetary position unchanged)
+
+Expected closing position in the 31 December measuring unit:
+  opening    (200,000) x 1.8                                        (360,000)
+  receipts     900,000 x 1.5                                       1,350,000
+  payments    (500,000) x 1.5                                       (750,000)
+                                                                   ---------
+                                                                     240,000
+Actual closing net monetary position                                 200,000
+                                                                   ---------
+LOSS on the net monetary position                                    (40,000)   ** agrees **
+```
+
+The entity swung from a net monetary liability to a net monetary asset early in a year of 80%
+inflation, and lost purchasing power on the cash it accumulated.
+
+**Restatement journal entry (posted to convert the historical-cost ledger):**
+
+```
+Dr  Property, Plant and Equipment                  1,800,000
+    Cr  Share Capital                                          1,200,000
+    Cr  Retained Earnings                                        600,000
+To restate non-monetary assets and equity into the measuring unit current at
+31 December 20X5. PP&E 2,700,000 - 900,000; share capital 1,800,000 - 600,000;
+retained earnings 1,100,000 - 500,000.
+Debits 1,800,000 = credits 1,800,000.
+```
+
+### Step 7: Consolidation and Presentation of Comparatives
+
+A consolidated group with a hyperinflationary subsidiary restates that subsidiary's financial
+statements under IAS 29 **before** translating them (workflow 12). Where comparative amounts are
+presented in a **different presentation currency**, IAS 29.8 and .34 route the entity to IAS 21.41A,
+42(b), 43 and 47A.
+
+**Common pitfalls:**
+- Restating monetary items. They are already in current units; restating them destroys the
+  net monetary gain or loss.
+- Restating cost of sales and depreciation at the average index rather than from the date of the
+  underlying inventory or asset.
+- Leaving the comparative period untouched. IAS 29.34 requires it to be restated into the current
+  measuring unit.
+- Presenting the net monetary result in OCI. IAS 29.9 requires profit or loss, separately disclosed.
+
+**Related workflows:** IAS 21 (workflow 12 — restate first, then translate at the closing rate),
+IAS 36 (a restated non-monetary asset must not exceed its recoverable amount), IFRS 18 (the gain or
+loss on the net monetary position is classified under IFRS 18.B65–B76; IAS 29.9 cross-refers to
+IFRS 18.46 and B86).
+
+---
+
+## 14. Diluted Earnings Per Share (IAS 33)
+
+### Step 1: Establish Basic EPS
+
+Basic EPS = profit or loss attributable to ordinary equity holders of the parent ÷ the weighted
+average number of ordinary shares outstanding during the period.
+
+**Contingently issuable shares in basic EPS** are included **only from the date when all necessary
+conditions are satisfied** — the date the events have actually occurred (IAS 33.24). Shares issuable
+solely after the passage of time are **not** contingently issuable, because the passage of time is a
+certainty.
+
+### Step 2: Adjust the Numerator (IAS 33.33)
+
+Adjust the profit attributable to ordinary equity holders by the **after-tax** effect of:
+
+- Any dividends or other items relating to dilutive potential ordinary shares that were deducted in
+  arriving at that profit (e.g. preference dividends on convertible preference shares).
+- Interest recognised in the period on dilutive potential ordinary shares (e.g. the coupon on a
+  convertible bond).
+- Any other changes in income or expense that would result from conversion.
+
+### Step 3: Compute Incremental Shares for Each Instrument
+
+**Options and warrants — the treasury stock method (IAS 33.45–46).**
+
+1. Assume the options are exercised.
+2. Treat the assumed proceeds as having been received from an issue of ordinary shares **at the
+   average market price of ordinary shares during the period**.
+3. The **difference** between the number of shares issued on exercise and the number that would have
+   been issued at the average market price is treated as an issue of ordinary shares **for no
+   consideration** — that difference is the incremental share count.
+
+Options and warrants are dilutive **only when the exercise price is below the average market price**
+for the period (IAS 33.46). They never affect the numerator, which is why they are almost always the
+most dilutive instrument and ranked first.
+
+**Convertible instruments.** Incremental shares = the number issuable on conversion. Numerator
+adjustment = the after-tax interest or dividend saved.
+
+**Contingently issuable shares in diluted EPS (IAS 33.52).**
+
+- Conditions **satisfied** at the reporting date -> include the shares, from the beginning of the
+  period or the date of the contingent share agreement if later.
+- Conditions **not satisfied** -> include the number of shares that would be issuable **if the end of
+  the reporting period were the end of the contingency period**. For a cumulative-earnings target, the
+  test is applied to cumulative earnings to date.
+- Restatement is **not permitted** if the conditions are ultimately not met when the contingency
+  period expires.
+
+### Step 4: Rank by Earnings per Incremental Share and Add Sequentially (IAS 33.41, 44)
+
+Potential ordinary shares are dilutive **when and only when** their conversion would **decrease** EPS
+from continuing operations (IAS 33.41). Each issue or series is considered **separately, not in
+aggregate**, and in sequence from **most dilutive to least dilutive** — lowest "earnings per
+incremental share" first (IAS 33.44). The sequence matters: adding an instrument out of order can
+make a genuinely dilutive instrument appear antidilutive.
+
+```
+Earnings per incremental share = numerator adjustment / incremental shares
+```
+
+**Shortcut for the treasury stock method.** The three-step calculation collapses to a single
+expression, which is the form the IASB uses in its own examples:
+
+```
+Incremental shares = n x (average market price - exercise price) / average market price
+```
+
+For the worked example below: 300,000 x (20.00 - 15.00) / 20.00 = 75,000 — identical to the
+proceeds-based calculation.
+
+Add each in turn; **stop including** at the first instrument that would increase EPS. That instrument
+and every one below it in the ranking are antidilutive and excluded.
+
+**The control number** is profit or loss from **continuing operations** attributable to ordinary
+equity holders of the parent. Dilution is judged against that figure, not against total profit.
+
+### Worked Example — Diluted EPS with Options, a Convertible Bond and Two Contingencies
+
+**Facts (year ended 31 December 20X5).**
+
+```
+Profit from continuing operations attributable to ordinary equity holders     4,000,000
+Ordinary shares outstanding throughout the year                               1,985,000
+Average market price of ordinary shares during 20X5                            CU 20.00
+Tax rate                                                                            25%
+
+(a) Options: 300,000 warrants outstanding all year, exercise price CU 15.00. These were issued
+    to an investor and are NOT within the scope of IFRS 2, so no IAS 33.47A adjustment to the
+    assumed proceeds is required. (For employee awards, see IAS 33.47A and .48 below.)
+
+(b) Convertible bonds: CU 5,000,000 nominal, 6% coupon, outstanding all year,
+    convertible into 250,000 ordinary shares.
+
+(c) Contingently issuable shares — store target: 60,000 shares issuable if the entity has
+    50 stores open by 31 December 20X6. The 50th store opened on 1 October 20X5, so the
+    condition was satisfied on that date. The agreement has been in force since 1 January 20X5.
+
+(d) Contingently issuable shares — profit target: 100,000 shares issuable if cumulative profit
+    for 20X4-20X6 exceeds CU 11,000,000. Cumulative profit to 31 December 20X5 is CU 7,500,000.
+```
+
+**Basic EPS:**
+
+```
+Weighted average shares = 1,985,000 + (60,000 x 3/12)  = 1,985,000 + 15,000 = 2,000,000
+  The 60,000 store-target shares enter basic EPS only from 1 October, the date the condition
+  was satisfied (IAS 33.24).
+
+Basic EPS = 4,000,000 / 2,000,000 = CU 2.00
+```
+
+**Incremental shares and ranking:**
+
+```
+(a) Options — treasury stock method:
+      Assumed proceeds            300,000 x CU 15.00 = 4,500,000
+      Shares repurchasable        4,500,000 / CU 20.00 =  225,000
+      Incremental shares          300,000 - 225,000  =    75,000
+      Numerator adjustment                                     0
+      Earnings per incremental share                        0.00
+      Dilutive because CU 15.00 < CU 20.00 average market price.
+
+(c) Store-target contingent shares — condition SATISFIED, so include the full 60,000 from
+    1 January 20X5 (IAS 33.52). 15,000 are already in the basic denominator.
+      Incremental shares          60,000 - 15,000     =    45,000
+      Earnings per incremental share                        0.00
+
+(d) Profit-target contingent shares — condition NOT satisfied. Test as if 31 December 20X5
+    were the end of the contingency period: cumulative profit CU 7,500,000 < CU 11,000,000.
+      Incremental shares                                          0
+
+(b) Convertible bonds:
+      After-tax interest saved    5,000,000 x 6% x (1 - 0.25) =  225,000
+      Incremental shares                                          250,000
+      Earnings per incremental share  225,000 / 250,000    =         0.90
+```
+
+**Sequential test, most dilutive first:**
+
+```
+| Step | Instrument added         | Numerator | Denominator |    EPS | Dilutive? |
+|---|---|---|---|---|---|
+| 0 | Basic                       | 4,000,000 |   2,000,000 | 2.0000 |     —     |
+| 1 | + options                   | 4,000,000 |   2,075,000 | 1.9277 |    Yes    |
+| 2 | + store-target contingent   | 4,000,000 |   2,120,000 | 1.8868 |    Yes    |
+| 3 | + convertible bonds         | 4,225,000 |   2,370,000 | 1.7827 |    Yes    |
+
+DILUTED EPS = 4,225,000 / 2,370,000 = CU 1.78
+```
+
+All three are dilutive, so all three are included. **The sequence is what makes this safe.** Had the
+bond's earnings per incremental share exceeded the running EPS of CU 1.8868 at step 3, it would have
+been antidilutive: it would be dropped, and diluted EPS would stop at **CU 1.89**.
+
+*Antidilutive variation.* Suppose the entity instead had convertible **preference** shares carrying a
+dividend of CU 200,000 after tax and converting into 80,000 ordinary shares. Earnings per incremental
+share = 200,000 / 80,000 = **CU 2.50**. Ranked last, they would be tested at step 4:
+
+```
+(4,225,000 + 200,000) / (2,370,000 + 80,000) = 4,425,000 / 2,450,000 = CU 1.8061
+```
+
+Since CU 1.8061 **exceeds** the CU 1.7827 running figure, the preference shares are **antidilutive**
+and are ignored. Diluted EPS remains **CU 1.78**. Testing them earlier in the sequence would have
+wrongly suppressed the dilution from the bond — which is precisely why IAS 33.44 mandates the
+most-dilutive-first order.
+
+
+**Verification — runnable.** Rebuilds the treasury stock method both ways, runs the sequential dilution test, and asserts the antidilutive instrument is excluded.
+
+```python
+profit, base_shares = 4_000_000, 1_985_000
+wanos = base_shares + 60_000*3/12                          # contingent shares from 1 Oct (IAS 33.24)
+assert wanos == 2_000_000 and profit/wanos == 2.00         # basic EPS
+
+opt = 300_000 - 300_000*15/20                              # treasury stock method (IAS 33.45)
+assert opt == 300_000*(20-15)/20 == 75_000                 # proceeds form == shortcut form
+cont = 60_000 - 60_000*3/12                                # IAS 33.52, condition already satisfied
+bond_e, bond_s = 5_000_000*0.06*0.75, 250_000              # after-tax interest saved; shares
+assert cont == 45_000 and bond_e/bond_s == 0.90            # earnings per incremental share
+
+n, s = profit, wanos                                       # add in sequence, most dilutive first
+for de, ds in [(0, opt), (0, cont), (bond_e, bond_s)]:     # EPIS 0.00, 0.00, 0.90 (IAS 33.44)
+    assert (n+de)/(s+ds) < n/s                             # each step must reduce EPS to be included
+    n, s = n+de, s+ds
+assert round(n/s, 4) == 1.7827
+assert (n + 200_000)/(s + 80_000) > n/s                    # preference shares antidilutive -> excluded
+print("OK  basic 2.00 -> diluted", round(n/s, 2), "; antidilutive instrument correctly excluded")
+```
+
+Output:
+
+```
+OK  basic 2.00 -> diluted 1.78 ; antidilutive instrument correctly excluded
+```
+
+**Presentation.** Present basic and diluted EPS **for profit or loss from continuing operations
+attributable to the ordinary equity holders of the parent** and **for profit or loss attributable to
+the ordinary equity holders of the parent**, with equal prominence, for each class of ordinary share
+with a different right to share in profit (IAS 33.66). Present EPS for every period for which a
+statement of comprehensive income is presented; if diluted EPS is reported for at least one period it
+must be reported for **all** periods presented, even where it equals basic EPS (IAS 33.67). An entity
+reporting a **discontinued operation** shall either present the basic and diluted amounts per share
+for it in the statement of comprehensive income or disclose them in the notes (IAS 33.68). Where
+profit or loss is presented in a separate statement under IFRS 18.12(b), the EPS figures are
+presented in that statement (IAS 33.67A, 68A).
+
+**Common pitfalls:**
+- Using the closing or period-end share price in the treasury stock method. IAS 33.45 requires the
+  **average** market price for the period.
+- Adding all potential ordinary shares at once. IAS 33.44 requires each issue or series to be tested
+  separately and in sequence.
+- Excluding contingently issuable shares from diluted EPS merely because the contingency period has
+  not ended. IAS 33.52 requires the year-end position to be tested as if it were the end of the
+  contingency period.
+- Judging dilution against total profit rather than profit from continuing operations.
+- Including options in diluted EPS when the exercise price exceeds the average market price. They are
+  antidilutive (IAS 33.46).
+
+**Employee share options — two specific rules (IAS 33.47A, 48).**
+- For share options and other share-based payment arrangements within IFRS 2, the issue price in
+  IAS 33.46 and the exercise price in IAS 33.47 **shall include the fair value, measured under
+  IFRS 2, of any goods or services to be supplied to the entity in the future** under the arrangement
+  (IAS 33.47A). In practice this means the unrecognised future IFRS 2 expense is **added to the
+  assumed proceeds** in the treasury stock method, which increases the shares deemed repurchased and
+  so reduces the incremental share count.
+- Employee share options with fixed or determinable terms and non-vested ordinary shares are treated
+  as **options**, and as outstanding **from the grant date**, even though they are contingent on
+  vesting. **Performance-based** employee share options are treated as **contingently issuable
+  shares** and so run through IAS 33.52 instead (IAS 33.48).
+
+**Related workflows:** IFRS 2 (workflow 11 — the grant-date fair value feeds IAS 33.47A; awards with
+a non-market performance condition are contingently issuable shares under IAS 33.48), IAS 32
+(classification of a convertible instrument between liability and equity determines the numerator
+adjustment), IAS 12 (the tax rate applied to the interest saved), IFRS 18 (EPS is presented in the
+statement of profit or loss where one is presented separately — IAS 33.67A, 68A).
+
+---
+
+## 15. Statement of Cash Flows (IAS 7) — Classification Decision Tree
+
+**This workflow reflects IAS 7 as amended by IFRS 18, effective for annual periods beginning on or
+after 1 January 2027 (IFRS 18 issued 9 April 2024; earlier application permitted; EU-endorsed
+13 February 2026, OJ 16 February 2026). The former free policy choice for interest and dividends is
+gone.** For periods before an entity applies IFRS 18, interest and dividends paid and received may
+still be classified under the previous IAS 7 policy choice.
+
+### Step 1: Confirm the Item Is a Cash Flow
+
+Only movements in **cash and cash equivalents** appear in the statement. Transfers between cash and
+cash equivalents are not cash flows. Non-cash investing and financing transactions — acquiring an
+asset under a lease, converting debt to equity, acquiring a subsidiary for shares — are **excluded**
+from the statement and disclosed elsewhere.
+
+### Step 2: Classify by Activity (IAS 7.10)
+
+```
+Is the cash flow a tax on income?
+├─ YES -> OPERATING, unless it can be specifically identified with an
+│          investing or financing transaction (IAS 7.35-36). Present separately.
+│          Where allocated across activities, disclose total taxes paid.
+└─ NO
+   │
+   Is it interest or a dividend?
+   ├─ YES
+   │   ├─ Does the entity invest in assets, or provide financing to customers,
+   │   │   as a MAIN BUSINESS ACTIVITY (IFRS 18.B30-B41)?
+   │   │   ├─ NO  -> IAS 7.34A:
+   │   │   │         interest PAID              -> FINANCING
+   │   │   │         interest RECEIVED          -> INVESTING
+   │   │   │         dividends RECEIVED         -> INVESTING
+   │   │   │         dividends PAID             -> FINANCING (IAS 7.33A)
+   │   │   └─ YES -> IAS 7.34B: classify dividends received, interest received
+   │   │             and interest paid by reference to how the entity classifies
+   │   │             dividend income, interest income and interest expenses in
+   │   │             the statement of profit or loss under IFRS 18. Classify the
+   │   │             TOTAL of each in a SINGLE category.
+   │   │             ├─ All of that item sits in one P&L category (IAS 7.34C)
+   │   │             │   -> follow it: the cash flow goes to the associated activity
+   │   │             └─ That item is split across more than one P&L category (34D)
+   │   │                 -> make an ACCOUNTING POLICY CHOICE and classify all of
+   │   │                    that cash flow in one of the associated activities
+   │   └─ Dividends PAID are always FINANCING (IAS 7.33A) — no exception,
+   │      no main-business-activity variation.
+   │
+   Does the expenditure result in a RECOGNISED ASSET in the statement of
+   financial position?
+   ├─ NO  -> it cannot be INVESTING (IAS 7.16). Default to OPERATING.
+   └─ YES -> is it a long-term asset or an investment (PP&E, intangibles,
+             equity or debt instruments of other entities, advances and loans
+             made to other parties)?
+             ├─ YES -> INVESTING (IAS 7.16)
+             └─ NO  -> OPERATING
+   │
+   Does it change the size and composition of contributed equity and
+   borrowings — proceeds from issuing shares, proceeds from and repayments
+   of borrowings, payments of the principal of lease liabilities?
+   └─ YES -> FINANCING (IAS 7.17)
+
+   Otherwise -> OPERATING: cash flows from the principal revenue-producing
+   activities and everything not classified elsewhere (IAS 7.14).
+```
+
+### Step 3: Choose a Method for the Operating Section (IAS 7.18)
+
+- **Direct method** — disclose major classes of gross cash receipts and gross cash payments.
+- **Indirect method** — **operating profit or loss** is adjusted for non-cash items, deferrals and
+  accruals, and items whose cash effects are investing or financing.
+
+**Note the change.** Under IFRS 18 the indirect method starts from the **operating profit or loss
+subtotal** required by IFRS 18.69(a), not from profit or loss (IAS 7.18(b)). This removes the long
+run of add-backs for interest, tax and investment income that used to open the reconciliation.
+
+### Step 4: Apply the Specific Rules
+
+| Item | Classification |
+|---|---|
+| Taxes on income | Operating, presented separately, unless specifically identifiable with investing or financing (IAS 7.35) |
+| Interest paid, whether expensed or **capitalised under IAS 23** | The **total** amount paid is included in the statement (IAS 7.32) |
+| Investments in subsidiaries, associates and joint ventures accounted for at cost or by the equity method | Report only the cash flows **between the investor and the investee** — dividends and advances (IAS 7.37) |
+| Foreign currency cash flows | Translate at the rate at the date of the cash flow; unrealised gains and losses on cash held in foreign currency are **not** cash flows but are reported to reconcile opening and closing cash |
+| Changes in liabilities arising from financing activities | Disclose information enabling users to evaluate them, including **both cash flows and non-cash changes** (IAS 7.44A) |
+| Supplier finance arrangements | Disclose information enabling users to assess the effects on liabilities and cash flows and on the entity's **liquidity risk** exposure (IAS 7.44F; arrangements described in IAS 7.44G). *Issued 25 May 2023; EU effective for annual periods beginning on or after 1 January 2024.* |
+
+### Worked Example — Statement of Cash Flows, Indirect Method
+
+**Facts.** A manufacturer with no specified main business activity, applying IFRS 18.
+
+```
+Cash flows from operating activities
+  Operating profit (IFRS 18.69(a) subtotal)                        1,200,000
+  Adjustments for:
+    Depreciation and amortisation                                    300,000
+    Increase in inventories                                         (150,000)
+    Increase in trade receivables                                   (200,000)
+    Increase in trade payables                                        90,000
+                                                                  ----------
+  Cash generated from operations                                   1,240,000
+  Income taxes paid                                                 (260,000)
+                                                                  ----------
+  Net cash from operating activities                                 980,000
+
+Cash flows from investing activities
+  Purchase of property, plant and equipment                         (700,000)
+  Interest received                              [IAS 7.34A(b)]       45,000
+  Dividends received from an associate           [IAS 7.34A(b)]       80,000
+                                                                  ----------
+  Net cash used in investing activities                             (575,000)
+
+Cash flows from financing activities
+  Proceeds from borrowings                                           500,000
+  Interest paid                                  [IAS 7.34A(a)]     (110,000)
+  Dividends paid to owners                       [IAS 7.33A]        (300,000)
+  Repayment of the principal of lease liabilities                   (120,000)
+                                                                  ----------
+  Net cash used in financing activities                              (30,000)
+                                                                  ----------
+Net increase in cash and cash equivalents                            375,000
+```
+
+**Cross-cast:** 980,000 − 575,000 − 30,000 = **375,000**.
+
+Under the pre-IFRS 18 IAS 7 the same entity could have placed interest received and dividends
+received in operating and interest paid in operating, giving net cash from operating activities of
+980,000 + 45,000 + 80,000 − 110,000 = **995,000** and net cash used in financing of **80,000**. The
+amendment removes that latitude for entities without a specified main business activity — a point
+worth flagging to users when comparatives are restated.
+
+**Variation — a bank (provides financing to customers as a main business activity).** Under
+IAS 7.34B the bank looks to its IFRS 18 profit or loss classification. A bank classifies interest
+income and interest expense on customer lending and deposits in the **operating** category of the
+statement of profit or loss, so interest received and interest paid on those balances are
+**operating** cash flows. If it classifies interest expense on its own corporate debt in the
+financing category as well, its interest paid falls in two P&L categories and IAS 7.34D requires an
+**accounting policy choice** to put the whole of interest paid into one activity. Dividends paid
+remain **financing** regardless (IAS 7.33A).
+
+**Common pitfalls:**
+- Classifying interest paid as operating out of habit. For an entity without a specified main
+  business activity it is now **financing** (IAS 7.34A(a)).
+- Splitting interest paid across two activities under IAS 7.34D. The policy choice puts the **total**
+  in one activity (IAS 7.34B, final sentence).
+- Classifying expenditure that does not give rise to a recognised asset as investing. IAS 7.16
+  prohibits it — internally generated development spend that fails the IAS 38 capitalisation criteria
+  is operating.
+- Presenting the lease payment as a single financing outflow. Only the **principal** is financing;
+  the interest element follows the interest-paid rule.
+- Starting the indirect reconciliation from profit or loss. IAS 7.18(b) now starts from operating
+  profit or loss.
+
+**Related workflows:** IFRS 18 (workflow 17 — the P&L categories drive the IAS 7.34B classification),
+IFRS 16 (lease principal is financing; the interest element follows IAS 7.34A/34B), IAS 12 (taxes
+paid), IAS 21 (foreign currency cash flows).
+
+---
+
+## 16. Goodwill Impairment Testing (IAS 36) — End to End
+
+Workflow 3 covers impairment generally. This workflow covers the goodwill test specifically, from
+allocation to the recognition of the loss within the unit.
+
+### Step 1: Allocate Goodwill to Cash-Generating Units (IAS 36.80)
+
+From the acquisition date, allocate goodwill acquired in a business combination to **each** of the
+acquirer's CGUs, or groups of CGUs, **expected to benefit from the synergies of the combination** —
+irrespective of whether other assets or liabilities of the acquiree are assigned to those units.
+
+Each unit or group to which goodwill is allocated must:
+
+- (a) be no finer than the **lowest level** at which management actually **monitors that goodwill
+  internally**; and
+- (b) **not be larger than an operating segment** as defined in IFRS 8, **before aggregation**.
+
+**Key judgment:** these are two independent ceilings and both bind. Allocating to the whole entity is
+almost never defensible, and IFRS 8's aggregation criteria cannot be used to widen the unit.
+
+**Decision point — can the allocation be completed before the end of the year of acquisition?**
+- **Yes** -> allocate and test.
+- **No** -> complete the initial allocation before the end of the **first annual period beginning
+  after the acquisition date** (IAS 36.84). Where the initial accounting for the combination is only
+  provisional under IFRS 3.45, account for the combination using the provisional values and adjust
+  within the measurement period (IAS 36.85).
+
+### Step 2: Determine the Timing of the Test (IAS 36.90, 96)
+
+Test a CGU to which goodwill has been allocated **annually**, and whenever there is an indication that
+the unit may be impaired (IAS 36.90). The annual test may be performed **at any time during the
+annual period, provided it is performed at the same time every year**; different CGUs may be tested at
+different times (IAS 36.96).
+
+**Exception:** if some or all of the goodwill allocated to a CGU was acquired in a business
+combination **during the current annual period**, that unit **must be tested before the end of that
+period** (IAS 36.96, final sentence).
+
+### Step 3: Determine the Carrying Amount of the Unit
+
+Include the goodwill and all assets of the unit that generate the cash inflows used to determine
+recoverable amount, plus any allocated corporate assets (workflow 3). Determine the carrying amount
+of the unit **on a basis consistent with** the way its recoverable amount is determined — if the
+recoverable amount is measured after deducting a liability, that liability must be deducted from the
+carrying amount too.
+
+### Step 4: Determine the Recoverable Amount (IAS 36.74)
+
+The recoverable amount of a CGU is the **higher** of its fair value less costs of disposal and its
+value in use. For value in use (IAS 36.33):
+
+- Base projections on reasonable and supportable assumptions representing management's best estimate
+  of the range of economic conditions over the remaining useful life, giving **greater weight to
+  external evidence**.
+- Base them on the most recent budgets approved by management, **excluding** cash flows from future
+  restructurings or from improving or enhancing the asset's performance. Budget-based projections
+  cover a **maximum of five years** unless a longer period can be justified.
+- Extrapolate beyond that period using a **steady or declining** growth rate, unless an increasing
+  rate can be justified. That rate is capped at the long-run average growth rate for the relevant
+  products, industries or countries, or for the asset's own market — exceeding it requires
+  justification.
+
+### Step 5: Compare and Recognise (IAS 36.104)
+
+**Decision point — does the carrying amount of the unit exceed its recoverable amount?**
+- **No** -> the unit and the goodwill allocated to it are regarded as not impaired (IAS 36.90).
+- **Yes** -> recognise the impairment loss and allocate it, **in this order**:
+  1. **First**, reduce the carrying amount of any **goodwill** allocated to the unit;
+  2. **Then**, spread the remainder across the unit's **other assets**, in proportion to each one's
+     carrying amount.
+
+### Step 6: Apply the Individual Asset Floor and Reallocate (IAS 36.105)
+
+No individual asset may be written down past a floor. That floor is the **highest** of three
+amounts: the asset's fair value less costs of disposal where that is measurable, its own value in use
+where that is determinable, and zero. Whatever the first pass would have charged to an asset above
+its floor is **redistributed across the unit's remaining assets**, again in proportion to carrying
+amounts.
+
+### Worked Example — Full Test with a Floor Constraint
+
+**Facts.** Goodwill of CU 900,000 arose on the 20X3 acquisition of Sub. It was allocated on
+acquisition to the two CGUs expected to benefit from the synergies: CGU North CU 540,000 and CGU
+South CU 360,000. CGU North is the lowest level at which goodwill is monitored and is not larger than
+an operating segment. The annual test date is 31 December.
+
+**Step 3 — carrying amount of CGU North at 31 December 20X5:**
+
+```
+Goodwill                                                            540,000
+Brand (indefinite useful life)                                      300,000
+Property                                                          1,200,000
+Plant and equipment                                                 800,000
+Right-of-use asset                                                  260,000
+                                                                  ---------
+Carrying amount of the unit                                       3,100,000
+```
+
+**Step 4 — recoverable amount.** Pre-tax discount rate 12%; terminal growth 1.5%, which does not
+exceed the long-term average growth rate for the industry.
+
+```
+| Year | Cash flow | Discount factor @12% | Present value |
+|---|---|---|---|
+| 1 |   217,000 | 0.892857 |   193,750 |
+| 2 |   232,000 | 0.797194 |   184,949 |
+| 3 |   247,000 | 0.711780 |   175,810 |
+| 4 |   262,000 | 0.635518 |   166,506 |
+| 5 |   277,000 | 0.567427 |   157,177 |
+|   |           |          | **878,192** |
+
+Terminal value at the end of year 5 = 277,000 x 1.015 / (0.12 - 0.015) = 2,677,667
+Present value of terminal value = 2,677,667 x 0.567427                 = 1,519,380
+
+Value in use = 878,192 + 1,519,380                                     = 2,397,572
+Fair value less costs of disposal, from a recent comparable transaction = 2,400,000
+
+Recoverable amount = HIGHER of the two                                 = 2,400,000
+```
+
+**Step 5 — impairment loss:**
+
+```
+Carrying amount    3,100,000
+Recoverable amount 2,400,000
+                   ---------
+Impairment loss      700,000
+```
+
+**Allocation, first pass (IAS 36.104):**
+
+```
+1. Goodwill written down in full                                    (540,000)
+2. Remainder 700,000 - 540,000 = 160,000, pro rata on the carrying
+   amounts of the other assets (base 2,560,000):
+
+   Brand                300,000 / 2,560,000 x 160,000 =              18,750
+   Property           1,200,000 / 2,560,000 x 160,000 =              75,000
+   Plant and equipment  800,000 / 2,560,000 x 160,000 =              50,000
+   Right-of-use asset   260,000 / 2,560,000 x 160,000 =              16,250
+                                                                    -------
+                                                                    160,000
+```
+
+**Step 6 — the floor bites.** The property has a fair value less costs of disposal of CU 1,160,000.
+Its first-pass allocation of CU 75,000 would take it to 1,200,000 − 75,000 = CU 1,125,000, **below**
+that floor. The property can therefore absorb only CU 40,000, and CU 35,000 must be reallocated pro
+rata to the remaining assets (base 300,000 + 800,000 + 260,000 = 1,360,000):
+
+```
+| Asset | First pass | Reallocation of 35,000 | Total allocated | Carrying amount after |
+|---|---|---|---|---|
+| Goodwill            | 540,000 |      — | 540,000 |         0 |
+| Property            |  75,000 | capped |  40,000 | 1,160,000 |
+| Brand               |  18,750 |  7,721 |  26,471 |   273,529 |
+| Plant and equipment |  50,000 | 20,588 |  70,588 |   729,412 |
+| Right-of-use asset  |  16,250 |  6,691 |  22,941 |   237,059 |
+| **Total**           |         |        | **700,000** | **2,400,000** |
+
+Reallocation:  Brand   300,000 / 1,360,000 x 35,000 =  7,720.59 -> 7,721
+               P&E     800,000 / 1,360,000 x 35,000 = 20,588.24 -> 20,588
+               ROU     260,000 / 1,360,000 x 35,000 =  6,691.18 -> 6,691
+               Sum 35,000.01 before rounding; rounded amounts sum to exactly 35,000.
+
+Checks: total allocated 700,000 = the impairment loss.
+        Carrying amounts after impairment total 2,400,000 = the recoverable amount.
+        Property at 1,160,000 = its FVLCOD floor, not below it.
+```
+
+**Journal entries:**
+
+```
+Dr  Impairment Loss (P&L)                    540,000
+    Cr  Goodwill                                            540,000
+To write off the goodwill allocated to CGU North in full (IAS 36.104(a)).
+
+Dr  Impairment Loss (P&L)                    160,000
+    Cr  Accumulated Impairment — Property                    40,000
+    Cr  Accumulated Impairment — Brand                       26,471
+    Cr  Accumulated Impairment — Plant and Equipment         70,588
+    Cr  Accumulated Impairment — Right-of-Use Asset          22,941
+To allocate the remaining loss pro rata to the other assets of the unit, restricted so that
+the property is not reduced below its fair value less costs of disposal of CU 1,160,000
+(IAS 36.104(b), 105).
+Debits 160,000 = credits 160,000.
+```
+
+
+**Verification — runnable.** Rebuilds the two-pass allocation including the IAS 36.105 floor and asserts it foots to the loss and to the recoverable amount.
+
+```python
+ca = {"Goodwill": 540_000, "Brand": 300_000, "Property": 1_200_000,
+      "Plant and equipment": 800_000, "ROU asset": 260_000}
+assert sum(ca.values()) == 3_100_000
+loss = 3_100_000 - 2_400_000                              # carrying amount - recoverable amount
+assert loss == 700_000
+
+rem    = loss - ca["Goodwill"]                            # goodwill written off first (IAS 36.104(a))
+others = {k: v for k, v in ca.items() if k != "Goodwill"}
+base   = sum(others.values())
+first  = {k: v/base*rem for k, v in others.items()}       # pro rata (IAS 36.104(b))
+assert base == 2_560_000 and round(sum(first.values())) == 160_000
+
+cap    = ca["Property"] - 1_160_000                       # IAS 36.105 floor = FVLCOD
+excess = first["Property"] - cap
+rest   = {k: v for k, v in others.items() if k != "Property"}
+b2     = sum(rest.values())
+final  = {"Goodwill": ca["Goodwill"], "Property": cap}
+for k, v in rest.items():
+    final[k] = first[k] + v/b2*excess                     # reallocate the capped excess
+r = {k: round(v) for k, v in final.items()}
+assert cap == 40_000 and round(excess) == 35_000 and b2 == 1_360_000
+assert sum(r.values()) == 700_000                          # allocation foots exactly, after rounding
+assert ca["Property"] - r["Property"] == 1_160_000         # floor respected, not breached
+assert sum(ca[k] - r[k] for k in ca) == 2_400_000          # carrying amounts now = recoverable amount
+print("OK ", r)
+```
+
+Output:
+
+```
+OK  {'Goodwill': 540000, 'Property': 40000, 'Brand': 26471, 'Plant and equipment': 70588, 'ROU asset': 22941}
+```
+
+### Step 7: Reversal — Never for Goodwill
+
+An impairment loss recognised for **goodwill shall not be reversed** in a subsequent period
+(IAS 36.124). If CGU North recovers, the losses on the brand, property, plant and equipment and the
+right-of-use asset may be reversed, subject to the ceiling that no asset's carrying amount may exceed
+what it would have been (net of depreciation) had no impairment been recognised — but the CU 540,000
+of goodwill is gone permanently.
+
+**Common pitfalls:**
+- Allocating goodwill to a unit larger than an operating segment before aggregation (IAS 36.80(b)).
+- Testing at a different date each year. IAS 36.96 requires the same time every year.
+- Failing to test in the year of acquisition when goodwill from a current-period combination has been
+  allocated to the unit.
+- Including cash flows from a planned restructuring or from enhancing the asset in value in use
+  (IAS 36.33(b)).
+- Allocating the loss pro rata across **all** assets including goodwill. Goodwill goes first, in full.
+- Ignoring the IAS 36.105 floor and pushing an asset below its own fair value less costs of disposal.
+- Using a post-tax discount rate against pre-tax cash flows.
+
+**Related workflows:** IAS 36 (workflow 3 — indicators, corporate assets, reversal), IFRS 3
+(workflow 7 — goodwill arises there and must be allocated at that point), IFRS 16 (right-of-use
+assets are within the unit and share in the allocation), IAS 12 (the impairment changes temporary
+differences), IAS 21 (goodwill on a foreign acquisition is translated at the closing rate before
+being tested).
+
+---
+
+## 17. Presentation of the Statement of Profit or Loss (IFRS 18)
+
+**Status.** IFRS 18 *Presentation and Disclosure in Financial Statements* — issued 9 April 2024;
+effective for annual periods beginning on or after 1 January 2027; earlier application permitted;
+EU-endorsed 13 February 2026, published in the Official Journal 16 February 2026. It replaces IAS 1
+and consequentially amends IAS 7, IAS 21, IAS 29, IAS 33 and others.
+
+### Step 1: Assess Whether the Entity Has a Specified Main Business Activity (IFRS 18.49)
+
+Before anything can be classified, determine whether the entity has a main business activity of:
+
+- (a) **investing in assets**; or
+- (b) **providing financing to customers**.
+
+An entity may have **more than one** main business activity — a manufacturer that also finances its
+customers may have both (IFRS 18.B30).
+
+| Activity | Examples (IFRS 18.B31, B32) |
+|---|---|
+| Investing in assets | Investment entities as defined in IFRS 10; investment property companies; insurers |
+| Providing financing to customers | Banks and other lending institutions; entities that finance customers to enable them to buy the entity's products; lessors that provide financing to customers in finance leases |
+
+**This is a matter of fact, not assertion** (IFRS 18.B33). The assessment requires judgement and must
+be based on evidence. Investing in assets or providing financing to customers is **likely** to be a
+main business activity where the entity uses a **subtotal similar to gross profit** as an important
+indicator of operating performance that includes income and expenses which would otherwise be
+investing or financing (IFRS 18.B34). Evidence includes using such a subtotal to explain operating
+performance externally or to assess or monitor it internally (IFRS 18.B35). Subtotals similar to
+gross profit include net interest income, net fee and commission income, the insurance service result
+and the net financial result (IFRS 18.B123).
+
+### Step 2: Classify Every Item of Income and Expense into One of Five Categories (IFRS 18.47)
+
+```
+(a) OPERATING        (IFRS 18.52)
+(b) INVESTING        (IFRS 18.53-58)
+(c) FINANCING        (IFRS 18.59-66)
+(d) INCOME TAXES     (IFRS 18.67)
+(e) DISCONTINUED OPERATIONS (IFRS 18.68)
+```
+
+**Operating is the residual, not a definition.** An entity classifies in the operating category **all**
+income and expenses in the statement of profit or loss that are not classified in the investing,
+financing, income taxes or discontinued operations categories (IFRS 18.52). Work the other four
+first.
+
+**Investing (IFRS 18.53).** Income and expenses from:
+- (a) investments in associates, joint ventures and unconsolidated subsidiaries;
+- (b) cash and cash equivalents; and
+- (c) other assets **if they generate a return individually and largely independently of the entity's
+  other resources**.
+
+For those assets, the amounts classified in investing are the income generated by them, the income
+and expenses from their initial and subsequent measurement including on derecognition, and the
+incremental expenses directly attributable to their acquisition and disposal — for example
+transaction costs and costs to sell (IFRS 18.54).
+
+**Financing (IFRS 18.59).** First distinguish:
+- (a) liabilities arising from transactions that involve **only the raising of finance** — borrowings,
+  bonds. For these, classify in financing **all** income and expenses from initial and subsequent
+  measurement including derecognition, plus incremental transaction costs of issue and extinguishment
+  (IFRS 18.60).
+- (b) liabilities arising from transactions that do **not** involve only the raising of finance —
+  trade payables, contract liabilities, **lease liabilities**, **defined benefit pension liabilities**
+  (IFRS 18.B53). For these, classify in financing **only** the interest income and expenses, and the
+  income and expenses arising from changes in interest rates, and then **only if the entity identifies
+  such amounts for the purpose of applying other IFRS requirements** (IFRS 18.61).
+
+**Two carve-outs from financing into operating (IFRS 18.64):**
+- income and expenses from issued investment contracts with participation features under IFRS 9; and
+- **insurance finance income and expenses** under IFRS 17.
+
+**Derivatives and designated hedging instruments are outside all of this.** IFRS 18.63 disapplies
+paragraphs 60–61 for them; classify under IFRS 18.B70–B76. Foreign exchange differences and the gain
+or loss on the net monetary position are likewise classified under IFRS 18.B65–B76 (IFRS 18.48).
+
+### Step 3: Apply the Specified Main Business Activity Variations
+
+The effect of a specified main business activity is that some income and expenses that would
+otherwise be investing or financing are classified in **operating** instead (IFRS 18.50).
+
+| Item | Default | If **investing in assets** is a main business activity | If **providing financing to customers** is a main business activity |
+|---|---|---|---|
+| Associates, JVs, unconsolidated subsidiaries (18.53(a)) | Investing | **Investing** if equity-accounted; **operating** if not (18.55) | Investing |
+| Cash and cash equivalents (18.53(b)) | Investing | **Operating**, where the entity invests as a main business activity in financial assets within 53(c) (18.56(a)) | **Operating** for cash that relates to providing financing to customers, e.g. cash held for related regulatory requirements; **accounting policy choice** for the rest (18.56(b)) |
+| Other assets generating an independent return (18.53(c)) | Investing | **Operating** (18.58) | Investing |
+| Liabilities that involve only the raising of finance (18.59(a)) | Financing | Financing | **Operating** if they relate to providing financing to customers; **accounting policy choice** between operating and financing if they do not, consistent with the 56(b)(ii) policy (18.65(a)) |
+
+Where an entity cannot distinguish between the two sub-populations, it applies the accounting policy
+choice to **all** of them and classifies them in **operating** (IFRS 18.57, 66).
+
+### Step 4: Decide How to Present Operating Expenses — by Nature, by Function, or Both
+
+Separately from categorisation, the entity must decide how to analyse the expenses **within** the
+operating category. It presents them by nature, by function, or using a mix, choosing whichever gives
+the **most useful structured summary** of its expenses (IFRS 18.78, B80–B82, B85). Where expenses are
+presented by function, the entity must additionally disclose specified amounts by nature.
+
+In the IASB's own Example II-1, a manufacturer concludes that presenting **all** operating expenses
+**by nature** is most useful, because its main drivers of profitability are raw material and
+employment costs — so its operating category reads: revenue; changes in inventories of finished goods
+and work in progress; raw materials used; employee benefits; depreciation, amortisation and
+impairment; other operating expenses. In Example II-2 a manufacturer that also finances customers
+concludes that a **mix** of function and nature is most useful.
+
+### Step 5: Present the Required Totals and Subtotals (IFRS 18.69)
+
+An entity shall present:
+
+- (a) **Operating profit or loss** — all income and expenses classified in the operating category
+  (IFRS 18.70).
+- (b) **Profit or loss before financing and income taxes** — operating profit or loss **plus all
+  income and expenses classified in the investing category** (IFRS 18.71), subject to paragraph 73.
+- (c) **Profit or loss** — the total of income less expenses in all five categories (IFRS 18.72).
+
+**Decision point — is the entity exempt from presenting the second subtotal?**
+An entity does **not** apply 69(b) if it applies the IFRS 18.65(a)(ii) accounting policy of
+classifying in the operating category the income and expenses from liabilities that do **not** relate
+to providing financing to customers (IFRS 18.73) — in practice, many banks. Such an entity still
+applies IFRS 18.24 to decide whether an additional subtotal after operating profit is needed for a
+useful structured summary. If it presents an additional subtotal comprising operating profit plus all
+investing income and expenses, it **must not** label it in a way implying that financing amounts are
+excluded — 'profit before financing' is expressly prohibited (IFRS 18.74).
+
+### Worked Example — Manufacturer with No Specified Main Business Activity
+
+```
+Statement of profit or loss for the year ended 31 December 20X7
+
+OPERATING
+  Revenue                                                          5,000,000
+  Cost of goods sold                                              (2,900,000)
+  Selling and distribution expenses                                 (450,000)
+  Administrative expenses                                           (620,000)
+  Impairment loss on trade receivables                               (30,000)
+  Other operating income                                              50,000
+                                                                  ----------
+  OPERATING PROFIT                          [IFRS 18.69(a), 70]    1,050,000
+
+INVESTING
+  Share of profit of associates (equity method)   [18.53(a), 55]      120,000
+  Interest income on cash and cash equivalents       [18.53(b)]        35,000
+  Gain on disposal of an investment property         [18.53(c)]        60,000
+                                                                  ----------
+  PROFIT BEFORE FINANCING AND INCOME TAXES  [IFRS 18.69(b), 71]    1,265,000
+
+FINANCING
+  Interest expense on borrowings                     [18.59(a), 60] (180,000)
+  Interest expense on lease liabilities              [18.59(b), 61]  (40,000)
+  Unwinding of discount on decommissioning provision [18.59(b), 61]  (25,000)
+                                                                  ----------
+  Profit before income taxes                                       1,020,000
+
+INCOME TAXES
+  Income tax expense                                     [18.67]     (255,000)
+                                                                  ----------
+  Profit from continuing operations                                  765,000
+
+DISCONTINUED OPERATIONS
+  Profit from discontinued operations, net of tax        [18.68]       90,000
+                                                                  ----------
+  PROFIT FOR THE YEAR                          [IFRS 18.69(c), 72]    855,000
+```
+
+**Cross-casts:** operating 5,000,000 − 2,900,000 − 450,000 − 620,000 − 30,000 + 50,000 =
+**1,050,000**; plus investing 215,000 = **1,265,000**; less financing 245,000 = **1,020,000**;
+less tax 255,000 plus discontinued 90,000 = **855,000**.
+
+**This structure matches the IASB's own Example II-1** (a manufacturer with no specified main
+business activity) line for line: operating category → *Operating profit* → investing category →
+*Profit before financing and income taxes* → financing category → *Profit before income taxes* →
+income taxes → *Profit*. Note in particular that the IASB's example presents **"Interest expenses on
+borrowings and lease liabilities"** and **"Interest expenses on pension liabilities"** as separate
+line items **in the financing category** — confirming the IFRS 18.61 / B53(c)–(d) treatment used
+above. The four IASB examples are the authoritative models: **II-1** manufacturer; **II-2**
+manufacturer that also finances customers; **II-3** insurer that invests in financial assets as a main
+business activity; **II-4** investment and retail bank with **both** specified main business
+activities.
+
+**Note on the lease and the provision.** Lease liabilities and decommissioning provisions are
+IFRS 18.59(b) liabilities — the entity received a right-of-use asset and a legal obligation, not
+finance (IFRS 18.B53(c)). Only the **interest** element goes to financing, and only because IFRS 16
+and IAS 37 respectively require the entity to identify it (IFRS 18.61(a)). Depreciation of the
+right-of-use asset stays in operating.
+
+### Worked Example — The Same Numbers for Two Other Entity Types
+
+**Variation A — an investment property company (investing in assets is a main business activity).**
+The gain on disposal of the investment property and the income from the properties are IFRS 18.53(c)
+assets that the entity invests in as a main business activity, so under IFRS 18.58 they are
+classified in **operating**, not investing. Income and expenses from cash and cash equivalents move to
+**operating** under IFRS 18.56(a). Equity-accounted associates remain in **investing**
+(IFRS 18.55(a)); associates not equity-accounted move to **operating** (IFRS 18.55(b)). Operating
+profit would become 1,050,000 + 60,000 + 35,000 = **1,145,000**, and profit before financing and
+income taxes would be unchanged at **1,265,000**.
+
+**Variation B — a bank (providing financing to customers is a main business activity).** Interest
+income and expense on customer lending and deposits sit in **operating** (IFRS 18.65(a)(i)). For
+borrowings that do not relate to providing financing to customers, the bank makes an accounting
+policy choice under IFRS 18.65(a)(ii) between operating and financing, and that choice must be
+consistent with its IFRS 18.56(b)(ii) policy for cash and cash equivalents. **If it chooses
+operating, it does not present the "profit or loss before financing and income taxes" subtotal at all**
+(IFRS 18.73) — and any additional subtotal it does present may not be labelled 'profit before
+financing' (IFRS 18.74).
+
+**Common pitfalls:**
+- Defining the operating category positively. It is the residual (IFRS 18.52).
+- Assuming every entity presents both subtotals. IFRS 18.73 removes the second for entities taking the
+  65(a)(ii) operating policy.
+- Putting insurance finance income and expenses in financing. IFRS 18.64(b) puts them in operating.
+- Classifying derivative gains and losses under the general financing rules. IFRS 18.63 sends them to
+  B70–B76.
+- Treating the specified main business activity assessment as a policy choice. IFRS 18.B33: a matter
+  of fact, based on evidence.
+- Putting the whole of a lease liability's expense in financing. Only the interest element, under
+  IFRS 18.61(a).
+
+**Related workflows:** IAS 7 (workflow 15 — for entities with a specified main business activity, the
+IFRS 18 P&L categories drive the cash flow classification via IAS 7.34B–34D), IFRS 17 (insurance
+finance income and expenses — IFRS 18.64(b)), IAS 29 (the gain or loss on the net monetary position —
+IAS 29.9 cross-refers to IFRS 18.46 and B86), IAS 21 (foreign exchange differences — IFRS 18.48,
+B65–B68), IFRS 9 (workflow 9 — hedging instruments under IFRS 18.63, B70–B76).
 
 ---
 
