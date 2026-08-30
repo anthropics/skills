@@ -116,4 +116,3 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 ## Dependencies
 
 `openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
-
