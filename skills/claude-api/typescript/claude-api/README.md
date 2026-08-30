@@ -1,20 +1,28 @@
 # Claude API — TypeScript
 
+| Feature | Namespace | Key types / call |
+|---|---|---|
+| User profiles | beta | `client.beta.userProfiles.create(...)` / `.retrieve(id)` / `.list()`. Pass the returned profile id on `client.beta.messages.create`. Requires a beta header — check the SDK's beta-headers reference for the current flag. |
+
 ## Installation
 
 ```bash
 npm install @anthropic-ai/sdk
 ```
 
+> **Reading local files (ESM):** `__dirname` and `__filename` are **undefined** in ES modules — using either throws `ReferenceError: __dirname is not defined` at runtime. For cwd-relative reads, pass the bare relative path (`fs.readFileSync("./sample.png")`). For script-relative paths, derive the directory from `import.meta.url`: `const here = path.dirname(fileURLToPath(import.meta.url))`. Never write `path.join(__dirname, …)` in an ESM `.ts` file.
+
 ## Client Initialization
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
-// Default (uses ANTHROPIC_API_KEY env var)
+// Default — resolves credentials from the environment:
+// ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
+// Prefer this for local dev; don't hardcode a key.
 const client = new Anthropic();
 
-// Explicit API key
+// Explicit API key (only when you must inject a specific key)
 const client = new Anthropic({ apiKey: "your-api-key" });
 ```
 
@@ -24,7 +32,7 @@ const client = new Anthropic({ apiKey: "your-api-key" });
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   messages: [{ role: "user", content: "What is the capital of France?" }],
 });
@@ -43,11 +51,31 @@ for (const block of response.content) {
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   system:
     "You are a helpful coding assistant. Always provide examples in Python.",
   messages: [{ role: "user", content: "How do I read a JSON file?" }],
+});
+```
+
+### Mid-conversation system messages (model-gated)
+
+For operator instructions that arrive mid-conversation (mode switches, injected state), append `{role: "system", ...}` to `messages` instead of editing top-level `system` — this preserves the cached prefix and carries operator authority. Must follow a user message (or an `assistant` message ending in server-tool use), and must be either the last entry in `messages` or be followed by an `assistant` turn; cannot be `messages[0]`. Unsupported models return a 400 (`role 'system' is not supported on this model`). See `shared/prompt-caching.md` for when to use this vs. top-level `system`.
+
+```typescript
+// No beta header needed — use regular client.messages.create.
+const response = await client.messages.create({
+  model: MODEL_ID, // must support mid-conversation system messages
+  max_tokens: 16000,
+  system: [
+    { type: "text", text: STABLE_SYSTEM, cache_control: { type: "ephemeral" } },
+  ],
+  messages: [
+    ...history,
+    { role: "user", content: userMessage },
+    { role: "system", content: "Terse mode enabled — keep responses under 40 words." },
+  ],
 });
 ```
 
@@ -59,7 +87,7 @@ const response = await client.messages.create({
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   messages: [
     {
@@ -84,7 +112,7 @@ import fs from "fs";
 const imageData = fs.readFileSync("image.png").toString("base64");
 
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   messages: [
     {
@@ -113,7 +141,7 @@ Use top-level `cache_control` to automatically cache the last cacheable block in
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   cache_control: { type: "ephemeral" }, // auto-caches the last cacheable block
   system: "You are an expert on this large document...",
@@ -127,7 +155,7 @@ For fine-grained control, add `cache_control` to specific content blocks:
 
 ```typescript
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   system: [
     {
@@ -141,7 +169,7 @@ const response = await client.messages.create({
 
 // With explicit TTL (time-to-live)
 const response2 = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   system: [
     {
@@ -168,16 +196,17 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 
 ## Extended Thinking
 
-> **Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Opus 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5:** thinking is on by default — omitting `thinking` runs adaptive (`{ type: "adaptive" }` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `{ type: "disabled" }` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `thinking: {type: "enabled", budget_tokens: N}` (must be < `max_tokens`, min 1024).
 
 ```typescript
-// Opus 4.7 / 4.6: adaptive thinking (recommended)
+// Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
-  thinking: { type: "adaptive" },
-  output_config: { effort: "high" }, // low | medium | high | max
+  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+  output_config: { effort: "high" }, // low | medium | high | xhigh | max
   messages: [
     { role: "user", content: "Solve this math problem step by step..." },
   ],
@@ -232,7 +261,7 @@ const messages: Anthropic.MessageParam[] = [
 ];
 
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   messages: messages,
 });
@@ -248,7 +277,7 @@ const response = await client.messages.create({
 
 ### Compaction (long conversations)
 
-> **Beta, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests — append `response.content`, not just the text.
+> **Beta, Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests — append `response.content`, not just the text.
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
@@ -261,7 +290,7 @@ async function chat(userMessage: string): Promise<string> {
 
   const response = await client.beta.messages.create({
     betas: ["compact-2026-01-12"],
-    model: "claude-opus-4-7",
+    model: "claude-opus-5",
     max_tokens: 16000,
     messages,
     context_management: {
@@ -297,7 +326,50 @@ The `stop_reason` field in the response indicates why the model stopped generati
 | `stop_sequence` | Hit a custom stop sequence                                      |
 | `tool_use`      | Claude wants to call a tool — execute it and continue           |
 | `pause_turn`    | Model paused and can be resumed (agentic flows)                 |
-| `refusal`       | Claude refused for safety reasons — output may not match schema |
+| `refusal`       | Claude refused for safety reasons — check `stop_details`        |
+
+### Structured Stop Details
+
+When `stop_reason` is `"refusal"`, the response includes a `stop_details` object with structured information about the refusal:
+
+```typescript
+if (response.stop_reason === "refusal" && response.stop_details) {
+  console.log(`Category: ${response.stop_details.category}`); // e.g. "cyber", "bio", "reasoning_extraction", "frontier_llm", or null — see docs for the full set
+  console.log(`Explanation: ${response.stop_details.explanation}`);
+}
+```
+
+### Refusal Fallbacks (Claude Fable 5) — opt in by default
+
+Fallbacks are **opt-in**: without them a refused request simply stops. Include the server-side `fallbacks` parameter in `claude-fable-5` code by default — on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.
+
+```typescript
+const response = await client.beta.messages.create({
+  model: "claude-fable-5",
+  max_tokens: 16000,
+  betas: ["server-side-fallback-2026-06-01"],
+  fallbacks: [{ model: "claude-opus-4-8" }],
+  messages: [{ role: "user", content: "..." }],
+});
+
+// Switch points: one fallback block per model that ran and declined this turn
+for (const block of response.content) {
+  if (block.type === "fallback") {
+    console.log(`${block.from.model} declined; ${block.to.model} continued`);
+  }
+}
+
+// Served-by signal — covers sticky turns, which carry no fallback block.
+// Pair with stop_reason: the fallback model can itself refuse.
+const fallbackRan = (response.usage.iterations ?? []).some(
+  (entry) => entry.type === "fallback_message",
+);
+if (fallbackRan && response.stop_reason !== "refusal") {
+  console.log(`Served by ${response.model}`);
+}
+```
+
+A `stop_reason: "refusal"` on the final response means the whole chain refused. The header must be exactly `server-side-fallback-2026-06-01` **for this array form**; the newer `fallbacks: "default"` scalar form uses `server-side-fallback-2026-07-01` instead (see `shared/model-migration.md` → Migrating to Claude Opus 5 → New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry — register the client-side `betaRefusalFallbackMiddleware` on the client there instead. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
 
 ---
 
@@ -308,7 +380,7 @@ The `stop_reason` field in the response indicates why the model stopped generati
 ```typescript
 // Automatic caching (simplest — caches the last cacheable block)
 const response = await client.messages.create({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 16000,
   cache_control: { type: "ephemeral" },
   system: largeDocumentText, // e.g., 50KB of context
@@ -323,7 +395,7 @@ const response = await client.messages.create({
 
 ```typescript
 const countResponse = await client.messages.countTokens({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   messages: messages,
   system: system,
 });

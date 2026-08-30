@@ -8,21 +8,25 @@ Creating a session requires an `environment_id`. Environments are **reusable con
 
 ### Networking
 
-| Network Policy                  | Description                                                   |
-| ------------------------------- | ------------------------------------------------------------- |
-| `unrestricted`                  | Full egress (except legal blocklist)                          |
-| `package_managers_and_custom`   | Package managers + custom `allowed_hosts`                      |
+| Network Policy   | Description                                                   |
+| ---------------- | ------------------------------------------------------------- |
+| `unrestricted`   | Full egress (except legal blocklist)                          |
+| `limited`        | Deny-by-default; opt in via `allowed_hosts` / `allow_package_managers` / `allow_mcp_servers` |
 
 ```json
 {
   "networking": {
-    "type": "package_managers_and_custom",
+    "type": "limited",
+    "allow_package_managers": true,
+    "allow_mcp_servers": true,
     "allowed_hosts": ["api.example.com"]
   }
 }
 ```
 
-**MCP caveat:** If using restricted networking, make sure `allowed_hosts` includes your MCP server domains. Otherwise the container can't reach them and tools silently fail.
+All three `limited` fields are optional. `allow_package_managers` (default `false`) permits PyPI/npm/etc.; `allow_mcp_servers` (default `false`) permits the agent's configured MCP server endpoints without listing them in `allowed_hosts`.
+
+**MCP caveat:** Under `limited` networking, either set `allow_mcp_servers: true` or add each MCP server domain to `allowed_hosts`. Otherwise the container can't reach them and tools silently fail.
 
 ### Creating an environment
 
@@ -37,6 +41,10 @@ const env = await client.beta.environments.create({
   },
 });
 ```
+
+### Self-hosted sandboxes
+
+To run tool execution in **your own infrastructure** instead of Anthropic's, set `config: {type: "self_hosted"}` — the agent loop stays on Anthropic's side, but `bash` / file ops / code execute in a container you control via an outbound-polling worker. The `networking` block does not apply (you control egress). Resource mounting (`file`, `github_repository`) and memory stores behave differently — see `shared/managed-agents-self-hosted-sandboxes.md` for the worker, credentials, and cloud-vs-self-hosted comparison.
 
 ### Environment CRUD
 
@@ -53,7 +61,7 @@ const env = await client.beta.environments.create({
 
 ## Resources
 
-Attach files, GitHub repositories, and memory stores to a session. **Session creation blocks until all resources are mounted** — the container won't go `running` until every file and repo is in place. Max **999 file resources** per session. Multiple GitHub repositories per session are supported. For `type: "memory_store"` resources (persistent cross-session memory — max 8 per session), see `shared/managed-agents-memory.md`.
+Attach files, GitHub repositories, and memory stores to a session. Resources are resolved during session creation, so a bad `file_id` or an unreachable repo surfaces on the create call rather than mid-run. Creating a session does **not** by itself start work or provision the sandbox — without `initial_events` the session is only registered, and the sandbox comes up when the session first needs it (see `shared/managed-agents-core.md` → Seeding a session with `initial_events`). Max **999 file resources** per session. Multiple GitHub repositories per session are supported. For `type: "memory_store"` resources (persistent cross-session memory — max 8 per session), see `shared/managed-agents-memory.md`.
 
 ### File Uploads (input — host → agent)
 
@@ -63,6 +71,7 @@ Upload a file first via the Files API, then reference by `file_id` + `mount_path
 // 1. Upload
 const file = await client.beta.files.upload({
   file: fs.createReadStream("data.csv"),
+  purpose: "agent",
 });
 
 // 2. Attach as a session resource
@@ -108,6 +117,8 @@ This gives you a bidirectional file bridge: upload reference data in, download a
 
 Clones a GitHub repository into the session container during initialization, before the agent begins execution. The agent can read, edit, commit, and push via `bash` (`git`). Multiple repositories per session are supported — add one `resources` entry per repo. Repositories are cached, so future sessions that use the same repository start faster.
 
+Mounting a repository also loads any skills stored in its root `.claude/skills` directory — discovered once per session, from the repository state checked out at session start (cloud sandboxes only). See `shared/managed-agents-tools.md` → Skills from a GitHub repository.
+
 Repositories are attached for the lifetime of the session — to change which repositories are mounted, create a new session. You **can** rotate a repository's `authorization_token` on a running session via `client.beta.sessions.resources.update(resource_id, {session_id, authorization_token})`; the resource `id` is returned at session creation and by `resources.list()`.
 
 **Fields:**
@@ -135,7 +146,7 @@ Repositories are attached for the lifetime of the session — to change which re
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -169,7 +180,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="claude-opus-4-7",
+    model="claude-opus-5",
     mcp_servers=[{
         "type": "url",
         "name": "github",

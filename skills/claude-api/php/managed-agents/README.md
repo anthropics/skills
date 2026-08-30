@@ -2,12 +2,12 @@
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for PHP. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the PHP SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `$client->beta->agents->create` and pass it to every subsequent `->sessions->create`; do not call `agents->create` in the request path. The Anthropic CLI is one convenient way to create agents and environments from version-controlled YAML — its URL is in `shared/live-sources.md`. The examples below show in-code creation for completeness; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `$client->beta->agents->create` and pass it to every subsequent `->sessions->create`; do not call `agents->create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
 ```bash
-composer require "anthropic-ai/sdk"
+composer require "anthropic-ai/sdk" "guzzlehttp/guzzle:^7"
 ```
 
 ## Client Initialization
@@ -48,7 +48,7 @@ use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
 // 1. Create the agent (reusable, versioned)
 $agent = $client->beta->agents->create(
     name: 'Coding Assistant',
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     system: 'You are a helpful coding assistant.',
     tools: [
         BetaManagedAgentsAgentToolset20260401Params::with(
@@ -64,6 +64,7 @@ $session = $client->beta->sessions->create(
     title: 'Quickstart session',
 );
 echo "Session ID: {$session->id}\n";
+echo "Trace: https://platform.claude.com/workspaces/default/sessions/{$session->id}\n"; // swap 'default' for your workspace ID if the API key is not in the Default workspace
 ```
 
 ### Updating an Agent
@@ -263,7 +264,14 @@ $client->beta->sessions->resources->delete($resource->id, sessionID: $session->i
 
 ## List and Download Session Files
 
-> ℹ️ Listing and downloading files an agent wrote during a session is not yet documented for PHP in this skill or in the apps source examples. See `shared/managed-agents-events.md` and the `anthropic-ai/sdk` PHP repository for the file list/download bindings.
+```php
+$files = $client->beta->files->list(
+    scopeID: 'sesn_abc123',
+    betas: ['managed-agents-2026-04-01'],
+);
+$content = $client->beta->files->download($files->data[0]->id);
+file_put_contents('output.txt', $content);
+```
 
 ---
 
@@ -293,15 +301,15 @@ $client->beta->sessions->delete($session->id);
 ```php
 use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
 use Anthropic\Beta\Agents\BetaManagedAgentsMCPToolsetParams;
-use Anthropic\Beta\Agents\BetaManagedAgentsUrlmcpServerParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsURLMCPServerParams;
 use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
 
 // Agent declares MCP server (no auth here — auth goes in a vault)
 $agent = $client->beta->agents->create(
     name: 'GitHub Assistant',
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     mcpServers: [
-        BetaManagedAgentsUrlmcpServerParams::with(
+        BetaManagedAgentsURLMCPServerParams::with(
             type: 'url',
             name: 'github',
             url: 'https://api.githubcopilot.com/mcp/',
@@ -395,8 +403,8 @@ $session = $client->beta->sessions->create(
         [
             'type' => 'github_repository',
             'url' => 'https://github.com/org/repo',
-            'mountPath' => '/workspace/repo',
-            'authorizationToken' => 'ghp_your_github_token',
+            'mount_path' => '/workspace/repo',
+            'authorization_token' => 'ghp_your_github_token',
         ],
     ],
 );
@@ -409,14 +417,14 @@ $resources = [
     [
         'type' => 'github_repository',
         'url' => 'https://github.com/org/frontend',
-        'mountPath' => '/workspace/frontend',
-        'authorizationToken' => 'ghp_your_github_token',
+        'mount_path' => '/workspace/frontend',
+        'authorization_token' => 'ghp_your_github_token',
     ],
     [
         'type' => 'github_repository',
         'url' => 'https://github.com/org/backend',
-        'mountPath' => '/workspace/backend',
-        'authorizationToken' => 'ghp_your_github_token',
+        'mount_path' => '/workspace/backend',
+        'authorization_token' => 'ghp_your_github_token',
     ],
 ];
 ```

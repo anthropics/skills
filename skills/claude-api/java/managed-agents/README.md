@@ -2,7 +2,7 @@
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for Java. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Java SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `client.beta().agents().create` and pass it to every subsequent `client.beta().sessions().create`; do not call `agents().create` in the request path. The Anthropic CLI is one convenient way to create agents and environments from version-controlled YAML — its URL is in `shared/live-sources.md`. The examples below show in-code creation for completeness; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `client.beta().agents().create` and pass it to every subsequent `client.beta().sessions().create`; do not call `agents().create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
@@ -28,13 +28,13 @@ var client = AnthropicOkHttpClient.fromEnv();
 
 ```java
 import com.anthropic.models.beta.environments.BetaCloudConfigParams;
+import com.anthropic.models.beta.environments.BetaUnrestrictedNetwork;
 import com.anthropic.models.beta.environments.EnvironmentCreateParams;
-import com.anthropic.models.beta.environments.UnrestrictedNetwork;
 
 var environment = client.beta().environments().create(EnvironmentCreateParams.builder()
     .name("my-dev-env")
     .config(BetaCloudConfigParams.builder()
-        .networking(UnrestrictedNetwork.builder().build())
+        .networking(BetaUnrestrictedNetwork.builder().build())
         .build())
     .build());
 System.out.println("Environment ID: " + environment.id()); // env_...
@@ -57,7 +57,7 @@ import com.anthropic.models.beta.sessions.SessionCreateParams;
 // 1. Create the agent (reusable, versioned)
 var agent = client.beta().agents().create(AgentCreateParams.builder()
     .name("Coding Assistant")
-    .model("claude-opus-4-7")
+    .model("claude-opus-5")
     .system("You are a helpful coding assistant.")
     .addTool(BetaManagedAgentsAgentToolset20260401Params.builder()
         .type(BetaManagedAgentsAgentToolset20260401Params.Type.AGENT_TOOLSET_20260401)
@@ -75,6 +75,7 @@ var session = client.beta().sessions().create(SessionCreateParams.builder()
     .title("Quickstart session")
     .build());
 System.out.println("Session ID: " + session.id());
+System.out.println("Trace: https://platform.claude.com/workspaces/default/sessions/" + session.id()); // swap 'default' for your workspace ID if the API key is not in the Default workspace
 ```
 
 ### Updating an Agent
@@ -290,14 +291,14 @@ client.beta().sessions().delete(session.id());
 
 ```java
 import com.anthropic.models.beta.agents.BetaManagedAgentsMcpToolsetParams;
-import com.anthropic.models.beta.agents.BetaManagedAgentsUrlmcpServerParams;
+import com.anthropic.models.beta.agents.BetaManagedAgentsUrlMcpServerParams;
 
 // Agent declares MCP server (no auth here — auth goes in a vault)
 var agent = client.beta().agents().create(AgentCreateParams.builder()
     .name("GitHub Assistant")
-    .model("claude-opus-4-7")
-    .addMcpServer(BetaManagedAgentsUrlmcpServerParams.builder()
-        .type(BetaManagedAgentsUrlmcpServerParams.Type.URL)
+    .model("claude-opus-5")
+    .addMcpServer(BetaManagedAgentsUrlMcpServerParams.builder()
+        .type(BetaManagedAgentsUrlMcpServerParams.Type.URL)
         .name("github")
         .url("https://api.githubcopilot.com/mcp/")
         .build())

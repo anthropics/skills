@@ -2,13 +2,15 @@
 
 All endpoints require `x-api-key` and `anthropic-version: 2023-06-01` headers. Managed Agents endpoints additionally require the `anthropic-beta` header.
 
+> Most users should define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md`. The endpoints below are the underlying API that the CLI and SDKs drive.
+
 ## Beta Headers
 
 ```
 anthropic-beta: managed-agents-2026-04-01
 ```
 
-The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults,memory_stores}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
+The SDK adds this header automatically for all `client.beta.{agents,environments,sessions,vaults,memory_stores,deployments,deployment_runs}.*` calls. Skills endpoints use `skills-2025-10-02`; Files endpoints use `files-api-2025-04-14`.
 
 ---
 
@@ -21,10 +23,13 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | Agents | `agents.create` / `retrieve` / `update` / `list` / `archive` | `Agents.New` / `Get` / `Update` / `List` / `Archive` |
 | Agent Versions | `agents.versions.list` | `Agents.Versions.List` |
 | Environments | `environments.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Environments.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
+| Environment Work (self-hosted) | `environments.work.poller` / `stats` / `stop` | See `shared/managed-agents-self-hosted-sandboxes.md` |
 | Sessions | `sessions.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Sessions.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Session Events | `sessions.events.list` / `send` / `stream` | `Sessions.Events.List` / `Send` / `StreamEvents` |
 | Session Threads | `sessions.threads.list` / `retrieve` / `archive`; `sessions.threads.events.list` / `stream` | `Sessions.Threads.List` / `Get` / `Archive`; `Sessions.Threads.Events.List` / `StreamEvents` |
 | Session Resources | `sessions.resources.add` / `retrieve` / `update` / `list` / `delete` | `Sessions.Resources.Add` / `Get` / `Update` / `List` / `Delete` |
+| Deployments | `deployments.create` / `update` / `pause` / `unpause` / `archive` / `run` | Not yet documented — WebFetch the SDK repo (`shared/live-sources.md`) |
+| Deployment Runs | `deployment_runs.list` / `retrieve` (TS: `deploymentRuns.*`) | Not yet documented — WebFetch the SDK repo (`shared/live-sources.md`) |
 | Vaults | `vaults.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `Vaults.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
 | Credentials | `vaults.credentials.create` / `retrieve` / `update` / `list` / `delete` / `archive` / `mcp_oauth_validate` | `Vaults.Credentials.New` / `Get` / `Update` / `List` / `Delete` / `Archive` / `McpOauthValidate` |
 | Memory Stores | `memory_stores.create` / `retrieve` / `update` / `list` / `delete` / `archive` | `MemoryStores.New` / `Get` / `Update` / `List` / `Delete` / `Archive` |
@@ -35,10 +40,11 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 - Agents and Session Threads have **no delete** — only `archive`. Archive is **permanent**: the agent becomes read-only, new sessions cannot reference it, and there is no unarchive. Confirm with the user before archiving a production agent. Environments, Sessions, Vaults, Credentials, and Memory Stores have both `delete` and `archive`; Session Resources, Files, Skills, and Memories are `delete`-only; Memory Versions have neither — only `redact`.
 - Session resources use `add` (not `create`).
 - Go's event stream is `StreamEvents` (not `Stream`).
+- The self-hosted worker is **not** under `client.beta.*` — it's `EnvironmentWorker` from `anthropic.lib.environments` / `@anthropic-ai/sdk/helpers/beta/environments`; only `environments.work.poller/stats/stop` are client methods.
 
-**Agent shorthand:** `agent` on session create accepts either a bare string (`agent="agent_abc123"` — uses latest version) or the full reference object (`{type: "agent", id: "agent_abc123", version: 123}`).
+**Agent shorthand:** `agent` on session create accepts three forms — a bare string (`agent="agent_abc123"`, latest version), a pinned reference `{type: "agent", id, version}`, or `{type: "agent_with_overrides", id, version?, model?, system?, tools?, mcp_servers?, skills?}` to override those fields for this session only (see `shared/managed-agents-core.md` → Override agent configuration for a session).
 
-**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-4-7"` — uses `standard` speed) or the full config object (`{id: "claude-opus-4-6", speed: "fast"}`). Note: `speed: "fast"` is only supported on Opus 4.6.
+**Model shorthand:** `model` on agent create accepts either a bare string (`model="claude-opus-5"` — uses `standard` speed) or the full config object, which takes `speed`, `effort`, and `inference_geo` alongside `id`: `{id: "claude-opus-5", speed: "fast"}`, `{id: "claude-opus-5", effort: "high"}`, `{id: "claude-opus-5", inference_geo: "us"}`. `effort` accepts a level string (`low`/`medium`/`high`/`xhigh`/`max`) or `{type: "<level>"}`, and is **agent-configuration only** — an `effort` inside a per-session `model` override is ignored. `inference_geo` (`"us"` | `"global"`) pins the geography serving the agent's model requests, and unlike `effort` **is** applied in a per-session `model` override. See `shared/managed-agents-core.md` → Effort on the agent model / Pinning inference geography. Note: `speed: "fast"` is supported on Claude Opus 5 and Opus 4.8 — on the Claude API only, which includes Managed Agents but not Amazon Bedrock, Google Cloud, or Microsoft Foundry. Opus 4.7 fast mode has been removed; `speed: "fast"` on Opus 4.7 returns an error.
 
 ---
 
@@ -51,7 +57,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `GET` | `/v1/agents` | ListAgents | List agents |
 | `POST` | `/v1/agents` | CreateAgent | Create a saved agent configuration |
 | `GET` | `/v1/agents/{agent_id}` | GetAgent | Get agent details |
-| `POST` | `/v1/agents/{agent_id}` | UpdateAgent | Update agent configuration |
+| `POST` | `/v1/agents/{agent_id}` | UpdateAgent | Update agent configuration. `version` is **optional**: supply it (≥ 1) for optimistic concurrency — a mismatch returns 409 — or omit it for an unconditional last-write-wins update. |
 | `POST` | `/v1/agents/{agent_id}/archive` | ArchiveAgent | Archive an agent. Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive — this is the terminal state. |
 | `GET` | `/v1/agents/{agent_id}/versions` | ListAgentVersions | List agent versions |
 
@@ -62,7 +68,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | `GET` | `/v1/sessions` | ListSessions | List sessions (paginated) |
 | `POST` | `/v1/sessions` | CreateSession | Create a new session |
 | `GET` | `/v1/sessions/{session_id}` | GetSession | Get session details |
-| `POST` | `/v1/sessions/{session_id}` | UpdateSession | Update session metadata/title |
+| `POST` | `/v1/sessions/{session_id}` | UpdateSession | Update session `metadata`/`title`, `agent.tools`/`agent.mcp_servers` (session-local override; session must be `idle`), or `budget` — change the cap (higher or lower; the new value must exceed the consumed list cost) or remove it with `null`; removal is one-way, and a budget can never be added post-create. `vault_ids` is create-only (rejected on update). See `shared/managed-agents-core.md` → Updating the agent configuration mid-session / Session budgets. |
 | `DELETE` | `/v1/sessions/{session_id}` | DeleteSession | Delete a session |
 | `POST` | `/v1/sessions/{session_id}/archive` | ArchiveSession | Archive a session |
 
@@ -72,7 +78,7 @@ All resources are under the `beta` namespace. Python and TypeScript share identi
 | -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
 | `GET` | `/v1/sessions/{session_id}/events` | ListEvents | List events (polling, paginated) |
 | `POST` | `/v1/sessions/{session_id}/events` | SendEvents | Send events (user message, tool result) |
-| `GET` | `/v1/sessions/{session_id}/events/stream` | StreamEvents | Stream events via SSE |
+| `GET` | `/v1/sessions/{session_id}/events/stream` | StreamEvents | Stream events via SSE. Optional `event_deltas[]=agent.message` / `agent.thinking` opts in to live-preview `event_start`/`event_delta` events — see `shared/managed-agents-events.md` § Live previews. |
 
 ## Session Threads
 
@@ -106,10 +112,36 @@ Per-subagent event streams in multiagent sessions. See `shared/managed-agents-mu
 | `POST`   | `/v1/environments/{environment_id}`                    | UpdateEnvironment    | Update environment                  |
 | `DELETE` | `/v1/environments/{environment_id}`                    | DeleteEnvironment    | Delete environment. Returns 204. |
 | `POST`   | `/v1/environments/{environment_id}/archive`            | ArchiveEnvironment   | Archive environment. Makes it **read-only**; existing sessions continue, new sessions cannot reference it. No unarchive — this is the terminal state. |
+| `GET`    | `/v1/environments/{environment_id}/work/stats`         | WorkQueueStats       | Self-hosted work-queue depth/pending/workers. `x-api-key` auth. See `shared/managed-agents-self-hosted-sandboxes.md`. |
+| `POST`   | `/v1/environments/{environment_id}/work/{work_id}/stop` | StopWork            | Self-hosted: stop a claimed work item. `x-api-key` auth. |
+
+For `type: "self_hosted"`, `config` is the bare `{"type": "self_hosted"}` — `networking` and `packages` do not apply.
+
+## Deployments
+
+Scheduled deployments (`depl_` IDs) run an agent on a recurring cron schedule — each firing creates a session. See `shared/managed-agents-scheduled-deployments.md` for the conceptual guide (cron/DST semantics, failure behavior, lifecycle).
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `POST`   | `/v1/deployments`                                | CreateDeployment | Create a scheduled deployment            |
+| `POST`   | `/v1/deployments/{deployment_id}`                | UpdateDeployment | Update deployment configuration (see `shared/managed-agents-scheduled-deployments.md`) |
+| `POST`   | `/v1/deployments/{deployment_id}/pause`          | PauseDeployment  | Suppress scheduled triggers (reversible; manual runs still allowed) |
+| `POST`   | `/v1/deployments/{deployment_id}/unpause`        | UnpauseDeployment | Resume from the next occurrence (no backfill) |
+| `POST`   | `/v1/deployments/{deployment_id}/archive`        | ArchiveDeployment | **Terminal** — schedule stops, deployment becomes immutable |
+| `POST`   | `/v1/deployments/{deployment_id}/run`            | RunDeployment    | Trigger a manual run immediately (`trigger_context.type: "manual"`); works while paused |
+
+## Deployment Runs
+
+Each trigger attempt (scheduled or manual) writes a `deployment_run` record (`drun_` IDs) carrying either the created `session_id` or an `error.type` (`environment_archived`, `agent_archived`, `vault_not_found`, `session_rate_limited`, `service_unavailable`).
+
+| Method   | Path                                             | Operation        | Description                              |
+| -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
+| `GET`    | `/v1/deployment_runs?deployment_id=...`          | ListDeploymentRuns | List runs for a deployment (paginated; filter failures with `has_error=true`) |
+| `GET`    | `/v1/deployment_runs/{deployment_run_id}`        | GetDeploymentRun   | Retrieve a single run by ID (a `deployment_run.*` webhook event carries this as `data.id`) |
 
 ## Vaults
 
-Vaults store MCP credentials that Anthropic manages on your behalf — OAuth credentials with auto-refresh, or static bearer tokens. Attach to sessions via `vault_ids`. See `managed-agents-tools.md` §Vaults for the conceptual guide and credential shapes.
+Vaults store credentials that Anthropic manages on your behalf — MCP credentials (OAuth with auto-refresh, or static bearer tokens) and `environment_variable` credentials substituted into outbound requests at egress. Attach to sessions via `vault_ids`. See `managed-agents-tools.md` §Vaults for the conceptual guide and credential shapes.
 
 | Method   | Path                                             | Operation        | Description                              |
 | -------- | ------------------------------------------------ | ---------------- | ---------------------------------------- |
@@ -153,7 +185,7 @@ Individual text documents inside a store (≤ 100KB each). `create` creates at a
 
 | Method   | Path                                                              | Operation      | Description                              |
 | -------- | ----------------------------------------------------------------- | -------------- | ---------------------------------------- |
-| `GET`    | `/v1/memory_stores/{memory_store_id}/memories`                    | ListMemories   | Returns `Memory \| MemoryPrefix`; filter by `path_prefix`, `depth`, `order_by`/`order` |
+| `GET`    | `/v1/memory_stores/{memory_store_id}/memories`                    | ListMemories   | Returns `Memory \| MemoryPrefix`; filter by `path_prefix`, `depth` |
 | `POST`   | `/v1/memory_stores/{memory_store_id}/memories`                    | CreateMemory   | Create at `path` (SDK: `memories.create`); `409 memory_path_conflict_error` if occupied |
 | `GET`    | `/v1/memory_stores/{memory_store_id}/memories/{memory_id}`        | GetMemory      | Read one memory (defaults to `view="full"`) |
 | `PATCH`  | `/v1/memory_stores/{memory_store_id}/memories/{memory_id}`        | UpdateMemory   | Change `content`, `path`, or both by ID; optional `precondition` |
@@ -203,7 +235,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 ```json
 {
   "name": "string (required, 1-256 chars)",
-  "model": "claude-opus-4-7 (required — bare string, or {id, speed} object)",
+  "model": "claude-opus-5 (required — bare string, or {id, speed?, effort?, inference_geo?} object)",
   "description": "string (optional, up to 2048 chars)",
   "system": "string (optional, up to 100,000 chars)",
   "tools": [
@@ -234,7 +266,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
 }
 ```
 
-> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1–20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}`) — see `shared/managed-agents-multiagent.md`.
+> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1–20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}` | `{type:"advisor",model}`, at most one advisor) — see `shared/managed-agents-multiagent.md`.
 
 ### CreateSession Request Body
 
@@ -252,14 +284,25 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
       "checkout": { "type": "branch", "name": "main" }
     }
   ],
-  "vault_ids": ["vlt_abc123 (optional — MCP credentials with auto-refresh)"],
+  "initial_events": [
+    { "type": "user.message", "content": [{ "type": "text", "text": "Review the auth module." }] }
+  ],
+  "vault_ids": ["vlt_abc123 (optional — vault credentials: MCP auth + environment variables)"],
+  "budget": {
+    "type": "limit",
+    "max_list_cost": { "amount": "2500", "currency": "USD" }
+  },
   "metadata": {
     "key": "value"
   }
 }
 ```
 
-> The `agent` field accepts only a string ID or `{type: "agent", id, version}` — `model`/`system`/`tools` live on the agent, not here.
+> The `agent` field accepts a string ID, `{type: "agent", id, version}`, or `{type: "agent_with_overrides", id, version?, ...}` for session-local overrides of `model`/`system`/`tools`/`mcp_servers`/`skills`. Outside the overrides form, those fields live on the agent, not here. An `effort` inside a `model` override is ignored — set it on the agent. An `inference_geo` inside a `model` override **is** applied (omitting it clears the agent's pin for this session).
+>
+> **`budget`** (optional, create-only) is a hard dollar cap on the session's list-priced spend; `amount` is an integer string in minor units (cents — `"2500"` = $25.00), `USD` only. It can be changed or removed later via session update, never added. See `shared/managed-agents-core.md` → Session budgets.
+>
+> **`initial_events`** (optional, max 50) sends events at creation and starts the agent loop in the same call. Only `user.message` and `user.define_outcome` are accepted — no `system.message`, and none of the tool-result kinds. Validation is all-or-nothing. See `shared/managed-agents-core.md` → Seeding a session with `initial_events`.
 >
 > **`checkout`** accepts `{type: "branch", name: "..."}` or `{type: "commit", sha: "..."}`. Omit for the repo's default branch.
 
@@ -270,7 +313,7 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   "name": "string (required)",
   "description": "string (optional)",
   "config": {
-    "type": "cloud",
+    "type": "cloud | self_hosted",
     "networking": {
       "type": "unrestricted | limited (union — see SDK types)"
     },
@@ -279,6 +322,26 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   "metadata": { "key": "value" }
 }
 ```
+
+### CreateDeployment Request Body
+
+```json
+{
+  "name": "Weekly compliance scan",
+  "agent": "agent_abc123 (required — same shapes as CreateSession)",
+  "environment_id": "env_abc123 (required)",
+  "initial_events": [
+    { "type": "user.message", "content": [{ "type": "text", "text": "Run the weekly compliance scan." }] }
+  ],
+  "schedule": {
+    "type": "cron",
+    "expression": "0 20 * * 5",
+    "timezone": "America/New_York"
+  }
+}
+```
+
+> Optional session config (`resources`, `vault_ids`, etc.) is supported the same way as on CreateSession, including `budget` — copied onto each fired session; unlike a session's, it can be added where none exists and re-added after clearing (see `shared/managed-agents-scheduled-deployments.md` § Deployment budgets). Response includes `status`, `paused_reason`, and `schedule.upcoming_runs_at` (next fire times). See `shared/managed-agents-scheduled-deployments.md`.
 
 ### SendEvents Request Body
 
@@ -297,6 +360,8 @@ Immutable per-mutation snapshots (`memver_...`) — the audit and rollback surfa
   ]
 }
 ```
+
+> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` — supported on Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5, checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
 
 ### Define Outcome Event
 
@@ -357,13 +422,31 @@ Note that `409 Conflict` carries `error.type: "invalid_request_error"` (there is
 
 ---
 
+## Pagination
+
+Most Managed Agents list endpoints use the `page` / `next_page` cursor scheme:
+
+| Field | Where | Notes |
+|---|---|---|
+| `limit` | query | Max items per page |
+| `page` | query | Opaque cursor from a previous response — pass a `next_page` or `prev_page` value here |
+| `order` | query | `asc` / `desc` on endpoints that support sorting. A cursor encodes the `order` of the request that produced it — reusing it with a different `order` returns 400. Other params (filters, `limit`) can change between paginated requests. |
+| `next_page` | response | Cursor for the next page; `null` when there are no more results |
+| `prev_page` | response | Cursor for the previous page on endpoints that support backward pagination — currently **only `GET /v1/sessions`**. `null` on the first page. On endpoints that don't support it, the field is **absent** (not `null`). |
+
+Every SDK exposes an auto-paginating iterator that follows `next_page`. In Python and TypeScript, iterate the list result directly; the other SDKs expose the iterator via a separate method (iterating the plain list result returns one page). SDK auto-pagination is **forward-only** — to go back a page, read `prev_page` from the response and pass it back as the `page` parameter yourself.
+
+> ⚠️ Some endpoints use a **different** cursor scheme: Message Batches, Files, Models, and several Admin API endpoints take `after_id`/`before_id` and return `has_more`/`first_id`/`last_id` instead of `page`/`next_page`. Some `page`-scheme endpoints (e.g. `GET /v1/skills`) also return a `has_more` boolean alongside `next_page`. Check the endpoint's reference page for its exact pagination fields.
+
+---
+
 ## Rate Limits
 
 Managed Agents endpoints have per-organization request-per-minute (RPM) limits, separate from your [Messages API token limits](https://platform.claude.com/docs/en/api/rate-limits). Model inference inside a session still draws from your organization's standard ITPM/OTPM limits.
 
 | Endpoint group | Scope | RPM | Max concurrent |
 |---|---|---|---|
-| Create operations (Agents, Sessions, Vaults) | organization | 60 | — |
+| Create operations (Agents, Sessions, Vaults) | organization | 300 | — |
 | All other operations (Agents, Sessions, Vaults) | organization | 600 | — |
 | All operations (Environments) | organization | 60 | 5 |
 
