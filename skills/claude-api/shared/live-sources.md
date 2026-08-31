@@ -18,7 +18,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Models Overview | `https://platform.claude.com/docs/en/about-claude/models/overview.md`        | "Extract current model IDs, context windows, and pricing for all Claude models" |
 | Migration Guide | `https://platform.claude.com/docs/en/about-claude/models/migration-guide.md` | "Extract breaking changes, deprecated parameters, and per-model migration steps when moving to a newer Claude model" |
 | Introducing Claude Fable 5 | `https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5.md` | "Extract capabilities, API changes, and availability stages for Claude Fable 5 and Claude Mythos 5" |
-| Pricing         | `https://platform.claude.com/docs/en/pricing.md`                             | "Extract current pricing per million tokens for input and output"               |
+| Pricing | `https://platform.claude.com/docs/en/about-claude/pricing.md`                        | "Extract current pricing per million tokens for input and output"               |
 
 ### Core Features
 
@@ -56,13 +56,13 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic          | URL                                                                                    | Extraction Prompt                                                                        |
 | -------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Code Execution | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md` | "Extract code execution tool setup, file upload, container reuse, and response handling" |
-| Computer Use   | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use.md`        | "Extract computer use tool setup, capabilities, and implementation examples"             |
+| ComputerUse | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md`      | "Extract computer use tool setup, capabilities, and implementation examples"             |
 | Bash Tool      | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md`           | "Extract bash tool schema, reference implementation, and security considerations"        |
 | Text Editor    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md`    | "Extract text editor tool commands, schema, and reference implementation"                |
 | Memory Tool    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md`         | "Extract memory tool commands, directory structure, and implementation patterns"         |
 | Tool Search    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md`    | "Extract tool search setup, when to use, and cache interaction"                          |
 | Programmatic Tool Calling | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md` | "Extract PTC setup, script execution model, and tool invocation from code"    |
-| Skills         | `https://platform.claude.com/docs/en/agents-and-tools/skills.md`                       | "Extract skill folder structure, SKILL.md format, and loading behavior"                  |
+| Skills | `https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md`                | "Extract skill folder structure, SKILL.md format, and loading behavior"                  |
 
 ### Advanced Features
 
@@ -110,7 +110,7 @@ The `ant` CLI provides terminal access to the Claude API. Every API resource is 
 
 | Topic         | URL                                                     | Extraction Prompt                                                                                  |
 | ------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Anthropic CLI | `https://platform.claude.com/docs/en/api/sdks/cli.md`   | "Extract CLI install, authentication, command structure, and the beta:agents/environments/sessions commands" |
+| AnthropicCLI | `https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md` | "ExtractCLIinstall,authentication,commandstructure,andthebeta:agents/environments/sessionscommands" |
 | Authentication overview | `https://platform.claude.com/docs/en/manage-claude/authentication.md` | "Extract the credential options (API keys, interactive OAuth login, Workload Identity Federation) and when to use each" |
 | WIF reference | `https://platform.claude.com/docs/en/manage-claude/wif-reference.md`  | "Extract credential precedence order, the profile configuration file schema, and the configuration directory layout" |
 
