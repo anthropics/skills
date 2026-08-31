@@ -356,11 +356,9 @@ for block in response.content:
 uploaded = client.beta.files.upload(file=open("sales_data.csv", "rb"))
 
 # 2. Pass to code execution via container_upload block
-# Code execution is GA; Files API is still beta (pass via extra_headers)
 response = client.messages.create(
     model="claude-opus-5",
     max_tokens=16000,
-    extra_headers={"anthropic-beta": "files-api-2025-04-14"},
     messages=[{
         "role": "user",
         "content": [

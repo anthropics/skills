@@ -208,9 +208,9 @@ curl https://api.anthropic.com/v1/messages \
 
 ---
 
-## Refusal Fallbacks (Claude Fable 5) - opt in by default
+## Refusal Fallbacks (Claude Fable 5.1) - opt in by default
 
-On `claude-fable-5`, safety classifiers may decline a request (HTTP 200 with `stop_reason: "refusal"`). Fallbacks are **opt-in**: without them the request simply stops. Include the `fallbacks` parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.
+On `claude-fable-5-1`, safety classifiers may decline a request (HTTP 200 with `stop_reason: "refusal"`). Fallbacks are **opt-in**: without them the request simply stops. Include the `fallbacks` parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.
 
 ```bash
 response=$(curl -s https://api.anthropic.com/v1/messages \
@@ -219,7 +219,7 @@ response=$(curl -s https://api.anthropic.com/v1/messages \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: server-side-fallback-2026-06-01" \
   -d '{
-    "model": "claude-fable-5",
+    "model": "claude-fable-5-1",
     "max_tokens": 16000,
     "fallbacks": [{"model": "claude-opus-4-8"}],
     "messages": [{"role": "user", "content": "Hello"}]
@@ -242,7 +242,7 @@ if [ "$(echo "$response" | jq -r '.stop_reason')" != "refusal" ] && \
 fi
 ```
 
-The header must be exactly `server-side-fallback-2026-06-01` **for this array form**; the newer `fallbacks: "default"` scalar form uses `server-side-fallback-2026-07-01` instead (see `shared/model-migration.md` -> Migrating to Claude Opus 5 -> New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): `shared/model-migration.md` -> Migrating to Claude Fable 5 -> `refusal` stop reason.
+The header must be exactly `server-side-fallback-2026-06-01` **for this array form**; the newer `fallbacks: "default"` scalar form uses `server-side-fallback-2026-07-01` instead (see `shared/model-migration.md` -> Migrating to Claude Opus 5 -> New API features), and pairing either header with the other form returns a 400. The parameter is rejected on the Batches API and unavailable on Amazon Bedrock, Vertex AI, and Microsoft Foundry. Full semantics (sticky routing, billing, streaming, echoing fallback turns back): `shared/model-migration.md` -> Migrating to Claude Fable 5.1 -> `refusal` stop reason.
 
 ---
 

@@ -27,7 +27,7 @@ Write from this table instead of reflecting the SDK assembly. Endpoint column te
 | Feature | Endpoint | Key C# types (namespace per table above) |
 |---|---|---|
 | User profiles | beta | `client.Beta.UserProfiles.Create(...)` / `.Retrieve(id)` / `.List()`. Pass the returned profile id on the beta messages call. Requires a beta header - check the SDK's beta-headers reference for the current flag. |
-| Agent Skills | beta | `BetaContainerParams` (with `Skills = [new BetaSkillParams { ... }]`), `BetaCodeExecutionTool20250825`. `Betas = ["code-execution-2025-08-25", "skills-2025-10-02"]`. Download the output via `client.Beta.Files.Download(fileId)`. |
+| Agent Skills | beta | `BetaContainerParams` (with `Skills = [new BetaSkillParams { ... }]`), `BetaCodeExecutionTool20250825`. `Betas = ["code-execution-2025-08-25"]` (Skills is out of beta - no `skills-2025-10-02`). Download the output via `client.Beta.Files.Download(fileId)`. |
 | Advisor tool | beta | `BetaAdvisorTool20260301` - may not be in all SDK releases yet |
 | Cache diagnostics | beta | `Diagnostics = new() { PreviousMessageID = ... }`, `BetaCacheControlEphemeral`, `BetaContentBlockParam` |
 | Context editing | beta | `ContextManagement = new BetaContextManagementConfig { Edits = [new BetaClearToolUses20250919Edit()] }`. `Betas = ["context-management-2025-06-27"]` (not `compact-2026-01-12` - that's for `BetaCompact20260112Edit`). |
@@ -35,7 +35,7 @@ Write from this table instead of reflecting the SDK assembly. Endpoint column te
 | Programmatic tool calling | non-beta | `CodeExecutionTool20260120`, `ToolResultBlockParam`, `ContentBlockParam` |
 | Task budgets | beta | `BetaOutputConfig` with `TaskBudget = new BetaTokenTaskBudget { ... }` |
 | Tool search | non-beta | `new ToolUnion(new ToolSearchToolRegex20251119 { Type = ToolSearchToolRegex20251119Type.ToolSearchToolRegex20251119 })` - `Type` must be set explicitly. |
-| Web search | non-beta | `new ToolUnion(new WebSearchTool20260209())` - the latest variant with dynamic filtering (Claude Fable 5 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305()` |
+| Web search | non-beta | `new ToolUnion(new WebSearchTool20260209())` - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305()` |
 
 ### Discovering type and member names
 
@@ -339,7 +339,7 @@ var one = await client.Models.Retrieve("claude-opus-5");
 
 Set `MaxTokens = 128000` on `client.Messages` and use the streaming path (see `streaming.md`). On Claude 4+ models, 128k output is native - no `output-128k-*` beta header or beta namespace is needed.
 
-**Prefilling the assistant message** (putting a trailing `Role.Assistant` message in the input) is **not supported** on Claude Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use `OutputConfig.Format` (structured outputs) instead.
+**Prefilling the assistant message** (putting a trailing `Role.Assistant` message in the input) is **not supported** on Claude Fable 5.1, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use `OutputConfig.Format` (structured outputs) instead.
 
 ## Stop Details
 
@@ -353,7 +353,7 @@ if (response.StopReason == "refusal" && response.StopDetails is { } details)
 }
 ```
 
-**Refusal fallbacks (Claude Fable 5) - opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. In `claude-fable-5` code, include `Fallbacks = [new(Model.ClaudeOpus4_8)]` plus the `AnthropicBeta.ServerSideFallback2026_06_01` beta on the beta messages call by default - a policy decline is re-served by the fallback model inside the same call. Not available on Amazon Bedrock, Vertex AI, or Microsoft Foundry - use the client-side handler there: `new AnthropicClient { Handlers = [new BetaRefusalFallbackHandler { Fallbacks = [new(Model.ClaudeOpus4_8)] }] }` (namespace `Anthropic.Helpers`), with per-conversation state via `BetaFallbackState.Create()` scoped with `using (fallbackState.Use()) { ... }`. Full semantics (billing, sticky routing, streaming) and a runnable example: `shared/model-migration.md` -> Migrating to Claude Fable 5 -> `refusal` stop reason, and the C# SDK repo's `examples/` (WebFetch via `shared/live-sources.md`).
+**Refusal fallbacks (Claude Fable 5.1) - opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. In `claude-fable-5-1` code, include `Fallbacks = [new(Model.ClaudeOpus4_8)]` plus the `AnthropicBeta.ServerSideFallback2026_06_01` beta on the beta messages call by default - a policy decline is re-served by the fallback model inside the same call. Not available on Amazon Bedrock, Vertex AI, or Microsoft Foundry - use the client-side handler there: `new AnthropicClient { Handlers = [new BetaRefusalFallbackHandler { Fallbacks = [new(Model.ClaudeOpus4_8)] }] }` (namespace `Anthropic.Helpers`), with per-conversation state via `BetaFallbackState.Create()` scoped with `using (fallbackState.Use()) { ... }`. Full semantics (billing, sticky routing, streaming) and a runnable example: `shared/model-migration.md` -> Migrating to Claude Fable 5.1 -> `refusal` stop reason, and the C# SDK repo's `examples/` (WebFetch via `shared/live-sources.md`).
 
 ---
 

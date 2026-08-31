@@ -31,17 +31,17 @@ Columns: **1P** = first-party Claude API, **P-AWS** = Claude Platform on AWS (An
 | &nbsp;&nbsp;Bash, text editor, memory | Yes | Yes | Yes | Yes | beta | |
 | &nbsp;&nbsp;Computer use | beta | beta | beta | beta | beta | |
 | **Agentic / orchestration** | | | | | | |
-| &nbsp;&nbsp;Agent Skills (Messages API) | beta | beta | No | No | beta | |
+| &nbsp;&nbsp;Agent Skills (Messages API) | Yes | Yes | No | No | beta | |
 | &nbsp;&nbsp;Programmatic tool calling | Yes | Yes | No | No | beta | |
 | &nbsp;&nbsp;MCP connector | beta | beta | No | No | beta | |
 | &nbsp;&nbsp;Managed Agents | beta | beta | No | No | No | Foundry: No (inferred; not in Foundry docs either way) |
 | &nbsp;&nbsp;Self-hosted sandboxes | beta | beta | No | No | No | P-AWS: worker authenticates with IAM/SigV4 or an AWS-Console API key + `AnthropicSelfHostedEnvironmentAccess` (Console environment keys don't work there); sessions on self-hosted environments cannot attach memory stores; `GET /v1/environments/{id}/work` list endpoint not supported, other work endpoints OK |
 | **API endpoints** | | | | | | |
 | &nbsp;&nbsp;Message Batches | Yes | Yes | No | No | No | |
-| &nbsp;&nbsp;Files API | beta | beta | No | No | beta | |
+| &nbsp;&nbsp;Files API | Yes | Yes | No | No | beta | |
 | &nbsp;&nbsp;Models API | Yes | Yes | No | No | No | |
 | **Other** | | | | | | |
-| &nbsp;&nbsp;Mid-conversation system messages | Yes | Yes | No | No | No | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Mythos 5; not Claude Sonnet 5 |
+| &nbsp;&nbsp;Mid-conversation system messages | Yes | Yes | No | No | No | Claude Opus 5, Claude Opus 4.8, Claude Fable 5.1, Claude Mythos 5.1; not Claude Sonnet 5 |
 | &nbsp;&nbsp;Server-side `fallbacks` | beta | beta | No | No | No | `"default"` -> beta `server-side-fallback-2026-07-01`; array form -> beta `server-side-fallback-2026-06-01` |
 | &nbsp;&nbsp;Fast mode | beta | No | No | No | No | Research preview, beta `fast-mode-2026-02-01`, first-party API only |
 | &nbsp;&nbsp;Cache diagnostics | beta | No | No | No | No | First-party API only |

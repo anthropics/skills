@@ -339,11 +339,9 @@ const uploaded = await client.beta.files.upload({
   file: await toFile(createReadStream("sales_data.csv"), undefined, {
     type: "text/csv",
   }),
-  betas: ["files-api-2025-04-14"],
 });
 
 // 2. Pass to code execution
-// Code execution is GA; Files API is still beta (pass via RequestOptions)
 const response = await client.messages.create(
   {
     model: "claude-opus-5",
@@ -362,7 +360,6 @@ const response = await client.messages.create(
     ],
     tools: [{ type: "code_execution_20260120", name: "code_execution" }],
   },
-  { headers: { "anthropic-beta": "files-api-2025-04-14" } },
 );
 ```
 
@@ -581,7 +578,7 @@ const response = await client.beta.messages.create({
     skills: [{ type: "anthropic", skill_id: "pptx", version: "latest" }],
   },
   tools: [{ type: "code_execution_20260521", name: "code_execution" }],
-  betas: ["code-execution-2025-08-25", "skills-2025-10-02"],
+  betas: ["code-execution-2025-08-25"],
   messages: [{ role: "user", content: "Create a 3-slide deck about X." }],
 });
 // Find the file_id in response.content, then:

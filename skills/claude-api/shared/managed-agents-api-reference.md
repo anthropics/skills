@@ -361,7 +361,7 @@ Immutable per-mutation snapshots (`memver_...`) - the audit and rollback surface
 }
 ```
 
-> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` - supported on Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5, checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
+> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` - supported on Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5, Claude Fable 5.1, and Claude Mythos 5.1, checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
 
 ### Define Outcome Event
 

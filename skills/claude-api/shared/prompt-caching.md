@@ -64,7 +64,7 @@ Many requests share a large fixed preamble (few-shot examples, retrieved docs, i
 
 ### Mid-conversation system messages
 
-**Claude Opus 5, Claude Opus 4.8, Claude Fable 5, and Claude Mythos 5; no beta header. Not available on Claude Sonnet 5** - use top-level `system` there. (Sources conflict on Claude Sonnet 5: the model config marks it supported, but every canonical docs page omits it. Treat it as unsupported and catch the 400.) When an operator instruction arrives mid-conversation - a mode switch, updated context, dynamically injected state - send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
+**Claude Opus 5, Claude Opus 4.8, Claude Fable 5.1, and Claude Mythos 5.1; no beta header. Not available on Claude Sonnet 5** - use top-level `system` there. (Sources conflict on Claude Sonnet 5: the model config marks it supported, but every canonical docs page omits it. Treat it as unsupported and catch the 400.) When an operator instruction arrives mid-conversation - a mode switch, updated context, dynamically injected state - send it as `{"role": "system", "content": "..."}` appended to `messages[]`, rather than editing top-level `system`. Editing top-level `system` changes the prefix ahead of the entire conversation history, so every cached turn is re-processed uncached; a `role: "system"` message sits after the history and leaves the cached prefix intact.
 
 ```json
 // Top-level system stays byte-identical; new instruction goes after the cached history
@@ -130,14 +130,14 @@ Fix by moving the dynamic piece after the last breakpoint, making it determinist
 
 | Model | Minimum |
 |---|---:|
-| Claude Opus 5, Claude Fable 5, Claude Mythos 5 | 512 tokens |
+| Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1 | 512 tokens |
 | Opus 4.8, Claude Sonnet 5, Sonnet 4.6, Sonnet 4.5, Opus 4.1, Opus 4, Sonnet 4 | 1024 tokens |
 | Opus 4.7, Mythos Preview, Haiku 3.5 | 2048 tokens |
 | Opus 4.6, Opus 4.5, Haiku 4.5 | 4096 tokens |
 
 **The minimum is not monotonic across generations** - 512 on the newest models, but 4096 on Opus 4.6/4.5 and Haiku 4.5. A 3K-token prompt caches on Claude Opus 5, Opus 4.8, and Sonnet 4.5, and silently won't on Opus 4.6 or Haiku 4.5. Claude Opus 5 halves the Opus 4.8 minimum (1024 -> 512), so prompts previously too short to cache now create entries with no code change.
 
-These minimums apply on **every** platform where the model is available - the old Amazon Bedrock override for Claude Fable 5 was removed, and no per-platform exception remains.
+These minimums apply on **every** platform where the model is available - the old Amazon Bedrock override for Claude Fable 5.1 was removed, and no per-platform exception remains.
 
 **Economics:** Cache reads cost ~0.1× base input price. Cache writes cost **1.25× for 5-minute TTL, 2× for 1-hour TTL**. Break-even depends on TTL: with 5-minute TTL, two requests break even (1.25× + 0.1× = 1.35× vs 2× uncached); with 1-hour TTL, you need at least three requests (2× + 0.2× = 2.2× vs 3× uncached). The 1-hour TTL keeps entries alive across gaps in bursty traffic, but the doubled write cost means it needs more reads to pay off.
 
@@ -226,11 +226,11 @@ Implication: you can change `tool_choice` per-request without losing the tools+s
 | Top-level change that invalidates | Cache-preserving form | Available on |
 |---|---|---|
 | Tool definitions (add/remove) | `tool_addition` / `tool_removal` blocks - see `shared/tool-use-concepts.md` § Mid-conversation tool changes | Claude Opus 5 onward, behind `mid-conversation-tool-changes-2026-07-01` |
-| System prompt content | A `{"role": "system", "content": "..."}` message - see § Mid-conversation system messages above | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Mythos 5 - **already available today**, no beta header |
+| System prompt content | A `{"role": "system", "content": "..."}` message - see § Mid-conversation system messages above | Claude Opus 5, Claude Opus 4.8, Claude Fable 5.1, Claude Mythos 5.1 - **already available today**, no beta header |
 
 Model switch has no escape hatch: caches are model-scoped. Keep the main loop on one model and spawn a subagent for cheaper sub-tasks (see `agent-design.md` § Caching for Agents).
 
-**Thinking blocks and the messages cache (model-specific).** On Claude Fable 5, Claude Mythos 5, Mythos Preview, Opus 4.5 and later, and Sonnet 4.6 and later, previous-turn thinking blocks are preserved by default, so passing a regular (non-tool-result) user message with thinking enabled leaves the messages cache valid. On earlier Opus and Sonnet models and all Haiku models through Haiku 4.5, that same request strips previously-cached thinking blocks from context, and every message after the first stripped block falls out of cache - in an agent loop this shows up as a `cache_creation_input_tokens` spike on turns where a plain user message follows tool use. (Toggling thinking on/off between requests is a separate, all-models invalidator of the messages cache - see the hierarchy table above. Changing `output_config.effort` behaves the same as changing thinking parameters; setting the model's default effort explicitly is equivalent to omitting it, so pinning the default costs nothing.)
+**Thinking blocks and the messages cache (model-specific).** On Claude Fable 5.1, Claude Mythos 5.1, Mythos Preview, Opus 4.5 and later, and Sonnet 4.6 and later, previous-turn thinking blocks are preserved by default, so passing a regular (non-tool-result) user message with thinking enabled leaves the messages cache valid. On earlier Opus and Sonnet models and all Haiku models through Haiku 4.5, that same request strips previously-cached thinking blocks from context, and every message after the first stripped block falls out of cache - in an agent loop this shows up as a `cache_creation_input_tokens` spike on turns where a plain user message follows tool use. (Toggling thinking on/off between requests is a separate, all-models invalidator of the messages cache - see the hierarchy table above. Changing `output_config.effort` behaves the same as changing thinking parameters; setting the model's default effort explicitly is equivalent to omitting it, so pinning the default costs nothing.)
 
 ---
 
