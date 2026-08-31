@@ -41,7 +41,11 @@ Columns: **1P** = first-party Claude API, **P-AWS** = Claude Platform on AWS (An
 | &nbsp;&nbsp;Files API | Yes | Yes | No | No | beta | |
 | &nbsp;&nbsp;Models API | Yes | Yes | No | No | No | |
 | **Other** | | | | | | |
-| &nbsp;&nbsp;Mid-conversation system messages | Yes | Yes | No | No | No | Claude Opus 5, Claude Opus 4.8, Claude Fable 5.1, Claude Mythos 5.1; not Claude Sonnet 5 |
+| &nbsp;&nbsp;Mid-conversation system messages | Yes | Yes | Yes | Yes | No | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1; not Claude Sonnet 5. Bedrock: InvokeModel passthrough, not ARN-versioned models |
+| &nbsp;&nbsp;Turn-scoped (`clear_at`) system messages | beta | beta | beta | beta | No | Same models as mid-conversation system messages; beta `mid-conversation-system-clear-at-2026-08-21` (on Bedrock/Vertex pass the value as a beta) |
+| &nbsp;&nbsp;Per-message `effort` (system message `output_config`) | beta | No | No | No | No | Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5; beta `mid-conversation-output-config-2026-07-01`; Claude API at launch (Bedrock/Vertex/Foundry unconfirmed; Claude Opus 5 excluded on Bedrock) |
+| &nbsp;&nbsp;`thinking.display: "updates"` | beta | beta | beta | beta | beta | Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5; beta `thinking-display-updates-2026-08-18` (pass the beta value per platform); without it `"updates"` is rejected as an unknown `display` value |
+| &nbsp;&nbsp;Thinking block-binding controls | beta | beta | per model | per model | No | `thinking.block_binding` + `input_transformations`; beta `thinking-binding-controls-2026-08-01` (on Bedrock via the `anthropic_beta` body field); the controls beta arrives per model on Bedrock/Vertex - until then the header is rejected; the history-editing enforcement itself follows the account-age rule in `shared/model-migration.md` -> Migrating to Claude Fable 5.1 from Claude Fable 5 |
 | &nbsp;&nbsp;Server-side `fallbacks` | beta | beta | No | No | No | `"default"` -> beta `server-side-fallback-2026-07-01`; array form -> beta `server-side-fallback-2026-06-01` |
 | &nbsp;&nbsp;Fast mode | beta | No | No | No | No | Research preview, beta `fast-mode-2026-02-01`, first-party API only |
 | &nbsp;&nbsp;Cache diagnostics | beta | No | No | No | No | First-party API only |
