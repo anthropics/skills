@@ -1,0 +1,4 @@
+name: tubi-dashboard
+description: Build HTML dashboards in Tubi's house style — KPI cards, filter bars, section-banded Chart.js charts, and delta/summary tables matching our Tableau look. Includes themed CSS, a functional page template, component snippets, build/lint scripts, and a style guide.
+trigger: /tubi-dashboard
+version: 1.0.0

@@ -1,0 +1,518 @@
+/* ============================================================
+   TUBI DASHBOARD THEME
+   House style for HTML dashboards (Tableau-equivalent look).
+   Load this file once per page, then use the classes/variables.
+   ============================================================ */
+
+:root {
+  /* ---- Brand ---- */
+  --tubi-purple:        #6A1B9A;  /* titles, KPI numbers, primary brand */
+  --tubi-purple-bright: #7408FB;  /* links, active accents, highlights */
+  --tubi-purple-deep:   #4A1B8C;  /* dark series, gradients */
+  --tubi-yellow:        #FCE300;  /* logo + accent only, use sparingly */
+  --tubi-black:         #14101E;  /* near-black series + headings */
+
+  /* ---- Neutrals / surfaces ---- */
+  --bg:            #FFFFFF;  /* page + card background */
+  --bg-band:       #F2F2F4;  /* section-header strips */
+  --bg-filter:     #ECEAF6;  /* filter-bar strips (pale lavender) */
+  --bg-row-alt:    #F7F7F9;  /* zebra table rows */
+  --bg-hover:      #F0EEF8;  /* row / control hover */
+  --border:        #E2E2E8;  /* table rules, card borders */
+  --border-strong: #C9C9D2;  /* totals rule, axis */
+
+  /* ---- Text ---- */
+  --text:        #1F2430;  /* default body text */
+  --text-muted:  #6B7280;  /* labels, captions, axis text */
+  --text-invert: #FFFFFF;
+
+  /* ---- Semantic (deltas / conditional) ---- */
+  --pos:     #1B873F;  /* positive delta text */
+  --neg:     #D02B2B;  /* negative delta text */
+  --pos-bg:  #C8E6C9;  /* conditional green fill (table bars) */
+  --neg-bg:  #FBD5D5;
+
+  /* ---- Ordered series palette (assign in chart order) ---- */
+  --series-1: #4A90E2;  /* blue   (e.g. Creator) */
+  --series-2: #8C8C8C;  /* gray   (e.g. Non-Priority) */
+  --series-3: #A020E0;  /* magenta(e.g. Priority) */
+  --series-4: #14101E;  /* black  (e.g. OTT) */
+  --series-5: #FCE300;  /* yellow (e.g. Web) */
+  --series-6: #4A1B8C;  /* deep purple */
+  --series-7: #2EA39B;  /* teal */
+  --series-8: #E67E22;  /* orange */
+
+  /* ---- Typography ---- */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --fs-page-title: 30px;
+  --fs-section:    17px;
+  --fs-kpi:        38px;
+  --fs-kpi-label:  14px;
+  --fs-body:       14px;
+  --fs-small:      12px;
+
+  /* ---- Spacing / shape ---- */
+  --gap:        16px;
+  --radius:     8px;
+  --radius-sm:  4px;
+  --card-pad:   18px;
+  --shadow:     0 1px 3px rgba(20,16,30,.08);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.dash { max-width: 1320px; margin: 0 auto; padding: 24px; }
+
+/* ============================================================
+   HEADER  (logo + title + optional right-side controls)
+   ============================================================ */
+.dash-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.dash-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px; height: 64px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--tubi-purple-bright), var(--tubi-purple-deep));
+  color: var(--tubi-yellow);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -.5px;
+}
+.dash-title {
+  margin: 0;
+  font-size: var(--fs-page-title);
+  font-weight: 800;
+  color: var(--tubi-purple);
+  letter-spacing: -.5px;
+}
+.dash-title--center { text-align: center; flex: 1; }
+.dash-header__spacer { flex: 1; }
+
+/* ============================================================
+   FILTER BAR  (pale lavender strip of dropdowns)
+   ============================================================ */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  background: var(--bg-filter);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  flex: 1;
+}
+.filter > label {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.filter select,
+.filter input {
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+.filter select:focus,
+.filter input:focus { outline: 2px solid var(--tubi-purple-bright); outline-offset: 0; }
+
+/* ============================================================
+   FILTER CHIPS  (active cross-filters set by clicking a chart —
+   every chart/table is a filter by default; this is where that
+   selection becomes visible and clearable)
+   ============================================================ */
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -8px 0 20px;
+}
+.filter-chips[hidden] { display: none; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--tubi-purple);
+  background: var(--bg-filter);
+  border: 1px solid var(--tubi-purple-bright);
+  border-radius: 999px;
+  padding: 4px 6px 4px 10px;
+}
+.chip b { font-weight: 700; }
+.chip button {
+  border: none;
+  background: none;
+  color: var(--tubi-purple);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.chip button:hover { color: var(--neg); }
+.chip--clear {
+  background: none;
+  border: 1px dashed var(--border-strong);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   SECTION HEADER  (centered title on a gray band)
+   ============================================================ */
+.section-band {
+  background: var(--bg-band);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 24px 0 12px;
+  text-align: center;
+}
+.section-band h2 {
+  margin: 0;
+  font-size: var(--fs-section);
+  font-weight: 700;
+  color: var(--text);
+}
+.section-band .subtitle {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ============================================================
+   KPI CARDS  (big purple number + gray label)
+   ============================================================ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--gap);
+  margin-bottom: 8px;
+}
+.kpi-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px var(--card-pad);
+  text-align: center;
+}
+.kpi-card .value {
+  font-size: var(--fs-kpi);
+  font-weight: 800;
+  color: var(--tubi-purple);
+  line-height: 1.1;
+}
+.kpi-card .label {
+  margin-top: 6px;
+  font-size: var(--fs-kpi-label);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.kpi-card .delta { margin-top: 6px; font-size: var(--fs-small); font-weight: 600; }
+
+/* ============================================================
+   CHART GRID + CONTAINERS
+   ============================================================ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--gap);
+}
+.chart-grid--2 { grid-template-columns: repeat(2, 1fr); }
+.chart-grid--3 { grid-template-columns: repeat(3, 1fr); }
+
+.chart-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--card-pad);
+}
+.chart-card h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.chart-card .chart-box { position: relative; height: 280px; }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-body);
+}
+.tbl caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 700;
+  color: var(--tubi-purple);
+  padding-bottom: 8px;
+}
+.tbl thead th {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-strong);
+  padding: 10px 12px;
+  white-space: nowrap;
+}
+.tbl thead th:first-child { text-align: left; }
+.tbl tbody td {
+  text-align: right;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.tbl tbody td:first-child { text-align: left; }
+.tbl tbody tr:nth-child(even) { background: var(--bg-row-alt); }
+.tbl tbody tr:hover { background: var(--bg-hover); }
+
+/* grand-total / summary row */
+.tbl tr.total td {
+  font-weight: 800;
+  border-top: 2px solid var(--border-strong);
+  border-bottom: none;
+  background: transparent;
+}
+
+/* delta cells */
+.pos { color: var(--pos); }
+.neg { color: var(--neg); }
+
+/* conditional in-cell bar (Tableau-style green fill) */
+.cell-bar {
+  position: relative;
+  z-index: 0;
+}
+.cell-bar::before {
+  content: "";
+  position: absolute;
+  inset: 2px 4px 2px auto;
+  right: 4px;
+  width: var(--bar, 0%);
+  background: var(--pos-bg);
+  border-radius: 2px;
+  z-index: -1;
+}
+
+/* ============================================================
+   LEGEND  (manual, matches series palette)
+   ============================================================ */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-small); color: var(--text-muted); }
+.legend i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.muted   { color: var(--text-muted); }
+.center  { text-align: center; }
+/* screen-reader-only: visually hidden, still read aloud (for chart data tables, etc.) */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+.mt-0 { margin-top: 0; } .mt-1 { margin-top: 8px; } .mt-2 { margin-top: 16px; }
+.mb-0 { margin-bottom: 0; } .mb-2 { margin-bottom: 16px; }
+@media (max-width: 720px) {
+  .chart-grid--2, .chart-grid--3 { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   DARK THEME  —  add data-theme="dark" to <html> or <body>
+   Same variables, dark surfaces. Charts read these via JS, so
+   nothing else changes. Toggle: document.documentElement
+   .setAttribute('data-theme', dark ? 'dark' : '');
+   ============================================================ */
+[data-theme="dark"] {
+  --tubi-purple:        #B98CFF;  /* lightened for contrast on dark */
+  --tubi-purple-bright: #A970FF;
+  --tubi-purple-deep:   #6C4BD8;
+
+  --bg:            #0F1420;
+  --bg-band:       #1A2130;
+  --bg-filter:     #171E2E;
+  --bg-row-alt:    #151B28;
+  --bg-hover:      #1E2637;
+  --border:        #2A3446;
+  --border-strong: #3A4658;
+
+  --text:        #E6EAF2;
+  --text-muted:  #93A0B5;
+
+  --pos:     #3FCF7F;
+  --neg:     #FF6B6B;
+  --pos-bg:  rgba(63,207,127,.22);
+  --neg-bg:  rgba(255,107,107,.22);
+
+  /* series stay the same hues; they read well on dark */
+  --shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+
+/* ============================================================
+   TAB BAR  —  multiple views in one file (like Tableau tabs)
+   ============================================================ */
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 20px;
+}
+.tab-bar button {
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--text-muted);
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+.tab-bar button:hover { color: var(--text); }
+.tab-bar button.active {
+  color: var(--tubi-purple);
+  border-bottom-color: var(--tubi-purple);
+  font-weight: 700;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ============================================================
+   ENHANCED KPI CARD  —  sparkline, "as of", source caption
+   ============================================================ */
+.kpi-card .spark { margin-top: 10px; height: 34px; position: relative; }
+.kpi-card .asof {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.caption-source {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 4px 0 12px;
+}
+.caption-source code {
+  font-style: normal;
+  background: var(--bg-band);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ============================================================
+   EXPORT / TOOLBAR  (e.g. download-PNG button)
+   ============================================================ */
+.dash-toolbar { display: flex; gap: 8px; }
+.btn {
+  font-family: var(--font);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--tubi-purple);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  cursor: pointer;
+}
+.btn:hover { background: var(--bg-hover); }
+
+/* ============================================================
+   SHOW SQL  —  reveal the query behind any chart or table
+   ============================================================ */
+.chart-card, .tbl-wrap { position: relative; }
+.sql-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-band);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  cursor: pointer;
+  z-index: 2;
+  transition: color .15s, border-color .15s;
+}
+.sql-toggle:hover { color: var(--tubi-purple); border-color: var(--tubi-purple-bright); }
+.sql-toggle.active { color: var(--tubi-purple-bright); border-color: var(--tubi-purple-bright); }
+.sql-block {
+  display: none;
+  margin: 12px 0 0;
+  padding: 14px;
+  background: var(--bg-band);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  max-height: 300px;
+}
+.sql-block.visible { display: block; }
+.sql-block .sql-copy {
+  float: right;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tubi-purple);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  cursor: pointer;
+  margin: -4px -4px 8px 8px;
+}
+.sql-block .sql-copy:hover { background: var(--bg-hover); }
+
+/* ============================================================
+   PRINT / PDF  —  hide controls, expand all tabs, avoid breaks
+   ============================================================ */
+@media print {
+  .filter-bar, .filter-chips, .tab-bar, .dash-toolbar, .btn, .sql-toggle, .sql-block { display: none !important; }
+  .tab-panel { display: block !important; }
+  .kpi-card, .chart-card, table.tbl { break-inside: avoid; }
+  .dash { max-width: none; padding: 0; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
