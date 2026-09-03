@@ -41,6 +41,25 @@ def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tupl
     test_set = trigger[:n_trigger_test] + no_trigger[:n_no_trigger_test]
     train_set = trigger[n_trigger_test:] + no_trigger[n_no_trigger_test:]
 
+    # A single-member class always lands entirely in the test split, and an
+    # empty train split would make the loop report "all passed" on iteration 1
+    # without testing anything. Fail loudly rather than silently producing a
+    # degenerate run.
+    if not eval_set:
+        raise ValueError("Eval set is empty; nothing to split.")
+    if len(trigger) > 0 and not trigger[n_trigger_test:]:
+        raise ValueError(
+            f"Cannot split eval set with holdout={holdout}: only {len(trigger)} "
+            "trigger query(ies), leaving none for the train split. Add at least "
+            "2 queries per polarity class or run with --holdout 0."
+        )
+    if len(no_trigger) > 0 and not no_trigger[n_no_trigger_test:]:
+        raise ValueError(
+            f"Cannot split eval set with holdout={holdout}: only {len(no_trigger)} "
+            "non-trigger query(ies), leaving none for the train split. Add at "
+            "least 2 queries per polarity class or run with --holdout 0."
+        )
+
     return train_set, test_set
 
 
