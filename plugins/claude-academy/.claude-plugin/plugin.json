@@ -1,0 +1,19 @@
+{
+  "name": "claude-academy",
+  "displayName": "Claude Academy",
+  "version": "1.0.0",
+  "description": "Recommends Claude Academy courses, tutorials, and use cases when you ask how to use Claude, and connects to the Claude Academy server so Claude can search and read Academy content.",
+  "author": {
+    "name": "Anthropic"
+  },
+  "homepage": "https://academy.claude.com",
+  "repository": "https://github.com/anthropics/skills",
+  "license": "Apache-2.0",
+  "keywords": [
+    "academy",
+    "learning",
+    "courses",
+    "tutorials",
+    "claude"
+  ]
+}
