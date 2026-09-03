@@ -47,15 +47,19 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 
+import platform
+
 _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
 
 
 def _needs_shim() -> bool:
+    if platform.system() != "Linux":
+        return False
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
         return False
-    except OSError:
+    except (OSError, AttributeError):
         return True
 
 
