@@ -1,0 +1,104 @@
+{
+  "name": "me-medicaid-policy",
+  "kind": "state-policy",
+  "state": "ME",
+  "index": "https://www.maine.gov/sos/rulemaking/agency-rules/mainecare-benefits-manual",
+  "fetchVia": "curl",
+  "out": "policy/me",
+  "note": "MaineCare Benefits Manual (10-144 CMR Ch.101) on the SOS APA-rules site. ~55 Ch.II per-service sections + Ch.III allowances, all DOCX (not PDF). Filenames embed revision tags; curl 200, no login.",
+  "docs": [
+    {
+      "title": "Ch.I §1 — General Administrative Policies and Procedures",
+      "detector": "D3,D4",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c1s001.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.I §4 — Telehealth Services",
+      "detector": "D4",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c1s004%20-%20JUL%202025.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §113 — Non-Emergency Transportation (NET) Services",
+      "detector": "D19",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s113%20LUP%2004.05.2015%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §5 — Ambulance Services",
+      "detector": "D19",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s005-LUP%2006.03.2015%20NSC.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §40 — Home Health Services",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/c2s040.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §96 — Private Duty Nursing and Personal Care Services",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s096%2002.11.2019%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §19 — Home and Community Benefits for the Elderly and Adults with Disabilities",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s019%20%28NSE%2C%20ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §12 — Consumer Directed Attendant Services",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s012%20%28NSE%2C%20ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.I §6 — Global HCBS Waiver Person-Centered Planning and Settings Rule",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c1s006.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §90 — Physician Services",
+      "detector": "D4",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s090%2005.14.2022%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §55 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s055%20LU%2011.09.2016%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §101 — Medical Imaging Services",
+      "detector": "D4",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s101%2009.01.2010%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §60 — Medical Supplies and Durable Medical Equipment",
+      "detector": "D15",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s060-2023-216%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §80 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s080%2009.01.2017%20%28ACK%29.docx",
+      "pp": null
+    },
+    {
+      "title": "Ch.II §43 — Hospice Services",
+      "detector": "D20",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/c2s043-2024-245%20%28ACK%29.docx",
+      "pp": null
+    }
+  ],
+  "_comment": "MaineCare Benefits Manual = Maine's Medicaid rules (10-144 CMR Ch.101). Single flat SOS index page; Ch.II = service-specific coverage policy, Ch.III = reimbursement allowances. All docs are DOCX (a few legacy .doc) — fetch-reference state-policy handler will need docx→txt (pandoc/textutil), not pdftotext. Filenames are revision-stamped (e.g. 'LUP 04.05.2015', '2026-093 RPR') so URLs change on amendment; two storage paths in use: /inline-files/ (newer) and /content/assets/ (older). Ch.III §113 Transportation absorbed into Ch.II §113.",
+  "siteArchitecture": "docx-curl",
+  "lastVerified": "2026-06-22"
+}

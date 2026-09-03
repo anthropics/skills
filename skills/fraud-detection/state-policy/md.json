@@ -1,0 +1,110 @@
+{
+  "name": "md-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MD",
+  "index": "https://health.maryland.gov/mmcp/pages/provider-information.aspx",
+  "fetchVia": "curl",
+  "out": "policy/md",
+  "note": "Maryland MDH: no per-service manual hub. Policy = COMAR Subtitle 10.09 chapters (HTML on dsd.maryland.gov → 301 to regs.maryland.gov) + a handful of MDH provider-manual PDFs and fee schedules. health.maryland.gov PDFs 200 via curl, no login.",
+  "docs": [
+    {
+      "title": "2026 Professional Services Provider Manual",
+      "detector": "D4",
+      "url": "https://health.maryland.gov/mmcp/provider/Documents/2026-Professional-Services-Provider-Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.02 — Physicians' Services",
+      "detector": "D4",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.02.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "2026 Medical Laboratory Fee Schedule",
+      "detector": "D4",
+      "url": "https://health.maryland.gov/mmcp/Documents/2026%20Medical%20Laboratory%20Fee%20Schedule%20Effective%20February%201%2c%202026.pdf",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.09 — Medical Laboratories",
+      "detector": "D4",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.09.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.19 — Transportation Services",
+      "detector": "D19",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.19.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.08 — Free-Standing Clinics / Ambulance Services",
+      "detector": "D19",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.08.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.04 — Home Health Services",
+      "detector": "D20",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.04.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.20 — Personal Care Services",
+      "detector": "D20",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.20.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.84 — Community First Choice (HCBS)",
+      "detector": "D20",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.84.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "Nursing Services Provider Manual",
+      "detector": "D20",
+      "url": "https://health.maryland.gov/mmcp/Documents/nursing-services/nursing-services-provider-manual-2017.pdf",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.12 — Disposable Medical Supplies and Durable Medical Equipment",
+      "detector": "D15",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.12.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.18 — Oxygen and Related Respiratory Equipment",
+      "detector": "D15",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.18.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "DMS/DME/OXY Fee Schedule (Approved Items List)",
+      "detector": "D15",
+      "url": "https://health.maryland.gov/mmcp/communitysupport/Documents/DMS-DME-Fee-Sch.xlsx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.03 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.03.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "COMAR 10.09.36 — General Medical Assistance Providers (enrollment/exclusion)",
+      "detector": "D3",
+      "url": "https://dsd.maryland.gov/regulations/Pages/10.09.36.01.aspx",
+      "pp": null
+    },
+    {
+      "title": "EPSDT Audiology/PT/OT/Speech/Vision Services Provider Manual",
+      "detector": "D20",
+      "url": "https://health.maryland.gov/mmcp/epsdt/Documents/2026-Audiology-Physical-Occupational-Speech-and-Vision-Services-Providers-Manual.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "MD coverage policy is regulatory: COMAR Title 10 Subtitle 09 has ~90 per-service chapters. dsd.maryland.gov/regulations/Pages/10.09.NN.01.aspx 301-redirects to regs.maryland.gov (per-section HTML; chapter-index .00 path 404s after redirect, so link sections). Provider-manual PDFs are scattered across /mmcp/ sub-sites — the Provider Information page lists fee schedules + manuals; Community Support Services hosts DME/DMS approved-list. Pharmacy program at /mmcp/pap. NEMT is administered via local health departments (no FFS billing manual). HealthChoice MCO manuals (Aetna/CareFirst/etc) skipped — payer-specific.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}

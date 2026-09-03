@@ -1,0 +1,116 @@
+{
+  "name": "ct-medicaid-policy",
+  "kind": "state-policy",
+  "state": "CT",
+  "index": "https://www.ctdssmap.com/CTPortal/Information/Publications",
+  "fetchVia": "curl",
+  "out": "policy/ct",
+  "note": "CT Medical Assistance Program (DSS/Gainwell) Provider Manual: 12 chapters. Ch1–6/9–12 are program-wide; Ch7 (Regulations/Policy) and Ch8 (Provider-Specific Claims) are per-provider-type via DNN dropdown postback. PDFs resolve at Get-Download-File?Filename=<f>&URI=Manuals/<f> — curl 200, no login.",
+  "docs": [
+    {
+      "title": "Ch.7 Transportation — Regulations/Policy",
+      "detector": "D19",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_trans.pdf&URI=Manuals/ch7_trans.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Home Health — Regulations/Policy",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_hh.pdf&URI=Manuals/ch7_hh.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Personal Care Assistance — Regulations/Policy",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_pca.pdf&URI=Manuals/ch7_pca.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Connecticut Home Care (CHCPE) — Regulations/Policy",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_chc.pdf&URI=Manuals/ch7_chc.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Acquired Brain Injury Waiver — Regulations/Policy",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=CH_7_ABI_CS.pdf&URI=Manuals/CH_7_ABI_CS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Physician — Regulations/Policy",
+      "detector": "D4",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_phys.pdf&URI=Manuals/ch7_phys.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 MEDS (Medical Equipment, Devices & Supplies) — Regulations/Policy",
+      "detector": "D15",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_MEDS.pdf&URI=Manuals/ch7_MEDS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Pharmacy — Regulations/Policy",
+      "detector": "D16,D23",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_pharm.pdf&URI=Manuals/ch7_pharm.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Independent Clinical Lab — Regulations/Policy",
+      "detector": "D4",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_ind_lab.pdf&URI=Manuals/ch7_ind_lab.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 Hospice — Regulations/Policy",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch7_hospice.pdf&URI=Manuals/ch7_hospice.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 Professional Services Claims (Physician/Transportation/Lab shared)",
+      "detector": "D4,D19",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=Chapter%208%20Professional%20Services%20V%204.3.pdf&URI=Manuals/Chapter%208%20Professional%20Services%20V%204.3.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 Home Health — Provider-Specific Claims",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch8_HH.pdf&URI=Manuals/ch8_HH.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 Waiver Services Claims (PCA / CT Home Care / Community First Choice)",
+      "detector": "D20",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch8_waiver.pdf&URI=Manuals/ch8_waiver.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 MEDS — Provider-Specific Claims",
+      "detector": "D15",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch8_MEDS.pdf&URI=Manuals/ch8_MEDS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 Pharmacy — Provider-Specific Claims",
+      "detector": "D16,D23",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch8_pharm.pdf&URI=Manuals/ch8_pharm.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.2 Provider Participation Policy",
+      "detector": "D3",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch2.pdf&URI=Manuals/ch2.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.9 Prior Authorization",
+      "detector": "D4,D15",
+      "url": "https://www.ctdssmap.com/CTPortal/Information/Get-Download-File?Filename=ch9_PA.pdf&URI=Manuals/ch9_PA.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "ctdssmap.com DNN portal (Gainwell). Index page has no static hrefs — Ch7/Ch8 PDFs resolved via ASP.NET __doPostBack on ddlprovidertyp7/8 + btnViewchapter. ~37 Ch7 + ~41 Ch8 provider-type variants total; captured 17 detector-relevant. Ch8 collapses many CMS-1500 types to one shared 'Professional Services' PDF. Direct Get-Download-File?...URI=Manuals/<slug>.pdf links 200 via curl. NEMT brokered (Veyo) but Transportation manual covers ambulance/wheelchair/livery. Regs also at eRegulations 17b-262.",
+  "siteArchitecture": "aspnet-postback",
+  "lastVerified": "2026-06-22"
+}

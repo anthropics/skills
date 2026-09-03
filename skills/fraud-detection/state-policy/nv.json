@@ -1,0 +1,98 @@
+{
+  "name": "nv-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NV",
+  "index": "https://dhcfp.nv.gov/Resources/AdminSupport/Manuals/MSM/MSMHome/",
+  "fetchVia": "curl",
+  "out": "policy/nv",
+  "note": "Nevada DHCFP Medicaid Services Manual (MSM) — ~45 numbered chapters, each a versioned PDF. Index links to per-chapter sub-pages listing current + historical revisions; first PDF on each sub-page is the current one. dhcfp.nv.gov 301s → nevadamedicaid.nv.gov; both hosts serve the same /uploadedFiles/ paths via curl. Billing Guidelines live separately on the fiscal-agent site (medicaid.nv.gov).",
+  "docs": [
+    {
+      "title": "MSM Ch.1900 — Transportation Services (NEMT/ambulance)",
+      "detector": "D19",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C1900/MSM_1900_26_01_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.3500 — Personal Care Services Program",
+      "detector": "D20",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C3500/MSM_3500_24_11_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.1400 — Home Health Agency",
+      "detector": "D20",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C1400/MSM_1400_24_01_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.900 — Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C900/MSM_900_24_01_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.1800 — 1915(i) HCBS Adult Day Health Care & Habilitation",
+      "detector": "D20",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C1800/MSM_1800_25_03_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.2200 — HCBS Waiver for the Frail Elderly",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.600 — Physician Services",
+      "detector": "D4",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C600/MSM_600_26_01_01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.300 — Radiology Services",
+      "detector": "D4",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C300/MSM_300_19-09-01.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.800 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C800/MSM_800_25_10_29.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.3400 — Telehealth Services",
+      "detector": "D4",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C3400/MSM_3400_23_11_29_ADA.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.1300 — DME, Disposable Supplies and Supplements",
+      "detector": "D15",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C1300/MSM_1300_24_05_01_ADA.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.1200 — Prescribed Drugs",
+      "detector": "D16,D23",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C1200/MSM_1200_25_10_05.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.100 — Medicaid Program (provider enrollment / general)",
+      "detector": "D3",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C100/MSM_100_25_03_26.pdf",
+      "pp": null
+    },
+    {
+      "title": "MSM Ch.3300 — Program Integrity",
+      "detector": "D3",
+      "url": "https://dhcfp.nv.gov/uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C3300/MSM_3300_19_05_01.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "MSM = NRS 422.2368/.2369 regulations. 45 chapter sub-pages at .../MSM/C<N>/Chapter<N>/; each lists dated PDFs (newest first) at /uploadedFiles/dhcfpnvgov/content/Resources/AdminSupport/Manuals/MSM/C<N>/MSM_<N>_<YY>_<MM>_<DD>.pdf. dhcfp.nv.gov host 301-redirects to nevadamedicaid.nv.gov but the original host still serves the PDFs directly. Captured 14 detector-relevant chapters; HCBS-waiver chapter pages (2100–2400) use a different template — C2200 url left null. Single 'MSM Complete Manual' PDF also available on the index.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

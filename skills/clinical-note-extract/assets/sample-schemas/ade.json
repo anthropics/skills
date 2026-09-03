@@ -1,0 +1,9 @@
+{
+  "suspected_drug": { "desc": "drug the note attributes the adverse event to, as named in the note", "check": {"kind": "terminology", "via": "rxnorm"} },
+  "adverse_event": { "desc": "the adverse event itself, as the clinician described it", "finding": true },
+  "severity_grade": { "desc": "CTCAE or descriptive grade as stated" },
+  "action_taken": { "desc": "dose held / reduced / discontinued / none — as stated" },
+  "onset_relative_to_drug": { "desc": "timing of the event relative to the drug, as stated" },
+  "dechallenge_result": { "desc": "did the event improve after stopping the drug", "finding": true },
+  "rechallenge_result": { "desc": "did the event recur after restarting the drug", "finding": true }
+}

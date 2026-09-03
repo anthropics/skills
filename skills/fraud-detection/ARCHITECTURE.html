@@ -1,0 +1,322 @@
+<title>FWA Detection — Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+  @font-face{font-family:"Anthropic Sans";src:url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Regular-Static.otf") format("opentype");font-weight:400;font-display:swap}
+  @font-face{font-family:"Anthropic Sans";src:url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Medium-Static.otf") format("opentype");font-weight:500;font-display:swap}
+  @font-face{font-family:"Anthropic Sans";src:url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Semibold-Static.otf") format("opentype");font-weight:600;font-display:swap}
+  @font-face{font-family:"Anthropic Sans";src:url("https://assets.claude.ai/Fonts/AnthropicSans-Text-Bold-Static.otf") format("opentype");font-weight:700;font-display:swap}
+  :root{
+    --ink:#141413; --paper:#faf9f5; --line:#e8e6dc; --mid:#b0aea5;
+    --orange:#d97757; --blue:#6a9bcc; --green:#788c5d;
+    --rule:#2f6383; --stat:#5a4d86; --llm:#d97757;
+    --sans:"Anthropic Sans",ui-sans-serif,-apple-system,"Segoe UI",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--sans);
+       background-image:radial-gradient(circle at 20% 0%, #f4f2ea 0%, transparent 40%),
+                        radial-gradient(circle at 80% 100%, #f0ede2 0%, transparent 35%)}
+  .wrap{max-width:1180px;margin:0 auto;padding:56px 28px 80px}
+
+  /* ── hero ────────────────────────────────────────────────────────── */
+  header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:48px;
+         animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .eyebrow{font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--orange)}
+  h1{font:700 44px/1.1 var(--sans);margin:10px 0 14px;letter-spacing:-.01em}
+  .lede{font:400 18px/1.7 var(--sans);color:#3a3936;max-width:62ch}
+  .lede em{color:var(--orange);font-style:normal;font-weight:600}
+  .meta{display:flex;gap:24px;margin-top:20px;font:12px var(--mono);color:var(--mid)}
+  .meta b{color:var(--ink);font-weight:600}
+
+  /* ── pipeline rail (vertical stages) ─────────────────────────────── */
+  .pipeline{position:relative;padding-left:54px}
+  .rail{position:absolute;left:18px;top:8px;bottom:8px;width:2px;
+        background:linear-gradient(var(--ink) 0%, var(--ink) 26%, var(--llm) 48%, var(--llm) 80%, var(--green) 94%, var(--green) 100%)}
+  .stage{position:relative;margin-bottom:56px;animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .stage:nth-child(2){animation-delay:.08s}.stage:nth-child(3){animation-delay:.16s}
+  .stage:nth-child(4){animation-delay:.24s}.stage:nth-child(5){animation-delay:.32s}
+  .stage:nth-child(6){animation-delay:.40s}.stage:nth-child(7){animation-delay:.48s}
+  .node{position:absolute;left:-44px;top:2px;width:18px;height:18px;border-radius:50%;
+        background:var(--paper);border:2px solid var(--ink)}
+  .node.llm{border-color:var(--llm);box-shadow:0 0 0 6px rgba(217,119,87,.12);animation:pulse 2.4s ease-in-out infinite}
+  .node.human{border-color:var(--green);box-shadow:0 0 0 6px rgba(120,140,93,.14)}
+  .stage h2 .human{color:var(--green);font-weight:600}
+  .return{margin-top:18px;font:600 11px var(--mono);letter-spacing:.1em;color:var(--green);
+          display:inline-flex;align-items:center;gap:8px}
+  .return::before{content:"↩";font-size:16px}
+  .stage h2{font:600 13px var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:0 0 4px;color:var(--ink)}
+  .stage h2 .tag{margin-left:10px;font-weight:400;color:var(--mid)}
+  .stage h2 .ai{color:var(--llm);font-weight:600}
+  .stage p.what{margin:4px 0 18px;font:400 15px/1.6 var(--sans);color:#3a3936;max-width:68ch}
+
+  /* ── data foundation strip ───────────────────────────────────────── */
+  .tables{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+  .tbl{font:11px var(--mono);padding:3px 8px;background:#fff;border:1px solid var(--line);
+       color:#555;border-radius:2px;cursor:default;transition:all .15s}
+  .tbl:hover{border-color:var(--blue);color:var(--ink);transform:translateY(-1px)}
+  .tbl.big{border-color:var(--blue);color:var(--blue)}
+
+  /* ── detector grid ───────────────────────────────────────────────── */
+  .detgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px}
+  .det{position:relative;border:1px solid var(--line);background:#fff;padding:12px 13px 13px;
+       cursor:pointer;transition:all .18s cubic-bezier(.2,.7,.2,1);overflow:hidden}
+  .det::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--rule)}
+  .det.stat::before{background:var(--stat)}
+  .det.mcd::before{background:var(--green)}
+  .det:hover{transform:translateY(-3px);box-shadow:0 6px 20px -8px rgba(20,20,19,.2);border-color:var(--ink)}
+  .det .id{font:600 11px var(--mono);color:var(--ink)}
+  .det .id .adj{float:right;font-size:9px;color:var(--llm);letter-spacing:.08em}
+  .det .nm{font:600 13.5px/1.3 var(--sans);margin:5px 0 6px;color:var(--ink)}
+  .det .src{font:10.5px var(--mono);color:var(--mid)}
+  .det .desc{display:none;font:12.5px/1.5 var(--sans);color:#444;margin-top:9px;border-top:1px solid var(--line);padding-top:9px}
+  .det.open .desc{display:block}
+  .det.open{grid-column:span 2}
+
+  /* ── adjudicate / synthesize cards ───────────────────────────────── */
+  .llmrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+  .llmcard{border:1px solid var(--line);border-left:3px solid var(--llm);background:#fff;padding:14px 16px}
+  .llmcard h3{font:600 12px var(--mono);margin:0 0 6px;letter-spacing:.06em;color:var(--llm)}
+  .llmcard p{margin:0;font:13px/1.55 var(--sans);color:#3a3936}
+  .llmcard .io{margin-top:8px;font:10.5px var(--mono);color:var(--mid)}
+
+  /* ── output strip ────────────────────────────────────────────────── */
+  .outputs{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .out{font:12px var(--mono);padding:7px 12px;background:var(--ink);color:var(--paper);border-radius:2px}
+
+  /* ── legend ──────────────────────────────────────────────────────── */
+  .legend{display:flex;gap:22px;margin:28px 0 0;font:11px var(--mono);color:var(--mid);flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+  .legend .r{background:var(--rule)}.legend .s{background:var(--stat)}.legend .m{background:var(--green)}.legend .l{background:var(--llm)}
+
+  /* ── feedback channel cards ──────────────────────────────────────── */
+  .fbcard{border:1px solid var(--line);border-left:3px solid var(--green);background:#fff;padding:14px 16px}
+  .fbcard h3{font:600 12px var(--mono);margin:0 0 6px;letter-spacing:.06em;color:var(--green)}
+  .fbcard p{margin:0;font:13px/1.55 var(--sans);color:#3a3936}
+  .fbcard .io{margin-top:8px;font:10.5px var(--mono);color:var(--mid)}
+
+  /* ── inviolable line callout ─────────────────────────────────────── */
+  .inviol{margin:36px 0 0;padding:18px 22px;border:1px solid var(--ink);background:#fff;
+          font:14px/1.6 var(--sans);position:relative}
+  .inviol::before{content:"INVIOLABLE LINE";position:absolute;top:-9px;left:18px;background:var(--paper);
+                  padding:0 8px;font:600 10px var(--mono);letter-spacing:.14em;color:var(--ink)}
+
+  /* ── forward-looking note ────────────────────────────────────────── */
+  .future{margin:28px 0 0;padding:18px 22px;border:1px dashed var(--green);background:#fff;
+          font:14px/1.65 var(--sans);position:relative}
+  .future::before{content:"WHERE THIS GOES";position:absolute;top:-9px;left:18px;background:var(--paper);
+                  padding:0 8px;font:600 10px var(--mono);letter-spacing:.14em;color:var(--green)}
+  .future b{font-weight:600}
+  .future .thread{margin:14px 0 0;padding-left:16px;border-left:2px solid var(--line);
+                  font:12px/1.7 var(--mono);color:#555;white-space:pre-line}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 6px rgba(217,119,87,.12)}50%{box-shadow:0 0 0 11px rgba(217,119,87,.02)}}
+
+  @media(max-width:720px){
+    h1{font-size:32px}.pipeline{padding-left:42px}.node{left:-34px}
+    .det.open{grid-column:span 1}
+  }
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Program Integrity · Fraud Waste &amp; Abuse</div>
+  <h1>Detect → Adjudicate → Synthesize</h1>
+  <p class="lede">
+    A claims corpus is screened by <em>22 deterministic detectors</em> against 32 public CMS reference
+    tables. Every dollar allegation is gate-recomputed. LLM reasoning is layered <em>on top</em> — to
+    weigh judgment-required findings, write the investigator narrative, and hunt for novel patterns —
+    but it never introduces a number the deterministic floor didn't produce.
+  </p>
+  <div class="meta">
+    <span><b>22</b> detectors</span>
+    <span><b>32</b> reference tables · <b>37M</b> rows</span>
+    <span><b>3</b> stage snapshots</span>
+    <span><b>4</b> LLM touchpoints</span>
+  </div>
+</header>
+
+<div class="pipeline">
+  <div class="rail"></div>
+
+  <!-- DATA -->
+  <section class="stage">
+    <span class="node"></span>
+    <h2>Reference layer <span class="tag">reference.duckdb · zero model</span></h2>
+    <p class="what">32 named tables ingested from cms.gov / oig.hhs.gov / data.cms.gov. Raw files kept on disk for audit and discovery; provenance (sourceUrl, release, rows) recorded per table.</p>
+    <div class="tables" id="tables"></div>
+  </section>
+
+  <!-- DETECT -->
+  <section class="stage">
+    <span class="node"></span>
+    <h2>Detect <span class="tag">scripts/d01–d22 · zero model · gate-recomputed</span></h2>
+    <p class="what">Each detector is a pure JS module that emits Findings — every one carries <code>{claimIds, citation:{rule, computed, threshold}, exposureUsd, evidence.sourceRow}</code>. The gate independently re-derives every cited number; non-reproducing findings drop. Output: <code>referrals.detect.json</code>.</p>
+    <div class="detgrid" id="detectors"></div>
+    <div class="legend">
+      <span><i class="r"></i>tier-1 rule (recoverable $)</span>
+      <span><i class="s"></i>tier-2 statistical (estimate $)</span>
+      <span><i class="m"></i>Medicaid-specific</span>
+      <span><i class="l"></i>LLM-adjudicated</span>
+    </div>
+  </section>
+
+  <!-- ADJUDICATE -->
+  <section class="stage">
+    <span class="node llm"></span>
+    <h2>Adjudicate <span class="ai">LLM</span> <span class="tag">per-finding · D2/D4/D7/D13 only</span></h2>
+    <p class="what">One agent per judgment-required finding weighs whether the indicator stands or a benign explanation in the claim data dismisses it. Mechanical detectors auto-confirm. May <b>subtract</b>, never add. Output: <code>referrals.adjudicated.json</code> with <code>{status, adjudication:{reason, by, confidence}}</code> on every finding.</p>
+    <div class="llmrow">
+      <div class="llmcard"><h3>D2 unbundling</h3><p>Was the column-2 service clinically distinct? Would modifier 59 be defensible with documentation?</p><div class="io">in: PTP edit row · out: confirmed/downgraded + cited codes</div></div>
+      <div class="llmcard"><h3>D4 medical-necessity</h3><p>Is the diagnosis truly non-covered, or does a covered comorbidity on the claim rebut it?</p><div class="io">in: coverage article + claim dx · out: confirmed + article ID</div></div>
+      <div class="llmcard"><h3>D7 outlier</h3><p>Is the z-score actually anomalous, or explainable practice pattern? Frame as estimate, never recoverable.</p><div class="io">in: cohort stats · out: confirmed/downgraded</div></div>
+      <div class="llmcard"><h3>D13 global-period</h3><p>Was the E/M unrelated to the surgery (modifier 24 defensible)?</p><div class="io">in: PFS GLOB_DAYS row · out: confirmed + modifier analysis</div></div>
+    </div>
+  </section>
+
+  <!-- SYNTHESIZE -->
+  <section class="stage">
+    <span class="node llm"></span>
+    <h2>Synthesize <span class="ai">LLM</span> <span class="tag">per-provider narrative + novel-lead discovery</span></h2>
+    <p class="what">One agent per provider writes the investigator-facing case from the adjudicated findings — every $ figure audited against the floor. A separate discovery agent hunts cross-provider patterns the detectors don't encode, then a 3-vote adversarial panel tries to refute each lead. Output: <code>referrals.final.json</code>.</p>
+    <div class="llmrow">
+      <div class="llmcard"><h3>Per-provider narrative</h3><p>Restates each confirmed finding's rule + computed-vs-threshold in "indicators consistent with [scheme]" language; sets priority; pulls verbatim source excerpts.</p><div class="io">11 agents · $-audit enforced</div></div>
+      <div class="llmcard"><h3>Novel-lead discovery</h3><p>Reads the corpus + detect output, proposes ≤3 patterns NOT covered by D1–D22 (rings, beneficiary-sharing, temporal clustering).</p><div class="io">1 agent · no $ allowed</div></div>
+      <div class="llmcard"><h3>Adversarial verify</h3><p>3 independent skeptics per lead, each prompted to refute. Survives only on majority confirmation.</p><div class="io">3× agents per lead</div></div>
+    </div>
+  </section>
+
+  <!-- RENDER -->
+  <section class="stage">
+    <span class="node"></span>
+    <h2>Render <span class="tag">zero model</span></h2>
+    <p class="what">Self-contained artifacts from <code>referrals.final.json</code> only. Every finding card shows the literal triggering reference-table row inline + a one-row CSV download + the upstream CMS dataset link.</p>
+    <div class="outputs">
+      <span class="out">index.html</span>
+      <span class="out">provider-packet-&lt;npi&gt;.html ×N</span>
+      <span class="out">referrals.xlsx</span>
+      <span class="out">cohort-&lt;specialty&gt;.csv</span>
+      <span class="out">srcrow-&lt;table&gt;-&lt;key&gt;.csv</span>
+    </div>
+  </section>
+
+  <!-- CLOSE THE LOOP -->
+  <section class="stage">
+    <span class="node human"></span>
+    <h2>Close the loop <span class="human">HUMAN</span> <span class="tag">inline end-of-run prompt → &lt;run-dir&gt;/feedback.jsonl</span></h2>
+    <p class="what">After the table is rendered, the same skill asks one question: <em>was there anything we missed — a claim that should have fired, a rule we don't have, a pattern you're seeing?</em> The answer is free-form; a small router agent classifies it into one of the channels below and appends a typed record. No separate command, no context switch — the run isn't done until the reviewer has had a chance to teach it.</p>
+    <div class="llmrow">
+      <div class="fbcard"><h3>Confirm / dismiss</h3><p>Per-finding verdict + free-text reason on any packet card.</p><div class="io">→ eval golden set · adjudicator few-shot exemplars</div></div>
+      <div class="fbcard"><h3>Missed claim</h3><p>"This claim should have fired" — claim ID + the rule the user believes applies.</p><div class="io">→ detector backlog (Dxx candidate) · novel-lead seed</div></div>
+      <div class="fbcard"><h3>New rule / document</h3><p>Coverage article, state Medicaid bulletin, payer policy PDF the reference layer lacks.</p><div class="io">→ reference.duckdb ingest queue</div></div>
+      <div class="fbcard"><h3>Novel scheme</h3><p>A pattern description from the field — "we're seeing X across these NPIs."</p><div class="io">→ synthesize discovery prompt · adversarial-verify</div></div>
+    </div>
+    <div class="return">FEEDS NEXT RUN — reference layer · detectors · adjudicator · evals</div>
+  </section>
+</div>
+
+<div class="inviol">
+  The model adjudicates, narrates, and discovers — but <b>any dollar or rule allegation must trace to a
+  deterministic detect-stage recompute</b>. Adjudicate may dismiss or downgrade a finding (with an
+  auditable reason); it never adds one or changes its dollars. Novel leads carry no exposure $.
+</div>
+
+<div class="future">
+  <b>The provider packet becomes a living negotiation record.</b> Today it's a one-way report; the natural
+  next step is to make it a shared, iterated document — the same model as a redlined contract or a tracked
+  audit response (engineers will recognize it as a pull request). The payer sends the packet as a
+  structured list of alleged overpayments; against each finding the provider can <b>concede</b>,
+  <b>dispute with evidence</b> (an op note, a modifier justification, a coverage letter), or <b>counter</b>.
+  The payer reviews the responses in the same document. Closing it is the resolution: conceded findings
+  become recoveries, successfully disputed findings become adjudicator exemplars ("benign — documentation
+  supports modifier 59"), and any rule either side surfaces that the detectors don't yet encode gets
+  promoted — deterministically if it can be expressed as a reference-table check, otherwise as an
+  LLM-adjudicated detector. Same channel in, same channel out; the packet <em>is</em> the negotiation, and
+  every closed packet makes the next sweep sharper.
+  <div class="thread">payer    → sends packet (8 findings, $42,310)
+provider → concedes D1·D12 · disputes D2 (attaches op note) · counters D4 ("see LCD L38945")
+payer    → accepts D2 dispute · D4 stands · packet closed
+system   → $31,180 recovered · D2 exemplar saved · L38945 queued for ingest</div>
+</div>
+
+</div>
+
+<script>
+const TABLES = [
+  ["mue",15162],["ptp",2633389,1],["pfs",19226],["leie",83464],["aoc",8798],
+  ["article_x_hcpc_code",18281],["article_x_icd10_covered",426210,1],["article_x_icd10_noncovered",45419],
+  ["lcd",979],["lcd_x_hcpc_code",2397],["lcd_x_contractor",15126],["lcd_related_ncd_documents",2475],
+  ["ncd_trkg",245],["ncd_bnft_ctgry_ref",78],["ncd_trkg_bnft_xref",599],
+  ["partb_by_provider",1296739,1],["partb_by_provider_service",9781673,1],["partb_by_geography",268350],
+  ["partd_by_provider",1416883,1],["dmepos_by_supplier",63988],["dmepos_by_referrer",387352],
+  ["psps",14377293,1],["market_saturation_county",1030290,1],["ffs_enrollment",2981799,1],
+  ["order_and_referring",2009566,1],["revoked_providers",7059],["opt_out",56300],
+  ["owners_hospital",147332],["owners_hospice",71133],["owners_home_health_agency",101100],
+  ["owners_skilled_nursing_facility",280207],["taxonomy_crosswalk",565],
+];
+const DETECTORS = [
+  {id:"D1", tier:1, nm:"Impossible day", src:"mue", adj:0,
+   d:"Units exceed the NCCI MUE per-day cap. MAI 2/3 sums per (NPI,DOS,HCPCS); MAI 1 evaluates per line. Cites MUE+MAI vs computed units."},
+  {id:"D2", tier:1, nm:"Unbundling", src:"ptp", adj:1,
+   d:"Both codes of a PTP edit pair billed same DOS without a bypass modifier. Mod-indicator 0 = never allowed; 1 = allowed with 59/X{EPSU}. Exposure = column-2 line."},
+  {id:"D3", tier:1, nm:"Phantom billing", src:"leie · aoc", adj:0,
+   d:"(a) billing NPI on OIG LEIE; (b) service after beneficiary date of death; (c) orphan add-on with no primary on the DOS."},
+  {id:"D4", tier:1, nm:"Medical necessity", src:"article_x_icd10_*", adj:1,
+   d:"Diagnosis explicitly non-covered for the HCPCS by a governing MCD Article, AND not covered by any. Defensible by construction — flags only the explicit non-covered list."},
+  {id:"D7", tier:2, nm:"Utilization outlier", src:"partb_by_provider", adj:1,
+   d:"Services-per-beneficiary robust-z vs specialty cohort (n=93k+, median+MAD via DuckDB). Exposure is a labeled statistical estimate — never a hard allegation."},
+  {id:"D9", tier:1, nm:"Ineligible orderer", src:"order_and_referring", adj:0,
+   d:"DME/HHA/lab claim's referring NPI is absent from CMS Order & Referring file (or LEIE-excluded). The DME-kickback signature."},
+  {id:"D10",tier:1, nm:"Revoked provider", src:"revoked_providers", adj:0,
+   d:"DOS inside the provider's CMS revocation / re-enrollment-bar window. Separate authority from LEIE."},
+  {id:"D11",tier:1, nm:"Non-payable code", src:"mue", adj:0,
+   d:"Drug HCPCS that Part B never pays — discontinued, oral self-administered (Part D's lane), or compounded-drug policy (MUE MAI-2 cap=0). Any units billed to Part B is per-se improper."},
+  {id:"D12",tier:1, nm:"Duplicate claim", src:"claims cross-join", adj:0,
+   d:"Identical (NPI, bene, HCPCS, modifiers, DOS, units) line billed >1×. Repeat/bilateral modifiers (76/77/91/50) excluded."},
+  {id:"D13",tier:1, nm:"Global-period violation", src:"pfs", adj:1,
+   d:"E/M inside a procedure's 010/090-day global without modifier 24/25/57. Self-citing from PFS GLOB_DAYS."},
+  {id:"D14",tier:1, nm:"Opt-out billing", src:"opt_out", adj:0,
+   d:"Claim DOS inside an opted-out provider's affidavit window (SSA §1802(b)). Voluntary opt-out, but the billing bar is absolute."},
+  {id:"D15",tier:2, nm:"DME outlier", src:"dmepos_by_supplier", adj:0,
+   d:"Supplier DMEPOS claims-per-beneficiary robust-z vs specialty cohort. Highest-FWA-rate category in both Medicare and Medicaid."},
+  {id:"D16",tier:2, nm:"Prescribing outlier", src:"partd_by_provider", adj:0,
+   d:"Opioid prescriber rate robust-z vs specialty cohort — the pill-mill signal. Benchmark-only (flags any corpus NPI whose Part D row is an outlier)."},
+  {id:"D17",tier:2, nm:"Market saturation", src:"market_saturation_county", adj:0,
+   d:"Provider's state + service type is CMS-flagged 'High' provider density or under moratorium. Supporting signal that strengthens co-occurring findings."},
+  {id:"D18",tier:2, nm:"Ownership ring", src:"owners_* · ffs_enrollment", adj:0,
+   d:"Common owner (Associate ID) across ≥2 corpus HHA/Hospice/SNF/Hospital entities — the asset-shielding pattern."},
+  {id:"D19",tier:1, nm:"Unanchored transport", src:"claims cross-join", adj:0, mcd:1,
+   d:"Non-emergency medical transport (NEMT — A0xxx, T2001-5) billed with NO medical service for that beneficiary that day. Medicaid's largest service-specific FWA category."},
+  {id:"D20",tier:1, nm:"Personal-care overlap", src:"payer institutional/ADT feed", adj:0, mcd:1,
+   d:"Home/community-based service (HCBS) hours — T1019-20, S5125, S5130/35, G0156 — billed while the beneficiary has an overlapping inpatient/SNF stay."},
+  {id:"D21",tier:1, nm:"Third-party liability", src:"payer 834/COB feed", adj:0, mcd:1,
+   d:"Paid claim with no COB adjustment while other primary coverage (Medicare, commercial) is active on the DOS. Payer-of-last-resort violation (42 CFR 433.139)."},
+  {id:"D22",tier:1, nm:"Telehealth mill", src:"claims per-provider-day", adj:0, mcd:1,
+   d:"Modifier 95/GT/GQ E/M minutes per provider-day exceed clinically possible (>12hr). The post-PHE telehealth-mill pattern."},
+];
+
+const tblEl = document.getElementById("tables");
+TABLES.forEach(([n,r,big],i)=>{
+  const e=document.createElement("span");
+  e.className="tbl"+(big?" big":"");
+  e.textContent=n;
+  e.title=r.toLocaleString()+" rows";
+  e.style.animation=`rise .4s ${.02*i}s cubic-bezier(.2,.7,.2,1) both`;
+  tblEl.appendChild(e);
+});
+
+const grid = document.getElementById("detectors");
+DETECTORS.forEach((d,i)=>{
+  const e=document.createElement("div");
+  e.className="det"+(d.mcd?" mcd":d.tier===2?" stat":"");
+  e.innerHTML=
+    `<div class="id">${d.id}${d.adj?'<span class="adj">LLM-ADJ</span>':''}</div>`+
+    `<div class="nm">${d.nm}</div>`+
+    `<div class="src">${d.src}</div>`+
+    `<div class="desc">${d.d}</div>`;
+  e.style.animation=`rise .45s ${.04*i+.1}s cubic-bezier(.2,.7,.2,1) both`;
+  e.onclick=()=>e.classList.toggle("open");
+  grid.appendChild(e);
+});
+</script>

@@ -1,0 +1,122 @@
+{
+  "name": "ma-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MA",
+  "index": "https://www.mass.gov/lists/masshealth-provider-manuals",
+  "fetchVia": "curl",
+  "out": "policy/ma",
+  "note": "MassHealth Provider Manual Series. ~50 provider-type manuals on the index hub; each is a /lists/ sub-page exposing Subchapter 4 (program regs, 130 CMR xxx) + Subchapter 6 (service codes) as direct /doc/.../download links. Every doc ships as a PDF+DOCX pair with inconsistent -N URL suffixes. curl 200, no login.",
+  "docs": [
+    {
+      "title": "All-Provider Subchapter 1-3 — Administrative & Billing Regulations (130 CMR 450)",
+      "detector": "D3,D4",
+      "url": "https://www.mass.gov/doc/administrative-and-billing-regulations-for-all-masshealth-providers-0/download",
+      "pp": null
+    },
+    {
+      "title": "All-Provider Subchapter 5 — Administrative & Billing Instructions",
+      "detector": "D4",
+      "url": "https://www.mass.gov/doc/subchapter-5-administrative-and-billing-instructions-for-all-masshealth-providers/download",
+      "pp": null
+    },
+    {
+      "title": "Transportation (TRN) Subchapter 4 — Regulations (130 CMR 407)",
+      "detector": "D19",
+      "url": "https://www.mass.gov/doc/transportation-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Transportation (TRN) Subchapter 6 — Service Codes",
+      "detector": "D19",
+      "url": "https://www.mass.gov/doc/transportation-trn-subchapter-6-0/download",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waivers Subchapter 4 — Regulations (130 CMR 630)",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/home-and-community-based-services-waivers-regulations-1/download",
+      "pp": null
+    },
+    {
+      "title": "HCBS Subchapter 6 — Service Codes",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/home-and-community-based-services-hcbs-subchapter-6-0/download",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Attendant (PCA) Subchapter 4 — Regulations (130 CMR 422)",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/personal-care-attendant-services-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Personal Care (PCA) Subchapter 6 — Service Codes",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/personal-care-pca-subchapter-6-0/download",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency (HHA) Subchapter 4 — Regulations (130 CMR 403)",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/home-health-agency-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency (HHA) Subchapter 6 — Service Codes",
+      "detector": "D20",
+      "url": "https://www.mass.gov/doc/home-health-agency-hha-subchapter-6-0/download",
+      "pp": null
+    },
+    {
+      "title": "Physician (PHY) Subchapter 4 — Regulations (130 CMR 433)",
+      "detector": "D4",
+      "url": "https://www.mass.gov/doc/physician-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Physician (PHY) Subchapter 6 — Service Codes",
+      "detector": "D4",
+      "url": "https://www.mass.gov/doc/physician-phy-subchapter-6/download",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment (DME) Subchapter 4 — Regulations (130 CMR 409)",
+      "detector": "D15",
+      "url": "https://www.mass.gov/doc/durable-medical-equipment-services-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment (DME) Subchapter 6 — Service Codes",
+      "detector": "D15",
+      "url": "https://www.mass.gov/doc/durable-medical-equipment-dme-subchapter-6-1/download",
+      "pp": null
+    },
+    {
+      "title": "Oxygen & Respiratory Therapy Equipment (OXY) Subchapter 4 — Regulations (130 CMR 427)",
+      "detector": "D15",
+      "url": "https://www.mass.gov/doc/oxygen-and-respiratory-therapy-equipment-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy (PHM) Subchapter 4 — Regulations (130 CMR 406)",
+      "detector": "D16,D23",
+      "url": "https://www.mass.gov/doc/pharmacy-regulations-2/download",
+      "pp": null
+    },
+    {
+      "title": "Independent Clinical Laboratory (LAB) Subchapter 4 — Regulations (130 CMR 401)",
+      "detector": "D4",
+      "url": "https://www.mass.gov/doc/independent-clinical-laboratory-regulations-0/download",
+      "pp": null
+    },
+    {
+      "title": "Independent Clinical Laboratory (LAB) Subchapter 6 — Service Codes",
+      "detector": "D4",
+      "url": "https://www.mass.gov/doc/independent-clinical-laboratory-lab-subchapter-6-0/download",
+      "pp": null
+    }
+  ],
+  "_comment": "Index hub lists ~50 provider-type manuals A-Z, each at /lists/<type>-manual-for-masshealth-providers. Every manual = shared Subch 1-3/5 (all-provider regs+billing) + type-specific Subch 4 (130 CMR coverage regs) + Subch 6 (service codes/PA tables) + shared Appendices A-Z. Each /doc/ slug has TWO download variants (PDF + DOCX), suffix→format mapping is inconsistent (-0 usually PDF but not always) — fetch handler should HEAD content-type and prefer application/pdf. Pharmacy has no Subchapter 6 (drug list is separate at mass.gov/druglist). NEMT brokered (PT-1) policy lives in TRN regs.",
+  "siteArchitecture": "docx-curl",
+  "lastVerified": "2026-06-22"
+}

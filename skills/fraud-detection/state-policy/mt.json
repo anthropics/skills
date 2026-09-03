@@ -1,0 +1,104 @@
+{
+  "name": "mt-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MT",
+  "index": "https://medicaidprovider.mt.gov/",
+  "fetchVia": "curl",
+  "out": "policy/mt",
+  "note": "Montana DPHHS medicaidprovider.mt.gov — ~36 per-service provider manuals as HTML pages at /manuals/<slug> (no PDF), reached via numeric provider-type hub pages (/01–/88). curl 200 with UA, no login. No standalone Lab manual (lab inside Physician/Hospital OP); HCBS waiver (Big Sky) policy lives in ARM 37.40 not on this site.",
+  "docs": [
+    {
+      "title": "General Information for Providers Manual",
+      "detector": "D3,D4",
+      "url": "https://medicaidprovider.mt.gov/manuals/generalinformationforprovidersmanual",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services Manual",
+      "detector": "D19",
+      "url": "https://medicaidprovider.mt.gov/manuals/ambulanceservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Commercial and Specialized Non-Emergency Transportation Services Manual",
+      "detector": "D19",
+      "url": "https://medicaidprovider.mt.gov/manuals/commercialandspecializednonemergencytransportationservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Personal Transportation Services Manual",
+      "detector": "D19",
+      "url": "https://medicaidprovider.mt.gov/manuals/personaltransportationservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Manual",
+      "detector": "D20",
+      "url": "https://medicaidprovider.mt.gov/manuals/homehealthservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Personal Assistance Services Manual",
+      "detector": "D20",
+      "url": "https://medicaidprovider.mt.gov/manuals/personalassistanceservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing Manual",
+      "detector": "D20",
+      "url": "https://medicaidprovider.mt.gov/manuals/privatedutynursingmanual",
+      "pp": null
+    },
+    {
+      "title": "Home Infusion Therapy Manual",
+      "detector": "D20",
+      "url": "https://medicaidprovider.mt.gov/manuals/homeinfusiontherapymanual",
+      "pp": null
+    },
+    {
+      "title": "Therapy Services (PT/OT/ST) Manual",
+      "detector": "D20",
+      "url": "https://medicaidprovider.mt.gov/manuals/therapyservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Physician-Related Services Manual",
+      "detector": "D4",
+      "url": "https://medicaidprovider.mt.gov/manuals/physicianrelatedservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Hospital Outpatient Services Manual (incl. lab/radiology)",
+      "detector": "D4",
+      "url": "https://medicaidprovider.mt.gov/manuals/hospitaloutpatientservicesmanual",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment, Prosthetics, Orthotics & Medical Supplies (DMEPOS) Manual",
+      "detector": "D15",
+      "url": "https://medicaidprovider.mt.gov/manuals/durablemedicalequipmentprostheticsorthoticsandmedicalsuppliesmanual",
+      "pp": null
+    },
+    {
+      "title": "Prescription Drug Program Manual",
+      "detector": "D16,D23",
+      "url": "https://medicaidprovider.mt.gov/manuals/prescriptiondrugprogrammanual",
+      "pp": null
+    },
+    {
+      "title": "Preferred Drug List (PDL) — May 2026",
+      "detector": "D16,D23",
+      "url": "https://medicaidprovider.mt.gov/docs/pharmacy/2026/May282026508CompliantBlackPDL.pdf",
+      "pp": null
+    },
+    {
+      "title": "ARM 37.86 — Medicaid Primary Care Services (rules)",
+      "detector": "D4",
+      "url": "http://www.mtrules.org/gateway/ChapterHome.asp?Chapter=37%2E86",
+      "pp": null
+    }
+  ],
+  "_comment": "Manuals are HTML (not PDF) — fetch-reference state-policy handler should save as .html→.txt. sitemap.xml enumerates all 36 /manuals/<slug> + 64 numeric provider-type pages. ARM Title 37 (mtrules.org) is the regulatory backstop. MT excluded-providers list at https://dphhs.mt.gov/MontanaHealthcarePrograms/TerminatedExcludedProviders (D3/D10).",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}
