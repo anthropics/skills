@@ -1,4 +1,4 @@
-# Managed Agents — cURL / Raw HTTP
+# Managed Agents - cURL / Raw HTTP
 
 Use these examples when the user needs raw HTTP requests or is working without an SDK.
 
@@ -42,7 +42,9 @@ curl -X POST https://api.anthropic.com/v1/environments \
     "config": {
       "type": "cloud",
       "networking": {
-        "type": "package_managers_and_custom",
+        "type": "limited",
+        "allow_package_managers": true,
+        "allow_mcp_servers": true,
         "allowed_hosts": ["api.example.com"]
       }
     }
@@ -53,7 +55,7 @@ curl -X POST https://api.anthropic.com/v1/environments \
 
 ## Create an Agent (required first step)
 
-> ⚠️ **There is no inline agent config.** Under `managed-agents-2026-04-01`, `model`/`system`/`tools` are top-level fields on `POST /v1/agents`, not on the session. Always create the agent first — the session only takes `"agent": {"type": "agent", "id": "..."}`.
+> Warning: **There is no inline agent config.** Under `managed-agents-2026-04-01`, `model`/`system`/`tools` are top-level fields on `POST /v1/agents`, not on the session. Always create the agent first - the session only takes `"agent": {"type": "agent", "id": "..."}`.
 
 ### Minimal
 
@@ -63,18 +65,20 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Coding Assistant",
-    "model": "claude-opus-4-7",
+    "model": "claude-opus-5",
     "tools": [{ "type": "agent_toolset_20260401" }]
   }'
-# → { "id": "agent_abc123", ... }
+# -> { "id": "agent_abc123", ... }
 
 # 2. Start a session
 curl -X POST https://api.anthropic.com/v1/sessions \
   "${HEADERS[@]}" \
   -d '{
-    "agent": { "type": "agent", "id": "agent_abc123", "version": "1772585501101368014" },
+    "agent": { "type": "agent", "id": "agent_abc123", "version": 1 },
     "environment_id": "env_abc123"
   }'
+# -> { "id": "sesn_abc123", ... }
+# Trace: https://platform.claude.com/workspaces/default/sessions/sesn_abc123  (swap 'default' for your workspace ID if the API key is not in the Default workspace)
 ```
 
 ### With system prompt, custom tools, and GitHub repo
@@ -85,7 +89,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Code Reviewer",
-    "model": "claude-opus-4-7",
+    "model": "claude-opus-5",
     "system": "You are a senior code reviewer. Be thorough and constructive.",
     "tools": [
       { "type": "agent_toolset_20260401" },
@@ -108,7 +112,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
 curl -X POST https://api.anthropic.com/v1/sessions \
   "${HEADERS[@]}" \
   -d '{
-    "agent": { "type": "agent", "id": "agent_abc123", "version": "1772585501101368014" },
+    "agent": { "type": "agent", "id": "agent_abc123", "version": 1 },
     "environment_id": "env_abc123",
     "title": "Code review session",
     "resources": [
@@ -122,6 +126,36 @@ curl -X POST https://api.anthropic.com/v1/sessions \
     ]
   }'
 ```
+
+### With a session budget
+
+```bash
+# Create a session with a hard $25.00 spend cap (list-priced; USD only; create-only).
+# amount is in minor units (cents) as an integer string: "2500" = $25.00
+curl -X POST https://api.anthropic.com/v1/sessions \
+  "${HEADERS[@]}" \
+  -d '{
+    "agent": { "type": "agent", "id": "agent_abc123" },
+    "environment_id": "env_abc123",
+    "budget": {
+      "type": "limit",
+      "max_list_cost": { "amount": "2500", "currency": "USD" }
+    }
+  }'
+
+# Change the cap - higher or lower, but it must exceed the consumed list cost.
+# An accepted update resumes work paused at budget_reached
+curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  "${HEADERS[@]}" \
+  -d '{ "budget": { "type": "limit", "max_list_cost": { "amount": "4000", "currency": "USD" } } }'
+
+# Remove the cap entirely - one-way; a removed budget can never be re-added
+curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID \
+  "${HEADERS[@]}" \
+  -d '{ "budget": null }'
+```
+
+See `shared/managed-agents-core.md` § Session budgets for list-cost composition, the settle-event allowlist at the cap, and multiagent semantics.
 
 ---
 
@@ -171,7 +205,7 @@ data: {"type":"session.status_idle","id":"sevt_...","processed_at":"..."}
 curl https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
   "${HEADERS[@]}"
 
-# Paginated — get next page of events
+# Paginated - get next page of events
 curl "https://api.anthropic.com/v1/sessions/$SESSION_ID/events?page=page_abc123" \
   "${HEADERS[@]}"
 ```
@@ -206,7 +240,7 @@ curl -X POST https://api.anthropic.com/v1/sessions/$SESSION_ID/events \
   -d '{
     "events": [
       {
-        "type": "interrupt"
+        "type": "user.interrupt"
       }
     ]
   }'
@@ -248,7 +282,8 @@ curl -X POST https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: files-api-2025-04-14" \
-  -F "file=@path/to/file.txt"
+  -F "file=@path/to/file.txt" \
+  -F "purpose=agent"
 ```
 
 ---
@@ -286,12 +321,12 @@ curl https://api.anthropic.com/v1/agents \
 ## MCP Server Integration
 
 ```bash
-# 1. Agent declares MCP server (no auth here — auth goes in a vault)
+# 1. Agent declares MCP server (no auth here - auth goes in a vault)
 curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "MCP Agent",
-    "model": "claude-opus-4-7",
+    "model": "claude-opus-5",
     "mcp_servers": [
       { "type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse" }
     ],
@@ -322,7 +357,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Restricted Agent",
-    "model": "claude-opus-4-7",
+    "model": "claude-opus-5",
     "tools": [
       {
         "type": "agent_toolset_20260401",

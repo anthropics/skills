@@ -1,10 +1,10 @@
-# Streaming — TypeScript
+# Streaming - TypeScript
 
 ## Quick Start
 
 ```typescript
 const stream = client.messages.stream({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 64000,
   messages: [{ role: "user", content: "Write a story" }],
 });
@@ -23,13 +23,13 @@ for await (const event of stream) {
 
 ## Handling Different Content Types
 
-> **Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
+> **Fable 5 / Claude Opus 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On Claude Opus 5 adaptive is also what you get by omitting `thinking` entirely. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
 
 ```typescript
 const stream = client.messages.stream({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 64000,
-  thinking: { type: "adaptive" },
+  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
   messages: [{ role: "user", content: "Analyze this problem" }],
 });
 
@@ -82,7 +82,7 @@ const getWeather = betaZodTool({
 });
 
 const runner = client.beta.messages.toolRunner({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 64000,
   tools: [getWeather],
   messages: [
@@ -117,7 +117,7 @@ for await (const messageStream of runner) {
 
 ```typescript
 const stream = client.messages.stream({
-  model: "claude-opus-4-7",
+  model: "claude-opus-5",
   max_tokens: 64000,
   messages: [{ role: "user", content: "Hello" }],
 });
@@ -145,13 +145,13 @@ console.log(`Tokens used: ${finalMessage.usage.output_tokens}`);
 
 ## Best Practices
 
-1. **Always flush output** — Use `process.stdout.write()` for immediate display
-2. **Handle partial responses** — If the stream is interrupted, you may have incomplete content
-3. **Track token usage** — The `message_delta` event contains usage information
-4. **Use `finalMessage()`** — Get the complete `Anthropic.Message` object even when streaming. Don't wrap `.on()` events in `new Promise()` — `finalMessage()` handles all completion/error/abort states internally
-5. **Buffer for web UIs** — Consider buffering a few tokens before rendering to avoid excessive DOM updates
-6. **Use `stream.on("text", ...)` for deltas** — The `text` event provides just the delta string, simpler than manually filtering `content_block_delta` events
-7. **For agentic loops with streaming** — See the [Streaming Manual Loop](./tool-use.md#streaming-manual-loop) section in tool-use.md for combining `stream()` + `finalMessage()` with a tool-use loop
+1. **Always flush output** - Use `process.stdout.write()` for immediate display
+2. **Handle partial responses** - If the stream is interrupted, you may have incomplete content
+3. **Track token usage** - The `message_delta` event contains usage information
+4. **Use `finalMessage()`** - Get the complete `Anthropic.Message` object even when streaming. Don't wrap `.on()` events in `new Promise()` - `finalMessage()` handles all completion/error/abort states internally
+5. **Buffer for web UIs** - Consider buffering a few tokens before rendering to avoid excessive DOM updates
+6. **Use `stream.on("text", ...)` for deltas** - The `text` event provides just the delta string, simpler than manually filtering `content_block_delta` events
+7. **For agentic loops with streaming** - See the [Streaming Manual Loop](./tool-use.md#streaming-manual-loop) section in tool-use.md for combining `stream()` + `finalMessage()` with a tool-use loop
 
 ## Raw SSE Format
 

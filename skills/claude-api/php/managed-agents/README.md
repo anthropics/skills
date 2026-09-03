@@ -1,13 +1,13 @@
-# Managed Agents — PHP
+# Managed Agents - PHP
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for PHP. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the PHP SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `$client->beta->agents->create` and pass it to every subsequent `->sessions->create`; do not call `agents->create` in the request path. The Anthropic CLI is one convenient way to create agents and environments from version-controlled YAML — its URL is in `shared/live-sources.md`. The examples below show in-code creation for completeness; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent - create once, reference by ID.** Store the agent ID returned by `$client->beta->agents->create` and pass it to every subsequent `->sessions->create`; do not call `agents->create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI - see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
 ```bash
-composer require "anthropic-ai/sdk"
+composer require "anthropic-ai/sdk" "guzzlehttp/guzzle:^7"
 ```
 
 ## Client Initialization
@@ -38,7 +38,7 @@ echo "Environment ID: {$environment->id}\n"; // env_...
 
 ## Create an Agent (required first step)
 
-> ⚠️ **There is no inline agent config.** `model`/`system`/`tools` live on the agent object, not the session. Always start with `$client->beta->agents->create()` — the session takes either `agent: $agent->id` or the typed `BetaManagedAgentsAgentParams::with(type: 'agent', id: $agent->id, version: $agent->version)`.
+> Warning: **There is no inline agent config.** `model`/`system`/`tools` live on the agent object, not the session. Always start with `$client->beta->agents->create()` - the session takes either `agent: $agent->id` or the typed `BetaManagedAgentsAgentParams::with(type: 'agent', id: $agent->id, version: $agent->version)`.
 
 ### Minimal
 
@@ -48,7 +48,7 @@ use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
 // 1. Create the agent (reusable, versioned)
 $agent = $client->beta->agents->create(
     name: 'Coding Assistant',
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     system: 'You are a helpful coding assistant.',
     tools: [
         BetaManagedAgentsAgentToolset20260401Params::with(
@@ -64,6 +64,7 @@ $session = $client->beta->sessions->create(
     title: 'Quickstart session',
 );
 echo "Session ID: {$session->id}\n";
+echo "Trace: https://platform.claude.com/workspaces/default/sessions/{$session->id}\n"; // swap 'default' for your workspace ID if the API key is not in the Default workspace
 ```
 
 ### Updating an Agent
@@ -104,13 +105,13 @@ $client->beta->sessions->events->send(
 );
 ```
 
-> 💡 **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens — stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
+> Tip: **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
 
 ---
 
 ## Stream Events (SSE)
 
-> ℹ️ **Streaming transporter:** PHP's default buffered PSR-18 client never returns for the open-ended session event stream. Use a streaming Guzzle transporter for `streamStream()` calls — other calls keep the default client.
+> Note: **Streaming transporter:** PHP's default buffered PSR-18 client never returns for the open-ended session event stream. Use a streaming Guzzle transporter for `streamStream()` calls - other calls keep the default client.
 
 ```php
 $streamingClient = new GuzzleHttp\Client(['stream' => true]);
@@ -187,7 +188,7 @@ $stream->close();
 
 ## Provide Custom Tool Result
 
-> ℹ️ The PHP managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic-ai/sdk` PHP repository for the corresponding params.
+> Note: The PHP managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic-ai/sdk` PHP repository for the corresponding params.
 
 ---
 
@@ -203,7 +204,7 @@ foreach ($client->beta->sessions->events->list($session->id)->pagingEachItem() a
 
 ## Upload a File
 
-> ℹ️ **PHP file upload:** The PHP SDK's beta managed-agents file upload binding is not shown in the apps source examples; the canonical PHP example uses raw cURL against `POST /v1/files`. If your codebase prefers the SDK, WebFetch the `anthropic-ai/sdk` PHP repository for the latest binding before writing code.
+> Note: **PHP file upload:** The PHP SDK's beta managed-agents file upload binding is not shown in the apps source examples; the canonical PHP example uses raw cURL against `POST /v1/files`. If your codebase prefers the SDK, WebFetch the `anthropic-ai/sdk` PHP repository for the latest binding before writing code.
 
 ```php
 use Anthropic\Beta\Sessions\BetaManagedAgentsFileResourceParams;
@@ -263,7 +264,14 @@ $client->beta->sessions->resources->delete($resource->id, sessionID: $session->i
 
 ## List and Download Session Files
 
-> ℹ️ Listing and downloading files an agent wrote during a session is not yet documented for PHP in this skill or in the apps source examples. See `shared/managed-agents-events.md` and the `anthropic-ai/sdk` PHP repository for the file list/download bindings.
+```php
+$files = $client->beta->files->list(
+    scopeID: 'sesn_abc123',
+    betas: ['managed-agents-2026-04-01'],
+);
+$content = $client->beta->files->download($files->data[0]->id);
+file_put_contents('output.txt', $content);
+```
 
 ---
 
@@ -293,15 +301,15 @@ $client->beta->sessions->delete($session->id);
 ```php
 use Anthropic\Beta\Agents\BetaManagedAgentsAgentToolset20260401Params;
 use Anthropic\Beta\Agents\BetaManagedAgentsMCPToolsetParams;
-use Anthropic\Beta\Agents\BetaManagedAgentsUrlmcpServerParams;
+use Anthropic\Beta\Agents\BetaManagedAgentsURLMCPServerParams;
 use Anthropic\Beta\Sessions\BetaManagedAgentsAgentParams;
 
-// Agent declares MCP server (no auth here — auth goes in a vault)
+// Agent declares MCP server (no auth here - auth goes in a vault)
 $agent = $client->beta->agents->create(
     name: 'GitHub Assistant',
-    model: 'claude-opus-4-7',
+    model: 'claude-opus-5',
     mcpServers: [
-        BetaManagedAgentsUrlmcpServerParams::with(
+        BetaManagedAgentsURLMCPServerParams::with(
             type: 'url',
             name: 'github',
             url: 'https://api.githubcopilot.com/mcp/',
@@ -395,8 +403,8 @@ $session = $client->beta->sessions->create(
         [
             'type' => 'github_repository',
             'url' => 'https://github.com/org/repo',
-            'mountPath' => '/workspace/repo',
-            'authorizationToken' => 'ghp_your_github_token',
+            'mount_path' => '/workspace/repo',
+            'authorization_token' => 'ghp_your_github_token',
         ],
     ],
 );
@@ -409,14 +417,14 @@ $resources = [
     [
         'type' => 'github_repository',
         'url' => 'https://github.com/org/frontend',
-        'mountPath' => '/workspace/frontend',
-        'authorizationToken' => 'ghp_your_github_token',
+        'mount_path' => '/workspace/frontend',
+        'authorization_token' => 'ghp_your_github_token',
     ],
     [
         'type' => 'github_repository',
         'url' => 'https://github.com/org/backend',
-        'mountPath' => '/workspace/backend',
-        'authorizationToken' => 'ghp_your_github_token',
+        'mount_path' => '/workspace/backend',
+        'authorization_token' => 'ghp_your_github_token',
     ],
 ];
 ```
