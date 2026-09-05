@@ -196,22 +196,22 @@ shared/
 ## How to Use Each Reference Section
 
 ### Quick Reference Sections (in SKILL.md)
-**Format:** Concise table or bullet list  
-**Use:** Get the essentials quickly (5-10 minutes)  
+**Format:** Concise table or bullet list
+**Use:** Get the essentials quickly (5-10 minutes)
 **Limitation:** May not cover all edge cases
 
 ### Language-Specific Docs (`{lang}/`)
-**Format:** Code examples in a specific language  
-**Use:** Implement features in your project's language  
+**Format:** Code examples in a specific language
+**Use:** Implement features in your project's language
 **Scope:** Covers basic usage and common patterns
 
 ### Shared References (`shared/`)
-**Format:** Detailed guides and patterns  
-**Use:** Deep dives into specific topics  
+**Format:** Detailed guides and patterns
+**Use:** Deep dives into specific topics
 **Scope:** Advanced patterns, trade-offs, optimization
 
 ### Navigation Guide (this file)
-**Format:** Task-based finder  
+**Format:** Task-based finder
 **Use:** Find the right section for your specific need
 
 ---
@@ -261,28 +261,28 @@ Based on common usage patterns, these are the most-accessed sections:
 
 ## FAQ
 
-**Q: The SKILL.md is long. Do I need to read all of it?**  
+**Q: The SKILL.md is long. Do I need to read all of it?**
 A: No. Use this navigation guide to find your specific task. Skim the relevant section; skip the rest.
 
-**Q: I found conflicting info in two places. Which do I trust?**  
-A: Priority: `{lang}/ specific files > shared/ detailed guides > SKILL.md quick references`.  
+**Q: I found conflicting info in two places. Which do I trust?**
+A: Priority: `{lang}/ specific files > shared/ detailed guides > SKILL.md quick references`.
 The more specific the section, the more up-to-date it usually is.
 
-**Q: Can I use OpenAI/Gemini examples with Claude API?**  
+**Q: Can I use OpenAI/Gemini examples with Claude API?**
 A: Not directly. The APIs differ. If you need non-Claude providers, Claude API skill will tell you to stop—it only produces Claude/Anthropic SDK code.
 
-**Q: How often is this skill updated?**  
-A: SKILL.md is the source of truth; it's updated as APIs change.  
-Individual reference files may be updated more frequently.  
+**Q: How often is this skill updated?**
+A: SKILL.md is the source of truth; it's updated as APIs change.
+Individual reference files may be updated more frequently.
 Check `shared/live-sources.md` for links to official documentation (always authoritative).
 
-**Q: I'm getting an error not covered here.**  
-A: Check `shared/common-errors.md` first.  
-Then check `{lang}/errors.md` for language-specific interpretation.  
+**Q: I'm getting an error not covered here.**
+A: Check `shared/common-errors.md` first.
+Then check `{lang}/errors.md` for language-specific interpretation.
 Last resort: Check the official SDK repository (link in `shared/live-sources.md`).
 
-**Q: How do I choose between different approaches?**  
-A: Read **SKILL.md § Which Surface Should I Use?**.  
+**Q: How do I choose between different approaches?**
+A: Read **SKILL.md § Which Surface Should I Use?**.
 Each approach has trade-offs; the section explains when to pick each.
 
 ---

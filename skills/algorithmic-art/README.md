@@ -80,7 +80,7 @@ A skill for creating generative art, data visualizations, and interactive visual
 ### Algorithmic Philosophy
 Every generative art piece should have a clear "philosophy" — the core idea or principle that drives it:
 
-❌ **Weak**: "Random shapes"  
+❌ **Weak**: "Random shapes"
 ✅ **Strong**: "Concentric circles grown by a diffusion-limited aggregation algorithm, with growth speed modulated by sine waves"
 
 The philosophy:
@@ -270,11 +270,11 @@ Before sharing algorithmic art:
 
 ---
 
-**Last Updated**: August 2026  
-**License**: Apache 2.0  
+**Last Updated**: August 2026
+**License**: Apache 2.0
 **Repository**: anthropics/skills
 
-**Getting Started**: 
+**Getting Started**:
 1. Read SKILL.md for overview
 2. Check `references/philosophy-guide.md` for algorithm definition
 3. Explore `scripts/` for templates and examples

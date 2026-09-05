@@ -209,6 +209,6 @@ Fix: Narrow description; explicitly state when NOT to use
 
 ---
 
-**Last Updated**: August 2026  
-**License**: Apache 2.0  
+**Last Updated**: August 2026
+**License**: Apache 2.0
 **Repository**: anthropics/skills

@@ -220,13 +220,13 @@ Before using PDF processing in production:
 
 ---
 
-**Last Updated**: August 2026  
-**License**: See LICENSE.txt (proprietary/source-available)  
+**Last Updated**: August 2026
+**License**: See LICENSE.txt (proprietary/source-available)
 **Repository**: anthropics/skills
 
 **Production-Ready**: Yes. Used in production by Anthropic.
 
-**Next Steps**: 
+**Next Steps**:
 1. Read SKILL.md for overview
 2. Check `reference.md` for detailed patterns
 3. Look at `scripts/` for utility examples
