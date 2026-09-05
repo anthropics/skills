@@ -35,10 +35,12 @@ def make_field_dict(field, field_id):
     elif ft == "/Ch":
         field_dict["type"] = "choice"
         states = field.get("/_States_", [])
-        field_dict["choice_options"] = [{
-            "value": state[0],
-            "text": state[1],
-        } for state in states]
+        # Per ISO 32000-1 §12.7.4.4, each /Opt entry is either a bare string
+        # (used as both export value and display text) or a [value, text] pair.
+        field_dict["choice_options"] = [
+            {"value": s, "text": s} if isinstance(s, str) else {"value": s[0], "text": s[1]}
+            for s in states
+        ]
     else:
         field_dict["type"] = f"unknown ({ft})"
     return field_dict
