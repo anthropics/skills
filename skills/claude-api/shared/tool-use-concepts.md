@@ -341,7 +341,7 @@ Computer use lets Claude interact with a desktop environment (screenshots, mouse
 
 For full documentation, use WebFetch:
 
-- URL: `https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool`
 
 ---
 
