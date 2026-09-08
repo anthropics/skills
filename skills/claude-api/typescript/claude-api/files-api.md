@@ -1,8 +1,8 @@
-# Files API — TypeScript
+# Files API - TypeScript
 
 The Files API uploads files for use in Messages API requests. Reference files via `file_id` in content blocks, avoiding re-uploads across multiple API calls.
 
-**Beta:** Pass `betas: ["files-api-2025-04-14"]` in your API calls (the SDK sets the required header automatically).
+The Files API is out of beta. In current SDKs `client.beta.files` has breaking shape changes from previous versions, matching the stable `client.files` - migrate per the Files API row in `shared/live-sources.md`. Examples below predate this.
 
 ## Key Facts
 

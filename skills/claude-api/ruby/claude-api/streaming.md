@@ -1,4 +1,4 @@
-# Streaming — Ruby
+# Streaming - Ruby
 
 ## Streaming
 

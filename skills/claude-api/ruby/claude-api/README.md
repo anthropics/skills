@@ -1,4 +1,4 @@
-# Claude API — Ruby
+# Claude API - Ruby
 
 > **Note:** The Ruby SDK supports the Claude API. A tool runner is available in beta via `client.beta.messages.tool_runner()`. Agent SDK is not yet available for Ruby.
 
@@ -33,7 +33,7 @@ message = client.messages.create(
   ]
 )
 # content is an array of polymorphic block objects (TextBlock, ThinkingBlock,
-# ToolUseBlock, ...). .type is a Symbol — compare with :text, not "text".
+# ToolUseBlock, ...). .type is a Symbol - compare with :text, not "text".
 # .text raises NoMethodError on non-TextBlock entries.
 message.content.each do |block|
   puts block.text if block.type == :text
@@ -45,7 +45,7 @@ end
 ## Extended Thinking
 
 > **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
-> **Claude Opus 5:** thinking is on by default — omitting `thinking:` runs adaptive (`{ type: "adaptive" }` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `{ type: "disabled" }` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
+> **Claude Opus 5:** thinking is on by default - omitting `thinking:` runs adaptive (`{ type: "adaptive" }` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `{ type: "disabled" }` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `thinking: { type: "enabled", budget_tokens: N }` (must be < `max_tokens`, min 1024).
 
 ```ruby
@@ -68,7 +68,7 @@ end
 
 ## Prompt Caching
 
-`system_:` (trailing underscore — avoids shadowing `Kernel#system`) takes an array of text blocks; set `cache_control` on the last block. Plain hashes work via the `OrHash` type alias. For placement patterns and the silent-invalidator audit checklist, see `shared/prompt-caching.md`.
+`system_:` (trailing underscore - avoids shadowing `Kernel#system`) takes an array of text blocks; set `cache_control` on the last block. Plain hashes work via the `OrHash` type alias. For placement patterns and the silent-invalidator audit checklist, see `shared/prompt-caching.md`.
 
 ```ruby
 message = client.messages.create(
@@ -93,12 +93,12 @@ When `stop_reason` is `:refusal`, the response includes structured `stop_details
 
 ```ruby
 if message.stop_reason == :refusal && message.stop_details
-  puts "Category: #{message.stop_details.category}"     # e.g. :cyber, :bio, :reasoning_extraction, :frontier_llm, or nil — see docs for the full set
+  puts "Category: #{message.stop_details.category}"     # e.g. :cyber, :bio, :reasoning_extraction, :frontier_llm, or nil - see docs for the full set
   puts "Explanation: #{message.stop_details.explanation}"
 end
 ```
 
-**Refusal fallbacks (Claude Fable 5) — opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. New `claude-fable-5` code should include the server-side `fallbacks` parameter (beta header `server-side-fallback-2026-06-01`, `fallbacks: [{model: "claude-opus-4-8"}]` on the beta messages call) by default. The exact Ruby binding (and the client-side middleware for providers without server-side support) is not documented here — WebFetch the Ruby SDK repo's `examples/` from `shared/live-sources.md`; full semantics in `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
+**Refusal fallbacks (Claude Fable 5.1) - opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. New `claude-fable-5-1` code should include the server-side `fallbacks` parameter (beta header `server-side-fallback-2026-06-01`, `fallbacks: [{model: "claude-opus-4-8"}]` on the beta messages call) by default. The exact Ruby binding (and the client-side middleware for providers without server-side support) is not documented here - WebFetch the Ruby SDK repo's `examples/` from `shared/live-sources.md`; full semantics in `shared/model-migration.md` -> Migrating to Claude Fable 5.1 -> `refusal` stop reason.
 
 ---
 

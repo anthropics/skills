@@ -1,4 +1,4 @@
-# Tool Use — Python
+# Tool Use - Python
 
 For conceptual overview (tool definitions, tool choice, tips), see [shared/tool-use-concepts.md](../../shared/tool-use-concepts.md).
 
@@ -42,16 +42,16 @@ For async usage, use `@beta_async_tool` with `async def` functions.
 
 **Key benefits of the tool runner:**
 
-- No manual loop — the SDK handles calling tools and feeding results back
+- No manual loop - the SDK handles calling tools and feeding results back
 - Type-safe tool inputs via decorators
 - Tool schemas are generated automatically from function signatures
 - Iteration stops automatically when Claude has no more tool calls
 
 ### Server tools with the tool runner
 
-The runner's `tools` list accepts raw server-tool definitions (`web_search_20260209`, `web_fetch_20260209`, code execution) alongside decorated tools — pass the literal tool dict; server tools run on Anthropic's servers, so there is no function to implement.
+The runner's `tools` list accepts raw server-tool definitions (`web_search_20260209`, `web_fetch_20260209`, code execution) alongside decorated tools - pass the literal tool dict; server tools run on Anthropic's servers, so there is no function to implement.
 
-**Caution — the runner does not auto-resume `pause_turn` (as of `anthropic` 0.116.0).** A long-running server-tool turn can stop with `stop_reason: "pause_turn"`. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message — no error, no warning, just a silently truncated answer. Unlike the TypeScript runner, the Python runner cannot be resumed mid-loop: it exits unconditionally when no client tool ran, and `runner.append_messages(...)` does not prevent the exit. To handle `pause_turn`, mirror the conversation history as you iterate, then restart the runner with the paused turn appended:
+**Caution - the runner does not auto-resume `pause_turn` (as of `anthropic` 0.116.0).** A long-running server-tool turn can stop with `stop_reason: "pause_turn"`. The runner only continues after a client tool produces a result, so a paused turn ends the loop and is returned as the final message - no error, no warning, just a silently truncated answer. Unlike the TypeScript runner, the Python runner cannot be resumed mid-loop: it exits unconditionally when no client tool ran, and `runner.append_messages(...)` does not prevent the exit. To handle `pause_turn`, mirror the conversation history as you iterate, then restart the runner with the paused turn appended:
 
 ```python
 messages = [{"role": "user", "content": user_input}]
@@ -68,7 +68,7 @@ while True:
     last = None
     for message in runner:
         last = message
-        # Mirror the history — the runner keeps its own copy and does not expose it
+        # Mirror the history - the runner keeps its own copy and does not expose it
         messages.append({"role": "assistant", "content": message.content})
         tool_response = runner.generate_tool_call_response()  # cached; tools still run once
         if tool_response is not None:
@@ -107,7 +107,7 @@ async with stdio_client(StdioServerParameters(command="mcp-server")) as (read, w
         await mcp_client.initialize()
 
         tools_result = await mcp_client.list_tools()
-        # tool_runner is sync — returns the runner, not a coroutine
+        # tool_runner is sync - returns the runner, not a coroutine
         runner = client.beta.messages.tool_runner(
             model="claude-opus-5",
             max_tokens=16000,
@@ -167,7 +167,7 @@ Conversion functions raise `UnsupportedMCPValueError` if an MCP value cannot be 
 
 ## Manual Agentic Loop
 
-Prefer the tool runner above. Drop to a manual loop only when you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, or avoiding a beta dependency — the runner is beta). Human-in-the-loop approval does *not* require a manual loop — gate inside the tool function (return a "user declined" result) or inspect pending `tool_use` blocks in the `for message in runner:` body and call `runner.set_messages_params()`.
+Prefer the tool runner above. Drop to a manual loop only when you need control the runner does not expose (e.g., a custom transport, request shapes the SDK cannot build, or avoiding a beta dependency - the runner is beta). Human-in-the-loop approval does *not* require a manual loop - gate inside the tool function (return a "user declined" result) or inspect pending `tool_use` blocks in the `for message in runner:` body and call `runner.set_messages_params()`.
 
 If you do need a manual loop:
 
@@ -356,11 +356,9 @@ for block in response.content:
 uploaded = client.beta.files.upload(file=open("sales_data.csv", "rb"))
 
 # 2. Pass to code execution via container_upload block
-# Code execution is GA; Files API is still beta (pass via extra_headers)
 response = client.messages.create(
     model="claude-opus-5",
     max_tokens=16000,
-    extra_headers={"anthropic-beta": "files-api-2025-04-14"},
     messages=[{
         "role": "user",
         "content": [
@@ -499,7 +497,7 @@ For full implementation examples, use WebFetch:
 
 ## Structured Outputs
 
-### JSON Outputs (Pydantic — Recommended)
+### JSON Outputs (Pydantic - Recommended)
 
 ```python
 from pydantic import BaseModel

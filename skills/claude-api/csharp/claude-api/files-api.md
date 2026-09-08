@@ -1,6 +1,8 @@
-# Files API — C#
+# Files API - C#
 
-## Files API (Beta)
+## Files API
+
+> **Out of beta.** In current SDKs `client.Beta.Files` has breaking shape changes from previous versions, matching the stable `client.Files` - migrate per the Files API row in `shared/live-sources.md`. Examples below predate this.
 
 Files live under `client.Beta.Files` (namespace `Anthropic.Models.Beta.Files`). `BinaryContent` implicit-converts from `Stream` and `byte[]`.
 
@@ -17,7 +19,7 @@ new BetaRequestDocumentBlock {
 }
 ```
 
-The non-beta `DocumentBlockParamSource` union has no file-ID variant — file references need `client.Beta.Messages.Create()`.
+The non-beta `DocumentBlockParamSource` union has no file-ID variant - file references need `client.Beta.Messages.Create()`.
 
 ---
 

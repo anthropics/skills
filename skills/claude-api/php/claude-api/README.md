@@ -1,4 +1,4 @@
-# Claude API — PHP
+# Claude API - PHP
 
 > **Note:** The PHP SDK is the official Anthropic SDK for PHP. A beta tool runner is available via `$client->beta->messages->toolRunner()`. Structured output helpers are supported via `StructuredOutputModel` classes. Agent SDK is not available. Bedrock, Vertex AI, and Foundry clients are supported.
 
@@ -26,7 +26,7 @@ use Anthropic\Bedrock\MantleClient;
 $client = new MantleClient(awsRegion: 'us-east-1');
 ```
 
-Model IDs on Bedrock take an `anthropic.` prefix — e.g. `model: 'anthropic.claude-opus-5'`.
+Model IDs on Bedrock take an `anthropic.` prefix - e.g. `model: 'anthropic.claude-opus-5'`.
 
 ### Google Vertex AI
 
@@ -109,7 +109,7 @@ $message = $client->messages->create(
 foreach ($message->content as $block) {
     if ($block instanceof ThinkingBlock) {
         echo "Thinking:\n{$block->thinking}\n\n";
-        // $block->signature is an opaque string — preserve verbatim if
+        // $block->signature is an opaque string - preserve verbatim if
         // passing thinking blocks back in multi-turn conversations
     } elseif ($block->type === 'text') {
         echo "Answer: {$block->text}\n";
@@ -118,7 +118,7 @@ foreach ($message->content as $block) {
 ```
 
 > **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (above). `['type' => 'enabled', 'budgetTokens' => N]` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
-> **Claude Opus 5:** thinking is on by default — omitting `thinking:` runs adaptive (`['type' => 'adaptive']` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `['type' => 'disabled']` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
+> **Claude Opus 5:** thinking is on by default - omitting `thinking:` runs adaptive (`['type' => 'adaptive']` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `['type' => 'disabled']` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `thinking: ['type' => 'enabled', 'budgetTokens' => N]` (budget must be < `maxTokens`, min 1024).
 
 `$block->type === 'thinking'` also works for the check; `instanceof` narrows for PHPStan.
@@ -152,12 +152,12 @@ When `stopReason` is `'refusal'`, the response includes structured `stopDetails`
 
 ```php
 if ($message->stopReason === 'refusal' && $message->stopDetails !== null) {
-    echo "Category: " . $message->stopDetails->category . "\n";     // e.g. "cyber", "bio", "reasoning_extraction", "frontier_llm", or null — see docs for the full set
+    echo "Category: " . $message->stopDetails->category . "\n";     // e.g. "cyber", "bio", "reasoning_extraction", "frontier_llm", or null - see docs for the full set
     echo "Explanation: " . $message->stopDetails->explanation . "\n";
 }
 ```
 
-**Refusal fallbacks (Claude Fable 5) — opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. New `claude-fable-5` code should include the server-side `fallbacks` parameter (beta header `server-side-fallback-2026-06-01`, fallback model `claude-opus-4-8`, on the beta messages call) by default. The exact PHP binding (and the client-side middleware for providers without server-side support) is not documented here — WebFetch the PHP SDK repo's `examples/` from `shared/live-sources.md`; full semantics in `shared/model-migration.md` → Migrating to Claude Fable 5 → `refusal` stop reason.
+**Refusal fallbacks (Claude Fable 5.1) - opt in by default.** Fallbacks are opt-in: without them a refused request simply stops. New `claude-fable-5-1` code should include the server-side `fallbacks` parameter (beta header `server-side-fallback-2026-06-01`, fallback model `claude-opus-4-8`, on the beta messages call) by default. The exact PHP binding (and the client-side middleware for providers without server-side support) is not documented here - WebFetch the PHP SDK repo's `examples/` from `shared/live-sources.md`; full semantics in `shared/model-migration.md` -> Migrating to Claude Fable 5.1 -> `refusal` stop reason.
 
 ---
 

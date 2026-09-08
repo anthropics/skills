@@ -1,6 +1,6 @@
-# Managed Agents — Scheduled Deployments
+# Managed Agents - Scheduled Deployments
 
-A **scheduled deployment** runs an agent on a recurring cron schedule — each firing creates a session autonomously. Use it for predictable-cadence work: nightly triage, weekly compliance scans, hourly monitors.
+A **scheduled deployment** runs an agent on a recurring cron schedule - each firing creates a session autonomously. Use it for predictable-cadence work: nightly triage, weekly compliance scans, hourly monitors.
 
 Requires the `managed-agents-2026-04-01` beta header (the SDK sets it automatically for `client.beta.deployments.*` / `client.beta.deployment_runs.*` calls).
 
@@ -8,8 +8,8 @@ Requires the `managed-agents-2026-04-01` beta header (the SDK sets it automatica
 
 A deployment bundles everything a session needs (agent, environment, optional files / GitHub / memory stores / vaults) plus a `schedule` and the `initial_events` that kick off each run:
 
-- `agent` and `environment_id` are required — same shapes as `sessions.create` (see `shared/managed-agents-core.md`).
-- `initial_events` must contain at least one starting event — a `user.message` **or** a `user.define_outcome`. (A deployment's `initial_events` also accepts `system.message`, which a session's does not.)
+- `agent` and `environment_id` are required - same shapes as `sessions.create` (see `shared/managed-agents-core.md`). A deployment targeting a **self-hosted** environment can attach `memory_store` resources (SDK worker required - `shared/managed-agents-self-hosted-sandboxes.md` § Memory stores); `file` and `github_repository` resources need a cloud environment. The Console deployment form doesn't offer memory stores for self-hosted environments - attach them via the API/SDK.
+- `initial_events` must contain at least one starting event - a `user.message` **or** a `user.define_outcome`. (A deployment's `initial_events` also accepts `system.message`, which a session's does not.)
 - `schedule` takes a cron `expression` and an IANA `timezone`. Minute-level granularity is the maximum.
 
 ```bash
@@ -54,7 +54,7 @@ deployment = client.beta.deployments.create(
 )
 ```
 
-The response is a deployment object (`depl_` ID prefix). Check `schedule.upcoming_runs_at` — the next fire times — to confirm the schedule parses the way you intended:
+The response is a deployment object (`depl_` ID prefix). Check `schedule.upcoming_runs_at` - the next fire times - to confirm the schedule parses the way you intended:
 
 ```json
 {
@@ -77,23 +77,23 @@ The response is a deployment object (`depl_` ID prefix). Check `schedule.upcomin
 
 - **Expression:** standard POSIX cron (`minute hour day-of-month month day-of-week`).
 - **Timezone:** IANA identifier (e.g. `"America/Los_Angeles"`).
-- **DST:** literal wall-clock matching — `"0 20 * * *"` in `America/New_York` fires at 8:00 PM local regardless of EST/EDT.
+- **DST:** literal wall-clock matching - `"0 20 * * *"` in `America/New_York` fires at 8:00 PM local regardless of EST/EDT.
 
-> ⚠️ **DST edge:** wall-clock times that don't exist on a spring-forward day (e.g. 2AM) are **skipped**; times that occur twice on a fall-back day **fire twice**. Schedule outside the 1–3AM local window, or use UTC, when missed or duplicate executions are unacceptable.
+> Warning: **DST edge:** wall-clock times that don't exist on a spring-forward day (e.g. 2AM) are **skipped**; times that occur twice on a fall-back day **fire twice**. Schedule outside the 1-3AM local window, or use UTC, when missed or duplicate executions are unacceptable.
 
 ## Deployment budgets
 
-A deployment accepts the same `budget` object as a session (`{type: "limit", max_list_cost: {amount, currency}}` — minor-unit cents string, `USD` only; see `shared/managed-agents-core.md` § Session budgets). The cap is **copied onto each session at fire time**, and that session then behaves exactly like any budgeted session.
+A deployment accepts the same `budget` object as a session (`{type: "limit", max_list_cost: {amount, currency}}` - minor-unit cents string, `USD` only; see `shared/managed-agents-core.md` § Session budgets). The cap is **copied onto each session at fire time**, and that session then behaves exactly like any budgeted session.
 
 Deployment budget update semantics differ from a session's:
 
-- `budget` is accepted on **create and update** — it is not create-only.
-- `budget: null` on update **clears** it, and a cleared budget **can be re-added later** — there is no one-way door.
-- A change applies **from the next fired session** — sessions already running keep the cap they were created with (change those via their own session update).
+- `budget` is accepted on **create and update** - it is not create-only.
+- `budget: null` on update **clears** it, and a cleared budget **can be re-added later** - there is no one-way door.
+- A change applies **from the next fired session** - sessions already running keep the cap they were created with (change those via their own session update).
 
 ## Deployment runs
 
-Every trigger attempt — successful or not — writes a **deployment run** record (`drun_` prefix), so you can audit failures independent of the session lifecycle. A successful run carries the created `session_id`; follow that session via the event stream (`shared/managed-agents-events.md`) or webhooks (`shared/managed-agents-webhooks.md`) as usual. A failed run carries an `error` whose `type` explains why session creation was rejected.
+Every trigger attempt - successful or not - writes a **deployment run** record (`drun_` prefix), so you can audit failures independent of the session lifecycle. A successful run carries the created `session_id`; follow that session via the event stream (`shared/managed-agents-events.md`) or webhooks (`shared/managed-agents-webhooks.md`) as usual. A failed run carries an `error` whose `type` explains why session creation was rejected.
 
 ```python
 # All runs for a deployment
@@ -114,7 +114,7 @@ for await (const run of client.beta.deploymentRuns.list({
 }
 ```
 
-Raw HTTP: `GET /v1/deployment_runs?deployment_id=...&has_error=true`. To retrieve a single run by ID, `GET /v1/deployment_runs/{deployment_run_id}` (SDK: `client.beta.deployment_runs.retrieve(run_id)`) — a `deployment_run.*` webhook event carries the run ID as its `data.id`.
+Raw HTTP: `GET /v1/deployment_runs?deployment_id=...&has_error=true`. To retrieve a single run by ID, `GET /v1/deployment_runs/{deployment_run_id}` (SDK: `client.beta.deployment_runs.retrieve(run_id)`) - a `deployment_run.*` webhook event carries the run ID as its `data.id`.
 
 A failed run looks like:
 
@@ -133,7 +133,7 @@ A failed run looks like:
 
 Error types include `environment_archived`, `agent_archived`, `vault_not_found`, `session_rate_limited`, and `service_unavailable`.
 
-The outcome of each **scheduled** run (started/succeeded/failed) and each deployment lifecycle change (created/updated/paused/unpaused/archived/deleted) is also delivered as a webhook event — see `shared/managed-agents-webhooks.md` for the `deployment.*` and `deployment_run.*` event types — so you can react without polling. Manual runs do **not** emit `deployment_run.*` webhook events.
+The outcome of each **scheduled** run (started/succeeded/failed) and each deployment lifecycle change (created/updated/paused/unpaused/archived/deleted) is also delivered as a webhook event - see `shared/managed-agents-webhooks.md` for the `deployment.*` and `deployment_run.*` event types - so you can react without polling. Manual runs do **not** emit `deployment_run.*` webhook events.
 
 ## Lifecycle: pause / unpause / archive
 
@@ -141,16 +141,16 @@ The outcome of each **scheduled** run (started/succeeded/failed) and each deploy
 |---|---|---|
 | Pause | `client.beta.deployments.pause(id)` | Suppresses scheduled triggers go-forward. Sessions already running continue. **Manual runs are still permitted while paused.** Sets `paused_reason: {"type": "manual"}`. |
 | Unpause | `client.beta.deployments.unpause(id)` | Resumes from the next scheduled occurrence. **Missed triggers are not backfilled.** Clears `paused_reason`. |
-| Archive | `client.beta.deployments.archive(id)` | **Terminal** — the schedule stops and the deployment can no longer be modified. Use pause for anything reversible. |
+| Archive | `client.beta.deployments.archive(id)` | **Terminal** - the schedule stops and the deployment can no longer be modified. Use pause for anything reversible. |
 
 Raw HTTP: `POST /v1/deployments/{deployment_id}/pause` (likewise `/unpause`, `/archive`).
 
 ### Failure behavior
 
-- **Rate-limited:** recorded immediately as a `session_rate_limited` run, **no retry** — the schedule simply tries again at the next occurrence. (Rate limits on API calls *inside* a session are handled by the session itself.)
-- **Other failed runs** (e.g. `environment_archived`, `vault_not_found`, `service_unavailable`): the run records the `error.type` — monitor runs and fix the referenced resource, or pause the deployment.
+- **Rate-limited:** recorded immediately as a `session_rate_limited` run, **no retry** - the schedule simply tries again at the next occurrence. (Rate limits on API calls *inside* a session are handled by the session itself.)
+- **Other failed runs** (e.g. `environment_archived`, `vault_not_found`, `service_unavailable`): the run records the `error.type` - monitor runs and fix the referenced resource, or pause the deployment.
 - **Agent archived:** the deployment is automatically **archived** (terminal) in the same operation. **Agent deleted:** the next scheduled trigger detects the missing agent and archives the deployment then. Either way no deployment run is recorded, and no further sessions are created.
 
 ## Manual runs
 
-`POST /v1/deployments/{deployment_id}/run` (SDK: `client.beta.deployments.run(id)`) creates a session immediately and writes a run with `trigger_context.type: "manual"`. Use it to **test a deployment before committing to the schedule** — and remember it works even while the deployment is paused.
+`POST /v1/deployments/{deployment_id}/run` (SDK: `client.beta.deployments.run(id)`) creates a session immediately and writes a run with `trigger_context.type: "manual"`. Use it to **test a deployment before committing to the schedule** - and remember it works even while the deployment is paused.

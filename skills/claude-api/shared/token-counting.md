@@ -1,11 +1,11 @@
 # Token Counting
 
 Use the `count_tokens` endpoint (`POST /v1/messages/count_tokens`) for accurate
-token counts against Claude models. Token counts are **model-specific** — pass
+token counts against Claude models. Token counts are **model-specific** - pass
 the same model ID you'll use for inference.
 
 **Do not use `tiktoken`.** It's OpenAI's tokenizer. It undercounts Claude
-tokens by ~15–20% on typical text, and by much more on code or non-English
+tokens by ~15-20% on typical text, and by much more on code or non-English
 input. Any estimate from `tiktoken`, `gpt-tokenizer`, or similar is wrong for
 Claude.
 
@@ -22,7 +22,7 @@ resp = client.messages.count_tokens(
 print(resp.input_tokens)
 ```
 
-TypeScript: `await client.messages.countTokens({model, messages})` →
+TypeScript: `await client.messages.countTokens({model, messages})` ->
 `.input_tokens`. See `{lang}/claude-api/README.md` for other SDKs.
 
 ## CLI
@@ -35,7 +35,7 @@ ant messages count-tokens --model claude-opus-5 \
 
 ## Diffing a file across two versions
 
-The endpoint is stateless — count each version separately and subtract:
+The endpoint is stateless - count each version separately and subtract:
 
 ```python
 from anthropic import Anthropic

@@ -1,4 +1,4 @@
-# Message Batches API — TypeScript
+# Message Batches API - TypeScript
 
 The Batches API (`POST /v1/messages/batches`) processes Messages API requests asynchronously at 50% of standard prices.
 

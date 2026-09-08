@@ -1,4 +1,4 @@
-# Streaming — PHP
+# Streaming - PHP
 
 ## Streaming
 
