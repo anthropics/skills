@@ -34,6 +34,8 @@ This repository includes [`MAXIMO`](./.claude/agents/MAXIMO.md), a generalist de
 
 MAXIMO can coordinate coding, finance, legal research, marketing, audit, accounting, research, data analysis, documents, presentations, spreadsheets, design, and automation. It does not replace qualified legal, tax, investment, accounting, audit, or other professional advice, and it degrades to a transparent, source-limited response when tools or authoritative data are unavailable.
 
+In Claude Code, use the `/maximo` shortcut, optionally followed by the task, to activate this workflow directly.
+
 The implementation is original repository content. Public collections reviewed for design patterns (not copied content) are recorded in [`skills/maximo/references/provenance.md`](./skills/maximo/references/provenance.md).
 
 # Try in Claude Code, Claude.ai, and the API
