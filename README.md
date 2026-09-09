@@ -28,6 +28,14 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
 
+## MAXIMO custom agent
+
+This repository includes [`MAXIMO`](./.claude/agents/MAXIMO.md), a generalist delivery agent that routes cross-domain requests to the narrowest repository skill and validates the result. Its operating skill is [`skills/maximo`](./skills/maximo), with separate references for domain routing, current-source verification, safety and privacy, and third-party provenance.
+
+MAXIMO can coordinate coding, finance, legal research, marketing, audit, accounting, research, data analysis, documents, presentations, spreadsheets, design, and automation. It does not replace qualified legal, tax, investment, accounting, audit, or other professional advice, and it degrades to a transparent, source-limited response when tools or authoritative data are unavailable.
+
+The implementation is original repository content. Public collections reviewed for design patterns (not copied content) are recorded in [`skills/maximo/references/provenance.md`](./skills/maximo/references/provenance.md).
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
