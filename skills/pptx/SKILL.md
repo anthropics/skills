@@ -233,6 +233,8 @@ ls -1 "$PWD"/slide-*.jpg
 
 **After fixes, rerun all four commands above** — the PDF must be regenerated from the edited `.pptx` before `pdftoppm` can reflect your changes.
 
+**Never drive a locally installed Office application (PowerPoint, Word, Excel) to render or convert — on Windows or anywhere else.** Office COM automation can attach to an Office instance that the user already has open, so calling `Quit()` can close their entire Office session and `Close()` can close their presentation, potentially losing unsaved work. If LibreOffice is missing on Windows, install it (`winget install TheDocumentFoundation.LibreOffice`) and rerun the commands above. If it can't be installed, skip visual QA and say so — COM automation is not a fallback. Should COM be unavoidable for some other task, operate only on the presentation you opened and never call `Quit()` or `Close()` on a shared instance.
+
 ## Dependencies
 
 `pptxgenjs` (npm, preinstalled — install only if `require('pptxgenjs')` fails) · `markitdown[pptx]`, `Pillow`, `defusedxml`, `lxml` (pip — text dump, thumbnail, clean, validate) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`) · `pdftoppm` (Poppler)
