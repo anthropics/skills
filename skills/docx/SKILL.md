@@ -38,7 +38,7 @@ After writing a `.docx`, render it and look at it:
 
 ```bash
 python scripts/office/soffice.py --headless --convert-to pdf output.docx
-pdftoppm -jpeg -r 100 output.pdf page
+pdftoppm -jpeg -r 100 output page
 ls page-*.jpg   # then Read the images
 ```
 
