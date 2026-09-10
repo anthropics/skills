@@ -1,0 +1,4 @@
+permissions:
+  shell:
+    # scripts/*.sh drive the pnpm/Parcel bundling toolchain
+    allowed: [bash, pnpm]
