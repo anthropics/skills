@@ -8,6 +8,7 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
+import re
 import select
 import subprocess
 import sys
@@ -49,9 +50,24 @@ def run_single_query(
     full assistant message, which only arrives after tool execution.
     """
     unique_id = uuid.uuid4().hex[:8]
-    clean_name = f"{skill_name}-skill-{unique_id}"
+    # Sanitize skill_name before using it in a file path: skill_name comes
+    # from SKILL.md frontmatter, which may be attacker-controlled, so it
+    # must not be allowed to contain path separators or ".." sequences.
+    # Mirror the strict pattern already enforced in quick_validate.py.
+    safe_skill_name = re.sub(r"[^a-z0-9-]", "", skill_name.lower())
+    if not safe_skill_name:
+        safe_skill_name = "skill"
+    clean_name = f"{safe_skill_name}-skill-{unique_id}"
     project_commands_dir = Path(project_root) / ".claude" / "commands"
-    command_file = project_commands_dir / f"{clean_name}.md"
+    command_file = (project_commands_dir / f"{clean_name}.md").resolve()
+
+    # Defense in depth: verify the resolved path actually stays within the
+    # intended commands directory before writing anything.
+    resolved_commands_dir = project_commands_dir.resolve()
+    if resolved_commands_dir not in command_file.parents:
+        raise ValueError(
+            f"Refusing to write command file outside {resolved_commands_dir}: {command_file}"
+        )
 
     try:
         project_commands_dir.mkdir(parents=True, exist_ok=True)
