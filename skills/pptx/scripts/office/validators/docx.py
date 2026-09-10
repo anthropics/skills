@@ -374,7 +374,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                 comment_ids = {
                     elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
                     for elem in comments_root.xpath(
-                        ".//w:comment", namespaces=namespaces
+                        "./w:comment", namespaces=namespaces
                     )
                 }
 
