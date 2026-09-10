@@ -119,6 +119,8 @@ class MCPConnectionHTTP(MCPConnection):
     def _create_context(self):
         if create_mcp_http_client is not None:
             http_client = create_mcp_http_client(headers=self.headers) if self.headers else None
+            if http_client is not None and self._stack is not None:
+                self._stack.push_async_callback(http_client.aclose)
             return streamable_http_client(url=self.url, http_client=http_client)
         else:
             try:
