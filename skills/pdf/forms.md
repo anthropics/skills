@@ -71,9 +71,9 @@ Then analyze the images to determine the purpose of each form field (make sure t
   // more fields
 ]
 ```
-- Run the `fill_fillable_fields.py` script from this file's directory to create a filled-in PDF:
+- Run the `fill_fillable_fields.py` script from this file's directory to create a filled-in PDF (choose a distinct output filename, e.g. `<input>_filled.pdf`, not matching the input path):
 `python scripts/fill_fillable_fields.py <input pdf> <field_values.json> <output pdf>`
-This script will verify that the field IDs and values you provide are valid; if it prints error messages, correct the appropriate fields and try again.
+This script will verify that the field IDs and values you provide are valid; if it prints error messages, correct the appropriate fields and try again. For non-Latin / CJK (Japanese, Chinese, Korean) text, verify rendered glyphs across viewers.
 
 # Non-fillable fields
 If the PDF doesn't have fillable form fields, you'll add text annotations. First try to extract coordinates from the PDF structure (more accurate), then fall back to visual estimation if needed.
