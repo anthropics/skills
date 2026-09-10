@@ -81,11 +81,11 @@ Reference: `interrupt.ts` - sends the interrupt the moment it sees `span.model_r
 
 ## 4. `tool_confirmation` round-trip
 
-When the agent has `permission_policy: { type: 'always_ask' }`, any call to that tool fires an `agent.tool_use` event with `evaluated_permission === 'ask'` and the session goes idle waiting for a decision. Respond with `user.tool_confirmation`.
+When a call evaluates to `ask` - the tool has `permission_policy: { type: 'always_ask' }`, or it has `{ type: 'auto' }` and the server reached no determination - the `agent.tool_use` / `agent.mcp_tool_use` event carries `evaluated_permission === 'ask'` and the session goes idle waiting for a decision. Respond with `user.tool_confirmation`.
 
 ```ts
 for await (const event of stream) {
-  if (event.type === 'agent.tool_use' && event.evaluated_permission === 'ask') {
+  if ((event.type === 'agent.tool_use' || event.type === 'agent.mcp_tool_use') && event.evaluated_permission === 'ask') {
     await client.beta.sessions.events.send(session.id, {
       events: [{
         type: 'user.tool_confirmation',
@@ -101,7 +101,9 @@ for await (const event of stream) {
 Key points:
 - `tool_use_id` is `event.id` (typically `sevt_...`), **not** a `toolu_...` ID.
 - `result` is `'allow' | 'deny'`. Use `deny_message` to tell the model *why* you denied - it gets surfaced back to the agent.
-- Multiple pending tools: respond once per `agent.tool_use` event with `evaluated_permission === 'ask'`.
+- Multiple pending tools: respond once per `agent.tool_use` / `agent.mcp_tool_use` event with `evaluated_permission === 'ask'`.
+- Gate on `evaluated_permission === 'ask'`, not on the policy you configured - it covers `always_ask` and `auto`-indeterminate alike. Calls the server **denies** under `auto` (`evaluated_permission === 'deny'`, `evaluation.evaluated_permission.reason_code === 'high_risk'`) never enter this flow: the agent gets an error tool result and the session keeps running; sending a confirmation for one is a 400.
+- Log `event.evaluation` for audit (`type` + `reason_code`), and tolerate a `type` or `reason_code` you don't recognize - branch on known values, pass unknown ones through.
 
 Reference: `tool-permissions.ts`.
 
@@ -123,7 +125,7 @@ for await (const event of stream) {
 ```
 
 `stop_reason.type` values on `session.status_idle`:
-- `requires_action` - agent is waiting on a client-side event (tool confirmation, custom tool result). Handle it, don't break. **Self-hosted exception:** if the session went `requires_action`-idle with no pending `agent.tool_use` (always_ask) or `agent.custom_tool_use` to answer, the worker failed the claimed work item (typically a memory-store mount error, logged only on the worker host). Don't `continue` forever on that - surface it, fix the host, and send `user.interrupt` to re-queue the work (`shared/managed-agents-self-hosted-sandboxes.md` § Memory stores -> Troubleshooting).
+- `requires_action` - agent is waiting on a client-side event (tool confirmation, custom tool result). Handle it, don't break. **Self-hosted exception:** if the session went `requires_action`-idle with no pending `agent.tool_use` / `agent.mcp_tool_use` (`ask`) or `agent.custom_tool_use` to answer, the worker failed the claimed work item (typically a memory-store mount error, logged only on the worker host). Don't `continue` forever on that - surface it, fix the host, and send `user.interrupt` to re-queue the work (`shared/managed-agents-self-hosted-sandboxes.md` § Memory stores -> Troubleshooting).
 - `retries_exhausted` - terminal failure. Break, then check `sessions.retrieve()` for the error state.
 - `end_turn` - normal completion.
 - `budget_reached` - the session hit its spend cap and paused. Not terminal and not resumable by any event: change (typically raise) or remove the session's `budget` to resume, or treat it as done. A `session.usage` event with the final cost immediately precedes this idle. See `shared/managed-agents-core.md` § Session budgets.
