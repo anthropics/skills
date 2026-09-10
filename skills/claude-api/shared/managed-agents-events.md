@@ -10,7 +10,7 @@ Send events to a session via `POST /v1/sessions/{id}/events`.
 | ------------------------- | --------------------------------------------------- |
 | `user.message`            | Send a user message |
 | `user.interrupt`          | Interrupt the agent while it's running |
-| `user.tool_confirmation`  | Approve/deny a tool call (when `always_ask` policy) |
+| `user.tool_confirmation`  | Approve/deny a tool call that paused for approval (`always_ask`, or `auto` when the server reached no determination) |
 | `user.custom_tool_result` | Provide result for a custom tool call |
 | `user.define_outcome`     | Start a rubric-graded iterate loop - see `shared/managed-agents-outcomes.md` |
 | `system.message`          | Append privileged system-level context for this turn and every turn after it; see § Adding system context mid-session |
@@ -63,9 +63,9 @@ Event types use dot notation, grouped by namespace:
 | --- | --- |
 | `agent.message` | Agent text output |
 | `agent.thinking` | Progress signal that the agent is thinking - it does **not** carry the thinking content |
-| `agent.tool_use` | Agent used a built-in tool (`agent_toolset_20260401`) |
+| `agent.tool_use` | Agent used a built-in tool (`agent_toolset_20260401`). Carries `evaluated_permission` (`allow`/`ask`/`deny`) and usually `evaluation` - see `shared/managed-agents-tools.md` § `evaluated_permission` and `evaluation` |
 | `agent.tool_result` | Result from a built-in tool |
-| `agent.mcp_tool_use` | Agent used an MCP tool |
+| `agent.mcp_tool_use` | Agent used an MCP tool. Carries `evaluated_permission` and usually `evaluation`, same as `agent.tool_use` |
 | `agent.mcp_tool_result` | Result from an MCP tool |
 | `agent.custom_tool_use` | Agent invoked a custom tool - session goes idle, you respond with `user.custom_tool_result` |
 | `agent.thread_context_compacted` | Conversation context was compacted |

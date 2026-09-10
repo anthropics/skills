@@ -25,7 +25,7 @@ agent = client.beta.agents.create(
 session = client.beta.sessions.create(agent=agent.id, environment_id=env.id)  # unchanged
 ```
 
-**Step 2 - move the reading-heavy work to a cheaper model.** Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller model with a narrow `system` prompt and only the tools it needs, and list it next to `self`. A roster entry is only a reference: the worker runs on its own `model`, `system`, and `tools`, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.
+**Step 2 - move the reading-heavy work to a cheaper model.** Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller current-generation model (Claude Haiku 4.5, or Claude Sonnet 5 when the worker needs more judgment) with a narrow `system` prompt and only the tools it needs, and list it next to `self`. A roster entry is only a reference: the worker runs on its own `model`, `system`, and `tools`, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.
 
 ```python
 worker = client.beta.agents.create(
@@ -222,7 +222,7 @@ No `agent.tool_use` and no `agent.thread_message_sent` are emitted for a consult
 
 ## Tool permissions and custom tools from subagent threads
 
-When a subagent needs your client (an `always_ask` confirmation, or a custom tool result), the request is **cross-posted to the primary thread** with `session_thread_id` identifying the originating thread - so you only need to watch the session stream. Reply with `user.tool_confirmation` (carrying `tool_use_id`) or `user.custom_tool_result` (carrying `custom_tool_use_id`), and **echo the `session_thread_id` from the originating event** (the SDK param type and docstring expect it). The server also routes by the tool-use ID, so the echo is belt-and-suspenders rather than load-bearing - but include it.
+When a subagent needs your client (a tool call that paused for approval - `always_ask`, or `auto` with no determination - or a custom tool result), the request is **cross-posted to the primary thread** with `session_thread_id` identifying the originating thread - so you only need to watch the session stream. Reply with `user.tool_confirmation` (carrying `tool_use_id`) or `user.custom_tool_result` (carrying `custom_tool_use_id`), and **echo the `session_thread_id` from the originating event** (the SDK param type and docstring expect it). The server also routes by the tool-use ID, so the echo is belt-and-suspenders rather than load-bearing - but include it.
 
 ```python
 for event_id in stop.event_ids:
@@ -238,6 +238,8 @@ for event_id in stop.event_ids:
 ```
 
 The same pattern applies to `user.custom_tool_result`.
+
+**`auto` in multiagent sessions.** Only your `user.message` events on the primary thread can lead the server to allow a call it would otherwise deny under `auto`; nothing in a subagent's thread carries that weight (your client posts no messages there, and the coordinator's messages to the subagent carry none). A call the server denies under `auto` is **not** cross-posted - its event and the error tool result appear only on the subagent's own thread stream, and the subagent keeps running.
 
 ---
 

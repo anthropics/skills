@@ -67,12 +67,13 @@ Override defaults for individual tools. This example enables everything except b
 
 ### Permission Policies
 
-Control when server-executed tools (agent toolset + MCP) run automatically vs wait for approval. Does not apply to custom tools.
+Control whether server-executed tools (agent toolset + MCP) run automatically, wait for your approval, or have each call evaluated by the server. Does not apply to custom tools (your application executes those).
 
 | Policy | Behavior |
 |---|---|
-| `always_allow` | Tool executes automatically (default) |
-| `always_ask` | Session emits `session.status_idle` and pauses until you send a `user.tool_confirmation` event |
+| `always_allow` | Tool executes automatically. Default for the agent toolset. |
+| `always_ask` | Session emits `session.status_idle` (`stop_reason.type: requires_action`) and pauses until you send a `user.tool_confirmation` event. Default for MCP toolsets. |
+| `auto` | The server evaluates each call (tool + input + session content so far) and **runs it, denies it, or pauses for your approval**. Neither toolset kind defaults to `auto`. See § `auto` below. |
 
 ```json
 {
@@ -87,14 +88,83 @@ Control when server-executed tools (agent toolset + MCP) run automatically vs wa
 }
 ```
 
-**Responding to `always_ask`:** Send a `user.tool_confirmation` event with `tool_use_id` from the triggering `agent_tool_use`/`mcp_tool_use` event:
+**Responding to `always_ask`** (and to `auto` calls that pause): send a `user.tool_confirmation` event with `tool_use_id` set to the **event ID** (`sevt_...`, not a `toolu_` ID) of the triggering `agent.tool_use` / `agent.mcp_tool_use` event. Several confirmations can go in one `events` request:
 
 ```json
 { "type": "user.tool_confirmation", "tool_use_id": "sevt_abc123", "result": "allow" }
-{ "type": "user.tool_confirmation", "tool_use_id": "sevt_def456", "result": "deny", "message": "Read .env.example instead" }
+{ "type": "user.tool_confirmation", "tool_use_id": "sevt_def456", "result": "deny", "deny_message": "Read .env.example instead" }
 ```
 
-The optional `message` on a deny is delivered to the agent so it can adjust its approach.
+The optional `deny_message` on a deny is delivered to the agent as the rejected tool result so it can adjust its approach. A `user.tool_confirmation` for an event whose `evaluated_permission` is not `"ask"` is rejected with a 400 - that includes calls the server denied under `auto`; your client cannot override them.
+
+#### `auto` - let the server evaluate each call
+
+Set `{"type": "auto"}` anywhere a `permission_policy` is accepted: a toolset's `default_config` or an individual `configs` entry, on the agent toolset or an `mcp_toolset`. Because the evaluation considers the call's input and the session's content up to that point, two calls to the same tool can be treated differently. Each call has exactly one of three outcomes:
+
+| Outcome | What happens |
+|---|---|
+| **Runs** | Server determined the call is safe - executes as under `always_allow`, without reaching your client. |
+| **Denied** | Server evaluated the call as high-risk - the tool does not run. The agent receives an error tool result (`Permission to use {tool_name} has been denied.`, `is_error: true`), the session **keeps running**, and your client cannot override the denial. |
+| **Pauses** | Server reached no determination - the session pauses exactly as under `always_ask`; respond with `user.tool_confirmation`. |
+
+```json
+{
+  "name": "Ops Agent",
+  "model": "claude-opus-5",
+  "mcp_servers": [{ "type": "url", "name": "github", "url": "https://mcp.example.com/github" }],
+  "tools": [
+    {
+      "type": "agent_toolset_20260401",
+      "default_config": { "permission_policy": { "type": "auto" } },
+      "configs": [{ "name": "bash", "permission_policy": { "type": "always_ask" } }]
+    },
+    {
+      "type": "mcp_toolset",
+      "mcp_server_name": "github",
+      "default_config": { "permission_policy": { "type": "auto" } }
+    }
+  ]
+}
+```
+
+Pass the same shape as an untyped dict / object literal / hash in Python, TypeScript, and Ruby. The typed SDKs (Go, Java, C#, PHP) need a generated type for the `auto` policy that ships with each SDK's release of the feature - until then, build the request in an untyped language or via cURL / `ant`. Python and TypeScript also only type-check `{"type": "auto"}` from the release that adds it (the wire API accepts it regardless).
+
+**What the evaluation trusts.** The server treats session content as material to assess, not instructions to follow. Text you post in `user.message` events (including end-user text you relay there) counts as *your intent* and can lead the server to allow a call it would otherwise deny - though some calls are evaluated as high-risk regardless. The same words in a tool result, a fetched webpage, an MCP server response, or a message between session threads carry no such weight. If you relay untrusted end-user input in `user.message`, the server reads it as your intent too and it can get a call allowed - put `always_ask` on the tools you would not let that end user run without review.
+
+> **`auto` is not a human checkpoint.** A call the server determines to be safe runs before any person sees it, and its effects may not be reversible. If a person must review a tool's calls before they run, use `always_ask` on that tool.
+
+#### `evaluated_permission` and `evaluation` - see how each call was evaluated
+
+Under **any** policy, each `agent.tool_use` and `agent.mcp_tool_use` event carries `evaluated_permission` (`"allow" | "ask" | "deny"`) - the outcome of the permission check. Most events also carry an `evaluation` object whose `type` names the policy that produced the outcome; under `auto` it adds the server's determination and, for `ask` / `deny`, a `reason_code`:
+
+```json
+{
+  "type": "agent.tool_use",
+  "id": "sevt_01pqr...",
+  "name": "bash",
+  "input": { "command": "rm -rf /workspace/reports" },
+  "evaluated_permission": "deny",
+  "evaluation": {
+    "type": "auto",
+    "evaluated_permission": { "type": "deny", "reason_code": "high_risk" }
+  },
+  "processed_at": "2026-03-25T14:05:12Z"
+}
+```
+
+| `evaluation` | Top-level `evaluated_permission` | Meaning |
+|---|---|---|
+| `{"type": "always_allow"}` | `"allow"` | Resolved policy is `always_allow`; the call ran. |
+| `{"type": "always_ask"}` | `"ask"` | Resolved policy is `always_ask`; paused for your approval. |
+| `{"type": "auto", "evaluated_permission": {"type": "allow"}}` | `"allow"` | Server determined the call safe; it ran. |
+| `{"type": "auto", "evaluated_permission": {"type": "ask", "reason_code": "indeterminate"}}` | `"ask"` | Server reached no determination; paused for your approval. |
+| `{"type": "auto", "evaluated_permission": {"type": "deny", "reason_code": "high_risk"}}` | `"deny"` | Server evaluated the call as high-risk and denied it. |
+
+- On the `auto` form the nested `evaluated_permission.type` always equals the event's top-level `evaluated_permission`.
+- `reason_code` is for your client to branch on and keep in audit records - not text to show end users.
+- `evaluation` is **absent** when the agent names a tool that isn't enabled in the session (server denies without evaluating any policy: `evaluated_permission: "deny"`, no `evaluation`) and on events recorded before the field existed (read those as `always_allow` for `"allow"`, `always_ask` for `"ask"`).
+- Write your client to tolerate an `evaluation.type` or `reason_code` it doesn't recognize.
+- `agent.custom_tool_use` events carry neither field (custom tools aren't governed by permission policies).
 
 To enable only specific tools, flip the default off and opt-in per tool:
 

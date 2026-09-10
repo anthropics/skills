@@ -188,6 +188,29 @@ ant beta:sessions:events list --session-id "$SID" --transform 'content.0.text' -
 ant beta:sessions:events stream --session-id "$SID"   # live event stream
 ```
 
+### Attach a terminal to a session (`ant beta:sessions connect`)
+
+`ant beta:sessions connect <session-id>` attaches your terminal to an existing session: it loads the transcript, follows it live, and lets you step in - send a message, interrupt, or allow/deny a tool call that is waiting for approval. Ctrl+C detaches; the session keeps running, and reconnecting reloads the full history. Read-only if the session is `terminated` or archived.
+
+```sh
+ant beta:sessions connect sesn_011CZkZAtmR3yMPDzynEDxu7          # terminal view
+ant beta:sessions connect sesn_011CZkZAtmR3yMPDzynEDxu7 --web    # Console session viewer, served locally
+```
+
+| Key | Action |
+|---|---|
+| Enter | Send input as a `user.message` (Alt+Enter / Ctrl+J for a newline) |
+| Esc | Interrupt the running agent (`user.interrupt`) |
+| Ctrl+O | Toggle detail: tool inputs/results, token usage, status events (`--verbose` / `-v` starts expanded) |
+| PgUp / PgDn | Scroll; scrolling up pauses following, End resumes |
+| Ctrl+C (or Ctrl+D on empty input) | Detach |
+
+When a call is waiting for approval (`always_ask`, or `auto` with no determination), the input line becomes **Allow tool call?** with **Yes** / **No** / **No, and tell the agent why** - the CLI sends `user.tool_confirmation`, with your typed reason as `deny_message`. In multiagent sessions the terminal view follows the primary thread only (which includes coordinator<->subagent messages).
+
+`--web` serves the Console's session viewer from a local server on `127.0.0.1`, prints the URL, and opens the browser (`--no-browser` to skip). The URL works once, within two minutes (reloading that tab is fine; to open it elsewhere, run the command again). The page talks only to the local `ant` process, which makes the API calls, so credentials never leave the CLI; the server runs until Ctrl+C. Unlike the terminal view, the browser viewer follows every thread of a multiagent session.
+
+Needs an interactive terminal (except `--web`) - for scripts use `ant beta:sessions:events stream` / `send`, below.
+
 ### Interactive session loop (stream-before-send)
 
 `ant beta:sessions:events stream` only delivers events emitted *after* the stream opens - so open it **before** sending the kickoff to avoid missing early events. Use process substitution to hold the stream on a file descriptor, send, then read:
