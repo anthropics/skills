@@ -101,17 +101,27 @@ def load_run_results(benchmark_dir: Path) -> dict:
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
+            run_subdirs = sorted(config_dir.glob("run-*"))
+            direct_grading = config_dir / "grading.json"
             # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+            if not run_subdirs and not direct_grading.exists():
                 continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
-                grading_file = run_dir / "grading.json"
+            if run_subdirs:
+                run_targets = []
+                for run_dir in run_subdirs:
+                    try:
+                        run_number = int(run_dir.name.split("-")[1])
+                    except (IndexError, ValueError):
+                        run_number = 1
+                    run_targets.append((run_dir, run_number, run_dir / "grading.json"))
+            else:
+                run_targets = [(config_dir, 1, direct_grading)]
 
+            for run_dir, run_number, grading_file in run_targets:
                 if not grading_file.exists():
                     print(f"Warning: grading.json not found in {run_dir}")
                     continue
