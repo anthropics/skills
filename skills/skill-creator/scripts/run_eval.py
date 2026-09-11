@@ -16,6 +16,11 @@ by construction: every run gets its own project directory keyed by a full
 UUID4. The directory is shared by the run's parallel workers and removed
 when the run ends; directories left behind by killed runs are swept once
 they are older than --stale-artifact-hours.
+
+Because user-level skills take precedence over project skills, an installed
+~/.claude/skills/<name> would shadow the candidate. The eval fails fast in
+that case rather than silently measuring the wrong description or moving
+user files.
 """
 
 import argparse
@@ -281,23 +286,22 @@ def _sweep_stale_eval_projects(stale_hours: float) -> None:
                 pass
 
 
-def _warn_if_shadowed(skill_name: str) -> None:
-    """Warn when a user-level skill with the same name also loads.
+def _raise_if_shadowed(skill_name: str) -> None:
+    """Refuse to run when a user-level skill would shadow the candidate.
 
     The eval project isolates the candidate from the surrounding project,
     but user-level skills (~/.claude/skills) load in every session. An
     installed copy of the skill carries its own description, so triggers
     it attracts are decided by the wrong description and skew measurement.
-    We warn rather than move user files aside.
+    Fail rather than silently return invalid scores or move user files.
     """
     installed = Path.home() / ".claude" / "skills" / skill_name
     if installed.is_dir():
-        print(
-            f"Warning: user-level skill at {installed} shares the eval "
-            f"skill's name and also loads during evals; triggers it absorbs "
-            f"are decided by its own description, skewing results. Consider "
-            f"moving it aside while running evals.",
-            file=sys.stderr,
+        raise RuntimeError(
+            f"Cannot evaluate skill {skill_name!r}: user-level skill at "
+            f"{installed} has the same name and would shadow the eval "
+            f"candidate. Move it aside for the duration of the eval and "
+            f"run the command again."
         )
 
 
@@ -312,7 +316,7 @@ def create_eval_project(
     the caller is responsible for removing it when the run finishes.
     """
     _sweep_stale_eval_projects(stale_hours)
-    _warn_if_shadowed(skill_name)
+    _raise_if_shadowed(skill_name)
 
     project_dir = EVAL_PROJECTS_ROOT / f"{skill_name}-{uuid.uuid4().hex}"
     skill_dir = project_dir / ".claude" / "skills" / skill_name
