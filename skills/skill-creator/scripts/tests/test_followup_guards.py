@@ -6,7 +6,7 @@ from pathlib import Path
 from unittest import mock
 
 from scripts.generate_report import generate_html
-from scripts.run_eval import _raise_if_shadowed
+from scripts.run_eval import _raise_if_shadowed, _tool_use_mentions
 from scripts.run_loop import run_loop
 
 
@@ -49,6 +49,36 @@ class FollowupGuardTests(unittest.TestCase):
                 "scripts.run_eval.Path.home", return_value=Path(tmp)
             ):
                 _raise_if_shadowed("pdf")
+
+    def test_short_skill_name_does_not_match_unrelated_tool_input(self):
+        self.assertFalse(
+            _tool_use_mentions("pdf", "Skill", {"skill": "pdf-tools"})
+        )
+        self.assertFalse(
+            _tool_use_mentions("pdf", "Read", {"file_path": "/tmp/report.pdf"})
+        )
+        self.assertFalse(
+            _tool_use_mentions(
+                "pdf", "Bash", {"command": "convert report.pdf output.png"}
+            )
+        )
+
+    def test_field_scoped_trigger_matching_handles_real_and_windows_paths(self):
+        self.assertTrue(_tool_use_mentions("pdf", "Skill", {"skill": "pdf"}))
+        self.assertTrue(
+            _tool_use_mentions(
+                "pdf",
+                "Read",
+                {"file_path": "/tmp/project/.claude/skills/pdf/SKILL.md"},
+            )
+        )
+        self.assertTrue(
+            _tool_use_mentions(
+                "pdf",
+                "Read",
+                {"file_path": r"C:\tmp\project\.claude\skills\pdf\SKILL.md"},
+            )
+        )
 
     def test_zero_iterations_returns_renderable_result(self):
         with tempfile.TemporaryDirectory() as tmp:
