@@ -115,6 +115,10 @@ def test_validation_errors():
         create_connection("invalid_transport")
 
 
+@pytest.mark.skipif(
+    connections.create_mcp_http_client is None,
+    reason="Custom http client is only created in mcp >= 2",
+)
 def test_http_custom_headers_client_closed_on_exit(captured_production_http_client, monkeypatch):
     """Verify caller-owned HTTP client is cleanly closed on normal context exit."""
     monkeypatch.setattr(connections, "ClientSession", StubClientSession)
@@ -125,14 +129,18 @@ def test_http_custom_headers_client_closed_on_exit(captured_production_http_clie
             "http", url="http://localhost:8000/mcp", headers={"Authorization": "Bearer test"}
         )
         async with conn:
-            if captured_production_http_client.get("client") is not None:
-                assert captured_production_http_client["client"].is_closed is False
-        if captured_production_http_client.get("client") is not None:
-            assert captured_production_http_client["client"].is_closed is True
+            client = captured_production_http_client.get("client")
+            assert client is not None
+            assert client.is_closed is False
+        assert client.is_closed is True
 
     anyio.run(_run)
 
 
+@pytest.mark.skipif(
+    connections.create_mcp_http_client is None,
+    reason="Custom http client is only created in mcp >= 2",
+)
 def test_http_custom_headers_client_closed_on_init_failure(captured_production_http_client, monkeypatch):
     """Verify caller-owned HTTP client is cleanly closed even if initialization fails."""
     monkeypatch.setattr(connections, "ClientSession", StubClientSession)
@@ -145,8 +153,9 @@ def test_http_custom_headers_client_closed_on_init_failure(captured_production_h
         with pytest.raises(ExpectedInitializationError):
             async with conn:
                 pass
-        if captured_production_http_client.get("client") is not None:
-            assert captured_production_http_client["client"].is_closed is True
+        client = captured_production_http_client.get("client")
+        assert client is not None
+        assert client.is_closed is True
 
     anyio.run(_run)
 
