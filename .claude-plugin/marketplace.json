@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -67,6 +66,15 @@
       "strict": false,
       "skills": [
         "./skills/discernment-nudge"
+      ]
+    },
+    {
+      "name": "coderifts-api-governance",
+      "description": "Governance decisions for API and agent-tool contract changes via the CodeRifts MCP server: preflight a change set, then branch on execution_action",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/api-governance"
       ]
     }
   ]
