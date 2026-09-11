@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -19,15 +20,39 @@ from pathlib import Path
 from scripts.utils import parse_skill_md
 
 
+def cleanup_probe_commands(project_root: Path | str, skill_name: str | None = None) -> None:
+    """Safely clean up leftover probe command files in .claude/commands/."""
+    try:
+        commands_dir = Path(project_root) / ".claude" / "commands"
+        if commands_dir.is_dir():
+            pattern = f"{skill_name}-skill-*.md" if skill_name else "*-skill-*.md"
+            for f in commands_dir.glob(pattern):
+                try:
+                    f.unlink()
+                except OSError:
+                    pass
+    except Exception:
+        pass
+
+
 def find_project_root() -> Path:
-    """Find the project root by walking up from cwd looking for .claude/.
+    """Find the project root by walking up from cwd looking for .claude/ or .git/.
 
     Mimics how Claude Code discovers its project root, so the command file
-    we create ends up where claude -p will look for it.
+    we create ends up where claude -p will look for it. Explicitly avoids
+    treating the user's home directory (~/.claude) as a project root so probe
+    files are not leaked into global user commands.
     """
-    current = Path.cwd()
+    current = Path.cwd().resolve()
+    try:
+        home = Path.home().resolve()
+    except Exception:
+        home = None
+
     for parent in [current, *current.parents]:
-        if (parent / ".claude").is_dir():
+        if home is not None and parent == home:
+            break
+        if (parent / ".claude").is_dir() or (parent / ".git").is_dir():
             return parent
     return current
 
@@ -65,7 +90,7 @@ def run_single_query(
             f"# {skill_name}\n\n"
             f"This skill handles: {skill_description}\n"
         )
-        command_file.write_text(command_content)
+        command_file.write_text(command_content, encoding="utf-8")
 
         cmd = [
             "claude",
@@ -92,93 +117,122 @@ def run_single_query(
 
         triggered = False
         start_time = time.time()
-        buffer = ""
         # Track state for stream event detection
         pending_tool_name = None
         accumulated_json = ""
 
+        # Background reader thread with Queue avoids Windows select() incompatibilities on pipes
+        q: queue.Queue[bytes | None] = queue.Queue()
+
+        def _enqueue_output(out_pipe, queue_dest):
+            try:
+                for line in iter(out_pipe.readline, b""):
+                    queue_dest.put(line)
+            except Exception:
+                pass
+            finally:
+                queue_dest.put(None)
+
+        reader_thread = threading.Thread(
+            target=_enqueue_output,
+            args=(process.stdout, q),
+            daemon=True,
+        )
+        reader_thread.start()
+
         try:
             while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
+                remaining_time = timeout - (time.time() - start_time)
+                if remaining_time <= 0:
                     break
 
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
+                try:
+                    line_bytes = q.get(timeout=min(remaining_time, 0.5))
+                except queue.Empty:
+                    if process.poll() is not None and q.empty():
+                        break
                     continue
 
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
+                if line_bytes is None:
                     break
-                buffer += chunk.decode("utf-8", errors="replace")
 
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
+                line = line_bytes.decode("utf-8", errors="replace").strip()
+                if not line:
+                    continue
 
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
 
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
+                # Early detection via stream events
+                if event.get("type") == "stream_event":
+                    se = event.get("event", {})
+                    se_type = se.get("type", "")
 
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
+                    if se_type == "content_block_start":
+                        cb = se.get("content_block", {})
+                        if cb.get("type") == "tool_use":
+                            tool_name = cb.get("name", "")
+                            if tool_name in ("Skill", "Read"):
+                                pending_tool_name = tool_name
+                                accumulated_json = ""
+                            else:
                                 return False
 
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
+                    elif se_type == "content_block_delta" and pending_tool_name:
+                        delta = se.get("delta", {})
+                        if delta.get("type") == "input_json_delta":
+                            accumulated_json += delta.get("partial_json", "")
+                            if clean_name in accumulated_json:
+                                return True
 
-                    elif event.get("type") == "result":
+                    elif se_type in ("content_block_stop", "message_stop"):
+                        if pending_tool_name:
+                            return clean_name in accumulated_json
+                        if se_type == "message_stop":
+                            return False
+
+                # Fallback: full assistant message
+                elif event.get("type") == "assistant":
+                    message = event.get("message", {})
+                    for content_item in message.get("content", []):
+                        if content_item.get("type") != "tool_use":
+                            continue
+                        tool_name = content_item.get("name", "")
+                        tool_input = content_item.get("input", {})
+                        if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                            triggered = True
+                        elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            triggered = True
                         return triggered
+
+                elif event.get("type") == "result":
+                    return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
-                process.kill()
-                process.wait()
+                try:
+                    process.kill()
+                except OSError:
+                    pass
+                try:
+                    process.wait(timeout=2)
+                except Exception:
+                    pass
+            if process.stdout:
+                try:
+                    process.stdout.close()
+                except OSError:
+                    pass
 
         return triggered
     finally:
-        if command_file.exists():
-            command_file.unlink()
+        try:
+            if command_file.exists():
+                command_file.unlink()
+        except OSError:
+            pass
 
 
 def run_eval(
@@ -193,67 +247,71 @@ def run_eval(
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
+    cleanup_probe_commands(project_root, skill_name)
     results = []
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        future_to_info = {}
-        for item in eval_set:
-            for run_idx in range(runs_per_query):
-                future = executor.submit(
-                    run_single_query,
-                    item["query"],
-                    skill_name,
-                    description,
-                    timeout,
-                    str(project_root),
-                    model,
-                )
-                future_to_info[future] = (item, run_idx)
+    try:
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_info = {}
+            for item in eval_set:
+                for run_idx in range(runs_per_query):
+                    future = executor.submit(
+                        run_single_query,
+                        item["query"],
+                        skill_name,
+                        description,
+                        timeout,
+                        str(project_root),
+                        model,
+                    )
+                    future_to_info[future] = (item, run_idx)
 
-        query_triggers: dict[str, list[bool]] = {}
-        query_items: dict[str, dict] = {}
-        for future in as_completed(future_to_info):
-            item, _ = future_to_info[future]
-            query = item["query"]
-            query_items[query] = item
-            if query not in query_triggers:
-                query_triggers[query] = []
-            try:
-                query_triggers[query].append(future.result())
-            except Exception as e:
-                print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+            query_triggers: dict[str, list[bool]] = {}
+            query_items: dict[str, dict] = {}
+            for future in as_completed(future_to_info):
+                item, _ = future_to_info[future]
+                query = item["query"]
+                query_items[query] = item
+                if query not in query_triggers:
+                    query_triggers[query] = []
+                try:
+                    query_triggers[query].append(future.result())
+                except Exception as e:
+                    print(f"Warning: query failed: {e}", file=sys.stderr)
+                    query_triggers[query].append(False)
 
-    for query, triggers in query_triggers.items():
-        item = query_items[query]
-        trigger_rate = sum(triggers) / len(triggers)
-        should_trigger = item["should_trigger"]
-        if should_trigger:
-            did_pass = trigger_rate >= trigger_threshold
-        else:
-            did_pass = trigger_rate < trigger_threshold
-        results.append({
-            "query": query,
-            "should_trigger": should_trigger,
-            "trigger_rate": trigger_rate,
-            "triggers": sum(triggers),
-            "runs": len(triggers),
-            "pass": did_pass,
-        })
+        for query, triggers in query_triggers.items():
+            item = query_items[query]
+            trigger_rate = sum(triggers) / len(triggers)
+            should_trigger = item["should_trigger"]
+            if should_trigger:
+                did_pass = trigger_rate >= trigger_threshold
+            else:
+                did_pass = trigger_rate < trigger_threshold
+            results.append({
+                "query": query,
+                "should_trigger": should_trigger,
+                "trigger_rate": trigger_rate,
+                "triggers": sum(triggers),
+                "runs": len(triggers),
+                "pass": did_pass,
+            })
 
-    passed = sum(1 for r in results if r["pass"])
-    total = len(results)
+        passed = sum(1 for r in results if r["pass"])
+        total = len(results)
 
-    return {
-        "skill_name": skill_name,
-        "description": description,
-        "results": results,
-        "summary": {
-            "total": total,
-            "passed": passed,
-            "failed": total - passed,
-        },
-    }
+        return {
+            "skill_name": skill_name,
+            "description": description,
+            "results": results,
+            "summary": {
+                "total": total,
+                "passed": passed,
+                "failed": total - passed,
+            },
+        }
+    finally:
+        cleanup_probe_commands(project_root, skill_name)
 
 
 def main():
@@ -269,7 +327,7 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
-    eval_set = json.loads(Path(args.eval_set).read_text())
+    eval_set = json.loads(Path(args.eval_set).read_text(encoding="utf-8"))
     skill_path = Path(args.skill_path)
 
     if not (skill_path / "SKILL.md").exists():
