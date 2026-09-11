@@ -206,6 +206,10 @@ These models return 404 - update immediately:
 
 | Retired model                 | Retired       | Drop-in replacement  |
 | ----------------------------- | ------------- | -------------------- |
+| `claude-opus-4-1-20250805`    | Aug 5, 2026   | `claude-opus-4-8`    |
+| `claude-opus-4-20250514`      | Jun 15, 2026  | `claude-opus-4-8`    |
+| `claude-sonnet-4-20250514`    | Jun 15, 2026  | `claude-sonnet-5` |
+| `claude-3-haiku-20240307`     | Apr 19, 2026  | `claude-haiku-4-5`   |
 | `claude-3-7-sonnet-20250219`  | Feb 19, 2026  | `claude-sonnet-5` |
 | `claude-3-5-haiku-20241022`   | Feb 19, 2026  | `claude-haiku-4-5`   |
 | `claude-3-opus-20240229`      | Jan 5, 2026   | `claude-opus-4-8`    |
@@ -213,14 +217,6 @@ These models return 404 - update immediately:
 | `claude-3-5-sonnet-20240620`  | Oct 28, 2025  | `claude-sonnet-5` |
 | `claude-3-sonnet-20240229`    | Jul 21, 2025  | `claude-sonnet-5` |
 | `claude-2.1`, `claude-2.0`    | Jul 21, 2025  | `claude-sonnet-5` |
-
-## Deprecated Models (retiring soon)
-
-| Model                         | Retires       | Replacement          |
-| ----------------------------- | ------------- | -------------------- |
-| `claude-3-haiku-20240307`     | Apr 19, 2026  | `claude-haiku-4-5`   |
-| `claude-opus-4-20250514`      | June 15, 2026 | `claude-opus-4-8`    |
-| `claude-sonnet-4-20250514`    | June 15, 2026 | `claude-sonnet-5` |
 
 ---
 
