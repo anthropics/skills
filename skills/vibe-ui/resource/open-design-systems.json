@@ -1,0 +1,8 @@
+{
+  "source": {
+    "repo": "nexu-io/open-design",
+    "commit": "a1f01e6fb7fdc823d71b00568bb9b2fff3b71f08",
+    "note": "This skill contribution intentionally omits the full 150-system offline bundle. Use the standalone Vibe UI repository for the full bundle."
+  },
+  "systems": []
+}
