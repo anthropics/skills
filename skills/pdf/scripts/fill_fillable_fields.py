@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from pypdf import PdfReader, PdfWriter
@@ -47,7 +48,13 @@ def fill_pdf_fields(input_pdf_path: str, fields_json_path: str, output_pdf_path:
         writer.update_page_form_field_values(writer.pages[page - 1], field_values, auto_regenerate=False)
 
     writer.set_need_appearances_writer(True)
-    
+
+    abs_in = os.path.abspath(input_pdf_path)
+    abs_out = os.path.abspath(output_pdf_path)
+    if abs_in == abs_out:
+        print(f"ERROR: output path matches input path ({output_pdf_path}); refusing to overwrite source file")
+        sys.exit(1)
+
     with open(output_pdf_path, "wb") as f:
         writer.write(f)
 
