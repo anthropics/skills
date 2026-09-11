@@ -1,0 +1,16 @@
+{
+  "_comment": "飞书多维表格配置文件示例 - 请复制为 feishu_config.json 并填入你的配置",
+  "_docs": "获取这些信息请参考: https://open.feishu.cn/document/server-docs/docs/bitable-v1/bitable-overview",
+
+  "APP_ID": "your_app_id_here",
+  "APP_SECRET": "your_app_secret_here",
+  "APP_TOKEN": "your_bitable_app_token_here",
+  "TABLE_ID": "your_default_table_id_here",
+
+  "_table_ids": {
+    "_comment": "可选：配置多个表格 ID",
+    "signals": "技术信号表的 table_id",
+    "holdings": "持仓管理表的 table_id",
+    "trades": "交易记录表的 table_id"
+  }
+}
