@@ -17,7 +17,7 @@ from pathlib import Path
 
 from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
-from scripts.run_eval import find_project_root, run_eval
+from scripts.run_eval import DEFAULT_TIMEOUT, FIXTURE_HELP, SkillAlreadyRegistered, run_eval
 from scripts.utils import parse_skill_md
 
 
@@ -58,9 +58,9 @@ def run_loop(
     verbose: bool,
     live_report_path: Path | None = None,
     log_dir: Path | None = None,
+    fixture: Path | None = None,
 ) -> dict:
     """Run the eval + improvement loop."""
-    project_root = find_project_root()
     name, original_description, content = parse_skill_md(skill_path)
     current_description = description_override or original_description
 
@@ -92,7 +92,7 @@ def run_loop(
             description=current_description,
             num_workers=num_workers,
             timeout=timeout,
-            project_root=project_root,
+            fixture=fixture,
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
@@ -247,7 +247,8 @@ def main():
     parser.add_argument("--skill-path", required=True, help="Path to skill directory")
     parser.add_argument("--description", default=None, help="Override starting description")
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
-    parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
+    parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="Timeout per query in seconds")
+    parser.add_argument("--fixture", default=None, help=FIXTURE_HELP)
     parser.add_argument("--max-iterations", type=int, default=5, help="Max improvement iterations")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
@@ -266,6 +267,14 @@ def main():
         sys.exit(1)
 
     name, _, _ = parse_skill_md(skill_path)
+
+    fixture = Path(args.fixture) if args.fixture else None
+    if fixture and not fixture.is_dir():
+        # copytree failures inside the pool are caught per probe and scored
+        # False, so a typo'd path would report a plausible 0/N instead of
+        # failing loudly here.
+        print(f"Error: fixture directory not found: {fixture}", file=sys.stderr)
+        sys.exit(1)
 
     # Set up live report path
     if args.report != "none":
@@ -290,21 +299,26 @@ def main():
 
     log_dir = results_dir / "logs" if results_dir else None
 
-    output = run_loop(
-        eval_set=eval_set,
-        skill_path=skill_path,
-        description_override=args.description,
-        num_workers=args.num_workers,
-        timeout=args.timeout,
-        max_iterations=args.max_iterations,
-        runs_per_query=args.runs_per_query,
-        trigger_threshold=args.trigger_threshold,
-        holdout=args.holdout,
-        model=args.model,
-        verbose=args.verbose,
-        live_report_path=live_report_path,
-        log_dir=log_dir,
-    )
+    try:
+        output = run_loop(
+            eval_set=eval_set,
+            skill_path=skill_path,
+            description_override=args.description,
+            num_workers=args.num_workers,
+            timeout=args.timeout,
+            max_iterations=args.max_iterations,
+            runs_per_query=args.runs_per_query,
+            trigger_threshold=args.trigger_threshold,
+            holdout=args.holdout,
+            model=args.model,
+            verbose=args.verbose,
+            live_report_path=live_report_path,
+            log_dir=log_dir,
+            fixture=fixture,
+        )
+    except SkillAlreadyRegistered as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
     # Save JSON output
     json_output = json.dumps(output, indent=2)
