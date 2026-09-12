@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+dist
+build
+coverage
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode
+.idea
+
+# Generated files
+*.min.js
+*.min.css
+
+# Backend
+backend/__pycache__
+backend/.pytest_cache
+backend/venv
+backend/.venv
+
+# Misc
+.git
+.env
+.env.local
