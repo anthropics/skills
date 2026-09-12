@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Axur Platform — Digital Risk Protection Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #0d1117;
+  --color-surface: #161b27;
+  --color-surface-2: #1e2537;
+  --color-border: #2a3347;
+  --color-accent: #00d4c8;
+  --color-accent-dim: rgba(0,212,200,0.12);
+  --color-accent-secondary: #ff6b35;
+  --color-threat: #ff6b35;
+  --color-threat-dim: rgba(255,107,53,0.12);
+  --color-text: #e6edf3;
+  --color-text-dim: #8b949e;
+  --color-text-muted: #556070;
+  --color-success: #3fb950;
+  --color-success-dim: rgba(63,185,80,0.12);
+  --color-error: #f85149;
+  --color-error-dim: rgba(248,81,73,0.12);
+  --color-warning: #d29922;
+  --color-warning-dim: rgba(210,153,34,0.12);
+  --color-ai-red: #f85149;
+  --color-ai-orange-dark: #ff8c42;
+  --color-ai-orange-light: #ffb347;
+  --color-ai-yellow: #d29922;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+  --shadow-accent: 0 0 20px rgba(0,212,200,0.2);
+  --transition: 0.2s ease;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
+:focus:not(:focus-visible) { outline: none; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── Progress bar ─── */
+#progress-bar-wrap {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--color-border); z-index: 1000;
+}
+#progress-bar {
+  height: 100%; background: var(--color-accent);
+  width: 0%; transition: width 0.3s ease;
+}
+
+/* ─── Nav dots (right side) ─── */
+#nav-dots {
+  position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px; z-index: 999;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--color-border); border: none; cursor: pointer;
+  transition: all var(--transition); padding: 0;
+}
+.nav-dot.active { background: var(--color-accent); transform: scale(1.4); }
+.nav-dot:hover { background: var(--color-text-dim); }
+.nav-dot-label {
+  position: absolute; right: 18px;
+  background: var(--color-surface); color: var(--color-text);
+  font-size: 11px; white-space: nowrap; padding: 4px 8px;
+  border-radius: var(--radius-sm); border: 1px solid var(--color-border);
+  opacity: 0; pointer-events: none; transition: opacity var(--transition);
+  transform: translateX(-4px);
+}
+#nav-dots:hover .nav-dot-label { opacity: 1; }
+
+/* ─── Modules ─── */
+.module {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 80px 24px;
+}
+.module-inner {
+  max-width: 860px; width: 100%;
+}
+.module-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-accent); background: var(--color-accent-dim);
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 24px;
+}
+.module-title {
+  font-size: clamp(28px, 5vw, 44px); font-weight: 700; line-height: 1.15;
+  margin-bottom: 16px; letter-spacing: -0.02em;
+}
+.module-subtitle {
+  font-size: 18px; color: var(--color-text-dim); margin-bottom: 48px;
+  line-height: 1.6; max-width: 680px;
+}
+
+/* ─── Section headings ─── */
+.section-heading {
+  font-size: 20px; font-weight: 600; margin: 48px 0 20px;
+  color: var(--color-text);
+}
+.section-heading-sm {
+  font-size: 15px; font-weight: 600; color: var(--color-text-dim);
+  text-transform: uppercase; letter-spacing: 0.06em; margin: 32px 0 12px;
+}
+
+/* ─── Callout boxes ─── */
+.callout {
+  border-radius: var(--radius-md); padding: 18px 22px;
+  margin: 24px 0; border-left: 3px solid;
+}
+.callout-info { background: var(--color-accent-dim); border-color: var(--color-accent); }
+.callout-warning { background: var(--color-warning-dim); border-color: var(--color-warning); }
+.callout-danger { background: var(--color-error-dim); border-color: var(--color-error); }
+.callout-success { background: var(--color-success-dim); border-color: var(--color-success); }
+.callout-title { font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.callout-info .callout-title { color: var(--color-accent); }
+.callout-warning .callout-title { color: var(--color-warning); }
+.callout-danger .callout-title { color: var(--color-error); }
+.callout-success .callout-title { color: var(--color-success); }
+
+/* ─── Translation blocks ─── */
+.translation-block {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  margin: 28px 0; border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+.translation-side {
+  padding: 24px; background: var(--color-surface);
+}
+.translation-side:first-child { border-right: 2px solid var(--color-border); }
+.translation-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-text-muted); margin-bottom: 12px;
+}
+.translation-side:first-child .translation-label { color: var(--color-warning); }
+.translation-side:last-child .translation-label { color: var(--color-accent); }
+.translation-text {
+  font-size: 14px; line-height: 1.7; color: var(--color-text);
+}
+.translation-side:first-child .translation-text {
+  font-family: var(--font-mono); font-size: 13px; color: var(--color-text-dim);
+}
+.translation-note {
+  font-size: 12px; color: var(--color-text-dim); margin-top: 12px;
+  padding-top: 10px; border-top: 1px solid var(--color-border);
+}
+.translation-note strong { color: var(--color-warning); }
+
+/* ─── Feature cards ─── */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 24px 0; }
+.card {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 20px; transition: border-color var(--transition);
+}
+.card:hover { border-color: var(--color-accent); }
+.card-icon { font-size: 28px; margin-bottom: 12px; }
+.card-title { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+.card-desc { font-size: 13px; color: var(--color-text-dim); line-height: 1.6; }
+.card-stat { font-size: 22px; font-weight: 700; color: var(--color-accent); margin-top: 10px; }
+.card-stat-label { font-size: 11px; color: var(--color-text-muted); }
+
+/* ─── Score badges ─── */
+.score-grid { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; }
+.score-row {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 14px 18px;
+}
+.score-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+.score-label { font-weight: 600; font-size: 14px; min-width: 160px; }
+.score-desc { font-size: 13px; color: var(--color-text-dim); }
+
+/* ─── Numbered steps ─── */
+.steps { display: flex; flex-direction: column; gap: 16px; margin: 24px 0; }
+.step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 18px;
+}
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--color-accent-dim); color: var(--color-accent);
+  font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-content { flex: 1; }
+.step-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--color-text-dim); line-height: 1.6; }
+
+/* ─── Prediction block ─── */
+.prediction-block {
+  background: var(--color-surface); border: 1px solid var(--color-accent);
+  border-radius: var(--radius-lg); padding: 28px; margin: 32px 0;
+}
+.prediction-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.prediction-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent); }
+.prediction-question { font-size: 16px; line-height: 1.6; margin-bottom: 20px; }
+.prediction-options { display: flex; flex-direction: column; gap: 10px; }
+.pred-option {
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  color: var(--color-text); border-radius: var(--radius-md); padding: 12px 16px;
+  text-align: left; cursor: pointer; font-size: 14px; font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.pred-option:hover { border-color: var(--color-accent); }
+.pred-option.selected { border-color: var(--color-accent); background: var(--color-accent-dim); }
+.pred-reveal {
+  margin-top: 20px; padding: 16px; background: var(--color-surface-2);
+  border-radius: var(--radius-md); border-left: 3px solid var(--color-accent);
+  display: none; font-size: 14px; line-height: 1.7;
+}
+.pred-reveal.visible { display: block; }
+.pred-commit {
+  margin-top: 16px; background: var(--color-accent); color: #000;
+  border: none; border-radius: var(--radius-md); padding: 10px 20px;
+  font-weight: 600; font-size: 14px; cursor: pointer; transition: opacity var(--transition);
+  display: none;
+}
+.pred-commit:hover { opacity: 0.85; }
+.pred-commit.visible { display: block; }
+
+/* ─── Quiz ─── */
+.quiz-container {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 28px; margin: 32px 0;
+}
+.quiz-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+.quiz-q { font-size: 15px; line-height: 1.7; margin-bottom: 20px; color: var(--color-text-dim); }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.quiz-option {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer;
+  transition: all var(--transition); font-size: 14px; text-align: left;
+  font-family: var(--font-body); color: var(--color-text); width: 100%;
+}
+.quiz-option:hover { border-color: var(--color-accent); }
+.quiz-option.selected { border-color: var(--color-accent); background: var(--color-accent-dim); }
+.quiz-option.correct { border-color: var(--color-success); background: var(--color-success-dim); }
+.quiz-option.incorrect { border-color: var(--color-error); background: var(--color-error-dim); }
+.quiz-icon { width: 18px; flex-shrink: 0; margin-top: 1px; }
+.quiz-check {
+  background: var(--color-accent); color: #000; border: none;
+  border-radius: var(--radius-md); padding: 10px 20px;
+  font-weight: 600; cursor: pointer; font-family: var(--font-body);
+}
+.quiz-check:disabled { opacity: 0.5; cursor: not-allowed; }
+.quiz-feedback {
+  margin-top: 16px; padding: 16px; border-radius: var(--radius-md);
+  font-size: 14px; line-height: 1.7; display: none;
+}
+.quiz-feedback.correct { background: var(--color-success-dim); border-left: 3px solid var(--color-success); display: block; }
+.quiz-feedback.incorrect { background: var(--color-error-dim); border-left: 3px solid var(--color-error); display: block; }
+.quiz-reset { margin-top: 12px; background: none; border: 1px solid var(--color-border); color: var(--color-text-dim); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; font-size: 13px; }
+.quiz-reset:hover { border-color: var(--color-accent); }
+
+/* ─── Decision tree ─── */
+.dt-container {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 28px; margin: 32px 0;
+}
+.dt-title { font-weight: 700; font-size: 16px; margin-bottom: 20px; color: var(--color-accent); }
+.dt-node { display: none; }
+.dt-node.active { display: block; }
+.dt-question { font-size: 17px; font-weight: 600; line-height: 1.5; margin-bottom: 18px; }
+.dt-choices { display: flex; flex-direction: column; gap: 10px; }
+.dt-choice {
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 14px 18px; cursor: pointer;
+  text-align: left; font-size: 14px; color: var(--color-text);
+  font-family: var(--font-body); transition: all var(--transition);
+}
+.dt-choice:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.dt-outcome {
+  border-radius: var(--radius-md); padding: 18px; margin-top: 10px;
+  font-size: 14px; line-height: 1.7;
+}
+.dt-outcome.success { background: var(--color-success-dim); border: 1px solid var(--color-success); }
+.dt-outcome.warning { background: var(--color-warning-dim); border: 1px solid var(--color-warning); }
+.dt-outcome.info { background: var(--color-accent-dim); border: 1px solid var(--color-accent); }
+.dt-outcome-title { font-weight: 700; margin-bottom: 6px; font-size: 15px; }
+.dt-breadcrumb { font-size: 12px; color: var(--color-text-muted); margin-bottom: 16px; }
+.dt-reset { margin-top: 16px; background: none; border: 1px solid var(--color-border); color: var(--color-text-dim); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; font-size: 13px; }
+.dt-reset:hover { border-color: var(--color-accent); }
+
+/* ─── State machine ─── */
+.sm-container {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: 28px; margin: 32px 0;
+}
+.sm-title { font-weight: 700; font-size: 16px; margin-bottom: 20px; color: var(--color-accent); }
+.sm-states { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.sm-state {
+  background: var(--color-surface-2); border: 2px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 14px 20px; min-width: 130px;
+  text-align: center; transition: all var(--transition);
+}
+.sm-state.active {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-accent);
+}
+.sm-state-name { font-weight: 600; font-size: 14px; }
+.sm-state-desc { font-size: 11px; color: var(--color-text-dim); margin-top: 4px; }
+.sm-arrow { color: var(--color-text-muted); font-size: 20px; line-height: 44px; }
+.sm-triggers { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.sm-trigger {
+  background: var(--color-accent-dim); border: 1px solid var(--color-accent);
+  color: var(--color-accent); border-radius: 20px; padding: 6px 16px;
+  cursor: pointer; font-size: 13px; font-family: var(--font-body); font-weight: 500;
+  transition: all var(--transition);
+}
+.sm-trigger:hover { background: var(--color-accent); color: #000; }
+.sm-info { font-size: 14px; color: var(--color-text-dim); line-height: 1.6; padding: 14px; background: var(--color-surface-2); border-radius: var(--radius-md); }
+.sm-reset { margin-top: 12px; background: none; border: 1px solid var(--color-border); color: var(--color-text-dim); border-radius: var(--radius-md); padding: 8px 16px; cursor: pointer; font-size: 13px; }
+
+/* ─── Glossary tooltips ─── */
+.term {
+  border-bottom: 1px dashed var(--color-accent); cursor: help;
+  color: var(--color-accent); position: relative; display: inline-block;
+}
+.term:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.term-tooltip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: var(--color-surface-2); border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md); padding: 10px 14px; width: 260px;
+  font-size: 13px; line-height: 1.5; color: var(--color-text);
+  z-index: 100; pointer-events: none; opacity: 0; transition: opacity var(--transition);
+  box-shadow: var(--shadow-md);
+}
+.term:hover .term-tooltip,
+.term:focus .term-tooltip { opacity: 1; }
+
+/* ─── Inline knowledge check ─── */
+.kcheck {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 20px; margin: 24px 0;
+}
+.kcheck-q { font-size: 15px; font-weight: 500; margin-bottom: 14px; }
+.kcheck-options { display: flex; flex-direction: column; gap: 8px; }
+.kcheck-opt {
+  background: var(--color-surface-2); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 10px 14px; cursor: pointer;
+  text-align: left; font-size: 13px; color: var(--color-text); font-family: var(--font-body);
+  transition: all var(--transition);
+}
+.kcheck-opt:hover { border-color: var(--color-accent); }
+.kcheck-opt.correct { border-color: var(--color-success); background: var(--color-success-dim); }
+.kcheck-opt.incorrect { border-color: var(--color-error); background: var(--color-error-dim); }
+.kcheck-feedback { font-size: 13px; margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm); display: none; }
+.kcheck-feedback.show { display: block; }
+.kcheck-feedback.ok { background: var(--color-success-dim); color: var(--color-success); }
+.kcheck-feedback.no { background: var(--color-error-dim); color: var(--color-error); }
+
+/* ─── Table ─── */
+.data-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 14px; }
+.data-table th {
+  background: var(--color-surface-2); color: var(--color-text-dim);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--color-border);
+}
+.data-table td { padding: 12px 16px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+.data-table tr:hover td { background: var(--color-surface); }
+
+/* ─── Tag / badge ─── */
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 20px; letter-spacing: 0.04em;
+}
+.tag-accent { background: var(--color-accent-dim); color: var(--color-accent); }
+.tag-threat { background: var(--color-threat-dim); color: var(--color-threat); }
+.tag-success { background: var(--color-success-dim); color: var(--color-success); }
+.tag-warning { background: var(--color-warning-dim); color: var(--color-warning); }
+
+/* ─── AQL code blocks ─── */
+.aql-block {
+  background: #0a0f1a; border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 20px; margin: 16px 0;
+  font-family: var(--font-mono); font-size: 14px; line-height: 1.8;
+}
+.aql-kw { color: #ff79c6; }
+.aql-val { color: var(--color-accent); }
+.aql-op { color: var(--color-warning); }
+.aql-comment { color: var(--color-text-muted); }
+.aql-wild { color: var(--color-ai-orange-light); }
+
+/* ─── Divider ─── */
+.divider { border: none; border-top: 1px solid var(--color-border); margin: 40px 0; }
+
+/* ─── Animate in ─── */
+.animate-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.animate-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-in { opacity: 1; transform: none; transition: none; }
+  * { transition-duration: 0.001ms !important; }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .translation-block { grid-template-columns: 1fr; }
+  .translation-side:first-child { border-right: none; border-bottom: 2px solid var(--color-border); }
+  #nav-dots { right: 8px; }
+  .module { padding: 60px 16px; }
+}
+
+/* ─── Hero (module 0) ─── */
+.hero { text-align: center; }
+.hero .module-title { font-size: clamp(32px, 6vw, 54px); }
+.hero-tags { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-cta {
+  background: var(--color-accent); color: #000; font-weight: 700; font-size: 16px;
+  padding: 14px 32px; border-radius: var(--radius-lg); border: none; cursor: pointer;
+  transition: opacity var(--transition);
+}
+.hero-cta:hover { opacity: 0.85; }
+.hero-meta { font-size: 13px; color: var(--color-text-muted); margin-top: 12px; }
+
+/* ─── Completion banner ─── */
+.completion-banner {
+  text-align: center; padding: 60px 24px;
+  background: linear-gradient(135deg, var(--color-accent-dim), var(--color-threat-dim));
+  border-radius: var(--radius-xl); border: 1px solid var(--color-accent); margin-top: 40px;
+}
+.completion-banner h2 { font-size: 32px; margin-bottom: 12px; }
+.completion-banner p { color: var(--color-text-dim); font-size: 16px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Course progress">
+  <div id="progress-bar"></div>
+</div>
+
+<nav id="nav-dots" aria-label="Module navigation">
+  <!-- dots injected by JS -->
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 0 — HERO
+══════════════════════════════════════════════════════════ -->
+<section class="module hero" id="mod-0" data-module="0">
+  <div class="module-inner animate-in">
+    <div class="hero-tags">
+      <span class="tag tag-accent">Digital Risk Protection</span>
+      <span class="tag tag-threat">Threat Intelligence</span>
+      <span class="tag tag-warning">7 Modules</span>
+    </div>
+    <h1 class="module-title">Master the Axur Platform</h1>
+    <p class="module-subtitle">
+      From brand monitoring to takedowns: detect, triage, and eliminate
+      digital threats against your organization using Axur's full threat intelligence platform.
+    </p>
+    <button class="hero-cta" onclick="goToModule(1)">Start Learning →</button>
+    <p class="hero-meta">~25 min · Self-paced · No login required</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 1 — THE DIGITAL THREAT LANDSCAPE
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-1" data-module="1">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 1 of 7</div>
+    <h2 class="module-title animate-in">The Digital Threat Landscape</h2>
+    <p class="module-subtitle animate-in">
+      Before you can protect a brand, you need to see it through an attacker's eyes.
+      What are they building, where, and how fast?
+    </p>
+
+    <!-- Prediction question -->
+    <div class="prediction-block animate-in" id="pred-m1" data-multiselect="true">
+      <div class="prediction-header">
+        <span aria-hidden="true">🤔</span>
+        <span class="prediction-label">Before we continue — select all that apply</span>
+      </div>
+      <p class="prediction-question">
+        A customer receives a convincing email claiming their bank account is locked.
+        They click a link and enter their password on what looks exactly like the bank's login page.
+        <strong>Where could the attacker have hosted this fake page? Pick every option you think is plausible.</strong>
+      </p>
+      <div class="prediction-options">
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m1')" data-value="a">On a look-alike domain (e.g. bank-secure-login.com) registered for ~$10</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m1')" data-value="b">On shared hosting linked from a fake social media profile</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m1')" data-value="c">Via a fraudulent Google Ad pointing to a third-party hosting site</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m1')" data-value="d">On infrastructure whose credentials route to a dark web Telegram channel</button>
+      </div>
+      <button class="pred-commit" id="pred-m1-btn" onclick="commitPrediction('pred-m1')" style="display:none">Lock in my answers →</button>
+      <div class="pred-reveal" id="pred-m1-reveal">
+        <strong style="color:var(--color-accent)">All four — and that's the problem.</strong>
+        Attackers use every surface available. A single phishing campaign might serve the fake page from a typo-squatted domain, promote it via fake Google Ads, link it from a fake social media profile, and then route credentials to a Telegram channel on the dark web. Traditional perimeter security sees none of this. That's the gap Axur closes.
+      </div>
+    </div>
+
+    <h3 class="section-heading">The six threat categories Axur monitors</h3>
+
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">🎣</div>
+        <div class="card-title">Phishing</div>
+        <div class="card-desc">Fake pages mimicking your brand's login, checkout, or support portals. Distributed via email, ads, social media, and fake apps.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📱</div>
+        <div class="card-title">Fake Social &amp; Apps</div>
+        <div class="card-desc">Impersonator accounts on Instagram, Facebook, LinkedIn, X. Counterfeit apps in app stores that steal credentials or spread malware.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏷️</div>
+        <div class="card-title">Brand Abuse</div>
+        <div class="card-desc">Unauthorized use of your logo, name, or visual identity in ads, websites, or domain names to mislead consumers.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <div class="card-title">Data Leakage</div>
+        <div class="card-desc">Compromised credit card numbers, employee credentials, source code, and confidential documents appearing in underground markets.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌑</div>
+        <div class="card-title">Deep &amp; Dark Web</div>
+        <div class="card-desc">Mentions of your brand, infrastructure, or executives in forums, ransomware leak sites, and encrypted messaging channels inaccessible to search engines.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🕵️</div>
+        <div class="card-title">Fraudulent Ads</div>
+        <div class="card-desc">Sponsored search results or display ads using your brand to divert traffic to malicious sites or competitors.</div>
+      </div>
+    </div>
+
+    <!-- Spec ↔ Plain English -->
+    <h3 class="section-heading">Why traditional security misses these threats</h3>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Traditional security thinking</div>
+        <div class="translation-text">"We have a firewall, endpoint protection, and a SIEM. Our perimeter is secured."</div>
+        <div class="translation-note"><strong>The gap:</strong> All these tools protect your infrastructure. None of them watch what attackers build <em>outside</em> your network.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What this actually means</div>
+        <div class="translation-text">
+          An attacker can register <code style="background:var(--color-surface-2);padding:2px 6px;border-radius:4px;font-family:var(--font-mono)">yourbank-secure.com</code> today, clone your login page, run a Google Ad pointing to it, and harvest credentials — without ever touching your network. Your firewall has nothing to inspect.
+          <br><br>
+          Digital risk protection is the discipline of monitoring the <em>external attack surface</em>: what exists about your brand on the open web, dark web, app stores, and social media that you don't control.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-info animate-in">
+      <div class="callout-title">The Axur approach</div>
+      Axur continuously crawls the open web, deep web, dark web, Telegram channels, app stores, social networks, and domain registrations. Anything matching your monitored assets — brand names, domains, BINs, executives — becomes an actionable ticket.
+    </div>
+
+    <hr class="divider">
+
+    <h3 class="section-heading">How fast does a phishing site get weaponized?</h3>
+    <div class="steps animate-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Domain registered (~$10, minutes)</div>
+          <div class="step-desc">Attacker buys a typo-squatted or brand-matching domain. Often dozens per campaign.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Fake page deployed (hours)</div>
+          <div class="step-desc">Clones your brand's visual identity using publicly available CSS and images. SSL certificates are free via Let's Encrypt — the padlock is no longer a trust signal.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Campaign launched (same day)</div>
+          <div class="step-desc">Phishing emails, social ads, or SMS blasts drive victims to the fake page. Credentials harvested in real-time to a Telegram bot.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Accounts drained (within hours)</div>
+          <div class="step-desc">Stolen credentials are tested immediately against banking and e-commerce accounts, or sold in underground markets.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning animate-in">
+      <div class="callout-title">Time is the critical variable</div>
+      The sooner a phishing site is detected and taken down, the fewer victims it reaches. Axur's takedown service sends the first extrajudicial notification in <strong>under 4 minutes</strong> on average, and resolves <strong>70%</strong> of cases on that first contact.
+    </div>
+
+    <!-- Knowledge check -->
+    <div class="kcheck animate-in">
+      <div class="kcheck-q">Quick check: A user reports that a Google Ad for "MyBank login" is pointing to a suspicious domain. What type of threat is this?</div>
+      <div class="kcheck-options">
+        <button class="kcheck-opt" onclick="checkKC(this,'right','kc-m1')">Fraudulent Brand Use in Advertising</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m1')">Data Leakage</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m1')">Deep &amp; Dark Web mention</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m1')">Credential exposure</button>
+      </div>
+      <div class="kcheck-feedback ok" id="kc-m1-ok" style="display:none">Correct. Fraudulent ads using a brand's name to divert traffic to a malicious site fall under "Fraudulent Brand Use" in advertising. Axur monitors sponsored search results and display ads specifically for this pattern.</div>
+      <div class="kcheck-feedback no" id="kc-m1-no" style="display:none">Not quite. This is a fraudulent ad — the attacker is using paid search to impersonate the brand. Data leakage and dark web mentions are separate threat categories. Credential exposure would be a downstream effect after victims fall for the phishing.</div>
+    </div>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(2)">Next: Navigate Your Workspace →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 2 — NAVIGATING YOUR WORKSPACE
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-2" data-module="2">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 2 of 7</div>
+    <h2 class="module-title animate-in">Navigating Your Workspace</h2>
+    <p class="module-subtitle animate-in">
+      Axur organizes every detected threat as a ticket inside workspace-specific lists.
+      Get this structure down and everything else follows.
+    </p>
+
+    <h3 class="section-heading">Platform structure at a glance</h3>
+
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">🏢</div>
+        <div class="card-title">Workspaces</div>
+        <div class="card-desc">Each threat type has its own workspace: Phishing, Fake Social Media, Fake Mobile App, Fraudulent Brand Use, Data Leakage, Deep &amp; Dark Web. Navigate between them in the left sidebar.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎫</div>
+        <div class="card-title">Tickets</div>
+        <div class="card-desc">Every detected threat becomes a ticket: a structured record with evidence, metadata, AI scoring, and action history. Tickets are the unit of work in Axur.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Work Lists</div>
+        <div class="card-desc">Within each workspace, tickets live in one of five lists that reflect their current stage in your treatment workflow.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Stats Page</div>
+        <div class="card-desc">Platform-wide metrics on coverage, active threats, incidents, and treatment rates, with industry benchmarking.</div>
+      </div>
+    </div>
+
+    <h3 class="section-heading">The five work lists: your ticket pipeline</h3>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform language</div>
+        <div class="translation-text">Open → Quarantine / Incidents → Treatment → Closed</div>
+        <div class="translation-note"><strong>Key insight:</strong> Incidents and Treatment are both active stages, but with different owners.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it actually means</div>
+        <div class="translation-text">
+          <strong>Open</strong> — New tickets detected by Axur's monitoring. Your inbox: requires your first decision.<br><br>
+          <strong>Quarantine</strong> — "Watch and wait." The URL shows brand misuse but no active fraud yet. Axur checks it daily at 6 a.m. and alerts you if content changes.<br><br>
+          <strong>Incidents</strong> — Confirmed threats requiring action. A transitional list — a ticket here must move forward (takedown, treat internally, or discard).<br><br>
+          <strong>Treatment</strong> — Takedown requested OR being handled internally. Axur is working the takedown; you're monitoring progress.<br><br>
+          <strong>Closed</strong> — Resolved (Solved or Discarded). Quarantine tickets auto-close 6 months after last detection.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning animate-in">
+      <div class="callout-title">Quarantine auto-discard</div>
+      Starting November 3, 2025, quarantine tickets are automatically discarded when the last detection date exceeds <strong>6 months</strong>. This runs daily. If a quarantined URL becomes active again, reopen it before the deadline or it will close without action.
+    </div>
+
+    <h3 class="section-heading">AI fraud probability scoring</h3>
+    <p style="color:var(--color-text-dim);font-size:14px;margin-bottom:20px">
+      Axur's AI assigns a fraud probability score to each ticket. Use it to prioritize, but don't let the score replace your judgment on high-stakes tickets.
+    </p>
+
+    <div class="score-grid animate-in">
+      <div class="score-row">
+        <div class="score-dot" style="background:var(--color-ai-red)"></div>
+        <div class="score-label">Red · ≥ 80% probability</div>
+        <div class="score-desc">High confidence of active fraud. Address immediately. These should move from Open → Incident → Takedown the same day.</div>
+      </div>
+      <div class="score-row">
+        <div class="score-dot" style="background:var(--color-ai-orange-dark)"></div>
+        <div class="score-label">Dark orange · 60–79.9%</div>
+        <div class="score-desc">Likely fraud, but review before escalating. Could be a test site or early-stage page not yet collecting credentials.</div>
+      </div>
+      <div class="score-row">
+        <div class="score-dot" style="background:var(--color-ai-orange-light)"></div>
+        <div class="score-label">Light orange · 40–59.9%</div>
+        <div class="score-desc">Ambiguous. May warrant quarantine while you gather more evidence, especially if the domain is very new.</div>
+      </div>
+      <div class="score-row">
+        <div class="score-dot" style="background:var(--color-ai-yellow)"></div>
+        <div class="score-label">Yellow · &lt; 40%</div>
+        <div class="score-desc">Low fraud signal. Review quickly — most will be discarded, but check before closing in case of false negatives on sophisticated pages.</div>
+      </div>
+    </div>
+
+    <div class="kcheck animate-in">
+      <div class="kcheck-q">A ticket arrives with an AI score of 72% (dark orange). The URL is three days old and clearly clones your checkout page, but hasn't appeared in any phishing report yet. What's your best first move?</div>
+      <div class="kcheck-options">
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m2')">Discard it — not enough evidence yet</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'right','kc-m2')">Create an incident and request takedown — the visual clone is sufficient evidence</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m2')">Put it in quarantine and wait for the AI score to reach 80%</button>
+        <button class="kcheck-opt" onclick="checkKC(this,'wrong','kc-m2')">Treat internally — the AI score is not high enough for takedown</button>
+      </div>
+      <div class="kcheck-feedback ok" id="kc-m2-ok" style="display:none">Right. The AI score is a signal, not a threshold. A visual clone of your checkout page is clear evidence of intent to defraud. Waiting for the score to climb or for reports to accumulate means more victims. Create an incident and request the takedown immediately — you can cancel it within 3 minutes if you change your mind.</div>
+      <div class="kcheck-feedback no" id="kc-m2-no" style="display:none">The AI score guides priority, but doesn't gate your decisions. A visual clone of your checkout page is compelling evidence regardless of score. You have 3 minutes to cancel a takedown request after submitting it, so the cost of acting is very low. Discarding or waiting lets a live phishing page collect more credentials.</div>
+    </div>
+
+    <h3 class="section-heading">Filtering your ticket list</h3>
+    <p style="color:var(--color-text-dim);font-size:14px;margin-bottom:16px">
+      With hundreds of tickets, filters are how you find what matters. Common filter combinations:
+    </p>
+
+    <table class="data-table animate-in">
+      <thead>
+        <tr>
+          <th>Goal</th>
+          <th>Filter to use</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>See only high-priority new threats</td>
+          <td>List: Open · AI Score: Red</td>
+        </tr>
+        <tr>
+          <td>Find all tickets for a specific brand asset</td>
+          <td>Asset filter → select brand name</td>
+        </tr>
+        <tr>
+          <td>Review stale quarantine items before auto-discard</td>
+          <td>List: Quarantine · Sort by: Oldest detection</td>
+        </tr>
+        <tr>
+          <td>Track takedowns in progress</td>
+          <td>List: Treatment · Status: Takedown requested</td>
+        </tr>
+        <tr>
+          <td>Search by URL or domain keyword</td>
+          <td>Manual search bar (supports partial matches)</td>
+        </tr>
+        <tr>
+          <td>Find historical detections for a new BIN</td>
+          <td>Data Leakage · Credit Cards · <code style="font-family:var(--font-mono)">isHistory:true</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(3)">Next: Reading a Ticket →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 3 — READING A TICKET
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-3" data-module="3">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 3 of 7</div>
+    <h2 class="module-title animate-in">Reading a Ticket</h2>
+    <p class="module-subtitle animate-in">
+      Every threat Axur detects becomes a ticket. Knowing what each field means, and what it doesn't tell you, cuts triage time and reduces wrong calls.
+    </p>
+
+    <h3 class="section-heading">Ticket types across workspaces</h3>
+
+    <table class="data-table animate-in">
+      <thead>
+        <tr><th>Workspace</th><th>Ticket type</th><th>What it detects</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Phishing</td>
+          <td><span class="tag tag-threat">Phishing</span></td>
+          <td>Fake pages mimicking your brand to steal credentials or payments</td>
+        </tr>
+        <tr>
+          <td>Fake Social Media</td>
+          <td><span class="tag tag-threat">Fake Social Media Profile</span></td>
+          <td>Impersonator accounts on major platforms misrepresenting your brand</td>
+        </tr>
+        <tr>
+          <td>Fake Mobile App</td>
+          <td><span class="tag tag-threat">Fake Mobile App</span></td>
+          <td>Counterfeit apps in app stores using your branding</td>
+        </tr>
+        <tr>
+          <td>Fraudulent Brand Use</td>
+          <td><span class="tag tag-threat">Fraudulent Brand Use</span></td>
+          <td>Unauthorized use of name, logo, or visual identity in ads, domains, or sites</td>
+        </tr>
+        <tr>
+          <td>Data Leakage</td>
+          <td><span class="tag tag-accent">Credit Cards · Credentials · Code · Breach Mentions</span></td>
+          <td>Your data appearing in underground markets, paste sites, or ransomware leaks</td>
+        </tr>
+        <tr>
+          <td>Deep &amp; Dark Web</td>
+          <td><span class="tag tag-warning">Dark Web Mention</span></td>
+          <td>References to your brand, employees, or infrastructure in dark web forums and channels</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-heading">Anatomy of a ticket: what each field actually means</h3>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform field</div>
+        <div class="translation-text">AI fraud probability score — 87% (🔴 red)</div>
+        <div class="translation-note"><strong>Watch out:</strong> Score reflects structural and visual signals, not confirmed victim data. A 55% score on a brand-new domain registered yesterday can still be extremely high risk.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it means</div>
+        <div class="translation-text">
+          Axur's model analyzed the page's visual similarity to your brand assets, the domain age and registration pattern, presence of credential-capture forms, URL structure, and SSL certificate. It synthesized these into a single probability.
+          <br><br>
+          87% means: if you showed 100 similar pages to an experienced analyst, roughly 87 would be confirmed phishing. <strong>It's a priority signal, not a certainty.</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform field</div>
+        <div class="translation-text">Detection date vs. Last detection date</div>
+        <div class="translation-note"><strong>Key distinction:</strong> A site detected 30 days ago with a last detection from yesterday is still active and dangerous.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it means</div>
+        <div class="translation-text">
+          <strong>Detection date</strong> — when Axur first found this threat.<br><br>
+          <strong>Last detection date</strong> — the most recent time Axur confirmed the threat is still live.<br><br>
+          The gap between these tells you how long the threat has been active. A long-running phishing site that survived undetected has likely already victimized many users. Prioritize takedown and check whether credential reset communications are needed.
+        </div>
+      </div>
+    </div>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform field</div>
+        <div class="translation-text">Evidence: Screenshot + HTML + Links</div>
+        <div class="translation-note"><strong>More evidence = higher takedown success rate.</strong> ISPs and registrars respond faster with clear proof.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it means</div>
+        <div class="translation-text">
+          Axur automatically captures visual evidence of the fraudulent page at detection time. This matters because phishing sites are often gone within hours.
+          <br><br>
+          For manually created tickets, you can add: screenshots, HTML source, and .zip files with full repository captures. Each additional piece of evidence strengthens the extrajudicial notification sent during takedown.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-heading">The Details panel: what most people miss</h3>
+    <div class="steps animate-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Source &amp; Group (Data Leakage tickets)</div>
+          <div class="step-desc">Where the data was found (Telegram, dark web forum, Mega.io) and the specific group or community. Critical for understanding blast radius — a Telegram channel with 50,000 members means broad exposure.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">File name &amp; File Information</div>
+          <div class="step-desc">For breach detections, the file containing the exposed data is available for download. Files remain accessible for one year. Always investigate in a sandbox — files come as collected and may contain malware.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Events history</div>
+          <div class="step-desc">A full audit trail of every action taken on the ticket: who moved it, when, and what was added. Essential for team handoffs and post-incident review.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Tags &amp; Notes</div>
+          <div class="step-desc">Internal-only fields. Notes are never seen by Axur teams. Use them for internal tracking, investigation progress, and cross-team handoff context. Tags enable bulk filtering and reporting.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-info animate-in">
+      <div class="callout-title">Reclassification</div>
+      Analysts, Specialists, and Managers can reclassify Phishing, Fraudulent Brand Use, Fake Social Media Profile, and Fake Mobile App tickets, changing the brand and/or ticket type. Useful when automated classification gets it wrong. You cannot reclassify to a brand or ticket type you don't have access to.
+    </div>
+
+    <!-- Prediction before working a ticket -->
+    <div class="prediction-block animate-in" id="pred-m3">
+      <div class="prediction-header">
+        <span aria-hidden="true">🤔</span>
+        <span class="prediction-label">Think ahead to the next module</span>
+      </div>
+      <p class="prediction-question">
+        You open a new ticket: a domain registered 2 days ago, visual clone of your payment portal, AI score 91% (red). The URL currently returns a 200 OK with credential capture form.
+        <strong>How many actions could you legitimately take on this ticket?</strong>
+      </p>
+      <div class="prediction-options">
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m3')" data-value="a">One — request takedown immediately</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m3')" data-value="b">Two — create incident, then request takedown</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m3')" data-value="c">Six — incident, quarantine, takedown, treat internally, discard, or safelist</button>
+        <button class="pred-option" onclick="selectPrediction(this,'pred-m3')" data-value="d">Three — incident, takedown, or discard</button>
+      </div>
+      <button class="pred-commit visible" id="pred-m3-btn" onclick="commitPrediction('pred-m3')">Lock in my answer →</button>
+      <div class="pred-reveal" id="pred-m3-reveal">
+        <strong style="color:var(--color-accent)">Six — all actions are technically available.</strong> Whether each makes sense is a different question. You <em>could</em> safelist a confirmed phishing page, but you'd be making a costly mistake. The next module covers the decision logic for each action — and the scenarios where even "obvious" choices have nuances.
+      </div>
+    </div>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(4)">Next: Working a Ticket →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 4 — WORKING A TICKET: TAKING ACTION
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-4" data-module="4">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 4 of 7</div>
+    <h2 class="module-title animate-in">Working a Ticket: Taking Action</h2>
+    <p class="module-subtitle animate-in">
+      Six actions. Each moves a ticket forward differently. Here's when each one makes sense, and where teams typically go wrong.
+    </p>
+
+    <h3 class="section-heading">The six actions: quick reference</h3>
+
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-title">Create Incident</div>
+        <div class="card-desc">Flags ticket as a confirmed potential risk. <em>Transitional</em> — a further action must follow. This is not a resolution.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">👁️</div>
+        <div class="card-title">Send to Quarantine</div>
+        <div class="card-desc">Monitor URLs showing brand misuse but no active fraud. Axur checks daily at 6 a.m. for content changes. Your team manages quarantine, not Axur.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">Request Takedown</div>
+        <div class="card-desc">Axur sends extrajudicial notifications to ISP, registrant, and registrar. Cancellable within 3 minutes. Under 4 min to first notification on average.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔧</div>
+        <div class="card-title">Treat Internally</div>
+        <div class="card-desc">Your team handles removal without Axur involvement. Use the ticket to centralize progress. Axur takes no action.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗑️</div>
+        <div class="card-title">Discard</div>
+        <div class="card-desc">False positive or irrelevant. Closes the ticket. Use when the detection clearly does not constitute fraud.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <div class="card-title">Add to Safelist</div>
+        <div class="card-desc">Mark a URL as authorized to circulate. All safelisted URLs are treated as safe in future detections. Use sparingly — mistakes are hard to catch later.</div>
+      </div>
+    </div>
+
+    <!-- Decision tree -->
+    <h3 class="section-heading">Decision navigator — which action to take</h3>
+
+    <div class="dt-container animate-in" role="region" aria-label="Ticket action decision navigator">
+      <div class="dt-title">Walk through any new ticket →</div>
+
+      <div class="dt-node active" id="dt-0">
+        <div class="dt-question">Is this URL authorized by your organization in any way?</div>
+        <div class="dt-choices">
+          <button class="dt-choice" onclick="dtGo('dt-safelist','dt-0')">Yes — this is a legitimate partner, reseller, or owned property</button>
+          <button class="dt-choice" onclick="dtGo('dt-1','dt-0')">No — this is unauthorized</button>
+        </div>
+      </div>
+
+      <div class="dt-node" id="dt-safelist">
+        <div class="dt-breadcrumb">Authorized URL</div>
+        <div class="dt-outcome info">
+          <div class="dt-outcome-title">Add to Safelist</div>
+          If the URL is genuinely authorized and Axur is detecting it as a false positive, safelist it so future identical detections close automatically. Document the reason in the notes field for your team's reference.
+        </div>
+        <button class="dt-reset" onclick="dtReset()">↩ Start over</button>
+      </div>
+
+      <div class="dt-node" id="dt-1">
+        <div class="dt-breadcrumb">Unauthorized →</div>
+        <div class="dt-question">Is there clear, current evidence of active fraud — credential harvesting, payment capture, or obvious brand impersonation with a live form?</div>
+        <div class="dt-choices">
+          <button class="dt-choice" onclick="dtGo('dt-2','dt-1')">Yes — live threat confirmed</button>
+          <button class="dt-choice" onclick="dtGo('dt-3','dt-1')">No — brand misuse exists but no clear fraud mechanism visible yet</button>
+          <button class="dt-choice" onclick="dtGo('dt-false-positive','dt-1')">No — this appears to be a false positive or unrelated site</button>
+        </div>
+      </div>
+
+      <div class="dt-node" id="dt-2">
+        <div class="dt-breadcrumb">Unauthorized → Active fraud confirmed →</div>
+        <div class="dt-question">Does your organization have legal or process reasons to handle this internally (e.g. specific ISP relationships, ongoing law enforcement coordination)?</div>
+        <div class="dt-choices">
+          <button class="dt-choice" onclick="dtGo('dt-takedown','dt-2')">No — Axur should manage the takedown</button>
+          <button class="dt-choice" onclick="dtGo('dt-internal','dt-2')">Yes — we will handle this ourselves</button>
+        </div>
+      </div>
+
+      <div class="dt-node" id="dt-takedown">
+        <div class="dt-breadcrumb">Unauthorized → Active fraud → Axur takedown</div>
+        <div class="dt-outcome success">
+          <div class="dt-outcome-title">Create Incident → Request Takedown</div>
+          Create the incident first to document the threat formally, then request takedown. Axur sends extrajudicial notifications to the ISP, registrant, and registrar in under 4 minutes on average. You have a 3-minute window to cancel after clicking. Add all available evidence before requesting — more evidence improves success rate. 99% overall resolution rate.
+        </div>
+        <button class="dt-reset" onclick="dtReset()">↩ Start over</button>
+      </div>
+
+      <div class="dt-node" id="dt-internal">
+        <div class="dt-breadcrumb">Unauthorized → Active fraud → Internal handling</div>
+        <div class="dt-outcome info">
+          <div class="dt-outcome-title">Create Incident → Treat Internally</div>
+          Create the incident to document it, then select "Treat Internally." Use the ticket notes field to track your progress, contacts reached, and resolution steps. Axur takes no external action — all removal efforts are yours to execute. Export to PDF for sharing with legal or law enforcement.
+        </div>
+        <button class="dt-reset" onclick="dtReset()">↩ Start over</button>
+      </div>
+
+      <div class="dt-node" id="dt-3">
+        <div class="dt-breadcrumb">Unauthorized → No active fraud →</div>
+        <div class="dt-question">How fresh is the domain or account? Could it become fraudulent imminently?</div>
+        <div class="dt-choices">
+          <button class="dt-choice" onclick="dtGo('dt-quarantine','dt-3')">Very new (days old) — high suspicion, worth watching</button>
+          <button class="dt-choice" onclick="dtGo('dt-quarantine','dt-3')">Established but showing concerning content changes</button>
+          <button class="dt-choice" onclick="dtGo('dt-false-positive','dt-3')">Old, stable, and clearly unrelated to fraud</button>
+        </div>
+      </div>
+
+      <div class="dt-node" id="dt-quarantine">
+        <div class="dt-breadcrumb">Brand misuse, no active fraud</div>
+        <div class="dt-outcome warning">
+          <div class="dt-outcome-title">Send to Quarantine</div>
+          Quarantine lets Axur's automated system watch the URL daily (6 a.m. check) and alert you to content changes. Set a calendar reminder to review it before 6 months — it will auto-discard after that window. If Axur signals a content change, reassess and escalate if fraud evidence appears.
+        </div>
+        <button class="dt-reset" onclick="dtReset()">↩ Start over</button>
+      </div>
+
+      <div class="dt-node" id="dt-false-positive">
+        <div class="dt-breadcrumb">False positive or unrelated</div>
+        <div class="dt-outcome info">
+          <div class="dt-outcome-title">Discard</div>
+          If the detection is a false positive — the site doesn't impersonate your brand and poses no fraud risk — discard it. Only safelist it if it's a legitimate authorized URL that will trigger future detections. Discarding alone is usually sufficient for one-off false positives.
+        </div>
+        <button class="dt-reset" onclick="dtReset()">↩ Start over</button>
+      </div>
+    </div>
+
+    <h3 class="section-heading">The takedown process — what happens after you click</h3>
+
+    <div class="steps animate-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Extrajudicial notification sent (under 4 min average)</div>
+          <div class="step-desc">Axur forwards a formal abuse notification to three entities simultaneously: the ISP (hosting the content), the registrant (who owns the domain), and the registrar (where the domain was purchased). Each has different leverage over the content.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">First-contact resolution (70% of cases)</div>
+          <div class="step-desc">Seven in ten takedowns resolve on this first notification — the hosting provider or registrar disables the content. You'll see the ticket update in the platform as the URL goes dark.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Escalation if needed</div>
+          <div class="step-desc">For the 30% that don't resolve immediately, Axur escalates through additional channels. Overall resolution rate: 99%. Some delays occur when content is hosted in jurisdictions with limited cooperation.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Post-takedown monitoring</div>
+          <div class="step-desc">Attackers often re-register variants of taken-down domains or move to a new host. Axur continues monitoring for resurfaces. If the same content reappears, a new ticket is created automatically.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-warning animate-in">
+      <div class="callout-title">Takedown interrupted</div>
+      Some takedowns enter an "Interrupted" status. This means Axur could not reach the responsible entity — common reasons include hosting in non-cooperative jurisdictions, invalid WHOIS contact data, or the content moving hosts after notification. You can request a Deep &amp; Dark Web investigation to pursue further if your plan includes research hours.
+    </div>
+
+    <!-- Quiz module 4 -->
+    <div class="quiz-container animate-in" role="group" aria-labelledby="quiz4-title">
+      <div class="quiz-title" id="quiz4-title">Scenario Quiz</div>
+      <div class="quiz-q">
+        A ticket arrives: a Telegram channel sharing what appears to be your company's internal HR documents, including employee salary data. The AI score is 45% (yellow). Your instinct is to discard it because the score is low. What should you actually do?
+      </div>
+      <div class="quiz-options" id="quiz4-opts">
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz4')" data-value="a">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Discard — the yellow score means it's probably a false positive
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz4')" data-value="b">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Create incident and request Deep &amp; Dark Web investigation, then treat internally while coordinating with HR and legal
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz4')" data-value="c">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Request takedown — Axur can remove Telegram channels
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz4')" data-value="d">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Put it in quarantine and wait for more evidence
+        </button>
+      </div>
+      <button class="quiz-check" id="quiz4-btn" onclick="checkQuiz('quiz4','b')" disabled>Check answer</button>
+      <div class="quiz-feedback" id="quiz4-feedback"></div>
+      <button class="quiz-reset" onclick="resetQuiz('quiz4')" style="display:none" id="quiz4-reset">Try again</button>
+    </div>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(5)">Next: Data Leakage →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 5 — DATA LEAKAGE
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-5" data-module="5">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 5 of 7</div>
+    <h2 class="module-title animate-in">Data Leakage: Protecting Your Crown Jewels</h2>
+    <p class="module-subtitle animate-in">
+      Card numbers, credentials, source code, internal documents: when they show up somewhere they shouldn't, every minute before you respond is time attackers have to use them.
+    </p>
+
+    <h3 class="section-heading">Four leakage types, four different risk profiles</h3>
+
+    <table class="data-table animate-in">
+      <thead>
+        <tr><th>Type</th><th>What's exposed</th><th>Primary risk</th><th>Key response action</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-threat">Credit Card Exposure</span></td>
+          <td>Card numbers, CVVs, expiry dates matched against your BINs</td>
+          <td>Fraudulent transactions before you can block cards</td>
+          <td>Reissue or block affected cards; notify cardholders</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-threat">Credentials Exposure</span></td>
+          <td>Login pairs (email + password) for employee or customer accounts</td>
+          <td>Account takeover, lateral movement, customer fraud</td>
+          <td>Force password reset; notify affected users; review MFA coverage</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-warning">Code &amp; Secret Leaks</span></td>
+          <td>Source code, API keys, tokens, private certificates on GitHub or paste sites</td>
+          <td>Credential exposure, IP theft, backdoor creation</td>
+          <td>Revoke secrets immediately; audit for downstream use; DMCA if applicable</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-warning">Mentions in Data Breach</span></td>
+          <td>Files referencing your brand/domain inside ransomware leak packages</td>
+          <td>Extortion, operational data exposure, third-party breach impact</td>
+          <td>Download file in sandbox; assess scope; engage incident response if live attack</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-danger animate-in">
+      <div class="callout-title">Critical: Takedown is not available for data breach files</div>
+      Ransomware groups operate outside legal jurisdictions. Takedown isn't an option. The response is entirely internal: assess, contain, notify, harden. For exposure before monitoring was active, use Threat Hunting to search historical data.
+    </div>
+
+    <h3 class="section-heading">Credit card exposure — what makes it different</h3>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Common misconception</div>
+        <div class="translation-text">"We have fraud detection — it will catch fraudulent transactions before they succeed."</div>
+        <div class="translation-note"><strong>The gap:</strong> Transaction-based fraud detection is reactive. Credit card exposure is proactive.</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What exposure monitoring adds</div>
+        <div class="translation-text">
+          Behavioral fraud detection catches anomalous <em>transactions</em>. Credit card exposure catches compromised cards <em>before any transaction is attempted</em>.<br><br>
+          When Axur finds your card data in a Telegram channel or dark web market, you can reissue those cards before attackers use them. The Luhn algorithm validates every detected card number — invalid numbers are discarded, reducing false positives.<br><br>
+          <strong>Complete cards</strong> (number + expiry + CVV) are the highest risk — they can be used immediately for CNP (card-not-present) fraud. <strong>Incomplete cards</strong> still warrant investigation but carry lower immediate risk.
+        </div>
+      </div>
+    </div>
+
+    <!-- Detection lifecycle state machine -->
+    <h3 class="section-heading">Detection lifecycle — the same workflow across all leakage types</h3>
+
+    <div class="sm-container animate-in" role="region" aria-label="Detection lifecycle state machine">
+      <div class="sm-title">Click a transition to move through the lifecycle →</div>
+      <div class="sm-states">
+        <div class="sm-state active" id="sm-new" aria-current="true">
+          <div class="sm-state-name">New</div>
+          <div class="sm-state-desc">Just identified</div>
+        </div>
+        <div class="sm-arrow" aria-hidden="true">→</div>
+        <div class="sm-state" id="sm-treatment">
+          <div class="sm-state-name">In Treatment</div>
+          <div class="sm-state-desc">Under investigation</div>
+        </div>
+        <div class="sm-arrow" aria-hidden="true">→</div>
+        <div class="sm-state" id="sm-solved">
+          <div class="sm-state-name">Solved</div>
+          <div class="sm-state-desc">Addressed</div>
+        </div>
+        <div class="sm-arrow" aria-hidden="true">/</div>
+        <div class="sm-state" id="sm-discarded">
+          <div class="sm-state-name">Discarded</div>
+          <div class="sm-state-desc">Not relevant</div>
+        </div>
+      </div>
+      <div class="sm-triggers">
+        <button class="sm-trigger" onclick="smTrigger('new','Start triage')">Start triage</button>
+        <button class="sm-trigger" onclick="smTrigger('treatment','Mark resolved')">Mark resolved</button>
+        <button class="sm-trigger" onclick="smTrigger('treatment','Mark irrelevant')">Mark irrelevant</button>
+        <button class="sm-trigger" onclick="smReset()">↩ Reset</button>
+      </div>
+      <div class="sm-info" id="sm-info" aria-live="polite">
+        <strong>New</strong> — A detection just landed. Your job: review the evidence, assess whether the data is real and relevant to your organization, and begin triage. Add tags and notes as you go — all actions are logged in the Events history.
+      </div>
+    </div>
+
+    <h3 class="section-heading">Investigating a breach file — safe procedure</h3>
+
+    <div class="steps animate-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Read the detection details first</div>
+          <div class="step-desc">Before downloading anything, read the Source, Group, Context, and Mentioned Sample fields. Often these tell you enough to assess severity without touching the file.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Download in a sandbox environment</div>
+          <div class="step-desc">Files come as collected and have not been scanned for malware. Axur explicitly recommends using a sandbox. Never open breach files directly on your work machine or corporate network.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Assess scope: what exactly is in the file?</div>
+          <div class="step-desc">Determine: which systems or data types are referenced, whether it's a direct exfiltration or a third-party breach that mentions you, and the volume of records.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Escalate and notify internally</div>
+          <div class="step-desc">Notify owners of impacted systems. If the breach indicates an active attack, escalate immediately. Engage legal if regulatory notification (GDPR, PCI-DSS, etc.) may be required.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Update the detection status and document</div>
+          <div class="step-desc">Move to "In Treatment," add notes with your findings, and update to "Solved" when remediation is complete. Files are available for download for one year — 1 TB per customer per month limit.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-container animate-in" role="group" aria-labelledby="quiz5-title">
+      <div class="quiz-title" id="quiz5-title">Scenario Quiz</div>
+      <div class="quiz-q">
+        Axur detects 847 credit cards matching your BINs in a Telegram channel. The detection shows "Incomplete cards" — card numbers only, no CVV or expiry. A colleague says "incomplete cards can't be used for fraud, we can close this." Is she right?
+      </div>
+      <div class="quiz-options" id="quiz5-opts">
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz5')" data-value="a">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Yes — without CVV, the cards can't be used for online transactions, so this is low priority
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz5')" data-value="b">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Partially — they're lower immediate risk than complete cards, but still warrant investigation and possible reissuance
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz5')" data-value="c">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          No — incomplete cards are more dangerous because they're harder to detect as compromised
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz5')" data-value="d">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          It depends entirely on the source — Telegram is low-risk compared to dark web forums
+        </button>
+      </div>
+      <button class="quiz-check" id="quiz5-btn" onclick="checkQuiz('quiz5','b')" disabled>Check answer</button>
+      <div class="quiz-feedback" id="quiz5-feedback"></div>
+      <button class="quiz-reset" onclick="resetQuiz('quiz5')" style="display:none" id="quiz5-reset">Try again</button>
+    </div>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(6)">Next: Threat Hunting →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 6 — THREAT HUNTING
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-6" data-module="6">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 6 of 7</div>
+    <h2 class="module-title animate-in">Threat Hunting: Searching on Your Terms</h2>
+    <p class="module-subtitle animate-in">
+      Axur's monitoring runs 24/7 in the background and automatically opens tickets when matches surface against your assets. Threat Hunting is the complement: a user-initiated search where you formulate a hypothesis and query the data lake directly.
+    </p>
+
+    <div class="callout callout-info animate-in">
+      <div class="callout-title">Automated monitoring vs. user-initiated Threat Hunting</div>
+      Monitoring is automated and continuous — it runs 24/7 without your input and creates tickets when it finds matches against your configured assets. Threat Hunting is user-initiated and hypothesis-driven: you query the data lake manually when you want to (1) test a specific incident hypothesis, (2) explore historical data from before monitoring was active for an asset, (3) deepen context on an existing ticket, or (4) investigate an angle monitoring isn't configured to cover.
+    </div>
+
+    <h3 class="section-heading">The credit system — what it costs to hunt</h3>
+
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">🪙</div>
+        <div class="card-title">1 credit = 100 results</div>
+        <div class="card-desc">Each search query consumes credits based on the number of results returned. A query that returns 500 results costs 5 credits.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏱️</div>
+        <div class="card-title">12-hour retention</div>
+        <div class="card-desc">Hunt results are available for 12 hours after the search completes. Export or save what you need — results disappear after the window closes.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔌</div>
+        <div class="card-title">API available</div>
+        <div class="card-desc">Threat Hunting is accessible via the Axur API, enabling integration into automated investigation workflows and SOAR platforms.</div>
+      </div>
+    </div>
+
+    <h3 class="section-heading">The Axur Query Language (AQL)</h3>
+    <p style="color:var(--color-text-dim);font-size:14px;margin-bottom:20px">
+      AQL is the search language for Threat Hunting. It's designed to be readable — if you've ever used a search engine's advanced operators, most of this will feel familiar.
+    </p>
+
+    <table class="data-table animate-in">
+      <thead>
+        <tr><th>Operator</th><th>Syntax</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-accent">AND</span></td>
+          <td><code style="font-family:var(--font-mono)">phishing AND mybank</code></td>
+          <td>Both terms must appear in the result</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-accent">OR</span></td>
+          <td><code style="font-family:var(--font-mono)">mybank OR "my bank"</code></td>
+          <td>Either term matches — useful for brand name variations</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-accent">NOT</span></td>
+          <td><code style="font-family:var(--font-mono)">mybank NOT official</code></td>
+          <td>Exclude results containing a term — reduces noise</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-warning">* wildcard</span></td>
+          <td><code style="font-family:var(--font-mono)">mybrank*</code></td>
+          <td>Matches zero or more characters — catches typo-squatting variants</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-warning">? wildcard</span></td>
+          <td><code style="font-family:var(--font-mono)">mybrank?</code></td>
+          <td>Matches exactly one character — more precise than *</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-warning">~ fuzzy</span></td>
+          <td><code style="font-family:var(--font-mono)">mybank~</code></td>
+          <td>Fuzzy match — catches misspellings and character substitutions (e.g. mybonk, mYbank)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="section-heading">Real-world query examples</h3>
+
+    <div class="aql-block animate-in">
+      <span class="aql-comment"># Hunt for similar domain names — classic typosquat detection</span><br>
+      <span class="aql-kw">domain</span>:<span class="aql-val">mybank</span><span class="aql-wild">*</span> <span class="aql-op">NOT</span> <span class="aql-val">mybank.com</span>
+    </div>
+
+    <div class="aql-block animate-in">
+      <span class="aql-comment"># Find credential leaks for your domain</span><br>
+      <span class="aql-kw">email</span>:<span class="aql-val">*@mybank.com</span> <span class="aql-op">AND</span> <span class="aql-kw">type</span>:<span class="aql-val">credential</span>
+    </div>
+
+    <div class="aql-block animate-in">
+      <span class="aql-comment"># Search for dark web mentions with executive names</span><br>
+      (<span class="aql-val">"John Smith"</span> <span class="aql-op">OR</span> <span class="aql-val">"Jane Doe"</span>) <span class="aql-op">AND</span> <span class="aql-val">mybank</span>
+    </div>
+
+    <div class="aql-block animate-in">
+      <span class="aql-comment"># Find phishing kits referencing your brand in ads</span><br>
+      <span class="aql-kw">title</span>:<span class="aql-val">mybank</span><span class="aql-wild">~</span> <span class="aql-op">AND</span> <span class="aql-kw">type</span>:<span class="aql-val">sponsored_ad</span>
+    </div>
+
+    <div class="callout callout-info animate-in">
+      <div class="callout-title">AI Query Builder shortcut</div>
+      Not sure how to write an AQL query? The AI Query Builder translates natural language into valid AQL. Type what you're looking for in plain English and it generates the query. You can edit the generated query before running it.
+    </div>
+
+    <h3 class="section-heading">Search parameter categories</h3>
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">URL &amp; Domains</div>
+        <div class="card-desc">Search across detected URLs and domain registrations. Primary tool for finding typosquat and look-alike domains before they launch phishing campaigns.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <div class="card-title">Credit Cards</div>
+        <div class="card-desc">Search by BIN range, card number prefix, or source. Note: Threat Hunting does NOT provide CVV numbers — use Credit Card Exposure for full detection details.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔑</div>
+        <div class="card-title">Credentials</div>
+        <div class="card-desc">Search leaked login pairs by domain, email pattern, or username. Useful for assessing scope before forcing a password reset campaign.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📢</div>
+        <div class="card-title">Ads &amp; Sponsored</div>
+        <div class="card-desc">Search for fraudulent sponsored search results or display ads using your brand. Especially useful post-campaign to catch fast-moving ad fraud.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌑</div>
+        <div class="card-title">Deep &amp; Dark Web</div>
+        <div class="card-desc">Search forums, marketplaces, ransomware sites, and Telegram channels for brand mentions, leaked documents, and threat actor chatter.</div>
+      </div>
+    </div>
+
+    <div class="quiz-container animate-in" role="group" aria-labelledby="quiz6-title">
+      <div class="quiz-title" id="quiz6-title">Knowledge Check</div>
+      <div class="quiz-q">
+        You run a Threat Hunting search that returns 1,200 results. You spend 2 hours reviewing them and identify 3 confirmed threats. When you try to export the remaining results the next morning, you find they're gone. What happened, and how do you prevent this next time?
+      </div>
+      <div class="quiz-options" id="quiz6-opts">
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz6')" data-value="a">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          A system error deleted the results — contact Axur support
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz6')" data-value="b">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Results expired after the 12-hour retention window — export immediately after a search or re-run the query
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz6')" data-value="c">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Your credits ran out during the session — purchase more and retry
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz6')" data-value="d">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Results older than 24 hours require a paid archive access request
+        </button>
+      </div>
+      <button class="quiz-check" id="quiz6-btn" onclick="checkQuiz('quiz6','b')" disabled>Check answer</button>
+      <div class="quiz-feedback" id="quiz6-feedback"></div>
+      <button class="quiz-reset" onclick="resetQuiz('quiz6')" style="display:none" id="quiz6-reset">Try again</button>
+    </div>
+
+    <button class="hero-cta" style="margin-top:24px" onclick="goToModule(7)">Next: Measuring Security Posture →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     MODULE 7 — STATS & SECURITY POSTURE
+══════════════════════════════════════════════════════════ -->
+<section class="module" id="mod-7" data-module="7">
+  <div class="module-inner">
+    <div class="module-badge animate-in">Module 7 of 7</div>
+    <h2 class="module-title animate-in">Measuring Your Security Posture</h2>
+    <p class="module-subtitle animate-in">
+      The Stats page shows whether your program is actually working: response speed and industry benchmarks, not just detection counts.
+    </p>
+
+    <h3 class="section-heading">The four metric categories</h3>
+
+    <div class="cards-grid animate-in">
+      <div class="card">
+        <div class="card-icon">🔭</div>
+        <div class="card-title">Coverage</div>
+        <div class="card-desc">How broad is Axur's monitoring for your assets? Higher coverage means fewer gaps in detection. Driven by your monitored asset list — the richer it is, the better the coverage.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-title">Threats</div>
+        <div class="card-desc">Total threats detected across all workspaces. Trend over time tells you if your brand's threat surface is growing, stable, or shrinking.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <div class="card-title">Incidents</div>
+        <div class="card-desc">Confirmed threats broken down by type: phishing, fake social, data leakage, etc. Includes segment benchmarking — how your incident rate compares to peers in your industry.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">✅</div>
+        <div class="card-title">Solved</div>
+        <div class="card-desc">Treatment rate metrics: how many threats were resolved vs. left open, average time-to-resolution, and takedown success rates.</div>
+      </div>
+    </div>
+
+    <h3 class="section-heading">Reading the stats — spec ↔ plain English</h3>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform metric</div>
+        <div class="translation-text">Industry benchmark: Your phishing incident rate is 23% above segment average</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it means for you</div>
+        <div class="translation-text">
+          Your brand is being targeted more aggressively than peers in your sector. This is either because: (a) your brand is more valuable to attackers (higher customer trust = more convincing phishing), (b) your monitoring coverage is higher so you're catching more, or (c) a specific campaign is targeting your industry vertical.
+          <br><br>
+          <strong>The right response:</strong> Don't reduce monitoring to look better in benchmarks. Investigate whether a specific threat actor group is running campaigns against your sector, and tighten takedown response times.
+        </div>
+      </div>
+    </div>
+
+    <div class="translation-block animate-in">
+      <div class="translation-side">
+        <div class="translation-label">Platform metric</div>
+        <div class="translation-text">Takedown resolved: 99% overall · 70% on first notification · Under 4 min to first notification (avg)</div>
+      </div>
+      <div class="translation-side">
+        <div class="translation-label">What it means for you</div>
+        <div class="translation-text">
+          Seven in ten takedowns succeed on the first extrajudicial notification — meaning most phishing sites are down within hours of your request. The remaining 30% require escalation but reach 99% overall.
+          <br><br>
+          <strong>Your time-to-takedown</strong> depends on how fast you move tickets from Open → Incident → Treatment. Axur's speed is fixed; your triage speed is not. A ticket sitting in Open for 48 hours before you request takedown means 48 extra hours of active phishing.
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-heading">Building monitoring into your workflow</h3>
+
+    <div class="steps animate-in">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Daily: clear the Open queue</div>
+          <div class="step-desc">Start with AI score red tickets. Every new red ticket should be evaluated and actioned (incident or discard) the same day it appears. Set up email alerts for new detections if you don't check daily.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Weekly: review quarantine and treatment</div>
+          <div class="step-desc">Check Quarantine for content changes flagged by Axur's daily crawl. Review Treatment tickets for stalled takedowns or "interrupted" statuses that need escalation or internal follow-up.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Monthly: proactive Threat Hunting</div>
+          <div class="step-desc">Run at least one proactive hunt per month — search for similar domain names registered in the past 30 days, new credential exposures, or dark web mentions. Find threats before the monitoring pipeline surfaces them.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Quarterly: review monitored assets</div>
+          <div class="step-desc">Coverage is only as good as your asset list. Add new brand names, acquired domains, new executive names, BINs for new card products. Remove assets that are no longer monitored. Export Stats for security reporting to leadership.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-success animate-in">
+      <div class="callout-title">What "good" looks like</div>
+      A mature Axur program: red tickets actioned same-day, takedown requests submitted within 2 hours of confirmation, quarantine reviewed weekly, Threat Hunting scheduled monthly, and asset list audited quarterly. Most programs reach this cadence within 60–90 days of onboarding.
+    </div>
+
+    <!-- Final quiz -->
+    <div class="quiz-container animate-in" role="group" aria-labelledby="quiz7-title">
+      <div class="quiz-title" id="quiz7-title">Final Scenario</div>
+      <div class="quiz-q">
+        Your Stats page shows: 340 threats detected last month, 89% treatment rate, but average time-to-treatment of 4.2 days. Your takedown success rate is 97%. Your manager asks what to focus on improving. What's the most impactful recommendation?
+      </div>
+      <div class="quiz-options" id="quiz7-opts">
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz7')" data-value="a">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Increase monitored assets to detect more threats — 340 per month seems low
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz7')" data-value="b">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Focus on reducing time-to-treatment — 4.2 days means phishing sites are live for days before action
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz7')" data-value="c">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          Push takedown success from 97% to 100% — no threats should be left unresolved
+        </button>
+        <button class="quiz-option" onclick="selectQuiz(this,'quiz7')" data-value="d">
+          <span class="quiz-icon" aria-hidden="true">○</span>
+          The 89% treatment rate is the most urgent gap — 11% of threats are unresolved
+        </button>
+      </div>
+      <button class="quiz-check" id="quiz7-btn" onclick="checkQuiz('quiz7','b')" disabled>Check answer</button>
+      <div class="quiz-feedback" id="quiz7-feedback"></div>
+      <button class="quiz-reset" onclick="resetQuiz('quiz7')" style="display:none" id="quiz7-reset">Try again</button>
+    </div>
+
+    <div class="completion-banner animate-in">
+      <h2>Course Complete</h2>
+      <p>You've covered the full Axur platform: threat detection, ticket triage, data leakage, takedowns, and threat hunting.</p>
+      <br>
+      <p style="font-size:14px;color:var(--color-text-dim)">
+        <strong style="color:var(--color-accent)">Next steps:</strong>
+        Log in to Axur → clear your Open queue → run your first Threat Hunt.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+// ─── Module data ───────────────────────────────────────────
+const MODULES = [
+  { id: 'mod-0', label: 'Intro' },
+  { id: 'mod-1', label: 'Threat Landscape' },
+  { id: 'mod-2', label: 'Your Workspace' },
+  { id: 'mod-3', label: 'Reading a Ticket' },
+  { id: 'mod-4', label: 'Working a Ticket' },
+  { id: 'mod-5', label: 'Data Leakage' },
+  { id: 'mod-6', label: 'Threat Hunting' },
+  { id: 'mod-7', label: 'Security Posture' },
+];
+
+// ─── Nav dots ──────────────────────────────────────────────
+function buildNavDots() {
+  const nav = document.getElementById('nav-dots');
+  MODULES.forEach((m, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    btn.setAttribute('aria-label', 'Go to ' + m.label);
+    btn.setAttribute('tabindex', '0');
+    const lbl = document.createElement('span');
+    lbl.className = 'nav-dot-label';
+    lbl.textContent = m.label;
+    btn.appendChild(lbl);
+    btn.addEventListener('click', () => goToModule(i));
+    btn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToModule(i); } });
+    nav.appendChild(btn);
+  });
+}
+
+function updateNavDots(activeIdx) {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === activeIdx);
+  });
+}
+
+// ─── Progress bar ──────────────────────────────────────────
+function updateProgress() {
+  const modules = document.querySelectorAll('.module');
+  const scrollY = window.scrollY + window.innerHeight * 0.5;
+  let active = 0;
+  modules.forEach((m, i) => {
+    if (m.getBoundingClientRect().top + window.scrollY <= scrollY) active = i;
+  });
+  const pct = (active / (modules.length - 1)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-bar-wrap').setAttribute('aria-valuenow', Math.round(pct));
+  updateNavDots(active);
+}
+
+// ─── Scroll to module ──────────────────────────────────────
+function goToModule(idx) {
+  const el = document.getElementById(MODULES[idx].id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Animate-in on scroll ─────────────────────────────────
+function checkAnimations() {
+  document.querySelectorAll('.animate-in:not(.visible)').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.92) el.classList.add('visible');
+  });
+}
+
+window.addEventListener('scroll', () => { updateProgress(); checkAnimations(); }, { passive: true });
+window.addEventListener('resize', updateProgress, { passive: true });
+document.addEventListener('DOMContentLoaded', () => { buildNavDots(); checkAnimations(); updateProgress(); });
+
+// ─── Prediction questions ──────────────────────────────────
+// data-multiselect="true" on the block → toggle behavior (checkbox-style)
+// default (no attribute) → single-select (radio-style)
+function selectPrediction(btn, blockId) {
+  const block = document.getElementById(blockId);
+  const isMulti = block.dataset.multiselect === 'true';
+  if (isMulti) {
+    // Toggle this option; leave others untouched
+    btn.classList.toggle('selected');
+  } else {
+    // Clear all, then select the clicked one
+    block.querySelectorAll('.pred-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  // Show commit button once at least one option is selected
+  const commitBtn = document.getElementById(blockId + '-btn');
+  if (commitBtn) {
+    const anySelected = block.querySelectorAll('.pred-option.selected').length > 0;
+    if (anySelected) {
+      commitBtn.style.display = 'block';
+      commitBtn.classList.add('visible');
+    } else {
+      commitBtn.style.display = 'none';
+      commitBtn.classList.remove('visible');
+    }
+  }
+}
+
+function commitPrediction(blockId) {
+  const reveal = document.getElementById(blockId + '-reveal');
+  const btn = document.getElementById(blockId + '-btn');
+  if (reveal) reveal.classList.add('visible');
+  if (btn) btn.style.display = 'none';
+  document.getElementById(blockId).querySelectorAll('.pred-option').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+}
+
+// ─── Inline knowledge check ────────────────────────────────
+function checkKC(btn, result, id) {
+  const parent = btn.closest('.kcheck');
+  parent.querySelectorAll('.kcheck-opt').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+  btn.classList.add(result === 'right' ? 'correct' : 'incorrect');
+  const ok = document.getElementById(id + '-ok');
+  const no = document.getElementById(id + '-no');
+  if (result === 'right') { ok.style.display = 'block'; ok.classList.add('show'); }
+  else { no.style.display = 'block'; no.classList.add('show'); }
+}
+
+// ─── Multiple choice quiz ──────────────────────────────────
+function selectQuiz(btn, quizId) {
+  const opts = document.getElementById(quizId + '-opts');
+  opts.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById(quizId + '-btn').disabled = false;
+}
+
+const QUIZ_FEEDBACK = {
+  quiz4: {
+    b: 'Correct. This is a Deep & Dark Web threat — the ticket type matters for choosing the right response. Telegram channels cannot be taken down via Axur\'s standard process, but a Deep & Dark Web investigation can produce intelligence for law enforcement referral. Internal coordination with HR (to assess the authenticity and scope of the documents) and legal (for potential regulatory obligations) is essential. The low AI score reflects that automated systems struggle with context-heavy breach scenarios — your human judgment is critical here.',
+    default: 'Not quite. The AI score of 45% reflects the difficulty of automatically classifying context-rich breach scenarios, not the severity of the threat. Actual HR salary data leaked in a Telegram channel is a serious incident regardless of score. Discarding or quarantining would mean missing a real data exposure. Takedown of Telegram channels via Axur\'s standard process isn\'t available — but a Dark Web investigation is.'
+  },
+  quiz5: {
+    b: 'Correct. Incomplete cards (number only, no CVV/expiry) pose lower immediate risk for CNP fraud but aren\'t harmless. They can be used in fraud scenarios where CVV isn\'t checked, tested via BIN attacks, or combined with other stolen data. 847 cards is a significant volume — investigate the source, assess whether the cards are still valid, and consider whether proactive reissuance is warranted based on your fraud risk tolerance.',
+    default: 'Not exactly right. Incomplete cards are lower immediate risk than complete cards, but they\'re not safe to ignore — especially at 847 cards from a single Telegram channel, which suggests an active breach rather than random noise. The source matters too: Telegram channels can have large audiences who rapidly weaponize leaked data. "B" is the most accurate answer.'
+  },
+  quiz6: {
+    b: 'Correct. Threat Hunting results are retained for only 12 hours after a search completes. This is a hard limit — there\'s no archive or support ticket that recovers expired results. Best practice: export results immediately after a search, or save the query so you can re-run it (which will consume credits again). For large investigations, break your analysis into sessions that fit within the 12-hour window.',
+    default: 'This isn\'t right. The 12-hour retention window is the key concept here. Results don\'t disappear due to errors or credit issues — they simply expire. Axur support cannot recover expired search results. Always export or re-run. This is one of the most common Threat Hunting gotchas for new users.'
+  },
+  quiz7: {
+    b: 'Exactly right. A 4.2-day average time-to-treatment means phishing sites, fake apps, and data leakage are active for over four days before your team acts. That\'s four days of credential harvesting, fraud, and brand damage. Takedown success at 97% is already excellent — marginal gains there won\'t move the needle. The 89% treatment rate sounds decent, but the speed problem is the real bottleneck. Focus on reducing triage time: daily queue review, alert routing, and clearer escalation paths for the team.',
+    default: 'The most impactful lever here is speed, not volume or completeness metrics. A 4.2-day treatment time means threats are live and active for days. Whether it\'s 340 or 400 threats, or 89% vs 95% treatment rate — none of those improvements matter as much as acting faster on the threats you\'re already finding. Option B is the right answer.'
+  }
+};
+
+function checkQuiz(quizId, correctValue) {
+  const opts = document.getElementById(quizId + '-opts');
+  const selected = opts.querySelector('.quiz-option.selected');
+  if (!selected) return;
+  const val = selected.getAttribute('data-value');
+  const isCorrect = val === correctValue;
+  opts.querySelectorAll('.quiz-option').forEach(b => { b.disabled = true; b.style.cursor = 'default'; });
+  selected.classList.add(isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) {
+    opts.querySelectorAll('.quiz-option').forEach(b => {
+      if (b.getAttribute('data-value') === correctValue) b.classList.add('correct');
+    });
+    selected.querySelector('.quiz-icon').textContent = '✓';
+  } else {
+    selected.querySelector('.quiz-icon').textContent = '✗';
+    opts.querySelectorAll('.quiz-option').forEach(b => {
+      if (b.getAttribute('data-value') === correctValue) b.classList.add('correct');
+    });
+  }
+  document.getElementById(quizId + '-btn').disabled = true;
+  const feedback = document.getElementById(quizId + '-feedback');
+  const fb = QUIZ_FEEDBACK[quizId];
+  feedback.textContent = (fb && fb[val]) ? fb[val] : (fb && fb.default) ? fb.default : '';
+  feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  const reset = document.getElementById(quizId + '-reset');
+  if (reset) reset.style.display = 'inline-block';
+}
+
+function resetQuiz(quizId) {
+  const opts = document.getElementById(quizId + '-opts');
+  opts.querySelectorAll('.quiz-option').forEach(b => {
+    b.classList.remove('selected','correct','incorrect');
+    b.disabled = false; b.style.cursor = 'pointer';
+    const icon = b.querySelector('.quiz-icon');
+    if (icon) icon.textContent = '○';
+  });
+  document.getElementById(quizId + '-btn').disabled = true;
+  document.getElementById(quizId + '-feedback').className = 'quiz-feedback';
+  document.getElementById(quizId + '-feedback').textContent = '';
+  const reset = document.getElementById(quizId + '-reset');
+  if (reset) reset.style.display = 'none';
+}
+
+// ─── Decision tree ─────────────────────────────────────────
+let dtHistory = [];
+
+function dtGo(targetId, fromId) {
+  dtHistory.push(fromId);
+  document.querySelectorAll('.dt-node').forEach(n => n.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+}
+
+function dtReset() {
+  dtHistory = [];
+  document.querySelectorAll('.dt-node').forEach(n => n.classList.remove('active'));
+  document.getElementById('dt-0').classList.add('active');
+}
+
+// ─── State machine ─────────────────────────────────────────
+const smStates = {
+  new: {
+    el: 'sm-new',
+    info: '<strong>New</strong> — A detection just landed. Your job: review the evidence, assess whether the data is real and relevant, and begin triage. Add tags and notes as you go — all actions are logged in Events history.'
+  },
+  treatment: {
+    el: 'sm-treatment',
+    info: '<strong>In Treatment</strong> — You\'ve begun investigating or remediating. For credit cards: reissuing cards. For credentials: forcing resets. For breach files: investigating scope in a sandbox. Keep notes updated so teammates can pick up where you left off.'
+  },
+  solved: {
+    el: 'sm-solved',
+    info: '<strong>Solved</strong> — Remediation is complete. Cards reissued, passwords reset, breach scope documented, internal teams notified. Mark as Solved only when no further action is required. This closes the detection.'
+  },
+  discarded: {
+    el: 'sm-discarded',
+    info: '<strong>Discarded</strong> — The detection is not relevant to your organization, is a false positive, or is an intentional exposure (e.g. a public test). Close the detection without remediation. Document the reason in notes.'
+  }
+};
+
+let smCurrent = 'new';
+
+const smTransitions = {
+  'Start triage': { from: 'new', to: 'treatment' },
+  'Mark resolved': { from: 'treatment', to: 'solved' },
+  'Mark irrelevant': { from: 'treatment', to: 'discarded' }
+};
+
+function smTrigger(fromState, label) {
+  const t = smTransitions[label];
+  if (!t) return;
+  Object.keys(smStates).forEach(k => {
+    const el = document.getElementById(smStates[k].el);
+    el.classList.remove('active');
+    el.removeAttribute('aria-current');
+  });
+  const next = t.to;
+  const el = document.getElementById(smStates[next].el);
+  el.classList.add('active');
+  el.setAttribute('aria-current', 'true');
+  smCurrent = next;
+  document.getElementById('sm-info').innerHTML = smStates[next].info;
+}
+
+function smReset() {
+  Object.keys(smStates).forEach(k => {
+    const el = document.getElementById(smStates[k].el);
+    el.classList.remove('active');
+    el.removeAttribute('aria-current');
+  });
+  document.getElementById(smStates['new'].el).classList.add('active');
+  document.getElementById(smStates['new'].el).setAttribute('aria-current', 'true');
+  smCurrent = 'new';
+  document.getElementById('sm-info').innerHTML = smStates['new'].info;
+}
+
+// ─── Keyboard module navigation ────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const modules = document.querySelectorAll('.module');
+  const scrollY = window.scrollY + window.innerHeight * 0.5;
+  let current = 0;
+  modules.forEach((m, i) => { if (m.getBoundingClientRect().top + window.scrollY <= scrollY) current = i; });
+  if (e.key === 'ArrowDown' && current < modules.length - 1) { e.preventDefault(); goToModule(current + 1); }
+  if (e.key === 'ArrowUp' && current > 0) { e.preventDefault(); goToModule(current - 1); }
+});
+</script>
+</body>
+</html>
