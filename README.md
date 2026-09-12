@@ -13,7 +13,7 @@ For more information, check out:
 
 # About This Repository
 
-This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).
+This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation, frontend human-centered law auditing) to enterprise workflows (communications, branding, etc.).
 
 Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
 
@@ -27,6 +27,11 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
+
+## Highlighted Example Skills
+- [skills/frontend-design](./skills/frontend-design): Distinctive, production-grade frontend interface creation.
+- [skills/webapp-testing](./skills/webapp-testing): Playwright-based local web app testing toolkit.
+- [skills/frontend-law-auditor](./skills/frontend-law-auditor): Human-centered frontend quality gate and theory-based audit across core UX laws.
 
 # Try in Claude Code, Claude.ai, and the API
 
