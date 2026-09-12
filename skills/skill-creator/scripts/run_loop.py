@@ -17,7 +17,7 @@ from pathlib import Path
 
 from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
-from scripts.run_eval import find_project_root, run_eval
+from scripts.run_eval import find_project_root, preflight_check, run_eval
 from scripts.utils import parse_skill_md
 
 
@@ -190,23 +190,33 @@ def run_loop(
         if verbose:
             print(f"\nImproving description...", file=sys.stderr)
 
-        t0 = time.time()
-        # Strip test scores from history so improvement model can't see them
-        blinded_history = [
-            {k: v for k, v in h.items() if not k.startswith("test_")}
-            for h in history
-        ]
-        new_description = improve_description(
-            skill_name=name,
-            skill_content=content,
-            current_description=current_description,
-            eval_results=train_results,
-            history=blinded_history,
-            model=model,
-            log_dir=log_dir,
-            iteration=iteration,
-        )
-        improve_elapsed = time.time() - t0
+        try:
+            t0 = time.time()
+            # Strip test scores from history so improvement model can't see them
+            blinded_history = [
+                {k: v for k, v in h.items() if not k.startswith("test_")}
+                for h in history
+            ]
+            new_description = improve_description(
+                skill_name=name,
+                skill_content=content,
+                current_description=current_description,
+                eval_results=train_results,
+                history=blinded_history,
+                model=model,
+                log_dir=log_dir,
+                iteration=iteration,
+            )
+            improve_elapsed = time.time() - t0
+        except Exception as e:
+            exit_reason = f"improve_description crashed on iteration {iteration}: {e}"
+            if verbose:
+                print(
+                    f"\nError during description improvement — saving partial "
+                    f"results and exiting loop.\n  {e}",
+                    file=sys.stderr,
+                )
+            break
 
         if verbose:
             print(f"Proposed ({improve_elapsed:.1f}s): {new_description}", file=sys.stderr)
@@ -257,6 +267,8 @@ def main():
     parser.add_argument("--report", default="auto", help="Generate HTML report at this path (default: 'auto' for temp file, 'none' to disable)")
     parser.add_argument("--results-dir", default=None, help="Save all outputs (results.json, report.html, log.txt) to a timestamped subdirectory here")
     args = parser.parse_args()
+
+    preflight_check(model=args.model)
 
     eval_set = json.loads(Path(args.eval_set).read_text())
     skill_path = Path(args.skill_path)
