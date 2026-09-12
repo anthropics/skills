@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     :root {
       --bg: #faf9f5;
@@ -169,6 +170,47 @@
       word-break: break-word;
       font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
     }
+    .output-file-content .md-rendered {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .output-file-content .md-rendered h1,
+    .output-file-content .md-rendered h2,
+    .output-file-content .md-rendered h3,
+    .output-file-content .md-rendered h4 {
+      margin-top: 1.2em;
+      margin-bottom: 0.5em;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+    .output-file-content .md-rendered h1 { font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    .output-file-content .md-rendered h2 { font-size: 1.15rem; }
+    .output-file-content .md-rendered h3 { font-size: 1rem; }
+    .output-file-content .md-rendered h4 { font-size: 0.9rem; }
+    .output-file-content .md-rendered p { margin: 0.5em 0; }
+    .output-file-content .md-rendered ul,
+    .output-file-content .md-rendered ol { margin: 0.5em 0; padding-left: 1.5em; }
+    .output-file-content .md-rendered li { margin: 0.25em 0; }
+    .output-file-content .md-rendered code {
+      background: var(--bg);
+      padding: 0.15em 0.35em;
+      border-radius: 3px;
+      font-size: 0.8125rem;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+    }
+    .output-file-content .md-rendered pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem;
+      margin: 0.5em 0;
+      overflow-x: auto;
+    }
+    .output-file-content .md-rendered pre code { background: none; padding: 0; }
+    .output-file-content .md-rendered blockquote { border-left: 3px solid var(--accent); padding-left: 0.75em; margin: 0.5em 0; color: var(--text-muted); }
+    .output-file-content .md-rendered strong { font-weight: 600; }
+    .output-file-content .md-rendered hr { border: none; border-top: 1px solid var(--border); margin: 1em 0; }
     .output-file-content img {
       max-width: 100%;
       height: auto;
@@ -792,7 +834,12 @@
         const content = document.createElement("div");
         content.className = "output-file-content";
 
-        if (file.type === "text") {
+        if (file.type === "text" && file.name.endsWith(".md") && typeof marked !== "undefined") {
+          const div = document.createElement("div");
+          div.className = "md-rendered";
+          div.innerHTML = marked.parse(file.content);
+          content.appendChild(div);
+        } else if (file.type === "text") {
           const pre = document.createElement("pre");
           pre.textContent = file.content;
           content.appendChild(pre);
@@ -952,7 +999,12 @@
         const fc = document.createElement("div");
         fc.className = "output-file-content";
 
-        if (file.type === "text") {
+        if (file.type === "text" && file.name.endsWith(".md") && typeof marked !== "undefined") {
+          const div = document.createElement("div");
+          div.className = "md-rendered";
+          div.innerHTML = marked.parse(file.content);
+          fc.appendChild(div);
+        } else if (file.type === "text") {
           const pre = document.createElement("pre");
           pre.textContent = file.content;
           fc.appendChild(pre);
