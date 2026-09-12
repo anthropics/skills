@@ -1,0 +1,117 @@
+<svg width="900" height="520" viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="titlebar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window -->
+  <rect width="900" height="520" rx="12" fill="#0d1117"/>
+  <rect width="900" height="52" rx="12" fill="url(#titlebar)"/>
+  <rect y="40" width="900" height="12" fill="#161b22"/>
+  <line x1="0" y1="52" x2="900" y2="52" stroke="#21262d" stroke-width="1"/>
+  <rect x=".5" y=".5" width="899" height="519" rx="11.5" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Window controls -->
+  <circle cx="28" cy="26" r="7" fill="#ff5f57"/>
+  <circle cx="52" cy="26" r="7" fill="#febc2e"/>
+  <circle cx="76" cy="26" r="7" fill="#28c840"/>
+  <text x="450" y="26" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#8b949e" text-anchor="middle" dominant-baseline="middle">claude-code-wrapped</text>
+
+  <!-- ── Progress bar ── -->
+  <rect x="24" y="66" width="852" height="5" rx="2" fill="#21262d"/>
+  <rect x="24" y="66" width="280" height="5" rx="2" fill="#56c8f5"/>
+  <text x="882" y="73" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="11" fill="#484f58" text-anchor="end" dominant-baseline="middle">3/11</text>
+
+  <!-- ── Section header: TOOLS YOU LOVED ── -->
+  <rect x="24" y="86" width="852" height="38" rx="4" fill="none" stroke="#56c8f5" stroke-width="1.5"/>
+  <text x="450" y="105" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="14" font-weight="bold" fill="#56c8f5" text-anchor="middle" dominant-baseline="middle">🔧  TOOLS YOU LOVED</text>
+
+  <!-- ── Bar rows ── -->
+  <!-- Labels, bars, and values -->
+
+  <!-- Bash -->
+  <text x="48" y="152" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#4ade80">Bash              </text>
+  <text x="215" y="152" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="224" y="140" width="352" height="16" rx="2" fill="#4ade8022"/>
+  <rect x="224" y="140" width="352" height="16" rx="2" fill="#4ade80"/>
+  <text x="584" y="152" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="600" y="152" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc">18.3K</text>
+  <text x="670" y="152" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="12" fill="#484f58">38%</text>
+
+  <!-- Edit -->
+  <text x="48" y="178" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#56c8f5">Edit              </text>
+  <text x="215" y="178" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="224" y="166" width="330" height="16" rx="2" fill="#56c8f522"/>
+  <rect x="224" y="166" width="330" height="16" rx="2" fill="#56c8f5"/>
+  <rect x="554" y="166" width="30" height="16" rx="2" fill="#21262d" opacity="0.5"/>
+  <text x="584" y="178" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="600" y="178" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc">15.7K</text>
+  <text x="670" y="178" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="12" fill="#484f58">32%</text>
+
+  <!-- Read -->
+  <text x="48" y="204" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#7bb8f5">Read              </text>
+  <text x="215" y="204" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="224" y="192" width="220" height="16" rx="2" fill="#7bb8f522"/>
+  <rect x="224" y="192" width="220" height="16" rx="2" fill="#7bb8f5"/>
+  <rect x="444" y="192" width="140" height="16" rx="2" fill="#21262d" opacity="0.5"/>
+  <text x="584" y="204" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="600" y="204" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc"> 9.1K</text>
+  <text x="670" y="204" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="12" fill="#484f58">19%</text>
+
+  <!-- Write -->
+  <text x="48" y="230" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#fbbf24">Write             </text>
+  <text x="215" y="230" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="224" y="218" width="100" height="16" rx="2" fill="#fbbf2422"/>
+  <rect x="224" y="218" width="100" height="16" rx="2" fill="#fbbf24"/>
+  <rect x="324" y="218" width="260" height="16" rx="2" fill="#21262d" opacity="0.5"/>
+  <text x="584" y="230" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="600" y="230" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc"> 3.2K</text>
+  <text x="670" y="230" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="12" fill="#484f58"> 7%</text>
+
+  <!-- Glob -->
+  <text x="48" y="256" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f87171">Glob              </text>
+  <text x="215" y="256" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="224" y="244" width="40" height="16" rx="2" fill="#f8717122"/>
+  <rect x="224" y="244" width="40" height="16" rx="2" fill="#f87171"/>
+  <rect x="264" y="244" width="320" height="16" rx="2" fill="#21262d" opacity="0.5"/>
+  <text x="584" y="256" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="600" y="256" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc">  821</text>
+  <text x="670" y="256" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="12" fill="#484f58"> 2%</text>
+
+  <!-- ── Divider ── -->
+  <line x1="24" y1="282" x2="876" y2="282" stroke="#21262d" stroke-width="1"/>
+
+  <!-- ── Section header: YOUR CLAUDE BILL ── -->
+  <rect x="24" y="294" width="852" height="38" rx="4" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="450" y="313" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="14" font-weight="bold" fill="#4ade80" text-anchor="middle" dominant-baseline="middle">💰  YOUR CLAUDE BILL</text>
+
+  <!-- sonnet -->
+  <text x="48" y="360" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#56c8f5">sonnet-4-6           </text>
+  <text x="255" y="360" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="264" y="348" width="290" height="16" rx="2" fill="#56c8f522"/>
+  <rect x="264" y="348" width="290" height="16" rx="2" fill="#56c8f5"/>
+  <text x="562" y="360" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="578" y="360" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc">$38.40</text>
+
+  <!-- haiku -->
+  <text x="48" y="386" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#c084fc">haiku-4-5            </text>
+  <text x="255" y="386" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <rect x="264" y="374" width="140" height="16" rx="2" fill="#c084fc22"/>
+  <rect x="264" y="374" width="140" height="16" rx="2" fill="#c084fc"/>
+  <rect x="404" y="374" width="158" height="16" rx="2" fill="#21262d" opacity="0.5"/>
+  <text x="562" y="386" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#21262d">│</text>
+  <text x="578" y="386" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#f0f6fc">$12.10</text>
+
+  <!-- ── Totals ── -->
+  <line x1="24" y1="408" x2="876" y2="408" stroke="#21262d" stroke-width="1"/>
+  <text x="48" y="428" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#484f58">  💵  Total spent:</text>
+  <text x="400" y="428" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#fbbf24">$50.50</text>
+  <text x="48" y="450" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#484f58">  📅  Per day:</text>
+  <text x="400" y="450" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#4ade80">$0.42</text>
+  <text x="48" y="472" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#484f58">  📆  Per week:</text>
+  <text x="400" y="472" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#56c8f5">$2.94</text>
+  <text x="48" y="494" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#484f58">  🗓   Per month:</text>
+  <text x="400" y="494" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" font-weight="bold" fill="#c084fc">$12.75</text>
+</svg>
