@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Notion (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: rgba(0,0,0,0.95);
+    --black-solid: #000000;
+    --white: #ffffff;
+    --warm-white: #f6f5f4;
+    --warm-dark: #31302e;
+    --gray-500: #615d59;
+    --gray-300: #a39e98;
+    --notion-blue: #0075de;
+    --active-blue: #005bab;
+    --focus-blue: #097fe8;
+    --link-light-blue: #62aef0;
+    --badge-bg: #f2f9ff;
+    --badge-text: #097fe8;
+    --teal: #2a9d99;
+    --green: #1aae39;
+    --orange: #dd5b00;
+    --pink: #ff64c8;
+    --purple: #391c57;
+    --brown: #523410;
+    --deep-navy: #213183;
+    --border-whisper: 1px solid rgba(0,0,0,0.1);
+    --shadow-card: rgba(0,0,0,0.04) 0px 4px 18px 0px, rgba(0,0,0,0.027) 0px 2.025px 7.85px 0px, rgba(0,0,0,0.02) 0px 0.8px 2.93px 0px, rgba(0,0,0,0.01) 0px 0.175px 1.04px 0px;
+    --shadow-deep: rgba(0,0,0,0.01) 0px 1px 3px 0px, rgba(0,0,0,0.02) 0px 3px 7px 0px, rgba(0,0,0,0.02) 0px 7px 15px 0px, rgba(0,0,0,0.04) 0px 14px 28px 0px, rgba(0,0,0,0.05) 0px 23px 52px 0px;
+    --font-sans: 'Inter', -apple-system, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: var(--white);
+    border-bottom: var(--border-whisper);
+  }
+  .nav-brand { font-size: 15px; font-weight: 600; color: var(--black); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 15px; font-weight: 500; color: var(--gray-500); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--black); text-decoration: underline; }
+  .nav-cta {
+    display: inline-block; background: var(--notion-blue); color: var(--white);
+    padding: 6px 14px; border-radius: 4px; font-size: 15px; font-weight: 600;
+    text-decoration: none; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: var(--active-blue); }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; }
+  .hero h1 {
+    font-size: 64px; font-weight: 700; line-height: 1.00;
+    letter-spacing: -2.125px; color: var(--black); margin-bottom: 16px;
+  }
+  .hero p { font-size: 20px; font-weight: 400; line-height: 1.50; color: var(--gray-500); max-width: 600px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-blue {
+    display: inline-block; background: var(--notion-blue); color: var(--white);
+    padding: 10px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-blue:hover { background: var(--active-blue); }
+  .btn-ghost {
+    display: inline-block; background: rgba(0,0,0,0.05); color: var(--black);
+    padding: 10px 24px; border-radius: 4px; border: none;
+    font-family: var(--font-sans); font-size: 15px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-ghost:hover { background: rgba(0,0,0,0.1); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section--warm { background: var(--warm-white); }
+  .section--warm .section-inner { max-width: 1200px; margin: 0 auto; padding: 64px 32px; }
+  .section-label { font-size: 12px; font-weight: 600; color: var(--gray-300); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-title { font-size: 32px; font-weight: 700; line-height: 1.20; letter-spacing: -1px; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: var(--border-whisper); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; border: var(--border-whisper); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--gray-500); font-family: monospace; }
+  .color-swatch-role { font-size: 11px; color: var(--gray-300); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--gray-500); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: var(--border-whisper); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-size: 12px; font-weight: 500; color: var(--gray-300); margin-top: 8px; font-family: monospace; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--gray-300); margin-top: 8px; }
+  .btn-pill { display: inline-block; background: var(--badge-bg); color: var(--badge-text); padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600; text-decoration: none; letter-spacing: 0.125px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: var(--white); border-radius: 12px; padding: 24px; border: var(--border-whisper); box-shadow: var(--shadow-card); transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: var(--shadow-deep); }
+  .card h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.25px; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--gray-500); line-height: 1.50; }
+  .card-badge { display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 9999px; margin-bottom: 12px; letter-spacing: 0.125px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--black);
+    border: 1px solid #dddddd; padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-sans); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--notion-blue); box-shadow: 0 0 0 2px rgba(0,117,222,0.2); }
+  .form-input--focus { border-color: var(--notion-blue); box-shadow: 0 0 0 2px rgba(0,117,222,0.2); }
+  .form-input--error { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(221,91,0,0.2); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--white); color: var(--black);
+    border: 1px solid #dddddd; padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-sans); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--gray-300); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--warm-dark); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-size: 11px; font-weight: 500; color: var(--gray-300); font-family: monospace; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--warm-dark); margin-bottom: 6px; }
+  .radius-label { font-size: 11px; font-weight: 500; color: var(--gray-300); font-family: monospace; }
+  .radius-context { font-size: 10px; color: var(--gray-300); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--white); border-radius: 12px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-size: 11px; color: var(--gray-300); font-family: monospace; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: var(--border-whisper); font-size: 13px; color: var(--gray-500); }
+  .footer a { color: var(--notion-blue); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; letter-spacing: -1.5px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section--warm .section-inner { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Notion free</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Notion</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-blue" href="#">Get Notion free</a>
+    <a class="btn-ghost" href="#">View Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgba(0,0,0,0.95)"></div><div class="color-swatch-info"><div class="color-swatch-name">Notion Black</div><div class="color-swatch-hex">rgba(0,0,0,0.95)</div><div class="color-swatch-role">Primary text, headings</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid rgba(0,0,0,0.1)"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0075de"></div><div class="color-swatch-info"><div class="color-swatch-name">Notion Blue</div><div class="color-swatch-hex">#0075de</div><div class="color-swatch-role">Primary CTA, links</div></div></div>
+  </div>
+
+  <div class="color-group-label">Warm Neutrals</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f6f5f4; border-bottom:1px solid rgba(0,0,0,0.1)"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm White</div><div class="color-swatch-hex">#f6f5f4</div><div class="color-swatch-role">Surface tint, sections</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#31302e"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Dark</div><div class="color-swatch-hex">#31302e</div><div class="color-swatch-role">Dark surfaces</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#615d59"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Gray 500</div><div class="color-swatch-hex">#615d59</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a39e98"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Gray 300</div><div class="color-swatch-hex">#a39e98</div><div class="color-swatch-role">Placeholder, muted</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic Accents</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2a9d99"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal</div><div class="color-swatch-hex">#2a9d99</div><div class="color-swatch-role">Success states</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1aae39"></div><div class="color-swatch-info"><div class="color-swatch-name">Green</div><div class="color-swatch-hex">#1aae39</div><div class="color-swatch-role">Confirmation</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dd5b00"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange</div><div class="color-swatch-hex">#dd5b00</div><div class="color-swatch-role">Warning</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff64c8"></div><div class="color-swatch-info"><div class="color-swatch-name">Pink</div><div class="color-swatch-hex">#ff64c8</div><div class="color-swatch-role">Decorative accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#391c57"></div><div class="color-swatch-info"><div class="color-swatch-name">Purple</div><div class="color-swatch-hex">#391c57</div><div class="color-swatch-role">Premium features</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#523410"></div><div class="color-swatch-info"><div class="color-swatch-name">Brown</div><div class="color-swatch-hex">#523410</div><div class="color-swatch-role">Earthy accent</div></div></div>
+  </div>
+
+  <div class="color-group-label">Interactive</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#005bab"></div><div class="color-swatch-info"><div class="color-swatch-name">Active Blue</div><div class="color-swatch-hex">#005bab</div><div class="color-swatch-role">Button active state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#097fe8"></div><div class="color-swatch-info"><div class="color-swatch-name">Focus Blue</div><div class="color-swatch-hex">#097fe8</div><div class="color-swatch-role">Focus ring</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#213183"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Navy</div><div class="color-swatch-hex">#213183</div><div class="color-swatch-role">Brand secondary</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f9ff; border-bottom:1px solid rgba(0,0,0,0.1)"></div><div class="color-swatch-info"><div class="color-swatch-name">Badge Bg</div><div class="color-swatch-hex">#f2f9ff</div><div class="color-swatch-role">Pill badge surface</div></div></div>
+  </div>
+</section>
+
+<div class="section--warm">
+<div class="section-inner" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:64px; font-weight:700; line-height:1.00; letter-spacing:-2.125px;">Display Hero</div><div class="type-meta">Display Hero -- 64px / 700 / 1.00 / -2.125px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:54px; font-weight:700; line-height:1.04; letter-spacing:-1.875px;">Display Secondary</div><div class="type-meta">Display Secondary -- 54px / 700 / 1.04 / -1.875px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:48px; font-weight:700; line-height:1.00; letter-spacing:-1.5px;">Section Heading</div><div class="type-meta">Section Heading -- 48px / 700 / 1.00 / -1.5px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:40px; font-weight:700; line-height:1.50;">Sub-heading Large</div><div class="type-meta">Sub-heading Large -- 40px / 700 / 1.50 / normal / Inter</div></div>
+  <div class="type-sample"><div style="font-size:26px; font-weight:700; line-height:1.23; letter-spacing:-0.625px;">Sub-heading</div><div class="type-meta">Sub-heading -- 26px / 700 / 1.23 / -0.625px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:22px; font-weight:700; line-height:1.27; letter-spacing:-0.25px;">Card Title</div><div class="type-meta">Card Title -- 22px / 700 / 1.27 / -0.25px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:600; line-height:1.40; letter-spacing:-0.125px;">Body Large -- Your workspace for docs, projects, and knowledge. All in one place.</div><div class="type-meta">Body Large -- 20px / 600 / 1.40 / -0.125px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.50;">Body Medium -- Navigation and emphasized text</div><div class="type-meta">Body Medium -- 16px / 500 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body -- Standard reading text for articles and descriptions</div><div class="type-meta">Body -- 16px / 400 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:15px; font-weight:600; line-height:1.33;">Nav / Button Label</div><div class="type-meta">Nav / Button -- 15px / 600 / 1.33 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:500; line-height:1.43;">Caption -- Metadata and secondary labels</div><div class="type-meta">Caption -- 14px / 500 / 1.43 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:600; line-height:1.33; letter-spacing:0.125px;">Badge / Micro Label</div><div class="type-meta">Badge -- 12px / 600 / 1.33 / 0.125px / Inter</div></div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-blue" href="#">Get Notion free</a><div class="button-label">Primary Blue</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">Request a demo</a><div class="button-label">Secondary</div></div>
+    <div class="button-item"><a class="btn-pill" href="#">New</a><div class="button-label">Pill Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(42,157,153,0.1); color:var(--teal); padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:600; letter-spacing:0.125px;">Available</span><div class="button-label">Teal Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(221,91,0,0.1); color:var(--orange); padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:600; letter-spacing:0.125px;">Warning</span><div class="button-label">Orange Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(26,174,57,0.1); color:var(--green); padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:600; letter-spacing:0.125px;">Confirmed</span><div class="button-label">Green Badge</div></div>
+  </div>
+</section>
+
+<div class="section--warm">
+<div class="section-inner" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:var(--badge-bg); color:var(--badge-text);">Workspace</div>
+      <h3>Custom Agents</h3>
+      <p>Build and deploy AI agents tailored to your team's workflow. Automate tasks, answer questions, and streamline processes.</p>
+    </div>
+    <div class="card" style="box-shadow: var(--shadow-deep);">
+      <div class="card-badge" style="background:rgba(42,157,153,0.1); color:var(--teal);">Productivity</div>
+      <h3>Connected Wikis</h3>
+      <p>Centralize team knowledge in interconnected wikis. Keep documentation organized and always up to date with real-time collaboration.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:rgba(255,100,200,0.1); color:var(--pink);">Projects</div>
+      <h3>Team Projects</h3>
+      <p>Manage projects with flexible views: boards, timelines, lists, and calendars. Everything your team needs, all in one workspace.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Workspace Name</label><input class="form-input" type="text" placeholder="My Team Workspace"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Email Address</label><input class="form-input form-input--focus" type="text" value="team@company.com"><div class="form-state-label">Focus (blue ring)</div></div>
+  <div class="form-group"><label class="form-label">Domain</label><input class="form-input form-input--error" type="text" value="invalid domain"><div class="form-state-label">Error (orange ring)</div></div>
+  <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your workspace..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section--warm">
+<div class="section-inner" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:14px"></div><div class="spacing-value">14</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Buttons, inputs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px</div><div class="radius-context">Links, menus</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Small cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px</div><div class="radius-context">Hero cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px</div><div class="radius-context">Badges</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50%</div><div class="radius-context">Avatars</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section--warm">
+<div class="section-inner" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: var(--border-whisper); box-shadow:none;"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No shadow</div></div>
+    <div class="elevation-card" style="border: var(--border-whisper);"><div class="elevation-label">Level 1: Whisper</div><div class="elevation-desc">1px solid rgba(0,0,0,0.1)</div></div>
+    <div class="elevation-card" style="border: var(--border-whisper); box-shadow: var(--shadow-card);"><div class="elevation-label">Level 2: Card</div><div class="elevation-desc">4-layer stack, max 0.04</div></div>
+    <div class="elevation-card" style="border: var(--border-whisper); box-shadow: var(--shadow-deep);"><div class="elevation-label">Level 3: Deep</div><div class="elevation-desc">5-layer stack, 52px blur</div></div>
+    <div class="elevation-card" style="box-shadow: 0 0 0 2px var(--focus-blue);"><div class="elevation-label">Focus</div><div class="elevation-desc">2px solid focus ring</div></div>
+  </div>
+</div>
+</div>
+
+<footer class="footer">
+  Generated from <a href="https://notion.com/">notion.com</a> DESIGN.md -- awesome-design-md
+</footer>
+
+</body>
+</html>

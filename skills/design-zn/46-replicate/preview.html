@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Replicate (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-replicate-dark: #202020;
+    --color-replicate-red: #ea2804;
+    --color-secondary-red: #dd4425;
+    --color-status-green: #2b9a66;
+    --color-github-dark: #24292e;
+    --color-white: #ffffff;
+    --color-near-white: #fcfcfc;
+    --color-medium-gray: #646464;
+    --color-warm-gray: #4e4e4e;
+    --color-mid-silver: #8d8d8d;
+    --color-light-silver: #bbbbbb;
+    --color-pure-black: #000000;
+    --font-display: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    /* Light mode */
+    --bg-page: #ffffff;
+    --bg-card: #ffffff;
+    --bg-nav: rgba(255,255,255,0.95);
+    --text-primary: #202020;
+    --text-secondary: #646464;
+    --text-muted: #8d8d8d;
+    --border-color: #202020;
+    --border-subtle: #e0e0e0;
+    --section-label-color: var(--color-replicate-red);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nav-brand {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+  }
+  .nav-brand .logo-icon {
+    width: 20px;
+    height: 20px;
+    background: var(--color-replicate-red);
+    border-radius: 9999px;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: underline dotted var(--color-light-silver);
+    text-underline-offset: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--color-replicate-red); }
+  .nav-cta {
+    background: var(--color-replicate-dark);
+    color: var(--color-near-white);
+    padding: 8px 24px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    outline: 4px solid var(--color-replicate-dark);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ea2804 0%, #d42020 25%, #c41858 50%, #e0407a 75%, #f06090 100%);
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -1.8px;
+    margin-bottom: 24px;
+    color: #ffffff;
+    position: relative;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.85);
+    font-size: 20px;
+    line-height: 1.4;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+  .btn-hero-dark {
+    background: var(--color-replicate-dark);
+    color: var(--color-near-white);
+    padding: 12px 32px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    outline: 4px solid var(--color-replicate-dark);
+  }
+  .btn-hero-outlined {
+    background: rgba(255,255,255,0.15);
+    color: #ffffff;
+    padding: 12px 32px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--section-label-color);
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.5px;
+    margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  .color-swatch-block {
+    height: 80px;
+    position: relative;
+    border-radius: 9999px 9999px 0 0;
+  }
+  .color-swatch-info {
+    padding: 12px 16px;
+    background: var(--bg-card);
+  }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .color-swatch-role { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample-text { margin-bottom: 8px; }
+  .type-sample-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* BUTTONS */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .button-demo { text-align: center; }
+  .button-demo-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+  }
+  .btn-dark-solid {
+    background: var(--color-replicate-dark);
+    color: var(--color-near-white);
+    padding: 12px 32px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+    outline: 4px solid var(--color-replicate-dark);
+  }
+  .btn-white-outlined {
+    background: var(--color-white);
+    color: var(--color-replicate-dark);
+    padding: 12px 32px;
+    border: 1px solid var(--color-replicate-dark);
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-frosted-glass {
+    background: rgba(255,255,255,0.1);
+    color: var(--color-replicate-dark);
+    padding: 6px 56px 6px 28px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    cursor: pointer;
+    outline: 1px solid var(--color-light-silver);
+  }
+  .btn-red-accent {
+    background: transparent;
+    color: var(--color-replicate-red);
+    padding: 12px 32px;
+    border: 1px solid var(--color-replicate-red);
+    border-radius: 9999px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-status {
+    background: var(--color-status-green);
+    color: #ffffff;
+    padding: 6px 18px;
+    border: none;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--bg-card);
+    border-radius: 9999px;
+    padding: 28px 32px;
+  }
+  .card-standard { border: 1px solid var(--color-replicate-dark); }
+  .card-accent { border: 1px solid var(--color-replicate-red); }
+  .card-dark {
+    background: var(--color-replicate-dark);
+    color: var(--color-near-white);
+    border: 1px solid var(--color-warm-gray);
+  }
+  .card h3 {
+    font-family: var(--font-display);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--text-secondary); font-size: 15px; line-height: 1.5; }
+  .card-dark p { color: var(--color-light-silver); }
+  .card-label {
+    font-family: var(--font-body);
+    font-size: 12px;
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+    color: var(--color-replicate-red);
+    margin-bottom: 16px;
+  }
+  .card-dark .card-label { color: var(--color-replicate-red); }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--color-github-dark);
+    border: 1px solid var(--color-warm-gray);
+    border-radius: 9999px;
+    padding: 20px 32px;
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.43;
+    color: #e6edf3;
+    overflow-x: auto;
+  }
+  .code-block .keyword { color: #ff7b72; }
+  .code-block .string { color: #a5d6ff; }
+  .code-block .comment { color: #8b949e; }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { text-align: center; }
+  .spacing-box {
+    background: rgba(234,40,4,0.08);
+    border: 1px solid rgba(234,40,4,0.25);
+    border-radius: 9999px;
+    margin-bottom: 8px;
+  }
+  .spacing-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .radius-context {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elevation-card {
+    background: var(--bg-card);
+    border-radius: 9999px;
+    padding: 24px 28px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .elevation-flat { border: none; background: var(--bg-page); }
+  .elevation-bordered { border: 1px solid var(--color-replicate-dark); }
+  .elevation-accent-border { border: 1px solid var(--color-replicate-red); }
+  .elevation-gradient {
+    background: linear-gradient(135deg, #ea2804, #c41858, #e0407a);
+    color: #ffffff;
+  }
+  .elevation-dark-section {
+    background: var(--color-replicate-dark);
+    color: var(--color-near-white);
+    border: 1px solid var(--color-warm-gray);
+  }
+  .elevation-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .elevation-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .elevation-gradient .elevation-desc,
+  .elevation-dark-section .elevation-desc { color: rgba(255,255,255,0.75); }
+  .elevation-level {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-replicate-red);
+    text-transform: lowercase;
+    letter-spacing: 0.3px;
+    margin-top: 12px;
+  }
+  .elevation-gradient .elevation-level,
+  .elevation-dark-section .elevation-level { color: rgba(255,255,255,0.6); }
+
+  /* DOTTED LINK STYLE */
+  .dotted-link {
+    color: var(--text-primary);
+    text-decoration: underline dotted var(--color-light-silver);
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+  .dotted-link:hover { color: var(--color-replicate-red); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-links a:not(.nav-cta-wrapper) { display: none; }
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 42px; letter-spacing: -1px; }
+    .section { padding: 60px 20px; }
+    .section-heading { font-size: 36px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .button-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><div class="logo-icon"></div> Replicate</div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#elevation">Elevation</a>
+    <button class="nav-cta">Sign In</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Preview:<br>Replicate</h1>
+  <p>Auto-generated design token catalog from DESIGN.md</p>
+  <div class="hero-buttons">
+    <button class="btn-hero-dark">Explore Tokens</button>
+    <button class="btn-hero-outlined">View Source</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">01 / Color Palette</div>
+  <h2 class="section-heading">Color Palette & Roles</h2>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #202020;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Replicate Dark</div>
+          <div class="color-swatch-hex">#202020</div>
+          <div class="color-swatch-role">Primary text, dark surfaces, borders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ea2804;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Replicate Red</div>
+          <div class="color-swatch-hex">#ea2804</div>
+          <div class="color-swatch-role">Core brand, hero gradient, accent borders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #dd4425;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Secondary Red</div>
+          <div class="color-swatch-hex">#dd4425</div>
+          <div class="color-swatch-role">Button borders, link hover states</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Secondary & Accent</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #2b9a66;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Status Green</div>
+          <div class="color-swatch-hex">#2b9a66</div>
+          <div class="color-swatch-role">Running/operational status badges</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #24292e;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">GitHub Dark</div>
+          <div class="color-swatch-hex">#24292e</div>
+          <div class="color-swatch-role">Code block backgrounds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffffff; border-bottom: 1px solid #e0e0e0;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Primary page body background</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fcfcfc; border-bottom: 1px solid #e0e0e0;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Near White</div>
+          <div class="color-swatch-hex">#fcfcfc</div>
+          <div class="color-swatch-role">Button text on dark surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: linear-gradient(135deg, #ea2804, #c41858, #e0407a, #f06090);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Hero Blaze Gradient</div>
+          <div class="color-swatch-hex">multi-stop</div>
+          <div class="color-swatch-role">Hero section, maximum visual impact</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #646464;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Medium Gray</div>
+          <div class="color-swatch-hex">#646464</div>
+          <div class="color-swatch-role">Secondary body text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #4e4e4e;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warm Gray</div>
+          <div class="color-swatch-hex">#4e4e4e</div>
+          <div class="color-swatch-role">Emphasized secondary text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #8d8d8d;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mid Silver</div>
+          <div class="color-swatch-hex">#8d8d8d</div>
+          <div class="color-swatch-role">Tertiary text, footnotes</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #bbbbbb;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Light Silver</div>
+          <div class="color-swatch-hex">#bbbbbb</div>
+          <div class="color-swatch-role">Dotted-underline link decoration</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #000000;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure Black</div>
+          <div class="color-swatch-hex">#000000</div>
+          <div class="color-swatch-role">Maximum-emphasis borders</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">02 / Typography Scale</div>
+  <h2 class="section-heading">Typography Rules</h2>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-display); font-size: 72px; font-weight: 700; line-height: 1.0; letter-spacing: -1.8px;">Display Hero</div>
+    <div class="type-sample-label">Display / Hero &mdash; 72px / 700 / 1.00 / -1.8px &mdash; rb-freigeist-neue (system-ui fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-display); font-size: 48px; font-weight: 700; line-height: 1.0;">Section Heading</div>
+    <div class="type-sample-label">Section Heading &mdash; 48px / 400-700 / 1.00 / normal &mdash; rb-freigeist-neue (system-ui fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-display); font-size: 30px; font-weight: 600; line-height: 1.2;">Sub-heading Display</div>
+    <div class="type-sample-label">Sub-heading &mdash; 30px / 600 / 1.20 / normal &mdash; rb-freigeist-neue (system-ui fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 38.4px; font-weight: 400; line-height: 0.83;">Sub-heading Sans</div>
+    <div class="type-sample-label">Sub-heading Sans &mdash; 38.4px / 400 / 0.83 / normal &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 18px; font-weight: 600; line-height: 1.56;">Feature Title</div>
+    <div class="type-sample-label">Feature Title &mdash; 18px / 600 / 1.56 / normal &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 20px; font-weight: 400; line-height: 1.4;">Body large text for intro paragraphs. Basier-square at 400 weight provides quiet geometric precision for all readable content.</div>
+    <div class="type-sample-label">Body Large &mdash; 20px / 400 / 1.40 / normal &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 16px; font-weight: 400; line-height: 1.5;">Standard body text for paragraphs, navigation, and button labels. The workhorse of the type system.</div>
+    <div class="type-sample-label">Body / Button &mdash; 16px / 400-600 / 1.50 / normal &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 14px; font-weight: 400; line-height: 1.43; color: var(--text-secondary);">Caption and metadata descriptions for model cards</div>
+    <div class="type-sample-label">Caption &mdash; 14px / 400-600 / 1.43 / -0.35px &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 12px; font-weight: 400; line-height: 1.33; text-transform: lowercase; color: var(--text-muted);">small tag / lowercase transform</div>
+    <div class="type-sample-label">Small / Tag &mdash; 12px / 400 / 1.33 / normal / lowercase &mdash; basier-square (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: 1.43;">replicate.run("stability-ai/sdxl", input={"prompt": "..."})</div>
+    <div class="type-sample-label">Code Body &mdash; 14px / 400 / 1.43 / normal &mdash; JetBrains Mono</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 11px; font-weight: 400; line-height: 1.5;">import replicate</div>
+    <div class="type-sample-label">Code Small &mdash; 11px / 400 / 1.50 / normal &mdash; JetBrains Mono</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">03 / Button Variants</div>
+  <h2 class="section-heading">Buttons</h2>
+
+  <div class="button-row">
+    <div class="button-demo">
+      <button class="btn-dark-solid">Get Started</button>
+      <div class="button-demo-label">dark solid pill</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-white-outlined">View Docs</button>
+      <div class="button-demo-label">white outlined pill</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-frosted-glass">Search models...</button>
+      <div class="button-demo-label">frosted glass / search</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-red-accent">Highlighted</button>
+      <div class="button-demo-label">red accent pill</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-status">running</button>
+      <div class="button-demo-label">status badge</div>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top: 40px;">
+    <span class="comment"># Run a model with Replicate</span><br>
+    <span class="keyword">import</span> replicate<br>
+    output = replicate.<span class="keyword">run</span>(<span class="string">"stability-ai/sdxl"</span>)
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-title">04 / Card Examples</div>
+  <h2 class="section-heading">Cards & Containers</h2>
+
+  <div class="card-grid">
+    <div class="card card-standard">
+      <div class="card-label">standard card</div>
+      <h3>Hard Border Pill</h3>
+      <p>Content card with 1px solid #202020 border and 9999px pill radius. The default container for model galleries and feature sections.</p>
+    </div>
+    <div class="card card-accent">
+      <div class="card-label">accent highlighted</div>
+      <h3>Red Accent Border</h3>
+      <p>Featured or highlighted card with 1px solid Replicate Red border. Used for promoted models and primary emphasis.</p>
+    </div>
+    <div class="card card-dark">
+      <div class="card-label">dark surface</div>
+      <h3>Dark Section Card</h3>
+      <p>Dark background card for manifesto-style sections, code examples, and high-contrast feature showcases.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-title">05 / Spacing Scale</div>
+  <h2 class="section-heading">Spacing System</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Base unit: 8px. Scale from 1px to 192px with generous section spacing.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-box" style="width: 4px; height: 4px;"></div><div class="spacing-label">1px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 8px; height: 8px;"></div><div class="spacing-label">2px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 16px; height: 16px;"></div><div class="spacing-label">4px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 24px; height: 24px;"></div><div class="spacing-label">6px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 32px; height: 32px;"></div><div class="spacing-label">8px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 48px; height: 48px;"></div><div class="spacing-label">12px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 64px; height: 64px;"></div><div class="spacing-label">16px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 96px; height: 96px;"></div><div class="spacing-label">24px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 128px; height: 128px;"></div><div class="spacing-label">32px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 160px; height: 160px;"></div><div class="spacing-label">48px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 192px; height: 192px;"></div><div class="spacing-label">64px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <div class="section-title">06 / Border Radius Scale</div>
+  <h2 class="section-heading">Border Radius</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Replicate uses exclusively pill-shaped geometry. There is only ONE radius in the entire system.</p>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px;"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Pill &mdash; the ONLY radius</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px; width: 120px; height: 60px; background: var(--color-replicate-dark);"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Buttons</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px; width: 160px; height: 80px; border-color: var(--color-replicate-red);"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Cards</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px; width: 40px; height: 40px; background: var(--color-status-green);"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Badges</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px; width: 80px; height: 80px; background: linear-gradient(135deg, #ea2804, #e0407a);"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Images</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">07 / Elevation & Depth</div>
+  <h2 class="section-heading">Depth & Elevation</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card elevation-flat">
+      <div><div class="elevation-name">Flat</div><div class="elevation-desc">No shadow, no border. White body and inline text blocks.</div></div>
+      <div class="elevation-level">level 0</div>
+    </div>
+    <div class="elevation-card elevation-bordered">
+      <div><div class="elevation-name">Bordered</div><div class="elevation-desc">1px solid #202020. Cards, buttons, containers.</div></div>
+      <div class="elevation-level">level 1</div>
+    </div>
+    <div class="elevation-card elevation-accent-border">
+      <div><div class="elevation-name">Accent Border</div><div class="elevation-desc">1px solid #ea2804. Featured and highlighted items.</div></div>
+      <div class="elevation-level">level 2</div>
+    </div>
+    <div class="elevation-card elevation-gradient">
+      <div><div class="elevation-name">Gradient Hero</div><div class="elevation-desc">Full-width blaze gradient for maximum visual impact.</div></div>
+      <div class="elevation-level">level 3</div>
+    </div>
+    <div class="elevation-card elevation-dark-section">
+      <div><div class="elevation-name">Dark Section</div><div class="elevation-desc">Dark bg #202020 with light text. Manifesto, footer, features.</div></div>
+      <div class="elevation-level">level 4</div>
+    </div>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>

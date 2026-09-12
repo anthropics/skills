@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Revolut (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white:#ffffff; --dark:#191c1f; --light:#f4f4f4; --blue:#494fdf; --action:#4f55f1;
+    --danger:#e23b4a; --pink:#e61e49; --warning:#ec7e00; --teal:#00a87e; --yellow:#b09000;
+    --gray:#8d969e; --slate:#505a63; --border:#c9c9cd;
+    --font-display:'DM Sans',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--dark); font-family:var(--font-body); font-size:16px; font-weight:400; line-height:1.50; letter-spacing:0.24px; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:14px 32px; background:var(--white); }
+  .nav-brand { font-family:var(--font-display); font-size:20px; font-weight:500; color:var(--dark); text-decoration:none; }
+  .nav-links { display:flex; gap:20px; list-style:none; }
+  .nav-links a { font-family:var(--font-display); font-size:16px; font-weight:500; color:var(--slate); text-decoration:none; transition:opacity 0.15s; }
+  .nav-links a:hover { opacity:0.7; }
+  .nav-cta { display:inline-block; background:var(--dark); color:var(--white); padding:10px 24px; border-radius:9999px; font-family:var(--font-display); font-size:16px; font-weight:500; text-decoration:none; }
+
+  .hero { padding:80px 32px; text-align:center; }
+  .hero h1 { font-family:var(--font-display); font-size:72px; font-weight:500; line-height:1.00; letter-spacing:-2.72px; margin-bottom:16px; }
+  .hero p { font-size:18px; color:var(--slate); max-width:500px; margin:0 auto 32px; letter-spacing:-0.09px; line-height:1.56; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn-dark { display:inline-block; background:var(--dark); color:var(--white); padding:14px 32px; border-radius:9999px; font-family:var(--font-display); font-size:16px; font-weight:500; text-decoration:none; border:none; cursor:pointer; transition:opacity 0.15s; }
+  .btn-dark:hover { opacity:0.85; }
+  .btn-light { display:inline-block; background:var(--light); color:var(--dark); padding:14px 34px; border-radius:9999px; font-family:var(--font-display); font-size:16px; font-weight:500; text-decoration:none; border:none; cursor:pointer; transition:opacity 0.15s; }
+  .btn-light:hover { opacity:0.85; }
+  .btn-outline { display:inline-block; background:transparent; color:var(--dark); padding:14px 32px; border-radius:9999px; border:2px solid var(--dark); font-family:var(--font-display); font-size:16px; font-weight:500; text-decoration:none; cursor:pointer; transition:opacity 0.15s; }
+  .btn-outline:hover { opacity:0.85; }
+  .btn-ghost-dark { display:inline-block; background:rgba(244,244,244,0.1); color:var(--light); padding:14px 32px; border-radius:9999px; border:2px solid var(--light); font-family:var(--font-display); font-size:16px; font-weight:500; text-decoration:none; }
+
+  .section { padding:64px 32px; max-width:1100px; margin:0 auto; }
+  .section-dark { padding:64px 32px; background:var(--dark); color:var(--white); }
+  .section-dark .inner { max-width:1100px; margin:0 auto; }
+  .section-label { font-size:12px; font-weight:600; color:var(--gray); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .section-label-light { font-size:12px; font-weight:600; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .section-title { font-family:var(--font-display); font-size:32px; font-weight:500; line-height:1.19; letter-spacing:-0.32px; margin-bottom:32px; }
+  .section-divider { border:none; border-top:1px solid var(--light); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
+  .color-swatch { border-radius:12px; overflow:hidden; border:1px solid var(--light); }
+  .color-swatch-block { height:60px; width:100%; }
+  .color-swatch-info { padding:8px 10px; }
+  .color-swatch-name { font-size:12px; font-weight:500; margin-bottom:2px; }
+  .color-swatch-hex { font-size:10px; color:var(--gray); font-family:monospace; }
+  .color-swatch-role { font-size:9px; color:var(--gray); margin-top:2px; }
+  .color-group-label { font-size:12px; font-weight:600; color:var(--slate); margin:20px 0 8px; }
+
+  .type-sample { margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--light); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:10px; color:var(--gray); margin-top:4px; font-family:monospace; }
+
+  .button-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:10px; color:var(--gray); margin-top:6px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:16px; }
+  .card { background:var(--white); border-radius:20px; padding:24px; border:1px solid var(--light); }
+  .card h3 { font-family:var(--font-display); font-size:24px; font-weight:500; margin-bottom:8px; }
+  .card p { font-size:16px; color:var(--slate); letter-spacing:0.24px; }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:14px; font-weight:600; margin-bottom:4px; letter-spacing:0.16px; }
+  .form-input { width:100%; background:var(--white); color:var(--dark); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-family:var(--font-body); font-size:16px; outline:none; letter-spacing:0.24px; }
+  .form-input:focus { border-color:var(--blue); box-shadow:0 0 0 0.125rem rgba(73,79,223,0.3); }
+  .form-input--focus { border-color:var(--blue); box-shadow:0 0 0 0.125rem rgba(73,79,223,0.3); }
+  .form-input--error { border-color:var(--danger); box-shadow:0 0 0 0.125rem rgba(226,59,74,0.3); }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--dark); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-family:var(--font-body); font-size:16px; resize:vertical; outline:none; }
+  .form-state-label { font-size:9px; color:var(--gray); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--blue); border-radius:4px; margin-bottom:4px; height:24px; }
+  .spacing-value { font-size:9px; color:var(--gray); font-family:monospace; }
+
+  .radius-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:52px; height:52px; background:var(--dark); margin-bottom:4px; }
+  .radius-label { font-size:9px; color:var(--gray); font-family:monospace; }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; }
+  .elevation-card { background:var(--white); border:1px solid var(--light); border-radius:20px; padding:16px; text-align:center; }
+  .elevation-label { font-size:13px; font-weight:500; margin-bottom:4px; }
+  .elevation-desc { font-size:9px; color:var(--gray); font-family:monospace; }
+
+  .footer { padding:32px; text-align:center; background:var(--dark); color:var(--gray); font-size:13px; }
+  .footer a { color:var(--white); text-decoration:underline; }
+
+  @media (max-width:720px) { .hero h1 { font-size:40px; letter-spacing:-0.8px; } .nav-links { display:none; } .section { padding:48px 16px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Revolut</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, and component — visualized with fintech precision.</p>
+  <div class="hero-buttons">
+    <a class="btn-dark" href="#">Get Started</a>
+    <a class="btn-outline" href="#">Learn More</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#191c1f"></div><div class="color-swatch-info"><div class="color-swatch-name">Revolut Dark</div><div class="color-swatch-hex">#191c1f</div><div class="color-swatch-role">Dark surface, text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Light surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f4f4f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Light</div><div class="color-swatch-hex">#f4f4f4</div><div class="color-swatch-role">Secondary surface</div></div></div>
+  </div>
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#494fdf"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue</div><div class="color-swatch-hex">#494fdf</div><div class="color-swatch-role">Brand blue</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e23b4a"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#e23b4a</div><div class="color-swatch-role">Error</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00a87e"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal</div><div class="color-swatch-hex">#00a87e</div><div class="color-swatch-role">Success</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ec7e00"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#ec7e00</div><div class="color-swatch-role">Warning</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e61e49"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Pink</div><div class="color-swatch-hex">#e61e49</div><div class="color-swatch-role">Critical</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b09000"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow</div><div class="color-swatch-hex">#b09000</div><div class="color-swatch-role">Attention</div></div></div>
+  </div>
+  <div class="color-group-label">Neutral</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#505a63"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate</div><div class="color-swatch-hex">#505a63</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#8d969e"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray</div><div class="color-swatch-hex">#8d969e</div><div class="color-swatch-role">Muted text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c9c9cd"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#c9c9cd</div><div class="color-swatch-role">Borders</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:72px; font-weight:500; line-height:1.00; letter-spacing:-2.72px;">Display Mega</div><div class="type-meta">Display — 136px / 500 / 1.00 / -2.72px / Aeonik Pro</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:48px; font-weight:500; line-height:1.21; letter-spacing:-0.48px;">Section Heading</div><div class="type-meta">Section — 48px / 500 / 1.21 / -0.48px / Aeonik Pro</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:32px; font-weight:500; line-height:1.19; letter-spacing:-0.32px;">Card Title</div><div class="type-meta">Card — 32px / 500 / 1.19 / -0.32px / Aeonik Pro</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:400; line-height:1.56; letter-spacing:-0.09px; color:var(--slate);">Body Large — One app for all things money. From spending to saving, to investing and beyond.</div><div class="type-meta">Body — 18px / 400 / 1.56 / -0.09px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:600; line-height:1.50; letter-spacing:0.16px;">Body Semibold — Account details</div><div class="type-meta">Semibold — 16px / 600 / 1.50 / +0.16px / Inter</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div><h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-dark" href="#">Get Started</a><div class="button-label">Primary Dark</div></div>
+    <div class="button-item"><a class="btn-light" href="#">Learn More</a><div class="button-label">Secondary Light</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">Contact</a><div class="button-label">Outlined</div></div>
+  </div>
+  <div style="background:var(--dark); padding:16px 20px; border-radius:20px; margin-top:16px; display:inline-flex; gap:12px;">
+    <a class="btn-ghost-dark" href="#">Ghost on Dark</a>
+  </div>
+  <div class="button-label" style="margin-top:8px;">Ghost variant on dark surface</div>
+</section>
+
+<div class="section-dark">
+  <div class="inner" id="cards">
+    <div class="section-label-light">04 / Cards</div><h2 class="section-title">Card Examples</h2>
+    <div class="card-grid">
+      <div class="card"><h3>Spending</h3><p>Track your spending in real-time. Get instant notifications for every transaction.</p></div>
+      <div class="card"><h3>Saving</h3><p>Set saving goals and round up spare change automatically into your vaults.</p></div>
+      <div class="card"><h3>Investing</h3><p>Buy and sell stocks, crypto, and commodities commission-free from your phone.</p></div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div><h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Phone number</label><input class="form-input" type="tel" placeholder="+44 7700 900000"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Email</label><input class="form-input form-input--focus" type="email" value="user@revolut.com"><div class="form-state-label">Focus (blue ring)</div></div>
+  <div class="form-group"><label class="form-label">Amount</label><input class="form-input form-input--error" type="text" value="-500"><div class="form-state-label">Error (danger ring)</div></div>
+  <div class="form-group"><label class="form-label">Note</label><textarea class="form-textarea" placeholder="Add a note..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:80px"></div><div class="spacing-value">80</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">07 / Radius</div><h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">20px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px; width:52px; height:52px;"></div><div class="radius-label">pill</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Flat</div><div class="elevation-desc">No shadow — Revolut is flat</div></div>
+    <div class="elevation-card" style="box-shadow:0 0 0 0.125rem rgba(73,79,223,0.3);"><div class="elevation-label">Focus</div><div class="elevation-desc">0.125rem ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">Generated from <a href="https://revolut.com/">revolut.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

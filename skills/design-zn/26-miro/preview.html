@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Miro (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --white:#fff; --black:#1c1c1e; --blue:#5b76fe; --blue-pressed:#2a41b6; --success:#00b473; --coral-l:#ffc6c6; --coral-d:#600000; --rose-l:#ffd8f4; --teal-l:#c3faf5; --teal-d:#187574; --orange-l:#ffe6cd; --pink:#fde0f0; --slate:#555a6a; --placeholder:#a5a8b5; --border:#c7cad5; --ring:rgb(224,226,232); --font:'Inter',ui-sans-serif,system-ui,sans-serif; --font-body:'Noto Sans','Inter',sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--black); font-family:var(--font); font-size:16px; line-height:1.50; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:12px 24px; background:var(--white); box-shadow:var(--ring) 0px 0px 0px 1px; }
+  .nav-brand { font-size:16px; font-weight:500; color:var(--black); text-decoration:none; }
+  .nav-links { display:flex; gap:20px; list-style:none; }
+  .nav-links a { font-size:14px; color:var(--slate); text-decoration:none; }
+  .nav-links a:hover { color:var(--blue); }
+  .nav-cta { display:inline-block; background:var(--blue); color:var(--white); padding:8px 16px; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none; letter-spacing:0.175px; }
+
+  .hero { padding:80px 24px 64px; text-align:center; }
+  .hero h1 { font-size:56px; font-weight:500; line-height:1.15; letter-spacing:-1.68px; margin-bottom:16px; }
+  .hero h1 span { color:var(--blue); }
+  .hero p { font-family:var(--font-body); font-size:18px; color:var(--slate); max-width:500px; margin:0 auto 32px; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; }
+  .btn-blue { display:inline-block; background:var(--blue); color:var(--white); padding:12px 24px; border-radius:8px; font-size:17.5px; font-weight:700; letter-spacing:0.175px; text-decoration:none; border:none; cursor:pointer; }
+  .btn-outline { display:inline-block; background:transparent; color:var(--black); padding:12px 24px; border-radius:8px; border:1px solid var(--border); font-size:17.5px; font-weight:500; text-decoration:none; cursor:pointer; }
+
+  .section { padding:48px 24px; max-width:1100px; margin:0 auto; }
+  .section-label { font-size:10.5px; text-transform:uppercase; color:var(--slate); margin-bottom:8px; }
+  .section-title { font-size:48px; font-weight:500; line-height:1.15; letter-spacing:-1.44px; margin-bottom:24px; }
+  .section-divider { border:none; border-top:1px solid var(--ring); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(130px,1fr)); gap:8px; margin-bottom:16px; }
+  .color-swatch { border-radius:12px; overflow:hidden; box-shadow:var(--ring) 0px 0px 0px 1px; }
+  .color-swatch-block { height:56px; }
+  .color-swatch-info { padding:8px; }
+  .color-swatch-name { font-size:11px; font-weight:500; margin-bottom:1px; }
+  .color-swatch-hex { font-size:9px; color:var(--placeholder); font-family:monospace; }
+  .color-group-label { font-size:11px; font-weight:600; color:var(--slate); margin:16px 0 6px; }
+
+  .type-sample { margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(224,226,232,0.5); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:9px; color:var(--placeholder); margin-top:4px; font-family:monospace; }
+
+  .button-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:9px; color:var(--placeholder); margin-top:4px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:12px; }
+  .card { border-radius:12px; padding:20px; }
+  .card h3 { font-size:24px; font-weight:500; letter-spacing:-0.72px; line-height:1.15; margin-bottom:8px; }
+  .card p { font-family:var(--font-body); font-size:14px; color:var(--slate); }
+
+  .form-group { margin-bottom:12px; max-width:380px; }
+  .form-label { display:block; font-size:14px; font-weight:600; margin-bottom:4px; }
+  .form-input { width:100%; background:var(--white); color:var(--black); border:1px solid #e9eaef; padding:12px 16px; border-radius:8px; font-family:var(--font); font-size:16px; outline:none; }
+  .form-input:focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue); }
+  .form-input--focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue); }
+  .form-input--error { border-color:var(--coral-d); box-shadow:0 0 0 1px var(--coral-d); }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--black); border:1px solid #e9eaef; padding:12px 16px; border-radius:8px; font-family:var(--font); font-size:16px; resize:vertical; outline:none; }
+  .form-state-label { font-size:9px; color:var(--placeholder); margin-top:3px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--blue); border-radius:3px; margin-bottom:3px; height:20px; opacity:0.6; }
+  .spacing-value { font-size:8px; color:var(--placeholder); font-family:monospace; }
+
+  .radius-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:48px; height:48px; background:var(--teal-l); margin-bottom:3px; }
+  .radius-label { font-size:8px; color:var(--placeholder); font-family:monospace; }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px; }
+  .elevation-card { background:var(--white); border-radius:12px; padding:14px; text-align:center; }
+  .elevation-label { font-size:12px; font-weight:500; margin-bottom:3px; }
+  .elevation-desc { font-size:8px; color:var(--placeholder); font-family:monospace; }
+
+  .footer { padding:24px; text-align:center; background:var(--black); color:var(--placeholder); font-size:11px; }
+  .footer a { color:var(--blue); text-decoration:underline; }
+
+  @media (max-width:768px) { .hero h1 { font-size:36px; letter-spacing:-1.08px; } .nav-links { display:none; } .section { padding:32px 16px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav"><a class="nav-brand" href="#">awesome-design-md</a><ul class="nav-links"><li><a href="#colors">Colors</a></li><li><a href="#typography">Typography</a></li><li><a href="#buttons">Buttons</a></li><li><a href="#cards">Cards</a></li><li><a href="#forms">Forms</a></li></ul><a class="nav-cta" href="#">Sign up free</a></nav>
+
+<section class="hero"><h1>Design System<br>Inspired by <span>Miro</span></h1><p>Every color, font, and component — visualized with collaborative precision.</p><div class="hero-buttons"><a class="btn-blue" href="#">Sign up free</a><a class="btn-outline" href="#">Contact sales</a></div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors"><div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+<div class="color-group-label">Primary</div>
+<div class="color-grid">
+<div class="color-swatch"><div class="color-swatch-block" style="background:#1c1c1e"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#1c1c1e</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#5b76fe"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 450</div><div class="color-swatch-hex">#5b76fe</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#00b473"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#00b473</div></div></div>
+</div>
+<div class="color-group-label">Pastel Accents</div>
+<div class="color-grid">
+<div class="color-swatch"><div class="color-swatch-block" style="background:#ffc6c6"></div><div class="color-swatch-info"><div class="color-swatch-name">Coral Light</div><div class="color-swatch-hex">#ffc6c6</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#ffd8f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Rose Light</div><div class="color-swatch-hex">#ffd8f4</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#c3faf5"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal Light</div><div class="color-swatch-hex">#c3faf5</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#ffe6cd"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange Light</div><div class="color-swatch-hex">#ffe6cd</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#fde0f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Pink</div><div class="color-swatch-hex">#fde0f0</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#fbd4d4"></div><div class="color-swatch-info"><div class="color-swatch-name">Red Light</div><div class="color-swatch-hex">#fbd4d4</div></div></div>
+</div>
+<div class="color-group-label">Neutral</div>
+<div class="color-grid">
+<div class="color-swatch"><div class="color-swatch-block" style="background:#555a6a"></div><div class="color-swatch-info"><div class="color-swatch-name">Slate</div><div class="color-swatch-hex">#555a6a</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#a5a8b5"></div><div class="color-swatch-info"><div class="color-swatch-name">Placeholder</div><div class="color-swatch-hex">#a5a8b5</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#c7cad5"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#c7cad5</div></div></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography"><div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+<div class="type-sample"><div style="font-size:56px; font-weight:500; line-height:1.15; letter-spacing:-1.68px;">Display Hero</div><div class="type-meta">Roobert PRO Medium — 56px / 1.15 / -1.68px</div></div>
+<div class="type-sample"><div style="font-size:48px; font-weight:500; line-height:1.15; letter-spacing:-1.44px;">Section Heading</div><div class="type-meta">Roobert PRO — 48px / 1.15 / -1.44px</div></div>
+<div class="type-sample"><div style="font-size:24px; font-weight:500; line-height:1.15; letter-spacing:-0.72px;">Card Title</div><div class="type-meta">Roobert PRO — 24px / 1.15 / -0.72px</div></div>
+<div class="type-sample"><div style="font-family:var(--font-body); font-size:18px; line-height:1.45; color:var(--slate);">Body — Get from brainstorm to breakthrough with Miro. The visual collaboration platform.</div><div class="type-meta">Noto Sans — 18px / 1.45</div></div>
+<div class="type-sample"><div style="font-size:17.5px; font-weight:700; line-height:1.29; letter-spacing:0.175px;">Button Label</div><div class="type-meta">Roobert PRO — 17.5px / 700 / +0.175px</div></div>
+<div class="type-sample"><div style="font-size:10.5px; text-transform:uppercase; line-height:0.90; color:var(--slate);">MICRO LABEL</div><div class="type-meta">Roobert PRO — 10.5px / uppercase</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons"><div class="section-label">03 / Buttons</div><h2 class="section-title">Buttons</h2>
+<div class="button-row">
+<div class="button-item"><a class="btn-blue" href="#">Sign up free</a><div class="button-label">Primary Blue</div></div>
+<div class="button-item"><a class="btn-outline" href="#">Contact sales</a><div class="button-label">Outlined</div></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards"><div class="section-label">04 / Cards</div><h2 class="section-title">Cards</h2>
+<div class="card-grid">
+<div class="card" style="background:var(--coral-l);"><h3>Brainstorming</h3><p>Ideate together in real-time with sticky notes and voting.</p></div>
+<div class="card" style="background:var(--teal-l);"><h3>Diagramming</h3><p>Create flowcharts, mind maps, and org charts visually.</p></div>
+<div class="card" style="background:var(--orange-l);"><h3>Workshops</h3><p>Run engaging workshops with built-in templates.</p></div>
+<div class="card" style="background:var(--rose-l);"><h3>Strategy</h3><p>Align teams with visual strategic planning tools.</p></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms"><div class="section-label">05 / Forms</div><h2 class="section-title">Forms</h2>
+<div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@company.com"><div class="form-state-label">Default</div></div>
+<div class="form-group"><label class="form-label">Team name</label><input class="form-input form-input--focus" type="text" value="Design Team"><div class="form-state-label">Focus (blue ring)</div></div>
+<div class="form-group"><label class="form-label">Password</label><input class="form-input form-input--error" type="password" value="short"><div class="form-state-label">Error</div></div>
+<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your board..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing</h2>
+<div class="spacing-row"><div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div><div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div><div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div><div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div><div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div></div></section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">07 / Radius</div><h2 class="section-title">Radius</h2>
+<div class="radius-row"><div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">20px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:40px"></div><div class="radius-label">40px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:50px"></div><div class="radius-label">50px</div></div></div></section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+<div class="elevation-grid"><div class="elevation-card" style="box-shadow:var(--ring) 0px 0px 0px 1px;"><div class="elevation-label">Ring</div><div class="elevation-desc">1px ring border</div></div><div class="elevation-card" style="box-shadow:0 0 0 1px var(--blue);"><div class="elevation-label">Focus</div><div class="elevation-desc">Blue ring</div></div></div></section>
+
+<footer class="footer">Generated from <a href="https://miro.com/">miro.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

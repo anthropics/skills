@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Inspired by Framer — Dark Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-blue: #0099ff;
+    --color-silver: #a6a6a6;
+    --color-near-black: #090909;
+    --color-frosted: rgba(255, 255, 255, 0.1);
+    --color-frosted-hover: rgba(255, 255, 255, 0.15);
+    --color-blue-glow: rgba(0, 153, 255, 0.15);
+    --color-ghost: rgba(255, 255, 255, 0.6);
+    --color-placeholder: rgba(255, 255, 255, 0.4);
+    --shadow-ring: rgba(0, 153, 255, 0.15) 0px 0px 0px 1px;
+    --shadow-contained: rgb(9, 9, 9) 0px 0px 0px 2px;
+    --shadow-floating: rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px, rgba(0, 0, 0, 0.25) 0px 10px 30px 0px;
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Azeret Mono', monospace;
+    --radius-xs: 1px;
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 15px;
+    --radius-2xl: 20px;
+    --radius-pill: 100px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font-body);
+    background: #050508;
+    color: var(--color-white);
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 200;
+    background: var(--color-white);
+    color: var(--color-black);
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: -0.11px;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(5, 5, 8, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .nav-brand {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-white);
+    letter-spacing: -0.3px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--color-silver);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.14px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--color-white); }
+  .nav-cta {
+    background: var(--color-white);
+    color: var(--color-black) !important;
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 13px;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.9; }
+
+  /* HERO */
+  .hero {
+    padding: 120px 32px 100px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: radial-gradient(ellipse at 50% 80%, rgba(0, 153, 255, 0.06) 0%, transparent 60%);
+  }
+  .hero h1 {
+    font-size: 96px;
+    font-weight: 700;
+    letter-spacing: -5px;
+    line-height: 0.88;
+    color: var(--color-white);
+    margin-bottom: 24px;
+  }
+  .hero .subtitle {
+    font-size: 18px;
+    color: var(--color-silver);
+    letter-spacing: -0.01px;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 40px;
+  }
+  .hero-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-white);
+    color: var(--color-black);
+    padding: 12px 28px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: -0.15px;
+  }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-frosted);
+    color: var(--color-white);
+    padding: 12px 28px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: -0.15px;
+  }
+  .btn-secondary:hover { background: var(--color-frosted-hover); }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 32px;
+  }
+  .section-title {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -2.5px;
+    line-height: 1.0;
+    margin-bottom: 12px;
+  }
+  .section-desc {
+    font-size: 16px;
+    color: var(--color-silver);
+    margin-bottom: 48px;
+    letter-spacing: -0.01px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    margin: 0 32px;
+    max-width: 1136px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-silver);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0a0a0d;
+    box-shadow: var(--shadow-ring);
+  }
+  .color-swatch-preview {
+    height: 80px;
+    width: 100%;
+  }
+  .color-swatch-info {
+    padding: 12px;
+  }
+  .color-swatch-name {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    letter-spacing: -0.13px;
+  }
+  .color-swatch-hex {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-silver);
+  }
+  .color-swatch-role {
+    font-size: 11px;
+    color: var(--color-ghost);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* TYPOGRAPHY */
+  .type-sample {
+    padding: 24px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .type-sample:last-child { border-bottom: none; }
+  .type-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-blue);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .type-spec {
+    font-size: 12px;
+    color: var(--color-silver);
+    margin-top: 8px;
+    letter-spacing: -0.12px;
+  }
+
+  /* BUTTONS */
+  .button-showcase {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-white);
+    padding: 12px 28px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    letter-spacing: -0.15px;
+    font-family: var(--font-body);
+  }
+  .btn-ghost:hover {
+    background: var(--color-frosted);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .btn-blue {
+    background: var(--color-blue);
+    color: var(--color-white);
+    padding: 12px 28px;
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: -0.15px;
+    font-family: var(--font-body);
+  }
+  .btn-blue:hover { opacity: 0.85; }
+  .btn-label {
+    display: block;
+    font-size: 11px;
+    color: var(--color-silver);
+    margin-top: 8px;
+    text-align: center;
+    font-family: var(--font-mono);
+  }
+  .btn-item { text-align: center; }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: #0a0a0d;
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-ring);
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .card:hover {
+    box-shadow: rgba(0, 153, 255, 0.3) 0px 0px 0px 1px, rgba(0, 0, 0, 0.4) 0px 12px 40px;
+    transform: translateY(-2px);
+  }
+  .card-elevated {
+    box-shadow: var(--shadow-floating);
+  }
+  .card-elevated:hover {
+    box-shadow: rgba(255, 255, 255, 0.15) 0px 0.5px 0px 0.5px, rgba(0, 0, 0, 0.45) 0px 14px 44px;
+    transform: translateY(-2px);
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.8px;
+    margin-bottom: 8px;
+  }
+  .card-text {
+    font-size: 14px;
+    color: var(--color-silver);
+    line-height: 1.5;
+  }
+  .card-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(0, 153, 255, 0.1);
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-blue);
+    margin-bottom: 12px;
+    letter-spacing: -0.11px;
+  }
+
+  /* FORMS */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-silver);
+    letter-spacing: -0.13px;
+  }
+  .form-input {
+    background: #0a0a0d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    color: var(--color-white);
+    font-size: 14px;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input::placeholder { color: var(--color-placeholder); }
+  .form-input:focus {
+    border-color: var(--color-blue);
+    box-shadow: var(--shadow-ring);
+  }
+  .form-input-error {
+    border-color: #ff4444;
+    box-shadow: rgba(255, 68, 68, 0.15) 0px 0px 0px 1px;
+  }
+  .form-error-text {
+    font-size: 12px;
+    color: #ff4444;
+  }
+  textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  /* SPACING */
+  .spacing-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .spacing-box {
+    height: 32px;
+    background: var(--color-blue);
+    border-radius: 4px;
+    opacity: 0.6;
+  }
+  .spacing-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-silver);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* RADIUS */
+  .radius-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 72px;
+    height: 72px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 8px;
+  }
+  .radius-value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-silver);
+  }
+  .radius-context {
+    font-size: 10px;
+    color: var(--color-ghost);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+  }
+  .elevation-card {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: #0a0a0d;
+    min-height: 120px;
+  }
+  .elevation-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.14px;
+  }
+  .elevation-desc {
+    font-size: 12px;
+    color: var(--color-silver);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 48px 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    margin-top: 40px;
+  }
+  .footer p {
+    font-size: 13px;
+    color: var(--color-silver);
+  }
+  .footer a {
+    color: var(--color-blue);
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 52px; letter-spacing: -2.5px; }
+    .hero .subtitle { font-size: 16px; }
+    .section-title { font-size: 36px; letter-spacing: -1.5px; }
+    .nav-links { display: none; }
+    .color-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .elevation-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- DARK MODE BADGE -->
+<div class="dark-badge">Dark Mode</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-brand">awesome-design-md</span>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+    <li><a href="#" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System<br>Inspired by Framer</h1>
+  <p class="subtitle">A complete visual catalog of design tokens, components, and patterns extracted from Framer's marketing site and documented in DESIGN.md.</p>
+  <div class="hero-buttons">
+    <a href="#colors" class="btn-primary">Explore Tokens</a>
+    <a href="#buttons" class="btn-secondary">View Components</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 1. COLOR PALETTE -->
+<section class="section" id="colors">
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-desc">Every color from Framer's dark-first identity — pure black void, electric blue accent, and frosted white surfaces.</p>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #000000; border-bottom: 1px solid rgba(255,255,255,0.04);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Void Black</div>
+          <div class="color-swatch-hex">#000000</div>
+          <div class="color-swatch-role">Primary background, void canvas</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #ffffff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Primary text, button fill</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #0099ff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Framer Blue</div>
+          <div class="color-swatch-hex">#0099ff</div>
+          <div class="color-swatch-role">Accent — links, borders, focus rings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Secondary & Accent</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #a6a6a6;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Muted Silver</div>
+          <div class="color-swatch-hex">#a6a6a6</div>
+          <div class="color-swatch-role">Secondary text, descriptions</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #090909; border: 1px solid rgba(255,255,255,0.04);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Near Black</div>
+          <div class="color-swatch-hex">#090909</div>
+          <div class="color-swatch-role">Elevated dark surface, card background</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.04);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Frosted White</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.1)</div>
+          <div class="color-swatch-role">Glass-effect buttons, translucent surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(255,255,255,0.6);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Ghost White</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.6)</div>
+          <div class="color-swatch-role">Tertiary text, placeholders</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Semantic</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(0,153,255,0.15); border: 1px solid rgba(0,153,255,0.15);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Blue Glow</div>
+          <div class="color-swatch-hex">rgba(0,153,255,0.15)</div>
+          <div class="color-swatch-role">Focus ring shadow, blue halo</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #0000ee;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Default Link Blue</div>
+          <div class="color-swatch-hex">#0000ee</div>
+          <div class="color-swatch-role">Browser default links (rare)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 2. TYPOGRAPHY -->
+<section class="section" id="typography">
+  <h2 class="section-title">Typography Scale</h2>
+  <p class="section-desc">GT Walsheim for compressed display headlines, Inter for refined body and UI text with extensive OpenType features.</p>
+
+  <div class="type-sample">
+    <div class="type-label">Display Hero — 110px / 500 / 0.85 / -5.5px</div>
+    <div style="font-size: 80px; font-weight: 700; letter-spacing: -4px; line-height: 0.88;">Build better sites</div>
+    <div class="type-spec">GT Walsheim Framer Medium (shown in Inter fallback) — extreme negative tracking, compressed impact</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Section Display — 85px / 500 / 0.95 / -4.25px</div>
+    <div style="font-size: 64px; font-weight: 700; letter-spacing: -3.5px; line-height: 0.95;">Scale without limits</div>
+    <div class="type-spec">GT Walsheim Medium (shown in Inter fallback) — OpenType: ss02, tnum</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Section Heading — 62px / 500 / 1.00 / -3.1px</div>
+    <div style="font-size: 52px; font-weight: 600; letter-spacing: -2.8px; line-height: 1.0;">Create, collaborate</div>
+    <div class="type-spec">GT Walsheim Medium — OpenType: ss02</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Feature Heading — 32px / 500 / 1.13 / -1px</div>
+    <div style="font-size: 32px; font-weight: 500; letter-spacing: -1px; line-height: 1.13;">Powering ambitious sites</div>
+    <div class="type-spec">GT Walsheim Medium — tightest of the smaller headings</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Card Title — 24px / 400 / 1.30 / -0.01px</div>
+    <div style="font-size: 24px; font-weight: 400; letter-spacing: -0.01px; line-height: 1.3;">Interactive components that respond</div>
+    <div class="type-spec">Inter Variable — OpenType: cv01, cv05, cv09, cv11, ss03, ss07</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Feature Title — 22px / 700 / 1.20 / -0.8px</div>
+    <div style="font-size: 22px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.2;">Visual canvas meets code precision</div>
+    <div class="type-spec">Inter — OpenType: cv05</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Body Large — 18px / 400 / 1.30 / -0.01px</div>
+    <div style="font-size: 18px; font-weight: 400; letter-spacing: -0.01px; line-height: 1.3; color: var(--color-silver);">Framer brings together the power of a visual canvas with the flexibility of code to create stunning, production-ready websites.</div>
+    <div class="type-spec">Inter Variable — OpenType: cv01, cv05, cv09, cv11, ss03, ss07</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Body — 15px / 400 / 1.30 / -0.01px</div>
+    <div style="font-size: 15px; font-weight: 400; letter-spacing: -0.01px; line-height: 1.3; color: var(--color-silver);">Design and publish performant sites. Framer handles layout, interactions, and responsive behavior so you can focus on creativity.</div>
+    <div class="type-spec">Inter Variable — OpenType: cv11</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Caption — 14px / 400 / 1.40</div>
+    <div style="font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--color-silver);">Responsive breakpoints with automatic layout adjustments across all devices.</div>
+    <div class="type-spec">Inter Variable — OpenType: cv01, cv06, cv09, cv11, ss03, ss07</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Label — 13px / 500 / 1.60</div>
+    <div style="font-size: 13px; font-weight: 500; line-height: 1.6; color: var(--color-silver);">Component interaction settings</div>
+    <div class="type-spec">Inter — OpenType: cv06, cv11, ss03</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Micro Code — 10.4px / 400 / 1.60</div>
+    <div style="font-family: var(--font-mono); font-size: 10.4px; font-weight: 400; line-height: 1.6; color: var(--color-blue);">npx framer-motion@latest</div>
+    <div class="type-spec">Azeret Mono — OpenType: cv06, cv11, ss03</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 3. BUTTONS -->
+<section class="section" id="buttons">
+  <h2 class="section-title">Button Variants</h2>
+  <p class="section-desc">All pill-shaped — no sharp corners on interactive elements. 40px–100px radius range.</p>
+
+  <div class="button-showcase">
+    <div class="btn-item">
+      <a href="#" class="btn-primary">Start for Free</a>
+      <span class="btn-label">Primary / White Pill</span>
+    </div>
+    <div class="btn-item">
+      <a href="#" class="btn-secondary">Learn More</a>
+      <span class="btn-label">Frosted / Glass</span>
+    </div>
+    <div class="btn-item">
+      <button class="btn-ghost">View Docs</button>
+      <span class="btn-label">Ghost / Outline</span>
+    </div>
+    <div class="btn-item">
+      <button class="btn-blue">Upgrade Plan</button>
+      <span class="btn-label">Blue / Accent</span>
+    </div>
+    <div class="btn-item">
+      <a href="#" class="btn-primary" style="padding: 8px 18px; font-size: 13px;">Sign Up</a>
+      <span class="btn-label">Small / Nav CTA</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 4. CARDS -->
+<section class="section" id="cards">
+  <h2 class="section-title">Card Examples</h2>
+  <p class="section-desc">Dark surface cards with Framer Blue ring borders and multi-layer floating shadows.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag">Visual Canvas</div>
+      <h3 class="card-title">Design Freedom</h3>
+      <p class="card-text">Build layouts with a true visual editor that outputs clean, production-ready code. Drag, resize, and animate with precision.</p>
+    </div>
+    <div class="card card-elevated">
+      <div class="card-tag">Interactive</div>
+      <h3 class="card-title">Smart Components</h3>
+      <p class="card-text">Create reusable components with built-in variants, interactions, and responsive overrides that scale across your project.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Performance</div>
+      <h3 class="card-title">Lightning Fast</h3>
+      <p class="card-text">Sites built on Framer's infrastructure load instantly with optimized assets, code splitting, and edge delivery.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 5. FORMS -->
+<section class="section" id="forms">
+  <h2 class="section-title">Form Elements</h2>
+  <p class="section-desc">Dark inputs with Framer Blue focus rings and minimal chrome.</p>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address (Focus State)</label>
+      <input type="email" class="form-input" placeholder="you@example.com" style="border-color: var(--color-blue); box-shadow: var(--shadow-ring);">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Project URL (Error State)</label>
+      <input type="url" class="form-input form-input-error" placeholder="https://yoursite.framer.app" value="invalid-url">
+      <span class="form-error-text">Please enter a valid URL</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input" placeholder="Describe your project..."></textarea>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 6. SPACING -->
+<section class="section" id="spacing">
+  <h2 class="section-title">Spacing Scale</h2>
+  <p class="section-desc">8px base unit system with fine-grained sub-8px values for micro-adjustments.</p>
+
+  <div>
+    <div class="spacing-row"><span class="spacing-label">2px</span><div class="spacing-box" style="width: 8px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">4px</span><div class="spacing-box" style="width: 16px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">6px</span><div class="spacing-box" style="width: 24px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">8px</span><div class="spacing-box" style="width: 40px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">10px</span><div class="spacing-box" style="width: 56px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">12px</span><div class="spacing-box" style="width: 72px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">15px</span><div class="spacing-box" style="width: 96px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">20px</span><div class="spacing-box" style="width: 140px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">30px</span><div class="spacing-box" style="width: 220px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">35px</span><div class="spacing-box" style="width: 260px;"></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 7. BORDER RADIUS -->
+<section class="section" id="radius">
+  <h2 class="section-title">Border Radius Scale</h2>
+  <p class="section-desc">From nearly-squared micro edges to full pill shapes — radius grows with element importance.</p>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 1px;"></div>
+      <div class="radius-value">1px</div>
+      <div class="radius-context">Micro</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 5px;"></div>
+      <div class="radius-value">5px</div>
+      <div class="radius-context">Thumbnails</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 8px;"></div>
+      <div class="radius-value">8px</div>
+      <div class="radius-context">Components</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 12px;"></div>
+      <div class="radius-value">12px</div>
+      <div class="radius-context">Cards</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 15px;"></div>
+      <div class="radius-value">15px</div>
+      <div class="radius-context">Large cards</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 20px;"></div>
+      <div class="radius-value">20px</div>
+      <div class="radius-context">Containers</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 40px;"></div>
+      <div class="radius-value">40px</div>
+      <div class="radius-context">Nav pills</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 100px; width: 72px; height: 44px;"></div>
+      <div class="radius-value">100px</div>
+      <div class="radius-context">Full pill</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- 8. ELEVATION -->
+<section class="section" id="elevation">
+  <h2 class="section-title">Elevation & Depth</h2>
+  <p class="section-desc">Inverted elevation system — blue ring shadows for containment, white edge highlights for floating elements.</p>
+
+  <div class="elevation-grid">
+    <div class="elevation-card" style="box-shadow: none; border: 1px solid rgba(255,255,255,0.03);">
+      <div class="elevation-label">Level 0 — Flat</div>
+      <div class="elevation-desc">No shadow. Pure black surface. The void baseline that everything else rises from.</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: var(--shadow-ring);">
+      <div class="elevation-label">Level 1 — Ring</div>
+      <div class="elevation-desc">Framer Blue glow ring (rgba(0,153,255,0.15) 1px). Card borders, interactive outlines.</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: var(--shadow-contained);">
+      <div class="elevation-label">Level 2 — Contained</div>
+      <div class="elevation-desc">Near-black ring (rgb(9,9,9) 2px). Subtle containment on dark surfaces.</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: var(--shadow-floating);">
+      <div class="elevation-label">Level 3 — Floating</div>
+      <div class="elevation-desc">White top-edge highlight + deep ambient shadow (30px spread). Elevated cards, modals, dropdowns.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Design system extracted from <a href="https://framer.com">framer.com</a> — Generated by awesome-design-md</p>
+</footer>
+
+</body>
+</html>

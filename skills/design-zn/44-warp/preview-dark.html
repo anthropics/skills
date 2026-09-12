@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Inspired by Warp — Dark Mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080807;
+    --bg-surface: #111110;
+    --parchment: #f5f4f1;
+    --ash: #a5a4a2;
+    --stone: #7a7978;
+    --purple-gray: #5c5a5f;
+    --earth: #2c2c2b;
+    --charcoal: #3a3a39;
+    --border: rgba(200, 200, 198, 0.25);
+    --border-subtle: rgba(200, 200, 198, 0.1);
+    --frosted: rgba(255, 255, 255, 0.03);
+    --frosted-btn: rgba(255, 255, 255, 0.12);
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--parchment);
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dark-badge {
+    position: fixed; top: 14px; right: 14px; z-index: 200;
+    background: var(--parchment); color: var(--bg);
+    padding: 5px 12px; border-radius: 50px;
+    font-size: 11px; font-weight: 500;
+  }
+
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(8, 8, 7, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-brand { font-size: 15px; font-weight: 500; color: var(--parchment); letter-spacing: -0.15px; }
+  .nav-links { display: flex; gap: 24px; align-items: center; list-style: none; }
+  .nav-links a { color: var(--stone); text-decoration: none; font-size: 16px; font-weight: 400; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--parchment); }
+  .nav-cta {
+    background: var(--earth); color: var(--ash) !important;
+    padding: 8px 20px; border-radius: 50px; font-weight: 500; font-size: 14px;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  .hero {
+    padding: 120px 32px 100px; text-align: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: 72px; font-weight: 400; letter-spacing: -2.4px; line-height: 1.0;
+    color: var(--parchment); margin-bottom: 20px;
+  }
+  .hero .subtitle {
+    font-size: 20px; color: var(--ash); letter-spacing: -0.2px;
+    line-height: 1.4; max-width: 560px; margin: 0 auto 40px;
+  }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center;
+    background: var(--earth); color: var(--ash);
+    padding: 12px 28px; border-radius: 50px;
+    font-size: 16px; font-weight: 500; text-decoration: none;
+    border: none; cursor: pointer; transition: opacity 0.2s; font-family: var(--font);
+  }
+  .btn-primary:hover { opacity: 0.8; }
+  .btn-secondary {
+    display: inline-flex; align-items: center;
+    background: transparent; color: var(--parchment);
+    padding: 12px 28px; border-radius: 50px;
+    font-size: 16px; font-weight: 400; text-decoration: none;
+    border: 1px solid var(--border); cursor: pointer;
+    transition: opacity 0.2s; font-family: var(--font);
+  }
+  .btn-secondary:hover { opacity: 0.7; }
+
+  .section { max-width: 1200px; margin: 0 auto; padding: 80px 32px; }
+  .section-title { font-size: 48px; font-weight: 400; letter-spacing: -0.96px; line-height: 1.2; margin-bottom: 12px; }
+  .section-desc { font-size: 18px; color: var(--ash); margin-bottom: 48px; letter-spacing: -0.18px; line-height: 1.3; }
+  .section-divider { border: none; border-top: 1px solid var(--border-subtle); max-width: 1136px; margin: 0 auto; }
+
+  .color-group { margin-bottom: 40px; }
+  .color-group-title { font-size: 12px; font-weight: 400; color: var(--stone); text-transform: uppercase; letter-spacing: 2.4px; margin-bottom: 16px; }
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+  .color-swatch { border-radius: 12px; overflow: hidden; background: var(--bg-surface); border: 1px solid var(--border-subtle); }
+  .color-swatch-preview { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 12px; }
+  .color-swatch-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 11px; color: var(--stone); }
+  .color-swatch-role { font-size: 11px; color: var(--ash); margin-top: 4px; line-height: 1.4; }
+
+  .type-sample { padding: 24px 0; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-label { font-size: 12px; color: var(--stone); letter-spacing: 2.4px; text-transform: uppercase; margin-bottom: 8px; }
+  .type-spec { font-size: 12px; color: var(--stone); margin-top: 8px; }
+
+  .button-showcase { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .btn-tag {
+    background: var(--frosted-btn); color: var(--parchment);
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 14px; font-weight: 400; border: none; cursor: pointer;
+    transition: opacity 0.2s; font-family: var(--font);
+  }
+  .btn-tag:hover { opacity: 0.7; }
+  .btn-ghost {
+    background: transparent; color: var(--ash);
+    padding: 12px 28px; border-radius: 50px;
+    font-size: 16px; font-weight: 400; border: none; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--charcoal);
+    transition: color 0.2s; font-family: var(--font);
+  }
+  .btn-ghost:hover { color: var(--parchment); }
+  .btn-label { display: block; font-size: 11px; color: var(--stone); margin-top: 8px; text-align: center; }
+  .btn-item { text-align: center; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--bg-surface); border-radius: 14px; padding: 28px;
+    border: 1px solid var(--border); transition: border-color 0.3s;
+  }
+  .card:hover { border-color: rgba(200, 200, 198, 0.4); }
+  .card-title { font-size: 22px; font-weight: 500; margin-bottom: 8px; line-height: 1.14; }
+  .card-text { font-size: 16px; color: var(--ash); line-height: 1.4; }
+  .card-tag {
+    display: inline-block; padding: 2px 8px;
+    background: var(--frosted-btn); border-radius: 4px;
+    font-size: 12px; font-weight: 400; color: var(--parchment);
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.4px;
+  }
+
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 14px; font-weight: 400; color: var(--stone); text-transform: uppercase; letter-spacing: 1.4px; }
+  .form-input {
+    background: var(--bg); border: 1px solid var(--border-subtle);
+    border-radius: 8px; padding: 12px 14px; color: var(--parchment);
+    font-size: 16px; font-family: var(--font); outline: none; transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: var(--stone); }
+  .form-input:focus { border-color: var(--ash); }
+  .form-input-error { border-color: #b04040; }
+  .form-error-text { font-size: 12px; color: #b04040; }
+  textarea.form-input { min-height: 100px; resize: vertical; }
+
+  .spacing-row { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+  .spacing-box { height: 28px; background: var(--ash); border-radius: 4px; opacity: 0.25; }
+  .spacing-label { font-size: 12px; color: var(--stone); min-width: 50px; text-align: right; font-family: var(--font-mono); }
+
+  .radius-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--frosted); border: 1px solid var(--border-subtle); margin-bottom: 8px; }
+  .radius-value { font-size: 11px; color: var(--stone); font-family: var(--font-mono); }
+  .radius-context { font-size: 10px; color: var(--purple-gray); margin-top: 2px; }
+
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  .elevation-card { padding: 24px; border-radius: 12px; background: var(--bg-surface); min-height: 110px; }
+  .elevation-label { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .elevation-desc { font-size: 13px; color: var(--ash); line-height: 1.5; }
+
+  .footer { text-align: center; padding: 48px 32px; border-top: 1px solid var(--border-subtle); margin-top: 40px; }
+  .footer p { font-size: 13px; color: var(--stone); }
+  .footer a { color: var(--ash); text-decoration: underline; text-decoration-color: var(--charcoal); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 48px; letter-spacing: -1.5px; }
+    .section-title { font-size: 36px; letter-spacing: -0.7px; }
+    .nav-links { display: none; }
+    .color-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .elevation-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dark-badge">Dark Mode</div>
+
+<nav class="nav">
+  <span class="nav-brand">awesome-design-md</span>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#elevation">Elevation</a></li>
+    <li><a href="#" class="nav-cta">Download</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Warp</h1>
+  <p class="subtitle">A visual catalog of design tokens, components, and patterns extracted from Warp's warm-dark marketing site and documented in DESIGN.md.</p>
+  <div class="hero-buttons">
+    <a href="#colors" class="btn-primary">Explore Tokens</a>
+    <a href="#buttons" class="btn-secondary">View Components</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <h2 class="section-title">Color Palette</h2>
+  <p class="section-desc">Almost monochromatic warm grays — from warm parchment text to earth-tone dark surfaces.</p>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #faf9f6;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warm Parchment</div>
+          <div class="color-swatch-hex">#faf9f6</div>
+          <div class="color-swatch-role">Primary text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #353534;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Earth Gray</div>
+          <div class="color-swatch-hex">#353534</div>
+          <div class="color-swatch-role">Button backgrounds</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #0e0e0d; border: 1px solid var(--border-subtle);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Deep Void</div>
+          <div class="color-swatch-hex">#0e0e0d</div>
+          <div class="color-swatch-role">Page background</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #afaeac;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Ash Gray</div>
+          <div class="color-swatch-hex">#afaeac</div>
+          <div class="color-swatch-role">Body text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #868584;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Stone Gray</div>
+          <div class="color-swatch-hex">#868584</div>
+          <div class="color-swatch-role">Secondary text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: #666469;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Purple-Tint Gray</div>
+          <div class="color-swatch-hex">#666469</div>
+          <div class="color-swatch-role">Link text</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Border</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-subtle);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Frosted Veil</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.04)</div>
+          <div class="color-swatch-role">Surface overlay</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(226,226,226,0.35);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Mist Border</div>
+          <div class="color-swatch-hex">rgba(226,226,226,0.35)</div>
+          <div class="color-swatch-role">Card borders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-preview" style="background: rgba(255,255,255,0.16);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Frosted Button</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.16)</div>
+          <div class="color-swatch-role">Tag backgrounds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <h2 class="section-title">Typography Scale</h2>
+  <p class="section-desc">Matter font family — geometric but approachable. Regular weight dominance.</p>
+
+  <div class="type-sample">
+    <div class="type-label">Display Hero — 80px / 400 / 1.00 / -2.4px</div>
+    <div style="font-size: 72px; font-weight: 400; line-height: 1.0; letter-spacing: -2.4px;">The best terminal</div>
+    <div class="type-spec">Matter Regular (Inter fallback)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Section Display — 56px / 400 / 1.20 / -0.56px</div>
+    <div style="font-size: 48px; font-weight: 400; line-height: 1.2; letter-spacing: -0.56px;">Development environment</div>
+    <div class="type-spec">Matter Regular</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Body Large — 20px / 400 / 1.40 / -0.2px</div>
+    <div style="font-size: 20px; font-weight: 400; line-height: 1.4; letter-spacing: -0.2px; color: var(--ash);">Warp is the terminal reimagined with AI and collaborative tools for modern development teams.</div>
+    <div class="type-spec">Matter Regular — relaxed reading</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Body — 18px / 400 / 1.30 / -0.18px</div>
+    <div style="font-size: 18px; font-weight: 400; line-height: 1.3; letter-spacing: -0.18px; color: var(--ash);">Built from the ground up in Rust for speed, with AI integrated at every level.</div>
+    <div class="type-spec">Matter Regular</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Uppercase Label — 12px / 400 / 1.35 / 2.4px</div>
+    <div style="font-size: 12px; font-weight: 400; line-height: 1.35; letter-spacing: 2.4px; text-transform: uppercase; color: var(--stone);">Featured Integration</div>
+    <div class="type-spec">Matter Regular — editorial wide tracking</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-label">Code — 16px / 400 / 1.00</div>
+    <div style="font-family: var(--font-mono); font-size: 16px; font-weight: 400; line-height: 1.0; color: var(--parchment);">curl -fsSL https://warp.dev/install | bash</div>
+    <div class="type-spec">Geist Mono</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <h2 class="section-title">Button Variants</h2>
+  <p class="section-desc">Restrained and muted — dark pills, frosted tags, underline ghosts.</p>
+
+  <div class="button-showcase">
+    <div class="btn-item">
+      <a href="#" class="btn-primary">Download Warp</a>
+      <span class="btn-label">Dark Pill</span>
+    </div>
+    <div class="btn-item">
+      <a href="#" class="btn-secondary">Learn More</a>
+      <span class="btn-label">Border Pill</span>
+    </div>
+    <div class="btn-item">
+      <button class="btn-tag">New Feature</button>
+      <span class="btn-label">Frosted Tag</span>
+    </div>
+    <div class="btn-item">
+      <button class="btn-ghost">Read the blog</button>
+      <span class="btn-label">Ghost Underline</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <h2 class="section-title">Card Examples</h2>
+  <p class="section-desc">Semi-transparent borders, warm dark surfaces, editorial tags.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag">Terminal</div>
+      <h3 class="card-title">Built in Rust</h3>
+      <p class="card-text">Blazingly fast terminal performance with native rendering and GPU acceleration.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">AI Agent</div>
+      <h3 class="card-title">Agent Mode</h3>
+      <p class="card-text">Let AI agents handle complex terminal workflows while you focus on building.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">Collaboration</div>
+      <h3 class="card-title">Shared Workflows</h3>
+      <p class="card-text">Share terminal sessions, commands, and configurations with your team.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <h2 class="section-title">Form Elements</h2>
+  <p class="section-desc">Warm dark inputs with subtle borders. No colored focus rings.</p>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input" placeholder="Enter your name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email (Focus)</label>
+      <input type="email" class="form-input" placeholder="you@warp.dev" style="border-color: var(--ash);">
+    </div>
+    <div class="form-group">
+      <label class="form-label">API Key (Error)</label>
+      <input type="text" class="form-input form-input-error" value="invalid-key">
+      <span class="form-error-text">Invalid key format</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input" placeholder="Describe your workflow..."></textarea>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <h2 class="section-title">Spacing Scale</h2>
+  <p class="section-desc">8px base unit with editorial-grade spacing.</p>
+
+  <div>
+    <div class="spacing-row"><span class="spacing-label">4px</span><div class="spacing-box" style="width: 16px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">8px</span><div class="spacing-box" style="width: 36px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">12px</span><div class="spacing-box" style="width: 56px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">16px</span><div class="spacing-box" style="width: 80px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">24px</span><div class="spacing-box" style="width: 128px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">32px</span><div class="spacing-box" style="width: 180px;"></div></div>
+    <div class="spacing-row"><span class="spacing-label">36px</span><div class="spacing-box" style="width: 210px;"></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <h2 class="section-title">Border Radius Scale</h2>
+  <p class="section-desc">From small tags to full pill CTAs.</p>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius: 4px;"></div><div class="radius-value">4px</div><div class="radius-context">Tags</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 6px;"></div><div class="radius-value">6px</div><div class="radius-context">Buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 8px;"></div><div class="radius-value">8px</div><div class="radius-context">Images</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 12px;"></div><div class="radius-value">12px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 14px;"></div><div class="radius-value">14px</div><div class="radius-context">Large</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 40px;"></div><div class="radius-value">40px</div><div class="radius-context">Sections</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 50px; width: 64px; height: 40px;"></div><div class="radius-value">50px</div><div class="radius-context">Pill</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 200px; width: 120px; height: 12px;"></div><div class="radius-value">200px</div><div class="radius-context">Progress</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <h2 class="section-title">Elevation & Depth</h2>
+  <p class="section-desc">Remarkably flat — depth through borders and photography.</p>
+
+  <div class="elevation-grid">
+    <div class="elevation-card" style="box-shadow: none; border: 1px solid var(--border-subtle);">
+      <div class="elevation-label">Level 0 — Flat</div>
+      <div class="elevation-desc">No shadow. The warm dark canvas baseline.</div>
+    </div>
+    <div class="elevation-card" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);">
+      <div class="elevation-label">Level 1 — Veil</div>
+      <div class="elevation-desc">Ultra-subtle white overlay.</div>
+    </div>
+    <div class="elevation-card" style="border: 1px solid var(--border);">
+      <div class="elevation-label">Level 2 — Border</div>
+      <div class="elevation-desc">Semi-transparent border containment.</div>
+    </div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.25) 0px 5px 15px; border: 1px solid var(--border-subtle);">
+      <div class="elevation-label">Level 3 — Ambient</div>
+      <div class="elevation-desc">Subtle shadow for floating elements.</div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Design system extracted from <a href="https://warp.dev">warp.dev</a> — Generated by awesome-design-md</p>
+</footer>
+
+</body>
+</html>
