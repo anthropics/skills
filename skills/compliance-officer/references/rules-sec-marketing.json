@@ -1,0 +1,800 @@
+[
+  {
+    "id": "SEC-MKT-a-misleading",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "No Misleading Implications",
+    "severity": "critical",
+    "summary": "Advertisement must not include statements that would be otherwise misleading or deceptive by implication",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only",
+      "patterns": [],
+      "keywords": [
+        "misleading",
+        "implication",
+        "deceptive"
+      ]
+    },
+    "remediation": {
+      "guidance": "Review all statements for potential misleading implications even if technically true.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(a)(3)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-a-omission",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "No Material Omissions",
+    "severity": "critical",
+    "summary": "Advertisement must not omit any material fact that would make the advertisement misleading",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only",
+      "patterns": [],
+      "keywords": [
+        "omission",
+        "material fact",
+        "misleading"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include all material facts necessary for complete understanding of advertised services.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(a)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-a-untrue",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "No Untrue Statements",
+    "severity": "critical",
+    "summary": "Advertisement must not include any untrue statement of a material fact",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only",
+      "patterns": [],
+      "keywords": [
+        "untrue",
+        "material fact",
+        "false statement"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify all factual claims in marketing materials. Remove or correct any untrue statements.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(a)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-b-bad-actor",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Bad Actor Disqualification",
+    "severity": "critical",
+    "summary": "Persons subject to bad actor disqualifications may not provide testimonials or endorsements",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only",
+      "patterns": [],
+      "keywords": [
+        "bad actor",
+        "disqualification",
+        "felony"
+      ]
+    },
+    "remediation": {
+      "guidance": "Screen all testimonial/endorsement providers for bad actor disqualifications.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(b)(4)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-b-endorsement-disclosure",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Endorsement Disclosure Requirements",
+    "severity": "warning",
+    "summary": "Endorsements must clearly disclose any compensation paid and conflicts of interest",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "endorsement",
+        "compensation",
+        "paid promotion"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose any compensation paid for endorsements and any conflicts of interest.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(b)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-b-promoter",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Promoter Requirements",
+    "severity": "warning",
+    "summary": "Investment advisers must execute written promoter agreements and implement oversight procedures",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "promoter",
+        "solicitor",
+        "referral"
+      ]
+    },
+    "remediation": {
+      "guidance": "Execute written promoter agreements and implement oversight procedures.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(b)(3)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-b-testimonial-disclosure",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Testimonial Disclosure Requirements",
+    "severity": "warning",
+    "summary": "Testimonials must include disclosure of client status, compensation received, and material conflicts of interest",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "testimonial",
+        "disclosure",
+        "client",
+        "compensation"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose: (1) client status, (2) compensation received, (3) material conflicts of interest.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(b)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "testimonial"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-c-rating-disclosure",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Third-Party Rating Disclosures",
+    "severity": "warning",
+    "summary": "Third-party ratings must disclose the date, period evaluated, identity of rater, and any compensation paid",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(5|4|3|2|1)[\\s-]?star",
+        "rated\\s+#?\\d+",
+        "top\\s+(advisor|RIA|firm)"
+      ],
+      "keywords": [
+        "rating",
+        "ranked",
+        "top advisor",
+        "best"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include: date of rating, period evaluated, identity of rater, and any compensation paid.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(c)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "rating"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-c-rating-questionnaire",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Rating Questionnaire Disclosure",
+    "severity": "info",
+    "summary": "Must disclose if rating was based on self-reported questionnaire data",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "questionnaire",
+        "self-reported",
+        "survey"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose if rating was based on self-reported questionnaire data.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(c)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-d-composite",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Composite Performance Requirements",
+    "severity": "warning",
+    "summary": "Must create composites of similar strategy accounts rather than showing cherry-picked account performance",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "composite",
+        "aggregated",
+        "similar strategies"
+      ]
+    },
+    "remediation": {
+      "guidance": "Create composites of similar strategy accounts rather than showing cherry-picked account performance.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(d)(3)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-d-gross-net",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Gross and Net Performance",
+    "severity": "critical",
+    "summary": "Must show net performance alongside gross performance with equal prominence",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "gross",
+        "net",
+        "fees deducted"
+      ]
+    },
+    "remediation": {
+      "guidance": "Always show net performance alongside gross performance with equal prominence.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(d)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-d-portability",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Portable Performance Attribution",
+    "severity": "warning",
+    "summary": "Portable track record must clearly identify the responsible person and prior firm",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "portable",
+        "prior firm",
+        "track record"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure portable track record clearly identifies the responsible person and prior firm.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(d)(4)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-d-time-periods",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Performance Time Periods",
+    "severity": "critical",
+    "summary": "Must include standardized 1-year, 5-year, and 10-year (or since inception) returns",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "1-year",
+        "5-year",
+        "10-year",
+        "time period"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include standardized 1-year, 5-year, and 10-year (or since inception) returns.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(d)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-e-hypothetical-disclosure",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Hypothetical Performance Disclosures",
+    "severity": "critical",
+    "summary": "Hypothetical performance must be clearly labeled and disclose assumptions, limitations, and that it does not reflect actual trading",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "hypothetical",
+        "backtest(ed)?",
+        "simulat(ed|ion)",
+        "model(ed)?\\s+performance"
+      ],
+      "keywords": [
+        "hypothetical",
+        "backtested",
+        "simulated",
+        "model portfolio"
+      ]
+    },
+    "remediation": {
+      "guidance": "Label as hypothetical. Disclose: (1) assumptions used, (2) limitations, (3) that it does not reflect actual trading.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(e)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-e-hypothetical-general",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Hypothetical Performance Requirements",
+    "severity": "critical",
+    "summary": "Restrict hypothetical performance to sophisticated audiences and include all limitations and assumptions",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "hypothetical",
+        "backtested",
+        "simulated"
+      ]
+    },
+    "remediation": {
+      "guidance": "Restrict hypothetical performance to sophisticated audiences. Include all limitations and assumptions.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(e)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-extracted-performance",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Extracted Performance Disclosure",
+    "severity": "warning",
+    "summary": "When showing performance of a subset, must also show the total portfolio performance",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "extracted",
+        "carve-out",
+        "subset",
+        "sector performance"
+      ]
+    },
+    "remediation": {
+      "guidance": "When showing performance of a subset, also show the total portfolio performance.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-f-predecessor",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Predecessor Performance Requirements",
+    "severity": "warning",
+    "summary": "Must clearly identify predecessor entity and verify substantially similar investment process",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "predecessor",
+        "acquired",
+        "successor"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly identify predecessor entity and verify substantially similar investment process.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1(f)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-MKT-related-performance",
+    "version": "1.0.0",
+    "framework": "sec-marketing",
+    "title": "Related Performance Requirements",
+    "severity": "warning",
+    "summary": "Must explain material differences between the related strategy shown and the strategy being offered",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "related",
+        "similar strategy",
+        "comparable"
+      ]
+    },
+    "remediation": {
+      "guidance": "Explain material differences between the related strategy shown and the strategy being offered.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 275.206(4)-1",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-275/section-275.206-4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]

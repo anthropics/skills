@@ -1,0 +1,641 @@
+[
+  {
+    "id": "FTC-CANCEL-HARD",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Difficult Cancellation Process",
+    "severity": "warning",
+    "summary": "Cancellation must be as easy as sign-up. Complex cancellation processes (call-only, multiple steps, retention offers) violate FTC guidelines.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "call\\s+to\\s+cancel",
+        "contact.*to\\s+cancel",
+        "cancellation\\s+(fee|charge|penalty)"
+      ],
+      "keywords": [
+        "cancel subscription",
+        "how to cancel",
+        "cancellation policy",
+        "stop subscription"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide simple online cancellation option. Do not require phone calls or multiple retention attempts.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Click-to-Cancel",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2023/03/ftc-proposes-rule-provision-making-it-easy-consumers-click-cancel",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-CANCEL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Difficult Cancellation",
+    "severity": "critical",
+    "summary": "Making cancellation significantly harder than sign-up is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "must\\s+call\\s+to\\s+cancel",
+        "call.*to\\s+cancel.*subscription",
+        "cancellation.*phone\\s+(only|required)",
+        "visit.*in[\\s-]?person.*cancel"
+      ],
+      "keywords": [
+        "call to cancel",
+        "cancel by phone",
+        "contact us to cancel"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement \"click-to-cancel\" - online cancellation should be as easy as online sign-up.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2021/10/ftc-brings-first-case-challenging-illegal-dark-patterns-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-CONFIRM",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Confirmshaming",
+    "severity": "warning",
+    "summary": "Using manipulative language to shame users out of declining offers is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "no,?\\s+i\\s+(don'?t|do\\s+not)\\s+(want|like|need)",
+        "no\\s+thanks,?\\s+i\\s+(hate|don'?t\\s+like)",
+        "i\\s+(prefer|want)\\s+to\\s+pay\\s+(more|full)",
+        "i\\s+don'?t\\s+want\\s+to\\s+save"
+      ],
+      "keywords": [
+        "no thanks I",
+        "I prefer to pay",
+        "I don't want to save"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use neutral opt-out language. Replace \"No, I don't want savings\" with \"No thanks\" or \"Decline\".",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-HIDDEN",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Hidden Costs at Checkout",
+    "severity": "critical",
+    "summary": "Revealing hidden fees, taxes, or charges only at checkout is a deceptive drip pricing dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(service|processing|handling|convenience)\\s+fee",
+        "fee.*added.*checkout",
+        "\\+\\s*\\$\\d+.*fee",
+        "additional\\s+(fee|charge|cost)s?\\s+(may\\s+)?apply"
+      ],
+      "keywords": [
+        "service fee",
+        "processing fee",
+        "convenience fee",
+        "fees apply",
+        "additional charges"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display total price including all mandatory fees upfront. No surprise charges at checkout.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/10/ftc-proposes-rule-ban-junk-fees",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "pricing"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-MISDIRECT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Visual Misdirection",
+    "severity": "warning",
+    "summary": "Using visual tricks (fake X buttons, disguised ads, misleading buttons) to manipulate user choices is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "fake button",
+        "close button",
+        "dismiss",
+        "misdirection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all UI elements behave as expected. Close buttons should close, not redirect.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-DARK-PRESELECT",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Dark Pattern: Pre-Selected Add-Ons",
+    "severity": "warning",
+    "summary": "Pre-checking boxes for add-ons, insurance, or upgrades without user action is a deceptive dark pattern.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "pre[\\s-]?selected",
+        "(add|include).*by\\s+default",
+        "opt[\\s-]?out.*uncheck"
+      ],
+      "keywords": [
+        "pre-selected",
+        "added by default",
+        "opt-out",
+        "uncheck to remove"
+      ]
+    },
+    "remediation": {
+      "guidance": "Do not pre-select any optional add-ons. Let users affirmatively choose extras.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases/2022/09/ftc-report-shows-rise-sophisticated-dark-patterns-designed-trick",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NEGATIVE-OPTION",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Negative Option / Subscription Trap",
+    "severity": "critical",
+    "summary": "Subscription services must clearly disclose terms and obtain express informed consent before charging. Silence cannot equal consent.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(subscription|membership|plan)\\s+will\\s+(auto|automatically)",
+        "continue.*\\s+until.*cancel",
+        "(auto[\\s-]?renew|recurring)",
+        "billed\\s+(monthly|annually|weekly)"
+      ],
+      "keywords": [
+        "auto-renew",
+        "recurring charge",
+        "subscription",
+        "membership",
+        "billed automatically"
+      ]
+    },
+    "remediation": {
+      "guidance": "Before charging, clearly disclose: (1) Total cost, (2) Recurring nature, (3) Cancellation method. Require checkbox consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "ROSCA / FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/legal-library/browse/rules/negative-option-rule",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "consent"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-RECURRING-HIDE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Hidden Recurring Charges",
+    "severity": "critical",
+    "summary": "Recurring charges must be clearly disclosed upfront, not hidden in fine print or terms of service.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "then\\s+\\$\\d+(\\.\\d+)?\\s*/(mo|month|yr|year)",
+        "recurring\\s+charge",
+        "billed\\s+every\\s+\\d+\\s+(days?|weeks?|months?)",
+        "\\*\\s*recurring"
+      ],
+      "keywords": [
+        "recurring",
+        "monthly charge",
+        "annual fee",
+        "billed every",
+        "automatic payment"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display recurring charge amount and frequency prominently near the price and in checkout summary.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "ROSCA",
+      "source_url": "https://www.ftc.gov/business-guidance/legal-library/browse/rules/negative-option-rule",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-DEMAND",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fabricated High Demand Claims",
+    "severity": "warning",
+    "summary": "Claims like \"selling fast\" or \"X people viewing\" that are fabricated or manipulated are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+\\s+people\\s+(viewing|watching|looking)",
+        "\\d+\\s+(sold|bought)\\s+in\\s+(last|past)",
+        "selling\\s+(fast|quickly)",
+        "(hot|popular|trending)\\s+(item|product)",
+        "in\\s+high\\s+demand"
+      ],
+      "keywords": [
+        "people viewing",
+        "sold today",
+        "trending",
+        "popular item",
+        "high demand"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only display real-time data that is accurate. Remove if viewer counts or demand claims are fabricated.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-EXCLUSIVE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "False Exclusivity Claims",
+    "severity": "warning",
+    "summary": "Claims of exclusivity (\"exclusive offer\", \"invitation only\") that are not genuine are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "exclusive\\s+(offer|deal|discount|access)",
+        "invitation\\s+only",
+        "(vip|member)\\s+exclusive",
+        "specially?\\s+selected",
+        "chosen\\s+(few|customers?)"
+      ],
+      "keywords": [
+        "exclusive offer",
+        "invitation only",
+        "VIP access",
+        "members only",
+        "special selection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove false exclusivity claims. Only use \"exclusive\" for genuinely limited or member-only offers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-SALE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Perpetual Sale / False Deadline",
+    "severity": "warning",
+    "summary": "Running perpetual \"sales\" or claiming \"sale ends today\" when it does not is deceptive pricing.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sale\\s+ends?\\s+(today|tonight|soon|midnight)",
+        "(last|final)\\s+(day|chance|opportunity)",
+        "ends?\\s+(soon|today|tonight|tomorrow)",
+        "(today|tonight)\\s+only"
+      ],
+      "keywords": [
+        "sale ends",
+        "last chance",
+        "final day",
+        "today only",
+        "limited time"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only advertise sales with genuine end dates. Document regular vs. sale pricing periods.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-STOCK",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "False Low Stock Claims",
+    "severity": "critical",
+    "summary": "Claims like \"Only X left!\" or \"Low stock\" that are false or manipulated to create urgency are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "only\\s+\\d+\\s+(left|remaining|in\\s+stock)",
+        "just\\s+\\d+\\s+(left|remaining)",
+        "(low|limited)\\s+stock",
+        "selling\\s+(out|fast)",
+        "almost\\s+(gone|sold\\s+out)"
+      ],
+      "keywords": [
+        "only left",
+        "low stock",
+        "limited quantity",
+        "selling fast",
+        "almost gone"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only display stock counts that reflect actual inventory. Remove if counts are fabricated or artificially limited.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-SCARCITY-TIMER",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake Countdown Timers",
+    "severity": "critical",
+    "summary": "Countdown timers that reset, extend, or do not reflect real deadlines are deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+:\\d+:\\d+\\s*(remaining|left)",
+        "offer\\s+expires?\\s+in",
+        "deal\\s+ends?\\s+in",
+        "hurry.*\\d+\\s*(hours?|minutes?|seconds?)\\s*(left|remaining)"
+      ],
+      "keywords": [
+        "countdown",
+        "time left",
+        "expires in",
+        "hours remaining",
+        "deal ends"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove countdown timers unless they reflect genuine time-limited offers. Do not reset timers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/blogs/business-blog",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]

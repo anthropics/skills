@@ -1,0 +1,550 @@
+[
+  {
+    "id": "CCPA-100-disclosure",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Pre-Collection Disclosure",
+    "severity": "critical",
+    "summary": "Businesses must provide notice at or before the point of collection of personal information.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(at|before)\\s+(the\\s+)?point\\s+of\\s+collection",
+        "notice\\s+at\\s+collection"
+      ],
+      "keywords": [
+        "at or before collection",
+        "categories collected",
+        "notice at collection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide notice at point of collection listing categories and purposes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.100(b)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-100-know",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Right to Know What Is Collected",
+    "severity": "warning",
+    "summary": "Consumers have the right to know what personal information is collected about them.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "right to know",
+        "personal information collected",
+        "categories of information"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose categories of personal information collected and purposes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.100(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-105-delete",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Right to Delete",
+    "severity": "warning",
+    "summary": "Consumers have the right to request deletion of personal information collected from them.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "delete.*personal\\s+information",
+        "right\\s+to\\s+delet"
+      ],
+      "keywords": [
+        "right to delete",
+        "request deletion",
+        "delete my data",
+        "delete my information"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide clear mechanism to request deletion and respond within 45 days.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.105(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-110-categories",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Specific Pieces of Information",
+    "severity": "info",
+    "summary": "Consumers have the right to request specific pieces of personal information collected about them.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "specific pieces",
+        "personal information",
+        "access request"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement process to provide specific data upon verified request.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.110(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "data-rights",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-120-minors",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Minors Consent Required",
+    "severity": "critical",
+    "summary": "Businesses must obtain affirmative opt-in consent before selling personal information of consumers under 16 years of age.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "minors",
+        "under 16",
+        "children",
+        "parental consent",
+        "opt-in for minors"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement age verification and obtain consent for minors data sale.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.120(c)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-120-opt-out",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Right to Opt-Out of Sale",
+    "severity": "critical",
+    "summary": "Consumers have the right to opt-out of the sale or sharing of their personal information.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sell.*personal\\s+information",
+        "share.*personal\\s+information",
+        "opt[\\s-]?out.*sale"
+      ],
+      "keywords": [
+        "opt-out",
+        "sale of personal information",
+        "do not sell",
+        "do not share"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement opt-out mechanism and honor requests immediately.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.120(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "data-sale"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-125-non-discrimination",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Non-Discrimination",
+    "severity": "warning",
+    "summary": "Businesses cannot discriminate against consumers for exercising their CCPA rights.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "non-discrimination",
+        "equal service",
+        "financial incentive"
+      ]
+    },
+    "remediation": {
+      "guidance": "Do not deny services, charge different prices, or provide different quality based on privacy choices.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.125(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-130-methods",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Request Methods",
+    "severity": "warning",
+    "summary": "Businesses must provide two or more designated methods for consumers to submit requests, including at minimum a toll-free telephone number and website address.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "toll-free number",
+        "request methods",
+        "privacy request form"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide toll-free number and website form for privacy requests.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.130(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-130-response",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Response Timeline",
+    "severity": "warning",
+    "summary": "Businesses must respond to verifiable consumer requests within 45 days of receipt.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "45 days",
+        "response timeline",
+        "acknowledge receipt"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement process to acknowledge receipt and respond within 45 days.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.130(a)(2)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-135-dns-link",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Do Not Sell Link Required",
+    "severity": "critical",
+    "summary": "Businesses that sell personal information must provide a clear and conspicuous link titled 'Do Not Sell My Personal Information' or 'Do Not Share My Personal Information' on their homepage.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "do\\s+not\\s+sell",
+        "do\\s+not\\s+share",
+        "opt[\\s-]?out.*sale"
+      ],
+      "keywords": [
+        "do not sell my personal information",
+        "do not share my personal information",
+        "DNS link"
+      ]
+    },
+    "remediation": {
+      "guidance": "Add visible \"Do Not Sell My Personal Information\" link in website footer.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.135(a)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "consent"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-135-privacy-policy",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Privacy Policy Requirements",
+    "severity": "warning",
+    "summary": "Businesses must update their privacy policy at least once every 12 months and include CCPA-required disclosures.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "privacy\\s+policy",
+        "california\\s+privacy\\s+rights"
+      ],
+      "keywords": [
+        "privacy policy",
+        "annual update",
+        "consumer rights",
+        "CCPA rights"
+      ]
+    },
+    "remediation": {
+      "guidance": "Update privacy policy annually with CCPA-required disclosures.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.135(a)(2)",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CCPA-CPRA-sensitive",
+    "version": "1.0.0",
+    "framework": "ccpa",
+    "title": "Sensitive Personal Information",
+    "severity": "critical",
+    "summary": "Under CPRA, businesses must provide consumers the right to limit the use and disclosure of sensitive personal information.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "limit.*sensitive\\s+personal",
+        "sensitive\\s+personal\\s+information"
+      ],
+      "keywords": [
+        "sensitive personal information",
+        "limit use",
+        "CPRA",
+        "limit the use of my sensitive personal information"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide \"Limit Use of My Sensitive Personal Information\" link if applicable.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "Cal. Civ. Code § 1798.121",
+      "source_url": "https://oag.ca.gov/privacy/ccpa",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US-CA"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]
