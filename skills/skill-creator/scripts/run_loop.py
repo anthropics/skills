@@ -88,17 +88,28 @@ def run_loop(
         # Evaluate train + test together in one batch for parallelism
         all_queries = train_set + test_set
         t0 = time.time()
-        all_results = run_eval(
-            eval_set=all_queries,
-            skill_name=name,
-            description=current_description,
-            num_workers=num_workers,
-            timeout=timeout,
-            project_root=project_root,
-            runs_per_query=runs_per_query,
-            trigger_threshold=trigger_threshold,
-            model=model,
-        )
+        try:
+            all_results = run_eval(
+                eval_set=all_queries,
+                skill_name=name,
+                description=current_description,
+                num_workers=num_workers,
+                timeout=timeout,
+                project_root=project_root,
+                runs_per_query=runs_per_query,
+                trigger_threshold=trigger_threshold,
+                model=model,
+            )
+        except Exception as e:
+            # Initial configuration failures must remain visible to callers.
+            # After a completed iteration, preserve its measured scores and
+            # report why the next candidate could not be evaluated.
+            if not history:
+                raise
+            exit_reason = f"run_eval failed on iteration {iteration}: {e}"
+            if verbose:
+                print(f"\nEvaluation failed — keeping partial results.\n  {e}", file=sys.stderr)
+            break
         eval_elapsed = time.time() - t0
 
         # Split results back into train/test by matching queries
