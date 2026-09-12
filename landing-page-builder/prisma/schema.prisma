@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String   @default("")
+  status      String   @default("draft")
+  blocks      String   @default("[]")
+  theme       String   @default("{}")
+  seoTitle    String   @default("")
+  seoDesc     String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  customDomainId String?
+  customDomain   CustomDomain? @relation(fields: [customDomainId], references: [id])
+  pageAds     PageAd[]
+}
+
+model CustomDomain {
+  id          String   @id @default(cuid())
+  domain      String   @unique
+  status      String   @default("pending")
+  cnameTarget String   @default("landing.yourdomain.com")
+  createdAt   DateTime @default(now())
+  pages       Page[]
+}
+
+model AdPixel {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  pixelId   String
+  code      String   @default("")
+  createdAt DateTime @default(now())
+  pageAds   PageAd[]
+}
+
+model PageAd {
+  id     String  @id @default(cuid())
+  pageId String
+  adId   String
+  page   Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  ad     AdPixel @relation(fields: [adId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, adId])
+}
