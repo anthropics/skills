@@ -99,15 +99,19 @@ def _tool_use_mentions(eval_skill_name: str, tool_name: str, tool_input: dict) -
     in the serialized input) produces false positives for short names that
     collide with common words or extensions: a skill named "pdf" would count
     a Read of "report.pdf" or a Bash command touching a .pdf as a trigger.
-    Only an exact Skill invocation, or a Read of a path inside the skill's
-    own directory, is a genuine consult.
+    Only an exact Skill invocation, or a Read of the skill's SKILL.md
+    entrypoint under .claude/skills, counts as a consult.
     """
     if tool_name == "Skill":
         return (tool_input.get("skill") or "").strip() == eval_skill_name
     if tool_name == "Read":
         # Normalize separators so the match holds on Windows paths too.
         path = (tool_input.get("file_path") or "").replace("\\", "/")
-        return f"/{eval_skill_name}/" in path
+        # A directory sharing the skill name is not evidence of a consult.
+        # Require the generated skill entrypoint, not e.g. /tmp/pdf/report.txt.
+        return ("/" + path.lstrip("/")).endswith(
+            f"/.claude/skills/{eval_skill_name}/SKILL.md"
+        )
     return False
 
 
