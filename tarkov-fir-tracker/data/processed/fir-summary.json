@@ -1,0 +1,1692 @@
+[
+  {
+    "id": "SALEWA_FIRST_AID_KIT",
+    "name": "Salewa first aid kit",
+    "total": 3,
+    "type": "Medical supply",
+    "level": 1,
+    "priority": 10,
+    "firstQuest": "Shortage",
+    "canCraft": true
+  },
+  {
+    "id": "DOGTAG_BEAR",
+    "name": "Dogtag (BEAR)",
+    "total": 25,
+    "type": "Other",
+    "level": 1,
+    "priority": 21,
+    "firstQuest": "Counteraction",
+    "canCraft": false
+  },
+  {
+    "id": "DOGTAG_USEC",
+    "name": "Dogtag (USEC)",
+    "total": 25,
+    "type": "Other",
+    "level": 1,
+    "priority": 21,
+    "firstQuest": "Our Own Land",
+    "canCraft": false
+  },
+  {
+    "id": "ISKRA_LUNCH_BOX",
+    "name": "Iskra ration pack",
+    "total": 3,
+    "type": "Food",
+    "level": 2,
+    "priority": 21,
+    "firstQuest": "Acquaintance",
+    "canCraft": true
+  },
+  {
+    "id": "CAN_OF_DELICIOUS_BEEF_STEW",
+    "name": "Can of beef stew (Large)",
+    "total": 2,
+    "type": "Food",
+    "level": 2,
+    "priority": 21,
+    "firstQuest": "Acquaintance",
+    "canCraft": false
+  },
+  {
+    "id": "NOODLES",
+    "name": "Pack of instant noodles",
+    "total": 2,
+    "type": "Food",
+    "level": 2,
+    "priority": 21,
+    "firstQuest": "Acquaintance",
+    "canCraft": false
+  },
+  {
+    "id": "MODULE_3_M_BODYARMOR",
+    "name": "BNTI Module-3M body armor",
+    "total": 1,
+    "type": "Armor vest",
+    "level": 5,
+    "priority": 50,
+    "firstQuest": "Supplier",
+    "canCraft": true
+  },
+  {
+    "id": "TOZ_106_BOLT_ACTION_SHOTGUN",
+    "name": "TOZ-106 20ga bolt-action shotgun",
+    "total": 1,
+    "type": "Weapon Shotgun",
+    "level": 5,
+    "priority": 50,
+    "firstQuest": "Supplier",
+    "canCraft": false
+  },
+  {
+    "id": "MORPHINE_INJECTOR",
+    "name": "Morphine injector",
+    "total": 8,
+    "type": "Injector",
+    "level": 8,
+    "priority": 83,
+    "firstQuest": "Painkiller",
+    "canCraft": true
+  },
+  {
+    "id": "60_ROUND_6_L_31_5_45_X_39_MAGAZINE_FOR_AK_74_AND_COMPATIBLES",
+    "name": "AK-74 5.45x39 6L31 60-round magazine",
+    "total": 3,
+    "type": "Magazine",
+    "level": 9,
+    "priority": 95,
+    "firstQuest": "Ice Cream Cones",
+    "canCraft": true
+  },
+  {
+    "id": "CAN_OF_BEEF_STEW",
+    "name": "Can of beef stew (Small)",
+    "total": 15,
+    "type": "Food",
+    "level": 10,
+    "priority": 105,
+    "firstQuest": "General Wares",
+    "canCraft": true
+  },
+  {
+    "id": "SPARK_PLUG",
+    "name": "Spark plug",
+    "total": 8,
+    "type": "Electronics",
+    "level": 10,
+    "priority": 105,
+    "firstQuest": "Car Repair",
+    "canCraft": true
+  },
+  {
+    "id": "CAR_BATTERY",
+    "name": "Car battery",
+    "total": 4,
+    "type": "Energy element",
+    "level": 10,
+    "priority": 105,
+    "firstQuest": "Car Repair",
+    "canCraft": true
+  },
+  {
+    "id": "MALBORO_CIGARETTES",
+    "name": "Malboro Cigarettes",
+    "total": 5,
+    "type": "Cigarettes",
+    "level": 12,
+    "priority": 123,
+    "firstQuest": "Bad Habit",
+    "canCraft": false
+  },
+  {
+    "id": "STRIKE_CIGARETTES",
+    "name": "Strike Cigarettes",
+    "total": 5,
+    "type": "Cigarettes",
+    "level": 12,
+    "priority": 123,
+    "firstQuest": "Bad Habit",
+    "canCraft": false
+  },
+  {
+    "id": "WILSTON_CIGARETTES",
+    "name": "Wilston cigarettes",
+    "total": 5,
+    "type": "Cigarettes",
+    "level": 12,
+    "priority": 123,
+    "firstQuest": "Bad Habit",
+    "canCraft": true
+  },
+  {
+    "id": "KINDA_COWBOY_HAT",
+    "name": "Kinda cowboy hat",
+    "total": 2,
+    "type": "Headwear",
+    "level": 15,
+    "priority": 153,
+    "firstQuest": "Dressed to Kill",
+    "canCraft": false
+  },
+  {
+    "id": "USHANKA_EAR_FLAP_CAP",
+    "name": "Ushanka ear flap hat",
+    "total": 2,
+    "type": "Headwear",
+    "level": 15,
+    "priority": 153,
+    "firstQuest": "Dressed to Kill",
+    "canCraft": false
+  },
+  {
+    "id": "SECURE_FLASH_DRIVE",
+    "name": "Secure Flash drive",
+    "total": 20,
+    "type": "Info item",
+    "level": 20,
+    "priority": 203,
+    "firstQuest": "Shady Business",
+    "canCraft": true
+  },
+  {
+    "id": "3_B_TG",
+    "name": "3-(b-TG) stimulant injector",
+    "total": 2,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "AHF_1_M",
+    "name": "AHF1-M stimulant injector",
+    "total": 2,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "COCKTAIL_OBDOLBOS",
+    "name": "Obdolbos cocktail injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "L_1_NOREPINEPHRINE",
+    "name": "L1 (Norepinephrine) injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "MELDONIN",
+    "name": "Meldonin injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "M_U_L_E_STIMULATOR",
+    "name": "M.U.L.E. stimulant injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": true
+  },
+  {
+    "id": "P_22",
+    "name": "P22 (Product 22) stimulant injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 21,
+    "priority": 218,
+    "firstQuest": "Samples",
+    "canCraft": false
+  },
+  {
+    "id": "OFZ_30_X_160_MM_SHELL",
+    "name": "OFZ 30x165mm shell",
+    "total": 5,
+    "type": "Other",
+    "level": 25,
+    "priority": 255,
+    "firstQuest": "Regulated Materials",
+    "canCraft": true
+  },
+  {
+    "id": "PORTABLE_DEFIBRILLATOR",
+    "name": "Portable defibrillator",
+    "total": 4,
+    "type": "Medical supply",
+    "level": 25,
+    "priority": 255,
+    "firstQuest": "Ambulance",
+    "canCraft": true
+  },
+  {
+    "id": "CMS_KIT",
+    "name": "CMS surgical kit",
+    "total": 2,
+    "type": "Jaeger",
+    "level": 25,
+    "priority": 255,
+    "firstQuest": "Ambulance",
+    "canCraft": true
+  },
+  {
+    "id": "6_STEN_140_M_MILITARY_BATTERY",
+    "name": "6-STEN-140-M military battery",
+    "total": 1,
+    "type": "Energy element",
+    "level": 25,
+    "priority": 255,
+    "firstQuest": "Regulated Materials",
+    "canCraft": false
+  },
+  {
+    "id": "TERRA_GROUP_LABS_ACCESS_KEYCARD",
+    "name": "TerraGroup Labs access keycard",
+    "total": 12,
+    "type": "Keycard",
+    "level": 25,
+    "priority": 256,
+    "firstQuest": "Fishing Place",
+    "canCraft": false
+  },
+  {
+    "id": "CAPACITORS",
+    "name": "Capacitors",
+    "total": 6,
+    "type": "Electronics",
+    "level": 30,
+    "priority": 305,
+    "firstQuest": "Fertilizers",
+    "canCraft": true
+  },
+  {
+    "id": "WIRES",
+    "name": "Bundle of wires",
+    "total": 6,
+    "type": "Electronics",
+    "level": 30,
+    "priority": 305,
+    "firstQuest": "Fertilizers",
+    "canCraft": true
+  },
+  {
+    "id": "UHF_RFID_READER",
+    "name": "UHF RFID Reader",
+    "total": 6,
+    "type": "Electronics",
+    "level": 35,
+    "priority": 355,
+    "firstQuest": "Import",
+    "canCraft": true
+  },
+  {
+    "id": "VPX_FLASH_STORAGE_MODULE",
+    "name": "VPX Flash Storage Module",
+    "total": 6,
+    "type": "Electronics",
+    "level": 35,
+    "priority": 355,
+    "firstQuest": "Import",
+    "canCraft": true
+  },
+  {
+    "id": "OPHTHALMOSCOPE",
+    "name": "Ophthalmoscope",
+    "total": 4,
+    "type": "Medical supply",
+    "level": 35,
+    "priority": 359,
+    "firstQuest": "Private Clinic",
+    "canCraft": false
+  },
+  {
+    "id": "LEDX_SKIN_TRANSILLUMINATOR",
+    "name": "LEDX Skin Transilluminator",
+    "total": 3,
+    "type": "Medical supply",
+    "level": 35,
+    "priority": 359,
+    "firstQuest": "Private Clinic",
+    "canCraft": true
+  },
+  {
+    "id": "RAVEN_FIGURINE",
+    "name": "Raven figurine",
+    "total": 3,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "AXEL_PARROT_FIGURINE",
+    "name": "Axel parrot figurine",
+    "total": 2,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "GOLDEN_EGG",
+    "name": "Golden egg",
+    "total": 2,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "42ND_SIGNATURE_BLEND_ENGLISH_TEA",
+    "name": "42 Signature Blend English Tea",
+    "total": 1,
+    "type": "Other",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "ANTIQUE_AXE",
+    "name": "Antique axe",
+    "total": 1,
+    "type": "Weapon Melee",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "BADDIES_RED_BEARD",
+    "name": "Baddie's red beard",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "BAKEEZY_COOK_BOOK",
+    "name": "BakeEzy cook book",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "BATTERED_ANTIQUE_BOOK",
+    "name": "Battered antique book",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "BEAR_BUDDY_PLUSH_TOY",
+    "name": "BEAR Buddy plush toy",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "CAN_OF_DR_LUPOS_COFFEE_BEANS",
+    "name": "Can of Dr. Lupo's coffee beans",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "CAN_OF_RAT_COLA",
+    "name": "Can of RatCola soda",
+    "total": 1,
+    "type": "Drink",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "CAN_OF_SPRATS",
+    "name": "Can of sprats",
+    "total": 1,
+    "type": "Food",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "DEADLYSLOBS_BEARD_OIL",
+    "name": "Deadlyslob's beard oil",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "DRD_BODY_ARMOR",
+    "name": "DRD body armor",
+    "total": 1,
+    "type": "Armor vest",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "EVASION_ARMBAND",
+    "name": "Armband (Evasion)",
+    "total": 1,
+    "type": "Armband",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "FAKE_MUSTACHE",
+    "name": "Fake mustache",
+    "total": 1,
+    "type": "Face cover",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "FIRE_KLEAN_GUN_LUBE",
+    "name": "#FireKlean gun lube",
+    "total": 1,
+    "type": "Flammable material",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "GINGY_KEYCHAIN",
+    "name": "Gingy keychain",
+    "total": 1,
+    "type": "Container",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "GLORIOUS_E_MASK",
+    "name": "Glorious E lightweight armored mask",
+    "total": 1,
+    "type": "Face cover",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "GOLDEN_1_G_PHONE",
+    "name": "Golden 1GPhone smartphone",
+    "total": 1,
+    "type": "Electronics",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "GOLDEN_ROOSTER",
+    "name": "Golden rooster figurine",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "INSEQ",
+    "name": "Inseq gas pipe wrench",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "JAR_OF_DEVIL_DOG_MAYO",
+    "name": "Jar of DevilDog mayo",
+    "total": 1,
+    "type": "Food",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "JOHNB_GLASSES",
+    "name": "JohnB Liquid DNB glasses",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "KOTTON_BEANIE",
+    "name": "Kotton beanie",
+    "total": 1,
+    "type": "Headwear",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "LOOT_LORD_PLUSHIE",
+    "name": "Loot Lord plushie",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "LVNDMAR_KS_RAT_POISON",
+    "name": "LVNDMARK's rat poison",
+    "total": 1,
+    "type": "Household item",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "MISSAM_FORKLIFT_KEY",
+    "name": "Missam forklift key",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "OLD_FIRESTEEL",
+    "name": "Old firesteel",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "PESTILY_PLAGUE_MASK",
+    "name": "Pestily plague mask",
+    "total": 1,
+    "type": "Face cover",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "PRESS_PASS",
+    "name": "Press pass (issued for NoiceGuy)",
+    "total": 1,
+    "type": "Other",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "SHROUD_HALF_MASK",
+    "name": "Shroud half-mask",
+    "total": 1,
+    "type": "Face cover",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "SILVER_BADGE",
+    "name": "Silver Badge",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "SMOKE_BALACLAVA",
+    "name": "Smoke balaclava",
+    "total": 1,
+    "type": "Face cover",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "TAMATTHI",
+    "name": "Tamatthi kunai knife replica",
+    "total": 1,
+    "type": "Weapon Melee",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "VERITAS_GUITAR_PICK",
+    "name": "Veritas guitar pick",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "VIDEO_CASSETTE_CYBORG",
+    "name": "Video cassette with the Cyborg Killer movie",
+    "total": 1,
+    "type": "Info item",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "VIIBIIN",
+    "name": "Viibiin sneaker",
+    "total": 1,
+    "type": "Valuable",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "WZ_WALLET",
+    "name": "WZ Wallet",
+    "total": 1,
+    "type": "Container",
+    "level": 40,
+    "priority": 415,
+    "firstQuest": "Collector",
+    "canCraft": false
+  },
+  {
+    "id": "PILE_OF_MEDS",
+    "name": "Pile of meds",
+    "total": 20,
+    "type": "Medical supply",
+    "level": 48,
+    "priority": 480,
+    "firstQuest": "Crisis",
+    "canCraft": true
+  },
+  {
+    "id": "BOTTLE_OF_OLOLO_MULTIVITAMINS",
+    "name": "Bottle of OLOLO Multivitamins",
+    "total": 14,
+    "type": "Medical supply",
+    "level": 48,
+    "priority": 480,
+    "firstQuest": "Crisis",
+    "canCraft": false
+  },
+  {
+    "id": "CULTIST_KNIFE",
+    "name": "Cultist knife",
+    "total": 12,
+    "type": "Weapon Melee",
+    "level": 50,
+    "priority": 500,
+    "firstQuest": "Night Sweep",
+    "canCraft": false
+  },
+  {
+    "id": "BOTTLE_OF_PEVKO_LIGHT_BEER",
+    "name": "Bottle of Pevko Light beer",
+    "total": 27,
+    "type": "Drink",
+    "level": 50,
+    "priority": 508,
+    "firstQuest": "Booze",
+    "canCraft": true
+  },
+  {
+    "id": "BOTTLE_OF_TARKOVSKAYA_VODKA",
+    "name": "Bottle of Tarkovskaya vodka",
+    "total": 12,
+    "type": "Drink",
+    "level": 50,
+    "priority": 508,
+    "firstQuest": "Booze",
+    "canCraft": true
+  },
+  {
+    "id": "BOTTLE_OF_DAN_JACKIEL_WHISKEY",
+    "name": "Bottle of Dan Jackiel whiskey",
+    "total": 11,
+    "type": "Drink",
+    "level": 50,
+    "priority": 508,
+    "firstQuest": "Booze",
+    "canCraft": true
+  },
+  {
+    "id": "PURIFIED_WATER",
+    "name": "Purified water",
+    "total": 3,
+    "type": "Drink",
+    "level": 50,
+    "priority": 508,
+    "firstQuest": "Booze",
+    "canCraft": true
+  },
+  {
+    "id": "MILITARY_COFDM_WIRELESS_SIGNAL_TRANSMITTER",
+    "name": "Military COFDM Wireless Signal Transmitter",
+    "total": 11,
+    "type": "Electronics",
+    "level": 60,
+    "priority": 626,
+    "firstQuest": "Special Equipment",
+    "canCraft": true
+  },
+  {
+    "id": "VIRTEX_PROGRAMMABLE_PROCESSOR",
+    "name": "Virtex programmable processor",
+    "total": 7,
+    "type": "Electronics",
+    "level": 60,
+    "priority": 626,
+    "firstQuest": "Special Equipment",
+    "canCraft": true
+  },
+  {
+    "id": "MILITARY_FLASH_DRIVE",
+    "name": "Military flash drive",
+    "total": 4,
+    "type": "Info item",
+    "level": 60,
+    "priority": 626,
+    "firstQuest": "Special Equipment",
+    "canCraft": true
+  },
+  {
+    "id": "CPU_FAN",
+    "name": "CPU fan",
+    "total": 15,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Farming - Part 4",
+    "canCraft": false
+  },
+  {
+    "id": "SJ_1",
+    "name": "SJ1 TGLabs combat stimulant injector",
+    "total": 15,
+    "type": "Injector",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Assessment - Part 3",
+    "canCraft": true
+  },
+  {
+    "id": "FLEECE_CLOTH",
+    "name": "Fleece fabric",
+    "total": 10,
+    "type": "Cloth",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "POLYAMIDE_FABRIC_CORDURA",
+    "name": "Cordura polyamide fabric",
+    "total": 10,
+    "type": "Cloth",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "RIPSTOP_CLOTH",
+    "name": "Ripstop fabric",
+    "total": 10,
+    "type": "Cloth",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 1",
+    "canCraft": true
+  },
+  {
+    "id": "BROKEN_G_PHONE",
+    "name": "Broken GPhone smartphone",
+    "total": 7,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Signal - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "GAS_ANALYZER",
+    "name": "Gas analyzer",
+    "total": 7,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sanitary Standards - Part 1",
+    "canCraft": true
+  },
+  {
+    "id": "LOWER_HALF_MASK",
+    "name": "Lower half-mask",
+    "total": 7,
+    "type": "Face cover",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Punisher - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "ARAMID_FIBER_CLOTH",
+    "name": "Aramid fiber fabric",
+    "total": 5,
+    "type": "Cloth",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 1",
+    "canCraft": true
+  },
+  {
+    "id": "BARS_A_2607_95_X_18",
+    "name": "Bars A-2607 95Kh18 knife",
+    "total": 5,
+    "type": "Weapon Melee",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Punisher - Part 4",
+    "canCraft": false
+  },
+  {
+    "id": "DRIED_MEAT",
+    "name": "Pack of Tarker dried meat",
+    "total": 5,
+    "type": "Food",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Easy Money - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "EL_COMPONENTS",
+    "name": "Electronic components",
+    "total": 5,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Network Provider - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "KEKTAPE_DUCT_TAPE",
+    "name": "KEKTAPE duct tape",
+    "total": 5,
+    "type": "Other",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "PRINTED_CIRCUIT_BOARD",
+    "name": "Printed circuit board",
+    "total": 5,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Signal - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "SJ_6",
+    "name": "SJ6 TGLabs combat stimulant injector",
+    "total": 5,
+    "type": "Injector",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Assessment - Part 3",
+    "canCraft": true
+  },
+  {
+    "id": "5_L_PROPANE_TANK",
+    "name": "Propane tank (5L)",
+    "total": 4,
+    "type": "Flammable material",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Thirsty - Breadwinner",
+    "canCraft": false
+  },
+  {
+    "id": "CORRUGATED_HOSE",
+    "name": "Corrugated hose",
+    "total": 4,
+    "type": "Other",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Spa Tour - Part 3",
+    "canCraft": true
+  },
+  {
+    "id": "FUEL_CONDITIONER",
+    "name": "Fuel conditioner",
+    "total": 4,
+    "type": "Flammable material",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Blood of War - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "PC_CPU",
+    "name": "PC CPU",
+    "total": 4,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Signal - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "RECHARGEABLE_BATTERY",
+    "name": "Rechargeable battery",
+    "total": 4,
+    "type": "Energy element",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Signal - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "RESPIRATOR",
+    "name": "Respirator",
+    "total": 4,
+    "type": "Face cover",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Vitamins - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "SVDS",
+    "name": "SVDS 7.62x54R sniper rifle",
+    "total": 4,
+    "type": "Weapon Rifle",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Make Amends - Equipment",
+    "canCraft": false
+  },
+  {
+    "id": "T_SHAPED_PLUG",
+    "name": "T-Shaped plug",
+    "total": 4,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Farming - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "ANTIQUE_TEAPOT",
+    "name": "Antique teapot",
+    "total": 3,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "BOTTLE_OF_SALINE",
+    "name": "Bottle of saline solution",
+    "total": 3,
+    "type": "Medical supply",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Thirsty - Secrets",
+    "canCraft": false
+  },
+  {
+    "id": "CAN_OF_TAR_COLA",
+    "name": "Can of TarCola soda",
+    "total": 3,
+    "type": "Drink",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Compensation for Damage - Barkeep",
+    "canCraft": false
+  },
+  {
+    "id": "COLT_M_4_A_1_5_56_X_45_ASSAULT_RIFLE",
+    "name": "Colt M4A1 5.56x45 assault rifle",
+    "total": 3,
+    "type": "Weapon Rifle",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Punisher - Part 5",
+    "canCraft": false
+  },
+  {
+    "id": "COMM3",
+    "name": "Mystery Ranch NICE COMM 3 BVS frame system (Coyote)",
+    "total": 3,
+    "type": "Backpack",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Special Offer",
+    "canCraft": false
+  },
+  {
+    "id": "GRAPHICS_CARD",
+    "name": "Graphics card",
+    "total": 3,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Farming - Part 4",
+    "canCraft": true
+  },
+  {
+    "id": "MEDICAL_BLOODSET",
+    "name": "Medical bloodset",
+    "total": 3,
+    "type": "Medical supply",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Vitamins - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "PARACORD",
+    "name": "Paracord",
+    "total": 3,
+    "type": "Other",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Textile - Part 1",
+    "canCraft": true
+  },
+  {
+    "id": "6_B_13",
+    "name": "6B13 assault armor",
+    "total": 2,
+    "type": "Armor vest",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sew it Good - Part 3",
+    "canCraft": false
+  },
+  {
+    "id": "ADRENALINE",
+    "name": "Adrenaline injector",
+    "total": 2,
+    "type": "Injector",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Thirsty - Secrets",
+    "canCraft": false
+  },
+  {
+    "id": "ALYONKA",
+    "name": "Alyonka chocolate bar",
+    "total": 2,
+    "type": "Food",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Easy Money - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "ANTIQUE_VASE",
+    "name": "Antique vase",
+    "total": 2,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 2",
+    "canCraft": false
+  },
+  {
+    "id": "BLACK_ROCK_CHEST_RIG",
+    "name": "BlackRock chest rig (Gray)",
+    "total": 2,
+    "type": "Chest rig",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sew it Good - Part 4",
+    "canCraft": true
+  },
+  {
+    "id": "BRONZE_LION",
+    "name": "Bronze lion figurine",
+    "total": 2,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "CLIN_WIPER",
+    "name": "Clin window cleaner",
+    "total": 2,
+    "type": "Household item",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Spa Tour - Part 3",
+    "canCraft": true
+  },
+  {
+    "id": "HEAT_EXCHANGE_ALKALI_SURFACE_WASHER",
+    "name": "Alkaline cleaner for heat exchangers",
+    "total": 2,
+    "type": "Household item",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Spa Tour - Part 7",
+    "canCraft": false
+  },
+  {
+    "id": "HORSE_FIGURINE",
+    "name": "Horse figurine",
+    "total": 2,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "LCD",
+    "name": "Working LCD",
+    "total": 2,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Key to the Tower",
+    "canCraft": false
+  },
+  {
+    "id": "MIL_BOARD",
+    "name": "Military circuit board",
+    "total": 2,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Key to the Tower",
+    "canCraft": true
+  },
+  {
+    "id": "OX_BLEACH",
+    "name": "Ox bleach",
+    "total": 2,
+    "type": "Household item",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Spa Tour - Part 3",
+    "canCraft": true
+  },
+  {
+    "id": "PLEXIGLASS",
+    "name": "Piece of plexiglass",
+    "total": 2,
+    "type": "Other",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Key to the Tower",
+    "canCraft": true
+  },
+  {
+    "id": "PM_9_X_18_PM_PISTOL",
+    "name": "Makarov PM 9x18PM pistol",
+    "total": 2,
+    "type": "Weapon Pistol",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Punisher - Part 5",
+    "canCraft": false
+  },
+  {
+    "id": "POWERCORD",
+    "name": "Power cord",
+    "total": 2,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Farming - Part 2",
+    "canCraft": true
+  },
+  {
+    "id": "WARTECH_GEAR_RIG",
+    "name": "WARTECH TV-109 + TV-106 chest rig (A-TACS FG)",
+    "total": 2,
+    "type": "Chest rig",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sew it Good - Part 4",
+    "canCraft": false
+  },
+  {
+    "id": "6_B_33_FRONT",
+    "name": "6B33 ballistic plate (Front)",
+    "total": 1,
+    "type": "Armor plate",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Surprise",
+    "canCraft": false
+  },
+  {
+    "id": "AK_74_N_5_45_X_39_ASSAULT_RIFLE",
+    "name": "Kalashnikov AK-74N 5.45x39 assault rifle",
+    "total": 1,
+    "type": "Weapon Rifle",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Punisher - Part 5",
+    "canCraft": true
+  },
+  {
+    "id": "AVS_TE",
+    "name": "Crye Precision AVS plate carrier (Tagilla Edition)",
+    "total": 1,
+    "type": "Armored chest rig",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Special Offer",
+    "canCraft": false
+  },
+  {
+    "id": "BOSS_CAP",
+    "name": "BOSS cap",
+    "total": 1,
+    "type": "Headwear",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Huntsman Path - Factory Chief",
+    "canCraft": false
+  },
+  {
+    "id": "CAT_FIGURINE",
+    "name": "Cat figurine",
+    "total": 1,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "CPC_GE",
+    "name": "Crye Precision CPC plate carrier (Goons Edition)",
+    "total": 1,
+    "type": "Armored chest rig",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Special Offer",
+    "canCraft": false
+  },
+  {
+    "id": "CULTIST",
+    "name": "Cultist figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "DED_MOROZ",
+    "name": "Ded Moroz figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "DEN",
+    "name": "Den figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "INSULATING_TAPE",
+    "name": "Insulating tape",
+    "total": 1,
+    "type": "Other",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Key to the Tower",
+    "canCraft": false
+  },
+  {
+    "id": "KILLA",
+    "name": "Killa figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "KORUND_VM_FRONT",
+    "name": "Korund-VM ballistic plates (Front)",
+    "total": 1,
+    "type": "Armor plate",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Surprise",
+    "canCraft": false
+  },
+  {
+    "id": "LBCR_GE",
+    "name": "LBT-1961A Load Bearing Chest Rig (Goons Edition)",
+    "total": 1,
+    "type": "Chest rig",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Special Offer",
+    "canCraft": false
+  },
+  {
+    "id": "LIGHT_BULB",
+    "name": "Light bulb",
+    "total": 1,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": false
+  },
+  {
+    "id": "MASKA_1_SCH_HELMET_KILLA",
+    "name": "\"Maska-1SCh\" bulletproof helmet",
+    "total": 1,
+    "type": "Helmet",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Huntsman Path - Sellout",
+    "canCraft": false
+  },
+  {
+    "id": "MUTKEVICH",
+    "name": "Politician Mutkevich figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "NIXXOR",
+    "name": "NIXXOR lens",
+    "total": 1,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": true
+  },
+  {
+    "id": "PILGRIM_TOURIST_BACKPACK",
+    "name": "Pilgrim tourist backpack",
+    "total": 1,
+    "type": "Backpack",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sew it Good - Part 1",
+    "canCraft": true
+  },
+  {
+    "id": "POWERBANK",
+    "name": "Portable Powerbank",
+    "total": 1,
+    "type": "Energy element",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": false
+  },
+  {
+    "id": "PR_TARAN",
+    "name": "PR-Taran police baton",
+    "total": 1,
+    "type": "Weapon Melee",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Huntsman Path - Crooked Cop",
+    "canCraft": false
+  },
+  {
+    "id": "RAM",
+    "name": "RAM stick",
+    "total": 1,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": false
+  },
+  {
+    "id": "RESHALA",
+    "name": "Reshala figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "ROLER_SUBMARINER_GOLD_WRIST_WATCH",
+    "name": "Roler Submariner gold wrist watch",
+    "total": 1,
+    "type": "Valuable",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Living High is Not a Crime - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "RYZHY",
+    "name": "Ryzhy figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "SALTY_DOG",
+    "name": "Salty Dog beef sausage",
+    "total": 1,
+    "type": "Food",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Delicious Sausage",
+    "canCraft": false
+  },
+  {
+    "id": "SANITARS_BAG",
+    "name": "Sanitar's bag",
+    "total": 1,
+    "type": "Backpack",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Special Offer",
+    "canCraft": false
+  },
+  {
+    "id": "SCAV",
+    "name": "Scav figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "SHTURMAN_KEY",
+    "name": "Shturman's stash key",
+    "total": 1,
+    "type": "Key",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Huntsman Path - Woods Keeper",
+    "canCraft": false
+  },
+  {
+    "id": "SJ_9",
+    "name": "SJ9 TGLabs combat stimulant injector",
+    "total": 1,
+    "type": "Injector",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Assessment - Part 3",
+    "canCraft": false
+  },
+  {
+    "id": "SKI_HAT_WITH_HOLES_FOR_EYES",
+    "name": "Ski hat with holes for eyes",
+    "total": 1,
+    "type": "Headwear",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Sew it Good - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "SPRTN",
+    "name": "SPRTN Omega ballistic plate",
+    "total": 1,
+    "type": "Armor plate",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Surprise",
+    "canCraft": false
+  },
+  {
+    "id": "SSD",
+    "name": "SSD drive",
+    "total": 1,
+    "type": "Info item",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": false
+  },
+  {
+    "id": "TAGILLA",
+    "name": "Tagilla figurine",
+    "total": 1,
+    "type": "Valuable Figurine",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Small Business - Part 1",
+    "canCraft": false
+  },
+  {
+    "id": "TT_PISTOL_7_62_X_25_TT_GOLD",
+    "name": "TT-33 7.62x25 TT pistol (Golden)",
+    "total": 1,
+    "type": "Weapon Pistol",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "The Huntsman Path - Trophy",
+    "canCraft": false
+  },
+  {
+    "id": "USB_A",
+    "name": "USB Adapter",
+    "total": 1,
+    "type": "Electronics",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Camera, Action!",
+    "canCraft": false
+  },
+  {
+    "id": "WD_40_100_ML",
+    "name": "WD-40 (100ml)",
+    "total": 1,
+    "type": "Flammable material",
+    "level": 1,
+    "priority": 999,
+    "firstQuest": "Spa Tour - Part 3",
+    "canCraft": true
+  }
+]
