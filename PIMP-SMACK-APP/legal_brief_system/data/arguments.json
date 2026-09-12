@@ -1,0 +1,74 @@
+{
+    "arguments": [
+        {
+            "number": "I",
+            "heading": "THE DISTRICT COURT ERRED IN DISMISSING APPELLANT'S ACCESS TO COURTS CLAIMS",
+            "subarguments": [
+                {
+                    "letter": "A",
+                    "heading": "The Destruction of 62 Legal Files Constituted Actual Injury",
+                    "content_key": "arg_1a",
+                    "citations": [
+                        "Bounds v. Smith",
+                        "Lewis v. Casey"
+                    ]
+                },
+                {
+                    "letter": "B",
+                    "heading": "Systematic Rejection of Filings Denied Meaningful Access",
+                    "content_key": "arg_1b",
+                    "citations": [
+                        "Bounds v. Smith",
+                        "Christopher v. Harbury"
+                    ]
+                }
+            ]
+        },
+        {
+            "number": "II",
+            "heading": "THE DISTRICT COURT ERRED IN FINDING NO DUE PROCESS VIOLATION",
+            "subarguments": [
+                {
+                    "letter": "A",
+                    "heading": "Unlawful Detention Beyond Court-Ordered Release Violated Due Process",
+                    "content_key": "arg_2a",
+                    "citations": [
+                        "Zinermon v. Burch",
+                        "Mathews v. Eldridge"
+                    ]
+                },
+                {
+                    "letter": "B",
+                    "heading": "Denial of Discovery 14 Times Violated Procedural Due Process",
+                    "content_key": "arg_2b",
+                    "citations": [
+                        "Mathews v. Eldridge"
+                    ]
+                }
+            ]
+        },
+        {
+            "number": "III",
+            "heading": "THE DISTRICT COURT ERRED IN DISMISSING MONELL CLAIMS",
+            "subarguments": [
+                {
+                    "letter": "A",
+                    "heading": "Appellant Sufficiently Alleged Official Policy or Custom",
+                    "content_key": "arg_3a",
+                    "citations": [
+                        "Monell v. Dep't of Social Services"
+                    ]
+                },
+                {
+                    "letter": "B",
+                    "heading": "The Pattern of Conduct Shows Deliberate Indifference",
+                    "content_key": "arg_3b",
+                    "citations": [
+                        "Monell v. Dep't of Social Services",
+                        "City of Canton v. Harris"
+                    ]
+                }
+            ]
+        }
+    ]
+}

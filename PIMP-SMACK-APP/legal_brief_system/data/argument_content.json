@@ -1,0 +1,102 @@
+{
+    "content_sections": {
+        "introduction": {
+            "max_pages": 2,
+            "description": "Brief overview of case and why appellant should win",
+            "content": "[Draft your introduction here - max 2 pages]\n\nThis appeal arises from the district court's dismissal of Appellant's civil rights claims. The systematic denial of access to courts, destruction of legal files, and prolonged unlawful detention after court-ordered release demonstrate clear constitutional violations that the district court erroneously dismissed."
+        },
+        "summary_of_argument": {
+            "description": "Succinct summary of each argument, following same structure as Argument section",
+            "content": "[Draft summary here - should mirror Argument section structure]\n\nI. The district court erred in dismissing access to courts claims because the destruction of 62 legal files and systematic rejection of filings caused actual injury to Appellant's ability to pursue legal remedies.\n\nII. The district court erred in finding no due process violation because Appellant was held seven days beyond his court-ordered release date and was denied discovery fourteen times.\n\nIII. The district court erred in dismissing Monell claims because Appellant sufficiently alleged official policy through the pattern of constitutional violations by county officials."
+        },
+        "arguments": {
+            "I": {
+                "heading": "THE DISTRICT COURT ERRED IN DISMISSING APPELLANT'S ACCESS TO COURTS CLAIMS",
+                "A": {
+                    "heading": "The Destruction of 62 Legal Files Constituted Actual Injury",
+                    "content": "[Draft argument I.A here]\n\nThe Supreme Court has recognized that prisoners have a constitutional right of access to the courts. Bounds v. Smith, 430 U.S. 817, 821 (1977). To state a claim for denial of access to courts, a plaintiff must show actual injury—that the defendant's actions hindered the plaintiff's efforts to pursue a nonfrivolous legal claim. Lewis v. Casey, 518 U.S. 343, 351 (1996).\n\nHere, on June 20, 2022, at 5:10 PM, a jail guard deliberately deleted 62 of Appellant's legal files during dinner lockdown. (ER-102.) These files contained critical evidence and legal arguments for Appellant's pending claims. The deletion occurred while Appellant was confined and unable to protect his property.\n\nThis destruction directly caused actual injury..."
+                },
+                "B": {
+                    "heading": "Systematic Rejection of Filings Denied Meaningful Access",
+                    "content": "[Draft argument I.B here]\n\nBeyond the destruction of files, Appellant faced systematic rejection of his court filings without explanation. Despite numerous attempts to file responses through PACER, documents were repeatedly rejected. (ER-XX.)\n\nThe automated rejection of filings without human review or explanation constitutes a denial of meaningful access to courts..."
+                }
+            },
+            "II": {
+                "heading": "THE DISTRICT COURT ERRED IN FINDING NO DUE PROCESS VIOLATION",
+                "A": {
+                    "heading": "Unlawful Detention Beyond Court-Ordered Release Violated Due Process",
+                    "content": "[Draft argument II.A here]\n\nOn July 1, 2022, the court ordered Appellant's release. (ER-115.) Despite this order, the jail continued to detain Appellant for an additional seven days.\n\nThe Fourteenth Amendment prohibits the deprivation of liberty without due process of law. Zinermon v. Burch, 494 U.S. 113, 125 (1990). Continued detention after a court order for release is a clear deprivation of liberty..."
+                },
+                "B": {
+                    "heading": "Denial of Discovery 14 Times Violated Procedural Due Process",
+                    "content": "[Draft argument II.B here]\n\nAppellant's discovery requests were denied fourteen times while he was incarcerated and proceeding pro se. (ER-XX.) Procedural due process requires notice and an opportunity to be heard at a meaningful time and in a meaningful manner. Mathews v. Eldridge, 424 U.S. 319, 333 (1976).\n\nThe systematic denial of discovery prevented Appellant from gathering evidence necessary to support his claims..."
+                }
+            },
+            "III": {
+                "heading": "THE DISTRICT COURT ERRED IN DISMISSING MONELL CLAIMS",
+                "A": {
+                    "heading": "Appellant Sufficiently Alleged Official Policy or Custom",
+                    "content": "[Draft argument III.A here]\n\nUnder Monell v. Department of Social Services, 436 U.S. 658 (1978), municipalities may be held liable under § 1983 when an official policy or custom causes a constitutional violation.\n\nAppellant alleged that the pattern of conduct by Clackamas County officials—including the destruction of legal files, denial of discovery, and unlawful detention—constitutes an official policy or custom..."
+                },
+                "B": {
+                    "heading": "The Pattern of Conduct Shows Deliberate Indifference",
+                    "content": "[Draft argument III.B here]\n\nThe repeated nature of the constitutional violations demonstrates deliberate indifference to Appellant's rights. The West Linn Police Department changed its policy immediately following notice of the suit, demonstrating awareness that its prior practices were deficient. (ER-XX.)..."
+                }
+            }
+        }
+    },
+    "record_citations": {
+        "format": "[volume]-ER-[page]",
+        "examples": [
+            "ER-12 (single volume)",
+            "1-ER-234 (multi-volume)",
+            "1-SER-56 (supplemental)"
+        ],
+        "citations_used": [
+            {
+                "cite": "ER-12",
+                "description": "Arrest report March 6, 2022"
+            },
+            {
+                "cite": "ER-45",
+                "description": "Police reports March 4, 2022"
+            },
+            {
+                "cite": "ER-67",
+                "description": "Notice to State March 28, 2022"
+            },
+            {
+                "cite": "ER-78",
+                "description": "Second arrest May 24, 2022"
+            },
+            {
+                "cite": "ER-89",
+                "description": "June 10, 2022 hearing transcript"
+            },
+            {
+                "cite": "ER-102",
+                "description": "Jail records - file deletion June 20, 2022"
+            },
+            {
+                "cite": "ER-115",
+                "description": "Court release order July 1, 2022"
+            },
+            {
+                "cite": "ER-120",
+                "description": "State case dismissal July 13, 2022"
+            },
+            {
+                "cite": "ECF 1",
+                "description": "Federal complaint"
+            },
+            {
+                "cite": "ECF 9",
+                "description": "F&R July 15, 2024"
+            },
+            {
+                "cite": "ECF 12",
+                "description": "District court order August 7, 2024"
+            }
+        ]
+    }
+}

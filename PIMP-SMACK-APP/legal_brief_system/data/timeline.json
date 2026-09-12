@@ -1,0 +1,106 @@
+{
+    "events": [
+        {
+            "date": "2020-10-08",
+            "event": "Heirs secretly obtain personal representative letters and conceal status through Oct 19 to divert insurance funds",
+            "significance": "Prevented Plaintiff from stopping the $111,943 release because bank blocked access without court order",
+            "er_cite": "Probate Dkt. 10/08/20"
+        },
+        {
+            "date": "2020-11-24",
+            "event": "Heir Zac Bond emails promising payment if Plaintiff vacates home",
+            "significance": "Evidence heirs schemed to divert insurance proceeds",
+            "er_cite": "ECF 15"
+        },
+        {
+            "date": "2021-01-15",
+            "event": "DA and Sheriff refuse to investigate $111,943 theft",
+            "significance": "Shows deliberate indifference to felony fraud",
+            "er_cite": "ECF 8"
+        },
+        {
+            "date": "2021-01-25",
+            "event": "Filed initial complaint in state court",
+            "significance": "Procedural start",
+            "er_cite": null
+        },
+        {
+            "date": "2022-03-04",
+            "event": "Police reports created showing selective statements by officers",
+            "significance": "Evidence of policy violation",
+            "er_cite": "ER-45"
+        },
+        {
+            "date": "2022-03-06",
+            "event": "Wrongful arrest by Officers Gunnarson and Blyth without warrant",
+            "significance": "Fourth Amendment violation",
+            "er_cite": "ER-12"
+        },
+        {
+            "date": "2022-03-28",
+            "event": "First notice sent to State of Oregon",
+            "significance": "Notice requirement satisfied",
+            "er_cite": "ER-67"
+        },
+        {
+            "date": "2022-05-08",
+            "event": "Jail medical staff refuses to provide eye care",
+            "significance": "Deliberate indifference to serious medical need",
+            "er_cite": "ECF 8"
+        },
+        {
+            "date": "2022-05-24",
+            "event": "Re-arrested by John Doe Officers 1 and 2",
+            "significance": "Double jeopardy claim",
+            "er_cite": "ER-78"
+        },
+        {
+            "date": "2022-06-10",
+            "event": "DA Portlock and advisor Medina colluded to delay trial",
+            "significance": "Sixth Amendment violation",
+            "er_cite": "ER-89"
+        },
+        {
+            "date": "2022-06-20",
+            "event": "Jail guard deleted 62 critical legal files at 5:10 PM",
+            "significance": "Access to courts violation",
+            "er_cite": "ER-102"
+        },
+        {
+            "date": "2022-07-01",
+            "event": "Court ordered release but jail continued detention",
+            "significance": "Unlawful detention",
+            "er_cite": "ER-115"
+        },
+        {
+            "date": "2022-07-13",
+            "event": "State case dismissed",
+            "significance": "Case ended favorably",
+            "er_cite": "ER-120"
+        },
+        {
+            "date": "2024-05-01",
+            "event": "Federal complaint filed",
+            "significance": "Start of federal action",
+            "er_cite": "ECF 1"
+        },
+        {
+            "date": "2024-07-15",
+            "event": "Magistrate Beckerman issued F&R recommending dismissal",
+            "significance": "Adverse ruling",
+            "er_cite": "ECF 9"
+        },
+        {
+            "date": "2024-08-07",
+            "event": "District court adopted F&R and dismissed with leave to amend",
+            "significance": "Order appealed from",
+            "er_cite": "ECF 12"
+        },
+        {
+            "date": "2025-10-01",
+            "event": "PACER blocks filing of Rule 59(e) motion on day 28 deadline",
+            "significance": "Obstructed access to appellate remedies",
+            "er_cite": "ECF 67"
+        }
+    ]
+}

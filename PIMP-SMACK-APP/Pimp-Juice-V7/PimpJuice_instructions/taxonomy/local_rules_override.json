@@ -1,0 +1,96 @@
+{
+  "_comment": "LOCAL RULES OVERRIDE SYSTEM",
+  "_purpose": "Base rules + local rules layered on top. Model can generate overrides.",
+  "_cascade": [
+    "1. FRAP (Federal Rules of Appellate Procedure) - base",
+    "2. Circuit Rules (e.g., 9th Circuit) - overrides FRAP",
+    "3. District Rules (e.g., District of Oregon) - overrides Circuit",
+    "4. Local Rules (specific court/judge) - overrides District",
+    "5. User/Model Override - final layer"
+  ],
+  
+  "base_frap": {
+    "typeface": {
+      "allowed": ["Century Schoolbook", "Times New Roman", "Garamond", "Georgia"],
+      "size_min": 14,
+      "proportional_required": true
+    },
+    "margins": {
+      "top": 1,
+      "bottom": 1,
+      "left": 1,
+      "right": 1
+    },
+    "line_spacing": "double",
+    "word_limit": 13000,
+    "page_limit": null,
+    "certificates_required": ["compliance", "service"]
+  },
+  
+  "circuit_overrides": {
+    "9th_circuit": {
+      "font": "Century Schoolbook",
+      "font_size": 14,
+      "word_limit": 14000,
+      "page_limit": null,
+      "special": {
+        "related_cases_statement": "required_if_any",
+        "addendum": "required_for_constitutional_issues"
+      }
+    },
+    "1st_circuit": {
+      "font": "Times New Roman",
+      "font_size": 14,
+      "word_limit": 13000
+    }
+  },
+  
+  "district_overrides": {
+    "D_OR": {
+      "_name": "District of Oregon",
+      "local_rules_url": "https://ord.uscourts.gov/index.php/rules-orders-and-notices/local-rules",
+      "overrides": {
+        "e_filing_required": true,
+        "cm_ecf": true,
+        "page_limits": {
+          "motion": 15,
+          "response": 15,
+          "reply": 7
+        },
+        "conference_required_before_discovery_motion": true,
+        "proposed_order_required": true
+      }
+    },
+    "C_D_CAL": {
+      "_name": "Central District of California",
+      "overrides": {
+        "page_limits": {
+          "motion": 25,
+          "response": 25,
+          "reply": 10
+        },
+        "meet_and_confer_required": true
+      }
+    }
+  },
+  
+  "model_override_template": {
+    "_comment": "Model fills this to override any rule",
+    "source": "local_rule_or_order",
+    "citation": "",
+    "overrides": {
+      "font": null,
+      "font_size": null,
+      "word_limit": null,
+      "page_limit": null,
+      "margins": null,
+      "line_spacing": null,
+      "special_requirements": []
+    }
+  },
+  
+  "override_script_usage": {
+    "command": "node apply-overrides.cjs base.json override.json output.json",
+    "description": "Merges override on top of base, with override winning conflicts"
+  }
+}

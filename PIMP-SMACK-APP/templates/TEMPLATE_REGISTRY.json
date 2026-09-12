@@ -1,0 +1,172 @@
+{
+  "_description": "PIMP SMACK Template Registry - All templates and their required placeholders",
+  "_usage": "Call template_generator.py with template_id and data dict",
+  "_no_edits_required": "All document generation is programmatic - NO FILE EDITING NEEDED",
+
+  "templates": {
+    "motion": {
+      "file": "MOTION_TEMPLATE.xml",
+      "description": "Standard motion with Introduction, Facts, Argument, Conclusion",
+      "required_placeholders": [
+        "INTRODUCTION_TEXT",
+        "STATEMENT_OF_FACTS_TEXT",
+        "ARGUMENT_I_TITLE",
+        "ARGUMENT_I_TEXT",
+        "CONCLUSION_TEXT",
+        "DOCUMENT_TITLE"
+      ],
+      "optional_placeholders": [
+        "ARGUMENT_II_TITLE",
+        "ARGUMENT_II_TEXT",
+        "ARGUMENT_III_TITLE",
+        "ARGUMENT_III_TEXT"
+      ],
+      "auto_filled_from_config": [
+        "CASE_NUMBER",
+        "PARTY_NAME",
+        "PARTY_NAME_CAPS",
+        "ADDRESS_LINE_1",
+        "CITY_STATE_ZIP",
+        "EMAIL",
+        "PHONE",
+        "DAY",
+        "MONTH",
+        "YEAR",
+        "SERVICE_DATE"
+      ]
+    },
+
+    "declaration": {
+      "file": "DECLARATION_TEMPLATE.xml",
+      "description": "28 USC 1746 declaration with 2+2+1 fact structure (XML output)",
+      "required_placeholders": [
+        "DECLARANT_NAME",
+        "DECLARANT_NAME_CAPS",
+        "FACT_1_IDENTITY",
+        "FACT_2_RELATIONSHIP",
+        "FACT_3_PRIMARY",
+        "FACT_4_SUPPORTING",
+        "FACT_5_CONCLUSION"
+      ],
+      "optional_placeholders": [],
+      "auto_filled_from_config": [
+        "CASE_NUMBER",
+        "EXECUTION_DATE",
+        "EXECUTION_CITY",
+        "EXECUTION_STATE"
+      ]
+    },
+
+    "declaration_docx": {
+      "file": "declaration-builder/scripts/document_builder.py",
+      "description": "RECOMMENDED: Full declaration builder with DOCX output",
+      "method": "generate_declaration_docx",
+      "required_data": [
+        "facts (list of dicts with: title, circumstance_time_place, circumstance_parties, element_primary, element_supporting, party_link)"
+      ],
+      "features": [
+        "Multi-jurisdiction support",
+        "Proper 2+2+1 fact structure",
+        "Cover page included",
+        "Standard .docx output"
+      ]
+    },
+
+    "notice": {
+      "file": "NOTICE_TEMPLATE.xml",
+      "description": "Notice of motion/hearing",
+      "required_placeholders": [
+        "NOTICE_TITLE",
+        "NOTICE_RECIPIENTS",
+        "NOTICE_BODY"
+      ],
+      "optional_placeholders": [
+        "NOTICE_DATE",
+        "NOTICE_TIME",
+        "NOTICE_LOCATION",
+        "ADDITIONAL_NOTICE"
+      ],
+      "auto_filled_from_config": [
+        "CASE_NUMBER",
+        "JUDGE_NAME",
+        "PARTY_NAME",
+        "PARTY_NAME_CAPS",
+        "ADDRESS_LINE_1",
+        "CITY_STATE_ZIP",
+        "EMAIL",
+        "PHONE",
+        "DAY",
+        "MONTH",
+        "YEAR",
+        "SERVICE_DATE"
+      ]
+    },
+
+    "cover": {
+      "file": "EXTERNAL:COVER_GENERATOR_COMPLETE/TEMPLATE_CAPTION.docx",
+      "generator": "COVER_GENERATOR_COMPLETE/generate_cover.py",
+      "description": "Ninth Circuit cover page - uses existing cover generator",
+      "required_placeholders": [
+        "case_number",
+        "appellant_name",
+        "appellee_names",
+        "document_title",
+        "lower_court"
+      ],
+      "notes": "Call generate_cover.py directly - already programmatic"
+    }
+  },
+
+  "building_blocks": {
+    "file": "BUILDING_BLOCKS.xml",
+    "description": "Individual XML components for custom document assembly",
+    "blocks": [
+      {"id": "HEADING_1", "use": "Section titles (centered, bold)"},
+      {"id": "HEADING_2", "use": "Subsection titles (numbered I., II.)"},
+      {"id": "BODY_PARAGRAPH", "use": "Standard body text"},
+      {"id": "BODY_PARAGRAPH_BOLD", "use": "Emphasized body text"},
+      {"id": "NUMBERED_FACT", "use": "Declaration facts (1., 2., 3.)"},
+      {"id": "BULLET_ITEM", "use": "Em-dash bullet points"},
+      {"id": "DATED_LINE", "use": "DATED this X day..."},
+      {"id": "RESPECTFULLY_SUBMITTED", "use": "Respectfully submitted,"},
+      {"id": "SIGNATURE_LINE", "use": "Edwardian Script /s/ signature"},
+      {"id": "NAME_BLOCK", "use": "NAME IN CAPS, Pro se"},
+      {"id": "ADDRESS_BLOCK", "use": "Full address with MAIL ONLY"},
+      {"id": "CERTIFICATE_OF_SERVICE", "use": "CM/ECF service certificate"},
+      {"id": "DECLARATION_PREAMBLE", "use": "28 USC 1746 opening"},
+      {"id": "DECLARATION_ATTESTATION", "use": "Closing attestation"},
+      {"id": "EXECUTED_LINE", "use": "Executed on date at location"},
+      {"id": "HEADER", "use": "Case number header"},
+      {"id": "FOOTER", "use": "Page number footer"},
+      {"id": "PAGE_SETTINGS", "use": "Letter size, 1\" margins"}
+    ]
+  },
+
+  "playlists": {
+    "full_motion_package": {
+      "description": "Cover + Motion + Declaration + Certificate",
+      "templates": ["cover", "motion", "declaration"],
+      "merge_order": ["cover", "motion", "declaration"]
+    },
+    "opposition": {
+      "description": "Opposition to motion",
+      "templates": ["cover", "motion"],
+      "merge_order": ["cover", "motion"]
+    },
+    "declaration_only": {
+      "description": "Standalone declaration",
+      "templates": ["declaration"],
+      "merge_order": ["declaration"]
+    },
+    "notice_package": {
+      "description": "Notice + Supporting Declaration",
+      "templates": ["cover", "notice", "declaration"],
+      "merge_order": ["cover", "notice", "declaration"]
+    }
+  },
+
+  "config_source": "MASTER_CASE_CONFIG.json",
+  "output_directory": "output/",
+  
+  "formatting_reference": "FORMATTING_BLOCKS.md"
+}

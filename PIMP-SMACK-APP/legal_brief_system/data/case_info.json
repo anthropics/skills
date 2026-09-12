@@ -1,0 +1,42 @@
+{
+    "case": {
+        "ninth_circuit_number": "24-1234",
+        "district_court_number": "3:24-cv-00839-SB",
+        "district_court": "UNITED STATES DISTRICT COURT FOR THE DISTRICT OF OREGON",
+        "lower_court_judge": "Hon. Marco A. Hernández"
+    },
+    "parties": {
+        "appellant": {
+            "name": "TYLER ALLEN LOFALL",
+            "type": "Plaintiff-Appellant",
+            "pro_se": true
+        },
+        "appellee": {
+            "name": "STATE OF OREGON, et al.",
+            "type": "Defendants-Appellees"
+        }
+    },
+    "counsel": {
+        "appellant_counsel": {
+            "name": "Tyler Allen Lofall",
+            "firm": null,
+            "address": "[Address]",
+            "phone": "[Phone]",
+            "email": "[Email]",
+            "pro_se": true
+        }
+    },
+    "filing": {
+        "type": "APPELLANT'S OPENING BRIEF",
+        "date": "2024-12-06"
+    },
+    "jurisdiction": {
+        "district_court_basis": "28 U.S.C. § 1331 (federal question)",
+        "appeals_court_basis": "28 U.S.C. § 1291 (final judgment)",
+        "judgment_date": "2024-08-07",
+        "notice_of_appeal_date": "2024-09-05",
+        "timeliness_rule": "FRAP 4(a)(1)(A)",
+        "final_judgment": true,
+        "criminal_bail_status": null
+    }
+}

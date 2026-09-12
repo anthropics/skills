@@ -1,0 +1,44 @@
+{
+    "CASE_NUMBER": "25-6461",
+    "COURT": "United States Court of Appeals for the Ninth Circuit",
+    "FILING_TITLE": "APPELLANT'S OPENING BRIEF",
+    "DISTRICT_CASE_NO": "3:24-cv-00839-SB",
+    "JUDGE": "Hon. Stacy Beckerman",
+    "APPELLANT": "Tyler Allen Lofall",
+    "APPELLEES": [
+        "Clackamas County",
+        "City of West Linn",
+        "Officer Dana Gunnarson",
+        "Officer Catlin Blyth"
+    ],
+    "APPELLANT_COUNSEL": {
+        "NAME": "Tyler Allen Lofall",
+        "ROLE": "Pro Se",
+        "ADDRESS": "5809 West Park Place, Pasco, WA 99301",
+        "EMAIL": "tyleralofall@gmail.com",
+        "PHONE": "(386) 262-3322"
+    },
+    "TABLE_OF_AUTHORITIES": "(Optional prebuilt text if you are not auto-generating.)",
+    "INTRODUCTION": "Intro text.",
+    "JURISDICTIONAL_STATEMENT": "Jurisdictional statement text.",
+    "ISSUES_PRESENTED": "Issues text.",
+    "STATEMENT_OF_THE_CASE": "Narrative statement of the case.",
+    "SUMMARY_OF_ARGUMENT": "Summary text.",
+    "STANDARD_OF_REVIEW": "Standard text.",
+    "ARGUMENT": [
+        {
+            "HEADING": "I. Issue heading",
+            "TEXT": "Argument text with citations."
+        },
+        {
+            "HEADING": "II. Next issue heading",
+            "TEXT": "Further argument text."
+        }
+    ],
+    "CONCLUSION": "Conclusion / requested relief.",
+    "RELATED_CASES": "Related cases statement.",
+    "ADDENDUM": "Statutes/rules text if included.",
+    "CERTIFICATE_COMPLIANCE": "Word count statement if needed.",
+    "CERTIFICATE_SERVICE": "Certificate of Service text.",
+    "DATE": "December 7, 2025"
+}
