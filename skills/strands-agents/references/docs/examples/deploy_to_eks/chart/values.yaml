@@ -1,0 +1,93 @@
+# Default values for strands-agents-weather
+# This is a YAML-formatted file.
+
+replicaCount: 1
+
+image:
+  repository: placeholder
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  pathType: Prefix
+  hosts: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+topologySpreadConstraints: []
+  #  - maxSkew: 1
+  #    minDomains: 3
+  #    topologyKey: topology.kubernetes.io/zone
+  #    whenUnsatisfiable: DoNotSchedule
+  #    labelSelector:
+  #      matchLabels:
+  #        app.kubernetes.io/name: strands-agents-weather
+  #  - maxSkew: 1
+  #    topologyKey: kubernetes.io/hostname
+  #    whenUnsatisfiable: ScheduleAnyway
+  #    labelSelector:
+  #      matchLabels:
+  #        app.kubernetes.io/instance: strands-agents-weather
+
+podDisruptionBudget:
+  enabled: false
+  # Only one of maxUnavailable and minAvailable can be specified
+  # minAvailable: 1    # Can be an absolute number or a percentage (e.g., "50%")
+  # maxUnavailable: 1  # Can be an absolute number or a percentage (e.g., "50%")
+
+env: []
+  # - name: ENV_VAR_NAME
+  #   value: "value"
