@@ -58,6 +58,8 @@ def run_loop(
     verbose: bool,
     live_report_path: Path | None = None,
     log_dir: Path | None = None,
+    progress_callback=None,
+    stop_signal=None,
 ) -> dict:
     """Run the eval + improvement loop."""
     project_root = find_project_root()
@@ -77,6 +79,19 @@ def run_loop(
     exit_reason = "unknown"
 
     for iteration in range(1, max_iterations + 1):
+        if stop_signal is not None and stop_signal.is_set():
+            exit_reason = f"stopped (iteration {iteration - 1})"
+            break
+        if progress_callback:
+            try:
+                progress_callback({
+                    "event": "iteration_start",
+                    "iteration": iteration,
+                    "max_iterations": max_iterations,
+                    "description": current_description,
+                })
+            except Exception:
+                pass
         if verbose:
             print(f"\n{'='*60}", file=sys.stderr)
             print(f"Iteration {iteration}/{max_iterations}", file=sys.stderr)
@@ -93,6 +108,7 @@ def run_loop(
             num_workers=num_workers,
             timeout=timeout,
             project_root=project_root,
+            skill_path=skill_path,
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
@@ -135,6 +151,18 @@ def run_loop(
             "total": train_summary["total"],
             "results": train_results["results"],
         })
+
+        # Notify subscribers of finished iteration
+        if progress_callback:
+            try:
+                progress_callback({
+                    "event": "iteration_done",
+                    "iteration": iteration,
+                    "entry": history[-1],
+                    "elapsed_s": eval_elapsed,
+                })
+            except Exception:
+                pass
 
         # Write live report if path provided
         if live_report_path:
@@ -189,6 +217,12 @@ def run_loop(
         # Improve the description based on train results
         if verbose:
             print(f"\nImproving description...", file=sys.stderr)
+
+        if progress_callback:
+            try:
+                progress_callback({"event": "improving", "iteration": iteration})
+            except Exception:
+                pass
 
         t0 = time.time()
         # Strip test scores from history so improvement model can't see them
