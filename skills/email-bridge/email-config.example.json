@@ -1,0 +1,9 @@
+{
+  "sender": "your_email@163.com",
+  "receiver": "your_receiver@qq.com",
+  "smtp_server": "smtp.163.com",
+  "smtp_port": 465,
+  "smtp_auth": "YOUR_SMTP_AUTH_CODE",
+  "pop_server": "pop.163.com",
+  "pop_port": 995
+}
