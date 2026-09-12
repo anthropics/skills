@@ -1,0 +1,23 @@
+{
+  "skill_name": "solo-developer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey so i need to build a REST API for my side project. it's basically a task manager app, nothing fancy. needs user auth (jwt probably?), CRUD operations for tasks, and maybe some filtering by status/priority. i'm using node + express. got about 3 days to get an MVP running before i show it to a potential co-founder. what's the fastest way to get this production-ready?",
+      "expected_output": "Should trigger RAPID mode (Beta-dominant). Expects: systematic project structure, JWT auth implementation, Express routes for CRUD, basic validation, essential tests, minimal but clear documentation. Should prioritize proven patterns over innovation given the 3-day timeline.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building a personal finance dashboard and want to add a really cool feature that visualizes spending patterns over time. I've got the data in postgres (transactions table with amount, category, date, merchant). I want something more interesting than just bar charts - maybe a sankey diagram showing money flow between categories, or a calendar heatmap. This is for my portfolio so I want it to stand out. Using React + D3. No rush, just want it to look professional and innovative.",
+      "expected_output": "Should trigger BALANCED or INNOVATION mode. Expects: creative visualization approach, D3 integration guidance, data transformation logic, responsive design considerations, performance optimization for large datasets. Should balance innovation (unique viz) with reliability (production-ready code).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "got a bug in production. users are reporting that sometimes when they upload a profile picture, it just disappears after a few hours. i'm using aws s3 for storage and the upload seems to work fine (i can see the file in the bucket right after upload). using multer for handling the upload in express. the image url is stored in postgres. need to figure out what's going on and fix it asap - this is affecting real users",
+      "expected_output": "Should trigger RAPID mode focused on debugging. Expects: systematic debugging approach, checking S3 lifecycle policies, verifying URL generation/storage, examining multer config, checking for async issues. Should prioritize finding and fixing the root cause quickly over architectural improvements.",
+      "files": []
+    }
+  ]
+}
