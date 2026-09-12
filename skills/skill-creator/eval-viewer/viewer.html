@@ -1192,7 +1192,12 @@
       // Per-eval breakdown (if runs data available)
       const runs = data.runs || [];
       if (runs.length > 0) {
-        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => {
+          if (a === null && b === null) return 0;
+          if (a === null) return 1;
+          if (b === null) return -1;
+          return a - b;
+        });
 
         html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
 
