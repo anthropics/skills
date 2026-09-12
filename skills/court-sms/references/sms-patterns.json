@@ -1,0 +1,62 @@
+{
+  "supported_platforms": [
+    {
+      "name": "全国法院统一送达平台",
+      "domain": "zxfw.court.gov.cn",
+      "download_method": "api",
+      "url_params": ["qdbh", "sdbh", "sdsin"],
+      "api_endpoint": "https://zxfw.court.gov.cn/yzw/yzw-zxfw-sdfw/api/v1/sdfw/getWsListBySdbhNew"
+    },
+    {
+      "name": "广东法院电子送达",
+      "domain": "sd.gdems.com",
+      "download_method": "browser",
+      "url_params": ["path_code"]
+    },
+    {
+      "name": "集约送达平台",
+      "domain": "jysd.10102368.com",
+      "download_method": "browser",
+      "url_params": ["key"]
+    }
+  ],
+  "sms_types": {
+    "文书送达": {
+      "keywords": ["送达平台链接", "zxfw.court.gov.cn", "sd.gdems.com", "jysd.10102368.com"],
+      "has_download_link": true
+    },
+    "立案通知": {
+      "keywords": ["已立案", "立案通知", "立案材料已审核"],
+      "has_download_link": false
+    },
+    "信息通知": {
+      "keywords": [],
+      "has_download_link": false
+    }
+  },
+  "case_number_patterns": {
+    "standard": "[（(〔[]\\d{4}[）)〕]][\\u4e00-\\u9fa5]+\\d+号",
+    "examples": [
+      "（2025）苏0981民初1234号",
+      "(2024)粤0604执保5678号",
+      "〔2025〕京0105民初901号"
+    ]
+  },
+  "document_types": {
+    "传票": {
+      "keywords": ["传票"],
+      "extract": ["开庭时间", "地点", "法庭", "案号", "案由"]
+    },
+    "开庭通知书": {
+      "keywords": ["开庭通知", "出庭通知"],
+      "extract": ["开庭时间", "宣判时间", "地点", "法庭", "案号"]
+    }
+  },
+  "party_extraction": {
+    "exclude_keywords": [
+      "人民法院", "中级人民法院", "高级人民法院", "最高人民法院",
+      "法官", "审判长", "审判员", "书记员", "陪审员",
+      "委托诉讼代理人", "法定代表人"
+    ]
+  }
+}
