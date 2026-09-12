@@ -96,6 +96,7 @@ These word counts are approximate and you can feel free to go longer if needed.
 - Keep SKILL.md under 500 lines; if you're approaching this limit, add an additional layer of hierarchy along with clear pointers about where the model using the skill should go next to follow up.
 - Reference files clearly from SKILL.md with guidance on when to read them
 - For large reference files (>300 lines), include a table of contents
+- **Path resolution for references**: Relative paths (like `references/aws.md`) do not resolve automatically from the skill's own directory because the process current working directory (CWD) is the active workspace. Furthermore, some platforms (like Claude.ai) reject relative paths entirely. To ensure compatibility across platforms, always instruct the model to construct the absolute path to files in `references/` or other bundled directories. Direct the model to locate the injected header (e.g., `Base directory for this skill: <path>`) or find the skill directory, and combine it with the relative path to form a complete absolute path (e.g., `<base_directory>/references/aws.md`) before executing file reads or writes.
 
 **Domain organization**: When a skill supports multiple domains/frameworks, organize by variant:
 ```
