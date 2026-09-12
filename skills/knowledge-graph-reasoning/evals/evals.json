@@ -1,0 +1,35 @@
+{
+  "skill_name": "knowledge-graph-reasoning",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have these research notes about cloud computing: 'AWS launched in 2006. Azure followed in 2010. GCP launched in 2008. AWS holds 31% market share. Azure holds 25%. GCP holds 11%. Kubernetes was created by Google and runs on all three. Serverless computing reduces infrastructure costs by 40-60%.' Build me a knowledge graph from this.",
+      "expected_output": "A JSON-LD knowledge graph with nodes for AWS, Azure, GCP, Kubernetes, Serverless, and market share metrics. Edges should include precedes (AWS->Azure), derived_from (Kubernetes->Google), contains (all three -> Kubernetes), and influences (Serverless -> costs). Should have proper confidence scores and source attribution.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have an existing knowledge graph about AI safety. It says 'RLHF improves model alignment' with confidence 0.95. Now I want to add this new fact: 'RLHF does not improve real-world safety outcomes according to a 2026 DeepMind study.' Validate this before adding it.",
+      "expected_output": "An adversarial validation report showing: negation detected (improves vs does not improve), consistency check flagged (same entity RLHF, conflicting claims), source check passed (DeepMind study cited). Resolution should be 'needs_review' with recommendation to keep both facts with sources since they measure different things (alignment vs real-world safety).",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Given this knowledge graph about a software system, find the path between 'user_auth' and 'database_crash'. The graph has: user_auth -> requires -> session_manager, session_manager -> requires -> redis_cache, redis_cache -> causes -> memory_leak, memory_leak -> causes -> database_crash.",
+      "expected_output": "Path found with 4 hops: user_auth -> session_manager -> redis_cache -> memory_leak -> database_crash. Path confidence should be the product of all edge weights. Should include interpretation explaining the causal chain from authentication through cache to crash.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "My knowledge graph has grown to 250 nodes across cybersecurity, compliance, and networking topics. It's getting hard to query. What should I do?",
+      "expected_output": "Recommendation to split into 3 domain-specific subgraphs (cybersecurity, compliance, networking) with an index graph linking them through shared bridge nodes. Should include a graph health report showing current density, hub nodes, and cluster detection to guide the split.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I need to merge two knowledge graphs: one about machine learning frameworks (PyTorch, TensorFlow, JAX) and one about hardware accelerators (NVIDIA GPUs, TPUs, AMD GPUs). Find the shared concepts and merge them.",
+      "expected_output": "Identification of shared entities (CUDA links PyTorch to NVIDIA, TPU links JAX to Google/TensorFlow). Merged graph with bridge nodes connecting the two domains. Adversarial validation run on any conflicting properties. Updated health metrics for the merged graph.",
+      "files": []
+    }
+  ]
+}
