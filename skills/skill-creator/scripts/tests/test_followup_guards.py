@@ -89,6 +89,34 @@ class FollowupGuardTests(unittest.TestCase):
         self.assertEqual(output["exit_reason"], "max_iterations (0)")
         self.assertIn("Skill Description Optimization", generate_html(output))
 
+    def test_read_outside_skill_directory_is_not_a_trigger(self):
+        for path in ("/tmp/pdf/invoice.txt", "/tmp/pdf/SKILL.md", "/tmp/.claude/skills/pdf-tools/SKILL.md"):
+            with self.subTest(path=path):
+                self.assertFalse(_tool_use_mentions("pdf", "Read", {"file_path": path}))
+
+    def test_eval_failure_preserves_completed_iteration(self):
+        result = {"results": [{"query": "q", "should_trigger": True,
+                               "pass": False, "triggers": 0, "runs": 1}]}
+        with tempfile.TemporaryDirectory() as tmp:
+            args = self.loop_args(self.make_skill(Path(tmp)), max_iterations=3)
+            with mock.patch("scripts.run_loop.run_eval", side_effect=[result, RuntimeError("eval unavailable")]), mock.patch(
+                "scripts.run_loop.improve_description", return_value="new description"
+            ):
+                output = run_loop(**args)
+        self.assertEqual(output["iterations_run"], 1)
+        self.assertEqual(output["best_description"], "test description")
+        self.assertEqual(output["final_description"], "new description")
+        self.assertIn("run_eval failed on iteration 2", output["exit_reason"])
+        self.assertIn("eval unavailable", output["exit_reason"])
+        self.assertIn("Skill Description Optimization", generate_html(output))
+
+    def test_initial_eval_failure_still_raises(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            args = self.loop_args(self.make_skill(Path(tmp)), max_iterations=2)
+            with mock.patch("scripts.run_loop.run_eval", side_effect=RuntimeError("configuration error")):
+                with self.assertRaisesRegex(RuntimeError, "configuration error"):
+                    run_loop(**args)
+
     def test_improvement_failure_keeps_completed_iteration(self):
         eval_output = {
             "results": [
