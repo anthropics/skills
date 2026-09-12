@@ -1,0 +1,95 @@
+{
+  "skill_name": "software-architecture-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I've got a system where the React frontend calls 6 different Python microservices directly over REST, and all of them share the same PostgreSQL database. It's getting really slow and hard to deploy. Can you review this architecture?",
+      "expected_output": "Scorecard identifying Distributed Monolith anti-pattern (shared DB), Chatty Microservices anti-pattern (direct frontend-to-service calls), recommendations for API Gateway pattern, database-per-service strategy, and an ADR for event-driven migration.",
+      "assertions": [
+        {
+          "name": "identifies-distributed-monolith",
+          "type": "contains_concept",
+          "description": "Response identifies the shared database as a Distributed Monolith anti-pattern",
+          "expected": "Flags shared PostgreSQL database across microservices as Distributed Monolith anti-pattern"
+        },
+        {
+          "name": "produces-scorecard",
+          "type": "format_check",
+          "description": "Response includes an Architecture Scorecard table with quality attribute scores",
+          "expected": "Markdown table with Scalability, Maintainability, Resilience scores and findings"
+        },
+        {
+          "name": "actionable-recommendations",
+          "type": "quality_check",
+          "description": "Recommendations are specific and actionable, not generic",
+          "expected": "Each recommendation includes what, why, and how to fix \u2014 not just 'add caching'"
+        },
+        {
+          "name": "rag-module-not-triggered",
+          "type": "scope_check",
+          "description": "Response does not invoke Gen AI / RAG review module for a non-AI system",
+          "expected": "RAG-specific checklist is not included in the output"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Here's my RAG pipeline for a healthcare Q&A bot at my company: I chunk patient documents at 512 fixed tokens, embed them with text-embedding-3-small, store in Pinecone, retrieve top-3, stuff into a GPT-4o prompt and return the answer directly to clinicians. Can you review this?",
+      "expected_output": "RAG pipeline checklist evaluation flagging fixed-size chunking, missing re-ranking, no hallucination mitigation, missing Responsible AI layer for healthcare context, no RAGAS evaluation. Critical flags for prompt injection risk and missing human-in-the-loop for clinical decisions.",
+      "assertions": [
+        {
+          "name": "rag-checklist-triggered",
+          "type": "contains_concept",
+          "description": "Response uses the Gen AI / RAG review module and checklist",
+          "expected": "RAG pipeline checklist is evaluated with chunking, embedding, retrieval, prompt, response sections"
+        },
+        {
+          "name": "responsible-ai-flagged",
+          "type": "critical_check",
+          "description": "Response flags missing Responsible AI layer as critical for healthcare context",
+          "expected": "\ud83d\udd34 Critical finding for missing content filtering, audit logging, or human-in-the-loop in clinical context"
+        },
+        {
+          "name": "hallucination-mitigation-flagged",
+          "type": "contains_concept",
+          "description": "Response identifies missing hallucination mitigation as a risk",
+          "expected": "Flags no grounding check, citation tracking, or confidence thresholds"
+        },
+        {
+          "name": "chunking-anti-pattern",
+          "type": "contains_concept",
+          "description": "Response identifies fixed-size chunking as Naive Chunking anti-pattern",
+          "expected": "Recommends semantic chunking with overlap and boundary-aware splitting"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My team is deciding between Kafka and Azure Service Bus for our event-driven order processing system. We're on Azure, team of 8 engineers, and we expect ~50k events/day with occasional spikes to 500k. Can you generate an ADR for this decision?",
+      "expected_output": "Full ADR document with context, decision (Azure Service Bus recommended for Azure-native team at this scale), consequences including positive and trade-offs, alternatives comparison table between Kafka and Azure Service Bus across latency, ops complexity, cost, and Azure integration.",
+      "assertions": [
+        {
+          "name": "adr-format-correct",
+          "type": "format_check",
+          "description": "Output follows the ADR template with all required sections",
+          "expected": "ADR includes Status, Context, Decision, Consequences (positive + trade-offs + risks), and Alternatives Considered table"
+        },
+        {
+          "name": "context-specific-recommendation",
+          "type": "quality_check",
+          "description": "ADR recommendation is tailored to the Azure context and team size, not generic",
+          "expected": "Decision accounts for Azure-native deployment, 8-engineer team operational burden, and 50k-500k event volume"
+        },
+        {
+          "name": "alternatives-table",
+          "type": "format_check",
+          "description": "Alternatives section includes a comparison table, not just prose",
+          "expected": "Markdown table comparing Kafka vs Azure Service Bus on multiple dimensions"
+        }
+      ],
+      "files": []
+    }
+  ]
+}
