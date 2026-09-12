@@ -252,7 +252,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         original_count = self.count_paragraphs_in_original()
         diff = new_count - original_count
         diff_str = f"+{diff}" if diff > 0 else str(diff)
-        print(f"\nParagraphs: {original_count} → {new_count} ({diff_str})")
+        print(f"\nParagraphs: {original_count} -> {new_count} ({diff_str})")
 
     def _parse_id_value(self, val: str, base: int = 16) -> int:
         return int(val, base)
