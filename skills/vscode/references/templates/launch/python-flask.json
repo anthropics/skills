@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Flask",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "flask",
+      "args": ["--app", "${workspaceFolder}/app.py", "run", "--debug", "--no-reload"],
+      "jinja": true,
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "FLASK_ENV": "development"
+      }
+    }
+  ]
+}

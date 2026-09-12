@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Chrome",
+      "type": "chrome",
+      "request": "attach",
+      "url": "http://localhost:9222",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}
