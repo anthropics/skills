@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md",
+  "film_stocks": [
+    {"name": "Kodak Portra 400", "description": "warm, rich skin tones, slight grain"},
+    {"name": "Fuji Velvia", "description": "vivid saturated colors, fine grain"},
+    {"name": "Kodak Vision3 500T", "description": "cinematic, natural, slight warmth"},
+    {"name": "Ilford HP5", "description": "classic black and white, visible grain"},
+    {"name": "Kodak Ektachrome", "description": "bright, contrasty, clean slide film"}
+  ]
+}
