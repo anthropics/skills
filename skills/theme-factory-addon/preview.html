@@ -1,0 +1,527 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: 1600px 2332px; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Inter', sans-serif;
+         background: #0f1115; color: #e6e8ec; width: 1600px; height: 2332px; }
+  .sheet { padding: 30px; }
+  .title { font-size: 30px; font-weight: 700; margin: 0; }
+  .sub { font-size: 15px; color: #9aa0a6; margin: 4px 0 0; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr);
+           gap: 14px; margin-top: 22px; }
+  .card { height: 96px; background: #171a21; border: 1px solid #242a33;
+           border-radius: 8px; padding: 10px 12px; overflow: hidden; }
+  .name { font-size: 13px; font-weight: 600; white-space: nowrap;
+           overflow: hidden; text-overflow: ellipsis; }
+  .mode { color: #6b7280; font-size: 10px; }
+  .strip { display: flex; height: 34px; border-radius: 4px; overflow: hidden;
+            margin: 8px 0 6px; border: 1px solid rgba(255,255,255,0.06); }
+  .cat { font-size: 10px; color: #6b7280; letter-spacing: 0.04em;
+          white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style></head>
+<body><div class="sheet">
+  <h1 class="title">theme-factory-addon</h1>
+  <p class="sub">100 curated themes · 14 categories · ● dark / ○ light · companion to Anthropic's theme-factory</p>
+  <div class="grid">
+          <div class="card">
+            <div class="name">Mountain Air <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#D4E1E7;"></span><span style="flex:1;background:#99BAD7;"></span><span style="flex:1;background:#7F9A83;"></span><span style="flex:1;background:#778C58;"></span><span style="flex:1;background:#254B5A;"></span><span style="flex:1;background:#082434;"></span></div>
+            <div class="cat">Earthy & Grounded</div>
+          </div>
+          <div class="card">
+            <div class="name">Desert Dunes <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E9DECE;"></span><span style="flex:1;background:#E6CDA9;"></span><span style="flex:1;background:#9D5F1B;"></span><span style="flex:1;background:#6C3C0C;"></span><span style="flex:1;background:#722A07;"></span><span style="flex:1;background:#291602;"></span></div>
+            <div class="cat">Earthy & Grounded</div>
+          </div>
+          <div class="card">
+            <div class="name">Serene Nature <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FDF1DB;"></span><span style="flex:1;background:#DFD5C6;"></span><span style="flex:1;background:#A6CBD3;"></span><span style="flex:1;background:#96AB88;"></span><span style="flex:1;background:#4F8FA8;"></span><span style="flex:1;background:#597B60;"></span></div>
+            <div class="cat">Earthy & Grounded</div>
+          </div>
+          <div class="card">
+            <div class="name">Mellow Greens <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F2D2C2;"></span><span style="flex:1;background:#D0DDD7;"></span><span style="flex:1;background:#C6A894;"></span><span style="flex:1;background:#A3BFB3;"></span><span style="flex:1;background:#648E7B;"></span><span style="flex:1;background:#6D6E71;"></span></div>
+            <div class="cat">Earthy & Grounded</div>
+          </div>
+          <div class="card">
+            <div class="name">Soft Crimson <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EEE8DC;"></span><span style="flex:1;background:#F5E8E0;"></span><span style="flex:1;background:#F8DEDC;"></span><span style="flex:1;background:#DAA2A1;"></span><span style="flex:1;background:#914955;"></span><span style="flex:1;background:#683147;"></span></div>
+            <div class="cat">Feminine & Soft</div>
+          </div>
+          <div class="card">
+            <div class="name">Beautiful Blush <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FEEEE8;"></span><span style="flex:1;background:#F9D3D0;"></span><span style="flex:1;background:#C7BDBD;"></span><span style="flex:1;background:#F2A7A2;"></span><span style="flex:1;background:#C98685;"></span><span style="flex:1;background:#C16B62;"></span></div>
+            <div class="cat">Feminine & Soft</div>
+          </div>
+          <div class="card">
+            <div class="name">Sunset Lovers <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFEAD6;"></span><span style="flex:1;background:#FBC98E;"></span><span style="flex:1;background:#F49A6E;"></span><span style="flex:1;background:#E76F51;"></span><span style="flex:1;background:#B5485E;"></span><span style="flex:1;background:#5C2A4D;"></span></div>
+            <div class="cat">Feminine & Soft</div>
+          </div>
+          <div class="card">
+            <div class="name">Salty Pink <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F8D4C1;"></span><span style="flex:1;background:#F0C4C2;"></span><span style="flex:1;background:#D58C89;"></span><span style="flex:1;background:#AE7F8A;"></span><span style="flex:1;background:#9C8C85;"></span><span style="flex:1;background:#6A6571;"></span></div>
+            <div class="cat">Feminine & Soft</div>
+          </div>
+          <div class="card">
+            <div class="name">High Seas <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EDEDEE;"></span><span style="flex:1;background:#D6E0EA;"></span><span style="flex:1;background:#898989;"></span><span style="flex:1;background:#72A6B7;"></span><span style="flex:1;background:#18617F;"></span><span style="flex:1;background:#092846;"></span></div>
+            <div class="cat">Coastal & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Calm Sapphire <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#D6E0EA;"></span><span style="flex:1;background:#84A2C9;"></span><span style="flex:1;background:#898993;"></span><span style="flex:1;background:#445A79;"></span><span style="flex:1;background:#344E95;"></span><span style="flex:1;background:#1C1D37;"></span></div>
+            <div class="cat">Coastal & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Around the Riverbend <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#C5DAE6;"></span><span style="flex:1;background:#BEBBC2;"></span><span style="flex:1;background:#BBA48D;"></span><span style="flex:1;background:#9AA7A0;"></span><span style="flex:1;background:#8391A7;"></span><span style="flex:1;background:#767064;"></span></div>
+            <div class="cat">Coastal & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Sandy Shores <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EFE6D6;"></span><span style="flex:1;background:#B8B8AC;"></span><span style="flex:1;background:#CBA378;"></span><span style="flex:1;background:#C86D39;"></span><span style="flex:1;background:#2E4C63;"></span><span style="flex:1;background:#2C2927;"></span></div>
+            <div class="cat">Coastal & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Summer Daze Pink <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F6E4D5;"></span><span style="flex:1;background:#C9E1E5;"></span><span style="flex:1;background:#EFBAD6;"></span><span style="flex:1;background:#C55894;"></span><span style="flex:1;background:#389998;"></span><span style="flex:1;background:#271F22;"></span></div>
+            <div class="cat">Bold & Fun</div>
+          </div>
+          <div class="card">
+            <div class="name">Joyful Boho <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F8D4BB;"></span><span style="flex:1;background:#FAC8C0;"></span><span style="flex:1;background:#B2D7E8;"></span><span style="flex:1;background:#D56F53;"></span><span style="flex:1;background:#5F8BC1;"></span><span style="flex:1;background:#014552;"></span></div>
+            <div class="cat">Bold & Fun</div>
+          </div>
+          <div class="card">
+            <div class="name">Fresh Fusion <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F4CBD3;"></span><span style="flex:1;background:#F7CD9A;"></span><span style="flex:1;background:#B8D3EE;"></span><span style="flex:1;background:#EA9D9B;"></span><span style="flex:1;background:#599F9E;"></span><span style="flex:1;background:#808285;"></span></div>
+            <div class="cat">Bold & Fun</div>
+          </div>
+          <div class="card">
+            <div class="name">Modern Pop <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#47BFBE;"></span><span style="flex:1;background:#898993;"></span><span style="flex:1;background:#E83698;"></span><span style="flex:1;background:#1C5AE4;"></span><span style="flex:1;background:#000000;"></span></div>
+            <div class="cat">Bold & Fun</div>
+          </div>
+          <div class="card">
+            <div class="name">Mystic Earth <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#D9D8DD;"></span><span style="flex:1;background:#D8BFAB;"></span><span style="flex:1;background:#D4C1C7;"></span><span style="flex:1;background:#E1BB94;"></span><span style="flex:1;background:#9C8F89;"></span><span style="flex:1;background:#73604D;"></span></div>
+            <div class="cat">Modern Boho & Neutrals</div>
+          </div>
+          <div class="card">
+            <div class="name">Modern Boho <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EDEDED;"></span><span style="flex:1;background:#E2E8E6;"></span><span style="flex:1;background:#F5E8E0;"></span><span style="flex:1;background:#EFC6B4;"></span><span style="flex:1;background:#D5B295;"></span><span style="flex:1;background:#9FB0AA;"></span></div>
+            <div class="cat">Modern Boho & Neutrals</div>
+          </div>
+          <div class="card">
+            <div class="name">Sandy Neutrals <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F5E8E0;"></span><span style="flex:1;background:#EED3C2;"></span><span style="flex:1;background:#F5D4D1;"></span><span style="flex:1;background:#C5B4A3;"></span><span style="flex:1;background:#A78F7C;"></span><span style="flex:1;background:#7F6152;"></span></div>
+            <div class="cat">Modern Boho & Neutrals</div>
+          </div>
+          <div class="card">
+            <div class="name">Perfectly Peach <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFF2EE;"></span><span style="flex:1;background:#D9CED6;"></span><span style="flex:1;background:#F9C7A1;"></span><span style="flex:1;background:#D1835C;"></span><span style="flex:1;background:#60555D;"></span><span style="flex:1;background:#303437;"></span></div>
+            <div class="cat">Modern Boho & Neutrals</div>
+          </div>
+          <div class="card">
+            <div class="name">Gothic Vintage <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#D9D9D9;"></span><span style="flex:1;background:#DFC9B4;"></span><span style="flex:1;background:#263F2C;"></span><span style="flex:1;background:#4D0011;"></span><span style="flex:1;background:#000000;"></span></div>
+            <div class="cat">Vintage Romance</div>
+          </div>
+          <div class="card">
+            <div class="name">Passionfruit Pie <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F0EFEC;"></span><span style="flex:1;background:#A9ACAD;"></span><span style="flex:1;background:#B28735;"></span><span style="flex:1;background:#866042;"></span><span style="flex:1;background:#702840;"></span><span style="flex:1;background:#412F26;"></span></div>
+            <div class="cat">Vintage Romance</div>
+          </div>
+          <div class="card">
+            <div class="name">Modern Mystic <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F5EAE1;"></span><span style="flex:1;background:#D9D8DD;"></span><span style="flex:1;background:#D7C2EE;"></span><span style="flex:1;background:#E4AD75;"></span><span style="flex:1;background:#C07A35;"></span><span style="flex:1;background:#592E6B;"></span></div>
+            <div class="cat">Vintage Romance</div>
+          </div>
+          <div class="card">
+            <div class="name">Eclectic Muse <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFCF1;"></span><span style="flex:1;background:#F1CBB8;"></span><span style="flex:1;background:#C9A475;"></span><span style="flex:1;background:#6E5A2F;"></span><span style="flex:1;background:#56140F;"></span><span style="flex:1;background:#000000;"></span></div>
+            <div class="cat">Vintage Romance</div>
+          </div>
+          <div class="card">
+            <div class="name">Warm Linen <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F2F1EF;"></span><span style="flex:1;background:#D9D2CC;"></span><span style="flex:1;background:#D9B18E;"></span><span style="flex:1;background:#A67564;"></span><span style="flex:1;background:#723E31;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Emerald Manor <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F4F4F4;"></span><span style="flex:1;background:#EDDBCD;"></span><span style="flex:1;background:#C0B283;"></span><span style="flex:1;background:#404A42;"></span><span style="flex:1;background:#192231;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Crimson Silk <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F3ECE4;"></span><span style="flex:1;background:#D9B6A3;"></span><span style="flex:1;background:#D88B79;"></span><span style="flex:1;background:#A71F13;"></span><span style="flex:1;background:#340A10;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Midnight Harbor <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EBDED4;"></span><span style="flex:1;background:#D9AA90;"></span><span style="flex:1;background:#A65E46;"></span><span style="flex:1;background:#07203F;"></span><span style="flex:1;background:#02000D;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Gilded Age <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#D9C4A9;"></span><span style="flex:1;background:#D8D0C5;"></span><span style="flex:1;background:#D9B061;"></span><span style="flex:1;background:#8D6F57;"></span><span style="flex:1;background:#3F0D0C;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Velvet Teal <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F2EFEA;"></span><span style="flex:1;background:#DFE5F3;"></span><span style="flex:1;background:#557373;"></span><span style="flex:1;background:#272401;"></span><span style="flex:1;background:#0D0D0D;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Jewel Box <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E7DECD;"></span><span style="flex:1;background:#62929E;"></span><span style="flex:1;background:#A6445D;"></span><span style="flex:1;background:#393A10;"></span><span style="flex:1;background:#142F40;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Mauve Garden <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#D8C6BA;"></span><span style="flex:1;background:#C09BAC;"></span><span style="flex:1;background:#617246;"></span><span style="flex:1;background:#314021;"></span><span style="flex:1;background:#0C0D07;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Slate Mist <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F3F5F9;"></span><span style="flex:1;background:#F2F2F0;"></span><span style="flex:1;background:#819FA7;"></span><span style="flex:1;background:#5B6E74;"></span><span style="flex:1;background:#0D0D0D;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Quiet Luxury <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F2F2F2;"></span><span style="flex:1;background:#D9D9D9;"></span><span style="flex:1;background:#BFAFAF;"></span><span style="flex:1;background:#0F1B27;"></span><span style="flex:1;background:#0D0D0D;"></span></div>
+            <div class="cat">Luxury & Sophisticated</div>
+          </div>
+          <div class="card">
+            <div class="name">Facebook <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#1877F2;"></span><span style="flex:1;background:#4267B2;"></span><span style="flex:1;background:#F0F2F5;"></span><span style="flex:1;background:#1C1E21;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Instagram <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#405DE6;"></span><span style="flex:1;background:#833AB4;"></span><span style="flex:1;background:#C13584;"></span><span style="flex:1;background:#E1306C;"></span><span style="flex:1;background:#F56040;"></span><span style="flex:1;background:#FCAF45;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Twitter X <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#1DA1F2;"></span><span style="flex:1;background:#657786;"></span><span style="flex:1;background:#E1E8ED;"></span><span style="flex:1;background:#14171A;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Tesla <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#E6E7E8;"></span><span style="flex:1;background:#E82127;"></span><span style="flex:1;background:#5C5E62;"></span><span style="flex:1;background:#181B21;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">McDonalds <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFC72C;"></span><span style="flex:1;background:#DA291C;"></span><span style="flex:1;background:#27251F;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Nike <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#111111;"></span><span style="flex:1;background:#8D8D8D;"></span><span style="flex:1;background:#CEFF00;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Spotify <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#1DB954;"></span><span style="flex:1;background:#1ED760;"></span><span style="flex:1;background:#191414;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Google <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#4285F4;"></span><span style="flex:1;background:#DB4437;"></span><span style="flex:1;background:#F4B400;"></span><span style="flex:1;background:#0F9D58;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Netflix <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E50914;"></span><span style="flex:1;background:#B81D24;"></span><span style="flex:1;background:#221F1F;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Coca-Cola <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F40009;"></span><span style="flex:1;background:#B30000;"></span><span style="flex:1;background:#000000;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Slack <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#4A154B;"></span><span style="flex:1;background:#36C5F0;"></span><span style="flex:1;background:#2EB67D;"></span><span style="flex:1;background:#ECB22E;"></span><span style="flex:1;background:#E01E5A;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Starbucks <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#00704A;"></span><span style="flex:1;background:#1E3932;"></span><span style="flex:1;background:#006241;"></span><span style="flex:1;background:#F1F8F5;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Amazon <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FF9900;"></span><span style="flex:1;background:#232F3E;"></span><span style="flex:1;background:#146EB4;"></span><span style="flex:1;background:#F2F3F3;"></span><span style="flex:1;background:#FFFFFF;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Airbnb <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FF5A5F;"></span><span style="flex:1;background:#00A699;"></span><span style="flex:1;background:#FC642D;"></span><span style="flex:1;background:#484848;"></span><span style="flex:1;background:#767676;"></span></div>
+            <div class="cat">Iconic Brands</div>
+          </div>
+          <div class="card">
+            <div class="name">Dracula <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#282A36;"></span><span style="flex:1;background:#F8F8F2;"></span><span style="flex:1;background:#BD93F9;"></span><span style="flex:1;background:#FF79C6;"></span><span style="flex:1;background:#50FA7B;"></span><span style="flex:1;background:#8BE9FD;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">One Dark Pro <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#282C34;"></span><span style="flex:1;background:#ABB2BF;"></span><span style="flex:1;background:#61AFEF;"></span><span style="flex:1;background:#E06C75;"></span><span style="flex:1;background:#98C379;"></span><span style="flex:1;background:#C678DD;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Monokai <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#272822;"></span><span style="flex:1;background:#F8F8F2;"></span><span style="flex:1;background:#F92672;"></span><span style="flex:1;background:#A6E22E;"></span><span style="flex:1;background:#66D9EF;"></span><span style="flex:1;background:#FD971F;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Nord <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#2E3440;"></span><span style="flex:1;background:#ECEFF4;"></span><span style="flex:1;background:#88C0D0;"></span><span style="flex:1;background:#5E81AC;"></span><span style="flex:1;background:#A3BE8C;"></span><span style="flex:1;background:#BF616A;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Gruvbox Dark <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#282828;"></span><span style="flex:1;background:#EBDBB2;"></span><span style="flex:1;background:#FE8019;"></span><span style="flex:1;background:#FB4934;"></span><span style="flex:1;background:#B8BB26;"></span><span style="flex:1;background:#FABD2F;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Tokyo Night <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1A1B26;"></span><span style="flex:1;background:#C0CAF5;"></span><span style="flex:1;background:#7AA2F7;"></span><span style="flex:1;background:#BB9AF7;"></span><span style="flex:1;background:#7DCFFF;"></span><span style="flex:1;background:#9ECE6A;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Catppuccin Mocha <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1E1E2E;"></span><span style="flex:1;background:#CDD6F4;"></span><span style="flex:1;background:#CBA6F7;"></span><span style="flex:1;background:#F5C2E7;"></span><span style="flex:1;background:#89B4FA;"></span><span style="flex:1;background:#A6E3A1;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Night Owl <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#011627;"></span><span style="flex:1;background:#D6DEEB;"></span><span style="flex:1;background:#82AAFF;"></span><span style="flex:1;background:#F78C6C;"></span><span style="flex:1;background:#C5E478;"></span><span style="flex:1;background:#C792EA;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">GitHub Dark <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0D1117;"></span><span style="flex:1;background:#C9D1D9;"></span><span style="flex:1;background:#58A6FF;"></span><span style="flex:1;background:#3FB950;"></span><span style="flex:1;background:#F85149;"></span><span style="flex:1;background:#BC8CFF;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">Solarized Dark <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#002B36;"></span><span style="flex:1;background:#839496;"></span><span style="flex:1;background:#268BD2;"></span><span style="flex:1;background:#2AA198;"></span><span style="flex:1;background:#859900;"></span><span style="flex:1;background:#D33682;"></span></div>
+            <div class="cat">Editor Classics (Dark)</div>
+          </div>
+          <div class="card">
+            <div class="name">GitHub Light <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#24292F;"></span><span style="flex:1;background:#0969DA;"></span><span style="flex:1;background:#1A7F37;"></span><span style="flex:1;background:#CF222E;"></span><span style="flex:1;background:#8250DF;"></span></div>
+            <div class="cat">Editor Light</div>
+          </div>
+          <div class="card">
+            <div class="name">Solarized Light <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FDF6E3;"></span><span style="flex:1;background:#586E75;"></span><span style="flex:1;background:#268BD2;"></span><span style="flex:1;background:#2AA198;"></span><span style="flex:1;background:#DC322F;"></span><span style="flex:1;background:#859900;"></span></div>
+            <div class="cat">Editor Light</div>
+          </div>
+          <div class="card">
+            <div class="name">Atom One Light <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FAFAFA;"></span><span style="flex:1;background:#383A42;"></span><span style="flex:1;background:#4078F2;"></span><span style="flex:1;background:#E45649;"></span><span style="flex:1;background:#50A14F;"></span><span style="flex:1;background:#A626A4;"></span></div>
+            <div class="cat">Editor Light</div>
+          </div>
+          <div class="card">
+            <div class="name">Catppuccin Latte <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EFF1F5;"></span><span style="flex:1;background:#4C4F69;"></span><span style="flex:1;background:#8839EF;"></span><span style="flex:1;background:#EA76CB;"></span><span style="flex:1;background:#1E66F5;"></span><span style="flex:1;background:#40A02B;"></span></div>
+            <div class="cat">Editor Light</div>
+          </div>
+          <div class="card">
+            <div class="name">Rosé Pine Dawn <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FAF4ED;"></span><span style="flex:1;background:#575279;"></span><span style="flex:1;background:#D7827E;"></span><span style="flex:1;background:#EA9D34;"></span><span style="flex:1;background:#286983;"></span><span style="flex:1;background:#907AA9;"></span></div>
+            <div class="cat">Editor Light</div>
+          </div>
+          <div class="card">
+            <div class="name">Synthwave 84 <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#262335;"></span><span style="flex:1;background:#F0EFF1;"></span><span style="flex:1;background:#FF7EDB;"></span><span style="flex:1;background:#36F9F6;"></span><span style="flex:1;background:#FF8B39;"></span><span style="flex:1;background:#FEDE5D;"></span></div>
+            <div class="cat">Neon & Retro</div>
+          </div>
+          <div class="card">
+            <div class="name">Cobalt2 <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#193549;"></span><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#FFC600;"></span><span style="flex:1;background:#0088FF;"></span><span style="flex:1;background:#FF9D00;"></span><span style="flex:1;background:#3AD900;"></span></div>
+            <div class="cat">Neon & Retro</div>
+          </div>
+          <div class="card">
+            <div class="name">Shades of Purple <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#2D2B55;"></span><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#FAD000;"></span><span style="flex:1;background:#B362FF;"></span><span style="flex:1;background:#9EFFFF;"></span><span style="flex:1;background:#FF628C;"></span></div>
+            <div class="cat">Neon & Retro</div>
+          </div>
+          <div class="card">
+            <div class="name">Spaceduck <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0F111B;"></span><span style="flex:1;background:#ECF0C1;"></span><span style="flex:1;background:#00A3CC;"></span><span style="flex:1;background:#B3A1E6;"></span><span style="flex:1;background:#5CCC96;"></span><span style="flex:1;background:#E39400;"></span></div>
+            <div class="cat">Neon & Retro</div>
+          </div>
+          <div class="card">
+            <div class="name">Horizon <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1C1E26;"></span><span style="flex:1;background:#D5D8DA;"></span><span style="flex:1;background:#E95678;"></span><span style="flex:1;background:#FAB795;"></span><span style="flex:1;background:#59E1E3;"></span><span style="flex:1;background:#B877DB;"></span></div>
+            <div class="cat">Neon & Retro</div>
+          </div>
+          <div class="card">
+            <div class="name">Everforest <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#2D353B;"></span><span style="flex:1;background:#D3C6AA;"></span><span style="flex:1;background:#A7C080;"></span><span style="flex:1;background:#DBBC7F;"></span><span style="flex:1;background:#E69875;"></span><span style="flex:1;background:#83C092;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Things <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#1C1C1E;"></span><span style="flex:1;background:#0098FF;"></span><span style="flex:1;background:#EAECEF;"></span><span style="flex:1;background:#6E7178;"></span><span style="flex:1;background:#FF5A4D;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Minimal <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FFFFFF;"></span><span style="flex:1;background:#2E3338;"></span><span style="flex:1;background:#4C8BF5;"></span><span style="flex:1;background:#F5F6F8;"></span><span style="flex:1;background:#D5D8DC;"></span><span style="flex:1;background:#9AA0A6;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Blue Topaz <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EEF3F6;"></span><span style="flex:1;background:#2C3E50;"></span><span style="flex:1;background:#2E86AB;"></span><span style="flex:1;background:#3AAFA9;"></span><span style="flex:1;background:#5D7A8C;"></span><span style="flex:1;background:#D9E2E8;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Primary <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FAF8F4;"></span><span style="flex:1;background:#3B3A39;"></span><span style="flex:1;background:#3E7BFA;"></span><span style="flex:1;background:#ECE9E4;"></span><span style="flex:1;background:#A8A29E;"></span><span style="flex:1;background:#D98E73;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">AnuPpuccin <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1E1E2E;"></span><span style="flex:1;background:#CDD6F4;"></span><span style="flex:1;background:#FAB387;"></span><span style="flex:1;background:#A6E3A1;"></span><span style="flex:1;background:#89B4FA;"></span><span style="flex:1;background:#CBA6F7;"></span></div>
+            <div class="cat">Obsidian & Calm</div>
+          </div>
+          <div class="card">
+            <div class="name">Rothko <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1C1310;"></span><span style="flex:1;background:#6E1A12;"></span><span style="flex:1;background:#C8451B;"></span><span style="flex:1;background:#D98B2B;"></span><span style="flex:1;background:#E8A22B;"></span><span style="flex:1;background:#F2E3C6;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Pollock <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F5F0E6;"></span><span style="flex:1;background:#E8DFC8;"></span><span style="flex:1;background:#2E6E6A;"></span><span style="flex:1;background:#A6522C;"></span><span style="flex:1;background:#6B4A2B;"></span><span style="flex:1;background:#1A1714;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Picasso Blue Period <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0B2A4A;"></span><span style="flex:1;background:#14506E;"></span><span style="flex:1;background:#2E7A99;"></span><span style="flex:1;background:#A8B6BE;"></span><span style="flex:1;background:#C7A26B;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Picasso Rose Period <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E5D2B8;"></span><span style="flex:1;background:#E8B7A6;"></span><span style="flex:1;background:#D98C7A;"></span><span style="flex:1;background:#C86B4A;"></span><span style="flex:1;background:#8A9BA0;"></span><span style="flex:1;background:#8A4B33;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Rembrandt <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1A140E;"></span><span style="flex:1;background:#3D2B1A;"></span><span style="flex:1;background:#6E2018;"></span><span style="flex:1;background:#8A5A22;"></span><span style="flex:1;background:#C68A3A;"></span><span style="flex:1;background:#E8D5A8;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Van Gogh <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0B1A3A;"></span><span style="flex:1;background:#1A3A2A;"></span><span style="flex:1;background:#1E4A8A;"></span><span style="flex:1;background:#4A78B5;"></span><span style="flex:1;background:#E8E2B0;"></span><span style="flex:1;background:#F4C430;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Monet <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E8DCC0;"></span><span style="flex:1;background:#A8C5B0;"></span><span style="flex:1;background:#6E9AA6;"></span><span style="flex:1;background:#D6B8CE;"></span><span style="flex:1;background:#C76B8E;"></span><span style="flex:1;background:#2E5A6E;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Klimt <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1A1610;"></span><span style="flex:1;background:#4A6B4E;"></span><span style="flex:1;background:#B5613A;"></span><span style="flex:1;background:#9A7B1E;"></span><span style="flex:1;background:#C8A02C;"></span><span style="flex:1;background:#EDE2C4;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Vermeer <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#2A2018;"></span><span style="flex:1;background:#1F4E8C;"></span><span style="flex:1;background:#C8912E;"></span><span style="flex:1;background:#D8A985;"></span><span style="flex:1;background:#EAD9B8;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Hokusai <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F2EFE6;"></span><span style="flex:1;background:#E4D9B8;"></span><span style="flex:1;background:#C9B68A;"></span><span style="flex:1;background:#2E5E8C;"></span><span style="flex:1;background:#1B3A6B;"></span><span style="flex:1;background:#14233F;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Matisse <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EFE6D2;"></span><span style="flex:1;background:#D98C5A;"></span><span style="flex:1;background:#E0728C;"></span><span style="flex:1;background:#C8472C;"></span><span style="flex:1;background:#3A8C4E;"></span><span style="flex:1;background:#2E6BB0;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Frida Kahlo <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#EDE3D0;"></span><span style="flex:1;background:#E89B1C;"></span><span style="flex:1;background:#C8262C;"></span><span style="flex:1;background:#B5277A;"></span><span style="flex:1;background:#2E5EAA;"></span><span style="flex:1;background:#1F7A4D;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Mondrian <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F4F3EE;"></span><span style="flex:1;background:#F2C200;"></span><span style="flex:1;background:#D5212E;"></span><span style="flex:1;background:#1E3A8A;"></span><span style="flex:1;background:#14110E;"></span></div>
+            <div class="cat">Master Painters</div>
+          </div>
+          <div class="card">
+            <div class="name">Spielberg <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#13303A;"></span><span style="flex:1;background:#1F4A52;"></span><span style="flex:1;background:#7FB0B8;"></span><span style="flex:1;background:#E0A23C;"></span><span style="flex:1;background:#F2C879;"></span><span style="flex:1;background:#F5E8C8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Scorsese <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#120A0A;"></span><span style="flex:1;background:#4A0E10;"></span><span style="flex:1;background:#A11217;"></span><span style="flex:1;background:#D6322B;"></span><span style="flex:1;background:#C8972E;"></span><span style="flex:1;background:#E8D6B8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Nolan <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#14181C;"></span><span style="flex:1;background:#2A333A;"></span><span style="flex:1;background:#46606E;"></span><span style="flex:1;background:#6E8A99;"></span><span style="flex:1;background:#A9BCC4;"></span><span style="flex:1;background:#D8DEE0;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Deakins <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0E0F12;"></span><span style="flex:1;background:#163A3E;"></span><span style="flex:1;background:#2E6E72;"></span><span style="flex:1;background:#D8662A;"></span><span style="flex:1;background:#E89B3C;"></span><span style="flex:1;background:#E8C99A;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Slocombe <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1C1A10;"></span><span style="flex:1;background:#3A2A16;"></span><span style="flex:1;background:#6B5A2A;"></span><span style="flex:1;background:#B5852E;"></span><span style="flex:1;background:#E0A93C;"></span><span style="flex:1;background:#EAD7A8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Kubrick <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#E8E0CC;"></span><span style="flex:1;background:#D8CBA8;"></span><span style="flex:1;background:#C8642A;"></span><span style="flex:1;background:#B01F2E;"></span><span style="flex:1;background:#6E4A2A;"></span><span style="flex:1;background:#1A1410;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Tarantino <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#FCE300;"></span><span style="flex:1;background:#F4ECCB;"></span><span style="flex:1;background:#B81414;"></span><span style="flex:1;background:#7A0E0E;"></span><span style="flex:1;background:#4A4A4A;"></span><span style="flex:1;background:#161210;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Fincher <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#0E1310;"></span><span style="flex:1;background:#1C2622;"></span><span style="flex:1;background:#3E4A38;"></span><span style="flex:1;background:#4A6660;"></span><span style="flex:1;background:#9A7B3A;"></span><span style="flex:1;background:#B8BEB4;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Lubezki <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#1E262B;"></span><span style="flex:1;background:#3A4A52;"></span><span style="flex:1;background:#6E828A;"></span><span style="flex:1;background:#B5662E;"></span><span style="flex:1;background:#A8BAC0;"></span><span style="flex:1;background:#D6DBD8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Storaro <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#10160F;"></span><span style="flex:1;background:#14484E;"></span><span style="flex:1;background:#2E7A78;"></span><span style="flex:1;background:#C0281E;"></span><span style="flex:1;background:#E08A2A;"></span><span style="flex:1;background:#E8B84A;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Wong Kar-wai <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#161010;"></span><span style="flex:1;background:#6E121A;"></span><span style="flex:1;background:#A81C24;"></span><span style="flex:1;background:#1E6E54;"></span><span style="flex:1;background:#C8972E;"></span><span style="flex:1;background:#E8D2A8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Gordon Willis <span class="mode">●</span></div>
+            <div class="strip"><span style="flex:1;background:#120D08;"></span><span style="flex:1;background:#2E1F12;"></span><span style="flex:1;background:#5A3E22;"></span><span style="flex:1;background:#9A6A2A;"></span><span style="flex:1;background:#C89A48;"></span><span style="flex:1;background:#E6D2A8;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div>
+          <div class="card">
+            <div class="name">Villeneuve <span class="mode">○</span></div>
+            <div class="strip"><span style="flex:1;background:#F0E6CE;"></span><span style="flex:1;background:#E8D2A6;"></span><span style="flex:1;background:#C89A5A;"></span><span style="flex:1;background:#C8762E;"></span><span style="flex:1;background:#5A6E7A;"></span><span style="flex:1;background:#2A2622;"></span></div>
+            <div class="cat">Directors & Cinematographers</div>
+          </div></div>
+</div></body></html>
