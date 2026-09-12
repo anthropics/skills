@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: {{fontFamily}};
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .card {
+      width: 1440px;
+      height: 2400px;
+      background-color: {{backgroundColor}};
+      color: {{textColor}};
+      padding: 130px 120px;
+      padding-bottom: 130px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      position: relative;
+    }
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 段落 */
+    p {
+      font-size: 48px;
+      line-height: 1.8;
+      font-family: {{fontFamily}};
+      color: {{textPrimary}};
+      margin-bottom: 72px;
+      text-align: left;
+      word-break: break-word;
+    }
+
+
+    /* 标题 */
+    h1 {
+      font-size: 72px;
+      margin-bottom: 72px;
+      font-weight: bold;
+      font-family: {{fontHeading}};
+      color: {{textPrimary}};
+    }
+
+    h2 {
+      font-size: 64px;
+      margin-bottom: 64px;
+      font-weight: bold;
+      font-family: {{fontHeading}};
+      color: {{textPrimary}};
+    }
+
+    h3 {
+      font-size: 56px;
+      margin-bottom: 56px;
+      font-weight: bold;
+      font-family: {{fontHeading}};
+      color: {{textPrimary}};
+    }
+
+    h4, h5, h6 {
+      font-size: 52px;
+      margin-bottom: 52px;
+      font-weight: bold;
+      font-family: {{fontHeading}};
+      color: {{textPrimary}};
+    }
+
+    /* 行内样式 */
+    strong { font-weight: bold; }
+    em { font-style: italic; }
+
+    /* 行内代码 */
+    code {
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      background-color: {{codeBackground}};
+      color: {{textPrimary}};
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 44px;
+    }
+
+    /* 代码块 */
+    pre {
+      background-color: {{codeBackground}};
+      border: 1px solid {{borderColor}};
+      padding: 30px;
+      border-radius: {{codeRadius}}px;
+      font-size: 42px;
+      line-height: 1.6;
+      overflow-x: visible;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      margin-bottom: 72px;
+    }
+
+    pre code {
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      background-color: transparent;
+      color: {{textPrimary}};
+      padding: 0;
+      border-radius: 0;
+      font-size: 42px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* 超长代码块自动缩小 */
+    pre.oversized { font-size: 32px; }
+    pre.oversized code { font-size: 32px; }
+
+    /* 列表 */
+    ul, ol {
+      padding-left: 60px;
+      margin-bottom: 72px;
+    }
+
+    li {
+      margin-bottom: 36px;
+      font-size: 48px;
+      line-height: 1.8;
+      color: {{textPrimary}};
+    }
+
+    /* 引用 */
+    blockquote {
+      border-left: 8px solid {{borderColor}};
+      padding-left: 40px;
+      color: {{textSecondary}};
+      margin-bottom: 72px;
+    }
+
+    /* 表格 */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 72px;
+      font-size: 42px;
+    }
+
+    th, td {
+      border: 2px solid {{borderColor}};
+      padding: 20px 30px;
+      text-align: left;
+      color: {{textPrimary}};
+    }
+
+    th {
+      background-color: {{backgroundElevated}};
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) td {
+      background-color: {{backgroundElevated}};
+    }
+
+    /* 图片 */
+    .image-block {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 60px 0;
+    }
+
+    .image-block:first-child { margin-top: 0; }
+    .image-block:last-child { margin-bottom: 0; }
+
+    .image-block img {
+      max-width: 100%;
+      max-height: 1800px;
+      height: auto;
+      display: block;
+      border-radius: {{imageRadius}}px;
+    }
+
+    /* Mermaid */
+    .mermaid-block {
+      width: 100%;
+      margin-bottom: 72px;
+    }
+
+    .mermaid-block:last-child { margin-bottom: 0; }
+
+    .mermaid-block .mermaid {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .mermaid-block svg,
+    .mermaid-block .mermaid svg {
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100% !important;
+      display: block !important;
+    }
+
+    /* HTML 块 */
+    .html-block {
+      margin-bottom: 0;
+    }
+
+    .html-block:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 页脚页码 */
+    .card-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px 120px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .card-footer.page-format-total,
+    .card-footer.page-format-brackets {
+      display: none;
+    }
+
+    body[data-page-format="total"] .card-footer.default-footer,
+    body[data-page-format="brackets"] .card-footer.default-footer {
+      display: none;
+    }
+    body[data-page-format="total"] .card-footer.page-format-total,
+    body[data-page-format="brackets"] .card-footer.page-format-brackets {
+      display: flex;
+    }
+
+    body[data-page-format="brackets"] .card-footer.page-format-total { display: none; }
+    body[data-page-format="total"] .card-footer.page-format-brackets { display: none; }
+
+    .page-indicator {
+      font-size: 22px;
+      font-weight: 500;
+      color: {{textTertiary}};
+      letter-spacing: 0.02em;
+    }
+
+    .page-indicator span.total {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body data-page-format="{{pageFormat}}">
+  <div class="card">
+    <div class="content-wrapper">
+      {{content}}
+    </div>
+    <div class="card-footer default-footer">
+      <div class="page-indicator">{{pageNumber}}</div>
+    </div>
+    <div class="card-footer page-format-total">
+      <div class="page-indicator">{{pageNumber}}<span class="total"> / {{totalPages}}</span></div>
+    </div>
+    <div class="card-footer page-format-brackets">
+      <div class="page-indicator">({{pageNumber}}/{{totalPages}})</div>
+    </div>
+  </div>
+</body>
+</html>
