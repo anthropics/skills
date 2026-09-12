@@ -1,0 +1,12 @@
+{
+  "server_root": "https://api.5g-messaging.com",
+  "rate_limits": {
+    "max_messages_per_hour": 100,
+    "max_numbers_per_send": 100,
+    "min_interval_seconds": 60
+  },
+  "templates": {
+    "default_text_template": "TEXT",
+    "allowed_template_types": ["TEXT", "RCS", "AIM", "MMS", "SMS"]
+  }
+}
