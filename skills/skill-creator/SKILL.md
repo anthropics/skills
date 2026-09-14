@@ -140,6 +140,8 @@ Try to explain to the model why things are important in lieu of heavy-handed mus
 
 ### Test Cases
 
+For guidance on choosing fixtures, writing paired trigger cases, and asserting on generated artifacts, see [Testing skills](references/testing.md).
+
 After writing the skill draft, come up with 2-3 realistic test prompts — the kind of thing a real user would actually say. Share them with the user: [you don't have to use this exact language] "Here are a few test cases I'd like to try. Do these look right, or do you want to add more?" Then run them.
 
 Save test cases to `evals/evals.json`. Don't write assertions yet — just the prompts. You'll draft assertions in the next step while the runs are in progress.
