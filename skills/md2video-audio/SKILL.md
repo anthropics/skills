@@ -1,13 +1,13 @@
 ---
 name: md2video-audio
-description: 将指定Markdown文件一键转换为带免费真人配音和讲解画面的 MP4 视频。零成本。当用户要求把 markdown 转成视频、制作口播视频或音视频合成时自动触发。
+description: 将指定Markdown文件一键转换为带真人配音和讲解画面的 MP4 视频。当用户要求把 markdown 转成视频、制作口播视频或音视频合成时自动触发。
 # license: "Non-Commercial,Personal Use Only"
 # tts_endpoint: "unofficial"
 ---
 
-# Markdown 免费口播视频生成技能 (md2video-audio)
+# Markdown 口播视频生成技能 (md2video-audio)
 
-- 作用：将本地Markdown 文件自动转化为包含画面与免费语音的 MP4 视频。
+- 作用：将本地Markdown 文件自动转化为包含画面与语音的 MP4 视频。
 
 ## 1. 全局核心铁律 (Core Rules)
 

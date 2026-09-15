@@ -1,13 +1,13 @@
 ---
 name: md2video-audio 
-description: Convert a specified Markdown file into an MP4 video with free natural-sounding voice-over and presentation visuals in one click, at zero cost. Automatically trigger this skill when the user asks to convert Markdown into a video, create a narrated video, or combine audio and video.
+description: Convert a specified Markdown file into an MP4 video with natural-sounding voice-over and presentation visuals in one click. Automatically trigger this skill when the user asks to convert Markdown into a video, create a narrated video, or combine audio and video.
 # license: "Non-Commercial,Personal Use Only"
 # tts_endpoint: "unofficial"
 ---
 
-# Free Markdown-to-Narrated-Video Skill (`md2video-audio`)
+# Markdown-to-Narrated-Video Skill (`md2video-audio`)
 
-- Purpose: Automatically convert a local Markdown file into an MP4 video containing presentation visuals and free voice-over narration.
+- Purpose: Automatically convert a local Markdown file into an MP4 video containing presentation visuals and voice-over narration.
 
 ## 1. Global Core Rules
 
