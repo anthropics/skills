@@ -1,6 +1,8 @@
 ---
 name: md2video-audio 
 description: Convert a specified Markdown file into an MP4 video with free natural-sounding voice-over and presentation visuals in one click, at zero cost. Automatically trigger this skill when the user asks to convert Markdown into a video, create a narrated video, or combine audio and video.
+# license: "Non-Commercial,Personal Use Only"
+# tts_endpoint: "unofficial"
 ---
 
 # Free Markdown-to-Narrated-Video Skill (`md2video-audio`)
@@ -20,7 +22,7 @@ description: Convert a specified Markdown file into an MP4 video with free natur
 
 ### 1. Check and Install Environment Dependencies
 
-See the corresponding reference file: `references/enviroment.md`.
+See the corresponding reference file: `references/environment.md`.
 
 ### 2. Generate the Optimized Document
 
@@ -60,10 +62,10 @@ grep -E '^---[[:space:]]*$' your_file.md | wc -l
 ### 5. Package Everything into a Video Using the Python Script
 
 - Use the two intermediate Markdown files generated in the preceding stages—the presentation document and the narration script—as inputs.
-- Execute the `ai-2md2marp2av.py` script located in this skill’s directory:
+- Execute the `ai_2md2marp2av.py` script located in this skill’s directory:
 
 ```bash
-python ai-2md2marp2av.py presentation.md narration.md
+python ai_2md2marp2av.py presentation.md narration.md
 ```
 
 - Note that the script requires interactive input. The user must provide this input manually.

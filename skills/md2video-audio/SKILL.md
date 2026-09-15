@@ -1,6 +1,8 @@
 ---
 name: md2video-audio
 description: 将指定Markdown文件一键转换为带免费真人配音和讲解画面的 MP4 视频。零成本。当用户要求把 markdown 转成视频、制作口播视频或音视频合成时自动触发。
+# license: "Non-Commercial,Personal Use Only"
+# tts_endpoint: "unofficial"
 ---
 
 # Markdown 免费口播视频生成技能 (md2video-audio)
@@ -20,7 +22,7 @@ description: 将指定Markdown文件一键转换为带免费真人配音和讲�
 
 ### 1. 环境依赖检查与安装
 
-对应子文件`references/enviroment.md`
+对应子文件`references/environment.md`
 
 ### 2. 生成优化稿
 
@@ -32,7 +34,7 @@ description: 将指定Markdown文件一键转换为带免费真人配音和讲�
 
 - 操作对象：保存成`show-原名前缀-时间戳`的新md文件。
 - 将上个步骤得到的md文件`new-原名前缀-时间戳`拆分为逻辑自然的展示稿，要求:
-    1. Markdown 文件最顶部加上几行配置。这里暂停询问用户要用哪种Marp风格展示，以及是否加入`allowHtml: true`，如果选默认风格见``references/showscript.md`。
+    1. Markdown 文件最顶部加上几行配置。这里暂停询问用户要用哪种Marp风格展示，以及是否加入`allowHtml: true`，如果选默认风格见`references/showscript.md`。
     2. 将HTML标签尽可能都转换为markdown形式表示，如`<img>`转换为`![]()`而里面参数不变
     3. 根据语义逻辑、md段落结构，用 `---` 分隔每页 PPT。
 - 检查展示稿每页是否符合内容分页规则（如下3条）：
@@ -51,7 +53,7 @@ description: 将指定Markdown文件一键转换为带免费真人配音和讲�
 
 ### 5. 用Python 脚本一键打包成视频
 
-- 用上述阶段中生成的2个中间结果md文件，分别是口播稿和展示稿作为输入，调用执行本skill目录下名为`ai-2md2marp2av.py`，`python ai-2md2marp2av.py 展示稿.md 口播稿.md`。注意脚本中有交互输入，必须让用户手动输入。
+- 用上述阶段中生成的2个中间结果md文件，分别是口播稿和展示稿作为输入，调用执行本skill目录下名为`ai_2md2marp2av.py`，`python ai_2md2marp2av.py 展示稿.md 口播稿.md`。注意脚本中有交互输入，必须让用户手动输入。
 - 脚本逻辑为用 Marp 生成的高颜值 PPT 图片后，把图片和 Edge-TTS 生成的语音按对应页数拼起来即可。
 
 ### 6. 降级方案
