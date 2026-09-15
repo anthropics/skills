@@ -5,7 +5,7 @@ event stream. These tests replay recorded streams through a real OS pipe, so
 select() and os.read() behave as they do against a live subprocess and only the
 bytes are scripted. No API calls are made.
 
-Run with: python -m unittest skills.skill_creator.scripts.test_run_eval
+Run from skills/skill-creator with: python -m unittest scripts.test_run_eval
 or directly: python scripts/test_run_eval.py
 """
 
