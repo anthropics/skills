@@ -32,6 +32,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import defusedxml.minidom
+import xml.dom.minidom
 from xml.parsers.expat import ExpatError
 from xml.sax.saxutils import escape as xml_escape
 
@@ -178,6 +179,20 @@ _COMMENT_OVERRIDES = [
 def _ensure_comment_relationships(unpacked_dir: Path) -> None:
     rels_path = unpacked_dir / "word" / "_rels" / "document.xml.rels"
     if not rels_path.exists():
+        rels_path.parent.mkdir(parents=True, exist_ok=True)
+        dom = xml.dom.minidom.getDOMImplementation().createDocument(
+            "http://schemas.openxmlformats.org/package/2006/relationships",
+            "Relationships",
+            None,
+        )
+        root = dom.documentElement
+        for rid, (rel_type, target) in enumerate(_COMMENT_RELS, start=1):
+            rel = dom.createElement("Relationship")
+            rel.setAttribute("Id", f"rId{rid}")
+            rel.setAttribute("Type", rel_type)
+            rel.setAttribute("Target", target)
+            root.appendChild(rel)
+        rels_path.write_bytes(dom.toxml(encoding="UTF-8"))
         return
     dom = defusedxml.minidom.parseString(rels_path.read_text(encoding="utf-8"))
     root = dom.documentElement
