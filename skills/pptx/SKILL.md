@@ -196,6 +196,12 @@ Run the sanitizer on every delivered `.pptx`, including files written directly b
 python-pptx or pptxgenjs. It is idempotent and uses an atomic replacement, so a
 failed repair leaves the original deck untouched.
 
+If the sanitizer exits nonzero, stop: do not deliver the deck as Keynote-ready.
+An existing out-of-sequence notes master is reported without reordering it,
+because that can break PowerPoint compatibility. Check such a deck in both apps.
+The general validator permits some PowerPoint-specific ordering, so a validation
+pass alone does not establish Keynote compatibility or replace the sanitizer.
+
 **If the deck came from a template, always pass `--original`.** A template may itself
 contain parts the XSD rejects, so a bare run can report failures you never caused — and
 a genuine regression can hide among them. `--original` baselines

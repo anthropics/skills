@@ -27,6 +27,11 @@ PRINTER_SETTINGS_CONTENT_TYPE = (
 OLE_OBJECT_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.oleObject"
 
 _SLIDE_SIZE_RE = re.compile(r"<(?P<prefix>[A-Za-z_][\w.-]*):sldSz\b(?P<attrs>[^>]*)/>")
+_SCREEN_ASPECT_RATIOS = {
+    "screen4x3": (4, 3),
+    "screen16x9": (16, 9),
+    "screen16x10": (16, 10),
+}
 _SUCCESSORS_OF_NOTES_MASTER = (
     "handoutMasterIdLst",
     "sldIdLst",
@@ -82,15 +87,20 @@ def _patch_slide_size(presentation_xml: str) -> tuple[str, bool]:
 
     updated = attrs
     if abs(cx - 12192000) <= 60000 and abs(cy - 6858000) <= 60000:
-        updated = _set_attribute(updated, "cx", "12192000")
-        updated = _set_attribute(updated, "cy", "6858000")
-        updated = _remove_attribute(updated, "type")
+        cx, cy = 12192000, 6858000
     elif abs(cx - 9144000) <= 60000 and abs(cy - 6858000) <= 60000:
-        updated = _set_attribute(updated, "cx", "9144000")
-        updated = _set_attribute(updated, "cy", "6858000")
-        updated = _set_attribute(updated, "type", "screen4x3")
-    else:
-        updated = _remove_attribute(updated, "type")
+        cx, cy = 9144000, 6858000
+    if (cx, cy) != (int(cx_text), int(cy_text)):
+        updated = _set_attribute(updated, "cx", str(cx))
+        updated = _set_attribute(updated, "cy", str(cy))
+
+    # Only remove a screen type whose aspect ratio contradicts the dimensions.
+    # Paper sizes and custom declarations are not inherited 4:3 template flags.
+    aspect_ratio = _SCREEN_ASPECT_RATIOS.get(_attribute(attrs, "type"))
+    if aspect_ratio is not None:
+        width, height = aspect_ratio
+        if abs(cx * height - cy * width) > 60000 * max(width, height):
+            updated = _remove_attribute(updated, "type")
 
     replacement = f"<{match.group('prefix')}:sldSz{updated}/>"
     if replacement == match.group(0):
@@ -140,7 +150,19 @@ def _add_notes_master_id(
     r_prefix = _namespace_prefix(presentation_xml, OFFICE_REL_NS)
     if p_prefix is None or r_prefix is None:
         return presentation_xml, False
-    if re.search(rf"<{re.escape(p_prefix)}:notesMasterIdLst\b", presentation_xml):
+    children = [
+        node.localName
+        for node in _dom(presentation_xml, PRESENTATION).documentElement.childNodes
+        if node.nodeType == node.ELEMENT_NODE and node.namespaceURI == PRESENTATION_NS
+    ]
+    if "notesMasterIdLst" in children:
+        for name in children[: children.index("notesMasterIdLst")]:
+            if name in _SUCCESSORS_OF_NOTES_MASTER:
+                raise SanitizeError(
+                    "presentation.xml has an out-of-sequence notesMasterIdLst; "
+                    "refusing to reorder it because this can break PowerPoint "
+                    "compatibility. Check the deck in Keynote and PowerPoint."
+                )
         return presentation_xml, False
 
     rid = _notes_master_rid(rels_xml)

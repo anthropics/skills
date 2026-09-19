@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -77,6 +78,14 @@ class KeynoteSanitizerTests(unittest.TestCase):
         self.assertIn('cx="10000000" cy="7000000"', xml)
         self.assertNotIn('type="screen4x3"', xml)
 
+    def test_consistent_a4_type_is_preserved(self):
+        source = PRESENTATION.replace("12191695", "10692000").replace(
+            "6858000", "7560000"
+        ).replace('type="screen4x3"', 'type="A4"')
+        xml, changed = keynote._patch_slide_size(source)
+        self.assertFalse(changed)
+        self.assertEqual(source, xml)
+
     def test_malformed_slide_size_is_left_unchanged(self):
         source = PRESENTATION.replace(' cx="12191695"', "")
         xml, changed = keynote._patch_slide_size(source)
@@ -89,14 +98,36 @@ class KeynoteSanitizerTests(unittest.TestCase):
         self.assertLess(xml.index("notesMasterIdLst"), xml.index("sldIdLst"))
         self.assertIn('r:id="rId8"', xml)
 
-    def test_existing_notes_master_is_not_reordered(self):
+    def test_misordered_notes_master_is_rejected_without_writing(self):
         existing = PRESENTATION.replace(
             "</p:sldIdLst>",
             '</p:sldIdLst><p:notesMasterIdLst><p:notesMasterId r:id="rId8"/></p:notesMasterIdLst>',
         )
-        xml, changed = keynote._add_notes_master_id(existing, RELS)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "deck.pptx"
+            write_package(path, package(**{keynote.PRESENTATION: existing.encode()}))
+            original = path.read_bytes()
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS_DIR / "keynote_sanitize.py"), str(path)],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("out-of-sequence notesMasterIdLst", result.stderr)
+            self.assertNotIn("Sanitized", result.stdout)
+            self.assertEqual(original, path.read_bytes())
+
+    def test_nested_extension_does_not_affect_notes_master_order(self):
+        source = PRESENTATION.replace(
+            '<p:sldMasterId id="1" r:id="rId1"/>',
+            '<p:sldMasterId id="1" r:id="rId1"><p:extLst/></p:sldMasterId>',
+        ).replace(
+            "<p:sldIdLst>",
+            '<p:notesMasterIdLst><p:notesMasterId r:id="rId8"/></p:notesMasterIdLst><p:sldIdLst>',
+        )
+        xml, changed = keynote._add_notes_master_id(source, RELS)
         self.assertFalse(changed)
-        self.assertEqual(existing, xml)
+        self.assertEqual(source, xml)
 
     def test_no_notes_relationship_is_a_noop(self):
         rels = RELS.replace(
