@@ -186,6 +186,9 @@ def _ensure_comment_relationships(unpacked_dir: Path) -> None:
             None,
         )
         root = dom.documentElement
+        root.setAttribute(
+            "xmlns", "http://schemas.openxmlformats.org/package/2006/relationships"
+        )
         for rid, (rel_type, target) in enumerate(_COMMENT_RELS, start=1):
             rel = dom.createElement("Relationship")
             rel.setAttribute("Id", f"rId{rid}")
