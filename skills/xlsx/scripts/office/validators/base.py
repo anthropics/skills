@@ -714,10 +714,10 @@ class BaseSchemaValidator:
         if xml_file.suffix == ".rels":
             return self.schemas_dir / self.SCHEMA_MAPPINGS[".rels"]
 
-        if "charts/" in str(xml_file) and xml_file.name.startswith("chart"):
+        if "charts/" in xml_file.as_posix() and xml_file.name.startswith("chart"):
             return self.schemas_dir / self.SCHEMA_MAPPINGS["chart"]
 
-        if "theme/" in str(xml_file) and xml_file.name.startswith("theme"):
+        if "theme/" in xml_file.as_posix() and xml_file.name.startswith("theme"):
             return self.schemas_dir / self.SCHEMA_MAPPINGS["theme"]
 
         if xml_file.parent.name in self.MAIN_CONTENT_FOLDERS:
