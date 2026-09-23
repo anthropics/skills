@@ -211,11 +211,9 @@ class GIFBuilder:
                 print(
                     f"  Reducing frames from {len(self.frames)} to ~12 for emoji size"
                 )
-                # Keep every nth frame to get close to 12 frames
-                keep_every = max(1, len(self.frames) // 12)
-                self.frames = [
-                    self.frames[i] for i in range(0, len(self.frames), keep_every)
-                ]
+                # Sample 12 evenly spaced frames from the sequence
+                frame_indices = [int(i * len(self.frames) / 12) for i in range(12)]
+                self.frames = [self.frames[i] for i in frame_indices]
 
         # Optimize colors with global palette
         optimized_frames = self.optimize_colors(num_colors, use_global_palette=True)
