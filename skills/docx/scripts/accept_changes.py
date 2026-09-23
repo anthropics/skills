@@ -7,6 +7,7 @@ import argparse
 import logging
 import shutil
 import subprocess
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -33,18 +34,31 @@ ACCEPT_CHANGES_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
     End Sub
 </script:module>"""
 
-_TRACKED_CHANGE_MARKERS = ("<w:ins", "<w:del", "<w:moveFrom", "<w:moveTo")
+_WORD_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+_TRACKED_CHANGE_LOCAL_NAMES = frozenset({"ins", "del", "moveFrom", "moveTo"})
 
 
 def _docx_still_has_tracked_changes(path: Path) -> bool:
-    """Return True if the DOCX at ``path`` still carries revision marks."""
+    """Return True if the DOCX at ``path`` still carries revision marks.
+
+    Revision marks are matched by namespace URI + local name (``ins``,
+    ``del``, ``moveFrom``, ``moveTo`` in the WordprocessingML namespace), so a
+    document that binds that namespace to a non-``w:`` prefix is still
+    detected.
+    """
     try:
         with zipfile.ZipFile(path) as zf:
             for name in zf.namelist():
                 if name.startswith("word/") and name.endswith(".xml"):
-                    data = zf.read(name).decode("utf-8", "replace")
-                    if any(marker in data for marker in _TRACKED_CHANGE_MARKERS):
+                    try:
+                        root = ET.fromstring(zf.read(name))
+                    except ET.ParseError:
                         return True
+                    ns_tag = "{" + _WORD_NS + "}"
+                    for elem in root.iter():
+                        tag = elem.tag
+                        if tag.startswith(ns_tag) and tag[len(ns_tag) :] in _TRACKED_CHANGE_LOCAL_NAMES:
+                            return True
     except Exception:
         return True
     return False
