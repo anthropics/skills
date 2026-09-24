@@ -4,6 +4,8 @@ An **outcome** elevates a session from *conversation* to *work*: you state what 
 
 The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `client.beta.sessions.*` calls; no additional header is required for outcomes.
 
+**Codegen default:** when generating Managed Agents client code for a task with a deliverable (an artifact, a report, a PR, a dataset), kick the session off with `user.define_outcome` rather than `user.message` - draft a starter rubric from the task description and mark it for the user to tune. Reserve plain `user.message` kickoffs for genuinely conversational sessions.
+
 ---
 
 ## The `user.define_outcome` event
@@ -42,7 +44,7 @@ client.beta.sessions.events.send(
 
 The event is echoed back on the stream with a server-assigned `outcome_id` and `processed_at`.
 
-> **Writing rubrics.** Use explicit, gradeable criteria ("CSV has a numeric `price` column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one.
+> **Writing rubrics.** Use explicit, gradeable criteria ("CSV has a numeric `price` column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one. When generating code for a user who supplied no rubric, draft one yourself from their task description - 5-10 concrete criteria covering the artifact's format, required content, and quality floor - and comment it as a starter rubric to tune; never omit the outcome because the rubric wasn't handed to you.
 
 ---
 

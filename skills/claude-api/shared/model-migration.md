@@ -27,7 +27,10 @@ For the latest, authoritative version (with code samples in every supported lang
 | Claude Fable 5.1 Migration Checklist | The required vs optional items for Claude Fable 5.1, tagged `[BLOCKS]` / `[TUNE]` |
 | Migrating to Claude Fable 5.1 from Claude Fable 5 | Migrating Claude Fable 5 / Claude Opus 5 / Claude Mythos 5 -> Claude Fable 5.1 or Claude Mythos 5.1 (forced `tool_choice` 400s; "preserved thinking" - model-bound blocks and the history-editing check; per-message effort; append-only per-turn reminders; `display: "updates"` progress updates; cheaper cache reads; behavioral re-tuning) |
 | Claude Fable 5.1 from Claude Fable 5 Migration Checklist | The required vs optional items for the Claude Fable 5 -> Claude Fable 5.1 move, tagged `[BLOCKS]` / `[TUNE]` |
+| Migrating to Claude Opus 5.5 | Migrating Claude Opus 5 -> Claude Opus 5.5 (thinking can't be disabled; forced `tool_choice` 400s; preserved thinking; computer use via the toolset only; progress updates as thinking blocks; default effort `medium`; broader classifiers; effort tuning + prompting guidance) |
+| Claude Opus 5.5 Migration Checklist | The required vs optional items for Claude Opus 5.5, tagged `[BLOCKS]` / `[TUNE]` |
 | Verify the Migration | After edits - runtime spot-check |
+| Ground the migration with an eval | User reports a behavioral regression on the new model |
 
 **TL;DR:** Change the model ID string. If you were using `budget_tokens`, switch to `thinking: {type: "adaptive"}`. If you were using assistant prefills, they 400 on both Opus 4.6 and Sonnet 4.6 - switch to one of the prefill replacements (most often `output_config.format`; see the table in Breaking Changes by Source Model). If you're moving from Sonnet 4.5 to Sonnet 4.6, set `effort` explicitly - 4.6 defaults to `high`. Remove the `effort-2025-11-24` and `fine-grained-tool-streaming-2025-05-14` beta headers (GA on 4.6); remove `interleaved-thinking-2025-05-14` once you're on adaptive thinking (keep it only while using the transitional `budget_tokens` escape hatch). Then drop back from `client.beta.messages.create` to `client.messages.create`. Dial back any aggressive "CRITICAL: YOU MUST" tool instructions; 4.6 follows the system prompt much more closely.
 
@@ -75,7 +78,7 @@ Not every file that contains the old model ID is a **caller** of the API. Before
 | 1 | **Calls the API/SDK** | `client.messages.create(model=...)`, `anthropic.Anthropic()`, request payloads | Swap the model ID **and** apply the breaking-change checklist for the target version (below). |
 | 2 | **Defines or serves the model** | Model registries, OpenAPI specs, routing/queue configs, model-policy enums, generated catalogs | The old entry **stays** (the model is still served). Ask whether to (a) add the new model alongside, (b) leave alone, or (c) retire the old model - never blind-replace. **If you can't ask, default to (a): add the new model alongside and flag it** - replacing would de-register a model that's still in production. |
 | 3 | **References the ID as an opaque string** | UI fallback constants, capability-gate substring checks, generic test fixtures, label parsers, env defaults | Usually swap the string and verify any parser/regex/substring match handles the new ID - but check the sub-cases below first. |
-| 4 | **Suffixed variant ID** | `claude-<model>-<suffix>` like `-fast`, `-1024k`, `-200k`, `[1m]`, dated snapshots | These are deployment/routing identifiers, not the public model ID. **Do not assume a new-model equivalent exists.** Verify in the registry first; if absent, leave the string alone and flag it. **Exception: `-fast` strings (e.g. `claude-opus-4-6-fast`) are handled by the Fast Mode section below**, which rewrites them to Opus 4.8 plus `speed="fast"` and the `fast-mode-2026-02-01` beta rather than leaving them in place. |
+| 4 | **Suffixed variant ID** | `claude-<model>-<suffix>` like `-fast`, `-1024k`, `-200k`, `[1m]`, dated snapshots | These are deployment/routing identifiers, not the public model ID. **Do not assume a new-model equivalent exists.** Verify in the registry first; if absent, leave the string alone and flag it. **Exception: `-fast` strings (e.g. `claude-opus-4-6-fast`) are handled by the Fast Mode section below**, which rewrites them to Claude Opus 5 plus `speed="fast"` and the `fast-mode-2026-02-01` beta rather than leaving them in place. |
 
 **Bucket 3 sub-cases - before swapping a string reference, check:**
 
@@ -169,14 +172,14 @@ If you're applying several prompt-tuning edits at once, offer them as a short li
 
 1. **Confirm the target model ID.** Use only the exact strings from `shared/models.md` - do not append date suffixes to aliases (`claude-opus-4-6`, not `claude-opus-4-6-20251101`). Guessing an ID will 404.
 2. **Check which features your code uses** with this checklist:
-   - `thinking: {type: "enabled", budget_tokens: N}` -> migrate to adaptive thinking on Opus 4.6 / Sonnet 4.6 (still functional but deprecated)
-   - Assistant-turn prefills (`messages` ending with `role: "assistant"`) -> must change on Opus 4.6 / Sonnet 4.6 (returns 400)
-   - `output_format` parameter on `messages.create()` -> must change on all models (deprecated API-wide)
-   - `max_tokens > ~16000` -> must stream on any model (above ~16K risks SDK HTTP timeouts). When streaming, every current model reaches 128K except Haiku 4.5, which caps at 64K
-   - Beta headers `effort-2025-11-24`, `fine-grained-tool-streaming-2025-05-14`, `interleaved-thinking-2025-05-14` -> GA on 4.6, remove them and switch from `client.beta.messages.create` to `client.messages.create`
-   - Moving Sonnet 4.5 -> Sonnet 4.6 with no `effort` set -> 4.6 defaults to `high`, which may change your latency/cost profile
-   - System prompts with `CRITICAL`, `MUST`, `If in doubt, use X` language -> likely to overtrigger on 4.6 (see Prompt-Behavior Changes)
-   - Coming from 3.x / 4.0 / 4.1: also check sampling params (`temperature` + `top_p`), tool versions (`text_editor_20250728`), `refusal` + `model_context_window_exceeded` stop reasons, trailing-newline tool-param handling
+ - `thinking: {type: "enabled", budget_tokens: N}` -> migrate to adaptive thinking on Opus 4.6 / Sonnet 4.6 (still functional but deprecated)
+ - Assistant-turn prefills (`messages` ending with `role: "assistant"`) -> must change on Opus 4.6 / Sonnet 4.6 (returns 400)
+ - `output_format` parameter on `messages.create()` -> must change on all models (deprecated API-wide)
+ - `max_tokens > ~16000` -> must stream on any model (above ~16K risks SDK HTTP timeouts). When streaming, every current model reaches 128K except Haiku 4.5, which caps at 64K
+ - Beta headers `effort-2025-11-24`, `fine-grained-tool-streaming-2025-05-14`, `interleaved-thinking-2025-05-14` -> GA on 4.6, remove them and switch from `client.beta.messages.create` to `client.messages.create`
+ - Moving Sonnet 4.5 -> Sonnet 4.6 with no `effort` set -> 4.6 defaults to `high`, which may change your latency/cost profile
+ - System prompts with `CRITICAL`, `MUST`, `If in doubt, use X` language -> likely to overtrigger on 4.6 (see Prompt-Behavior Changes)
+ - Coming from 3.x / 4.0 / 4.1: also check sampling params (`temperature` + `top_p`), tool versions (`text_editor_20250728`), `refusal` + `model_context_window_exceeded` stop reasons, trailing-newline tool-param handling
 3. **Test on a single request first.** Run one call against the new model, inspect the response, then roll out.
 
 ---
@@ -188,6 +191,7 @@ If you're applying several prompt-tuning edits at once, offer them as a short li
 | Claude Mythos Preview (`claude-mythos-preview`) | `claude-mythos-5-1` (Project Glasswing successor) or `claude-fable-5-1` (GA) | Same tokenizer family - mostly a model-ID swap; remove `thinking` config and prefill; see Migrating to Claude Fable 5.1 |
 | Claude Fable 5 (`claude-fable-5`) | `claude-fable-5-1` | Same tier, same per-token price, same tokenizer; three breaking changes (forced `tool_choice` 400s, "preserved thinking") - see Migrating to Claude Fable 5.1 from Claude Fable 5 |
 | Claude Mythos 5 (`claude-mythos-5`) | `claude-mythos-5-1` | Same path as claude-fable-5 -> claude-fable-5-1; see § Claude Mythos 5.1 under Migrating to Claude Fable 5.1 from Claude Fable 5 |
+| Claude Opus 5 (`claude-opus-5`)         | `claude-opus-5-5` - only when the user names Claude Opus 5.5 (launching) | Lower price ($4 / $20 vs $5 / $25), same context window and tokenizer; four breaking changes (thinking can't be disabled, forced `tool_choice` 400s, preserved thinking, computer use via the toolset only) - see Migrating to Claude Opus 5.5 |
 | Opus 4.8                              | `claude-opus-5` | The current Opus. Two breaking changes (thinking on by default; disabling thinking capped at `high` effort) plus prompt re-tuning - see Migrating to Claude Opus 5 |
 | Opus 4.7                              | `claude-opus-5` | Apply the Opus 4.8 section (prompt re-tuning, no new breaking changes), then the Claude Opus 5 section |
 | Opus 4.6                              | `claude-opus-5` | Apply the Opus 4.7 breaking changes, then 4.8 re-tuning, then the Claude Opus 5 section |
@@ -196,7 +200,7 @@ If you're applying several prompt-tuning edits at once, offer them as a short li
 | Sonnet 4.0 / 4.5 / 3.7 / 3.5          | `claude-sonnet-5` | Apply the Sonnet 4.6 changes first, then the Claude Sonnet 5 section |
 | Haiku 3 / 3.5                         | `claude-haiku-4-5` | Fastest and most cost-effective                   |
 
-Default to the latest Opus for the caller's tier unless they explicitly chose otherwise. The Opus migrations layer: if you're on Opus 4.6 or older, apply each version's section in order up to your target (e.g. 4.5 -> 4.8 means the 4.6, 4.7, and 4.8 sections in sequence). A 4.7 -> 4.8 move has no new breaking changes - see Migrating to Opus 4.8 below.
+Default to the latest Opus for the caller's tier unless they explicitly chose otherwise - except Claude Opus 5.5, which is launching: migrate to it only when the user names it. The Opus migrations layer: if you're on Opus 4.6 or older, apply each version's section in order up to your target (e.g. 4.5 -> 4.8 means the 4.6, 4.7, and 4.8 sections in sequence). A 4.7 -> 4.8 move has no new breaking changes - see Migrating to Opus 4.8 below.
 
 ---
 
@@ -494,6 +498,7 @@ If the model is now overtriggering a tool or skill, the fix is almost always to 
 | `claude-opus-4-5`              | `claude-opus-5`     |
 | `claude-opus-4-1`              | `claude-opus-5`     |
 | `claude-opus-4-0`              | `claude-opus-5`     |
+| `claude-opus-5`                  | `claude-opus-5-5` - only when the user names Claude Opus 5.5 |
 | `claude-mythos-preview`        | `claude-mythos-5-1` (Project Glasswing) or `claude-fable-5-1` |
 | `claude-fable-5`            | `claude-fable-5-1`     |
 | `claude-mythos-5`           | `claude-mythos-5-1`    |
@@ -511,6 +516,7 @@ If the code uses the `AnthropicBedrockMantle` client (Python `anthropic[bedrock]
 |---|---|
 | `claude-opus-4-8` | `anthropic.claude-opus-4-8` |
 | `claude-opus-5` | `anthropic.claude-opus-5` |
+| `claude-opus-5-5` | `anthropic.claude-opus-5-5` |
 | `claude-fable-5-1` | `anthropic.claude-fable-5-1` |
 | `claude-fable-5` | `anthropic.claude-fable-5` |
 | `claude-mythos-5-1` | `anthropic.claude-mythos-5-1` (us-east-1 only, not publicly listed) |
@@ -520,7 +526,7 @@ If the code uses the `AnthropicBedrockMantle` client (Python `anthropic[bedrock]
 
 When migrating a Bedrock file, apply the same rename-table row as first-party, then keep/add the `anthropic.` prefix. Do **not** generate a first-party `claude-*` ID for a Bedrock client - it will 400.
 
-**Skip for Bedrock:** the `code_execution_*` tool-version checklist item and the **Task Budgets** section - neither is available on Bedrock (see `shared/platform-availability.md` for the per-feature table). Everything else in this guide - `effort`, adaptive/extended thinking, `output_config.format`, `thinking.display`, fine-grained tool streaming, token counting - is available on Bedrock.
+**Skip for Bedrock:** the `code_execution_*` tool-version checklist item and the **Task Budgets** section - neither is available on Bedrock (see `shared/platform-availability.md` for the per-feature table). Everything else in this guide - `effort`, adaptive/extended thinking, `output_config.format`, `thinking.display`, token counting - is available on Bedrock; fine-grained tool streaming (`eager_input_streaming`) is available on Bedrock's newer serving stack only (see the per-model note in `shared/platform-availability.md`).
 
 > **Out of scope:** the legacy Amazon Bedrock integration (`InvokeModel` / `Converse` APIs with ARN-versioned IDs like `anthropic.claude-3-5-sonnet-20241022-v2:0`) uses a different request shape and model-ID format. This guide does not cover it; WebFetch the Bedrock page in `shared/live-sources.md` if the user is migrating between the two Bedrock integrations.
 
@@ -699,11 +705,11 @@ Beyond resolution, Opus 4.7 also improves on low-level perception (pointing, mea
 
 Requests that involve prohibited or high-risk topics may lead to refusals.
 
-### Fast Mode: Claude Opus 5 / Opus 4.8 only
+### Fast Mode: Claude Opus 5 / Claude Opus 5.5 / Opus 4.8 only
 
-Fast mode is available on Claude Opus 5 and Opus 4.8. Only surface this if the caller's code actually uses fast mode (e.g. `model="claude-opus-4-6-fast"`, or `speed="fast"` on an unsupported model); if the word "fast" does not appear in the code, say nothing about Fast Mode.
+Fast mode is available on Claude Opus 5, Claude Opus 5.5, and Opus 4.8. Only surface this if the caller's code actually uses fast mode (e.g. `model="claude-opus-4-6-fast"`, or `speed="fast"` on an unsupported model); if the word "fast" does not appear in the code, say nothing about Fast Mode.
 
-When you see `model="claude-opus-4-6-fast"` (or any retired `-fast` model string), **the migration edit is** to move the fast-mode traffic onto Claude Opus 5, the current fast-capable default (Opus 4.8 also works if the caller is staying on that tier):
+When you see `model="claude-opus-4-6-fast"` (or any retired `-fast` model string), **the migration edit is** to move the fast-mode traffic onto Claude Opus 5, the current fast-capable default (Opus 4.8 also works if the caller is staying on that tier; Claude Opus 5.5 supports it too, at $8 / $40 - its fast-mode docs flip after the model launch, confirm before quoting - use it when the user names it):
 
 ```python
 # Request fast mode on Claude Opus 5.
@@ -714,7 +720,7 @@ client.beta.messages.create(
 )
 ```
 
-That is: switch the model to Claude Opus 5 (or Opus 4.8) and request fast mode the supported way, using the beta `client.beta.messages....` endpoint, the `fast-mode-2026-02-01` beta flag, and `speed="fast"` as a top-level request parameter (per-language form in SKILL.md § Fast Mode). Opus 4.7 fast mode has also been removed, so do not land on Opus 4.7 either. Do **not** leave the code on a retired `-fast` model string - the failure mode differs by version: `claude-opus-4-6-fast` is retired and the API **silently falls back** to standard Opus 4.6 (no error - the caller loses fast-mode speed without noticing); `claude-opus-4-7-fast` and `speed="fast"` on Opus 4.7 instead return an **API error** (hard failure - requests break outright rather than degrading). Either way, migrate to Opus 4.8 fast mode now.
+That is: switch the model to Claude Opus 5 (or Opus 4.8) and request fast mode the supported way, using the beta `client.beta.messages....` endpoint, the `fast-mode-2026-02-01` beta flag, and `speed="fast"` as a top-level request parameter (per-language form in SKILL.md § Fast Mode). Opus 4.7 fast mode has also been removed, so do not land on Opus 4.7 either. Do **not** leave the code on a retired `-fast` model string - the failure mode differs by version: `claude-opus-4-6-fast` is retired and the API **silently falls back** to standard Opus 4.6 (no error - the caller loses fast-mode speed without noticing); `claude-opus-4-7-fast` and `speed="fast"` on Opus 4.7 instead return an **API error** (hard failure - requests break outright rather than degrading). Either way, migrate to a supported fast-mode model (Claude Opus 5 by default) now.
 
 ### Behavioral shifts (prompt-tunable)
 
@@ -1598,7 +1604,7 @@ Keep passing thinking blocks back unchanged when you switch models - the API dro
 
 The published docs file this and breaking change 2 together under *preserved thinking* ("pass blocks back unchanged and let the API decide which the model can use"); this one is the conversation check - editing earlier turns invalidates every later thinking block. The API field names for it say `prefix_mismatch_behavior` / `prefix_binding_mismatch` - the same check.
 
-A Claude Fable 5.1 thinking block's `signature` also records the conversation prefix that produced it - the top-level `system` prompt, the set of tools in `tools`, and every message before the block (with server-side compaction, the prefix starts at the most recent compaction block) - plus a chain to the previous thinking block across turns (earlier thinking blocks aren't part of the prefix, but each block records the one before it, which is why blocks can be removed from the *front* of the history and not from the middle). When the transcript comes back, the API checks that this prefix is unchanged. Claude Code, claude.ai, Managed Agents, and the Agent SDK keep the prefix intact for you; **if your code builds the `messages` array itself, check it before migrating** (the three-step check is below). **Who is enforced:** new accounts **created on or after August 31, 2026** (Claude API organizations, Amazon Bedrock accounts, Google Cloud projects, Microsoft Foundry resources). Anthropic plans to enforce it for every account on future models, so adopt the patterns now even if your account isn't enforced today. For accounts created earlier the API *records* the mismatch but acts on it only when the request opts in: setting `thinking.block_binding.prefix_mismatch_behavior` - **any value, including `"error"`, opts the request into enforcement**, which is also how you test from an older organization - or sending the `thinking-binding-controls-2026-08-01` header alone, which opts the request into the beta's default, `drop_block`. If you ship a tool or framework that people run with their own API key, test with the field set: your users on new organizations are enforced before you are. To see whether your own organization is enforced by default, send a request that edits history without the beta header - a 400 that names the header means it is. Platform note: the opt-in controls themselves (the beta header, `prefix_mismatch_behavior`, `input_transformations`) are on the Claude API and Claude Platform on AWS at launch, arrive per model on Amazon Bedrock and Google Cloud (until then the header is rejected there), and aren't offered on Microsoft Foundry - on a platform without the controls the opt-in test path doesn't apply and recovery is strip-and-retry (`shared/platform-availability.md` has the matrix).
+A Claude Fable 5.1 thinking block's `signature` also records the conversation prefix that produced it - the top-level `system` prompt, the set of tools in `tools`, and every message before the block (with server-side compaction, the prefix starts at the most recent compaction block) - plus a chain to the previous thinking block across turns (earlier thinking blocks aren't part of the prefix, but each block records the one before it, which is why blocks can be removed from the *front* of the history and not from the middle). When the transcript comes back, the API checks that this prefix is unchanged. Claude Code, claude.ai, Managed Agents, and the Agent SDK keep the prefix intact for you; **if your code builds the `messages` array itself, check it before migrating** (the three-step check is below). **Who is enforced:** new accounts **created on or after August 31, 2026** (Claude API organizations, Amazon Bedrock accounts, Google Cloud projects, Microsoft Foundry resources). Enforcement scope is decided per model - Claude Opus 5.5 also enforces it for new accounts only - so make your application compatible regardless of your account's age: the same patterns keep the prompt cache warm, and you can test against the check from any account by sending `prefix_mismatch_behavior`. For accounts created earlier the API *records* the mismatch but acts on it only when the request opts in: setting `thinking.block_binding.prefix_mismatch_behavior` - **any value, including `"error"`, opts the request into enforcement**, which is also how you test from an older organization - or sending the `thinking-binding-controls-2026-08-01` header alone, which opts the request into the beta's default, `drop_block`. If you ship a tool or framework that people run with their own API key, test with the field set: your users on new organizations are enforced before you are. To see whether your own organization is enforced by default, send a request that edits history without the beta header - a 400 that names the header means it is. Platform note: the opt-in controls themselves (the beta header, `prefix_mismatch_behavior`, `input_transformations`) are on the Claude API and Claude Platform on AWS at launch, arrive per model on Amazon Bedrock and Google Cloud (until then the header is rejected there), and aren't offered on Microsoft Foundry - on a platform without the controls the opt-in test path doesn't apply and recovery is strip-and-retry (`shared/platform-availability.md` has the matrix).
 
 **What invalidates every later thinking block:**
 
@@ -1840,7 +1846,7 @@ The second tells it to hold the scope the user set:
 - [ ] **[BLOCKS]** Coming from an Opus-tier or older model (not from Claude Fable 5): apply the Claude Fable 5.1 Migration Checklist above (the Opus-tier -> Fable migration) first, plus § Coming from Claude Opus 5 - `thinking: {type: "disabled"}` now 400s at any effort, between-tool narration moves into `thinking` blocks, ZDR is lost, price doubles
 - [ ] **[BLOCKS]** Data retention: 30-day retention required (Covered Model; ZDR only if expressly authorized by Anthropic) - a ZDR org gets `400 invalid_request_error` on every request, as on Claude Fable 5; check the retention configuration before debugging the payload
 - [ ] **[BLOCKS]** Keep passing `thinking` blocks back unchanged on every turn, including empty ones and `redacted_thinking` - the history-editing check rejects edited history
-- [ ] **[BLOCKS]** Preserved thinking / the history-editing check (new accounts created on/after 2026-08-31 on every platform, and any request that sets `prefix_mismatch_behavior` or sends the controls beta header; later models enforce it for everyone): stop editing history between requests - freeze the top-level `system`, use `role: "system"` messages for mid-session instructions, `tool_addition`/`tool_removal` for tool changes, turn-scoped (`clear_at`) system messages - or, without that beta, retained user-message text blocks - appended after the tool results and never deleted, for per-turn reminders, server-side context editing / compaction (summary-only if client-side) for trimming, `file_id` for cross-turn files. Run the three-step check on a platform offering the controls beta (`shared/platform-availability.md`) (`prefix_mismatch_behavior: "drop_block"` + log `input_transformations`; fix every `prefix_binding_mismatch`, `model_binding_mismatch` after a model switch is expected; `"error"` in CI), then pick a production setting and monitor it. If you ship a tool others run with their own key, test with the field set. Keep-tail and background compaction need `"drop_block"` (per request - keep sending it) or stripped thinking on the retained turns; never compact mid tool round
+- [ ] **[BLOCKS]** Preserved thinking / the history-editing check (new accounts created on/after 2026-08-31 on every platform, and any request that sets `prefix_mismatch_behavior` or sends the controls beta header; enforcement scope is decided per model, and Claude Opus 5.5 also enforces it for new accounts only): stop editing history between requests - freeze the top-level `system`, use `role: "system"` messages for mid-session instructions, `tool_addition`/`tool_removal` for tool changes, turn-scoped (`clear_at`) system messages - or, without that beta, retained user-message text blocks - appended after the tool results and never deleted, for per-turn reminders, server-side context editing / compaction (summary-only if client-side) for trimming, `file_id` for cross-turn files. Run the three-step check on a platform offering the controls beta (`shared/platform-availability.md`) (`prefix_mismatch_behavior: "drop_block"` + log `input_transformations`; fix every `prefix_binding_mismatch`, `model_binding_mismatch` after a model switch is expected; `"error"` in CI), then pick a production setting and monitor it. If you ship a tool others run with their own key, test with the field set. Keep-tail and background compaction need `"drop_block"` (per request - keep sending it) or stripped thinking on the retained turns; never compact mid tool round
 - [ ] **[TUNE]** Fallbacks: keep server-side `fallbacks` (targets `claude-opus-4-8` / `claude-opus-5`; routing unpublished) or the SDK middleware; the fallback model can't read 5.1 thinking blocks (dropped, unbilled); fallback credit works as on Claude Fable 5
 - [ ] **[TUNE]** Adopt `thinking: {type: "adaptive", display: "updates"}` with `thinking-display-updates-2026-08-18` (all platforms) if users watch long tool-calling turns; render non-empty `thinking` blocks as status lines, handle the interrupted-response sentinel, echo them back unchanged
 - [ ] **[TUNE]** Adopt per-message effort (`mid-conversation-output-config-2026-07-01`; also on Claude Opus 5) where a loop mixes hard and routine steps - lowering is reliable, raising wants a big jump; re-run the effort sweep (`high` default; `medium` as cost control; `xhigh`/`max` only for capability-sensitive work; `low` often beats below-frontier models on cost per task); size `max_tokens` for `high`+
@@ -1851,9 +1857,215 @@ The second tells it to hold the scope the user set:
 
 ---
 
+## Migrating to Claude Opus 5.5
+
+> **Model ID `claude-opus-5-5` is authoritative as written here.** When the user asks to migrate to Claude Opus 5.5, write `model="claude-opus-5-5"` exactly. Do **not** WebFetch to verify - this guide is the source of truth for migration target IDs. The corresponding entry exists in `shared/models.md`.
+
+Claude Opus 5.5 succeeds Claude Opus 5 in the Opus line for long-running agentic coding and knowledge work, **at a lower price** - $4 / $20 per MTok input / output against Claude Opus 5's $5 / $25. Same 1M token context window (default and maximum), same 128K max output, same tokenizer as Claude Opus 5 (token counts unchanged; coming from a pre-Opus-4.7 model, follow the tokenizer guidance in the Claude Opus 5 section). Knowledge cutoff June 2026. Available at launch on the Claude API (`claude-opus-5-5`), Amazon Bedrock (`anthropic.claude-opus-5-5`), Claude Platform on AWS, Google Cloud, and Microsoft Foundry (all as `claude-opus-5-5`; on Foundry both the Anthropic-hosted and Microsoft-hosted paths, the latter subject to its own launch-day go/no-go); Claude Opus 5 stays available on all of them. Existing Claude Opus 5 prompts should perform well out of the box; the Claude Opus 5 prompting patterns below remain a reasonable starting point.
+
+**Migrate to Claude Opus 5.5 when the user names it.** This section is written ahead of the launch: the skill's mandated default (`claude-opus-5`) and the pricing table in SKILL.md don't move until then. It is layered on top of the Claude Opus 5 migration above - a caller coming from Opus 4.8 or older applies § Migrating to Claude Opus 5 first (Opus 4.7 or older: the sections before that), with two exceptions to what that section (and the earlier ones) say: Claude Opus 5's "thinking can be disabled at `high` or below" does not carry over, and neither does the acceptance of the earlier `computer_20251124` tool (breaking change 4 below). Coming from Claude Sonnet 5: the request surface already matches (adaptive thinking, no sampling parameters, no prefill) - apply this section on top of the Claude Sonnet 5 code, re-baselining for Opus-tier pricing and rate limits.
+
+**What changes, in one line:** four breaking changes for code running on Claude Opus 5 (thinking can't be disabled; forced `tool_choice` 400s; thinking blocks are tied to the model and the conversation - "preserved thinking"; the `computer_20251124` tool 400s - use the computer toolset), one response-shape change that fails no request (text between tool calls comes back in `thinking` blocks), a **default effort of `medium`** where Claude Opus 5's is `high`, and a broader safety-classifier set (`bio` and `reasoning_extraction` join `cyber`). The first three breaking changes are the same mechanisms Claude Fable 5.1 introduced - the sections below give the Claude Opus 5.5 specifics and point at § Migrating to Claude Fable 5.1 from Claude Fable 5 for the shared mechanics rather than repeating them. Everything else in the Claude Opus 5 request surface carries over: mid-conversation system messages and per-message effort (which some of the tips below use), mid-conversation tool changes, task budgets, compaction, the 512-token minimum cacheable prompt, batch, the Files API, PDF support, vision, and the server-side and client-side tools.
+
+### Breaking change 1: thinking can't be disabled
+
+On Claude Opus 5, thinking is on by default and `thinking: {type: "disabled"}` is accepted at effort `high` or below. On Claude Opus 5.5 thinking is **always on**: `{"type": "disabled"}` and `{"type": "enabled", "budget_tokens": N}` both return a 400 `invalid_request_error` at every effort level, with no beta header involved:
+
+```text
+"thinking.type.disabled" is not supported for this model. Use "thinking.type.adaptive" and "output_config.effort" to control thinking behavior.
+```
+
+(`"thinking.type.enabled" is not supported for this model. ...` for the budget form.) Omit the `thinking` field or send `{type: "adaptive"}`, which is equivalent. **Effort is now the control for how much the model thinks, and therefore for latency and cost** (§ Choosing an effort level below). Migrate a route that disables thinking or sets a budget as follows:
+
+1. **Remove the `thinking` field** (or set it to `{type: "adaptive"}`).
+2. **If time to first token matters, set `output_config.effort` to `low`.** At `low` the model keeps its thinking short; how often it skips thinking altogether depends on the prompts. Measure, and move to `medium` if quality drops. A system-prompt line such as *"Answer directly without deliberating."* can reduce thinking further (and with it TTFT and cost) - measure quality on your own use case before keeping it, since less thinking can cost accuracy.
+3. **Size `max_tokens` for the thinking as well as the reply.** Thinking counts toward `max_tokens` even though its text isn't returned under the default `display`, so a limit sized for a no-thinking route cuts replies off. For long agentic coding turns, 64K has worked well.
+4. **Read the response by block `type`, not position.** A response can begin with one or more `thinking` blocks; under the default `display: "omitted"` they come back with an empty `thinking` string. Set `display: "summarized"` for a readable summary of the reasoning. Pass `thinking` blocks back unmodified in tool-use loops.
+
+```python
+# Before - accepted on Claude Opus 5, 400 on Claude Opus 5.5
+client.messages.create(
+    model="claude-opus-5",
+    max_tokens=16000,
+    thinking={"type": "disabled"},
+    messages=[{"role": "user", "content": "..."}],
+)
+
+# After - thinking is always on; effort is the control
+client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=16000,
+    output_config={"effort": "low"},
+    messages=[{"role": "user", "content": "..."}],
+)
+```
+
+**Prompts written for thinking disabled.** Three follow-ups if the Claude Opus 5 integration ran with thinking off: (a) start at `low` and measure, as above; (b) **remove instructions that stood in for thinking** - a prompt that asked the model to write its reasoning into the response text as a substitute for thinking should go, and the reasoning read from `display: "summarized"` blocks instead; a prompt that pushes the model to reproduce its internal reasoning in the response can be **declined** with `stop_details.category: "reasoning_extraction"`; (c) re-test the two thinking-disabled mitigations from § Two failure modes when thinking is disabled under Claude Opus 5 - both address artifacts that appeared only with thinking off, so check whether the combined "brief sentence before a tool call / say so if no tool fits / no internal XML tags" instruction is still needed, and **delete any rule telling the model not to think either way** (it can't comply, and such rules increase tag leakage).
+
+### Breaking change 2: forced tool use is rejected
+
+As on Claude Fable 5.1: `tool_choice: {"type": "any"}` and `{"type": "tool", "name": "..."}` return a 400 `invalid_request_error` (`tool_choice: type "tool" and "any" are not supported for this model.`) on the Messages API, the Message Batches API, and the token-counting endpoint, where Claude Opus 5 accepts both. `{"type": "auto"}` (the default) and `{"type": "none"}` are unchanged; `disable_parallel_tool_use: true` still works with `auto` but now means *at most* one call. Migrate by intent - the full patterns (steering from the prompt, `strict: true` for schema-valid arguments, structured outputs for extraction, the advisor tool) are under § Breaking change 1: forced tool use is rejected in § Migrating to Claude Fable 5.1 from Claude Fable 5. The two most common:
+
+- **Steering toward a tool:** `tool_choice: {"type": "auto"}` plus the expectation in the prompt ("Use the `get_weather` tool to answer"), with `strict: true` on the tool definition (schema sets `additionalProperties: false`) so the arguments match the schema. Because `auto` does not guarantee a call, **check that one was made and retry if it wasn't.**
+- **Extracting structured data:** if the forced call existed only to get JSON back, replace it with structured outputs (`output_config.format`).
+
+```python
+# Before - 400 on Claude Opus 5.5
+response = client.messages.create(
+    model="claude-opus-5",
+    max_tokens=1024,
+    tools=tools,
+    tool_choice={"type": "tool", "name": "get_weather"},
+    messages=[{"role": "user", "content": "What's the weather in Paris?"}],
+)
+
+# After - auto + strict tool use, steering in the prompt, and a check that the call happened
+response = client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=1024,
+    tools=[{**tool, "strict": True} for tool in tools],
+    tool_choice={"type": "auto"},
+    messages=[{"role": "user", "content": "What's the weather in Paris? Use the get_weather tool."}],
+)
+if not any(block.type == "tool_use" for block in response.content):
+    ...  # retry, or fall back to a text answer
+```
+
+### Breaking change 3: thinking blocks are tied to the model and the conversation
+
+Both halves of "preserved thinking" from Claude Fable 5.1 apply to Claude Opus 5.5; the mechanics (what invalidates a block, the `drop_block` request shape, `input_transformations`, the three-step audit, the append-only replacements table, which client-side compaction shapes break) are under § Breaking change 2 and § Breaking change 3 in § Migrating to Claude Fable 5.1 from Claude Fable 5 and apply verbatim. What is specific to Claude Opus 5.5:
+
+- **Model binding - who reads whose blocks.** Claude Opus 5.5 reads thinking blocks from Claude Opus 5 and earlier Opus, Sonnet, and Haiku models - a conversation that *moves onto* `claude-opus-5-5` keeps its reasoning - but **not** from any Fable or Mythos model. In the other direction, on the Claude API only Claude Fable 5.1 and Claude Mythos 5.1 read a Claude Opus 5.5 block; **no other model does** - so a router switch, a client-side retry on another model, or a classifier-refusal fallback (server-side or SDK middleware) to Claude Opus 5 / Claude Opus 4.8 runs the turns after the switch without Claude Opus 5.5's reasoning. The API drops what the target can't read before the model sees it: the request succeeds, dropped blocks aren't billed, and with the `thinking-binding-controls-2026-08-01` header the drop is reported in `input_transformations` with `reason: "model_binding_mismatch"`. Whether Claude Fable 5.1 / Claude Mythos 5.1 also keep Claude Opus 5.5's blocks on Amazon Bedrock and Google Cloud is open at launch - the docs claim it for the Claude API only. Keep passing blocks back unchanged when you switch models; don't strip them yourself.
+- **Conversation binding - who is enforced.** Same posture as Claude Fable 5.1: on every platform the prefix check (the `system` prompt, the `tools` array, and every earlier message must be byte-identical to when the block was produced) is enforced by default for accounts **created on or after August 31, 2026, 00:00 UTC** - a replayed block after such an edit is a 400. Older accounts opt in by setting `thinking.block_binding.prefix_mismatch_behavior` (`"error"` or `"drop_block"`, beta `thinking-binding-controls-2026-08-01`). Claude Code, claude.ai, Managed Agents, and the Agent SDK keep the prefix intact; **if your code builds `messages` itself, run the three-step check before migrating** - and do it now even on an exempt account, because it also raises prompt-cache hit rates. The three edits that break the prefix and their append-only replacements: a per-turn reminder injected and later deleted, or a system prompt changed mid-session (append a mid-conversation `role: "system"` message instead; for a one-turn reminder the `clear_at: "next_user_message"` form under beta `mid-conversation-system-clear-at-2026-08-21` is a limited beta - without it, append the reminder as a text block after the `tool_result` blocks and leave earlier copies in place); tools added or removed mid-session (declare the full set at session start and send `tool_addition` / `tool_removal` blocks, beta `mid-conversation-tool-changes-2026-07-01`); and compaction that summarizes older turns while replaying newer ones with their thinking blocks (use server-side compaction or context editing - the on-demand `compaction` parameter under beta `compact-2026-09-04`, offered on the Claude API, Claude Platform on AWS, Google Cloud, and Microsoft Foundry but not yet Amazon Bedrock, is designed to keep the retained turns' blocks valid after the swap - or client-side *simple* compaction that replaces the whole history with a summary and replays no earlier thinking, or set `drop_block`). Two compaction details that follow Claude Fable 5.1: a threshold-compaction request with custom `instructions` summarizes from the visible conversation only - earlier thinking blocks are not part of the summarizer's input, so tell it what the summary must retain (on-demand compaction's summarizer reads earlier thinking with or without `instructions`); and any assistant turn you re-insert after a compaction block needs its `thinking` / `redacted_thinking` blocks removed, or `drop_block` set.
+
+```http
+POST /v1/messages
+anthropic-beta: thinking-binding-controls-2026-08-01
+
+{"model": "claude-opus-5-5", "max_tokens": 64000,
+ "thinking": {"type": "adaptive", "block_binding": {"prefix_mismatch_behavior": "drop_block"}},
+ "messages": [ ...full history with thinking blocks replayed verbatim... ]}
+```
+
+### Breaking change 4: computer use only through the computer toolset
+
+> **Confirm at launch.** The EAP guide marks the accepted computer-use tool versions and the toolset's platform availability as not final; the launch docs state the rule below. Re-check `shared/live-sources.md` -> Computer use before promising it on a partner platform.
+
+Claude Opus 5 accepts computer use both as the `computer_toolset_20260801` toolset and, with the `computer-use-2025-11-24` beta header, as the earlier `computer_20251124` tool. **Claude Opus 5.5 accepts only the toolset**: a `tools` entry of type `computer_20251124` returns a 400 `invalid_request_error` that names the rejected type and then lists the accepted ones after `Did you mean one of` (it begins `'claude-opus-5-5' does not support tool types: computer_20251124.`). The toolset is GA on the Claude API and Google Cloud with no beta header; other platforms offer only the earlier beta versions today, so an integration on those platforms has no Claude Opus 5.5 computer-use path until they add the toolset - check the computer use tool's Compatibility section (`shared/tool-use-concepts.md` § Computer Use has the toolset summary). This is more than a `tools`-entry swap, so make and test the change on Claude Opus 5 first (it accepts both forms):
+
+- **Request:** drop the beta header and the beta client namespace; the entry is `{"type": "computer_toolset_20260801"}` with **no `name`** and no `display_width_px` / `display_height_px`; an optional `configs` map turns individual member tools on or off (`{"zoom": {"enabled": false}}`). All 17 members, `zoom` included, are on by default. The entry can't share a request with a `computer_20251124` entry or another tool named `computer`.
+- **Agent loop:** Claude's calls are `tool_use` blocks whose `name` is the member (`screenshot`, `left_click`, `type`, `zoom`, ...) - **the action is the block's `name`, not `input.action`** - carrying `"toolset_name": "computer"`, and there can be **several per turn** (a batch action), each its own block. Return one `tool_result` per `tool_use`, matched by `tool_use_id`, all in the next `user` message, **every one echoing `"toolset_name": "computer"`** (a result that omits it is rejected); only `screenshot` and `zoom` results need an image, a short `OK` is enough for the rest. Coordinates are in the pixel space of the full screenshots you return, also after a `zoom`. Screenshots must already fit the model's image limits (the toolset takes no display dimensions and the API doesn't downscale for you).
+
+```python
+# Before - 400 on Claude Opus 5.5
+client.beta.messages.create(
+    model="claude-opus-5",
+    max_tokens=4096,
+    betas=["computer-use-2025-11-24"],
+    tools=[{"type": "computer_20251124", "name": "computer",
+            "display_width_px": 1024, "display_height_px": 768}],
+    messages=[{"role": "user", "content": "Open the display settings."}],
+)
+
+# After - no beta header; the toolset entry takes no name or display size
+client.messages.create(
+    model="claude-opus-5-5",
+    max_tokens=4096,
+    tools=[{"type": "computer_toolset_20260801"}],
+    messages=[{"role": "user", "content": "Open the display settings."}],
+)
+```
+
+Integrations already on the toolset, and the browser use toolset (`browser_toolset_20260801`), need no change.
+
+### Text between tool calls comes back in thinking blocks
+
+On Claude Opus 5, the short notes the model writes between tool calls (what it just found, what it's doing next) come back as `text` blocks. On Claude Opus 5.5, as on Claude Fable 5.1, notes longer than a sentence or two come back as **progress-update `thinking` blocks**, at most one before each tool call, and under the default `display: "omitted"` their text is empty - no request fails, but a client that renders only `text` blocks goes quiet for the length of a long agentic turn. Fix: set `thinking.display: "updates"` (beta `thinking-display-updates-2026-08-18`) to get a short summary of each note as text while reasoning stays hidden (`"summarized"` returns both, mixed), render each non-empty `thinking` block ahead of the `tool_use` it precedes, and pass the blocks back unchanged - the consumption rules (streaming `thinking_delta`, the interrupted-work sentinel, zero-or-more per response) are under addition 3 in § New API features of § Migrating to Claude Fable 5.1 from Claude Fable 5:
+
+```http
+POST /v1/messages
+anthropic-beta: thinking-display-updates-2026-08-18
+
+{"model": "claude-opus-5-5", "max_tokens": 64000,
+ "thinking": {"type": "adaptive", "display": "updates"},
+ "tools": [...],
+ "messages": [{"role": "user", "content": "Review the PRs open against our billing service."}]}
+```
+
+Three levers on what users see:
+
+1. **Receive them** - `display: "updates"` as above (a `"summarized"` display returns them too, mixed with the reasoning summaries).
+2. **If the model may need to hand the user something *verbatim*** partway through a long turn - a code snippet, an exact value - give it a simple tool for sending the user a message and tell it to reserve the tool for that content. Declare the tool in `tools` from the **first** request of the session: adding it later edits the conversation's prefix and invalidates earlier thinking blocks (breaking change 3).
+3. **For more frequent or predictable updates** - a one-line statement of intent before the first tool call and a short recap at the end - say so in the system prompt: when you want user-facing text and what it should contain. The model follows such instructions reasonably well; this helps most in pair programming and other human-in-the-loop work.
+
+### Choosing an effort level - the default is `medium`, and the levels don't map 1:1 from Claude Opus 5
+
+Effort is the main control for how much Claude Opus 5.5 thinks, and with adaptive-only thinking it is the first setting to adjust when trading off intelligence, latency, and cost. Two things change from Claude Opus 5:
+
+- **The API default is `medium`** (Claude Opus 5 and earlier Opus models default to `high`), so a request that omits `effort` now runs one level lower than it did. **Set `effort` explicitly** and re-run the sweep rather than carrying the Claude Opus 5 setting over. Effort names don't mean the same amount of thinking across models: in Anthropic's testing, Claude Opus 5.5 at `medium` exceeds Claude Opus 5 at `high` on coding and knowledge-work evaluations, and on several coding evaluations `low` comes close to it at much lower cost. Start at `medium` and test the neighboring levels; reserve `xhigh` and `max` for work where you have measured a quality gain (all five levels are supported; `max` is uncapped).
+- **At a given level, Claude Opus 5.5 tends to think more per turn than Claude Opus 5**, especially at `xhigh` and `max`. If you keep the `effort` value you set for Claude Opus 5, expect longer turns and more output tokens. To get less thinking, **lower the effort level before adding "think less" instructions** - lowering effort reduces thinking, cost, and latency more reliably than prompting does. Set `max_tokens` with room for the thinking as well as the reply (thinking counts toward it even though the text isn't returned - a limit sized for Claude Opus 5 with thinking off can cut replies off; 64K is a reasonable starting point for long agentic coding turns).
+
+Change effort for individual turns without invalidating the prompt cache with a **per-message effort change** (beta `mid-conversation-output-config-2026-07-01`; the request shape is addition 1 under § New API features of § Migrating to Claude Fable 5.1 from Claude Fable 5, and Claude Opus 5 already supports it). Changing the **top-level** `effort` between requests does invalidate the prompt cache.
+
+### Safeguards - a broader classifier set than Claude Opus 5
+
+Claude Opus 5.5 runs cybersecurity **and biology** safety classifiers similar to Claude Fable 5.1's; coming from Claude Opus 5, the biology classifier is new. Everyday health and educational questions are unaffected, but requests the classifier treats as dual-use biology research (virology, toxicology, molecular design) are declined; on the cybersecurity side, finding vulnerabilities in source code is allowed. Separately - also new relative to Claude Opus 5 - a request that tries to get the model to reproduce its internal reasoning in the response text can be declined with `stop_details.category: "reasoning_extraction"`; if a prompt does this (for example, to get visible reasoning with thinking off), remove the instruction, set `display: "summarized"`, and read the `thinking` blocks. **`reasoning_extraction` declines are not retried on a fallback model.**
+
+A classifier decline arrives as a normal HTTP 200 with `stop_reason: "refusal"` and a `stop_details` object naming the category (`"cyber"`, `"bio"`, `"reasoning_extraction"`, ...; branch on `stop_reason`, treat `stop_details` as informational - the full handling is § `refusal` stop reason under § Migrating to Claude Fable 5.1). A refusal before any output is not billed, but the request still counts against your rate limits (the billing wording is under revision at launch - confirm). Retry on another model with server-side fallbacks - `fallbacks: "default"` under beta `server-side-fallback-2026-07-01` retries on the model Anthropic recommends for that category, the array form under `server-side-fallback-2026-06-01` names your own targets (§ New API features under § Migrating to Claude Opus 5 has both shapes; the permitted targets for Claude Opus 5.5 are open at launch - expect Claude Opus 5 / claude-opus-4-8), the SDK middleware on platforms without server-side fallback, or your own retry. A fallback model runs without Claude Opus 5.5's thinking blocks (breaking change 3). **Ship the opt-in from day one**, as the Claude Fable 5.1 section says.
+
+The classifiers can still flag benign requests - the fallback opt-in is what keeps a false positive from becoming an outage. (The EAP guide's prompt-side workarounds for specific false positives were not carried into the launch docs - don't cite them.)
+
+### What carries over unchanged from Claude Opus 5 - and what's open at launch
+
+- **Feature set:** per-message effort (beta), mid-conversation system messages (no header) and tool changes (beta), task budgets, compaction (including the on-demand `compaction` parameter, beta `compact-2026-09-04`, which has its own docs), prompt caching with the 512-token minimum, batch processing (up to 300K output tokens with the `output-300k-2026-03-24` beta), the Files API, PDF support, vision, structured outputs, strict tool use, and the same server-side and client-side tools - except computer use, which needs the toolset (breaking change 4). Programmatic tool calling lists the model.
+- **Pricing:** $4 / $20 per MTok; 5-minute cache writes $5 and 1-hour cache writes $8 (derived from the standard 1.25x / 2x multipliers - confirm at launch); **cache reads $0.20 per MTok (0.05x base input)**; batch $2 / $10. The cache-read discount is deeper than Claude Opus 5's, so long agentic sessions that re-read a cached prefix save more, and a miss costs relatively more - keeping the cache warm (per-message effort, append-only histories, the keep-alive patterns in `shared/prompt-caching.md`) matters more.
+- **Rate limits:** a separate pool from Claude Opus 5's (own per-tier numbers - may instead share Claude Opus 5's group; confirm at launch). Re-check your tier's Claude Opus 5.5 limits before moving volume.
+- **Priority Tier:** not supported (as Claude Opus 5).
+- **Fast mode:** research preview on the Claude API only (not Bedrock, Claude Platform on AWS, Google Cloud, or Foundry), `speed: "fast"` under beta `fast-mode-2026-02-01`, at **$8 / $40 per MTok** (2x the standard price, the same multiple as Claude Opus 5's $10 / $50) - the fast-mode docs flip after the model's own launch, so confirm before quoting.
+- **Data retention / ZDR:** the launch docs say nothing new - treat Claude Opus 5.5 as Claude Opus 5 here, and check `shared/platform-availability.md` at launch.
+- **SDK constants:** `Model.ClaudeOpus5_5` (C#), `anthropic.ModelClaudeOpus5_5` (Go), `Model.CLAUDE_OPUS_5_5` (Java, PHP), `Anthropic::Model::CLAUDE_OPUS_5_5` (Ruby) - published with each SDK's launch release; the bare string `"claude-opus-5-5"` works everywhere before then.
+
+### Capability improvements versus Claude Opus 5
+
+**Cheaper per solved task, not just per token.** On many coding, analysis, and vision tasks, Claude Opus 5.5 at its default effort matched or beat Claude Opus 5 while using fewer tokens, and its price per token is 20% lower than Claude Opus 5's (60% lower for cache reads) - so expect the cost per solved task to be significantly lower for most tasks, and re-baseline `shared/cost-optimization.md`'s Claude Opus 5 figures rather than scaling them by the list price alone.
+
+- **Agentic coding and code review:** the largest measured gains are on multistep work in a real codebase (carrying a change through a large repository until its tests pass) - in Anthropic's testing, at its default `medium` effort it matched or beat Claude Opus 5's `high`-effort results on such tasks, in fewer steps and with about half the tokens - and on code review, where it catches more bugs with fewer false alarms. It explains its changes in plain language, which makes its work easier to review and trust. It tends to finish the same task with fewer tokens.
+- **Knowledge work:** a more reliable analyst - much less likely than Claude Opus 5 to state a figure or cite a source the inputs don't support (citations pointed at the right source much more often in one customer's measurement); at `medium` it produced better long analytical deliverables than Claude Opus 5 at `high` with roughly 40% fewer output tokens; better at building and auditing financial models; more detail-oriented on large inputs (a date in a long thread that falls on the wrong weekday, a chart in a deck that doesn't match the figures) **without more false-positive flags**.
+- **Communication and writing:** clearer prose, most noticeably in how it reports on agentic work - its updates while it works and its summary when it finishes say plainly what it did, what it found, and what it needs from you, with less jargon and fewer stock phrases.
+- **Charts, diagrams, screenshots, and computer use:** reads visual material more accurately at every effort level without extra tooling - in Anthropic's testing, even at `low` it read charts more accurately than Claude Opus 5 at its highest effort, at roughly a tenth of the output tokens per chart (Claude Opus 5 read charts well only by running code to crop, zoom, and measure) - values on dense charts, and meaning that depends on position rather than text (which boxes an arrow connects, what changed between two diagram versions, exactly when a meeting starts and ends in a calendar screenshot). Also more reliable at multistep computer use from screenshots: at its default effort it matched the success rate Claude Opus 5 reached only at a much higher effort setting, in fewer steps and with roughly 40% fewer tokens.
+
+### Behavioral shifts (prompt-tunable)
+
+- **Re-evaluate Claude Opus 5-specific instructions.** Instructions tuned for Claude Opus 5's behavior (the verbosity, over-verification, and scope prompts under § Behavioral shifts of § Migrating to Claude Opus 5) may no longer be needed - keep them as the starting point, then re-test each on your own evals rather than carrying them over untouched.
+- **Progress updates:** covered above - render the `thinking` blocks, and ask in the system prompt for the cadence you want.
+- **Frontend design defaults:** asked for frontend work without design direction, it falls back on a few default styles, and a general instruction such as "avoid a generic AI look" mostly swaps one default for another. **It responds well to instructions that name specific patterns to avoid.** Work iteratively - look at which styles the first result used instead, and extend the list:
+
+  > *"Output a vanilla HTML/CSS personal website with placeholder data. Do not use a cream or off-white background, italic accent words in headlines, numbered "01/02/03" section labels, monospace labels, or pill-shaped buttons."*
+
+- **Ingesting complex visual inputs:** it reads charts, diagrams, and screenshots considerably more precisely out of the box, so **harness scaffolding built for visual inputs on earlier models may no longer be needed - re-test it.** For the densest inputs, two things still add accuracy: higher-resolution images (most of all for technical drawings), and image-processing tools - run it as an agent with a container holding the raw images and libraries such as PIL and OpenCV so it can crop, zoom, measure, and verify; if a container is too much overhead, a cropping tool alone still helps. It uses these tools more effectively at higher effort levels; without tools, raising effort improves its reading of technical drawings but does little for charts.
+- **Long turns:** at `xhigh` / `max`, turns run longer than on Claude Opus 5 - plan timeouts, streaming, and progress UX accordingly, and lower effort before prompting for brevity.
+
+### Claude Opus 5.5 Migration Checklist
+
+- [ ] **[BLOCKS]** Model ID -> `claude-opus-5-5` (Bedrock: `anthropic.claude-opus-5-5`). Coming from Opus 4.8 or older, the Claude Opus 5 checklist first - except that disabling thinking is not an option.
+- [ ] **[BLOCKS]** Remove `thinking: {type: "disabled"}` and `{type: "enabled", budget_tokens}` on every route - both 400 at every effort level. Choose an effort level instead; size `max_tokens` for thinking plus the reply; read content blocks by `type`; pass `thinking` blocks back unmodified.
+- [ ] **[BLOCKS]** Replace `tool_choice` `any` / `tool` with `auto` plus `strict: true` (steering in the prompt, and a check that the call happened) or structured outputs - on `count_tokens` and Batches too.
+- [ ] **[BLOCKS]** Computer use: declare `{"type": "computer_toolset_20260801"}` (no beta header, no `name` / display size) instead of `computer_20251124`, and update the agent loop for member `tool_use` blocks (action = block `name`), batch actions, and `toolset_name` on every result; confirm the toolset is offered on your platform. Test on Claude Opus 5 first.
+- [ ] **[BLOCKS]** If the harness builds `messages` itself: run the preserved-thinking three-step check (§ Migrating to Claude Fable 5.1 from Claude Fable 5) - accounts created on or after 2026-08-31 are enforced by default on every platform; set `prefix_mismatch_behavior` explicitly under `thinking-binding-controls-2026-08-01` and replace every history edit with its append-only form. Declare from the first request any tool the session may need later.
+- [ ] **[BLOCKS]** Handle `stop_reason: "refusal"` before reading `content` (new `bio` and `reasoning_extraction` categories) and ship a fallback opt-in; `reasoning_extraction` is not retried on a fallback.
+- [ ] **[TUNE]** Set `effort` explicitly - the default is `medium`, one level below Claude Opus 5's `high` - and re-run the sweep including `low` / `medium`; lower effort before adding "think less" prompts; reserve `xhigh` / `max` for measured gains; use per-message effort (beta) to vary it without a cache reset.
+- [ ] **[TUNE]** If the UI showed text between tool calls: `display: "updates"` (beta) or `"summarized"`, render non-empty `thinking` blocks; give the model a send-message tool (declared at session start) for verbatim mid-turn content; ask in the system prompt for the update cadence you want.
+- [ ] **[TUNE]** If a router or fallback can move the conversation to another model, expect it to run without Claude Opus 5.5's thinking blocks (only Claude Fable 5.1 / Claude Mythos 5.1 on the Claude API keep them).
+- [ ] **[TUNE]** If thinking was disabled on Claude Opus 5: start at `low`, remove reasoning-in-the-response instructions, re-test the thinking-disabled mitigation instruction, delete any "don't think" rule.
+- [ ] **[TUNE]** Re-test visual-input scaffolding (may be unnecessary now); for frontend work, name the specific default patterns to avoid rather than asking for "no generic look"; re-evaluate Claude Opus 5-specific verbosity / verification / scope instructions.
+- [ ] **[TUNE]** Re-baseline cost and latency at the chosen effort level: $4 / $20, cache reads $0.20 per MTok; separate rate-limit pool; no Priority Tier; fast mode is Claude API only at $8 / $40.
+
+---
+
+
 ## Verify the Migration
 
-After updating, spot-check that the new model is actually being used. Replace `YOUR_TARGET_MODEL` with the model string you migrated to (e.g. `claude-fable-5-1`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5`, `claude-sonnet-4-6`, `claude-haiku-4-5`) and keep the assertion prefix in sync:
+After updating, spot-check that the new model is actually being used. Replace `YOUR_TARGET_MODEL` with the model string you migrated to (e.g. `claude-fable-5-1`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5`, `claude-sonnet-4-6`, `claude-haiku-4-5`) and keep the assertion prefix in sync:
 
 ```python
 YOUR_TARGET_MODEL = "claude-opus-5"  # or "claude-opus-4-7", "claude-sonnet-5", "claude-sonnet-4-6", "claude-haiku-4-5"
@@ -1870,3 +2082,9 @@ m.capabilities["effort"]["max"]["supported"]
 ```
 
 See `shared/models.md` for the full capability lookup pattern.
+
+---
+
+## Ground the migration with an eval
+
+A spot-check confirms the new model answers; it doesn't confirm the app still behaves the way the user wants. When the user reports a behavioral regression on the new model - e.g. *"it refuses things the old one handled fine"*, *"tool calls dropped off after the swap"*, *"responses got twice as long"* - don't tune the prompt by feel. Read `shared/evals/build-eval.md` and build a small eval that captures the regression, then read `shared/evals/eval-hillclimb.md` to iterate the prompt or harness against that eval until the score moves. Grounding the fix in an eval keeps the migration decision honest and leaves the user with a regression test for the next model swap.

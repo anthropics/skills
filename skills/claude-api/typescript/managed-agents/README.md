@@ -136,6 +136,36 @@ await client.beta.sessions.events.send(
 
 ---
 
+## Define an Outcome (default kickoff for deliverables)
+
+When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with `user.define_outcome` instead of `user.message`: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See [Outcomes](../../shared/managed-agents-outcomes.md) for the event reference and rubric-writing guidance.
+
+```typescript
+const STARTER_RUBRIC = `# Report rubric - starter, tune the criteria
+- Output is a single \`report.md\` in /mnt/session/outputs/
+- Every claim cites a source URL
+- Includes a summary table with one row per competitor
+- Prices are current as of the run date and each row says where it was read from
+- No placeholder text, TODOs, or empty sections remain
+`;
+
+await client.beta.sessions.events.send(
+  session.id,
+  {
+    events: [
+      {
+        type: "user.define_outcome",
+        description: "Write a competitor-pricing report as report.md",
+        rubric: { type: "text", content: STARTER_RUBRIC },
+        max_iterations: 5, // optional; default 3, max 20
+      },
+    ],
+  },
+);
+```
+
+---
+
 ## Stream Events (SSE)
 
 ```typescript

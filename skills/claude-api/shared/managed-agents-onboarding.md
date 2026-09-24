@@ -22,7 +22,7 @@ Their description does the interview's work. Draft the agent config from it and 
 
 - **Tools** - enable the full prebuilt toolset by default (`agent_toolset_20260401`: `bash`, `read`, `write`, `edit`, `glob`, `grep`, `web_fetch`, `web_search`). **Suggest MCP servers** for any third-party service the job names (GitHub, Linear, Slack, ...) - and flag the credential each one implies as you suggest it ("Linear MCP -> you'll need a Linear API token at kickoff"), so §4's auth step is a formality, not a surprise. Collection itself waits for §4. Custom tools only if the user's own app must answer calls (name, description, input schema - their handler code is theirs; don't generate it).
 - **Skills** - **suggest** prebuilt `xlsx`/`docx`/`pptx`/`pdf` when the job produces those artifacts; custom by `skill_id` (max 20 total per agent, prebuilt + custom combined).
-- **Outcome** - if the description implies checkable "done" criteria (or you can elicit them in the follow-up: not "a good report" but "a CSV with a numeric `price` column per SKU"), **suggest an Outcome kickoff** - the harness grades and iterates against a rubric (`shared/managed-agents-outcomes.md`).
+- **Outcome - the default kickoff for any job with a deliverable.** If the job produces something checkable (an artifact, a report, a PR, a dataset), draft a starter rubric from the description - explicit, independently gradeable criteria: not "a good report" but "a CSV with a numeric `price` column per SKU" - and propose it inline with the config; the harness grades and iterates against it (`shared/managed-agents-outcomes.md`). The user not having a rubric is not a reason to skip this - drafting one is your job; mark it as a starter to tune. Fall back to a conversational kickoff only when the job is genuinely interactive (a chat surface, human-in-the-loop steering).
 - **On-hand resources** - repos on disk (`github_repository`: URL, optional `mount_path`/`checkout`; token comes in §4), files to seed (Files API upload -> `{type: "file", file_id, mount_path}`; read-only), if the job references them.
 - **Model** - default `claude-opus-5`; `claude-fable-5-1` for the hardest long-horizon work (`shared/model-migration.md` -> Migrating to Claude Fable 5.1).
 
@@ -44,9 +44,9 @@ Usually zero or one question:
 
 **Silent viability gate - run this yourself before emitting anything; surface only the gaps.** Walk the job clause by clause: every verb maps to an enabled tool or MCP server ("open a PR" -> GitHub MCP, not just the mount); every MCP server and repo mount has its credential from the auth step; every external host is reachable under the networking choice; every file/repo/dataset the job references is mounted; "done" is checkable. If something's missing, say so and resolve it - don't emit a config you already know is under-resourced.
 
-**Kickoff - pick one, never both:**
-- `user.message` - conversational.
-- `user.define_outcome` + rubric - when §2 settled on an Outcome; the harness iterates and grades until the rubric passes.
+**Kickoff - pick one, never both. Outcome is the default:**
+- `user.define_outcome` + rubric - the default whenever the job has a deliverable (§2 drafts the rubric); the harness iterates and grades until the rubric passes.
+- `user.message` - only for genuinely conversational sessions.
 - **Scheduled shape?** Skip per-session kickoff entirely - create a **deployment** (`deployments.create()` with `schedule` + `initial_events`); each firing creates the session autonomously. See `shared/managed-agents-scheduled-deployments.md`.
 
 Mechanics to bake into the runtime code: session creation resolves resources (a bad mount surfaces there, before tokens) but does not itself provision the sandbox; open the event stream *before* sending the kickoff; break on `session.status_terminated`, or `session.status_idle` with any non-`requires_action` `stop_reason` - terminal, or `budget_reached`, which is not terminal (only a budget change/removal resumes it) (`shared/managed-agents-client-patterns.md` Pattern 5); usage lands on `span.model_request_end`; artifacts land in `/mnt/session/outputs/` (`files.list({scope_id: session.id, ...})`).

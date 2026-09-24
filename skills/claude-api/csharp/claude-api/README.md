@@ -157,7 +157,7 @@ var response = await client.Messages.Create(new MessageCreateParams
     MaxTokens = 16000,
     // ThinkingConfigParam? implicitly converts from the concrete variant classes -
     // no wrapper needed.
-    // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5, Opus 4.8/4.7, and Claude Sonnet 5
     Thinking = new ThinkingConfigAdaptive { Display = Display.Summarized },
     Messages =
     [

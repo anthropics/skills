@@ -173,7 +173,7 @@ Automatic is the right default for multi-turn conversations - the multi-turn pla
 | A single turn appends more than 20 positions (consecutive tool_use runs, and tool_result runs, each collapse to one position) | The lookback can miss the previous entry - § 20-block lookback window. |
 | A platform or integration without automatic caching (check `shared/platform-availability.md`) | The top-level field is rejected there - use explicit markers only. |
 
-**The robust combination for agent loops:** one explicit breakpoint on the last block of the static system prefix - the expensive shared part gets a guaranteed read point that survives whatever happens later in `messages` - plus top-level automatic caching for the growing conversation tail (where automatic caching is available - `shared/platform-availability.md`).
+**The robust combination for agent loops:** one explicit breakpoint on the last block of the static system prefix - the expensive shared part gets a guaranteed read point that survives whatever happens later in `messages` - plus top-level automatic caching for the growing conversation tail (where automatic caching is available - `shared/platform-availability.md`). If § Choosing the TTL puts you on the 1-hour TTL, set `ttl: "1h"` on the explicit marker as well as on the top-level field. Both default to 5 minutes, and a 1-hour automatic entry after a 5-minute marker breaks the ordering rule above: longer TTLs must come first. The reverse, a 1-hour marker with a 5-minute tail, is allowed.
 
 ---
 
@@ -229,15 +229,15 @@ Implication: you can change `tool_choice` per-request without losing the tools+s
 
 | Top-level change that invalidates | Cache-preserving form | Available on |
 |---|---|---|
-| Tool definitions (add/remove) | `tool_addition` / `tool_removal` blocks - see `shared/tool-use-concepts.md` § Mid-conversation tool changes | Claude Opus 5 onward, behind `mid-conversation-tool-changes-2026-07-01` |
+| Tool definitions (add/remove) | `tool_addition` / `tool_removal` blocks - see `shared/tool-use-concepts.md` § Mid-conversation tool changes | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1 (not Claude Sonnet 5), behind `mid-conversation-tool-changes-2026-07-01` |
 | System prompt content | A `{"role": "system", "content": "..."}` message - see § Mid-conversation system messages above | Claude Opus 5, Claude Opus 4.8, Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1 - **already available today**, no beta header |
 | Per-turn reminder (inject, then delete next request) | A turn-scoped `clear_at: "next_user_message"` system message, left in the transcript - see § Mid-conversation system messages above (without the beta: a text block after the `tool_result` blocks, earlier copies kept) | Same models as mid-conversation system messages, behind `mid-conversation-system-clear-at-2026-08-21` |
 | `effort` change | A `{"role": "system", "content": [], "output_config": {"effort": ...}}` message - see `shared/model-migration.md` -> Migrating to Claude Fable 5.1 from Claude Fable 5 | Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5, behind `mid-conversation-output-config-2026-07-01` |
-| Dropped thinking blocks (a Claude Fable 5.1 / Claude Mythos 5.1 block replayed to a model that can't read it, or a history-editing-check `drop_block`) | None - the API drops the block on that request and the messages cache changes from its position onward; tools and system caches are intact. Blocks the receiving model can read, passed back unchanged, keep the cache intact | - |
+| Dropped thinking blocks (a Claude Fable 5.1 / Claude Mythos 5.1 / Claude Opus 5.5 block replayed to a model that can't read it - only Claude Fable 5.1 / Claude Mythos 5.1 on the Claude API read Claude Opus 5.5's - or a history-editing-check `drop_block`) | None - the API drops the block on that request and the messages cache changes from its position onward; tools and system caches are intact. Blocks the receiving model can read, passed back unchanged, keep the cache intact | - |
 
 Model switch has no escape hatch: caches are model-scoped. Keep the main loop on one model and spawn a subagent for cheaper sub-tasks (see `agent-design.md` § Caching for Agents).
 
-**Thinking blocks and the messages cache (model-specific).** On Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1, Mythos Preview, Opus 4.5 and later, and Sonnet 4.6 and later, previous-turn thinking blocks are preserved by default, so passing a regular (non-tool-result) user message with thinking enabled leaves the messages cache valid. On earlier Opus and Sonnet models and all Haiku models through Haiku 4.5, that same request strips previously-cached thinking blocks from context, and every message after the first stripped block falls out of cache - in an agent loop this shows up as a `cache_creation_input_tokens` spike on turns where a plain user message follows tool use. (Toggling thinking on/off between requests is a separate, all-models invalidator of the messages cache - see the hierarchy table above. Changing `output_config.effort` behaves the same as changing thinking parameters; setting the model's default effort explicitly is equivalent to omitting it, so pinning the default costs nothing.)
+**Thinking blocks and the messages cache (model-specific).** On Claude Fable 5, Claude Fable 5.1, Claude Mythos 5, Claude Mythos 5.1, Mythos Preview, Opus 4.5 and later (Claude Opus 5.5 included), and Sonnet 4.6 and later, previous-turn thinking blocks are preserved by default, so passing a regular (non-tool-result) user message with thinking enabled leaves the messages cache valid. On earlier Opus and Sonnet models and all Haiku models through Haiku 4.5, that same request strips previously-cached thinking blocks from context, and every message after the first stripped block falls out of cache - in an agent loop this shows up as a `cache_creation_input_tokens` spike on turns where a plain user message follows tool use. (Toggling thinking on/off between requests is a separate, all-models invalidator of the messages cache - see the hierarchy table above. Changing `output_config.effort` behaves the same as changing thinking parameters; setting the model's default effort explicitly is equivalent to omitting it, so pinning the default costs nothing.)
 
 ---
 
@@ -276,6 +276,9 @@ To eliminate the cache-miss latency on the *first* real request, send a **`max_t
 client.messages.create(
     model="claude-opus-5",
     max_tokens=0,
+    # Example values - send the same thinking and effort settings as your real traffic (see below)
+    thinking={"type": "adaptive"},
+    output_config={"effort": "high"},
     system=[{
         "type": "text",
         "text": SYSTEM_PROMPT,
@@ -286,6 +289,8 @@ client.messages.create(
 ```
 
 **Breakpoint placement:** put `cache_control` on the **last block shared with the real request** (the system prompt or tool definitions) - **not** on the placeholder user message, and **not** via top-level automatic caching (which would key the cache to the placeholder). The placeholder can be any non-whitespace string; it's read during prefill but never answered.
+
+**Match the real traffic's thinking and effort settings.** Both are rendered into the prompt (see § Invalidation hierarchy), so a pre-warm with different settings can write a cache entry your real traffic never hits. For adaptive-thinking traffic, send the same `thinking` and `effort` values in the pre-warm. Traffic that uses extended thinking (`thinking.type: "enabled"`, accepted only on Claude 4.6 and earlier models and on Claude Mythos Preview) can't be matched, because `max_tokens: 0` rejects that setting (see Rejected combinations below). Whether a pre-warm still helps that traffic depends on where the model renders the thinking configuration, which the docs don't state per model - check `cache_read_input_tokens` on the first real request.
 
 **Rejected combinations:** `max_tokens: 0` is an `invalid_request_error` with `stream: true`, `thinking.type: "enabled"`, `output_config.format`, `tool_choice` of `{"type":"tool"}` or `{"type":"any"}`, or inside a Message Batches request.
 

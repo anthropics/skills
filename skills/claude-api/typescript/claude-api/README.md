@@ -205,7 +205,7 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 const response = await client.messages.create({
   model: "claude-opus-5",
   max_tokens: 16000,
-  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+  thinking: { type: "adaptive", display: "summarized" }, // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5, Opus 4.8/4.7, and Claude Sonnet 5
   output_config: { effort: "high" }, // low | medium | high | xhigh | max
   messages: [
     { role: "user", content: "Solve this math problem step by step..." },

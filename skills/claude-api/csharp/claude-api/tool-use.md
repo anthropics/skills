@@ -14,7 +14,7 @@ using Anthropic.Models.Messages;
 
 var parameters = new MessageCreateParams
 {
-    Model = Model.ClaudeSonnet4_6,
+    Model = "claude-opus-5",
     MaxTokens = 16000,
     Tools = [
         new Tool {

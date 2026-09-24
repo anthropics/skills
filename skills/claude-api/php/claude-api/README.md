@@ -99,7 +99,7 @@ use Anthropic\Messages\ThinkingBlock;
 $message = $client->messages->create(
     model: 'claude-opus-5',
     maxTokens: 16000,
-    thinking: ['type' => 'adaptive', 'display' => 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    thinking: ['type' => 'adaptive', 'display' => 'summarized'], // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5, Opus 4.8/4.7, and Claude Sonnet 5
     messages: [
         ['role' => 'user', 'content' => 'Solve: 27 * 453'],
     ],
