@@ -210,7 +210,7 @@ curl https://api.anthropic.com/v1/messages \
 
 ## Refusal Fallbacks (Claude Fable 5.1) - opt in by default
 
-On `claude-fable-5-1`, safety classifiers may decline a request (HTTP 200 with `stop_reason: "refusal"`). Fallbacks are **opt-in**: without them the request simply stops. Include the `fallbacks` parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates.
+On `claude-fable-5-1`, safety classifiers may decline a request (HTTP 200 with `stop_reason: "refusal"`). Fallbacks are **opt-in**: without them the request simply stops. Include the `fallbacks` parameter and its beta header by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A mid-stream decline is billed at normal rates, and the rescue bills at the fallback model's own rates; for a decline before any output, see [How refusals are billed](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#how-refusals-are-billed).
 
 ```bash
 response=$(curl -s https://api.anthropic.com/v1/messages \
