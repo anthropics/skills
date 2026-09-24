@@ -87,7 +87,7 @@
         const idx = item.origIdx;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><textarea class="query-input" onchange="updateQuery(${idx}, this.value)">${escapeHtml(item.query)}</textarea></td>
+          <td><textarea class="query-input" id="query-input-${idx}" onchange="updateQuery(${idx}, this.value)">${escapeHtml(item.query)}</textarea></td>
           <td>
             <label class="toggle">
               <input type="checkbox" ${item.should_trigger ? 'checked' : ''} onchange="updateTrigger(${idx}, this.checked)">
@@ -113,10 +113,11 @@
     function deleteRow(idx) { evalItems.splice(idx, 1); render(); }
 
     function addRow() {
-      evalItems.push({ query: '', should_trigger: true });
+      // render() groups should-trigger rows first, so the new row is not the
+      // last one in the DOM; focus it by the id render() assigned to it.
+      const newIdx = evalItems.push({ query: '', should_trigger: true }) - 1;
       render();
-      const inputs = document.querySelectorAll('.query-input');
-      inputs[inputs.length - 1].focus();
+      document.getElementById(`query-input-${newIdx}`).focus();
     }
 
     function updateSummary() {
