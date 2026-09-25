@@ -27,6 +27,18 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
+- [./habits](./habits): The Agent Habits specification and implementations, including the Habit Creator and Habit Runner
+
+# Habits
+Habits are orchestrated containers that wrap multiple Skills into a repeatable, quality-driven workflow. They sit above Skills in the hierarchy.
+
+For more details, see the [Agent Habits Specification](./habits/SPEC.md).
+
+## Running a Habit
+You can execute a Habit using the interactive Habit Runner engine:
+```bash
+python habits/runner.py habits/habit-creator
+```
 
 # Try in Claude Code, Claude.ai, and the API
 
