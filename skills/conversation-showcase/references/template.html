@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ═══════════════════════════════════════════════
+   Anthropic Theme (default)
+   Based on anthropic.com design tokens
+   ═══════════════════════════════════════════════ */
+:root {
+  /* Slate palette (warm neutrals) */
+  --bg: #e8e6dc;              /* slate-200 — page background */
+  --card-bg: #f5f4ed;         /* slate-100 — surface */
+  --surface-white: #ffffff;   /* white cards */
+  --surface-off: #faf9f5;     /* slate-050 — subtle surface */
+
+  /* Borders */
+  --border: #dedcd1;          /* slate-250 */
+  --border-strong: #c2c0b6;   /* slate-350 */
+
+  /* User bubble */
+  --user-bg: #d97757;         /* clay — Anthropic brand accent */
+  --user-text: #ffffff;
+
+  /* Claude bubble */
+  --claude-bg: #ffffff;
+  --claude-border: #d97757;   /* clay */
+
+  /* Text */
+  --text-primary: #141413;    /* slate-950 */
+  --text-secondary: #30302e;  /* slate-750 */
+  --text-muted: #87867f;      /* slate-500 */
+
+  /* Tool blocks */
+  --tool-bg: #f5f4ed;         /* slate-100 */
+  --tool-border: #dedcd1;     /* slate-250 */
+  --tool-text: #30302e;       /* slate-750 */
+  --tool-text-dim: #87867f;   /* slate-500 */
+
+  /* Accents */
+  --accent: #d97757;          /* clay */
+  --success: #788c5d;         /* olive */
+  --info: #6a9bcc;            /* sky */
+
+  /* Tag */
+  --tag-bg: rgba(217,119,87,0.12);
+  --tag-text: #d97757;
+
+  /* Shadow */
+  --shadow-card: 0 2px 2px #00000003, 0 4px 4px #00000005, 0 16px 24px #0000000a;
+
+  /* Avatar backgrounds */
+  --avatar-claude-bg: var(--surface-off);
+  --avatar-user-bg: var(--user-bg);
+
+  /* Layout (replaced by skill at generation time) */
+  --card-width: __CARD_WIDTH__px;
+  --card-height: __CARD_HEIGHT__px;
+}
+
+/* ─── Dark Theme ─── add class="theme-dark" to <html> */
+.theme-dark {
+  --bg: #0a0a0f;
+  --card-bg: #13131a;
+  --surface-white: #1a1a24;
+  --surface-off: #16161f;
+  --border: #2a2a3a;
+  --border-strong: #3a3a4a;
+  --user-bg: #1d4ed8;
+  --user-text: #ffffff;
+  --claude-bg: #1a1a24;
+  --claude-border: #d97757;
+  --text-primary: #e8e8ed;
+  --text-secondary: #a0a0b0;
+  --text-muted: #6b6b80;
+  --tool-bg: #0f0f16;
+  --tool-border: #2a2a3a;
+  --tool-text: #4ade80;
+  --tool-text-dim: #4ade8099;
+  --accent: #d97757;
+  --success: #4ade80;
+  --info: #60a5fa;
+  --tag-bg: rgba(217,119,87,0.15);
+  --tag-text: #d97757;
+  --shadow-card: none;
+  --avatar-claude-bg: #16161f;
+  --avatar-user-bg: #1d4ed8;
+}
+
+/* ─── Terminal Theme ─── add class="theme-terminal" to <html> */
+.theme-terminal {
+  --bg: #000000;
+  --card-bg: #0a0a0a;
+  --surface-white: #0a0a0a;
+  --surface-off: #0a0a0a;
+  --border: #222222;
+  --border-strong: #333333;
+  --user-bg: #003300;
+  --user-text: #4ade80;
+  --claude-bg: #0a0a0a;
+  --claude-border: #4ade80;
+  --text-primary: #4ade80;
+  --text-secondary: #4ade8088;
+  --text-muted: #4ade8066;
+  --tool-bg: #050505;
+  --tool-border: #1a1a1a;
+  --tool-text: #4ade80;
+  --tool-text-dim: #4ade8066;
+  --accent: #4ade80;
+  --success: #4ade80;
+  --info: #4ade80;
+  --tag-bg: rgba(74,222,128,0.1);
+  --tag-text: #4ade80;
+  --shadow-card: none;
+  --avatar-claude-bg: transparent;
+  --avatar-user-bg: #003300;
+}
+
+/* ═══ Reset & Base ═══ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  width: var(--card-width);
+  min-height: var(--card-height);
+  background: var(--bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card {
+  width: 100%;
+  min-height: var(--card-height);
+  display: flex;
+  flex-direction: column;
+  padding: 56px;
+}
+
+/* ═══ Header ═══ */
+.header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 32px;
+  border-bottom: 1.5px solid var(--border);
+  margin-bottom: 40px;
+}
+
+.window-controls { display: flex; gap: 10px; }
+
+.window-controls span {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+.dot-close    { background: #ff5f57; }
+.dot-minimize { background: #febc2e; }
+.dot-maximize { background: #28c840; }
+
+.header-brand {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.spark {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ═══ Task Tag + Title ═══ */
+.task-tag {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  padding: 6px 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.task-title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 40px;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* ═══ Messages ═══ */
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+
+/* Message row */
+.msg {
+  display: flex;
+  gap: 16px;
+  max-width: 90%;
+}
+
+.msg-user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.msg-claude {
+  align-self: flex-start;
+}
+
+/* ═══ Avatars ═══ */
+.avatar {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* User avatar — circle with "U" text */
+.msg-user .avatar {
+  background: var(--avatar-user-bg);
+  color: var(--user-text);
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Claude avatar — terminal face (▗▗ ▖▖ / ▘▘▝▝) via CSS background */
+.msg-claude .avatar {
+  border-radius: 14px;
+  background-color: var(--avatar-claude-bg);
+  border: 1.5px solid var(--border);
+  /* 12×8 terminal face: 4 dots eyes + 4 dots smile, matching Claude Code CLI ASCII art */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' shape-rendering='crispEdges'%3E%3Crect x='1' y='2' width='1' height='1' fill='%23d97757'/%3E%3Crect x='3' y='2' width='1' height='1' fill='%23d97757'/%3E%3Crect x='8' y='2' width='1' height='1' fill='%23d97757'/%3E%3Crect x='10' y='2' width='1' height='1' fill='%23d97757'/%3E%3Crect x='3' y='5' width='1' height='1' fill='%23d97757'/%3E%3Crect x='4' y='5' width='1' height='1' fill='%23d97757'/%3E%3Crect x='7' y='5' width='1' height='1' fill='%23d97757'/%3E%3Crect x='8' y='5' width='1' height='1' fill='%23d97757'/%3E%3C/svg%3E");
+  background-size: 72%;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+
+.theme-terminal .msg-claude .avatar {
+  border: 2px solid var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' shape-rendering='crispEdges'%3E%3Crect x='2' y='0' width='6' height='1' fill='%234ade80'/%3E%3Crect x='1' y='1' width='8' height='1' fill='%234ade80'/%3E%3Crect x='0' y='2' width='10' height='1' fill='%234ade80'/%3E%3Crect x='0' y='3' width='10' height='1' fill='%234ade80'/%3E%3Crect x='2' y='3' width='2' height='1' fill='%23000'/%3E%3Crect x='6' y='3' width='2' height='1' fill='%23000'/%3E%3Crect x='0' y='4' width='10' height='1' fill='%234ade80'/%3E%3Crect x='0' y='5' width='10' height='1' fill='%234ade80'/%3E%3Crect x='0' y='6' width='10' height='1' fill='%234ade80'/%3E%3Crect x='4' y='6' width='2' height='1' fill='%23166534'/%3E%3Crect x='0' y='7' width='10' height='1' fill='%234ade80'/%3E%3Crect x='1' y='8' width='8' height='1' fill='%234ade80'/%3E%3Crect x='2' y='9' width='6' height='1' fill='%234ade80'/%3E%3C/svg%3E");
+}
+
+/* ═══ Bubbles ═══ */
+.bubble {
+  padding: 22px 28px;
+  border-radius: 22px;
+  font-size: 32px;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+}
+
+.msg-user .bubble {
+  background: var(--user-bg);
+  color: var(--user-text);
+  border-bottom-right-radius: 6px;
+  box-shadow: var(--shadow-card);
+}
+
+.msg-claude .bubble {
+  background: var(--claude-bg);
+  border: 1.5px solid var(--border);
+  border-left: 4px solid var(--claude-border);
+  border-bottom-left-radius: 6px;
+  box-shadow: var(--shadow-card);
+}
+
+.bubble strong { font-weight: 600; }
+
+.bubble code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  background: var(--tool-bg);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--tool-border);
+}
+
+/* Result list inside Claude bubble */
+.result-list {
+  list-style: none;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 28px;
+  line-height: 1.5;
+}
+
+.result-list .bullet {
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.result-list .check {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+/* ═══ Tool Execution Block ═══ */
+.tools {
+  margin-left: 68px;
+  background: var(--tool-bg);
+  border: 1.5px solid var(--tool-border);
+  border-radius: 16px;
+  padding: 22px 26px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  box-shadow: var(--shadow-card);
+}
+
+.tools-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tool-border);
+}
+
+.tools-header .bolt {
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 26px;
+  color: var(--tool-text);
+}
+
+.tool-item .icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.tool-item .label {
+  flex: 1;
+  opacity: 0.9;
+}
+
+.tool-item .meta {
+  font-size: 20px;
+  color: var(--tool-text-dim);
+  margin-left: auto;
+}
+
+.tool-item .status-ok {
+  color: var(--success);
+  margin-left: auto;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.tool-item .status-err {
+  color: #bf4d43;
+  margin-left: auto;
+  font-size: 24px;
+}
+
+/* Timeline connector (optional, add class "tools-timeline") */
+.tools-timeline .tool-item {
+  position: relative;
+  padding-left: 24px;
+}
+
+.tools-timeline .tool-item::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--tool-border);
+}
+
+.tools-timeline .tool-item:first-child::before { top: 50%; }
+.tools-timeline .tool-item:last-child::before { bottom: 50%; }
+
+.tools-timeline .tool-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--tool-bg);
+}
+
+/* ═══ Code Diff Block (optional) ═══ */
+.diff-block {
+  margin-left: 68px;
+  background: var(--tool-bg);
+  border: 1.5px solid var(--tool-border);
+  border-radius: 16px;
+  padding: 22px 26px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  line-height: 1.6;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.diff-add { color: var(--success); }
+
+.diff-remove {
+  color: #bf4d43;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* ═══ Footer ═══ */
+.footer {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 24px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.footer .spark { font-size: 28px; }
+
+/* ═══ Cover Page (page 1 only) ═══ */
+.cover-desc {
+  font-size: 30px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+
+.cover-stats {
+  background: var(--surface-white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.cover-stat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 26px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.cover-stat .icon {
+  font-size: 24px;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cover-stat .highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cover-divider {
+  width: 48px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin: 8px 0 24px 0;
+}
+
+/* ═══ Multi-Page Series ═══ */
+
+/* Page indicator (swipe dots) */
+.page-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.page-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.page-dot.active {
+  background: var(--accent);
+  width: 28px;
+  border-radius: 5px;
+}
+
+/* Phase label for continuation pages (pages 2+) */
+.phase-label {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.phase-label::before,
+.phase-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ═══ Utility ═══ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+</style>
+</head>
+
+<!--
+  TEMPLATE USAGE:
+  1. Replace __CARD_WIDTH__ and __CARD_HEIGHT__ with pixel values
+     Default: 1080 × 1440 (小红书 3:4)
+  2. Add theme class to <html>: (none)=anthropic, "theme-dark", "theme-terminal"
+  3. Fill in __TASK_TAG__ and __TASK_TITLE__
+  4. Add message elements inside .messages div
+  5. Render with Chrome headless or browser screenshot
+
+  ─── MESSAGE ELEMENTS (copy & adapt) ───
+
+  User message:
+  <div class="msg msg-user">
+    <div class="avatar">coco</div>
+    <div class="bubble">用户消息文本</div>
+  </div>
+
+  Claude message (simple):
+  <div class="msg msg-claude">
+    <div class="avatar"></div>
+    <div class="bubble">Claude 回复文本</div>
+  </div>
+
+  Claude message (with result list):
+  <div class="msg msg-claude">
+    <div class="avatar"></div>
+    <div class="bubble">
+      总结文本
+      <ul class="result-list">
+        <li><span class="bullet">•</span> 要点一</li>
+        <li><span class="check">✓</span> 成功项</li>
+      </ul>
+    </div>
+  </div>
+
+  Tool execution block:
+  <div class="tools">
+    <div class="tools-header">
+      <span class="bolt">⚡</span> Actions
+    </div>
+    <div class="tool-item">
+      <span class="icon">📖</span>
+      <span class="label">Read src/App.tsx</span>
+    </div>
+    <div class="tool-item">
+      <span class="icon">✏️</span>
+      <span class="label">Edit src/App.tsx</span>
+      <span class="meta">+12 -3</span>
+    </div>
+    <div class="tool-item">
+      <span class="icon">⚡</span>
+      <span class="label">npm test</span>
+      <span class="status-ok">✓</span>
+    </div>
+  </div>
+
+  Tool execution block (timeline style):
+  <div class="tools tools-timeline">
+    <div class="tools-header">
+      <span class="bolt">⚡</span> Execution
+    </div>
+    <div class="tool-item">...</div>
+  </div>
+
+  Code diff block:
+  <div class="diff-block">
+    <div class="diff-remove">- const old = "before";</div>
+    <div class="diff-add">+ const updated = "after";</div>
+  </div>
+-->
+
+<body>
+<div class="card">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="window-controls">
+      <span class="dot-close"></span>
+      <span class="dot-minimize"></span>
+      <span class="dot-maximize"></span>
+    </div>
+    <div class="header-brand">
+      <span class="spark">✦</span> Claude Code
+    </div>
+  </div>
+
+  <!-- Task Tag + Title -->
+  <div class="task-tag">__TASK_TAG__</div>
+  <div class="task-title">__TASK_TITLE__</div>
+
+  <!-- Messages -->
+  <div class="messages">
+    <!-- __MESSAGES_CONTENT__ -->
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span class="spark">✦</span>
+    <span>Claude Code</span>
+  </div>
+
+</div>
+</body>
+</html>
