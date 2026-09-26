@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://purl.org/dc/terms/"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <!-- Local stand-in for the dcterms: declarations that opc-coreProperties.xsd
+       references, replacing the unreachable
+       <xs:import schemaLocation="http://dublincore.org/schemas/xmls/qdc/2003-04-02/dcterms.xsd">.
+       W3CDTF stays an unrestricted string so no timestamp spelling that is valid today
+       becomes an error. -->
+  <xs:simpleType name="W3CDTF">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:element name="created" type="dcterms:W3CDTF"/>
+  <xs:element name="modified" type="dcterms:W3CDTF"/>
+
+</xs:schema>
