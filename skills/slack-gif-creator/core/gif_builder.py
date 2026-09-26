@@ -220,8 +220,10 @@ class GIFBuilder:
         # Optimize colors with global palette
         optimized_frames = self.optimize_colors(num_colors, use_global_palette=True)
 
-        # Calculate frame duration in milliseconds
-        frame_duration = 1000 / self.fps
+        # GIF frame delays are whole centiseconds and Pillow truncates the
+        # conversion, so snap to the nearest representable delay: 1000 / fps
+        # alone writes 60 ms at the default fps=15, making the clip run fast.
+        frame_duration = max(10, round(1000 / self.fps / 10) * 10)
 
         # Save GIF
         imageio.imwrite(
@@ -242,7 +244,7 @@ class GIFBuilder:
             "dimensions": f"{self.width}x{self.height}",
             "frame_count": len(optimized_frames),
             "fps": self.fps,
-            "duration_seconds": len(optimized_frames) / self.fps,
+            "duration_seconds": len(optimized_frames) * frame_duration / 1000,
             "colors": num_colors,
         }
 
