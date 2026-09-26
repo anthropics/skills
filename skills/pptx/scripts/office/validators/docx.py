@@ -70,9 +70,8 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         errors = []
 
         for xml_file in self.xml_files:
-            if xml_file.name != "document.xml":
-                continue
-
+            # Headers, footers, footnotes and comments carry w:t too, and a
+            # missing xml:space strips the whitespace in every part alike.
             try:
                 root = lxml.etree.parse(str(xml_file)).getroot()
 
