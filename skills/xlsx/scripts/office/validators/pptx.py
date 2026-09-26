@@ -25,6 +25,16 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         "tablestyleid": "tablestyles",
     }
 
+    # <p:sp>/<p:pic>/<p:grpSp>/<p:cxnSp> carry no attribute of their own: the
+    # drawing-object id PowerPoint numbers them with lives on the <cNvPr> child
+    # they all share, so that is the element the uniqueness check must key on.
+    # Declared here, not in the shared table, because WordprocessingML writes one
+    # pic:cNvPr/@id="0" per picture in a valid document.
+    UNIQUE_ID_REQUIREMENTS = {
+        **BaseSchemaValidator.UNIQUE_ID_REQUIREMENTS,
+        "cnvpr": ("id", "file"),
+    }
+
     def validate(self):
         if not self.validate_xml():
             return False
