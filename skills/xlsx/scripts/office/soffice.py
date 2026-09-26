@@ -15,8 +15,10 @@ not be completed" and converts nothing. get_soffice_env() stays public for the
 callers that build their own argv (they must pass -env:UserInstallation too).
 """
 
+import atexit
 import contextlib
 import os
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -47,7 +49,7 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 
-_SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
+_SHIM_SO: Path | None = None
 
 
 def _needs_shim() -> bool:
@@ -60,17 +62,24 @@ def _needs_shim() -> bool:
 
 
 def _ensure_shim() -> Path:
-    if _SHIM_SO.exists():
+    # Build into a private (0700) temp dir: a fixed name in the shared temp dir
+    # could be pre-created by another local user and would then be LD_PRELOADed.
+    global _SHIM_SO
+    if _SHIM_SO is not None and _SHIM_SO.exists():
         return _SHIM_SO
 
-    src = Path(tempfile.gettempdir()) / "lo_socket_shim.c"
+    build_dir = Path(tempfile.mkdtemp(prefix="lo_socket_shim_"))
+    atexit.register(shutil.rmtree, build_dir, ignore_errors=True)
+    src = build_dir / "lo_socket_shim.c"
+    shim = build_dir / "lo_socket_shim.so"
     src.write_text(_SHIM_SOURCE)
     subprocess.run(
-        ["gcc", "-shared", "-fPIC", "-o", str(_SHIM_SO), str(src), "-ldl"],
+        ["gcc", "-shared", "-fPIC", "-o", str(shim), str(src), "-ldl"],
         check=True,
         capture_output=True,
     )
     src.unlink()
+    _SHIM_SO = shim
     return _SHIM_SO
 
 
