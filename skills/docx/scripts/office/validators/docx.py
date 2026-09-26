@@ -319,7 +319,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         document_xml = None
         comments_xml = None
         for xml_file in self.xml_files:
-            if xml_file.name == "document.xml" and "word" in str(xml_file):
+            if xml_file.relative_to(self.unpacked_dir).as_posix() == "word/document.xml":
                 document_xml = xml_file
             elif xml_file.name == "comments.xml":
                 comments_xml = xml_file
