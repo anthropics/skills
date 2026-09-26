@@ -55,7 +55,9 @@ def main():
         "--original",
         required=False,
         default=None,
-        help="Path to original file (.docx/.pptx/.xlsx or .dotx/.potx/.xltx). If omitted, all XSD errors are reported and redlining validation is skipped.",
+        help="Path to original file (.docx/.pptx/.xlsx or .dotx/.potx/.xltx), which "
+        "must be the same document type as the target. If omitted, all XSD errors "
+        "are reported and redlining validation is skipped.",
     )
     parser.add_argument(
         "-v",
@@ -96,7 +98,13 @@ def main():
         if original_file.suffix.lower() not in OOXML_FAMILY:
             _fail(f"{original_file} must be one of: {', '.join(sorted(OOXML_FAMILY))}")
 
+    target_family = OOXML_FAMILY.get(path.suffix.lower())
     family = OOXML_FAMILY.get((original_file or path).suffix.lower())
+    if original_file and target_family and family != target_family:
+        _fail(
+            f"{path} is a {target_family} file but --original {original_file} "
+            f"is {family}; --original must be the same document type as the target"
+        )
     if family is None:
         _fail(
             f"Cannot determine file type from {path}. Use --original or provide one of: {', '.join(sorted(OOXML_FAMILY))}."
