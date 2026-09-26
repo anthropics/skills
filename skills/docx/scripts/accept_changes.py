@@ -13,7 +13,10 @@ from office.soffice import get_soffice_env
 
 logger = logging.getLogger(__name__)
 
-LIBREOFFICE_PROFILE = "/tmp/libreoffice_docx_profile"
+# Use the platform temp dir: /tmp does not exist on Windows, and this script
+# is documented as cross-platform.
+import tempfile
+LIBREOFFICE_PROFILE = str(Path(tempfile.gettempdir()) / "libreoffice_docx_profile")
 MACRO_DIR = f"{LIBREOFFICE_PROFILE}/user/basic/Standard"
 
 ACCEPT_CHANGES_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
@@ -76,7 +79,8 @@ def accept_changes(
     except subprocess.TimeoutExpired:
         return (
             None,
-            f"Successfully accepted all tracked changes: {input_file} -> {output_file}",
+            f"LibreOffice timed out after 30s; the file was left as copied ({input_file} -> {output_file}). "
+            "Re-run with a longer timeout if needed, and verify the result before using it.",
         )
 
     if result.returncode != 0:
