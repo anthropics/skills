@@ -167,7 +167,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         count = 0
 
         for xml_file in self.xml_files:
-            if xml_file.name != "document.xml":
+            if xml_file.relative_to(self.unpacked_dir).as_posix() != "word/document.xml":
                 continue
 
             try:
