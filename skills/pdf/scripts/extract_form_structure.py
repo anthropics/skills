@@ -46,6 +46,9 @@ def extract_form_structure(pdf_path):
                 })
 
             for line in page.lines:
+                # page.lines also holds slanted segments, whose bbox top is not on the line
+                if abs(float(line["bottom"]) - float(line["top"])) > 1:
+                    continue
                 if abs(float(line["x1"]) - float(line["x0"])) > page.width * 0.5:
                     structure["lines"].append({
                         "page": page_num,
