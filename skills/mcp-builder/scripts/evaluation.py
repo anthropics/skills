@@ -326,11 +326,11 @@ Examples:
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
     stdio_group.add_argument("-a", "--args", nargs="+", help="Arguments for the command (stdio only)")
-    stdio_group.add_argument("-e", "--env", nargs="+", help="Environment variables in KEY=VALUE format (stdio only)")
+    stdio_group.add_argument("-e", "--env", action="extend", nargs="+", help="Environment variables in KEY=VALUE format (stdio only)")
 
     remote_group = parser.add_argument_group("sse/http options")
     remote_group.add_argument("-u", "--url", help="MCP server URL (sse/http only)")
-    remote_group.add_argument("-H", "--header", nargs="+", dest="headers", help="HTTP headers in 'Key: Value' format (sse/http only)")
+    remote_group.add_argument("-H", "--header", action="extend", nargs="+", dest="headers", help="HTTP headers in 'Key: Value' format (sse/http only)")
 
     parser.add_argument("-o", "--output", type=Path, help="Output file for evaluation report (default: stdout)")
 
