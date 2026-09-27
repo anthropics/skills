@@ -100,22 +100,23 @@ def _setup_libreoffice_macro(profile: Path) -> bool:
     macro_dir = profile / "user" / "basic" / "Standard"
     macro_file = macro_dir / "Module1.xba"
 
-    if macro_file.exists() and "AcceptAllTrackedChanges" in macro_file.read_text():
-        return True
-
     if not macro_dir.exists():
-        subprocess.run(
-            [
-                "soffice",
-                "--headless",
-                f"-env:UserInstallation={profile.as_uri()}",
-                "--terminate_after_init",
-            ],
-            capture_output=True,
-            timeout=10,
-            check=False,
-            env=get_soffice_env(),
-        )
+        try:
+            subprocess.run(
+                [
+                    "soffice",
+                    "--headless",
+                    f"-env:UserInstallation={profile.as_uri()}",
+                    "--terminate_after_init",
+                ],
+                capture_output=True,
+                timeout=10,
+                check=False,
+                env=get_soffice_env(),
+            )
+        except subprocess.TimeoutExpired:
+            logger.warning("Timed out initializing LibreOffice profile")
+            return False
         macro_dir.mkdir(parents=True, exist_ok=True)
 
     try:
