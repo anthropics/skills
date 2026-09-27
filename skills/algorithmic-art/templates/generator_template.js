@@ -151,11 +151,9 @@ function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-// Constrain to bounds
+// Wrap into [0, max) so coordinates and indices stay valid for any overshoot
 function wrapAround(value, max) {
-    if (value < 0) return max;
-    if (value > max) return 0;
-    return value;
+    return ((value % max) + max) % max;
 }
 
 // ============================================================================
