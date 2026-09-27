@@ -51,6 +51,10 @@ def get_field_info(reader: PdfReader):
     possible_radio_names = set()
 
     for field_id, field in fields.items():
+        if not field:
+            # pypdf yields None for unnamed/malformed field nodes;
+            # skipping them keeps the extraction from crashing.
+            continue
         if field.get("/Kids"):
             if field.get("/FT") == "/Btn":
                 possible_radio_names.add(field_id)
