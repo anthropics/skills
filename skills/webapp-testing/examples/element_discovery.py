@@ -30,7 +30,9 @@ with sync_playwright() as p:
     print(f"\nFound {len(inputs)} input fields:")
     for input_elem in inputs:
         name = input_elem.get_attribute('name') or input_elem.get_attribute('id') or "[unnamed]"
-        input_type = input_elem.get_attribute('type') or 'text'
+        # Only <input> defaults to type "text"; <textarea> and <select> have no type at all
+        tag = input_elem.evaluate("el => el.tagName.toLowerCase()")
+        input_type = input_elem.get_attribute('type') or ('text' if tag == 'input' else tag)
         print(f"  - {name} ({input_type})")
 
     # Take screenshot for visual reference
