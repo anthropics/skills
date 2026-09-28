@@ -1,5 +1,6 @@
 import os
 import sys
+import tempfile
 
 from pdf2image import convert_from_path, pdfinfo_from_path
 
@@ -10,22 +11,29 @@ PAGE_BATCH_SIZE = 5
 def convert(pdf_path, output_dir, max_dim=1000):
     page_count = int(pdfinfo_from_path(pdf_path)["Pages"])
 
-    for first_page in range(1, page_count + 1, PAGE_BATCH_SIZE):
-        last_page = min(first_page + PAGE_BATCH_SIZE - 1, page_count)
-        images = convert_from_path(
-            pdf_path, dpi=200, first_page=first_page, last_page=last_page
-        )
-        for page_number, image in enumerate(images, start=first_page):
-            width, height = image.size
-            if width > max_dim or height > max_dim:
-                scale_factor = min(max_dim / width, max_dim / height)
-                new_width = int(width * scale_factor)
-                new_height = int(height * scale_factor)
-                image = image.resize((new_width, new_height))
+    with tempfile.TemporaryDirectory(prefix=".pdf-pages-", dir=output_dir) as stage:
+        staged_pages = []
+        for first_page in range(1, page_count + 1, PAGE_BATCH_SIZE):
+            last_page = min(first_page + PAGE_BATCH_SIZE - 1, page_count)
+            images = convert_from_path(
+                pdf_path, dpi=200, first_page=first_page, last_page=last_page
+            )
+            for page_number, image in enumerate(images, start=first_page):
+                width, height = image.size
+                if width > max_dim or height > max_dim:
+                    scale_factor = min(max_dim / width, max_dim / height)
+                    new_width = int(width * scale_factor)
+                    new_height = int(height * scale_factor)
+                    image = image.resize((new_width, new_height))
 
-            image_path = os.path.join(output_dir, f"page_{page_number}.png")
-            image.save(image_path)
-            print(f"Saved page {page_number} as {image_path} (size: {image.size})")
+                name = f"page_{page_number}.png"
+                image.save(os.path.join(stage, name))
+                staged_pages.append((page_number, name, image.size))
+
+        for page_number, name, size in staged_pages:
+            image_path = os.path.join(output_dir, name)
+            os.replace(os.path.join(stage, name), image_path)
+            print(f"Saved page {page_number} as {image_path} (size: {size})")
 
     print(f"Converted {page_count} pages to PNG images")
 
