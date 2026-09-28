@@ -76,6 +76,11 @@ def run_loop(
     # Split into train/test if holdout > 0
     if holdout > 0:
         train_set, test_set = split_eval_set(eval_set, holdout)
+        if not test_set:
+            print(
+                "Warning: eval set is too small for a holdout; no held-out score will be available",
+                file=sys.stderr,
+            )
         if verbose:
             print(f"Split: {len(train_set)} train, {len(test_set)} test (holdout={holdout})", file=sys.stderr)
     else:
@@ -268,6 +273,8 @@ def main():
     args = parser.parse_args()
 
     eval_set = json.loads(Path(args.eval_set).read_text())
+    if not eval_set:
+        parser.error("Eval set must contain at least one query")
     skill_path = Path(args.skill_path)
 
     if not (skill_path / "SKILL.md").exists():
