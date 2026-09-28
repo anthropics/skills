@@ -11,7 +11,11 @@ REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 @pytest.mark.parametrize("skill", ["docx", "pptx", "xlsx"])
 @pytest.mark.parametrize(
     ("target", "expected_valid"),
-    [("../../outside.txt", False), ("media.txt", True)],
+    [
+        ("../../outside.txt", False),
+        ("media.txt", True),
+        ("My%20Image.txt", True),
+    ],
 )
 def test_validator_keeps_relationships_inside_package(
     skill, target, expected_valid, tmp_path, monkeypatch, capsys
@@ -30,7 +34,9 @@ def test_validator_keeps_relationships_inside_package(
     document.write_text("<document/>", encoding="utf-8")
     (tmp_path / "outside.txt").write_text("outside package", encoding="utf-8")
     if expected_valid:
-        (document.parent / "media.txt").write_text("inside package", encoding="utf-8")
+        (document.parent / target.replace("%20", " ")).write_text(
+            "inside package", encoding="utf-8"
+        )
 
     root_rels = package / "_rels" / ".rels"
     root_rels.parent.mkdir()
