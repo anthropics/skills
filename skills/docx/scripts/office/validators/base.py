@@ -362,7 +362,9 @@ class BaseSchemaValidator:
 
                         try:
                             target_path = target_path.resolve()
-                            if target_path.exists() and target_path.is_file():
+                            if not target_path.is_relative_to(self.unpacked_dir):
+                                broken_refs.append((target, rel.sourceline))
+                            elif target_path.exists() and target_path.is_file():
                                 referenced_files.add(target_path)
                                 all_referenced_files.add(target_path)
                             else:
