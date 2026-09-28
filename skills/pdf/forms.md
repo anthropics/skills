@@ -131,7 +131,7 @@ For each field, calculate entry coordinates from the extracted structure:
 - Use the checkbox rectangle coordinates directly from form_structure.json
 - entry_bounding_box = [checkbox.x0, checkbox.top, checkbox.x1, checkbox.bottom]
 
-Create fields.json using `pdf_width` and `pdf_height` (signals PDF coordinates):
+Create fields.json using `pdf_width` and `pdf_height` for coordinates on the visible page. For cropped or rotated pages, these dimensions describe the displayed CropBox, with width and height swapped at 90° or 270° rotation:
 ```json
 {
   "pages": [

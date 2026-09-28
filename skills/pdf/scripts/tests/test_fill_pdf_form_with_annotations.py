@@ -94,6 +94,32 @@ class AnnotationGeometryTests(unittest.TestCase):
             [20, 40, 40, 80],
         )
 
+    def test_field_page_outside_pdf_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "source.pdf"
+            fields = Path(directory) / "fields.json"
+            output = Path(directory) / "output.pdf"
+            writer = PdfWriter()
+            writer.add_blank_page(width=100, height=200)
+            writer.write(source)
+            fields.write_text(
+                json.dumps(
+                    {
+                        "pages": [{"page_number": 2, "pdf_width": 100, "pdf_height": 200}],
+                        "form_fields": [
+                            {
+                                "page_number": 2,
+                                "entry_bounding_box": [10, 10, 20, 20],
+                                "entry_text": {"text": "Example"},
+                            }
+                        ],
+                    }
+                )
+            )
+            with self.assertRaisesRegex(ValueError, "Page 2 is outside"):
+                fill_pdf_form(str(source), str(fields), str(output))
+            self.assertFalse(output.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
