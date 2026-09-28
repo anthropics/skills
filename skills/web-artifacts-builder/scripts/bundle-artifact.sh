@@ -33,7 +33,7 @@ fi
 
 # Clean previous build
 echo "🧹 Cleaning previous build..."
-rm -rf dist bundle.html
+rm -rf dist
 
 # Build with Parcel
 echo "🔨 Building with Parcel..."
@@ -41,7 +41,10 @@ pnpm exec parcel build index.html --dist-dir dist --no-source-maps
 
 # Inline everything into single HTML
 echo "🎯 Inlining all assets into single HTML file..."
-pnpm exec html-inline dist/index.html > bundle.html
+temp_dir=$(mktemp -d "./.bundle.XXXXXX")
+trap 'rm -rf "$temp_dir"' EXIT
+pnpm exec html-inline dist/index.html > "$temp_dir/bundle.html"
+mv -f "$temp_dir/bundle.html" bundle.html
 
 # Get file size
 FILE_SIZE=$(du -h bundle.html | cut -f1)
