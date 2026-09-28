@@ -7,7 +7,7 @@ from concurrent.futures import Future
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts import run_eval
+from scripts import run_eval, run_loop
 from scripts.generate_report import generate_html
 
 
@@ -93,6 +93,28 @@ class EvalErrorTests(unittest.TestCase):
         report = generate_html(data)
 
         self.assertIn('<span class="score score-bad">0/1</span>', report)
+
+    def test_verbose_accuracy_does_not_count_failed_negative_trial(self):
+        failed_result = {
+            "query": "irrelevant query", "should_trigger": False,
+            "triggers": 0, "runs": 1, "errors": 1, "pass": False,
+        }
+        eval_output = {"results": [failed_result], "summary": {"passed": 0, "failed": 1, "total": 1}}
+        stderr = io.StringIO()
+        with patch.object(run_loop, "find_project_root", return_value=Path.cwd()), \
+                patch.object(run_loop, "parse_skill_md", return_value=("skill", "description", "content")), \
+                patch.object(run_loop, "run_eval", return_value=eval_output), \
+                patch.object(run_loop.sys, "stderr", stderr):
+            run_loop.run_loop(
+                eval_set=[{"query": "irrelevant query", "should_trigger": False}],
+                skill_path=Path.cwd(), description_override=None,
+                num_workers=1, timeout=1, max_iterations=1,
+                runs_per_query=1, trigger_threshold=0.5, holdout=0,
+                model="test", verbose=True,
+            )
+
+        self.assertIn("Train: 0/1 correct", stderr.getvalue())
+        self.assertIn("accuracy=0%", stderr.getvalue())
 
 
 if __name__ == "__main__":
