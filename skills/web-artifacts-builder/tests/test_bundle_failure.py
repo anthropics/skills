@@ -32,6 +32,7 @@ class BundleFailureTests(unittest.TestCase):
                 "    printf 'partial output'\n"
                 "    exit 4\n"
                 "  fi\n"
+                "  if [ \"$FAIL_STAGE\" = empty ]; then exit 0; fi\n"
                 "  cat \"$3\"\n"
                 "  exit 0\n"
                 "fi\n"
@@ -54,6 +55,11 @@ class BundleFailureTests(unittest.TestCase):
 
     def test_existing_bundle_survives_partial_inline_failure(self):
         code, bundle = self.run_bundle("inline")
+        self.assertNotEqual(code, 0)
+        self.assertEqual(bundle, "known good bundle")
+
+    def test_existing_bundle_survives_empty_inline_output(self):
+        code, bundle = self.run_bundle("empty")
         self.assertNotEqual(code, 0)
         self.assertEqual(bundle, "known good bundle")
 

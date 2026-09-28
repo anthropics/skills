@@ -44,6 +44,10 @@ echo "🎯 Inlining all assets into single HTML file..."
 temp_dir=$(mktemp -d "./.bundle.XXXXXX")
 trap 'rm -rf "$temp_dir"' EXIT
 pnpm exec html-inline dist/index.html > "$temp_dir/bundle.html"
+if [ ! -s "$temp_dir/bundle.html" ]; then
+  echo "❌ Error: HTML inliner produced an empty bundle."
+  exit 1
+fi
 mv -f "$temp_dir/bundle.html" bundle.html
 
 # Get file size
