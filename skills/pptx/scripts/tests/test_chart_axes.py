@@ -24,6 +24,10 @@ class ChartAxisTests(unittest.TestCase):
     def test_line_3d_chart_accepts_three_live_axes(self):
         self.assertEqual(find_chart_problems(chart_with_third_axis(3)), [])
 
+    def test_line_3d_chart_rejects_repeated_axis_reference(self):
+        problems = find_chart_problems(chart_with_third_axis(1))
+        self.assertTrue(problems)
+
 
 if __name__ == "__main__":
     unittest.main()
