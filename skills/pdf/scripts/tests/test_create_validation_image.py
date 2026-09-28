@@ -42,6 +42,25 @@ class ValidationImageTests(unittest.TestCase):
                     self.assertEqual(overlay.getpixel((25, 10)), (255, 0, 0))
                     self.assertEqual(overlay.getpixel((65, 10)), (0, 0, 255))
 
+    def test_missing_page_reports_requested_number(self):
+        with tempfile.TemporaryDirectory() as directory:
+            fields = Path(directory) / "fields.json"
+            fields.write_text(json.dumps({"pages": [{"page_number": 1}], "form_fields": []}))
+            with self.assertRaisesRegex(ValueError, "Page 2"):
+                create_validation_image(2, str(fields), "unused.png", "unused-output.png")
+
+    def test_partial_page_dimensions_report_missing_pair(self):
+        for dimensions in ({"pdf_width": 100}, {"image_height": 50}):
+            with self.subTest(dimensions=dimensions), tempfile.TemporaryDirectory() as directory:
+                fields = Path(directory) / "fields.json"
+                fields.write_text(
+                    json.dumps(
+                        {"pages": [{"page_number": 1, **dimensions}], "form_fields": []}
+                    )
+                )
+                with self.assertRaisesRegex(ValueError, "must define both"):
+                    create_validation_image(1, str(fields), "unused.png", "unused-output.png")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,11 +10,15 @@ def create_validation_image(page_number, fields_json_path, input_path, output_pa
     with open(fields_json_path, 'r') as f:
         data = json.load(f)
 
-    page = next(p for p in data["pages"] if p["page_number"] == page_number)
-    if "pdf_width" in page:
-        source_width, source_height = page["pdf_width"], page["pdf_height"]
-    else:
-        source_width, source_height = page["image_width"], page["image_height"]
+    page = next((p for p in data["pages"] if p["page_number"] == page_number), None)
+    if page is None:
+        raise ValueError(f"Page {page_number} is not listed in fields.json")
+
+    dimensions = "pdf" if "pdf_width" in page or "pdf_height" in page else "image"
+    width_key, height_key = f"{dimensions}_width", f"{dimensions}_height"
+    if width_key not in page or height_key not in page:
+        raise ValueError(f"Page {page_number} must define both {width_key} and {height_key}")
+    source_width, source_height = page[width_key], page[height_key]
     if source_width <= 0 or source_height <= 0:
         raise ValueError("Page dimensions must be positive")
 
