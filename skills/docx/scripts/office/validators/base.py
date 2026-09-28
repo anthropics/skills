@@ -324,7 +324,14 @@ class BaseSchemaValidator:
                 and file_path.name != "[Content_Types].xml"
                 and not file_path.name.endswith(".rels")
             ):  
-                all_files.append(file_path.resolve())
+                resolved_path = file_path.resolve()
+                if not resolved_path.is_relative_to(self.unpacked_dir):
+                    errors.append(
+                        f"  File resolves outside package: "
+                        f"{file_path.relative_to(self.unpacked_dir)}"
+                    )
+                    continue
+                all_files.append(resolved_path)
 
         all_referenced_files = set()
 
