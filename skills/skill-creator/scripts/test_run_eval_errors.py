@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scripts import run_eval
+from scripts.generate_report import generate_html
 
 
 class FailedProcess:
@@ -77,6 +78,21 @@ class EvalErrorTests(unittest.TestCase):
 
         self.assertFalse(output["results"][0]["pass"])
         self.assertEqual(output["results"][0]["errors"], 1)
+
+    def test_report_does_not_count_a_failed_negative_trial_as_correct(self):
+        failed_result = {
+            "query": "irrelevant query", "should_trigger": False,
+            "triggers": 0, "runs": 1, "errors": 1, "pass": False,
+        }
+        data = {"history": [{
+            "iteration": 1, "description": "description",
+            "train_passed": 0, "train_total": 1,
+            "train_results": [failed_result],
+        }]}
+
+        report = generate_html(data)
+
+        self.assertIn('<span class="score score-bad">0/1</span>', report)
 
 
 if __name__ == "__main__":

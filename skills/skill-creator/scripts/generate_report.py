@@ -234,7 +234,7 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
                 if r.get("should_trigger", True):
                     correct += triggers
                 else:
-                    correct += runs - triggers
+                    correct += runs - triggers - r.get("errors", 0)
             return correct, total
 
         train_correct, train_runs = aggregate_runs(train_results)
