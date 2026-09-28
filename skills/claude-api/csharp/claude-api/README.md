@@ -35,7 +35,7 @@ Write from this table instead of reflecting the SDK assembly. Endpoint column te
 | Programmatic tool calling | non-beta | `CodeExecutionTool20260120`, `ToolResultBlockParam`, `ContentBlockParam` |
 | Task budgets | beta | `BetaOutputConfig` with `TaskBudget = new BetaTokenTaskBudget { ... }` |
 | Tool search | non-beta | `new ToolUnion(new ToolSearchToolRegex20251119 { Type = ToolSearchToolRegex20251119Type.ToolSearchToolRegex20251119 })` - `Type` must be set explicitly. |
-| Web search | non-beta | `new ToolUnion(new WebSearchTool20260209())` - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305()` |
+| Web search | non-beta | `new ToolUnion(new WebSearchTool20260209())` - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5.5 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5.5 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305()` |
 
 ### Discovering type and member names
 
@@ -58,7 +58,7 @@ AnthropicClient client = new();
 
 var message = await client.Messages.Create(new MessageCreateParams
 {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     MaxTokens = 1024,
     Messages = [ new() { Role = Role.User, Content = "Hello, Claude" } ],
 });
@@ -77,7 +77,7 @@ AnthropicClient client = new();
 
 var response = await client.Beta.Messages.Create(new MessageCreateParams
 {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     MaxTokens = 4096,
     Betas = ["<beta-flag>"],
     Messages = [ new() { Role = Role.User, Content = "..." } ],
@@ -123,7 +123,7 @@ using Anthropic.Models.Messages;
 
 var parameters = new MessageCreateParams
 {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     MaxTokens = 16000,
     Messages = [new() { Role = Role.User, Content = "What is the capital of France?" }]
 };
@@ -144,7 +144,8 @@ foreach (var text in response.Content.Select(b => b.Value).OfType<TextBlock>())
 
 **Adaptive thinking is the recommended mode for Claude 4.6+ models.** Claude decides dynamically when and how much to think.
 
-> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (below). `new ThinkingConfigEnabled { BudgetTokens = N }` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (below). `new ThinkingConfigEnabled { BudgetTokens = N }` is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5.5:** thinking is always on - omit `Thinking` (or send `ThinkingConfigAdaptive`, which is equivalent); `ThinkingConfigDisabled` returns a 400 at every effort, as does a thinking budget. Control depth with `OutputConfig.Effort` instead - the default is `medium` on this model, where Claude Opus 5 defaults to `high`.
 > **Claude Opus 5:** thinking is on by default - omitting `Thinking` runs adaptive (`ThinkingConfigAdaptive` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `ThinkingConfigDisabled` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `new ThinkingConfigEnabled { BudgetTokens = N }` (budget must be < `MaxTokens`, min 1024).
 
@@ -153,11 +154,11 @@ using Anthropic.Models.Messages;
 
 var response = await client.Messages.Create(new MessageCreateParams
 {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     MaxTokens = 16000,
     // ThinkingConfigParam? implicitly converts from the concrete variant classes -
     // no wrapper needed.
-    // display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     Thinking = new ThinkingConfigAdaptive { Display = Display.Summarized },
     Messages =
     [
@@ -201,7 +202,7 @@ using Anthropic.Models.Beta.Messages;
 
 var betaParams = new MessageCreateParams   // no Beta prefix - see unprefixed list above
 {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     MaxTokens = 16000,
     Betas = ["compact-2026-01-12"],
     ContextManagement = new BetaContextManagementConfig
@@ -290,7 +291,7 @@ Verify hits via `response.Usage.CacheCreationInputTokens` / `response.Usage.Cach
 
 ```csharp
 MessageTokensCount result = await client.Messages.CountTokens(new MessageCountTokensParams {
-    Model = "claude-opus-5",
+    Model = "claude-opus-5-5",
     Messages = [new() { Role = Role.User, Content = "Hello" }],
 });
 long tokens = result.InputTokens;
@@ -320,7 +321,7 @@ new MessageParam {
 
 ```csharp
 var response = await client.Beta.Messages.Create(new MessageCreateParams {
-    Model = "claude-opus-5", MaxTokens = 4096,
+    Model = "claude-opus-5-5", MaxTokens = 4096,
     Speed = Speed.Fast,
     Betas = ["fast-mode-2026-02-01"],
     Messages = [...],
@@ -332,14 +333,14 @@ var response = await client.Beta.Messages.Create(new MessageCreateParams {
 ```csharp
 var page = await client.Models.List();
 foreach (var m in page.Items) { Console.WriteLine(m.ID); }
-var one = await client.Models.Retrieve("claude-opus-5");
+var one = await client.Models.Retrieve("claude-opus-5-5");
 ```
 
 ## Long Output (128k) + Prefill
 
 Set `MaxTokens = 128000` on `client.Messages` and use the streaming path (see `streaming.md`). On Claude 4+ models, 128k output is native - no `output-128k-*` beta header or beta namespace is needed.
 
-**Prefilling the assistant message** (putting a trailing `Role.Assistant` message in the input) is **not supported** on Claude Fable 5.1, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use `OutputConfig.Format` (structured outputs) instead.
+**Prefilling the assistant message** (putting a trailing `Role.Assistant` message in the input) is **not supported** on Claude Fable 5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6 - requests return a 400. Use `OutputConfig.Format` (structured outputs) instead.
 
 ## Stop Details
 

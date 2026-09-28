@@ -1,6 +1,6 @@
 # Managed Agents - Memory Stores
 
-> **Public beta.** Memory stores ship under the `managed-agents-2026-04-01` beta header; the SDK sets it automatically on all `client.beta.memory_stores.*` calls. If `client.beta.memory_stores` is missing, upgrade to the latest SDK release.
+> **Public beta.** Memory stores ship under the `agent-memory-2026-07-22` beta header; the SDK sets it automatically on all `client.beta.memory_stores.*` calls. Don't add `managed-agents-2026-04-01` to these calls - sending both headers on a memory store request returns a 400. Attaching a store to a session is a session call and still uses `managed-agents-2026-04-01`. If `client.beta.memory_stores` is missing, upgrade to the latest SDK release.
 
 Sessions are ephemeral by default - when one ends, anything the agent learned is gone. A **memory store** is a workspace-scoped collection of small text documents that persists across sessions. When a store is attached to a session (via `resources[]`), it is mounted into the container as a filesystem directory; the agent reads and writes it with the ordinary file tools, and a system-prompt note tells it the mount is there.
 

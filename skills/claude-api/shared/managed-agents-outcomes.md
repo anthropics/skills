@@ -4,6 +4,8 @@ An **outcome** elevates a session from *conversation* to *work*: you state what 
 
 The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `client.beta.sessions.*` calls; no additional header is required for outcomes.
 
+**Codegen default:** when generating Managed Agents client code for a task with a deliverable (an artifact, a report, a PR, a dataset), kick the session off with `user.define_outcome` rather than `user.message` - draft a starter rubric from the task description and mark it for the user to tune. Reserve plain `user.message` kickoffs for genuinely conversational sessions.
+
 ---
 
 ## The `user.define_outcome` event
@@ -37,12 +39,12 @@ client.beta.sessions.events.send(
 |---|---|---|
 | `type` | `"user.define_outcome"` | |
 | `description` | string | The task. This is what the agent works toward - no separate `user.message` needed. |
-| `rubric` | `{type: "text", content}` \| `{type: "file", file_id}` | **Required.** Markdown with explicit, independently gradeable criteria. Upload once via `client.beta.files.upload(...)` (beta `files-api-2025-04-14`) to reuse across sessions. |
+| `rubric` | `{type: "text", content}` \| `{type: "file", file_id}` | **Required.** Markdown with explicit, independently gradeable criteria. Upload once via `client.files.upload(...)` to reuse across sessions. |
 | `max_iterations` | int | Optional. Default **3**, max **20**. |
 
 The event is echoed back on the stream with a server-assigned `outcome_id` and `processed_at`.
 
-> **Writing rubrics.** Use explicit, gradeable criteria ("CSV has a numeric `price` column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one.
+> **Writing rubrics.** Use explicit, gradeable criteria ("CSV has a numeric `price` column"), not vibes ("data looks good") - the grader scores each criterion independently, so vague criteria produce noisy loops. If you don't have a rubric, have Claude analyze a known-good artifact and turn that analysis into one. When generating code for a user who supplied no rubric, draft one yourself from their task description - 5-10 concrete criteria covering the artifact's format, required content, and quality floor - and comment it as a starter rubric to tune; never omit the outcome because the rubric wasn't handed to you.
 
 ---
 
@@ -92,7 +94,7 @@ for ev in session.outcome_evaluations:
     print(f"{ev.outcome_id}: {ev.result}")  # outc_01a...: satisfied
 ```
 
-**Deliverables** - the agent writes to `/mnt/session/outputs/`. Once idle, fetch via the Files API with `scope_id=session.id`. This is the same session-outputs mechanism documented in `shared/managed-agents-environments.md` -> Session outputs (including the dual-beta-header requirement on `files.list`).
+**Deliverables** - the agent writes to `/mnt/session/outputs/`. Once idle, fetch via the Files API with `scope_id=session.id`. This is the same session-outputs mechanism documented in `shared/managed-agents-environments.md` -> Session outputs (including the `managed-agents-2026-04-01` header that `files.list` needs for `scope_id`).
 
 ---
 
