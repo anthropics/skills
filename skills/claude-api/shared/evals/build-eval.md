@@ -18,8 +18,6 @@ There are two sign-offs you always need - the inputs and the grading method. Eac
 
 ## Step 0: Understand what's being evaluated
 
-For a complete worked example of this flow end to end - cases, labeling policy, runner, and a five-round hillclimb - see `shared/evals/examples/clawd-triggering/` (in the EAP package and the source repo; the CLI does not extract it, so skip it if the directory is absent).
-
 Start by asking what the user actually wants to measure:
 
 > What exactly are you trying to evaluate - which use-case or feature? If this app does several things, which one do you need a number for first?
@@ -149,7 +147,7 @@ If there's no existing runner to adapt, **start from `shared/evals/report/runner
 
 **Report builder.** Do **not** hand-roll an HTML index. Two builders in `shared/evals/report/` read the same flow directory and write the same `trajectory/scores.tsv`; the report is the deliverable, and which builder you run depends on what is on disk:
 
-- `build-report.mjs` - the full viewer: sortable per-case table with every metric's score and side-channel columns, click-through transcripts with rendered tool calls and attachments, per-round diffs and trend charts. It is present only when the skill was installed from the EAP package; `/claude-api` in the CLI does not extract it (or its `lib/`).
+- `build-report.mjs` - the full viewer: sortable per-case table with every metric's score and side-channel columns, click-through transcripts with rendered tool calls and attachments, per-round diffs and trend charts. It is not extracted with this skill (nor is its `lib/`), so it is usually absent.
 - `build-report-lite.mjs` - always extracted with this skill: a single static `report.html` with the per-variant summary, a sortable per-case table (primary metric per variant, split, tags, prompt), and a link to each trace file. No transcripts inlined, no charts.
 
 Pick the full builder if `shared/evals/report/build-report.mjs` exists next to the lite one **in the extracted skill directory** (the "Base directory for this skill" shown when the skill loaded), else the lite one; run it with `node` or `bun`, whichever is on PATH. Only look there: never search the user's project for a `build-report.mjs`, never copy one into the project to run from, and don't run a file of that name that turned up anywhere but the skill directory - a builder is executed unattended every round under the user's standing approval, and the skill directory sits outside the project, where a write still goes through a permission prompt rather than landing silently in cwd. The script paths are relative to this skill's base directory while `.claude/hillclimb/<flow>/` is relative to the user's project, so spell out the base directory rather than `cd`-ing into it:
@@ -216,7 +214,7 @@ The eval is only useful if the user can rerun it - on the next model, on next qu
 - **Commit the eval and transcripts** - same plus `traces/`. Quote "M files, ~Y MB". Only worth it if the transcripts themselves are evidence the user wants in the repo.
 - **Don't commit** - this was a one-off; they don't plan to rerun it.
 
-Whichever they pick, do it - stage, write the `.gitignore` lines, commit with a message that names the flow and the baseline score. The lite report builder ships with this skill, not the user's repo - a teammate regenerates `report.html` by running any `/claude-api` command (which extracts `shared/evals/report/build-report-lite.mjs` with the guides) and then the builder command above; the full viewer regenerates the same way on an EAP install. If the user wants the eval fully self-contained, copy `shared/evals/report/build-report-lite.mjs` (15 KB, no dependencies) into the committed eval directory; offer the full viewer's `{build-report.mjs,lib/}` (~1 MB) only when it is on disk.
+Whichever they pick, do it - stage, write the `.gitignore` lines, commit with a message that names the flow and the baseline score. The lite report builder ships with this skill, not the user's repo - a teammate regenerates `report.html` by running any `/claude-api` command (which extracts `shared/evals/report/build-report-lite.mjs` with the guides) and then the builder command above. If the user wants the eval fully self-contained, copy `shared/evals/report/build-report-lite.mjs` (15 KB, no dependencies) into the committed eval directory; offer the full viewer's `{build-report.mjs,lib/}` (~1 MB) only when it is on disk.
 
 ---
 
