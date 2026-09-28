@@ -18,6 +18,21 @@ spec.loader.exec_module(generate_review)
 
 
 class ViewerSymlinkTests(unittest.TestCase):
+    def test_symlinked_workspace_root_is_supported(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            workspace = root / "workspace"
+            outputs = workspace / "eval-1" / "outputs"
+            outputs.mkdir(parents=True)
+            (outputs / "answer.txt").write_text("expected output", encoding="utf-8")
+            alias = root / "workspace-alias"
+            alias.symlink_to(workspace, target_is_directory=True)
+
+            runs = generate_review.find_runs(alias)
+
+            self.assertEqual(len(runs), 1)
+            self.assertEqual([item["name"] for item in runs[0]["outputs"]], ["answer.txt"])
+
     def test_linked_output_file_is_not_embedded(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
