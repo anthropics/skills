@@ -10,20 +10,42 @@ def create_validation_image(page_number, fields_json_path, input_path, output_pa
     with open(fields_json_path, 'r') as f:
         data = json.load(f)
 
-        img = Image.open(input_path)
+    page = next((p for p in data["pages"] if p["page_number"] == page_number), None)
+    if page is None:
+        raise ValueError(f"Page {page_number} is not listed in fields.json")
+
+    dimensions = "pdf" if "pdf_width" in page or "pdf_height" in page else "image"
+    width_key, height_key = f"{dimensions}_width", f"{dimensions}_height"
+    if width_key not in page or height_key not in page:
+        raise ValueError(f"Page {page_number} must define both {width_key} and {height_key}")
+    source_width, source_height = page[width_key], page[height_key]
+    if source_width <= 0 or source_height <= 0:
+        raise ValueError("Page dimensions must be positive")
+
+    with Image.open(input_path) as img:
+        x_scale = img.width / source_width
+        y_scale = img.height / source_height
         draw = ImageDraw.Draw(img)
         num_boxes = 0
-        
+
+        def image_box(box):
+            return [
+                box[0] * x_scale,
+                box[1] * y_scale,
+                box[2] * x_scale,
+                box[3] * y_scale,
+            ]
+
         for field in data["form_fields"]:
             if field["page_number"] == page_number:
-                entry_box = field['entry_bounding_box']
-                label_box = field['label_bounding_box']
+                entry_box = image_box(field['entry_bounding_box'])
+                label_box = image_box(field['label_bounding_box'])
                 draw.rectangle(entry_box, outline='red', width=2)
                 draw.rectangle(label_box, outline='blue', width=2)
                 num_boxes += 2
-        
+
         img.save(output_path)
-        print(f"Created validation image at {output_path} with {num_boxes} bounding boxes")
+    print(f"Created validation image at {output_path} with {num_boxes} bounding boxes")
 
 
 if __name__ == "__main__":
