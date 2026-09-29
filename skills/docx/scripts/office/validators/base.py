@@ -793,6 +793,9 @@ class BaseSchemaValidator:
             if (
                 relative_path.parts
                 and relative_path.parts[0] in self.MAIN_CONTENT_FOLDERS
+                # Relationship parts are entirely in the OPC rels namespace, so the
+                # cleaner would delete all their content and the schema check with it.
+                and not xml_file.name.endswith(".rels")
             ):
                 xml_doc = self._clean_ignorable_namespaces(xml_doc)
 
