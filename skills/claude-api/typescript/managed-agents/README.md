@@ -1,8 +1,8 @@
-# Managed Agents — TypeScript
+# Managed Agents - TypeScript
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for TypeScript. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the TypeScript SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `agents.create` and pass it to every subsequent `sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent - create once, reference by ID.** Store the agent ID returned by `agents.create` and pass it to every subsequent `sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled files synced with `ant apply` - see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
@@ -15,7 +15,7 @@ npm install @anthropic-ai/sdk
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
 
-// Default — resolves credentials from the environment:
+// Default - resolves credentials from the environment:
 // ANTHROPIC_API_KEY, or ANTHROPIC_AUTH_TOKEN, or an `ant auth login` profile.
 // Prefer this for local dev; don't hardcode a key.
 const client = new Anthropic();
@@ -45,7 +45,7 @@ console.log(environment.id); // env_...
 
 ## Create an Agent (required first step)
 
-> ⚠️ **There is no inline agent config.** `model`/`system`/`tools` live on the agent object, not the session. Always start with `agents.create()` — the session only takes `agent: { type: "agent", id: agent.id }`.
+> Warning: **There is no inline agent config.** `model`/`system`/`tools` live on the agent object, not the session. Always start with `agents.create()` - the session only takes `agent: { type: "agent", id: agent.id }`.
 
 ### Minimal
 
@@ -54,7 +54,7 @@ console.log(environment.id); // env_...
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-5",
+    model: "claude-opus-5-5",
     tools: [{ type: "agent_toolset_20260401", default_config: { enabled: true } }],
   },
 );
@@ -76,7 +76,7 @@ console.log(`Trace: https://platform.claude.com/workspaces/default/sessions/${se
 const agent = await client.beta.agents.create(
   {
     name: "Code Reviewer",
-    model: "claude-opus-5",
+    model: "claude-opus-5-5",
     system: "You are a senior code reviewer.",
     tools: [
       { type: "agent_toolset_20260401", default_config: { enabled: true } },
@@ -132,7 +132,37 @@ await client.beta.sessions.events.send(
 );
 ```
 
-> 💡 **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens — stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
+> Tip: **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
+
+---
+
+## Define an Outcome (default kickoff for deliverables)
+
+When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with `user.define_outcome` instead of `user.message`: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See [Outcomes](../../shared/managed-agents-outcomes.md) for the event reference and rubric-writing guidance.
+
+```typescript
+const STARTER_RUBRIC = `# Report rubric - starter, tune the criteria
+- Output is a single \`report.md\` in /mnt/session/outputs/
+- Every claim cites a source URL
+- Includes a summary table with one row per competitor
+- Prices are current as of the run date and each row says where it was read from
+- No placeholder text, TODOs, or empty sections remain
+`;
+
+await client.beta.sessions.events.send(
+  session.id,
+  {
+    events: [
+      {
+        type: "user.define_outcome",
+        description: "Write a competitor-pricing report as report.md",
+        rubric: { type: "text", content: STARTER_RUBRIC },
+        max_iterations: 5, // optional; default 3, max 20
+      },
+    ],
+  },
+);
+```
 
 ---
 
@@ -163,7 +193,7 @@ for await (const event of stream) {
       }
       break;
     case "agent.custom_tool_use":
-      // Custom tool invocation — session is now idle
+      // Custom tool invocation - session is now idle
       console.log(`\nCustom tool call: ${event.name}`);
       console.log(`Input: ${JSON.stringify(event.input)}`);
       break;
@@ -309,7 +339,7 @@ for (const f of files.data) {
 }
 ```
 
-> 💡 There's a brief indexing lag (~1–3s) between `session.status_idle` and output files appearing in `files.list`. Retry once or twice if the list is empty.
+> Tip: There's a brief indexing lag (~1-3s) between `session.status_idle` and output files appearing in `files.list`. Retry once or twice if the list is empty.
 
 ---
 
@@ -335,10 +365,10 @@ await client.beta.sessions.archive("sesn_011CZxAbc123Def456");
 ## MCP Server Integration
 
 ```typescript
-// Agent declares MCP server (no auth here — auth goes in a vault)
+// Agent declares MCP server (no auth here - auth goes in a vault)
 const agent = await client.beta.agents.create({
   name: "MCP Agent",
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   mcp_servers: [
     { type: "url", name: "my-tools", url: "https://my-mcp-server.example.com/sse" },
   ],

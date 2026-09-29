@@ -1,4 +1,4 @@
-# Message Batches API — Python
+# Message Batches API - Python
 
 The Batches API (`POST /v1/messages/batches`) processes Messages API requests asynchronously at 50% of standard prices.
 
@@ -26,7 +26,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="request-1",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-5",
+                model="claude-opus-5-5",
                 max_tokens=16000,
                 messages=[{"role": "user", "content": "Summarize climate change impacts"}]
             )
@@ -34,7 +34,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="request-2",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-5",
+                model="claude-opus-5-5",
                 max_tokens=16000,
                 messages=[{"role": "user", "content": "Explain quantum computing basics"}]
             )
@@ -102,7 +102,7 @@ print(f"Status: {cancelled.processing_status}")  # "canceling"
 
 ## List Batches (auto-pagination)
 
-Iterating the return value of any `list()` call auto-paginates across all pages — do not index into `.data` if you want the full set:
+Iterating the return value of any `list()` call auto-paginates across all pages - do not index into `.data` if you want the full set:
 
 ```python
 for batch in client.messages.batches.list(limit=20):
@@ -130,7 +130,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id=f"analysis-{i}",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-5",
+                model="claude-opus-5-5",
                 max_tokens=16000,
                 system=shared_system,
                 messages=[{"role": "user", "content": question}]
