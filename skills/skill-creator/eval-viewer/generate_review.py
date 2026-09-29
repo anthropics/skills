@@ -18,6 +18,7 @@ import json
 import mimetypes
 import os
 import re
+from datetime import datetime, timezone
 import signal
 import subprocess
 import sys
@@ -122,9 +123,13 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     outputs_dir = run_dir / "outputs"
     output_files: list[dict] = []
     if outputs_dir.is_dir():
-        for f in sorted(outputs_dir.iterdir()):
+        # Recurse: eval deliverables commonly live in nested project dirs,
+        # and showing only top-level files made them look missing.
+        for f in sorted(outputs_dir.rglob("*")):
             if f.is_file() and f.name not in METADATA_FILES:
-                output_files.append(embed_file(f))
+                embedded = embed_file(f)
+                embedded["name"] = str(f.relative_to(outputs_dir))
+                output_files.append(embedded)
 
     # Load grading if present
     grading = None
@@ -252,6 +257,9 @@ def generate_html(
     skill_name: str,
     previous: dict[str, dict] | None = None,
     benchmark: dict | None = None,
+    *,
+    static_mode: bool = False,
+    workspace_name: str = "",
 ) -> str:
     """Generate the complete standalone HTML page with embedded data."""
     template_path = Path(__file__).parent / "viewer.html"
@@ -272,11 +280,17 @@ def generate_html(
         "runs": runs,
         "previous_feedback": previous_feedback,
         "previous_outputs": previous_outputs,
+        "static_mode": static_mode,
+        "workspace_id": re.sub(r"[^A-Za-z0-9_-]", "-", workspace_name) or "default",
+        "generated_at": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
     }
     if benchmark:
         embedded["benchmark"] = benchmark
 
-    data_json = json.dumps(embedded)
+    # Escape "</" so embedded content (e.g. HTML outputs) cannot terminate the
+    # surrounding <script> block. JSON treats "\/" identically to "/", so this
+    # is safe for every consumer of the serialized data.
+    data_json = json.dumps(embedded).replace("</", "<\\/")
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
@@ -339,7 +353,10 @@ class ReviewHandler(BaseHTTPRequestHandler):
                     benchmark = json.loads(self.benchmark_path.read_text())
                 except (json.JSONDecodeError, OSError):
                     pass
-            html = generate_html(runs, self.skill_name, self.previous, benchmark)
+            html = generate_html(
+                runs, self.skill_name, self.previous, benchmark,
+                static_mode=False, workspace_name=self.workspace.name,
+            )
             content = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -429,7 +446,10 @@ def main() -> None:
             pass
 
     if args.static:
-        html = generate_html(runs, skill_name, previous, benchmark)
+        html = generate_html(
+            runs, skill_name, previous, benchmark,
+            static_mode=True, workspace_name=workspace.name,
+        )
         args.static.parent.mkdir(parents=True, exist_ok=True)
         args.static.write_text(html)
         print(f"\n  Static viewer written to: {args.static}\n")

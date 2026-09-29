@@ -634,7 +634,7 @@
   <div class="done-overlay" id="done-overlay">
     <div class="done-card">
       <h2>Review Complete</h2>
-      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <p id="done-note">Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
       <div class="btn-row">
         <button onclick="closeDoneDialog()">OK</button>
       </div>
@@ -653,6 +653,132 @@
     let currentIndex = 0;
     let visitedRuns = new Set();
 
+    // ---- Static-mode local persistence ----
+    // Drafts are checkpointed to localStorage (survives reloads) and, once the
+    // user picks a file via the File System Access API, auto-written to a real
+    // feedback.json on disk (survives everything). Served mode is unchanged.
+    const STATIC = EMBEDDED_DATA.static_mode === true;
+    const WS_ID = String(EMBEDDED_DATA.workspace_id || "default");
+    const GEN_AT = String(EMBEDDED_DATA.generated_at || "");
+    const LS_KEY = "shipit-eval-viewer:v1:" + WS_ID + ":" + GEN_AT;
+    const IDB_NAME = "shipit-eval-viewer";
+    const IDB_STORE = "file-handles";
+
+    function idbOpen() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbGet(key) {
+      try {
+        const db = await idbOpen();
+        return await new Promise((resolve) => {
+          const tx = db.transaction(IDB_STORE, "readonly");
+          const req = tx.objectStore(IDB_STORE).get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => resolve(null);
+        });
+      } catch { return null; }
+    }
+
+    async function idbSet(key, value) {
+      try {
+        const db = await idbOpen();
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(IDB_STORE, "readwrite");
+          tx.objectStore(IDB_STORE).put(value, key);
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch { /* best-effort */ }
+    }
+
+    function buildReviewsPayload(status) {
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      return JSON.stringify({ reviews, status }, null, 2);
+    }
+
+    function saveLocalDraft() {
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify({ reviews: feedbackMap, savedAt: new Date().toISOString() }));
+      } catch { /* storage full or disabled */ }
+    }
+
+    function restoreLocalDraft() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (draft && draft.reviews) {
+          for (const [runId, text] of Object.entries(draft.reviews)) {
+            if (text && text.trim()) feedbackMap[runId] = text;
+          }
+        }
+      } catch { /* ignore corrupt drafts */ }
+    }
+
+    function clearLocalDraft() {
+      try { localStorage.removeItem(LS_KEY); } catch { /* best-effort */ }
+    }
+
+    // Best-effort write to an already-granted file handle (no user gesture).
+    async function writeToExistingHandle(payload) {
+      const handle = await idbGet(WS_ID);
+      if (!handle) return false;
+      try {
+        if (await handle.queryPermission({ mode: "readwrite" }) !== "granted") return false;
+        const writable = await handle.createWritable();
+        await writable.write(payload);
+        await writable.close();
+        return true;
+      } catch { return false; }
+    }
+
+    // Submit-time write: pick a file (FS Access API) or fall back to a download.
+    async function writeFeedbackToFile(payload) {
+      let handle = await idbGet(WS_ID);
+      if (!handle && window.showSaveFilePicker) {
+        try {
+          handle = await window.showSaveFilePicker({
+            suggestedName: "feedback.json",
+            types: [{ description: "JSON", accept: { "application/json": [".json"] } }],
+          });
+          await idbSet(WS_ID, handle);
+        } catch { handle = null; }  // picker cancelled or unavailable
+      }
+      if (handle) {
+        try {
+          if (await handle.queryPermission({ mode: "readwrite" }) !== "granted") {
+            if (await handle.requestPermission({ mode: "readwrite" }) !== "granted") {
+              handle = null;
+            }
+          }
+          if (handle) {
+            const writable = await handle.createWritable();
+            await writable.write(payload);
+            await writable.close();
+            return "saved";
+          }
+        } catch { /* write failed — fall back to download */ }
+      }
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "feedback.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      return "downloaded";
+    }
+
     // ---- Init ----
     async function init() {
       // Load saved feedback from server — but only if this isn't a fresh
@@ -669,6 +795,15 @@
             for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
           }
         } catch { /* first run, no feedback yet */ }
+      }
+
+      // Static mode: restore drafts checkpointed in localStorage for THIS
+      // generated page, so a reload can never lose typed feedback.
+      if (STATIC) {
+        restoreLocalDraft();
+        // If we already hold a granted file handle, write the restored draft
+        // back to disk so the file matches what's on screen.
+        writeToExistingHandle(buildReviewsPayload("in_progress"));
       }
 
       document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
@@ -1009,6 +1144,18 @@
         }
       }
 
+      if (STATIC) {
+        // Checkpoint locally so nothing is ever lost, even if the page
+        // reloads mid-review.
+        saveLocalDraft();
+        // If the user already picked a feedback.json for this workspace,
+        // keep writing to it continuously.
+        writeToExistingHandle(JSON.stringify({ reviews, status: "in_progress" }, null, 2));
+        document.getElementById("feedback-status").textContent =
+          "Draft saved locally";
+        return;
+      }
+
       fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1016,14 +1163,12 @@
       }).then(() => {
         document.getElementById("feedback-status").textContent = "Saved";
       }).catch(() => {
-        // Static mode or server unavailable — no-op on auto-save,
-        // feedback will be downloaded on final submit
         document.getElementById("feedback-status").textContent = "Will download on submit";
       });
     }
 
     // ---- Done ----
-    function showDoneDialog() {
+    async function showDoneDialog() {
       // Save current textarea to feedbackMap (but don't POST yet)
       const run = EMBEDDED_DATA.runs[currentIndex];
       const text = document.getElementById("feedback").value;
@@ -1040,7 +1185,21 @@
       for (const r of EMBEDDED_DATA.runs) {
         reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
       }
-      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      const payload = buildReviewsPayload("complete");
+      if (STATIC) {
+        const outcome = await writeFeedbackToFile(payload);
+        const note = document.getElementById("done-note");
+        if (outcome === "saved") {
+          clearLocalDraft();
+          note.textContent =
+            "Feedback saved to feedback.json on disk. Go back to your agent and tell them you're done reviewing.";
+        } else {
+          note.textContent =
+            "feedback.json downloaded — save it near the workspace, then tell your agent you're done reviewing.";
+        }
+        document.getElementById("done-overlay").classList.add("visible");
+        return;
+      }
       fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1048,7 +1207,7 @@
       }).then(() => {
         document.getElementById("done-overlay").classList.add("visible");
       }).catch(() => {
-        // Server not available (static mode) — download as file
+        // Server unreachable — download as file
         const blob = new Blob([payload], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
