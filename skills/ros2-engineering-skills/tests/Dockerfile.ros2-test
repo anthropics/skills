@@ -1,0 +1,80 @@
+# Dockerfile for testing ROS 2 code examples across distros.
+#
+# Build args:
+#   ROS_DISTRO  — humble | jazzy | rolling (default: jazzy)
+#
+# Usage:
+#   docker build -f tests/Dockerfile.ros2-test --build-arg ROS_DISTRO=humble -t ros2-test:humble .
+#   docker run --rm ros2-test:humble
+
+ARG ROS_DISTRO=jazzy
+FROM osrf/ros:${ROS_DISTRO}-desktop
+
+# Re-declare ARG after FROM (Docker scoping rules)
+ARG ROS_DISTRO
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-c"]
+
+# osrf/ros:*-desktop already includes pytest, colcon, rclcpp, rosidl, etc.
+# Install ros2_control for hardware_interface package testing.
+# Humble (22.04) pip doesn't support --break-system-packages; Jazzy+ (24.04) requires it.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3-pytest python3-pip \
+       ros-${ROS_DISTRO}-hardware-interface \
+       ros-${ROS_DISTRO}-ros2-control \
+    && pip3 install hypothesis 2>/dev/null \
+    || pip3 install --break-system-packages hypothesis \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /ws/ros2-engineering-skills
+COPY . .
+
+# Stage 1: Pure-Python unit tests on the utility scripts
+RUN python3 -m pytest tests/ -v --tb=short
+
+# Stage 2: Scaffold packages (C++, Python, interfaces, hardware_interface)
+RUN mkdir -p /ws/test_ws/src \
+    && python3 scripts/create_package.py test_cpp_pkg --type cpp --dest /ws/test_ws/src \
+    && python3 scripts/create_package.py test_py_pkg --type python --dest /ws/test_ws/src \
+    && python3 scripts/create_package.py test_iface_pkg --type interfaces --dest /ws/test_ws/src \
+    && python3 scripts/create_package.py test_hw_pkg --type hardware_interface --dest /ws/test_ws/src
+
+# Stage 3: Build all scaffolded packages WITH testing enabled
+# This compiles the generated gtest targets to verify the scaffolding is valid C++.
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
+    && cd /ws/test_ws \
+    && colcon build \
+         --executor sequential \
+         --event-handlers console_direct+ \
+         --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+# Stage 4a: Run C++ and interfaces tests (CTest via colcon)
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
+    && cd /ws/test_ws \
+    && colcon test \
+         --executor sequential \
+         --event-handlers console_direct+ \
+         --packages-select test_cpp_pkg test_iface_pkg test_hw_pkg \
+    && colcon test-result --verbose
+
+# Stage 4b: Run Python package tests with pytest directly
+# (colcon test uses unittest runner for ament_python, which cannot discover pytest-style tests)
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
+    && source /ws/test_ws/install/setup.bash \
+    && cd /ws/test_ws/src/test_py_pkg \
+    && python3 -m pytest test/ -v
+
+# Stage 5: Validate generated launch files
+RUN python3 scripts/launch_validator.py /ws/test_ws/src/test_cpp_pkg/launch/ \
+    && python3 scripts/launch_validator.py /ws/test_ws/src/test_py_pkg/launch/
+
+# Stage 6: QoS checker — all presets including safety_heartbeat with deadline/lifespan
+RUN python3 scripts/qos_checker.py --preset sensor \
+    && python3 scripts/qos_checker.py --preset command \
+    && python3 scripts/qos_checker.py --preset map \
+    && python3 scripts/qos_checker.py --preset diagnostics \
+    && python3 scripts/qos_checker.py --preset parameter_events \
+    && python3 scripts/qos_checker.py --preset action_feedback \
+    && python3 scripts/qos_checker.py --preset safety_heartbeat
+
+CMD echo "All tests passed for ROS 2 ${ROS_DISTRO}!"
