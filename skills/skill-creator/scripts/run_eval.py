@@ -193,6 +193,9 @@ def run_eval(
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
+    if runs_per_query < 1:
+        raise ValueError("runs_per_query must be positive")
+
     results = []
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
