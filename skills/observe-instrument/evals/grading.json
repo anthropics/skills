@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "passed": true,
+      "evidence": "Lines 21-24: Observe.init(app_name=\"math_agent_service\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\")) appears at module level after load_dotenv()"
+    },
+    {
+      "text": "from ioa_observe.sdk import Observe is present in imports",
+      "passed": true,
+      "evidence": "Line 10: from ioa_observe.sdk import Observe"
+    },
+    {
+      "text": "from ioa_observe.sdk.decorators import tool, agent, graph (or similar combination) is present",
+      "passed": true,
+      "evidence": "Line 11: from ioa_observe.sdk.decorators import agent, tool, graph"
+    },
+    {
+      "text": "from ioa_observe.sdk.tracing import session_start is present",
+      "passed": true,
+      "evidence": "Line 12: from ioa_observe.sdk.tracing import session_start"
+    },
+    {
+      "text": "@tool decorator is applied to the multiply function",
+      "passed": true,
+      "evidence": "Lines 39-42: @tool(name=\"multiply\") decorates def multiply(a: float, b: float) -> float"
+    },
+    {
+      "text": "@tool decorator is applied to the add function",
+      "passed": true,
+      "evidence": "Lines 45-48: @tool(name=\"add\") decorates def add(a: float, b: float) -> float"
+    },
+    {
+      "text": "@agent decorator is applied to MathAgentWorkflow class",
+      "passed": true,
+      "evidence": "Line 55: @agent(name=\"math_agent\") appears directly above class MathAgentWorkflow"
+    },
+    {
+      "text": "@graph decorator is applied to MathAgentWorkflow class (stacked above @agent)",
+      "passed": true,
+      "evidence": "Lines 54-55: @graph(name=\"math_agent_graph\") appears on the line above @agent(name=\"math_agent\"), both above class MathAgentWorkflow"
+    },
+    {
+      "text": "session_start() is called in the main() function before running the workflow",
+      "passed": true,
+      "evidence": "Line 71: session_start() is the first statement in async def main(), appearing before workflow = MathAgentWorkflow(...) on line 72"
+    },
+    {
+      "text": "The file remains functionally equivalent - all original logic is preserved",
+      "passed": true,
+      "evidence": "All original elements preserved: load_dotenv(), LlamaDebugHandler, CallbackManager, Settings.callback_manager, multiply and add function bodies, MathAgentWorkflow.__init__ and run methods with identical logic, main() query 'What is 20+(2*4)?' and print(response), asyncio.run(main()) entry point. Only additions were made (imports, Observe.init, decorators, session_start, get_workflow method)"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  }
+}
