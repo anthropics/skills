@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://purl.org/dc/elements/1.1/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <!-- Local stand-in for the six dc: elements that opc-coreProperties.xsd declares,
+       replacing the unreachable <xs:import schemaLocation="http://dublincore.org/schemas/xmls/qdc/2003-04-02/dc.xsd">.
+       anyType accepts every value a producer writes, so what stays under test is the
+       structure of CT_CoreProperties: which elements appear, and at most once each. -->
+  <xs:element name="creator" type="xs:anyType"/>
+  <xs:element name="description" type="xs:anyType"/>
+  <xs:element name="identifier" type="xs:anyType"/>
+  <xs:element name="language" type="xs:anyType"/>
+  <xs:element name="subject" type="xs:anyType"/>
+  <xs:element name="title" type="xs:anyType"/>
+
+</xs:schema>
