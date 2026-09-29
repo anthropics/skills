@@ -77,6 +77,35 @@ literal `#NAME?` baked into the file you deliver.
 - **`.xlsm` loses its macros unless you pass `keep_vba=True`** to `load_workbook`.
 - **A sheet name containing a space must be quoted** in a cross-sheet reference: `='Assumptions Inputs'!$B$5`. Unquoted, it evaluates to `#VALUE!`.
 
+## Complex workbooks: surgical package editing
+
+An openpyxl load→save rewrites the entire package. Parts it does not model — native
+charts, drawings, comment VML, slicers, `extLst` extensions — are silently dropped or
+regenerated, and `xl/styles.xml` is rewritten. Desktop Excel opens the result with a
+"repair" dialog whose recovery log is generic and names no specific part.
+
+Check first (`unzip -l file.xlsx`): if the workbook has chart, drawing, or comment
+parts that must survive, do not full-save with a library. Patch surgically instead:
+rewrite only the target worksheet XML members inside the ZIP and copy every other
+member byte-for-byte. Each rule below, violated, produces the same repair prompt:
+
+- **Never round-trip worksheet XML through a generic XML serializer.** ElementTree
+  renames namespace prefixes on write (`mc` becomes `ns1`). Legal in plain XML —
+  fatal in OOXML, because `mc:Ignorable="x14ac xr …"` names prefixes as literal
+  strings and every name listed must be a declared prefix in scope (ISO 29500-3).
+  Edit sheet XML with targeted string surgery or a prefix-preserving serializer
+  (lxml), and diff the changed part's prefix→URI map against the original before
+  delivery.
+- **Keep `xl/styles.xml` byte-identical.** Cells reference the style table by
+  numeric index; merging or reordering it leaves dangling references. Reuse the
+  workbook's existing style ids for new cells.
+- **If cell contents changed, delete `xl/calcChain.xml`** (the ZIP member and its
+  `[Content_Types].xml` override) and set `<calcPr fullCalcOnLoad="1"/>` in
+  `workbook.xml`; Excel rebuilds the chain cleanly on open.
+- **Validate before delivery**: ZIP integrity, every changed part parses, internal
+  relationship targets resolve, untouched members byte-identical to the source.
+  Excel's repair log will not tell you which rule you broke.
+
 ## Financial models
 
 Unless the user says otherwise, or the existing file already does something else.
