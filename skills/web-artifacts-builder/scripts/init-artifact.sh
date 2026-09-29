@@ -3,24 +3,31 @@
 # Exit on error
 set -e
 
-# Detect Node version
-NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
+# Detect Node version, including the minor release needed by current Vite.
+NODE_VERSION=$(node -p 'process.versions.node')
+IFS=. read -r NODE_MAJOR NODE_MINOR _ <<< "$NODE_VERSION"
 
 echo "🔍 Detected Node.js version: $NODE_VERSION"
 
-if [ "$NODE_VERSION" -lt 18 ]; then
-  echo "❌ Error: Node.js 18 or higher is required"
-  echo "   Current version: $(node -v)"
+if [ "$NODE_MAJOR" -lt 18 ] || \
+   { [ "$NODE_MAJOR" -eq 18 ] && [ "$NODE_MINOR" -lt 12 ]; } || \
+   [ "$NODE_MAJOR" -eq 19 ]; then
+  echo "❌ Error: Node.js 18.12+ or a supported newer release is required"
+  echo "   Current version: $NODE_VERSION"
   exit 1
 fi
 
-# Set Vite version based on Node version
-if [ "$NODE_VERSION" -ge 20 ]; then
+# Current create-vite and Vite require Node 20.19+ or 22.12+.
+if [ "$NODE_MAJOR" -gt 22 ] || \
+   { [ "$NODE_MAJOR" -eq 22 ] && [ "$NODE_MINOR" -ge 12 ]; } || \
+   { [ "$NODE_MAJOR" -eq 20 ] && [ "$NODE_MINOR" -ge 19 ]; }; then
   VITE_VERSION="latest"
+  CREATE_VITE_PACKAGE="vite"
   echo "✅ Using Vite latest (Node 20+)"
 else
   VITE_VERSION="5.4.11"
-  echo "✅ Using Vite $VITE_VERSION (Node 18 compatible)"
+  CREATE_VITE_PACKAGE="vite@5.5.5"
+  echo "✅ Using Vite $VITE_VERSION and create-vite 5.5.5 (compatible with Node $NODE_VERSION)"
 fi
 
 # Detect OS and set sed syntax
@@ -33,7 +40,12 @@ fi
 # Check if pnpm is installed
 if ! command -v pnpm &> /dev/null; then
   echo "📦 pnpm not found. Installing pnpm..."
-  npm install -g pnpm
+  if [ "$NODE_MAJOR" -gt 22 ] || \
+     { [ "$NODE_MAJOR" -eq 22 ] && [ "$NODE_MINOR" -ge 13 ]; }; then
+    npm install -g pnpm
+  else
+    npm install -g pnpm@9.15.9
+  fi
 fi
 
 # Check if project name is provided
@@ -55,8 +67,8 @@ fi
 
 echo "🚀 Creating new React + Vite project: $PROJECT_NAME"
 
-# Create new Vite project (always use latest create-vite, pin vite version later)
-pnpm create vite "$PROJECT_NAME" --template react-ts
+# Select a scaffolder compatible with the detected Node release.
+pnpm create "$CREATE_VITE_PACKAGE" "$PROJECT_NAME" --template react-ts
 
 # Navigate into project directory
 cd "$PROJECT_NAME"
@@ -68,9 +80,9 @@ $SED_INPLACE 's/<title>.*<\/title>/<title>'"$PROJECT_NAME"'<\/title>/' index.htm
 echo "📦 Installing base dependencies..."
 pnpm install
 
-# Pin Vite version for Node 18
-if [ "$NODE_VERSION" -lt 20 ]; then
-  echo "📌 Pinning Vite to $VITE_VERSION for Node 18 compatibility..."
+# Pin Vite wherever the latest release is not supported by this Node release.
+if [ "$VITE_VERSION" != "latest" ]; then
+  echo "📌 Pinning Vite to $VITE_VERSION for Node $NODE_VERSION compatibility..."
   pnpm add -D vite@$VITE_VERSION
 fi
 
