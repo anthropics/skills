@@ -8,10 +8,10 @@ description: >-
   Audience of large readerships each reading for one thing (prisoners for hope, teenage girls for
   love, men and boys for the action) and reacting as themselves. The one law is cut, never invent:
   no generated plot, prose, characters, or dialogue - only findings, verified against the page, and
-  at most deletions. Use this whenever a fiction writer asks you to critique, stress-test, red-team,
+  at most deletions. Use whenever a fiction writer asks you to critique, stress-test, red-team,
   proofread, poke holes in, "be brutal with", find the weak spots in, check continuity on, or get a
   real reader's reaction to their prose, plot, characters, dialogue, or pacing. Published by
-  Hollow House Films as "The Adversarial Read" - both names refer to this skill.
+  Hollow House Films as "The Adversarial Read" - both names mean this skill.
 license: Complete terms in LICENSE.txt
 ---
 
