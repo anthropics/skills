@@ -33,7 +33,7 @@ Write from this table instead of `javap`/jar inspection. Endpoint column tells y
 | Strict tool use | non-beta | `Tool`, `Tool.InputSchema` |
 | Task budgets | beta | `.outputConfig(BetaOutputConfig.builder().taskBudget(BetaTokenTaskBudget.builder()...))` |
 | Tool search | non-beta | `.addTool(ToolSearchToolRegex20251119.builder()...)` from `com.anthropic.models.messages` |
-| Web search | non-beta | `WebSearchTool20260209` from `com.anthropic.models.messages` - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305` |
+| Web search | non-beta | `WebSearchTool20260209` from `com.anthropic.models.messages` - the latest variant with dynamic filtering (Claude Fable 5.1 + Claude Opus 5.5 + Claude Opus 5 + Opus 4.8/4.7/4.6 + Claude Sonnet 5.5 + Claude Sonnet 5 + Sonnet 4.6). For older models or Vertex, use `WebSearchTool20250305` |
 
 ### Discovering type and member names
 
@@ -81,7 +81,7 @@ import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Message;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model("claude-opus-5")  // .model(String) overload - use it for ids with no typed Model constant yet
+    .model("claude-opus-5-5")  // .model(String) overload - works for every model id; typed Model.* constants lag model launches
     .maxTokens(16000L)
     .addUserMessage("What is the capital of France?")
     .build();
@@ -98,20 +98,21 @@ response.content().stream()
 
 **Adaptive thinking is the recommended mode for Claude 4.6+ models.** Claude decides dynamically when and how much to think. The builder has a direct `.thinking(ThinkingConfigAdaptive)` overload - no manual union wrapping.
 
-> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (below). `ThinkingConfigEnabled.builder().budgetTokens(N)` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking (below). `ThinkingConfigEnabled.builder().budgetTokens(N)` is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5.5:** thinking is always on - omit `.thinking(...)` (or send `ThinkingConfigAdaptive`, which is equivalent); `ThinkingConfigDisabled` returns a 400 at every effort, as does a thinking budget. Control depth with `.outputConfig(OutputConfig.builder().effort(...))` instead - the default is `medium` on this model, where Claude Opus 5 defaults to `high`.
 > **Claude Opus 5:** thinking is on by default - omitting `.thinking(...)` runs adaptive (`ThinkingConfigAdaptive` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `ThinkingConfigDisabled` is accepted only at effort `HIGH` or lower; pairing it with `XHIGH`/`MAX` returns a 400.
 > **Older models:** Use `.thinking(ThinkingConfigEnabled.builder().budgetTokens(N).build())` (budget must be < `maxTokens`, min 1024).
 
 ```java
 import com.anthropic.models.messages.ContentBlock;
 import com.anthropic.models.messages.MessageCreateParams;
-import com.anthropic.models.messages.Model;
 import com.anthropic.models.messages.ThinkingConfigAdaptive;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model("claude-opus-5-5")
     .maxTokens(16000L)
-    .thinking(ThinkingConfigAdaptive.builder().build())
+    // display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
+    .thinking(ThinkingConfigAdaptive.builder().display(ThinkingConfigAdaptive.Display.SUMMARIZED).build())
     .addUserMessage("Solve this step by step: 27 * 453")
     .build();
 
@@ -171,7 +172,7 @@ import com.anthropic.models.messages.MessageCountTokensParams;
 
 long tokens = client.messages().countTokens(
     MessageCountTokensParams.builder()
-        .model(Model.CLAUDE_SONNET_4_6)
+        .model("claude-opus-5-5")
         .addUserMessage("Hello")
         .build()
 ).inputTokens();

@@ -29,7 +29,7 @@ static class GetWeather implements Supplier<String> {
 
 BetaToolRunner toolRunner = client.beta().messages().toolRunner(
     MessageCreateParams.builder()
-        .model("claude-opus-5")
+        .model("claude-opus-5-5")
         .maxTokens(16000L)
         .putAdditionalHeader("anthropic-beta", "structured-outputs-2025-11-13")
         .addTool(GetWeather.class)
@@ -57,7 +57,7 @@ import com.anthropic.models.beta.messages.ToolRunnerCreateParams;
 BetaMemoryToolHandler memoryHandler = new FileSystemMemoryToolHandler(sandboxRoot);
 
 MessageCreateParams createParams = MessageCreateParams.builder()
-    .model("claude-opus-5")
+    .model("claude-opus-5-5")
     .maxTokens(4096L)
     .addTool(BetaMemoryTool20250818.builder().build())
     .addUserMessage("Remember that my favorite color is blue")
@@ -96,7 +96,7 @@ Tool tool = Tool.builder()
     .build();
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model("claude-opus-5-5")
     .maxTokens(16000L)
     .addTool(tool)
     .addUserMessage("Weather in Paris?")
@@ -140,7 +140,7 @@ record Book(String title, String author) {}
 record BookList(List<Book> books) {}
 
 StructuredMessageCreateParams<BookList> params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_SONNET_4_6)
+    .model("claude-opus-5-5")
     .maxTokens(16000L)
     .outputConfig(BookList.class)  // returns a typed builder
     .addUserMessage("List 3 classic novels")
@@ -190,7 +190,7 @@ import com.anthropic.models.beta.messages.BetaCodeExecutionTool20260120;
 import com.anthropic.models.beta.messages.BetaRequestMcpServerUrlDefinition;
 
 MessageCreateParams params = MessageCreateParams.builder()
-    .model(Model.CLAUDE_OPUS_4_8)
+    .model("claude-opus-5-5")
     .maxTokens(16000L)
     .addBeta("mcp-client-2025-11-20")
     .addTool(BetaToolBash20250124.builder().build())

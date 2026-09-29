@@ -120,7 +120,7 @@ client.beta.organization.workspaces.members.add(
 client.beta.organization.api_keys.update("apikey_...", status="inactive", name="New Key Name")
 
 # Rate limit reports (optional filters: model=..., group_type=...)
-client.beta.organization.rate_limits.list(model="claude-opus-5")
+client.beta.organization.rate_limits.list(model="claude-opus-5-5")
 client.beta.organization.workspaces.rate_limits.list("wrkspc_...")
 
 # Service accounts + WIF (org:admin OAuth token required)

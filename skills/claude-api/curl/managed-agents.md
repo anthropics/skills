@@ -65,7 +65,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Coding Assistant",
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "tools": [{ "type": "agent_toolset_20260401" }]
   }'
 # -> { "id": "agent_abc123", ... }
@@ -89,7 +89,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Code Reviewer",
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "system": "You are a senior code reviewer. Be thorough and constructive.",
     "tools": [
       { "type": "agent_toolset_20260401" },
@@ -281,7 +281,6 @@ curl -X DELETE https://api.anthropic.com/v1/sessions/$SESSION_ID \
 curl -X POST https://api.anthropic.com/v1/files \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
-  -H "anthropic-beta: files-api-2025-04-14" \
   -F "file=@path/to/file.txt" \
   -F "purpose=agent"
 ```
@@ -297,13 +296,12 @@ List files the agent wrote to `/mnt/session/outputs/` during a session, then dow
 curl "https://api.anthropic.com/v1/files?scope_id=$SESSION_ID" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
-  -H "anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01"
+  -H "anthropic-beta: managed-agents-2026-04-01"
 
 # Download a specific file
 curl "https://api.anthropic.com/v1/files/$FILE_ID/content" \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
-  -H "anthropic-beta: files-api-2025-04-14,managed-agents-2026-04-01" \
   -o downloaded_file.txt
 ```
 
@@ -326,7 +324,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "MCP Agent",
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "mcp_servers": [
       { "type": "url", "name": "my-tools", "url": "https://my-mcp-server.example.com/sse" }
     ],
@@ -357,7 +355,7 @@ curl -X POST https://api.anthropic.com/v1/agents \
   "${HEADERS[@]}" \
   -d '{
     "name": "Restricted Agent",
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "tools": [
       {
         "type": "agent_toolset_20260401",
