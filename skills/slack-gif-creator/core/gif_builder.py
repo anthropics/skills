@@ -40,6 +40,10 @@ class GIFBuilder:
         """
         if isinstance(frame, Image.Image):
             frame = np.array(frame.convert("RGB"))
+        elif frame.shape[-1:] != (3,):
+            # optimize_colors assumes 3 channels per pixel, so honour the
+            # documented conversion for ndarray inputs too (RGBA, grayscale).
+            frame = np.array(Image.fromarray(frame).convert("RGB"))
 
         # Ensure frame is correct size
         if frame.shape[:2] != (self.height, self.width):
