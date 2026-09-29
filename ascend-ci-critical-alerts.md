@@ -30,9 +30,9 @@
 
 | 告警名 | 触发条件 | for | 通知路由 |
 |--------|---------|-----|---------|
-| GitHubProxyUnreachable | 国内集群走 gh-proxy clone 失败（`cluster!="hk-001"`） | 10m | 按集群（dev-email / 默认） |
+| GitHubProxyUnreachable | 国内集群走 git 代理 clone 失败（`cluster!="hk-001"`）。⚠️ 名称/label `path="gh-proxy"` 为历史遗留，2026-08-20 起（c67fd173）拨测实际目标 = **git-cdn**（`git-cdn-service.git-cdn.svc.cluster.local:8000`） | 10m | 按集群（dev-email / 默认） |
 | GitHubDirectUnreachable | hk-001 直连 GitHub clone 失败 | 10m | dev-email（hk-001） |
-| GitHubUnreachable | 直连 + gh-proxy 两条路径均失败（escalation） | 10m | 按集群 |
+| GitHubUnreachable | 直连 + 代理（git-cdn）两条路径均失败（escalation） | 10m | 按集群 |
 | GitHubProbeMissing | `github_probe_success{path="any"}` 全集群消失（Pushgateway/CronJob 挂） | 10m | zhangyang-email（cluster=center） |
 | GitHubStatusOutage | GitHub 官方状态页事故等级 major/critical（indicator≥2） | 10m | 按集群 |
 | GitHubStatusComponentDegraded | 状态页任一分项 degraded/partial_outage/major_outage | 5m | 按集群 |
