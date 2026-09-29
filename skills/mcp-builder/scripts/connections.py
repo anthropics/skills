@@ -7,7 +7,11 @@ from typing import Any
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
-from mcp.client.streamable_http import streamablehttp_client
+
+try:
+    from mcp.client.streamable_http import streamable_http_client
+except ImportError:  # mcp < 2
+    from mcp.client.streamable_http import streamablehttp_client as streamable_http_client
 
 
 class MCPConnection(ABC):
@@ -106,7 +110,7 @@ class MCPConnectionHTTP(MCPConnection):
         self.headers = headers or {}
 
     def _create_context(self):
-        return streamablehttp_client(url=self.url, headers=self.headers)
+        return streamable_http_client(url=self.url, headers=self.headers)
 
 
 def create_connection(
