@@ -231,7 +231,7 @@ ls -1 "$PWD"/slide-*.jpg
 
 **Pass the absolute paths printed above directly to the view tool.** The `rm` clears stale images from prior runs. `pdftoppm` zero-pads based on page count: `slide-1.jpg` for decks under 10 pages, `slide-01.jpg` for 10-99, `slide-001.jpg` for 100+.
 
-**After fixes, rerun all four commands above** — the PDF must be regenerated from the edited `.pptx` before `pdftoppm` can reflect your changes.
+**After fixes, rerun all four commands above** — the PDF must be regenerated from the edited `.pptx` before `pdftoppm` can reflect your changes. Always use headless conversion via `scripts/office/soffice.py` instead of COM automations that could terminate a user's open PowerPoint application.
 
 ## Dependencies
 
