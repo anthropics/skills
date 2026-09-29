@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+# cmux-task - set up multi-agent cmux sessions for common task types
+#
+# Usage:
+#   cmux-task feature  "<description>" [--cwd <path>] [--dry-run]
+#   cmux-task bugfix   "<description>" [--cwd <path>] [--dry-run]
+#   cmux-task research "<description>" [--cwd <path>] [--dry-run]
+#   cmux-task custom   "<description>" --roles <r1,r2,...> [--cwd <path>] [--dry-run]
+#
+# Output: workspace ref and surface ref per role on stdout.
+# Subagents are started with `claude` and given their role prompt after a brief wait.
+
+set -euo pipefail
+
+# Resolve through symlinks so SCRIPT_DIR always points to the real script location
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")")" && pwd)"
+TEMPLATES_DIR="$SCRIPT_DIR/../templates"
+CLAUDE_START_WAIT=3  # seconds to wait for claude to start before sending prompt
+
+# ── helpers ─────────────────────────────────────────────────────────────────
+
+die() { echo "error: $*" >&2; exit 1; }
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: cmux-task <type> "<description>" [options]
+
+Types:
+  feature    roles: implementer, tester, reviewer
+  bugfix     roles: implementer, tester
+  research   roles: researcher, summarizer
+  custom     specify --roles <r1,r2,...>
+
+Options:
+  --cwd <path>       Working directory (default: $PWD)
+  --roles <list>     Comma-separated roles (required for custom type)
+  --dry-run          Print plan, create nothing
+  --no-prompts       Set up surfaces but don't inject prompts (start claude manually)
+
+EOF
+    exit 1
+}
+
+# Extract a ref token like "workspace:3" or "surface:7" from cmux output
+extract_ref() {
+    local token="$1"
+    local output="$2"
+    echo "$output" | grep -o "${token}:[0-9]*" | head -1
+}
+
+# Send text to a surface (no newline yet)
+surface_send() {
+    local ws="$1" surf="$2" text="$3"
+    cmux send --workspace "$ws" --surface "$surf" "$text"
+}
+
+# Send text + Enter (suppress cmux OK output)
+surface_run() {
+    local ws="$1" surf="$2" text="$3"
+    cmux send --workspace "$ws" --surface "$surf" "$text" >/dev/null
+    cmux send-key --workspace "$ws" --surface "$surf" Return >/dev/null
+}
+
+# Render a template: replace {{TASK}}, {{ROLE}}, {{CWD}} placeholders
+render_template() {
+    local template_file="$1" task="$2" role="$3" cwd="$4"
+    if [[ ! -f "$template_file" ]]; then
+        echo "You are a $role. Task: $task. Working directory: $cwd. Begin."
+        return
+    fi
+    sed \
+        -e "s|{{TASK}}|$task|g" \
+        -e "s|{{ROLE}}|$role|g" \
+        -e "s|{{CWD}}|$cwd|g" \
+        "$template_file"
+}
+
+# ── argument parsing ─────────────────────────────────────────────────────────
+
+[[ $# -lt 2 ]] && usage
+
+TASK_TYPE="${1:-}"
+TASK_DESC="${2:-}"
+shift 2
+
+CWD="$PWD"
+CUSTOM_ROLES=""
+DRY_RUN=false
+NO_PROMPTS=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --cwd)       CWD="$2";         shift 2 ;;
+        --roles)     CUSTOM_ROLES="$2"; shift 2 ;;
+        --dry-run)   DRY_RUN=true;     shift   ;;
+        --no-prompts) NO_PROMPTS=true; shift   ;;
+        *) die "unknown option: $1" ;;
+    esac
+done
+
+[[ -z "$TASK_DESC" ]] && die "task description is required"
+
+# Resolve roles for this task type
+case "$TASK_TYPE" in
+    feature)  ROLES=("implementer" "tester" "reviewer") ;;
+    bugfix)   ROLES=("implementer" "tester") ;;
+    research) ROLES=("researcher" "summarizer") ;;
+    custom)
+        [[ -z "$CUSTOM_ROLES" ]] && die "custom type requires --roles <r1,r2,...>"
+        IFS=',' read -ra ROLES <<< "$CUSTOM_ROLES"
+        ;;
+    *) usage ;;
+esac
+
+# ── dry run ──────────────────────────────────────────────────────────────────
+
+if $DRY_RUN; then
+    echo "=== DRY RUN: cmux-task $TASK_TYPE ==="
+    echo "Task:       $TASK_DESC"
+    echo "CWD:        $CWD"
+    echo "Roles:      ${ROLES[*]}"
+    echo ""
+    echo "Would create:"
+    echo "  workspace: [$TASK_TYPE] ${TASK_DESC:0:30}"
+    for role in "${ROLES[@]}"; do
+        echo "  surface:   $role"
+        echo "    prompt:  $(render_template "$TEMPLATES_DIR/$role.txt" "$TASK_DESC" "$role" "$CWD" | head -1)"
+    done
+    exit 0
+fi
+
+# ── create workspace ─────────────────────────────────────────────────────────
+
+echo "Setting up cmux session for: $TASK_DESC"
+echo "Roles: ${ROLES[*]}"
+echo ""
+
+ws_output=$(cmux new-workspace --cwd "$CWD")
+WS=$(extract_ref "workspace" "$ws_output")
+[[ -z "$WS" ]] && die "failed to create workspace (got: $ws_output)"
+
+# Name it (truncate task to 40 chars for readability)
+WS_TITLE="[$TASK_TYPE] ${TASK_DESC:0:40}"
+cmux rename-workspace --workspace "$WS" "$WS_TITLE" >/dev/null
+
+echo "workspace: $WS  (\"$WS_TITLE\")"
+echo ""
+
+# ── create surfaces and start workers ────────────────────────────────────────
+
+# Parallel arrays: ROLE_NAMES[i] → ROLE_SURFS[i] (bash 3.2 compatible, no associative arrays)
+ROLE_NAMES=()
+ROLE_SURFS=()
+
+for role in "${ROLES[@]}"; do
+    surf_output=$(cmux new-surface --workspace "$WS")
+    SURF=$(extract_ref "surface" "$surf_output")
+    [[ -z "$SURF" ]] && die "failed to create surface for $role (got: $surf_output)"
+
+    ROLE_NAMES+=("$role")
+    ROLE_SURFS+=("$SURF")
+
+    # Rename the tab to the role name
+    cmux rename-tab --workspace "$WS" --surface "$SURF" "$role" >/dev/null
+
+    # Navigate to cwd and start claude
+    surface_run "$WS" "$SURF" "cd '$CWD' && claude"
+
+    echo "  $role → $SURF (claude starting...)"
+done
+
+# ── inject prompts ────────────────────────────────────────────────────────────
+
+if ! $NO_PROMPTS; then
+    echo ""
+    echo "Waiting ${CLAUDE_START_WAIT}s for claude to start in all surfaces..."
+    sleep "$CLAUDE_START_WAIT"
+
+    for i in "${!ROLE_NAMES[@]}"; do
+        role="${ROLE_NAMES[$i]}"
+        SURF="${ROLE_SURFS[$i]}"
+        template_file="$TEMPLATES_DIR/$role.txt"
+        prompt=$(render_template "$template_file" "$TASK_DESC" "$role" "$CWD")
+
+        # Send as a single message (no newlines mid-message - claude uses Shift+Enter for those)
+        # Templates are designed to be single-paragraph
+        surface_run "$WS" "$SURF" "$prompt"
+
+        echo "  $role ← prompt injected"
+    done
+fi
+
+# ── print summary ─────────────────────────────────────────────────────────────
+
+echo ""
+echo "=== Session ready ==="
+echo "workspace:  $WS"
+echo ""
+for i in "${!ROLE_NAMES[@]}"; do
+    echo "  ${ROLE_NAMES[$i]}:  ${ROLE_SURFS[$i]}"
+done
+echo ""
+echo "Monitor:  cmux read-screen --workspace $WS --surface <ref>"
+echo "Cleanup:  cmux close-workspace --workspace $WS"
+echo ""
+echo "Workers write summaries to: $CWD/output/<role>.md"
+echo "Orchestrator synthesizes from those files when all are present."
