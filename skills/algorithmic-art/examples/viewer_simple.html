@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Algorithmic Art — Simple Viewer</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 0; padding: 16px; background: #f7f6f2; color: #111; }
+    .controls { margin-bottom: 12px; display:flex; gap:8px; align-items:center }
+    .viewer { border: 1px solid #ddd; background: #fff; padding: 8px; max-width: 1000px; }
+    input[type=file] { display: inline-block }
+    pre { background:#111;color:#fff;padding:8px;border-radius:6px;overflow:auto }
+  </style>
+</head>
+<body>
+  <h2>Algorithmic Art — Simple Viewer</h2>
+  <div class="controls">
+    <label>Open SVG: <input id="file" type="file" accept="image/svg+xml"></label>
+    <button id="load-sample">Load sample (run generator to create)</button>
+    <a id="instructions" href="#">How to generate</a>
+  </div>
+
+  <div class="viewer" id="viewer">Drop or open an SVG file to preview it here.</div>
+
+  <script>
+    const fileInput = document.getElementById('file');
+    const viewer = document.getElementById('viewer');
+    const loadSample = document.getElementById('load-sample');
+    const instructions = document.getElementById('instructions');
+
+    fileInput.addEventListener('change', async (ev) => {
+      const f = ev.target.files[0];
+      if (!f) return;
+      const txt = await f.text();
+      viewer.innerHTML = txt;
+    });
+
+    // Provide quick instructions link
+    instructions.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('Run: node skills/algorithmic-art/examples/generator_simple.js --seed=42 --size=800 --count=200 > out.svg\nThen open or drag out.svg into this viewer.');
+    });
+
+    loadSample.addEventListener('click', () => {
+      viewer.innerHTML = '<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#f1e9e1"/><circle cx="200" cy="200" r="40" fill="#d97757"/></svg>';
+    });
+
+    // Support drag & drop
+    viewer.addEventListener('dragover', (e) => { e.preventDefault(); viewer.style.outline='2px dashed #bbb'; });
+    viewer.addEventListener('dragleave', () => { viewer.style.outline=''; });
+    viewer.addEventListener('drop', async (e) => {
+      e.preventDefault(); viewer.style.outline='';
+      const f = e.dataTransfer.files[0];
+      if (!f) return;
+      const txt = await f.text();
+      viewer.innerHTML = txt;
+    });
+  </script>
+</body>
+</html>
