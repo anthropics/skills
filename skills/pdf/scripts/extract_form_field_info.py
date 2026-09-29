@@ -54,7 +54,10 @@ def get_field_info(reader: PdfReader):
         if field.get("/Kids"):
             if field.get("/FT") == "/Btn":
                 possible_radio_names.add(field_id)
-            continue
+                continue
+            # A node with no /FT is a name grouping, not a field.
+            if not field.get("/FT"):
+                continue
         field_info_by_id[field_id] = make_field_dict(field, field_id)
 
 
