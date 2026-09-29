@@ -598,12 +598,23 @@ class BaseSchemaValidator:
                     continue
 
                 extension = file_path.suffix.lstrip(".").lower()
-                if extension and extension not in declared_extensions:
-                    if extension in media_extensions:
-                        relative_path = file_path.relative_to(self.unpacked_dir)
-                        errors.append(
-                            f'  {relative_path}: File with extension \'{extension}\' not declared in [Content_Types].xml - should add: <Default Extension="{extension}" ContentType="{media_extensions[extension]}"/>'
-                        )
+                if not extension:
+                    continue
+
+                relative_path = file_path.relative_to(self.unpacked_dir)
+                part_path = relative_path.as_posix()
+
+                if extension in declared_extensions or part_path in declared_parts:
+                    continue
+
+                if extension in media_extensions:
+                    errors.append(
+                        f'  {relative_path}: File with extension \'{extension}\' not declared in [Content_Types].xml - should add: <Default Extension="{extension}" ContentType="{media_extensions[extension]}"/>'
+                    )
+                else:
+                    errors.append(
+                        f'  {part_path}: File with extension \'{extension}\' not declared in [Content_Types].xml - should add: <Default Extension="{extension}" ContentType="..."/> or <Override PartName="/{part_path}" ContentType="..."/>'
+                    )
 
         except Exception as e:
             errors.append(f"  Error parsing [Content_Types].xml: {e}")
