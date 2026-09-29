@@ -123,7 +123,7 @@ def create_gradient_background(
 
     for y in range(height):
         # Interpolate color
-        ratio = y / height
+        ratio = y / (height - 1) if height > 1 else 0.0
         r = int(r1 * (1 - ratio) + r2 * ratio)
         g = int(g1 * (1 - ratio) + g2 * ratio)
         b = int(b1 * (1 - ratio) + b2 * ratio)
