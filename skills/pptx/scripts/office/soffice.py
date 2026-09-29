@@ -51,6 +51,12 @@ _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"
 
 
 def _needs_shim() -> bool:
+    # The LD_PRELOAD shim is Linux-only: it exists to unblock AF_UNIX sockets in
+    # sandboxed Linux VMs. On Windows (no AF_UNIX, no gcc) and macOS the probe
+    # below would fail and the script would then try to compile the shim, so skip
+    # it there entirely.
+    if os.name != "posix":
+        return False
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
