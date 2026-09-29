@@ -61,9 +61,11 @@ def main():
 
     args = parser.parse_args()
 
-    cols = min(args.cols, MAX_COLS)
+    cols = max(1, min(args.cols, MAX_COLS))
     if args.cols > MAX_COLS:
         print(f"Warning: Columns limited to {MAX_COLS}")
+    elif args.cols < 1:
+        print("Warning: Columns must be at least 1, using 1")
 
     input_path = Path(args.input)
     if not input_path.exists() or input_path.suffix.lower() != ".pptx":
