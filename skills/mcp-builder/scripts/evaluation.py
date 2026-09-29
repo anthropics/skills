@@ -57,23 +57,24 @@ def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
     """Parse XML evaluation file with qa_pair elements."""
     try:
         tree = ET.parse(file_path)
-        root = tree.getroot()
-        evaluations = []
+    except (OSError, ET.ParseError) as e:
+        raise ValueError(f"Invalid evaluation XML {file_path}: {e}") from e
 
-        for qa_pair in root.findall(".//qa_pair"):
-            question_elem = qa_pair.find("question")
-            answer_elem = qa_pair.find("answer")
+    qa_pairs = tree.getroot().findall(".//qa_pair")
+    if not qa_pairs:
+        raise ValueError(f"No qa_pair elements found in {file_path}")
 
-            if question_elem is not None and answer_elem is not None:
-                evaluations.append({
-                    "question": (question_elem.text or "").strip(),
-                    "answer": (answer_elem.text or "").strip(),
-                })
+    evaluations = []
+    for index, qa_pair in enumerate(qa_pairs, start=1):
+        question_elem = qa_pair.find("question")
+        answer_elem = qa_pair.find("answer")
+        question = (question_elem.text or "").strip() if question_elem is not None else ""
+        answer = (answer_elem.text or "").strip() if answer_elem is not None else ""
+        if not question or not answer:
+            raise ValueError(f"Invalid qa_pair {index} in {file_path}: question and answer must be non-empty")
+        evaluations.append({"question": question, "answer": answer})
 
-        return evaluations
-    except Exception as e:
-        print(f"Error parsing evaluation file {file_path}: {e}")
-        return []
+    return evaluations
 
 
 def extract_xml_content(text: str, tag: str) -> str | None:
@@ -225,13 +226,13 @@ async def run_evaluation(
     """Run evaluation with MCP server tools."""
     print("🚀 Starting Evaluation")
 
+    qa_pairs = parse_evaluation_file(eval_path)
+    print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
+
     client = Anthropic()
 
     tools = await connection.list_tools()
     print(f"📋 Loaded {len(tools)} tools from MCP server")
-
-    qa_pairs = parse_evaluation_file(eval_path)
-    print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
 
     results = []
     for i, qa_pair in enumerate(qa_pairs):
@@ -360,7 +361,11 @@ Examples:
 
     async with connection:
         print("✅ Connected successfully")
-        report = await run_evaluation(args.eval_file, connection, args.model)
+        try:
+            report = await run_evaluation(args.eval_file, connection, args.model)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
 
         if args.output:
             args.output.write_text(report)
