@@ -26,7 +26,7 @@
 
 ---
 
-## 一、GitHub / 连通性拨测类(责任人：张扬；许广跃）
+## 一、GitHub / 连通性拨测类(责任人：许广跃，张扬）
 
 | 告警名 | 触发条件 | for | 通知路由 |
 |--------|---------|-----|---------|
@@ -40,7 +40,7 @@
 | GitHubStatusPageUnreachable | 所有集群都拉不到状态页（`max(github_status_check_ok)==0`） | 10m | zhangyang-email（cluster=center） |
 | GitHubStatusIncidentOpen | 状态页有未解决 incident（indicator=none 也兜底） | 10m | 按集群 |
 
-## 二、Runner / CI 执行类
+## 二、Runner / CI 执行类（责任人：文浪，张扬）
 
 | 告警名 | 触发条件 | for | 通知路由 |
 |--------|---------|-----|---------|
@@ -53,7 +53,7 @@
 | RunnerUpdateAvailable | actions/runner 落后于 GitHub 最新 release | 10m | zhangyang-email（4h） |
 | RunnerVersionExpiring | 距 GitHub 30 天强制升级截止不足 5 天 | 10m | zhangyang-email（4h） |
 
-## 三、NPU 资源类（掉卡 / 排队 / 指标漏报）
+## 三、NPU 资源类（掉卡 / 排队 / 指标漏报）（掉卡责任人：张扬）
 
 | 告警名 | 触发条件 | for | 通知路由 |
 |--------|---------|-----|---------|
@@ -64,7 +64,7 @@
 | NPUMetricTotalUsedCountMissing | `custom_npu_total_used_count` 逐节点漏报 / 全局缺失（absent 兜底） | 5m | datastat-email |
 | NPUMetricTotalMissing | `custom_npu_total` 逐节点漏报 / 全局缺失（exporter 掉线） | 5m | datastat-email |
 
-## 四、存储 / 证书 / 成本 / 安全类
+## 四、存储 / 证书 / 成本 / 安全类（责任人：许广跃，张扬）
 
 | 告警名 | 触发条件 | for | 通知路由 |
 |--------|---------|-----|---------|
@@ -80,11 +80,11 @@
 
 ## 五、基础设施服务 / 拨测自诊断
 
-| 告警名 | 触发条件 | for | 通知路由 |
-|--------|---------|-----|---------|
-| NginxPodDown | nginx 系 namespace pod NotReady 或 ImagePull/CrashLoop | 10m | 按集群 |
-| InfraServiceCrashLooping | vault / smart-git-proxy / git-cdn 容器崩溃循环或拉取失败 | 10m | 按集群 |
-| ProbeStale | 任一拨测指标超期未更新（github/sfs/balance/sa/cert/runner 兜底总检） | 5m | zhangyang-email（*ProbeStale，24h） |
+| 告警名 | 触发条件 | for | 通知路由 | 责任人|
+|--------|---------|-----|---------|-------|
+| NginxPodDown | nginx 系 namespace pod NotReady 或 ImagePull/CrashLoop | 10m | 按集群 | 文浪， 张扬|
+| InfraServiceCrashLooping | vault / smart-git-proxy / git-cdn 容器崩溃循环或拉取失败 | 10m | 按集群 |许广跃，李超然|
+| ProbeStale | 任一拨测指标超期未更新（github/sfs/balance/sa/cert/runner 兜底总检） | 5m | zhangyang-email（*ProbeStale，24h） |张扬|
 
 ---
 
