@@ -1,0 +1,808 @@
+openapi: 3.1.0
+info:
+  title: APRO AI Oracle Ticker API
+  description: |
+    Cryptocurrency price, category, and OHLCV data oracle.
+    Provides real-time and historical crypto market data with
+    cryptographic signatures for on-chain verification.
+  version: 2.0.0
+  contact:
+    name: APRO Oracle
+    url: https://apro.com
+
+servers:
+  - url: https://api-ai-oracle.apro.com
+    description: Production
+  - url: http://localhost:6688
+    description: Local Development
+
+security:
+  - apiKeyAuth: []
+    apiSecretAuth: []
+
+tags:
+  - name: Ticker
+    description: Cryptocurrency price, category, and OHLCV data
+
+# ========================================================
+# PATHS
+# ========================================================
+paths:
+
+  # ==================== Ticker ====================
+
+  /v2/ticker/currencies/list:
+    get:
+      summary: List Supported Currencies
+      description: |
+        List all supported cryptocurrencies with pagination.
+        Returns coin name, symbol, keywords, and supported data providers.
+        Response data is a direct JSON array (not wrapped in an object).
+      operationId: tickerListCurrencies
+      tags: [Ticker]
+      parameters:
+        - name: page
+          in: query
+          description: "Page number for pagination (1-based)."
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+            example: 1
+        - name: size
+          in: query
+          description: "Number of items per page."
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+            example: 20
+      responses:
+        "200":
+          description: Paginated list of supported currencies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_CurrencyListResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v2/ticker/currency/support:
+    get:
+      summary: Check Currency Support
+      description: |
+        Check if a specific cryptocurrency is supported and which providers are available.
+        Use "strict" mode for exact name match or "relaxed" for fuzzy matching.
+      operationId: tickerCheckSupport
+      tags: [Ticker]
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: "Cryptocurrency name (e.g. \"Bitcoin\", \"Ethereum\"). Uses full name, NOT ticker symbol."
+          schema:
+            type: string
+            example: "Bitcoin"
+        - name: restricted
+          in: query
+          required: true
+          description: "Match mode: \"strict\" for exact match, \"relaxed\" for fuzzy match. Always use \"relaxed\"."
+          schema:
+            type: string
+            enum: ["strict", "relaxed"]
+            default: "relaxed"
+            example: "relaxed"
+      responses:
+        "200":
+          description: Currency support information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_CurrencySupportResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v2/ticker/currency/price:
+    get:
+      summary: Get Crypto Price
+      description: |
+        Get current price data for a cryptocurrency.
+        Returns aggregated price with cryptographic signatures for on-chain verification,
+        plus individual prices from each data provider.
+      operationId: tickerGetPrice
+      tags: [Ticker]
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: "Cryptocurrency name (e.g. \"Bitcoin\", \"Ethereum\"). Uses full name, NOT ticker symbol."
+          schema:
+            type: string
+            example: "Bitcoin"
+        - name: quotation
+          in: query
+          required: true
+          description: "Quote currency name (e.g. \"USD\"). Required."
+          schema:
+            type: string
+            example: "USD"
+        - name: type
+          in: query
+          description: "Price aggregation type."
+          schema:
+            type: string
+            enum: ["median", "average"]
+            default: "median"
+            example: "median"
+      responses:
+        "200":
+          description: Price data with cryptographic signatures
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_TickerPriceResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v2/ticker/currency/category/list:
+    get:
+      summary: Get Token Categories
+      description: |
+        List all available cryptocurrency categories.
+        Returns category name, title, and description.
+        Response data is a direct JSON array (not wrapped in an object).
+      operationId: tickerGetCategories
+      tags: [Ticker]
+      responses:
+        "200":
+          description: List of all categories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_CategoryListResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v2/ticker/currency/category/coins:
+    get:
+      summary: Get Coins by Category
+      description: |
+        Get all coins belonging to a specific category.
+        The category name can be obtained from the category list endpoint.
+        Response data is a direct JSON array (not wrapped in an object).
+      operationId: tickerGetCategoryCoins
+      tags: [Ticker]
+      parameters:
+        - name: category
+          in: query
+          required: true
+          description: "Category name from the /v2/ticker/currency/category/list endpoint (e.g. \"Memes\", \"Gaming\")."
+          schema:
+            type: string
+            example: "Memes"
+      responses:
+        "200":
+          description: Coins in the specified category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_CategoryCoinsResponse"
+        "400":
+          description: Missing or invalid category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v2/ticker/currency/ohlcv:
+    get:
+      summary: Get OHLCV Data
+      description: |
+        Get OHLCV (Open/High/Low/Close/Volume) candlestick data for a cryptocurrency.
+        Supports hourly and daily intervals with time range filtering.
+        Query param timestamps (start_timestamp, end_timestamp) are in MILLISECONDS.
+        Response point timestamps are in SECONDS.
+        Returns aggregated data in `points` and per-provider data in `ohlcvs`.
+      operationId: tickerGetOHLCV
+      tags: [Ticker]
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: "Cryptocurrency name (e.g. \"Bitcoin\", \"Ethereum\"). Uses full name, NOT ticker symbol."
+          schema:
+            type: string
+            example: "Bitcoin"
+        - name: quotation
+          in: query
+          required: true
+          description: "Quote currency name (e.g. \"USD\"). Required for OHLCV."
+          schema:
+            type: string
+            example: "USD"
+        - name: type
+          in: query
+          description: "Price aggregation type."
+          schema:
+            type: string
+            enum: ["median", "average"]
+            default: "median"
+            example: "median"
+        - name: interval
+          in: query
+          description: "Candlestick time interval. Must be \"hourly\" or \"daily\" (NOT \"1h\" or \"1d\")."
+          schema:
+            type: string
+            enum: ["hourly", "daily"]
+            default: "daily"
+            example: "daily"
+        - name: start_timestamp
+          in: query
+          required: true
+          description: "Start time as Unix timestamp in MILLISECONDS. This parameter is required."
+          schema:
+            type: integer
+            format: int64
+            example: 1704067200000
+        - name: end_timestamp
+          in: query
+          description: "End time as Unix timestamp in MILLISECONDS."
+          schema:
+            type: integer
+            format: int64
+            example: 1706745599000
+      responses:
+        "200":
+          description: OHLCV candlestick data with cryptographic signatures
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wrapped_OHLCVResponse"
+        "400":
+          description: Missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+# ========================================================
+# COMPONENTS
+# ========================================================
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key for authentication
+    apiSecretAuth:
+      type: apiKey
+      in: header
+      name: X-API-SECRET
+      description: API secret for authentication
+
+  schemas:
+
+    # ========== Response Envelope ==========
+
+    ApiStatus:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code:
+          type: integer
+          description: HTTP-like status code
+          example: 200
+        message:
+          type: string
+          description: Human-readable status message (empty on success)
+          example: ""
+        timestamp:
+          type: integer
+          format: int64
+          description: Server timestamp in Unix milliseconds
+          example: 1711180800000
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          type: "null"
+          description: Always null on error
+
+    # ========== Ticker: Currency List ==========
+    # Note: data field is a direct array, not { currencies: [...] }
+
+    CurrencyInfo:
+      type: object
+      required: [name, symbol, keywords, support_providers]
+      properties:
+        name:
+          type: string
+          description: Full cryptocurrency name (use this value in other API calls)
+          example: "Bitcoin"
+        symbol:
+          type: string
+          description: Ticker symbol (informational only — API params use `name`, not `symbol`)
+          example: "BTC"
+        keywords:
+          type: array
+          items:
+            type: string
+          description: Alternative names and keywords for this currency
+          example: ["0x Protocol"]
+        support_providers:
+          type: array
+          items:
+            type: string
+          description: List of data providers supporting this currency
+          example: ["AggregationCoinMarketCap", "AggregationCoinGecko", "DexAve", "DexDexTools"]
+
+    Wrapped_CurrencyListResponse:
+      type: object
+      description: "Response envelope. `data` is a direct array of CurrencyInfo."
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CurrencyInfo"
+
+    # ========== Ticker: Currency Support ==========
+
+    Wrapped_CurrencySupportResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          $ref: "#/components/schemas/CurrencyInfo"
+
+    # ========== Ticker: Price ==========
+
+    SignatureEntry:
+      type: object
+      required: [signer, hash, signature, timestamp]
+      properties:
+        signer:
+          type: string
+          description: Signer address (hex)
+          example: "0x7BBD19224F373321aAAD8e20BFa75601F4b07E82"
+        hash:
+          type: string
+          description: Message hash (hex)
+          example: "0x181b6e750fb1c9e6cee1ecf55f23ec126f7319f05d71fc350954bc5709e23928"
+        signature:
+          type: string
+          description: Full ECDSA signature (hex, 65 bytes with recovery id)
+          example: "0x333c2ae68bf9317ca799e506efc71ac917878e9ad37b68f49443b7be2bd1e747..."
+        timestamp:
+          type: integer
+          format: int64
+          description: Signature timestamp (Unix milliseconds)
+          example: 1775670864497
+
+    ProviderPrice:
+      type: object
+      required: [name, symbol, quotes, quotes_symbol, price, provider_name, direct_price, last_updated]
+      properties:
+        name:
+          type: string
+          description: Cryptocurrency name
+          example: "Bitcoin"
+        symbol:
+          type: string
+          description: Ticker symbol
+          example: "BTC"
+        quotes:
+          type: string
+          description: Quote currency full name
+          example: "United States Dollar"
+        quotes_symbol:
+          type: string
+          description: Quote currency symbol/code
+          example: "USD"
+        price:
+          type: number
+          format: double
+          description: Price from this specific provider
+          example: 66849
+        provider_name:
+          type: string
+          description: Data provider name
+          example: "AggregationCoinGecko"
+        direct_price:
+          type: boolean
+          description: Whether this is a direct price quote (not derived)
+          example: true
+        last_updated:
+          type: integer
+          format: int64
+          description: Timestamp of this provider's price (Unix seconds)
+          example: 1775201110
+
+    TickerPriceData:
+      type: object
+      required: [name, symbol, quotes, quotes_symbol, price, report_type, timestamp, signature, prices]
+      properties:
+        name:
+          type: string
+          description: Cryptocurrency name
+          example: "Bitcoin"
+        symbol:
+          type: string
+          description: Ticker symbol
+          example: "BTC"
+        quotes:
+          type: string
+          description: Quote currency full name
+          example: "United States Dollar"
+        quotes_symbol:
+          type: string
+          description: Quote currency symbol/code
+          example: "USD"
+        price:
+          type: number
+          format: double
+          description: Aggregated price in quote currency
+          example: 66828.13
+        report_type:
+          type: string
+          description: Aggregation method used
+          example: "median"
+        timestamp:
+          type: integer
+          format: int64
+          description: Timestamp of the price report (Unix milliseconds)
+          example: 1775201110242
+        signature:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureEntry"
+          description: Cryptographic signatures for on-chain verification
+        prices:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderPrice"
+          description: Individual prices from each data provider
+
+    Wrapped_TickerPriceResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          $ref: "#/components/schemas/TickerPriceData"
+
+    # ========== Ticker: Category List ==========
+    # Note: data field is a direct array, not { categories: [...] }
+
+    CategoryInfo:
+      type: object
+      required: [name, title, description]
+      properties:
+        name:
+          type: string
+          description: Category identifier (use this value in category/coins endpoint)
+          example: "Memes"
+        title:
+          type: string
+          description: Human-readable category title
+          example: "Memes"
+        description:
+          type: string
+          description: Category description
+          example: "Memes"
+
+    Wrapped_CategoryListResponse:
+      type: object
+      description: "Response envelope. `data` is a direct array of CategoryInfo."
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryInfo"
+
+    # ========== Ticker: Category Coins ==========
+    # Note: data field is a direct array, not { coins: [...] }
+
+    CategoryCoin:
+      type: object
+      required: [name, symbol]
+      properties:
+        name:
+          type: string
+          description: Full coin name
+          example: "Dogecoin"
+        symbol:
+          type: string
+          description: Coin ticker symbol
+          example: "DOGE"
+        quotes:
+          type: string
+          description: Quote currency full name
+          example: "United States Dollar"
+        quotes_symbol:
+          type: string
+          description: Quote currency symbol
+          example: "USD"
+        providers:
+          type: array
+          items:
+            type: string
+          description: Data providers
+        price:
+          type: number
+          description: Current price
+        market_cap:
+          type: number
+          description: Market capitalization
+        volume_24h:
+          type: number
+          description: 24-hour trading volume
+        percent_change_1h:
+          type: number
+        percent_change_24h:
+          type: number
+        percent_change_7d:
+          type: number
+        percent_change_30d:
+          type: number
+        percent_change_60d:
+          type: number
+        percent_change_90d:
+          type: number
+        last_updated:
+          type: integer
+          description: Last update timestamp (seconds)
+
+    Wrapped_CategoryCoinsResponse:
+      type: object
+      description: "Response envelope. `data` is a direct array of CategoryCoin."
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryCoin"
+
+    # ========== Ticker: OHLCV ==========
+
+    OHLCVPoint:
+      type: object
+      required: [open, high, low, close, volume, timestamp]
+      description: "Aggregated OHLCV data point (in top-level `points` array)"
+      properties:
+        open:
+          type: number
+          format: double
+          description: Opening price for the period
+          example: 68768.42
+        high:
+          type: number
+          format: double
+          description: Highest price during the period
+          example: 69087.77
+        low:
+          type: number
+          format: double
+          description: Lowest price during the period
+          example: 65559.78
+        close:
+          type: number
+          format: double
+          description: Closing price for the period
+          example: 66329.69
+        volume:
+          type: number
+          format: double
+          description: Total trading volume during the period
+          example: 46483453593.58
+        timestamp:
+          type: integer
+          format: int64
+          description: Period start time as Unix timestamp (SECONDS, not milliseconds)
+          example: 1774656000
+
+    ProviderOHLCVPoint:
+      type: object
+      required: [open, high, low, close, timestamp]
+      description: "Per-provider OHLCV data point (in `ohlcvs[].points` array). Note: no volume field."
+      properties:
+        open:
+          type: number
+          format: double
+          description: Opening price from this provider
+          example: 68746
+        high:
+          type: number
+          format: double
+          description: Highest price from this provider
+          example: 69058
+        low:
+          type: number
+          format: double
+          description: Lowest price from this provider
+          example: 65587
+        close:
+          type: number
+          format: double
+          description: Closing price from this provider
+          example: 66321
+        timestamp:
+          type: integer
+          format: int64
+          description: Period start time as Unix timestamp (SECONDS)
+          example: 1774656000
+
+    ProviderOHLCV:
+      type: object
+      required: [name, symbol, quotes, quotes_symbol, provider_name, direct, points]
+      description: "OHLCV data from a single data provider"
+      properties:
+        name:
+          type: string
+          description: Cryptocurrency name
+          example: "Bitcoin"
+        symbol:
+          type: string
+          description: Ticker symbol
+          example: "BTC"
+        quotes:
+          type: string
+          description: Quote currency full name
+          example: "United States Dollar"
+        quotes_symbol:
+          type: string
+          description: Quote currency symbol/code
+          example: "USD"
+        provider_name:
+          type: string
+          description: Data provider name
+          example: "AggregationCoinGecko"
+        direct:
+          type: boolean
+          description: Whether this is a direct price quote
+          example: true
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderOHLCVPoint"
+          description: OHLCV data points from this provider
+
+    OHLCVData:
+      type: object
+      required: [name, symbol, quotes, quotes_symbol, points, report_type, signature, ohlcvs]
+      properties:
+        name:
+          type: string
+          description: Cryptocurrency name
+          example: "Bitcoin"
+        symbol:
+          type: string
+          description: Ticker symbol
+          example: "BTC"
+        quotes:
+          type: string
+          description: Quote currency full name
+          example: "United States Dollar"
+        quotes_symbol:
+          type: string
+          description: Quote currency symbol/code
+          example: "USD"
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/OHLCVPoint"
+          description: Aggregated OHLCV data points (median/average across providers). Includes volume.
+        report_type:
+          type: string
+          description: Aggregation method used
+          example: "median"
+        signature:
+          type: array
+          items:
+            $ref: "#/components/schemas/SignatureEntry"
+          description: Cryptographic signatures for on-chain verification
+        ohlcvs:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProviderOHLCV"
+          description: Per-provider OHLCV data (individual provider data points, no volume)
+
+    Wrapped_OHLCVResponse:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/ApiStatus"
+        data:
+          $ref: "#/components/schemas/OHLCVData"
