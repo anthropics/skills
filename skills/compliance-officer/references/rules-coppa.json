@@ -1,0 +1,570 @@
+[
+  {
+    "id": "COPPA-312-10-retention",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Data Retention Limits",
+    "severity": "warning",
+    "summary": "Must retain children's personal information only as long as reasonably necessary to fulfill the purpose for which it was collected.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "retain.*child.*data\\s+(for|until|only)",
+        "delet(e|ion).*child.*after"
+      ],
+      "keywords": [
+        "data retention for children",
+        "retention limits",
+        "delete children's data",
+        "retention period"
+      ]
+    },
+    "remediation": {
+      "guidance": "Delete children's personal information once it is no longer reasonably necessary. Do not retain it indefinitely.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.10",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "data-retention"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-2-notice",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Notice on Website/App",
+    "severity": "critical",
+    "summary": "Operators of websites or online services directed to children under 13 must post a clear, prominent, and complete online privacy notice.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "children('s)?\\s+privacy",
+        "kids(')?\\s+privacy",
+        "coppa\\s+(compliance|notice|policy)"
+      ],
+      "keywords": [
+        "children's privacy policy",
+        "kids privacy",
+        "COPPA notice",
+        "privacy policy for children"
+      ]
+    },
+    "remediation": {
+      "guidance": "Post a clearly labeled, complete children's privacy notice linked from every page that collects information from children.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.2, 312.4(d)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "privacy"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-3-consent",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Verifiable Parental Consent",
+    "severity": "critical",
+    "summary": "Must obtain verifiable parental consent before collecting, using, or disclosing personal information from children under 13.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "parental\\s+consent",
+        "parent('s)?\\s+(or\\s+)?guardian('s)?\\s+(consent|permission|approval)",
+        "verif(y|iable|ied)\\s+.*consent"
+      ],
+      "keywords": [
+        "parental consent",
+        "verifiable parental consent",
+        "parent or guardian permission",
+        "consent from parent"
+      ]
+    },
+    "remediation": {
+      "guidance": "Obtain verifiable parental consent using an approved method (signed form, credit card, video conference, etc.) before collecting data from children under 13.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.3, 312.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-4-content-notice",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Content of Privacy Notice",
+    "severity": "warning",
+    "summary": "Children's privacy notice must list categories of personal information collected, how it is used, disclosure practices, and contact information for the operator.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(collect|gather).*from\\s+children",
+        "information.*children.*collect"
+      ],
+      "keywords": [
+        "categories of information collected from children",
+        "how we use children's data",
+        "children's personal information"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include in the notice: operator contact info, categories of data collected from children, how data is used, disclosure practices, and parental rights.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.4(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-4-direct-notice",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Direct Notice to Parents",
+    "severity": "critical",
+    "summary": "Must provide direct notice to parents before collecting information from their child, describing what information will be collected and how it will be used.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "direct notice to parents",
+        "notify parent",
+        "parental notification"
+      ]
+    },
+    "remediation": {
+      "guidance": "Send direct notice to parents describing what data will be collected, how it will be used, and how parents can provide or revoke consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.4(c)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "consent"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-5-methods",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Consent Methods",
+    "severity": "warning",
+    "summary": "Verifiable parental consent must use a method reasonably calculated to ensure the consenting person is the child's parent.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "signed\\s+(consent|authorization)\\s+form",
+        "credit\\s+card.*verif",
+        "video\\s+(conference|call).*consent"
+      ],
+      "keywords": [
+        "consent method",
+        "signed consent form",
+        "knowledge-based authentication",
+        "video conference consent"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use an FTC-approved consent verification method: signed form returned by mail/fax/email scan, credit card transaction, video conference, or government ID check.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.5(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-6-rights",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Parental Rights",
+    "severity": "warning",
+    "summary": "Parents must be able to review personal information collected from their child, request deletion, and refuse further collection.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "parent.*review.*child('s)?\\s+(data|information)",
+        "delete.*child('s)?\\s+(data|information|account)"
+      ],
+      "keywords": [
+        "parental access rights",
+        "review child's information",
+        "delete child's data",
+        "refuse further collection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide parents the ability to: (1) review their child's personal information, (2) request deletion, and (3) refuse further collection or use.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "data-rights"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-7-prohibition",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "No Conditioning on Data Collection",
+    "severity": "critical",
+    "summary": "Cannot condition a child's participation in an activity on providing more personal information than is reasonably necessary.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(require|must\\s+provide).*to\\s+(play|participate|access|use)",
+        "required.*field.*children"
+      ],
+      "keywords": [
+        "required information",
+        "cannot condition participation",
+        "reasonably necessary",
+        "data minimization for children"
+      ]
+    },
+    "remediation": {
+      "guidance": "Do not require children to disclose more information than is reasonably necessary to participate in an activity. Only collect what is strictly needed.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.7",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "data-minimization"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-8-confidentiality",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Data Security",
+    "severity": "warning",
+    "summary": "Must establish and maintain reasonable procedures to protect the confidentiality, security, and integrity of children's personal information.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "protect children's data",
+        "security of children's information",
+        "confidentiality",
+        "data security"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement reasonable data security measures to protect children's personal information from unauthorized access, use, or disclosure.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.8",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "security",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-age-gate",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Age Screening",
+    "severity": "critical",
+    "summary": "Sites directed to a general audience that knowingly collect information from children under 13 must implement age screening.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(age|birthday)\\s+(gate|screen|check|verif)",
+        "how\\s+old\\s+are\\s+you",
+        "enter\\s+your\\s+(birth\\s*date|date\\s+of\\s+birth|age)"
+      ],
+      "keywords": [
+        "age gate",
+        "age verification",
+        "age screening",
+        "date of birth",
+        "are you over 13"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement age screening before collecting personal information. If a user indicates they are under 13, block data collection or trigger parental consent flow.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.2",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-ed-tech",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Educational Technology Exception",
+    "severity": "warning",
+    "summary": "Schools may consent on behalf of parents for educational technology services, but only for school-authorized educational purposes.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "school.*consent",
+        "educational\\s+(purpose|technology|service)",
+        "teacher.*consent.*behalf"
+      ],
+      "keywords": [
+        "school consent",
+        "educational purpose",
+        "ed-tech",
+        "school-authorized",
+        "FERPA"
+      ]
+    },
+    "remediation": {
+      "guidance": "When relying on school consent, use collected data only for school-authorized educational purposes. Do not use for commercial purposes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.5(c)(3)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "education"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "COPPA-312-safe-harbor",
+    "version": "1.0.0",
+    "framework": "coppa",
+    "title": "Safe Harbor Programs",
+    "severity": "info",
+    "summary": "Operators may participate in FTC-approved self-regulatory safe harbor programs as an alternative to individual FTC enforcement.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "safe harbor",
+        "CARU",
+        "kidSAFE",
+        "PRIVO",
+        "iKeepSafe",
+        "self-regulatory program"
+      ]
+    },
+    "remediation": {
+      "guidance": "Consider joining an FTC-approved COPPA safe harbor program (CARU, kidSAFE, PRIVO, iKeepSafe) for additional compliance support.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 312.11",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]

@@ -1,0 +1,700 @@
+[
+  {
+    "id": "SEC-482-a-general",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "General Advertisement Requirements",
+    "severity": "warning",
+    "summary": "Advertisements for investment companies must comply with SEC Rule 482 requirements, including required disclosures and prohibitions on misleading content.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "advertisement",
+        "investment company",
+        "fund advertising"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all fund advertisements contain required disclosures and are not misleading.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(a)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-a-prospectus",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Prospectus Availability Statement",
+    "severity": "critical",
+    "summary": "Investment company advertisements must include a statement directing investors to carefully consider objectives, risks, charges, and expenses in the prospectus.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "prospectus",
+        "consider carefully",
+        "objectives",
+        "risks",
+        "charges",
+        "expenses"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include: \"Consider the investment objectives, risks, charges, and expenses carefully before investing. The prospectus contains this and other information. Read it carefully.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(a)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-b-current-quarter",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Most Recent Calendar Quarter",
+    "severity": "critical",
+    "summary": "Performance data in investment company advertisements must be updated to the most recent calendar quarter-end and include an 'as of' date.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "as\\s+of\\s+(Q[1-4]|[A-Za-z]+\\s+\\d{1,2},?\\s+\\d{4})",
+        "(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},?\\s+\\d{4}"
+      ],
+      "keywords": [
+        "as of",
+        "quarter-end",
+        "current performance"
+      ]
+    },
+    "remediation": {
+      "guidance": "Update performance data quarterly. Include \"as of\" date for all performance figures.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(b)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-b-gross-net",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Gross vs Net Performance",
+    "severity": "warning",
+    "summary": "When showing gross performance, investment company advertisements must also show net-of-fee performance to avoid misleading investors.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "gross",
+        "net",
+        "after fees",
+        "before fees"
+      ]
+    },
+    "remediation": {
+      "guidance": "Show net-of-fee performance alongside any gross performance figures.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(b)(3)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-b-periods",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Required Performance Periods",
+    "severity": "critical",
+    "summary": "Investment company advertisements showing performance must include 1-year, 5-year, and 10-year (or since inception if shorter) average annual total returns.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "1[\\s-]?year",
+        "5[\\s-]?year",
+        "10[\\s-]?year",
+        "since\\s+inception"
+      ],
+      "keywords": [
+        "1-year",
+        "5-year",
+        "10-year",
+        "since inception"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include 1-year, 5-year, and 10-year (or since inception) average annual total returns.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(b)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-b-standardized",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Standardized Performance Required",
+    "severity": "critical",
+    "summary": "All performance data in investment company advertisements must use SEC-standardized total return calculations.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+(\\.\\d+)?%\\s*(return|performance|gain)",
+        "returned\\s+\\d+(\\.\\d+)?%"
+      ],
+      "keywords": [
+        "performance",
+        "return",
+        "standardized"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use SEC-standardized total return calculations for all performance data.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(b)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-c-expense-ratio",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Expense Ratio Disclosure",
+    "severity": "critical",
+    "summary": "Investment company advertisements must disclose the total annual fund operating expense ratio from the most recent prospectus.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "expense\\s+ratio",
+        "operating\\s+expenses?",
+        "\\d+(\\.\\d+)?%\\s+expense"
+      ],
+      "keywords": [
+        "expense ratio",
+        "operating expenses",
+        "management fee"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include total annual fund operating expense ratio from the most recent prospectus.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(c)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "fees"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-c-sales-loads",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Sales Load Disclosure",
+    "severity": "critical",
+    "summary": "Investment company advertisements must disclose maximum sales charges (loads), including both front-end and back-end loads, or clearly state if the fund is no-load.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sales\\s+(charge|load)",
+        "front[\\s-]?end\\s+load",
+        "back[\\s-]?end\\s+load",
+        "no[\\s-]?load"
+      ],
+      "keywords": [
+        "sales load",
+        "sales charge",
+        "no-load",
+        "load fund"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose maximum front-end and back-end sales loads, or clearly state \"no-load\" if applicable.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(c)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "fees"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-d-tax",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Tax Impact Disclosure",
+    "severity": "warning",
+    "summary": "Investment company advertisements showing performance must disclose whether figures are pre-tax or after-tax and explain relevant tax implications.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "tax",
+        "after-tax",
+        "pre-tax",
+        "tax consequences"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose whether performance figures are pre-tax or after-tax, and explain tax implications.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(d)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-e-no-fdic",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Not FDIC Insured Statement",
+    "severity": "critical",
+    "summary": "Investment company advertisements must clearly state that the fund is not FDIC insured, has no bank guarantee, and may lose value.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "not\\s+FDIC\\s+insured",
+        "no\\s+bank\\s+guarantee",
+        "may\\s+lose\\s+value"
+      ],
+      "keywords": [
+        "FDIC",
+        "not insured",
+        "bank guarantee",
+        "may lose value"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include: \"Not FDIC Insured • No Bank Guarantee • May Lose Value\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(e)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "risk"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-e-principal-risk",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Principal Risk Statement",
+    "severity": "critical",
+    "summary": "Investment company advertisements must include a statement that investment return and principal value will fluctuate, and shares may be worth more or less than original cost when redeemed.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "principal",
+        "fluctuate",
+        "may lose value",
+        "redeemed"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include: \"Investment return and principal value will fluctuate. Shares, when redeemed, may be worth more or less than their original cost.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(e)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "risk"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-f-annual-returns",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Average Annual Total Returns",
+    "severity": "critical",
+    "summary": "Investment company advertisements must calculate and present average annual total returns using SEC-standardized methodology.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "average annual",
+        "total return",
+        "annualized"
+      ]
+    },
+    "remediation": {
+      "guidance": "Calculate and present average annual total returns using SEC-standardized methodology.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(f)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-f-benchmark",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Benchmark Comparison",
+    "severity": "warning",
+    "summary": "Investment company advertisements showing performance should include comparison to an appropriate benchmark index for the same time periods.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "S&P\\s*500",
+        "benchmark",
+        "index\\s+(comparison|performance)",
+        "vs\\.?\\s+(S&P|Russell|Dow|MSCI|Bloomberg)"
+      ],
+      "keywords": [
+        "benchmark",
+        "index",
+        "S&P 500",
+        "comparison"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include comparison to an appropriate benchmark index for the same time periods.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(f)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-g-current",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Current Performance Availability",
+    "severity": "warning",
+    "summary": "Investment company advertisements must provide a phone number or website URL where investors can obtain current month-end performance data.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "call.*\\d{3}[\\s.-]?\\d{3}[\\s.-]?\\d{4}",
+        "visit.*\\.(com|org|net)",
+        "current\\s+performance"
+      ],
+      "keywords": [
+        "call",
+        "visit",
+        "current performance",
+        "month-end"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include phone number or website URL where current month-end performance can be obtained.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482(g)",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "SEC-482-past-performance",
+    "version": "1.0.0",
+    "framework": "sec-482",
+    "title": "Past Performance Legend",
+    "severity": "critical",
+    "summary": "Investment company advertisements must include a clear statement that past performance does not guarantee future results.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "past\\s+performance.*guarantee",
+        "historical.*future\\s+results"
+      ],
+      "keywords": [
+        "past performance",
+        "does not guarantee",
+        "future results"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include: \"Past performance does not guarantee future results.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "17 CFR 230.482",
+      "source_url": "https://www.ecfr.gov/current/title-17/chapter-II/part-230/section-230.482",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "performance"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]
