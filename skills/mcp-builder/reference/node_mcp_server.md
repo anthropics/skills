@@ -118,7 +118,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 const server = new McpServer({
-  name: "example-mcp",
+  name: "example-mcp-server",
   version: "1.0.0"
 });
 
@@ -594,8 +594,10 @@ async function getUser(id: string): Promise<any> {
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import axios, { AxiosError } from "axios";
+import express from "express";
 
 // Constants
 const API_BASE_URL = "https://api.example.com/v1";
@@ -678,7 +680,7 @@ function handleApiError(error: unknown): string {
 
 // Create MCP server instance
 const server = new McpServer({
-  name: "example-mcp",
+  name: "example-mcp-server",
   version: "1.0.0"
 });
 
@@ -764,48 +766,41 @@ if (transport === 'http') {
 Expose data as resources for efficient, URI-based access:
 
 ```typescript
-import { ResourceTemplate } from "@modelcontextprotocol/sdk/types.js";
+import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-// Register a resource with URI template
+// Register a resource with URI template and optional dynamic listing
 server.registerResource(
+  "document",
+  new ResourceTemplate("file://documents/{name}", {
+    list: async () => {
+      const documents = await getAvailableDocuments();
+      return {
+        resources: documents.map(doc => ({
+          uri: `file://documents/${doc.name}`,
+          name: doc.name,
+          mimeType: "text/plain",
+          description: doc.description,
+        })),
+      };
+    },
+  }),
   {
-    uri: "file://documents/{name}",
-    name: "Document Resource",
+    title: "Document Resource",
     description: "Access documents by name",
-    mimeType: "text/plain"
+    mimeType: "text/plain",
   },
-  async (uri: string) => {
-    // Extract parameter from URI
-    const match = uri.match(/^file:\/\/documents\/(.+)$/);
-    if (!match) {
-      throw new Error("Invalid URI format");
-    }
-
-    const documentName = match[1];
-    const content = await loadDocument(documentName);
-
+  async (uri, variables) => {
+    const name = variables.name as string;
+    const content = await loadDocument(name);
     return {
       contents: [{
-        uri,
+        uri: uri.href,
         mimeType: "text/plain",
-        text: content
+        text: content,
       }]
     };
   }
 );
-
-// List available resources dynamically
-server.registerResourceList(async () => {
-  const documents = await getAvailableDocuments();
-  return {
-    resources: documents.map(doc => ({
-      uri: `file://documents/${doc.name}`,
-      name: doc.name,
-      mimeType: "text/plain",
-      description: doc.description
-    }))
-  };
-});
 ```
 
 **When to use Resources vs Tools:**
@@ -862,14 +857,10 @@ Notify clients when server state changes:
 
 ```typescript
 // Notify when tools list changes
-server.notification({
-  method: "notifications/tools/list_changed"
-});
+server.sendToolListChanged();
 
 // Notify when resources change
-server.notification({
-  method: "notifications/resources/list_changed"
-});
+server.sendResourceListChanged();
 ```
 
 Use notifications sparingly - only when server capabilities genuinely change.
