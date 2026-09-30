@@ -1,0 +1,41 @@
+{
+  "name": "Demo Slime",
+  "description": "Default demo sprite - cute blue slime with bounce animation",
+  "subject": {
+    "name": "slime",
+    "description": "cute blue gel slime",
+    "shape": "dome/teardrop blob, no limbs",
+    "features": "two simple dot eyes, glossy highlight"
+  },
+  "style": {
+    "name": "SNES RPG",
+    "colors": 4,
+    "feel": "bouncy, gelatinous, charming"
+  },
+  "canvas": {
+    "width": 128,
+    "height": 32,
+    "cell_width": 32,
+    "cell_height": 32,
+    "columns": 4,
+    "rows": 1,
+    "background": "#FF00FF"
+  },
+  "palette": [
+    "#FFFFFF",
+    "#88D8FF",
+    "#3898DC",
+    "#1C4A6E"
+  ],
+  "animation": {
+    "name": "bounce",
+    "frames": 4,
+    "poses": [
+      "Neutral dome shape, resting position",
+      "Squashed flat - wider and shorter",
+      "Stretched tall - narrower and taller",
+      "Settling back to neutral with wobble"
+    ]
+  },
+  "direction": "centered/symmetrical"
+}
