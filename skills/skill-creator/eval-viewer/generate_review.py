@@ -158,7 +158,7 @@ def embed_file(path: Path) -> dict:
             content = "(Error reading file)"
         return {
             "name": path.name,
-            "type": "text",
+            "type": "markdown" if ext == ".md" else "text",
             "content": content,
         }
     elif ext in IMAGE_EXTENSIONS:
