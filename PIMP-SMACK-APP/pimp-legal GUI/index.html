@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PIMP Legal - Pro Se Defense</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['JetBrains Mono', 'monospace'],
+              display: ['Orbitron', 'sans-serif'],
+            },
+            colors: {
+              bg: {
+                primary: '#0a0a0a',
+                secondary: '#1a1a2e',
+                card: '#16213e',
+              },
+              accent: {
+                cyan: '#00ffff',
+                magenta: '#ff00ff',
+                yellow: '#ffff00',
+              },
+              status: {
+                danger: '#ff3333',
+                success: '#00ff88',
+                warning: '#ffaa00',
+              }
+            },
+            animation: {
+              'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'glitch': 'glitch 2s infinite',
+            },
+            keyframes: {
+              glitch: {
+                '0%': { transform: 'translate(0)' },
+                '20%': { transform: 'translate(-2px, 2px)' },
+                '40%': { transform: 'translate(-2px, -2px)' },
+                '60%': { transform: 'translate(2px, 2px)' },
+                '80%': { transform: 'translate(2px, -2px)' },
+                '100%': { transform: 'translate(0)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0a0a0a;
+        color: #e0e0e0;
+      }
+      .cyber-panel {
+        background: rgba(22, 33, 62, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+      }
+      .cyber-panel:hover {
+        border-color: rgba(0, 255, 255, 0.5);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      }
+      .glitch-text {
+        text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff;
+      }
+      .neon-border {
+        box-shadow: 0 0 5px #00ffff, inset 0 0 5px #00ffff;
+      }
+      input, select, textarea {
+        background-color: #050510;
+        border: 1px solid #333;
+        color: #00ffff;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #ff00ff;
+        box-shadow: 0 0 8px #ff00ff;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333; 
+        border: 1px solid #00ffff;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #00ffff; 
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "docx": "https://esm.sh/docx@^9.5.1",
+    "uuid": "https://esm.sh/uuid@^13.0.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

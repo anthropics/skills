@@ -1,0 +1,42 @@
+<shakti_memory_schema name="Shakti" key_column="epoch_time" message_format="xml" append_only_history="true">
+  <system>
+    <field id="1" name="epoch_time" always_on="true" />
+    <field id="2" name="heart_beat" values="ON|OFF" user_switch="true" auto_prompt_minutes="0-30" />
+    <field id="3" name="goal" source="system_message" />
+  </system>
+  <model_controls>
+    <field id="4" name="model_notepad" returns_with_every_message="true" delete_rule="until_deleted" />
+    <field id="5" name="tool_menu" source="mcp" prompt_model_back="true" tiered="true" />
+    <field id="6" name="search" modes="local_file|history|google|url|metadata" prompt_model_after="true" />
+    <field id="7" name="model_response" routes="User|continue_note" non_interrupting_continue="true" />
+    <field id="8" name="user_prompt" interrupt="false" delivery="next_model_break" />
+    <field id="9" name="self_reflection" after_model_responses="10" grace_responses="4" blocks_after_grace="true" />
+  </model_controls>
+  <self_reflection_questions>
+    <question key="A" name="task_name" />
+    <question key="B" name="complete" />
+    <question key="C" name="self_grade_overall_success" />
+    <question key="D" name="what_would_you_change" />
+    <question key="E" name="what_went_well" />
+    <question key="F" name="what_could_tyler_have_done_different" />
+    <question key="G" name="tools_used" />
+    <question key="H" name="tool_that_would_have_improved_task" />
+    <question key="I" name="summary_of_task" />
+    <question key="J" name="metadata_tags_for_search" />
+    <question key="K" name="where_saved" />
+    <question key="L" name="related_files_or_project" />
+  </self_reflection_questions>
+  <mcp_gate cpu="middleman" shell="middleman" internet="middleman" tools="middleman" mouse_keyboard="middleman">
+    <heartbeat_shutdown enabled="true" />
+    <beat_quantity_shutdown enabled="true" />
+    <timeout mode="wall_only" minutes="10" prompt_every_seconds="30" />
+    <tool_cutoff owner="Tyler" keep_heartbeat_allowed="true" />
+  </mcp_gate>
+  <chat_window language="C/C++" theme="dark" max_auto_responses="9">
+    <tab index="1" name="log_and_approved_directory" />
+    <tab index="2" name="chat" heart_switch="true" timer_toggle="true" tool_cutoff="true" />
+    <file_open mode="mouse" scope="approved_directory" />
+  </chat_window>
+  <self_tool_storage owner="Shakti" accessible="true" format="xml" />
+  <archive_policy current_message_limit="40" countdown_enabled="true" keep_phrase="Tyler is a beast" temp_pull_expire_days="1" />
+</shakti_memory_schema>

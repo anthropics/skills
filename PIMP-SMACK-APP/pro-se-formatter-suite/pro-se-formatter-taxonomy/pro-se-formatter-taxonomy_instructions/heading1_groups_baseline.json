@@ -1,0 +1,160 @@
+{
+  "version": "0.2.0",
+  "scope": "formatter_heading1_groups_baseline",
+  "note": "DEPRECATED (reference-only): headings are now stored directly under each filing type in filing_types_federal_baseline.json. This file remains as an optional glossary/reference and for backwards compatibility.",
+  "heading1_sections": {
+    "introduction": {
+      "label": "Introduction",
+      "definition": "Short purpose statement: what this document asks for / responds to." 
+    },
+    "factual_background": {
+      "label": "Factual Background",
+      "definition": "Facts relevant to the issue at hand (not the whole life story)."
+    },
+    "argument": {
+      "label": "Argument",
+      "definition": "Where the filer asserts points on the issue; cites authority where applicable. Common in motions/briefs; not used for declarations/pleadings/exhibits." 
+    },
+    "conclusion": {
+      "label": "Conclusion",
+      "definition": "What you want the court to do / summary of requested relief."
+    },
+    "caption_cover": {
+      "label": "Caption/Cover (placeholder)",
+      "definition": "Caption/cover formatting varies by jurisdiction; do not invent local requirements."
+    },
+    "signature_block": {
+      "label": "Signature Block",
+      "definition": "Signature line(s) for filer/declarant/counsel." 
+    }
+  },
+  "heading1_groups": {
+    "motion_h1": {
+      "label": "Motion (H1 groups)",
+      "applies_to_filing_types": [
+        "motion"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "checklist": [
+        "Has Introduction",
+        "Has Factual Background (issue-relevant)",
+        "Has Argument (issue-specific)",
+        "Has Conclusion",
+        "Has Signature Block"
+      ]
+    },
+    "brief_h1": {
+      "label": "Brief / Memorandum (H1 groups)",
+      "applies_to_filing_types": [
+        "brief"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Introduction",
+        "Factual Background",
+        "Argument",
+        "Conclusion",
+        "Signature Block"
+      ],
+      "checklist": [
+        "Has Introduction",
+        "Has Factual Background (issue-relevant)",
+        "Has Argument",
+        "Has Conclusion",
+        "Has Signature Block"
+      ]
+    },
+    "pleading_h1": {
+      "label": "Pleading (H1 groups)",
+      "applies_to_filing_types": [
+        "pleading"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Parties (placeholder)",
+        "Factual Allegations",
+        "Claims / Defenses (placeholder)",
+        "Prayer for Relief (placeholder)",
+        "Signature Block"
+      ],
+      "checklist": [
+        "Has Parties section",
+        "Has Factual Allegations",
+        "Has Claims/Defenses placeholder",
+        "Has Prayer for Relief placeholder",
+        "Has Signature Block"
+      ]
+    },
+    "declaration_h1": {
+      "label": "Declaration / Affidavit (H1 groups)",
+      "applies_to_filing_types": [
+        "declaration"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Title (e.g., 'Declaration of …')",
+        "Declarant Identity / Capacity",
+        "Facts (sworn) (placeholder for your fact-block structure)",
+        "Signature Block"
+      ],
+      "checklist": [
+        "Declarant identity present",
+        "Sworn facts present",
+        "Signature block present"
+      ]
+    },
+    "notice_h1": {
+      "label": "Notice (H1 groups)",
+      "applies_to_filing_types": [
+        "notice"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Notice (body)",
+        "Signature Block"
+      ],
+      "checklist": [
+        "States what is being noticed",
+        "Signature block present"
+      ]
+    },
+    "proposed_order_h1": {
+      "label": "Proposed Order (H1 groups)",
+      "applies_to_filing_types": [
+        "proposed_order"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Order (body placeholder)",
+        "Date (placeholder)",
+        "Judge Signature Line (placeholder)"
+      ],
+      "checklist": [
+        "Order body present",
+        "Judge signature line placeholder present"
+      ]
+    },
+    "stipulation_h1": {
+      "label": "Stipulation (H1 groups)",
+      "applies_to_filing_types": [
+        "stipulation"
+      ],
+      "heading1": [
+        "Caption/Cover (placeholder)",
+        "Stipulation Terms",
+        "Signature Blocks (all parties)"
+      ],
+      "checklist": [
+        "Terms present",
+        "Signature blocks accounted for"
+      ]
+    }
+  }
+}
