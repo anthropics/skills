@@ -1,0 +1,30 @@
+{
+  "name": "deploy_to_ec2",
+  "version": "0.1.0",
+  "description": "CDK TypeScript project to deploy a sample agent to EC2",
+  "private": true,
+  "bin": {
+    "cdk-app": "bin/cdk-app.js"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "watch": "tsc -w",
+    "test": "vitest run",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.3",
+    "aws-cdk": "2.1012.0",
+    "prettier": "~3.5.3",
+    "tsx": "^4.7.0",
+    "typescript": "~5.8.3",
+    "vitest": "^3.1.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.192.0",
+    "constructs": "^10.2.0"
+  },
+  "prettier": {
+    "printWidth": 120
+  }
+}
