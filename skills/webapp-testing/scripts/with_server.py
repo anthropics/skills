@@ -66,11 +66,15 @@ def main():
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
             # Use shell=True to support commands with cd and &&
+            # stdout/stderr must not be piped: nothing ever drains them, so a
+            # server that logs more than the 64KB pipe buffer blocks forever
+            # and `is_server_ready` never succeeds. Inherit the terminal or
+            # discard instead.
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stdout=None,
+                stderr=None
             )
             server_processes.append(process)
 
