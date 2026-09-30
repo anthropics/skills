@@ -276,7 +276,22 @@ def generate_html(
     if benchmark:
         embedded["benchmark"] = benchmark
 
-    data_json = json.dumps(embedded)
+    # Escape the characters that are unsafe to embed in the viewer's <script>
+    # block. json.dumps does not escape "<", so an embedded string containing
+    # "</script>" (common, since runs carry the raw outputs a skill under test
+    # produced) would close the script element early — blanking the viewer and
+    # allowing markup injection. U+2028/U+2029 are valid in JSON but were illegal
+    # in JS string literals before ES2019, and EMBEDDED_DATA is consumed as a JS
+    # object literal. This mirrors Flask's htmlsafe_dumps / Django's json_script;
+    # each escape parses back to the original character, so the data is unchanged.
+    data_json = (
+        json.dumps(embedded)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
