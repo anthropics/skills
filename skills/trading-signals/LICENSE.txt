@@ -1,0 +1,23 @@
+Aelita Trader Skill - Proprietary License
+
+Copyright (c) 2025-2026 Roman Antonov. All rights reserved.
+
+Author: Roman Antonov
+Email: romwtb@gmail.com
+GitHub: https://github.com/roman-rr
+Website: https://roman-rr.github.io/
+
+PAID LICENSE - NOT FREE SOFTWARE.
+
+This skill, its API endpoints, signal data, and all associated
+intellectual property are proprietary. The API is currently provided
+free during beta period.
+
+Any commercial redistribution, reselling of signal data, or creation
+of derivative works requires explicit written permission and a paid
+license agreement with Roman Antonov.
+
+Unauthorized redistribution or reproduction without explicit written
+permission is strictly prohibited.
+
+For licensing inquiries contact: romwtb@gmail.com
