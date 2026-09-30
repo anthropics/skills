@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ocp-mcp": {
+      "command": "python3.12",
+      "args": ["/ocp-claude-skills/ocp_mcp_server.py"]
+    }
+  }
+}
+
