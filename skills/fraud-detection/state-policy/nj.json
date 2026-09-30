@@ -1,0 +1,104 @@
+{
+  "name": "nj-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NJ",
+  "index": "https://www.njmmis.com/documentDownload.aspx?fileType=19C807B2-D8D9-4711-BBEE-2C28B6E81BDF",
+  "fetchVia": "curl",
+  "out": "policy/nj",
+  "note": "NJMMIS (Gainwell) Billing Supplements / Training Packets — 28 provider-type categories behind an ASP.NET dropdown postback. NJ's actual provider 'manuals' are N.J.A.C. Title 10:49–10:87 (LexisNexis HTML, no PDFs); the NJMMIS billing supplements + training packets are the closest curl-able PDFs. Direct download URL pattern: documentDownload.aspx?document=<file>.pdf — curl 200, no login.",
+  "docs": [
+    {
+      "title": "Transportation Billing Supplement",
+      "detector": "D19",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_Transportation.pdf",
+      "pp": null
+    },
+    {
+      "title": "Transportation Training Packet",
+      "detector": "D19",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=transportation_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Care Provider Billing Supplement",
+      "detector": "D20",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_HomeCareProv.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health / Home Care Training Packet",
+      "detector": "D20",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=homehealth-homecare_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "DDD Supports Waiver Program Training Packet (HCBS)",
+      "detector": "D20",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=ddd_training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Community Support Services Training Packet",
+      "detector": "D20",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=Community_Support_services_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Billing Supplement",
+      "detector": "D4",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_Physician.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Training Packet",
+      "detector": "D4",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=physician_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Supply — DME Billing Supplement",
+      "detector": "D15",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_MedSupDME.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME Training Packet",
+      "detector": "D15",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=dme_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Billing Supplement",
+      "detector": "D16,D23",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_Pharm.pdf",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratory Billing Supplement",
+      "detector": "D4",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_IndepLab.pdf",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratory Training Packet",
+      "detector": "D4",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=ind-lab_Training.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Billing Supplement",
+      "detector": "D20",
+      "url": "https://www.njmmis.com/documentDownload.aspx?document=BillingSup_Hospice.pdf",
+      "pp": null
+    },
+    {
+      "title": "Essential Information for NJ FamilyCare Providers (DMAHS, 2026)",
+      "detector": "D3,D4",
+      "url": "https://nj.gov/humanservices/dmahs/documents/providers-stakeholders/Essential_Information_for_NJFamilyCare_Provider_2026.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Index page is an ASP.NET dropdown (wctBillingSuppHeader1:ddlDocTypes) + btnSubmit postback that renders a #dgdArticleList table with span.documentLink onclick=window.open('documentDownload.aspx?document=<file>') — no <a> hrefs, so a plain crawl misses them. 28 provider categories; captured 14 detector-relevant docs across Transportation/HomeCare-HCBS/Physician/DME/Pharmacy/Lab/Hospice + the DMAHS general provider guide. Regulatory source of truth is N.J.A.C. 10:49 et seq. at https://www.nj.gov/humanservices/dmahs/providers-stakeholders/provider-resources/eligibility/ (LexisNexis-hosted HTML).",
+  "siteArchitecture": "aspnet-postback",
+  "lastVerified": "2026-06-22"
+}

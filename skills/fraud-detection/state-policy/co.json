@@ -1,0 +1,122 @@
+{
+  "name": "co-medicaid-policy",
+  "kind": "state-policy",
+  "state": "CO",
+  "index": "https://hcpf.colorado.gov/billing-manuals",
+  "fetchVia": "browser",
+  "out": "policy/co",
+  "note": "Health First Colorado (HCPF) Billing Manuals — ~40 per-provider-type manuals as HTML pages (not PDFs) at hcpf.colorado.gov/<slug>. curl 403s site-wide (Drupal + WAF); browser required. Each manual page is the policy text directly — fetch as HTML→text.",
+  "docs": [
+    {
+      "title": "General Provider Information Manual",
+      "detector": "D3,D4",
+      "url": "https://hcpf.colorado.gov/gen-info-manual",
+      "pp": null
+    },
+    {
+      "title": "Non-Emergent Medical Transportation (NEMT) Billing Manual",
+      "detector": "D19",
+      "url": "https://hcpf.colorado.gov/nemt-billing-manual",
+      "pp": null
+    },
+    {
+      "title": "Emergency Medical Transportation Billing Manual",
+      "detector": "D19",
+      "url": "https://hcpf.colorado.gov/emt-manual",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health Secure Transportation (BHST) Billing Manual",
+      "detector": "D19",
+      "url": "https://hcpf.colorado.gov/BHST-manual",
+      "pp": null
+    },
+    {
+      "title": "Home Health Billing Information Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/hh-billing_manual",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/pdn-manual",
+      "pp": null
+    },
+    {
+      "title": "Pediatric Personal Care Benefit Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/ppc-manual",
+      "pp": null
+    },
+    {
+      "title": "Community First Choice (CFC) Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/cfc-billing-manual",
+      "pp": null
+    },
+    {
+      "title": "HCBS — Adult BI/CMHS/EBD Waiver Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/BICMHSEBD-manual",
+      "pp": null
+    },
+    {
+      "title": "HCBS — Intellectual/Developmental Disabilities (IDD) Waiver Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/hcbs-idd-manual",
+      "pp": null
+    },
+    {
+      "title": "Medical-Surgical Billing Manual (Physician/Practitioner CMS-1500)",
+      "detector": "D4",
+      "url": "https://hcpf.colorado.gov/med-surg-manual",
+      "pp": null
+    },
+    {
+      "title": "Telemedicine Billing Manual",
+      "detector": "D4",
+      "url": "https://hcpf.colorado.gov/telemedicine-manual",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment, Prosthetics, Orthotics and Supplies (DMEPOS) Billing Manual",
+      "detector": "D15",
+      "url": "https://hcpf.colorado.gov/DMEPOS-manual",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Billing Manual",
+      "detector": "D16,D23",
+      "url": "https://hcpf.colorado.gov/pharmacy-billing-manual",
+      "pp": null
+    },
+    {
+      "title": "Physician-Administered Drugs (PAD) Billing Manual",
+      "detector": "D16",
+      "url": "https://hcpf.colorado.gov/pad-manual",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services Billing Manual",
+      "detector": "D4",
+      "url": "https://hcpf.colorado.gov/laboratory-billing",
+      "pp": null
+    },
+    {
+      "title": "Outpatient Imaging and Radiology Billing Manual",
+      "detector": "D4",
+      "url": "https://hcpf.colorado.gov/imaging-manual",
+      "pp": null
+    },
+    {
+      "title": "Hospice Billing Manual",
+      "detector": "D20",
+      "url": "https://hcpf.colorado.gov/hospice-billing-manual",
+      "pp": null
+    }
+  ],
+  "_comment": "HCPF publishes billing manuals as live HTML pages, one per provider type (~40 unique slugs on /bill-manual-provider-type). No per-manual PDF downloads; the page IS the manual. Physician services = the Medical-Surgical manual. EVV manual at /evv-manual supplements D20. Provider Enrollment PDF exists at /sites/hcpf/files/Provider%20Enrollment%20Manual%20*.pdf but also 403s via curl. fetch-reference state-policy handler should treat these URLs as HTML→text (browser fetch).",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

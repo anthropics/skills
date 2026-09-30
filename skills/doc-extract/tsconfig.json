@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["bun-types"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // decoders ships as plain .mjs with JSDoc types (the fhir server imports it
+    // unbuilt); without allowJs+checkJs it resolves to any here
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": ["scripts/*.ts", "scripts/*.mjs"]
+}

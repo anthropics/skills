@@ -1,0 +1,116 @@
+{
+  "name": "fl-medicaid-policy",
+  "kind": "state-policy",
+  "state": "FL",
+  "index": "https://ahca.myflorida.com/medicaid/rules/adopted-rules-service-specific-policies.html",
+  "fetchVia": "curl",
+  "out": "policy/fl",
+  "note": "Florida AHCA Medicaid Coverage Policies (Rule 59G-4 series). ~80 per-service PDFs on the index; captured 17 detector-relevant ones. Practitioner svcs split across E&M + per-specialty policies. Direct download links, no login.",
+  "docs": [
+    {
+      "title": "Non-Emergency Transportation Services Coverage Policy (59G-4.330)",
+      "detector": "D19",
+      "url": "https://ahca.myflorida.com/content/download/5967/file/59G-4.330.pdf",
+      "pp": null
+    },
+    {
+      "title": "Emergency Transportation Services Coverage Policy (59G-4.015)",
+      "detector": "D19",
+      "url": "https://ahca.myflorida.com/content/download/7037/file/59G-4.015_Emergency_Transportation_Coverage_Policy_Adoption.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Visit Services Coverage Policy (59G-4.130)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/7034/file/59G-4.130%20Home%20Health%20Visit%20Services%20Coverage%20Policy_FINAL.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Electronic Visit Verification Program (59G-4.132)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/7041/file/59G_4-132_RT.pdf",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Services Coverage Policy (59G-4.215)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/25561/file/59G-4.215%20Personal%20Care%20Services%20Coverage%20Policy_Final_10.8.24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing and Family Home Health Aide Services (59G-4.261)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/7036/file/59G-4.261%20Private%20Duty%20Nursing%20Services%20Coverage%20Policy_FINAL.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home and Community Based Services Settings (59G-13.075)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/5934/file/59G-13.075_HCBS_Settings.pdf",
+      "pp": null
+    },
+    {
+      "title": "Evaluation and Management / Child Health Check-Up Coverage Policy (59G-4.087)",
+      "detector": "D4",
+      "url": "https://ahca.myflorida.com/content/download/27062/file/59G-4.087%20Evaluation%20and%20Management%20and%20Child%20Health%20Check%20Policy%20(1).pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services Coverage Policy (59G-4.190)",
+      "detector": "D4",
+      "url": "https://ahca.myflorida.com/content/download/24380/file/Florida%20Medicaid%20Laboratory%20Services%20Coverage%20Policy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Radiology and Nuclear Medicine Coverage Policy (59G-4.240)",
+      "detector": "D4",
+      "url": "https://ahca.myflorida.com/content/download/5956/file/59G-4.240_Radiology_and_Nuclear_Medicine_Coverage_Policy_2019.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pain Management Services Coverage Policy (59G-4.222)",
+      "detector": "D4,D16",
+      "url": "https://ahca.myflorida.com/content/download/27071/file/59G-4.222%20Pain_Management_Services_Coverage_Policy%20(1).pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Medical Supply Services: Specialized (59G-4.072)",
+      "detector": "D15",
+      "url": "https://ahca.myflorida.com/content/download/23763/file/59G-4.072%20Durable%20Medical%20%20Equipment%20and%20Medical%20Supply%20Services%20Specialized.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Medical Supply Services: Respiratory (59G-4.074)",
+      "detector": "D15",
+      "url": "https://ahca.myflorida.com/content/download/23765/file/59G-4.074%20Durable%20Medical%20Equipment%20and%20Medical%20Supply%20Services%20Respiratory.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Medical Supply Services: Wheelchairs, Hospital Beds, Ambulatory Aids (59G-4.075)",
+      "detector": "D15",
+      "url": "https://ahca.myflorida.com/content/download/23766/file/59G-4.075%20Durable%20Medical%20Equipment%20and%20Medical%20Supply%20Services%20Wheelchairs%20Hospital%20Beds%20and%20Ambulatory%20Aids.pdf",
+      "pp": null
+    },
+    {
+      "title": "Prescribed Drug Services Coverage Policy (59G-4.250)",
+      "detector": "D16,D23",
+      "url": "https://ahca.myflorida.com/content/download/5957/file/59G-4.250_Prescribed_Drug_Coverage_Policy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services Coverage Policy (59G-4.140)",
+      "detector": "D20",
+      "url": "https://ahca.myflorida.com/content/download/5949/file/59G-4.140_Hospice_Coverage_Policy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Provider General Handbook (59G-5.020)",
+      "detector": "D3,D4",
+      "url": "https://ahca.myflorida.com/content/download/7012/file/59G_5020_Provider_General_REQUIREMENTS.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "AHCA Adopted Rules — Service Specific Policies index. 80+ coverage-policy PDFs total (Rule 59G-4.xxx, one per service). FL has no single 'Practitioner Services' handbook — physician services split into E&M + ~15 specialty-specific policies (cardio/neuro/ortho/etc). DME split into 6 sub-policies (59G-4.072–.077). Fee schedules under sibling page rules/rule-59g-4.002-provider-reimbursement-schedules-and-billing-codes. Direct /content/download/ links 200 via curl.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

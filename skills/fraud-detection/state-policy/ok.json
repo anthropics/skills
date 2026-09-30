@@ -1,0 +1,104 @@
+{
+  "name": "ok-medicaid-policy",
+  "kind": "state-policy",
+  "state": "OK",
+  "index": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service.html",
+  "fetchVia": "curl",
+  "out": "policy/ok",
+  "note": "OHCA SoonerCare policy = OAC 317 Chapter 30 (Medical Providers — Fee for Service), rendered as nested HTML on oklahoma.gov AEM (xpolicy tree). ~85 specialty Parts under Subchapter 5. curl 200, no login. Supplemented by the Provider Billing & Procedures Manual PDF.",
+  "docs": [
+    {
+      "title": "OAC 317:30-5 — SoonerRide Non-Emergency Transportation",
+      "detector": "D19",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/soonerride-non-emergency-transportation.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Transportation by Ambulance",
+      "detector": "D19",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/transportation-by-ambulance.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Agency Personal Care Services",
+      "detector": "D20",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/agency-personal-care-services.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Home Health Agencies",
+      "detector": "D20",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/home-health-agencies.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/private-duty-nursing.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — ADvantage Program Waiver Services (HCBS)",
+      "detector": "D20",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/advantage-program-waiver-services.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Physicians",
+      "detector": "D4",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/physicians.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Certified Laboratories",
+      "detector": "D4",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/certified-laboratories.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Diagnostic Testing Entities",
+      "detector": "D4",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/diagnostic-testing-entities.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Medical Suppliers (DME)",
+      "detector": "D15",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/medical-suppliers.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Pharmacies",
+      "detector": "D16,D23",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/pharmacies.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Hospice Care",
+      "detector": "D20",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/hospice-care.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-5 — Outpatient Behavioral Health Services",
+      "detector": "D4",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/individual-providers-and-specialties/outpatient-behavioral-health-services.html",
+      "pp": null
+    },
+    {
+      "title": "OAC 317:30-3 — General Scope and Administration (provider screening, sanctions, telehealth)",
+      "detector": "D3,D4",
+      "url": "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-providers-fee-for-service/general-provider-policies/general-scope-and-administration.html",
+      "pp": null
+    },
+    {
+      "title": "OHCA Provider Billing and Procedures Manual (full PDF)",
+      "detector": "D4",
+      "url": "https://oklahoma.gov/content/dam/ok/en/okhca/documents/a0300/21360.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "OHCA hosts OAC Title 317 Ch.30 directly as a nested HTML xpolicy tree (AEM). Subchapter 5 'Individual Providers and Specialties' has ~85 per-service Parts; each Part page links per-rule sub-pages. fetch-reference state-policy handler should treat these as HTML→text and recurse one level (Part page → its rule sub-pages). Billing manual is a single ~5.4 MB PDF (also split per-chapter at .../okhca/documents/chap<N>.pdf). SoonerSelect managed-care contracts not captured. curl 200 site-wide.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}

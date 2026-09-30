@@ -1,0 +1,98 @@
+{
+  "name": "ms-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MS",
+  "index": "https://medicaid.ms.gov/providers/administrative-code/",
+  "fetchVia": "curl",
+  "out": "policy/ms",
+  "note": "Mississippi Admin. Code Title 23 — DOM hosts every Part as a standalone PDF on a single index page (WordPress wp-content/uploads, dated filenames). 39 Parts total; captured 14 detector-relevant. Full single-PDF compendium also linked. curl 200, no login.",
+  "docs": [
+    {
+      "title": "Part 200 — General Provider Information",
+      "detector": "D3,D4",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2026/04/Title-23-Part-200-General-Provider-Information-eff-04.01.26.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 201 — Transportation Services (NEMT + Ambulance)",
+      "detector": "D19",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2024/02/Title-23-Part-201-Transporation-Services.Entire.eff-2.1.24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 208 — Home and Community Based LTC Services (HCBS Waivers)",
+      "detector": "D20",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2025/07/Title-23-Part-208-HCBS-LTC-eff.-7.1.2025.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 215 — Home Health Services",
+      "detector": "D20",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2024/11/Title-23-Part-215-Home-Health-Services-eff.-11.01.24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 203 — Physician Services",
+      "detector": "D4",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2026/05/Title-23-Part-203-Physician-Services-eff-05.01.26.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 225 — Telemedicine",
+      "detector": "D4",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2024/05/Title-23-Part-225-Telemedicine-eff-06.01.2024.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 209 — Durable Medical Equipment and Medical Supplies",
+      "detector": "D15",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2025/05/Title-23-Part-209-DME-and-Medical-Supplies-eff-6.1.25.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 214 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2025/05/Title-23-Part-214-Pharmacy-Services-eff.-6.1.25.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 219 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2024/11/Title-23-Part-219-Laboratory-Services-eff.-11.01.24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 220 — Radiology Services",
+      "detector": "D4",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2014/01/Admin-Code-Part-220.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 213 — Therapy Services (PT/OT/ST)",
+      "detector": "D20",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2021/11/Title-23-Part-213-Therapy-Services-eff.-11.01.21.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 205 — Hospice Services",
+      "detector": "D20",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2022/03/Title-23-Part-205-Hospice-Services-eff.-1.1.22-revised-3.4.22.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 202 — Hospital Services",
+      "detector": "D20",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2024/09/Title-23-Part-202-Hospital-Services-09.01.24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 305 — Program Integrity",
+      "detector": "D3",
+      "url": "https://medicaid.ms.gov/wp-content/uploads/2025/08/Title-23-Part-305-Program-Integrity.eff_.-08.01.25.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "MS DOM Administrative Code Title 23. Single flat index → per-Part PDFs at /wp-content/uploads/<YYYY>/<MM>/Title-23-Part-NNN-*.pdf (filenames embed eff. dates, so they roll). Entire-code PDF at /wp-content/uploads/2026/05/Entire-AdminstrativeCode-eff.-5.1.26.pdf. No separate 'Personal Care' Part — personal-care attendant svcs covered inside Part 208 HCBS waivers. Provider Billing Handbook (Gainwell) is a separate companion at /provider-billing-handbook-2/.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}
