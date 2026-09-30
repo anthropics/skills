@@ -118,6 +118,23 @@ if all_tables:
     combined_df.to_excel("extracted_tables.xlsx", index=False)
 ```
 
+#### Positional Tables Without Cell Borders
+
+Some PDFs render tables only by positioning words at fixed coordinates, with no ruling lines or table objects. If `page.extract_tables()` returns nothing useful but the page visually contains columns, use word coordinates instead of character-column positions from `pdftotext -layout`:
+
+```python
+import pdfplumber
+
+with pdfplumber.open("document.pdf") as pdf:
+    for page in pdf.pages:
+        words = page.extract_words()
+        for word in words:
+            print(word["text"], word["x0"], word["x1"], word["top"], word["bottom"])
+        page.flush_cache()
+```
+
+Group words into columns using their physical `x0`/`x1` positions and into rows using `top`/`bottom`. This is more reliable for multi-page positional tables because `pdftotext -layout` character spacing can shift between pages. For very large PDFs, process one page at a time and call `page.flush_cache()` after extracting what you need so cached page state does not accumulate unnecessarily.
+
 ### reportlab - Create PDFs
 
 #### Basic PDF Creation
