@@ -1,0 +1,446 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  FRONTEND_IMAGE_NAME: ${{ github.repository }}/frontend
+  BACKEND_IMAGE_NAME: ${{ github.repository }}/backend
+  NODE_VERSION: '20.x'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ============================================
+  # PRE-DEPLOYMENT VALIDATION
+  # ============================================
+  validate:
+    name: Pre-Deployment Validation
+    runs-on: ubuntu-latest
+    outputs:
+      deploy_env: ${{ steps.determine-env.outputs.environment }}
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine deployment environment
+        id: determine-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "version=staging-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate version format (production only)
+        if: steps.determine-env.outputs.environment == 'production'
+        run: |
+          if [[ ! "${{ steps.version.outputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format. Must be v*.*.* (e.g., v1.0.0)"
+            exit 1
+          fi
+          echo "✅ Version format valid: ${{ steps.version.outputs.version }}"
+
+      - name: Check for breaking changes
+        run: |
+          echo "🔍 Scanning for breaking changes..."
+          git log --oneline -10 | grep -i "BREAKING CHANGE" && echo "⚠️ Breaking changes detected" || echo "✅ No breaking changes"
+
+  # ============================================
+  # BUILD FRONTEND
+  # ============================================
+  build-frontend:
+    name: Build Frontend Docker Image
+    runs-on: ubuntu-latest
+    needs: validate
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=${{ needs.validate.outputs.version }}
+
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile.frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:buildcache,mode=max
+          build-args: |
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            BUILD_ENV=${{ needs.validate.outputs.deploy_env }}
+
+      - name: Scan image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+          format: 'sarif'
+          output: 'trivy-frontend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+  # ============================================
+  # BUILD BACKEND
+  # ============================================
+  build-backend:
+    name: Build Backend Docker Image
+    runs-on: ubuntu-latest
+    needs: validate
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=${{ needs.validate.outputs.version }}
+
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./docker/Dockerfile.backend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:buildcache,mode=max
+          build-args: |
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+
+      - name: Scan image for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+          format: 'sarif'
+          output: 'trivy-backend-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+  # ============================================
+  # DEPLOY TO STAGING
+  # ============================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [validate, build-frontend, build-backend]
+    if: needs.validate.outputs.deploy_env == 'staging'
+    environment:
+      name: staging
+      url: https://staging.piano-tutor.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (or your cloud provider)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to staging via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/piano-tutor
+
+            # Pull latest images
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+            docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+
+            # Update docker-compose
+            export VERSION=${{ needs.validate.outputs.version }}
+            docker-compose -f docker-compose.staging.yml down
+            docker-compose -f docker-compose.staging.yml up -d
+
+            # Wait for health checks
+            sleep 10
+            curl -f http://localhost:3000/health || exit 1
+            curl -f http://localhost:8000/health || exit 1
+
+      - name: Run smoke tests
+        run: |
+          echo "🧪 Running smoke tests against staging..."
+          # Add your smoke test commands here
+          curl -f https://staging.piano-tutor.com/health
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "✅ Staging deployment successful!"
+          echo "URL: https://staging.piano-tutor.com"
+          echo "Version: ${{ needs.validate.outputs.version }}"
+
+  # ============================================
+  # DEPLOY TO PRODUCTION
+  # ============================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [validate, build-frontend, build-backend]
+    if: needs.validate.outputs.deploy_env == 'production'
+    environment:
+      name: production
+      url: https://piano-tutor.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Create backup before deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/piano-tutor
+
+            # Backup current version
+            BACKUP_DIR="/opt/backups/$(date +%Y%m%d_%H%M%S)"
+            mkdir -p $BACKUP_DIR
+            docker-compose -f docker-compose.production.yml config > $BACKUP_DIR/docker-compose.yml
+            docker images | grep piano-tutor > $BACKUP_DIR/images.txt
+
+            echo "✅ Backup created at $BACKUP_DIR"
+
+      - name: Deploy to production (Blue-Green)
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/piano-tutor
+
+            # Pull new images
+            docker pull ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+            docker pull ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}
+
+            # Start new containers (green)
+            export VERSION=${{ needs.validate.outputs.version }}
+            docker-compose -f docker-compose.production.yml -p piano-tutor-green up -d
+
+            # Wait for health checks
+            echo "⏳ Waiting for health checks..."
+            for i in {1..30}; do
+              if curl -f http://localhost:3001/health && curl -f http://localhost:8001/health; then
+                echo "✅ Health checks passed"
+                break
+              fi
+              echo "Attempt $i/30 - waiting..."
+              sleep 2
+            done
+
+            # Switch traffic (nginx/load balancer update)
+            sudo nginx -s reload
+
+            # Stop old containers (blue)
+            docker-compose -f docker-compose.production.yml -p piano-tutor-blue down
+
+            # Rename green to blue for next deployment
+            docker-compose -f docker-compose.production.yml -p piano-tutor-green down
+            docker-compose -f docker-compose.production.yml -p piano-tutor-blue up -d
+
+      - name: Run production smoke tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+
+          # Health check
+          curl -f https://piano-tutor.com/health || exit 1
+
+          # API health
+          curl -f https://piano-tutor.com/api/health || exit 1
+
+          # Check critical paths
+          curl -f https://piano-tutor.com/ | grep -q "Piano Tutor" || exit 1
+
+          echo "✅ All smoke tests passed"
+
+      - name: Monitor error rates (5 min)
+        run: |
+          echo "📊 Monitoring error rates for 5 minutes..."
+          # Add monitoring check here (DataDog, Sentry, etc.)
+          sleep 300
+
+      - name: Rollback on failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/piano-tutor
+            echo "🔴 Deployment failed - initiating rollback..."
+
+            # Switch back to previous version (blue)
+            docker-compose -f docker-compose.production.yml -p piano-tutor-blue up -d
+            docker-compose -f docker-compose.production.yml -p piano-tutor-green down
+
+            sudo nginx -s reload
+
+            echo "✅ Rollback completed"
+
+      - name: Create GitHub Release
+        if: success() && startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.validate.outputs.version }}
+          release_name: Release ${{ needs.validate.outputs.version }}
+          body: |
+            ## 🚀 Production Release ${{ needs.validate.outputs.version }}
+
+            **Deployment Time**: ${{ github.event.head_commit.timestamp }}
+            **Deployed By**: ${{ github.actor }}
+
+            ### Changes
+            ${{ github.event.head_commit.message }}
+
+            ### Artifacts
+            - Frontend Image: `${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}`
+            - Backend Image: `${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.validate.outputs.version }}`
+
+            ### Health Checks
+            - ✅ Frontend: https://piano-tutor.com/health
+            - ✅ Backend: https://piano-tutor.com/api/health
+          draft: false
+          prerelease: false
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "✅ Production deployment successful!"
+          echo "URL: https://piano-tutor.com"
+          echo "Version: ${{ needs.validate.outputs.version }}"
+          echo "Deployed at: $(date)"
+
+  # ============================================
+  # POST-DEPLOYMENT VERIFICATION
+  # ============================================
+  post-deployment-checks:
+    name: Post-Deployment Verification
+    runs-on: ubuntu-latest
+    needs: [validate, deploy-staging, deploy-production]
+    if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
+
+    steps:
+      - name: Determine environment URL
+        id: env-url
+        run: |
+          if [[ "${{ needs.validate.outputs.deploy_env }}" == "production" ]]; then
+            echo "url=https://piano-tutor.com" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://staging.piano-tutor.com" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            ${{ steps.env-url.outputs.url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Check performance metrics
+        run: |
+          echo "📊 Checking performance metrics..."
+          # Add performance monitoring checks
+
+      - name: Verify database migrations
+        run: |
+          echo "🗄️ Verifying database state..."
+          # Add database verification
+
+      - name: Update status page
+        run: |
+          echo "📢 Updating status page..."
+          # Add status page update logic
