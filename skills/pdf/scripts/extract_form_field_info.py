@@ -45,7 +45,10 @@ def make_field_dict(field, field_id):
 
 
 def get_field_info(reader: PdfReader):
-    fields = reader.get_fields()
+    # pypdf returns None when the PDF has no form fields (e.g. no /AcroForm),
+    # and None values inside the dict for unnamed/malformed field nodes;
+    # normalizing both keeps the extraction from crashing.
+    fields = reader.get_fields() or {}
 
     field_info_by_id = {}
     possible_radio_names = set()
