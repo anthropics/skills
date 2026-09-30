@@ -1,0 +1,55 @@
+# Python project using uv as package manager.
+# Substitute {PYTHON_VERSIONS} (json array, e.g. ["3.10", "3.11", "3.12"]),
+# {LINT_CMD} (e.g. "uv run ruff check ."), and {TEST_CMD} (e.g. "uv run pytest -v").
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: {PYTHON_VERSIONS}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv (with cache)
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Pin Python version
+        run: echo "${{ matrix.python-version }}" > .python-version
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
+
+      - name: Run tests
+        run: {TEST_CMD}
+
+      - name: Run linter
+        run: {LINT_CMD}
