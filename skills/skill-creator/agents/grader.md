@@ -58,12 +58,16 @@ Beyond the predefined expectations, extract implicit claims from the outputs and
 
 This catches issues that predefined expectations might miss.
 
-### Step 5: Read User Notes
+### Step 5: Read Optional User Notes
 
-If `{outputs_dir}/user_notes.md` exists:
+`{outputs_dir}/user_notes.md` is an optional compatibility artifact. The standard skill-creator workflow does not generate it automatically; a custom or external executor may provide it.
+
+If it exists:
 1. Read it and note any uncertainties or issues flagged by the executor
 2. Include relevant concerns in the grading output
 3. These may reveal problems even when expectations pass
+
+If it does not exist, continue without it and do not synthesize user notes.
 
 ### Step 6: Critique the Evals
 
@@ -98,14 +102,16 @@ Save results to `{outputs_dir}/../grading.json` (sibling to outputs_dir).
 
 **When uncertain**: The burden of proof to pass is on the expectation.
 
-### Step 8: Read Executor Metrics and Timing
+### Step 8: Read Optional Executor Metrics and Timing
 
-1. If `{outputs_dir}/metrics.json` exists, read it and include in grading output
-2. If `{outputs_dir}/../timing.json` exists, read it and include timing data
+`{outputs_dir}/metrics.json` is also optional. The standard skill-creator workflow does not generate it automatically; a custom or external executor may emit it.
+
+1. If `{outputs_dir}/metrics.json` exists, read it and include `execution_metrics` in grading output. If it is absent, omit `execution_metrics` rather than inventing values.
+2. If `{outputs_dir}/../timing.json` exists, read it and include timing data. Timing is captured separately by the standard workflow when the executor task completes.
 
 ## Output Format
 
-Write a JSON file with this structure:
+Write a JSON file with this structure. Optional sections such as `execution_metrics`, `timing`, and `user_notes_summary` should be omitted when their source artifacts are unavailable.
 
 ```json
 {
@@ -194,10 +200,10 @@ Write a JSON file with this structure:
   - **failed**: Count of failed expectations
   - **total**: Total expectations evaluated
   - **pass_rate**: Fraction passed (0.0 to 1.0)
-- **execution_metrics**: Copied from executor's metrics.json (if available)
+- **execution_metrics**: Optional; copied from executor's metrics.json when provided
   - **output_chars**: Total character count of output files (proxy for tokens)
   - **transcript_chars**: Character count of transcript
-- **timing**: Wall clock timing from timing.json (if available)
+- **timing**: Optional; wall clock timing from timing.json when available
   - **executor_duration_seconds**: Time spent in executor subagent
   - **total_duration_seconds**: Total elapsed time for the run
 - **claims**: Extracted and verified claims from the output
@@ -205,7 +211,7 @@ Write a JSON file with this structure:
   - **type**: "factual", "process", or "quality"
   - **verified**: Boolean - whether the claim holds
   - **evidence**: Supporting or contradicting evidence
-- **user_notes_summary**: Issues flagged by the executor
+- **user_notes_summary**: Optional; issues summarized from user_notes.md when provided
   - **uncertainties**: Things the executor wasn't sure about
   - **needs_review**: Items requiring human attention
   - **workarounds**: Places where the skill didn't work as expected
