@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "changelog-entry-writer",
+      "description": "Turns a diff, commit list, or PR description into a well-formatted changelog entry following the Keep a Changelog convention",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/changelog-entry-writer"
+      ]
     }
   ]
 }
