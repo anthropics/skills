@@ -93,6 +93,7 @@ def run_loop(
             num_workers=num_workers,
             timeout=timeout,
             project_root=project_root,
+            skill_path=skill_path,
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
