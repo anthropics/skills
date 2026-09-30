@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+.builder-block {
+  position: relative;
+  transition: outline 0.15s;
+  cursor: pointer;
+}
+.builder-block:hover {
+  outline: 2px dashed #6366f1;
+  outline-offset: 2px;
+}
+.builder-block.selected {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+.drag-handle {
+  cursor: grab;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
