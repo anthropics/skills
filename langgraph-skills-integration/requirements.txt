@@ -1,0 +1,35 @@
+# LangGraph + DeepSeek + Skills 集成所需依赖
+
+# LangGraph 和 LangChain
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-community>=0.3.0
+langchain-core>=0.3.0
+
+# DeepSeek API (兼容 OpenAI 格式)
+openai>=1.0.0
+
+# 数据处理
+pyyaml>=6.0
+gitpython>=3.1.0
+
+# PDF 处理 (如果使用 pdf 技能)
+pypdf>=3.0.0
+pdfplumber>=0.10.0
+reportlab>=4.0.0
+
+# GIF 创建 (如果使用 slack-gif-creator 技能)
+pillow>=10.0.0
+imageio>=2.31.0
+numpy>=1.24.0
+
+# 文档处理 (如果使用 docx/xlsx 技能)
+python-docx>=1.0.0
+openpyxl>=3.1.0
+
+# OCR (可选，用于扫描的 PDF)
+# pytesseract>=0.3.10
+# pdf2image>=1.16.0
+
+# 其他工具
+python-dotenv>=1.0.0  # 环境变量管理
