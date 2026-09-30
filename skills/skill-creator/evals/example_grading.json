@@ -1,0 +1,34 @@
+{
+  "eval_id": "eval-1",
+  "eval_name": "simple-workflow-skill",
+  "timestamp": "2026-08-09T12:34:56Z",
+  "expectations": [
+    {
+      "text": "Captures what the skill does (structure standup updates, flag blockers)",
+      "passed": true,
+      "evidence": "Response explicitly stated 'skill to structure standup updates into consistent format' and 'flag blockers automatically'"
+    },
+    {
+      "text": "Identifies when to trigger (standup context, status update requests)",
+      "passed": true,
+      "evidence": "Description included 'when user mentions standup, status meetings, or team status updates'"
+    },
+    {
+      "text": "Provides SKILL.md skeleton with proper frontmatter",
+      "passed": true,
+      "evidence": "Generated complete SKILL.md template with name, description, and license fields in YAML frontmatter"
+    },
+    {
+      "text": "Suggests 2-3 realistic test prompts",
+      "passed": true,
+      "evidence": "Provided 3 test prompts covering: standard standup, remote team standup, and async standup format"
+    },
+    {
+      "text": "Explains whether quantitative assertions or qualitative feedback makes sense",
+      "passed": true,
+      "evidence": "Response noted 'this skill produces structured output so assertions can verify format correctness, but quality of blocker identification needs qualitative review'"
+    }
+  ],
+  "overall_pass_rate": 1.0,
+  "notes": "All criteria met. Response demonstrates understanding of skill creation workflow and provides actionable next steps."
+}
