@@ -1,0 +1,11 @@
+{
+  "checkCodeQuality": true,
+  "checkSecurity": true,
+  "checkTests": true,
+  "checkDependencies": true,
+  "checkDocumentation": true,
+  "failOnWarnings": true,
+  "customChecks": [],
+  "excludePaths": ["node_modules", ".git", "dist"],
+  "reportFormat": "detailed"
+}

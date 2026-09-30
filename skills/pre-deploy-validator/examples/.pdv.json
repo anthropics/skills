@@ -1,0 +1,8 @@
+{
+  "checkCodeQuality": true,
+  "checkSecurity": true,
+  "checkTests": true,
+  "checkDependencies": true,
+  "checkDocumentation": true,
+  "failOnWarnings": false
+}
