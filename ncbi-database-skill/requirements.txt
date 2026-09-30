@@ -1,0 +1,12 @@
+# NCBI Database Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core package for NCBI queries
+biopython>=1.81
+
+# For async operations (optional)
+aiohttp>=3.9.0
+asyncio>=3.4.3
+
+# For better JSON handling (optional)
+requests>=2.31.0
