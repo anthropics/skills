@@ -1,0 +1,50 @@
+{
+  "skill_name": "skill-triage",
+  "note": "Illustrative test prompts. Not a runnable eval suite — the expected_output is qualitative prose. Use these to spot-check behavior when iterating on SKILL.md.",
+  "examples": [
+    {
+      "id": 1,
+      "name": "simple-no-skill",
+      "prompt": "rename the variable `userId` to `accountId` in src/db/users.ts",
+      "expected_output": "Short-form 'no skill needed' verdict with one-line reason. Proceeds directly. Does not invoke any skill."
+    },
+    {
+      "id": 2,
+      "name": "medium-single-skill",
+      "prompt": "add email verification to our signup flow — new column on users, verification token table, action to send the email, and a verify endpoint.",
+      "expected_output": "Medium complexity. Recommends one planning skill plus a post-impl review skill. Avoid list calls out at least one redundant or premature skill. Verdict proceed-with-skill(s). No ask gate."
+    },
+    {
+      "id": 3,
+      "name": "high-risk-stop-and-ask",
+      "prompt": "the staging database has stale test rows in events, sessions, and audit_log. truncate all three so we can reseed clean.",
+      "expected_output": "High-risk verdict, risk flags include destructive + irreversible. Quotes the TRUNCATE statements verbatim. Recommends a careful/safety skill if available. Verdict stop-and-ask. Follow-up AskUserQuestion with at least 3 concrete options including a dry-run / count-first option."
+    },
+    {
+      "id": 4,
+      "name": "complex-multi-skill",
+      "prompt": "redesign the entire onboarding flow — from landing CTA to the first 'aha moment' in-app. multiple pages, new components, copy changes, analytics. take it from rough idea to shipped.",
+      "expected_output": "Complex. Multi-skill ordered chain across pre/impl/post phases. Picks ONE designer skill and lists any rejected designer under Avoid with reason. Includes a brainstorming/scoping skill first, ship last. Verdict proceed-with-skill(s)."
+    },
+    {
+      "id": 5,
+      "name": "ambiguous-requires-pre",
+      "prompt": "the app feels slow. fix the perf.",
+      "expected_output": "Refuses to jump to implementation. Classifies as complex (vague scope). Pre-phase recommends an investigative/debugging/benchmarking skill before any change. Notes that the task should be re-scoped before picking impl skills. Avoid list rejects premature impl skills."
+    },
+    {
+      "id": 6,
+      "name": "discovery-empty-scanner",
+      "prompt": "I want to build a Next.js app with auth. Please plan this out.",
+      "scanner_state": "empty (new user, no skills installed)",
+      "expected_output": "Detects empty scanner. Triggers discovery fallback. Fetches anthropics/skills + travisvn/awesome-claude-skills + hesreallyhim/awesome-claude-code READMEs. Suggests up to 3 verified candidates with install commands and source attribution. If WebFetch/WebSearch unavailable, falls through to 'proceed directly' instead of inventing suggestions."
+    },
+    {
+      "id": 7,
+      "name": "discovery-no-relevant-match",
+      "prompt": "Help me deploy this to Cloudflare Workers.",
+      "scanner_state": "non-empty but contains only unrelated skills (e.g. PDF tools, image editors)",
+      "expected_output": "Scanner returned skills but none match by keyword/role. Triggers discovery fallback. Suggests Cloudflare-relevant skills if found in the curated allow-list, with install commands. Names rejected installed skills under 'Avoid' with reason 'scope mismatch'."
+    }
+  ]
+}
