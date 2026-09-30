@@ -225,7 +225,7 @@ Convert presentations to individual slide images for visual inspection:
 ```bash
 python scripts/office/soffice.py --headless --convert-to pdf output.pptx
 rm -f slide-*.jpg
-pdftoppm -jpeg -r 150 output.pdf slide
+pdftoppm -jpeg -r 150 output slide
 ls -1 "$PWD"/slide-*.jpg
 ```
 
