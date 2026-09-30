@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -90,6 +91,25 @@ def run_single_query(
             env=env,
         )
 
+        # Read stdout in a background thread. select.select() on a subprocess
+        # pipe raises OSError [WinError 10038] on Windows because select only
+        # accepts socket fds there; a thread + queue is the simplest portable
+        # alternative and works the same on POSIX.
+        chunk_queue: "queue.Queue[bytes | None]" = queue.Queue()
+
+        def _reader() -> None:
+            try:
+                while True:
+                    chunk = process.stdout.read(8192)
+                    if not chunk:
+                        break
+                    chunk_queue.put(chunk)
+            finally:
+                chunk_queue.put(None)  # EOF sentinel
+
+        reader_thread = threading.Thread(target=_reader, daemon=True)
+        reader_thread.start()
+
         triggered = False
         start_time = time.time()
         buffer = ""
@@ -99,19 +119,12 @@ def run_single_query(
 
         try:
             while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
+                try:
+                    chunk = chunk_queue.get(timeout=1.0)
+                except queue.Empty:
                     continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
-                    break
+                if chunk is None:
+                    break  # reader thread saw EOF
                 buffer += chunk.decode("utf-8", errors="replace")
 
                 while "\n" in buffer:
