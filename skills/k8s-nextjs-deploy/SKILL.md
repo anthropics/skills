@@ -26,17 +26,17 @@ Do NOT use for:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudreviewer-web
-  namespace: cloudreviewer
+  name: myapp-web
+  namespace: myapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cloudreviewer-web
+      app: myapp-web
   template:
     metadata:
       labels:
-        app: cloudreviewer-web
+        app: myapp-web
     spec:
       imagePullSecrets:
         - name: harbor-pull-secret
@@ -82,11 +82,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cloudreviewer-web
-  namespace: cloudreviewer
+  name: myapp-web
+  namespace: myapp
 spec:
   selector:
-    app: cloudreviewer-web
+    app: myapp-web
   ports:
     - name: http
       port: 80
@@ -99,8 +99,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cloudreviewer
-  namespace: cloudreviewer
+  name: myapp
+  namespace: myapp
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
@@ -110,7 +110,7 @@ spec:
         - www.example.com
         - buy.example.com
         - kb.example.com
-      secretName: cloudreviewer-tls
+      secretName: myapp-tls
   rules:
     - host: www.example.com
       http:
@@ -119,7 +119,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: cloudreviewer-web
+                name: myapp-web
                 port:
                   number: 80
 ```
@@ -172,7 +172,7 @@ Pod image pulled successfully but container won't start — usually a missing `s
 kubectl -n <ns> describe pod <pod> | grep -i "secret\|error" | head -20
 ```
 
-The referenced secret (e.g., `cloudreviewer-buy-secrets`) was lost when the namespace was deleted. Recreate it:
+The referenced secret (e.g., `myapp-secrets`) was lost when the namespace was deleted. Recreate it:
 
 ```bash
 kubectl -n <ns> create secret generic my-app-secrets \
