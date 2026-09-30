@@ -1,0 +1,252 @@
+# Game Character FSM Example
+# Hierarchical state machine for a platformer game character
+
+name: GameCharacter
+type: hierarchical
+initial: alive.grounded.idle
+description: Character controller with nested states for movement and combat
+
+# Hierarchical state structure
+states:
+  alive:
+    description: Character is alive and controllable
+    substates:
+      grounded:
+        description: Character is on the ground
+        substates:
+          idle:
+            description: Standing still
+            entry: play_idle_animation()
+            transitions:
+              - event: move_input
+                next: alive.grounded.walking
+                guard: speed < run_threshold
+              - event: move_input
+                next: alive.grounded.running
+                guard: speed >= run_threshold
+              - event: jump_input
+                next: alive.airborne.jumping
+                action: apply_jump_force()
+              - event: attack_input
+                next: alive.grounded.attacking
+                action: start_attack()
+
+          walking:
+            description: Moving at normal speed
+            entry: play_walk_animation()
+            update: move_character(walk_speed)
+            transitions:
+              - event: no_input
+                next: alive.grounded.idle
+              - event: speed_increase
+                next: alive.grounded.running
+                guard: speed >= run_threshold
+              - event: jump_input
+                next: alive.airborne.jumping
+                action: apply_jump_force()
+
+          running:
+            description: Moving at high speed
+            entry: play_run_animation()
+            update: move_character(run_speed)
+            transitions:
+              - event: no_input
+                next: alive.grounded.idle
+              - event: speed_decrease
+                next: alive.grounded.walking
+                guard: speed < run_threshold
+              - event: jump_input
+                next: alive.airborne.jumping
+                action: apply_jump_force(1.5)  # Higher jump when running
+              - event: dash_input
+                next: alive.grounded.dashing
+                guard: dash_cooldown_ready
+
+          dashing:
+            description: Quick dash move
+            entry: start_dash()
+            exit: end_dash()
+            duration: 0.3  # seconds
+            transitions:
+              - event: dash_complete
+                next: alive.grounded.idle
+              - event: collision
+                next: alive.grounded.idle
+                action: cancel_dash()
+
+          attacking:
+            description: Performing attack
+            entry: play_attack_animation()
+            substates:
+              combo1:
+                transitions:
+                  - event: attack_input
+                    next: alive.grounded.attacking.combo2
+                    guard: within_combo_window
+                  - event: animation_complete
+                    next: alive.grounded.idle
+
+              combo2:
+                transitions:
+                  - event: attack_input
+                    next: alive.grounded.attacking.combo3
+                    guard: within_combo_window
+                  - event: animation_complete
+                    next: alive.grounded.idle
+
+              combo3:
+                transitions:
+                  - event: animation_complete
+                    next: alive.grounded.idle
+                    action: reset_combo()
+
+      airborne:
+        description: Character is in the air
+        entry: apply_gravity()
+        substates:
+          jumping:
+            description: Moving upward
+            entry: play_jump_animation()
+            update: apply_jump_physics()
+            transitions:
+              - event: peak_reached
+                next: alive.airborne.falling
+              - event: ground_contact
+                next: alive.grounded.landing
+              - event: wall_contact
+                next: alive.airborne.wall_sliding
+                guard: wall_slide_available
+              - event: double_jump_input
+                next: alive.airborne.double_jumping
+                guard: double_jump_available
+
+          double_jumping:
+            description: Second jump in air
+            entry: play_double_jump_animation()
+            transitions:
+              - event: peak_reached
+                next: alive.airborne.falling
+              - event: ground_contact
+                next: alive.grounded.landing
+
+          falling:
+            description: Moving downward
+            entry: play_fall_animation()
+            update: apply_fall_physics()
+            transitions:
+              - event: ground_contact
+                next: alive.grounded.landing
+              - event: wall_contact
+                next: alive.airborne.wall_sliding
+                guard: wall_slide_available
+
+          wall_sliding:
+            description: Sliding down a wall
+            entry: play_wall_slide_animation()
+            update: apply_wall_slide_physics()
+            transitions:
+              - event: jump_input
+                next: alive.airborne.wall_jumping
+                action: wall_jump()
+              - event: ground_contact
+                next: alive.grounded.idle
+              - event: wall_release
+                next: alive.airborne.falling
+
+          wall_jumping:
+            description: Jumping off a wall
+            entry: apply_wall_jump_force()
+            transitions:
+              - event: peak_reached
+                next: alive.airborne.falling
+              - event: ground_contact
+                next: alive.grounded.landing
+
+      grounded.landing:
+        description: Just landed from air
+        entry: play_landing_animation()
+        duration: 0.2
+        transitions:
+          - event: animation_complete
+            next: alive.grounded.idle
+          - event: move_input
+            next: alive.grounded.walking
+            guard: landing_recovery_complete
+
+  hurt:
+    description: Character taking damage
+    entry: play_hurt_animation()
+    transitions:
+      - event: hurt_recovery
+        next: alive.grounded.idle
+        guard: has_health
+      - event: hurt_recovery
+        next: dead
+        guard: no_health_remaining
+
+  dead:
+    description: Character is dead
+    entry: play_death_animation()
+    final: true
+    transitions:
+      - event: respawn
+        next: alive.grounded.idle
+        action: reset_character()
+
+# Parallel regions (orthogonal states)
+parallel_regions:
+  equipment:
+    states: [unarmed, sword, bow, magic_staff]
+    initial: unarmed
+
+  power_ups:
+    states: [normal, invincible, speed_boost, strength_boost]
+    initial: normal
+
+# Physics parameters
+physics:
+  gravity: -9.8
+  jump_force: 500
+  walk_speed: 5.0
+  run_speed: 10.0
+  run_threshold: 7.5
+  dash_speed: 20.0
+  wall_slide_speed: -2.0
+  air_control: 0.3
+
+# Animation parameters
+animations:
+  idle:
+    frames: 8
+    loop: true
+
+  walk:
+    frames: 10
+    loop: true
+
+  run:
+    frames: 8
+    loop: true
+
+  jump:
+    frames: 3
+    loop: false
+
+  fall:
+    frames: 2
+    loop: true
+
+  attack_combo:
+    combo1_frames: 5
+    combo2_frames: 6
+    combo3_frames: 8
+
+# Guard conditions
+guards:
+  speed_check: "current_speed > threshold"
+  dash_cooldown_ready: "time_since_last_dash > dash_cooldown"
+  double_jump_available: "double_jump_count > 0"
+  wall_slide_available: "is_touching_wall && vertical_velocity < 0"
+  within_combo_window: "time_since_last_attack < combo_window"
+  has_health: "health > 0"
+  no_health_remaining: "health <= 0"
