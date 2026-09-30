@@ -266,7 +266,7 @@ async def run_evaluation(
             summary=result["summary"] or "N/A",
             feedback=result["feedback"] or "N/A",
         )
-        for i, (qa_pair, result) in enumerate(zip(qa_pairs, results))
+        for i, (qa_pair, result) in enumerate(zip(qa_pairs, results, strict=True))
     ])
 
     return report
