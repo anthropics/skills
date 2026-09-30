@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Spotify (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #121212; --surface: #181818; --mid: #1f1f1f; --card: #252525;
+    --green: #1ed760; --white: #ffffff; --silver: #b3b3b3; --muted: #7c7c7c;
+    --neg: #f3727f; --warn: #ffa42b; --info: #539df5;
+    --border: #4d4d4d; --light-border: #7c7c7c;
+    --shadow-heavy: rgba(0,0,0,0.5) 0px 8px 24px;
+    --shadow-med: rgba(0,0,0,0.3) 0px 8px 8px;
+    --font: 'Inter', Helvetica Neue, helvetica, arial, sans-serif;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--white); font-family:var(--font); font-size:14px; font-weight:400; line-height:1.40; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:12px 24px; background:var(--surface); }
+  .nav-brand { font-size:14px; font-weight:700; color:var(--white); text-decoration:none; }
+  .nav-links { display:flex; gap:16px; list-style:none; }
+  .nav-links a { font-size:14px; font-weight:400; color:var(--silver); text-decoration:none; transition:color 0.15s; }
+  .nav-links a:hover { color:var(--white); }
+  .nav-cta { display:inline-block; background:var(--green); color:#000; padding:8px 20px; border-radius:500px; font-size:14px; font-weight:700; text-decoration:none; }
+
+  .hero { padding:64px 24px; text-align:center; background:var(--bg); }
+  .hero h1 { font-size:24px; font-weight:700; margin-bottom:12px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { font-size:14px; color:var(--silver); max-width:500px; margin:0 auto 24px; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn-green { display:inline-block; background:var(--green); color:#000; padding:10px 24px; border-radius:500px; font-size:14px; font-weight:700; text-decoration:none; border:none; cursor:pointer; text-transform:uppercase; letter-spacing:1.4px; }
+  .btn-outline { display:inline-block; background:transparent; color:var(--white); padding:10px 24px; border-radius:9999px; border:1px solid var(--light-border); font-family:var(--font); font-size:14px; font-weight:700; text-decoration:none; cursor:pointer; text-transform:uppercase; letter-spacing:1.4px; }
+  .btn-dark { display:inline-block; background:var(--mid); color:var(--white); padding:8px 16px; border-radius:9999px; font-size:14px; font-weight:700; text-decoration:none; }
+  .btn-circle { display:inline-flex; align-items:center; justify-content:center; background:var(--green); color:#000; width:48px; height:48px; border-radius:50%; font-size:20px; font-weight:700; text-decoration:none; border:none; cursor:pointer; }
+
+  .section { padding:48px 24px; max-width:1000px; margin:0 auto; }
+  .section-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1.4px; color:var(--silver); margin-bottom:8px; }
+  .section-title { font-size:18px; font-weight:700; margin-bottom:24px; }
+  .section-divider { border:none; border-top:1px solid rgba(255,255,255,0.08); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-bottom:20px; }
+  .color-swatch { border-radius:6px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); }
+  .color-swatch-block { height:60px; width:100%; }
+  .color-swatch-info { padding:8px 10px; }
+  .color-swatch-name { font-size:12px; font-weight:700; margin-bottom:2px; }
+  .color-swatch-hex { font-size:10px; color:var(--silver); font-family:monospace; }
+  .color-swatch-role { font-size:9px; color:var(--muted); margin-top:2px; }
+  .color-group-label { font-size:12px; font-weight:700; color:var(--silver); margin:20px 0 8px; text-transform:uppercase; letter-spacing:1px; }
+
+  .type-sample { margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:10px; color:var(--muted); margin-top:4px; font-family:monospace; }
+
+  .button-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:10px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:0.5px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; }
+  .card { background:var(--surface); border-radius:8px; padding:16px; transition:background 0.2s; }
+  .card:hover { background:var(--card); }
+  .card h3 { font-size:16px; font-weight:700; margin-bottom:4px; }
+  .card p { font-size:12px; color:var(--silver); }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:12px; font-weight:700; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px; }
+  .form-input { width:100%; background:var(--mid); color:var(--white); border:none; padding:12px 16px; border-radius:500px; font-family:var(--font); font-size:14px; outline:none; box-shadow:rgb(18,18,18) 0px 1px 0px, rgb(124,124,124) 0px 0px 0px 1px inset; }
+  .form-input:focus { box-shadow:0 0 0 2px var(--green); }
+  .form-input--focus { box-shadow:0 0 0 2px var(--green); }
+  .form-input--error { box-shadow:0 0 0 2px var(--neg); }
+  .form-textarea { width:100%; min-height:80px; background:var(--mid); color:var(--white); border:none; padding:12px 16px; border-radius:8px; font-family:var(--font); font-size:14px; resize:vertical; outline:none; box-shadow:rgb(124,124,124) 0px 0px 0px 1px inset; }
+  .form-state-label { font-size:9px; color:var(--muted); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--green); border-radius:4px; margin-bottom:4px; height:24px; }
+  .spacing-value { font-size:9px; color:var(--muted); font-family:monospace; }
+
+  .radius-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:52px; height:52px; background:var(--mid); border:1px solid rgba(255,255,255,0.1); margin-bottom:4px; }
+  .radius-label { font-size:9px; color:var(--muted); font-family:monospace; }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px; }
+  .elevation-card { background:var(--surface); border-radius:8px; padding:16px; text-align:center; }
+  .elevation-label { font-size:13px; font-weight:700; margin-bottom:4px; }
+  .elevation-desc { font-size:9px; color:var(--muted); font-family:monospace; }
+
+  .footer { padding:24px; text-align:center; border-top:1px solid rgba(255,255,255,0.05); font-size:12px; color:var(--muted); }
+  .footer a { color:var(--green); text-decoration:underline; }
+
+  @media (max-width:768px) { .nav-links { display:none; } .section { padding:32px 16px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Open Spotify</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System Inspired by <span>Spotify</span></h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, and component — visualized in the dark.</p>
+  <div class="hero-buttons">
+    <a class="btn-green" href="#">Get Spotify Free</a>
+    <a class="btn-outline" href="#">Learn More</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1ed760"></div><div class="color-swatch-info"><div class="color-swatch-name">Spotify Green</div><div class="color-swatch-hex">#1ed760</div><div class="color-swatch-role">Brand accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#121212"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#121212</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#181818"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface</div><div class="color-swatch-hex">#181818</div><div class="color-swatch-role">Cards, containers</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f1f1f"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Dark</div><div class="color-swatch-hex">#1f1f1f</div><div class="color-swatch-role">Buttons, inputs</div></div></div>
+  </div>
+  <div class="color-group-label">Text & Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Primary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b3b3b3"></div><div class="color-swatch-info"><div class="color-swatch-name">Silver</div><div class="color-swatch-hex">#b3b3b3</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f3727f"></div><div class="color-swatch-info"><div class="color-swatch-name">Negative</div><div class="color-swatch-hex">#f3727f</div><div class="color-swatch-role">Error states</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffa42b"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#ffa42b</div><div class="color-swatch-role">Warning states</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#539df5"></div><div class="color-swatch-info"><div class="color-swatch-name">Announcement</div><div class="color-swatch-hex">#539df5</div><div class="color-swatch-role">Info states</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-size:24px; font-weight:700;">Section Title — Your Playlists</div><div class="type-meta">Title — 24px / 700 / SpotifyMixUITitle</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:600; line-height:1.30;">Feature Heading</div><div class="type-meta">Feature — 18px / 600 / 1.30</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:700;">Body Bold — Liked Songs</div><div class="type-meta">Body Bold — 16px / 700</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; color:var(--silver);">Caption — 3 min 42 sec</div><div class="type-meta">Caption — 14px / 400</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:1.4px;">SHUFFLE PLAY</div><div class="type-meta">Button Uppercase — 14px / 700 / uppercase / +1.4px</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:700; color:var(--silver);">Small Bold — 1,234 songs</div><div class="type-meta">Small Bold — 12px / 700</div></div>
+  <div class="type-sample"><div style="font-size:10.5px; font-weight:600; text-transform:capitalize; color:var(--silver);">Badge</div><div class="type-meta">Badge — 10.5px / 600 / capitalize</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div><h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-green" href="#">Shuffle Play</a><div class="button-label">Green Pill</div></div>
+    <div class="button-item"><a class="btn-dark" href="#">Browse</a><div class="button-label">Dark Pill</div></div>
+    <div class="button-item"><a class="btn-outline" href="#">Follow</a><div class="button-label">Outlined</div></div>
+    <div class="button-item"><a class="btn-circle" href="#">&#9654;</a><div class="button-label">Play Circle</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div><h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card"><h3>Discover Weekly</h3><p>Your personal playlist, updated every Monday.</p></div>
+    <div class="card" style="box-shadow:var(--shadow-med);"><h3>Release Radar</h3><p>New releases from artists you follow. Elevated shadow.</p></div>
+    <div class="card"><h3>Daily Mix 1</h3><p>Made for you based on your listening.</p></div>
+    <div class="card"><h3>Liked Songs</h3><p>Your saved songs collection.</p></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div><h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Search</label><input class="form-input" type="search" placeholder="Artists, songs, or podcasts"><div class="form-state-label">Default (inset border)</div></div>
+  <div class="form-group"><label class="form-label">Playlist Name</label><input class="form-input form-input--focus" type="text" value="Chill Vibes"><div class="form-state-label">Focus (green ring)</div></div>
+  <div class="form-group"><label class="form-label">Email</label><input class="form-input form-input--error" type="email" value="invalid"><div class="form-state-label">Error (red ring)</div></div>
+  <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Add a description..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">07 / Radius</div><h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:500px"></div><div class="radius-label">500px</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%; width:52px; height:52px;"></div><div class="radius-label">50%</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Base</div><div class="elevation-desc">#121212 background</div></div>
+    <div class="elevation-card" style="background:var(--mid);"><div class="elevation-label">Surface</div><div class="elevation-desc">#1f1f1f</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-med);"><div class="elevation-label">Elevated</div><div class="elevation-desc">0.3 opacity 8px</div></div>
+    <div class="elevation-card" style="box-shadow:var(--shadow-heavy);"><div class="elevation-label">Dialog</div><div class="elevation-desc">0.5 opacity 24px</div></div>
+  </div>
+</section>
+
+<footer class="footer">Generated from <a href="https://spotify.com/">spotify.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

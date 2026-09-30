@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: xAI (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1f2228;
+    --bg-page: #1f2228;
+    --white: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-disabled: rgba(255, 255, 255, 0.3);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --surface: rgba(255, 255, 255, 0.03);
+    --surface-hover: rgba(255, 255, 255, 0.08);
+    --ring-blue: rgb(59, 130, 246);
+    --font-display: 'Geist Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, Monaco, monospace;
+    --font-body: 'Inter', -apple-system, system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(31,34,40,0.90);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { font-family: var(--font-display); font-size: 14px; font-weight: 400; color: var(--text-primary); text-decoration: none; text-transform: uppercase; letter-spacing: 1.4px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-family: var(--font-body); font-size: 14px; font-weight: 400; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--text-muted); }
+  .nav-cta {
+    display: inline-block; background: var(--white); color: var(--bg);
+    padding: 8px 16px; border-radius: 0px;
+    font-family: var(--font-display); font-size: 12px; font-weight: 400;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 1.4px;
+    transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed; top: 16px; right: 16px; z-index: 200;
+    background: var(--white); color: var(--bg);
+    font-family: var(--font-display); font-size: 11px; font-weight: 400;
+    padding: 4px 10px; border-radius: 0px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; }
+  .hero h1 {
+    font-family: var(--font-display); font-size: 64px; font-weight: 300; line-height: 1.20;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.50; color: var(--text-secondary); max-width: 560px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--white); color: var(--bg);
+    padding: 12px 24px; border-radius: 0px; border: none;
+    font-family: var(--font-display); font-size: 14px; font-weight: 400;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 1.4px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-ghost {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 12px 24px; border-radius: 0px;
+    border: 1px solid var(--border-strong);
+    font-family: var(--font-display); font-size: 14px; font-weight: 400;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 1.4px;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-ghost:hover { opacity: 0.6; }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1080px; margin: 0 auto; }
+  .section-label { font-family: var(--font-display); font-size: 12px; font-weight: 400; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 8px; }
+  .section-title { font-family: var(--font-body); font-size: 30px; font-weight: 400; line-height: 1.20; margin-bottom: 32px; color: var(--text-primary); }
+  .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { overflow: hidden; border: 1px solid var(--border); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 400; margin-bottom: 2px; color: var(--text-primary); }
+  .color-swatch-hex { font-size: 12px; color: var(--text-muted); font-family: var(--font-display); }
+  .color-swatch-role { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 400; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-display); font-size: 12px; font-weight: 400; color: var(--text-muted); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+  .btn-text-link {
+    display: inline-block; background: none; color: var(--text-primary);
+    padding: 8px 16px; font-family: var(--font-body); font-size: 16px;
+    font-weight: 400; text-decoration: none; transition: opacity 0.15s;
+  }
+  .btn-text-link:hover { opacity: 0.5; }
+  .badge-mono {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 4px 8px; font-family: var(--font-display); font-size: 12px;
+    text-transform: uppercase; letter-spacing: 1px;
+    border: 1px solid var(--border-strong);
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--surface); padding: 24px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s ease;
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card h3 { font-family: var(--font-body); font-size: 20px; font-weight: 400; margin-bottom: 8px; color: var(--text-primary); }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.60; }
+  .card-tag { display: inline-block; font-family: var(--font-display); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 6px; border: 1px solid var(--border-strong); margin-bottom: 12px; color: var(--text-muted); }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 400; color: var(--text-secondary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: transparent; color: var(--text-primary);
+    border: 1px solid var(--border-strong); padding: 10px 12px; border-radius: 0px;
+    font-family: var(--font-body); font-size: 14px; font-weight: 400; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--ring-blue); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+  .form-input--focus { border-color: var(--ring-blue); box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: transparent; color: var(--text-primary);
+    border: 1px solid var(--border-strong); padding: 10px 12px; border-radius: 0px;
+    font-family: var(--font-body); font-size: 14px; font-weight: 400; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--white); margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-display); font-size: 11px; font-weight: 400; color: var(--text-muted); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--white); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-display); font-size: 11px; font-weight: 400; color: var(--text-muted); }
+  .radius-context { font-size: 10px; color: var(--text-muted); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--surface); padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 400; margin-bottom: 4px; color: var(--text-primary); }
+  .elevation-desc { font-family: var(--font-display); font-size: 11px; color: var(--text-muted); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); }
+  .footer a { color: var(--text-primary); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">TRY GROK</a>
+</nav>
+<div class="dark-badge">Dark Mode</div>
+
+<section class="hero">
+  <h1>Design System Inspired by xAI</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value -- visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">GET STARTED</a>
+    <a class="btn-ghost" href="#">VIEW DOCUMENTATION</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228; border-bottom: 1px solid rgba(255,255,255,0.1)"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Background</div><div class="color-swatch-hex">#1f2228</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Text, foreground</div></div></div>
+  </div>
+
+  <div class="color-group-label">Text Opacity Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,1);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Text Primary</div><div class="color-swatch-hex">rgba(255,255,255,1)</div><div class="color-swatch-role">Headings, labels</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.7);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">rgba(255,255,255,0.7)</div><div class="color-swatch-role">Descriptions</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.5);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Text Muted</div><div class="color-swatch-hex">rgba(255,255,255,0.5)</div><div class="color-swatch-role">Hover state, placeholders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.3);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Text Disabled</div><div class="color-swatch-hex">rgba(255,255,255,0.3)</div><div class="color-swatch-role">Disabled states</div></div></div>
+  </div>
+
+  <div class="color-group-label">Border & Surface</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.1);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Border Default</div><div class="color-swatch-hex">rgba(255,255,255,0.1)</div><div class="color-swatch-role">Cards, dividers</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.2);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Border Strong</div><div class="color-swatch-hex">rgba(255,255,255,0.2)</div><div class="color-swatch-role">Active, buttons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.03);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Subtle</div><div class="color-swatch-hex">rgba(255,255,255,0.03)</div><div class="color-swatch-role">Card backgrounds</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f2228"><div style="width:100%;height:100%;background:rgba(255,255,255,0.08);"></div></div><div class="color-swatch-info"><div class="color-swatch-name">Surface Hover</div><div class="color-swatch-hex">rgba(255,255,255,0.08)</div><div class="color-swatch-role">Hover surfaces</div></div></div>
+  </div>
+
+  <div class="color-group-label">Functional</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:rgb(59,130,246)"></div><div class="color-swatch-info"><div class="color-swatch-name">Focus Ring</div><div class="color-swatch-hex">rgb(59, 130, 246)</div><div class="color-swatch-role">Keyboard focus</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:72px; font-weight:300; line-height:1.20; color:var(--text-primary);">Display Hero</div><div class="type-meta">Display Hero -- 320px (shown at 72px) / GeistMono / 300 / 1.50</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-body); font-size:30px; font-weight:400; line-height:1.20; color:var(--text-primary);">Section Heading</div><div class="type-meta">Section Heading -- 30px / universalSans / 400 / 1.20</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-body); font-size:16px; font-weight:400; line-height:1.50; color:var(--text-secondary);">Body text -- xAI is a company working on building artificial intelligence to accelerate human scientific discovery.</div><div class="type-meta">Body -- 16px / universalSans / 400 / 1.50</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:14px; font-weight:400; line-height:1.43; text-transform:uppercase; letter-spacing:1.4px; color:var(--text-primary);">Button Label</div><div class="type-meta">Button -- 14px / GeistMono / 400 / uppercase / 1.4px tracking</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-body); font-size:14px; font-weight:400; line-height:1.50; color:var(--text-secondary);">Label / Caption text for supporting information</div><div class="type-meta">Label -- 14px / universalSans / 400 / 1.50</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-body); font-size:12px; font-weight:400; line-height:1.50; color:var(--text-muted);">Small meta text, timestamps, footnotes</div><div class="type-meta">Small -- 12px / universalSans / 400 / 1.50</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:12px; font-weight:400; line-height:1.50; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted);">MONOSPACE TAG</div><div class="type-meta">Tag -- 12px / GeistMono / uppercase / 1px tracking</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">GET STARTED</a><div class="button-label">Primary</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">LEARN MORE</a><div class="button-label">Ghost / Outlined</div></div>
+    <div class="button-item"><a class="btn-text-link" href="#">Text Link</a><div class="button-label">Text Link</div></div>
+    <div class="button-item"><span class="badge-mono">API v2</span><div class="button-label">Mono Tag</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag">MODEL</div>
+      <h3>Grok</h3>
+      <p>An AI assistant built to be maximally helpful. Grok has real-time knowledge, a conversational style, and handles complex reasoning tasks.</p>
+    </div>
+    <div class="card" style="border-color: var(--border-strong);">
+      <div class="card-tag">RESEARCH</div>
+      <h3>Understanding AI</h3>
+      <p>Advancing fundamental research in artificial intelligence. Card shown with stronger border for elevated emphasis.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag">API</div>
+      <h3>Developer Access</h3>
+      <p>Build with Grok through the xAI API. Enterprise-grade performance with straightforward integration.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">API Key Name</label><input class="form-input" type="text" placeholder="my-api-key"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Endpoint URL</label><input class="form-input form-input--focus" type="text" value="https://api.x.ai/v1/chat"><div class="form-state-label">Focus (blue ring)</div></div>
+  <div class="form-group"><label class="form-label">System Prompt</label><textarea class="form-textarea" placeholder="You are a helpful assistant..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+  </div>
+  <p style="font-size:14px; color:var(--text-muted); margin-top:8px;">Base unit: 8px. Scale is deliberately sparse -- large jumps create clear hierarchy through whitespace.</p>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0px"></div><div class="radius-label">0px</div><div class="radius-context">Primary (buttons, cards)</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Secondary containers</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation (No Shadows)</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid var(--border);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No border, no shadow</div></div>
+    <div class="elevation-card" style="background: var(--surface); border: 1px solid var(--border);"><div class="elevation-label">Level 1: Surface</div><div class="elevation-desc">Subtle bg (0.03 opacity)</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border);"><div class="elevation-label">Level 2: Bordered</div><div class="elevation-desc">0.1 opacity border</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-strong);"><div class="elevation-label">Level 3: Active</div><div class="elevation-desc">0.2 opacity border</div></div>
+    <div class="elevation-card" style="box-shadow: 0 0 0 2px rgb(59,130,246);"><div class="elevation-label">Focus</div><div class="elevation-desc">Blue focus ring</div></div>
+  </div>
+  <p style="font-size:14px; color:var(--text-muted); margin-top:16px;">xAI uses no box-shadows. Depth is communicated through border opacity and background opacity only.</p>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://x.ai/">x.ai</a> DESIGN.md -- awesome-design-md
+</footer>
+
+</body>
+</html>
