@@ -1,0 +1,105 @@
+# Product Vision
+
+> **Last Updated**: {{DATE}}
+> **Product Owner**: {{NAME}}
+
+## Mission
+
+<!-- One sentence describing the product's purpose -->
+
+{{PROJECT_NAME}} exists to {{mission statement}}.
+
+## Vision
+
+<!-- Where do we want to be in 1-3 years? -->
+
+## Target Users
+
+### Primary Persona
+
+**Name**: {{Persona Name}}
+
+- **Role**: {{job title/role}}
+- **Goals**: {{what they want to achieve}}
+- **Pain Points**: {{current frustrations}}
+- **Tech Savviness**: Low / Medium / High
+
+### Secondary Personas
+
+<!-- Additional user types, if any -->
+
+## Problem Statement
+
+<!-- What problem are we solving? Why does it matter? -->
+
+## Value Proposition
+
+<!-- What unique value do we provide? -->
+
+For {{target users}} who {{need/want}}, {{product}} is a {{category}} that {{key benefit}}. Unlike {{alternatives}}, we {{differentiator}}.
+
+## Key Metrics
+
+### North Star Metric
+
+**Metric**: {{metric name}}
+**Current**: {{value}}
+**Target**: {{value}}
+**Why**: {{rationale}}
+
+### Supporting Metrics
+
+| Metric | Current | Target | Owner |
+|--------|---------|--------|-------|
+| {{metric}} | {{value}} | {{value}} | {{name}} |
+
+## Product Principles
+
+When making trade-offs, prioritize in this order:
+
+1. **{{Principle 1}}**: {{description}}
+2. **{{Principle 2}}**: {{description}}
+3. **{{Principle 3}}**: {{description}}
+
+## Roadmap Themes
+
+### Current Quarter
+
+- {{Theme 1}}: {{brief description}}
+- {{Theme 2}}: {{brief description}}
+
+### Next Quarter
+
+- {{Theme 1}}: {{brief description}}
+- {{Theme 2}}: {{brief description}}
+
+### Future (Not Committed)
+
+- {{Theme 1}}: {{brief description}}
+
+## Constraints
+
+<!-- Business or product constraints that shape decisions -->
+
+- {{Constraint 1}}
+- {{Constraint 2}}
+
+## Competitive Landscape
+
+| Competitor | Strengths | Weaknesses | Our Advantage |
+|------------|-----------|------------|---------------|
+| {{name}} | {{strengths}} | {{weaknesses}} | {{our advantage}} |
+
+## Success Criteria
+
+<!-- How do we know if the product is successful? -->
+
+- [ ] {{success criterion 1}}
+- [ ] {{success criterion 2}}
+- [ ] {{success criterion 3}}
+
+## Change History
+
+| Date | Change | Author |
+|------|--------|--------|
+| {{date}} | Initial product vision | {{author}} |
