@@ -1,0 +1,9 @@
+.project/
+__pycache__/
+*.pyc
+.venv/
+mcp/.venv/
+eval-server/.venv/
+*.swap-tmp
+*.swap-backup
+*.apply-backup
