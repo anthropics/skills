@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PAGE_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #080810;
+    --surface:  #0f0f1e;
+    --surface2: #141428;
+    --border:   #1e1e3a;
+    --accent:   #7c6af7;
+    --accent2:  #4a3fc7;
+    --accent-glow: rgba(124,106,247,0.18);
+    --text:     #f0eeff;
+    --muted:    #7070a0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 1000; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat; background-size: 180px;
+  }
+
+  /* Gradient mesh background */
+  .mesh {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 20% 20%, rgba(124,106,247,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 500px at 80% 80%, rgba(74,63,199,0.05) 0%, transparent 70%);
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 56px;
+    background: rgba(8,8,16,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-weight: 700; font-size: 1.15rem; color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.88rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent); color: var(--bg) !important;
+    padding: 9px 22px; font-weight: 700 !important;
+    transition: all 0.2s !important;
+  }
+  .nav-cta:hover { background: #9484ff !important; box-shadow: 0 0 20px var(--accent-glow); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding: 120px 56px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.75rem; color: var(--accent); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid rgba(124,106,247,0.3);
+    padding: 6px 14px; border-radius: 100px;
+    background: rgba(124,106,247,0.06);
+    margin-bottom: 28px;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .hero h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(2.2rem, 4vw, 3.6rem);
+    font-weight: 900; line-height: 1.12; margin-bottom: 24px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    color: var(--muted); font-size: 1.1rem; line-height: 1.8;
+    margin-bottom: 44px; max-width: 520px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; padding: 16px 36px;
+    background: var(--accent); color: var(--bg);
+    font-weight: 700; font-size: 0.9rem; text-decoration: none;
+    transition: all 0.2s; letter-spacing: 0.04em;
+  }
+  .btn-primary:hover {
+    background: #9484ff;
+    box-shadow: 0 0 30px var(--accent-glow), 0 4px 20px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    display: inline-block; padding: 15px 36px;
+    border: 1px solid var(--border); color: var(--muted);
+    font-weight: 500; font-size: 0.9rem; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    min-height: 340px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .hero-visual::before {
+    content: '';
+    position: absolute; inset: -1px;
+    background: linear-gradient(135deg, rgba(124,106,247,0.3), transparent 60%);
+    pointer-events: none; z-index: 0; border-radius: inherit;
+  }
+  .mock-bar {
+    height: 8px; border-radius: 4px;
+    background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .mock-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: inherit;
+    width: var(--fill, 60%);
+  }
+  .mock-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+  .mock-metric {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.5rem; font-weight: 700; color: var(--accent);
+  }
+
+  /* ─── FEATURES ─── */
+  .section { max-width: 1200px; margin: 0 auto; padding: 100px 56px; position: relative; z-index: 1; }
+  .section-header { text-align: center; margin-bottom: 64px; }
+  .section-header h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; margin-bottom: 16px;
+  }
+  .section-header h2 span { color: var(--accent); }
+  .section-header p { color: var(--muted); font-size: 1.05rem; max-width: 540px; margin: 0 auto; }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px; background: var(--border);
+  }
+  .feature {
+    background: var(--surface); padding: 40px 36px;
+    transition: background 0.2s;
+  }
+  .feature:hover { background: var(--surface2); }
+  .feature-num {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 0.75rem; color: var(--accent); font-weight: 700;
+    letter-spacing: 0.12em; margin-bottom: 20px; display: block;
+  }
+  .feature h3 { font-family: 'Frank Ruhl Libre', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; }
+  .feature p { font-size: 0.92rem; color: var(--muted); }
+
+  /* ─── PRICING ─── */
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; margin-top: 16px;
+  }
+  .price-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 40px 36px; position: relative; transition: all 0.2s;
+  }
+  .price-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--surface2), var(--surface));
+  }
+  .price-card.featured::before {
+    content: 'הכי פופולרי';
+    position: absolute; top: -12px; right: 24px;
+    background: var(--accent); color: var(--bg);
+    font-size: 0.7rem; font-weight: 700;
+    padding: 4px 14px; letter-spacing: 0.08em;
+  }
+  .price-amount {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 3rem; font-weight: 900; color: var(--text);
+    line-height: 1; margin: 20px 0 8px;
+  }
+  .price-amount span { font-size: 1.2rem; color: var(--muted); }
+  .price-period { font-size: 0.82rem; color: var(--muted); margin-bottom: 28px; }
+  .price-features { list-style: none; }
+  .price-features li {
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 0.9rem; color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .price-features li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+  .price-cta {
+    display: block; text-align: center;
+    margin-top: 32px; padding: 14px;
+    border: 1px solid var(--border); color: var(--muted);
+    text-decoration: none; font-weight: 600; font-size: 0.88rem;
+    transition: all 0.2s;
+  }
+  .price-card.featured .price-cta {
+    background: var(--accent); border-color: var(--accent); color: var(--bg);
+  }
+  .price-cta:hover { border-color: var(--accent); color: var(--accent); }
+  .price-card.featured .price-cta:hover { background: #9484ff; }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials {
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    padding: 80px 0; overflow: hidden;
+  }
+  .testimonial-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; max-width: 1200px; margin: 0 auto; padding: 0 56px;
+  }
+  .testimonial {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 32px 28px;
+  }
+  .testimonial-text { font-size: 0.95rem; color: var(--text); line-height: 1.75; margin-bottom: 24px; }
+  .testimonial-author { font-size: 0.8rem; color: var(--muted); }
+  .testimonial-author strong { color: var(--text); display: block; }
+
+  /* ─── CTA BAND ─── */
+  .cta-band {
+    text-align: center; padding: 120px 56px;
+    max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;
+  }
+  .cta-band::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse, rgba(124,106,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-band h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; margin-bottom: 20px;
+  }
+  .cta-band p { color: var(--muted); font-size: 1.1rem; margin-bottom: 44px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 56px;
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--muted); font-size: 0.82rem;
+    position: relative; z-index: 1;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* Animations */
+  .animate { opacity: 0; transform: translateY(28px); transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+  .animate.visible { opacity: 1; transform: translateY(0); }
+  .animate-delay-1 { transition-delay: 0.1s; }
+  .animate-delay-2 { transition-delay: 0.2s; }
+  .animate-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 120px 20px 60px; }
+    .hero-visual { display: none; }
+    .section { padding: 60px 20px; }
+    .testimonial-strip { padding: 0 20px; }
+    .cta-band { padding: 80px 20px; }
+    footer { flex-direction: column; gap: 16px; padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mesh"></div>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    {{SITE_NAME}}
+  </div>
+  <ul class="nav-links">
+    {{NAV_LINKS}}
+    <li><a href="{{CTA_LINK}}" class="nav-cta">{{NAV_CTA_TEXT}}</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge animate">{{HERO_BADGE}}</div>
+    <h1 class="animate animate-delay-1">{{HERO_HEADLINE}}</h1>
+    <p class="hero-sub animate animate-delay-2">{{HERO_SUBTITLE}}</p>
+    <div class="hero-actions animate animate-delay-3">
+      <a href="{{CTA_LINK}}" class="btn-primary">{{CTA_BUTTON}}</a>
+      <a href="{{SECONDARY_LINK}}" class="btn-outline">{{SECONDARY_BUTTON}}</a>
+    </div>
+  </div>
+  <div class="hero-visual animate animate-delay-2">
+    {{HERO_VISUAL_CONTENT}}
+    <!-- Example mock metrics:
+    <div>
+      <div class="mock-label">ניתוח עסקאות</div>
+      <div class="mock-metric">2,847</div>
+    </div>
+    <div>
+      <div class="mock-label">אחוז הצלחה</div>
+      <div class="mock-bar" style="--fill: 78%"></div>
+    </div>
+    -->
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section">
+  <div class="section-header animate">
+    <h2>{{FEATURES_TITLE}}</h2>
+    <p>{{FEATURES_SUBTITLE}}</p>
+  </div>
+  <div class="features-grid">
+    {{FEATURES}}
+    <!-- Example:
+    <div class="feature animate">
+      <span class="feature-num">01 — AI</span>
+      <h3>ניתוח חכם</h3>
+      <p>תיאור פיצ'ר.</p>
+    </div>
+    -->
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section">
+  <div class="section-header animate">
+    <h2>{{PRICING_TITLE}}</h2>
+    <p>{{PRICING_SUBTITLE}}</p>
+  </div>
+  <div class="pricing-grid">
+    {{PRICING_TIERS}}
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div class="testimonials">
+  <div class="testimonial-strip">
+    {{TESTIMONIALS}}
+  </div>
+</div>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2 class="animate">{{CTA_HEADLINE}}</h2>
+  <p class="animate animate-delay-1">{{CTA_SUBTITLE}}</p>
+  <a href="{{CTA_LINK}}" class="btn-primary animate animate-delay-2">{{CTA_BUTTON}}</a>
+</div>
+
+<footer>
+  <span>© {{YEAR}} {{SITE_NAME}}</span>
+  <span>{{FOOTER_LINKS}}</span>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(e => e.forEach(el => {
+  if (el.isIntersecting) { el.target.classList.add('visible'); obs.unobserve(el.target); }
+}), { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.animate').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

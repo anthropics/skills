@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PAGE_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Heebo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #f7f5f0;
+    --surface:  #ffffff;
+    --surface2: #f0ede6;
+    --border:   #e0dbd0;
+    --accent:   #1a1a1a;
+    --accent2:  #3d3830;
+    --text:     #1a1a1a;
+    --muted:    #888070;
+    --rule:     #d8d2c8;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Heebo', sans-serif;
+    font-size: 18px;
+    line-height: 1.85;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper texture */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 250px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 64px;
+    background: rgba(247,245,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 170px 64px 100px;
+    max-width: 900px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-meta {
+    font-size: 0.78rem; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 20px;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta::after {
+    content: ''; flex: 1; height: 1px; background: var(--rule);
+  }
+  .hero h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(2.4rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    color: var(--text);
+  }
+  .hero-deck {
+    font-size: 1.2rem; color: var(--muted);
+    line-height: 1.75; max-width: 620px;
+    border-right: 3px solid var(--rule); padding-right: 20px;
+    margin-bottom: 48px;
+  }
+
+  /* ─── ARTICLE BODY ─── */
+  .article {
+    max-width: 900px; margin: 0 auto; padding: 80px 64px 120px;
+  }
+  .article h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 700; margin: 56px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--text);
+  }
+  .article h3 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.2rem; font-weight: 700;
+    margin: 36px 0 12px; color: var(--text);
+  }
+  .article p { color: var(--text); margin-bottom: 22px; }
+  .article p + p { text-indent: 1.5em; }
+
+  /* Pullquote */
+  .pullquote {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+    font-weight: 300; line-height: 1.55;
+    color: var(--accent2);
+    border-top: 2px solid var(--accent);
+    border-bottom: 1px solid var(--rule);
+    padding: 28px 0 32px;
+    margin: 48px 0;
+    letter-spacing: -0.01em;
+  }
+
+  /* Footnotes / aside */
+  .aside {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    margin: 36px 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .aside-label {
+    font-size: 0.7rem; text-transform: uppercase;
+    letter-spacing: 0.12em; font-weight: 700;
+    color: var(--text); margin-bottom: 8px; display: block;
+  }
+
+  /* List styles */
+  .article ul, .article ol {
+    padding-right: 24px; margin-bottom: 22px; color: var(--text);
+  }
+  .article li { margin-bottom: 8px; }
+
+  /* Figure / image caption */
+  .figure { margin: 44px 0; }
+  .figure img { width: 100%; display: block; }
+  .figure figcaption {
+    font-size: 0.8rem; color: var(--muted);
+    padding-top: 10px; border-top: 1px solid var(--rule);
+    font-style: italic;
+  }
+
+  /* ─── AUTHOR / BIO ─── */
+  .author-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 32px 28px; display: flex; gap: 20px;
+    align-items: flex-start; margin: 60px 0 0;
+  }
+  .author-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0;
+  }
+  .author-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .author-bio { font-size: 0.88rem; color: var(--muted); }
+
+  /* ─── CTA ─── */
+  .cta-minimal {
+    background: var(--accent); color: var(--bg);
+    padding: 80px 64px; text-align: center; margin: 80px 0 0;
+  }
+  .cta-minimal h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 900; margin-bottom: 16px; color: var(--bg);
+  }
+  .cta-minimal p { color: rgba(247,245,240,0.65); margin-bottom: 36px; font-size: 1.05rem; }
+  .btn-inv {
+    display: inline-block; padding: 15px 40px;
+    background: var(--bg); color: var(--accent);
+    font-weight: 700; font-size: 0.9rem; text-decoration: none;
+    transition: all 0.2s; letter-spacing: 0.04em;
+  }
+  .btn-inv:hover { background: #e8e4da; transform: translateY(-2px); }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 36px 64px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--muted); font-size: 0.8rem;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* Animations */
+  .animate { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .animate.visible { opacity: 1; transform: translateY(0); }
+  .animate-delay-1 { transition-delay: 0.12s; }
+  .animate-delay-2 { transition-delay: 0.24s; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 20px 60px; }
+    .article { padding: 60px 20px 80px; }
+    .cta-minimal { padding: 60px 20px; }
+    footer { flex-direction: column; gap: 12px; padding: 28px 20px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">{{SITE_NAME}}</span>
+  <ul class="nav-links">
+    {{NAV_LINKS}}
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-meta animate">
+    <span>{{CATEGORY}}</span>
+    <span>{{DATE}}</span>
+    <span>{{READ_TIME}}</span>
+  </div>
+  <h1 class="animate animate-delay-1">{{HERO_HEADLINE}}</h1>
+  <p class="hero-deck animate animate-delay-2">{{HERO_SUBTITLE}}</p>
+</header>
+
+<!-- ARTICLE BODY -->
+<main class="article">
+  <!-- Section 1 -->
+  <h2 class="animate">{{SECTION_1_TITLE}}</h2>
+  <div class="animate animate-delay-1">
+    {{SECTION_1_CONTENT}}
+  </div>
+
+  <!-- Pullquote -->
+  <blockquote class="pullquote animate">
+    {{PULLQUOTE}}
+  </blockquote>
+
+  <!-- Section 2 -->
+  <h2 class="animate">{{SECTION_2_TITLE}}</h2>
+  <div class="animate animate-delay-1">
+    {{SECTION_2_CONTENT}}
+  </div>
+
+  <!-- Aside / footnote -->
+  <div class="aside animate">
+    <span class="aside-label">{{ASIDE_LABEL}}</span>
+    {{ASIDE_CONTENT}}
+  </div>
+
+  <!-- Section 3 -->
+  <h2 class="animate">{{SECTION_3_TITLE}}</h2>
+  <div class="animate animate-delay-1">
+    {{SECTION_3_CONTENT}}
+  </div>
+
+  <!-- Section 4 -->
+  <h2 class="animate">{{SECTION_4_TITLE}}</h2>
+  <div class="animate animate-delay-1">
+    {{SECTION_4_CONTENT}}
+  </div>
+
+  <!-- Author -->
+  <div class="author-card animate">
+    <div class="author-avatar">{{AUTHOR_INITIAL}}</div>
+    <div>
+      <div class="author-name">{{AUTHOR_NAME}}</div>
+      <div class="author-bio">{{AUTHOR_BIO}}</div>
+    </div>
+  </div>
+</main>
+
+<!-- CTA -->
+<div class="cta-minimal animate">
+  <h2>{{CTA_HEADLINE}}</h2>
+  <p>{{CTA_SUBTITLE}}</p>
+  <a href="{{CTA_LINK}}" class="btn-inv">{{CTA_BUTTON}}</a>
+</div>
+
+<footer>
+  <span>© {{YEAR}} {{SITE_NAME}}</span>
+  <span>{{FOOTER_LINKS}}</span>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(e => e.forEach(el => {
+  if (el.isIntersecting) { el.target.classList.add('visible'); obs.unobserve(el.target); }
+}), { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.animate').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
