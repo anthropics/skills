@@ -68,6 +68,11 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "claude-academy",
+      "description": "Claude Academy plugin: the academy-guide skill plus a connector to the Claude Academy MCP server for searching and reading Academy courses, tutorials, and use cases",
+      "source": "./plugins/claude-academy"
     }
   ]
 }
