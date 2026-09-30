@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.sidePanel.setPanelBehavior({ openPanelOnActionIconClick: true });
+  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   chrome.contextMenus.create({ id: "brianjosh-audit", title: "Send to BrianJosh", contexts: ["selection"] });
 });
 
