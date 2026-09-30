@@ -68,6 +68,24 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "git-commit-guidelines",
+      "description": "Provides guidelines for writing clear and effective Git commit messages",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/git-commit-guidelines"
+      ]
+    },
+    {
+      "name": "pr-guidelines",
+      "description": "Generates a pull request description based on the provided information and use it as a template for future pull requests",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/pr-guidelines"
+      ]
     }
   ]
 }
