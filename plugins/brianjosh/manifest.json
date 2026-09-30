@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "BrianJosh",
+  "version": "1.0.0",
+  "description": "Chrome extension version of BrianJosh for job board text extraction.",
+  "author": "Dr. De.Souz.AI",
+  "permissions": [
+    "sidePanel",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/*",
+        "https://*.indeed.com/*",
+        "https://*.glassdoor.com/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "BrianJosh Side Panel"
+  }
+}
