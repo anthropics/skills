@@ -1,0 +1,423 @@
+# CODEMAP.md - Codebase Architecture Map
+
+> **Note**: This is a Node.js/TypeScript example. Adapt the specifics (frameworks, file structures, tech stack) to match YOUR project.
+
+**Generated**: [DATE]
+**Version**: 1.0
+
+---
+
+## 📊 Project Overview
+
+```
+[PROJECT_NAME]/
+├── Backend API (Node.js + Express + TypeScript)
+├── Database (PostgreSQL)
+├── Testing (Jest + Playwright)
+└── Deployment (Docker)
+```
+
+---
+
+## 🗂️ Directory Structure
+
+### `/src/server.ts` - Express App Setup
+**Purpose**: Initialize Express, register middleware, start server
+**Lines**: ~60
+**Key Functions**:
+- `createApp()` - Create Express instance
+- `startServer()` - Start listening
+
+**Dependencies**: middleware/*, api/
+
+---
+
+### `/src/api/` - REST API Routes
+**Purpose**: All HTTP endpoints organized by feature
+
+**Structure**:
+```
+api/
+├── [feature]/
+│   ├── routes.ts      ← Route definitions
+│   ├── controller.ts  ← Request handlers
+│   └── schema.ts      ← zod validation schemas
+└── index.ts           ← Register all routes
+```
+
+**Pattern**:
+- Each feature has own directory
+- Validation in schema.ts (zod)
+- Handlers in controller.ts
+- Routes in routes.ts
+- Errors thrown as AppError (caught by middleware)
+
+**Example**:
+- `/users` - User CRUD endpoints
+- `/auth` - Login, register, logout
+- `/products` - Product endpoints
+
+---
+
+### `/src/services/` - Business Logic
+**Purpose**: Service layer between controller and repository
+
+**Files**:
+- `BaseService.ts` - Abstract base class
+- `[Feature]Service.ts` - Feature business logic
+- `__tests__/` - Unit tests
+
+**Pattern**:
+- Extends BaseService
+- Uses repository for DB access
+- Handles validation & business rules
+- Can call other services
+- Throws AppError on failure
+
+**Example Method**:
+```typescript
+static async create(data: CreateUserDto): Promise<User> {
+  // Validate
+  // Check business rules
+  // Call repository
+  // Return result
+}
+```
+
+---
+
+### `/src/models/` - Database Models & Types
+**Purpose**: TypeScript interfaces and zod schemas
+
+**Files**:
+- `[Entity].ts` - Type definitions
+- `schemas.ts` - zod validation schemas
+
+**Example**:
+```typescript
+// Type definition
+interface User {
+  id: string
+  email: string
+  password: string
+  createdAt: Date
+}
+
+// zod schema
+const UserSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+})
+```
+
+---
+
+### `/src/middleware/` - Express Middleware
+**Purpose**: Request processing before handlers
+
+**Files**:
+| File | Purpose |
+|------|---------|
+| `auth.ts` | JWT token verification, set req.user |
+| `errorHandler.ts` | Catch all errors, return { success, error } |
+| `validation.ts` | Validate body, params, query with zod |
+| `logger.ts` | Log all requests |
+| `cors.ts` | CORS configuration |
+| `rateLimit.ts` | Rate limiting (100 req/min per IP) |
+
+**Usage in route**:
+```typescript
+router.post('/users',
+  authMiddleware,      // Check token
+  validateBody(UserSchema), // Validate request
+  createUser           // Handler
+)
+```
+
+---
+
+### `/src/utils/` - Helper Functions
+**Purpose**: Shared utilities
+
+**Files**:
+| File | Purpose | Key Functions |
+|------|---------|---|
+| `logger.ts` | Winston logger setup | logger.info(), warn(), error() |
+| `errors.ts` | Custom error classes | AppError class |
+| `db.ts` | PostgreSQL connection pool | query() |
+| `jwt.ts` | Token generation/verification | generateToken(), verifyToken() |
+
+---
+
+### `/src/types/` - TypeScript Definitions
+**Purpose**: Shared type definitions
+
+**Files**:
+- `index.ts` - Common types
+- `express.d.ts` - Extend Express Request type
+- `api.ts` - API response types
+
+**Example**:
+```typescript
+// Extend Express Request
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { id: string }
+    }
+  }
+}
+
+// API response types
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+}
+```
+
+---
+
+## 📁 `/tests` - Test Files
+
+### Unit Tests (`tests/unit/`)
+**Purpose**: Test individual functions/methods in isolation
+
+**Location**: `src/services/__tests__/[Service].test.ts`
+
+**Pattern**: Jest with mocked dependencies
+```typescript
+describe('UserService.create', () => {
+  it('should create user with valid data', async () => {
+    // Mock repository
+    // Call service method
+    // Assert result
+  })
+})
+```
+
+---
+
+### Integration Tests (`tests/integration/`)
+**Purpose**: Test API endpoints with real/test database
+
+**Location**: `tests/integration/[feature].test.ts`
+
+**Pattern**: Jest + supertest
+```typescript
+describe('POST /api/users', () => {
+  it('should return 201 and user data', async () => {
+    const res = await request(app)
+      .post('/api/users')
+      .send({ email: 'test@example.com' })
+
+    expect(res.status).toBe(201)
+    expect(res.body.success).toBe(true)
+  })
+})
+```
+
+---
+
+### E2E Tests (`tests/e2e/`)
+**Purpose**: Test complete user journeys
+
+**Location**: `tests/e2e/[flow].test.ts`
+
+**Pattern**: Playwright
+```typescript
+test('User login flow', async ({ page }) => {
+  await page.goto('/login')
+  await page.fill('input[type=email]', 'test@example.com')
+  await page.fill('input[type=password]', 'password123')
+  await page.click('button[type=submit]')
+  // Assert logged in
+})
+```
+
+---
+
+## 📦 `/migrations` - Database Migrations
+
+**Purpose**: Schema version control
+
+**Files**:
+```
+migrations/
+├── 001_init.sql                 ← Create initial tables
+├── 002_add_feature.sql          ← Add new feature
+└── 003_fix_schema.sql           ← Schema fixes
+```
+
+**Pattern**:
+- Up migration: Create/modify schema
+- Down migration: Rollback
+
+**Usage**:
+```bash
+npm run migrate          # Apply latest
+npm run migrate:rollback # Revert one
+```
+
+---
+
+## 🔄 Request Flow
+
+```
+1. Client: POST /api/users { email: "test@example.com" }
+
+2. Middleware Chain:
+   ├─ cors.ts          → Check CORS
+   ├─ logger.ts        → Log request
+   ├─ validation.ts    → Validate with zod
+   └─ auth.ts          → Verify JWT (if protected)
+
+3. Route Handler (api/users/routes.ts)
+   └─ Calls controller
+
+4. Controller (api/users/controller.ts)
+   ├─ Get validated req.body
+   └─ Call service
+
+5. Service (services/UserService.ts)
+   ├─ Check business rules
+   └─ Call repository
+
+6. Repository
+   └─ Execute SQL query
+
+7. Response
+   ├─ Service returns result
+   ├─ Controller sends JSON
+   └─ Client receives: { success: true, data: {...} }
+
+8. Error Handling (if error)
+   ├─ Catch in errorHandler.ts
+   └─ Send: { success: false, error: "..." }
+```
+
+---
+
+## 📦 Key Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| express | 4.x | Web framework |
+| zod | ^3.x | Input validation |
+| pg | 8.x | PostgreSQL driver |
+| jsonwebtoken | 9.x | JWT tokens |
+| winston | 3.x | Logging |
+| jest | 29.x | Unit testing |
+| supertest | 6.x | HTTP testing |
+| @playwright/test | 1.x | E2E testing |
+
+---
+
+## 🎯 File Purpose Quick Reference
+
+| File Path | Purpose | Lines | Key Functions |
+|-----------|---------|-------|---|
+| `src/server.ts` | Express setup | ~60 | createApp() |
+| `src/api/index.ts` | Route registration | ~30 | registerRoutes() |
+| `src/api/[feature]/routes.ts` | Endpoints | ~20 | routes |
+| `src/api/[feature]/controller.ts` | Handlers | ~100 | handler functions |
+| `src/api/[feature]/schema.ts` | Validation | ~30 | zod schemas |
+| `src/services/[Feature]Service.ts` | Logic | ~150 | business logic |
+| `src/middleware/auth.ts` | Auth | ~40 | verifyToken() |
+| `src/utils/logger.ts` | Logging | ~50 | logger config |
+| `src/utils/errors.ts` | Errors | ~30 | AppError class |
+| `tests/integration/[feature].test.ts` | Tests | ~200 | test suite |
+
+---
+
+## 🔍 How to Navigate
+
+**Want to add new endpoint?**
+1. Read: `src/api/[similar-feature]/routes.ts` (pattern)
+2. Check: `src/api/[similar-feature]/schema.ts` (validation)
+3. Create: New files following same pattern
+
+**Want to understand flow?**
+1. Start: `src/server.ts` (entry point)
+2. Then: `src/api/index.ts` (routes registration)
+3. Then: `src/api/[feature]/routes.ts` (specific endpoint)
+4. Then: `src/api/[feature]/controller.ts` (handler)
+5. Then: `src/services/[Feature]Service.ts` (logic)
+
+**Want to debug error?**
+1. Check: `src/middleware/errorHandler.ts` (error catch)
+2. Check: `src/utils/errors.ts` (AppError definition)
+3. Grep: Find where error is thrown
+
+**Want to run tests?**
+1. Unit: `npm run test:unit`
+2. Integration: `npm run test:integration`
+3. E2E: `npm run test:e2e`
+4. Coverage: `npm run test:coverage`
+
+---
+
+## 🔗 Related Documentation
+
+- [CLAUDE.md](./CLAUDE.md) - Project rules & conventions
+- [MEMORY.md](./MEMORY.md) - Project context & gotchas
+- [README.md](./README.md) - Setup instructions & how to run
+
+---
+
+## 📊 Architecture Diagram
+
+```
+┌─────────────┐
+│   Client    │
+└──────┬──────┘
+       │ HTTP
+       ▼
+┌──────────────────────────────┐
+│  Express App (server.ts)     │
+└──────┬───────────────────────┘
+       │
+   Middleware Chain:
+   ├─ cors.ts
+   ├─ logger.ts
+   ├─ validation.ts
+   ├─ auth.ts
+   └─ errorHandler.ts
+       │
+       ▼
+┌──────────────────────────────┐
+│  Route Handler               │
+│  api/[feature]/routes.ts     │
+└──────┬───────────────────────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│  Controller                  │
+│  api/[feature]/controller.ts │
+└──────┬───────────────────────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│  Service Layer               │
+│  services/[Feature]Service   │
+└──────┬───────────────────────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│  Repository                  │
+│  (DB access pattern)         │
+└──────┬───────────────────────┘
+       │
+       ▼
+┌──────────────────────────────┐
+│  Database (PostgreSQL)       │
+└──────────────────────────────┘
+```
+
+---
+
+## 📝 Notes
+
+- Add more detail as project grows
+- Update when structure changes significantly
+- Keep in sync with actual code
