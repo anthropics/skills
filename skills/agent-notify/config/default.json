@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "Notification": {
+      "enabled": true,
+      "type": "confirm",
+      "description": "Plays sound when Claude asks for confirmation"
+    },
+    "Stop": {
+      "enabled": true,
+      "type": "done",
+      "description": "Plays sound when Claude completes a task"
+    }
+  },
+  "sounds": {
+    "confirm": "",
+    "done": "",
+    "error": ""
+  },
+  "taskbar": {
+    "flashCount": 5,
+    "enabled": true
+  }
+}
