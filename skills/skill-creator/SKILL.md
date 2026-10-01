@@ -166,6 +166,24 @@ This section is one continuous sequence — don't stop partway through. Do NOT u
 
 Put results in `<skill-name>-workspace/` as a sibling to the skill directory. Within the workspace, organize results by iteration (`iteration-1/`, `iteration-2/`, etc.) and within that, each test case gets a directory (`eval-0/`, `eval-1/`, etc.). Don't create all of this upfront — just create directories as you go.
 
+### Check subagent capability and consent
+
+Before launching runs, verify how test cases should be executed in your current environment:
+- **Can subagents be spawned autonomously?**
+  - **Yes (e.g. headless automation or Cowork with subagents permitted)**: Proceed to **Step 1** below to spawn parallel with-skill and baseline subagents.
+  - **Spawning requires explicit user permission (e.g. Claude Code or harnesses where unrequested agent spawning is prohibited)**: Ask the user for opt-in:
+    > "I can run N paired test subagents in parallel (with-skill vs. baseline) to evaluate this; would you like me to spawn them?"
+    - If the user approves: Proceed to **Step 1**.
+    - If the user declines or unprompted spawning is not desired: Take the **Inline execution fallback** below.
+  - **Subagents are unavailable (e.g. Claude.ai)**: Take the **Inline execution fallback** below.
+
+#### Inline execution fallback
+
+When running without subagents:
+1. **Run test cases sequentially**: For each test case, read the skill's `SKILL.md`, then follow its instructions directly to complete the test prompt yourself. Run each test one at a time.
+2. **Baselines & quantitative benchmarks**: Skip the baseline runs and comparative benchmarking (since running both without isolated subagents is not meaningful). Save each output directly to `<workspace>/iteration-<N>/eval-<ID>/with_skill/outputs/`.
+3. **Review**: Present results directly in the conversation or write outputs to disk, and prompt the user for qualitative feedback.
+
 ### Step 1: Spawn all runs (with-skill AND baseline) in the same turn
 
 For each test case, spawn two subagents in the same turn — one with the skill, one without. This is important: don't spawn the with-skill runs first and then come back for baselines later. Launch everything at once so it all finishes around the same time.
@@ -421,7 +439,7 @@ After packaging, direct the user to the resulting `.skill` file path so they can
 
 In Claude.ai, the core workflow is the same (draft → test → review → improve → repeat), but because Claude.ai doesn't have subagents, some mechanics change. Here's what to adapt:
 
-**Running test cases**: No subagents means no parallel execution. For each test case, read the skill's SKILL.md, then follow its instructions to accomplish the test prompt yourself. Do them one at a time. This is less rigorous than independent subagents (you wrote the skill and you're also running it, so you have full context), but it's a useful sanity check — and the human review step compensates. Skip the baseline runs — just use the skill to complete the task as requested.
+**Running test cases**: No subagents means no parallel execution. Follow the **Inline execution fallback** described in "Running and evaluating test cases" above: read the skill's SKILL.md, follow its instructions to complete each test prompt yourself sequentially, and skip baseline runs. This is less rigorous than independent subagents (you wrote the skill and you're also running it, so you have full context), but it's a useful sanity check — and the human review step compensates.
 
 **Reviewing results**: If you can't open a browser (e.g., Claude.ai's VM has no display, or you're on a remote server), skip the browser reviewer entirely. Instead, present results directly in the conversation. For each test case, show the prompt and the output. If the output is a file the user needs to see (like a .docx or .xlsx), save it to the filesystem and tell them where it is so they can download and inspect it. Ask for feedback inline: "How does this look? Anything you'd change?"
 
