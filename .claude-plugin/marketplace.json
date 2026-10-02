@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "invoice-parser",
+      "description": "Extracts structured data from invoices and receipts (PDF, image, or text) to a strict JSON schema and validates the math is internally consistent before emitting",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/invoice-parser"
+      ]
     }
   ]
 }
