@@ -1,27 +1,22 @@
 ---
 name: invoice-parser
 description: >
-  Extract structured data from a supplied invoice or receipt (PDF,
-  PNG, JPG, or already-extracted text) and emit it as strict JSON
-  matching the schema in reference/schema.md — vendor identity, bill-
-  to, invoice number and dates, currency, per-line items with unit
-  price and quantity, subtotal, tax lines (VAT / GST / sales tax),
-  discounts, shipping, tip, and grand total. Also validates that the
-  math is internally consistent (line items sum to subtotal;
-  subtotal plus tax and shipping and tip minus discount equals
-  total), flags any discrepancy in a `validation_errors` array, and
-  can convert one or many parsed invoices to a flat CSV suitable for
-  bookkeeping import. Use when the user says "extract fields from
-  this invoice", "parse this receipt", "digitize this invoice",
-  "read this PDF invoice into JSON", "make this receipt into a CSV",
-  or attaches an invoice/receipt image or PDF and asks for the total
-  / line items / vendor. Do NOT use for: general document OCR (use
-  the pdf skill), expense categorisation (out of scope), forecasting
-  or accounting entry generation (different skill), or invoices you
-  are being asked to *create* rather than parse — the skill file
-  covers the schema, the validation rules, currency handling, VAT
-  vs. sales-tax handling, tip and discount edge cases, and the
-  triage protocol when validation fails.
+  Extract structured data from an invoice or receipt (PDF, PNG, JPG,
+  or extracted text) and emit it as strict JSON matching
+  reference/schema.md — vendor, bill-to, invoice number and dates,
+  currency (ISO 4217), per-line items with quantity, unit price and
+  amount, subtotal, tax lines (VAT, GST, sales tax), discount,
+  shipping, tip, and total. Also validates the math is internally
+  consistent (line items sum to subtotal; subtotal + tax + shipping
+  + tip − discount equals total), flags discrepancies in a
+  validation_errors array, and can convert parsed invoices to a flat
+  CSV for bookkeeping import. Use when the user says extract fields
+  from this invoice, parse this receipt, digitize this invoice, read
+  this PDF invoice into JSON, make this receipt into a CSV, or
+  attaches an invoice or receipt image/PDF and asks for the total,
+  line items, or vendor. Do NOT use for creating invoices, general
+  document OCR, expense categorisation, or accounting entry
+  generation.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -132,8 +127,9 @@ Before returning the result, run `scripts/validate.py` on the JSON
 (or apply the same checks manually if the script is not available).
 It verifies:
 
-- Sum of `line_items[*].amount` equals `subtotal` (within a 1-cent
-  tolerance per line, to allow for rounding).
+- Sum of `line_items[*].amount` equals `subtotal` (within one
+  currency unit of least precision — e.g. 1 cent for USD/EUR, 1 yen
+  for JPY — to allow for rounding).
 - Every `line_items[i].amount` equals `quantity * unit_price` within
   tolerance.
 - `subtotal + sum(tax) + shipping + tip - discount` equals `total`
@@ -168,15 +164,16 @@ python scripts/validate.py path/to/invoice.json --to-csv
 # Validate + convert a batch (JSON array or JSONL) to CSV
 python scripts/validate.py invoices.jsonl --to-csv > out.csv
 
-# Show the exact schema
-python scripts/validate.py --print-schema
+# Print the flat CSV column list (the JSON schema is in reference/schema.md)
+python scripts/validate.py --print-csv-columns
 
 # Run the built-in fixture tests
 python scripts/validate.py --self-test
 ```
 
-Exit codes: `0` valid, `1` at least one validation error, `2` schema
-violation (missing required field, wrong type).
+Exit codes: `0` valid, `1` at least one math or format validation
+error, `2` schema violation (missing required field, wrong type) or
+unreadable input.
 
 ## Reporting to the user
 
@@ -201,9 +198,11 @@ common gotchas:
 
 - **VAT-inclusive vs. VAT-exclusive.** UK/EU invoices often show a
   `£120.00` line where the VAT is already baked in. Look for `incl.
-  VAT` / `VAT inclusive` / `TVA comprise`. When VAT-inclusive, the
-  `unit_price` in the schema is the pre-VAT figure; add a
-  `tax_inclusive: true` flag at the top level.
+  VAT` / `VAT inclusive` / `TVA comprise`. When VAT-inclusive, keep
+  `unit_price` and `amount` as the printed (VAT-inclusive) values
+  and set `tax_inclusive: true` at the top level — the validator
+  then expects `total = subtotal + shipping + tip − discount`
+  (without re-adding tax).
 - **Service charge vs. tip.** UK/European restaurant bills often
   add a mandatory `Service charge` (e.g. 12.5%) that is *not* a tip.
   Emit it as a tax line named `Service charge`, not as `tip`.

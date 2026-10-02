@@ -53,7 +53,7 @@ validator in `scripts/validate.py` enforces this schema.
 | `sku` | string | no | Product code, if printed. |
 | `quantity` | number | yes | Default `1` if not printed (service invoices). |
 | `unit` | string | no | `hour`, `each`, `kg`, `L`, etc. |
-| `unit_price` | number | yes | Price for one `unit`. Pre-VAT unless `tax_inclusive: true` at top level. |
+| `unit_price` | number | yes | Price for one `unit`, as printed. Pre-VAT when `tax_inclusive: false`; VAT-inclusive when `tax_inclusive: true`. |
 | `amount` | number | yes | `quantity * unit_price` (validated within 1-cent tolerance). |
 | `tax_rate` | number | no | Percentage as a number (`20` for 20%). For per-line VAT. |
 

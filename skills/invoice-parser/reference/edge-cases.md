@@ -36,11 +36,13 @@ Symptoms:
 Handling:
 
 - Set `tax_inclusive: true` at the top level.
-- Keep `unit_price` as the printed value (VAT-inclusive).
-- Emit the VAT line in the `tax` array with the calculated amount.
-- The validator relaxes the `total = subtotal + tax` check when
-  `tax_inclusive: true` and instead checks that VAT amount is
-  consistent with the rate applied to the pre-tax portion.
+- Keep `unit_price` and `amount` as the printed (VAT-inclusive)
+  values; the printed subtotal already includes VAT.
+- Emit the VAT line in the `tax` array with the printed VAT amount
+  (as a memo — this amount is already inside the subtotal).
+- The validator relaxes the total check when `tax_inclusive: true`
+  and expects `total = subtotal + shipping + tip − discount` (no
+  separate VAT addition, since VAT is already in the subtotal).
 
 ## Service charge vs. tip
 

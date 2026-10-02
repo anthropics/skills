@@ -22,7 +22,7 @@ SCHEMA_VERSION = "1"
 # validate monetary comparisons. Only the currencies that deviate
 # from 2 dp are listed; anything unknown defaults to 2 dp.
 _CURRENCY_DECIMALS: dict[str, int] = {
-    "JPY": 0, "KRW": 0, "VND": 0, "CLP": 0, "ISK": 0,
+    "JPY": 0, "KRW": 0, "VND": 0, "CLP": 0, "ISK": 0, "HUF": 0,
     "BHD": 3, "KWD": 3, "OMR": 3, "JOD": 3, "TND": 3, "LYD": 3,
 }
 
@@ -84,14 +84,33 @@ def _check_required(obj: dict, required: list[str], errs: list[ValidationError],
                 message=f"Missing required field: {base}.{k}"))
 
 
-def _check_type(value: Any, expected: type | tuple[type, ...], errs: list[ValidationError], path: str) -> bool:
+def _check_type(obj: dict, key: str, expected: type | tuple[type, ...], errs: list[ValidationError], base: str) -> bool:
+    if key not in obj:
+        return False
+    value = obj[key]
+    # Explicitly reject bool when a numeric type is expected (bool is a subclass of int in Python).
+    numeric_expected = expected is float or expected is int or (
+        isinstance(expected, tuple) and set(expected) <= {int, float}
+    )
+    if numeric_expected and isinstance(value, bool):
+        errs.append(ValidationError(
+            check="wrong_type", path=f"{base}.{key}",
+            expected=_type_name(expected), observed="bool",
+            message=f"Expected {_type_name(expected)} at {base}.{key}, got bool"))
+        return False
     if not isinstance(value, expected):
         errs.append(ValidationError(
-            check="wrong_type", path=path,
-            expected=str(expected), observed=type(value).__name__,
-            message=f"Expected {expected} at {path}, got {type(value).__name__}"))
+            check="wrong_type", path=f"{base}.{key}",
+            expected=_type_name(expected), observed=type(value).__name__,
+            message=f"Expected {_type_name(expected)} at {base}.{key}, got {type(value).__name__}"))
         return False
     return True
+
+
+def _type_name(expected: type | tuple[type, ...]) -> str:
+    if isinstance(expected, tuple):
+        return " or ".join(t.__name__ for t in expected)
+    return expected.__name__
 
 
 # ------------------------------------------------------------------ #
@@ -114,34 +133,93 @@ def _round(v: float, currency: str) -> float:
 # ------------------------------------------------------------------ #
 
 
+_TOP_TYPES: dict[str, type | tuple[type, ...]] = {
+    "schema_version": str,
+    "document_type": str,
+    "is_credit_note": bool,
+    "vendor": dict,
+    "bill_to": dict,
+    "ship_to": dict,
+    "invoice_number": str,
+    "issue_date": str,
+    "due_date": str,
+    "currency": str,
+    "line_items": list,
+    "subtotal": (int, float),
+    "tax": list,
+    "discount": (int, float),
+    "shipping": (int, float),
+    "tip": (int, float),
+    "total": (int, float),
+    "amount_paid": (int, float),
+    "amount_due": (int, float),
+    "tax_inclusive": bool,
+    "payment_terms": str,
+    "payment_methods": list,
+    "notes": str,
+    "parse_notes": list,
+    "validation_errors": list,
+    "source": dict,
+}
+
+_LINE_ITEM_TYPES: dict[str, type | tuple[type, ...]] = {
+    "description": str,
+    "sku": str,
+    "quantity": (int, float),
+    "unit": str,
+    "unit_price": (int, float),
+    "amount": (int, float),
+    "tax_rate": (int, float),
+}
+
+_TAX_LINE_TYPES: dict[str, type | tuple[type, ...]] = {
+    "name": str,
+    "rate": (int, float),
+    "amount": (int, float),
+}
+
+
+def _check_types(obj: dict, types: dict, errs: list[ValidationError], base: str) -> None:
+    for key, expected in types.items():
+        if key in obj and obj[key] is None:
+            # None is accepted for any field — represents "absent" per schema conventions.
+            continue
+        _check_type(obj, key, expected, errs, base)
+
+
 def validate_invoice(invoice: dict, index: int = 0) -> Report:
     errs: list[ValidationError] = []
-    number = invoice.get("invoice_number")
+    number = invoice.get("invoice_number") if isinstance(invoice, dict) else None
     report = Report(invoice_index=index, invoice_number=number, errors=errs)
 
-    _check_required(invoice, _REQUIRED_TOP, errs, "root")
-
-    if invoice.get("schema_version") != SCHEMA_VERSION:
+    if not isinstance(invoice, dict):
         errs.append(ValidationError(
-            check="wrong_type", path="schema_version",
-            expected=SCHEMA_VERSION, observed=invoice.get("schema_version"),
-            message="schema_version does not match parser version."))
+            check="wrong_type", path="root",
+            expected="object", observed=type(invoice).__name__,
+            message=f"Invoice must be a JSON object, got {type(invoice).__name__}"))
+        return report
+
+    _check_required(invoice, _REQUIRED_TOP, errs, "root")
+    _check_types(invoice, _TOP_TYPES, errs, "root")
+
+    sv = invoice.get("schema_version")
+    if sv is not None and isinstance(sv, str) and sv != SCHEMA_VERSION:
+        errs.append(ValidationError(
+            check="schema_version_mismatch", path="schema_version",
+            expected=SCHEMA_VERSION, observed=sv,
+            message=f"schema_version {sv!r} does not match parser version {SCHEMA_VERSION!r}."))
 
     currency = invoice.get("currency")
-    if currency and isinstance(currency, str):
-        if currency.upper() not in _ISO_4217:
-            errs.append(ValidationError(
-                check="currency_not_iso_4217", path="currency", observed=currency,
-                message=f"Currency {currency!r} is not a recognised ISO 4217 code."))
-    else:
-        # already caught by required/type checks
-        pass
+    if isinstance(currency, str) and currency.upper() not in _ISO_4217:
+        errs.append(ValidationError(
+            check="currency_not_iso_4217", path="currency", observed=currency,
+            message=f"Currency {currency!r} is not a recognised ISO 4217 code."))
 
     for datefield in ("issue_date", "due_date"):
         v = invoice.get(datefield)
         if v is None:
             continue
-        if not (isinstance(v, str) and DATE_RE.match(v)):
+        if isinstance(v, str) and not DATE_RE.match(v):
             errs.append(ValidationError(
                 check="date_not_iso_8601", path=datefield, observed=v,
                 message=f"{datefield} is not ISO 8601 (YYYY-MM-DD)."))
@@ -159,6 +237,11 @@ def validate_invoice(invoice: dict, index: int = 0) -> Report:
     tol = _tolerance_for(cur)
 
     if isinstance(line_items, list):
+        if len(line_items) == 0:
+            errs.append(ValidationError(
+                check="line_items_empty", path="line_items",
+                expected=">=1", observed=0,
+                message="line_items must contain at least one entry."))
         for i, li in enumerate(line_items):
             if not isinstance(li, dict):
                 errs.append(ValidationError(
@@ -166,10 +249,11 @@ def validate_invoice(invoice: dict, index: int = 0) -> Report:
                     expected="object", observed=type(li).__name__))
                 continue
             _check_required(li, _REQUIRED_LINE, errs, f"line_items[{i}]")
+            _check_types(li, _LINE_ITEM_TYPES, errs, f"line_items[{i}]")
             qty = li.get("quantity")
             up = li.get("unit_price")
             amt = li.get("amount")
-            if all(isinstance(v, (int, float)) for v in (qty, up, amt)):
+            if (all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (qty, up, amt))):
                 computed = _round(qty * up, cur)
                 if abs(computed - amt) > tol + 1e-9:
                     errs.append(ValidationError(
@@ -178,9 +262,11 @@ def validate_invoice(invoice: dict, index: int = 0) -> Report:
                         expected=computed, observed=amt, delta=round(amt - computed, 4),
                         message=f"line_items[{i}]: {qty} * {up} = {computed}, printed as {amt}."))
 
-        if isinstance(subtotal, (int, float)):
-            summed = _round(sum((li.get("amount") or 0) for li in line_items if isinstance(li, dict)), cur)
-            if abs(summed - subtotal) > tol * max(1, len(line_items)) + 1e-9:
+        if isinstance(subtotal, (int, float)) and not isinstance(subtotal, bool):
+            summed = _round(sum((li.get("amount") or 0) for li in line_items
+                                if isinstance(li, dict) and isinstance(li.get("amount"), (int, float))
+                                and not isinstance(li.get("amount"), bool)), cur)
+            if abs(summed - subtotal) > tol + 1e-9:
                 errs.append(ValidationError(
                     check="line_items_sum_equals_subtotal",
                     path="subtotal",
@@ -196,11 +282,13 @@ def validate_invoice(invoice: dict, index: int = 0) -> Report:
                     expected="object", observed=type(tl).__name__))
                 continue
             _check_required(tl, _REQUIRED_TAX, errs, f"tax[{i}]")
+            _check_types(tl, _TAX_LINE_TYPES, errs, f"tax[{i}]")
             a = tl.get("amount")
-            if isinstance(a, (int, float)):
+            if isinstance(a, (int, float)) and not isinstance(a, bool):
                 tax_total += a
 
-    if isinstance(subtotal, (int, float)) and isinstance(total, (int, float)):
+    if (isinstance(subtotal, (int, float)) and not isinstance(subtotal, bool)
+            and isinstance(total, (int, float)) and not isinstance(total, bool)):
         if tax_inclusive:
             base = subtotal + shipping + tip - discount
         else:
@@ -413,37 +501,68 @@ _FIXTURE_TAX_INCLUSIVE = {
     "tax_inclusive": True,
 }
 
+_FIXTURE_WRONG_TYPE_SUBTOTAL = {**_FIXTURE_CLEAN, "invoice_number": "INV-BAD-004",
+                                "subtotal": "70.00"}
+
+_FIXTURE_EMPTY_LINE_ITEMS = {**_FIXTURE_CLEAN, "invoice_number": "INV-BAD-005",
+                             "line_items": [], "subtotal": 0.00, "total": 14.00}
+
+_FIXTURE_MISSING_SCHEMA_VERSION = {k: v for k, v in _FIXTURE_CLEAN.items() if k != "schema_version"}
+_FIXTURE_MISSING_SCHEMA_VERSION = {**_FIXTURE_MISSING_SCHEMA_VERSION, "invoice_number": "INV-BAD-006"}
+
 
 def self_test() -> int:
-    tests: list[tuple[str, dict, set[str]]] = [
-        ("clean", _FIXTURE_CLEAN, set()),
+    tests: list[tuple[str, dict, set[str], set[str]]] = [
+        # (name, fixture, must_include, must_not_include)
+        ("clean", _FIXTURE_CLEAN, set(), set()),
         ("bad_math_line", _FIXTURE_BAD_MATH,
-         {"line_item_amount_mismatch", "line_items_sum_equals_subtotal", "total_equals_subtotal_plus_adjustments"}),
-        ("bad_currency", _FIXTURE_BAD_CURRENCY, {"currency_not_iso_4217"}),
-        ("bad_date", _FIXTURE_BAD_DATE, {"date_not_iso_8601"}),
-        ("credit_note_valid", _FIXTURE_CREDIT_NOTE, set()),
-        ("credit_note_sign_wrong", _FIXTURE_CREDIT_NOTE_BAD, {"total_sign_mismatch_credit_note"}),
-        ("tax_inclusive_valid", _FIXTURE_TAX_INCLUSIVE, set()),
+         {"line_item_amount_mismatch", "line_items_sum_equals_subtotal", "total_equals_subtotal_plus_adjustments"},
+         set()),
+        ("bad_currency", _FIXTURE_BAD_CURRENCY, {"currency_not_iso_4217"}, set()),
+        ("bad_date", _FIXTURE_BAD_DATE, {"date_not_iso_8601"}, set()),
+        ("credit_note_valid", _FIXTURE_CREDIT_NOTE, set(), set()),
+        ("credit_note_sign_wrong", _FIXTURE_CREDIT_NOTE_BAD, {"total_sign_mismatch_credit_note"}, set()),
+        ("tax_inclusive_valid", _FIXTURE_TAX_INCLUSIVE, set(), set()),
+        ("wrong_type_subtotal", _FIXTURE_WRONG_TYPE_SUBTOTAL, {"wrong_type"}, set()),
+        ("empty_line_items", _FIXTURE_EMPTY_LINE_ITEMS, {"line_items_empty"}, set()),
+        # Missing schema_version must report required_field_missing once, and must NOT
+        # also report wrong_type / schema_version_mismatch for a field that was absent.
+        ("missing_schema_version", _FIXTURE_MISSING_SCHEMA_VERSION,
+         {"required_field_missing"}, {"schema_version_mismatch", "wrong_type"}),
     ]
     ok = 0
     fail = 0
-    for name, fixture, expected_checks in tests:
+    for entry in tests:
+        name, fixture, expected_checks, forbidden_checks = entry
         rep = validate_invoice(fixture)
         got = {e.check for e in rep.errors}
         # For "clean" tests, we require exactly zero errors.
-        if not expected_checks:
+        if not expected_checks and not forbidden_checks:
             if got:
                 print(f"  [{name}] expected clean, got errors: {sorted(got)}", file=sys.stderr)
                 fail += 1
                 continue
             ok += 1
             continue
-        # For failure tests, every expected check must appear.
         missing = expected_checks - got
-        if missing:
-            print(f"  [{name}] missing expected checks: {sorted(missing)}; got {sorted(got)}", file=sys.stderr)
-            fail += 1
-            continue
+        forbidden_present = forbidden_checks & got
+        if missing or forbidden_present:
+            if missing:
+                print(f"  [{name}] missing expected checks: {sorted(missing)}; got {sorted(got)}", file=sys.stderr)
+            if forbidden_present:
+                # Allow forbidden check to appear only if it is for a different field.
+                # Here specifically: schema_version_mismatch should never fire when
+                # schema_version is absent.
+                offending = [e for e in rep.errors if e.check in forbidden_present
+                             and (e.path == "schema_version" or e.path.endswith(".schema_version"))]
+                if offending:
+                    print(f"  [{name}] forbidden checks present for schema_version: "
+                          f"{[(e.check, e.path) for e in offending]}", file=sys.stderr)
+                    fail += 1
+                    continue
+            if missing:
+                fail += 1
+                continue
         ok += 1
     # CSV smoke: run against the clean fixture and check header + one row.
     buf = io.StringIO()
@@ -472,18 +591,19 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Validate parsed-invoice JSON and optionally emit CSV.")
     ap.add_argument("path", nargs="?", help="Path to JSON file (single invoice, JSON array, or JSONL). Use '-' for stdin.")
     ap.add_argument("--to-csv", action="store_true", help="Emit a CSV row per line item to stdout.")
-    ap.add_argument("--print-schema", action="store_true", help="Print the field list and exit.")
+    ap.add_argument("--print-csv-columns", action="store_true",
+                    help="Print the flat CSV column list (the JSON schema itself lives in reference/schema.md).")
     ap.add_argument("--self-test", action="store_true", help="Run built-in fixture tests.")
     args = ap.parse_args()
 
     if args.self_test:
         return self_test()
-    if args.print_schema:
+    if args.print_csv_columns:
         for c in _CSV_COLUMNS:
             print(c)
         return 0
     if not args.path:
-        ap.error("path is required (use '-' for stdin, or --self-test / --print-schema)")
+        ap.error("path is required (use '-' for stdin, or --self-test / --print-csv-columns)")
 
     try:
         invoices = _load_input(args.path)
@@ -495,13 +615,18 @@ def main() -> int:
         return 2
 
     reports = [validate_invoice(inv, i) for i, inv in enumerate(invoices)]
-    any_errors = any(rep.errors for rep in reports)
 
     if args.to_csv:
         write_csv(invoices, reports, sys.stdout)
     else:
         for rep in reports:
             print(format_report(rep))
+
+    schema_checks = {"required_field_missing", "wrong_type"}
+    any_schema = any(e.check in schema_checks for rep in reports for e in rep.errors)
+    any_errors = any(rep.errors for rep in reports)
+    if any_schema:
+        return 2
     return 1 if any_errors else 0
 
 
