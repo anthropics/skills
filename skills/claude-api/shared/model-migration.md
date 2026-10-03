@@ -215,8 +215,8 @@ These models return 404 - update immediately:
 | ----------------------------- | ------------- | -------------------- |
 | `claude-opus-4-1-20250805`    | Aug 5, 2026   | `claude-opus-4-8`    |
 | `claude-opus-4-20250514`      | Jun 15, 2026  | `claude-opus-4-8`    |
-| `claude-sonnet-4-20250514`    | Jun 15, 2026  | `claude-sonnet-5-5` |
-| `claude-3-haiku-20240307`     | Apr 20, 2026  | `claude-haiku-4-5`   |
+| `claude-sonnet-4-20250514`    | Jun 15, 2026  | `claude-sonnet-4-6`  |
+| `claude-3-haiku-20240307`     | Apr 20, 2026  | `claude-haiku-4-5-20251001` |
 | `claude-3-7-sonnet-20250219`  | Feb 19, 2026  | `claude-sonnet-5-5` |
 | `claude-3-5-haiku-20241022`   | Feb 19, 2026  | `claude-haiku-4-5`   |
 | `claude-3-opus-20240229`      | Jan 5, 2026   | `claude-opus-4-8`    |
