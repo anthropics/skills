@@ -50,8 +50,25 @@ def get_slides_in_sldidlst(unpacked_dir: Path) -> set[str]:
 
     rid_to_slide = _slide_rids(pres_rels_path, unpacked_dir)
 
-    pres_content = pres_path.read_text(encoding="utf-8")
-    referenced_rids = set(re.findall(r'<p:sldId[^>]*r:id="([^"]+)"', pres_content))
+    try:
+        pres_dom = defusedxml.minidom.parse(str(pres_path))
+    except Exception as e:
+        raise RefusedToClean(
+            f"Failed to parse ppt/presentation.xml ({e}). Refusing to delete slides."
+        )
+
+    referenced_rids = set()
+    for el in pres_dom.getElementsByTagName("*"):
+        tag = el.tagName.split(":")[-1]
+        if tag == "sldId":
+            rid = el.getAttribute("r:id")
+            if not rid:
+                for attr in el.attributes.values():
+                    if attr.name.endswith(":id") and attr.name != "id":
+                        rid = attr.value
+                        break
+            if rid:
+                referenced_rids.add(rid)
 
     return {
         posixpath.basename(rid_to_slide[rid])
@@ -67,27 +84,29 @@ class RefusedToClean(Exception):
 def remove_orphaned_slides(unpacked_dir: Path) -> list[str]:
     slides_dir = unpacked_dir / "ppt" / "slides"
     slides_rels_dir = slides_dir / "_rels"
+    pres_path = unpacked_dir / "ppt" / "presentation.xml"
     pres_rels_path = unpacked_dir / "ppt" / "_rels" / "presentation.xml.rels"
 
     if not slides_dir.exists():
         return []
 
-    referenced_slides = get_slides_in_sldidlst(unpacked_dir)
     on_disk = sorted(slides_dir.glob("slide*.xml"))
+    if not on_disk:
+        return []
 
-    if on_disk and not any(s.name in referenced_slides for s in on_disk):
-        listed = re.findall(
-            r'<p:sldId[^>]*r:id="([^"]+)"',
-            (unpacked_dir / "ppt" / "presentation.xml").read_text(encoding="utf-8")
-            if (unpacked_dir / "ppt" / "presentation.xml").exists()
-            else "",
+    if not pres_path.exists():
+        raise RefusedToClean(
+            f"ppt/presentation.xml is missing while {len(on_disk)} slide(s) exist on disk. "
+            f"Refusing to delete slides."
         )
-        if listed:
-            raise RefusedToClean(
-                f"<p:sldIdLst> lists {len(listed)} slide(s) and none of the "
-                f"{len(on_disk)} slide(s) on disk match any of them. Refusing to "
-                f"delete them all — this is a parse failure, not an empty deck."
-            )
+
+    referenced_slides = get_slides_in_sldidlst(unpacked_dir)
+
+    if not any(s.name in referenced_slides for s in on_disk):
+        raise RefusedToClean(
+            f"None of the {len(on_disk)} slide(s) on disk match any slide referenced in "
+            f"presentation.xml. Refusing to delete them all — this is a parse failure, not an empty deck."
+        )
 
     removed = []
 
