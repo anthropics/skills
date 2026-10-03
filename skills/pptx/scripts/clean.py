@@ -126,6 +126,8 @@ def remove_orphaned_slides(unpacked_dir: Path) -> list[str]:
 
     on_disk = sorted(slides_dir.glob("slide*.xml"))
 
+    # Unresolved or ambiguous slide metadata must never be treated as an empty
+    # referenced-slide set — that would delete every slide.
     if on_disk and not any(s.name in referenced_slides for s in on_disk):
         raise RefusedToClean(
             f"<p:sldIdLst> resolves to {len(referenced_slides)} slide(s) and none "

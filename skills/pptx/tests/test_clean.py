@@ -16,29 +16,39 @@ PKG_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 SLIDE_REL_TYPE = (
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"
 )
+LAYOUT_REL_TYPE = (
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+)
 
 
-def _sld_id(rid: str, prefix: str = "p", quote: str = '"') -> str:
-    return f'<{prefix}:sldId id="256" r:id={quote}{rid}{quote}/>'
+def _sld_id(
+    rid: str, prefix: str = "p", quote: str = '"', attr_prefix: str = "r"
+) -> str:
+    tag = f"{prefix}:sldId" if prefix else "sldId"
+    attr = f"{attr_prefix}:id" if attr_prefix else "id"
+    return f'<{tag} id="256" {attr}={quote}{rid}{quote}/>'
 
 
-def _presentation_xml(sld_ids: str, prefix: str = "p") -> str:
+def _presentation_xml(sld_ids: str, prefix: str = "p", extra_ns: str = "") -> str:
+    decl = f'xmlns:{prefix}="{PML_NS}"' if prefix else f'xmlns="{PML_NS}"'
+    p = f"{prefix}:" if prefix else ""
     return (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-        f'<{prefix}:presentation xmlns:{prefix}="{PML_NS}" xmlns:r="{REL_NS}">'
-        f"<{prefix}:sldIdLst>{sld_ids}</{prefix}:sldIdLst>"
-        f"</{prefix}:presentation>"
+        f'<{p}presentation {decl} xmlns:r="{REL_NS}"{extra_ns}>'
+        f"<{p}sldIdLst>{sld_ids}</{p}sldIdLst>"
+        f"</{p}presentation>"
     )
 
 
-def _rels_xml(rels) -> str:
-    entries = "".join(
-        f'<Relationship Id="{rid}" Type="{SLIDE_REL_TYPE}" Target="{target}"/>'
-        for rid, target in rels
-    )
+def _rels_xml(rels, rel_type: str = SLIDE_REL_TYPE) -> str:
+    entries = []
+    for rel in rels:
+        rid, target = rel[0], rel[1]
+        rtype = rel[2] if len(rel) > 2 else rel_type
+        entries.append(f'<Relationship Id="{rid}" Type="{rtype}" Target="{target}"/>')
     return (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
-        f'<Relationships xmlns="{PKG_REL_NS}">{entries}</Relationships>'
+        f'<Relationships xmlns="{PKG_REL_NS}">{"".join(entries)}</Relationships>'
     )
 
 
@@ -209,6 +219,95 @@ class CleanSlidesTest(unittest.TestCase):
             clean.clean_unused_files(self.root)
 
         self.assertTrue(self._slide_path("slide1.xml").exists())
+
+    def test_duplicate_slide_rids_keep_referenced_slide(self):
+        _write_package(
+            self.root,
+            _presentation_xml(_sld_id("rId1") + _sld_id("rId1")),
+            slides=["slide1.xml", "slide2.xml"],
+            rels=[("rId1", "slides/slide1.xml")],
+        )
+
+        removed = clean.clean_unused_files(self.root)
+
+        self.assertIn("ppt/slides/slide2.xml", removed)
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+        self.assertFalse(self._slide_path("slide2.xml").exists())
+
+    def test_non_slide_relationship_refuses_and_keeps_slides(self):
+        _write_package(
+            self.root,
+            _presentation_xml(_sld_id("rId2")),
+            slides=["slide1.xml"],
+            rels=[("rId2", "slideLayouts/slideLayout1.xml", LAYOUT_REL_TYPE)],
+        )
+
+        with self.assertRaises(clean.RefusedToClean):
+            clean.clean_unused_files(self.root)
+
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+
+    def test_mixed_slide_and_non_slide_rids_keep_referenced_slide(self):
+        _write_package(
+            self.root,
+            _presentation_xml(_sld_id("rId1") + _sld_id("rId2")),
+            slides=["slide1.xml", "slide2.xml"],
+            rels=[
+                ("rId1", "slides/slide1.xml"),
+                ("rId2", "slideLayouts/slideLayout1.xml", LAYOUT_REL_TYPE),
+            ],
+        )
+
+        removed = clean.clean_unused_files(self.root)
+
+        self.assertIn("ppt/slides/slide2.xml", removed)
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+        self.assertFalse(self._slide_path("slide2.xml").exists())
+
+    def test_relative_slide_target_resolves(self):
+        _write_package(
+            self.root,
+            _presentation_xml(_sld_id("rId1")),
+            slides=["slide1.xml", "slide2.xml"],
+            rels=[("rId1", "../slides/slide1.xml")],
+        )
+
+        removed = clean.clean_unused_files(self.root)
+
+        self.assertIn("ppt/slides/slide2.xml", removed)
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+        self.assertFalse(self._slide_path("slide2.xml").exists())
+
+    def test_default_namespace_discovers_slides(self):
+        _write_package(
+            self.root,
+            _presentation_xml(_sld_id("rId1", prefix=""), prefix=""),
+            slides=["slide1.xml", "slide2.xml"],
+            rels=[("rId1", "slides/slide1.xml")],
+        )
+
+        removed = clean.clean_unused_files(self.root)
+
+        self.assertIn("ppt/slides/slide2.xml", removed)
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+        self.assertFalse(self._slide_path("slide2.xml").exists())
+
+    def test_nonstandard_relationship_prefix_discovers_slides(self):
+        _write_package(
+            self.root,
+            _presentation_xml(
+                _sld_id("rId1", attr_prefix="rel"),
+                extra_ns=f' xmlns:rel="{REL_NS}"',
+            ),
+            slides=["slide1.xml", "slide2.xml"],
+            rels=[("rId1", "slides/slide1.xml")],
+        )
+
+        removed = clean.clean_unused_files(self.root)
+
+        self.assertIn("ppt/slides/slide2.xml", removed)
+        self.assertTrue(self._slide_path("slide1.xml").exists())
+        self.assertFalse(self._slide_path("slide2.xml").exists())
 
 
 if __name__ == "__main__":
