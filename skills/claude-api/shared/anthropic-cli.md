@@ -158,13 +158,14 @@ Flags that natively take a file path (e.g. `--file` on `beta:files upload`) acce
 
 ## Version-controlled Managed Agents resources (`ant apply`)
 
-This is the recommended flow for defining agents, environments, skills, memory stores and deployments: one file (or skill directory) per resource in your repo, synced with `ant apply` (needs `ant` 1.30.0 or later - check `ant --version`). It prints a plan, creates or updates what differs, and records each resource's ID in `claude-lock.json`. See `shared/managed-agents-core.md` for the field reference, and the `ant apply` page in `shared/live-sources.md` for `--force`, `--prune`, `--lock-file`, renamed or deleted files and CI setup (written for a person at a terminal; the rules below still apply).
+This is the recommended flow for defining agents, environments, skills, memory stores, vaults and deployments: one file (or skill directory) per resource in your repo, synced with `ant apply` (needs `ant` 1.30.0 or later, 1.34.0 for vaults - check `ant --version`). It prints a plan, creates or updates what differs, and records each resource's ID in `claude-lock.json`. See `shared/managed-agents-core.md` for the field reference, and the `ant apply` page in `shared/live-sources.md` for `--force`, `--prune`, `--lock-file`, renamed or deleted files and CI setup (written for a person at a terminal; the rules below still apply).
 
 ```
 agents/summarizer.md          # YAML frontmatter = agent config, Markdown body = system prompt
 environments/cloud.yaml       # the environment create body
 skills/pr-summary/SKILL.md    # a skill is a directory with SKILL.md at its root
 memory_stores/notes.yaml
+vaults/team.yaml              # display_name (+ metadata) only - the container, never a credential
 deployments/nightly.md        # frontmatter = deployment create body, Markdown body = the message that starts each run
 claude-lock.json              # written by ant apply - commit it
 ```
@@ -193,13 +194,15 @@ ant apply agents/summarizer.md environments/cloud.yaml   # print the plan, then 
 ant apply   # later: reconcile every file claude-lock.json already tracks
 ```
 
-- **Name the files you wrote; pass `.` or a directory only when the user asks for the whole tree.** A directory is walked to any depth and everything that looks like a resource is applied: any file that has a top-level `type:`, sits directly in `agents/`, `environments/`, `memory_stores/` or `deployments/`, or is named after one of them (`environment_staging.yaml`), plus any directory holding a `SKILL.md`. Claude Code plugins, conda (`environment.yml`) and Kubernetes (`deployments/`) use the same names, and a cloned repo can hold files its user never read.
+- **Name the files you wrote; pass `.` or a directory only when the user asks for the whole tree.** A directory is walked to any depth and everything that looks like a resource is applied: any file that has a top-level `type:`, sits directly in `agents/`, `environments/`, `memory_stores/`, `vaults/` or `deployments/`, or has a filename that is or starts with `agent`, `environment`, `memory_store` or `deployment` (`agent.md`, `environment_staging.yaml`; the kind has to lead, so `staging-environment.yaml` is not recognized), plus any directory holding a `SKILL.md`. A filename never makes a vault: outside `vaults/`, a vault file needs `type: vault`. Claude Code plugins, conda (`environment.yml`) and Kubernetes (`deployments/`) use the same names, and a cloned repo can hold files its user never read.
 - **Without a terminal (a coding agent's shell), `ant apply` prints the plan and exits; it applies only with `--yes`.** If you are a coding agent running this for a user, that flag is their approval, not yours: show them the dry-run plan and add `--yes` (or answer the prompt) only once they say go ahead. The plan also covers whatever `claude-lock.json` already tracks: if it would create or change anything you did not write, or a file you did not write sits at a path you need, stop and ask; never add `--force` or `--prune` on your own.
 - **Reference other resources by path, not ID** (relative to the file that names it): `skills: [../skills/pr-summary]` on an agent; `agent: ../agents/summarizer.md` and `environment_id: ../environments/cloud.yaml` on a deployment. `ant apply` also applies whatever the files you pass reference, in dependency order, and fills in the IDs. For a resource these files don't manage, write its ID (`agent_01...`, `env_01...`); anything else is sent as written.
 - **Commit `claude-lock.json`** (the first run writes it where you run the command - use the repo root). The next run uses it to update the same resources instead of creating duplicates. A resource created any other way (Console, `ant beta:agents create`, an SDK) cannot be adopted: a file describing it creates a second one.
 - **To change a resource, edit its file and run `ant apply` again** (an agent gets a new version; whatever references it is updated in the same run).
 - **CI in the user's own repository:** run from the directory that holds `claude-lock.json` (normally the repo root) and name the resource directories the project has, not `.` (a walk of `.` also applies look-alike files elsewhere in the repo): `ant apply --dry-run agents environments` on pull requests, `ant apply --yes agents environments` only on push to the default branch (there the merge is the approval), then commit `claude-lock.json`.
-- **Not managed:** vaults and credentials (`ant beta:vaults`, `ant beta:vaults:credentials`, or an SDK), uploaded files, sessions.
+- **One directory per agent works too:** `agents/<agent-name>/agent.md` with `environment.yaml`, `vault.yaml` (`type: vault`) and `deployment-<name>.yaml` beside it. A file named for its kind alone takes the directory's name. Full layout: `shared/managed-agents-onboarding-from-url.md` §4.
+- **Vaults are managed as containers only.** The file creates and renames the vault; credentials are added separately (`ant beta:vaults:credentials create`, or an SDK) and are never read or diffed. `vault_ids` on a deployment takes `vlt_...` IDs, not paths: apply the vault first, then copy its ID from `claude-lock.json`. Removing a vault with `--prune` archives it, which purges its secrets.
+- **Not managed:** credentials, uploaded files, sessions.
 
 **One-off provisioning** can still use `ant beta:agents create <<'YAML'` (see Input above) and `ant beta:agents update --agent-id ... --version N`; you keep track of the IDs yourself.
 
