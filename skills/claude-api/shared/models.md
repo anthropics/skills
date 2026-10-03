@@ -95,7 +95,7 @@ curl https://api.anthropic.com/v1/models/claude-opus-4-8 \
 | Claude Opus 4.1   | `claude-opus-4-1-20250805`    | Aug 5, 2026 |
 | Claude Sonnet 4   | `claude-sonnet-4-20250514`    | Jun 15, 2026 |
 | Claude Opus 4     | `claude-opus-4-20250514`      | Jun 15, 2026 |
-| Claude Haiku 3    | `claude-3-haiku-20240307`     | Apr 19, 2026 |
+| Claude Haiku 3    | `claude-3-haiku-20240307`     | Apr 20, 2026 |
 | Claude Sonnet 3.7 | `claude-3-7-sonnet-20250219`  | Feb 19, 2026 |
 | Claude Haiku 3.5  | `claude-3-5-haiku-20241022`   | Feb 19, 2026 |
 | Claude Opus 3     | `claude-3-opus-20240229`      | Jan 5, 2026 |
