@@ -4,14 +4,14 @@ The `ant` CLI exposes every Claude API resource as a shell subcommand. Compared 
 
 ## When to use the CLI vs the SDK
 
-**CLI for the control plane, SDK for the data plane.** Agents and environments are relatively static resources you define, configure, and debug with `ant` - check the YAML into your repo, apply from CI, inspect from a terminal. Sessions are dynamic and driven by your application through the SDK - create per task, stream events, react to tool calls, integrate into your product. Both hit the same API; the split is about where the call lives, not what's possible.
+**CLI for the control plane, SDK for the data plane.** Agents and environments are relatively static resources you define, configure, and debug with `ant` - keep them as files in your repo, sync them with `ant apply` (by hand or from CI), inspect from a terminal. Sessions are dynamic and driven by your application through the SDK - create per task, stream events, react to tool calls, integrate into your product. Both hit the same API; the split is about where the call lives, not what's possible.
 
 | | Control plane -> `ant` | Data plane -> SDK |
 |---|---|---|
 | Resources | agents, environments, skills, vaults, files | sessions, events |
 | Cadence | Once per deploy / ad-hoc | Every task / every turn |
-| Lives in | `*.yaml` in your repo + CI + terminal | Application code |
-| Typical calls | `create < agent.yaml`, `update --version N`, `list`, `retrieve`, `archive`, `--debug` | `sessions.create()`, `events.stream()`, `events.send()` |
+| Lives in | `agents/`, `environments/`, `claude-lock.json` in your repo + CI + terminal | Application code |
+| Typical calls | `ant apply`, `list`, `retrieve`, `archive`, `--debug` | `sessions.create()`, `events.stream()`, `events.send()` |
 
 ## Install and auth
 
@@ -24,7 +24,7 @@ xattr -d com.apple.quarantine "$(brew --prefix)/bin/ant"
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_$(uname -s | tr A-Z a-z)_$(uname -m | sed -e s/x86_64/amd64/ -e s/aarch64/arm64/).tar.gz" \
   | sudo tar -xz -C /usr/local/bin ant
 
-# Or from source (Go 1.22+)
+# Or from source (Go 1.25+)
 go install github.com/anthropics/anthropic-cli/cmd/ant@latest
 ```
 
@@ -60,7 +60,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "anthropic-version: 2023-06-01" \
   -H "anthropic-beta: oauth-2025-04-20" \
   -H "content-type: application/json" \
-  -d '{"model": "claude-opus-5", "max_tokens": 1024, "messages": [{"role": "user", "content": "Hello"}]}'
+  -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role": "user", "content": "Hello"}]}'
 
 # .env format - sets ANTHROPIC_AUTH_TOKEN (and ANTHROPIC_BASE_URL if the profile has one).
 # Output is bare KEY=value (no `export`), so use `set -a` to auto-export for child processes:
@@ -82,7 +82,7 @@ Beta resources (agents, sessions, environments, deployments, skills, vaults, mem
 
 ```sh
 ant models list
-ant messages create --model claude-opus-5 --max-tokens 1024 --message '{role: user, content: "Hello"}'
+ant messages create --model claude-opus-5-5 --max-tokens 1024 --message '{role: user, content: "Hello"}'
 ant beta:agents retrieve --agent-id agent_01...
 ant beta:sessions:events list --session-id session_01...
 ```
@@ -112,7 +112,7 @@ ant beta:agents list --transform '{id,name,model}' --format jsonl
 **Extract a scalar for shell use:** pair `--transform` with `-r` (`--raw-output` - prints strings unquoted, jq-style):
 
 ```sh
-AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-5}' \
+AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-5-5}' \
   --transform id -r)
 ```
 
@@ -123,7 +123,7 @@ AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-
 ```sh
 ant beta:agents create \
   --name "Research Agent" \
-  --model '{id: claude-opus-5}' \
+  --model '{id: claude-opus-5-5}' \
   --tool '{type: agent_toolset_20260401}' \
   --tool '{type: custom, name: search_docs, input_schema: {type: object, properties: {query: {type: string}}}}'
 ```
@@ -133,7 +133,7 @@ ant beta:agents create \
 ```sh
 ant beta:agents create <<'YAML'
 name: Research Agent
-model: claude-opus-5
+model: claude-opus-5-5
 system: |
   You are a research assistant. Cite sources for every claim.
 tools:
@@ -144,9 +144,9 @@ YAML
 **`@file` references** - inline a file's contents into any string-valued field. Inside structured flag values, quote the path. Binary files are auto-base64'd; force with `@file://` (text) or `@data://` (base64). Escape a literal leading `@` as `\@`.
 
 ```sh
-ant beta:agents create --name "Researcher" --model '{id: claude-sonnet-5}' --system @./prompts/researcher.txt
+ant beta:agents create --name "Researcher" --model '{id: claude-sonnet-5-5}' --system @./prompts/researcher.txt
 
-ant messages create --model claude-opus-5 --max-tokens 1024 \
+ant messages create --model claude-opus-5-5 --max-tokens 1024 \
   --message '{role: user, content: [
     {type: document, source: {type: base64, media_type: application/pdf, data: "@./scan.pdf"}},
     {type: text, text: "Extract the text from this scanned document."}
@@ -156,37 +156,87 @@ ant messages create --model claude-opus-5 --max-tokens 1024 \
 
 Flags that natively take a file path (e.g. `--file` on `beta:files upload`) accept a bare path without `@`.
 
-## Version-controlled Managed Agents resources
+## Version-controlled Managed Agents resources (`ant apply`)
 
-This is the recommended flow for defining agents and environments - check the YAML into your repo and sync via `create` (first time) / `update` (thereafter). See `shared/managed-agents-core.md` for the field reference.
+This is the recommended flow for defining agents, environments, skills, memory stores and deployments: one file (or skill directory) per resource in your repo, synced with `ant apply` (needs `ant` 1.30.0 or later - check `ant --version`). It prints a plan, creates or updates what differs, and records each resource's ID in `claude-lock.json`. See `shared/managed-agents-core.md` for the field reference, and the `ant apply` page in `shared/live-sources.md` for `--force`, `--prune`, `--lock-file`, renamed or deleted files and CI setup (written for a person at a terminal; the rules below still apply).
 
-```yaml
-# summarizer.agent.yaml
+```
+agents/summarizer.md          # YAML frontmatter = agent config, Markdown body = system prompt
+environments/cloud.yaml       # the environment create body
+skills/pr-summary/SKILL.md    # a skill is a directory with SKILL.md at its root
+memory_stores/notes.yaml
+deployments/nightly.md        # frontmatter = deployment create body, Markdown body = the message that starts each run
+claude-lock.json              # written by ant apply - commit it
+```
+
+```markdown
+---
+# agents/summarizer.md
 name: Summarizer
-model: claude-sonnet-5
-system: |
-  You are a helpful assistant that writes concise summaries.
+model: claude-sonnet-5-5
 tools:
   - type: agent_toolset_20260401
+---
+
+You are a helpful assistant that writes concise summaries.
+```
+
+```yaml
+# environments/cloud.yaml
+name: summarizer-env
+config: {type: cloud, networking: {type: unrestricted}}
 ```
 
 ```sh
-# Create (once) - capture the ID
-AGENT_ID=$(ant beta:agents create < summarizer.agent.yaml --transform id -r)
-
-# Update (CI) - needs ID + current version (optimistic lock)
-ant beta:agents update --agent-id "$AGENT_ID" --version 1 < summarizer.agent.yaml
+ant apply --dry-run -v agents/summarizer.md environments/cloud.yaml   # print the plan with every field, change nothing
+ant apply agents/summarizer.md environments/cloud.yaml   # print the plan, then ask (y)es / (n)o / (d)etails - needs a terminal
+ant apply   # later: reconcile every file claude-lock.json already tracks
 ```
 
-Same pattern for environments (`ant beta:environments create|update < env.yaml`), then start a session with both IDs:
+- **Name the files you wrote; pass `.` or a directory only when the user asks for the whole tree.** A directory is walked to any depth and everything that looks like a resource is applied: any file that has a top-level `type:`, sits directly in `agents/`, `environments/`, `memory_stores/` or `deployments/`, or is named after one of them (`environment_staging.yaml`), plus any directory holding a `SKILL.md`. Claude Code plugins, conda (`environment.yml`) and Kubernetes (`deployments/`) use the same names, and a cloned repo can hold files its user never read.
+- **Without a terminal (a coding agent's shell), `ant apply` prints the plan and exits; it applies only with `--yes`.** If you are a coding agent running this for a user, that flag is their approval, not yours: show them the dry-run plan and add `--yes` (or answer the prompt) only once they say go ahead. The plan also covers whatever `claude-lock.json` already tracks: if it would create or change anything you did not write, or a file you did not write sits at a path you need, stop and ask; never add `--force` or `--prune` on your own.
+- **Reference other resources by path, not ID** (relative to the file that names it): `skills: [../skills/pr-summary]` on an agent; `agent: ../agents/summarizer.md` and `environment_id: ../environments/cloud.yaml` on a deployment. `ant apply` also applies whatever the files you pass reference, in dependency order, and fills in the IDs. For a resource these files don't manage, write its ID (`agent_01...`, `env_01...`); anything else is sent as written.
+- **Commit `claude-lock.json`** (the first run writes it where you run the command - use the repo root). The next run uses it to update the same resources instead of creating duplicates. A resource created any other way (Console, `ant beta:agents create`, an SDK) cannot be adopted: a file describing it creates a second one.
+- **To change a resource, edit its file and run `ant apply` again** (an agent gets a new version; whatever references it is updated in the same run).
+- **CI in the user's own repository:** run from the directory that holds `claude-lock.json` (normally the repo root) and name the resource directories the project has, not `.` (a walk of `.` also applies look-alike files elsewhere in the repo): `ant apply --dry-run agents environments` on pull requests, `ant apply --yes agents environments` only on push to the default branch (there the merge is the approval), then commit `claude-lock.json`.
+- **Not managed:** vaults and credentials (`ant beta:vaults`, `ant beta:vaults:credentials`, or an SDK), uploaded files, sessions.
+
+**One-off provisioning** can still use `ant beta:agents create <<'YAML'` (see Input above) and `ant beta:agents update --agent-id ... --version N`; you keep track of the IDs yourself.
+
+Start a session with the IDs from `claude-lock.json` (each `resources` key is the file's path as the plan prints it):
 
 ```sh
-ant beta:sessions create --agent "$AGENT_ID" --environment-id "$ENV_ID" --title "Task"
+AGENT_ID=$(jq -r '.resources["./agents/summarizer.md"].id' claude-lock.json)
+ENV_ID=$(jq -r '.resources["./environments/cloud.yaml"].id' claude-lock.json)
+SID=$(ant beta:sessions create --agent "$AGENT_ID" --environment-id "$ENV_ID" --title "Task" --transform id -r)
 ant beta:sessions:events send --session-id "$SID" \
   --event '{type: user.message, content: [{type: text, text: "Summarize X"}]}'
 ant beta:sessions:events list --session-id "$SID" --transform 'content.0.text' -r
 ant beta:sessions:events stream --session-id "$SID"   # live event stream
 ```
+
+### Attach a terminal to a session (`ant beta:sessions connect`)
+
+`ant beta:sessions connect <session-id>` attaches your terminal to an existing session: it loads the transcript, follows it live, and lets you step in - send a message, interrupt, or allow/deny a tool call that is waiting for approval. Ctrl+C detaches; the session keeps running, and reconnecting reloads the full history. Read-only if the session is `terminated` or archived.
+
+```sh
+ant beta:sessions connect sesn_011CZkZAtmR3yMPDzynEDxu7          # terminal view
+ant beta:sessions connect sesn_011CZkZAtmR3yMPDzynEDxu7 --web    # Console session viewer, served locally
+```
+
+| Key | Action |
+|---|---|
+| Enter | Send input as a `user.message` (Alt+Enter / Ctrl+J for a newline) |
+| Esc | Interrupt the running agent (`user.interrupt`) |
+| Ctrl+O | Toggle detail: tool inputs/results, token usage, status events (`--verbose` / `-v` starts expanded) |
+| PgUp / PgDn | Scroll; scrolling up pauses following, End resumes |
+| Ctrl+C (or Ctrl+D on empty input) | Detach |
+
+When a call is waiting for approval (`always_ask`, or `auto` with no determination), the input line becomes **Allow tool call?** with **Yes** / **No** / **No, and tell the agent why** - the CLI sends `user.tool_confirmation`, with your typed reason as `deny_message`. In multiagent sessions the terminal view follows the primary thread only (which includes coordinator<->subagent messages).
+
+`--web` serves the Console's session viewer from a local server on `127.0.0.1`, prints the URL, and opens the browser (`--no-browser` to skip). The URL works once, within two minutes (reloading that tab is fine; to open it elsewhere, run the command again). The page talks only to the local `ant` process, which makes the API calls, so credentials never leave the CLI; the server runs until Ctrl+C. Unlike the terminal view, the browser viewer follows every thread of a multiagent session.
+
+Needs an interactive terminal (except `--web`) - for scripts use `ant beta:sessions:events stream` / `send`, below.
 
 ### Interactive session loop (stream-before-send)
 

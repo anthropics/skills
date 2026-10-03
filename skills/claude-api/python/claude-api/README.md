@@ -33,7 +33,7 @@ Use `with_options()` to override client settings for a single call without mutat
 
 ```python
 client.with_options(timeout=5.0, max_retries=5).messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello"}],
 )
@@ -90,7 +90,7 @@ Set `ANTHROPIC_LOG=debug` (or `info`) to enable SDK logging via the standard `lo
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     messages=[
         {"role": "user", "content": "What is the capital of France?"}
@@ -109,7 +109,7 @@ for block in response.content:
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     system="You are a helpful coding assistant. Always provide examples in Python.",
     messages=[{"role": "user", "content": "How do I read a JSON file?"}]
@@ -145,7 +145,7 @@ with open("image.png", "rb") as f:
     image_data = base64.standard_b64encode(f.read()).decode("utf-8")
 
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -168,7 +168,7 @@ response = client.messages.create(
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     messages=[{
         "role": "user",
@@ -198,7 +198,7 @@ Use top-level `cache_control` to automatically cache the last cacheable block in
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     cache_control={"type": "ephemeral"},  # auto-caches the last cacheable block
     system="You are an expert on this large document...",
@@ -212,7 +212,7 @@ For fine-grained control, add `cache_control` to specific content blocks:
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     system=[{
         "type": "text",
@@ -224,7 +224,7 @@ response = client.messages.create(
 
 # With explicit TTL (time-to-live)
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     system=[{
         "type": "text",
@@ -249,16 +249,17 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 
 ## Extended Thinking
 
-> **Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
+> **Claude Opus 5.5:** thinking is always on - omit `thinking` (or send `{"type": "adaptive"}`, which is equivalent); `{"type": "disabled"}` returns a 400 at every effort, as does a thinking budget. Control depth with `output_config.effort` instead - the default is `medium` on this model, where Claude Opus 5 defaults to `high`.
 > **Claude Opus 5:** thinking is on by default - omitting `thinking` runs adaptive (`{"type": "adaptive"}` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `{"type": "disabled"}` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
 > **Older models:** Use `thinking: {type: "enabled", budget_tokens: N}` (must be < `max_tokens`, min 1024).
 
 ```python
-# Fable 5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
+# Fable 5 / Claude Opus 5.5 / Claude Opus 5 / Opus 4.8 / 4.7 / 4.6: adaptive thinking (recommended)
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
-    thinking={"type": "adaptive", "display": "summarized"},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Claude Opus 5 / Opus 4.8 / 4.7
+    thinking={"type": "adaptive", "display": "summarized"},  # display opt-in: default is omitted (empty thinking text) on Fable 5/5.1, Mythos 5/5.1, Claude Opus 5.5, Claude Opus 5, Opus 4.8/4.7, Claude Sonnet 5.5, and Claude Sonnet 5
     output_config={"effort": "high"},  # low | medium | high | xhigh | max
     messages=[{"role": "user", "content": "Solve this step by step..."}]
 )
@@ -317,7 +318,7 @@ To access raw headers or other response metadata, use `.with_raw_response`:
 
 ```python
 raw = client.messages.with_raw_response.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello"}],
 )
@@ -363,7 +364,7 @@ class ConversationManager:
 # Usage
 conversation = ConversationManager(
     client=anthropic.Anthropic(),
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     system="You are a helpful assistant."
 )
 
@@ -381,7 +382,7 @@ response2 = conversation.send("What's my name?")  # Claude remembers "Alice"
 
 ### Compaction (long conversations)
 
-> **Beta, Fable 5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests - append `response.content`, not just the text.
+> **Beta, Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests - append `response.content`, not just the text.
 
 ```python
 import anthropic
@@ -394,7 +395,7 @@ def chat(user_message: str) -> str:
 
     response = client.beta.messages.create(
         betas=["compact-2026-01-12"],
-        model="claude-opus-5",
+        model="claude-opus-5-5",
         max_tokens=16000,
         messages=messages,
         context_management={
@@ -440,7 +441,7 @@ if response.stop_reason == "refusal" and response.stop_details:
 
 ### Refusal Fallbacks (Claude Fable 5.1) - opt in by default
 
-Fallbacks are **opt-in**: without them a refused request simply stops. Include the server-side `fallbacks` parameter in `claude-fable-5-1` code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A decline before any output isn't billed (a mid-stream decline bills the streamed partial); the rescue bills at the fallback model's own rates, with cache repricing applied automatically.
+Fallbacks are **opt-in**: without them a refused request simply stops. Include the server-side `fallbacks` parameter in `claude-fable-5-1` code by default - on a policy decline the API re-runs the same request on the fallback model inside the same call. A mid-stream decline is billed at normal rates, and the rescue bills at the fallback model's own rates, with cache repricing applied automatically; for a decline before any output, see [How refusals are billed](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback#how-refusals-are-billed).
 
 ```python
 response = client.beta.messages.create(
@@ -476,7 +477,7 @@ A `stop_reason: "refusal"` on the final response means the whole chain refused. 
 ```python
 # Automatic caching (simplest - caches the last cacheable block)
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=16000,
     cache_control={"type": "ephemeral"},
     system=large_document_text,  # e.g., 50KB of context
@@ -492,14 +493,14 @@ response = client.messages.create(
 ```python
 # Default to Opus for most tasks
 response = client.messages.create(
-    model="claude-opus-5",  # $5.00/$25.00 per 1M tokens
+    model="claude-opus-5-5",  # $4.00/$20.00 per 1M tokens
     max_tokens=16000,
     messages=[{"role": "user", "content": "Explain quantum computing"}]
 )
 
 # Use Sonnet for high-volume production workloads
 standard_response = client.messages.create(
-    model="claude-sonnet-5",  # $2.00/$10.00 per 1M tokens
+    model="claude-sonnet-5-5",  # $2.00/$10.00 per 1M tokens
     max_tokens=16000,
     messages=[{"role": "user", "content": "Summarize this document"}]
 )
@@ -516,12 +517,12 @@ simple_response = client.messages.create(
 
 ```python
 count_response = client.messages.count_tokens(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     messages=messages,
     system=system
 )
 
-estimated_input_cost = count_response.input_tokens * 0.000005  # $5/1M tokens
+estimated_input_cost = count_response.input_tokens * 0.000004  # $4/1M tokens
 print(f"Estimated input cost: ${estimated_input_cost:.4f}")
 ```
 

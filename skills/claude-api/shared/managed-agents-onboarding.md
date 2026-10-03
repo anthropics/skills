@@ -22,9 +22,9 @@ Their description does the interview's work. Draft the agent config from it and 
 
 - **Tools** - enable the full prebuilt toolset by default (`agent_toolset_20260401`: `bash`, `read`, `write`, `edit`, `glob`, `grep`, `web_fetch`, `web_search`). **Suggest MCP servers** for any third-party service the job names (GitHub, Linear, Slack, ...) - and flag the credential each one implies as you suggest it ("Linear MCP -> you'll need a Linear API token at kickoff"), so §4's auth step is a formality, not a surprise. Collection itself waits for §4. Custom tools only if the user's own app must answer calls (name, description, input schema - their handler code is theirs; don't generate it).
 - **Skills** - **suggest** prebuilt `xlsx`/`docx`/`pptx`/`pdf` when the job produces those artifacts; custom by `skill_id` (max 20 total per agent, prebuilt + custom combined).
-- **Outcome** - if the description implies checkable "done" criteria (or you can elicit them in the follow-up: not "a good report" but "a CSV with a numeric `price` column per SKU"), **suggest an Outcome kickoff** - the harness grades and iterates against a rubric (`shared/managed-agents-outcomes.md`).
+- **Outcome - the default kickoff for any job with a deliverable.** If the job produces something checkable (an artifact, a report, a PR, a dataset), draft a starter rubric from the description - explicit, independently gradeable criteria: not "a good report" but "a CSV with a numeric `price` column per SKU" - and propose it inline with the config; the harness grades and iterates against it (`shared/managed-agents-outcomes.md`). The user not having a rubric is not a reason to skip this - drafting one is your job; mark it as a starter to tune. Fall back to a conversational kickoff only when the job is genuinely interactive (a chat surface, human-in-the-loop steering).
 - **On-hand resources** - repos on disk (`github_repository`: URL, optional `mount_path`/`checkout`; token comes in §4), files to seed (Files API upload -> `{type: "file", file_id, mount_path}`; read-only), if the job references them.
-- **Model** - default `claude-opus-5`; `claude-fable-5-1` for the hardest long-horizon work (`shared/model-migration.md` -> Migrating to Claude Fable 5.1).
+- **Model** - default `claude-opus-5-5`; `claude-fable-5-1` for the hardest long-horizon work (`shared/model-migration.md` -> Migrating to Claude Fable 5.1).
 
 > Important: **PR creation needs the GitHub MCP server too** - a `github_repository` mount is filesystem-only. Edit in the mount -> push branch via `bash` -> open the PR via the MCP `create_pull_request` tool.
 
@@ -44,9 +44,9 @@ Usually zero or one question:
 
 **Silent viability gate - run this yourself before emitting anything; surface only the gaps.** Walk the job clause by clause: every verb maps to an enabled tool or MCP server ("open a PR" -> GitHub MCP, not just the mount); every MCP server and repo mount has its credential from the auth step; every external host is reachable under the networking choice; every file/repo/dataset the job references is mounted; "done" is checkable. If something's missing, say so and resolve it - don't emit a config you already know is under-resourced.
 
-**Kickoff - pick one, never both:**
-- `user.message` - conversational.
-- `user.define_outcome` + rubric - when §2 settled on an Outcome; the harness iterates and grades until the rubric passes.
+**Kickoff - pick one, never both. Outcome is the default:**
+- `user.define_outcome` + rubric - the default whenever the job has a deliverable (§2 drafts the rubric); the harness iterates and grades until the rubric passes.
+- `user.message` - only for genuinely conversational sessions.
 - **Scheduled shape?** Skip per-session kickoff entirely - create a **deployment** (`deployments.create()` with `schedule` + `initial_events`); each firing creates the session autonomously. See `shared/managed-agents-scheduled-deployments.md`.
 
 Mechanics to bake into the runtime code: session creation resolves resources (a bad mount surfaces there, before tokens) but does not itself provision the sandbox; open the event stream *before* sending the kickoff; break on `session.status_terminated`, or `session.status_idle` with any non-`requires_action` `stop_reason` - terminal, or `budget_reached`, which is not terminal (only a budget change/removal resumes it) (`shared/managed-agents-client-patterns.md` Pattern 5); usage lands on `span.model_request_end`; artifacts land in `/mnt/session/outputs/` (`files.list({scope_id: session.id, ...})`).
@@ -55,24 +55,27 @@ Mechanics to bake into the runtime code: session creation resolves resources (a 
 
 Go straight from the last answer to the code - no preamble, no lecture about setup-vs-runtime; the two-block structure shows it. Generate **two clearly-separated blocks**:
 
-**Block 1 - Setup (run once, store the IDs).** Prefer **YAML files + `ant` CLI** - agents and environments are version-controlled definitions users should check in and apply from CI:
+**Block 1 - Setup (files + `ant apply`; the IDs land in `claude-lock.json`).** Agents and environments are version-controlled definitions - write them as files and sync them with `ant apply` (`shared/anthropic-cli.md` -> Version-controlled Managed Agents resources):
 
-1. `<name>.agent.yaml` (flat: `name`, `model`, `system`, `tools`, `mcp_servers`, `skills`) and `<name>.environment.yaml`
+1. `agents/<name>.md` - YAML frontmatter (`name`, `model`, `tools`, `mcp_servers`, `skills`) with the system prompt as the Markdown body - and `environments/<name>.yaml`. Reusing an existing environment (§3)? Write no environment file (it would create a second one), leave it out of the commands below, and use the existing `env_...` ID wherever an environment is named (Block 2, a deployment file's `environment_id`).
 2. ```sh
-   AGENT_ID=$(ant beta:agents create < <name>.agent.yaml --transform id -r)
-   ENV_ID=$(ant beta:environments create < <name>.environment.yaml --transform id -r)
-   # CI sync: ant beta:agents update --agent-id "$AGENT_ID" --version N < <name>.agent.yaml
+   ant apply --dry-run -v agents/<name>.md environments/<name>.yaml   # prints the full plan, every field; changes nothing
+   ant apply agents/<name>.md environments/<name>.yaml                # asks, then creates; run it again after any edit to update
    ```
+   Name the files you just wrote - never `.` or a directory, which is walked and also creates whatever else in the repo looks like a resource (a Claude Code plugin's `agents/*.md` and `skills/*/SKILL.md`, files the user never read). Without a terminal (a coding agent's shell) the second command prints the plan and exits; it applies only with `--yes`, which is the user's approval, not yours: show them the dry-run plan and add it only once they say go ahead. If the plan would create or change anything you did not write, or a file you did not write sits at a path you need, stop and ask; never add `--force` or `--prune` on your own.
+3. Keep `claude-lock.json` beside the files (commit both if this is a repo) - it holds the IDs, and without it the next `ant apply` creates duplicates. Copy the IDs Block 2 needs (agent, environment; scheduled shape: the deployment) into the app's own config or env vars once - `resources["./agents/<name>.md"].id` and so on, keyed by the path the plan printed - so the running app does not depend on the lockfile.
+
+If `ant` is missing or older than 1.30.0 (`ant --version`) - and the user is not on Claude Platform on AWS (below) - say so and offer to install or upgrade it (`shared/anthropic-cli.md` -> Install and auth). Ask before running an installer, and do not silently fall back to the SDK; use the SDK fallback below only if the user declines or it cannot be installed.
 
 SDK fallback if the user asks - and **required on Claude Platform on AWS**, where auth is SigV4 and the `ant` CLI has no SigV4 mode (use the platform client from `shared/claude-platform-on-aws.md`): label it `# ONE-TIME SETUP - run once, save the IDs` and call `environments.create()` -> `agents.create()`.
 
 > Warning: **Deployments are newer than the rest of the MA surface.** Before emitting `ant beta:deployments ...` or `client.beta.deployments` / `client.beta.deployment_runs` calls, verify the user's installed CLI/SDK exposes them (`ant beta:deployments --help`; `hasattr(client.beta, "deployments")`). If not, emit raw HTTP against `POST /v1/deployments` with the `managed-agents-2026-04-01` beta header (plus `oauth-2025-04-20` when authenticating with a Bearer token from `ant auth print-credentials`), and leave an upgrade note marking what simplifies to SDK calls.
 
-**Scheduled shape? The deployment is setup, not runtime.** Create it in Block 1, after the agent/environment IDs exist (`deployments.create()` with `schedule` + `initial_events`). Block 2 is then **not** a session loop - there is no per-run kickoff to send. Emit instead: a manual-run trigger (`POST /v1/deployments/{id}/run`) so the user can test now rather than wait for the first firing - the manual run doubles as the smoke test - plus a fetch helper (latest `deployment_runs` entry -> `session_id` -> Console URL + `files.list(scope_id=session_id)` for the artifacts).
+**Scheduled shape? The deployment is setup, not runtime.** Create it in Block 1. With `ant apply`: write `deployments/<name>.md` and add it to the same `ant apply` command. It names the agent and environment by path (a reused environment by its `env_...` ID); the frontmatter is `schedule` plus the rest of the create body, and the Markdown body becomes a `user.message` kickoff (for an Outcome kickoff put `initial_events` in the frontmatter and leave the body empty, not both). With the SDK: `deployments.create()` with `schedule` + `initial_events` after the agent/environment IDs exist. Block 2 is then **not** a session loop - there is no per-run kickoff to send. Emit instead: a manual-run trigger (`POST /v1/deployments/{id}/run`) so the user can test now rather than wait for the first firing - the manual run doubles as the smoke test - plus a fetch helper (latest `deployment_runs` entry -> `session_id` -> Console URL + `files.list(scope_id=session_id)` for the artifacts).
 
 **Block 2 - Runtime (every invocation; conversational and Outcome shapes).** SDK code in the detected language (Python/TS/cURL - SKILL.md -> Language Detection); don't emit shell loops here:
 
-1. Load `agent_id` + `env_id` from config/env
+1. Load `agent_id` + `env_id` from config/env (where Block 1 put them)
 2. `sessions.create(agent=AGENT_ID, environment_id=ENV_ID, resources=[...], vault_ids=[...])`, then print the Console URL so the user can watch live: `https://platform.claude.com/workspaces/default/sessions/{session.id}` (swap `default` for their workspace slug)
 3. **Smoke-test when the job depends on MCP servers, credentials, or locked-down hosts** - those failures don't surface at `sessions.create()`, only on first use. One cheap probe turn ("Confirm you can reach <service> and list 1-2 items; don't start the task"), verify, then send the real kickoff. Skip when there are no external dependencies.
 4. Open stream -> send the §4 kickoff -> loop with the terminal gate from §4.
