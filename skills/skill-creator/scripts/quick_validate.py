@@ -32,6 +32,11 @@ def find_path_references(content):
         if in_fence:
             continue
         for path in re.findall(pattern, line):
+            # Strip anchor fragments: [x](references/g.md#section) links to a
+            # section inside g.md; the fragment is not part of the file path.
+            path = path.split('#', 1)[0]
+            if not path:
+                continue
             if any(x in path.lower() for x in ('example', 'xxx', '<', '>', 'my-', 'my_')):
                 continue
             paths.add(path)
