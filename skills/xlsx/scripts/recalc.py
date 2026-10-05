@@ -232,9 +232,9 @@ def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
                 continue
             for row in ws.iter_rows():
                 for cell in row:
-                    if cell.value is not None and isinstance(cell.value, str):
+                    if cell.value is not None and cell.data_type == 'e':
                         for err in excel_errors:
-                            if err in cell.value:
+                            if cell.value == err:
                                 location = f"{sheet_name}!{cell.coordinate}"
                                 error_details[err].append(location)
                                 total_errors += 1
