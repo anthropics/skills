@@ -63,3 +63,5 @@ if __name__ == "__main__":
         messages = get_bounding_box_messages(f)
     for msg in messages:
         print(msg)
+    if any(msg.startswith("FAILURE") for msg in messages):
+        sys.exit(1)
