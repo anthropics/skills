@@ -10,7 +10,7 @@ The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `c
 
 ## The `user.define_outcome` event
 
-Outcomes are not a field on `sessions.create()`. You create a normal session, then send a `user.define_outcome` event. The agent starts working on receipt - **do not also send a `user.message`** to kick it off.
+Outcomes are not a field on `sessions.create()`. You create a normal session, then send a `user.define_outcome` event. The agent starts working on receipt - **do not also send a `user.message`** to kick it off. (One exception: an outcome worded generally, such as "answers the user's question", needs the question itself. Send the `user.message` first and the outcome second, in one `initial_events` array.)
 
 You can collapse both calls into one by passing a single `user.define_outcome` in the session's `initial_events` array - same event, same rules, one round trip (see `shared/managed-agents-core.md` -> Seeding a session with `initial_events`). More than one `user.define_outcome` in that array, or one without a `rubric`, rejects the whole create with a 400.
 
