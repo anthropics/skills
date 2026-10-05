@@ -21,6 +21,24 @@ from scripts.run_eval import find_project_root, run_eval
 from scripts.utils import parse_skill_md
 
 
+def _open_report(path: Path) -> bool:
+    """Open a report in the default browser when one is available.
+
+    Report generation is still useful in headless environments, so a browser
+    failure must not abort the evaluation loop. Returning the browser result
+    also lets callers distinguish a displayed report from a file-only report.
+    """
+    try:
+        opened = webbrowser.open(path.resolve().as_uri())
+    except (webbrowser.Error, OSError) as exc:
+        print(f"Could not open report in a browser: {exc}", file=sys.stderr)
+        return False
+
+    if not opened:
+        print(f"No browser was available; the report was written to {path}", file=sys.stderr)
+    return opened
+
+
 def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tuple[list[dict], list[dict]]:
     """Split eval set into train and test sets, stratified by should_trigger."""
     random.seed(seed)
@@ -276,7 +294,7 @@ def main():
             live_report_path = Path(args.report)
         # Open the report immediately so the user can watch
         live_report_path.write_text("<html><body><h1>Starting optimization loop...</h1><meta http-equiv='refresh' content='5'></body></html>")
-        webbrowser.open(str(live_report_path))
+        _open_report(live_report_path)
     else:
         live_report_path = None
 
