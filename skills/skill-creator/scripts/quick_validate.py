@@ -9,6 +9,9 @@ import re
 import yaml
 from pathlib import Path
 
+STANDARD_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
+
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -38,15 +41,16 @@ def validate_skill(skill_path):
     except yaml.YAMLError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
 
-    # Define allowed properties
-    ALLOWED_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
-
-    # Check for unexpected properties (excluding nested keys under metadata)
-    unexpected_keys = set(frontmatter.keys()) - ALLOWED_PROPERTIES
+    # The Agent Skills spec defines the standard properties above, but
+    # runtimes may add platform-specific extensions. Preserve portability
+    # signal without blocking otherwise-valid skills from being packaged.
+    unexpected_keys = set(frontmatter.keys()) - STANDARD_PROPERTIES
     if unexpected_keys:
-        return False, (
-            f"Unexpected key(s) in SKILL.md frontmatter: {', '.join(sorted(unexpected_keys))}. "
-            f"Allowed properties are: {', '.join(sorted(ALLOWED_PROPERTIES))}"
+        print(
+            "Warning: non-standard SKILL.md frontmatter key(s): "
+            f"{', '.join(sorted(unexpected_keys))}. "
+            "These may be platform-specific extensions and may be ignored by other Agent Skills runtimes.",
+            file=sys.stderr,
         )
 
     # Check required fields
@@ -93,11 +97,12 @@ def validate_skill(skill_path):
 
     return True, "Skill is valid!"
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python quick_validate.py <skill_directory>")
         sys.exit(1)
-    
+
     valid, message = validate_skill(sys.argv[1])
     print(message)
     sys.exit(0 if valid else 1)
