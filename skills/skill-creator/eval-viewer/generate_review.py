@@ -384,6 +384,12 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self.send_error(403)
             return
         if self.path == "/api/feedback":
+            # A JSON content type cannot be sent cross-site without a CORS preflight,
+            # which this server never approves; plain HTML form posts are refused.
+            content_type = self.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            if content_type != "application/json":
+                self.send_error(415)
+                return
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
             try:
