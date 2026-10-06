@@ -20,8 +20,6 @@ import time
 import sys
 import argparse
 import shlex
-import re
-from pathlib import Path
 
 
 def parse_server_command(cmd_str: str) -> tuple[list[str], str | None]:
