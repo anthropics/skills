@@ -38,7 +38,7 @@ fi
 
 # Check if project name is provided
 if [ -z "$1" ]; then
-  echo "❌ Usage: ./create-react-shadcn-complete.sh <project-name>"
+  echo "❌ Usage: ./init-artifact.sh <project-name>"
   exit 1
 fi
 
@@ -56,7 +56,7 @@ fi
 echo "🚀 Creating new React + Vite project: $PROJECT_NAME"
 
 # Create new Vite project (always use latest create-vite, pin vite version later)
-pnpm create vite "$PROJECT_NAME" --template react-ts
+pnpm create vite "$PROJECT_NAME" --template react-ts </dev/null
 
 # Navigate into project directory
 cd "$PROJECT_NAME"
