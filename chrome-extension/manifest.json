@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "BrianJosh",
+  "version": "1.0.0",
+  "description": "Chrome extension version.",
+  "permissions": ["sidePanel", "activeTab", "scripting", "contextMenus"],
+  "background": {"service_worker": "background.js"},
+  "content_scripts": [{"matches": ["<all_urls>"],"js": ["content.js"]}],
+  "side_panel": {"default_path": "sidepanel.html"},
+  "action": {"default_title": "BrianJosh Side Panel"}
+}
