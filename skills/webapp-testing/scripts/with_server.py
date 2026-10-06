@@ -19,6 +19,25 @@ import socket
 import time
 import sys
 import argparse
+import shlex
+import re
+from pathlib import Path
+
+
+def parse_server_command(cmd_str: str) -> tuple[list[str], str | None]:
+    """Parse a server command into argv tokens and an optional working directory.
+
+    Supports simple directory switching patterns like:
+      "cd backend && python server.py"
+    without invoking shell=True.
+    """
+    tokens = shlex.split(cmd_str)
+    if len(tokens) >= 4 and tokens[0] == "cd" and tokens[2] == "&&":
+        cwd_dir = tokens[1]
+        actual_argv = tokens[3:]
+        return actual_argv, cwd_dir
+
+    return tokens, None
 
 def is_server_ready(port, timeout=30):
     """Wait for server to be ready by polling the port."""
@@ -65,10 +84,11 @@ def main():
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            # Use shell=True to support commands with cd and &&
+            argv, cwd = parse_server_command(server['cmd'])
             process = subprocess.Popen(
-                server['cmd'],
-                shell=True,
+                argv,
+                cwd=cwd,
+                shell=False,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
