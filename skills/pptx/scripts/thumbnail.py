@@ -61,6 +61,9 @@ def main():
 
     args = parser.parse_args()
 
+    if args.cols < 1:
+        parser.error("--cols must be at least 1")
+
     cols = min(args.cols, MAX_COLS)
     if args.cols > MAX_COLS:
         print(f"Warning: Columns limited to {MAX_COLS}")
