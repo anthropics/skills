@@ -127,17 +127,17 @@ def build_workbook(model: EstimateModel, output: Path) -> Path:
         factor = cost_columns["Multiplicateur mensuel"]
         monthly = cost_columns[f"Cout mensuel ({currency})"]
         _formula(costs, row_index, cost_headers.index(f"Cout mensuel ({currency})") + 1, f"={quantity}{row_index}*{price}{row_index}*{factor}{row_index}")
-        _formula(costs, row_index, cost_headers.index(f"Cout annuel ({currency})") + 1, f"={monthly}{row_index}*mois_par_an")
+        _formula(costs, row_index, cost_headers.index(f"Cout annuel ({currency})") + 1, f"={monthly}{row_index}*mois_par_an", cross_sheet=True)
     scenario_rows = [[scenario.name, scenario.description, None, None, None, scenario.notes] for scenario in model.scenarios]
-    scenarios = _sheet(wb, sheets[6], ["Scenario", "Description", "JH totaux", "JH Build", "JH Run/mois", "Notes"], scenario_rows, "Scenarios", "Comparaison des trois enveloppes JH sans overrides locaux ; les overrides s'appliquent a la synthese retenue.")
+    scenarios = _sheet(wb, sheets[6], ["Scenario", "Description", "Rapprochement technique (non budgetaire)", "JH Build", "JH Run/mois", "Notes"], scenario_rows, "Scenarios", "Comparaison sans overrides locaux. Le rapprochement technique additionne JH Build et JH Run/mois, des unites incompatibles : utilisation budgetaire interdite.")
     effort_columns = dict(zip(SCENARIOS, ("JH bas", "JH probable", "JH haut")))
     for row_index, scenario in enumerate(model.scenarios, FIRST_DATA_ROW):
         column = effort_columns[scenario.name]
         _formula(scenarios, row_index, 3, f"=SUM(Taches[{column}])", True)
         _formula(scenarios, row_index, 4, f'=SUMIF(Taches[Nature],"Build",Taches[{column}])', True)
         _formula(scenarios, row_index, 5, f'=SUMIF(Taches[Nature],"Run",Taches[{column}])', True)
-    phases = _sheet(wb, sheets[7], ["Phase", "Sequence", "Jalon", "JH retenus", "JH Build", "JH Run/mois", "Notes"],
-                    [[row["phase"], row["sequence"], row["milestone"], None, None, None, row["notes"]] for row in model.phasing], "Phasage", "Lots et jalons. Les charges ponctuelles et recurrentes sont presentees separement.")
+    phases = _sheet(wb, sheets[7], ["Phase", "Sequence", "Jalon", "Rapprochement technique (non budgetaire)", "JH Build", "JH Run/mois", "Notes"],
+                    [[row["phase"], row["sequence"], row["milestone"], None, None, None, row["notes"]] for row in model.phasing], "Phasage", "Lots et jalons. Le rapprochement technique additionne JH Build et JH Run/mois, des unites incompatibles : utilisation budgetaire interdite.")
     for row_index, phase in enumerate(model.phasing, FIRST_DATA_ROW):
         _formula(phases, row_index, 4, f"=SUMIF(Taches[Lot],A{row_index},Taches[JH retenu])", True)
         for column, nature in ((5, "Build"), (6, "Run")):
@@ -148,7 +148,7 @@ def build_workbook(model: EstimateModel, output: Path) -> Path:
            [[row[key] for key in ROW_KEYS["decisions"]] for row in model.decisions], "Arbitrages", "Decisions explicites et hypotheses a confirmer.")
     _sheet(wb, sheets[10], ["ID", "Titre", "Type", "Date", "URL", "Notes"],
            [[row[key] for key in ROW_KEYS["sources"]] for row in model.sources], "Sources", "References datees ; les exemples synthetiques ne constituent pas des tarifs de marche.")
-    summary_rows = [["JH retenus (Build + Run/mois)", None, "JH", "Indicateur technique ; ne pas valoriser le cumul ponctuel et recurrent."],
+    summary_rows = [["Rapprochement technique (Build + Run/mois)", None, "Unites mixtes", "Utilisation budgetaire interdite : JH Build et JH Run/mois ont des unites incompatibles."],
                     ["JH Build", None, "JH", "Effort ponctuel."], ["JH Run mensuel", None, "JH/mois", "Effort recurrent."],
                     ["Cout Build", None, currency, "Effort Build au taux journalier saisi."],
                     ["Cout Run mensuel", None, f"{currency}/mois", "Effort Run au taux journalier saisi."]]

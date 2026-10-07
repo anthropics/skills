@@ -33,6 +33,22 @@ def test_builder_uses_required_financial_colours(tmp_path):
     assert wb["04_Taches_JH"]["Q5"].font.color.rgb.endswith("000000")
     assert wb["04_Taches_JH"]["O5"].font.color.rgb.endswith("008000")
     assert wb["11_Synthese"]["B5"].font.color.rgb.endswith("008000")
+    assert wb["05_Couts_cloud"]["L5"].font.color.rgb.endswith("008000")
+
+
+def test_mixed_effort_totals_prohibit_budget_use(tmp_path):
+    wb = load_workbook(build_workbook(load_model(FIXTURE), tmp_path / "estimate.xlsx"))
+    for name, total_column in (("06_Scenarios", "C4"), ("07_Phasage", "D4")):
+        ws = wb[name]
+        assert "rapprochement technique" in ws[total_column].value.lower()
+        assert "utilisation budgetaire interdite" in ws["A2"].value.lower()
+        headers = [cell.value for cell in ws[4]]
+        assert "JH Build" in headers
+        assert "JH Run/mois" in headers
+    summary = wb["11_Synthese"]
+    assert "rapprochement technique" in summary["A5"].value.lower()
+    assert summary["C5"].value == "Unites mixtes"
+    assert "utilisation budgetaire interdite" in summary["D5"].value.lower()
 
 
 def test_scenario_selection_and_override_are_dynamic(tmp_path):
