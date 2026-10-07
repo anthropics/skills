@@ -1,0 +1,42 @@
+{
+  "metadata": {"title": "Synthetic web service estimate", "date": "2026-10-07", "currency": "EUR", "effort_unit": "JH", "notes": "Public synthetic example; prices are illustrative assumptions, not provider quotes."},
+  "assumptions": [
+    {"key": "scenario_global", "value": "Standard", "unit": "scenario", "status": "Confirme", "source": "SYN-01", "notes": "Global scenario; task overrides take precedence."},
+    {"key": "taux_journalier", "value": 650, "unit": "EUR/JH", "status": "A confirmer", "source": "SYN-01", "notes": "Illustrative rate; replace before a real estimate."},
+    {"key": "mois_par_an", "value": 12, "unit": "mois/an", "status": "Confirme", "source": "SYN-01", "notes": "Annualisation factor."}
+  ],
+  "inventory": [
+    {"id": "COMP-01", "component": "Web service", "environment": "Development", "quantity": 1, "unit": "service", "notes": "Synthetic development workload."},
+    {"id": "COMP-02", "component": "Web service", "environment": "Staging", "quantity": 1, "unit": "service", "notes": "Synthetic validation workload."},
+    {"id": "COMP-03", "component": "Web service", "environment": "Production", "quantity": 2, "unit": "replica", "notes": "Synthetic runtime workload."}
+  ],
+  "architecture": [
+    {"id": "ARCH-01", "component": "Web service", "type": "Managed application", "environment": "Production", "provider": "Provider A", "decision": "Managed runtime", "notes": "Generic option; alternatives remain in the cost comparison."}
+  ],
+  "tasks": [
+    {"id": "TASK-01", "lot": "Foundation", "domain": "infrastructure", "task": "Provision isolated environments", "deliverable": "Infrastructure definitions", "environment": "All", "role": "Platform engineer", "prerequisites": "Approved inventory", "dependencies": [], "acceptance_criterion": "Three environments provisioned", "expected_evidence": "Deployment report", "jh_low": 2, "jh_likely": 3, "jh_high": 5, "scenario_override": null, "nature": "Build", "coverage": "Full", "source": "SYN-01", "confidence": "Medium", "notes": "Synthetic task."},
+    {"id": "TASK-02", "lot": "Foundation", "domain": "server-hardening", "task": "Apply security baseline", "deliverable": "Baseline policy", "environment": "All", "role": "Security engineer", "prerequisites": "Environments available", "dependencies": ["TASK-01"], "acceptance_criterion": "Baseline checks pass", "expected_evidence": "Control report", "jh_low": 1, "jh_likely": 2, "jh_high": 4, "scenario_override": "Resilient", "nature": "Build", "coverage": "Full", "source": "SYN-01", "confidence": "Medium", "notes": "Explicit task override."},
+    {"id": "TASK-03", "lot": "Delivery", "domain": "cicd-devsecops", "task": "Configure delivery pipeline", "deliverable": "Pipeline definitions", "environment": "All", "role": "Delivery engineer", "prerequisites": "Source repository", "dependencies": ["TASK-01"], "acceptance_criterion": "Promote and rollback demonstrated", "expected_evidence": "Pipeline run", "jh_low": 2, "jh_likely": 3, "jh_high": 5, "scenario_override": null, "nature": "Build", "coverage": "Full", "source": "SYN-01", "confidence": "Medium", "notes": "Synthetic task."},
+    {"id": "TASK-04", "lot": "Delivery", "domain": "hosting-capacity", "task": "Validate runtime capacity", "deliverable": "Capacity report", "environment": "Staging", "role": "Performance engineer", "prerequisites": "Deployable service", "dependencies": ["TASK-03"], "acceptance_criterion": "Target load verified", "expected_evidence": "Load report", "jh_low": 1, "jh_likely": 2, "jh_high": 3, "scenario_override": null, "nature": "Build", "coverage": "Full", "source": "SYN-01", "confidence": "Low", "notes": "Capacity target to confirm."},
+    {"id": "TASK-05", "lot": "Operations", "domain": "cloud-migration", "task": "Rehearse service transition", "deliverable": "Transition runbook", "environment": "Production", "role": "Platform engineer", "prerequisites": "Validation complete", "dependencies": ["TASK-02", "TASK-04"], "acceptance_criterion": "Recovery demonstrated", "expected_evidence": "Rehearsal record", "jh_low": 1, "jh_likely": 2, "jh_high": 4, "scenario_override": null, "nature": "Build", "coverage": "Full", "source": "SYN-01", "confidence": "Medium", "notes": "Synthetic task."},
+    {"id": "TASK-06", "lot": "Operations", "domain": "finops", "task": "Review recurring usage", "deliverable": "Usage review", "environment": "Production", "role": "Operations engineer", "prerequisites": "Usage evidence", "dependencies": ["TASK-05"], "acceptance_criterion": "Waste actions recorded", "expected_evidence": "Monthly review", "jh_low": 0.5, "jh_likely": 1, "jh_high": 2, "scenario_override": null, "nature": "Run", "coverage": "Full", "source": "SYN-01", "confidence": "Medium", "notes": "Recurring effort in JH/month; kept separate from Build."}
+  ],
+  "cloud_costs": [
+    {"id": "COST-01", "provider": "Provider A", "service": "Managed runtime", "environment": "Production", "scenario": "Standard", "unit": "replica/month", "quantity": 2, "unit_price": 45, "currency": "EUR", "monthly_multiplier": 1, "source": "SYN-01", "confidence": "Low", "notes": "Illustrative synthetic price."},
+    {"id": "COST-02", "provider": "Provider B", "service": "Managed runtime", "environment": "Production", "scenario": "Standard", "unit": "replica/month", "quantity": 2, "unit_price": 50, "currency": "EUR", "monthly_multiplier": 1, "source": "SYN-01", "confidence": "Low", "notes": "Alternative provider; do not sum with Provider A."},
+    {"id": "COST-03", "provider": "Provider C", "service": "Managed runtime", "environment": "Production", "scenario": "Standard", "unit": "replica/month", "quantity": 2, "unit_price": 55, "currency": "EUR", "monthly_multiplier": 1, "source": "SYN-01", "confidence": "Low", "notes": "Alternative provider; do not sum with Provider A."}
+  ],
+  "scenarios": [
+    {"name": "Economique", "description": "Minimum suitable scope", "notes": "Uses low JH."},
+    {"name": "Standard", "description": "Expected delivery scope", "notes": "Uses likely JH."},
+    {"name": "Resilient", "description": "Higher resilience and uncertainty", "notes": "Uses high JH."}
+  ],
+  "phasing": [
+    {"phase": "Foundation", "sequence": 1, "milestone": "Environments ready", "notes": "Baseline before delivery."},
+    {"phase": "Delivery", "sequence": 2, "milestone": "Service validated", "notes": "Capacity before transition."},
+    {"phase": "Operations", "sequence": 3, "milestone": "Transition complete", "notes": "Run effort displayed separately."}
+  ],
+  "risks": [{"id": "RISK-01", "risk": "Unknown traffic profile", "impact": "Capacity assumptions may change", "probability": "Medium", "mitigation": "Measure representative load", "owner": "Performance engineer", "status": "Open"}],
+  "decisions": [{"id": "DEC-01", "question": "Runtime hosting option", "option": "Managed runtime", "rationale": "Reduce operational burden", "status": "A confirmer", "source": "SYN-01"}],
+  "sources": [{"id": "SYN-01", "title": "Synthetic public assumptions", "type": "Synthetic", "date": "2026-10-07", "url": "", "notes": "No client data and no live tariff claims."}]
+}
