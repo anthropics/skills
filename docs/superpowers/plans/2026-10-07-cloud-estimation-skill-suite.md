@@ -284,9 +284,10 @@ git commit -m "feat: render validated cloud architecture diagrams"
 def test_orchestrator_has_required_enforcement(load_skill):
     skill = load_skill("cloud-estimation-orchestrator")
     assert skill.frontmatter["name"] == "cloud-estimation-orchestrator"
-    for phrase in ["JH", ".xlsx", "measure", "double counting", "anonym"]:
-        assert phrase.lower() in skill.body.lower()
-    assert "Pre-delivery gate" in skill.body
+    assert skill.frontmatter["description"]
+    assert skill.unfinished_scaffold_markers == []
+    assert skill.missing_references == []
+    assert skill.missing_scripts == []
 ```
 
 - [ ] **Step 2: Run the test and verify the missing-skill failure**
@@ -324,9 +325,9 @@ git commit -m "feat: add cloud estimation orchestrator skill"
 **Interfaces:**
 - Produces: infrastructure tasks, inventory items, architecture options, ADR decisions, risks, and source records.
 
-- [ ] **Step 1: Add failing domain coverage tests**
+- [ ] **Step 1: Add failing domain-contract tests**
 
-Assert that infrastructure covers landing zone, network, data, observability, backup, recovery, IaC, environments, and operations. Assert that architecture compares VPS, VM, serverless, managed platform, microservices, and Kubernetes using workload, capability, resilience, compliance, operational burden, portability, and TCO.
+Add a machine-readable `references/domain-contract.json` to each skill and validate its allowed input/output record types against `tooling/model.py`. The infrastructure contract must emit task, inventory, risk, and source records. The architecture contract must emit option, decision, risk, and cost-driver records. These tests validate interfaces and references, not prose wording.
 
 - [ ] **Step 2: Run tests and verify both skills are missing**
 
@@ -361,9 +362,9 @@ git commit -m "feat: add infrastructure and architecture skills"
 **Interfaces:**
 - Produces: sizing assumptions, capacity calculations, node pools, scaling bounds, failure domains, and sensitivity scenarios.
 
-- [ ] **Step 1: Add failing tests for Kubernetes decision discipline and capacity units**
+- [ ] **Step 1: Add failing domain-contract tests for sizing outputs**
 
-Assert that Kubernetes selection requires a workload/team justification and covers upgrades, policies, observability, backup, and recurring operations. Assert that capacity inputs include CPU, memory, storage, IOPS, bandwidth, concurrency, utilisation target, scaling limit, and failure-domain reserve.
+Validate that the Kubernetes contract can emit node-pool, platform-task, risk, and recurring-operation records, and that the capacity contract accepts CPU, memory, storage, IOPS, bandwidth, concurrency, utilisation target, scaling limit, and failure-domain reserve as typed inputs. Do not test for prose phrases.
 
 - [ ] **Step 2: Run tests and confirm failures**
 
@@ -396,9 +397,9 @@ git commit -m "feat: add kubernetes and capacity simulation skills"
 **Interfaces:**
 - Produces: delivery pipeline tasks, security control tasks, acceptance evidence, one-off JH, and recurring JH.
 
-- [ ] **Step 1: Add failing coverage tests**
+- [ ] **Step 1: Add failing domain-contract tests for delivery and control evidence**
 
-Assert that CI/CD includes build, tests, registry, provenance, scans, IaC, promotion, migrations, rollback, runners, and evidence. Assert that hardening distinguishes infrastructure/server controls from application security and includes identity, privileged access, patching, logging, backup, restore, vulnerability management, certificates, and incident readiness.
+Validate that CI/CD records support pipeline stage, evidence, one-off JH, and recurring JH fields. Validate that hardening records support control boundary, implementation task, verification evidence, one-off JH, recurring JH, and residual risk. Do not test for prose phrases.
 
 - [ ] **Step 2: Run tests and confirm failures**
 
@@ -431,9 +432,9 @@ git commit -m "feat: add cicd and server hardening skills"
 **Interfaces:**
 - Produces: transparent weighted scores, equal-scope three-year TCO, and savings opportunities with implementation/operation JH.
 
-- [ ] **Step 1: Add failing decision and savings tests**
+- [ ] **Step 1: Add failing domain-contract tests for decisions and savings**
 
-Assert that provider selection counts eligible regions before proposing disaster recovery, includes service scope and commercial policy as top-level parameters, and never ranks on monthly resource price alone. Assert that every FinOps opportunity has baseline, action, savings range, one-off JH, recurring JH, risk, reversibility, and validation method.
+Validate that provider comparison accepts region eligibility, service scope, commercial policy, implementation JH, recurring JH, and TCO horizon as inputs. Validate that every FinOps opportunity record requires baseline, action, savings range, one-off JH, recurring JH, risk, reversibility, and validation method. Do not test for prose phrases.
 
 - [ ] **Step 2: Run tests and confirm failures**
 
@@ -466,9 +467,9 @@ git commit -m "feat: add provider selection and finops skills"
 **Interfaces:**
 - Produces: source/target mapping, source-write constraint, cutover and rollback tasks, diagram node/flow model, SVG, PNG, and workbook embedding.
 
-- [ ] **Step 1: Add failing migration and diagram tests**
+- [ ] **Step 1: Add failing domain-contract tests for migration and diagrams**
 
-Assert that migration starts with live read-only inventory, reports documentation drift, asks whether the source may be modified, and covers rehearsal, integrity, rollback, decommissioning, and hypercare. Assert that diagramming uses the inventory IDs and records icon provenance.
+Validate that migration records require inventory evidence, documentation drift, source-write policy, rehearsal, integrity, rollback, decommissioning, and hypercare fields. Validate that diagram records reference inventory node IDs and icon provenance. Do not test for prose phrases.
 
 - [ ] **Step 2: Run tests and confirm failures**
 
@@ -703,15 +704,19 @@ rtk powershell -NoProfile -Command '$root="skill-updates/2026-10-07/cloud-estima
 
 Record each name, exit status, and diagnostic count. Expected: eleven exit statuses equal to zero and zero unfinished scaffold placeholders.
 
-- [ ] **Step 2: Run confidentiality and cross-example re-identification review**
+- [ ] **Step 2: Run independent forward-tests on realistic synthetic requests**
+
+Dispatch a fresh evaluator for each skill with only the staged skill path, one synthetic request, and the minimum synthetic inputs. The evaluator must generate the requested XLSX in an isolated temporary directory. Review observable results: stable workbook sheets, non-duplicated JH tasks, correct domain boundaries, explicit unknowns, scenario differences, formula reconciliation, and the domain-specific decisions required by the specification. Record the request, artifact hash, validator report, and behavioural verdict. Failed behaviour requires a focused skill correction and a new forward-test; matching preferred wording is not a pass criterion.
+
+- [ ] **Step 3: Run confidentiality and cross-example re-identification review**
 
 List every public example's vertical, geography, counts, dates, amounts, and provider mix. Confirm that their combination cannot be mapped back to any source workbook; widen or replace any identifying combination.
 
-- [ ] **Step 3: Verify bundle references and archive listings**
+- [ ] **Step 4: Verify bundle references and archive listings**
 
 For each `SKILL.md`, resolve every `references/`, `scripts/`, and `assets/` path inside its corresponding `.skill` archive. Assert eleven manifest entries, eleven unique hashes, and no unlisted file.
 
-- [ ] **Step 4: Run final repository checks**
+- [ ] **Step 5: Run final repository checks**
 
 Run: `git diff --check`
 
@@ -719,7 +724,7 @@ Run: `git status --short`
 
 Expected: no whitespace errors; only intended staged suite files and generated bundles are changed.
 
-- [ ] **Step 5: Commit the delivery gate results**
+- [ ] **Step 6: Commit the delivery gate results**
 
 ```bash
 git add skill-updates/2026-10-07/cloud-estimation-suite
