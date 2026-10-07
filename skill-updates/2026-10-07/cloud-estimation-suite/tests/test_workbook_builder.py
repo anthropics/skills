@@ -175,4 +175,3 @@ def test_model_accepts_zero_effort_and_zero_cost(tmp_path):
     wb = load_workbook(build_workbook(model, tmp_path / "zero.xlsx"))
     assert wb["04_Taches_JH"]["L5"].value == 0
     assert wb["05_Couts_cloud"]["G5"].value == 0
-
