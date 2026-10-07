@@ -10,7 +10,7 @@ import re
 from openpyxl import load_workbook
 from openpyxl.utils.cell import range_boundaries
 
-from .recalculate import ERROR_TOKENS
+from .recalculate import ERROR_TOKENS, _Evaluator, _calibrate_python
 
 DEFAULT_CONTRACT = Path(__file__).with_name("workbook-contract.json")
 FUTURE_FUNCTIONS = re.compile(r"(?<![\w.])(?:IFNA|IFS|XLOOKUP|XMATCH|CONCAT|TEXTJOIN|FILTER|UNIQUE|SORT|LET|LAMBDA)\s*\(", re.I)
@@ -22,7 +22,7 @@ class ValidationReport:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     counts: dict[str, int] = field(default_factory=lambda: dict.fromkeys(
-        ("sheets", "formulas", "formula_errors", "missing_cached_values", "table_filter_overlaps",
+        ("sheets", "formulas", "formula_errors", "formula_semantic_errors", "missing_cached_values", "table_filter_overlaps",
          "unsupported_future_functions", "reconciliations", "reconciliation_errors", "diagram_inventory_ids", "private_data_matches", "errors"), 0))
     cost_totals: list[dict] = field(default_factory=list)
 
@@ -47,6 +47,15 @@ def _assumptions(workbook):
     return {row["Hypothese"]: row["Valeur"] for _, row in _rows(workbook, "01_Hypotheses")}
 
 
+def _same_formula_value(actual, expected):
+    if isinstance(expected, bool):
+        return isinstance(actual, bool) and actual == expected
+    if isinstance(expected, (int, float)):
+        return (isinstance(actual, (int, float)) and not isinstance(actual, bool)
+                and math.isfinite(actual) and math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-7))
+    return actual == expected
+
+
 def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted_totals=None,
                       diagram_inventory_ids=None) -> ValidationReport:
     """Do not recalculate or repair: stale/missing caches must fail this gate.
@@ -63,6 +72,10 @@ def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted
         report.errors.append(f"Cannot inspect workbook/contract: {error}")
         report.counts["errors"] = len(report.errors)
         return report
+    controls_passed, control_errors = _calibrate_python()
+    if control_errors or controls_passed != 10:
+        report.errors.append(f"Formula/cache evaluator calibration failed: {control_errors or controls_passed}")
+    evaluator = _Evaluator(formulas)
     report.counts["sheets"] = len(formulas.sheetnames)
     for ws in formulas:
         for row in ws:
@@ -79,6 +92,14 @@ def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted
                     if cached.value is None:
                         report.counts["missing_cached_values"] += 1
                         report.errors.append(f"{location}: missing cached value; recalculate before delivery")
+                    elif not control_errors and controls_passed == 10:
+                        try:
+                            evaluated = evaluator.cell(ws.title, cell.coordinate)
+                            if not _same_formula_value(cached.value, evaluated):
+                                raise ValueError(f"cached {cached.value!r}, evaluated {evaluated!r}")
+                        except Exception as error:
+                            report.counts["formula_semantic_errors"] += 1
+                            report.errors.append(f"{location}: formula/cache mismatch ({error})")
                     if FUTURE_FUNCTIONS.search(text) or "_xlfn." in text:
                         report.counts["unsupported_future_functions"] += 1
                         report.errors.append(f"{location}: unsupported future function")

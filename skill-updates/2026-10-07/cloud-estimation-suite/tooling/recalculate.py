@@ -5,6 +5,7 @@ and SUMIFS. Unknown syntax fails closed; it is not a general Excel replacement.
 """
 
 from dataclasses import asdict, dataclass, field
+import base64
 import math
 import os
 from pathlib import Path
@@ -272,16 +273,79 @@ def _calibrate_python():
     return passed, errors
 
 
-def _excel_available():
+def _run_excel_powershell(script, path=None, timeout=120):
+    executable = shutil.which("powershell.exe") or shutil.which("pwsh.exe")
+    if executable is None:
+        raise FormulaFailure("PowerShell is unavailable for Excel COM")
+    environment = os.environ.copy()
+    if path is not None:
+        environment["ESTIMATE_RECALC_PATH"] = str(path.resolve())
+    encoded = base64.b64encode(script.encode("utf-16le")).decode("ascii")
+    result = subprocess.run([executable, "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded],
+                            capture_output=True, text=True, timeout=timeout, env=environment)
+    if result.returncode:
+        raise FormulaFailure(f"PowerShell Excel COM failed: {(result.stderr or result.stdout).strip()}")
+
+
+_EXCEL_PROBE = """
+$ErrorActionPreference = 'Stop'
+$excel = $null
+try {
+    $excel = New-Object -ComObject Excel.Application
+} finally {
+    if ($null -ne $excel) {
+        try { $excel.Quit() } finally {
+            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
+        }
+    }
+}
+"""
+
+
+_EXCEL_RECALCULATE = """
+$ErrorActionPreference = 'Stop'
+$excel = $null
+$workbook = $null
+try {
+    $excel = New-Object -ComObject Excel.Application
+    $excel.Visible = $false
+    $excel.DisplayAlerts = $false
+    $excel.AutomationSecurity = 3
+    $workbook = $excel.Workbooks.Open($env:ESTIMATE_RECALC_PATH, 0, $false)
+    $excel.CalculateFullRebuild()
+    $workbook.Save()
+} finally {
+    if ($null -ne $workbook) {
+        try { $workbook.Close($false) } finally {
+            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($workbook)
+        }
+    }
+    if ($null -ne $excel) {
+        try { $excel.Quit() } finally {
+            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
+        }
+    }
+}
+"""
+
+
+def _select_excel_backend():
     if sys.platform != "win32":
-        return False
+        return None
     try:
         import win32com.client
         excel = win32com.client.DispatchEx("Excel.Application")
-        excel.Quit()
-        return True
+        try:
+            return "pywin32"
+        finally:
+            excel.Quit()
     except Exception:
-        return False
+        pass
+    try:
+        _run_excel_powershell(_EXCEL_PROBE, timeout=30)
+        return "powershell"
+    except Exception:
+        return None
 
 
 def _find_libreoffice():
@@ -297,7 +361,12 @@ def _find_libreoffice():
     return None
 
 
-def _native_excel(path):
+def _native_excel(path, backend):
+    if backend == "powershell":
+        _run_excel_powershell(_EXCEL_RECALCULATE, path)
+        return
+    if backend != "pywin32":
+        raise FormulaFailure(f"Unknown Excel COM backend: {backend}")
     import win32com.client
     excel = win32com.client.DispatchEx("Excel.Application")
     workbook = None
@@ -380,8 +449,9 @@ def recalculate(path: Path) -> RecalculationResult:
             candidate = directory / path.name
             shutil.copyfile(path, candidate)
             engines = []
-            if _excel_available():
-                engines.append(("excel-com", lambda: _native_excel(candidate)))
+            excel_backend = _select_excel_backend()
+            if excel_backend:
+                engines.append(("excel-com", lambda: _native_excel(candidate, excel_backend)))
             libreoffice = _find_libreoffice()
             if libreoffice:
                 engines.append(("libreoffice", lambda: _native_libreoffice(candidate, libreoffice, directory)))

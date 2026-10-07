@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+import sys
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
@@ -18,7 +19,10 @@ FIXTURE = ROOT / "tests/fixtures/synthetic-brief.json"
 
 
 @pytest.fixture
-def valid_workbook(tmp_path):
+def valid_workbook(tmp_path, monkeypatch):
+    import tooling.recalculate as module
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
+    monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     path = build_workbook(load_model(FIXTURE), tmp_path / "estimate.xlsx")
     result = recalculate(path)
     assert result.ok, result.errors
@@ -129,7 +133,7 @@ def test_validator_rejects_structural_and_publication_defects(valid_workbook, co
 
 def test_python_fallback_calibrates_nested_and_multiple_criteria_controls(tmp_path, monkeypatch):
     import tooling.recalculate as module
-    monkeypatch.setattr(module, "_excel_available", lambda: False)
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     path = build_workbook(load_model(FIXTURE), tmp_path / "estimate.xlsx")
     result = recalculate(path)
@@ -144,7 +148,7 @@ def test_python_fallback_calibrates_nested_and_multiple_criteria_controls(tmp_pa
 @pytest.mark.parametrize("formula,error", [("=1/0", "#DIV/0!"), ("=A1", "circular"), ("=UNKNOWN(1)", "unsupported"), ("=Missing!A1", "#REF!")])
 def test_fallback_refuses_errors_and_leaves_original_unchanged(tmp_path, monkeypatch, formula, error):
     import tooling.recalculate as module
-    monkeypatch.setattr(module, "_excel_available", lambda: False)
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     path = tmp_path / "invalid.xlsx"
     wb = Workbook()
@@ -159,7 +163,7 @@ def test_fallback_refuses_errors_and_leaves_original_unchanged(tmp_path, monkeyp
 
 def test_fallback_failure_to_calibrate_blocks_delivery(valid_workbook, monkeypatch):
     import tooling.recalculate as module
-    monkeypatch.setattr(module, "_excel_available", lambda: False)
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     monkeypatch.setattr(module, "_calibrate_python", lambda: (0, ["control failed"]))
     before = valid_workbook.read_bytes()
@@ -198,6 +202,30 @@ def test_validator_rejects_stale_cached_total(valid_workbook):
     assert any("11_Synthese!B6" in error and "reconciliation" in error for error in report.errors)
 
 
+def test_validator_rejects_changed_formula_with_correct_old_cache_without_mutation(valid_workbook):
+    namespace = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+    with ZipFile(valid_workbook) as archive:
+        members = [(item, archive.read(item.filename)) for item in archive.infolist()]
+    with ZipFile(valid_workbook, "w") as archive:
+        for item, data in members:
+            if item.filename == "xl/worksheets/sheet12.xml":
+                root = ET.fromstring(data)
+                for cell in root.iter(f"{namespace}c"):
+                    if cell.attrib["r"] == "B6":
+                        assert cell.find(f"{namespace}v").text == "14"
+                        cell.find(f"{namespace}f").text = "1+1"
+                data = ET.tostring(root)
+            archive.writestr(item, data)
+    before = valid_workbook.read_bytes()
+    report = validate_workbook(valid_workbook)
+    assert not report.ok
+    assert report.counts["missing_cached_values"] == 0
+    assert report.counts["reconciliation_errors"] == 0
+    assert report.counts["formula_semantic_errors"] == 1
+    assert any("11_Synthese!B6" in error and "formula/cache" in error for error in report.errors)
+    assert valid_workbook.read_bytes() == before
+
+
 def test_cost_reconciliation_groups_provider_environment_and_scenario(tmp_path):
     data = json.loads(FIXTURE.read_text(encoding="utf-8"))
     data["cloud_costs"].append(dict(data["cloud_costs"][0], id="COST-04", environment="Development", quantity=3, unit_price=2, monthly_multiplier=4))
@@ -219,8 +247,8 @@ def test_native_excel_takes_priority_and_records_verified_opening(valid_workbook
     import tooling.recalculate as module
     native_bytes = valid_workbook.read_bytes()
     mutate(valid_workbook, "11_Synthese", "B6", "=SUMIF(Taches[Nature],\"Build\",Taches[JH retenu])")
-    monkeypatch.setattr(module, "_excel_available", lambda: True)
-    monkeypatch.setattr(module, "_native_excel", lambda candidate: candidate.write_bytes(native_bytes))
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: "powershell")
+    monkeypatch.setattr(module, "_native_excel", lambda candidate, backend: candidate.write_bytes(native_bytes))
     monkeypatch.setattr(module, "_find_libreoffice", lambda: Path("unused-soffice"))
     result = recalculate(valid_workbook)
     assert result.ok
@@ -229,17 +257,83 @@ def test_native_excel_takes_priority_and_records_verified_opening(valid_workbook
     assert result.cached_values_count > 40
 
 
+def test_native_excel_com_roundtrip_when_available(tmp_path):
+    import tooling.recalculate as module
+    backend = module._select_excel_backend()
+    if backend is None:
+        pytest.skip("Excel COM is not available on this host")
+    path = build_workbook(load_model(FIXTURE), tmp_path / "native.xlsx")
+    result = recalculate(path)
+    assert result.ok, result.errors
+    assert result.engine == "excel-com"
+    assert result.native_opened
+    assert result.cached_values_count == result.formula_count
+    report = validate_workbook(path)
+    assert report.ok, report.errors
+
+
+def test_excel_backend_selects_powershell_when_pywin32_is_missing(monkeypatch):
+    import tooling.recalculate as module
+    monkeypatch.setattr(module.sys, "platform", "win32")
+    monkeypatch.setitem(sys.modules, "win32com", None)
+    calls = []
+    monkeypatch.setattr(module, "_run_excel_powershell", lambda script, timeout: calls.append(timeout))
+    assert module._select_excel_backend() == "powershell"
+    assert calls == [30]
+
+
 def test_failed_native_excel_uses_verified_python_fallback(valid_workbook, monkeypatch):
     import tooling.recalculate as module
-    def unavailable(candidate):
+    def unavailable(candidate, backend):
         raise OSError("native application unavailable")
-    monkeypatch.setattr(module, "_excel_available", lambda: True)
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: "powershell")
     monkeypatch.setattr(module, "_native_excel", unavailable)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     result = recalculate(valid_workbook)
     assert result.ok
     assert result.engine == "python-calibrated"
     assert any("native application unavailable" in warning for warning in result.warnings)
+
+
+def test_libreoffice_success_after_excel_is_unavailable(valid_workbook, monkeypatch):
+    import tooling.recalculate as module
+    cached_bytes = valid_workbook.read_bytes()
+    mutate(valid_workbook, "11_Synthese", "B6", "=1+1")
+    events = []
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
+    monkeypatch.setattr(module, "_find_libreoffice", lambda: Path("soffice"))
+    def libreoffice(candidate, executable, directory):
+        events.append("libreoffice")
+        candidate.write_bytes(cached_bytes)
+    monkeypatch.setattr(module, "_native_libreoffice", libreoffice)
+    result = recalculate(valid_workbook)
+    assert result.ok, result.errors
+    assert result.engine == "libreoffice"
+    assert result.native_opened
+    assert events == ["libreoffice"]
+
+
+def test_excel_failure_then_libreoffice_success(valid_workbook, monkeypatch):
+    import tooling.recalculate as module
+    cached_bytes = valid_workbook.read_bytes()
+    mutate(valid_workbook, "11_Synthese", "B6", "=1+1")
+    events = []
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: "powershell")
+    monkeypatch.setattr(module, "_find_libreoffice", lambda: Path("soffice"))
+    def excel(candidate, backend):
+        events.append("excel")
+        raise OSError("Excel failed")
+    def libreoffice(candidate, executable, directory):
+        events.append("libreoffice")
+        candidate.write_bytes(cached_bytes)
+    monkeypatch.setattr(module, "_native_excel", excel)
+    monkeypatch.setattr(module, "_native_libreoffice", libreoffice)
+    result = recalculate(valid_workbook)
+    assert result.ok, result.errors
+    assert result.engine == "libreoffice"
+    assert result.native_opened
+    assert events == ["excel", "libreoffice"]
+    assert any("Excel failed" in warning for warning in result.warnings)
 
 
 def test_empty_optional_sections_and_zero_effort_still_validate(tmp_path):
@@ -266,7 +360,7 @@ def test_calibration_runs_the_deliberately_broken_controls():
 
 def test_fallback_numeric_zero_criterion_does_not_match_blanks(tmp_path, monkeypatch):
     import tooling.recalculate as module
-    monkeypatch.setattr(module, "_excel_available", lambda: False)
+    monkeypatch.setattr(module, "_select_excel_backend", lambda: None)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: None)
     wb = Workbook()
     ws = wb.active
