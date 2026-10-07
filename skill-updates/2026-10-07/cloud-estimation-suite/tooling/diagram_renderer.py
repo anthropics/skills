@@ -11,6 +11,7 @@ Byte determinism is within the same Python/Pillow version and rendering fonts.
 import base64
 from dataclasses import asdict, dataclass
 from hashlib import sha256
+import heapq
 from io import BytesIO
 import json
 import math
@@ -81,19 +82,20 @@ def _icon_pack(pack):
     try:
         pack = Path(pack).resolve(strict=True)
         manifest = json.loads((pack / "manifest.json").read_text(encoding="utf-8"))
-        provider = manifest["provider"]
-        source = manifest["official_source_url"]
+        provider = _text(manifest["provider"], "icon.provider", required=True)
+        source = _text(manifest["official_source_url"], "icon.official_source_url", required=True)
         if source not in POLICY["official_sources"].get(provider, []):
             raise ValueError("unofficial source")
-        notices = [manifest.get(key) for key in POLICY["manifest"]["notice_one_of"]]
-        notice = next((value for value in notices if isinstance(value, str) and value.strip()), None)
+        notices = [_text(manifest[key], f"icon.{key}", required=True)
+                   for key in POLICY["manifest"]["notice_one_of"] if key in manifest]
+        notice = next(iter(notices), None)
         if notice is None or not isinstance(manifest["assets"], list) or not manifest["assets"]:
             raise ValueError("incomplete manifest")
         assets = {}
         listed = set()
         for entry in manifest["assets"]:
-            relative = entry["path"]
-            digest = entry["sha256"]
+            relative = _text(entry["path"], "icon.path", required=True)
+            digest = _text(entry["sha256"], "icon.sha256", required=True)
             if not isinstance(relative, str) or "\\" in relative or not isinstance(digest, str) or not re.fullmatch("[0-9a-fA-F]{64}", digest):
                 raise ValueError("invalid asset record")
             parts = relative.split("/")
@@ -146,16 +148,81 @@ def _layout(nodes):
     return groups, positions, width, max(180, y + 20)
 
 
-def _route(source, target, lane=0):
+def _clear_segment(first, second, obstacles):
+    """Rectilinear segments cannot enter any padded node rectangle."""
+    ax, ay = first
+    bx, by = second
+    for left, top, right, bottom in obstacles:
+        if ax == bx:
+            if left < ax < right and max(min(ay, by), top) < min(max(ay, by), bottom):
+                return False
+        elif top < ay < bottom and max(min(ax, bx), left) < min(max(ax, bx), right):
+            return False
+    return True
+
+
+def _route(source, target, positions):
+    """Shortest deterministic rectilinear route avoiding every node, plus stubs.
+
+    The visibility grid uses the gaps around all rectangles. Dijkstra state
+    includes direction so a small bend penalty favours readable routes. Fixed
+    coordinate ordering resolves equal-cost paths without input-order effects.
+    """
     x, y = source
     tx, ty = target
     if source == target:
         return [(x + NODE_W, y + 35), (x + NODE_W + 12, y + 35), (x + NODE_W + 12, y + NODE_H - 24), (x + NODE_W, y + NODE_H - 24)]
-    corridor = min(y, ty) - 18 - lane % 3 * 12
-    source_gap, target_gap = x + NODE_W + 10, tx + NODE_W + 10
-    return [(x + NODE_W, y + NODE_H / 2), (source_gap, y + NODE_H / 2),
-            (source_gap, corridor), (target_gap, corridor),
-            (target_gap, ty + NODE_H / 2), (tx + NODE_W, ty + NODE_H / 2)]
+    obstacles = [(nx - 4, ny - 4, nx + NODE_W + 4, ny + NODE_H + 4) for nx, ny in positions.values()]
+    start, end = (x + NODE_W + 10, y + NODE_H / 2), (tx + NODE_W + 10, ty + NODE_H / 2)
+    xs = sorted({coordinate for nx, _ in positions.values() for coordinate in (nx - 10, nx + NODE_W + 10)})
+    ys = sorted({start[1], end[1]} | {coordinate for _, ny in positions.values() for coordinate in (ny - 24, ny + NODE_H + 24)})
+    xi, yi = {value: index for index, value in enumerate(xs)}, {value: index for index, value in enumerate(ys)}
+    initial = (start, 1)  # Initial stub is horizontal.
+    queue, costs, previous = [(0, start, 1)], {initial: 0}, {}
+    final = None
+    while queue:
+        cost, point, direction = heapq.heappop(queue)
+        state = (point, direction)
+        if cost != costs[state]:
+            continue
+        if point == end:
+            final = state
+            break
+        px, py = point
+        ix, iy = xi[px], yi[py]
+        neighbours = []
+        for offset in (-1, 1):
+            if 0 <= ix + offset < len(xs):
+                neighbours.append(((xs[ix + offset], py), 1))
+            if 0 <= iy + offset < len(ys):
+                neighbours.append(((px, ys[iy + offset]), 2))
+        for next_point, next_direction in sorted(neighbours):
+            nx, ny = next_point
+            if any(left <= nx <= right and top <= ny <= bottom for left, top, right, bottom in obstacles):
+                continue
+            if not _clear_segment(point, next_point, obstacles):
+                continue
+            candidate = cost + abs(nx - px) + abs(ny - py) + (18 if direction != next_direction else 0)
+            next_state = (next_point, next_direction)
+            if candidate < costs.get(next_state, math.inf):
+                costs[next_state], previous[next_state] = candidate, state
+                heapq.heappush(queue, (candidate, next_point, next_direction))
+    if final is None:
+        raise ValueError("diagram: no unobstructed route between nodes")
+    middle = []
+    while final != initial:
+        middle.append(final[0])
+        final = previous[final]
+    points = [(x + NODE_W, start[1]), start] + list(reversed(middle)) + [(tx + NODE_W, end[1])]
+    simplified = []
+    for point in points:
+        if len(simplified) >= 2:
+            ax, ay = simplified[-2]
+            bx, by = simplified[-1]
+            if ax == bx == point[0] or ay == by == point[1]:
+                simplified.pop()
+        simplified.append(point)
+    return simplified
 
 
 def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | None = None) -> DiagramManifest:
@@ -181,7 +248,10 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
     ET.SubElement(marker, "path", {"d": "M 0 0 L 10 5 L 0 10 z", "fill": "#345678"})
     canvas = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(canvas)
-    font = ImageFont.load_default(size=14)
+    try:
+        font = ImageFont.load_default(size=14)
+    except TypeError:  # Pillow before 10.1 has no size argument.
+        font = ImageFont.load_default()
 
     def rectangle(parent, x, y, w, h, fill, stroke):
         ET.SubElement(parent, "rect", {"x": str(x), "y": str(y), "width": str(w), "height": str(h), "rx": "6", "fill": fill, "stroke": stroke})
@@ -197,8 +267,9 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
                 group = ET.SubElement(root, "g", {f"data-{kind}": label})
                 rectangle(group, x, y, w, h, "#f2f6fa" if kind == "environment" else "#ffffff", "#c3d1df")
                 text(group, x + 12, y + 8, label)
-    for lane, edge in enumerate(edges):
-        points = _route(positions[edge["source"]], positions[edge["target"]], lane)
+    routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions) for edge in edges}
+    for edge in edges:
+        points = routes[edge["id"]]
         path = "M " + " L ".join(f"{x:g} {y:g}" for x, y in points)
         ET.SubElement(root, "path", {"data-edge-id": edge["id"], "data-source": edge["source"], "data-target": edge["target"], "d": path, "stroke": "#345678", "stroke-width": "2", "fill": "none", "marker-end": "url(#arrow)"})
         draw.line(points, fill="#345678", width=2)
@@ -222,9 +293,10 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         for index, line in enumerate(textwrap.wrap(node["component"], width=22 if offset > 12 else 29)[:3]):
             text(group, x + offset, y + 12 + index * 18, line)
         text(group, x + 12, y + NODE_H - 28, node["id"])
-    for lane, edge in enumerate(edges):
-        points = _route(positions[edge["source"]], positions[edge["target"]], lane)
-        x, y = ((points[2][0] + points[3][0]) / 2, points[2][1])
+    for edge in edges:
+        points = routes[edge["id"]]
+        first, second = max(zip(points, points[1:]), key=lambda pair: abs(pair[1][0] - pair[0][0]) + abs(pair[1][1] - pair[0][1]))
+        x, y = ((first[0] + second[0]) / 2, (first[1] + second[1]) / 2)
         text(root, x + 4, y - 18, edge["label"] or edge["id"])
     if not nodes:
         text(root, 24, 40, "No inventory nodes supplied")

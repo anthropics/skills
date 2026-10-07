@@ -9,7 +9,7 @@ from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
 from openpyxl import load_workbook
-from PIL import Image
+from PIL import Image, ImageFont
 import pytest
 
 from tooling.diagram_renderer import render_diagram
@@ -75,6 +75,45 @@ def test_flow_routes_around_intervening_nodes(tmp_path):
         for step in range(21):
             sx, sy = ax + (bx - ax) * step / 20, ay + (by - ay) * step / 20
             assert not (x < sx < x + w and y < sy < y + h), "flow crosses unrelated node"
+
+
+def assert_paths_avoid_node_interiors(svg):
+    rectangles = [node.attrib for node in svg.findall(".//s:g[@data-node-id]/s:rect", NS)]
+    paths = svg.findall(".//s:path[@data-edge-id]", NS)
+    assert rectangles and paths
+    for path in paths:
+        coordinates = [float(value) for value in re.findall(r"-?\d+(?:\.\d+)?", path.attrib["d"])]
+        points = list(zip(coordinates[::2], coordinates[1::2]))
+        assert len(points) >= 2
+        for (ax, ay), (bx, by) in zip(points, points[1:]):
+            assert ax == bx or ay == by, "expected orthogonal route"
+            for rectangle in rectangles:
+                x, y, w, h = (float(rectangle[key]) for key in ("x", "y", "width", "height"))
+                if ax == bx:
+                    intersects = x < ax < x + w and max(min(ay, by), y) < min(max(ay, by), y + h)
+                else:
+                    intersects = y < ay < y + h and max(min(ax, bx), x) < min(max(ax, bx), x + w)
+                assert not intersects, f"{path.attrib['data-edge-id']} crosses node rectangle {rectangle}"
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_cross_environment_routes_avoid_all_nodes(tmp_path, reverse):
+    nodes = [{"id": key, "environment": "A", "zone": "One"} for key in ("A-1", "A-2", "A-3")]
+    nodes += [{"id": "B-1", "environment": "B", "zone": "One"}, {"id": "B-2", "environment": "B", "zone": "Two"}]
+    source, target = ("A-1", "B-2") if reverse else ("B-2", "A-1")
+    architecture = {"nodes": nodes, "edges": [{"id": "cross-environment", "source": source, "target": target}]}
+    first = render_diagram(architecture, tmp_path / "a.svg", tmp_path / "a.png")
+    assert_paths_avoid_node_interiors(ET.parse(tmp_path / "a.svg"))
+    architecture["nodes"].reverse()
+    second = render_diagram(architecture, tmp_path / "b.svg", tmp_path / "b.png")
+    assert first.output_hashes == second.output_hashes
+
+
+def test_multirow_routes_avoid_every_node(tmp_path):
+    nodes = [{"id": f"N-{index}", "environment": "A", "zone": "One"} for index in range(8)]
+    edges = [{"id": f"FLOW-{index}", "source": f"N-{index}", "target": "N-0"} for index in range(1, 8)]
+    render_diagram({"nodes": nodes, "edges": edges}, tmp_path / "a.svg", tmp_path / "a.png")
+    assert_paths_avoid_node_interiors(ET.parse(tmp_path / "a.svg"))
 
 
 @pytest.mark.parametrize("change,message", [
@@ -157,6 +196,39 @@ def test_provider_mismatch_uses_neutral_symbol(tmp_path, architecture):
     result = render_diagram(architecture, tmp_path / "a.svg", tmp_path / "a.png", pack)
     assert result.icon_sources == ["provider-neutral"]
     assert result.icon_provenance == []
+
+
+@pytest.mark.parametrize("invalid_character", ["\ufffe", "\x00"])
+@pytest.mark.parametrize("notice_key", ["licence", "license", "trademark_notice"])
+def test_invalid_rights_notice_falls_back_in_svg_and_workbook(tmp_path, architecture, invalid_character, notice_key):
+    pack, manifest = make_icon_pack(tmp_path)
+    manifest[notice_key] = "Test rights notice" + invalid_character
+    (pack / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    architecture["nodes"][0].update(provider="AWS", icon="symbol.png")
+    result = render_diagram(architecture, tmp_path / "a.svg", tmp_path / "a.png", pack)
+    assert result.icon_sources == ["provider-neutral"]
+    assert result.icon_provenance == []
+    assert not ET.parse(tmp_path / "a.svg").findall(".//s:image", NS)
+    model = load_model(ROOT / "tests/fixtures/synthetic-brief.json")
+    wb = load_workbook(build_workbook(model, tmp_path / "estimate.xlsx", architecture=architecture, icon_pack=pack))
+    ws = wb["03_Architecture"]
+    marker = next(cell for row in ws for cell in row if cell.value == "Diagram manifest")
+    stored = json.loads(ws.cell(marker.row + 1, 2).value)
+    assert stored["icon_sources"] == ["provider-neutral"]
+    assert stored["icon_provenance"] == []
+
+
+def test_font_loading_supports_pillow_without_size_parameter(tmp_path, architecture, monkeypatch):
+    original = ImageFont.load_default
+
+    def legacy_default():
+        return original()
+
+    monkeypatch.setattr(ImageFont, "load_default", legacy_default)
+    result = render_diagram(architecture, tmp_path / "a.svg", tmp_path / "a.png")
+    assert result.node_ids == ["COMP-01", "COMP-02", "COMP-03"]
+    with Image.open(tmp_path / "a.png") as png:
+        assert png.format == "PNG" and png.width > 100
 
 
 def test_workbook_embeds_image_manifest_inventory_and_flow_ranges(tmp_path, architecture):
