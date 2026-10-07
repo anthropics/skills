@@ -1,8 +1,12 @@
 """Build the fixed workbook contract with editable inputs and live formulas."""
 
+from io import BytesIO
+import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from openpyxl import Workbook
+from openpyxl.drawing.image import Image as WorkbookImage
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook.defined_name import DefinedName
@@ -10,6 +14,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 from .model import CONTRACT, EstimateModel, ROW_KEYS, SCENARIOS
+from .diagram_renderer import render_diagram
 
 HEADER_ROW = 4
 FIRST_DATA_ROW = HEADER_ROW + 1
@@ -69,8 +74,59 @@ def _validation(ws, column, last_row, allow_blank=False):
     validation.add(f"{column}{FIRST_DATA_ROW}:{column}{max(FIRST_DATA_ROW, last_row)}")
 
 
-def build_workbook(model: EstimateModel, output: Path) -> Path:
-    """Write all twelve sections; derived values remain spreadsheet formulas."""
+def _embed_architecture(ws, model, architecture, icon_pack):
+    """Keep decision rows and the fixed header contract; append diagram records."""
+    if architecture is None:
+        architecture = {"nodes": [dict(row) for row in model.inventory], "edges": []}
+    inventory_ids = [row["id"] for row in model.inventory]
+    with TemporaryDirectory(prefix="estimate-diagram-") as directory:
+        directory = Path(directory)
+        manifest = render_diagram(architecture, directory / "architecture.svg", directory / "architecture.png", icon_pack)
+        if len(inventory_ids) != len(set(inventory_ids)) or set(manifest.node_ids) != set(inventory_ids):
+            raise ValueError("diagram node IDs must match workbook inventory IDs exactly")
+        image = WorkbookImage(BytesIO((directory / "architecture.png").read_bytes()))
+    row = ws.max_row + 3
+
+    def records(title, headers, values):
+        nonlocal row
+        ws.cell(row, 1, title).font = Font(name="Arial", bold=True, color="17365D")
+        row += 1
+        for column, header in enumerate(headers, 1):
+            ws.cell(row, column, header).font = Font(name="Arial", bold=True, color="17365D")
+        row += 1
+        for record in values:
+            for column, value in enumerate(record, 1):
+                cell = ws.cell(row, column, value)
+                if isinstance(value, str):
+                    cell.data_type = "s"
+                cell.font = Font(name="Arial", color=BLACK)
+                cell.alignment = Alignment(wrap_text=True, vertical="top")
+            row += 1
+        row += 2
+
+    records("Diagram nodes", ["ID", "Composant", "Environnement", "Zone", "Fournisseur"],
+            [[node["id"], node.get("component", node.get("label", node["id"])), node.get("environment", "Unspecified"), node.get("zone", "Unspecified"), node.get("provider", "")] for node in sorted(architecture["nodes"], key=lambda node: node["id"])])
+    records("Diagram flows", ["ID", "Source", "Destination", "Flux"],
+            [[edge["id"], edge["source"], edge["target"], edge.get("label", "")] for edge in sorted(architecture.get("edges", []), key=lambda edge: edge["id"])])
+    records("Icon provenance", ["Fournisseur", "Source officielle", "Licence / marque", "Fichier", "SHA-256"],
+            [[item["provider"], item["official_source_url"], item["licence_or_trademark_notice"], item["path"], item["sha256"]] for item in manifest.icon_provenance] or [["provider-neutral", "", "Original neutral labelled symbols", "", ""]])
+    manifest_json = json.dumps(manifest.to_dict(), sort_keys=True, ensure_ascii=False)
+    if len(manifest_json) > 32767:
+        raise ValueError("diagram manifest exceeds Excel cell text limit")
+    ws.cell(row, 1, "Diagram manifest").font = Font(name="Arial", bold=True, color="17365D")
+    ws.cell(row + 1, 1, "JSON")
+    ws.cell(row + 1, 2, manifest_json).data_type = "s"
+    row += 4
+    image.width, image.height = (image.width * min(1, 1100 / image.width), image.height * min(1, 1100 / image.width))
+    ws.add_image(image, f"A{row}")
+
+
+def build_workbook(model: EstimateModel, output: Path, *, architecture: dict | None = None, icon_pack: Path | None = None) -> Path:
+    """Write twelve sections, formulas, and a self-contained inventory diagram.
+
+    Optional architecture supplies explicit zones/flows; its node IDs must equal
+    inventory IDs. Without it, draw inventory nodes and do not infer connections.
+    """
     wb = Workbook()
     wb.remove(wb.active)
     wb.calculation.fullCalcOnLoad = True
@@ -99,8 +155,9 @@ def build_workbook(model: EstimateModel, output: Path) -> Path:
     scenario_validation.add(assumptions.cell(assumption_rows["scenario_global"], 2))
     _sheet(wb, sheets[2], ["ID", "Composant", "Environnement", "Quantite", "Unite", "Notes"],
            [[row[key] for key in ROW_KEYS["inventory"]] for row in model.inventory], "Inventaire", "Inventaire generique des composants et environnements.")
-    _sheet(wb, sheets[3], ["ID", "Composant", "Type", "Environnement", "Fournisseur", "Decision", "Notes"],
+    architecture_sheet = _sheet(wb, sheets[3], ["ID", "Composant", "Type", "Environnement", "Fournisseur", "Decision", "Notes"],
            [[row[key] for key in ROW_KEYS["architecture"]] for row in model.architecture], "Architecture", "Options d'architecture et decisions techniques a justifier.")
+    _embed_architecture(architecture_sheet, model, architecture, icon_pack)
     task_headers = CONTRACT["task_columns"]
     task_columns = {header: index for index, header in enumerate(task_headers, 1)}
     task_rows = []
