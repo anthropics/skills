@@ -121,10 +121,11 @@ AGENT_ID=$(ant beta:agents create --name "My Agent" --model '{id: claude-sonnet-
 **Flags** - scalar fields map directly. Structured fields accept relaxed-YAML syntax (unquoted keys) or strict JSON. Repeatable flags build arrays (each `--tool`, `--event`, `--message` appends one element):
 
 ```sh
+# a research agent needs the web; otherwise set both to false
 ant beta:agents create \
   --name "Research Agent" \
   --model '{id: claude-opus-5-5}' \
-  --tool '{type: agent_toolset_20260401}' \
+  --tool '{type: agent_toolset_20260401, default_config: {permission_policy: {type: auto}}, configs: [{name: web_fetch, enabled: true}, {name: web_search, enabled: true}]}' \
   --tool '{type: custom, name: search_docs, input_schema: {type: object, properties: {query: {type: string}}}}'
 ```
 
@@ -138,6 +139,10 @@ system: |
   You are a research assistant. Cite sources for every claim.
 tools:
   - type: agent_toolset_20260401
+    default_config: {permission_policy: {type: auto}}
+    configs:   # a research agent needs the web; otherwise set both to false
+      - {name: web_fetch, enabled: true}
+      - {name: web_search, enabled: true}
 YAML
 ```
 
@@ -177,6 +182,10 @@ name: Summarizer
 model: claude-sonnet-5-5
 tools:
   - type: agent_toolset_20260401
+    default_config: {permission_policy: {type: auto}}
+    configs:
+      - {name: web_fetch, enabled: false}
+      - {name: web_search, enabled: false}
 ---
 
 You are a helpful assistant that writes concise summaries.
@@ -185,7 +194,7 @@ You are a helpful assistant that writes concise summaries.
 ```yaml
 # environments/cloud.yaml
 name: summarizer-env
-config: {type: cloud, networking: {type: unrestricted}}
+config: {type: cloud, networking: {type: limited, allow_package_managers: true}}
 ```
 
 ```sh
@@ -277,7 +286,7 @@ done
 exec {stream}<&-
 ```
 
-This works for interactive exploration and demos. For application code that needs to react to `agent.tool_use` / `agent.custom_tool_use` events, reconnect after drops, or dedup against `events.list`, use the SDK - see `shared/managed-agents-client-patterns.md`.
+This works for interactive exploration and demos; it stops at the first `session.status_idle`, even one that is waiting on you (`stop_reason.type: requires_action`, such as a call paused for approval - answer it with `ant beta:sessions connect`). For application code that needs to react to `agent.tool_use` / `agent.custom_tool_use` events, reconnect after drops, or dedup against `events.list`, use the SDK - see `shared/managed-agents-client-patterns.md`.
 
 ## Scripting patterns
 
