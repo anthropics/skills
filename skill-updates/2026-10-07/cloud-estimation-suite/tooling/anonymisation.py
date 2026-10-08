@@ -14,6 +14,7 @@ Archive text is scanned without extraction, including metadata and nested ZIPs.
 from __future__ import annotations
 
 import argparse
+from collections.abc import Callable
 from dataclasses import dataclass, field
 import html
 import io
@@ -45,8 +46,8 @@ DEFAULT_LIMITS = {
 }
 DOMAIN = re.compile(r"(?i)(?<![\w@.-])(?:[^\W_](?:[^\W_]|-){0,62}\.)+(?:[^\W\d_]{2,63}|xn--[a-z0-9-]{2,59})\b")
 EMAIL = re.compile(r"(?i)\b[a-z0-9._%+-]+@((?:[a-z0-9-]+\.)+[a-z]{2,63})\b")
-IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])")
-IPV6 = re.compile(r"(?<![\w:])(?:[0-9a-fA-F]{0,4}:){2,}[0-9a-fA-F:.]*(?![\w:])")
+IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?!\w|\.\w)")
+IPV6 = re.compile(r"(?<![\w:])(?:[0-9a-fA-F]{0,4}:){2,}[0-9a-fA-F:.]*(?![\w:]|\.\w)")
 IDENTIFIERS = {
     "cloud-account-id": re.compile(r"(?<![\w])\d{12}(?![\w])"),
     "cloud-project-id": re.compile(r"(?i)\b(?:project[_-]?id\s*[\"']?\s*[:=]\s*[\"']?|projects/)([a-z][a-z0-9-]{4,62}[a-z0-9])\b"),
@@ -58,7 +59,7 @@ IDENTIFIERS = {
 
 @dataclass(frozen=True)
 class AnonymisationMatch:
-    path: str
+    path: str = field(repr=False)
     rule: str
     line: int
     excerpt: str = "[REDACTED]"
@@ -66,18 +67,19 @@ class AnonymisationMatch:
 
 @dataclass(frozen=True)
 class ScanIssue:
-    path: str
+    path: str = field(repr=False)
     rule: str
 
 
 @dataclass
 class AnonymisationReport:
-    matches: list[AnonymisationMatch] = field(default_factory=list)
-    issues: list[ScanIssue] = field(default_factory=list)
-    excluded_paths: list[str] = field(default_factory=list)
+    matches: list[AnonymisationMatch] = field(default_factory=list, repr=False)
+    issues: list[ScanIssue] = field(default_factory=list, repr=False)
+    excluded_paths: list[str] = field(default_factory=list, repr=False)
     scanned_files: int = 0
     scanned_texts: int = 0
     binary_entries: int = 0
+    _path_is_sensitive: Callable[[str], bool] = field(default=lambda path: True, repr=False)
 
     @property
     def match_count(self) -> int:
@@ -93,17 +95,15 @@ class AnonymisationReport:
 
     def summary(self) -> str:
         """Safe console report: never print source excerpts or sensitive paths."""
-        unsafe_paths = {item.path for item in self.matches if item.line == 0}
-
         def safe(path: str) -> str:
-            return "[REDACTED PATH]" if any(part in path for part in unsafe_paths) else path
+            return "[REDACTED PATH]" if self._path_is_sensitive(path) else path
 
         lines = [f"matches={self.match_count} issues={len(self.issues)} complete={str(self.complete).lower()} "
                  f"files={self.scanned_files} texts={self.scanned_texts} binary={self.binary_entries} "
                  f"excluded={len(self.excluded_paths)}"]
         lines.extend(f"{safe(item.path)}:{item.line} rule={item.rule} {item.excerpt}" for item in self.matches)
         lines.extend(f"{safe(item.path)} rule={item.rule}" for item in self.issues)
-        lines.extend(f"excluded-fixture={path}" for path in self.excluded_paths)
+        lines.extend(f"excluded-fixture={safe(path)}" for path in self.excluded_paths)
         return "\n".join(lines)
 
 
@@ -152,6 +152,9 @@ class _Scanner:
                               for key, rule in (("denylist", "denylist-token"),
                                                 ("source_workbook_names", "private-source-workbook"))
                               for token in policy[key]]
+        # Diagnostic masking reruns the pure detector against each complete
+        # path, independent of retained matches, issue type or traversal order.
+        self.report._path_is_sensitive = lambda path: any(self.rules_for_line(path))
 
     def issue(self, path: str, rule: str) -> None:
         self.report.issues.append(ScanIssue(path, rule))
@@ -165,19 +168,29 @@ class _Scanner:
             self.issue(path, "match-limit")
 
     def check_line(self, text: str, path: str, line: int, domains: bool = True) -> None:
+        for rule in self.rules_for_line(text, domains):
+            self.record(path, rule, line)
+
+    def rules_for_line(self, text: str, domains: bool = True):
+        """Yield detection rules without changing report state or consuming limits."""
         text = html.unescape(text)
         for rule, pattern in list(IDENTIFIERS.items()) + self.literal_rules:
             if pattern.search(text):
-                self.record(path, rule, line)
+                yield rule
         for found in EMAIL.finditer(text):
             if not _example_domain(found.group(1)):
-                self.record(path, "email", line)
+                yield "email"
         for pattern in (IPV4, IPV6):
             for found in pattern.finditer(text):
+                candidate = found.group().rstrip(".")
+                # A single final colon may be prose punctuation; compressed
+                # IPv6 endings (::) remain part of the address and are validated.
+                if candidate.endswith(":") and not candidate.endswith("::"):
+                    candidate = candidate[:-1]
                 try:
-                    address = ipaddress.ip_address(found.group())
+                    address = ipaddress.ip_address(candidate)
                     if address.is_global and not address.is_reserved:
-                        self.record(path, "public-ip", line)
+                        yield "public-ip"
                 except ValueError:
                     pass
         if domains:
@@ -185,7 +198,7 @@ class _Scanner:
                 try:
                     host = found.group().lower().encode("idna").decode("ascii")
                 except UnicodeError:
-                    self.record(path, "non-example-domain", line)
+                    yield "non-example-domain"
                     continue
                 url_host = text[:found.start()].endswith(("://", "//"))
                 if not url_host and (host.rsplit(".", 1)[-1] not in PUBLIC_TLDS
@@ -193,7 +206,7 @@ class _Scanner:
                     continue
                 if (not _example_domain(host) and host not in self.policy["allowed_domains"]
                         and (url_host or Path(host).suffix not in FILE_SUFFIXES)):
-                    self.record(path, "non-example-domain", line)
+                    yield "non-example-domain"
 
     def text(self, raw: bytes, path: str, required: bool) -> None:
         try:
@@ -248,14 +261,14 @@ class _Scanner:
         try:
             with zipfile.ZipFile(io.BytesIO(raw)) as archive:
                 for entry in archive.infolist():
-                    if entry.is_dir():
-                        continue
                     self.archive_entries += 1
                     entry_path = path + "!" + entry.filename
                     self.check_line(entry.filename, entry_path, 0)
                     if self.archive_entries > self.limits["max_archive_entries"]:
                         self.issue(path, "archive-entry-limit")
                         break
+                    if entry.is_dir():
+                        continue
                     if entry.file_size / max(entry.compress_size, 1) > self.limits["max_compression_ratio"]:
                         self.issue(entry_path, "archive-compression-limit")
                         continue
@@ -288,6 +301,7 @@ def scan_tree(root: Path, policy: Path | None = None) -> AnonymisationReport:
     if not root.is_dir():
         raise ValueError("scan root must be a directory")
     scanner = _Scanner(_load_policy(policy))
+    scanner.check_line(root.name, ".", 0)
 
     def walk_error(error: OSError) -> None:
         scanner.issue("[UNREADABLE PATH]", "tree-unreadable")
@@ -296,8 +310,10 @@ def scan_tree(root: Path, policy: Path | None = None) -> AnonymisationReport:
         directories.sort()
         for name in directories[:]:
             directory = Path(folder) / name
+            path = directory.relative_to(root).as_posix()
+            scanner.check_line(path, path, 0)
             if directory.is_symlink():
-                scanner.issue(directory.relative_to(root).as_posix(), "symlink-not-scanned")
+                scanner.issue(path, "symlink-not-scanned")
                 directories.remove(name)
         for name in sorted(filenames):
             file = Path(folder) / name

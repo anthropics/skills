@@ -218,3 +218,88 @@ def test_default_policy_scans_the_final_public_tree_with_explicit_positive_contr
     assert report.clean, report.summary()
     assert report.scanned_texts > 100
     assert report.excluded_paths == ["tests/fixtures/forbidden-sample.txt"]
+
+
+@pytest.mark.parametrize("suffix", [".", ",", ";", ":", ")", "]", "!", "?", "..."])
+@pytest.mark.parametrize("address", ["8." + "8.8.8", "2606:" + "4700:4700::1111"])
+def test_public_ips_followed_by_sentence_punctuation_are_detected(tmp_path, policy, address, suffix):
+    (tmp_path / "notes.md").write_text("Address: " + address + suffix, encoding="utf-8")
+    assert any(item.rule == "public-ip" for item in scan_tree(tmp_path, policy).matches)
+
+
+@pytest.mark.parametrize("value", [
+    "192.0.2.1.", "10.0.0.1,", "2001:db8::1.", "coordinates[::2]",
+    "999.999.999.999.", "8.8." + "8.8.9", "8." + "8.8.8.example.com",
+    "2606:" + "4700:4700::1111.example.com", "2606:" + "4700:4700::1111:::",
+])
+def test_punctuation_handling_does_not_create_false_public_ip_matches(tmp_path, policy, value):
+    (tmp_path / "notes.md").write_text(value, encoding="utf-8")
+    assert not any(item.rule == "public-ip" for item in scan_tree(tmp_path, policy).matches)
+
+
+def test_sensitive_issue_paths_remain_redacted_after_match_storage_is_full(tmp_path, policy):
+    token = "synthetic" + "-sensitive-path"
+    policy.write_text(json.dumps({"denylist": [token], "limits": {"max_matches": 1}}), encoding="utf-8")
+    (tmp_path / "a.md").write_text("account=" + "123456" + "789012", encoding="utf-8")
+    (tmp_path / (token + ".xlsx")).write_bytes(b"not an archive")
+    report = scan_tree(tmp_path, policy)
+    assert report.match_count == 1 and not report.complete
+    assert {item.rule for item in report.issues} >= {"match-limit", "archive-unreadable"}
+    assert token not in report.summary()
+    assert token not in repr(report)
+    assert "[REDACTED PATH]" in report.summary()
+
+
+def test_sensitive_symlink_directory_issue_is_redacted(tmp_path, policy, monkeypatch):
+    token = "synthetic" + "-sensitive-link"
+    policy.write_text(json.dumps({"denylist": [token]}), encoding="utf-8")
+    link = tmp_path / token
+    link.mkdir()
+    (link / "must-not-be-read.md").write_text("neutral", encoding="utf-8")
+    # This machine disallows unprivileged symlink creation. Exercise the real
+    # scanner against the filesystem adapter's symlink classification instead.
+    original_is_symlink = Path.is_symlink
+    monkeypatch.setattr(Path, "is_symlink", lambda path: path == link or original_is_symlink(path))
+    report = scan_tree(tmp_path, policy)
+    assert any(item.rule == "symlink-not-scanned" for item in report.issues)
+    assert token not in report.summary()
+    assert token not in repr(report)
+    assert report.scanned_texts == 0
+
+
+def test_sensitive_empty_filesystem_directory_name_is_scanned(tmp_path, policy):
+    token = "synthetic" + "-sensitive-directory"
+    policy.write_text(json.dumps({"denylist": [token]}), encoding="utf-8")
+    (tmp_path / token).mkdir()
+    report = scan_tree(tmp_path, policy)
+    assert any(item.path == token and item.line == 0 and item.rule == "denylist-token" for item in report.matches)
+    assert token not in report.summary()
+
+
+def test_scan_root_directory_name_is_also_checked_without_printing_absolute_path(tmp_path, policy):
+    token = "synthetic" + "-sensitive-root"
+    policy.write_text(json.dumps({"denylist": [token]}), encoding="utf-8")
+    root = tmp_path / token
+    root.mkdir()
+    report = scan_tree(root, policy)
+    assert any(item.path == "." and item.line == 0 and item.rule == "denylist-token" for item in report.matches)
+    assert token not in report.summary() and str(tmp_path) not in report.summary()
+
+
+def test_sensitive_zip_directory_name_is_scanned_before_skipping_its_content(tmp_path, policy):
+    token = "synthetic" + "-sensitive-directory"
+    policy.write_text(json.dumps({"denylist": [token]}), encoding="utf-8")
+    with zipfile.ZipFile(tmp_path / "export.zip", "w") as archive:
+        archive.writestr(token + "/", b"")
+    report = scan_tree(tmp_path, policy)
+    assert any(item.path == "export.zip!" + token + "/" and item.line == 0 for item in report.matches)
+    assert token not in report.summary()
+
+
+def test_zip_directory_entries_count_toward_archive_entry_limit(tmp_path, policy):
+    policy.write_text(json.dumps({"limits": {"max_archive_entries": 1}}), encoding="utf-8")
+    with zipfile.ZipFile(tmp_path / "export.zip", "w") as archive:
+        archive.writestr("one/", b"")
+        archive.writestr("two/", b"")
+    report = scan_tree(tmp_path, policy)
+    assert not report.complete and any(item.rule == "archive-entry-limit" for item in report.issues)
