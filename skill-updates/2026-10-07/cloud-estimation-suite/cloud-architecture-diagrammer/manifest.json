@@ -9,7 +9,7 @@
     "scripts/diagram_renderer.py": "32767ecd068fc29ddc90487782e7152edab1d815b54239020d9c1582f15a73d0",
     "scripts/icon-policy.json": "38f7cce62cd171bd5660edba4b69c4d6f6606a2779cba748c68c2012101326ed",
     "scripts/model.py": "2b62b5aa1c18fb67bf265892c6fa74052f5caae2b8a9079df9361e4d87523af0",
-    "scripts/recalculate.py": "ca97c20d82f0957e630f1fe8d1d0d4e995c22e6ee398dd2f50344b41a0849284",
+    "scripts/recalculate.py": "67f55121132ae2e7d96febabbd17899c9bb665d7082c12e010970ab7fb889aba",
     "scripts/workbook-contract.json": "2319bde2a7bf3669dcf9bb65d041b4de09fb57fa15c5ad9be496c2fbb604f34f",
     "scripts/workbook_builder.py": "c8af54e7ad020674b5f9c5b156bc1dc8bec04023a05016c4fb86fe8854d233ff",
     "scripts/workbook_validator.py": "8f73e4d3a1589ff397c5fe78976e9c691f2e2a92c20405b42c03d5d452dcf4bc"

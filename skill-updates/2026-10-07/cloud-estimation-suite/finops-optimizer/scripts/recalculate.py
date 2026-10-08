@@ -5,7 +5,6 @@ and SUMIFS. Unknown syntax fails closed; it is not a general Excel replacement.
 """
 
 from dataclasses import asdict, dataclass, field
-import base64
 import math
 import os
 from pathlib import Path
@@ -280,10 +279,13 @@ def _run_excel_powershell(script, path=None, timeout=120):
     environment = os.environ.copy()
     if path is not None:
         environment["ESTIMATE_RECALC_PATH"] = str(path.resolve())
-    encoded = base64.b64encode(script.encode("utf-16le")).decode("ascii")
-    result = subprocess.run([executable, "-NoProfile", "-NonInteractive", "-EncodedCommand", encoded],
+    # Pass an argument vector directly (no shell expansion). EncodedCommand can
+    # terminate during COM Open with exit 0; require a positive completion signal.
+    marker = "ESTIMATE_RECALC_COMPLETED"
+    command = script + f'\nWrite-Output "{marker}"\n'
+    result = subprocess.run([executable, "-NoProfile", "-NonInteractive", "-Command", command],
                             capture_output=True, text=True, timeout=timeout, env=environment)
-    if result.returncode:
+    if result.returncode or marker not in result.stdout.splitlines():
         raise FormulaFailure(f"PowerShell Excel COM failed: {(result.stderr or result.stdout).strip()}")
 
 
@@ -298,6 +300,8 @@ try {
             [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
         }
     }
+    [GC]::Collect()
+    [GC]::WaitForPendingFinalizers()
 }
 """
 
@@ -306,12 +310,14 @@ _EXCEL_RECALCULATE = """
 $ErrorActionPreference = 'Stop'
 $excel = $null
 $workbook = $null
+$excel_workbooks = $null
 try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
     $excel.DisplayAlerts = $false
     $excel.AutomationSecurity = 3
-    $workbook = $excel.Workbooks.Open($env:ESTIMATE_RECALC_PATH, 0, $false)
+    $excel_workbooks = $excel.Workbooks
+    $workbook = $excel_workbooks.Open($env:ESTIMATE_RECALC_PATH, 0, $false)
     $excel.CalculateFullRebuild()
     $workbook.Save()
 } finally {
@@ -320,11 +326,16 @@ try {
             [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($workbook)
         }
     }
+    if ($null -ne $excel_workbooks) {
+        [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel_workbooks)
+    }
     if ($null -ne $excel) {
         try { $excel.Quit() } finally {
             [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
         }
     }
+    [GC]::Collect()
+    [GC]::WaitForPendingFinalizers()
 }
 """
 
@@ -441,7 +452,10 @@ def recalculate(path: Path) -> RecalculationResult:
     path = Path(path).resolve()
     report = RecalculationResult()
     try:
-        workbook = load_workbook(path)
+        # Embedded images can retain a ZipExtFile beyond openpyxl's archive close.
+        # Own the stream lifetime so Windows allows the atomic replacement.
+        with path.open("rb") as stream:
+            workbook = load_workbook(stream)
         formulas = _formula_cells(workbook)
         report.formula_count = len(formulas)
         with tempfile.TemporaryDirectory(prefix="estimate-recalc-", dir=path.parent) as temporary:
@@ -490,8 +504,10 @@ def recalculate(path: Path) -> RecalculationResult:
 
 
 def _verify_caches(path, formulas):
-    values = load_workbook(path, data_only=True)
-    formula_workbook = load_workbook(path)
+    with Path(path).open("rb") as stream:
+        values = load_workbook(stream, data_only=True)
+    with Path(path).open("rb") as stream:
+        formula_workbook = load_workbook(stream)
     for sheet, coordinate in formulas:
         if formula_workbook[sheet][coordinate].data_type != "f":
             raise FormulaFailure(f"{sheet}!{coordinate}: native conversion lost formula")

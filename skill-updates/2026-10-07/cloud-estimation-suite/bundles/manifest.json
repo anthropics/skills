@@ -2,58 +2,58 @@
   "bundles": {
     "cicd-devsecops-estimator.skill": {
       "member_count": 13,
-      "sha256": "92a0f8581b6b8d70dee18bfe3ddd9afe1e8a58c05eb88d2fdc08ec480734f716",
-      "uncompressed_size": 122739
+      "sha256": "9bccedd2f6ce4fb0d49891a7c1fdcc80a8a5a0360095d4e9407326f2850e07e4",
+      "uncompressed_size": 123566
     },
     "cloud-architecture-advisor.skill": {
       "member_count": 13,
-      "sha256": "2b7e97ab6db1cabebf2c572fa5a9afd958c64593101e48ba2b570da943513c72",
-      "uncompressed_size": 124107
+      "sha256": "2409039735e2874fbf6b7b68de0f04e8dc51b29c57c615bf2b8fbeb397b20634",
+      "uncompressed_size": 124934
     },
     "cloud-architecture-diagrammer.skill": {
       "member_count": 14,
-      "sha256": "6e42fc8dc35bd7e46d5eeb6bd2d9c0e97bebc10e647a84bb13e1f8bfed4bebb5",
-      "uncompressed_size": 119863
+      "sha256": "9cf211ee660c9be705500648b36a0efb042f69e3fafd8132e9281b677fee8f12",
+      "uncompressed_size": 120690
     },
     "cloud-estimation-orchestrator.skill": {
       "member_count": 13,
-      "sha256": "04b49e2b7aeb9063b1c4c0649c18980d0d54a3c0338a940b9cca06b511fab059",
-      "uncompressed_size": 127120
+      "sha256": "3fd413dc8102986234897ae08c8930d9fa73711b93df39fc8997355edd42d667",
+      "uncompressed_size": 127947
     },
     "cloud-migration-estimator.skill": {
       "member_count": 13,
-      "sha256": "9b73e4ae7bde4b7ff01de0a52b4128c51e06678b047f41ad7f4a061650991d21",
-      "uncompressed_size": 120561
+      "sha256": "33b82283537f31f45fb7d5cc3b08b72fae2b49c8fa7e8172f15c926c708161e4",
+      "uncompressed_size": 121388
     },
     "cloud-provider-selector.skill": {
       "member_count": 13,
-      "sha256": "f3ea7d52b117cabde67dc0db38615f8a72348be7d6d027f6d8b327040bec6b09",
-      "uncompressed_size": 121254
+      "sha256": "8cbaa9a7573d80e8b2f6a7ecb3b150ee8eac8568e0f72af3e5c13c2d2301dfb7",
+      "uncompressed_size": 122081
     },
     "finops-optimizer.skill": {
       "member_count": 13,
-      "sha256": "8c8ce336109d276a621353aadaef208f0d549c69069af308a17e2e091e22f380",
-      "uncompressed_size": 123502
+      "sha256": "04c24302d8042aceb4b54f24ee36cd3d033563325f080600e5d3107f7116da92",
+      "uncompressed_size": 124329
     },
     "hosting-capacity-simulator.skill": {
       "member_count": 14,
-      "sha256": "2fbe2b08fd6c50b5f3e0e9d32992a041546d263df57e2989352bba1635466c15",
-      "uncompressed_size": 126616
+      "sha256": "5b84d191ca9a003d2bec164a9340ac619c65931420de93f1ba4016ac6e39d3c3",
+      "uncompressed_size": 127443
     },
     "infra-work-estimator.skill": {
       "member_count": 13,
-      "sha256": "1fb8fa0f5bf148357f7754a48982164d21429cb76c2a3c2aabb9760eb6187bf9",
-      "uncompressed_size": 122335
+      "sha256": "42493f891c59601dce6205f9c0dc6a0b6118e61924a7aea9f0fa65ea1c249626",
+      "uncompressed_size": 123162
     },
     "kubernetes-architect.skill": {
       "member_count": 13,
-      "sha256": "7407576af927d716755c687d84addd4c6a122d749b77022683792e9524f53b62",
-      "uncompressed_size": 120751
+      "sha256": "1af23737c63873c193c7bb0e8f4256e195aef7ea50f72cc8362a86a8a69a0fe9",
+      "uncompressed_size": 121578
     },
     "server-hardening-estimator.skill": {
       "member_count": 13,
-      "sha256": "d13c038eff224e8fa5acd26adbc311d9a2ebd226cde6c63de4eb4a6692493e19",
-      "uncompressed_size": 124192
+      "sha256": "2e23aa23aa4de7af0bfaaa1e1c73f9493e2f4a5bbab97a733019a1786fe05191",
+      "uncompressed_size": 125019
     }
   },
   "version": 1
