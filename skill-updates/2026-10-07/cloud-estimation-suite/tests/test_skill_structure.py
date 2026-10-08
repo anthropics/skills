@@ -1,6 +1,7 @@
 """Mechanical packaging checks only; these do not prove agent behavior."""
 
 from dataclasses import fields
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -77,6 +78,8 @@ def test_orchestrator_has_required_enforcement(load_skill):
 @pytest.mark.parametrize("name,required_outputs", [
     ("infra-work-estimator", {"task": "tasks", "inventory": "inventory", "risk": "risks", "source": "sources"}),
     ("cloud-architecture-advisor", {"option": "architecture", "decision": "decisions", "risk": "risks", "cost-driver": "assumptions"}),
+    ("kubernetes-architect", {"node-pool": "inventory", "platform-task": "tasks", "risk": "risks", "recurring-operation": "tasks"}),
+    ("hosting-capacity-simulator", {"sizing-input": "assumptions", "capacity-result": "assumptions", "measurement-task": "tasks", "scenario": "scenarios", "risk": "risks"}),
 ])
 def test_domain_contract_maps_records_to_common_model(name, required_outputs, load_skill):
     # Removing a required record or emitting a nonexistent field must fail.
@@ -114,3 +117,87 @@ def test_domain_contract_maps_records_to_common_model(name, required_outputs, lo
         assert set(record["required_keys"]) == set(expected_keys[section])
         assert len(record["required_keys"]) == len(set(record["required_keys"]))
         assert record["workbook_sheet"] == expected_sheets[section]
+
+
+def validate_capacity(values):
+    # Missing fields, weakened numeric types or dropped bounds break the interface.
+    path = ROOT / "hosting-capacity-simulator/references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    schema = json.loads(path.read_text(encoding="utf-8"))["capacity_inputs"]
+    expected_units = {
+        "cpu": "vCPU", "memory": "GiB", "storage": "GiB", "iops": "operations/s",
+        "bandwidth": "Mbit/s", "concurrency": "requests", "utilisation_target": "ratio",
+        "scaling_limit": "instances", "failure_domain_reserve": "instances",
+    }
+    assert set(schema["required"]) == set(expected_units)
+    assert set(schema["properties"]) == set(expected_units)
+    assert {key: value["unit"] for key, value in schema["properties"].items()} == expected_units
+    script = ROOT / "hosting-capacity-simulator/scripts/validate_capacity.py"
+    assert script.is_file(), f"Missing capacity validator: {script}"
+    spec = importlib.util.spec_from_file_location("capacity_validator", script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.validate_capacity_inputs(values)
+
+
+@pytest.fixture
+def capacity_validator():
+    return validate_capacity
+
+
+@pytest.fixture
+def measured_capacity():
+    # Synthetic simultaneous peak; no client data or prices.
+    return {
+        "cpu": 12.5, "memory": 24.0, "storage": 512.0, "iops": 2500,
+        "bandwidth": 200.0, "concurrency": 80, "utilisation_target": 0.7,
+        "scaling_limit": 12, "failure_domain_reserve": 1,
+    }
+
+
+def test_capacity_contract_accepts_measured_peaks(capacity_validator, measured_capacity):
+    assert capacity_validator(measured_capacity) == measured_capacity
+
+
+@pytest.mark.parametrize("field", [
+    "cpu", "memory", "storage", "iops", "bandwidth", "concurrency",
+    "utilisation_target", "scaling_limit", "failure_domain_reserve",
+])
+def test_capacity_contract_rejects_missing_dimension(capacity_validator, measured_capacity, field):
+    del measured_capacity[field]
+    with pytest.raises(ValueError, match=field):
+        capacity_validator(measured_capacity)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("cpu", "12 vCPU"), ("cpu", True), ("memory", -1), ("storage", None),
+    ("iops", -1), ("bandwidth", "200 Mbps"), ("concurrency", 1.5),
+    ("utilisation_target", 0), ("utilisation_target", 1.01),
+    ("scaling_limit", 0), ("scaling_limit", 2.5),
+    ("failure_domain_reserve", -1), ("failure_domain_reserve", 0.5),
+])
+def test_capacity_contract_rejects_invalid_quantity(capacity_validator, measured_capacity, field, value):
+    measured_capacity[field] = value
+    with pytest.raises(ValueError, match=field):
+        capacity_validator(measured_capacity)
+
+
+def test_capacity_contract_accepts_explicit_zero_demand_and_no_reserve(capacity_validator, measured_capacity):
+    for field in ("cpu", "memory", "storage", "iops", "bandwidth", "concurrency", "failure_domain_reserve"):
+        measured_capacity[field] = 0
+    measured_capacity["utilisation_target"] = 1
+    measured_capacity["scaling_limit"] = 1
+    assert capacity_validator(measured_capacity) == measured_capacity
+
+
+@pytest.mark.parametrize("field,value", [("cpu", float("nan")), ("memory", float("inf")), ("failure_domain_reserve", 12)])
+def test_capacity_contract_rejects_nonfinite_or_exhausted_reserve(capacity_validator, measured_capacity, field, value):
+    measured_capacity[field] = value
+    with pytest.raises(ValueError, match=field):
+        capacity_validator(measured_capacity)
+
+
+def test_capacity_contract_rejects_undeclared_unit_field(capacity_validator, measured_capacity):
+    measured_capacity["cpu_millicores"] = 1000
+    with pytest.raises(ValueError, match="cpu_millicores"):
+        capacity_validator(measured_capacity)
