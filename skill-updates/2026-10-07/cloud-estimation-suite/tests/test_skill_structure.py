@@ -1,11 +1,15 @@
 """Mechanical packaging checks only; these do not prove agent behavior."""
 
+from dataclasses import fields
+import json
 from pathlib import Path
 import re
 from types import SimpleNamespace
 
 import pytest
 import yaml
+
+from tooling.model import CloudCost, EstimateModel, ROW_KEYS, Scenario, Task
 
 ROOT = Path(__file__).parents[1]
 RESOURCE = re.compile(r"(?:\]\(|`)((?:references|scripts|assets)/[^\s)`#]+)")
@@ -68,3 +72,45 @@ def test_orchestrator_has_required_enforcement(load_skill):
     assert skill.missing_references == []
     assert skill.missing_scripts == []
     assert skill.missing_assets == []
+
+
+@pytest.mark.parametrize("name,required_outputs", [
+    ("infra-work-estimator", {"task": "tasks", "inventory": "inventory", "risk": "risks", "source": "sources"}),
+    ("cloud-architecture-advisor", {"option": "architecture", "decision": "decisions", "risk": "risks", "cost-driver": "assumptions"}),
+])
+def test_domain_contract_maps_records_to_common_model(name, required_outputs, load_skill):
+    # Removing a required record or emitting a nonexistent field must fail.
+    # This checks the interchange contract, never the agent's prose decisions.
+    skill = load_skill(name)
+    assert skill.frontmatter["name"] == name
+    assert skill.frontmatter["description"].strip()
+    assert skill.unfinished_scaffold_markers == []
+    assert skill.missing_references == []
+    assert skill.missing_scripts == []
+    assert skill.missing_assets == []
+    path = ROOT / name / "references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    contract = json.loads(path.read_text(encoding="utf-8"))
+    assert contract["skill"] == name
+    assert contract["model"] == "EstimateModel"
+    assert contract["effort_unit"] == "JH"
+    model_sections = {field.name for field in fields(EstimateModel)}
+    assert contract["inputs"] and set(contract["inputs"]) <= model_sections
+    assert len(contract["inputs"]) == len(set(contract["inputs"]))
+    expected_keys = {**ROW_KEYS, **{
+        section: tuple(field.name for field in fields(record))
+        for section, record in (("tasks", Task), ("cloud_costs", CloudCost), ("scenarios", Scenario))
+    }}
+    expected_sheets = dict(zip(
+        ("metadata", "assumptions", "inventory", "architecture", "tasks", "cloud_costs", "scenarios", "phasing", "risks", "decisions", "sources"),
+        json.loads((ROOT / "tooling/workbook-contract.json").read_text(encoding="utf-8"))["sheets"],
+    ))
+    assert required_outputs.keys() <= contract["outputs"].keys()
+    for record_type, section in required_outputs.items():
+        assert contract["outputs"][record_type]["section"] == section
+    for record in contract["outputs"].values():
+        section = record["section"]
+        assert section in expected_keys, f"Unknown output section: {section}"
+        assert set(record["required_keys"]) == set(expected_keys[section])
+        assert len(record["required_keys"]) == len(set(record["required_keys"]))
+        assert record["workbook_sheet"] == expected_sheets[section]
