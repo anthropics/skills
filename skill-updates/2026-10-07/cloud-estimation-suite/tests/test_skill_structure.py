@@ -80,6 +80,8 @@ def test_orchestrator_has_required_enforcement(load_skill):
     ("cloud-architecture-advisor", {"option": "architecture", "decision": "decisions", "risk": "risks", "cost-driver": "assumptions"}),
     ("kubernetes-architect", {"node-pool": "inventory", "platform-task": "tasks", "risk": "risks", "recurring-operation": "tasks"}),
     ("hosting-capacity-simulator", {"sizing-input": "assumptions", "capacity-result": "assumptions", "measurement-task": "tasks", "scenario": "scenarios", "risk": "risks"}),
+    ("cicd-devsecops-estimator", {"pipeline-task": "tasks", "recurring-operation": "tasks", "risk": "risks", "source": "sources"}),
+    ("server-hardening-estimator", {"control-task": "tasks", "recurring-operation": "tasks", "residual-risk": "risks", "source": "sources"}),
 ])
 def test_domain_contract_maps_records_to_common_model(name, required_outputs, load_skill):
     # Removing a required record or emitting a nonexistent field must fail.
@@ -117,6 +119,39 @@ def test_domain_contract_maps_records_to_common_model(name, required_outputs, lo
         assert set(record["required_keys"]) == set(expected_keys[section])
         assert len(record["required_keys"]) == len(set(record["required_keys"]))
         assert record["workbook_sheet"] == expected_sheets[section]
+
+
+@pytest.mark.parametrize("name,expected_fields", [
+    ("cicd-devsecops-estimator", {
+        "pipeline_stage": {"record": "pipeline-task", "keys": ["notes"]},
+        "evidence": {"record": "pipeline-task", "keys": ["expected_evidence"]},
+        "one_off_jh": {"record": "pipeline-task", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "recurring_jh": {"record": "recurring-operation", "keys": ["jh_low", "jh_likely", "jh_high"]},
+    }),
+    ("server-hardening-estimator", {
+        "control_boundary": {"record": "control-task", "keys": ["notes"]},
+        "implementation_task": {"record": "control-task", "keys": ["task"]},
+        "verification_evidence": {"record": "control-task", "keys": ["expected_evidence"]},
+        "one_off_jh": {"record": "control-task", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "recurring_jh": {"record": "recurring-operation", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "residual_risk": {"record": "residual-risk", "keys": ["risk", "mitigation", "owner", "status"]},
+    }),
+])
+def test_delivery_and_hardening_fields_preserve_evidence_and_effort_nature(name, expected_fields):
+    # Dropping evidence, confusing Build/Run, or pointing to nonexistent fields
+    # breaks the emitted domain interface, independent of instruction wording.
+    path = ROOT / name / "references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    contract = json.loads(path.read_text(encoding="utf-8"))
+    assert contract["domain_fields"] == expected_fields
+    outputs = contract["outputs"]
+    for binding in contract["domain_fields"].values():
+        assert binding["record"] in outputs
+        assert binding["keys"] and set(binding["keys"]) <= set(outputs[binding["record"]]["required_keys"])
+    build_record = contract["domain_fields"]["one_off_jh"]["record"]
+    assert outputs[build_record]["constraints"] == {"nature": "Build"}
+    assert outputs["recurring-operation"]["constraints"] == {"nature": "Run", "period": "month"}
+    assert "expected_evidence" in outputs["recurring-operation"]["required_keys"]
 
 
 def validate_capacity(values):
