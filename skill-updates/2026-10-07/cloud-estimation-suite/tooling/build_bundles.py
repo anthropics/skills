@@ -11,7 +11,9 @@ import argparse
 from hashlib import sha256
 from io import BytesIO
 import json
+import ntpath
 from pathlib import Path
+import posixpath
 import re
 import stat
 from zipfile import ZIP_STORED, ZipFile, ZipInfo
@@ -36,12 +38,30 @@ def _excluded(relative: Path) -> bool:
     )
 
 
-def _archive_bytes(skill_dir: Path, output_dir: Path) -> bytes:
+def _resolved_skill_dir(skill_dir: Path) -> Path:
     if skill_dir.is_symlink() or getattr(skill_dir, "is_junction", lambda: False)():
         raise ValueError(f"Refusing linked skill directory: {skill_dir}")
     root = skill_dir.resolve()
     if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", root.name):
         raise ValueError(f"Invalid skill directory name: {root.name}")
+    return root
+
+
+def _validate_archive_path(filename: str) -> None:
+    """Require a canonical relative path with unambiguous POSIX/Windows parts."""
+    parts = filename.split("/")
+    windows_name = filename.replace("/", "\\")
+    if (not filename or "\\" in filename or ":" in filename
+            or any(ord(character) < 32 for character in filename)
+            or posixpath.isabs(filename) or ntpath.isabs(filename)
+            or ntpath.splitdrive(filename)[0]
+            or any(part in {"", ".", ".."} or part.rstrip(" .") != part for part in parts)
+            or posixpath.normpath(filename) != filename
+            or ntpath.normpath(windows_name) != windows_name):
+        raise ValueError(f"Unsafe archive path: {filename!r}")
+
+
+def _archive_bytes(root: Path, output_dir: Path) -> bytes:
     if output_dir.resolve().is_relative_to(root):
         raise ValueError("Refusing output directory inside the skill")
     if not (root / "SKILL.md").is_file():
@@ -51,12 +71,16 @@ def _archive_bytes(skill_dir: Path, output_dir: Path) -> bytes:
         relative = path.relative_to(root)
         if _excluded(relative):
             continue
+        # Validate the complete name that will be given to ZipInfo. In particular,
+        # literal backslashes in a POSIX filename must never become Windows '..'.
+        filename = f"{root.name}/{relative.as_posix()}"
+        _validate_archive_path(filename)
         if path.is_symlink() or getattr(path, "is_junction", lambda: False)():
             raise ValueError(f"Refusing symlink or junction in skill: {relative.as_posix()}")
         if not path.resolve().is_relative_to(root):
             raise ValueError(f"Skill member escapes its root: {relative.as_posix()}")
         if path.is_file():
-            payloads[f"{root.name}/{relative.as_posix()}"] = path.read_bytes()
+            payloads[filename] = path.read_bytes()
         elif not path.is_dir():
             raise ValueError(f"Unsupported skill member: {relative.as_posix()}")
     manifest_member = f"{root.name}/manifest.json"
@@ -81,7 +105,9 @@ def _archive_bytes(skill_dir: Path, output_dir: Path) -> bytes:
 
 
 def _write_bundle(skill_dir: Path, output_dir: Path, payload: bytes) -> Path:
-    target = output_dir / f"{skill_dir.name}.skill"
+    filename = f"{skill_dir.name}.skill"
+    _validate_archive_path(filename)
+    target = output_dir / filename
     if target.is_symlink() or (target.exists() and not target.is_file()):
         raise ValueError(f"Refusing non-regular output: {target}")
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -96,9 +122,9 @@ def build_bundle(skill_dir: Path, output_dir: Path) -> Path:
     All inputs are read before the output is touched. No temporary directory or
     authoring-tree path is encoded in the archive. Identical outputs stay intact.
     """
-    skill_dir, output_dir = Path(skill_dir), Path(output_dir)
-    payload = _archive_bytes(skill_dir, output_dir)
-    return _write_bundle(skill_dir, output_dir, payload)
+    root, output_dir = _resolved_skill_dir(Path(skill_dir)), Path(output_dir)
+    payload = _archive_bytes(root, output_dir)
+    return _write_bundle(root, output_dir, payload)
 
 
 def main() -> None:
@@ -111,13 +137,14 @@ def main() -> None:
             or any(not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name) for name in names)):
         raise ValueError("Expected eleven unique skill names in the registry")
     # Preflight the whole suite before producing any output.
-    payloads = {name: _archive_bytes(SUITE / name, output) for name in sorted(names)}
+    roots = [_resolved_skill_dir(SUITE / name) for name in sorted(names)]
+    payloads = {root: _archive_bytes(root, output) for root in roots}
     manifest = {"version": 1, "bundles": {}}
     manifest_path = output / "manifest.json"
     if manifest_path.is_symlink() or (manifest_path.exists() and not manifest_path.is_file()):
         raise ValueError(f"Refusing non-regular output: {manifest_path}")
-    for name, payload in payloads.items():
-        path = _write_bundle(SUITE / name, output, payload)
+    for root, payload in payloads.items():
+        path = _write_bundle(root, output, payload)
         with ZipFile(path) as archive:
             if archive.testzip() is not None:
                 raise ValueError(f"Corrupt archive: {path.name}")

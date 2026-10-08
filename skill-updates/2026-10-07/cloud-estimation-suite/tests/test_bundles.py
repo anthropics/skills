@@ -11,6 +11,7 @@ import shutil
 import stat
 import subprocess
 import sys
+from types import SimpleNamespace
 from zipfile import ZipFile
 
 import pytest
@@ -147,6 +148,60 @@ def test_archive_bytes_ignore_source_order_timestamps_and_permissions(builder, t
     a = builder.build_bundle(first, tmp_path / "out-first")
     b = builder.build_bundle(second, tmp_path / "out-second")
     assert a.read_bytes() == b.read_bytes()
+
+
+@pytest.mark.parametrize("relative_name", [
+    r"..\..\outside.txt", r"C:\outside.txt", "/outside.txt",
+    "//host/share/outside.txt", "C:/outside.txt", "C:outside.txt",
+    "nested/C:/outside.test", "nested//outside.test", "./outside.txt",
+    "nested/../outside.txt", "nested/./outside.txt", "", ".", "..",
+    "nested/.../outside.txt", "nested/.. /outside.txt", "nested/ /outside.txt",
+    "nested/trailing./outside.txt", "nested/name:stream.txt", "nested/name\x00truncated.txt",
+])
+def test_cross_platform_unsafe_member_names_are_refused_before_output(
+        builder, tmp_path, monkeypatch, relative_name):
+    directory = tmp_path / "example-skill"
+    directory.mkdir()
+    (directory / "SKILL.md").write_bytes(b"entrypoint\n")
+    candidate = directory / "candidate.txt"
+    candidate.write_bytes(b"harmless local payload\n")
+    output = tmp_path / "output"
+    # Windows cannot create a POSIX filename containing literal backslashes.
+    # Substitute only the relative name of an ordinary local file; all reads,
+    # ZIP construction and output behavior still exercise the real builder.
+    # Nothing named outside.txt is ever created or extracted by this test.
+    real_relative_to = Path.relative_to
+    portable_relative = SimpleNamespace(
+        parts=tuple(relative_name.split("/")),
+        name=PurePosixPath(relative_name).name,
+        suffix=PurePosixPath(relative_name).suffix,
+        as_posix=lambda: relative_name,
+    )
+
+    def relative_to(path, *args, **kwargs):
+        if path == candidate:
+            return portable_relative
+        return real_relative_to(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "relative_to", relative_to)
+    with pytest.raises(ValueError, match="archive path"):
+        builder.build_bundle(directory, output)
+    assert not output.exists()
+    assert sorted(path.name for path in tmp_path.iterdir()) == ["example-skill"]
+
+
+@pytest.mark.parametrize("relative", [Path("."), Path("foo") / ".."])
+def test_resolved_skill_basename_matches_bundle_filename_and_archive_root(
+        builder, tmp_path, monkeypatch, relative):
+    directory = tmp_path / "example-skill"
+    (directory / "foo").mkdir(parents=True)
+    (directory / "SKILL.md").write_bytes(b"entrypoint\n")
+    output = tmp_path / "output"
+    monkeypatch.chdir(directory)
+    archive = builder.build_bundle(relative, output)
+    assert archive == output / "example-skill.skill"
+    with ZipFile(archive) as zf:
+        assert zf.namelist() == ["example-skill/SKILL.md"]
 
 
 def test_missing_entrypoint_is_refused_without_output(builder, tmp_path):
