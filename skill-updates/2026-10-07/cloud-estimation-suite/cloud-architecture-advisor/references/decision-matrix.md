@@ -84,7 +84,7 @@ cost rows into one set of scenario totals.
 
 ## ADR and common output records
 
-[references/domain-contract.json](references/domain-contract.json) lists exact
+[domain-contract.json](domain-contract.json) lists exact
 record keys. Option and cost-driver are domain record types mapped to existing
 model sections, not new top-level fields. Preserve stable option and source
 IDs in notes so the comparison, diagram and ADR can be traced.

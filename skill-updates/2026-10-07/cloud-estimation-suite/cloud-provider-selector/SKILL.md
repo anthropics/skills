@@ -79,6 +79,9 @@ Use the locally supplied common loader, builder, renderer, recalculation
 adapter and validator. Preserve twelve sheets; mark irrelevant sections
 `Non applicable` with a reason rather than dropping them.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these rules and relevant references against the final artifacts.

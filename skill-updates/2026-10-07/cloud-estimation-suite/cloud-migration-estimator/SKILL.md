@@ -83,6 +83,9 @@ builder, renderer, recalculation adapter and validator. Keep all twelve
 sheets, derived formulas and cached values; mark irrelevant sections
 `Non applicable` with a reason.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these rules and the workflow against the final artifacts. Record

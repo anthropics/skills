@@ -78,6 +78,9 @@ capacity. Use the locally supplied common loader, builder, renderer,
 recalculation adapter and validator. Preserve all twelve sheets, editable
 inputs and formulas; mark irrelevant sections `Non applicable` with a reason.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these rules and the relevant reference against the final artifacts.

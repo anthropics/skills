@@ -80,6 +80,9 @@ renderer, recalculation adapter and validator. Preserve all twelve contract
 sheets and editable, formula-driven scenario selection and totals; explain
 irrelevant sections as `Non applicable`.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these instructions and relevant references against the final records

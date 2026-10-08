@@ -74,6 +74,9 @@ unit and capture date. Unverified prices remain `A chiffrer` assumptions and
 decisions with incomplete totals disclosed; never insert text or invented zero
 into numeric cost fields.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read this skill and the relevant reference against the completed model and

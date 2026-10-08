@@ -1,0 +1,28 @@
+{
+  "files": {
+    "LICENSE": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94",
+    "SKILL.md": "f0bf1f09f0b2ecb8ab226452c17e9068798c6c9a494eeb9d5b03e5683cf60740",
+    "references/common-methodology.md": "bc80933e70321451e50b6b889256e295d44ba6ee85599be048be875756f8412f",
+    "references/domain-contract.json": "867282687a8f354323d6dcce4b7cf4ecd6e54981e7ad0a0cc4774942640cbeda",
+    "references/task-catalogue.md": "5480165247be6712a1920bb7e6eeb725946ff9dfdb96bb332d36f4c4dec67114",
+    "scripts/diagram_renderer.py": "32767ecd068fc29ddc90487782e7152edab1d815b54239020d9c1582f15a73d0",
+    "scripts/icon-policy.json": "38f7cce62cd171bd5660edba4b69c4d6f6606a2779cba748c68c2012101326ed",
+    "scripts/model.py": "2b62b5aa1c18fb67bf265892c6fa74052f5caae2b8a9079df9361e4d87523af0",
+    "scripts/recalculate.py": "ca97c20d82f0957e630f1fe8d1d0d4e995c22e6ee398dd2f50344b41a0849284",
+    "scripts/workbook-contract.json": "2319bde2a7bf3669dcf9bb65d041b4de09fb57fa15c5ad9be496c2fbb604f34f",
+    "scripts/workbook_builder.py": "c8af54e7ad020674b5f9c5b156bc1dc8bec04023a05016c4fb86fe8854d233ff",
+    "scripts/workbook_validator.py": "8f73e4d3a1589ff397c5fe78976e9c691f2e2a92c20405b42c03d5d452dcf4bc"
+  },
+  "generated_files": [
+    "LICENSE",
+    "references/common-methodology.md",
+    "scripts/diagram_renderer.py",
+    "scripts/icon-policy.json",
+    "scripts/model.py",
+    "scripts/recalculate.py",
+    "scripts/workbook-contract.json",
+    "scripts/workbook_builder.py",
+    "scripts/workbook_validator.py"
+  ],
+  "version": 1
+}

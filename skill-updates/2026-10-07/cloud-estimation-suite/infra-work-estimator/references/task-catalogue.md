@@ -57,7 +57,7 @@ mutations merely to measure. Unknown inputs belong in assumptions and risks.
 
 ## Model and XLSX mapping
 
-[references/domain-contract.json](references/domain-contract.json) lists the
+[domain-contract.json](domain-contract.json) lists the
 required keys for emitted record types. Read the locally supplied common
 model and workbook contract when constructing the full JSON. All eleven
 `EstimateModel` sections must exist, including empty arrays; `metadata` is

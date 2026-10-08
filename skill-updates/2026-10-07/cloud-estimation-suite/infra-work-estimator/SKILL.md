@@ -76,6 +76,9 @@ validator supplied locally in the distribution. Preserve all twelve contract
 sheets, formula-driven selection/totals and editable assumptions; explain
 irrelevant sections with `Non applicable`.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these instructions and the relevant reference against the final model

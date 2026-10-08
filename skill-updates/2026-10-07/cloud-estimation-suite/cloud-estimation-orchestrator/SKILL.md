@@ -103,6 +103,9 @@ does not check omitted assertions or prove that an invented flow is real.
 Use native Excel or LibreOffice when available. A calibrated Python fallback
 must be disclosed; it cannot satisfy a required native-opening check.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these rules and the relevant references against the final artifacts.

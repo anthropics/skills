@@ -76,6 +76,9 @@ Use the common recalculation adapter and validator, then inspect the finished
 image and workbook for legibility, clipping, crossed nodes, hidden flows and
 meaningful boundary labels. Keep formulas and cached values intact.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these rules and references against the final artifacts. Record

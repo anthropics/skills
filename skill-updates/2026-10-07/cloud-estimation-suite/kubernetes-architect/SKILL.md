@@ -70,6 +70,9 @@ at runtime from current official sources or authorised exports; do not store
 current prices in this skill. Missing prices remain `A chiffrer` assumptions
 and decisions, never invented zero or text in numeric cost fields.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read this skill and the selected reference against the final model and

@@ -84,6 +84,9 @@ recalculation adapter and validator. Keep all twelve sheets, formula-driven
 selection/totals and editable assumptions; explain irrelevant sections as
 `Non applicable`.
 
+Read [references/common-methodology.md](references/common-methodology.md) when
+constructing the complete model or using the local workbook runtime.
+
 ## Pre-delivery gate
 
 Re-read these instructions and relevant references against the final records
