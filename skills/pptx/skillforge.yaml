@@ -1,0 +1,4 @@
+permissions:
+  shell:
+    # soffice (LibreOffice, headless) is driven by scripts/office/soffice.py
+    allowed: [python, soffice]
