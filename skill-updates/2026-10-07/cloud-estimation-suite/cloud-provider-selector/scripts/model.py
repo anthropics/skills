@@ -165,6 +165,8 @@ def load_model(path: Path) -> EstimateModel:
         raise ValueError("assumptions.key: duplicate key")
     if assumptions["scenario_global"] not in SCENARIOS:
         raise ValueError("assumptions.scenario_global: unknown scenario")
+    if "comparison_scenario" in assumptions and assumptions["comparison_scenario"] not in SCENARIOS:
+        raise ValueError("assumptions.comparison_scenario: unknown scenario")
     for key in ("taux_journalier", "mois_par_an"):
         _number(assumptions[key], f"assumptions.{key}")
     costs = _records(data, "cloud_costs", CloudCost)

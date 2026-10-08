@@ -150,9 +150,14 @@ def build_workbook(model: EstimateModel, output: Path, *, architecture: dict | N
         wb.defined_names.add(DefinedName(name, attr_text=f"'{assumptions.title}'!$B${row_index}"))
     scenario_validation = DataValidation(type="list", formula1='"' + ",".join(SCENARIOS) + '"')
     scenario_validation.showErrorMessage = True
+    scenario_validation.showDropDown = False
     scenario_validation.errorStyle = "stop"
+    scenario_validation.errorTitle = "Scenario invalide"
+    scenario_validation.error = "Choisir Economique, Standard ou Resilient."
     assumptions.add_data_validation(scenario_validation)
-    scenario_validation.add(assumptions.cell(assumption_rows["scenario_global"], 2))
+    for key in ("scenario_global", "comparison_scenario"):
+        if key in assumption_rows:
+            scenario_validation.add(assumptions.cell(assumption_rows[key], 2))
     _sheet(wb, sheets[2], ["ID", "Composant", "Environnement", "Quantite", "Unite", "Notes"],
            [[row[key] for key in ROW_KEYS["inventory"]] for row in model.inventory], "Inventaire", "Inventaire generique des composants et environnements.")
     architecture_sheet = _sheet(wb, sheets[3], ["ID", "Composant", "Type", "Environnement", "Fournisseur", "Decision", "Notes"],

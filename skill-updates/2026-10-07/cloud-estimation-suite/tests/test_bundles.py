@@ -157,6 +157,11 @@ def test_archive_bytes_ignore_source_order_timestamps_and_permissions(builder, t
     "nested/../outside.txt", "nested/./outside.txt", "", ".", "..",
     "nested/.../outside.txt", "nested/.. /outside.txt", "nested/ /outside.txt",
     "nested/trailing./outside.txt", "nested/name:stream.txt", "nested/name\x00truncated.txt",
+    "nested/CON", "nested/prn.txt", "AUX/device.txt", "nested/NUL.json",
+    "nested/COM1.txt", "nested/com9.log", "LPT1/guide.md", "nested/lpt9.bin",
+    "nested/COM¹.txt", "nested/LPT².bin", "nested/CONIN$", "nested/CONOUT$.txt",
+    "nested/CON .txt", 'nested/name".txt', "nested/name<.txt", "nested/name>.txt",
+    "nested/name|.txt", "nested/name?.txt", "nested/name*.txt",
 ])
 def test_cross_platform_unsafe_member_names_are_refused_before_output(
         builder, tmp_path, monkeypatch, relative_name):

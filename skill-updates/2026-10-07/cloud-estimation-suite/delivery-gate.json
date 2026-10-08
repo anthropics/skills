@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "mechanical_gate_passed": true,
+  "delivery_ready": false,
+  "independent_forward_tests": {
+    "status": "pending",
+    "required": 11,
+    "executed": 0
+  },
+  "skills": [
+    {
+      "name": "cloud-estimation-orchestrator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 11,
+      "archive": "cloud-estimation-orchestrator.skill",
+      "member_count": 13,
+      "sha256": "4fbd784253eedc8626d352e1d7e7157847f7bd66f98da54e0ff23284da46fe48",
+      "uncompressed_size": 130329
+    },
+    {
+      "name": "infra-work-estimator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "infra-work-estimator.skill",
+      "member_count": 13,
+      "sha256": "6d27248d214b8f86c219936a09ef5983f61fea928c1818ec43a702d37643952a",
+      "uncompressed_size": 125544
+    },
+    {
+      "name": "cloud-architecture-advisor",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "cloud-architecture-advisor.skill",
+      "member_count": 13,
+      "sha256": "779912f0b06aa43a0a666dd4a088eccc9891b409687502e77415c556c78c0468",
+      "uncompressed_size": 127316
+    },
+    {
+      "name": "kubernetes-architect",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "kubernetes-architect.skill",
+      "member_count": 13,
+      "sha256": "03e91569e82b23465171adb061e92735941440e9ed78e7d587b6d26ab36a33e7",
+      "uncompressed_size": 123960
+    },
+    {
+      "name": "cicd-devsecops-estimator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "cicd-devsecops-estimator.skill",
+      "member_count": 13,
+      "sha256": "2a90da159e84e1c8d2e3f05b1fef223d23d6fc0df4c988ccc07094981dc07971",
+      "uncompressed_size": 125948
+    },
+    {
+      "name": "server-hardening-estimator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "server-hardening-estimator.skill",
+      "member_count": 13,
+      "sha256": "5e29439cdf664d25566c017fabb3cec53db9387b0ac36279c7f27b0aff3076fd",
+      "uncompressed_size": 127401
+    },
+    {
+      "name": "hosting-capacity-simulator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 14,
+      "archive": "hosting-capacity-simulator.skill",
+      "member_count": 14,
+      "sha256": "ab14bc88e8b0650d0c8adae21d9da1163e3ad4d80f17cce6638a55b91b6aa1f0",
+      "uncompressed_size": 129825
+    },
+    {
+      "name": "cloud-provider-selector",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "cloud-provider-selector.skill",
+      "member_count": 13,
+      "sha256": "991a2239f3c1e09e74dcddb67261cb5cbbbb68822f0a0498288f6385d122aa2e",
+      "uncompressed_size": 124463
+    },
+    {
+      "name": "finops-optimizer",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "finops-optimizer.skill",
+      "member_count": 13,
+      "sha256": "edecf56d06e5762988dc4937f4195ee80020a32395c4d4b1cedfd298ec76607d",
+      "uncompressed_size": 126711
+    },
+    {
+      "name": "cloud-migration-estimator",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 12,
+      "archive": "cloud-migration-estimator.skill",
+      "member_count": 13,
+      "sha256": "5043084291c16225c23aa34fa5f906ed9d5f82efd2e07f2997a030c4c12b2180",
+      "uncompressed_size": 123770
+    },
+    {
+      "name": "cloud-architecture-diagrammer",
+      "quick_validate_exit": 0,
+      "diagnostic_count": 0,
+      "validator_message": "Skill is valid!",
+      "scaffold_placeholders": 0,
+      "relative_links_verified": 14,
+      "archive": "cloud-architecture-diagrammer.skill",
+      "member_count": 14,
+      "sha256": "671c722b0fbd2dc7c6ae3e93a70f846ab1966a400fb94bd722f76d4293ce633d",
+      "uncompressed_size": 123072
+    }
+  ],
+  "workbook_validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": [
+      "Numerical prose and diagram correspondence are checked only for supplied assertions/IDs."
+    ],
+    "counts": {
+      "sheets": 12,
+      "formulas": 132,
+      "formula_errors": 0,
+      "formula_semantic_errors": 0,
+      "missing_cached_values": 0,
+      "table_filter_overlaps": 0,
+      "unsupported_future_functions": 0,
+      "reconciliations": 140,
+      "reconciliation_errors": 0,
+      "diagram_inventory_ids": 4,
+      "private_data_matches": 0,
+      "errors": 0
+    },
+    "cost_totals": [
+      {
+        "provider": "Provider A",
+        "environment": "Non-production",
+        "scenario": "Economique",
+        "monthly": 45,
+        "annual": 540,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider A",
+        "environment": "Non-production",
+        "scenario": "Resilient",
+        "monthly": 45,
+        "annual": 540,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider A",
+        "environment": "Non-production",
+        "scenario": "Standard",
+        "monthly": 45,
+        "annual": 540,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider A",
+        "environment": "Production",
+        "scenario": "Economique",
+        "monthly": 69,
+        "annual": 828,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider A",
+        "environment": "Production",
+        "scenario": "Resilient",
+        "monthly": 195,
+        "annual": 2340,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider A",
+        "environment": "Production",
+        "scenario": "Standard",
+        "monthly": 126,
+        "annual": 1512,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Non-production",
+        "scenario": "Economique",
+        "monthly": 50,
+        "annual": 600,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Non-production",
+        "scenario": "Resilient",
+        "monthly": 50,
+        "annual": 600,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Non-production",
+        "scenario": "Standard",
+        "monthly": 50,
+        "annual": 600,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Production",
+        "scenario": "Economique",
+        "monthly": 74,
+        "annual": 888,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Production",
+        "scenario": "Resilient",
+        "monthly": 210,
+        "annual": 2520,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider B",
+        "environment": "Production",
+        "scenario": "Standard",
+        "monthly": 136,
+        "annual": 1632,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Non-production",
+        "scenario": "Economique",
+        "monthly": 55,
+        "annual": 660,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Non-production",
+        "scenario": "Resilient",
+        "monthly": 55,
+        "annual": 660,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Non-production",
+        "scenario": "Standard",
+        "monthly": 55,
+        "annual": 660,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Production",
+        "scenario": "Economique",
+        "monthly": 79,
+        "annual": 948,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Production",
+        "scenario": "Resilient",
+        "monthly": 225,
+        "annual": 2700,
+        "currency": "EUR"
+      },
+      {
+        "provider": "Provider C",
+        "environment": "Production",
+        "scenario": "Standard",
+        "monthly": 146,
+        "annual": 1752,
+        "currency": "EUR"
+      }
+    ]
+  },
+  "anonymisation_summary": "matches=0 issues=0 complete=true files=212 texts=374 binary=21 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
+  "public_example_review": {
+    "groups": [
+      {
+        "paths": [
+          "tests/fixtures/synthetic-brief.json"
+        ],
+        "vertical": "generic web service",
+        "geography": "unspecified",
+        "inventory_components": 4,
+        "tasks": 6,
+        "providers": [
+          "Provider A",
+          "Provider B",
+          "Provider C"
+        ],
+        "dates": [
+          "2026-10-07"
+        ],
+        "invented_unit_prices_eur": [
+          45,
+          50,
+          55
+        ],
+        "daily_rate_eur": 650
+      },
+      {
+        "paths": [
+          "examples/synthetic-architecture.json",
+          "examples/synthetic-architecture.png",
+          "examples/synthetic-architecture.svg",
+          "examples/synthetic-assertions.json",
+          "examples/synthetic-cloud-brief.json",
+          "examples/synthetic-cloud-estimate.xlsx"
+        ],
+        "vertical": "generic web service",
+        "geography": "unspecified",
+        "inventory_components": 4,
+        "explicit_flows": 1,
+        "tasks": 10,
+        "cloud_cost_rows": 27,
+        "providers": [
+          "Provider A",
+          "Provider B",
+          "Provider C"
+        ],
+        "dates": [
+          "2026-10-01",
+          "2026-10-07"
+        ],
+        "invented_unit_prices_eur": [
+          24,
+          36,
+          45,
+          50,
+          55,
+          60
+        ],
+        "daily_rate_eur": 650,
+        "three_year_tco_eur": [
+          41906,
+          42446,
+          42986
+        ]
+      }
+    ],
+    "source_corpus_count": 16,
+    "public_source_filename_matches": 0,
+    "combination_review": "Same deliberately invented composite expanded from the six-task test fixture; no client vertical or geography, neutral provider labels, generic counts and invented amounts. Supporting JSON, SVG, PNG and XLSX express one example, not multiple independent client stories.",
+    "limitation": "Mechanical scanning and private comparative review found no copied identifying combination; this is a reviewed confidentiality assessment, not a mathematical guarantee.",
+    "private_corpus_validation": {
+      "source_workbooks": 16,
+      "inspected_cells": 14434,
+      "private_denylist_terms": 6,
+      "private_source_filename_rules": 16,
+      "matches": 0,
+      "issues": 0,
+      "complete": true
+    }
+  },
+  "repository_checks": {
+    "pytest": {
+      "passed": 312,
+      "skipped": 1,
+      "failed": 0,
+      "skip_reason": "Windows symlink creation unavailable",
+      "command": "python -X utf8 -m pytest skill-updates/2026-10-07/cloud-estimation-suite/tests -q"
+    },
+    "diff_check_exit": 0
+  },
+  "tdd": {
+    "baseline": {
+      "passed": 50,
+      "skipped": 1,
+      "failed": 0
+    },
+    "red": {
+      "failed": 22,
+      "passed": 20,
+      "deselected": 31
+    },
+    "green_targeted": {
+      "passed": 42,
+      "deselected": 31
+    },
+    "corrections": [
+      "Reject Windows reserved device names and forbidden archive characters before output",
+      "Validate optional comparison_scenario at model import and workbook inspection; provide a visible three-value stopping dropdown",
+      "Preserve the dcterms prefix used by xsi:type QName values while anonymising XML metadata; reopen the delivered bytes natively after privacy transformations"
+    ],
+    "final_artifact_metadata": {
+      "red_failed": 1,
+      "green_passed": 1
+    }
+  },
+  "public_workbook": {
+    "path": "examples/synthetic-cloud-estimate.xlsx",
+    "sha256": "9d4ce0748788208511ac56263d54ef0b9ca7c8f8640857e561069869ff477e40",
+    "recalculation": {
+      "engine": "excel-com",
+      "native_opened": true,
+      "formulas": 132,
+      "cached_values": 132,
+      "errors": 0,
+      "final_artifact_native_open_verified": true
+    },
+    "comparison_dropdown": {
+      "values": 3,
+      "native_visible": true,
+      "native_alert_style": "stop"
+    }
+  }
+}

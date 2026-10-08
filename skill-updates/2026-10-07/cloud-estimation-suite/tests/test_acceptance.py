@@ -6,6 +6,7 @@ or lost capacity/FinOps decisions must fail these consumer-facing checks.
 
 from collections import Counter
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -18,6 +19,7 @@ from tooling.anonymisation import scan_tree
 from tooling.model import load_model
 from tooling.recalculate import FormulaFailure, _EXCEL_RECALCULATE, _run_excel_powershell, recalculate
 from tooling.workbook_validator import validate_workbook
+from tooling.workbook_builder import build_workbook
 
 ROOT = Path(__file__).parents[1]
 EXAMPLES = ROOT / "examples"
@@ -193,6 +195,55 @@ def test_foundation_overload_compares_collective_capacity_with_all_foundation_ro
     effort_fields = {"Economique": "jh_low", "Standard": "jh_likely", "Resilient": "jh_high"}
     demand = sum(getattr(task, effort_fields[task.scenario_override or "Standard"]) for task in foundation)
     assert demand == 9 and demand - available[1].value == overload.value
+
+
+def test_comparison_scenario_has_a_visible_stopping_dropdown(tmp_path):
+    model = load_model(EXAMPLES / "synthetic-cloud-brief.json")
+    path = build_workbook(model, tmp_path / "dropdown.xlsx")
+    with path.open("rb") as stream:
+        workbook = load_workbook(stream)
+    sheet = workbook["01_Hypotheses"]
+    cell = next(row[1] for row in sheet if row[0].value == "comparison_scenario")
+    validations = [rule for rule in sheet.data_validations.dataValidation if cell.coordinate in rule]
+    assert len(validations) == 1
+    rule = validations[0]
+    assert rule.type == "list" and rule.formula1 == '"Economique,Standard,Resilient"'
+    assert rule.showDropDown is not True
+    assert rule.showErrorMessage and rule.errorStyle == "stop" and not rule.allow_blank
+
+
+def test_model_refuses_misspelled_comparison_scenario(tmp_path):
+    data = json.loads((EXAMPLES / "synthetic-cloud-brief.json").read_bytes())
+    next(row for row in data["assumptions"] if row["key"] == "comparison_scenario")["value"] = "Standrad"
+    path = tmp_path / "misspelled.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with pytest.raises(ValueError, match="comparison_scenario.*unknown scenario"):
+        load_model(path)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Final public artifact native Excel opening")
+def test_final_public_metadata_normalization_remains_native_readable(tmp_path):
+    # Reopen the delivered bytes after privacy normalization, not its precursor.
+    trial = tmp_path / "final-public-artifact.xlsx"
+    shutil.copyfile(EXAMPLES / "synthetic-cloud-estimate.xlsx", trial)
+    _run_excel_powershell(_EXCEL_RECALCULATE, trial)
+
+
+def test_validator_refuses_edited_misspelled_comparison_scenario(tmp_path, monkeypatch):
+    with (EXAMPLES / "synthetic-cloud-estimate.xlsx").open("rb") as stream:
+        workbook = load_workbook(stream)
+    sheet = workbook["01_Hypotheses"]
+    cell = next(row[1] for row in sheet if row[0].value == "comparison_scenario")
+    cell.value = "Standrad"
+    path = tmp_path / "misspelled.xlsx"
+    workbook.save(path)
+    import tooling.recalculate as adapter
+    monkeypatch.setattr(adapter, "_select_excel_backend", lambda: None)
+    monkeypatch.setattr(adapter, "_find_libreoffice", lambda: None)
+    assert recalculate(path).ok
+    report = validate_workbook(path)
+    assert not report.ok
+    assert any("comparison_scenario" in error and "invalid" in error for error in report.errors)
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Windows PowerShell cleanup contract")

@@ -148,6 +148,8 @@ def synthetic_model():
 
 def _public_metadata(path):
     """Normalize author/revision metadata after native save; retain caches."""
+    # xsi:type contains a QName string; its prefix must survive serialization.
+    ET.register_namespace("dcterms", "http://purl.org/dc/terms/")
     with ZipFile(path) as archive:
         entries = [(item, archive.read(item.filename)) for item in archive.infolist()]
     identifiers = {}

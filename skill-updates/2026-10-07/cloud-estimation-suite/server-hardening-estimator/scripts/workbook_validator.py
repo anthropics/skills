@@ -192,6 +192,8 @@ def _reconcile(formulas, values, contract, report, currency):
     assumptions = _assumptions(values)
     scenarios = contract["scenario_names"]
     global_scenario = assumptions["scenario_global"]
+    if "comparison_scenario" in assumptions and assumptions["comparison_scenario"] not in scenarios:
+        report.errors.append("01_Hypotheses: invalid comparison_scenario")
     if global_scenario not in scenarios:
         report.errors.append("01_Hypotheses: invalid global scenario")
         return

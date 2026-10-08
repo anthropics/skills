@@ -51,11 +51,13 @@ def _validate_archive_path(filename: str) -> None:
     """Require a canonical relative path with unambiguous POSIX/Windows parts."""
     parts = filename.split("/")
     windows_name = filename.replace("/", "\\")
-    if (not filename or "\\" in filename or ":" in filename
+    if (not filename or any(character in filename for character in '\\:<>"|?*')
             or any(ord(character) < 32 for character in filename)
             or posixpath.isabs(filename) or ntpath.isabs(filename)
             or ntpath.splitdrive(filename)[0]
             or any(part in {"", ".", ".."} or part.rstrip(" .") != part for part in parts)
+            or any(re.fullmatch(r"CON|PRN|AUX|NUL|CONIN\$|CONOUT\$|COM[1-9¹²³]|LPT[1-9¹²³]",
+                                part.split(".", 1)[0].rstrip(" "), re.I) for part in parts)
             or posixpath.normpath(filename) != filename
             or ntpath.normpath(windows_name) != windows_name):
         raise ValueError(f"Unsafe archive path: {filename!r}")
