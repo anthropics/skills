@@ -26,7 +26,7 @@ Creating a session requires an `environment_id`. Environments are **reusable con
 
 All three `limited` fields are optional. `allow_package_managers` (default `false`) permits PyPI/npm/etc.; `allow_mcp_servers` (default `false`) permits the agent's configured MCP server endpoints without listing them in `allowed_hosts`.
 
-**MCP caveat:** Under `limited` networking, either set `allow_mcp_servers: true` or add each MCP server domain to `allowed_hosts`. Otherwise the container can't reach them and tools silently fail.
+**MCP caveat:** Under `limited` networking, either set `allow_mcp_servers: true` or add each MCP server domain to `allowed_hosts`. Otherwise creating a session for an agent that declares those servers fails with a 400 naming the blocked hosts.
 
 **Packages caveat:** Under `limited` networking, `packages` requires `allow_package_managers: true`; otherwise the request fails with a 400. Listing the registry in `allowed_hosts` is not enough.
 
@@ -109,7 +109,7 @@ for await (const f of client.beta.files.list({
 **Requirements:**
 - The `write` tool (or `bash`) must be enabled for the agent to create output files.
 - Session-scoped `files.list` / `files.download` captures outputs written to `/mnt/session/outputs/`.
-- The filter parameter is **`scope_id`** (REST query param `?scope_id=<session_id>`). The SDK's files resource auto-adds only the `files-api-2025-04-14` header, so pass `betas: ["managed-agents-2026-04-01"]` explicitly (or both headers on raw HTTP) - without it the API may reject `scope_id` as an unknown field. Requires `@anthropic-ai/sdk` >= 0.88.0 / `anthropic` (Python) >= 0.92.0 - older versions don't type `scope_id`. The `ant` CLI does **not** expose this flag yet; use the SDK or curl.
+- The filter parameter is **`scope_id`** (REST query param `?scope_id=<session_id>`). Filtering by `scope_id` requires the `managed-agents-2026-04-01` header, which `client.beta.files` does not add, so pass `betas: ["managed-agents-2026-04-01"]` explicitly (on raw HTTP, send `anthropic-beta: managed-agents-2026-04-01`); the list call uses the `beta` files namespace only to pass that header, and upload and download also work on `client.files`. Requires `@anthropic-ai/sdk` >= 0.88.0 / `anthropic` (Python) >= 0.92.0 - older versions don't type `scope_id`. In the `ant` CLI, use `ant beta:files list --scope-id <session_id> --beta managed-agents-2026-04-01`.
 - Pass the session ID returned by `sessions.create()` verbatim (e.g. `sesn_011CZx...`) - the API validates the prefix.
 - There's a brief indexing lag (~1-3s) between `session.status_idle` and output files appearing in `files.list`. Retry once or twice if empty.
 
@@ -150,7 +150,7 @@ Repositories are attached for the lifetime of the session - to change which repo
 const agent = await client.beta.agents.create(
   {
     name: 'GitHub Agent',
-    model: 'claude-opus-5',
+    model: 'claude-opus-5-5',
     mcp_servers: [
       { type: 'url', name: 'github', url: 'https://api.githubcopilot.com/mcp/' },
     ],
@@ -184,7 +184,7 @@ import os
 
 agent = client.beta.agents.create(
     name="GitHub Agent",
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     mcp_servers=[{
         "type": "url",
         "name": "github",
