@@ -84,6 +84,8 @@ def test_orchestrator_has_required_enforcement(load_skill):
     ("server-hardening-estimator", {"control-task": "tasks", "recurring-operation": "tasks", "residual-risk": "risks", "source": "sources"}),
     ("cloud-provider-selector", {"comparison-input": "assumptions", "provider-decision": "decisions", "implementation-task": "tasks", "recurring-operation": "tasks", "cloud-cost": "cloud_costs", "risk": "risks", "source": "sources"}),
     ("finops-optimizer", {"opportunity": "decisions", "baseline": "assumptions", "implementation-task": "tasks", "recurring-operation": "tasks", "cloud-cost": "cloud_costs", "risk": "risks", "source": "sources"}),
+    ("cloud-migration-estimator", {"inventory": "inventory", "source-write-policy": "assumptions", "documentation-drift": "decisions", "service-mapping": "architecture", "migration-task": "tasks", "recurring-operation": "tasks", "risk": "risks", "source": "sources"}),
+    ("cloud-architecture-diagrammer", {"inventory": "inventory", "topology-node": "architecture", "flow-evidence": "sources", "topology-issue": "risks", "diagram-task": "tasks"}),
 ])
 def test_domain_contract_maps_records_to_common_model(name, required_outputs, load_skill):
     # Removing a required record or emitting a nonexistent field must fail.
@@ -285,3 +287,50 @@ def test_provider_and_finops_contracts_require_decision_inputs(name, schema_key,
     else:
         assert schema["constraints"]["baseline_kind"] == ["measured-billing", "forecast"]
         assert schema["constraints"]["savings_status"] == ["forecast", "validated-measured"]
+
+
+def test_migration_contract_preserves_source_constraints_and_complete_lifecycle():
+    # Removing a lifecycle field or mapping evidence to a nonexistent common
+    # column breaks the domain interface; this makes no claim about agent prose.
+    path = ROOT / "cloud-migration-estimator/references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    contract = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "inventory_evidence": {"record": "inventory", "keys": ["id", "notes"]},
+        "documentation_drift": {"record": "documentation-drift", "keys": ["question", "option", "rationale", "status", "source"]},
+        "source_write_policy": {"record": "source-write-policy", "keys": ["value", "status", "source", "notes"]},
+        "source_target_mapping": {"record": "service-mapping", "keys": ["id", "component", "decision", "notes"]},
+        **{phase: {"record": "migration-task", "keys": ["task", "dependencies", "acceptance_criterion", "expected_evidence", "notes"]}
+           for phase in ("preparation", "rehearsal", "data_transfer", "cutover", "integrity", "rollback", "decommissioning", "hypercare")},
+        "one_off_jh": {"record": "migration-task", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "recurring_jh": {"record": "recurring-operation", "keys": ["jh_low", "jh_likely", "jh_high"]},
+    }
+    schema = contract["migration_fields"]
+    assert set(schema["required"]) == set(expected)
+    assert len(schema["required"]) == len(set(schema["required"]))
+    assert schema["bindings"] == expected
+    for binding in schema["bindings"].values():
+        assert set(binding["keys"]) <= set(contract["outputs"][binding["record"]]["required_keys"])
+    assert schema["constraints"]["source_write_policy"] == ["forbidden", "owner-only", "scoped-authorised", "unknown"]
+    assert schema["constraints"]["inventory_method"] == "read-only-live-first"
+    assert contract["outputs"]["migration-task"]["constraints"] == {"nature": "Build"}
+    assert contract["outputs"]["recurring-operation"]["constraints"] == {"nature": "Run", "period": "month"}
+
+
+def test_diagram_contract_uses_shared_graph_and_icon_provenance_interfaces():
+    # A detached graph, lost endpoint identity, missing provenance or a changed
+    # render target breaks the interchange contract. Rendering refusal and
+    # artifact embedding are exercised by the canonical renderer tests.
+    path = ROOT / "cloud-architecture-diagrammer/references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    contract = json.loads(path.read_text(encoding="utf-8"))
+    schema = contract["diagram_fields"]
+    assert set(schema["required"]) == {"inventory_node_ids", "nodes", "edges", "icon_provenance", "artifacts", "topology_verification"}
+    assert schema["nodes"] == {"required_keys": ["id", "component", "environment", "zone", "provider", "icon"], "id_reference": "inventory.id", "coverage": "exact"}
+    assert schema["edges"] == {"required_keys": ["id", "source", "target", "label"], "endpoint_reference": "nodes.id", "evidence_reference": "sources.id", "infer_connections": False}
+    assert schema["topology_verification"] == {"before": "estimate-finalisation", "reject": ["duplicate-node-id", "duplicate-edge-id", "node-absent-from-inventory", "missing-inventory-node", "dangling-flow"], "unresolved_flow": "risk-or-assumption"}
+    policy = json.loads((ROOT / "tooling/icon-policy.json").read_text(encoding="utf-8"))
+    assert schema["icon_provenance"]["default"] == policy["default"]
+    assert schema["icon_provenance"]["asset_formats"] == policy["asset_formats"]
+    assert set(schema["icon_provenance"]["required_keys"]) == {"path", "sha256", "provider", "official_source_url", "licence_or_trademark_notice"}
+    assert schema["artifacts"] == {"exports": ["SVG", "PNG"], "primary": "XLSX", "embed": {"sheet": "03_Architecture", "format": "PNG"}, "manifest_keys": ["node_ids", "edge_ids", "icon_sources", "icon_provenance", "output_hashes", "warnings"]}
