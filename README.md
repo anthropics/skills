@@ -35,6 +35,8 @@ See what the [`frontend-design`](./skills/frontend-design) skill does to a plain
 - Before: https://skill-fixture-before.theroost.dev?vr_gallery=1
 - After (frontend-design): https://frontend-design-after.theroost.dev?vr_gallery=1
 
+Illustrative, author-supplied example: Vibe Rooster applied the `frontend-design` skill to the same page content. It is not a benchmark or an official demo.
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
