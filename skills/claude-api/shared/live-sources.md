@@ -18,7 +18,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Models Overview | `https://platform.claude.com/docs/en/about-claude/models/overview.md`        | "Extract current model IDs, context windows, and pricing for all Claude models" |
 | Migration Guide | `https://platform.claude.com/docs/en/about-claude/models/migration-guide.md` | "Extract breaking changes, deprecated parameters, and per-model migration steps when moving to a newer Claude model" |
 | Introducing Claude Fable 5 | `https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5.md` | "Extract capabilities, API changes, and availability stages for Claude Fable 5 and Claude Mythos 5" |
-| Pricing         | `https://platform.claude.com/docs/en/pricing.md`                             | "Extract current pricing per million tokens for input and output"               |
+| Pricing         | `https://platform.claude.com/docs/en/about-claude/pricing.md`                | "Extract current pricing per million tokens for input and output"               |
 | Cost Optimization | `https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence.md` | "Extract measured cost levers, cache and batch savings, effort and model cost-per-task comparisons, budget controls, and multi-model guidance" |
 
 ### Core Features
@@ -26,7 +26,7 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic             | URL                                                                          | Extraction Prompt                                                                      |
 | ----------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | Extended Thinking | `https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md` | "Extract extended thinking parameters, budget_tokens requirements, and usage examples" |
-| Adaptive Thinking | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md` | "Extract adaptive thinking setup, effort levels, and Claude Opus 5 usage examples"         |
+| Adaptive Thinking | `https://platform.claude.com/docs/en/build-with-claude/adaptive-thinking.md` | "Extract adaptive thinking setup, effort levels, and Claude Opus 5.5 usage examples"         |
 | Effort Parameter  | `https://platform.claude.com/docs/en/build-with-claude/effort.md`            | "Extract effort levels, cost-quality tradeoffs, and interaction with thinking"        |
 | Tool Use          | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview.md`  | "Extract tool definition schema, tool_choice options, and handling tool results"       |
 | Streaming         | `https://platform.claude.com/docs/en/build-with-claude/streaming.md`         | "Extract streaming event types, SDK examples, and best practices"                      |
@@ -69,13 +69,13 @@ This file contains WebFetch URLs for fetching current information from platform.
 | Topic          | URL                                                                                    | Extraction Prompt                                                                        |
 | -------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | Code Execution | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md` | "Extract code execution tool setup, file upload, container reuse, and response handling" |
-| Computer Use   | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use.md`        | "Extract computer use tool setup, capabilities, and implementation examples"             |
+| Computer Use   | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool.md`   | "Extract the computer_toolset_20260801 setup (configs, member tools, batch actions, toolset_name on results), the Compatibility matrix, and the migration steps from computer_20251124"             |
 | Bash Tool      | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool.md`           | "Extract bash tool schema, reference implementation, and security considerations"        |
 | Text Editor    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool.md`    | "Extract text editor tool commands, schema, and reference implementation"                |
 | Memory Tool    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md`         | "Extract memory tool commands, directory structure, and implementation patterns"         |
 | Tool Search    | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool.md`    | "Extract tool search setup, when to use, and cache interaction"                          |
 | Programmatic Tool Calling | `https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md` | "Extract PTC setup, script execution model, and tool invocation from code"    |
-| Skills         | `https://platform.claude.com/docs/en/agents-and-tools/skills.md`                       | "Extract skill folder structure, SKILL.md format, and loading behavior"                  |
+| Skills         | `https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview.md`        | "Extract skill folder structure, SKILL.md format, and loading behavior"                  |
 | Skills Guide   | `https://platform.claude.com/docs/en/build-with-claude/skills-guide.md`                | "Extract the Skills API (/v1/skills) usage and the migration steps from skills-2025-10-02" |
 
 ### Advanced Features
@@ -120,11 +120,12 @@ Use these when a managed-agents binding, behavior, or wire-level detail isn't co
 
 ### Anthropic CLI
 
-The `ant` CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is the recommended way to create agents and environments from version-controlled YAML (`ant beta:agents create < agent.yaml` - see `shared/anthropic-cli.md`), and also exposes sessions and every other API resource for scripting and interactive inspection.
+The `ant` CLI provides terminal access to the Claude API. Every API resource is exposed as a subcommand. It is the recommended way to keep agents, environments, skills, memory stores, vaults and deployments as version-controlled files (`ant apply` - see `shared/anthropic-cli.md`), and also exposes sessions and every other API resource for scripting and interactive inspection.
 
 | Topic         | URL                                                     | Extraction Prompt                                                                                  |
 | ------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Anthropic CLI | `https://platform.claude.com/docs/en/api/sdks/cli.md`   | "Extract CLI install, authentication, command structure, and the beta:agents/environments/sessions commands" |
+| Anthropic CLI | `https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md` | "Extract CLI install, authentication, command structure, and sending a first request" |
+| `ant apply` | `https://platform.claude.com/docs/en/cli-sdks-libraries/cli/apply.md` | "Extract the file layout per resource kind, how a file's kind is inferred, path references between files, `claude-lock.json`, the flags (`--dry-run`, `--yes`, `--force`, `--prune`, `--upgrade`, `--lock-file`), and the CI setup" |
 | `ant beta:sessions connect` | `https://platform.claude.com/docs/en/cli-sdks-libraries/cli/sessions-connect.md` | "Extract the interactive session viewer: keybindings, tool-call allow/deny prompt, `--web` local viewer and its URL/lifetime rules" |
 | Authentication overview | `https://platform.claude.com/docs/en/manage-claude/authentication.md` | "Extract the credential options (API keys, interactive OAuth login, Workload Identity Federation) and when to use each" |
 | WIF reference | `https://platform.claude.com/docs/en/manage-claude/wif-reference.md`  | "Extract credential precedence order, the profile configuration file schema, and the configuration directory layout" |
