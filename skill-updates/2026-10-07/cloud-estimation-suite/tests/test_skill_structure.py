@@ -82,6 +82,8 @@ def test_orchestrator_has_required_enforcement(load_skill):
     ("hosting-capacity-simulator", {"sizing-input": "assumptions", "capacity-result": "assumptions", "measurement-task": "tasks", "scenario": "scenarios", "risk": "risks"}),
     ("cicd-devsecops-estimator", {"pipeline-task": "tasks", "recurring-operation": "tasks", "risk": "risks", "source": "sources"}),
     ("server-hardening-estimator", {"control-task": "tasks", "recurring-operation": "tasks", "residual-risk": "risks", "source": "sources"}),
+    ("cloud-provider-selector", {"comparison-input": "assumptions", "provider-decision": "decisions", "implementation-task": "tasks", "recurring-operation": "tasks", "cloud-cost": "cloud_costs", "risk": "risks", "source": "sources"}),
+    ("finops-optimizer", {"opportunity": "decisions", "baseline": "assumptions", "implementation-task": "tasks", "recurring-operation": "tasks", "cloud-cost": "cloud_costs", "risk": "risks", "source": "sources"}),
 ])
 def test_domain_contract_maps_records_to_common_model(name, required_outputs, load_skill):
     # Removing a required record or emitting a nonexistent field must fail.
@@ -236,3 +238,50 @@ def test_capacity_contract_rejects_undeclared_unit_field(capacity_validator, mea
     measured_capacity["cpu_millicores"] = 1000
     with pytest.raises(ValueError, match="cpu_millicores"):
         capacity_validator(measured_capacity)
+
+
+@pytest.mark.parametrize("name,schema_key,expected_bindings", [
+    ("cloud-provider-selector", "comparison_inputs", {
+        "region_eligibility": {"record": "comparison-input", "keys": ["value", "source", "notes"]},
+        "service_scope": {"record": "comparison-input", "keys": ["value", "notes"]},
+        "commercial_policy": {"record": "comparison-input", "keys": ["value", "source", "notes"]},
+        "weighted_criteria": {"record": "comparison-input", "keys": ["value", "source", "notes"]},
+        "implementation_jh": {"record": "implementation-task", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "recurring_jh": {"record": "recurring-operation", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "tco_horizon_years": {"record": "comparison-input", "keys": ["value", "unit"]},
+    }),
+    ("finops-optimizer", "opportunity_fields", {
+        "baseline": {"record": "baseline", "keys": ["value", "unit", "status", "source", "notes"]},
+        "action": {"record": "opportunity", "keys": ["option"]},
+        "savings_range": {"record": "opportunity", "keys": ["rationale"]},
+        "one_off_jh": {"record": "implementation-task", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "recurring_jh": {"record": "recurring-operation", "keys": ["jh_low", "jh_likely", "jh_high"]},
+        "risk": {"record": "risk", "keys": ["risk", "mitigation", "owner", "status"]},
+        "reversibility": {"record": "opportunity", "keys": ["rationale"]},
+        "validation_method": {"record": "implementation-task", "keys": ["acceptance_criterion", "expected_evidence"]},
+    }),
+])
+def test_provider_and_finops_contracts_require_decision_inputs(name, schema_key, expected_bindings):
+    # Omitting a savings dimension, effort nature, or region/scope input breaks
+    # the domain interchange interface; no prose or recommendation is tested.
+    path = ROOT / name / "references/domain-contract.json"
+    assert path.is_file(), f"Missing domain contract: {path}"
+    contract = json.loads(path.read_text(encoding="utf-8"))
+    schema = contract[schema_key]
+    assert set(schema["required"]) == set(expected_bindings)
+    assert len(schema["required"]) == len(set(schema["required"]))
+    assert schema["bindings"] == expected_bindings
+    for binding in schema["bindings"].values():
+        output = contract["outputs"][binding["record"]]
+        assert set(binding["keys"]) <= set(output["required_keys"])
+    assert contract["outputs"]["implementation-task"]["constraints"] == {"nature": "Build"}
+    assert contract["outputs"]["recurring-operation"]["constraints"] == {"nature": "Run", "period": "month"}
+    if name == "cloud-provider-selector":
+        assert schema["constraints"]["tco_horizon_years"] == 3
+        assert schema["constraints"]["region_eligibility"] == {
+            "count_eligible_regions": True, "multi_region_dr_minimum": 2,
+        }
+        assert schema["constraints"]["service_scope"] == "equal"
+    else:
+        assert schema["constraints"]["baseline_kind"] == ["measured-billing", "forecast"]
+        assert schema["constraints"]["savings_status"] == ["forecast", "validated-measured"]
