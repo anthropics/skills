@@ -45,7 +45,7 @@
       "unit": "JH",
       "status": "A confirmer",
       "source": "SYN-01",
-      "notes": "Period 1; role capacity 6 JH; dependency TASK-01 before TASK-02/09/10."
+      "notes": "Period 1; collective capacity across Foundation roles, not per-role capacity. Owner: delivery lead. Dependency TASK-01 before TASK-02/09/10; individual role availability remains unverified."
     },
     {
       "key": "schedule.foundation_overload",
@@ -304,12 +304,36 @@
       "notes": "Explicit synthetic absence, not an unknown represented as zero."
     },
     {
+      "key": "comparison_scenario",
+      "value": "Standard",
+      "unit": "scenario",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Same reference scenario for all provider TCOs; independent of scenario_global, task overrides still apply."
+    },
+    {
       "key": "tco.ProviderA.Standard",
       "value": 0,
       "unit": "EUR/3years",
       "status": "A confirmer",
       "source": "SYN-01",
       "notes": "Dynamic selected Build plus 36 months of human Run, Provider A Standard cloud and non-cloud OPEX; alternatives never added."
+    },
+    {
+      "key": "tco.ProviderB.Standard",
+      "value": 0,
+      "unit": "EUR/3years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic same-perimeter Provider B comparison; Build, human Run, cloud and horizon remain separate in Scenarios."
+    },
+    {
+      "key": "tco.ProviderC.Standard",
+      "value": 0,
+      "unit": "EUR/3years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic same-perimeter Provider C comparison; alternatives never added."
     },
     {
       "key": "region_eligibility",
@@ -1158,7 +1182,7 @@
       "id": "DEC-SCHEDULE",
       "question": "Foundation Build exceeds Period 1 capacity",
       "option": "Move dependent Foundation work into another period before approval",
-      "rationale": "Dynamic schedule.foundation_overload; capacity must be confirmed with role owner; subsequent periods cannot start before prerequisites. No approved calendar until overload is resolved.",
+      "rationale": "Dynamic schedule.foundation_overload compares all Foundation Build with collective capacity, not a per-role budget. Delivery lead must confirm collective and individual role availability; subsequent periods cannot start before prerequisites. No approved calendar until overload is resolved.",
       "status": "Open",
       "source": "SYN-01"
     }

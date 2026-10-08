@@ -72,13 +72,32 @@ eight-hour JH convention is editable; these estimates already use JH.
 The all-tasks Build scenario comparisons are 9.5/17/30 JH; the selected
 19 JH includes the task override. Provider A Standard cloud is EUR
 171/month, separately from human Run. The constant-demand three-year TCO
-is EUR 41,906, including Build, human Run and the selected cloud alternative.
+is EUR 41,906 for Provider A, including Build, human Run and that cloud alternative.
 Taxes, FX, discounts, growth and non-cloud OPEX are explicitly excluded.
+
+The separate `ComparaisonFournisseurs` table in `06_Scenarios` compares the
+reference Standard scenario for all three providers over three years.
+`comparison_scenario` is independent of the global task selection; explicit
+task overrides are still included. Every metric except the provider label
+is a formula, independently reconciled against the synthetic assertions.
+
+| Provider | Build JH | Human Run JH/month | Cloud EUR/month | Three-year TCO EUR |
+|---|---|---|---|---|
+| Provider A | 19 | 1 | 171 | 41,906 |
+| Provider B | 19 | 1 | 186 | 42,446 |
+| Provider C | 19 | 1 | 201 | 42,986 |
+
+At EUR 650/JH, each alternative uses `19 * 650 + 36 * (1 * 650 + cloud)`.
+Changing the TJM or horizon recalculates each alternative independently;
+changing the global scenario alone preserves the Standard comparison.
+The generator reports this matrix as structured `provider_comparison` JSON.
 
 The scenario deliberately retains open findings:
 
 - Foundation Build needs 9 JH against 6 JH available in its provisional
-  period, a 3 JH overload. DEC-SCHEDULE requires replanning before approval.
+  period, a 3 JH overload against collective capacity across Foundation roles.
+  The six JH are not a per-role capacity. The delivery lead must verify
+  individual role availability; DEC-SCHEDULE requires replanning before approval.
 - Standard high-band CPU demand is 12 vCPU against `4 * 2 * 0.75 = 6`
   effective vCPU, an overload ratio of 2. The inputs also distinguish memory,
   shared storage, IOPS, bandwidth and concurrency. These are assumptions,
@@ -136,7 +155,7 @@ The generator prints JSON evidence for the engine, native opening, formula
 and cache counts, validation, inventory and anonymisation. Validation reloads
 formulas and `data_only=True` caches, checks every formula and group total,
 and compares the supplied independent assertions. The shipped example has
-115 formulas and 123 numerical reconciliations, zero formula/semantic/cache
+132 formulas and 140 numerical reconciliations, zero formula/semantic/cache
 errors and a zero inventory delta. Author and revision metadata are normalized
 after native saving without resaving through openpyxl or losing caches.
 Never save a workbook loaded with `data_only=True`: it would lose formulas.

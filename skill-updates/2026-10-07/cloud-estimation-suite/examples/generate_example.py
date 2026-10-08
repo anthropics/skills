@@ -15,6 +15,8 @@ import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
 from openpyxl import load_workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.worksheet.table import Table, TableStyleInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -79,7 +81,7 @@ def synthetic_model():
 
     for key, value, unit, notes in [
         ("hours_per_jh", 8, "h/JH", "Editable convention; task estimates already in JH."),
-        ("schedule.foundation_available", 6, "JH", "Period 1; role capacity 6 JH; dependency TASK-01 before TASK-02/09/10."),
+        ("schedule.foundation_available", 6, "JH", "Period 1; collective capacity across Foundation roles, not per-role capacity. Owner: delivery lead. Dependency TASK-01 before TASK-02/09/10; individual role availability remains unverified."),
         ("schedule.foundation_overload", 0, "JH", "Dynamic formula: Foundation Build minus available JH; positive = overload, DEC-SCHEDULE."),
         ("capacity.production.Standard.base.cpu", 6, "vCPU", "Assumed aligned CPU demand; independent service scenario and workload band."),
         ("capacity.production.Standard.high.cpu", 12, "vCPU", "Assumed high-band CPU demand, not a benchmark."),
@@ -112,7 +114,10 @@ def synthetic_model():
         ("finops.savings_selected", 0, "EUR/mois", "Dynamic baseline minus scheduled Provider A Standard non-production charges."),
         ("tco_horizon_years", 3, "years", "Equal scope and constant demand; taxes, FX, discounts and growth excluded."),
         ("non_cloud_opex", 0, "EUR/mois", "Explicit synthetic absence, not an unknown represented as zero."),
+        ("comparison_scenario", "Standard", "scenario", "Same reference scenario for all provider TCOs; independent of scenario_global, task overrides still apply."),
         ("tco.ProviderA.Standard", 0, "EUR/3years", "Dynamic selected Build plus 36 months of human Run, Provider A Standard cloud and non-cloud OPEX; alternatives never added."),
+        ("tco.ProviderB.Standard", 0, "EUR/3years", "Dynamic same-perimeter Provider B comparison; Build, human Run, cloud and horizon remain separate in Scenarios."),
+        ("tco.ProviderC.Standard", 0, "EUR/3years", "Dynamic same-perimeter Provider C comparison; alternatives never added."),
         ("region_eligibility", "A/B/C: hypothetical single-region eligibility; multi-region DR unverified", "scope", "No real provider or regional suitability claim."),
         ("commercial_policy", "No commitments, same currency, invented prices, no discounts", "scope", "Runtime quotes and region eligibility required before approval."),
         ("weighted_criteria", "Operational fit 50%, recovery evidence 30%, TCO 20%; unscored until evidence", "scope", "No invented suitability scores."),
@@ -127,7 +132,7 @@ def synthetic_model():
         dict(id="DEC-ARCH", question="Managed runtime or Kubernetes platform", option="Managed runtime and shared managed backend",
              rationale="No cluster requirement in this synthetic scope; Kubernetes work Non applicable. Retain application isolation and restore evidence; managed runtime reduces platform ownership, operator monthly Run remains explicit.", status="Provisional", source="SYN-01"),
         dict(id="DEC-SCHEDULE", question="Foundation Build exceeds Period 1 capacity", option="Move dependent Foundation work into another period before approval",
-             rationale="Dynamic schedule.foundation_overload; capacity must be confirmed with role owner; subsequent periods cannot start before prerequisites. No approved calendar until overload is resolved.", status="Open", source="SYN-01"),
+             rationale="Dynamic schedule.foundation_overload compares all Foundation Build with collective capacity, not a per-role budget. Delivery lead must confirm collective and individual role availability; subsequent periods cannot start before prerequisites. No approved calendar until overload is resolved.", status="Open", source="SYN-01"),
     ]
     data["risks"] += [
         dict(id="RISK-OVERLOAD", risk="High workload CPU exceeds Standard target capacity", impact="Service target infeasible at high band; limited scaling and failure reserve", probability="Assumed", mitigation="TASK-04 measurement; revisit replicas, quotas and placement before approval", owner="Performance engineer", status="Open"),
@@ -181,6 +186,42 @@ def generate(output, require_native=False):
     assumptions = workbook["01_Hypotheses"]
     cells = {row[0].value: row[1].coordinate for row in assumptions if row[0].value}
     ref = lambda key: cells[key]
+    comparison = workbook["06_Scenarios"]
+    comparison_header = comparison.max_row + 4
+    comparison.cell(comparison_header - 1, 1, "Comparaison fournisseurs - scenario de reference et horizon dans Hypotheses")
+    headers = ["Fournisseur", "Build (JH)", "Run humain (JH/mois)", "Cloud (EUR/mois)", "Horizon (annees)", "TCO (EUR)"]
+    for column, label in enumerate(headers, 1):
+        cell = comparison.cell(comparison_header, column, label)
+        cell.font = Font(name="Arial", bold=True, color="FFFFFF")
+        cell.fill = PatternFill("solid", fgColor="17365D")
+        cell.alignment = Alignment(wrap_text=True)
+    scenario_reference = f"'01_Hypotheses'!{ref('comparison_scenario')}"
+
+    def reference_effort(nature):
+        def subtotal(column, override):
+            return f'SUMIFS(Taches[{column}],Taches[Nature],"{nature}",Taches[Scenario override],"{override}")'
+        baseline = f'IF({scenario_reference}="Economique",{subtotal("JH bas", "")},IF({scenario_reference}="Standard",{subtotal("JH probable", "")},{subtotal("JH haut", "")}))'
+        overrides = [subtotal(column, override) for column, override in
+                     (("JH bas", "Economique"), ("JH probable", "Standard"), ("JH haut", "Resilient"))]
+        return "=" + "+".join([baseline] + overrides)
+
+    comparison_rows = {}
+    for row, provider in enumerate(("Provider A", "Provider B", "Provider C"), comparison_header + 1):
+        comparison_rows[provider] = row
+        comparison.cell(row, 1, provider)
+        for column, formula in enumerate([
+            reference_effort("Build"), reference_effort("Run"),
+            f'=SUMIFS(CoutsCloud[Cout mensuel (EUR)],CoutsCloud[Fournisseur],A{row},CoutsCloud[Scenario],{scenario_reference})',
+            f"='01_Hypotheses'!{ref('tco_horizon_years')}",
+            f"=B{row}*taux_journalier+(C{row}*taux_journalier+D{row}+'01_Hypotheses'!{ref('non_cloud_opex')})*mois_par_an*E{row}",
+        ], 2):
+            cell = comparison.cell(row, column, formula)
+            cell.font = Font(name="Arial", color="008000")
+            cell.number_format = '#,##0.00;(#,##0.00);"-"'
+    table = Table(displayName="ComparaisonFournisseurs", ref=f"A{comparison_header}:F{comparison_header + 3}")
+    table.tableStyleInfo = TableStyleInfo(name="TableStyleMedium2", showRowStripes=True)
+    comparison.add_table(table)
+    comparison.row_dimensions[comparison_header].height = 34
     formulas = {
         "schedule.foundation_overload": f'=SUMIFS(Taches[JH retenu],Taches[Lot],"Foundation",Taches[Nature],"Build")-{ref("schedule.foundation_available")}',
         "capacity.production.Standard.high.overload_ratio": f'={ref("capacity.production.Standard.high.cpu")}/({ref("capacity.production.Standard.cpu_per_unit")}*{ref("capacity.production.Standard.units")}*{ref("capacity.production.Standard.base.utilisation_target")})',
@@ -190,9 +231,9 @@ def generate(output, require_native=False):
         "finops.savings_low": f'={ref("finops.baseline")}*{ref("finops.savings_low_fraction")}',
         "finops.savings_high": f'={ref("finops.baseline")}*{ref("finops.savings_high_fraction")}',
         "finops.savings_selected": f'={ref("finops.baseline")}-SUMIFS(CoutsCloud[Cout mensuel (EUR)],CoutsCloud[Fournisseur],"Provider A",CoutsCloud[Scenario],"Standard",CoutsCloud[Environnement],"Non-production")',
-        "tco.ProviderA.Standard": f"='11_Synthese'!B8+('11_Synthese'!B9+'11_Synthese'!B11+{ref('non_cloud_opex')})*mois_par_an*{ref('tco_horizon_years')}",
     }
-    from openpyxl.styles import Font
+    formulas.update({f"tco.Provider{provider[-1]}.Standard": f"='06_Scenarios'!F{row}"
+                     for provider, row in comparison_rows.items()})
     for key, formula in formulas.items():
         assumptions[ref(key)] = formula
         assumptions[ref(key)].font = Font(name="Arial", color="008000" if "!" in formula or "Taches[" in formula or "CoutsCloud[" in formula else "000000")
@@ -205,17 +246,29 @@ def generate(output, require_native=False):
         raise RuntimeError(json.dumps(recalculation.to_dict()))
     _public_metadata(path)
     # Hand-derived expectations, independent of the workbook calculation engine.
-    expectations = dict(zip(formulas, (3, 2, 45, 2, 0.5, 22.5, 45, 45, 41906)))
+    expectations = dict(zip(formulas, (3, 2, 45, 2, 0.5, 22.5, 45, 45, 41906, 42446, 42986)))
     assertions = {f"01_Hypotheses!{ref(key)}": value for key, value in expectations.items()}
     assertions.update({"11_Synthese!B6": 19, "11_Synthese!B7": 1, "11_Synthese!B8": 12350,
                        "11_Synthese!B9": 650, "11_Synthese!B11": 171,
                        "06_Scenarios!D5": 9.5, "06_Scenarios!D6": 17, "06_Scenarios!D7": 30})
+    # Hand-derived: 19*650 + 36*(1*650 + cloud), cloud=171/186/201.
+    comparison_expected = {"Provider A": (19, 1, 171, 3, 41906),
+                           "Provider B": (19, 1, 186, 3, 42446),
+                           "Provider C": (19, 1, 201, 3, 42986)}
+    for provider, row in comparison_rows.items():
+        assertions.update({f"06_Scenarios!{comparison.cell(row, column).coordinate}": value
+                           for column, value in enumerate(comparison_expected[provider], 2)})
     (output / "synthetic-assertions.json").write_text(json.dumps(assertions, indent=2) + "\n", encoding="utf-8")
     report = validate_workbook(path, asserted_totals=assertions, diagram_inventory_ids=manifest.node_ids)
     scan = scan_tree(output)
     if not report.ok or not scan.clean:
         raise RuntimeError(json.dumps(dict(validation=report.to_dict(), anonymisation=scan.summary())))
-    return dict(recalculation=recalculation.to_dict(), validation=report.to_dict(),
+    with path.open("rb") as stream:
+        values = load_workbook(stream, data_only=True)
+    provider_comparison = [dict(zip(("provider", "build_jh", "run_monthly_jh", "cloud_monthly_eur", "horizon_years", "tco_eur"),
+                                   [values["06_Scenarios"].cell(row, column).value for column in range(1, 7)]))
+                           for row in comparison_rows.values()]
+    return dict(recalculation=recalculation.to_dict(), validation=report.to_dict(), provider_comparison=provider_comparison,
                 anonymisation_matches=scan.match_count, diagram_inventory_delta=0)
 
 

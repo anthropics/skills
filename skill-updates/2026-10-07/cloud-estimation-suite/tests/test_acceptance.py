@@ -11,11 +11,12 @@ import subprocess
 import sys
 
 from openpyxl import load_workbook
+from openpyxl.utils.cell import range_boundaries
 import pytest
 
 from tooling.anonymisation import scan_tree
 from tooling.model import load_model
-from tooling.recalculate import FormulaFailure, _run_excel_powershell
+from tooling.recalculate import FormulaFailure, _EXCEL_RECALCULATE, _run_excel_powershell, recalculate
 from tooling.workbook_validator import validate_workbook
 
 ROOT = Path(__file__).parents[1]
@@ -129,3 +130,97 @@ def test_windows_com_bridge_rejects_exit_zero_before_completion():
     _run_excel_powershell("Write-Output 'control'")
     with pytest.raises(FormulaFailure, match="PowerShell Excel COM failed"):
         _run_excel_powershell("exit 0")
+
+
+def test_standard_provider_comparison_separates_effort_cloud_and_three_year_tco(example_report, tmp_path, monkeypatch):
+    model, formulas, values, architecture, report = example_report
+    ws = formulas["06_Scenarios"]
+    assert "ComparaisonFournisseurs" in ws.tables, "Missing three-provider Standard TCO comparison"
+    left, header, right, bottom = range_boundaries(ws.tables["ComparaisonFournisseurs"].ref)
+    assert [ws.cell(header, column).value for column in range(left, right + 1)] == [
+        "Fournisseur", "Build (JH)", "Run humain (JH/mois)", "Cloud (EUR/mois)",
+        "Horizon (annees)", "TCO (EUR)",
+    ]
+    expected = {"Provider A": (19, 1, 171, 3, 41906),
+                "Provider B": (19, 1, 186, 3, 42446),
+                "Provider C": (19, 1, 201, 3, 42986)}
+    found = {}
+    for row in range(header + 1, bottom + 1):
+        provider = values[ws.title].cell(row, left).value
+        found[provider] = tuple(values[ws.title].cell(row, column).value for column in range(left + 1, right + 1))
+        assert all(ws.cell(row, column).data_type == "f" for column in range(left + 1, right + 1))
+    assert found == expected
+    assertions = json.loads((EXAMPLES / "synthetic-assertions.json").read_text(encoding="utf-8"))
+    for row in range(header + 1, bottom + 1):
+        for column in range(left + 1, right + 1):
+            assert assertions[f"{ws.title}!{ws.cell(row, column).coordinate}"] == values[ws.title].cell(row, column).value
+    # Reference Standard remains comparable when global selection changes.
+    # Independent sensitivity: 19*700 + 24*(700 + cloud) for a two-year horizon.
+    with (EXAMPLES / "synthetic-cloud-estimate.xlsx").open("rb") as stream:
+        trial = load_workbook(stream)
+    assumptions = {row[0].value: row[1].coordinate for row in trial["01_Hypotheses"] if row[0].value}
+    for key, value in (("scenario_global", "Economique"), ("taux_journalier", 700), ("tco_horizon_years", 2)):
+        trial["01_Hypotheses"][assumptions[key]] = value
+    path = tmp_path / "sensitivity.xlsx"
+    trial.save(path)
+    import tooling.recalculate as adapter
+    monkeypatch.setattr(adapter, "_select_excel_backend", lambda: None)
+    monkeypatch.setattr(adapter, "_find_libreoffice", lambda: None)
+    assert recalculate(path).ok
+    with path.open("rb") as stream:
+        recalculated = load_workbook(stream, data_only=True)
+    expected_tcos = {"Provider A": 34204, "Provider B": 34564, "Provider C": 34924}
+    for row in range(header + 1, bottom + 1):
+        assert recalculated[ws.title].cell(row, left + 1).value == 19
+        assert recalculated[ws.title].cell(row, left + 2).value == 1
+        provider = recalculated[ws.title].cell(row, left).value
+        assert recalculated[ws.title].cell(row, right).value == expected_tcos[provider]
+
+
+def test_foundation_overload_compares_collective_capacity_with_all_foundation_roles(example_report):
+    model, formulas, values, architecture, report = example_report
+    inputs = {row[0].value: row for row in values["01_Hypotheses"] if row[0].value}
+    available = inputs["schedule.foundation_available"]
+    assert available[1].value == 6
+    assert "collective capacity" in available[5].value.lower()
+    assert "not per-role capacity" in available[5].value.lower()
+    overload = inputs["schedule.foundation_overload"][1]
+    assert overload.value == 3
+    assert "Taches[Lot]" in formulas["01_Hypotheses"][overload.coordinate].value
+    assert "Taches[Role]" not in formulas["01_Hypotheses"][overload.coordinate].value
+    foundation = [task for task in model.tasks if task.lot == "Foundation" and task.nature == "Build"]
+    assert len({task.role for task in foundation}) == 2
+    effort_fields = {"Economique": "jh_low", "Standard": "jh_likely", "Resilient": "jh_high"}
+    demand = sum(getattr(task, effort_fields[task.scenario_override or "Standard"]) for task in foundation)
+    assert demand == 9 and demand - available[1].value == overload.value
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows PowerShell cleanup contract")
+def test_excel_cleanup_attempts_quit_all_releases_and_gc_after_close_and_release_failures():
+    # Fake only the external COM boundary; execute the real production PowerShell.
+    prefix = r"""
+$script:events = [Collections.Generic.List[string]]::new()
+$script:fake_book = [pscustomobject]@{Kind='Workbook'}
+$script:fake_book | Add-Member ScriptMethod Save { $script:events.Add('SAVE') }
+$script:fake_book | Add-Member ScriptMethod Close { param($save) $script:events.Add('CLOSE'); throw 'forced Close failure' }
+$script:fake_books = [pscustomobject]@{Kind='Workbooks'}
+$script:fake_books | Add-Member ScriptMethod Open { param($path,$links,$readonly) return $script:fake_book }
+$script:fake_excel = [pscustomobject]@{Kind='Excel'; Workbooks=$script:fake_books; Visible=$false; DisplayAlerts=$false; AutomationSecurity=3}
+$script:fake_excel | Add-Member ScriptMethod CalculateFullRebuild { $script:events.Add('CALCULATE') }
+$script:fake_excel | Add-Member ScriptMethod Quit { $script:events.Add('QUIT'); throw 'forced Quit failure' }
+function New-Object { param($ComObject) return $script:fake_excel }
+function Release-ExcelComObject { param($object) $script:events.Add('RELEASE-'+$object.Kind); throw ('forced release '+$object.Kind) }
+function Invoke-ExcelCollection { $script:events.Add('COLLECT'); throw 'forced collection failure' }
+function Wait-ExcelFinalizers { $script:events.Add('FINALIZERS') }
+$reported = ''
+try {
+"""
+    suffix = r"""
+} catch { $reported = $_.Exception.Message }
+$expected = 'CALCULATE,SAVE,CLOSE,RELEASE-Workbook,RELEASE-Workbooks,QUIT,RELEASE-Excel,COLLECT,FINALIZERS'
+if (($script:events -join ',') -ne $expected) { throw ('Missing downstream cleanup: '+($script:events -join ',')) }
+foreach ($message in @('forced Close failure','forced release Workbook','forced release Workbooks','forced Quit failure','forced release Excel','forced collection failure')) {
+    if (!$reported.Contains($message)) { throw ('Missing collected error: '+$message+'; report='+$reported) }
+}
+"""
+    _run_excel_powershell(prefix + _EXCEL_RECALCULATE + suffix)

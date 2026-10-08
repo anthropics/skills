@@ -282,27 +282,62 @@ def _run_excel_powershell(script, path=None, timeout=120):
     # Pass an argument vector directly (no shell expansion). EncodedCommand can
     # terminate during COM Open with exit 0; require a positive completion signal.
     marker = "ESTIMATE_RECALC_COMPLETED"
-    command = script + f'\nWrite-Output "{marker}"\n'
+    command = _EXCEL_HELPERS + script + f'\nWrite-Output "{marker}"\n'
     result = subprocess.run([executable, "-NoProfile", "-NonInteractive", "-Command", command],
                             capture_output=True, text=True, timeout=timeout, env=environment)
     if result.returncode or marker not in result.stdout.splitlines():
         raise FormulaFailure(f"PowerShell Excel COM failed: {(result.stderr or result.stdout).strip()}")
 
 
+_EXCEL_HELPERS = """
+function Release-ExcelComObject {
+    param($object)
+    [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($object)
+}
+function Invoke-ExcelCollection { [GC]::Collect() }
+function Wait-ExcelFinalizers { [GC]::WaitForPendingFinalizers() }
+function Close-ExcelResources {
+    param($workbook, $excel_workbooks, $excel)
+    $cleanup_failures = [Collections.Generic.List[string]]::new()
+    if ($null -ne $workbook) {
+        try { $workbook.Close($false) }
+        catch { $cleanup_failures.Add('Workbook.Close: ' + $_.Exception.Message) }
+        try { Release-ExcelComObject $workbook }
+        catch { $cleanup_failures.Add('Workbook release: ' + $_.Exception.Message) }
+    }
+    if ($null -ne $excel_workbooks) {
+        try { Release-ExcelComObject $excel_workbooks }
+        catch { $cleanup_failures.Add('Workbooks release: ' + $_.Exception.Message) }
+    }
+    if ($null -ne $excel) {
+        try { $excel.Quit() }
+        catch { $cleanup_failures.Add('Excel.Quit: ' + $_.Exception.Message) }
+        try { Release-ExcelComObject $excel }
+        catch { $cleanup_failures.Add('Excel release: ' + $_.Exception.Message) }
+    }
+    try { Invoke-ExcelCollection }
+    catch { $cleanup_failures.Add('GC collection: ' + $_.Exception.Message) }
+    try { Wait-ExcelFinalizers }
+    catch { $cleanup_failures.Add('GC finalizers: ' + $_.Exception.Message) }
+    return $cleanup_failures.ToArray()
+}
+"""
+
+
 _EXCEL_PROBE = """
 $ErrorActionPreference = 'Stop'
 $excel = $null
+$failures = [Collections.Generic.List[string]]::new()
 try {
     $excel = New-Object -ComObject Excel.Application
+} catch {
+    $failures.Add('Excel probe: ' + $_.Exception.Message)
 } finally {
-    if ($null -ne $excel) {
-        try { $excel.Quit() } finally {
-            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
-        }
+    foreach ($failure in @(Close-ExcelResources $null $null $excel)) {
+        $failures.Add($failure)
     }
-    [GC]::Collect()
-    [GC]::WaitForPendingFinalizers()
 }
+if ($failures.Count -gt 0) { throw ($failures -join '; ') }
 """
 
 
@@ -311,6 +346,7 @@ $ErrorActionPreference = 'Stop'
 $excel = $null
 $workbook = $null
 $excel_workbooks = $null
+$failures = [Collections.Generic.List[string]]::new()
 try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
@@ -320,23 +356,14 @@ try {
     $workbook = $excel_workbooks.Open($env:ESTIMATE_RECALC_PATH, 0, $false)
     $excel.CalculateFullRebuild()
     $workbook.Save()
+} catch {
+    $failures.Add('Excel recalculation: ' + $_.Exception.Message)
 } finally {
-    if ($null -ne $workbook) {
-        try { $workbook.Close($false) } finally {
-            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($workbook)
-        }
+    foreach ($failure in @(Close-ExcelResources $workbook $excel_workbooks $excel)) {
+        $failures.Add($failure)
     }
-    if ($null -ne $excel_workbooks) {
-        [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel_workbooks)
-    }
-    if ($null -ne $excel) {
-        try { $excel.Quit() } finally {
-            [void][System.Runtime.InteropServices.Marshal]::FinalReleaseComObject($excel)
-        }
-    }
-    [GC]::Collect()
-    [GC]::WaitForPendingFinalizers()
 }
+if ($failures.Count -gt 0) { throw ($failures -join '; ') }
 """
 
 

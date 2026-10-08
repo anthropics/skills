@@ -38,9 +38,15 @@ def _overlap(first, second):
 
 def _rows(workbook, name):
     ws = workbook[name]
-    headers = [cell.value for cell in ws[4]]
+    # Scenarios may also contain a separately validated provider comparison.
+    # Other sheets still inspect every populated row, including outside tables.
+    primary_tables = ws.tables.values() if name == "06_Scenarios" else ()
+    bounds = next((range_boundaries(table.ref) for table in primary_tables
+                   if range_boundaries(table.ref)[:2] == (1, 4)), (1, 4, ws.max_column, ws.max_row))
+    left, top, right, bottom = bounds
+    headers = [ws.cell(top, column).value for column in range(left, right + 1)]
     return [(index, dict(zip(headers, [cell.value for cell in ws[index]])))
-            for index in range(5, ws.max_row + 1) if ws.cell(index, 1).value is not None]
+            for index in range(top + 1, bottom + 1) if ws.cell(index, left).value is not None]
 
 
 def _assumptions(workbook):
