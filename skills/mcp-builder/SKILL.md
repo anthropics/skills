@@ -148,6 +148,7 @@ Review for:
 
 **TypeScript:**
 - Run `npm run build` to verify compilation
+- v2 projects: run the self-check script from the [v2 guide](./reference/node_mcp_server_v2.md#verify-your-server) against the built server
 - Test with MCP Inspector: `npx @modelcontextprotocol/inspector`
 
 **Python:**
@@ -232,13 +233,13 @@ Load these resources as needed during development:
   - Quality checklist
 
 - [⚡ TypeScript Implementation Guide (SDK v2)](./reference/node_mcp_server_v2.md) - Complete TypeScript guide for `@modelcontextprotocol/server` with:
-  - Project structure
-  - Zod 4 schema patterns
-  - Tool registration with `server.registerTool`
-  - stdio and Streamable HTTP serving with `serveStdio` and `createMcpHandler`
-  - A v1 → v2 translation table and migration steps
-  - Complete working examples
-  - Quality checklist
+  - Project setup and the server factory
+  - Tool design: Zod 4 schemas, output formats, pagination, errors
+  - A complete example serving stdio and Streamable HTTP, plus bearer auth
+  - Resources, prompts, and notifications
+  - A self-check script to verify the built server
+  - Links to SDK examples for advanced features
+  - A v1 → v2 translation table, migration steps, and a quality checklist
 
 - [⚡ TypeScript Implementation Guide (SDK v1)](./reference/node_mcp_server.md) - The equivalent guide for existing `@modelcontextprotocol/sdk` projects
 
