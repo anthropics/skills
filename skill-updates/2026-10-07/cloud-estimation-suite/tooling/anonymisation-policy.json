@@ -1,0 +1,17 @@
+{
+  "allowed_domains": [
+    "aws.amazon.com",
+    "learn.microsoft.com",
+    "cloud.google.com",
+    "www.w3.org",
+    "schemas.openxmlformats.org",
+    "purl.org",
+    "creativecommons.org",
+    "wiki.creativecommons.org",
+    "json-schema.org"
+  ],
+  "technical_identifiers": ["node.id", "nodes.id", "inventory.id", "sources.id", "scenarios.name", "workbook.save", "excel.workbooks.open"],
+  "denylist": [],
+  "source_workbook_names": [],
+  "excluded_fixture_paths": ["tests/fixtures/forbidden-sample.txt"]
+}
