@@ -276,7 +276,16 @@ def generate_html(
     if benchmark:
         embedded["benchmark"] = benchmark
 
-    data_json = json.dumps(embedded)
+    # Escape characters that could end the <script> block or break the JS literal
+    # (eval outputs are model-written, so treat them as untrusted).
+    data_json = (
+        json.dumps(embedded)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
@@ -329,7 +338,19 @@ class ReviewHandler(BaseHTTPRequestHandler):
         self.benchmark_path = benchmark_path
         super().__init__(*args, **kwargs)
 
+    def _local_request_ok(self) -> bool:
+        """Reject DNS-rebinding (unexpected Host) and cross-site browser requests (foreign Origin)."""
+        port = self.server.server_address[1]
+        hosts = {f"localhost:{port}", f"127.0.0.1:{port}"}
+        if self.headers.get("Host", "") not in hosts:
+            return False
+        origin = self.headers.get("Origin")
+        return origin is None or origin in {f"http://{h}" for h in hosts}
+
     def do_GET(self) -> None:
+        if not self._local_request_ok():
+            self.send_error(403)
+            return
         if self.path == "/" or self.path == "/index.html":
             # Regenerate HTML on each request (re-scans workspace for new outputs)
             runs = find_runs(self.workspace)
@@ -359,7 +380,16 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self.send_error(404)
 
     def do_POST(self) -> None:
+        if not self._local_request_ok():
+            self.send_error(403)
+            return
         if self.path == "/api/feedback":
+            # A JSON content type cannot be sent cross-site without a CORS preflight,
+            # which this server never approves; plain HTML form posts are refused.
+            content_type = self.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            if content_type != "application/json":
+                self.send_error(415)
+                return
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
             try:
