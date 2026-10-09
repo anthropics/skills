@@ -193,6 +193,17 @@ def run_eval(
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
+    # Results are grouped by query text below. A duplicate would combine its
+    # trials with another eval item and may put a holdout item into training.
+    seen_queries = set()
+    for item in eval_set:
+        query = item["query"]
+        if query in seen_queries:
+            raise ValueError(
+                f"Duplicate eval query {query!r}; use runs_per_query for repeated trials"
+            )
+        seen_queries.add(query)
+
     results = []
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
