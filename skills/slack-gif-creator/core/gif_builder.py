@@ -30,6 +30,8 @@ class GIFBuilder:
         self.height = height
         self.fps = fps
         self.frames: list[np.ndarray] = []
+        # Number of original frame intervals represented by each retained frame.
+        self._frame_intervals: list[int] = []
 
     def add_frame(self, frame: np.ndarray | Image.Image):
         """
@@ -50,6 +52,7 @@ class GIFBuilder:
             frame = np.array(pil_frame)
 
         self.frames.append(frame)
+        self._frame_intervals.append(1)
 
     def add_frames(self, frames: list[np.ndarray | Image.Image]):
         """Add multiple frames at once."""
@@ -136,6 +139,7 @@ class GIFBuilder:
             return 0
 
         deduplicated = [self.frames[0]]
+        retained_intervals = [self._frame_intervals[0]]
         removed_count = 0
 
         for i in range(1, len(self.frames)):
@@ -151,10 +155,13 @@ class GIFBuilder:
             # High threshold (0.9995+) means only remove nearly identical frames
             if similarity < threshold:
                 deduplicated.append(self.frames[i])
+                retained_intervals.append(self._frame_intervals[i])
             else:
                 removed_count += 1
+                retained_intervals[-1] += self._frame_intervals[i]
 
         self.frames = deduplicated
+        self._frame_intervals = retained_intervals
         return removed_count
 
     def save(
@@ -216,18 +223,23 @@ class GIFBuilder:
                 self.frames = [
                     self.frames[i] for i in range(0, len(self.frames), keep_every)
                 ]
+                self._frame_intervals = [
+                    self._frame_intervals[i]
+                    for i in range(0, len(self._frame_intervals), keep_every)
+                ]
 
         # Optimize colors with global palette
         optimized_frames = self.optimize_colors(num_colors, use_global_palette=True)
 
         # Calculate frame duration in milliseconds
         frame_duration = 1000 / self.fps
+        frame_durations = [count * frame_duration for count in self._frame_intervals]
 
         # Save GIF
         imageio.imwrite(
             output_path,
             optimized_frames,
-            duration=frame_duration,
+            duration=frame_durations,
             loop=0,  # Infinite loop
         )
 
@@ -242,7 +254,7 @@ class GIFBuilder:
             "dimensions": f"{self.width}x{self.height}",
             "frame_count": len(optimized_frames),
             "fps": self.fps,
-            "duration_seconds": len(optimized_frames) / self.fps,
+            "duration_seconds": sum(self._frame_intervals) / self.fps,
             "colors": num_colors,
         }
 
@@ -267,3 +279,4 @@ class GIFBuilder:
     def clear(self):
         """Clear all frames (useful for creating multiple GIFs)."""
         self.frames = []
+        self._frame_intervals = []
