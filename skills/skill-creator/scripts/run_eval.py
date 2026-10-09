@@ -65,7 +65,7 @@ def run_single_query(
             f"# {skill_name}\n\n"
             f"This skill handles: {skill_description}\n"
         )
-        command_file.write_text(command_content)
+        command_file.write_text(command_content, encoding="utf-8")
 
         cmd = [
             "claude",
