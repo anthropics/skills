@@ -67,6 +67,16 @@ def package_skill(skill_path, output_dir=None):
         print(f"❌ Error: SKILL.md not found in {skill_path}")
         return None
 
+    # zipfile.write follows file symlinks. Reject links on paths eligible for
+    # packaging before opening the archive, while allowing excluded build
+    # trees such as node_modules/.bin to contain their normal symlinks.
+    for entry in skill_path.rglob("*"):
+        if should_exclude(entry.relative_to(skill_path.parent)):
+            continue
+        if entry.is_symlink():
+            print(f"❌ Error: Symlink in skill folder: {entry.relative_to(skill_path)}")
+            return None
+
     # Run validation before packaging
     print("🔍 Validating skill...")
     valid, message = validate_skill(skill_path)
