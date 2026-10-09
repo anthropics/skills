@@ -1,6 +1,8 @@
 import os
 import sys
 
+from PIL import Image
+
 from pdf2image import convert_from_path
 
 
@@ -15,7 +17,7 @@ def convert(pdf_path, output_dir, max_dim=1000):
             scale_factor = min(max_dim / width, max_dim / height)
             new_width = int(width * scale_factor)
             new_height = int(height * scale_factor)
-            image = image.resize((new_width, new_height))
+            image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
         
         image_path = os.path.join(output_dir, f"page_{i+1}.png")
         image.save(image_path)
