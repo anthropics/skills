@@ -71,9 +71,16 @@ def rendered_text(text: str, preserve: bool) -> str:
     return text if preserve else text.strip(XML_SPACE)
 
 
-def safe_extract(zf: zipfile.ZipFile, dest: Path) -> None:
+MAX_UNPACKED_BYTES = 500 * 1024 * 1024
+
+
+def safe_extract(zf: zipfile.ZipFile, dest: Path, max_bytes: int = MAX_UNPACKED_BYTES) -> None:
     dest = dest.resolve()
-    for m in zf.infolist():
+    members = zf.infolist()
+    total = sum(m.file_size for m in members)
+    if total > max_bytes:
+        raise ValueError(f"archive expands to {total} bytes, over the {max_bytes} byte cap")
+    for m in members:
         if stat.S_ISLNK(m.external_attr >> 16):
             raise ValueError(f"symlink archive entry not allowed: {m.filename!r}")
         target = (dest / m.filename).resolve()
