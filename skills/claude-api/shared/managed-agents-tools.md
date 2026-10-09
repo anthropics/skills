@@ -29,7 +29,7 @@ The `agent_toolset_20260401` provides these built-in tools:
 | `web_fetch` | Fetch content from a URL |
 | `web_search` | Search the web for information |
 
-**Start with the web tools off.** A bare `{ "type": "agent_toolset_20260401" }` enables all eight, and the environment's `networking` does not restrict the two web tools (§ Web search & web fetch settings). List both in `configs` explicitly, as in the example below, and set `enabled: true` only on the ones the job needs (`web_search` to find pages, `web_fetch` to read a URL), with `allowed_domains` when the sites are known in advance.
+**Start with the web tools off.** A bare `{ "type": "agent_toolset_20260401" }` enables all eight, and of the environment's `networking` choices only `limited` restricts the two web tools (§ Web search & web fetch settings). List both in `configs` explicitly, as in the example below, and set `enabled: true` only on the ones the job needs (`web_search` to find pages, `web_fetch` to read a URL), with the sites in `allowed_domains` when they are known in advance, and under `limited` networking in the environment's `allowed_hosts` too.
 
 ### Per-Tool Configuration
 
@@ -184,7 +184,7 @@ To enable only specific tools, flip the default off and opt-in per tool:
 
 ### Web search & web fetch settings (domain filters)
 
-`web_search` and `web_fetch` run on Anthropic's servers regardless of environment type, so an environment's `networking` policy **does not** govern them (see `shared/managed-agents-environments.md` -> Networking). To control what they can reach, set `allowed_domains` (only these hosts) **or** `blocked_domains` (never these hosts) - never both on one entry - on the tool's `configs` entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.
+`web_search` and `web_fetch` run on Anthropic's servers regardless of environment type. With `limited` networking, `allowed_hosts` also applies to them: `web_fetch` returns an error result for a URL on a host that `allowed_hosts` does not match, `web_search` omits results from such hosts, and when `allowed_hosts` lists no hosts neither returns a page or a search result. A host added to `allowed_hosts` for these tools is also open to the sandbox. `unrestricted` networking and self-hosted environments do not limit them (see `shared/managed-agents-environments.md` -> Networking). To control what they can reach whatever the environment, set `allowed_domains` (only these hosts) **or** `blocked_domains` (never these hosts) - never both on one entry - on the tool's `configs` entry. Each tool carries its own list. Organization-level web search/fetch settings in the Console apply to the Messages API only, not to Managed Agents sessions.
 
 ```json
 {
@@ -243,7 +243,7 @@ Custom tools are executed by **your application**, not Anthropic. The flow:
 4. You send back a `user.custom_tool_result` event with the output
 5. Session resumes `running`
 
-No permission policy needed - you're the one executing.
+No permission policy needed - you're the one executing. A custom tool's name can't start with `mcp__` or `ant__` or match a built-in agent tool's name (400); an agent that already stores an `ant__` tool accepts only an update that sends `tools` without it, and a new session that would run with such a tool is refused (400).
 
 ```json
 {

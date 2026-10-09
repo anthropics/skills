@@ -144,9 +144,9 @@ client.beta.sessions.events.send(
 
 ---
 
-## Define an Outcome (default kickoff for deliverables)
+## Define an Outcome (default kickoff for one deliverable)
 
-When the session's job is to produce something checkable - an artifact, a report, a PR - kick off with `user.define_outcome` instead of `user.message`: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See [Outcomes](../../shared/managed-agents-outcomes.md) for the event reference and rubric-writing guidance. The job below reads live prices, so its agent needs `web_search` and `web_fetch` set to `enabled: true`.
+When the session's job is one checkable deliverable - an artifact, a report, a PR - kick off with `user.define_outcome` instead of `user.message`: the harness grades each iteration against your rubric and the agent revises until it passes. Send one or the other, never both. See [Outcomes](../../shared/managed-agents-outcomes.md) for the event reference and rubric-writing guidance. The job below reads live prices, so its agent needs `web_search` and `web_fetch` set to `enabled: true`. Under the `limited` networking created above, those tools reach only the hosts in `allowed_hosts`, and with none listed they return no page or search result: list the sites the job reads there (a listed host is also open to the sandbox). When the sites can't be listed in advance, the other mode is `unrestricted`, which gives the whole sandbox full egress, not only the web tools: offer it to the user with that warning, do not choose it for them, and if they take it, keep secrets and sensitive files out of the sandbox (see [Environments](../../shared/managed-agents-environments.md)).
 
 ```python
 STARTER_RUBRIC = """# Report rubric - starter, tune the criteria

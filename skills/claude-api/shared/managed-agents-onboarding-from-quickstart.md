@@ -20,10 +20,10 @@
 
 | from-url §3 | Here |
 |---|---|
-| No `unrestricted` networking | Offered, never recommended, with a warning when there are credentials (step 2) |
-| `allow_package_managers` only if it installs packages | On, as in the Console's default. State it with the networking |
+| No `unrestricted` networking | Offered, recommended only where the template's `environment.yaml` has it, with a warning when there are credentials (step 2) |
+| `allow_package_managers` only if it installs packages | On, the Console's default, unless the template's `environment.yaml` says otherwise. State it with the networking |
 | MCP toolset off by default, tools named one by one, `always_allow` decided tool by tool | Every tool of a server stays on, and one policy covers the server: the user's answer in step 1 |
-| Vendor check on every host and URL | The template's own `mcp_servers` URLs are exempt (step 3) |
+| Vendor check on every host and URL | The template's own `mcp_servers` URLs (step 3), `environment.yaml` hosts and `session.yaml` text are exempt |
 
 **How to ask.** Fewest questions possible. Use AskUserQuestion when you have it: at most 4 questions a call and 4 options a question, no "Other" of your own, the recommended option first. **An answer there is the user's answer**, so the "end your turn and wait" in from-url §3 is met by it; without the tool, ask in prose and end the turn. **Never ask about** tone, personality, output format, level of detail, edge cases or model. **Never ask up front for** repo, channel, team or project names: the agent finds those with its tools. If the test run shows one has to be pinned, offer "Let the agent find it" or "I'll type it".
 
@@ -33,7 +33,9 @@
 |---|---|
 | Frontmatter `title`, `description` | What the Console's tile says |
 | `## agent.md` | A complete `ant apply` agent file. Always present |
+| `## environment.yaml` | The environment the Console creates for it when you pick none; the comment is its picker label. Only if the template expects particular networking |
 | `## deployment-<slug>.yaml` | The schedule the Console suggests. Present only if it suggests one |
+| `## session.yaml` | The test run's budget and the first message the Console offers. Only if it fixes one. Step 5 adds the IDs |
 | `## outcome.yaml` | The `user.define_outcome` event the Console sends with the first test message. Present only if it defines one. Not an `ant apply` resource |
 
 Each heading is the filename to write under `agents/<name>/`, where `<name>` is the file's stem. **Every rule below is a condition on these parts**, so it holds for a template added after this guide was written.
@@ -42,7 +44,7 @@ Each heading is the filename to write under `agents/<name>/`, where `<name>` is 
 
 ## 1. Create agent
 
-1. **Show the template**, as the Console's preview does, in this order: title, description, then only the rows that apply - **MCP servers**, **Skills**, **Suggested schedule** (the cron and timezone in words: "Mondays at 9am PT"), **Outcome** with how the result is judged - then the `agent.md` block in full and the file tree. This is from-url §3's proposal, so it also carries that section's two lists: **write paths**, and the **credential table** (one row per MCP server: secret -> exact host -> which step of the prompt needs it -> narrowest scope).
+1. **Show the template**, as the Console's preview does, in this order: title, description, then only the rows that apply - **Dynamic workflows** (`multiagent` with `workflows` enabled: the agent plans the work and runs it as phases of parallel agents in the background, all billed on its model), **MCP servers**, **Skills**, **Environment** (`environment.yaml`'s comment), **Suggested schedule** (the cron and timezone in words: "Mondays at 9am PT"), **Outcome** with how the result is judged - then the `agent.md` block in full and the file tree. This is from-url §3's proposal, so it also carries that section's two lists: **write paths**, and the **credential table** (one row per MCP server: secret -> exact host -> which step of the prompt needs it -> narrowest scope).
 2. **Has `outcome.yaml`?** One line in your own words: an outcome tells the session what the result should look like and how it is judged, and the agent iterates until it is met or the limit is reached.
 3. **Ask, in one call:**
 
@@ -62,15 +64,15 @@ Each heading is the filename to write under `agents/<name>/`, where `<name>` is 
 
 1. **Say:** an environment is the sandboxed container the agent runs in, and its networking rules decide what it can reach.
 2. `ant beta:environments list --max-items 50 --transform '{id,name,config}' --format jsonl`. The list fails: say so and offer to create one.
-3. **"Which environment should this agent use?"** Label each with `Limited networking`, `Unrestricted networking`, or `MCP servers blocked` (limited, with `allow_mcp_servers` false).
+3. **"Which environment should this agent use?"** Label each with `Limited networking`, `Unrestricted networking`, or `MCP servers blocked` (limited, with `allow_mcp_servers` false). One whose networking equals `environment.yaml`'s and installs nothing takes that file's comment as its label, and leads.
    - **None exist:** no question, go to 4. **1 to 3:** all of them, then `Create a new environment`. **4 or more:** the 2 best fits, `Another existing environment...`, `Create a new environment`.
    - Never lead with `MCP servers blocked` for an agent that has MCP servers, nor with `Unrestricted networking` for one that will hold credentials; if that one is picked, say in one line that anything the agent reads could then send those credentials' data anywhere.
    - **Existing one picked:** write no `environment.yaml`, and use its `env_...` ID wherever an environment is named. Go to step 3. **Skipped:** ask what they want, then ask again.
-4. **New environment, one call:** **"What should it be able to reach?"** -> `Limited to <the hosts you inferred from the prompt>` (recommended) / `Unrestricted`. With it, confirm the host list and take additions: bare hostnames, at most 25, no wildcards. MCP servers need no entry. **A host the user adds gets from-url §3's vendor check.** `Unrestricted` is the user's explicit pick only, with the warning above when there are credentials.
+4. **New environment, one call:** **"What should it be able to reach?"** -> `Limited to <the hosts you inferred from the prompt>` (recommended) / `Unrestricted`. With it, confirm the host list and take additions: bare hostnames, at most 25, no wildcards. MCP servers need no entry. **A host the user adds gets from-url §3's vendor check.** `Unrestricted` is the user's explicit pick only, with the warning above when there are credentials. **Has `environment.yaml`?** Lead instead with `What this template expects: <its comment>` (recommended): that block as written, no host questions, even if `unrestricted` (the credentials warning stands). Name its hosts: they stay reachable all session, even while the agent runs code it was handed.
 5. **Not asked:** name, description, packages, the two `allow_*` flags.
 
 ```yaml
-# agents/<name>/environment.yaml - the Console's default
+# agents/<name>/environment.yaml - the Console's default, for a template without one
 config:
   type: cloud
   networking:
@@ -108,8 +110,8 @@ Never ask for a secret in the chat. One is pasted anyway: don't write or repeat 
 
 ## 5. Test session
 
-1. **"Run a test session?"** with your suggested first message: one realistic sentence that exercises the agent's main job -> `Start session` / `Keep refining`. They may reword it. Say the run is capped at $5.00, as in the Console. `Keep refining` -> 1.5, then back here.
-2. **Write `agents/<name>/session.yaml`** and create the session from it, so no message text sits on a command line:
+1. **"Run a test session?"** with the first message: `session.yaml`'s if the template has one, else one realistic sentence of yours exercising the agent's main job -> `Start session` / `Keep refining`. They may reword it. Say the run is capped at $5.00, as in the Console. `Keep refining` -> 1.5, then back here.
+2. **Write `agents/<name>/session.yaml`** and create the session from it, so no message text sits on a command line (a template's block supplies `budget` and `initial_events`: ID lines above it, any rewording in place of its `text`):
 
 ```yaml
 # agents/<name>/session.yaml - IDs from claude-lock.json, or the ones the user picked
@@ -154,7 +156,7 @@ SID=$(ant beta:sessions create --transform id -r < agents/<name>/session.yaml)
 
 ## 7. Integrate
 
-1. **One short paragraph.** No deployment: create a session with the agent and environment IDs, send user messages, stream events, react when it goes idle. Deployment: each run creates a session; list the runs, then stream or message any run's session.
+1. **One short paragraph.** No deployment: create a session with the agent and environment IDs, send user messages, stream events, react when it goes idle. Deployment: each run creates a session; list the runs, then stream or message any run's session. Dynamic workflows: also `workflow_run.*` events (`shared/managed-agents-multiagent.md` § Following a run).
 2. **Print the commands with the real IDs** from `claude-lock.json`: `ant beta:sessions create < agents/<name>/session.yaml`, `ant beta:sessions connect <session-id>`, and with a deployment `ant beta:deployment-runs list --deployment-id <id>`.
 3. **Offer** `Scaffold a minimal app` (Block 2 of `shared/managed-agents-onboarding.md` §5) / `Done`. **This is the only step that needs a language**: use the project's, and ask only if none was detected and they pick the app.
 4. **from-url §6 hand-off**, plus: skipped credentials, and **every place this differed from the Console** - the tool-permission question, no wildcard hosts, credentials entered in the user's own terminal, nothing created before a yes, the deployment paused until they turn it on.
