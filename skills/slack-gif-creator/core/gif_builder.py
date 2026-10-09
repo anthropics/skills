@@ -33,7 +33,7 @@ class GIFBuilder:
 
     def add_frame(self, frame: np.ndarray | Image.Image):
         """
-        Add a frame to the GIF.
+        Add a snapshot of a frame to the GIF.
 
         Args:
             frame: Frame as numpy array or PIL Image (will be converted to RGB)
@@ -49,7 +49,8 @@ class GIFBuilder:
             )
             frame = np.array(pil_frame)
 
-        self.frames.append(frame)
+        # Callers may reuse or mutate their drawing buffer for the next frame.
+        self.frames.append(frame.copy())
 
     def add_frames(self, frames: list[np.ndarray | Image.Image]):
         """Add multiple frames at once."""
