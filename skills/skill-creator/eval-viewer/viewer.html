@@ -606,7 +606,8 @@
             id="feedback"
             placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
           ></textarea>
-          <div class="feedback-status" id="feedback-status"></div>
+          <div class="feedback-status" id="feedback-status" role="status" aria-live="polite"></div>
+          <button type="button" id="retry-btn" onclick="retryFeedbackLoad()" hidden>Retry saved feedback</button>
           <div class="prev-feedback" id="prev-feedback" style="display:none;">
             <div class="prev-feedback-label">Previous feedback</div>
             <div id="prev-feedback-text"></div>
@@ -633,8 +634,8 @@
   <!-- Done overlay -->
   <div class="done-overlay" id="done-overlay">
     <div class="done-card">
-      <h2>Review Complete</h2>
-      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <h2 id="done-title">Feedback</h2>
+      <p id="done-message">Review conclusions require explicit human confirmation.</p>
       <div class="btn-row">
         <button onclick="closeDoneDialog()">OK</button>
       </div>
@@ -649,43 +650,105 @@
     /*__EMBEDDED_DATA__*/
 
     // ---- State ----
-    let feedbackMap = {};  // run_id -> feedback text
+    let feedbackMap = Object.create(null);
     let currentIndex = 0;
     let visitedRuns = new Set();
+    let saveTimeout = null;
+    let feedbackRevision = 0;
+    let feedbackSaveQueue = Promise.resolve();
+    let feedbackStatus = "in_progress";
+    let feedbackLoadState = "loading";
+    const dirtyRunIds = new Set();
 
     // ---- Init ----
     async function init() {
-      // Load saved feedback from server — but only if this isn't a fresh
-      // iteration (indicated by previous_feedback being present). When
-      // previous feedback exists, the feedback.json on disk is stale from
-      // the prior iteration and should not pre-fill the textareas.
-      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
-        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
-      if (!hasPrevious) {
-        try {
-          const resp = await fetch("/api/feedback");
-          const data = await resp.json();
-          if (data.reviews) {
-            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
-          }
-        } catch { /* first run, no feedback yet */ }
-      }
-
+      feedbackLoadState = "loading";
       document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
       showRun(0);
-
-      // Wire up feedback auto-save
       const textarea = document.getElementById("feedback");
-      let saveTimeout = null;
       textarea.addEventListener("input", () => {
-        clearTimeout(saveTimeout);
-        document.getElementById("feedback-status").textContent = "";
+        if (textarea.disabled) return;
+        cancelPendingFeedbackSave();
+        feedbackMap[EMBEDDED_DATA.runs[currentIndex].id] = textarea.value;
+        dirtyRunIds.add(EMBEDDED_DATA.runs[currentIndex].id);
+        feedbackRevision += 1;
+        feedbackStatus = "in_progress";
+        updateFeedbackControls();
         saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
       });
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (location.protocol === "file:") {
+        feedbackLoadState = "local";
+      } else if (hasPrevious) {
+        // Existing previous context deliberately starts a fresh iteration.
+        feedbackLoadState = "known";
+      } else {
+        await loadFeedback();
+      }
+      updateFeedbackControls();
+    }
+
+    async function loadFeedback() {
+      cancelPendingFeedbackSave();
+      feedbackLoadState = "loading";
+      updateFeedbackControls();
+      const hasLocalEdits = dirtyRunIds.size > 0;
+      try {
+        const response = await fetch("/api/feedback");
+        if (!response.ok) throw new Error("Feedback load failed: HTTP " + response.status);
+        const data = await response.json();
+        if (!data || typeof data !== "object" || Array.isArray(data)
+          || (Object.keys(data).length > 0 && !Array.isArray(data.reviews))
+          || (data.status !== undefined && data.status !== "complete" && data.status !== "in_progress")) {
+          throw new Error("Invalid saved feedback");
+        }
+        // Validate the whole document before changing local notes or allowing writes.
+        const restored = Object.create(null);
+        for (const review of data.reviews || []) {
+          if (!review || typeof review.run_id !== "string" || !review.run_id.trim()
+            || typeof review.feedback !== "string" || Object.hasOwn(restored, review.run_id)) {
+            throw new Error("Invalid saved review");
+          }
+          restored[review.run_id] = review.feedback;
+        }
+        for (const id of dirtyRunIds) restored[id] = feedbackMap[id];
+        feedbackStatus = dirtyRunIds.size ? "in_progress" : data.status || "in_progress";
+        feedbackMap = restored;
+        dirtyRunIds.clear();
+        feedbackLoadState = "known";
+      } catch {
+        feedbackLoadState = "unknown";
+      }
+      document.getElementById("feedback").value = feedbackMap[EMBEDDED_DATA.runs[currentIndex].id] || "";
+      updateFeedbackControls();
+      if (feedbackLoadState === "known" && hasLocalEdits) {
+        document.getElementById("feedback-status").textContent = "Saving recovered feedback...";
+        await saveCurrentFeedback();
+      }
+    }
+
+    function retryFeedbackLoad() {
+      if (feedbackLoadState !== "unknown") return Promise.resolve();
+      return loadFeedback();
+    }
+
+    function updateFeedbackControls() {
+      const loading = feedbackLoadState === "loading";
+      document.getElementById("feedback").disabled = loading;
+      document.getElementById("done-btn").disabled = loading;
+      document.getElementById("retry-btn").disabled = loading;
+      document.getElementById("retry-btn").hidden = feedbackLoadState !== "unknown";
+      document.getElementById("feedback-status").textContent = loading ? "Loading saved feedback..."
+        : feedbackLoadState === "unknown" ? "Saved feedback could not be read. Edits stay local; Retry loads earlier notes. Done downloads local edits."
+        : feedbackLoadState === "local" ? "Notes stay in this viewer. Done downloads feedback."
+        : "";
+      updateNavButtons();
     }
 
     // ---- Navigation ----
     function navigate(delta) {
+      if (document.getElementById("feedback").disabled) return;
       const newIndex = currentIndex + delta;
       if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
         saveCurrentFeedback();
@@ -694,9 +757,9 @@
     }
 
     function updateNavButtons() {
-      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("prev-btn").disabled = feedbackLoadState === "loading" || currentIndex === 0;
       document.getElementById("next-btn").disabled =
-        currentIndex === EMBEDDED_DATA.runs.length - 1;
+        feedbackLoadState === "loading" || currentIndex === EMBEDDED_DATA.runs.length - 1;
     }
 
     // ---- Show a run ----
@@ -745,9 +808,7 @@
 
       // Feedback
       document.getElementById("feedback").value = feedbackMap[run.id] || "";
-      document.getElementById("feedback-status").textContent = "";
-
-      updateNavButtons();
+      updateFeedbackControls();
 
       // Track visited runs and promote done button when all visited
       visitedRuns.add(index);
@@ -991,78 +1052,121 @@
     }
 
     // ---- Feedback (saved to server -> feedback.json) ----
+    function cancelPendingFeedbackSave() {
+      clearTimeout(saveTimeout);
+      saveTimeout = null;
+    }
+
+    function postFeedback(payload) {
+      if (feedbackLoadState !== "known") return Promise.reject(new Error("Saved feedback is unread"));
+      const request = feedbackSaveQueue.then(() => {
+        if (feedbackLoadState !== "known") throw new Error("Saved feedback is unread");
+        return fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        });
+      }).then((response) => {
+        if (!response.ok) throw new Error("Feedback save failed: HTTP " + response.status);
+      });
+      // A failed request must not stop later saves.
+      feedbackSaveQueue = request.catch(() => {});
+      return request;
+    }
+
     function saveCurrentFeedback() {
+      if (document.getElementById("feedback").disabled) return Promise.resolve();
+      cancelPendingFeedbackSave();
+      const revision = ++feedbackRevision;
       const run = EMBEDDED_DATA.runs[currentIndex];
       const text = document.getElementById("feedback").value;
 
-      if (text.trim() === "") {
-        delete feedbackMap[run.id];
-      } else {
+      if (feedbackLoadState === "known" || dirtyRunIds.has(run.id)) {
         feedbackMap[run.id] = text;
+      }
+
+      if (feedbackLoadState !== "known") {
+        updateFeedbackControls();
+        return Promise.resolve();
       }
 
       // Build reviews array from map
       const reviews = [];
-      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
-        if (feedback.trim()) {
+      const entries = feedbackStatus === "complete"
+        ? [...new Set([...EMBEDDED_DATA.runs.map(r => r.id), ...Object.keys(feedbackMap)])].map(id => [id, feedbackMap[id] || ""])
+        : Object.entries(feedbackMap);
+      for (const [run_id, feedback] of entries) {
+        if (feedbackStatus === "complete" || feedback.trim()) {
           reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
         }
       }
 
-      fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reviews, status: "in_progress" }),
-      }).then(() => {
+      return postFeedback(JSON.stringify({ reviews, status: feedbackStatus })).then(() => {
+        if (revision !== feedbackRevision || run.id !== EMBEDDED_DATA.runs[currentIndex].id) return;
         document.getElementById("feedback-status").textContent = "Saved";
       }).catch(() => {
-        // Static mode or server unavailable — no-op on auto-save,
-        // feedback will be downloaded on final submit
-        document.getElementById("feedback-status").textContent = "Will download on submit";
+        if (revision !== feedbackRevision) return;
+        document.getElementById("feedback-status").textContent = "Save failed. Notes kept here; Done downloads them.";
       });
     }
 
     // ---- Done ----
     function showDoneDialog() {
+      if (document.getElementById("feedback").disabled) return Promise.resolve();
+      cancelPendingFeedbackSave();
+      const revision = ++feedbackRevision;
+      feedbackStatus = feedbackLoadState === "unknown" ? "in_progress" : "complete";
       // Save current textarea to feedbackMap (but don't POST yet)
       const run = EMBEDDED_DATA.runs[currentIndex];
       const text = document.getElementById("feedback").value;
-      if (text.trim() === "") {
-        delete feedbackMap[run.id];
-      } else {
+      if (feedbackLoadState === "known" || dirtyRunIds.has(run.id)) {
         feedbackMap[run.id] = text;
       }
 
-      // POST once with status: complete — include ALL runs so the model
-      // can distinguish "no feedback" (looks good) from "not reviewed"
+      // Include every run. Empty feedback does not establish human acceptance.
       const reviews = [];
       const ts = new Date().toISOString();
-      for (const r of EMBEDDED_DATA.runs) {
-        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      const ids = feedbackLoadState === "unknown" ? [...dirtyRunIds]
+        : [...new Set([...EMBEDDED_DATA.runs.map(r => r.id), ...Object.keys(feedbackMap)])];
+      for (const id of ids) {
+        reviews.push({ run_id: id, feedback: feedbackMap[id] || "", timestamp: ts });
       }
-      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
-      fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: payload,
-      }).then(() => {
+      const payload = JSON.stringify({ reviews, status: feedbackStatus }, null, 2);
+      if (feedbackLoadState !== "known") {
+        downloadFeedback(payload, feedbackLoadState);
+        return Promise.resolve();
+      }
+      return postFeedback(payload).then(() => {
+        if (revision !== feedbackRevision) return;
+        document.getElementById("done-title").textContent = "Review complete";
+        document.getElementById("done-message").textContent = "Feedback saved. Review conclusions require explicit human confirmation.";
         document.getElementById("done-overlay").classList.add("visible");
       }).catch(() => {
-        // Server not available (static mode) — download as file
-        const blob = new Blob([payload], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "feedback.json";
-        a.click();
-        URL.revokeObjectURL(url);
-        document.getElementById("done-overlay").classList.add("visible");
+        if (revision !== feedbackRevision) return;
+        downloadFeedback(payload, "save-failed");
       });
     }
 
+    function downloadFeedback(payload, mode) {
+      const recovery = mode === "unknown";
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = recovery ? "feedback-recovery.json" : "feedback.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      document.getElementById("feedback-status").textContent = "Feedback download requested; keep the file. Notes remain here.";
+      document.getElementById("done-title").textContent = recovery ? "Local feedback recovery" : "Feedback download";
+      document.getElementById("done-message").textContent = recovery
+        ? "Saved feedback could not be read. A feedback-recovery.json download was requested with only your local edits. Earlier server notes are excluded. Keep the file; nothing was saved to the server."
+        : mode === "local"
+          ? "A feedback.json download was requested. Keep the file; feedback has not been saved to a server."
+          : "Server save failed. A feedback.json download was requested. Keep the file; notes remain in this viewer.";
+      document.getElementById("done-overlay").classList.add("visible");
+    }
+
     function closeDoneDialog() {
-      // Reset status back to in_progress
-      saveCurrentFeedback();
       document.getElementById("done-overlay").classList.remove("visible");
     }
 
