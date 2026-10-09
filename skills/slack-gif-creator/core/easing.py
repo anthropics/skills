@@ -228,6 +228,9 @@ EASING_FUNCTIONS.update(
         "back_in": ease_back_in,
         "back_out": ease_back_out,
         "back_in_out": ease_back_in_out,
+        "cubic_in": ease_in_cubic,
+        "cubic_out": ease_out_cubic,
+        "cubic_in_out": ease_in_out_cubic,
         "anticipate": ease_back_in,  # Alias
         "overshoot": ease_back_out,  # Alias
     }
