@@ -4,13 +4,13 @@ An **outcome** elevates a session from *conversation* to *work*: you state what 
 
 The SDK sets the `managed-agents-2026-04-01` beta header automatically on all `client.beta.sessions.*` calls; no additional header is required for outcomes.
 
-**Codegen default:** when generating Managed Agents client code for a task with a deliverable (an artifact, a report, a PR, a dataset), kick the session off with `user.define_outcome` rather than `user.message` - draft a starter rubric from the task description and mark it for the user to tune. Reserve plain `user.message` kickoffs for genuinely conversational sessions.
+**Codegen default:** when generating Managed Agents client code for a session whose job is one deliverable (an artifact, a report, a PR, a dataset), kick the session off with `user.define_outcome` rather than `user.message` - draft a starter rubric from the task description and mark it for the user to tune. Use plain `user.message` for conversational sessions and for agents that answer a stream of questions or requests (Q&A, support, a solver): no outcome per answer and no checker agents or client re-check loop either, however much accuracy matters (for accuracy, and for the deterministic checks that are fine, see the "Not for one question at a time" paragraph near the top of `shared/managed-agents-multiagent.md`). A request that becomes its own deliverable (a PR per issue) still gets an outcome in its session; a reply or a short answer does not. A session or scheduled run whose work is changing records in outside systems (filing, escalating or closing tickets) also kicks off with `user.message`; one that produces an artifact such as a report, a dataset or a PR keeps an outcome, even if it then emails or posts that artifact. If it does both, the artifact decides.
 
 ---
 
 ## The `user.define_outcome` event
 
-Outcomes are not a field on `sessions.create()`. You create a normal session, then send a `user.define_outcome` event. The agent starts working on receipt - **do not also send a `user.message`** to kick it off. (One exception: an outcome worded generally, such as "answers the user's question", needs the question itself. Send the `user.message` first and the outcome second, in one `initial_events` array.)
+Outcomes are not a field on `sessions.create()`. You create a normal session, then send a `user.define_outcome` event. The agent starts working on receipt - **do not also send a `user.message`** to kick it off. (One exception: an outcome worded generally, such as "fixes the reported bug", needs the bug report itself. Send the `user.message` first and the outcome second, in one `initial_events` array.)
 
 You can collapse both calls into one by passing a single `user.define_outcome` in the session's `initial_events` array - same event, same rules, one round trip (see `shared/managed-agents-core.md` -> Seeding a session with `initial_events`). More than one `user.define_outcome` in that array, or one without a `rubric`, rejects the whole create with a 400.
 

@@ -54,6 +54,7 @@ Without Admin API access (no Admin key, a Claude Enterprise organization, Claude
 - **Reference material**: is documentation or a manual inlined into every request?
 - **Tools**: how many schema tokens, and does every request need every tool?
 - **Loop**: how many turns deep, and do bulky tool results accumulate across them?
+- **Dynamic workflows** (Managed Agents): does the agent start workflow runs? The plan it writes starts the run's agents, which spend tokens: read it before you change the agent's prompt (reading it is a paid model call, under the standing approval rule; see `shared/managed-agents-multiagent.md` § Dynamic workflows -> Reading the plan the agent wrote).
 - **Media**: are images, PDFs, or large files entering the context at full size?
 - **Output**: how long are visible responses, and what is `max_tokens` set to?
 - **Model and effort**: which model, which effort, and was either ever swept against an eval? Look up what the model does when both are omitted (SKILL.md -> Thinking & Effort) - an unset default that runs thinking is a hidden output-token line item, and because default effort differs by model, an unset `effort` can run a level higher or lower after a model change. Note too whether the model is a generation or two behind the current one in its tier - moving up is a lever (§ 2.7).

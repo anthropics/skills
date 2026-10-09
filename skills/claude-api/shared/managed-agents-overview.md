@@ -44,7 +44,7 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Update/version an agent                | `shared/managed-agents-core.md` (Agents -> Versioning) - update, don't re-create |
 | Create a session                       | `shared/managed-agents-core.md` + `{lang}/managed-agents/README.md` (cURL/C#: `curl/managed-agents.md`) |
 | Configure tools and permissions        | `shared/managed-agents-tools.md`                        |
-| Turn `web_search` / `web_fetch` on or off; restrict which sites they can reach; localize search; cap fetched content | `shared/managed-agents-tools.md` (§ Agent Toolset, § Web search & web fetch settings) - `enabled` / `allowed_domains` / `blocked_domains` / `user_location` / `max_content_tokens` on the toolset `configs` entry; **not** the environment's `networking` |
+| Turn `web_search` / `web_fetch` on or off; restrict which sites they can reach; localize search; cap fetched content | `shared/managed-agents-tools.md` (§ Agent Toolset, § Web search & web fetch settings) - `enabled` / `allowed_domains` / `blocked_domains` / `user_location` / `max_content_tokens` on the toolset `configs` entry; with `limited` networking the environment's `allowed_hosts` also applies to them (`shared/managed-agents-environments.md`) |
 | Set up MCP servers                     | `shared/managed-agents-tools.md` (MCP Servers section)  |
 | Stream events / handle tool_use        | `shared/managed-agents-events.md` + language file       |
 | Get notified of session state changes via webhook (no polling) | `shared/managed-agents-webhooks.md` - Console-registered endpoint, HMAC verify, thin payload + fetch |
@@ -62,6 +62,8 @@ Managed Agents is in beta. The SDK sets required beta headers automatically:
 | Cap a session's spend with a hard dollar budget | `shared/managed-agents-core.md` (§ Session budgets) - `budget` at session create, `budget_reached` pause, change/remove to resume. Deployments: `shared/managed-agents-scheduled-deployments.md` § Deployment budgets |
 | Pin where model inference runs (data residency) | `shared/managed-agents-core.md` (§ Pinning inference geography) - `model.inference_geo` on the agent, per-session override, roster uniformity |
 | Load skills from the codebase instead of uploading | `shared/managed-agents-tools.md` (§ Skills from a GitHub repository) - root `.claude/skills` discovery at session start |
+| Let the agent run work too big to hand out one task at a time (hundreds of documents, many sources) as a background workflow run | `shared/managed-agents-multiagent.md` (§ Dynamic workflows) - `multiagent: {type: "multiagent_20261001", workflows: {type: "enabled"}}` (can combine with a roster), the system-prompt line that says when to start a run, `workflow_run.*` events, knowing when the work is done, interrupting with runs open |
+| Make a workflow run cheaper, faster or better | `shared/managed-agents-multiagent.md` (§ Dynamic workflows -> Reading the plan the agent wrote) - read the plan the agent wrote before you propose a change |
 | Give the session an advisor to consult mid-turn | `shared/managed-agents-multiagent.md` (§ Advisor) - `{type: "advisor", model}` roster entry, consultation threads, plaintext vs redacted delivery |
 
 ## Common Pitfalls
