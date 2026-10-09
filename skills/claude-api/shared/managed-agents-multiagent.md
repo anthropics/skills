@@ -18,24 +18,26 @@ agent = client.beta.agents.create(
     description="Researches a question end to end. A copy can be spawned to own one well-scoped sub-question.",
     model="claude-opus-5-5",
     system="You are a research assistant. When a request splits into independent sub-questions, delegate each to a copy of yourself, one self-contained task per copy, then verify and combine their reports.",
-    tools=[{"type": "agent_toolset_20260401"}],
+    tools=[{"type": "agent_toolset_20260401",
+            "default_config": {"permission_policy": {"type": "auto"}},
+            "configs": [{"name": n, "enabled": True} for n in ("web_fetch", "web_search")]}],  # research needs the web
     multiagent={"type": "coordinator", "agents": [{"type": "self"}]},  # the only change vs. a single agent
 )
 
 session = client.beta.sessions.create(agent=agent.id, environment_id=env.id)  # unchanged
 ```
 
-**Step 2 - move the reading-heavy work to a cheaper model.** Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller current-generation model (Claude Haiku 4.5, or Claude Sonnet 5.5 when the worker needs more judgment) with a narrow `system` prompt and only the tools it needs, and list it next to `self`. A roster entry is only a reference: the worker runs on its own `model`, `system`, and `tools`, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.
+**Step 2 - move the reading-heavy work to a cheaper model.** Delegated research work is mostly searching, reading, and extracting: many input tokens, little hard reasoning. Create a second agent on a smaller current-generation model (Claude Haiku 5.5, or Claude Sonnet 5.5 when the worker needs more judgment) with a narrow `system` prompt and only the tools it needs, and list it next to `self`. A roster entry is only a reference: the worker runs on its own `model`, `system`, and `tools`, and its tokens are billed at its own model's rates. The large model spends its tokens on planning, checking, and synthesis; the small model does the bulk reading.
 
 ```python
 worker = client.beta.agents.create(
     name="Web researcher",
     description="Fast, low-cost, read-only researcher. Give it one well-scoped question; it searches, reads, and reports findings with sources.",
-    model="claude-haiku-4-5",
+    model="claude-haiku-5-5",
     system="Answer exactly the question you are given. Search and read as much as you need, then report concise findings with a source URL or file path for every claim.",
     tools=[{
         "type": "agent_toolset_20260401",
-        "default_config": {"enabled": False},
+        "default_config": {"enabled": False, "permission_policy": {"type": "auto"}},
         "configs": [{"name": n, "enabled": True} for n in ("read", "glob", "grep", "web_fetch", "web_search")],
     }],
 )
@@ -45,7 +47,9 @@ lead = client.beta.agents.create(
     description="Plans and synthesizes research. A copy can be spawned to own one large sub-analysis.",
     model="claude-opus-5-5",
     system="Plan the work. Delegate each independent, reading-heavy question to Web researcher, one self-contained task per spawn, several in parallel. Keep verification and the final synthesis for yourself; spawn a copy of yourself only for a sub-analysis that needs your full capability.",
-    tools=[{"type": "agent_toolset_20260401"}],
+    tools=[{"type": "agent_toolset_20260401",
+            "default_config": {"permission_policy": {"type": "auto"}},
+            "configs": [{"name": n, "enabled": True} for n in ("web_fetch", "web_search")]}],  # the lead verifies sources itself
     multiagent={"type": "coordinator", "agents": [worker.id, {"type": "self"}]},
 )
 ```
@@ -58,7 +62,7 @@ reviewer = client.beta.agents.create(
     description="Read-only reviewer for race conditions, deadlocks, lost updates, and retry/idempotency bugs. Give it the changed file paths and the invariants that must hold; it reports findings with file:line evidence. Spawn several on the same change for independent reviews.",
     model="claude-sonnet-5-5",
     system="Review only the files you are pointed at. Look for concurrency bugs: unsynchronized shared state, lock ordering, non-atomic read-modify-write, retries without idempotency. Report each finding as file:line, the interleaving that triggers it, and a suggested fix; say plainly if you found none.",
-    tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": False},
+    tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": False, "permission_policy": {"type": "auto"}},
             "configs": [{"name": n, "enabled": True} for n in ("read", "glob", "grep")]}],
 )
 test_writer = client.beta.agents.create(
@@ -66,7 +70,7 @@ test_writer = client.beta.agents.create(
     description="Writes and runs tests. Give it the module path, the behavior to pin down, and the test command; it adds test files, runs them, and reports results with output.",
     model="claude-sonnet-5-5",
     system="Write focused tests for the behavior you are given, run them with the command you are given, and report pass/fail, the relevant output, and the paths of files you added. Do not edit non-test code; if the code under test looks wrong, report that instead.",
-    tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True},
+    tools=[{"type": "agent_toolset_20260401", "default_config": {"enabled": True, "permission_policy": {"type": "auto"}},
             "configs": [{"name": n, "enabled": False} for n in ("web_fetch", "web_search")]}],
 )
 lead = client.beta.agents.create(
@@ -74,12 +78,14 @@ lead = client.beta.agents.create(
     description="Plans and makes code changes and integrates specialist reports. A copy can be spawned to own one independent change.",
     model="claude-opus-5-5",
     system="Make the change yourself. Then, in parallel, send the changed paths and invariants to three Concurrency reviewers and the module path and test command to Test writer. Merge and de-duplicate the reviewers' findings, check each against the code before acting on it, fix, and have Test writer re-run. Keep design decisions and the final summary for yourself.",
-    tools=[{"type": "agent_toolset_20260401"}],
+    tools=[{"type": "agent_toolset_20260401",
+            "default_config": {"permission_policy": {"type": "auto"}},
+            "configs": [{"name": n, "enabled": False} for n in ("web_fetch", "web_search")]}],
     multiagent={"type": "coordinator", "agents": [reviewer.id, test_writer.id, {"type": "self"}]},
 )
 ```
 
-The same shape fits a pipeline of different specialists: a fast document extractor (for example on Claude Haiku 4.5) that writes one JSON file per input document, a verifier that checks each file against its source, and a lead that applies the corrections and writes the final table to `/mnt/session/outputs/`. Put the input and output paths in every task: threads share the container's filesystem, not each other's conversation.
+The same shape fits a pipeline of different specialists: a fast document extractor (for example on Claude Haiku 5.5) that writes one JSON file per input document, a verifier that checks each file against its source, and a lead that applies the corrections and writes the final table to `/mnt/session/outputs/`. Put the input and output paths in every task: threads share the container's filesystem, not each other's conversation.
 
 - **Good fits:** parallel research across sources; reading large amounts of material without filling the coordinator's context; specialists with narrow prompts and tool sets rather than one agent carrying every tool. **Poor fit:** a small single-step task - every delegation costs a round-trip and a re-briefing.
 - **Write `name` and `description` for the coordinator to read.** The coordinator chooses whom to spawn from each roster entry's name and description (the `self` entry is listed under the coordinator's own name), so say what each agent is good at and what to hand it. Names must be unique across the roster; don't name an agent `self`.
@@ -100,7 +106,9 @@ orchestrator = client.beta.agents.create(
     name="Engineering lead",
     model="claude-opus-5-5",
     system="You coordinate engineering work. Delegate code review to the reviewer and test writing to the test agent.",
-    tools=[{"type": "agent_toolset_20260401"}],
+    tools=[{"type": "agent_toolset_20260401",
+            "default_config": {"permission_policy": {"type": "auto"}},
+            "configs": [{"name": n, "enabled": False} for n in ("web_fetch", "web_search")]}],
     multiagent={
         "type": "coordinator",
         "agents": [
@@ -222,7 +230,7 @@ No `agent.tool_use` and no `agent.thread_message_sent` are emitted for a consult
 
 ## Tool permissions and custom tools from subagent threads
 
-When a subagent needs your client (a tool call that paused for approval - `always_ask`, or `auto` with no determination - or a custom tool result), the request is **cross-posted to the primary thread** with `session_thread_id` identifying the originating thread - so you only need to watch the session stream. Reply with `user.tool_confirmation` (carrying `tool_use_id`) or `user.custom_tool_result` (carrying `custom_tool_use_id`), and **echo the `session_thread_id` from the originating event** (the SDK param type and docstring expect it). The server also routes by the tool-use ID, so the echo is belt-and-suspenders rather than load-bearing - but include it.
+When a subagent needs your client (a tool call that paused for approval - `always_ask`, or `auto` with no determination - or a custom tool result), the request is **cross-posted to the primary thread** with `session_thread_id` identifying the originating thread - so you only need to watch the session stream. Reply with `user.tool_confirmation` (`tool_use_id`) or `user.custom_tool_result` (`custom_tool_use_id`); the server routes by that id, so you do not send `session_thread_id` back.
 
 ```python
 for event_id in stop.event_ids:
@@ -230,10 +238,9 @@ for event_id in stop.event_ids:
     confirmation = {
         "type": "user.tool_confirmation",
         "tool_use_id": event_id,
-        "result": "allow",
+        # you write approve(): ask a person or apply your own rule; deny when unattended
+        "result": "allow" if approve(pending) else "deny",
     }
-    if pending.session_thread_id is not None:
-        confirmation["session_thread_id"] = pending.session_thread_id
     client.beta.sessions.events.send(session.id, events=[confirmation])
 ```
 

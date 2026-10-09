@@ -33,7 +33,7 @@ environment = client.beta.environments.create(
   name: "my-dev-env",
   config: {
     type: "cloud",
-    networking: {type: "unrestricted"}
+    networking: {type: "limited", allow_package_managers: true, allow_mcp_servers: true}
   }
 )
 puts "Environment ID: #{environment.id}" # env_...
@@ -47,13 +47,24 @@ puts "Environment ID: #{environment.id}" # env_...
 
 ### Minimal
 
+The examples on this page turn both web tools off. Set `enabled` to true on `web_fetch` / `web_search` only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see `shared/managed-agents-tools.md` § Agent Toolset. They also set the `auto` permission policy, under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer `deny`; never answer `allow` to every paused call.
+
 ```ruby
 # 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
   name: "Coding Assistant",
   model: :"claude-opus-5-5",
   system_: "You are a helpful coding assistant.",
-  tools: [{type: "agent_toolset_20260401"}]
+  tools: [
+    {
+      type: "agent_toolset_20260401",
+      default_config: {permission_policy: {type: "auto"}},
+      configs: [
+        {name: "web_fetch", enabled: false},
+        {name: "web_search", enabled: false}
+      ]
+    }
+  ]
 )
 
 # 2. Start a session
@@ -124,10 +135,22 @@ stream.each do |event|
   case event.type
   in :"agent.message"
     event.content.each { |block| print block.text }
-  in :"agent.tool_use"
+  in :"agent.tool_use" | :"agent.mcp_tool_use"
     puts "\n[Using tool: #{event.name}]"
+    if event.evaluated_permission == :ask
+      # Paused for your decision (always_ask, or auto with no determination)
+      client.beta.sessions.events.send_(
+        session.id,
+        events: [{
+          type: "user.tool_confirmation",
+          tool_use_id: event.id,
+          # you write approve: ask a person or apply your own rule; deny when unattended
+          result: approve(event) ? "allow" : "deny"
+        }]
+      )
+    end
   in :"session.status_idle"
-    break
+    break unless event.stop_reason.type == :requires_action # waiting on you, keep streaming
   in :"session.error"
     puts "\n[Error: #{event.error&.message || "unknown"}]"
     break
@@ -141,7 +164,7 @@ end
 
 ### Reconnecting and Tailing
 
-When reconnecting mid-session, list past events first to dedupe, then tail live events:
+When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an `ask` in the history that no `user.tool_confirmation` follows.
 
 ```ruby
 require "set"
@@ -160,7 +183,8 @@ stream.each do |event|
   in :"agent.message"
     event.content.each { |block| print block.text }
   in :"session.status_idle"
-    break
+    # requires_action: answer the paused call as under Stream Events, then keep streaming
+    break unless event.stop_reason.type == :requires_action
   else
     # ignore other event types
   end
@@ -201,7 +225,7 @@ session = client.beta.sessions.create(
     {
       type: "file",
       file_id: file.id,
-      mount_path: "/workspace/data.csv"
+      mount_path: "/data.csv"
     }
   ]
 )
@@ -274,7 +298,14 @@ agent = client.beta.agents.create(
     }
   ],
   tools: [
-    {type: "agent_toolset_20260401"},
+    {
+      type: "agent_toolset_20260401",
+      default_config: {permission_policy: {type: "auto"}},
+      configs: [
+        {name: "web_fetch", enabled: false},
+        {name: "web_search", enabled: false}
+      ]
+    },
     {type: "mcp_toolset", mcp_server_name: "github"}
   ]
 )

@@ -431,9 +431,9 @@ Optional fields on the tool definition:
 
 | Executor (request `model`) | Valid advisor (tool `model`) |
 |---|---|
-| `claude-haiku-4-5` / `claude-sonnet-4-6` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-5-5`, `claude-sonnet-5`, or `claude-sonnet-4-6` |
-| `claude-sonnet-5` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5-5`, or `claude-sonnet-5` |
-| `claude-opus-4-6` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-5-5`, or `claude-sonnet-5` |
+| `claude-haiku-4-5` / `claude-sonnet-4-6` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-5-5`, `claude-sonnet-5`, `claude-haiku-5-5`, or `claude-sonnet-4-6` |
+| `claude-sonnet-5` / `claude-haiku-5-5` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-sonnet-5-5`, `claude-sonnet-5`, or `claude-haiku-5-5` |
+| `claude-opus-4-6` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-5-5`, `claude-sonnet-5`, or `claude-haiku-5-5` |
 | `claude-opus-4-7` / `claude-opus-4-8` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, or `claude-sonnet-5-5` |
 | `claude-opus-5-5` / `claude-opus-5` / `claude-fable-5` / `claude-mythos-5` | `claude-mythos-5-1`, `claude-fable-5-1`, `claude-mythos-5`, `claude-fable-5`, `claude-opus-5-5`, or `claude-opus-5` |
 | `claude-fable-5-1` / `claude-mythos-5-1` | `claude-mythos-5-1` or `claude-fable-5-1` - and these executors (like `claude-opus-5-5`) reject forced `tool_choice`, so nudge the advisor call from the prompt |
@@ -444,7 +444,7 @@ Optional fields on the tool definition:
 > | `content` type | Fields | When |
 > |---|---|---|
 > | `advisor_result` | `text`, `stop_reason` | Advisor returns plaintext (e.g. Opus 4.8) |
-> | `advisor_redacted_result` | `encrypted_content`, `stop_reason` | Advisor returns encrypted output - Claude Opus 5.5, Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5 |
+> | `advisor_redacted_result` | `encrypted_content`, `stop_reason` | Advisor returns encrypted output - Claude Opus 5.5, Claude Opus 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5, Claude Haiku 5.5 |
 > | `advisor_tool_result_error` | `error_code` | Consultation failed - `max_uses_exceeded`, `prompt_too_long`, `too_many_requests`, `overloaded`, `unavailable`, `execution_time_exceeded`, or `model_not_found` |
 >
 > So switch on `advisor_tool_result.content` type, not on the block type. Code that reads `.text` unconditionally gets nothing back from an Claude Opus 5.5 or Claude Opus 5 advisor, because the payload is under `encrypted_content` instead - and you cannot read it, only replay it.
@@ -530,7 +530,7 @@ Two features are available:
 - **JSON outputs** (`output_config.format`): Control Claude's response format
 - **Strict tool use** (`strict: true`): Guarantee valid tool parameter schemas
 
-**Supported models:** Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.
+**Supported models:** Claude Fable 5, Claude Mythos 5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, Claude Sonnet 5, Claude Haiku 5.5, and Claude Haiku 4.5. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.
 
 > **Recommended:** Use `client.messages.parse()` which automatically validates responses against your schema. When using `messages.create()` directly, use `output_config: {format: {...}}`. The `output_format` convenience parameter is also accepted by some SDK methods (e.g., `.parse()`), but `output_config.format` is the canonical API-level parameter.
 

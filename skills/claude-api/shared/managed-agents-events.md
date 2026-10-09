@@ -35,7 +35,7 @@ client.beta.sessions.events.send(
 
 Constraints:
 
-- **Model-gated: Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5).** Only the agent's **primary** model is checked - `system.message` lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
+- **Model-gated: Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5 (not Claude Sonnet 5).** Only the agent's **primary** model is checked - `system.message` lands on the primary thread only, so subagent models are not considered. On an unsupported primary model the event is rejected with a `model_does_not_support_mid_conversation_system` validation error.
 - **While the session is idle with `stop_reason: requires_action`** (blocked on `user.custom_tool_result` / `user.tool_confirmation`), a `system.message` is accepted **only when it trails a tool result event in the same request**. Sent on its own - or alongside a `user.message` - it is rejected until the pending tool events are resolved.
 - `content` accepts 1-1000 text items.
 
@@ -194,7 +194,7 @@ await sendMessage(sessionId, "And compare the two");
 // Stream once - agent responds to all three as a coherent turn
 ```
 
-Events can be sent up to the Session at any time. There is no need to wait on a specific session status to enqueue new events via `client.beta.sessions.events.send()`. One exception: a session paused at its budget (`stop_reason: budget_reached`) accepts only settle events - a `user.message` there is a 400. See § Reaching a session budget.
+Events can be sent up to the Session at any time. There is no need to wait on a specific session status to enqueue new events via `client.beta.sessions.events.send()`. Two exceptions: while a call is waiting on you (`stop_reason: requires_action`) or the session is paused at its budget (`budget_reached`), only settle events are accepted - a `user.message` there is a 400. See § Reaching a session budget.
 
 ### Interrupt
 
