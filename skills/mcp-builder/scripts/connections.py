@@ -2,9 +2,11 @@
 
 from abc import ABC, abstractmethod
 from contextlib import AsyncExitStack
+from inspect import signature
 from typing import Any
 
 from mcp import ClientSession, StdioServerParameters
+from mcp.types import PaginatedRequestParams
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
 from mcp.client.streamable_http import streamablehttp_client
@@ -54,15 +56,36 @@ class MCPConnection(ABC):
 
     async def list_tools(self) -> list[dict[str, Any]]:
         """Retrieve available tools from the MCP server."""
+        tools = []
+        seen_cursors = set()
+        uses_params = "params" in signature(self.session.list_tools).parameters
         response = await self.session.list_tools()
-        return [
-            {
-                "name": tool.name,
-                "description": tool.description,
-                "input_schema": tool.inputSchema,
-            }
-            for tool in response.tools
-        ]
+
+        while True:
+            for tool in response.tools:
+                input_schema = getattr(tool, "input_schema", None)
+                if input_schema is None:
+                    input_schema = tool.inputSchema
+                tools.append({
+                    "name": tool.name,
+                    "description": tool.description,
+                    "input_schema": input_schema,
+                })
+
+            cursor = getattr(response, "next_cursor", None)
+            if cursor is None:
+                cursor = getattr(response, "nextCursor", None)
+            if cursor is None:
+                return tools
+            if cursor in seen_cursors:
+                raise ValueError(f"MCP server repeated tools/list cursor {cursor!r}")
+            seen_cursors.add(cursor)
+
+            # ClientSession v1 accepts cursor=; v2 accepts params=.
+            if uses_params:
+                response = await self.session.list_tools(params=PaginatedRequestParams(cursor=cursor))
+            else:
+                response = await self.session.list_tools(cursor=cursor)
 
     async def call_tool(self, tool_name: str, arguments: dict[str, Any]) -> Any:
         """Call a tool on the MCP server with provided arguments."""
