@@ -254,7 +254,7 @@ Note: please use generate_review.py to create the viewer; there's no need to wri
 
 The "Outputs" tab shows one test case at a time:
 - **Prompt**: the task that was given
-- **Output**: the files the skill produced, rendered inline where possible
+- **Output**: the files the skill produced, rendered inline where possible. Markdown is previewed; fenced mermaid blocks render as diagrams.
 - **Previous Output** (iteration 2+): collapsed section showing last iteration's output
 - **Formal Grades** (if grading was run): collapsed section showing assertion pass/fail
 - **Feedback**: a textbox that auto-saves as they type
