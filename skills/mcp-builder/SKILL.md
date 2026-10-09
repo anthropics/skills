@@ -29,7 +29,7 @@ Balance comprehensive API endpoint coverage with specialized workflow tools. Wor
 Clear, descriptive tool names help agents find the right tools quickly. Use consistent prefixes (e.g., `github_create_issue`, `github_list_repos`) and action-oriented naming.
 
 **Context Management:**
-Agents benefit from concise tool descriptions and the ability to filter/paginate results. Design tools that return focused, relevant data. Some clients support code execution which can help agents filter and process data efficiently.
+Agents benefit from precise, complete tool descriptions and the ability to filter/paginate results. Design tools that return focused, relevant data. Some clients support code execution which can help agents filter and process data efficiently.
 
 **Actionable Error Messages:**
 Error messages should guide agents toward solutions with specific suggestions and next steps.
@@ -106,9 +106,9 @@ For each tool:
 - Helps clients understand and process tool outputs
 
 **Tool Description:**
-- Concise summary of functionality
-- Parameter descriptions
-- Return type schema
+- Precise, complete description of functionality: what the tool does, when to use it and when not to
+- Parameter descriptions, including each parameter's limits and failure modes
+- Return type schema: what the tool returns (and what it does not return)
 
 **Implementation:**
 - Async/await for I/O operations
