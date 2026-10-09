@@ -11,6 +11,7 @@ from openpyxl import load_workbook
 from openpyxl.utils.cell import range_boundaries
 
 from .recalculate import ERROR_TOKENS, _Evaluator, _calibrate_python
+from .publication import blank_formula_caches
 
 DEFAULT_CONTRACT = Path(__file__).with_name("workbook-contract.json")
 FUTURE_FUNCTIONS = re.compile(r"(?<![\w.])(?:IFNA|IFS|XLOOKUP|XMATCH|CONCAT|TEXTJOIN|FILTER|UNIQUE|SORT|LET|LAMBDA)\s*\(", re.I)
@@ -21,9 +22,10 @@ class ValidationReport:
     ok: bool = False
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
+    finance_status: str = "not_checked"
     counts: dict[str, int] = field(default_factory=lambda: dict.fromkeys(
         ("sheets", "formulas", "formula_errors", "formula_semantic_errors", "missing_cached_values", "table_filter_overlaps",
-         "unsupported_future_functions", "reconciliations", "reconciliation_errors", "diagram_inventory_ids", "private_data_matches", "errors"), 0))
+         "unsupported_future_functions", "reconciliations", "reconciliation_errors", "diagram_inventory_ids", "private_data_matches", "annex_blocks", "errors"), 0))
     cost_totals: list[dict] = field(default_factory=list)
 
     def to_dict(self):
@@ -74,6 +76,7 @@ def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted
         specification = json.loads(Path(contract).read_text(encoding="utf-8"))
         formulas = load_workbook(path)
         values = load_workbook(path, data_only=True)
+        blanks = blank_formula_caches(path)
     except Exception as error:
         report.errors.append(f"Cannot inspect workbook/contract: {error}")
         report.counts["errors"] = len(report.errors)
@@ -95,13 +98,14 @@ def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted
                     report.errors.append(f"{location}: formula error {', '.join(tokens)}")
                 if cell.data_type == "f":
                     report.counts["formulas"] += 1
-                    if cached.value is None:
+                    if cached.value is None and (ws.title, cell.coordinate) not in blanks:
                         report.counts["missing_cached_values"] += 1
                         report.errors.append(f"{location}: missing cached value; recalculate before delivery")
                     elif not control_errors and controls_passed == 10:
                         try:
                             evaluated = evaluator.cell(ws.title, cell.coordinate)
-                            if not _same_formula_value(cached.value, evaluated):
+                            actual = "" if (ws.title, cell.coordinate) in blanks else cached.value
+                            if not _same_formula_value(actual, evaluated):
                                 raise ValueError(f"cached {cached.value!r}, evaluated {evaluated!r}")
                         except Exception as error:
                             report.counts["formula_semantic_errors"] += 1
@@ -143,8 +147,28 @@ def validate_workbook(path: Path, contract: Path = DEFAULT_CONTRACT, *, asserted
         "11_Synthese": ["Indicateur", "Valeur", "Unite", "Notes"],
     }
     for name, headers in expected_headers.items():
-        if name in formulas.sheetnames and [cell.value for cell in formulas[name][4]] != headers:
+        actual = ([formulas[name].cell(4, column).value for column in range(1, 7)]
+                  if name == "06_Scenarios" and name in formulas.sheetnames
+                  else ([cell.value for cell in formulas[name][4]] if name in formulas.sheetnames else headers))
+        if actual != headers:
             report.errors.append(f"{name}: column contract mismatch")
+    if "06_Scenarios" in formulas.sheetnames:
+        ws = formulas["06_Scenarios"]
+        covered = set()
+        for table in ws.tables.values():
+            left, top, right, bottom = range_boundaries(table.ref)
+            if (left, top) == (1, 4):
+                if right != 6:
+                    report.errors.append("06_Scenarios: canonical table must be A:F")
+                continue
+            report.counts["annex_blocks"] += 1
+            headers = [ws.cell(top, c).value for c in range(left, right + 1)]
+            if any(not isinstance(h, str) or not h.strip() for h in headers) or len(headers) != len(set(headers)):
+                report.errors.append(f"06_Scenarios: annex {table.name} has invalid headers")
+            covered.update((r, c) for r in range(top, bottom + 1) for c in range(left, right + 1))
+        if any(cell.value is not None and (cell.row, cell.column) not in covered
+               for row in ws.iter_rows(min_row=4, min_col=7) for cell in row):
+            report.errors.append("06_Scenarios: annex outside A:F requires a separately validated table")
     if all(name in formulas.sheetnames for name in specification["sheets"]):
         try:
             metadata = {row["Cle"]: row["Valeur"] for _, row in _rows(values, "00_Lisez-moi")}
@@ -190,6 +214,14 @@ def _compare(report, location, actual, expected):
 
 def _reconcile(formulas, values, contract, report, currency):
     assumptions = _assumptions(values)
+    rate = assumptions["taux_journalier"]
+    unknown_rate = rate in (None, "A chiffrer")
+    report.finance_status = "blocked" if unknown_rate else "rate_provided_not_approved"
+    if unknown_rate:
+        report.warnings.append("Finance blocked: taux_journalier A chiffrer; dependent human costs and TCO unavailable. Technical capacity and JH remain valid.")
+    elif isinstance(rate, bool) or not isinstance(rate, (int, float)) or not math.isfinite(rate) or rate < 0:
+        report.errors.append("01_Hypotheses: invalid taux_journalier")
+        return
     scenarios = contract["scenario_names"]
     global_scenario = assumptions["scenario_global"]
     if "comparison_scenario" in assumptions and assumptions["comparison_scenario"] not in scenarios:
@@ -256,8 +288,9 @@ def _reconcile(formulas, values, contract, report, currency):
         report.errors.append("07_Phasage: phases do not cover every task lot")
     expected_summary = {"Rapprochement technique (Build + Run/mois)": totals["Build"] + totals["Run"],
                         "JH Build": totals["Build"], "JH Run mensuel": totals["Run"],
-                        "Cout Build": totals["Build"] * assumptions["taux_journalier"],
-                        "Cout Run mensuel": totals["Run"] * assumptions["taux_journalier"]}
+                        "Cout Build": None if unknown_rate else totals["Build"] * rate,
+                        "Cout Run mensuel": None if unknown_rate else totals["Run"] * rate,
+                        "Statut finance": "Bloque - taux journalier A chiffrer" if unknown_rate else "Taux journalier renseigne - approbation non acquise"}
     providers = {provider for provider, _ in provider_totals}
     for provider in providers:
         for scenario in scenarios:

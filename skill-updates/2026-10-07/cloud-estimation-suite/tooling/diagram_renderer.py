@@ -161,7 +161,7 @@ def _clear_segment(first, second, obstacles):
     return True
 
 
-def _route(source, target, positions):
+def _route(source, target, positions, lane=0, lanes=1):
     """Shortest deterministic rectilinear route avoiding every node, plus stubs.
 
     The visibility grid uses the gaps around all rectangles. Dijkstra state
@@ -170,12 +170,19 @@ def _route(source, target, positions):
     """
     x, y = source
     tx, ty = target
+    # Each sorted edge owns distinct ports, vertical grid lanes and horizontal
+    # gap lanes. The offsets fit even the narrowest inter-node gap; a common
+    # endpoint no longer implies a shared stub or occupied route segment.
+    fraction = (lane + 1) / (lanes + 1)
+    offset, gap = 6 + 8 * fraction, 14 + 8 * fraction
+    port = 24 + 64 * fraction
     if source == target:
-        return [(x + NODE_W, y + 35), (x + NODE_W + 12, y + 35), (x + NODE_W + 12, y + NODE_H - 24), (x + NODE_W, y + NODE_H - 24)]
+        return [(x + NODE_W, y + 24 + 24 * fraction), (x + NODE_W + offset, y + 24 + 24 * fraction),
+                (x + NODE_W + offset, y + 64 + 24 * fraction), (x + NODE_W, y + 64 + 24 * fraction)]
     obstacles = [(nx - 4, ny - 4, nx + NODE_W + 4, ny + NODE_H + 4) for nx, ny in positions.values()]
-    start, end = (x + NODE_W + 10, y + NODE_H / 2), (tx + NODE_W + 10, ty + NODE_H / 2)
-    xs = sorted({coordinate for nx, _ in positions.values() for coordinate in (nx - 10, nx + NODE_W + 10)})
-    ys = sorted({start[1], end[1]} | {coordinate for _, ny in positions.values() for coordinate in (ny - 24, ny + NODE_H + 24)})
+    start, end = (x + NODE_W + offset, y + port), (tx + NODE_W + offset, ty + port)
+    xs = sorted({coordinate for nx, _ in positions.values() for coordinate in (nx - (4 + 2 * fraction), nx + NODE_W + offset)})
+    ys = sorted({start[1], end[1]} | {coordinate for _, ny in positions.values() for coordinate in (ny - gap, ny + NODE_H + gap)})
     xi, yi = {value: index for index, value in enumerate(xs)}, {value: index for index, value in enumerate(ys)}
     initial = (start, 1)  # Initial stub is horizontal.
     queue, costs, previous = [(0, start, 1)], {initial: 0}, {}
@@ -238,6 +245,47 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         if asset and node["provider"] == asset[1]["provider"]:
             used[node["id"]] = asset
     groups, positions, width, height = _layout(nodes)
+    routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions, index, len(edges))
+              for index, edge in enumerate(edges)}
+    try:
+        font = ImageFont.load_default(size=14)
+    except TypeError:  # Pillow before 10.1 has no size argument.
+        font = ImageFont.load_default()
+    # Measure full labels; do not disguise collisions by truncating their text.
+    label_boxes, footer_labels = {}, set()
+    occupied = [(x - 4, y - 4, x + NODE_W + 4, y + NODE_H + 4) for x, y in positions.values()]
+    all_segments = [pair for points in routes.values() for pair in zip(points, points[1:])]
+    footer = height
+    for edge in edges:
+        value = edge["label"] or edge["id"]
+        bounds = font.getbbox(value)
+        w, h = max(bounds[2] - bounds[0], math.ceil(len(value) * 9)) + 12, 28
+        points = routes[edge["id"]]
+        candidates = []
+        for first, second in sorted(zip(points, points[1:]), key=lambda p: -(abs(p[1][0] - p[0][0]) + abs(p[1][1] - p[0][1]))):
+            if first[1] == second[1]:
+                candidates.extend([((first[0] + second[0] - w) / 2, first[1] - h - 4),
+                                   ((first[0] + second[0] - w) / 2, first[1] + 4)])
+        box = None
+        for lx, ly in candidates:
+            rect = (lx, ly, lx + w, ly + h)
+            if lx < 4 or ly < 4 or lx + w > width - 4 or ly + h > height - 4:
+                continue
+            if any(max(lx, a) < min(lx + w, c) and max(ly, b) < min(ly + h, d) for a, b, c, d in occupied):
+                continue
+            if any(not _clear_segment(a, b, [rect]) for a, b in all_segments):
+                continue
+            box = rect
+            break
+        if box is None:
+            # Dedicated numbered flow legend, outside node/route occupancy.
+            box = (24, footer + 8, 24 + w + 100, footer + 8 + h)
+            footer += h + 12
+            width = max(width, math.ceil(box[2] + 24))
+            footer_labels.add(edge["id"])
+        occupied.append(box)
+        label_boxes[edge["id"]] = box
+    height = max(height, math.ceil(footer + (20 if footer != height else 0)))
     root = ET.Element("svg", {"xmlns": "http://www.w3.org/2000/svg", "width": str(width), "height": str(height), "viewBox": f"0 0 {width} {height}"})
     ET.SubElement(root, "title").text = "Architecture diagram"
     provenance = sorted({asset[1]["path"]: asset[1] for asset in used.values()}.values(), key=lambda item: item["path"])
@@ -248,10 +296,6 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
     ET.SubElement(marker, "path", {"d": "M 0 0 L 10 5 L 0 10 z", "fill": "#345678"})
     canvas = Image.new("RGB", (width, height), "white")
     draw = ImageDraw.Draw(canvas)
-    try:
-        font = ImageFont.load_default(size=14)
-    except TypeError:  # Pillow before 10.1 has no size argument.
-        font = ImageFont.load_default()
 
     def rectangle(parent, x, y, w, h, fill, stroke):
         ET.SubElement(parent, "rect", {"x": str(x), "y": str(y), "width": str(w), "height": str(h), "rx": "6", "fill": fill, "stroke": stroke})
@@ -267,7 +311,6 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
                 group = ET.SubElement(root, "g", {f"data-{kind}": label})
                 rectangle(group, x, y, w, h, "#f2f6fa" if kind == "environment" else "#ffffff", "#c3d1df")
                 text(group, x + 12, y + 8, label)
-    routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions) for edge in edges}
     for edge in edges:
         points = routes[edge["id"]]
         path = "M " + " L ".join(f"{x:g} {y:g}" for x, y in points)
@@ -294,10 +337,14 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
             text(group, x + offset, y + 12 + index * 18, line)
         text(group, x + 12, y + NODE_H - 28, node["id"])
     for edge in edges:
-        points = routes[edge["id"]]
-        first, second = max(zip(points, points[1:]), key=lambda pair: abs(pair[1][0] - pair[0][0]) + abs(pair[1][1] - pair[0][1]))
-        x, y = ((first[0] + second[0]) / 2, (first[1] + second[1]) / 2)
-        text(root, x + 4, y - 18, edge["label"] or edge["id"])
+        x, y, right, bottom = label_boxes[edge["id"]]
+        label_group = ET.SubElement(root, "g", {"data-flow-label": edge["id"]})
+        ET.SubElement(label_group, "title").text = f"{edge['id']}: {edge['source']} -> {edge['target']}"
+        rectangle(label_group, x, y, right - x, bottom - y, "#ffffff", "#b8c8d8")
+        label_group[-1].set("data-edge-label-id", edge["id"])
+        text(label_group, x + 4, y + 4, edge["label"] or edge["id"])
+        if edge["id"] in footer_labels:
+            text(label_group, right - 90, y + 4, edge["id"])
     if not nodes:
         text(root, 24, 40, "No inventory nodes supplied")
     svg_bytes = ET.tostring(root, encoding="utf-8")

@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 import re
 import sys
-from uuid import NAMESPACE_URL, uuid5
 import xml.etree.ElementTree as ET
 from zipfile import ZipFile
 
@@ -24,6 +23,7 @@ from tooling.anonymisation import scan_tree
 from tooling.diagram_renderer import render_diagram
 from tooling.model import load_model
 from tooling.recalculate import recalculate
+from tooling.publication import sanitize_publication
 from tooling.workbook_builder import build_workbook
 from tooling.workbook_validator import validate_workbook
 
@@ -147,29 +147,8 @@ def synthetic_model():
 
 
 def _public_metadata(path):
-    """Normalize author/revision metadata after native save; retain caches."""
-    # xsi:type contains a QName string; its prefix must survive serialization.
-    ET.register_namespace("dcterms", "http://purl.org/dc/terms/")
-    with ZipFile(path) as archive:
-        entries = [(item, archive.read(item.filename)) for item in archive.infolist()]
-    identifiers = {}
-    def public_identifier(match):
-        original = match.group()
-        if original not in identifiers:
-            value = str(uuid5(NAMESPACE_URL, f"public-synthetic-revision-{len(identifiers)}"))
-            identifiers[original] = ("{" + value[:-1] + "a}").encode("ascii")
-        return identifiers[original]
-    with ZipFile(path, "w") as archive:
-        for item, content in entries:
-            if item.filename.endswith((".xml", ".rels")):
-                content = re.sub(rb"\{[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}\}", public_identifier, content)
-            if item.filename == "docProps/core.xml":
-                root = ET.fromstring(content)
-                for element in root:
-                    if element.tag.rsplit("}", 1)[-1] in ("creator", "lastModifiedBy"):
-                        element.text = "Public synthetic example"
-                content = ET.tostring(root, encoding="utf-8", xml_declaration=True)
-            archive.writestr(item, content)
+    """Idempotent shared normalization; structural OOXML GUIDs are retained."""
+    return sanitize_publication(path)
 
 
 def generate(output, require_native=False):
@@ -215,7 +194,7 @@ def generate(output, require_native=False):
             reference_effort("Build"), reference_effort("Run"),
             f'=SUMIFS(CoutsCloud[Cout mensuel (EUR)],CoutsCloud[Fournisseur],A{row},CoutsCloud[Scenario],{scenario_reference})',
             f"='01_Hypotheses'!{ref('tco_horizon_years')}",
-            f"=B{row}*taux_journalier+(C{row}*taux_journalier+D{row}+'01_Hypotheses'!{ref('non_cloud_opex')})*mois_par_an*E{row}",
+            f'=IF(taux_journalier="","",IF(taux_journalier="A chiffrer","",B{row}*taux_journalier+(C{row}*taux_journalier+D{row}+\'01_Hypotheses\'!{ref("non_cloud_opex")})*mois_par_an*E{row}))',
         ], 2):
             cell = comparison.cell(row, column, formula)
             cell.font = Font(name="Arial", color="008000")

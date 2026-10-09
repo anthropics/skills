@@ -22,6 +22,8 @@ from openpyxl.utils.cell import range_boundaries
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.table import Table
 
+from .publication import blank_formula_caches, sanitize_publication
+
 ERROR_TOKENS = ("#REF!", "#DIV/0!", "#VALUE!", "#N/A", "#NAME?", "#NUM!", "#NULL!", "#SPILL!", "#CALC!")
 NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 
@@ -34,6 +36,8 @@ class RecalculationResult:
     cached_values_count: int = 0
     controls_passed: int = 0
     native_opened: bool = False
+    publication_inspected_parts: int = 0
+    final_native_opened: bool = False
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
@@ -434,6 +438,31 @@ def _native_libreoffice(path, executable, directory):
     shutil.copyfile(converted, path)
 
 
+def _verify_native_final(path, backend):
+    """Open sanitized bytes read-only, close without Save, and assert unchanged."""
+    before = Path(path).read_bytes()
+    if backend == "powershell":
+        script = _EXCEL_RECALCULATE.replace("$false)", "$true)", 1).replace("    $excel.CalculateFullRebuild()\n    $workbook.Save()", "    if (-not $workbook.ReadOnly) { throw 'Final workbook is not read-only' }")
+        _run_excel_powershell(script, path)
+    else:
+        import win32com.client
+        excel = win32com.client.DispatchEx("Excel.Application")
+        workbook = None
+        try:
+            excel.Visible = False
+            excel.DisplayAlerts = False
+            excel.AutomationSecurity = 3
+            workbook = excel.Workbooks.Open(str(Path(path).resolve()), UpdateLinks=0, ReadOnly=True)
+            if not workbook.ReadOnly:
+                raise FormulaFailure("Final workbook is not read-only")
+        finally:
+            if workbook is not None:
+                workbook.Close(SaveChanges=False)
+            excel.Quit()
+    if Path(path).read_bytes() != before:
+        raise FormulaFailure("Final native opening changed published bytes")
+
+
 def _formula_cells(workbook):
     return [(ws.title, cell.coordinate) for ws in workbook for row in ws for cell in row if cell.data_type == "f"]
 
@@ -521,7 +550,11 @@ def recalculate(path: Path) -> RecalculationResult:
                     return report
                 _inject_caches(path, candidate, workbook, values)
                 report.warnings.append("Python fallback used; native Excel/LibreOffice opening is not verified. Only the documented formula subset is supported.")
+            report.publication_inspected_parts = sanitize_publication(candidate)
             _verify_caches(candidate, formulas)
+            if report.engine == "excel-com":
+                _verify_native_final(candidate, excel_backend)
+                report.final_native_opened = True
             report.cached_values_count = len(formulas)
             os.replace(candidate, path)
             report.ok = True
@@ -531,6 +564,7 @@ def recalculate(path: Path) -> RecalculationResult:
 
 
 def _verify_caches(path, formulas):
+    blanks = blank_formula_caches(path)
     with Path(path).open("rb") as stream:
         values = load_workbook(stream, data_only=True)
     with Path(path).open("rb") as stream:
@@ -539,7 +573,7 @@ def _verify_caches(path, formulas):
         if formula_workbook[sheet][coordinate].data_type != "f":
             raise FormulaFailure(f"{sheet}!{coordinate}: native conversion lost formula")
         cell = values[sheet][coordinate]
-        if cell.value is None:
+        if cell.value is None and (sheet, coordinate) not in blanks:
             raise FormulaFailure(f"{sheet}!{coordinate}: missing cached value")
         if cell.data_type == "e" or isinstance(cell.value, str) and cell.value in ERROR_TOKENS:
             raise FormulaFailure(f"{sheet}!{coordinate}: {cell.value}")

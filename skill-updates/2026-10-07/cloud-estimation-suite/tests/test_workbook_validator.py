@@ -249,6 +249,7 @@ def test_native_excel_takes_priority_and_records_verified_opening(valid_workbook
     mutate(valid_workbook, "11_Synthese", "B6", "=SUMIF(Taches[Nature],\"Build\",Taches[JH retenu])")
     monkeypatch.setattr(module, "_select_excel_backend", lambda: "powershell")
     monkeypatch.setattr(module, "_native_excel", lambda candidate, backend: candidate.write_bytes(native_bytes))
+    monkeypatch.setattr(module, "_verify_native_final", lambda candidate, backend: None)
     monkeypatch.setattr(module, "_find_libreoffice", lambda: Path("unused-soffice"))
     result = recalculate(valid_workbook)
     assert result.ok

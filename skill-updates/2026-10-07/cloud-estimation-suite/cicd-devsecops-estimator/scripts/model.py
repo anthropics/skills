@@ -168,6 +168,8 @@ def load_model(path: Path) -> EstimateModel:
     if "comparison_scenario" in assumptions and assumptions["comparison_scenario"] not in SCENARIOS:
         raise ValueError("assumptions.comparison_scenario: unknown scenario")
     for key in ("taux_journalier", "mois_par_an"):
+        if key == "taux_journalier" and assumptions[key] in (None, "A chiffrer"):
+            continue  # Unknown is not a zero price; only financial dependencies stop.
         _number(assumptions[key], f"assumptions.{key}")
     costs = _records(data, "cloud_costs", CloudCost)
     if any(cost.currency != data["metadata"]["currency"] for cost in costs):

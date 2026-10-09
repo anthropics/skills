@@ -27,6 +27,11 @@ import tokenize
 import zipfile
 import zlib
 
+try:
+    from .publication import structural_guid_spans
+except ImportError:  # Direct authoring-tool CLI invocation.
+    from publication import structural_guid_spans
+
 
 TEXT_SUFFIXES = {".md", ".markdown", ".json", ".py", ".csv", ".xml", ".svg", ".txt", ".rels", ".ini"}
 ARCHIVE_SUFFIXES = {".zip", ".xlsx"}
@@ -49,6 +54,7 @@ EMAIL = re.compile(r"(?i)\b[a-z0-9._%+-]+@((?:[a-z0-9-]+\.)+[a-z]{2,63})\b")
 IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?!\w|\.\w)")
 IPV6 = re.compile(r"(?<![\w:])(?:[0-9a-fA-F]{0,4}:){2,}[0-9a-fA-F:.]*(?![\w:]|\.\w)")
 IDENTIFIERS = {
+    "local-user-path": re.compile(r"(?i)(?:[a-z]:[\\/]Users[\\/]|/Users/|/home/)[a-z0-9_.-]+(?:[\\/][^\s<>\"']*)?"),
     "cloud-account-id": re.compile(r"(?<![\w])\d{12}(?![\w])"),
     "cloud-project-id": re.compile(r"(?i)\b(?:project[_-]?id\s*[\"']?\s*[:=]\s*[\"']?|projects/)([a-z][a-z0-9-]{4,62}[a-z0-9])\b"),
     "cloud-subscription-id": re.compile(r"(?i)\b(?:subscription[_-]?id\s*[\"']?\s*[:=]\s*[\"']?|subscriptions/)([a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12})\b"),
@@ -230,6 +236,16 @@ class _Scanner:
                 self.report.binary_entries += 1
             return
         self.report.scanned_texts += 1
+        if "!" in path:
+            part = path.rsplit("!", 1)[-1]
+            spans = structural_guid_spans(content, part)
+            # Explicit private policy tokens remain forbidden even in a uid.
+            for line, text in enumerate(content.splitlines(), 1):
+                for rule, pattern in self.literal_rules:
+                    if pattern.search(text):
+                        self.record(path, rule, line)
+            for start, end in sorted(spans, reverse=True):
+                content = content[:start] + "X" * (end - start) + content[end:]
         is_python = path.endswith(".py")
         for line, text in enumerate(content.splitlines(), 1):
             self.check_line(text, path, line, domains=not is_python)

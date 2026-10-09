@@ -5,7 +5,8 @@
   "independent_forward_tests": {
     "status": "pending",
     "required": 11,
-    "executed": 0
+    "executed": 0,
+    "scope": "Independent replays on the corrected revision have not been run by the implementer. Previous failing reports are not replay passes."
   },
   "skills": [
     {
@@ -16,9 +17,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 11,
       "archive": "cloud-estimation-orchestrator.skill",
-      "member_count": 13,
-      "sha256": "4fbd784253eedc8626d352e1d7e7157847f7bd66f98da54e0ff23284da46fe48",
-      "uncompressed_size": 130329
+      "member_count": 14,
+      "sha256": "17d250ca1f489bef079a5aa76335288d35f31d011bcde182290aa4ee3398c749",
+      "uncompressed_size": 145745
     },
     {
       "name": "infra-work-estimator",
@@ -28,9 +29,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "infra-work-estimator.skill",
-      "member_count": 13,
-      "sha256": "6d27248d214b8f86c219936a09ef5983f61fea928c1818ec43a702d37643952a",
-      "uncompressed_size": 125544
+      "member_count": 14,
+      "sha256": "dce8498be86cbfbe3722a594c4d12973f5be5cc0b18245150a06e75141441786",
+      "uncompressed_size": 140960
     },
     {
       "name": "cloud-architecture-advisor",
@@ -40,9 +41,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-architecture-advisor.skill",
-      "member_count": 13,
-      "sha256": "779912f0b06aa43a0a666dd4a088eccc9891b409687502e77415c556c78c0468",
-      "uncompressed_size": 127316
+      "member_count": 14,
+      "sha256": "4297e4d0246320720e1bcd2de9840d504f711bf57154b68a5c87b34f9310ae22",
+      "uncompressed_size": 142732
     },
     {
       "name": "kubernetes-architect",
@@ -52,9 +53,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "kubernetes-architect.skill",
-      "member_count": 13,
-      "sha256": "03e91569e82b23465171adb061e92735941440e9ed78e7d587b6d26ab36a33e7",
-      "uncompressed_size": 123960
+      "member_count": 14,
+      "sha256": "79c881cad8697b967aea5c6f6f72fe92a24c3fdccb5a61b325e2176e54e8e1ed",
+      "uncompressed_size": 139376
     },
     {
       "name": "cicd-devsecops-estimator",
@@ -64,9 +65,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cicd-devsecops-estimator.skill",
-      "member_count": 13,
-      "sha256": "2a90da159e84e1c8d2e3f05b1fef223d23d6fc0df4c988ccc07094981dc07971",
-      "uncompressed_size": 125948
+      "member_count": 14,
+      "sha256": "99ec69c94834ce5360024092e205551c689253cc62a2277c0a7588df45c18452",
+      "uncompressed_size": 141364
     },
     {
       "name": "server-hardening-estimator",
@@ -76,9 +77,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "server-hardening-estimator.skill",
-      "member_count": 13,
-      "sha256": "5e29439cdf664d25566c017fabb3cec53db9387b0ac36279c7f27b0aff3076fd",
-      "uncompressed_size": 127401
+      "member_count": 14,
+      "sha256": "c00a17b423037748f8b8eb3d58a837525ef7e4641341e5ebae4be0e3eef8d55c",
+      "uncompressed_size": 142817
     },
     {
       "name": "hosting-capacity-simulator",
@@ -88,9 +89,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 14,
       "archive": "hosting-capacity-simulator.skill",
-      "member_count": 14,
-      "sha256": "ab14bc88e8b0650d0c8adae21d9da1163e3ad4d80f17cce6638a55b91b6aa1f0",
-      "uncompressed_size": 129825
+      "member_count": 15,
+      "sha256": "449adfb18dbc9613dff932568057e52686784eed54ff0c7656a07686b206d330",
+      "uncompressed_size": 145241
     },
     {
       "name": "cloud-provider-selector",
@@ -100,9 +101,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-provider-selector.skill",
-      "member_count": 13,
-      "sha256": "991a2239f3c1e09e74dcddb67261cb5cbbbb68822f0a0498288f6385d122aa2e",
-      "uncompressed_size": 124463
+      "member_count": 14,
+      "sha256": "1d0e316e8aed7af2e433635b6ccba20a82178b7fa2055ccae1f3d73d8dd7156d",
+      "uncompressed_size": 139879
     },
     {
       "name": "finops-optimizer",
@@ -112,9 +113,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "finops-optimizer.skill",
-      "member_count": 13,
-      "sha256": "edecf56d06e5762988dc4937f4195ee80020a32395c4d4b1cedfd298ec76607d",
-      "uncompressed_size": 126711
+      "member_count": 14,
+      "sha256": "68bc6a8c797330fb642b651e32083ce9b97591193dc0d6d789b49aaf5bab8fa2",
+      "uncompressed_size": 142127
     },
     {
       "name": "cloud-migration-estimator",
@@ -124,9 +125,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-migration-estimator.skill",
-      "member_count": 13,
-      "sha256": "5043084291c16225c23aa34fa5f906ed9d5f82efd2e07f2997a030c4c12b2180",
-      "uncompressed_size": 123770
+      "member_count": 14,
+      "sha256": "c98bc1ad3a8a1fb98f8034425eb92dcb753bd676bb937f60fef725098df10fd0",
+      "uncompressed_size": 139186
     },
     {
       "name": "cloud-architecture-diagrammer",
@@ -136,9 +137,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 14,
       "archive": "cloud-architecture-diagrammer.skill",
-      "member_count": 14,
-      "sha256": "671c722b0fbd2dc7c6ae3e93a70f846ab1966a400fb94bd722f76d4293ce633d",
-      "uncompressed_size": 123072
+      "member_count": 15,
+      "sha256": "f09cd752be579d0c5062349257b8590f3d18ed8afa9affadcd3358b4a5f72dbb",
+      "uncompressed_size": 138488
     }
   ],
   "workbook_validation": {
@@ -147,18 +148,20 @@
     "warnings": [
       "Numerical prose and diagram correspondence are checked only for supplied assertions/IDs."
     ],
+    "finance_status": "rate_provided_not_approved",
     "counts": {
       "sheets": 12,
-      "formulas": 132,
+      "formulas": 133,
       "formula_errors": 0,
       "formula_semantic_errors": 0,
       "missing_cached_values": 0,
       "table_filter_overlaps": 0,
       "unsupported_future_functions": 0,
-      "reconciliations": 140,
+      "reconciliations": 141,
       "reconciliation_errors": 0,
       "diagram_inventory_ids": 4,
       "private_data_matches": 0,
+      "annex_blocks": 1,
       "errors": 0
     },
     "cost_totals": [
@@ -166,149 +169,149 @@
         "provider": "Provider A",
         "environment": "Non-production",
         "scenario": "Economique",
-        "monthly": 45,
-        "annual": 540,
+        "monthly": 45.0,
+        "annual": 540.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider A",
         "environment": "Non-production",
         "scenario": "Resilient",
-        "monthly": 45,
-        "annual": 540,
+        "monthly": 45.0,
+        "annual": 540.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider A",
         "environment": "Non-production",
         "scenario": "Standard",
-        "monthly": 45,
-        "annual": 540,
+        "monthly": 45.0,
+        "annual": 540.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider A",
         "environment": "Production",
         "scenario": "Economique",
-        "monthly": 69,
-        "annual": 828,
+        "monthly": 69.0,
+        "annual": 828.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider A",
         "environment": "Production",
         "scenario": "Resilient",
-        "monthly": 195,
-        "annual": 2340,
+        "monthly": 195.0,
+        "annual": 2340.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider A",
         "environment": "Production",
         "scenario": "Standard",
-        "monthly": 126,
-        "annual": 1512,
+        "monthly": 126.0,
+        "annual": 1512.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Non-production",
         "scenario": "Economique",
-        "monthly": 50,
-        "annual": 600,
+        "monthly": 50.0,
+        "annual": 600.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Non-production",
         "scenario": "Resilient",
-        "monthly": 50,
-        "annual": 600,
+        "monthly": 50.0,
+        "annual": 600.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Non-production",
         "scenario": "Standard",
-        "monthly": 50,
-        "annual": 600,
+        "monthly": 50.0,
+        "annual": 600.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Production",
         "scenario": "Economique",
-        "monthly": 74,
-        "annual": 888,
+        "monthly": 74.0,
+        "annual": 888.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Production",
         "scenario": "Resilient",
-        "monthly": 210,
-        "annual": 2520,
+        "monthly": 210.0,
+        "annual": 2520.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider B",
         "environment": "Production",
         "scenario": "Standard",
-        "monthly": 136,
-        "annual": 1632,
+        "monthly": 136.0,
+        "annual": 1632.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Non-production",
         "scenario": "Economique",
-        "monthly": 55,
-        "annual": 660,
+        "monthly": 55.0,
+        "annual": 660.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Non-production",
         "scenario": "Resilient",
-        "monthly": 55,
-        "annual": 660,
+        "monthly": 55.0,
+        "annual": 660.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Non-production",
         "scenario": "Standard",
-        "monthly": 55,
-        "annual": 660,
+        "monthly": 55.0,
+        "annual": 660.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Production",
         "scenario": "Economique",
-        "monthly": 79,
-        "annual": 948,
+        "monthly": 79.0,
+        "annual": 948.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Production",
         "scenario": "Resilient",
-        "monthly": 225,
-        "annual": 2700,
+        "monthly": 225.0,
+        "annual": 2700.0,
         "currency": "EUR"
       },
       {
         "provider": "Provider C",
         "environment": "Production",
         "scenario": "Standard",
-        "monthly": 146,
-        "annual": 1752,
+        "monthly": 146.0,
+        "annual": 1752.0,
         "currency": "EUR"
       }
     ]
   },
-  "anonymisation_summary": "matches=0 issues=0 complete=true files=212 texts=374 binary=21 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
+  "anonymisation_summary": "matches=0 issues=0 complete=true files=250 texts=398 binary=46 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
   "public_example_review": {
     "groups": [
       {
@@ -390,13 +393,14 @@
   },
   "repository_checks": {
     "pytest": {
-      "passed": 312,
+      "passed": 323,
       "skipped": 1,
       "failed": 0,
       "skip_reason": "Windows symlink creation unavailable",
       "command": "python -X utf8 -m pytest skill-updates/2026-10-07/cloud-estimation-suite/tests -q"
     },
-    "diff_check_exit": 0
+    "diff_check_exit": 0,
+    "bundles_byte_identical_rebuild": 11
   },
   "tdd": {
     "baseline": {
@@ -425,19 +429,44 @@
   },
   "public_workbook": {
     "path": "examples/synthetic-cloud-estimate.xlsx",
-    "sha256": "9d4ce0748788208511ac56263d54ef0b9ca7c8f8640857e561069869ff477e40",
+    "sha256": "1e0c0b09014d622ad83f550fa818ee91031aa475f1baca19c6baa5deddec3439",
     "recalculation": {
       "engine": "excel-com",
       "native_opened": true,
-      "formulas": 132,
-      "cached_values": 132,
+      "formulas": 133,
+      "cached_values": 133,
       "errors": 0,
-      "final_artifact_native_open_verified": true
+      "publication_inspected_parts": 49,
+      "final_artifact_native_open_verified": true,
+      "final_open_read_only": true,
+      "final_open_saved": false,
+      "final_open_bytes_unchanged": true
     },
     "comparison_dropdown": {
       "values": 3,
       "native_visible": true,
       "native_alert_style": "stop"
     }
+  },
+  "forward_fix_round_1": {
+    "base_commit": "2f8eb44818890ba439bbd756d2d671901bd0ced7",
+    "baseline_targeted_passed": 95,
+    "initial_red_failed": 6,
+    "additional_native_guid_red_failed": 2,
+    "regression_green_passed": 11,
+    "renderer_validator_green_passed": 76,
+    "independent_replays": "pending",
+    "corrections": [
+      "Unknown daily rate is null/A chiffrer, never a placeholder zero; technical effort/capacity stays calculable, dependent costs blank, financial status blocked",
+      "Automatic post-native byte-level author/absolute-path normalization preserves namespace declarations, QName values, formula caches and structural Office GUIDs; all XML/relationships parsed and final Excel opens read-only without saving",
+      "Sorted edge-specific ports and orthogonal lanes remove shared flow segments; full-length measured label boxes avoid nodes, flows and labels; deterministic fallback legend",
+      "Canonical scenario headers bounded to A4:F4; disjoint annex tables checked separately with unique nonempty headers, all formulas/caches and supplied numerical assertions"
+    ],
+    "limitations": [
+      "Native Excel results verified on this Windows host; fallback does not claim final native opening",
+      "Additional domain-specific costs/TCO must use unknown-price guards; annex arithmetic is independently checked only for supplied assertions",
+      "Perpendicular crossings in complex diagrams are not globally optimized; the three-zone forward case has zero node/label collisions and zero shared segments",
+      "Confidentiality scans and reviewed synthetic combinations are evidence, not a mathematical anonymity guarantee"
+    ]
   }
 }

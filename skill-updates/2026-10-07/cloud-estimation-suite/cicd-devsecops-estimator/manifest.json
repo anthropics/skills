@@ -2,16 +2,17 @@
   "files": {
     "LICENSE": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94",
     "SKILL.md": "e620f6d216615dbae35f41db1723229c88bdcd5f0df0ff1f56126e1751e458c5",
-    "references/common-methodology.md": "bc80933e70321451e50b6b889256e295d44ba6ee85599be048be875756f8412f",
+    "references/common-methodology.md": "d6bee45b8066ba37137193a20f9113d0031ce989e7c0056f1afb26b3def1a0e9",
     "references/domain-contract.json": "7f17fd8d155b9d4d231cfeb3b423551624462ec038eb36bb537fd1c542259c07",
     "references/pipeline-catalogue.md": "df20013fa6f5c91deaa7b3c890576c4b7da30bc19d795a89e4e1b1db1208ffeb",
-    "scripts/diagram_renderer.py": "32767ecd068fc29ddc90487782e7152edab1d815b54239020d9c1582f15a73d0",
+    "scripts/diagram_renderer.py": "d11f20b30ac83a02ad6b53d616ae9b7b4d196f6aad7de16109cc17f57056de0d",
     "scripts/icon-policy.json": "38f7cce62cd171bd5660edba4b69c4d6f6606a2779cba748c68c2012101326ed",
-    "scripts/model.py": "7374de1d5e42119fd586ab05fbdbfb06d313463be4efde54d2464807efe97dd2",
-    "scripts/recalculate.py": "69540af43f168515e3efb7183e454ec2e1aadc16080eaf084a6f27b209d88110",
+    "scripts/model.py": "9448180b0779c0edbcb0486ee2640744eeb51c588ee9c0933a8ea1618af70585",
+    "scripts/publication.py": "e6c170eb9d611821a29c11b7bcbef4b6ecf189f5ea930b81644bbb76830768b8",
+    "scripts/recalculate.py": "69288048ccf6d59512bd7aacaa8c53b180648fe53bc8cf69018af1cdaef200a8",
     "scripts/workbook-contract.json": "2319bde2a7bf3669dcf9bb65d041b4de09fb57fa15c5ad9be496c2fbb604f34f",
-    "scripts/workbook_builder.py": "2190185b73fd7223a465f61ef4d264241723ff79ddea40442c1ce5790059acb8",
-    "scripts/workbook_validator.py": "ae497645f820f863f973a97135fd7370c68fc15565a8b9ee13b52c934c07c7ce"
+    "scripts/workbook_builder.py": "38e3ac68e85de58e15cc482c8652f0529b8b8174f506f0354e788b3bdf554196",
+    "scripts/workbook_validator.py": "3b314620f56f26482e4857148e6347adf99f0e79ad14a28bc1de6d60c3b718aa"
   },
   "generated_files": [
     "LICENSE",
@@ -19,6 +20,7 @@
     "scripts/diagram_renderer.py",
     "scripts/icon-policy.json",
     "scripts/model.py",
+    "scripts/publication.py",
     "scripts/recalculate.py",
     "scripts/workbook-contract.json",
     "scripts/workbook_builder.py",

@@ -16,6 +16,7 @@ SHARED = {
     "scripts/workbook_builder.py": "workbook_builder.py",
     "scripts/workbook_validator.py": "workbook_validator.py",
     "scripts/recalculate.py": "recalculate.py",
+    "scripts/publication.py": "publication.py",
     "scripts/diagram_renderer.py": "diagram_renderer.py",
     "scripts/workbook-contract.json": "workbook-contract.json",
     "scripts/icon-policy.json": "icon-policy.json",

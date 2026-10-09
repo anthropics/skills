@@ -218,15 +218,17 @@ def build_workbook(model: EstimateModel, output: Path, *, architecture: dict | N
     for provider in providers:
         for scenario in SCENARIOS:
             summary_rows.append([f"Cloud mensuel | {provider} | {scenario}", None, f"{currency}/mois", "Option alternative ; ne pas sommer les fournisseurs."])
+    summary_rows.append(["Statut finance", None, "Controle", "Un taux inconnu bloque couts humains, TCO et approbation financiere, pas les capacites ou JH. Un taux renseigne ne vaut pas approbation."])
     summary = _sheet(wb, sheets[11], ["Indicateur", "Valeur", "Unite", "Notes"], summary_rows, "Synthese", "Synthese dynamique des charges et options cloud. Les prix, la couverture et les incertitudes doivent etre confirmes avant engagement.")
     summary_formulas = ["=SUM(Taches[JH retenu])", '=SUMIF(Taches[Nature],"Build",Taches[JH retenu])',
                         '=SUMIF(Taches[Nature],"Run",Taches[JH retenu])',
-                        '=SUMIF(Taches[Nature],"Build",Taches[JH retenu])*taux_journalier',
-                        '=SUMIF(Taches[Nature],"Run",Taches[JH retenu])*taux_journalier']
+                        '=IF(taux_journalier="","",IF(taux_journalier="A chiffrer","",SUMIF(Taches[Nature],"Build",Taches[JH retenu])*taux_journalier))',
+                        '=IF(taux_journalier="","",IF(taux_journalier="A chiffrer","",SUMIF(Taches[Nature],"Run",Taches[JH retenu])*taux_journalier))']
     for provider in providers:
         for scenario in SCENARIOS:
             quoted_provider = provider.replace('"', '""')
             summary_formulas.append(f'=SUMIFS(CoutsCloud[Cout mensuel ({currency})],CoutsCloud[Fournisseur],"{quoted_provider}",CoutsCloud[Scenario],"{scenario}")')
+    summary_formulas.append('=IF(taux_journalier="","Bloque - taux journalier A chiffrer",IF(taux_journalier="A chiffrer","Bloque - taux journalier A chiffrer","Taux journalier renseigne - approbation non acquise"))')
     for row_index, formula in enumerate(summary_formulas, FIRST_DATA_ROW):
         _formula(summary, row_index, 2, formula, True)
     output = Path(output)
