@@ -1,0 +1,45 @@
+{
+  "branches": {
+    "main": "main",
+    "dev": "dev",
+    "release_prefix": "release/"
+  },
+  "verification": {
+    "lint_command": "",
+    "typecheck_command": "",
+    "test_command": "",
+    "build_command": ""
+  },
+  "risk": {
+    "revert_cost_patterns": {
+      "HIGH": [
+        "migration",
+        "schema",
+        "*.sql",
+        "*.prisma",
+        "*.proto",
+        "docker-compose",
+        ".github/workflows",
+        "terraform",
+        "kubernetes",
+        "helm",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml",
+        "Cargo.lock",
+        "go.sum",
+        "requirements.txt",
+        "pyproject.toml"
+      ],
+      "MEDIUM": [
+        "config",
+        "settings",
+        "*.yaml",
+        "*.yml",
+        "*.toml",
+        "*.ini",
+        "*.env*"
+      ]
+    }
+  }
+}
