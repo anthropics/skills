@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "scale": {
+    "min": 0,
+    "max": 10,
+    "descriptors": {
+      "9.0-10.0": "Exceptional match",
+      "7.5-8.9": "Strong match",
+      "6.0-7.4": "Moderate match",
+      "4.0-5.9": "Weak match",
+      "0.0-3.9": "Poor match"
+    }
+  },
+  "criteria": [
+    {
+      "name": "Technical Skills Match",
+      "key": "technical_skills",
+      "weight": 0.30,
+      "description": "How well the candidate's technical skills align with the job requirements.",
+      "scoring": {
+        "9-10": "Meets or exceeds all required technical skills and most preferred skills.",
+        "7-8": "Meets most required technical skills, some preferred skills present.",
+        "5-6": "Meets roughly half of the required technical skills.",
+        "3-4": "Meets a few required skills but has significant gaps.",
+        "0-2": "Very little overlap between candidate skills and job requirements."
+      },
+      "evaluation_notes": [
+        "Match required skills before preferred skills.",
+        "Recognize equivalent names (e.g., 'JS' = 'JavaScript', 'K8s' = 'Kubernetes').",
+        "Consider transferable skills from adjacent technologies.",
+        "Differentiate between listed skills and demonstrated skills (used in projects/roles)."
+      ]
+    },
+    {
+      "name": "Experience Relevance",
+      "key": "experience_relevance",
+      "weight": 0.25,
+      "description": "How closely the candidate's work history matches the role's responsibilities and experience requirements.",
+      "scoring": {
+        "9-10": "Extensive directly relevant experience meeting or exceeding the required years. Prior roles closely mirror the target position.",
+        "7-8": "Solid relevant experience near the required years. Most past responsibilities align with the role.",
+        "5-6": "Some relevant experience but gaps in years or domain relevance. Partial alignment with role responsibilities.",
+        "3-4": "Limited relevant experience. Most past roles are in tangentially related areas.",
+        "0-2": "No relevant experience. Career history is unrelated to the target role."
+      },
+      "evaluation_notes": [
+        "Calculate total years of relevant experience from employment dates.",
+        "Weight recent experience more heavily than older roles.",
+        "Look for progression and increasing responsibility.",
+        "Quantified achievements (revenue, users, performance) strengthen this score."
+      ]
+    },
+    {
+      "name": "Education Alignment",
+      "key": "education_alignment",
+      "weight": 0.15,
+      "description": "How well the candidate's educational background meets the stated requirements.",
+      "scoring": {
+        "9-10": "Exceeds education requirements (e.g., Master's when Bachelor's required) in a directly relevant field.",
+        "7-8": "Meets the stated degree requirement in a relevant or closely related field.",
+        "5-6": "Has the required degree level but in a less relevant field, or is one level below in a relevant field.",
+        "3-4": "Education is partially relevant but does not meet the stated minimum.",
+        "0-2": "Education is unrelated or significantly below requirements."
+      },
+      "evaluation_notes": [
+        "If the JD says 'or equivalent experience', treat strong experience as satisfying this criterion.",
+        "Consider bootcamps, MOOCs, and professional training as supplementary education.",
+        "GPA matters only if explicitly requested in the JD.",
+        "Relevant coursework or thesis work can boost the score even if the degree field is not a direct match."
+      ]
+    },
+    {
+      "name": "Keyword Coverage",
+      "key": "keyword_coverage",
+      "weight": 0.15,
+      "description": "Presence of important terms, tools, and domain-specific language from the job description in the resume.",
+      "scoring": {
+        "9-10": "Nearly all important JD keywords and phrases appear naturally in the resume.",
+        "7-8": "Most critical keywords present. A few niche terms missing.",
+        "5-6": "About half of the important keywords found. Several notable omissions.",
+        "3-4": "Few JD keywords present. Resume uses different terminology for most concepts.",
+        "0-2": "Almost no keyword overlap. Resume appears to be for a different domain."
+      },
+      "evaluation_notes": [
+        "Extract keywords from job title, responsibilities, requirements, and preferred sections.",
+        "Count both exact matches and semantic equivalents.",
+        "Keyword stuffing without context should not boost this score.",
+        "Consider ATS implications: missing keywords may cause automated filtering."
+      ]
+    },
+    {
+      "name": "Certifications & Extras",
+      "key": "certifications_extras",
+      "weight": 0.10,
+      "description": "Relevant certifications, licenses, publications, patents, awards, or other differentiators.",
+      "scoring": {
+        "9-10": "Holds certifications or credentials explicitly required or strongly preferred in the JD, plus additional relevant differentiators.",
+        "7-8": "Has most certifications mentioned in the JD or strong alternative differentiators.",
+        "5-6": "Has some relevant certifications or noteworthy extras, but missing key ones from the JD.",
+        "3-4": "Few relevant extras. Certifications are outdated or only tangentially related.",
+        "0-2": "No relevant certifications or extras. JD lists specific required certifications that are absent."
+      },
+      "evaluation_notes": [
+        "Only penalize for missing certifications if the JD explicitly requires or prefers them.",
+        "Open source contributions, conference talks, and publications count as extras.",
+        "Expired or outdated certifications should be noted but scored lower.",
+        "If the JD does not mention certifications, score based on any differentiators present."
+      ]
+    },
+    {
+      "name": "Presentation Quality",
+      "key": "presentation_quality",
+      "weight": 0.05,
+      "description": "Clarity, structure, and professionalism of the resume itself.",
+      "scoring": {
+        "9-10": "Well-structured with clear sections, quantified achievements, strong action verbs, and concise language. Easy to scan.",
+        "7-8": "Good structure and mostly clear. Some achievements quantified. Minor areas for improvement.",
+        "5-6": "Adequate structure but lacking polish. Few quantified results. Some unclear descriptions.",
+        "3-4": "Poorly organized or hard to follow. Vague descriptions. Missing key sections.",
+        "0-2": "Very poor presentation. Major structural issues, excessive length, or missing critical information."
+      },
+      "evaluation_notes": [
+        "This score is about the resume as a document, not the candidate's qualifications.",
+        "Look for: action verbs, quantified results, consistent formatting, appropriate length.",
+        "Note any extraction artifacts that may indicate formatting issues in the original PDF.",
+        "A well-targeted resume (tailored to the specific role) scores higher than a generic one."
+      ]
+    }
+  ]
+}
