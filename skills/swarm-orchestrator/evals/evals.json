@@ -1,0 +1,35 @@
+{
+  "skill_name": "swarm-orchestrator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to build a system that monitors social media mentions of my brand, classifies them by sentiment and urgency, and generates response drafts for negative ones. Design an agent swarm for this.",
+      "expected_output": "A swarm with 5-6 agents: MentionIngester (Perceiver, deterministic), SentimentScorer (Analyzer, deterministic via rules), UrgencyClassifier (Classifier, deterministic), NegativeFilter/Gate (Validator, deterministic), ResponseDrafter (Synthesizer, 1 API call). Sequential Chalkboard pattern. Should show pipeline diagram, chalkboard schema, cost estimate near $0.02/mention, and 80%+ deterministic ratio.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My agent pipeline keeps producing contradictory outputs. Agent 3 says the product is ready to ship but Agent 5 says there are critical bugs. How do I fix this?",
+      "expected_output": "Diagnosis should recommend adding an Adversarial Pair pattern or a Resolver agent between the conflicting agents. Should explain the chalkboard trace debugging method: read outputs top-to-bottom, find where contradiction originates. Should suggest adding a Validator gate after Agent 3 that cross-checks against Agent 5's criteria before passing downstream.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I have a swarm with 12 agents but it's costing $2 per run. Most agents use API calls. How do I reduce costs?",
+      "expected_output": "Should recommend the deterministic-first cascade: identify which agents can use rules/code instead of LLM, start with smallest viable model for remaining, add gates to prevent unnecessary API calls. Should suggest specific agents to make deterministic based on archetype (Perceivers, Classifiers, Validators should almost always be deterministic). Target: 50-80% deterministic ratio, $0.05-0.20/run.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Design an agent swarm that reviews legal contracts for risk clauses, compares them against company policy, and produces a risk assessment report.",
+      "expected_output": "A swarm with 6-8 agents using Pipeline with Gates pattern. ContractParser (Perceiver), ClauseExtractor (Perceiver), PolicyMatcher (Analyzer, deterministic - compare against known policy rules), RiskScorer (Analyzer, deterministic thresholds), ComplianceGate (Validator, deterministic), RiskAnalyzer (Analyzer, 1 API for nuanced judgment), ReportWriter (Synthesizer, template-based). Should emphasize that legal compliance checks should be deterministic rules, not LLM judgment.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Here's my pipeline definition with 4 agents. Validate it and tell me if there are any problems: Agent A (Perceiver, deterministic) outputs to Agent B (Classifier, api_calls=1), Agent B outputs to Agent C (Validator, deterministic, api_calls=2), Agent C outputs to Agent A creating a loop.",
+      "expected_output": "Should detect 3 issues: 1) Agent C has contradictory config (deterministic=true but api_calls=2), 2) Circular dependency (A→B→C→A), 3) Classifier (Agent B) should typically be deterministic not API-based. Should recommend breaking the cycle by removing C→A connection, fixing C's deterministic/api contradiction, and making B deterministic with keyword-based classification.",
+      "files": []
+    }
+  ]
+}
