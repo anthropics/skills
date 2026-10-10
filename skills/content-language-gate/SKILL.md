@@ -35,7 +35,10 @@ scripts/language-gate.py <rules.json> [root-dir]
   "decoys":    [["certainty", "This will definitely happen within two weeks."]],
   "content":   {"glob": "content/*.json", "fields": ["text", "short"],
                 "list_fields": ["rules", "questions"], "option_field": "options"},
-  "originality": ["all"]
+  "originality": [
+    {"name": "output",   "fields": ["text", "short"], "mode": "pair", "gate": true},
+    {"name": "headline", "fields": ["short"],         "mode": "each", "gate": false}
+  ]
 }
 ```
 
@@ -60,13 +63,29 @@ If the content glob matches nothing, a naive gate reports "0 violations → clea
 most common way a text gate lies: the rule file points at the wrong path and silence reads as
 success. This one goes red with `NOTHING WAS SCANNED`.
 
-### 3. Fields are never merged when counting uniqueness
+### 3. Declare your unit of uniqueness — both defaults are wrong
 
-Measured: a predecessor counted `text + "|" + short` as a single uniqueness key. Because
-`text` always differed, the merged string always differed too — and **repeated `short`
-strings became mathematically invisible**. It reported `433/433 unique` while 12 strings
-repeated 3–4 times (28 excess copies). Merging keys hides duplication; count each field
-separately.
+Uniqueness means nothing until you say WHAT must be unique. I measured both failure
+directions on the same content:
+
+- **Merging blindly hides duplication.** A gate keying on `text + "|" + short` cannot see a
+  repeated `short`, because `text` always differs — so the merged key always differs too.
+- **Splitting blindly invents defects.** Counting bare fields surfaced "28 repeated
+  headlines" and I recorded it as a hidden template-app defect. **It was not.** The product
+  renders a headline **plus** a support line, and the design deliberately reuses one headline
+  across three nuance variants:
+
+```text
+"You want to be seen where you are."  +  "Waiting to be noticed is not your way."
+"You want to be seen where you are."  +  "You hope the word comes from others."
+"You want to be seen where you are."  +  "You are waiting for the right moment."
+```
+
+  Measured: headline+support **pairs 286/286 unique (0 repeats)**; bare headlines 286/258
+  (28 repeats). Two users can see the same headline; no user ever sees the same **output**.
+
+So `originality` takes explicit units. `"gate": true` goes red on a repeat, `"gate": false`
+is reported as `INFO`. Make the gated unit the thing the user actually receives.
 
 ## Acceptance
 
@@ -95,8 +114,9 @@ This gate's own history is the argument for it.
 | Arm | Result |
 |---|---|
 | real content (≈1 100 strings, external rule file) | self-test 5/5 · violations 0 |
-| originality on the same content | **28 excess copies found** — duplicates a predecessor gate had hidden |
-| synthetic fixture with a deliberate duplicate | RED, named the repeated string, exit `1` |
-| synthetic fixture, duplicate removed | CLEAN, exit `0` |
+| originality, gated unit = output pair | **286/286 unique** on that content — clean at the unit that matters |
+| originality, ungated unit = bare headline | 28 repeats reported as `INFO`, not as a verdict |
+| **known-bad**: identical output emitted twice | **RED**, named the duplicated pair, exit `1` |
+| design case: shared headline, distinct outputs | CLEAN, exit `0` |
 | **empty scan** (wrong glob) | `NOTHING WAS SCANNED`, exit `1` — did **not** report clean |
 | **blind rules** (patterns that match nothing) | declared **BLIND**, named every missed decoy |

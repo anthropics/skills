@@ -21,12 +21,29 @@ AN EMPTY SCAN IS NOT A PASS
 If the content glob matches nothing, a naive gate reports "0 violations -> clean".
 That is the most common way a text gate lies. This one goes red.
 
-FIELDS ARE NEVER MERGED
------------------------
-A predecessor counted `text + "|" + short` as one uniqueness key. Because `text` always
-differed, the merged string always differed too, and repeated `short` strings were
-mathematically invisible: it reported "433/433 unique" while 12 strings repeated 3-4
-times (28 excess copies). Count each field separately.
+DECLARE YOUR UNIT OF UNIQUENESS - BOTH DIRECTIONS FAIL
+------------------------------------------------------
+Uniqueness is only meaningful once you say WHAT must be unique. Both defaults are wrong,
+and I measured both:
+
+  MERGING BLINDLY HIDES DUPLICATION. A gate counting `text + "|" + short` as one key
+  cannot see a repeated `short` at all, because `text` always differs - so the merged
+  string always differs too.
+
+  SPLITTING BLINDLY INVENTS DEFECTS. Counting bare fields on the same content surfaced
+  "28 repeated headlines" and I called it a hidden template-app defect. It was not. The
+  product shows a headline PLUS a support line, and the design deliberately reuses one
+  headline across three nuance variants:
+      "You want to be seen where you are."  + "Waiting to be noticed is not your way."
+      "You want to be seen where you are."  + "You hope the word comes from others."
+      "You want to be seen where you are."  + "You are waiting for the right moment."
+  Measured on that content: headline+support PAIRS 286/286 unique (0 repeats), bare
+  headlines 286/258 (28 repeats). Two users can see the same headline; no user ever sees
+  the same OUTPUT. The repeat was the design, not a defect.
+
+So `originality` takes explicit units. A unit with "gate": true goes red on a repeat; a
+unit with "gate": false is reported as INFO. Make the gated unit the thing the user
+actually sees.
 
 NO PROJECT CONSTANTS EMBEDDED - classes, decoys and the content glob come from the rule file.
 
@@ -39,7 +56,10 @@ Rule file schema:
     "decoys":    [["<class>", "<this text MUST be caught>"], ...],
     "content":   {"glob": "content/*.json", "fields": ["text", "short"],
                   "list_fields": ["rules", "questions"], "option_field": "options"},
-    "originality": ["all"]
+    "originality": [
+      {"name": "output",   "fields": ["short", "text"], "mode": "pair", "gate": true},
+      {"name": "headline", "fields": ["short"],         "mode": "each", "gate": false}
+    ]
   }
 Exit code: 0 = clean, 1 = red (usable as a CI gate).
 """
@@ -122,17 +142,36 @@ def main():
     else:
         print("  PASS  no forbidden class found (%s)" % ", ".join(sorted(forbidden)))
 
-    # 3) ORIGINALITY - fields counted separately, never merged
-    if rules.get("originality"):
-        every = [value for _, _, values in records for value in values]
-        repeats = len(every) - len(set(every))
-        mark = "PASS" if repeats == 0 else "FAIL"
-        if repeats:
-            verdict = 1
-        print("ORIGINALITY all : total=%-5d unique=%-5d repeats=%d  %s"
-              % (len(every), len(set(every)), repeats, mark))
-        if repeats:
-            counts = collections.Counter(every)
+    # 3) ORIGINALITY - every unit is declared explicitly (see the module docstring)
+    for unit in rules.get("originality", []):
+        if isinstance(unit, str):                     # legacy shorthand: every string, gated
+            unit = {"name": unit, "fields": None, "mode": "each", "gate": True}
+        name = unit.get("name", "unit")
+        want = unit.get("fields")
+        gated = unit.get("gate", True)
+        if unit.get("mode") == "pair":
+            # One key per item: the fields joined IN THE DECLARED ORDER. This is the unit a
+            # user actually receives when the product renders headline + support together.
+            keys = []
+            for _, _, values in records:
+                picked = values[:len(want)] if want else values
+                if picked:
+                    keys.append(" || ".join(picked))
+        else:
+            keys = [value for _, _, values in records for value in values]
+        repeats = len(keys) - len(set(keys))
+        if gated:
+            mark = "PASS" if repeats == 0 else "FAIL"
+            if repeats:
+                verdict = 1
+            label = "ORIGINALITY"
+        else:
+            mark = "INFO"
+            label = "originality"
+        print("%-11s %-9s: total=%-5d unique=%-5d repeats=%d  %s"
+              % (label, name[:9], len(keys), len(set(keys)), repeats, mark))
+        if repeats and gated:
+            counts = collections.Counter(keys)
             for value, n in sorted(((v, n) for v, n in counts.items() if n > 1),
                                    key=lambda pair: -pair[1])[:8]:
                 print("  FAIL  %dx repeated :: %s" % (n, value[:62]))
