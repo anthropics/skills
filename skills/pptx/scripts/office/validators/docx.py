@@ -374,7 +374,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                 comment_ids = {
                     elem.get(f"{{{self.WORD_2006_NAMESPACE}}}id")
                     for elem in comments_root.xpath(
-                        ".//w:comment", namespaces=namespaces
+                        "./w:comment", namespaces=namespaces
                     )
                 }
 
@@ -386,6 +386,15 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                     if comment_id:  
                         errors.append(
                             f'  document.xml: marker id="{comment_id}" references non-existent comment'
+                        )
+
+                orphaned_comments = comment_ids - marker_ids
+                for comment_id in sorted(
+                    orphaned_comments, key=lambda x: int(x) if x and x.isdigit() else 0
+                ):
+                    if comment_id:
+                        errors.append(
+                            f'  comments.xml: comment id="{comment_id}" is not anchored anywhere in document.xml'
                         )
 
         except (lxml.etree.XMLSyntaxError, Exception) as e:
