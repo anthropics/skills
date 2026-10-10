@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
+from xml.parsers import expat
 from zipfile import ZipFile
 
 ABS_PATH_NS = "http://schemas.microsoft.com/office/spreadsheetml/2010/11/ac"
@@ -17,8 +18,44 @@ REVISION_NAMESPACES = {
 }
 
 
-def _namespaces(raw):
-    return list(ET.iterparse(BytesIO(raw), events=("start-ns",)))
+def _element_spans(raw):
+    """Original byte spans keyed by Expat's namespace-resolved element names."""
+    encoding = ("utf-16-le" if raw.startswith((b"\xff\xfe", b"<\x00")) else
+                "utf-16-be" if raw.startswith((b"\xfe\xff", b"\x00<")) else "utf-8")
+    unit = 2 if encoding.startswith("utf-16") else 1
+
+    def tag_end(start):
+        quote = None
+        for index in range(start, len(raw), unit):
+            char = chr(raw[index]) if unit == 1 else raw[index:index + unit].decode(encoding, errors="surrogatepass")
+            if quote:
+                if char == quote:
+                    quote = None
+            elif char in ("'", '"'):
+                quote = char
+            elif char == ">":
+                return index + unit
+        raise ValueError("Publication: incomplete XML tag")
+
+    parser = expat.ParserCreate(namespace_separator="}")
+    stack, spans = [], []
+
+    def start(name, attributes):
+        begin = parser.CurrentByteIndex
+        content = tag_end(begin)
+        empty = raw[content - 2 * unit:content] == "/>".encode(encoding)
+        span = dict(name=name, start=begin, content_start=content, empty=empty)
+        stack.append(span)
+        spans.append(span)
+
+    def end(name):
+        span = stack.pop()
+        span["content_end"] = span["content_start"] if span["empty"] else parser.CurrentByteIndex
+        span["end"] = span["content_start"] if span["empty"] else tag_end(parser.CurrentByteIndex)
+
+    parser.StartElementHandler, parser.EndElementHandler = start, end
+    parser.Parse(raw, True)
+    return spans, encoding
 
 
 def structural_guid_spans(content, part):
@@ -80,20 +117,27 @@ def sanitize_publication(path):
     for item, raw in entries:
         if item.filename.endswith((".xml", ".rels")):
             inspected += 1
-            root = ET.fromstring(raw)
-            ns = _namespaces(raw)
-            for _, (prefix, uri) in ns:
-                tag_prefix = (re.escape(prefix).encode() + b":") if prefix else b""
-                if uri == ABS_PATH_NS and any(e.tag == "{" + uri + "}absPath" for e in root.iter()):
-                    tag = tag_prefix + b"absPath"
-                    raw = re.sub(b"<" + tag + rb"\b[^>]*(?:/>|>.*?</" + tag + b">)", b"", raw, flags=re.S)
-                names = ("creator",) if uri == DC_NS else (("lastModifiedBy",) if uri == CORE_NS else ())
-                if item.filename == "docProps/core.xml":
-                    for name in names:
-                        tag = tag_prefix + name.encode()
-                        raw = re.sub(b"(<" + tag + rb"\b[^>]*>).*?(</" + tag + b">)", rb"\1Public synthetic estimate\2", raw, flags=re.S)
+            spans, encoding = _element_spans(raw)
+            edits = []
+            for span in spans:
+                if span["name"] == ABS_PATH_NS + "}absPath":
+                    edits.append((span["start"], span["end"], b""))
+                elif (item.filename == "docProps/core.xml" and not span["empty"]
+                      and span["name"] in (DC_NS + "}creator", CORE_NS + "}lastModifiedBy")):
+                    edits.append((span["content_start"], span["content_end"], "Public synthetic estimate".encode(encoding)))
+            # Apply only outermost edits, preserving all other bytes exactly.
+            selected = []
+            for begin, end, replacement in sorted(edits, key=lambda edit: (edit[0], -edit[1])):
+                if not selected or begin >= selected[-1][1]:
+                    selected.append((begin, end, replacement))
+            for begin, end, replacement in reversed(selected):
+                raw = raw[:begin] + replacement + raw[end:]
             after = ET.fromstring(raw)
-            if re.search(rb"(?i)(?:[a-z]:[\\/]Users[\\/]|/Users/|/home/)[a-z0-9_.-]+", raw):
+            private_path = re.compile(r"(?i)(?:[a-z]:[\\/]Users[\\/]|/Users/|/home/)[a-z0-9_.-]+")
+            decoded = [value for element in after.iter() for value in
+                       (element.text, element.tail, *element.attrib.values()) if value]
+            if (any(private_path.search(value) for value in decoded)
+                    or private_path.search(raw.decode(encoding))):
                 raise ValueError("Publication: private local-user path remains in an XML/relationship part")
             if any(e.tag == "{" + ABS_PATH_NS + "}absPath" for e in after.iter()):
                 raise ValueError("Publication: absolute-path metadata was not neutralized")

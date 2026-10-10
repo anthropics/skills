@@ -235,6 +235,9 @@ def _route(source, target, positions, lane=0, lanes=1):
 def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | None = None) -> DiagramManifest:
     """Render complete inventory IDs and explicit directed flows without network I/O."""
     nodes, edges = _graph(architecture)
+    for edge in edges:
+        # SVG whitespace and Pillow newlines must describe the same measured label.
+        edge["label"] = " ".join((edge["label"] or edge["id"]).split())
     svg, png = Path(svg), Path(png)
     if svg.resolve() == png.resolve():
         raise ValueError("SVG and PNG output paths must differ")
@@ -344,7 +347,7 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         label_group[-1].set("data-edge-label-id", edge["id"])
         text(label_group, x + 4, y + 4, edge["label"] or edge["id"])
         if edge["id"] in footer_labels:
-            text(label_group, right - 90, y + 4, edge["id"])
+            text(label_group, right - 90, y + 4, " ".join(edge["id"].split()))
     if not nodes:
         text(root, 24, 40, "No inventory nodes supplied")
     svg_bytes = ET.tostring(root, encoding="utf-8")

@@ -403,6 +403,21 @@ def _find_libreoffice():
     return None
 
 
+def _close_excel_pywin32(workbook, excel):
+    """Each owned COM resource receives its attempt even if cleanup fails."""
+    failures = []
+    if workbook is not None:
+        try:
+            workbook.Close(SaveChanges=False)
+        except Exception as error:
+            failures.append(f"Workbook.Close: {error}")
+    try:
+        excel.Quit()
+    except Exception as error:
+        failures.append(f"Excel.Quit: {error}")
+    return failures
+
+
 def _native_excel(path, backend):
     if backend == "powershell":
         _run_excel_powershell(_EXCEL_RECALCULATE, path)
@@ -412,6 +427,7 @@ def _native_excel(path, backend):
     import win32com.client
     excel = win32com.client.DispatchEx("Excel.Application")
     workbook = None
+    failures = []
     try:
         excel.Visible = False
         excel.DisplayAlerts = False
@@ -419,10 +435,12 @@ def _native_excel(path, backend):
         workbook = excel.Workbooks.Open(str(path.resolve()), UpdateLinks=0, ReadOnly=False)
         excel.CalculateFullRebuild()
         workbook.Save()
+    except Exception as error:
+        failures.append(f"Excel recalculation: {error}")
     finally:
-        if workbook is not None:
-            workbook.Close(SaveChanges=False)
-        excel.Quit()
+        failures.extend(_close_excel_pywin32(workbook, excel))
+    if failures:
+        raise FormulaFailure("; ".join(failures))
 
 
 def _native_libreoffice(path, executable, directory):
@@ -448,6 +466,7 @@ def _verify_native_final(path, backend):
         import win32com.client
         excel = win32com.client.DispatchEx("Excel.Application")
         workbook = None
+        failures = []
         try:
             excel.Visible = False
             excel.DisplayAlerts = False
@@ -455,10 +474,12 @@ def _verify_native_final(path, backend):
             workbook = excel.Workbooks.Open(str(Path(path).resolve()), UpdateLinks=0, ReadOnly=True)
             if not workbook.ReadOnly:
                 raise FormulaFailure("Final workbook is not read-only")
+        except Exception as error:
+            failures.append(f"Final Excel opening: {error}")
         finally:
-            if workbook is not None:
-                workbook.Close(SaveChanges=False)
-            excel.Quit()
+            failures.extend(_close_excel_pywin32(workbook, excel))
+        if failures:
+            raise FormulaFailure("; ".join(failures))
     if Path(path).read_bytes() != before:
         raise FormulaFailure("Final native opening changed published bytes")
 

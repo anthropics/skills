@@ -6,7 +6,7 @@
     "status": "pending",
     "required": 11,
     "executed": 0,
-    "scope": "Independent replays on the corrected revision have not been run by the implementer. Previous failing reports are not replay passes."
+    "scope": "Fresh independent replays on the round-two corrected revision remain pending; the implementer has not run evaluators."
   },
   "skills": [
     {
@@ -18,8 +18,8 @@
       "relative_links_verified": 11,
       "archive": "cloud-estimation-orchestrator.skill",
       "member_count": 14,
-      "sha256": "17d250ca1f489bef079a5aa76335288d35f31d011bcde182290aa4ee3398c749",
-      "uncompressed_size": 145745
+      "sha256": "cb8b7e26fdbc1be69d4030d51598183d655ce0fbde741d1d1f7ae299b01a8dc3",
+      "uncompressed_size": 148630
     },
     {
       "name": "infra-work-estimator",
@@ -30,8 +30,8 @@
       "relative_links_verified": 12,
       "archive": "infra-work-estimator.skill",
       "member_count": 14,
-      "sha256": "dce8498be86cbfbe3722a594c4d12973f5be5cc0b18245150a06e75141441786",
-      "uncompressed_size": 140960
+      "sha256": "882af9e1e945074a80f91db7aad24dd41b0016e597ab831f5fa5375346e8f752",
+      "uncompressed_size": 143845
     },
     {
       "name": "cloud-architecture-advisor",
@@ -42,8 +42,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-architecture-advisor.skill",
       "member_count": 14,
-      "sha256": "4297e4d0246320720e1bcd2de9840d504f711bf57154b68a5c87b34f9310ae22",
-      "uncompressed_size": 142732
+      "sha256": "3b5e400e7935150f17f1eec14ad3960a765eefb3e98c9840b62012a8a3841a29",
+      "uncompressed_size": 145617
     },
     {
       "name": "kubernetes-architect",
@@ -54,8 +54,8 @@
       "relative_links_verified": 12,
       "archive": "kubernetes-architect.skill",
       "member_count": 14,
-      "sha256": "79c881cad8697b967aea5c6f6f72fe92a24c3fdccb5a61b325e2176e54e8e1ed",
-      "uncompressed_size": 139376
+      "sha256": "3c4a7ae8e9cfacd2998db95fad94a95c0b7dd2bd90f7e92a9d42f96c80e5a119",
+      "uncompressed_size": 142261
     },
     {
       "name": "cicd-devsecops-estimator",
@@ -66,8 +66,8 @@
       "relative_links_verified": 12,
       "archive": "cicd-devsecops-estimator.skill",
       "member_count": 14,
-      "sha256": "99ec69c94834ce5360024092e205551c689253cc62a2277c0a7588df45c18452",
-      "uncompressed_size": 141364
+      "sha256": "9ae1111b7e9660dde1750be17ae3be8342a8ecb166502bde844513db39ef0fb6",
+      "uncompressed_size": 144249
     },
     {
       "name": "server-hardening-estimator",
@@ -78,8 +78,8 @@
       "relative_links_verified": 12,
       "archive": "server-hardening-estimator.skill",
       "member_count": 14,
-      "sha256": "c00a17b423037748f8b8eb3d58a837525ef7e4641341e5ebae4be0e3eef8d55c",
-      "uncompressed_size": 142817
+      "sha256": "be1b9ef5add62e703e9931f447800b2d905d8a504c0e196a75673645a3ba0b1a",
+      "uncompressed_size": 145702
     },
     {
       "name": "hosting-capacity-simulator",
@@ -90,8 +90,8 @@
       "relative_links_verified": 14,
       "archive": "hosting-capacity-simulator.skill",
       "member_count": 15,
-      "sha256": "449adfb18dbc9613dff932568057e52686784eed54ff0c7656a07686b206d330",
-      "uncompressed_size": 145241
+      "sha256": "aa17e1b39cfd15c1719c3bc4a10eacaf464142e6459f5a3a3a6bcfa58e113b6e",
+      "uncompressed_size": 148126
     },
     {
       "name": "cloud-provider-selector",
@@ -102,8 +102,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-provider-selector.skill",
       "member_count": 14,
-      "sha256": "1d0e316e8aed7af2e433635b6ccba20a82178b7fa2055ccae1f3d73d8dd7156d",
-      "uncompressed_size": 139879
+      "sha256": "3bb8876fb7f766d8ddf6894e0c3b742c7c16d21768cd3e8644c4d634be14f48e",
+      "uncompressed_size": 142764
     },
     {
       "name": "finops-optimizer",
@@ -114,8 +114,8 @@
       "relative_links_verified": 12,
       "archive": "finops-optimizer.skill",
       "member_count": 14,
-      "sha256": "68bc6a8c797330fb642b651e32083ce9b97591193dc0d6d789b49aaf5bab8fa2",
-      "uncompressed_size": 142127
+      "sha256": "6ea4a780827e464232214da97c19139e159f1d0523552de83b08bc8c76a72940",
+      "uncompressed_size": 145012
     },
     {
       "name": "cloud-migration-estimator",
@@ -126,8 +126,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-migration-estimator.skill",
       "member_count": 14,
-      "sha256": "c98bc1ad3a8a1fb98f8034425eb92dcb753bd676bb937f60fef725098df10fd0",
-      "uncompressed_size": 139186
+      "sha256": "9bc776546dbf7628b7a72144b5b4abed34aa7850aae1cac91b46cda57cdc6dd8",
+      "uncompressed_size": 142071
     },
     {
       "name": "cloud-architecture-diagrammer",
@@ -138,8 +138,8 @@
       "relative_links_verified": 14,
       "archive": "cloud-architecture-diagrammer.skill",
       "member_count": 15,
-      "sha256": "f09cd752be579d0c5062349257b8590f3d18ed8afa9affadcd3358b4a5f72dbb",
-      "uncompressed_size": 138488
+      "sha256": "8f65ba95fc40d818ed165d811a0177be851bba9638b83cba06b466d37be4f8f5",
+      "uncompressed_size": 141373
     }
   ],
   "workbook_validation": {
@@ -311,7 +311,7 @@
       }
     ]
   },
-  "anonymisation_summary": "matches=0 issues=0 complete=true files=250 texts=398 binary=46 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
+  "anonymisation_summary": "matches=0 issues=0 complete=true files=262 texts=399 binary=57 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
   "public_example_review": {
     "groups": [
       {
@@ -393,7 +393,7 @@
   },
   "repository_checks": {
     "pytest": {
-      "passed": 323,
+      "passed": 333,
       "skipped": 1,
       "failed": 0,
       "skip_reason": "Windows symlink creation unavailable",
@@ -429,7 +429,7 @@
   },
   "public_workbook": {
     "path": "examples/synthetic-cloud-estimate.xlsx",
-    "sha256": "1e0c0b09014d622ad83f550fa818ee91031aa475f1baca19c6baa5deddec3439",
+    "sha256": "2145bd243c54c0f7cc6b2aab2f737a18a18eb3350d7c314c246fe2e27bebb678",
     "recalculation": {
       "engine": "excel-com",
       "native_opened": true,
@@ -467,6 +467,31 @@
       "Additional domain-specific costs/TCO must use unknown-price guards; annex arithmetic is independently checked only for supplied assertions",
       "Perpendicular crossings in complex diagrams are not globally optimized; the three-zone forward case has zero node/label collisions and zero shared segments",
       "Confidentiality scans and reviewed synthetic combinations are evidence, not a mathematical anonymity guarantee"
+    ]
+  },
+  "forward_fix_round_2": {
+    "base_commit": "fef6d97277473d8b0be495d3353d272bfe8421f1",
+    "baseline_forward_regressions_passed": 11,
+    "red_phases": {
+      "initial_failed": 6,
+      "expanded_cleanup_failed": 2,
+      "unicode_tag_failed": 1,
+      "fallback_label_failed": 1
+    },
+    "regression_green_passed": 10,
+    "targeted_green_passed": 110,
+    "independent_replays": "pending",
+    "corrections": [
+      "Reject decoded XML attribute, text and tail private paths, including numeric entity escapes, before writing publication bytes",
+      "Use effective namespace-resolved element byte spans to remove only Office absPath metadata; preserve application homonyms, namespace/QName declarations, caches and unmodified bytes",
+      "Attempt Workbook.Close and Excel.Quit independently in both pywin32 branches, preserving all body and cleanup failures",
+      "Normalize multiline flow labels and fallback IDs to measured single-line display text without truncating their words"
+    ],
+    "limitations": [
+      "The pywin32 failure branches are verified with an isolated fake COM object; real native Excel evidence on this host uses PowerShell COM",
+      "Publication byte surgery covers UTF-8 and UTF-16 XML; unsupported encodings fail closed rather than being reserialized",
+      "Independent evaluator replay verdicts remain required before delivery_ready can become true",
+      "Existing complex-diagram and confidentiality-assessment limitations from round one remain applicable"
     ]
   }
 }
