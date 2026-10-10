@@ -101,15 +101,39 @@ def load_run_results(benchmark_dir: Path) -> dict:
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+            run_dirs = sorted(config_dir.glob("run-*"))
+            direct_grading = config_dir / "grading.json"
+            if not run_dirs and not direct_grading.exists():
                 continue
+
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            if direct_grading.exists() and not run_dirs:
+                try:
+                    with open(direct_grading, encoding="utf-8") as f:
+                        grading = json.load(f)
+                    result = {
+                        "eval_id": eval_id,
+                        "run_number": 1,
+                        "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
+                        "passed": grading.get("summary", {}).get("passed", 0),
+                        "failed": grading.get("summary", {}).get("failed", 0),
+                        "total": grading.get("summary", {}).get("total", 0),
+                    }
+                    if eval_name:
+                        result["eval_name"] = eval_name
+                    results[config].append(result)
+                except Exception as e:
+                    print(f"Warning: Invalid JSON in {direct_grading}: {e}")
+                continue
+
+            for run_dir in run_dirs:
+                try:
+                    run_number = int(run_dir.name.split("-")[1])
+                except (IndexError, ValueError):
+                    run_number = 1
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -117,7 +141,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                     continue
 
                 try:
-                    with open(grading_file) as f:
+                    with open(grading_file, encoding="utf-8") as f:
                         grading = json.load(f)
                 except json.JSONDecodeError as e:
                     print(f"Warning: Invalid JSON in {grading_file}: {e}")
