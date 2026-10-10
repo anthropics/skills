@@ -18,6 +18,8 @@ import subprocess
 import socket
 import time
 import sys
+import os
+import signal
 import argparse
 
 def is_server_ready(port, timeout=30):
@@ -66,11 +68,15 @@ def main():
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
             # Use shell=True to support commands with cd and &&
+            # start_new_session puts the shell and everything it spawns into one process
+            # group, so cleanup can signal the whole group. Without it, terminate() reaches
+            # only the shell and the real server is orphaned, still holding its port.
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                start_new_session=True
             )
             server_processes.append(process)
 
@@ -92,11 +98,25 @@ def main():
         # Clean up all servers
         print(f"\nStopping {len(server_processes)} server(s)...")
         for i, process in enumerate(server_processes):
+            # Signal the whole process group, not just the shell.
             try:
-                process.terminate()
+                pgid = os.getpgid(process.pid)
+            except ProcessLookupError:
+                pgid = None
+            try:
+                if pgid is not None:
+                    os.killpg(pgid, signal.SIGTERM)
+                else:
+                    process.terminate()
                 process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill()
+            except (subprocess.TimeoutExpired, ProcessLookupError):
+                try:
+                    if pgid is not None:
+                        os.killpg(pgid, signal.SIGKILL)
+                    else:
+                        process.kill()
+                except ProcessLookupError:
+                    pass
                 process.wait()
             print(f"Server {i+1} stopped")
         print("All servers stopped")
