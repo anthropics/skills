@@ -1,0 +1,958 @@
+
+Python >= 3.10+ 
+
+[root@ansible-rhel9 ocp-claude-skills]# cat /etc/redhat-release
+Red Hat Enterprise Linux release 9.6 (Plow)
+[root@ansible-rhel9 ocp-claude-skills]# subscription-manager repos \
+--enable=rhel-9-for-x86_64-baseos-rpms \
+--enable=rhel-9-for-x86_64-appstream-rpms
+Repository 'rhel-9-for-x86_64-baseos-rpms' is enabled for this system.
+Repository 'rhel-9-for-x86_64-appstream-rpms' is enabled for this system.
+
+
+
+[root@ansible-rhel9 ocp-claude-skills]# dnf install python3.12 --assumeno
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:03:58 ago on Fri 17 Apr 2026 08:00:45 AM MDT.
+Dependencies resolved.
+====================================================================================================================================================================================================
+ Package                                            Architecture                     Version                                       Repository                                                  Size
+====================================================================================================================================================================================================
+Installing:
+ python3.12                                         x86_64                           3.12.12-4.el9_7.2                             rhel-9-for-x86_64-appstream-rpms                            32 k
+Upgrading:
+ openssl                                            x86_64                           1:3.5.1-7.el9_7                               rhel-9-for-x86_64-baseos-rpms                              1.5 M
+ openssl-fips-provider                              x86_64                           3.0.7-8.el9                                   rhel-9-for-x86_64-baseos-rpms                              9.2 k
+ openssl-fips-provider-so                           x86_64                           3.0.7-8.el9                                   rhel-9-for-x86_64-baseos-rpms                              576 k
+ openssl-libs                                       x86_64                           1:3.5.1-7.el9_7                               rhel-9-for-x86_64-baseos-rpms                              2.3 M
+Installing dependencies:
+ libnsl2                                            x86_64                           2.0.0-1.el9                                   rhel-9-for-x86_64-appstream-rpms                            33 k
+ mpdecimal                                          x86_64                           2.5.1-3.el9                                   rhel-9-for-x86_64-appstream-rpms                            88 k
+ python3.12-libs                                    x86_64                           3.12.12-4.el9_7.2                             rhel-9-for-x86_64-appstream-rpms                           9.7 M
+ python3.12-pip-wheel                               noarch                           23.2.1-5.el9                                  rhel-9-for-x86_64-appstream-rpms                           1.5 M
+
+Transaction Summary
+====================================================================================================================================================================================================
+Install  5 Packages
+Upgrade  4 Packages
+
+Total download size: 16 M
+Operation aborted.
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+dnf install -y python3.12
+
+
+[root@ansible-rhel9 ocp-claude-skills]# dnf install -y python3.12
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:05:09 ago on Fri 17 Apr 2026 08:00:45 AM MDT.
+Dependencies resolved.
+====================================================================================================================================================================================================
+ Package                                            Architecture                     Version                                       Repository                                                  Size
+====================================================================================================================================================================================================
+Installing:
+ python3.12                                         x86_64                           3.12.12-4.el9_7.2                             rhel-9-for-x86_64-appstream-rpms                            32 k
+Upgrading:
+ openssl                                            x86_64                           1:3.5.1-7.el9_7                               rhel-9-for-x86_64-baseos-rpms                              1.5 M
+ openssl-fips-provider                              x86_64                           3.0.7-8.el9                                   rhel-9-for-x86_64-baseos-rpms                              9.2 k
+ openssl-fips-provider-so                           x86_64                           3.0.7-8.el9                                   rhel-9-for-x86_64-baseos-rpms                              576 k
+ openssl-libs                                       x86_64                           1:3.5.1-7.el9_7                               rhel-9-for-x86_64-baseos-rpms                              2.3 M
+Installing dependencies:
+ libnsl2                                            x86_64                           2.0.0-1.el9                                   rhel-9-for-x86_64-appstream-rpms                            33 k
+ mpdecimal                                          x86_64                           2.5.1-3.el9                                   rhel-9-for-x86_64-appstream-rpms                            88 k
+ python3.12-libs                                    x86_64                           3.12.12-4.el9_7.2                             rhel-9-for-x86_64-appstream-rpms                           9.7 M
+ python3.12-pip-wheel                               noarch                           23.2.1-5.el9                                  rhel-9-for-x86_64-appstream-rpms                           1.5 M
+
+Transaction Summary
+====================================================================================================================================================================================================
+Install  5 Packages
+Upgrade  4 Packages
+
+Total download size: 16 M
+Downloading Packages:
+(1/9): mpdecimal-2.5.1-3.el9.x86_64.rpm                                                                                                                             243 kB/s |  88 kB     00:00
+(2/9): python3.12-pip-wheel-23.2.1-5.el9.noarch.rpm                                                                                                                 2.5 MB/s | 1.5 MB     00:00
+(3/9): libnsl2-2.0.0-1.el9.x86_64.rpm                                                                                                                                52 kB/s |  33 kB     00:00
+(4/9): python3.12-3.12.12-4.el9_7.2.x86_64.rpm                                                                                                                      106 kB/s |  32 kB     00:00
+(5/9): openssl-fips-provider-3.0.7-8.el9.x86_64.rpm                                                                                                                  92 kB/s | 9.2 kB     00:00
+(6/9): openssl-fips-provider-so-3.0.7-8.el9.x86_64.rpm                                                                                                              2.2 MB/s | 576 kB     00:00
+(7/9): python3.12-libs-3.12.12-4.el9_7.2.x86_64.rpm                                                                                                                  18 MB/s | 9.7 MB     00:00
+(8/9): openssl-3.5.1-7.el9_7.x86_64.rpm                                                                                                                             3.9 MB/s | 1.5 MB     00:00
+(9/9): openssl-libs-3.5.1-7.el9_7.x86_64.rpm                                                                                                                        9.4 MB/s | 2.3 MB     00:00
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                                13 MB/s |  16 MB     00:01
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                                            1/1
+  Upgrading        : openssl-fips-provider-so-3.0.7-8.el9.x86_64                                                                                                                               1/13
+  Upgrading        : openssl-fips-provider-3.0.7-8.el9.x86_64                                                                                                                                  2/13
+  Upgrading        : openssl-libs-1:3.5.1-7.el9_7.x86_64                                                                                                                                       3/13
+  Installing       : python3.12-pip-wheel-23.2.1-5.el9.noarch                                                                                                                                  4/13
+  Installing       : mpdecimal-2.5.1-3.el9.x86_64                                                                                                                                              5/13
+  Installing       : libnsl2-2.0.0-1.el9.x86_64                                                                                                                                                6/13
+  Installing       : python3.12-3.12.12-4.el9_7.2.x86_64                                                                                                                                       7/13
+  Installing       : python3.12-libs-3.12.12-4.el9_7.2.x86_64                                                                                                                                  8/13
+  Upgrading        : openssl-1:3.5.1-7.el9_7.x86_64                                                                                                                                            9/13
+  Cleanup          : openssl-1:3.2.2-6.el9_5.1.x86_64                                                                                                                                         10/13
+  Cleanup          : openssl-libs-1:3.2.2-6.el9_5.1.x86_64                                                                                                                                    11/13
+  Cleanup          : openssl-fips-provider-3.0.7-6.el9_5.x86_64                                                                                                                               12/13
+  Cleanup          : openssl-fips-provider-so-3.0.7-6.el9_5.x86_64                                                                                                                            13/13
+  Running scriptlet: openssl-fips-provider-so-3.0.7-6.el9_5.x86_64                                                                                                                            13/13
+  Verifying        : libnsl2-2.0.0-1.el9.x86_64                                                                                                                                                1/13
+  Verifying        : mpdecimal-2.5.1-3.el9.x86_64                                                                                                                                              2/13
+  Verifying        : python3.12-pip-wheel-23.2.1-5.el9.noarch                                                                                                                                  3/13
+  Verifying        : python3.12-3.12.12-4.el9_7.2.x86_64                                                                                                                                       4/13
+  Verifying        : python3.12-libs-3.12.12-4.el9_7.2.x86_64                                                                                                                                  5/13
+  Verifying        : openssl-fips-provider-3.0.7-8.el9.x86_64                                                                                                                                  6/13
+  Verifying        : openssl-fips-provider-3.0.7-6.el9_5.x86_64                                                                                                                                7/13
+  Verifying        : openssl-fips-provider-so-3.0.7-8.el9.x86_64                                                                                                                               8/13
+  Verifying        : openssl-fips-provider-so-3.0.7-6.el9_5.x86_64                                                                                                                             9/13
+  Verifying        : openssl-1:3.5.1-7.el9_7.x86_64                                                                                                                                           10/13
+  Verifying        : openssl-1:3.2.2-6.el9_5.1.x86_64                                                                                                                                         11/13
+  Verifying        : openssl-libs-1:3.5.1-7.el9_7.x86_64                                                                                                                                      12/13
+  Verifying        : openssl-libs-1:3.2.2-6.el9_5.1.x86_64                                                                                                                                    13/13
+Installed products updated.
+
+Upgraded:
+  openssl-1:3.5.1-7.el9_7.x86_64           openssl-fips-provider-3.0.7-8.el9.x86_64           openssl-fips-provider-so-3.0.7-8.el9.x86_64           openssl-libs-1:3.5.1-7.el9_7.x86_64
+Installed:
+  libnsl2-2.0.0-1.el9.x86_64     mpdecimal-2.5.1-3.el9.x86_64     python3.12-3.12.12-4.el9_7.2.x86_64     python3.12-libs-3.12.12-4.el9_7.2.x86_64     python3.12-pip-wheel-23.2.1-5.el9.noarch
+
+Complete!
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+[root@ansible-rhel9 ocp-claude-skills]# dnf install -y python3.12-pip
+Updating Subscription Management repositories.
+Last metadata expiration check: 0:08:08 ago on Fri 17 Apr 2026 08:00:45 AM MDT.
+Dependencies resolved.
+====================================================================================================================================================================================================
+ Package                                           Architecture                       Version                                    Repository                                                    Size
+====================================================================================================================================================================================================
+Installing:
+ python3.12-pip                                    noarch                             23.2.1-5.el9                               rhel-9-for-x86_64-appstream-rpms                             3.2 M
+Installing weak dependencies:
+ python3.12-setuptools                             noarch                             68.2.2-5.el9_6                             rhel-9-for-x86_64-appstream-rpms                             1.6 M
+
+Transaction Summary
+====================================================================================================================================================================================================
+Install  2 Packages
+
+Total download size: 4.8 M
+Installed size: 21 M
+Downloading Packages:
+(1/2): python3.12-setuptools-68.2.2-5.el9_6.noarch.rpm                                                                                                              3.9 MB/s | 1.6 MB     00:00
+(2/2): python3.12-pip-23.2.1-5.el9.noarch.rpm                                                                                                                       6.0 MB/s | 3.2 MB     00:00
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                               8.9 MB/s | 4.8 MB     00:00
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                                            1/1
+  Installing       : python3.12-setuptools-68.2.2-5.el9_6.noarch                                                                                                                                1/2
+  Installing       : python3.12-pip-23.2.1-5.el9.noarch                                                                                                                                         2/2
+  Running scriptlet: python3.12-pip-23.2.1-5.el9.noarch                                                                                                                                         2/2
+  Verifying        : python3.12-setuptools-68.2.2-5.el9_6.noarch                                                                                                                                1/2
+  Verifying        : python3.12-pip-23.2.1-5.el9.noarch                                                                                                                                         2/2
+Installed products updated.
+
+Installed:
+  python3.12-pip-23.2.1-5.el9.noarch                                                           python3.12-setuptools-68.2.2-5.el9_6.noarch
+
+Complete!
+[root@ansible-rhel9 ocp-claude-skills]#
+
+[root@ansible-rhel9 ocp-claude-skills]# python3.12 -m pip --version
+pip 23.2.1 from /usr/lib/python3.12/site-packages/pip (python 3.12)
+[root@ansible-rhel9 ocp-claude-skills]#
+
+python3.12 -m pip install -r requirements.txt
+
+[root@ansible-rhel9 ocp-claude-skills]# python3.12 -m pip install -r requirements.txt
+
+Collecting fastmcp (from -r requirements.txt (line 1))
+  Obtaining dependency information for fastmcp from https://files.pythonhosted.org/packages/cf/76/b310d52fa0e30d39bd937eb58ec2c1f1ea1b5f519f0575e9dd9612f01deb/fastmcp-3.2.4-py3-none-any.whl.metadata
+  Downloading fastmcp-3.2.4-py3-none-any.whl.metadata (8.1 kB)
+Collecting authlib>=1.6.5 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for authlib>=1.6.5 from https://files.pythonhosted.org/packages/57/2f/55fca558f925a51db046e5b929deb317ddb05afed74b22d89f4eca578980/authlib-1.6.11-py2.py3-none-any.whl.metadata
+  Downloading authlib-1.6.11-py2.py3-none-any.whl.metadata (9.8 kB)
+Collecting cyclopts>=4.0.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for cyclopts>=4.0.0 from https://files.pythonhosted.org/packages/b4/bd/05055d8360cef0757d79367157f3b15c0a0715e81e08f86a04018ec045f0/cyclopts-4.10.2-py3-none-any.whl.metadata
+  Downloading cyclopts-4.10.2-py3-none-any.whl.metadata (12 kB)
+Collecting exceptiongroup>=1.2.2 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for exceptiongroup>=1.2.2 from https://files.pythonhosted.org/packages/8a/0e/97c33bf5009bdbac74fd2beace167cab3f978feb69cc36f1ef79360d6c4e/exceptiongroup-1.3.1-py3-none-any.whl.metadata
+  Downloading exceptiongroup-1.3.1-py3-none-any.whl.metadata (6.7 kB)
+Collecting griffelib>=2.0.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for griffelib>=2.0.0 from https://files.pythonhosted.org/packages/11/8c/c9138d881c79aa0ea9ed83cbd58d5ca75624378b38cee225dcf5c42cc91f/griffelib-2.0.2-py3-none-any.whl.metadata
+  Downloading griffelib-2.0.2-py3-none-any.whl.metadata (1.3 kB)
+Collecting httpx<1.0,>=0.28.1 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for httpx<1.0,>=0.28.1 from https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl.metadata
+  Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting jsonref>=1.1.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jsonref>=1.1.0 from https://files.pythonhosted.org/packages/0c/ec/e1db9922bceb168197a558a2b8c03a7963f1afe93517ddd3cf99f202f996/jsonref-1.1.0-py3-none-any.whl.metadata
+  Downloading jsonref-1.1.0-py3-none-any.whl.metadata (2.7 kB)
+Collecting jsonschema-path>=0.3.4 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jsonschema-path>=0.3.4 from https://files.pythonhosted.org/packages/04/d5/4e96c44f6c1ea3d812cf5391d81a4f5abaa540abf8d04ecd7f66e0ed11df/jsonschema_path-0.4.5-py3-none-any.whl.metadata
+  Downloading jsonschema_path-0.4.5-py3-none-any.whl.metadata (5.9 kB)
+Collecting mcp<2.0,>=1.24.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for mcp<2.0,>=1.24.0 from https://files.pythonhosted.org/packages/9c/46/f6b4ad632c67ef35209a66127e4bddc95759649dd595f71f13fba11bdf9a/mcp-1.27.0-py3-none-any.whl.metadata
+  Downloading mcp-1.27.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting openapi-pydantic>=0.5.1 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for openapi-pydantic>=0.5.1 from https://files.pythonhosted.org/packages/12/cf/03675d8bd8ecbf4445504d8071adab19f5f993676795708e36402ab38263/openapi_pydantic-0.5.1-py3-none-any.whl.metadata
+  Downloading openapi_pydantic-0.5.1-py3-none-any.whl.metadata (10 kB)
+Collecting opentelemetry-api>=1.20.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for opentelemetry-api>=1.20.0 from https://files.pythonhosted.org/packages/58/ee/99ab786653b3bda9c37ade7e24a7b607a1b1f696063172768417539d876d/opentelemetry_api-1.41.0-py3-none-any.whl.metadata
+  Downloading opentelemetry_api-1.41.0-py3-none-any.whl.metadata (1.5 kB)
+Collecting packaging>=24.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for packaging>=24.0 from https://files.pythonhosted.org/packages/7a/c2/920ef838e2f0028c8262f16101ec09ebd5969864e5a64c4c05fad0617c56/packaging-26.1-py3-none-any.whl.metadata
+  Downloading packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
+Collecting platformdirs>=4.0.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for platformdirs>=4.0.0 from https://files.pythonhosted.org/packages/75/a6/a0a304dc33b49145b21f4808d763822111e67d1c3a32b524a1baf947b6e1/platformdirs-4.9.6-py3-none-any.whl.metadata
+  Downloading platformdirs-4.9.6-py3-none-any.whl.metadata (4.7 kB)
+Collecting py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4 from https://files.pythonhosted.org/packages/32/69/f1b537ee70b7def42d63124a539ed3026a11a3ffc3086947a1ca6e861868/py_key_value_aio-0.4.4-py3-none-any.whl.metadata
+  Downloading py_key_value_aio-0.4.4-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic[email]>=2.11.7 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pydantic[email]>=2.11.7 from https://files.pythonhosted.org/packages/77/ca/b45c378e6e8d0b90577288b533e04e95b7afd61bb1d51b6c263176435489/pydantic-2.13.2-py3-none-any.whl.metadata
+  Downloading pydantic-2.13.2-py3-none-any.whl.metadata (108 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.5/108.5 kB 28.5 MB/s eta 0:00:00
+Collecting pyperclip>=1.9.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pyperclip>=1.9.0 from https://files.pythonhosted.org/packages/df/80/fc9d01d5ed37ba4c42ca2b55b4339ae6e200b456be3a1aaddf4a9fa99b8c/pyperclip-1.11.0-py3-none-any.whl.metadata
+  Downloading pyperclip-1.11.0-py3-none-any.whl.metadata (2.4 kB)
+Collecting python-dotenv>=1.1.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for python-dotenv>=1.1.0 from https://files.pythonhosted.org/packages/0b/d7/1959b9648791274998a9c3526f6d0ec8fd2233e4d4acce81bbae76b44b2a/python_dotenv-1.2.2-py3-none-any.whl.metadata
+  Downloading python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+Collecting pyyaml<7.0,>=6.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pyyaml<7.0,>=6.0 from https://files.pythonhosted.org/packages/8b/9d/b3589d3877982d4f2329302ef98a8026e7f4443c765c46cfecc8858c6b4b/pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata
+  Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting rich>=13.9.4 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for rich>=13.9.4 from https://files.pythonhosted.org/packages/82/3b/64d4899d73f91ba49a8c18a8ff3f0ea8f1c1d75481760df8c68ef5235bf5/rich-15.0.0-py3-none-any.whl.metadata
+  Downloading rich-15.0.0-py3-none-any.whl.metadata (18 kB)
+Collecting uncalled-for>=0.2.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for uncalled-for>=0.2.0 from https://files.pythonhosted.org/packages/11/e1/7ec67882ad8fc9f86384bef6421fa252c9cbe5744f8df6ce77afc9eca1f5/uncalled_for-0.3.1-py3-none-any.whl.metadata
+  Downloading uncalled_for-0.3.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting uvicorn>=0.35 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for uvicorn>=0.35 from https://files.pythonhosted.org/packages/b7/23/a5bbd9600dd607411fa644c06ff4951bec3a4d82c4b852374024359c19c0/uvicorn-0.44.0-py3-none-any.whl.metadata
+  Downloading uvicorn-0.44.0-py3-none-any.whl.metadata (6.7 kB)
+Collecting watchfiles>=1.0.0 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for watchfiles>=1.0.0 from https://files.pythonhosted.org/packages/cf/68/5707da262a119fb06fbe214d82dd1fe4a6f4af32d2d14de368d0349eb52a/watchfiles-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading watchfiles-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+Collecting websockets>=15.0.1 (from fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for websockets>=15.0.1 from https://files.pythonhosted.org/packages/18/29/71729b4671f21e1eaa5d6573031ab810ad2936c8175f03f97f3ff164c802/websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata
+  Downloading websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+Collecting cryptography (from authlib>=1.6.5->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for cryptography from https://files.pythonhosted.org/packages/c7/0b/333ddab4270c4f5b972f980adef4faa66951a4aaf646ca067af597f15563/cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl.metadata
+  Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Collecting attrs>=23.1.0 (from cyclopts>=4.0.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for attrs>=23.1.0 from https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl.metadata
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting docstring-parser<4.0,>=0.15 (from cyclopts>=4.0.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for docstring-parser<4.0,>=0.15 from https://files.pythonhosted.org/packages/a7/5f/ed01f9a3cdffbd5a008556fc7b2a08ddb1cc6ace7effa7340604b1d16699/docstring_parser-0.18.0-py3-none-any.whl.metadata
+  Downloading docstring_parser-0.18.0-py3-none-any.whl.metadata (3.5 kB)
+Collecting rich-rst<2.0.0,>=1.3.1 (from cyclopts>=4.0.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for rich-rst<2.0.0,>=1.3.1 from https://files.pythonhosted.org/packages/13/2f/b4530fbf948867702d0a3f27de4a6aab1d156f406d72852ab902c4d04de9/rich_rst-1.3.2-py3-none-any.whl.metadata
+  Downloading rich_rst-1.3.2-py3-none-any.whl.metadata (6.1 kB)
+Collecting typing-extensions>=4.6.0 (from exceptiongroup>=1.2.2->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for typing-extensions>=4.6.0 from https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl.metadata
+  Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting anyio (from httpx<1.0,>=0.28.1->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for anyio from https://files.pythonhosted.org/packages/da/42/e921fccf5015463e32a3cf6ee7f980a6ed0f395ceeaa45060b61d86486c2/anyio-4.13.0-py3-none-any.whl.metadata
+  Downloading anyio-4.13.0-py3-none-any.whl.metadata (4.5 kB)
+Collecting certifi (from httpx<1.0,>=0.28.1->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for certifi from https://files.pythonhosted.org/packages/9a/3c/c17fb3ca2d9c3acff52e30b309f538586f9f5b9c9cf454f3845fc9af4881/certifi-2026.2.25-py3-none-any.whl.metadata
+  Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1.0,>=0.28.1->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for httpcore==1.* from https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl.metadata
+  Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx<1.0,>=0.28.1->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for idna from https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl.metadata
+  Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1.0,>=0.28.1->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for h11>=0.16 from https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl.metadata
+  Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting pathable<0.6.0,>=0.5.0 (from jsonschema-path>=0.3.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pathable<0.6.0,>=0.5.0 from https://files.pythonhosted.org/packages/52/96/5a770e5c461462575474468e5af931cff9de036e7c2b4fea23c1c58d2cbe/pathable-0.5.0-py3-none-any.whl.metadata
+  Downloading pathable-0.5.0-py3-none-any.whl.metadata (5.9 kB)
+Collecting referencing<0.38.0 (from jsonschema-path>=0.3.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for referencing<0.38.0 from https://files.pythonhosted.org/packages/2c/58/ca301544e1fa93ed4f80d724bf5b194f6e4b945841c5bfd555878eea9fcb/referencing-0.37.0-py3-none-any.whl.metadata
+  Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting httpx-sse>=0.4 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for httpx-sse>=0.4 from https://files.pythonhosted.org/packages/d2/fd/6668e5aec43ab844de6fc74927e155a3b37bf40d7c3790e49fc0406b6578/httpx_sse-0.4.3-py3-none-any.whl.metadata
+  Downloading httpx_sse-0.4.3-py3-none-any.whl.metadata (9.7 kB)
+Collecting jsonschema>=4.20.0 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jsonschema>=4.20.0 from https://files.pythonhosted.org/packages/69/90/f63fb5873511e014207a475e2bb4e8b2e570d655b00ac19a9a0ca0a385ee/jsonschema-4.26.0-py3-none-any.whl.metadata
+  Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+Collecting pydantic-settings>=2.5.2 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pydantic-settings>=2.5.2 from https://files.pythonhosted.org/packages/00/4b/ccc026168948fec4f7555b9164c724cf4125eac006e176541483d2c959be/pydantic_settings-2.13.1-py3-none-any.whl.metadata
+  Downloading pydantic_settings-2.13.1-py3-none-any.whl.metadata (3.4 kB)
+Collecting pyjwt[crypto]>=2.10.1 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pyjwt[crypto]>=2.10.1 from https://files.pythonhosted.org/packages/e5/7a/8dd906bd22e79e47397a61742927f6747fe93242ef86645ee9092e610244/pyjwt-2.12.1-py3-none-any.whl.metadata
+  Downloading pyjwt-2.12.1-py3-none-any.whl.metadata (4.1 kB)
+Collecting python-multipart>=0.0.9 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for python-multipart>=0.0.9 from https://files.pythonhosted.org/packages/9a/22/f1925cdda983ab66fc8ec6ec8014b959262747e58bdca26a4e3d1da29d56/python_multipart-0.0.26-py3-none-any.whl.metadata
+  Downloading python_multipart-0.0.26-py3-none-any.whl.metadata (2.1 kB)
+Collecting sse-starlette>=1.6.1 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for sse-starlette>=1.6.1 from https://files.pythonhosted.org/packages/f8/7f/3de5402f39890ac5660b86bcf5c03f9d855dad5c4ed764866d7b592b46fd/sse_starlette-3.3.4-py3-none-any.whl.metadata
+  Downloading sse_starlette-3.3.4-py3-none-any.whl.metadata (14 kB)
+Collecting starlette>=0.27 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for starlette>=0.27 from https://files.pythonhosted.org/packages/0b/c9/584bc9651441b4ba60cc4d557d8a547b5aff901af35bda3a4ee30c819b82/starlette-1.0.0-py3-none-any.whl.metadata
+  Downloading starlette-1.0.0-py3-none-any.whl.metadata (6.3 kB)
+Collecting typing-inspection>=0.4.1 (from mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for typing-inspection>=0.4.1 from https://files.pythonhosted.org/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl.metadata
+  Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting importlib-metadata<8.8.0,>=6.0 (from opentelemetry-api>=1.20.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for importlib-metadata<8.8.0,>=6.0 from https://files.pythonhosted.org/packages/fa/5e/f8e9a1d23b9c20a551a8a02ea3637b4642e22c2626e3a13a9a29cdea99eb/importlib_metadata-8.7.1-py3-none-any.whl.metadata
+  Downloading importlib_metadata-8.7.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting beartype>=0.20.0 (from py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for beartype>=0.20.0 from https://files.pythonhosted.org/packages/71/cc/18245721fa7747065ab478316c7fea7c74777d07f37ae60db2e84f8172e8/beartype-0.22.9-py3-none-any.whl.metadata
+  Downloading beartype-0.22.9-py3-none-any.whl.metadata (37 kB)
+Collecting aiofile>=3.5.0 (from py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for aiofile>=3.5.0 from https://files.pythonhosted.org/packages/50/25/da1f0b4dd970e52bf5a36c204c107e11a0c6d3ed195eba0bfbc664c312b2/aiofile-3.9.0-py3-none-any.whl.metadata
+  Downloading aiofile-3.9.0-py3-none-any.whl.metadata (14 kB)
+Collecting keyring>=25.6.0 (from py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for keyring>=25.6.0 from https://files.pythonhosted.org/packages/81/db/e655086b7f3a705df045bf0933bdd9c2f79bb3c97bfef1384598bb79a217/keyring-25.7.0-py3-none-any.whl.metadata
+  Downloading keyring-25.7.0-py3-none-any.whl.metadata (21 kB)
+Collecting cachetools>=5.0.0 (from py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for cachetools>=5.0.0 from https://files.pythonhosted.org/packages/06/f3/39cf3367b8107baa44f861dc802cbf16263c945b62d8265d36034fc07bea/cachetools-7.0.5-py3-none-any.whl.metadata
+  Downloading cachetools-7.0.5-py3-none-any.whl.metadata (5.6 kB)
+Collecting annotated-types>=0.6.0 (from pydantic[email]>=2.11.7->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for annotated-types>=0.6.0 from https://files.pythonhosted.org/packages/78/b6/6307fbef88d9b5ee7421e68d78a9f162e0da4900bc5f5793f6d3d0e34fb8/annotated_types-0.7.0-py3-none-any.whl.metadata
+  Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.46.2 (from pydantic[email]>=2.11.7->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pydantic-core==2.46.2 from https://files.pythonhosted.org/packages/e4/51/5d6155eb737db55b0ad354ca5f333ef009f75feb67df2d79a84bace45af6/pydantic_core-2.46.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading pydantic_core-2.46.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+Collecting email-validator>=2.0.0 (from pydantic[email]>=2.11.7->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for email-validator>=2.0.0 from https://files.pythonhosted.org/packages/de/15/545e2b6cf2e3be84bc1ed85613edd75b8aea69807a71c26f4ca6a9258e82/email_validator-2.3.0-py3-none-any.whl.metadata
+  Downloading email_validator-2.3.0-py3-none-any.whl.metadata (26 kB)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.9.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for markdown-it-py>=2.2.0 from https://files.pythonhosted.org/packages/94/54/e7d793b573f298e1c9013b8c4dade17d481164aa517d1d7148619c2cedbf/markdown_it_py-4.0.0-py3-none-any.whl.metadata
+  Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Collecting pygments<3.0.0,>=2.13.0 (from rich>=13.9.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pygments<3.0.0,>=2.13.0 from https://files.pythonhosted.org/packages/f4/7e/a72dd26f3b0f4f2bf1dd8923c85f7ceb43172af56d63c7383eb62b332364/pygments-2.20.0-py3-none-any.whl.metadata
+  Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting click>=7.0 (from uvicorn>=0.35->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for click>=7.0 from https://files.pythonhosted.org/packages/e4/20/71885d8b97d4f3dde17b1fdb92dbd4908b00541c5a3379787137285f602e/click-8.3.2-py3-none-any.whl.metadata
+  Downloading click-8.3.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting caio<0.10.0,>=0.9.0 (from aiofile>=3.5.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for caio<0.10.0,>=0.9.0 from https://files.pythonhosted.org/packages/d1/1c/0fe770b8ffc8362c48134d1592d653a81a3d8748d764bec33864db36319d/caio-0.9.25-cp312-cp312-manylinux_2_34_x86_64.whl.metadata
+  Downloading caio-0.9.25-cp312-cp312-manylinux_2_34_x86_64.whl.metadata (3.3 kB)
+Collecting dnspython>=2.0.0 (from email-validator>=2.0.0->pydantic[email]>=2.11.7->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for dnspython>=2.0.0 from https://files.pythonhosted.org/packages/ba/5a/18ad964b0086c6e62e2e7500f7edc89e3faa45033c71c1893d34eed2b2de/dnspython-2.8.0-py3-none-any.whl.metadata
+  Downloading dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)
+Collecting zipp>=3.20 (from importlib-metadata<8.8.0,>=6.0->opentelemetry-api>=1.20.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for zipp>=3.20 from https://files.pythonhosted.org/packages/08/8a/0861bec20485572fbddf3dfba2910e38fe249796cb73ecdeb74e07eeb8d3/zipp-3.23.1-py3-none-any.whl.metadata
+  Downloading zipp-3.23.1-py3-none-any.whl.metadata (3.6 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=4.20.0->mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jsonschema-specifications>=2023.03.6 from https://files.pythonhosted.org/packages/41/45/1a4ed80516f02155c51f51e8cedb3c1902296743db0bbc66608a0db2814f/jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata
+  Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting rpds-py>=0.25.0 (from jsonschema>=4.20.0->mcp<2.0,>=1.24.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for rpds-py>=0.25.0 from https://files.pythonhosted.org/packages/60/1b/6f8f29f3f995c7ffdde46a626ddccd7c63aefc0efae881dc13b6e5d5bb16/rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata
+  Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Collecting SecretStorage>=3.2 (from keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for SecretStorage>=3.2 from https://files.pythonhosted.org/packages/b7/46/f5af3402b579fd5e11573ce652019a67074317e18c1935cc0b4ba9b35552/secretstorage-3.5.0-py3-none-any.whl.metadata
+  Downloading secretstorage-3.5.0-py3-none-any.whl.metadata (4.0 kB)
+Collecting jeepney>=0.4.2 (from keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jeepney>=0.4.2 from https://files.pythonhosted.org/packages/b2/a3/e137168c9c44d18eff0376253da9f1e9234d0239e0ee230d2fee6cea8e55/jeepney-0.9.0-py3-none-any.whl.metadata
+  Downloading jeepney-0.9.0-py3-none-any.whl.metadata (1.2 kB)
+Collecting jaraco.classes (from keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jaraco.classes from https://files.pythonhosted.org/packages/7f/66/b15ce62552d84bbfcec9a4873ab79d993a1dd4edb922cbfccae192bd5b5f/jaraco.classes-3.4.0-py3-none-any.whl.metadata
+  Downloading jaraco.classes-3.4.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting jaraco.functools (from keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jaraco.functools from https://files.pythonhosted.org/packages/fd/c4/813bb09f0985cb21e959f21f2464169eca882656849adf727ac7bb7e1767/jaraco_functools-4.4.0-py3-none-any.whl.metadata
+  Downloading jaraco_functools-4.4.0-py3-none-any.whl.metadata (3.0 kB)
+Collecting jaraco.context (from keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for jaraco.context from https://files.pythonhosted.org/packages/f2/58/bc8954bda5fcda97bd7c19be11b85f91973d67a706ed4a3aec33e7de22db/jaraco_context-6.1.2-py3-none-any.whl.metadata
+  Downloading jaraco_context-6.1.2-py3-none-any.whl.metadata (4.2 kB)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.9.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for mdurl~=0.1 from https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl.metadata
+  Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting cffi>=2.0.0 (from cryptography->authlib>=1.6.5->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for cffi>=2.0.0 from https://files.pythonhosted.org/packages/78/2d/7fa73dfa841b5ac06c7b8855cfc18622132e365f5b81d02230333ff26e9e/cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata
+  Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+Collecting docutils (from rich-rst<2.0.0,>=1.3.1->cyclopts>=4.0.0->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for docutils from https://files.pythonhosted.org/packages/02/10/5da547df7a391dcde17f59520a231527b8571e6f46fc8efb02ccb370ab12/docutils-0.22.4-py3-none-any.whl.metadata
+  Downloading docutils-0.22.4-py3-none-any.whl.metadata (15 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography->authlib>=1.6.5->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for pycparser from https://files.pythonhosted.org/packages/0c/c3/44f3fbbfa403ea2a7c779186dc20772604442dde72947e7d01069cbe98e3/pycparser-3.0-py3-none-any.whl.metadata
+  Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting more-itertools (from jaraco.classes->keyring>=25.6.0->py-key-value-aio[filetree,keyring,memory]<0.5.0,>=0.4.4->fastmcp->-r requirements.txt (line 1))
+  Obtaining dependency information for more-itertools from https://files.pythonhosted.org/packages/cb/98/6af411189d9413534c3eb691182bff1f5c6d44ed2f93f2edfe52a1bbceb8/more_itertools-11.0.2-py3-none-any.whl.metadata
+  Downloading more_itertools-11.0.2-py3-none-any.whl.metadata (41 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 41.4/41.4 kB 9.6 MB/s eta 0:00:00
+Downloading fastmcp-3.2.4-py3-none-any.whl (728 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 728.6/728.6 kB 17.3 MB/s eta 0:00:00
+Downloading authlib-1.6.11-py2.py3-none-any.whl (244 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 244.5/244.5 kB 44.5 MB/s eta 0:00:00
+Downloading cyclopts-4.10.2-py3-none-any.whl (204 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 204.3/204.3 kB 42.5 MB/s eta 0:00:00
+Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Downloading griffelib-2.0.2-py3-none-any.whl (142 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 142.4/142.4 kB 4.7 MB/s eta 0:00:00
+Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 17.4 MB/s eta 0:00:00
+Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 17.6 MB/s eta 0:00:00
+Downloading jsonref-1.1.0-py3-none-any.whl (9.4 kB)
+Downloading jsonschema_path-0.4.5-py3-none-any.whl (19 kB)
+Downloading mcp-1.27.0-py3-none-any.whl (215 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 216.0/216.0 kB 37.2 MB/s eta 0:00:00
+Downloading openapi_pydantic-0.5.1-py3-none-any.whl (96 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.4/96.4 kB 26.0 MB/s eta 0:00:00
+Downloading opentelemetry_api-1.41.0-py3-none-any.whl (69 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.0/69.0 kB 1.8 MB/s eta 0:00:00
+Downloading packaging-26.1-py3-none-any.whl (95 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 95.8/95.8 kB 20.5 MB/s eta 0:00:00
+Downloading platformdirs-4.9.6-py3-none-any.whl (21 kB)
+Downloading pydantic_core-2.46.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 77.8 MB/s eta 0:00:00
+Downloading pyperclip-1.11.0-py3-none-any.whl (11 kB)
+Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 70.9 MB/s eta 0:00:00
+Downloading rich-15.0.0-py3-none-any.whl (310 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 310.7/310.7 kB 22.1 MB/s eta 0:00:00
+Downloading uncalled_for-0.3.1-py3-none-any.whl (11 kB)
+Downloading uvicorn-0.44.0-py3-none-any.whl (69 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.4/69.4 kB 5.7 MB/s eta 0:00:00
+Downloading watchfiles-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 456.8/456.8 kB 68.4 MB/s eta 0:00:00
+Downloading websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 184.9/184.9 kB 38.7 MB/s eta 0:00:00
+Downloading aiofile-3.9.0-py3-none-any.whl (19 kB)
+Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Downloading anyio-4.13.0-py3-none-any.whl (114 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 114.4/114.4 kB 26.5 MB/s eta 0:00:00
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.5/67.5 kB 16.7 MB/s eta 0:00:00
+Downloading beartype-0.22.9-py3-none-any.whl (1.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 73.4 MB/s eta 0:00:00
+Downloading cachetools-7.0.5-py3-none-any.whl (13 kB)
+Downloading click-8.3.2-py3-none-any.whl (108 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 108.4/108.4 kB 26.1 MB/s eta 0:00:00
+Downloading docstring_parser-0.18.0-py3-none-any.whl (22 kB)
+Downloading email_validator-2.3.0-py3-none-any.whl (35 kB)
+Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+Downloading httpx_sse-0.4.3-py3-none-any.whl (9.0 kB)
+Downloading idna-3.11-py3-none-any.whl (71 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.0/71.0 kB 22.1 MB/s eta 0:00:00
+Downloading importlib_metadata-8.7.1-py3-none-any.whl (27 kB)
+Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.6/90.6 kB 21.6 MB/s eta 0:00:00
+Downloading keyring-25.7.0-py3-none-any.whl (39 kB)
+Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.3/87.3 kB 19.5 MB/s eta 0:00:00
+Downloading pathable-0.5.0-py3-none-any.whl (16 kB)
+Downloading pydantic-2.13.2-py3-none-any.whl (471 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 471.9/471.9 kB 10.4 MB/s eta 0:00:00
+Downloading pydantic_settings-2.13.1-py3-none-any.whl (58 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 58.9/58.9 kB 13.8 MB/s eta 0:00:00
+Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 50.9 MB/s eta 0:00:00
+Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 74.2 MB/s eta 0:00:00
+Downloading python_multipart-0.0.26-py3-none-any.whl (28 kB)
+Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+Downloading rich_rst-1.3.2-py3-none-any.whl (12 kB)
+Downloading sse_starlette-3.3.4-py3-none-any.whl (14 kB)
+Downloading starlette-1.0.0-py3-none-any.whl (72 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 72.7/72.7 kB 18.2 MB/s eta 0:00:00
+Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 kB 12.0 MB/s eta 0:00:00
+Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 153.7/153.7 kB 37.7 MB/s eta 0:00:00
+Downloading py_key_value_aio-0.4.4-py3-none-any.whl (152 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 152.3/152.3 kB 30.5 MB/s eta 0:00:00
+Downloading caio-0.9.25-cp312-cp312-manylinux_2_34_x86_64.whl (80 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.2/80.2 kB 18.3 MB/s eta 0:00:00
+Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 219.6/219.6 kB 40.1 MB/s eta 0:00:00
+Downloading dnspython-2.8.0-py3-none-any.whl (331 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 331.1/331.1 kB 42.1 MB/s eta 0:00:00
+Downloading jeepney-0.9.0-py3-none-any.whl (49 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.0/49.0 kB 10.3 MB/s eta 0:00:00
+Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (394 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 394.1/394.1 kB 54.9 MB/s eta 0:00:00
+Downloading secretstorage-3.5.0-py3-none-any.whl (15 kB)
+Downloading zipp-3.23.1-py3-none-any.whl (10 kB)
+Downloading docutils-0.22.4-py3-none-any.whl (633 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 633.2/633.2 kB 71.8 MB/s eta 0:00:00
+Downloading jaraco.classes-3.4.0-py3-none-any.whl (6.8 kB)
+Downloading jaraco_context-6.1.2-py3-none-any.whl (7.9 kB)
+Downloading jaraco_functools-4.4.0-py3-none-any.whl (10 kB)
+Downloading pyjwt-2.12.1-py3-none-any.whl (29 kB)
+Downloading more_itertools-11.0.2-py3-none-any.whl (71 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 71.9/71.9 kB 20.9 MB/s eta 0:00:00
+Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.2/48.2 kB 11.2 MB/s eta 0:00:00
+Installing collected packages: pyperclip, zipp, websockets, uncalled-for, typing-extensions, rpds-py, pyyaml, python-multipart, python-dotenv, pyjwt, pygments, pycparser, platformdirs, pathable, packaging, more-itertools, mdurl, jsonref, jeepney, jaraco.context, idna, httpx-sse, h11, griffelib, docutils, docstring-parser, dnspython, click, certifi, caio, cachetools, beartype, attrs, annotated-types, uvicorn, typing-inspection, referencing, pydantic-core, py-key-value-aio, markdown-it-py, jaraco.functools, jaraco.classes, importlib-metadata, httpcore, exceptiongroup, email-validator, cffi, anyio, aiofile, watchfiles, starlette, rich, pydantic, opentelemetry-api, jsonschema-specifications, jsonschema-path, httpx, cryptography, sse-starlette, SecretStorage, rich-rst, pydantic-settings, openapi-pydantic, jsonschema, authlib, mcp, keyring, cyclopts, fastmcp
+Successfully installed SecretStorage-3.5.0 aiofile-3.9.0 annotated-types-0.7.0 anyio-4.13.0 attrs-26.1.0 authlib-1.6.11 beartype-0.22.9 cachetools-7.0.5 caio-0.9.25 certifi-2026.2.25 cffi-2.0.0 click-8.3.2 cryptography-46.0.7 cyclopts-4.10.2 dnspython-2.8.0 docstring-parser-0.18.0 docutils-0.22.4 email-validator-2.3.0 exceptiongroup-1.3.1 fastmcp-3.2.4 griffelib-2.0.2 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 httpx-sse-0.4.3 idna-3.11 importlib-metadata-8.7.1 jaraco.classes-3.4.0 jaraco.context-6.1.2 jaraco.functools-4.4.0 jeepney-0.9.0 jsonref-1.1.0 jsonschema-4.26.0 jsonschema-path-0.4.5 jsonschema-specifications-2025.9.1 keyring-25.7.0 markdown-it-py-4.0.0 mcp-1.27.0 mdurl-0.1.2 more-itertools-11.0.2 openapi-pydantic-0.5.1 opentelemetry-api-1.41.0 packaging-26.1 pathable-0.5.0 platformdirs-4.9.6 py-key-value-aio-0.4.4 pycparser-3.0 pydantic-2.13.2 pydantic-core-2.46.2 pydantic-settings-2.13.1 pygments-2.20.0 pyjwt-2.12.1 pyperclip-1.11.0 python-dotenv-1.2.2 python-multipart-0.0.26 pyyaml-6.0.3 referencing-0.37.0 rich-15.0.0 rich-rst-1.3.2 rpds-py-0.30.0 sse-starlette-3.3.4 starlette-1.0.0 typing-extensions-4.15.0 typing-inspection-0.4.2 uncalled-for-0.3.1 uvicorn-0.44.0 watchfiles-1.1.1 websockets-16.0 zipp-3.23.1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+WARNING: There was an error checking the latest version of pip.
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+[root@ansible-rhel9 ~]# mkdir /ocp-claude-skills/
+[root@ansible-rhel9 ~]# cd /ocp-claude-skills/
+[root@ansible-rhel9 ocp-claude-skills]# touch README.md
+[root@ansible-rhel9 ocp-claude-skills]# touch requirements.txt
+[root@ansible-rhel9 ocp-claude-skills]# touch LICENSE
+[root@ansible-rhel9 ocp-claude-skills]# touch ocp_mcp_server.py
+[root@ansible-rhel9 ocp-claude-skills]# touch .mcp.json
+[root@ansible-rhel9 ocp-claude-skills]# touch CLAUDE.md
+[root@ansible-rhel9 ocp-claude-skills]# mkdir .claude/
+[root@ansible-rhel9 ocp-claude-skills]# mkdir .claude/skills/
+[root@ansible-rhel9 ocp-claude-skills]# mkdir .claude/skills/login_status/
+[root@ansible-rhel9 ocp-claude-skills]# mkdir .claude/skills/pod_status/
+[root@ansible-rhel9 ocp-claude-skills]# mkdir .claude/skills/nginx_deploy/
+[root@ansible-rhel9 ocp-claude-skills]# touch .claude/skills/login_status/SKILL.md
+[root@ansible-rhel9 ocp-claude-skills]# touch .claude/skills/pod_status/SKILL.md
+[root@ansible-rhel9 ocp-claude-skills]# touch .claude/skills/nginx_deploy/SKILL.md
+[root@ansible-rhel9 ocp-claude-skills]#
+
+[root@ansible-rhel9 ocp-claude-skills]# tree /ocp-claude-skills/
+/ocp-claude-skills/
+├── CLAUDE.md
+├── LICENSE
+├── ocp_mcp_server.py
+├── README.md
+└── requirements.txt
+
+0 directories, 5 files
+[root@ansible-rhel9 ocp-claude-skills]# tree /ocp-claude-skills/.claude/
+/ocp-claude-skills/.claude/
+└── skills
+    ├── login_status
+    │   └── SKILL.md
+    ├── nginx_deploy
+    │   └── SKILL.md
+    └── pod_status
+        └── SKILL.md
+
+4 directories, 3 files
+
+################################################################## TESTING #########################################################################################3
+
+
+[root@ansible-rhel9 ocp-claude-skills]# oc whoami
+ocpadmin
+[root@ansible-rhel9 ocp-claude-skills]# tree .claude/
+.claude/
+└── skills
+    ├── login_status
+    │   └── SKILL.md
+    ├── nginx_deploy
+    │   └── SKILL.md
+    └── pod_status
+        └── SKILL.md
+
+4 directories, 3 files
+
+
+[root@ansible-rhel9 ocp-claude-skills]# python3.12 -c "import fastmcp; print('fastmcp OK')"
+fastmcp OK
+
+
+MCP-server-test:
+
+
+[root@ansible-rhel9 ocp-claude-skills]# python3.12 ocp_mcp_server.py
+
+
+                                                          ╭──────────────────────────────────────────────────────────────────────────────╮
+                                                          │                                                                              │
+                                                          │                                                                              │
+                                                          │                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+                                                          │                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+                                                          │                                                                              │
+                                                          │                                                                              │
+                                                          │                                                                              │
+                                                          │                                FastMCP 3.2.4                                 │
+                                                          │                            https://gofastmcp.com                             │
+                                                          │                                                                              │
+                                                          │                  🖥  Server:      ocp-mcp, 3.2.4                              │
+                                                          │                  🚀 Deploy free: https://horizon.prefect.io                  │
+                                                          │                                                                              │
+                                                          ╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[04/17/26 08:21:10] INFO     Starting MCP server 'ocp-mcp' with transport 'stdio'                                                                                                   transport.py:209
+
+
+[root@ansible-rhel9 ocp-claude-skills]# claude
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Accessing workspace:
+
+ /ocp-claude-skills
+
+ Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source project, or work from your team). If not, take a moment to
+ review what's in this folder first.
+
+ Claude Code'll be able to read, edit, and execute files here.
+
+ Security guide
+
+ ❯ 1. Yes, I trust this folder
+   2. No, exit
+
+ Enter to confirm · Esc to cancel
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  New MCP server found in .mcp.json: ocp-mcp
+
+  MCP servers may execute code or access system resources. All tool calls require approval. Learn more in the MCP documentation.
+
+  ❯ 1. Use this and all future MCP servers in this project
+    2. Use this MCP server
+    3. Continue without using this MCP server
+
+  Enter to confirm · Esc to cancel
+
+
+
+▒ Claude Code           Claude Code v2.1.112
+ ▐▛███▜▌   Sonnet 4.6 · API Usage Billing
+▝▜█████▛▘  /ocp-claude-skills
+  ▘▘ ▝▝    Welcome to Opus 4.7 xhigh! · /effort to tune speed vs. intelligence
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ /mcp
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+/mcp                                   Manage MCP servers
+/ocp-mcp:pod_health_prompt (MCP)       Prompt to analyze pod health in a namespace (arguments: namespace)
+/ocp-mcp:login_status_prompt (MCP)     Prompt to summarize OCP login and cluster health
+/ocp-mcp:nginx_deploy_prompt (MCP)     Prompt to deploy and verify nginx on OCP (arguments: namespace)
+/less-permission-prompts               Scan your transcripts for common read-only Bash and MCP tool calls, then add a prioritized allowlist to project .claude/settings.jso…
+
+############ Prompt test #######################33
+
+[.......
+# Test 1 — Login check
+"Am I logged into OCP?"
+
+.......]
+
+
+
+           Claude Code v2.1.112
+ ▐▛███▜▌   Sonnet 4.6 · API Usage Billing
+▝▜█████▛▘  /ocp-claude-skills
+  ▘▘ ▝▝    Welcome to Opus 4.7 xhigh! · /effort to tune speed vs. intelligence
+
+❯ Am I logged into OCP?
+
+● Skill(login_status)
+  ⎿  Successfully loaded skill
+
+● Checking your OCP login status now.
+
+● Calling ocp-mcp… (ctrl+o to expand)
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Tool use
+
+   ocp-mcp - check_login() (MCP)
+   Check if currently logged into OCP — returns current user and server
+
+ Do you want to proceed?
+ ❯ 1. Yes
+   2. Yes, and don't ask again for ocp-mcp - check_login commands in /ocp-claude-skills
+   3. No
+
+ Esc to cancel · Tab to amend
+
+● Skill(login_status)
+  ⎿  Successfully loaded skill
+
+● Checking your OCP login status now.
+
+  Called ocp-mcp (ctrl+o to expand)
+
+● Yes, you're logged in. You are authenticated as ocpadmin on the cluster at https://api.vmwocp.hpe.local:6443.
+
+
+
+
+[ .....
+
+# Test 2 — Cluster health
+"Show me all nodes"
+........ ]
+
+❯ Show me all nodes
+
+● Calling ocp-mcp… (ctrl+o to expand)
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Tool use
+    Check OpenShift Container Platform login status
+   ocp-mcp - get_nodes() (MCP)
+   Get all OCP nodes and their status
+
+ Do you want to proceed?
+ ❯ 1. Yes
+   2. Yes, and don't ask again for ocp-mcp - get_nodes commands in /ocp-claude-skills
+   3. No
+
+ Esc to cancel · Tab to amend
+❯ Show me all nodes
+
+  Called ocp-mcp (ctrl+o to expand)
+
+● Your cluster has 6 nodes, all in Ready status:
+
+  ┌───────────────┬───────────────────────┬────────────────┬──────────┐
+  │     Name      │         Role          │       IP       │ Version  │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-master1 │ control-plane, master │ 10.254.105.108 │ v1.31.11 │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-master2 │ control-plane, master │ 10.254.105.109 │ v1.31.11 │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-master3 │ control-plane, master │ 10.254.105.110 │ v1.31.11 │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-worker1 │ worker                │ 10.254.105.111 │ v1.31.11 │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-worker2 │ worker                │ 10.254.105.112 │ v1.31.11 │
+  ├───────────────┼───────────────────────┼────────────────┼──────────┤
+  │ vmocp-worker3 │ worker                │ 10.254.105.113 │ v1.31.11 │
+  └───────────────┴───────────────────────┴────────────────┴──────────┘
+
+  3 masters + 3 workers, all running RHCOS on Kubernetes v1.31.11. Everything looks healthy.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+[.......
+# Test 3 — Pods
+"Show me pods in namespace openshift-monitoring"
+
+..........]
+
+
+❯ Show me pods in namespace openshift-monitoring
+
+● Calling ocp-mcp… (ctrl+o to expand)
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Tool use
+
+   ocp-mcp - get_pods(namespace: "openshift-monitoring") (MCP)
+   Get all pods and their status in a given namespace
+
+ Do you want to proceed?
+ ▒ Check OpenShift Container Platform login status
+   2. Yes, and don't ask again for ocp-mcp - get_pods commands in /ocp-claude-skills
+   3. No
+
+ Esc to cancel · Tab to amend
+ 
+ 
+ 
+
+❯ Show me pods in namespace openshift-monitoring
+
+  Called ocp-mcp (ctrl+o to expand)
+
+● All 23 pods in openshift-monitoring are Running with no issues:
+
+  ┌──────────────────────────────────────────────┬──────────┬──────────┐
+  │                     Pod                      │  Ready   │ Restarts │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ alertmanager-main-0                          │ 6/6      │ 12       │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ alertmanager-main-1                          │ 6/6      │ 18       │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ cluster-monitoring-operator-86d48cf768-mxttk │ 1/1      │ 1        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ kube-state-metrics-57db8f7c58-rkc9s          │ 3/3      │ 9        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ metrics-server-6f7bf886b5-rd8cc              │ 1/1      │ 0        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ metrics-server-6f7bf886b5-wp6xn              │ 1/1      │ 0        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ monitoring-plugin-9889797cb-6mrhq            │ 1/1      │ 2        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ monitoring-plugin-9889797cb-rqxc5            │ 1/1      │ 3        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ node-exporter-* (6 pods)                     │ 2/2 each │ —        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ openshift-state-metrics-7867497d99-m4sfj     │ 3/3      │ 9        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ prometheus-k8s-0                             │ 6/6      │ 18       │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ prometheus-k8s-1                             │ 6/6      │ 12       │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ prometheus-operator-6c944b95ff-w4s2m         │ 2/2      │ 2        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ prometheus-operator-admission-webhook-* (2)  │ 1/1 each │ —        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ telemeter-client-7c87bbb6fd-47hbk            │ 3/3      │ 6        │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ thanos-querier-b4f9584c-69dgk                │ 6/6      │ 18       │
+  ├──────────────────────────────────────────────┼──────────┼──────────┤
+  │ thanos-querier-b4f9584c-rdx9f                │ 6/6      │ 12       │
+  └──────────────────────────────────────────────┴──────────┴──────────┘
+
+  Everything is healthy. The restart counts are normal for long-running pods (205 days old).
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ 
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+❯ exit
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Resume this session with:
+claude --resume 4db7a943-5ffd-4227-9157-55c8d39a22be
+
+Total cost:            $0.1104
+Total duration (API):  30s
+Total duration (wall): 18m 15s
+Total code changes:    0 lines added, 0 lines removed
+Usage by model:
+    claude-haiku-4-5:  343 input, 16 output, 0 cache read, 0 cache write ($0.0004)
+   claude-sonnet-4-6:  23 input, 1.4k output, 176.5k cache read, 9.4k cache write ($0.1100)
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+
+
+
+# Test 3 — Cluster operators
+"Are all cluster operators healthy?"
+
+# Test 4 — Version
+"What OCP version is running?"
+
+
+
+cd /ocp-claude-skills
+[root@ansible-rhel9 ocp-claude-skills]# ls -la ~/.ssh
+total 24
+drwxr-xr-x.  2 root root  119 Apr 13 01:34 .
+dr-xr-x---. 30 root root 4096 Apr 17 10:36 ..
+-rw-------   1 root root  400 Oct  6  2025 authorized_keys
+-rw-------   1 root root 3609 Apr 17 10:38 known_hosts
+-rw-------   1 root root 3344 Apr 13 01:34 known_hosts.old
+-r--------   1 root root 1823 Oct  6  2025 quay_installer
+-r--------   1 root root  400 Oct  6  2025 quay_installer.pub
+[root@ansible-rhel9 ocp-claude-skills]# pwd
+/ocp-claude-skills
+[root@ansible-rhel9 ocp-claude-skills]# ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "i.banerjee83@gmail.com"
+Generating public/private ed25519 key pair.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_ed25519
+Your public key has been saved in /root/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:KeOPBERMfi5c7rGHkucFHc3LCzSd1kUpDnoZrKPkJiU i.banerjee83@gmail.com
+The key's randomart image is:
++--[ED25519 256]--+
+|   oo    .   .o. |
+|   o.    ++o...  |
+|    o o +o*=..   |
+|   oE=oo+*o..    |
+|    +=B.Soo      |
+|    .*+B . .     |
+|    ooB o .      |
+|     = =         |
+|      o .        |
++----[SHA256]-----+
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+https://github.com/settings/keys
+
+new key 
+
+[root@ansible-rhel9 ocp-claude-skills]# ssh -T git@github.com
+git push -u origin main
+Hi ibanerjeedoc21-source! You've successfully authenticated, but GitHub does not provide shell access.
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 3.32 KiB | 3.32 MiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To github.com:ibanerjeedoc21-source/ocp-claude-skills.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+[root@ansible-rhel9 ocp-claude-skills]#
+
+
+To rebase or after upload from GUI then resync
+
+git pull --rebase origin main
+
+
+
+
+[root@ansible-rhel9 ocp-claude-skills]# git pull --rebase origin main
+remote: Enumerating objects: 14, done.
+remote: Counting objects: 100% (14/14), done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 13 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (13/13), 314.88 KiB | 3.31 MiB/s, done.
+From github.com:ibanerjeedoc21-source/ocp-claude-skills
+ * branch            main       -> FETCH_HEAD
+   cba5e51..79fe982  main       -> origin/main
+Updating cba5e51..79fe982
+Fast-forward
+ 10.png         | Bin 0 -> 51906 bytes
+ 2.png          | Bin 0 -> 27018 bytes
+ 3.png          | Bin 0 -> 21490 bytes
+ 4.png          | Bin 0 -> 36549 bytes
+ 5.png          | Bin 0 -> 36275 bytes
+ 6.png          | Bin 0 -> 31398 bytes
+ 7.png          | Bin 0 -> 46990 bytes
+ 8.png          | Bin 0 -> 61981 bytes
+ 9.png          | Bin 0 -> 22973 bytes
+ MCP-server.png | Bin 0 -> 22853 bytes
+ MOP.txt        | 901 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 11 files changed, 901 insertions(+)
+ create mode 100644 10.png
+ create mode 100644 2.png
+ create mode 100644 3.png
+ create mode 100644 4.png
+ create mode 100644 5.png
+ create mode 100644 6.png
+ create mode 100644 7.png
+ create mode 100644 8.png
+ create mode 100644 9.png
+ create mode 100644 MCP-server.png
+ create mode 100644 MOP.txt
+
+
+[root@ansible-rhel9 ocp-claude-skills]# mkdir demo-screenshot
+[root@ansible-rhel9 ocp-claude-skills]# mv *.png demo-screenshot/
+[root@ansible-rhel9 ocp-claude-skills]# ls -la
+total 140
+drwxr-xr-x   5 root root   186 Apr 17 11:25 .
+dr-xr-xr-x. 22 root root  4096 Apr 17 06:59 ..
+drwxr-xr-x   3 root root    47 Apr 17 08:51 .claude
+-rw-r--r--   1 root root  1030 Apr 17 07:14 CLAUDE.md
+drwxr-xr-x   2 root root   146 Apr 17 11:25 demo-screenshot
+drwxr-xr-x   8 root root  4096 Apr 17 11:23 .git
+-rw-r--r--   1 root root     0 Apr 17 07:01 LICENSE
+-rw-r--r--   1 root root   136 Apr 17 08:34 .mcp.json
+-rw-r--r--   1 root root 86054 Apr 17 11:23 MOP.txt
+-rw-r--r--   1 root root  6367 Apr 17 08:15 ocp_mcp_server.py
+-rw-r--r--   1 root root 23204 Apr 17 09:29 README.md
+-rw-r--r--   1 root root     8 Apr 17 07:33 requirements.txt
+
