@@ -9,8 +9,10 @@ import argparse
 import json
 import os
 import select
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -50,7 +52,16 @@ def run_single_query(
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
-    project_commands_dir = Path(project_root) / ".claude" / "commands"
+
+    # Each probe gets a private project root. Sharing one commands directory
+    # across workers does not just risk collisions -- it silently destroys the
+    # measurement. Every concurrent probe writes a command carrying the same
+    # candidate description under a different uuid into the same
+    # .claude/commands/, so Claude sees N indistinguishable skills and picks
+    # one, while each probe only counts its own uuid. Trigger rate then
+    # converges on 1/num_workers however good the description is.
+    probe_root = Path(tempfile.mkdtemp(prefix="skill-trigger-eval-"))
+    project_commands_dir = probe_root / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
     try:
@@ -86,7 +97,7 @@ def run_single_query(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            cwd=project_root,
+            cwd=str(probe_root),
             env=env,
         )
 
@@ -177,8 +188,42 @@ def run_single_query(
 
         return triggered
     finally:
-        if command_file.exists():
-            command_file.unlink()
+        # Remove the whole probe root, not just the command file. A killed run
+        # previously stranded probe commands in the shared .claude/commands/,
+        # where they stayed visible as bogus skills to the next run and to the
+        # operator's own session.
+        #
+        # ignore_errors stays True on every attempt: this runs in a finally, so
+        # a raised cleanup error would mask the trigger result we came for.
+        # The retry is for Windows, which will not unlink a directory that is
+        # still a process's cwd; the killed subprocess releases that handle
+        # asynchronously.
+        for _ in range(4):
+            shutil.rmtree(probe_root, ignore_errors=True)
+            if not probe_root.exists():
+                break
+            time.sleep(0.25)
+
+
+def _sweep_probe_roots() -> None:
+    """Delete spent probe roots left behind by per-probe cleanup.
+
+    Only needed on Windows, which will not unlink a directory that is still a
+    process's cwd; the killed `claude` subprocess releases that handle after
+    wait() returns, and waiting it out inside the run costs more than the empty
+    directories do. The per-probe cleanup removes the contents (the part that
+    matters -- a stranded command file is a bogus skill the next run can see),
+    and this removes the empty shells afterwards.
+
+    Roots still holding a .md are skipped, so a probe in flight -- in this run
+    or a concurrent one -- cannot have its command file deleted underneath it.
+    """
+    for path in Path(tempfile.gettempdir()).glob("skill-trigger-eval-*"):
+        try:
+            if not any(path.rglob("*.md")):
+                shutil.rmtree(path, ignore_errors=True)
+        except OSError:
+            pass
 
 
 def run_eval(
@@ -223,6 +268,10 @@ def run_eval(
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
+
+    # The executor context has exited, so every claude subprocess is gone and
+    # the cwd handles it held are released.
+    _sweep_probe_roots()
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
