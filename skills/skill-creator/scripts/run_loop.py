@@ -267,6 +267,18 @@ def main():
 
     name, _, _ = parse_skill_md(skill_path)
 
+    est = len(eval_set) * args.runs_per_query * args.max_iterations
+    print(
+        f"Estimated claude invocations: ~{est} "
+        f"({len(eval_set)} queries × {args.runs_per_query} runs × {args.max_iterations} iterations, "
+        f"{args.num_workers} parallel workers, model: {args.model})",
+        file=sys.stderr,
+    )
+    if sys.stdin.isatty():
+        resp = input("Continue? [y/N] ").strip().lower()
+        if resp not in ("y", "yes"):
+            sys.exit(0)
+
     # Set up live report path
     if args.report != "none":
         if args.report == "auto":
