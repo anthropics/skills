@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md",
+  "shot_sizes": [
+    {"abbr": "ELS", "name": "Extreme Long Shot", "frame": "vast landscape, subject tiny or absent"},
+    {"abbr": "EWS", "name": "Extreme Wide", "frame": "subject tiny in environment"},
+    {"abbr": "WS", "name": "Wide Shot / Long Shot", "frame": "full body + surroundings"},
+    {"abbr": "MLS", "name": "Medium Long Shot / Cowboy", "frame": "mid-thigh up"},
+    {"abbr": "MWS", "name": "Medium Wide", "frame": "knees up"},
+    {"abbr": "MS", "name": "Medium", "frame": "waist up"},
+    {"abbr": "MCU", "name": "Medium Close-Up", "frame": "chest up"},
+    {"abbr": "CU", "name": "Close-Up", "frame": "face"},
+    {"abbr": "ECU", "name": "Extreme Close-Up", "frame": "detail — eyes, hands, object"},
+    {"abbr": "Insert", "name": "Insert Shot", "frame": "detail of an object or action"},
+    {"abbr": "OTS", "name": "Over-the-Shoulder", "frame": "looking over a character's shoulder"},
+    {"abbr": "POV", "name": "POV", "frame": "first-person character perspective"},
+    {"abbr": "2S", "name": "Two-Shot", "frame": "two characters in frame"}
+  ]
+}
