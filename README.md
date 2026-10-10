@@ -94,3 +94,4 @@ The markdown content below contains the instructions, examples, and guidelines t
 Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
 
 - **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+- **idea-skill** - [idea-skill](https://github.com/NatanNarciso/idea-skill) turns a spoken idea into a fully tagged GitHub issue on the right GitHub Projects Kanban board, and turns an approved Claude Code plan into a merged PR — a pair of Claude Code Agent Skills (`/idea` and `ship`) plus a setup script, no server or extra infrastructure required.
