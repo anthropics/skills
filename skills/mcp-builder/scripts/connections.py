@@ -7,7 +7,18 @@ from typing import Any
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
-from mcp.client.streamable_http import streamablehttp_client
+
+try:
+    from mcp.client.streamable_http import streamable_http_client
+
+    try:
+        from mcp.client.streamable_http import create_mcp_http_client
+    except ImportError:
+        create_mcp_http_client = None
+except ImportError:
+    # Fallback for mcp < 2.0 where function was named streamablehttp_client
+    from mcp.client.streamable_http import streamablehttp_client as streamable_http_client
+    create_mcp_http_client = None
 
 
 class MCPConnection(ABC):
@@ -106,7 +117,16 @@ class MCPConnectionHTTP(MCPConnection):
         self.headers = headers or {}
 
     def _create_context(self):
-        return streamablehttp_client(url=self.url, headers=self.headers)
+        if create_mcp_http_client is not None:
+            http_client = create_mcp_http_client(headers=self.headers) if self.headers else None
+            if http_client is not None and self._stack is not None:
+                self._stack.push_async_callback(http_client.aclose)
+            return streamable_http_client(url=self.url, http_client=http_client)
+        else:
+            try:
+                return streamable_http_client(url=self.url, headers=self.headers)
+            except TypeError:
+                return streamable_http_client(url=self.url)
 
 
 def create_connection(
