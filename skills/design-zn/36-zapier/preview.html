@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Zapier (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Degular Display';
+    src: local('Degular Display');
+    font-weight: 500;
+    font-style: normal;
+  }
+  :root {
+    --zapier-black: #201515;
+    --cream: #fffefb;
+    --off-white: #fffdf9;
+    --charcoal: #36342e;
+    --warm-gray: #939084;
+    --sand: #c5c0b1;
+    --light-sand: #eceae3;
+    --mid-warm: #b5b2aa;
+    --orange: #ff4f00;
+    --shadow-tab-active: rgb(255, 79, 0) 0px -4px 0px 0px inset;
+    --shadow-tab-hover: rgb(197, 192, 177) 0px -4px 0px 0px inset;
+    --font-display: 'Degular Display', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Inter', Helvetica, Arial, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--zapier-black);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(255, 254, 251, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand);
+  }
+  .nav-brand { font-size: 14px; font-weight: 600; color: var(--zapier-black); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--charcoal); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--zapier-black); }
+  .nav-cta {
+    display: inline-block; background: var(--orange); color: var(--cream);
+    padding: 8px 16px; border-radius: 4px; font-size: 14px; font-weight: 600;
+    text-decoration: none; border: 1px solid var(--orange); transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.9; }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 56px; font-weight: 500; line-height: 0.90;
+    color: var(--zapier-black); margin-bottom: 20px;
+  }
+  .hero p { font-size: 20px; font-weight: 400; line-height: 1.40; color: var(--charcoal); max-width: 600px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-orange {
+    display: inline-block; background: var(--orange); color: var(--cream);
+    padding: 8px 16px; border-radius: 4px; border: 1px solid var(--orange);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-orange:hover { opacity: 0.9; }
+  .btn-dark {
+    display: inline-block; background: var(--zapier-black); color: var(--cream);
+    padding: 20px 24px; border-radius: 8px; border: 1px solid var(--zapier-black);
+    font-family: var(--font-sans); font-size: 16px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-dark:hover { background: var(--sand); color: var(--zapier-black); }
+  .btn-ghost {
+    display: inline-block; background: var(--light-sand); color: var(--charcoal);
+    padding: 20px 24px; border-radius: 8px; border: 1px solid var(--sand);
+    font-family: var(--font-sans); font-size: 16px; font-weight: 600;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-ghost:hover { background: var(--sand); color: var(--zapier-black); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--warm-gray); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-title { font-size: 32px; font-weight: 500; line-height: 1.25; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--sand); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 5px; overflow: hidden; border: 1px solid var(--sand); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--warm-gray); font-family: var(--font-sans); }
+  .color-swatch-role { font-size: 11px; color: var(--warm-gray); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--charcoal); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--light-sand); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-size: 12px; font-weight: 500; color: var(--warm-gray); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--warm-gray); margin-top: 8px; }
+  .btn-pill {
+    display: inline-block; background: var(--cream); color: var(--charcoal);
+    padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 500;
+    text-decoration: none; border: 1px solid var(--sand);
+  }
+
+  /* TABS */
+  .tab-row { display: flex; gap: 0; border-bottom: 1px solid var(--sand); margin-bottom: 24px; }
+  .tab-item {
+    padding: 12px 16px; font-size: 14px; font-weight: 500; color: var(--charcoal);
+    cursor: pointer; transition: box-shadow 0.15s;
+  }
+  .tab-item:hover { box-shadow: var(--shadow-tab-hover); }
+  .tab-item.active { color: var(--zapier-black); box-shadow: var(--shadow-tab-active); }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: var(--cream); border-radius: 5px; padding: 24px; border: 1px solid var(--sand); transition: border-color 0.2s; }
+  .card:hover { border-color: var(--charcoal); }
+  .card h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.48px; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--charcoal); line-height: 1.50; }
+  .card-badge { display: inline-block; font-size: 12px; font-weight: 600; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--zapier-black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--cream); color: var(--zapier-black);
+    border: 1px solid var(--sand); padding: 10px 12px; border-radius: 5px;
+    font-family: var(--font-sans); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--orange); }
+  .form-input--focus { border-color: var(--orange); }
+  .form-input--error { border-color: #d32f2f; }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--cream); color: var(--zapier-black);
+    border: 1px solid var(--sand); padding: 10px 12px; border-radius: 5px;
+    font-family: var(--font-sans); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--warm-gray); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--zapier-black); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-size: 11px; font-weight: 500; color: var(--warm-gray); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--zapier-black); margin-bottom: 6px; }
+  .radius-label { font-size: 11px; font-weight: 500; color: var(--warm-gray); }
+  .radius-context { font-size: 10px; color: var(--warm-gray); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--cream); border-radius: 5px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-size: 11px; color: var(--warm-gray); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--sand); font-size: 13px; color: var(--warm-gray); }
+  .footer a { color: var(--orange); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Start Free</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Zapier</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-dark" href="#">Get Started</a>
+    <a class="btn-ghost" href="#">View Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#201515"></div><div class="color-swatch-info"><div class="color-swatch-name">Zapier Black</div><div class="color-swatch-hex">#201515</div><div class="color-swatch-role">Primary text, headings</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fffefb; border-bottom:1px solid #c5c0b1"></div><div class="color-swatch-info"><div class="color-swatch-name">Cream White</div><div class="color-swatch-hex">#fffefb</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fffdf9; border-bottom:1px solid #c5c0b1"></div><div class="color-swatch-info"><div class="color-swatch-name">Off White</div><div class="color-swatch-hex">#fffdf9</div><div class="color-swatch-role">Secondary surface</div></div></div>
+  </div>
+
+  <div class="color-group-label">Brand Accent</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff4f00"></div><div class="color-swatch-info"><div class="color-swatch-name">Zapier Orange</div><div class="color-swatch-hex">#ff4f00</div><div class="color-swatch-role">Primary CTA, active states</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#36342e"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Charcoal</div><div class="color-swatch-hex">#36342e</div><div class="color-swatch-role">Secondary text, borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#939084"></div><div class="color-swatch-info"><div class="color-swatch-name">Warm Gray</div><div class="color-swatch-hex">#939084</div><div class="color-swatch-role">Muted text, labels</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c5c0b1"></div><div class="color-swatch-info"><div class="color-swatch-name">Sand</div><div class="color-swatch-hex">#c5c0b1</div><div class="color-swatch-role">Borders, dividers</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b5b2aa"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Warm</div><div class="color-swatch-hex">#b5b2aa</div><div class="color-swatch-role">Alternate borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#eceae3"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Sand</div><div class="color-swatch-hex">#eceae3</div><div class="color-swatch-role">Ghost button bg, surfaces</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:56px; font-weight:500; line-height:0.90;">Display Hero</div><div class="type-meta">Display Hero — 56px / 500 / 0.90 / Degular Display</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-display); font-size:40px; font-weight:500; line-height:0.90;">Display Hero SM</div><div class="type-meta">Display Hero SM — 40px / 500 / 0.90 / Degular Display</div></div>
+  <div class="type-sample"><div style="font-size:48px; font-weight:500; line-height:1.04;">Section Heading</div><div class="type-meta">Section Heading — 48px / 500 / 1.04 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:36px; font-weight:500; line-height:normal; letter-spacing:-1px;">Sub-heading Large</div><div class="type-meta">Sub-heading LG — 36px / 500 / normal / -1px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:24px; font-weight:600; line-height:normal; letter-spacing:-0.48px;">Card Title</div><div class="type-meta">Card Title — 24px / 600 / normal / -0.48px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:400; line-height:1.40; letter-spacing:-0.2px;">Body Large — Automate your work across thousands of app integrations. Build powerful workflows in minutes.</div><div class="type-meta">Body Large — 20px / 400 / 1.40 / -0.2px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:600; line-height:1.00;">Body Emphasis</div><div class="type-meta">Body Emphasis — 18px / 600 / 1.00 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.25;">Body Medium — Navigation and interface text</div><div class="type-meta">Body Medium — 16px / 500 / 1.25 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:600; line-height:1.16;">Body Semibold — Active states</div><div class="type-meta">Body Semibold — 16px / 600 / 1.16 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:600; line-height:normal;">Button Label</div><div class="type-meta">Button — 14px / 600 / normal / Inter</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:500; line-height:1.43;">Caption — Labels and metadata</div><div class="type-meta">Caption — 14px / 500 / 1.43 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">SECTION LABEL</div><div class="type-meta">Caption Upper — 14px / 600 / uppercase / 0.5px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">MICRO LABEL</div><div class="type-meta">Micro — 12px / 600 / uppercase / 0.5px / Inter</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row" style="margin-bottom:32px;">
+    <div class="button-item"><a class="btn-orange" href="#">Start Free</a><div class="button-label">Primary Orange</div></div>
+    <div class="button-item"><a class="btn-dark" href="#">Get Started</a><div class="button-label">Dark CTA</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">Learn More</a><div class="button-label">Ghost / Light</div></div>
+    <div class="button-item"><a class="btn-pill" href="#">Integrations</a><div class="button-label">Pill</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(45,45,46,0.5); color:#fffefb; padding:8px 16px; border-radius:20px; font-size:14px; font-weight:500;">Play Video</span><div class="button-label">Overlay</div></div>
+  </div>
+
+  <div class="section-label" style="margin-top:32px;">Tab Navigation</div>
+  <div class="tab-row">
+    <div class="tab-item active">Overview</div>
+    <div class="tab-item">Integrations</div>
+    <div class="tab-item">Pricing</div>
+    <div class="tab-item">Enterprise</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:rgba(255,79,0,0.1); color:var(--orange);">Integration</div>
+      <h3>Connect Your Apps</h3>
+      <p>Link your favorite tools and automate workflows between them. No code required, set up in minutes.</p>
+    </div>
+    <div class="card" style="border-color: var(--charcoal);">
+      <div class="card-badge" style="background:rgba(32,21,21,0.08); color:var(--zapier-black);">Featured</div>
+      <h3>AI Automation</h3>
+      <p>Build intelligent workflows with AI-powered actions. Transform, summarize, and route data automatically.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:var(--light-sand); color:var(--charcoal);">Workflow</div>
+      <h3>Multi-step Zaps</h3>
+      <p>Chain multiple actions together for complex automations. Trigger once, automate everything downstream.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Zap Name</label><input class="form-input" type="text" placeholder="My automation"><div class="form-state-label">Default (sand border)</div></div>
+  <div class="form-group"><label class="form-label">Trigger App</label><input class="form-input form-input--focus" type="text" value="Gmail"><div class="form-state-label">Focus (orange border)</div></div>
+  <div class="form-group"><label class="form-label">Webhook URL</label><input class="form-input form-input--error" type="text" value="invalid-url"><div class="form-state-label">Error (red border)</div></div>
+  <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your workflow..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">3px</div><div class="radius-context">Spans</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:5px"></div><div class="radius-label">5px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Large buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:14px"></div><div class="radius-label">14px</div><div class="radius-context">Social icons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-label">20px</div><div class="radius-context">Pills</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid var(--light-sand);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No border emphasis</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--sand);"><div class="elevation-label">Level 1: Sand Border</div><div class="elevation-desc">1px solid #c5c0b1</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--charcoal);"><div class="elevation-label">Level 1b: Strong</div><div class="elevation-desc">1px solid #36342e</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--sand); box-shadow: var(--shadow-tab-active);"><div class="elevation-label">Level 2: Active Tab</div><div class="elevation-desc">Inset orange underline</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--sand); box-shadow: var(--shadow-tab-hover);"><div class="elevation-label">Level 2b: Hover Tab</div><div class="elevation-desc">Inset sand underline</div></div>
+    <div class="elevation-card" style="border: 2px solid var(--orange);"><div class="elevation-label">Focus</div><div class="elevation-desc">Orange focus ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://zapier.com/">zapier.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

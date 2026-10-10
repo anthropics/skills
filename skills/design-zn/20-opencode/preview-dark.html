@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: OpenCode (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --oc-dark: #fdfcfc;
+    --oc-light: #201d1d;
+    --oc-gray: #9a9898;
+    --oc-dark-surface: #302c2c;
+    --oc-border-gray: #646262;
+    --oc-light-surface: #2a2626;
+    --oc-input-bg: #302c2c;
+    --accent: #4da3ff;
+    --accent-hover: #007aff;
+    --accent-active: #0056b3;
+    --danger: #ff6961;
+    --danger-hover: #ff3b30;
+    --danger-active: #d70015;
+    --success: #5de882;
+    --warning: #ffb840;
+    --warning-hover: #ff9f0a;
+    --warning-active: #cc7f08;
+    --text-primary: #fdfcfc;
+    --text-secondary: #9a9898;
+    --text-muted: #6e6e73;
+    --text-caption: #9a9898;
+    --border-warm: rgba(253, 252, 252, 0.12);
+    --border-tab: #9a9898;
+    --border-outline: #646262;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--oc-light);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dark-badge {
+    position: fixed; top: 12px; right: 12px; z-index: 200;
+    background: var(--accent); color: #ffffff;
+    padding: 4px 12px; border-radius: 9999px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: var(--oc-light);
+    border-bottom: 1px solid var(--border-warm);
+  }
+  .nav-brand { font-size: 14px; font-weight: 700; color: var(--text-primary); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    display: inline-block; background: var(--oc-dark); color: var(--oc-light);
+    padding: 4px 20px; border-radius: 4px; font-size: 14px; font-weight: 500;
+    text-decoration: none; font-family: var(--font-mono); transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; }
+  .hero h1 {
+    font-size: 38px; font-weight: 700; line-height: 1.50;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.50; color: var(--text-secondary); max-width: 600px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--oc-dark); color: var(--oc-light);
+    padding: 4px 20px; border-radius: 4px; border: none;
+    font-family: var(--font-mono); font-size: 16px; font-weight: 500; line-height: 2.00;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    display: inline-block; background: transparent; color: var(--text-primary);
+    padding: 4px 20px; border-radius: 4px; border: 1px solid var(--border-outline);
+    font-family: var(--font-mono); font-size: 16px; font-weight: 500; line-height: 2.00;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--text-primary); }
+  .btn-accent {
+    display: inline-block; background: var(--accent); color: #ffffff;
+    padding: 4px 20px; border-radius: 4px; border: none;
+    font-family: var(--font-mono); font-size: 16px; font-weight: 500; line-height: 2.00;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-accent:hover { background: var(--accent-hover); }
+  .btn-danger {
+    display: inline-block; background: var(--danger); color: #ffffff;
+    padding: 4px 20px; border-radius: 4px; border: none;
+    font-family: var(--font-mono); font-size: 16px; font-weight: 500; line-height: 2.00;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-danger:hover { background: var(--danger-hover); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1000px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-title { font-size: 38px; font-weight: 700; line-height: 1.50; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--border-warm); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 4px; overflow: hidden; border: 1px solid var(--border-warm); background: var(--oc-dark-surface); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); }
+  .color-swatch-role { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 700; color: var(--text-secondary); margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-warm); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--text-muted); margin-top: 8px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: var(--oc-dark-surface); border-radius: 4px; padding: 24px; border: 1px solid var(--border-warm); transition: border-color 0.15s; }
+  .card:hover { border-color: var(--border-outline); }
+  .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.50; }
+  .card-badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--oc-input-bg); color: var(--text-primary);
+    border: 1px solid var(--border-warm); padding: 20px; border-radius: 6px;
+    font-family: var(--font-mono); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input--focus { border-color: var(--accent); }
+  .form-input--error { border-color: var(--danger); }
+  .form-state-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--oc-dark); border-radius: 2px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--oc-dark); margin-bottom: 6px; }
+  .radius-label { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+  .radius-context { font-size: 10px; color: var(--text-muted); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--oc-dark-surface); border-radius: 4px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .elevation-desc { font-size: 11px; color: var(--text-muted); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--border-warm); font-size: 14px; color: var(--text-secondary); }
+  .footer a { color: var(--accent); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 28px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .section-title { font-size: 28px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dark-badge">Dark Mode</div>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by OpenCode</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value -- visualized in monospace precision.</p>
+  <div class="hero-buttons">
+    <a class="btn-primary" href="#">Install OpenCode</a>
+    <a class="btn-secondary" href="#">View on GitHub</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#201d1d"></div><div class="color-swatch-info"><div class="color-swatch-name">OpenCode Dark</div><div class="color-swatch-hex">#201d1d</div><div class="color-swatch-role">Background, buttons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#fdfcfc"></div><div class="color-swatch-info"><div class="color-swatch-name">OpenCode Light</div><div class="color-swatch-hex">#fdfcfc</div><div class="color-swatch-role">Primary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9a9898"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Gray</div><div class="color-swatch-hex">#9a9898</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#302c2c"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Surface</div><div class="color-swatch-hex">#302c2c</div><div class="color-swatch-role">Elevated surface</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface & Border</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1eeee"></div><div class="color-swatch-info"><div class="color-swatch-name">Light Surface</div><div class="color-swatch-hex">#f1eeee</div><div class="color-swatch-role">Light background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f8f7f7"></div><div class="color-swatch-info"><div class="color-swatch-name">Input BG</div><div class="color-swatch-hex">#f8f7f7</div><div class="color-swatch-role">Form inputs</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#646262"></div><div class="color-swatch-info"><div class="color-swatch-name">Border Gray</div><div class="color-swatch-hex">#646262</div><div class="color-swatch-role">Outline borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6e6e73"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Muted</div><div class="color-swatch-hex">#6e6e73</div><div class="color-swatch-role">Muted labels</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#007aff"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Blue</div><div class="color-swatch-hex">#007aff</div><div class="color-swatch-role">Primary accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0056b3"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Hover</div><div class="color-swatch-hex">#0056b3</div><div class="color-swatch-role">Hover state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#004085"></div><div class="color-swatch-info"><div class="color-swatch-name">Accent Active</div><div class="color-swatch-hex">#004085</div><div class="color-swatch-role">Active state</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff3b30"></div><div class="color-swatch-info"><div class="color-swatch-name">Danger</div><div class="color-swatch-hex">#ff3b30</div><div class="color-swatch-role">Error, destructive</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#30d158"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#30d158</div><div class="color-swatch-role">Success state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff9f0a"></div><div class="color-swatch-info"><div class="color-swatch-name">Warning</div><div class="color-swatch-hex">#ff9f0a</div><div class="color-swatch-role">Caution, alerts</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#424245"></div><div class="color-swatch-info"><div class="color-swatch-name">Text Secondary</div><div class="color-swatch-hex">#424245</div><div class="color-swatch-role">Captions on light</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:38px; font-weight:700; line-height:1.50;">Heading 1 -- Hero</div><div class="type-meta">Heading 1 -- 38px / 700 / 1.50 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:700; line-height:1.50;">Heading 2 -- Section Title</div><div class="type-meta">Heading 2 -- 16px / 700 / 1.50 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.50;">Body Medium -- Navigation links, interactive text, and button labels live here.</div><div class="type-meta">Body Medium -- 16px / 500 / 1.50 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body Regular -- Standard paragraph text for descriptions, documentation, and general content across the interface.</div><div class="type-meta">Body Regular -- 16px / 400 / 1.50 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.00;">Body Tight -- Compact Labels</div><div class="type-meta">Body Tight -- 16px / 500 / 1.00 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:2.00;">Caption -- Footnotes, metadata, and small supplementary text with relaxed line-height for readability.</div><div class="type-meta">Caption -- 14px / 400 / 2.00 / Berkeley Mono</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:1.50; font-family:var(--font-mono);">$ opencode --help</div><div class="type-meta">Code -- 14px / 400 / 1.50 / Berkeley Mono (monospace)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-primary" href="#">Install OpenCode</a><div class="button-label">Primary Dark</div></div>
+    <div class="button-item"><a class="btn-secondary" href="#">View on GitHub</a><div class="button-label">Secondary Outline</div></div>
+    <div class="button-item"><a class="btn-accent" href="#">Learn More</a><div class="button-label">Accent Blue</div></div>
+    <div class="button-item"><a class="btn-danger" href="#">Delete</a><div class="button-label">Danger</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--success); color:#ffffff; padding:4px 20px; border-radius:4px; font-size:16px; font-weight:500; font-family:var(--font-mono);">Success</span><div class="button-label">Success</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--warning); color:#ffffff; padding:4px 20px; border-radius:4px; font-size:16px; font-weight:500; font-family:var(--font-mono);">Warning</span><div class="button-label">Warning</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:rgba(77,163,255,0.15); color:var(--accent);">AI Agent</div>
+      <h3>Terminal-Native Coding</h3>
+      <p>An open source AI coding agent that runs in your terminal. No IDE required -- just you, your code, and the command line.</p>
+    </div>
+    <div class="card" style="border-color: var(--border-outline);">
+      <div class="card-badge" style="background:rgba(93,232,130,0.15); color:var(--success);">Open Source</div>
+      <h3>Multi-Provider Support</h3>
+      <p>Works with Anthropic, OpenAI, and other LLM providers. Choose the model that fits your workflow and budget.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:rgba(255,184,64,0.15); color:var(--warning);">CLI</div>
+      <h3>Context-Aware Editing</h3>
+      <p>Understands your entire codebase context. Make changes across multiple files with natural language instructions.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="text" placeholder="you@example.com"><div class="form-state-label">Default (warm border, 20px padding)</div></div>
+  <div class="form-group"><label class="form-label">API Key</label><input class="form-input form-input--focus" type="text" value="sk-ant-..."><div class="form-state-label">Focus (accent blue border)</div></div>
+  <div class="form-group"><label class="form-label">Invalid Key</label><input class="form-input form-input--error" type="text" value="invalid-key-format"><div class="form-state-label">Error (danger red border)</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:1px"></div><div class="spacing-value">1</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Default (buttons, cards)</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px</div><div class="radius-context">Inputs</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: none; background: var(--oc-light-surface);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No border, no shadow</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-warm);"><div class="elevation-label">Level 1: Subtle</div><div class="elevation-desc">1px rgba(253,252,252,0.12)</div></div>
+    <div class="elevation-card" style="border-bottom: 2px solid var(--border-tab);"><div class="elevation-label">Level 2: Tab</div><div class="elevation-desc">2px solid #9a9898</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-outline);"><div class="elevation-label">Level 3: Outline</div><div class="elevation-desc">1px solid #646262</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://opencode.ai/">opencode.ai</a> DESIGN.md -- awesome-design-md
+</footer>
+
+</body>
+</html>
