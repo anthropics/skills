@@ -171,26 +171,31 @@ def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
 
     before = _stamp(abs_path)
 
-    cmd = [
-        "soffice",
+    args = [
         "--headless",
         "--norestore",
         f"-env:UserInstallation={profile_url}",
-        "vnd.sun.star.script:Standard.Module1.RecalculateAndSave?language=Basic&location=application",
         abs_path,
+        "vnd.sun.star.script:Standard.Module1.RecalculateAndSave?language=Basic&location=application",
     ]
 
+    wrapped_cmd = None
     if platform.system() == "Linux" and shutil.which("timeout"):
-        cmd = ["timeout", str(timeout)] + cmd
+        wrapped_cmd = ["timeout", str(timeout), "soffice"] + args
     elif platform.system() == "Darwin" and has_gtimeout():
-        cmd = ["gtimeout", str(timeout)] + cmd
+        wrapped_cmd = ["gtimeout", str(timeout), "soffice"] + args
 
     timed_out = f"LibreOffice timed out after {timeout}s; formulas were NOT recalculated. Re-run with a longer timeout."
 
     try:
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, env=get_soffice_env(), timeout=timeout + 15
-        )
+        if wrapped_cmd is not None:
+            result = subprocess.run(
+                wrapped_cmd, capture_output=True, text=True, env=get_soffice_env(), timeout=timeout + 15
+            )
+        else:
+            result = run_soffice(
+                args, capture_output=True, text=True, env=get_soffice_env(), timeout=timeout + 15
+            )
     except subprocess.TimeoutExpired:
         return {"error": timed_out}
     except FileNotFoundError:
