@@ -136,6 +136,9 @@ def sanitize_publication(path):
             private_path = re.compile(r"(?i)(?:[a-z]:[\\/]Users[\\/]|/Users/|/home/)[a-z0-9_.-]+")
             decoded = [value for element in after.iter() for value in
                        (element.text, element.tail, *element.attrib.values()) if value]
+            # xmlns bindings, including unused/shadowed ones, are not attrib values.
+            decoded.extend(uri for event, (prefix, uri) in
+                           ET.iterparse(BytesIO(raw), events=("start-ns",)))
             if (any(private_path.search(value) for value in decoded)
                     or private_path.search(raw.decode(encoding))):
                 raise ValueError("Publication: private local-user path remains in an XML/relationship part")

@@ -6,7 +6,7 @@
     "status": "pending",
     "required": 11,
     "executed": 0,
-    "scope": "Fresh independent replays on the round-two corrected revision remain pending; the implementer has not run evaluators."
+    "scope": "Fresh independent replays on the round-three corrected revision remain pending; the implementer has not run evaluators."
   },
   "skills": [
     {
@@ -18,8 +18,8 @@
       "relative_links_verified": 11,
       "archive": "cloud-estimation-orchestrator.skill",
       "member_count": 14,
-      "sha256": "cb8b7e26fdbc1be69d4030d51598183d655ce0fbde741d1d1f7ae299b01a8dc3",
-      "uncompressed_size": 148630
+      "sha256": "d0da64bf3d43c5d3ec4b8a83553b2c887169055309e091ebedab832d65e769f6",
+      "uncompressed_size": 148859
     },
     {
       "name": "infra-work-estimator",
@@ -30,8 +30,8 @@
       "relative_links_verified": 12,
       "archive": "infra-work-estimator.skill",
       "member_count": 14,
-      "sha256": "882af9e1e945074a80f91db7aad24dd41b0016e597ab831f5fa5375346e8f752",
-      "uncompressed_size": 143845
+      "sha256": "3ea4d673cb71c515fddcac17c2bfe8aa9c2db2c87a963a820e0b441b104ffb5b",
+      "uncompressed_size": 144074
     },
     {
       "name": "cloud-architecture-advisor",
@@ -42,8 +42,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-architecture-advisor.skill",
       "member_count": 14,
-      "sha256": "3b5e400e7935150f17f1eec14ad3960a765eefb3e98c9840b62012a8a3841a29",
-      "uncompressed_size": 145617
+      "sha256": "b0cd709793ea2305af9939b4fcca855086fbd8c733e6aaf55a7aa9d32039864e",
+      "uncompressed_size": 145846
     },
     {
       "name": "kubernetes-architect",
@@ -54,8 +54,8 @@
       "relative_links_verified": 12,
       "archive": "kubernetes-architect.skill",
       "member_count": 14,
-      "sha256": "3c4a7ae8e9cfacd2998db95fad94a95c0b7dd2bd90f7e92a9d42f96c80e5a119",
-      "uncompressed_size": 142261
+      "sha256": "671877659c374e507544cd1ea78a84e75eee13644756713d8c24853da3533f86",
+      "uncompressed_size": 142490
     },
     {
       "name": "cicd-devsecops-estimator",
@@ -66,8 +66,8 @@
       "relative_links_verified": 12,
       "archive": "cicd-devsecops-estimator.skill",
       "member_count": 14,
-      "sha256": "9ae1111b7e9660dde1750be17ae3be8342a8ecb166502bde844513db39ef0fb6",
-      "uncompressed_size": 144249
+      "sha256": "99c5757b4eb484401507af97a265b3872884ae2c0b1a82b22751c15130dacc2a",
+      "uncompressed_size": 144478
     },
     {
       "name": "server-hardening-estimator",
@@ -78,8 +78,8 @@
       "relative_links_verified": 12,
       "archive": "server-hardening-estimator.skill",
       "member_count": 14,
-      "sha256": "be1b9ef5add62e703e9931f447800b2d905d8a504c0e196a75673645a3ba0b1a",
-      "uncompressed_size": 145702
+      "sha256": "7bf8e23677fd96b8d8926342a55b88947d504c380b7c57575ea27bb78f8792b6",
+      "uncompressed_size": 145931
     },
     {
       "name": "hosting-capacity-simulator",
@@ -90,8 +90,8 @@
       "relative_links_verified": 14,
       "archive": "hosting-capacity-simulator.skill",
       "member_count": 15,
-      "sha256": "aa17e1b39cfd15c1719c3bc4a10eacaf464142e6459f5a3a3a6bcfa58e113b6e",
-      "uncompressed_size": 148126
+      "sha256": "ab62ba334f6e1bf8ab36c5900e2d59eda557a5189964371333ec7c214eadeb2b",
+      "uncompressed_size": 148355
     },
     {
       "name": "cloud-provider-selector",
@@ -102,8 +102,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-provider-selector.skill",
       "member_count": 14,
-      "sha256": "3bb8876fb7f766d8ddf6894e0c3b742c7c16d21768cd3e8644c4d634be14f48e",
-      "uncompressed_size": 142764
+      "sha256": "bf5c5d6cbaa1a5db143b80e6f6bff171011fe84e287e4ec71c05c245489e58a2",
+      "uncompressed_size": 142993
     },
     {
       "name": "finops-optimizer",
@@ -114,8 +114,8 @@
       "relative_links_verified": 12,
       "archive": "finops-optimizer.skill",
       "member_count": 14,
-      "sha256": "6ea4a780827e464232214da97c19139e159f1d0523552de83b08bc8c76a72940",
-      "uncompressed_size": 145012
+      "sha256": "7c7216f8ae340eb0097226111fa8cae2f5514fbd214d39ce352681f8f9e3ed48",
+      "uncompressed_size": 145241
     },
     {
       "name": "cloud-migration-estimator",
@@ -126,8 +126,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-migration-estimator.skill",
       "member_count": 14,
-      "sha256": "9bc776546dbf7628b7a72144b5b4abed34aa7850aae1cac91b46cda57cdc6dd8",
-      "uncompressed_size": 142071
+      "sha256": "f43d52ce78323611e5c92490213ec04a58037ac6ee6e07ec150bcc5490903fa5",
+      "uncompressed_size": 142300
     },
     {
       "name": "cloud-architecture-diagrammer",
@@ -138,8 +138,8 @@
       "relative_links_verified": 14,
       "archive": "cloud-architecture-diagrammer.skill",
       "member_count": 15,
-      "sha256": "8f65ba95fc40d818ed165d811a0177be851bba9638b83cba06b466d37be4f8f5",
-      "uncompressed_size": 141373
+      "sha256": "9b42a68d2bf245f95ebc47ea04857b4cf09008e1c406402fc502fd5ce7ab3368",
+      "uncompressed_size": 141602
     }
   ],
   "workbook_validation": {
@@ -393,7 +393,7 @@
   },
   "repository_checks": {
     "pytest": {
-      "passed": 333,
+      "passed": 352,
       "skipped": 1,
       "failed": 0,
       "skip_reason": "Windows symlink creation unavailable",
@@ -429,7 +429,7 @@
   },
   "public_workbook": {
     "path": "examples/synthetic-cloud-estimate.xlsx",
-    "sha256": "2145bd243c54c0f7cc6b2aab2f737a18a18eb3350d7c314c246fe2e27bebb678",
+    "sha256": "cdcfcc19f896a59b2f298272510171811cef46a567568cba1e77e174f77a146f",
     "recalculation": {
       "engine": "excel-com",
       "native_opened": true,
@@ -492,6 +492,25 @@
       "Publication byte surgery covers UTF-8 and UTF-16 XML; unsupported encodings fail closed rather than being reserialized",
       "Independent evaluator replay verdicts remain required before delivery_ready can become true",
       "Existing complex-diagram and confidentiality-assessment limitations from round one remain applicable"
+    ]
+  },
+  "forward_fix_round_3": {
+    "base_commit": "831a87ecd962b6dc735bfadb747f9aba71f2a1ba",
+    "baseline_publication_review_passed": 10,
+    "red_failed": 16,
+    "red_passed": 13,
+    "added_regression_green_passed": 19,
+    "publication_review_green_passed": 29,
+    "targeted_green_passed": 129,
+    "independent_replays": "pending",
+    "corrections": [
+      "Check decoded XML namespace declarations, including default, shadowed, unused and attribute-only bindings, for private local-user paths before publication",
+      "Choose the display-label fallback after trimming the supplied label, then normalize the complete chosen value before measurement and rendering"
+    ],
+    "limitations": [
+      "Native Excel verification uses PowerShell COM on this Windows host; UTF-8 and UTF-16 XML regressions cover LE and BE",
+      "XML entity decoding is checked; this round does not introduce general URI percent-decoding or a new confidentiality policy",
+      "Independent evaluator replay verdicts remain required; prior complex-diagram and confidentiality-assessment limitations remain"
     ]
   }
 }

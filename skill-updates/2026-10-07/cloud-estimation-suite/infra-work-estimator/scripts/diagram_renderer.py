@@ -237,7 +237,7 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
     nodes, edges = _graph(architecture)
     for edge in edges:
         # SVG whitespace and Pillow newlines must describe the same measured label.
-        edge["label"] = " ".join((edge["label"] or edge["id"]).split())
+        edge["label"] = " ".join((edge["label"].strip() or edge["id"]).split())
     svg, png = Path(svg), Path(png)
     if svg.resolve() == png.resolve():
         raise ValueError("SVG and PNG output paths must differ")

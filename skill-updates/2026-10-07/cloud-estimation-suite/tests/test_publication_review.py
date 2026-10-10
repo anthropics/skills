@@ -139,3 +139,57 @@ def test_fallback_flow_identifier_is_also_a_single_line_label(tmp_path):
     ns = {"s": "http://www.w3.org/2000/svg"}
     labels = root.findall('.//s:g[@data-flow-label]/s:text', ns)
     assert labels and all(label.text == "Flow identifier" for label in labels)
+
+
+@pytest.mark.parametrize("encoding", ["utf-8", "utf-16", "utf-16-be"])
+@pytest.mark.parametrize("scope", ["prefix", "default", "shadowed", "unused", "attribute"])
+def test_decoded_private_namespace_refuses_publication_without_mutation(tmp_path, encoding, scope):
+    # Namespace declarations are not ordinary ElementTree attributes.
+    uri = "file:///" + "C:/Us&#101;rs/" + "private-person/work"
+    if scope == "prefix":
+        xml = '<root xmlns:private="' + uri + '"><private:value/></root>'
+    elif scope == "default":
+        xml = '<root xmlns="' + uri + '"><value/></root>'
+    elif scope == "shadowed":
+        xml = '<root xmlns:p="urn:public"><p:value/><branch xmlns:p="' + uri + '"><p:value/></branch><p:value/></root>'
+    elif scope == "unused":
+        xml = '<root xmlns:private="' + uri + '"><value/></root>'
+    else:
+        xml = '<root xmlns:private="' + uri + '" private:value="neutral"/>'
+    path = tmp_path / "namespace.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", xml.encode(encoding))
+    original = path.read_bytes()
+    with pytest.raises(ValueError, match="local-user path"):
+        sanitize_publication(path)
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("encoding", ["utf-8", "utf-16", "utf-16-be"])
+def test_legitimate_office_namespaces_and_shadowing_are_preserved(tmp_path, encoding):
+    xml = ('<root xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+           'xmlns:p="http://schemas.microsoft.com/office/spreadsheetml/2010/11/ac">'
+           '<p:value/><branch xmlns:p="urn:public:application"><p:value keep="yes"/></branch>'
+           '<p:value/></root>')
+    raw = xml.encode(encoding)
+    path = tmp_path / "public-namespaces.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", raw)
+    assert sanitize_publication(path) == 1
+    with ZipFile(path) as archive:
+        assert archive.read("xl/workbook.xml") == raw
+
+
+def test_whitespace_only_flow_label_uses_normalized_identifier_in_its_box(tmp_path):
+    graph = {"nodes": [{"id": "APP"}, {"id": "DATA"}],
+             "edges": [{"id": "Flow\nidentifier", "source": "APP", "target": "DATA", "label": " \t "}]}
+    render_diagram(graph, tmp_path / "whitespace.svg", tmp_path / "whitespace.png")
+    root = ET.parse(tmp_path / "whitespace.svg")
+    ns = {"s": "http://www.w3.org/2000/svg"}
+    group = root.find('.//s:g[@data-flow-label]', ns)
+    label, box = group.find("s:text", ns), group.find("s:rect", ns)
+    assert label.text == "Flow identifier"
+    x, y, w, h = [float(box.attrib[key]) for key in ("x", "y", "width", "height")]
+    assert x <= float(label.attrib["x"]) < x + w
+    assert y < float(label.attrib["y"]) < y + h
+    assert w >= len("Flow identifier") * 9 + 12
