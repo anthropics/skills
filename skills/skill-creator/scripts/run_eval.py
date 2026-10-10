@@ -67,9 +67,13 @@ def run_single_query(
         )
         command_file.write_text(command_content)
 
+        # Substitute the skill name slash command in the query if it exists
+        # e.g., /triage-issue -> /triage-issue-skill-<unique_id>
+        modified_query = query.replace(f"/{skill_name}", f"/{clean_name}")
+
         cmd = [
             "claude",
-            "-p", query,
+            "-p", modified_query,
             "--output-format", "stream-json",
             "--verbose",
             "--include-partial-messages",
@@ -138,7 +142,8 @@ def run_single_query(
                                     pending_tool_name = tool_name
                                     accumulated_json = ""
                                 else:
-                                    return False
+                                    # Do not return False immediately; the model might run other helper tools first
+                                    pass
 
                         elif se_type == "content_block_delta" and pending_tool_name:
                             delta = se.get("delta", {})
@@ -163,9 +168,12 @@ def run_single_query(
                             tool_input = content_item.get("input", {})
                             if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
                                 triggered = True
+                                return True
                             elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
                                 triggered = True
-                            return triggered
+                                return True
+                        # If the assistant message finishes and has no matches, return False
+                        return False
 
                     elif event.get("type") == "result":
                         return triggered
