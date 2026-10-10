@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -32,6 +33,137 @@ def find_project_root() -> Path:
     return current
 
 
+class TriggerDetector:
+    """Incremental state machine over `claude -p --output-format stream-json` lines.
+
+    Kept separate from process handling so it can be exercised against recorded
+    transcripts without spawning Claude.
+    """
+
+    def __init__(self, clean_name: str):
+        self.clean_name = clean_name
+        self.pending_tool_name = None
+        self.accumulated_json = ""
+        self.triggered = False
+
+    def feed(self, line: str) -> bool | None:
+        """Consume one line. Returns the verdict once known, else None."""
+        line = line.strip()
+        if not line:
+            return None
+
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            return None
+
+        if event.get("type") == "stream_event":
+            se = event.get("event", {})
+            se_type = se.get("type", "")
+
+            if se_type == "content_block_start":
+                cb = se.get("content_block", {})
+                if cb.get("type") == "tool_use":
+                    tool_name = cb.get("name", "")
+                    if tool_name in ("Skill", "Read"):
+                        self.pending_tool_name = tool_name
+                        self.accumulated_json = ""
+                    else:
+                        return False
+
+            elif se_type == "content_block_delta" and self.pending_tool_name:
+                delta = se.get("delta", {})
+                if delta.get("type") == "input_json_delta":
+                    self.accumulated_json += delta.get("partial_json", "")
+                    if self.clean_name in self.accumulated_json:
+                        return True
+
+            elif se_type in ("content_block_stop", "message_stop"):
+                if self.pending_tool_name:
+                    return self.clean_name in self.accumulated_json
+                if se_type == "message_stop":
+                    return False
+
+        elif event.get("type") == "assistant":
+            message = event.get("message", {})
+            for content_item in message.get("content", []):
+                if content_item.get("type") != "tool_use":
+                    continue
+                tool_name = content_item.get("name", "")
+                tool_input = content_item.get("input", {})
+                if tool_name == "Skill" and self.clean_name in tool_input.get("skill", ""):
+                    self.triggered = True
+                elif tool_name == "Read" and self.clean_name in tool_input.get("file_path", ""):
+                    self.triggered = True
+                return self.triggered
+
+        elif event.get("type") == "result":
+            return self.triggered
+
+        return None
+
+
+def detect_trigger(lines, clean_name: str) -> bool:
+    """Run TriggerDetector over an iterable of lines and return the verdict."""
+    detector = TriggerDetector(clean_name)
+    for line in lines:
+        verdict = detector.feed(line)
+        if verdict is not None:
+            return verdict
+    return detector.triggered
+
+
+def iter_process_lines(stream, deadline_check, poll_interval: float = 1.0):
+    """Yield decoded lines from `stream` as they arrive.
+
+    A reader thread feeds a queue so the main loop can still honour a timeout.
+    `select` is not usable here: on Windows it accepts sockets only, and calling
+    it on a pipe raises OSError, which the caller records as a non-trigger, so
+    every query is silently scored as a miss.
+    """
+    chunks: queue.Queue = queue.Queue()
+
+    def pump():
+        try:
+            while True:
+                data = stream.read1(8192)
+                if not data:
+                    break
+                chunks.put(data)
+        except (ValueError, OSError):
+            pass
+        finally:
+            chunks.put(None)
+
+    threading.Thread(target=pump, daemon=True).start()
+
+    buffer = ""
+    while deadline_check():
+        try:
+            chunk = chunks.get(timeout=poll_interval)
+        except queue.Empty:
+            continue
+        if chunk is None:
+            break
+        buffer += chunk.decode("utf-8", errors="replace")
+        while "\n" in buffer:
+            line, buffer = buffer.split("\n", 1)
+            yield line
+    if buffer:
+        yield buffer
+
+
+def resolve_probe_name(skill_name: str, unique_id: str, use_installed: bool) -> str:
+    """Name the eval looks for inside the Skill tool call.
+
+    When the skill under test is not installed, a uniquely-named copy is written
+    into .claude/commands/ and that name is what Claude invokes. When the skill
+    IS already installed, Claude invokes the real skill instead, the unique probe
+    name never appears, and matching on it reports a false miss for every query.
+    """
+    return skill_name if use_installed else f"{skill_name}-skill-{unique_id}"
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -39,33 +171,34 @@ def run_single_query(
     timeout: int,
     project_root: str,
     model: str | None = None,
+    use_installed: bool = False,
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
-    Creates a command file in .claude/commands/ so it appears in Claude's
-    available_skills list, then runs `claude -p` with the raw query.
-    Uses --include-partial-messages to detect triggering early from
-    stream events (content_block_start) rather than waiting for the
-    full assistant message, which only arrives after tool execution.
+    Unless `use_installed` is set, creates a command file in .claude/commands/ so
+    the description under test appears in the available_skills list. Uses
+    --include-partial-messages to detect triggering early from stream events
+    rather than waiting for the full assistant message.
     """
     unique_id = uuid.uuid4().hex[:8]
-    clean_name = f"{skill_name}-skill-{unique_id}"
+    clean_name = resolve_probe_name(skill_name, unique_id, use_installed)
     project_commands_dir = Path(project_root) / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
     try:
-        project_commands_dir.mkdir(parents=True, exist_ok=True)
-        # Use YAML block scalar to avoid breaking on quotes in description
-        indented_desc = "\n  ".join(skill_description.split("\n"))
-        command_content = (
-            f"---\n"
-            f"description: |\n"
-            f"  {indented_desc}\n"
-            f"---\n\n"
-            f"# {skill_name}\n\n"
-            f"This skill handles: {skill_description}\n"
-        )
-        command_file.write_text(command_content)
+        if not use_installed:
+            project_commands_dir.mkdir(parents=True, exist_ok=True)
+            # Use YAML block scalar to avoid breaking on quotes in description
+            indented_desc = "\n  ".join(skill_description.split("\n"))
+            command_content = (
+                f"---\n"
+                f"description: |\n"
+                f"  {indented_desc}\n"
+                f"---\n\n"
+                f"# {skill_name}\n\n"
+                f"This skill handles: {skill_description}\n"
+            )
+            command_file.write_text(command_content, encoding="utf-8")
 
         cmd = [
             "claude",
@@ -90,94 +223,19 @@ def run_single_query(
             env=env,
         )
 
-        triggered = False
         start_time = time.time()
-        buffer = ""
-        # Track state for stream event detection
-        pending_tool_name = None
-        accumulated_json = ""
-
         try:
-            while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
-                    continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
-                    break
-                buffer += chunk.decode("utf-8", errors="replace")
-
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
-                        return triggered
+            lines = iter_process_lines(
+                process.stdout, lambda: time.time() - start_time < timeout
+            )
+            return detect_trigger(lines, clean_name)
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
                 process.kill()
                 process.wait()
-
-        return triggered
     finally:
-        if command_file.exists():
+        if not use_installed and command_file.exists():
             command_file.unlink()
 
 
@@ -191,6 +249,7 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    use_installed: bool = False,
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
@@ -207,6 +266,7 @@ def run_eval(
                     timeout,
                     str(project_root),
                     model,
+                    use_installed,
                 )
                 future_to_info[future] = (item, run_idx)
 
@@ -267,9 +327,23 @@ def main():
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
+    parser.add_argument(
+        "--use-installed",
+        action="store_true",
+        help="Match the skill by its real name instead of writing a uniquely-named "
+             "probe copy. Use when the skill under test is already installed, since "
+             "Claude invokes the real skill and the probe name never appears.",
+    )
     args = parser.parse_args()
 
-    eval_set = json.loads(Path(args.eval_set).read_text())
+    if args.use_installed and args.description:
+        parser.error(
+            "--description cannot be combined with --use-installed: the override is "
+            "injected through the probe copy, so with --use-installed the installed "
+            "skill supplies the description and the override is silently ignored."
+        )
+
+    eval_set = json.loads(Path(args.eval_set).read_text(encoding="utf-8"))
     skill_path = Path(args.skill_path)
 
     if not (skill_path / "SKILL.md").exists():
@@ -293,6 +367,7 @@ def main():
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        use_installed=args.use_installed,
     )
 
     if args.verbose:
