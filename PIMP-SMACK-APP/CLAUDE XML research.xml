@@ -1,0 +1,391 @@
+# XML Legal Document Standards: A Technical Implementation Guide
+
+OASIS LegalDocML (Akoma Ntoso) provides a mature XML schema for legal documents, though it requires adaptation for U.S. litigation contexts—particularly Ninth Circuit appellate briefs. The combination of **LegalDocML for semantic structure**, **python-docx-template for DOCX generation**, and **LibreOffice for PDF conversion** forms the most practical automation pipeline. Complete schema files exist at docs.oasis-open.org, and court-specific formatting rules can be encoded as validation rules to prevent pro se dismissals due to format errors.
+
+## OASIS LegalDocML provides the foundational schema
+
+The OASIS Akoma Ntoso standard (v1.0, approved August 2018) defines **315+ XML elements** across 59 complex types for marking up legal documents. The namespace `http://docs.oasis-open.org/legaldocml/ns/akn/3.0` contains document types including `<act>`, `<bill>`, `<judgment>`, and critically for litigation, the generic `<doc>` element adaptable for briefs and motions.
+
+Every LegalDocML document follows a universal structure:
+
+```xml
+<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <doc name="brief">
+    <meta>
+      <identification source="#drafter">
+        <FRBRWork>
+          <FRBRthis value="/akn/us/doc/brief/9thcir/2025-12345"/>
+          <FRBRdate date="2025-01-15" name="filing"/>
+          <FRBRcountry value="us"/>
+        </FRBRWork>
+      </identification>
+      <references source="#drafter">
+        <TLCOrganization eId="court" href="/ontology/court/us/9thcircuit"/>
+        <TLCPerson eId="appellant" href="/ontology/person/smith"/>
+      </references>
+    </meta>
+    <coverPage>...</coverPage>
+    <preface>...</preface>
+    <mainBody>
+      <section eId="sec_jurisdiction"><heading>JURISDICTIONAL STATEMENT</heading>...</section>
+      <section eId="sec_argument"><heading>ARGUMENT</heading>...</section>
+    </mainBody>
+    <conclusions><signature>...</signature></conclusions>
+  </doc>
+</akomaNtoso>
+```
+
+The **`<meta>` block is mandatory** and uses the FRBR (Functional Requirements for Bibliographic Records) model to track document identity across Work, Expression, and Manifestation levels. The `eId` attribute provides unique identifiers for every content element—essential for cross-referencing and citation linking.
+
+Official schema files (XSD) are available at **http://docs.oasis-open.org/legaldocml/akn-core/v1.0/os/part2-specs/schemas/** with the GitHub repository at **github.com/oasis-open/legaldocml-akomantoso**.
+
+## Element hierarchy enables structured legal content
+
+LegalDocML organizes elements into six content models that map cleanly to legal document structure:
+
+**Hierarchical containers** for nested sections: `<part>`, `<chapter>`, `<section>`, `<subsection>`, `<paragraph>`, `<subparagraph>`. These support the standard legal brief organization (I.A.1.a.) with `<num>` elements for numbering.
+
+**Block elements** for paragraph-level content: `<p>`, `<blockList>`, `<toc>` (table of contents), `<citation>`, `<heading>`. The `<toc>` and `<tocItem>` elements exist, though no dedicated Table of Authorities structure—requiring custom implementation.
+
+**Inline markup** for semantic annotation: `<ref>` for citations and cross-references (with `href` pointing to target), `<term>` for defined terms, `<date>`, `<person>`, `<organization>`. Case names can be marked as `<ref href="/akn/us/case/supreme/2007/twombly">Bell Atlantic Corp. v. Twombly</ref>`.
+
+The standard lacks native U.S. litigation document types—briefs, motions, and pleadings use the generic `<doc name="brief|motion|pleading">` with jurisdiction-specific extensions via `<proprietary>` and `<foreign>` elements.
+
+## Ninth Circuit formatting maps to XML metadata attributes
+
+Federal appellate briefs require precise formatting that XML can encode as validation-ready metadata. The Ninth Circuit's requirements under FRAP 32 and Circuit Rules 28-32 translate to schema elements:
+
+| Requirement | Specification | XML Encoding |
+|-------------|---------------|--------------|
+| Page margins | ≥1 inch all sides | `<margins top="1in" bottom="1in" left="1in" right="1in"/>` |
+| Font | 14pt proportional serif | `<typography fontFamily="Times New Roman" fontSize="14pt"/>` |
+| Line spacing | Double-spaced body | `<spacing line="double"/>` |
+| Word limit | 14,000 words (principal brief) | `<limits maxWords="14000"/>` |
+| Cover color | Blue (appellant), Red (appellee) | `<coverPage color="blue"/>` |
+
+**Required brief sections** in order: Cover Page → Corporate Disclosure → Table of Contents → Table of Authorities → Jurisdictional Statement → Issues Presented → Statement of Case → Summary of Argument → Argument (with standard of review) → Conclusion → Statement of Related Cases → Certificate of Compliance → Signature Block → Addendum → Certificate of Service.
+
+Items excluded from word count (FRAP 32(f)): cover page, TOC, TOA, certificates, addendum, and signature block—critical for automated word count validation.
+
+A suggested schema extension for Ninth Circuit compliance:
+
+```xml
+<xs:complexType name="NinthCircuitBrief">
+  <xs:sequence>
+    <xs:element name="caseMetadata">
+      <xs:complexType>
+        <xs:attribute name="caseNumber" type="xs:string" use="required"/>
+        <xs:attribute name="briefType" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="opening"/>
+              <xs:enumeration value="answering"/>
+              <xs:enumeration value="reply"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="formatting">
+      <xs:complexType>
+        <xs:attribute name="fontFamily" default="Times New Roman"/>
+        <xs:attribute name="fontSize" default="14pt"/>
+        <xs:attribute name="lineSpacing" default="double"/>
+        <xs:attribute name="marginAll" default="1in"/>
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+</xs:complexType>
+```
+
+## Citation encoding requires careful XML design
+
+Legal citations in XML must support the Table of Authorities while preserving semantic meaning. The Ninth Circuit requires Excerpts of Record citations in format `2-ER-345` (volume-type-page):
+
+```xml
+<citation type="record">
+  <volume>2</volume>
+  <recordType>ER</recordType><!-- ER, SER, FER -->
+  <page>345</page>
+</citation>
+<!-- Renders as: 2-ER-345 -->
+
+<citation type="case">
+  <caseName style="italic">Twombly</caseName>
+  <fullCitation>Bell Atlantic Corp. v. Twombly</fullCitation>
+  <volume>550</volume>
+  <reporter>U.S.</reporter>
+  <page>544</page>
+  <year>2007</year>
+  <pincite>555-56</pincite>
+</citation>
+```
+
+For Table of Authorities generation, citations need page tracking:
+
+```xml
+<tableOfAuthorities>
+  <section type="cases">
+    <heading>CASES</heading>
+    <entry>
+      <caseName style="italic">Bell Atlantic Corp. v. Twombly</caseName>
+      <reporter>550 U.S. 544 (2007)</reporter>
+      <pages>3, 5, 12-14</pages><!-- Pages where cited -->
+    </entry>
+  </section>
+  <section type="statutes">...</section>
+  <section type="rules">...</section>
+</tableOfAuthorities>
+```
+
+## LegalRuleML complements document markup with rule encoding
+
+OASIS LegalRuleML (v1.0, August 2021) handles **legal rule representation** rather than document structure. It encodes obligations, permissions, and prohibitions in machine-executable form:
+
+```xml
+<lrml:LegalRuleML xmlns:lrml="http://docs.oasis-open.org/legalruleml/ns/v1.0/">
+  <lrml:Statements>
+    <lrml:PrescriptiveStatement key="ps1">
+      <lrml:Obligation>
+        <ruleml:if>
+          <ruleml:Atom><ruleml:Rel>isAppellant</ruleml:Rel></ruleml:Atom>
+        </ruleml:if>
+        <ruleml:then>
+          <ruleml:Atom><ruleml:Rel>mustFileOpeningBrief</ruleml:Rel></ruleml:Atom>
+        </ruleml:then>
+      </lrml:Obligation>
+    </lrml:PrescriptiveStatement>
+  </lrml:Statements>
+  <lrml:Associations>
+    <lrml:Association>
+      <lrml:toSource source="/akn/us/rules/frap/28"/>
+    </lrml:Association>
+  </lrml:Associations>
+</lrml:LegalRuleML>
+```
+
+LegalRuleML integrates with LegalDocML through IRI references—`<lrml:toSource>` can point to any LegalDocML `eId`. This enables encoding court rules as executable validation logic.
+
+## Python-docx-template enables production DOCX generation
+
+For MCP skill development targeting DOCX output, **python-docx-template (docxtpl)** with Jinja2 syntax provides the most practical approach. It preserves complex Word formatting while enabling dynamic content:
+
+```python
+from docxtpl import DocxTemplate
+from datetime import datetime
+
+doc = DocxTemplate("ninth_circuit_brief_template.docx")
+context = {
+    'case_number': '25-12345',
+    'appellant': 'John Smith',
+    'appellee': 'Jane Jones',
+    'lower_court': 'U.S. District Court, Central District of California',
+    'lower_case_number': '2:24-cv-01234-ABC',
+    'sections': [
+        {'heading': 'JURISDICTIONAL STATEMENT', 'content': '...'},
+        {'heading': 'ISSUES PRESENTED', 'content': '...'},
+    ],
+    'citations': [
+        {'case': 'Bell Atlantic Corp. v. Twombly', 'cite': '550 U.S. 544 (2007)', 'pages': '3, 7'},
+    ],
+    'filing_date': datetime.now().strftime('%B %d, %Y')
+}
+doc.render(context)
+doc.save("generated_brief.docx")
+```
+
+**Template syntax in the Word document:**
+```
+Case No. {{ case_number }}
+{{ appellant }}, Appellant,
+v.
+{{ appellee }}, Appellee.
+
+{% for section in sections %}
+{{ section.heading }}
+{{ section.content }}
+{% endfor %}
+```
+
+For complex table generation with variable rows:
+```
+{%tr for cite in citations %}
+{{ cite.case }}    {{ cite.cite }}    {{ cite.pages }}
+{%tr endfor %}
+```
+
+## OOXML elements encode all court formatting requirements
+
+The underlying DOCX format (OOXML) uses specific elements for legal formatting. Key mappings for Ninth Circuit requirements:
+
+**Page margins** (in twips, 1440 = 1 inch):
+```xml
+<w:sectPr>
+  <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+  <w:pgSz w:w="12240" w:h="15840"/><!-- Letter size -->
+</w:sectPr>
+```
+
+**Font and size** (sizes in half-points, 28 = 14pt):
+```xml
+<w:rPr>
+  <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>
+  <w:sz w:val="28"/>
+</w:rPr>
+```
+
+**Double spacing** (line="480" with auto = double):
+```xml
+<w:pPr>
+  <w:spacing w:line="480" w:lineRule="auto"/>
+</w:pPr>
+```
+
+**Table of Contents field code:**
+```xml
+<w:fldSimple w:instr=" TOC \o &quot;1-3&quot; \h \z \u ">
+  <w:r><w:t></w:t></w:r>
+</w:fldSimple>
+```
+
+Word must recalculate TOC page numbers—set `w:dirty="true"` on the field to prompt update on document open, or use LibreOffice for automated refresh before PDF export.
+
+## The optimal transformation pipeline uses LibreOffice for PDF
+
+For court-ready PDF/A output, the recommended pipeline:
+
+```
+Legal XML → Validation → docxtpl Render → DOCX → LibreOffice → PDF/A
+```
+
+**LibreOffice headless conversion** (highest fidelity, free):
+```python
+import subprocess
+
+def docx_to_pdf(input_path, output_dir):
+    subprocess.run([
+        'libreoffice', '--headless',
+        '--convert-to', 'pdf:writer_pdf_Export',
+        '--outdir', output_dir,
+        input_path
+    ], check=True)
+```
+
+For PDF/A compliance required by CM/ECF:
+```bash
+libreoffice --headless --convert-to "pdf:writer_pdf_Export:SelectPdfVersion=1" document.docx
+```
+
+Alternative for direct XML-to-PDF: Apache FOP with XSL-FO, though this requires maintaining parallel XSLT stylesheets.
+
+## Validation requires both schema and business rules
+
+A robust validation pipeline combines XSD structural validation with Schematron business rules:
+
+**XSD validation** (structural correctness):
+```python
+from lxml import etree
+
+def validate_structure(xml_path, xsd_path):
+    schema = etree.XMLSchema(etree.parse(xsd_path))
+    doc = etree.parse(xml_path)
+    return schema.validate(doc), schema.error_log
+```
+
+**Schematron validation** (court-specific rules):
+```xml
+<sch:schema xmlns:sch="http://purl.oclc.org/dsdl/schematron">
+  <sch:pattern name="Ninth Circuit Requirements">
+    <sch:rule context="//brief[@court='ca9']">
+      <sch:assert test="count(//body-text//*[normalize-space()]) le 14000">
+        Principal brief exceeds 14,000 word limit
+      </sch:assert>
+      <sch:assert test="//jurisdictional-statement">
+        Missing required Jurisdictional Statement
+      </sch:assert>
+      <sch:assert test="//certificate-of-compliance">
+        Missing Certificate of Compliance (Form 8)
+      </sch:assert>
+    </sch:rule>
+  </sch:pattern>
+</sch:schema>
+```
+
+## Real-world implementations demonstrate production patterns
+
+**UK legislation.gov.uk** represents the most mature LegalDocML deployment—all UK legislation available as XML at URLs like `legislation.gov.uk/ukpga/2021/1/data.xml` with public XSLT transforms on GitHub.
+
+**OASIS Electronic Court Filing (ECF 5.01)** provides the actual XML standard for U.S. court e-filing, built on NIEM schemas. It handles filing metadata, not document content:
+
+```xml
+<FilingMessage xmlns="urn:oasis:names:tc:legalxml-courtfiling:schema:xsd:Filing-5.0">
+  <ecf:CaseTypeCode>Civil</ecf:CaseTypeCode>
+  <ecf:FilingLeadDocument>
+    <nc:DocumentIdentification><nc:IdentificationID>DOC-001</nc:IdentificationID></nc:DocumentIdentification>
+    <ecf:DocumentTypeCode>Brief</ecf:DocumentTypeCode>
+  </ecf:FilingLeadDocument>
+</FilingMessage>
+```
+
+**Docassemble** (docassemble.org) provides a complete open-source document automation platform with guided interviews, YAML definitions, and Jinja2 templating—used by legal aid organizations nationwide.
+
+## Practical implementation architecture for MCP skills
+
+For building skills like the ninth-circuit-cover-generator, the recommended architecture:
+
+```
+┌────────────────────┐
+│  User Input (JSON) │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐     ┌────────────────────┐
+│  Input Validation  │────▶│  Schema Check      │
+│  (Python)          │     │  (XSD + Custom)    │
+└─────────┬──────────┘     └────────────────────┘
+          │
+          ▼
+┌────────────────────┐
+│  Legal XML         │
+│  (Intermediate)    │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  docxtpl Render    │◀──── Word Template (.docx)
+│  (Jinja2)          │      with formatting
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│  Post-Processing   │
+│  (python-docx)     │
+└─────────┬──────────┘
+          │
+          ├────────────────┐
+          ▼                ▼
+┌──────────────┐   ┌──────────────┐
+│  DOCX Output │   │  PDF/A       │
+│              │   │  (LibreOffice)│
+└──────────────┘   └──────────────┘
+```
+
+Key files needed for a Ninth Circuit brief generator:
+- `ninth_circuit_brief.xsd` — Custom schema extending LegalDocML
+- `brief_template.docx` — Word template with Jinja2 tags and court formatting
+- `validation_rules.sch` — Schematron rules for court compliance
+- `generator.py` — Main processing logic
+
+## Conclusion
+
+Building production legal document automation requires combining **OASIS LegalDocML for semantic XML structure** with **court-specific formatting schemas** and **template-based DOCX generation**. The key insight is that LegalDocML provides robust infrastructure for legislative and judicial documents but needs extension for U.S. litigation contexts.
+
+For MCP skill development targeting pro se litigants, the most actionable approach is:
+
+1. Create custom XSD schemas extending LegalDocML's `<doc>` element with Ninth Circuit-specific metadata
+2. Design Word templates with exact court formatting (14pt Times New Roman, 1" margins, double-spacing)  
+3. Use python-docx-template for Jinja2-based generation
+4. Implement Schematron validation for court rule compliance (word limits, required sections)
+5. Convert to PDF/A via LibreOffice headless for e-filing
+
+The official schemas at **docs.oasis-open.org/legaldocml/** and examples at **github.com/oasis-open/legaldocml-akomantoso** provide the foundation. Court rules are codified at **ca9.uscourts.gov/rules/** with detailed formatting requirements under FRAP 32 and Ninth Circuit Rules 28-32.

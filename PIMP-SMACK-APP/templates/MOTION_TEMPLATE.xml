@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?mso-application progid="Word.Document"?>
+<w:wordDocument xmlns:w="http://schemas.microsoft.com/office/word/2003/wordml" xmlns:wx="http://schemas.microsoft.com/office/word/2003/auxHint" xmlns:o="urn:schemas-microsoft-com:office:office" xml:space="preserve">
+
+<!-- ============================================
+     MOTION TEMPLATE - PIMP SMACK WORKFLOW
+     Placeholders: {{PLACEHOLDER_NAME}}
+     ============================================ -->
+
+<w:styles>
+  <!-- Normal -->
+  <w:style w:type="paragraph" w:default="on" w:styleId="Normal">
+    <w:name w:val="Normal"/>
+    <w:rPr>
+      <w:rFonts w:ascii="Times New Roman" w:h-ansi="Times New Roman"/>
+      <w:sz w:val="24"/><w:sz-cs w:val="24"/>
+    </w:rPr>
+  </w:style>
+
+  <!-- Heading1 - Centered, Bold -->
+  <w:style w:type="paragraph" w:styleId="Heading1">
+    <w:name w:val="heading 1"/>
+    <w:pPr>
+      <w:spacing w:before="960" w:after="600"/>
+      <w:jc w:val="center"/>
+      <w:outlineLvl w:val="0"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:b/><w:b-cs/>
+      <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+    </w:rPr>
+  </w:style>
+
+  <!-- Heading2 - Numbered, Bold -->
+  <w:style w:type="paragraph" w:styleId="Heading2">
+    <w:name w:val="heading 2"/>
+    <w:pPr>
+      <w:spacing w:before="600" w:after="480"/>
+      <w:outlineLvl w:val="1"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:b/><w:b-cs/>
+      <w:sz w:val="28"/><w:sz-cs w:val="24"/>
+    </w:rPr>
+  </w:style>
+
+  <!-- Body Text -->
+  <w:style w:type="paragraph" w:styleId="BodyText">
+    <w:name w:val="Body Text"/>
+    <w:pPr>
+      <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+      <w:ind w:first-line="720"/>
+    </w:pPr>
+    <w:rPr>
+      <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+      <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+    </w:rPr>
+  </w:style>
+
+  <!-- Signature Style -->
+  <w:style w:type="character" w:styleId="SignatureScript">
+    <w:name w:val="Signature Script"/>
+    <w:rPr>
+      <w:rFonts w:ascii="Edwardian Script ITC" w:h-ansi="Edwardian Script ITC"/>
+      <w:b/><w:b-cs/><w:i/><w:i-cs/>
+      <w:sz w:val="52"/><w:sz-cs w:val="52"/>
+      <w:u w:val="single"/>
+    </w:rPr>
+  </w:style>
+</w:styles>
+
+<w:docPr>
+  <w:view w:val="print"/>
+  <w:zoom w:percent="100"/>
+</w:docPr>
+
+<w:body>
+  <wx:sect>
+    <!-- ==================== INTRODUCTION ==================== -->
+    <wx:sub-section>
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+        <w:r><w:t>INTRODUCTION</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{INTRODUCTION_TEXT}}</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+
+    <!-- ==================== STATEMENT OF FACTS ==================== -->
+    <wx:sub-section>
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+        <w:r><w:t>STATEMENT OF FACTS</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{STATEMENT_OF_FACTS_TEXT}}</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+
+    <!-- ==================== ARGUMENT ==================== -->
+    <wx:sub-section>
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+        <w:r><w:t>ARGUMENT</w:t></w:r>
+      </w:p>
+      
+      <!-- Argument Section I -->
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+        <w:r><w:t>{{ARGUMENT_I_TITLE}}</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{ARGUMENT_I_TEXT}}</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Argument Section II -->
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading2"/></w:pPr>
+        <w:r><w:t>{{ARGUMENT_II_TITLE}}</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{ARGUMENT_II_TEXT}}</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+
+    <!-- ==================== CONCLUSION ==================== -->
+    <wx:sub-section>
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+        <w:r><w:t>CONCLUSION</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{CONCLUSION_TEXT}}</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- DATED Line -->
+      <w:p>
+        <w:pPr>
+          <w:spacing w:before="360" w:after="120" w:line="480" w:line-rule="auto"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>DATED this {{DAY}} day of {{MONTH}}, {{YEAR}}.</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Respectfully submitted -->
+      <w:p>
+        <w:pPr>
+          <w:spacing w:before="240" w:after="60"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>Respectfully submitted,</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Signature -->
+      <w:p>
+        <w:pPr>
+          <w:ind w:left="4320"/>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Edwardian Script ITC" w:h-ansi="Edwardian Script ITC"/>
+            <w:b/><w:b-cs/><w:i/><w:i-cs/>
+            <w:sz w:val="52"/><w:sz-cs w:val="52"/>
+            <w:u w:val="single"/>
+          </w:rPr>
+          <w:t>/s/ {{PARTY_NAME}}</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Name Block -->
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:b/><w:b-cs/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{PARTY_NAME_CAPS}}</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>, Pro se</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Address -->
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{ADDRESS_LINE_1}}</w:t>
+        </w:r>
+      </w:p>
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{CITY_STATE_ZIP}}</w:t>
+        </w:r>
+      </w:p>
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>Email - {{EMAIL}}</w:t>
+        </w:r>
+      </w:p>
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/><w:spacing w:after="360"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>Phone - {{PHONE}}</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+
+    <!-- ==================== CERTIFICATE OF SERVICE ==================== -->
+    <wx:sub-section>
+      <w:p>
+        <w:pPr><w:pStyle w:val="Heading1"/></w:pPr>
+        <w:r><w:t>CERTIFICATE OF SERVICE</w:t></w:r>
+      </w:p>
+      <w:p>
+        <w:pPr>
+          <w:spacing w:after="240" w:line="480" w:line-rule="auto"/>
+          <w:ind w:first-line="720"/>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>I hereby certify that on {{SERVICE_DATE}}, I electronically filed the foregoing {{DOCUMENT_TITLE}} with the Clerk of the Court using the CM/ECF system, which will send notification of such filing to all counsel of record.</w:t>
+        </w:r>
+      </w:p>
+
+      <!-- Certificate Signature (same block as above) -->
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Edwardian Script ITC" w:h-ansi="Edwardian Script ITC"/>
+            <w:b/><w:b-cs/><w:i/><w:i-cs/>
+            <w:sz w:val="52"/><w:sz-cs w:val="52"/>
+            <w:u w:val="single"/>
+          </w:rPr>
+          <w:t>/s/ {{PARTY_NAME}}</w:t>
+        </w:r>
+      </w:p>
+      <w:p>
+        <w:pPr><w:ind w:left="4320"/></w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:b/><w:b-cs/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>{{PARTY_NAME_CAPS}}</w:t>
+        </w:r>
+        <w:r>
+          <w:rPr>
+            <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+            <w:sz w:val="28"/><w:sz-cs w:val="28"/>
+          </w:rPr>
+          <w:t>, Pro se</w:t>
+        </w:r>
+      </w:p>
+    </wx:sub-section>
+
+    <!-- ==================== PAGE SETTINGS ==================== -->
+    <w:sectPr>
+      <w:hdr w:type="odd">
+        <w:p>
+          <w:pPr><w:jc w:val="center"/></w:pPr>
+          <w:r>
+            <w:rPr>
+              <w:rFonts w:ascii="Californian FB" w:h-ansi="Californian FB"/>
+              <w:b/><w:sz w:val="28"/>
+            </w:rPr>
+            <w:t>Case No. {{CASE_NUMBER}}</w:t>
+          </w:r>
+        </w:p>
+      </w:hdr>
+      <w:ftr w:type="odd">
+        <w:p>
+          <w:pPr><w:jc w:val="center"/></w:pPr>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>Page </w:t></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:instrText>PAGE</w:instrText></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>1</w:t></w:r>
+          <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
+        </w:p>
+      </w:ftr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/>
+    </w:sectPr>
+  </wx:sect>
+</w:body>
+</w:wordDocument>

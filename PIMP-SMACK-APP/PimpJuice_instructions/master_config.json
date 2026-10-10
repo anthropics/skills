@@ -1,0 +1,109 @@
+{
+  "_file": "MASTER_CONFIG_TEMPLATE",
+  "_version": "2.0.0",
+  "_purpose": "Model fills this with user data. Used to generate formatted document.",
+  "_instructions": "See PimpJuice_instructions/MODEL_INSTRUCTIONS.md for how to use this.",
+
+  "_STEP_1_FILING_TYPE": {
+    "_comment": "Look up in filing_types.json to get construct_order and heading1_groups",
+    "filing_type": "",
+    "filing_type_options": ["MOTION", "BRIEF", "APPELLATE_BRIEF", "COMPLAINT", "ANSWER", "DECLARATION", "NOTICE", "ORDER", "STIPULATION", "DISCOVERY", "EXHIBIT", "JUDGMENT", "LETTER", "SUBPOENA"]
+  },
+
+  "_STEP_2_JURISDICTION": {
+    "_comment": "Look up in courts.json to get formatting rules",
+    "jurisdiction_id": "",
+    "jurisdiction_options": {
+      "FEDERAL_APPELLATE": ["NINTH_CIRCUIT", "SEVENTH_CIRCUIT", "ELEVENTH_CIRCUIT", "FOURTH_CIRCUIT", "FIFTH_CIRCUIT", "TENTH_CIRCUIT", "DC_CIRCUIT"],
+      "FEDERAL_DISTRICT": ["NDCA", "CDCA", "DOR"],
+      "STATE_APPELLATE": ["CA_COURT_OF_APPEAL", "OR_COURT_OF_APPEALS"]
+    }
+  },
+
+  "CASE": {
+    "case_number": "",
+    "lower_court_case_number": "",
+    "court_name": "",
+    "court_abbreviation": "",
+    "lower_court_name": "",
+    "judge_name": "",
+    "judge_title": ""
+  },
+
+  "PARTIES": {
+    "party_1_name": "",
+    "party_1_designation": "",
+    "party_2_name": "",
+    "party_2_designation": "",
+    "additional_parties": []
+  },
+
+  "FILER": {
+    "name": "",
+    "designation": "",
+    "address_line_1": "",
+    "address_line_2": "",
+    "city_state_zip": "",
+    "phone": "",
+    "email": "",
+    "bar_number": ""
+  },
+
+  "DOCUMENT": {
+    "title": "",
+    "filing_date": "",
+    "word_count": 0
+  },
+
+  "SECTIONS": {
+    "_comment": "Fill ONLY the sections listed in heading1_groups for the filing_type",
+    "_example_appellate_brief": {
+      "JURISDICTIONAL_STATEMENT": "Content here...",
+      "STATEMENT_OF_ISSUES": ["Issue 1", "Issue 2"],
+      "STATEMENT_OF_THE_CASE": "Content here...",
+      "STATEMENT_OF_FACTS": "Content here...",
+      "SUMMARY_OF_ARGUMENT": "Content here...",
+      "STANDARD_OF_REVIEW": "Content here...",
+      "ARGUMENT": [
+        {
+          "heading": "I. THE DISTRICT COURT ERRED",
+          "content": "Content here...",
+          "subheadings": [
+            {
+              "heading": "A. Standard of Review",
+              "content": "Content here..."
+            }
+          ]
+        }
+      ],
+      "CONCLUSION": "Content here..."
+    },
+    "_example_motion": {
+      "INTRODUCTION": "Content here...",
+      "FACTUAL_BACKGROUND": "Content here...",
+      "LEGAL_STANDARD": "Content here...",
+      "ARGUMENT": "Content here...",
+      "CONCLUSION": "Content here..."
+    }
+  },
+
+  "CERTIFICATES": {
+    "compliance": {
+      "word_count": 0,
+      "typeface": "",
+      "font_size": "",
+      "software": "Microsoft Word"
+    },
+    "service": {
+      "date": "",
+      "method": "CM/ECF",
+      "service_list": []
+    }
+  },
+
+  "_OUTPUT": {
+    "_comment": "Model generates document in this format",
+    "format": "xml",
+    "format_options": ["xml", "docx", "pdf"]
+  }
+}

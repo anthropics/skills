@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Local Rules Override Schema",
+  "type": "object",
+  "properties": {
+    "jurisdiction_id": {
+      "type": "string"
+    },
+    "overrides": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,243 @@
+{
+  "_file": "JURISDICTION_CONFIGS",
+  "_purpose": "Formatting rules by court. Script swaps these into templates based on target jurisdiction.",
+
+  "FEDERAL_APPELLATE": {
+    
+    "NINTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Ninth Circuit",
+      "abbreviation": "9th Cir.",
+      "rules_citation": "9th Cir. R.",
+      "formatting": {
+        "font": "Century Schoolbook",
+        "font_size": "14pt",
+        "footnote_size": "14pt",
+        "line_spacing": "double",
+        "margins": "1 inch all sides"
+      },
+      "pagination": {
+        "type": "consecutive",
+        "start_at": "brief",
+        "page_number_location": "bottom_center"
+      },
+      "word_limits": {
+        "opening_brief": 14000,
+        "answering_brief": 14000,
+        "reply_brief": 7000,
+        "motion": 5200
+      },
+      "required_sections": [
+        "JURISDICTIONAL_STATEMENT",
+        "STATEMENT_OF_ISSUES",
+        "STATEMENT_OF_THE_CASE",
+        "STATEMENT_OF_FACTS",
+        "SUMMARY_OF_ARGUMENT",
+        "STANDARD_OF_REVIEW",
+        "ARGUMENT",
+        "CONCLUSION",
+        "RELATED_CASES",
+        "CERTIFICATE_OF_COMPLIANCE"
+      ],
+      "special_rules": {
+        "statutory_authorities": "Required verbatim in addendum (9th Cir. R. 28-2.7)",
+        "related_cases": "Mandatory disclosure (9th Cir. R. 28-2.6)",
+        "addendum": "Must include table of contents if used"
+      }
+    },
+
+    "SEVENTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Seventh Circuit",
+      "abbreviation": "7th Cir.",
+      "rules_citation": "7th Cir. R.",
+      "formatting": {
+        "font": "Century Schoolbook",
+        "font_size": "12pt",
+        "footnote_size": "11pt",
+        "line_spacing": "double",
+        "margins": "1 inch all sides"
+      },
+      "pagination": {
+        "type": "traditional",
+        "start_at": "jurisdictional_statement",
+        "page_number_location": "bottom_center"
+      },
+      "word_limits": {
+        "opening_brief": 14000,
+        "answering_brief": 14000,
+        "reply_brief": 7000
+      }
+    },
+
+    "ELEVENTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Eleventh Circuit",
+      "abbreviation": "11th Cir.",
+      "rules_citation": "11th Cir. R.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "14pt",
+        "footnote_size": "14pt",
+        "line_spacing": "double",
+        "margins": "1 inch all sides"
+      },
+      "pagination": {
+        "type": "mixed",
+        "cover": "none",
+        "cip": "C-1 of X format",
+        "front_matter": "roman_lowercase",
+        "body": "arabic_starting_at_issues",
+        "page_number_location": "bottom_center"
+      },
+      "special_rules": {
+        "cip_format": "Each page numbered C-1 of 3, C-2 of 3, etc.",
+        "cip_title": "Must include case number and party names"
+      }
+    },
+
+    "FOURTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Fourth Circuit",
+      "abbreviation": "4th Cir.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "14pt",
+        "footnote_size": "14pt"
+      },
+      "pagination": {
+        "type": "traditional",
+        "page_number_location": "bottom_center"
+      }
+    },
+
+    "FIFTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Fifth Circuit",
+      "abbreviation": "5th Cir.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "14pt",
+        "footnote_size": "12pt"
+      },
+      "pagination": {
+        "type": "traditional",
+        "page_number_location": "bottom_center"
+      }
+    },
+
+    "TENTH_CIRCUIT": {
+      "display": "United States Court of Appeals for the Tenth Circuit",
+      "abbreviation": "10th Cir.",
+      "formatting": {
+        "font": "Century Schoolbook",
+        "font_size": "14pt",
+        "footnote_size": "14pt"
+      },
+      "pagination": {
+        "type": "consecutive",
+        "page_number_location": "bottom_center"
+      },
+      "special_rules": {
+        "glossary": "Required if brief contains uncommon acronyms (after TOA)",
+        "oral_argument": "If requested, must state reasons after conclusion",
+        "attachments": "Order under review and final judgment must be attached"
+      }
+    },
+
+    "DC_CIRCUIT": {
+      "display": "United States Court of Appeals for the District of Columbia Circuit",
+      "abbreviation": "D.C. Cir.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "14pt",
+        "footnote_size": "14pt"
+      },
+      "pagination": {
+        "type": "consecutive",
+        "page_number_location": "bottom_center"
+      }
+    }
+  },
+
+  "FEDERAL_DISTRICT": {
+    
+    "NDCA": {
+      "display": "United States District Court, Northern District of California",
+      "abbreviation": "N.D. Cal.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "12pt",
+        "footnote_size": "12pt",
+        "line_spacing": "double",
+        "margins": "1 inch all sides"
+      },
+      "pagination": {
+        "type": "consecutive",
+        "page_number_location": "bottom_center"
+      },
+      "word_limits": {
+        "motion": 7000,
+        "opposition": 7000,
+        "reply": 4200
+      }
+    },
+
+    "CDCA": {
+      "display": "United States District Court, Central District of California",
+      "abbreviation": "C.D. Cal.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "12pt"
+      },
+      "word_limits": {
+        "motion": 7000,
+        "opposition": 7000,
+        "reply": 4200
+      }
+    },
+
+    "DOR": {
+      "display": "United States District Court, District of Oregon",
+      "abbreviation": "D. Or.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "12pt"
+      },
+      "special_rules": {
+        "note": "Oregon has strict formatting enforcement - verify current local rules"
+      }
+    }
+  },
+
+  "STATE_APPELLATE": {
+    
+    "CA_COURT_OF_APPEAL": {
+      "display": "California Court of Appeal",
+      "abbreviation": "Cal. Ct. App.",
+      "rules_citation": "Cal. Rules of Court",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "13pt",
+        "footnote_size": "13pt",
+        "line_spacing": "1.5"
+      },
+      "pagination": {
+        "page_number_location": "bottom_center"
+      },
+      "word_limits": {
+        "opening_brief": 14000,
+        "respondent_brief": 14000,
+        "reply_brief": 7000
+      }
+    },
+
+    "OR_COURT_OF_APPEALS": {
+      "display": "Oregon Court of Appeals",
+      "abbreviation": "Or. Ct. App.",
+      "formatting": {
+        "font": "Times New Roman",
+        "font_size": "12pt"
+      },
+      "special_rules": {
+        "warning": "Oregon known for strict formatting enforcement without explanation",
+        "recommendation": "Verify ALL local rules before filing"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "_schema_version": "1.0",
+  "_inherits_from": "MASTER_FRAP",
+  "_description": "Tyler's Ninth Circuit Opening Brief - Case 25-6461",
+  
+  "filing_info": {
+    "filing_type": "APPELLATE_BRIEF",
+    "jurisdiction": "ninth_circuit",
+    "court_level": "appellate"
+  },
+  
+  "case_info": {
+    "case_number": "25-6461",
+    "case_name": "Tyler Allen Lofall v. Clackamas County et al.",
+    "lower_court": "United States District Court for the District of Oregon",
+    "lower_case_number": "3:23-cv-00839-SB",
+    "appellant": "Tyler Allen Lofall",
+    "appellee": "Clackamas County, et al."
+  },
+  
+  "headings_in_my_document": [
+    "JURISDICTIONAL STATEMENT",
+    "STATEMENT OF THE ISSUES",
+    "STATEMENT OF THE CASE",
+    "STATEMENT OF FACTS",
+    "SUMMARY OF ARGUMENT",
+    "STANDARD OF REVIEW",
+    "ARGUMENT",
+    "CONCLUSION",
+    "RELATED CASES STATEMENT"
+  ],
+  
+  "custom_sections": {},
+  
+  "formatting_overrides": {},
+  
+  "special_inserts": [],
+  
+  "build_components": {
+    "use_coverpage": true,
+    "use_caption": false,
+    "use_header": false,
+    "use_footer": false,
+    "use_toc": true,
+    "use_toa": true,
+    "use_signature": true,
+    "use_declaration": false,
+    "use_cert_of_compliance": true,
+    "use_cert_of_service": true,
+    "use_addendum": true
+  }
+}

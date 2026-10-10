@@ -1,0 +1,17 @@
+<tool_menu name="ShaktiTools" flood_control="tiered">
+  <section id="1" name="calculator">
+    <tool name="ti83" command="TI83_EXPR" description="Evaluate TI-83-style arithmetic expressions through the MCP gate." />
+  </section>
+  <section id="2" name="files">
+    <tool name="open_approved_dir" command="OPEN_APPROVED_DIR" description="Open a user-approved working directory picker or file browser." />
+    <tool name="history_search" command="SEARCH_HISTORY" description="Search append-only XML history by title, summary, metadata, or task tag." />
+  </section>
+  <section id="3" name="computer_control">
+    <tool name="screen_tick" command="SCREEN_TICK" description="Get screenshot path, mouse position, grid, and button placeholders." />
+    <tool name="mouse_keyboard" command="REQUEST_INPUT_ACTION" description="Request gated mouse or keyboard action through MCP." />
+  </section>
+  <section id="4" name="network">
+    <tool name="url_fetch" command="FETCH_URL" description="Fetch a URL through MCP when internet is enabled by Tyler." />
+    <tool name="google_search" command="GOOGLE_SEARCH" description="Search the web through MCP when enabled." />
+  </section>
+</tool_menu>

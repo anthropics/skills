@@ -1,0 +1,44 @@
+{
+    "CASE_NUMBER": "25-6461",
+    "COURT": "United States Court of Appeals for the Ninth Circuit",
+    "FILING_TITLE": "EMERGENCY MOTION FOR STAY PENDING APPEAL",
+    "JUDGE": "Hon. Stacy Beckerman",
+    "PARTIES": {
+        "APPELLANT": "Tyler Allen Lofall",
+        "APPELLEES": [
+            "Clackamas County",
+            "City of West Linn",
+            "Officer Dana Gunnarson",
+            "Officer Catlin Blyth"
+        ],
+        "ATTORNEYS": [
+            {
+                "ROLE": "Appellant Pro Se",
+                "NAME": "Tyler Allen Lofall",
+                "ADDRESS": "5809 West Park Place, Pasco, WA 99301",
+                "EMAIL": "tyleralofall@gmail.com",
+                "PHONE": "(386) 262-3322"
+            }
+        ]
+    },
+    "RELIEF_REQUESTED": "Stay of district court judgment pending appeal.",
+    "INTRODUCTION": "Concise 1–2 paragraph intro.",
+    "FACTS": "Key facts relevant to the motion.",
+    "ARGUMENT": [
+        {
+            "HEADING": "Likelihood of success on the merits",
+            "TEXT": "Support with citations as needed."
+        },
+        {
+            "HEADING": "Irreparable harm",
+            "TEXT": "Explain harm without stay."
+        },
+        {
+            "HEADING": "Balance of equities and public interest",
+            "TEXT": "Why relief is equitable."
+        }
+    ],
+    "CONCLUSION": "Requested order text.",
+    "CERTIFICATE_SERVICE": "Certificate of Service text.",
+    "DATE": "December 7, 2025"
+}

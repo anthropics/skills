@@ -1,0 +1,99 @@
+{
+  "_schema_name": "MASTER_FRCP",
+  "_version": "1.0.0",
+  "_description": "Master formatting rules for Federal Rules of Civil Procedure (District Court)",
+  
+  "default_formatting": {
+    "font": "California",
+    "font_fallback": ["Century Schoolbook", "Times New Roman"],
+    "font_size": "12pt",
+    "line_spacing": "double",
+    "margins": {
+      "top": "1in",
+      "bottom": "1in",
+      "left": "1in",
+      "right": "1in"
+    },
+    "paragraph_indent": "0.5in",
+    "alignment": "left"
+  },
+  
+  "heading_styles": {
+    "LEGAL_H1": {
+      "font": "California",
+      "font_size": "12pt",
+      "bold": true,
+      "caps": true,
+      "alignment": "center",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H2": {
+      "font": "California",
+      "font_size": "12pt",
+      "bold": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "0in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H3": {
+      "font": "California",
+      "font_size": "12pt",
+      "bold": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "0.5in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    },
+    "LEGAL_H4": {
+      "font": "California",
+      "font_size": "12pt",
+      "italic": true,
+      "caps": false,
+      "alignment": "left",
+      "indent": "1in",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt",
+      "line_spacing": "single"
+    }
+  },
+  
+  "body_text_style": {
+    "LEGAL_BODY": {
+      "font": "California",
+      "font_size": "12pt",
+      "bold": false,
+      "italic": false,
+      "alignment": "left",
+      "first_line_indent": "0.5in",
+      "line_spacing": "double",
+      "spacing_before": "0pt",
+      "spacing_after": "0pt"
+    }
+  },
+  
+  "page_settings": {
+    "page_numbers": true,
+    "page_number_location": "bottom_center",
+    "page_number_format": "arabic",
+    "header": {
+      "enabled": true,
+      "content": "{{CASE_NUMBER}}"
+    },
+    "footer": {
+      "enabled": false
+    }
+  },
+  
+  "document_limits": {
+    "motion_word_limit": null,
+    "brief_word_limit": null,
+    "page_limit": null
+  }
+}
