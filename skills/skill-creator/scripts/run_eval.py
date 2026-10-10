@@ -7,16 +7,21 @@ for a set of queries. Outputs results as JSON.
 
 import argparse
 import json
+import logging
 import os
 import select
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
+
+logger = logging.getLogger(__name__)
 
 
 def find_project_root() -> Path:
@@ -42,19 +47,30 @@ def run_single_query(
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
-    Creates a command file in .claude/commands/ so it appears in Claude's
-    available_skills list, then runs `claude -p` with the raw query.
+    Creates a command file in an isolated throwaway project root so it
+    appears in Claude's available_skills list for the `claude -p` subprocess
+    only — never in the user's live .claude/commands/, where concurrent
+    Claude Code sessions would see the synthetic variant during the parallel
+    eval window. `claude -p` discovers commands from its cwd's .claude/;
+    global auth/config in ~/.claude are unaffected by cwd.
     Uses --include-partial-messages to detect triggering early from
     stream events (content_block_start) rather than waiting for the
     full assistant message, which only arrives after tool execution.
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
-    project_commands_dir = Path(project_root) / ".claude" / "commands"
-    command_file = project_commands_dir / f"{clean_name}.md"
+    # Include the skill name in the prefix so any tempdir stranded by a
+    # killed worker (rmtree never runs on SIGKILL) is attributable.
+    eval_root = Path(tempfile.mkdtemp(prefix=f"skill-eval-{skill_name}-{unique_id}-"))
+    # Make the hermetic-by-design intent explicit for anyone reading eval logs:
+    # the synthetic variant lives only under this throwaway root, never the live
+    # project. Silent by default (no handler configured); emits when the caller
+    # turns logging on.
+    logger.info("Isolated eval root: %s (cleaned on exit)", eval_root)
+    command_file = eval_root / ".claude" / "commands" / f"{clean_name}.md"
 
     try:
-        project_commands_dir.mkdir(parents=True, exist_ok=True)
+        command_file.parent.mkdir(parents=True, exist_ok=True)
         # Use YAML block scalar to avoid breaking on quotes in description
         indented_desc = "\n  ".join(skill_description.split("\n"))
         command_content = (
@@ -86,7 +102,7 @@ def run_single_query(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            cwd=project_root,
+            cwd=str(eval_root),
             env=env,
         )
 
@@ -177,8 +193,7 @@ def run_single_query(
 
         return triggered
     finally:
-        if command_file.exists():
-            command_file.unlink()
+        shutil.rmtree(eval_root, ignore_errors=True)
 
 
 def run_eval(
