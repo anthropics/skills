@@ -53,6 +53,24 @@ Start by understanding the user's intent. The current conversation might already
 3. What's the expected output format?
 4. Should we set up test cases to verify the skill works? Skills with objectively verifiable outputs (file transforms, data extraction, code generation, fixed workflow steps) benefit from test cases. Skills with subjective outputs (writing style, art) often don't need them. Suggest the appropriate default based on the skill type, but let the user decide.
 
+### Identify the Skill Type
+
+Before drafting, it helps to know what category the skill falls into. Most useful skills cluster into one of these types:
+
+| Type | What it does |
+|------|-------------|
+| **Library/API Reference** | Explains how to correctly use a library, CLI, or SDK. Focuses on edge cases, footguns, and gotchas that Claude would not know from training data alone. |
+| **Product Verification** | Describes how to test or verify that code works. Often paired with tools like Playwright or tmux. Worth investing serious time here because verification quality directly determines output quality. |
+| **Data Fetching & Analysis** | Connects to data and monitoring stacks. Includes credentials, dashboard IDs, table schemas, and common query patterns. |
+| **Business Process Automation** | Automates a repetitive workflow into one command. Usually simple instructions but may depend on other skills or MCPs. |
+| **Code Scaffolding & Templates** | Generates framework boilerplate for a specific function in your codebase. Especially useful when scaffolding has natural-language requirements that pure code templates cannot cover. |
+| **Code Quality & Review** | Enforces code quality standards and helps review code. Can include deterministic scripts for maximum robustness. Good candidate for running automatically via hooks or CI. |
+| **CI/CD & Deployment** | Helps fetch, push, and deploy code. May reference other skills to collect data or run checks before deploying. |
+| **Runbooks** | Takes a symptom (alert, error, Slack thread) and walks through a multi-tool investigation to produce a structured report. |
+| **Infrastructure Operations** | Performs routine maintenance and operational procedures, especially destructive actions that benefit from guardrails and confirmation steps. |
+
+You do not need to force a skill into exactly one category, but knowing the type helps you pick the right patterns. A verification skill needs assertion scripts. A runbook needs symptom-to-tool mappings. A business process skill benefits from storing logs of previous runs so the model can see what changed since last time.
+
 ### Interview and Research
 
 Proactively ask questions about edge cases, input/output formats, example files, success criteria, and dependencies. Wait to write test prompts until you've got this part ironed out.
@@ -107,6 +125,47 @@ cloud-deploy/
     └── azure.md
 ```
 Claude reads only the relevant reference file.
+
+#### Focus on What Claude Does Not Already Know
+
+Claude knows a lot about coding and has opinions about common libraries. If your skill is primarily about knowledge, focus on information that pushes Claude out of its default behavior. The most valuable content is the stuff Claude would get wrong without your skill: internal conventions, undocumented edge cases, domain-specific patterns your team has learned the hard way.
+
+If you find yourself writing instructions that Claude would follow anyway, cut them. They burn context without adding value.
+
+#### Build a Gotchas Section
+
+The highest-signal content in any skill is the gotchas section. These should be built up from real failure points that Claude runs into when using the skill. Start with whatever you know and update the section over time as new failure modes surface.
+
+A good gotchas section turns a mediocre skill into a reliable one. It is where institutional knowledge lives.
+
+#### Setup and User Config
+
+Some skills need user-specific context to work: which Slack channel to post in, which repo to target, API credentials, team names. Rather than hardcoding these or asking the user every time, use a `config.json` file in the skill directory.
+
+The pattern: on first run, if `config.json` does not exist or is missing required fields, the skill asks the user for the information and saves it. On subsequent runs, it reads the config silently. This makes the skill feel polished and avoids repetitive setup questions.
+
+```
+skill-name/
+├── SKILL.md
+├── config.json    (created on first run, gitignored)
+└── scripts/
+```
+
+#### Memory and Data Persistence
+
+Skills can store data across runs. This could be as simple as an append-only log file or as structured as a SQLite database. A standup-post skill might keep a `standups.log` with every post it has written, so next time Claude reads its own history and can tell what changed since yesterday.
+
+Important: data stored inside the skill directory may be deleted when the skill is upgraded. For anything that needs to persist across upgrades, store it in a stable location outside the skill folder. In Claude Code, `${CLAUDE_PLUGIN_DATA}` provides a stable per-plugin directory for this purpose.
+
+#### On-Demand Hooks
+
+Skills can register hooks that activate only when the skill is invoked and last for the duration of the session. This is useful for opinionated guardrails that you want sometimes but not always.
+
+Examples:
+- A `/careful` command that blocks `rm -rf`, `DROP TABLE`, force-push, and `kubectl delete` via a PreToolUse matcher on Bash. You only want this when touching production; having it always on would slow everything down.
+- A `/freeze` command that blocks any Edit/Write outside a specific directory. Useful when debugging: you want to add logs but keep accidentally "fixing" unrelated code.
+
+If your skill involves destructive operations or has a mode where mistakes are expensive, consider shipping an on-demand hook as a safety net.
 
 #### Principle of Lack of Surprise
 
@@ -414,6 +473,18 @@ python -m scripts.package_skill <path/to/skill-folder>
 ```
 
 After packaging, direct the user to the resulting `.skill` file path so they can install it.
+
+---
+
+## Distributing Skills
+
+Once a skill is working, you may want to share it with your team. There are two main paths:
+
+**Check into your repo.** For smaller teams working across a few repos, put skills in `./.claude/skills`. This is the simplest approach. The tradeoff: every skill checked into the repo adds to the context the model sees at the start of each session. A handful is fine. Dozens will start to cost you.
+
+**Use a plugin marketplace.** As you scale, an internal marketplace (or a public one like the Claude Code plugin directory) lets you distribute skills without bloating every session. Users install what they need. The organic discovery pattern that works well: someone builds a useful skill, shares it in Slack or an internal forum, and if it gets traction, it graduates to the marketplace via a PR.
+
+The key thing to manage at scale is context cost. Every installed skill contributes to the model's available_skills listing. Be intentional about what ships as a default versus what users opt into.
 
 ---
 
