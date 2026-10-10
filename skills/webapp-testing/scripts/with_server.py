@@ -18,6 +18,9 @@ import subprocess
 import socket
 import time
 import sys
+import os
+import signal
+import tempfile
 import argparse
 
 def is_server_ready(port, timeout=30):
@@ -30,6 +33,42 @@ def is_server_ready(port, timeout=30):
         except (socket.error, ConnectionRefusedError):
             time.sleep(0.5)
     return False
+
+
+def read_log_tail(log_path, max_bytes=2048):
+    """Return the last chunk of a server log for error reporting."""
+    try:
+        with open(log_path, 'rb') as f:
+            f.seek(0, os.SEEK_END)
+            size = f.tell()
+            f.seek(max(0, size - max_bytes))
+            return f.read().decode('utf-8', errors='replace').strip()
+    except OSError:
+        return ''
+
+
+def stop_process_tree(process):
+    """Stop a server and any children it spawned (e.g. via shell wrappers)."""
+    posix = os.name == 'posix'
+
+    def signal_group(sig, fallback):
+        # The server runs in its own process group (start_new_session=True),
+        # so signal the whole group: terminating only the shell would orphan
+        # the actual server process and leave the port bound.
+        if posix:
+            try:
+                os.killpg(process.pid, sig)
+            except ProcessLookupError:
+                pass
+            return
+        fallback()
+
+    signal_group(signal.SIGTERM, process.terminate)
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        signal_group(signal.SIGKILL if posix else signal.SIGTERM, process.kill)
+        process.wait()
 
 
 def main():
@@ -65,19 +104,35 @@ def main():
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            # Use shell=True to support commands with cd and &&
+            # Send output to a log file rather than a pipe: nothing reads the
+            # pipe while the command runs, so a chatty server would fill the
+            # pipe buffer and block mid-run.
+            log_fd, log_path = tempfile.mkstemp(
+                prefix=f"with_server_port{server['port']}_", suffix='.log'
+            )
+            print(f"Server log: {log_path}")
+
+            # Use shell=True to support commands with cd and &&.
+            # start_new_session puts the shell and everything it spawns in one
+            # process group so cleanup can stop all of it.
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stdout=log_fd,
+                stderr=subprocess.STDOUT,
+                start_new_session=True
             )
+            os.close(log_fd)
             server_processes.append(process)
 
             # Wait for this server to be ready
             print(f"Waiting for server on port {server['port']}...")
             if not is_server_ready(server['port'], timeout=args.timeout):
-                raise RuntimeError(f"Server failed to start on port {server['port']} within {args.timeout}s")
+                message = f"Server failed to start on port {server['port']} within {args.timeout}s"
+                log_tail = read_log_tail(log_path)
+                if log_tail:
+                    message += f"\nLast server output:\n{log_tail}"
+                raise RuntimeError(message)
 
             print(f"Server ready on port {server['port']}")
 
@@ -92,12 +147,7 @@ def main():
         # Clean up all servers
         print(f"\nStopping {len(server_processes)} server(s)...")
         for i, process in enumerate(server_processes):
-            try:
-                process.terminate()
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
+            stop_process_tree(process)
             print(f"Server {i+1} stopped")
         print("All servers stopped")
 
