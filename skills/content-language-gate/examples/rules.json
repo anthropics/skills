@@ -1,0 +1,25 @@
+{
+  "_note": "Example rule file for a fortune/horoscope-style product. Forbidden classes come from the product's own experience charter, not from this skill.",
+  "forbidden": {
+    "certainty":  "\\b(definitely|guaranteed|will certainly|is going to happen)\\b",
+    "fate":       "\\b(destiny|fated|written in the stars|your fate)\\b",
+    "fear":       "\\b(you will lose|danger|I am warning you|bad news)\\b",
+    "diagnosis":  "\\b(your personality|narcissist|bipolar|depression|diagnosis)\\b",
+    "percentage": "\\b\\d{1,3}\\s?%|\\bpercent accurate\\b",
+    "astrology":  "\\b(zodiac|your sign|rising sign|Scorpio placement)\\b"
+  },
+  "decoys": [
+    ["certainty",  "This will definitely happen within two weeks."],
+    ["fate",       "It is written in the stars, your fate is opening."],
+    ["diagnosis",  "Your personality leans narcissist - that is the diagnosis."],
+    ["percentage", "This reading is 87 % accurate."],
+    ["fear",       "I am warning you, you will lose this chance."]
+  ],
+  "content": {
+    "glob": "content/*.json",
+    "fields": ["text", "short"],
+    "list_fields": ["rules", "questions"],
+    "option_field": "options"
+  },
+  "originality": ["all"]
+}
