@@ -1,0 +1,19 @@
+{
+  "rules": [
+    {
+      "id": "R3",
+      "text": "Waiting to be noticed is not your way.",
+      "short": "You want to be seen where you are."
+    },
+    {
+      "id": "R4",
+      "text": "You hope the word comes from others.",
+      "short": "You want to be seen where you are."
+    },
+    {
+      "id": "R5",
+      "text": "You are waiting for the right moment.",
+      "short": "You want to be seen where you are."
+    }
+  ]
+}
