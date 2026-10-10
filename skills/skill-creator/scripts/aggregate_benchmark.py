@@ -85,10 +85,12 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
         metadata_path = eval_dir / "eval_metadata.json"
+        eval_name = None
         if metadata_path.exists():
             try:
-                with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                meta = json.load(open(metadata_path))
+                eval_id = meta.get("eval_id", eval_idx)
+                eval_name = meta.get("eval_name")
             except (json.JSONDecodeError, OSError):
                 eval_id = eval_idx
         else:
@@ -101,15 +103,22 @@ def load_run_results(benchmark_dir: Path) -> dict:
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
-                continue
+            run_dirs = sorted(config_dir.glob("run-*"))
+            # Flat layout: grading.json directly in config_dir (no run-* subdirs)
+            if not run_dirs:
+                if (config_dir / "grading.json").exists():
+                    run_dirs = [config_dir]
+                else:
+                    continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            for run_dir in run_dirs:
+                if run_dir == config_dir:
+                    run_number = 1
+                else:
+                    run_number = int(run_dir.name.split("-")[1])
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -126,6 +135,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 # Extract metrics
                 result = {
                     "eval_id": eval_id,
+                    "eval_name": eval_name,
                     "run_number": run_number,
                     "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
                     "passed": grading.get("summary", {}).get("passed", 0),
@@ -203,10 +213,15 @@ def aggregate_results(results: dict) -> dict:
             "tokens": calculate_stats(tokens)
         }
 
-    # Calculate delta between the first two configs (if two exist)
+    # Calculate delta: primary (with_skill/new_skill) minus baseline (without_skill/old_skill).
+    # Use known names first to avoid alphabetical-sort inversions (old_skill < with_skill).
+    _primary_names = {"with_skill", "new_skill"}
+    _baseline_names = {"without_skill", "old_skill"}
+    primary_key = next((c for c in configs if c in _primary_names), None) or (configs[0] if configs else None)
+    baseline_key = next((c for c in configs if c in _baseline_names), None) or (configs[1] if len(configs) >= 2 else None)
     if len(configs) >= 2:
-        primary = run_summary.get(configs[0], {})
-        baseline = run_summary.get(configs[1], {})
+        primary = run_summary.get(primary_key, {})
+        baseline = run_summary.get(baseline_key, {})
     else:
         primary = run_summary.get(configs[0], {}) if configs else {}
         baseline = {}
@@ -235,10 +250,14 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
     runs = []
     for config in results:
         for result in results[config]:
-            runs.append({
+            entry = {
                 "eval_id": result["eval_id"],
                 "configuration": config,
                 "run_number": result["run_number"],
+            }
+            if result.get("eval_name") is not None:
+                entry["eval_name"] = result["eval_name"]
+            entry.update({
                 "result": {
                     "pass_rate": result["pass_rate"],
                     "passed": result["passed"],
@@ -252,6 +271,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
                 "expectations": result["expectations"],
                 "notes": result["notes"]
             })
+            runs.append(entry)
 
     # Determine eval IDs from results
     eval_ids = sorted(set(
