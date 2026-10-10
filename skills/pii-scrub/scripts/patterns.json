@@ -1,0 +1,95 @@
+{
+  "$comment": "Baseline PII patterns applied by scrub.ps1 and scrub.py. Add or extend by editing this file. Each entry: name (identifier), pattern (regex, must work in both .NET and Python's re module), replacement (string). PATTERN ORDER: patterns run in the order listed below; substitutions are applied sequentially. Where one pattern's matches could be a subset of another's, use lookahead/lookbehind to make the patterns mutually exclusive (see openai-api-key for an example) rather than relying on order.",
+  "baseline": [
+    {
+      "name": "full-uuid",
+      "pattern": "\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b",
+      "replacement": "<session-id>"
+    },
+    {
+      "name": "ipv4",
+      "pattern": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+      "replacement": "<ip>"
+    },
+    {
+      "name": "ipv6-strict",
+      "$comment": "Requires 4+ segments. Loose IPv6 regex (2+ segments) matches HH:MM:SS timestamps.",
+      "pattern": "\\b(?:[0-9a-fA-F]{1,4}:){4,}[0-9a-fA-F]{1,4}\\b",
+      "replacement": "<ipv6>"
+    },
+    {
+      "name": "ipv6-compressed",
+      "$comment": "Compressed IPv6 (:: form). Requires at least one hex segment before :: to avoid false-positives on timestamps (HH:MM:SS). Misses bare ::1 (loopback) by design; that's not PII.",
+      "pattern": "\\b[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4})*::(?:[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4})*)?\\b",
+      "replacement": "<ipv6>"
+    },
+    {
+      "name": "email",
+      "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "replacement": "<email>"
+    },
+    {
+      "$comment": "All credential-shaped patterns redact to <credential> (not <api-key>, <jwt-token>, etc.) to avoid leaking which TYPE of credential was in the source. The credential type itself is metadata an attacker can use to narrow attack surface. JWT minimum-length is 10 chars after eyJ to catch minimal valid JWTs (header eyJhbGciOiJIUzI1NiJ9 is 16 chars after eyJ); raise this if you see false-positives on non-JWT base64 strings.",
+      "name": "jwt-token",
+      "pattern": "eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+",
+      "replacement": "<credential>"
+    },
+    {
+      "name": "anthropic-api-key",
+      "pattern": "sk-ant-[A-Za-z0-9_-]{20,}",
+      "replacement": "<credential>"
+    },
+    {
+      "name": "openai-api-key",
+      "$comment": "Negative lookahead (?!ant-) excludes Anthropic keys; otherwise this pattern would also match sk-ant-* and force a fragile dependency on running anthropic-api-key first.",
+      "pattern": "sk-(?!ant-)[A-Za-z0-9]{20,}",
+      "replacement": "<credential>"
+    },
+    {
+      "name": "github-token",
+      "$comment": "GitHub personal access tokens (classic and fine-grained) and OAuth tokens.",
+      "pattern": "\\b(?:ghp|gho|ghu|ghs|ghr|github_pat)_[A-Za-z0-9_]{20,}\\b",
+      "replacement": "<credential>"
+    },
+    {
+      "name": "aws-access-key",
+      "pattern": "\\bAKIA[0-9A-Z]{16}\\b",
+      "replacement": "<credential>"
+    },
+    {
+      "name": "generic-bearer-secret",
+      "$comment": "Catches obvious credential assignments, including JSON-quoted key names. Case-insensitive on the key name. Group $2 optionally captures a closing quote on the key name (JSON style: `\"api_key\":`) and re-emits it so JSON structure is preserved. Separator (= or : with surrounding whitespace) is captured into $3 and preserved so YAML/JSON files keep their structure: `api_key: value` -> `api_key: <credential>`, NOT `api_key=<credential>`. Quotes around the value are matched but dropped from output (intentional; the quotes around <credential> would be misleading).",
+      "pattern": "(?i)(api[_-]?key|access[_-]?token|secret|bearer|password)([\"']?)(\\s*[=:]\\s*)[\"']?[A-Za-z0-9_-]{16,}[\"']?",
+      "replacement": "$1$2$3<credential>"
+    },
+    {
+      "name": "phone-us",
+      "$comment": "US-shaped phone numbers in common forms: 555-867-5309, 555.867.5309, 555 867 5309, (555) 867-5309, +1 555-867-5309, +1-555-867-5309. Does not match international formats outside +1. May catch unrelated NNN-NNN-NNNN sequences (e.g., some serial numbers, dates with the right shape) — review audit output.",
+      "pattern": "(?:\\+?1[-.\\s]?)?(?:\\(\\d{3}\\)\\s?|\\d{3}[-.\\s])\\d{3}[-.\\s]\\d{4}",
+      "replacement": "<phone>"
+    },
+    {
+      "name": "ssn-us",
+      "pattern": "\\b\\d{3}-\\d{2}-\\d{4}\\b",
+      "replacement": "<ssn>"
+    },
+    {
+      "name": "credit-card",
+      "$comment": "Catches 13-16 digit sequences with common separators. Not Luhn-verified.",
+      "pattern": "\\b(?:\\d{4}[\\s-]?){3,4}\\d{1,4}\\b",
+      "replacement": "<credit-card>"
+    }
+  ],
+  "audit_only": [
+    {
+      "name": "private-key-block",
+      "$comment": "PEM-style private key markers. If this matches, STOP — the file should not be shared.",
+      "pattern": "-----BEGIN (?:RSA |EC |OPENSSH |PGP |DSA |ENCRYPTED )?PRIVATE KEY-----"
+    },
+    {
+      "name": "long-base64-blob",
+      "$comment": "Suspiciously long base64 blobs. Often legit (icons, data URIs); flagged for human review.",
+      "pattern": "[A-Za-z0-9+/]{100,}={0,2}"
+    }
+  ]
+}
