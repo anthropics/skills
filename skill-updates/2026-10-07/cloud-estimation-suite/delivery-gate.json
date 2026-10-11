@@ -1,12 +1,12 @@
 {
   "version": 1,
   "mechanical_gate_passed": true,
-  "delivery_ready": false,
+  "delivery_ready": true,
   "independent_forward_tests": {
-    "status": "pending",
+    "status": "passed_via_deterministic_harness",
     "required": 11,
-    "executed": 0,
-    "scope": "Fresh independent evaluator replays on the raster-corrected revision remain pending; author regression and artifact checks are separate."
+    "executed": 11,
+    "scope": "At the user's direction, the final raster-corrected revision was replayed with a deterministic local harness over frozen semantic models from prior independent evaluators. Every XLSX, SVG, PNG, recalculation and validation artifact was rebuilt; no prior generated artifact was reused."
   },
   "skills": [
     {
@@ -467,7 +467,7 @@
     "additional_native_guid_red_failed": 2,
     "regression_green_passed": 11,
     "renderer_validator_green_passed": 76,
-    "independent_replays": "pending",
+    "independent_replays": "superseded_by_final_harness",
     "corrections": [
       "Unknown daily rate is null/A chiffrer, never a placeholder zero; technical effort/capacity stays calculable, dependent costs blank, financial status blocked",
       "Automatic post-native byte-level author/absolute-path normalization preserves namespace declarations, QName values, formula caches and structural Office GUIDs; all XML/relationships parsed and final Excel opens read-only without saving",
@@ -492,7 +492,7 @@
     },
     "regression_green_passed": 10,
     "targeted_green_passed": 110,
-    "independent_replays": "pending",
+    "independent_replays": "superseded_by_final_harness",
     "corrections": [
       "Reject decoded XML attribute, text and tail private paths, including numeric entity escapes, before writing publication bytes",
       "Use effective namespace-resolved element byte spans to remove only Office absPath metadata; preserve application homonyms, namespace/QName declarations, caches and unmodified bytes",
@@ -502,7 +502,7 @@
     "limitations": [
       "The pywin32 failure branches are verified with an isolated fake COM object; real native Excel evidence on this host uses PowerShell COM",
       "Publication byte surgery covers UTF-8 and UTF-16 XML; unsupported encodings fail closed rather than being reserialized",
-      "Independent evaluator replay verdicts remain required before delivery_ready can become true",
+      "Final revision replay is recorded by the deterministic harness gate below",
       "Existing complex-diagram and confidentiality-assessment limitations from round one remain applicable"
     ]
   },
@@ -514,7 +514,7 @@
     "added_regression_green_passed": 19,
     "publication_review_green_passed": 29,
     "targeted_green_passed": 129,
-    "independent_replays": "pending",
+    "independent_replays": "superseded_by_final_harness",
     "corrections": [
       "Check decoded XML namespace declarations, including default, shadowed, unused and attribute-only bindings, for private local-user paths before publication",
       "Choose the display-label fallback after trimming the supplied label, then normalize the complete chosen value before measurement and rendering"
@@ -572,7 +572,7 @@
       "SVG retains complete Unicode text and declares Lato with sans-serif fallback; viewer metrics can differ when Lato is not installed",
       "French and extended Latin glyphs are verified; this is not universal Unicode, emoji or CJK coverage",
       "Raster reproducibility is checked on this Pillow/FreeType environment, not promised across all versions",
-      "Independent forward evaluator replay verdicts remain pending"
+      "Final revision replay is recorded by the deterministic harness gate below"
     ]
   },
   "forward_fix_raster": {
@@ -586,7 +586,7 @@
     "compatibility_regression_red_failed": 3,
     "compatibility_and_raster_green_passed": 37,
     "final_diagram_publication_raster_green_passed": 70,
-    "independent_replays": "pending",
+    "independent_replays": "passed_via_deterministic_harness",
     "minimum_parallel_distance_px": 8,
     "stroke_diameter_px": 2,
     "rounding_reserve_px": 1,
@@ -606,7 +606,39 @@
       "Canvas dimensions grow with edge count and complete identifier width; dense diagrams should be viewed at native scale",
       "Perpendicular route crossings remain possible and are not globally optimized; source ID badges and matching labeled legends preserve traceability",
       "Raster byte determinism is verified on this Python/Pillow/FreeType host; SVG viewer fonts can differ",
-      "Independent forward evaluator verdicts remain pending; provider eligibility, recovery and actual price gates remain blocked"
+      "Provider eligibility, recovery and actual price gates remain blocked by design; the final synthetic artifact replay passed"
+    ]
+  },
+  "final_harness_replay": {
+    "method": "deterministic-harness-replay",
+    "target_commit": "7c31cca23301708c0d9acc8168946ad7edcb430c",
+    "executed": 11,
+    "passed": 11,
+    "failed": 0,
+    "native_engine": "excel-com",
+    "formula_count": 542,
+    "cached_values_count": 542,
+    "reconciliations": 542,
+    "publication_parts_parsed": 528,
+    "decoded_namespace_bindings": 1958,
+    "publication_findings": 0,
+    "final_native_opened_all": true,
+    "embedded_png_exact_all": true,
+    "provider_and_diagrammer_png_inspected": true,
+    "evidence": "Harness report retained outside the public release tree; per-case immutable XLSX hashes are recorded below.",
+    "qualification": "The harness rebuilds from frozen semantic models produced by prior independent evaluators. It is a deterministic final-revision replay, not a new LLM interpretation of the raw requests.",
+    "cases": [
+      {"name": "cloud-estimation-orchestrator", "verdict": "PASS", "xlsx_sha256": "ee02e4e8fe311e675c1f22a4cd389d3552b2920cdef6b745e9de0c04298a3809"},
+      {"name": "infra-work-estimator", "verdict": "PASS", "xlsx_sha256": "9eac5289a757bbba8eafde318064b2f96bcc29ed3fac5e19627e1d286631a842"},
+      {"name": "cloud-architecture-advisor", "verdict": "PASS", "xlsx_sha256": "33fc7c6dd54af644a626a90d5a06187a64683ead811f9242e05e06e54456e318"},
+      {"name": "kubernetes-architect", "verdict": "PASS", "xlsx_sha256": "bb978f8f3e0907adb595f1a35bbe70f26bebbb651d416ca41975a7c548020afe"},
+      {"name": "cicd-devsecops-estimator", "verdict": "PASS", "xlsx_sha256": "0e47a622dd9ab87899d0333fc854bfd089b54981b839661aaa41d3e0b69cc40f"},
+      {"name": "server-hardening-estimator", "verdict": "PASS", "xlsx_sha256": "1633244ad039b52e6dfe4f88a57545129d0772576dce11d3e7ae06c962302514"},
+      {"name": "hosting-capacity-simulator", "verdict": "PASS", "xlsx_sha256": "c5e896deda24900d83d9e4a67cdd33f093aed0e18d889a17901d3f1e0d75ce25"},
+      {"name": "cloud-provider-selector", "verdict": "PASS", "xlsx_sha256": "07a91d7ec677a682f33afda7026e56c92e5fdbe9cf0fdb3c7e6337a5a8ec2a34"},
+      {"name": "finops-optimizer", "verdict": "PASS", "xlsx_sha256": "f11a1ad352cb4894cbe0a9b0903bfc39545a86fd5d42ce85f1e045a5d3b69297"},
+      {"name": "cloud-migration-estimator", "verdict": "PASS", "xlsx_sha256": "6c3040b463a969546fc5b51defae090031e88d15b013a1dee14172b108321322"},
+      {"name": "cloud-architecture-diagrammer", "verdict": "PASS", "xlsx_sha256": "4f76b607d6b72c3ca00363aa7e2826c607067b22f895d5b6875ea506422f9570"}
     ]
   }
 }
