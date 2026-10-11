@@ -391,6 +391,8 @@ Use the model ID from your system prompt (the one powering the current session) 
 
 While it runs, periodically tail the output to give the user updates on which iteration it's on and what the scores look like.
 
+If the environment has no graphical browser, the loop still writes the HTML report and continues. Use `--report none` when you do not need a live report, or pass a path with `--report <output.html>` and open the generated file later.
+
 This handles the full optimization loop automatically. It splits the eval set into 60% train and 40% held-out test, evaluates the current description (running each query 3 times to get a reliable trigger rate), then calls Claude to propose improvements based on what failed. It re-evaluates each new description on both train and test, iterating up to 5 times. When it's done, it opens an HTML report in the browser showing the results per iteration and returns JSON with `best_description` — selected by test score rather than train score to avoid overfitting.
 
 ### How skill triggering works
