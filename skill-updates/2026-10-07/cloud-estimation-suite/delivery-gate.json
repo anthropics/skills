@@ -6,7 +6,7 @@
     "status": "pending",
     "required": 11,
     "executed": 0,
-    "scope": "Fresh independent replays on the round-three corrected revision remain pending; the implementer has not run evaluators."
+    "scope": "Fresh independent evaluator replays on the Unicode-corrected revision remain pending; the implementer has not run evaluators."
   },
   "skills": [
     {
@@ -17,9 +17,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 11,
       "archive": "cloud-estimation-orchestrator.skill",
-      "member_count": 14,
-      "sha256": "d0da64bf3d43c5d3ec4b8a83553b2c887169055309e091ebedab832d65e769f6",
-      "uncompressed_size": 148859
+      "member_count": 17,
+      "sha256": "7f9e901562186544fc835bb54a614ecb07bb914f5b0456534952b816efa07cfc",
+      "uncompressed_size": 811762
     },
     {
       "name": "infra-work-estimator",
@@ -29,9 +29,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "infra-work-estimator.skill",
-      "member_count": 14,
-      "sha256": "3ea4d673cb71c515fddcac17c2bfe8aa9c2db2c87a963a820e0b441b104ffb5b",
-      "uncompressed_size": 144074
+      "member_count": 17,
+      "sha256": "a4d037ce1a3e85f72128a7ccae35cbe7e5be4f7b1434b1fdee0d2de87ca92b66",
+      "uncompressed_size": 806977
     },
     {
       "name": "cloud-architecture-advisor",
@@ -41,9 +41,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-architecture-advisor.skill",
-      "member_count": 14,
-      "sha256": "b0cd709793ea2305af9939b4fcca855086fbd8c733e6aaf55a7aa9d32039864e",
-      "uncompressed_size": 145846
+      "member_count": 17,
+      "sha256": "c33bc56e5b1e61e936f45d8276f0d87776270c11138f30210d68f8761f38d50c",
+      "uncompressed_size": 808749
     },
     {
       "name": "kubernetes-architect",
@@ -53,9 +53,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "kubernetes-architect.skill",
-      "member_count": 14,
-      "sha256": "671877659c374e507544cd1ea78a84e75eee13644756713d8c24853da3533f86",
-      "uncompressed_size": 142490
+      "member_count": 17,
+      "sha256": "5bb5a3e22f13fd454fb0b74ca9f64b8a6abe200452afb86f5edf220097fbd43d",
+      "uncompressed_size": 805393
     },
     {
       "name": "cicd-devsecops-estimator",
@@ -65,9 +65,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cicd-devsecops-estimator.skill",
-      "member_count": 14,
-      "sha256": "99c5757b4eb484401507af97a265b3872884ae2c0b1a82b22751c15130dacc2a",
-      "uncompressed_size": 144478
+      "member_count": 17,
+      "sha256": "d983e978e04f2e91786d8bb997afa8d35d8bbf781ce589989f1d5a6559a82239",
+      "uncompressed_size": 807381
     },
     {
       "name": "server-hardening-estimator",
@@ -77,9 +77,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "server-hardening-estimator.skill",
-      "member_count": 14,
-      "sha256": "7bf8e23677fd96b8d8926342a55b88947d504c380b7c57575ea27bb78f8792b6",
-      "uncompressed_size": 145931
+      "member_count": 17,
+      "sha256": "e468921fbf50d920520211edeb877c9378113eef7d570705a38c47a0acf6064d",
+      "uncompressed_size": 808834
     },
     {
       "name": "hosting-capacity-simulator",
@@ -89,9 +89,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 14,
       "archive": "hosting-capacity-simulator.skill",
-      "member_count": 15,
-      "sha256": "ab62ba334f6e1bf8ab36c5900e2d59eda557a5189964371333ec7c214eadeb2b",
-      "uncompressed_size": 148355
+      "member_count": 18,
+      "sha256": "d5035855088da0a8efd3b99e7a94ec73788885cf7fcafe24ad1d7db866d3af69",
+      "uncompressed_size": 811258
     },
     {
       "name": "cloud-provider-selector",
@@ -101,9 +101,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-provider-selector.skill",
-      "member_count": 14,
-      "sha256": "bf5c5d6cbaa1a5db143b80e6f6bff171011fe84e287e4ec71c05c245489e58a2",
-      "uncompressed_size": 142993
+      "member_count": 17,
+      "sha256": "cd69d4e43f52fc4239242d831b2a523c239c53da792b81880fecc75f69214f7a",
+      "uncompressed_size": 805896
     },
     {
       "name": "finops-optimizer",
@@ -113,9 +113,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "finops-optimizer.skill",
-      "member_count": 14,
-      "sha256": "7c7216f8ae340eb0097226111fa8cae2f5514fbd214d39ce352681f8f9e3ed48",
-      "uncompressed_size": 145241
+      "member_count": 17,
+      "sha256": "1773df3d35fb50bea3fa75c20e00a55b3243d8c9439b3eb58fe9f0e1a149f5f5",
+      "uncompressed_size": 808144
     },
     {
       "name": "cloud-migration-estimator",
@@ -125,9 +125,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 12,
       "archive": "cloud-migration-estimator.skill",
-      "member_count": 14,
-      "sha256": "f43d52ce78323611e5c92490213ec04a58037ac6ee6e07ec150bcc5490903fa5",
-      "uncompressed_size": 142300
+      "member_count": 17,
+      "sha256": "6ef0b4b83a61306377a731c6042728b658a2ca4c33867dbab9e5062bb775540d",
+      "uncompressed_size": 805203
     },
     {
       "name": "cloud-architecture-diagrammer",
@@ -137,9 +137,9 @@
       "scaffold_placeholders": 0,
       "relative_links_verified": 14,
       "archive": "cloud-architecture-diagrammer.skill",
-      "member_count": 15,
-      "sha256": "9b42a68d2bf245f95ebc47ea04857b4cf09008e1c406402fc502fd5ce7ab3368",
-      "uncompressed_size": 141602
+      "member_count": 18,
+      "sha256": "220f35e2afe60aa6bca9ff483b8f06c31cae03a12b2c753cd90c69ae983ff091",
+      "uncompressed_size": 804505
     }
   ],
   "workbook_validation": {
@@ -311,7 +311,7 @@
       }
     ]
   },
-  "anonymisation_summary": "matches=0 issues=0 complete=true files=262 texts=399 binary=57 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
+  "anonymisation_summary": "matches=0 issues=0 complete=true files=301 texts=446 binary=82 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
   "public_example_review": {
     "groups": [
       {
@@ -393,7 +393,7 @@
   },
   "repository_checks": {
     "pytest": {
-      "passed": 352,
+      "passed": 378,
       "skipped": 1,
       "failed": 0,
       "skip_reason": "Windows symlink creation unavailable",
@@ -429,7 +429,7 @@
   },
   "public_workbook": {
     "path": "examples/synthetic-cloud-estimate.xlsx",
-    "sha256": "cdcfcc19f896a59b2f298272510171811cef46a567568cba1e77e174f77a146f",
+    "sha256": "63c0da1678dcf8ba97afce5a095ba8ad6fa2c636061deae252a4d43adc9b849c",
     "recalculation": {
       "engine": "excel-com",
       "native_opened": true,
@@ -511,6 +511,56 @@
       "Native Excel verification uses PowerShell COM on this Windows host; UTF-8 and UTF-16 XML regressions cover LE and BE",
       "XML entity decoding is checked; this round does not introduce general URI percent-decoding or a new confidentiality policy",
       "Independent evaluator replay verdicts remain required; prior complex-diagram and confidentiality-assessment limitations remain"
+    ]
+  },
+  "forward_fix_unicode": {
+    "base_commit": "a4a3c8409c593f0d1ead76f5e8de343bbef14eb8",
+    "red_initial_failed": 12,
+    "red_initial_passed": 2,
+    "red_delivery_failed": 12,
+    "regressions_green_passed": 26,
+    "targeted_green_passed": 156,
+    "accented_glyphs_distinct_from_missing_and_ascii": 9,
+    "extracted_isolated_bundles_verified": 11,
+    "font_provenance": {
+      "family": "Lato",
+      "style": "Regular",
+      "license": "SIL Open Font License 1.1",
+      "source_repository": "google/fonts",
+      "source_commit": "bd8f81ddb5c74d5c8897b36ad88b440266245103",
+      "source_path": "ofl/lato/Lato-Regular.ttf",
+      "metadata_path": "ofl/lato/METADATA.pb",
+      "font_bytes": 656568,
+      "font_sha256": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
+      "license_path": "ofl/lato/OFL.txt",
+      "license_source_bytes": 4407,
+      "license_source_sha256": "74ba064d03f1f1c4a952da936c3eb71866c34404916734de3cae73b34357e59e",
+      "license_bytes": 4406,
+      "license_sha256": "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423",
+      "license_normalization": "Remove the single trailing ASCII space on source line 21; complete copyright and licence text retained",
+      "downloaded_on": "2026-10-10",
+      "font_modified": false,
+      "license_whitespace_normalized": true
+    },
+    "licence_scan_exception": "Exact canonical, registered skill and archive OFL paths plus distributed SHA-256 only; source SHA-256 and one-space normalization are recorded; identifier and private literal rules are still scanned separately.",
+    "native_unicode_integration": {
+      "formulas": 51,
+      "cached_values": 51,
+      "reconciliations": 51,
+      "inspected_xml_parts": 48,
+      "final_native_opened": true,
+      "embedded_png_bytes_identical": true,
+      "embedded_png_sha256": "e98aca2169cf076dd60b3cf2a2a0e3f64b0d59df3ed2c3b298f1873d1c8826d5"
+    },
+    "corrections": [
+      "Use the checksum-verified bundled Lato Regular font for deterministic PNG drawing and label-box measurements",
+      "Preserve original binary font bytes during sync and include the complete OFL licence and provenance in all eleven autonomous bundles"
+    ],
+    "limitations": [
+      "SVG retains complete Unicode text and declares Lato with sans-serif fallback; viewer metrics can differ when Lato is not installed",
+      "French and extended Latin glyphs are verified; this is not universal Unicode, emoji or CJK coverage",
+      "Raster reproducibility is checked on this Pillow/FreeType environment, not promised across all versions",
+      "Independent forward evaluator replay verdicts remain pending"
     ]
   }
 }

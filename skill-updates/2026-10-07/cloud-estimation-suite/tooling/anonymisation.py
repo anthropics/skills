@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from hashlib import sha256
 import html
 import io
 import ipaddress
@@ -49,6 +50,14 @@ DEFAULT_LIMITS = {
     "max_files": 10000,
     "max_matches": 10000,
 }
+# The exact distributed OFL text carries public author contacts. This is not a
+# general email/domain allowlist; private identifiers/literal rules still run.
+PUBLIC_OFL_SHA256 = "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423"
+PUBLIC_OFL_PATHS = {"tooling/fonts/lato/OFL.txt"}
+for _skill in json.loads(Path(__file__).with_name("domain-registry.json").read_bytes())["skills"]:
+    _name = _skill["name"]
+    PUBLIC_OFL_PATHS.update({f"{_name}/scripts/fonts/lato/OFL.txt",
+                            f"bundles/{_name}.skill!{_name}/scripts/fonts/lato/OFL.txt"})
 DOMAIN = re.compile(r"(?i)(?<![\w@.-])(?:[^\W_](?:[^\W_]|-){0,62}\.)+(?:[^\W\d_]{2,63}|xn--[a-z0-9-]{2,59})\b")
 EMAIL = re.compile(r"(?i)\b[a-z0-9._%+-]+@((?:[a-z0-9-]+\.)+[a-z]{2,63})\b")
 IPV4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?!\w|\.\w)")
@@ -236,6 +245,13 @@ class _Scanner:
                 self.report.binary_entries += 1
             return
         self.report.scanned_texts += 1
+        if path in PUBLIC_OFL_PATHS and sha256(raw).hexdigest() == PUBLIC_OFL_SHA256:
+            # A separate pass keeps every private-policy and identifier rule.
+            for line, text in enumerate(content.splitlines(), 1):
+                for rule, pattern in list(IDENTIFIERS.items()) + self.literal_rules:
+                    if pattern.search(html.unescape(text)):
+                        self.record(path, rule, line)
+            return
         if "!" in path:
             part = path.rsplit("!", 1)[-1]
             spans = structural_guid_spans(content, part)

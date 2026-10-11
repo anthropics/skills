@@ -18,6 +18,9 @@ SHARED = {
     "scripts/recalculate.py": "recalculate.py",
     "scripts/publication.py": "publication.py",
     "scripts/diagram_renderer.py": "diagram_renderer.py",
+    "scripts/fonts/lato/Lato-Regular.ttf": "fonts/lato/Lato-Regular.ttf",
+    "scripts/fonts/lato/OFL.txt": "fonts/lato/OFL.txt",
+    "scripts/fonts/lato/provenance.json": "fonts/lato/provenance.json",
     "scripts/workbook-contract.json": "workbook-contract.json",
     "scripts/icon-policy.json": "icon-policy.json",
     "references/common-methodology.md": "common-methodology.md",
@@ -86,7 +89,9 @@ def sync_skill(skill_dir: Path) -> list[Path]:
     payloads = {}
     for relative, source in sorted(SHARED.items()):
         target = _safe_target(root, relative)
-        wanted = (CANONICAL / source).read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        wanted = (CANONICAL / source).read_bytes()
+        if Path(source).suffix not in {".ttf"}:
+            wanted = wanted.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
         if target.exists():
             current = target.read_bytes()
             if current != wanted and sha256(current).hexdigest() != previous.get(relative):

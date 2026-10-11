@@ -23,6 +23,8 @@ from xml.etree import ElementTree as ET
 from PIL import Image, ImageDraw, ImageFont
 
 POLICY = json.loads(Path(__file__).with_name("icon-policy.json").read_text(encoding="utf-8"))
+FONT_PATH = Path(__file__).with_name("fonts") / "lato" / "Lato-Regular.ttf"
+FONT_SHA256 = "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251"
 NODE_W, NODE_H = 240, 112
 
 
@@ -250,10 +252,10 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
     groups, positions, width, height = _layout(nodes)
     routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions, index, len(edges))
               for index, edge in enumerate(edges)}
-    try:
-        font = ImageFont.load_default(size=14)
-    except TypeError:  # Pillow before 10.1 has no size argument.
-        font = ImageFont.load_default()
+    font_bytes = FONT_PATH.read_bytes()
+    if sha256(font_bytes).hexdigest() != FONT_SHA256:
+        raise ValueError("diagram: bundled Lato font checksum mismatch")
+    font = ImageFont.truetype(BytesIO(font_bytes), size=14, layout_engine=ImageFont.Layout.BASIC)
     # Measure full labels; do not disguise collisions by truncating their text.
     label_boxes, footer_labels = {}, set()
     occupied = [(x - 4, y - 4, x + NODE_W + 4, y + NODE_H + 4) for x, y in positions.values()]
@@ -305,7 +307,7 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         draw.rounded_rectangle((x, y, x + w, y + h), radius=6, fill=fill, outline=stroke)
 
     def text(parent, x, y, value, colour="#17365d"):
-        ET.SubElement(parent, "text", {"x": str(x), "y": str(y + 14), "font-family": "sans-serif", "font-size": "14", "fill": colour}).text = value
+        ET.SubElement(parent, "text", {"x": str(x), "y": str(y + 14), "font-family": "Lato, sans-serif", "font-size": "14", "fill": colour}).text = value
         draw.text((x, y), value, font=font, fill=colour)
 
     for kind in ("environment", "zone"):

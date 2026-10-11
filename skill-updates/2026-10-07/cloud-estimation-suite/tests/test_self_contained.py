@@ -21,6 +21,9 @@ SHARED = {
     "scripts/recalculate.py": "recalculate.py",
     "scripts/publication.py": "publication.py",
     "scripts/diagram_renderer.py": "diagram_renderer.py",
+    "scripts/fonts/lato/Lato-Regular.ttf": "fonts/lato/Lato-Regular.ttf",
+    "scripts/fonts/lato/OFL.txt": "fonts/lato/OFL.txt",
+    "scripts/fonts/lato/provenance.json": "fonts/lato/provenance.json",
     "scripts/workbook-contract.json": "workbook-contract.json",
     "scripts/icon-policy.json": "icon-policy.json",
     "references/common-methodology.md": "common-methodology.md",
@@ -73,8 +76,11 @@ def test_shared_copies_and_complete_manifest_are_lf_and_identical(name):
         target = directory / relative
         assert target.is_file(), f"{name}: missing {relative}"
         payload = target.read_bytes()
-        assert b"\r" not in payload, f"{name}: non-LF generated file {relative}"
-        assert payload == (ROOT / "tooling" / canonical).read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        expected = (ROOT / "tooling" / canonical).read_bytes()
+        if not canonical.endswith(".ttf"):
+            assert b"\r" not in payload, f"{name}: non-LF generated file {relative}"
+            expected = expected.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        assert payload == expected
     manifest = json.loads((directory / "manifest.json").read_bytes())
     expected = {
         path.relative_to(directory).as_posix(): sha256(path.read_bytes()).hexdigest()

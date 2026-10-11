@@ -1,3 +1,10 @@
+Third-party font notice
+
+The unmodified bundled Lato font is licensed separately under the SIL Open
+Font License 1.1, not under the Creative Commons license below. Its complete
+copyright notice and license are in scripts/fonts/lato/OFL.txt, with source
+commit and SHA-256 provenance in scripts/fonts/lato/provenance.json.
+
 Attribution 4.0 International
 
 =======================================================================
