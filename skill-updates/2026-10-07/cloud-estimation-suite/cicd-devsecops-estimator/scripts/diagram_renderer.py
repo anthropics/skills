@@ -26,6 +26,8 @@ POLICY = json.loads(Path(__file__).with_name("icon-policy.json").read_text(encod
 FONT_PATH = Path(__file__).with_name("fonts") / "lato" / "Lato-Regular.ttf"
 FONT_SHA256 = "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251"
 NODE_W, NODE_H = 240, 112
+LANE_PITCH = 8  # 2 px stroke diameter + rounding reserve, with visible whitespace.
+PORT_PITCH = 32  # Leaves room for a complete 20 px route-ID badge.
 
 
 @dataclass
@@ -127,22 +129,29 @@ def _icon_pack(pack):
         return {}, ["Unverified icon pack; provider-neutral symbols used."]
 
 
-def _layout(nodes):
+def _layout(nodes, clearance=20, node_height=NODE_H):
     """Environment bands containing zone groups; IDs sort inside each group."""
     groups, positions = [], {}
     y, width = 40, 360
+    margin = max(20, clearance + 12)
+    column_gap = 2 * margin + 16
+    row_gap = max(48, 2 * clearance + 24)
     for environment in sorted({node["environment"] for node in nodes}):
         zones = sorted({node["zone"] for node in nodes if node["environment"] == environment})
         x, band_height = 40, 0
         for zone in zones:
             members = [node for node in nodes if node["environment"] == environment and node["zone"] == zone]
             columns = min(3, len(members))
-            zone_width = columns * (NODE_W + 20) + 20
-            zone_height = math.ceil(len(members) / columns) * (NODE_H + 48) + 80
+            zone_width = columns * NODE_W + (columns - 1) * column_gap + 2 * margin
+            zone_height = math.ceil(len(members) / columns) * (node_height + row_gap) + 80
             groups.append(("zone", zone, x, y + 36, zone_width, zone_height))
             for index, node in enumerate(members):
-                positions[node["id"]] = (x + 20 + index % columns * (NODE_W + 20), y + 104 + index // columns * (NODE_H + 48))
-            x += zone_width + 20
+                positions[node["id"]] = (x + margin + index % columns * (NODE_W + column_gap),
+                                         y + 104 + clearance + index // columns * (node_height + row_gap))
+            # A zone boundary consumes the same pitch as a column boundary.
+            # Otherwise differently grouped environment bands shift columns
+            # into another edge's lane even when each local gap is ample.
+            x += zone_width + column_gap - 2 * margin
             band_height = max(band_height, zone_height + 56)
         groups.append(("environment", environment, 20, y, x, band_height))
         width = max(width, x + 40)
@@ -163,7 +172,7 @@ def _clear_segment(first, second, obstacles):
     return True
 
 
-def _route(source, target, positions, lane=0, lanes=1):
+def _route(source, target, positions, lane=0, *, node_height=NODE_H, stub=16, text_boxes=()):
     """Shortest deterministic rectilinear route avoiding every node, plus stubs.
 
     The visibility grid uses the gaps around all rectangles. Dijkstra state
@@ -172,19 +181,19 @@ def _route(source, target, positions, lane=0, lanes=1):
     """
     x, y = source
     tx, ty = target
-    # Each sorted edge owns distinct ports, vertical grid lanes and horizontal
-    # gap lanes. The offsets fit even the narrowest inter-node gap; a common
-    # endpoint no longer implies a shared stub or occupied route segment.
-    fraction = (lane + 1) / (lanes + 1)
-    offset, gap = 6 + 8 * fraction, 14 + 8 * fraction
-    port = 24 + 64 * fraction
-    if source == target:
-        return [(x + NODE_W, y + 24 + 24 * fraction), (x + NODE_W + offset, y + 24 + 24 * fraction),
-                (x + NODE_W + offset, y + 64 + 24 * fraction), (x + NODE_W, y + 64 + 24 * fraction)]
-    obstacles = [(nx - 4, ny - 4, nx + NODE_W + 4, ny + NODE_H + 4) for nx, ny in positions.values()]
-    start, end = (x + NODE_W + offset, y + port), (tx + NODE_W + offset, ty + port)
-    xs = sorted({coordinate for nx, _ in positions.values() for coordinate in (nx - (4 + 2 * fraction), nx + NODE_W + offset)})
-    ys = sorted({start[1], end[1]} | {coordinate for _, ny in positions.values() for coordinate in (ny - gap, ny + NODE_H + gap)})
+    # Do not compress lanes into a fixed gap: every sorted edge owns an integer
+    # grid offset and port. Layout grows to contain this footprint. The initial
+    # stub carries the full ID; all middle segments avoid every badge and group
+    # caption as well as every component. A loop uses a separate return port.
+    offset = stub + LANE_PITCH * lane
+    gap = LANE_PITCH * (lane + 1)
+    port = 24 + PORT_PITCH * lane
+    return_port = port + (16 if source == target else 0)
+    obstacles = [(nx - 4, ny - 4, nx + NODE_W + 4, ny + node_height + 4) for nx, ny in positions.values()]
+    obstacles += [(a - 2, b - 2, c + 2, d + 2) for a, b, c, d in text_boxes]
+    start, end = (x + NODE_W + offset, y + port), (tx + NODE_W + offset, ty + return_port)
+    xs = sorted({coordinate for nx, _ in positions.values() for coordinate in (nx - offset, nx + NODE_W + offset)})
+    ys = sorted({start[1], end[1]} | {coordinate for _, ny in positions.values() for coordinate in (ny - gap, ny + node_height + gap)})
     xi, yi = {value: index for index, value in enumerate(xs)}, {value: index for index, value in enumerate(ys)}
     initial = (start, 1)  # Initial stub is horizontal.
     queue, costs, previous = [(0, start, 1)], {initial: 0}, {}
@@ -249,22 +258,39 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         asset = assets.get(node["icon"])
         if asset and node["provider"] == asset[1]["provider"]:
             used[node["id"]] = asset
-    groups, positions, width, height = _layout(nodes)
-    routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions, index, len(edges))
-              for index, edge in enumerate(edges)}
     font_bytes = FONT_PATH.read_bytes()
     if sha256(font_bytes).hexdigest() != FONT_SHA256:
         raise ValueError("diagram: bundled Lato font checksum mismatch")
     font = ImageFont.truetype(BytesIO(font_bytes), size=14, layout_engine=ImageFont.Layout.BASIC)
+    display_ids = {edge["id"]: " ".join(edge["id"].split()) for edge in edges}
+    id_widths = {key: math.ceil(font.getlength(value)) + 12 for key, value in display_ids.items()}
+    stub = max(id_widths.values(), default=0) + 16
+    clearance = max(20, stub + LANE_PITCH * len(edges))
+    node_height = max(NODE_H, 48 + PORT_PITCH * len(edges))
+    groups, positions, width, height = _layout(nodes, clearance, node_height)
+    heading_boxes = []
+    for _, value, x, y, _, _ in groups:
+        left, top, right, bottom = font.getbbox(value)
+        heading_boxes.append((x + 12 + left, y + 8 + top, x + 12 + right, y + 8 + bottom))
+    route_badges = {}
+    for index, edge in enumerate(edges):
+        x, y = positions[edge["source"]]
+        left, top = x + NODE_W + 4, y + 24 + PORT_PITCH * index - 10
+        route_badges[edge["id"]] = (left, top, left + id_widths[edge["id"]], top + 20)
+    routes = {edge["id"]: _route(positions[edge["source"]], positions[edge["target"]], positions, index,
+                                node_height=node_height, stub=stub,
+                                text_boxes=[*route_badges.values(), *heading_boxes])
+              for index, edge in enumerate(edges)}
     # Measure full labels; do not disguise collisions by truncating their text.
-    label_boxes, footer_labels = {}, set()
-    occupied = [(x - 4, y - 4, x + NODE_W + 4, y + NODE_H + 4) for x, y in positions.values()]
+    label_boxes = {}
+    occupied = [(x - 4, y - 4, x + NODE_W + 4, y + node_height + 4) for x, y in positions.values()]
+    occupied += [*route_badges.values(), *heading_boxes]
     all_segments = [pair for points in routes.values() for pair in zip(points, points[1:])]
     footer = height
     for edge in edges:
         value = edge["label"] or edge["id"]
         bounds = font.getbbox(value)
-        w, h = max(bounds[2] - bounds[0], math.ceil(len(value) * 9)) + 12, 28
+        w, h = max(bounds[2] - bounds[0], math.ceil(len(value) * 9)) + id_widths[edge["id"]] + 20, 28
         points = routes[edge["id"]]
         candidates = []
         for first, second in sorted(zip(points, points[1:]), key=lambda p: -(abs(p[1][0] - p[0][0]) + abs(p[1][1] - p[0][1]))):
@@ -278,16 +304,15 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
                 continue
             if any(max(lx, a) < min(lx + w, c) and max(ly, b) < min(ly + h, d) for a, b, c, d in occupied):
                 continue
-            if any(not _clear_segment(a, b, [rect]) for a, b in all_segments):
+            if any(not _clear_segment(a, b, [(lx - 2, ly - 2, lx + w + 2, ly + h + 2)]) for a, b in all_segments):
                 continue
             box = rect
             break
         if box is None:
             # Dedicated numbered flow legend, outside node/route occupancy.
-            box = (24, footer + 8, 24 + w + 100, footer + 8 + h)
+            box = (24, footer + 8, 24 + w, footer + 8 + h)
             footer += h + 12
             width = max(width, math.ceil(box[2] + 24))
-            footer_labels.add(edge["id"])
         occupied.append(box)
         label_boxes[edge["id"]] = box
     height = max(height, math.ceil(footer + (20 if footer != height else 0)))
@@ -328,7 +353,7 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
         x, y = positions[node["id"]]
         group = ET.SubElement(root, "g", {"data-node-id": node["id"]})
         ET.SubElement(group, "title").text = f"{node['id']}: {node['component']}"
-        rectangle(group, x, y, NODE_W, NODE_H, "#e7f0f8", "#345678")
+        rectangle(group, x, y, NODE_W, node_height, "#e7f0f8", "#345678")
         offset = 12
         if node["id"] in used:
             content = used[node["id"]][0]
@@ -340,16 +365,21 @@ def render_diagram(architecture: dict, svg: Path, png: Path, icon_pack: Path | N
             offset = 62
         for index, line in enumerate(textwrap.wrap(node["component"], width=22 if offset > 12 else 29)[:3]):
             text(group, x + offset, y + 12 + index * 18, line)
-        text(group, x + 12, y + NODE_H - 28, node["id"])
+        text(group, x + 12, y + node_height - 28, node["id"])
+    for edge in edges:
+        x, y, right, bottom = route_badges[edge["id"]]
+        group = ET.SubElement(root, "g", {"data-flow-route-id": edge["id"]})
+        ET.SubElement(group, "title").text = f"{edge['id']}: {edge['source']} -> {edge['target']}"
+        rectangle(group, x, y, right - x, bottom - y, "#ffffff", "#345678")
+        text(group, x + 4, y + 2, display_ids[edge["id"]])
     for edge in edges:
         x, y, right, bottom = label_boxes[edge["id"]]
         label_group = ET.SubElement(root, "g", {"data-flow-label": edge["id"]})
         ET.SubElement(label_group, "title").text = f"{edge['id']}: {edge['source']} -> {edge['target']}"
         rectangle(label_group, x, y, right - x, bottom - y, "#ffffff", "#b8c8d8")
         label_group[-1].set("data-edge-label-id", edge["id"])
-        text(label_group, x + 4, y + 4, edge["label"] or edge["id"])
-        if edge["id"] in footer_labels:
-            text(label_group, right - 90, y + 4, " ".join(edge["id"].split()))
+        text(label_group, x + 4, y + 4, edge["label"] or display_ids[edge["id"]])
+        text(label_group, right - id_widths[edge["id"]], y + 4, display_ids[edge["id"]])
     if not nodes:
         text(root, 24, 40, "No inventory nodes supplied")
     svg_bytes = ET.tostring(root, encoding="utf-8")

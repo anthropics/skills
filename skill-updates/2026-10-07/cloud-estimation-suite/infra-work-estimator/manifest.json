@@ -5,7 +5,7 @@
     "references/common-methodology.md": "d6bee45b8066ba37137193a20f9113d0031ce989e7c0056f1afb26b3def1a0e9",
     "references/domain-contract.json": "867282687a8f354323d6dcce4b7cf4ecd6e54981e7ad0a0cc4774942640cbeda",
     "references/task-catalogue.md": "5480165247be6712a1920bb7e6eeb725946ff9dfdb96bb332d36f4c4dec67114",
-    "scripts/diagram_renderer.py": "88cab53d65d90d43954e2bb6b10665e91e60f56d77ffe05ad8041b5650a37635",
+    "scripts/diagram_renderer.py": "f6ff369ba8e87611a9aedf5450086f3eca7a109f5da59c890cd6f15b4c1ec033",
     "scripts/fonts/lato/Lato-Regular.ttf": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
     "scripts/fonts/lato/OFL.txt": "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423",
     "scripts/fonts/lato/provenance.json": "0a39c534c037b0be50e826c304585dc3e6983dc4efb303ac999e1462f49ce051",

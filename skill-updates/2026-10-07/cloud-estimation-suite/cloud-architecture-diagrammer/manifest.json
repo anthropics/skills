@@ -6,7 +6,7 @@
     "references/domain-contract.json": "83228fcb8f293d2d81ab2ea6e200cf6ea66620beafc2db2d728292bf8ad84410",
     "references/icon-policy.md": "efbeadae5f8e4fb4d7556ed7e076475b0a6d49d9099e84e0421ebc86f8ed2f48",
     "references/topology-workflow.md": "e047fdae31f278dfb26179aa7666dd6cd3afc0124e1f5ac51458adb673323f9f",
-    "scripts/diagram_renderer.py": "88cab53d65d90d43954e2bb6b10665e91e60f56d77ffe05ad8041b5650a37635",
+    "scripts/diagram_renderer.py": "f6ff369ba8e87611a9aedf5450086f3eca7a109f5da59c890cd6f15b4c1ec033",
     "scripts/fonts/lato/Lato-Regular.ttf": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
     "scripts/fonts/lato/OFL.txt": "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423",
     "scripts/fonts/lato/provenance.json": "0a39c534c037b0be50e826c304585dc3e6983dc4efb303ac999e1462f49ce051",

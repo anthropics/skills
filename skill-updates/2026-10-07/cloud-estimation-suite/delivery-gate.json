@@ -6,7 +6,7 @@
     "status": "pending",
     "required": 11,
     "executed": 0,
-    "scope": "Fresh independent evaluator replays on the Unicode-corrected revision remain pending; the implementer has not run evaluators."
+    "scope": "Fresh independent evaluator replays on the raster-corrected revision remain pending; author regression and artifact checks are separate."
   },
   "skills": [
     {
@@ -18,8 +18,8 @@
       "relative_links_verified": 11,
       "archive": "cloud-estimation-orchestrator.skill",
       "member_count": 17,
-      "sha256": "7f9e901562186544fc835bb54a614ecb07bb914f5b0456534952b816efa07cfc",
-      "uncompressed_size": 811762
+      "sha256": "7e12045979d472225694e433092167a44c1b04e7dfe9644bea772d564a146629",
+      "uncompressed_size": 813855
     },
     {
       "name": "infra-work-estimator",
@@ -30,8 +30,8 @@
       "relative_links_verified": 12,
       "archive": "infra-work-estimator.skill",
       "member_count": 17,
-      "sha256": "a4d037ce1a3e85f72128a7ccae35cbe7e5be4f7b1434b1fdee0d2de87ca92b66",
-      "uncompressed_size": 806977
+      "sha256": "4cbbbabe3815cbcbf26b574424e3eac07fc831a2f2174db2d1826143efd23f42",
+      "uncompressed_size": 809070
     },
     {
       "name": "cloud-architecture-advisor",
@@ -42,8 +42,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-architecture-advisor.skill",
       "member_count": 17,
-      "sha256": "c33bc56e5b1e61e936f45d8276f0d87776270c11138f30210d68f8761f38d50c",
-      "uncompressed_size": 808749
+      "sha256": "33305ca521c673db2282f6babe9570cc54dc741392cde2ded5555b5a8191ab5b",
+      "uncompressed_size": 810842
     },
     {
       "name": "kubernetes-architect",
@@ -54,8 +54,8 @@
       "relative_links_verified": 12,
       "archive": "kubernetes-architect.skill",
       "member_count": 17,
-      "sha256": "5bb5a3e22f13fd454fb0b74ca9f64b8a6abe200452afb86f5edf220097fbd43d",
-      "uncompressed_size": 805393
+      "sha256": "355fa9a35ce4cb5644fa4d64589314de83708aa8b9276a39012372a8b3686cc3",
+      "uncompressed_size": 807486
     },
     {
       "name": "cicd-devsecops-estimator",
@@ -66,8 +66,8 @@
       "relative_links_verified": 12,
       "archive": "cicd-devsecops-estimator.skill",
       "member_count": 17,
-      "sha256": "d983e978e04f2e91786d8bb997afa8d35d8bbf781ce589989f1d5a6559a82239",
-      "uncompressed_size": 807381
+      "sha256": "0cfbda5643086609493578c64f9097459b67bd439e31d884a3b44acb172ce3a5",
+      "uncompressed_size": 809474
     },
     {
       "name": "server-hardening-estimator",
@@ -78,8 +78,8 @@
       "relative_links_verified": 12,
       "archive": "server-hardening-estimator.skill",
       "member_count": 17,
-      "sha256": "e468921fbf50d920520211edeb877c9378113eef7d570705a38c47a0acf6064d",
-      "uncompressed_size": 808834
+      "sha256": "62f39bd2b5ad87829d5a9bc5e142574ecc7dac332001564cc1e71f14effb6dfa",
+      "uncompressed_size": 810927
     },
     {
       "name": "hosting-capacity-simulator",
@@ -90,8 +90,8 @@
       "relative_links_verified": 14,
       "archive": "hosting-capacity-simulator.skill",
       "member_count": 18,
-      "sha256": "d5035855088da0a8efd3b99e7a94ec73788885cf7fcafe24ad1d7db866d3af69",
-      "uncompressed_size": 811258
+      "sha256": "7b855b58353e0bb24afcc65607bb3ea1fe88550f732cc8d2fcd1e99d7e03a659",
+      "uncompressed_size": 813351
     },
     {
       "name": "cloud-provider-selector",
@@ -102,8 +102,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-provider-selector.skill",
       "member_count": 17,
-      "sha256": "cd69d4e43f52fc4239242d831b2a523c239c53da792b81880fecc75f69214f7a",
-      "uncompressed_size": 805896
+      "sha256": "f3020aabacb7e4c15621712827729d120765a77d499353f54e4bdcbcb5c25d86",
+      "uncompressed_size": 807989
     },
     {
       "name": "finops-optimizer",
@@ -114,8 +114,8 @@
       "relative_links_verified": 12,
       "archive": "finops-optimizer.skill",
       "member_count": 17,
-      "sha256": "1773df3d35fb50bea3fa75c20e00a55b3243d8c9439b3eb58fe9f0e1a149f5f5",
-      "uncompressed_size": 808144
+      "sha256": "658cce1ff89918a86eb9bb2a7568bc902f951353abbdf858bd7dace03a7e5db0",
+      "uncompressed_size": 810237
     },
     {
       "name": "cloud-migration-estimator",
@@ -126,8 +126,8 @@
       "relative_links_verified": 12,
       "archive": "cloud-migration-estimator.skill",
       "member_count": 17,
-      "sha256": "6ef0b4b83a61306377a731c6042728b658a2ca4c33867dbab9e5062bb775540d",
-      "uncompressed_size": 805203
+      "sha256": "5e1720174b1fbac6573571051335d02ff690474316c5a31c23a6d98c7354f0b8",
+      "uncompressed_size": 807296
     },
     {
       "name": "cloud-architecture-diagrammer",
@@ -138,8 +138,8 @@
       "relative_links_verified": 14,
       "archive": "cloud-architecture-diagrammer.skill",
       "member_count": 18,
-      "sha256": "220f35e2afe60aa6bca9ff483b8f06c31cae03a12b2c753cd90c69ae983ff091",
-      "uncompressed_size": 804505
+      "sha256": "c857651bee7068df8398c2a4df75b19add98c4c4f0fc3b14d5cd3ed64038883b",
+      "uncompressed_size": 806598
     }
   ],
   "workbook_validation": {
@@ -311,7 +311,7 @@
       }
     ]
   },
-  "anonymisation_summary": "matches=0 issues=0 complete=true files=301 texts=446 binary=82 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
+  "anonymisation_summary": "matches=0 issues=0 complete=true files=302 texts=448 binary=81 excluded=1\nexcluded-fixture=tests/fixtures/forbidden-sample.txt",
   "public_example_review": {
     "groups": [
       {
@@ -375,6 +375,18 @@
           42446,
           42986
         ]
+      },
+      {
+        "paths": [
+          "tests/fixtures/provider-converging-flows.json"
+        ],
+        "vertical": "generic web service",
+        "geography": "unspecified",
+        "inventory_components": 6,
+        "explicit_flows": 5,
+        "provider_labels": "neutral synthetic A/B/C in author verification",
+        "prices_or_client_data": false,
+        "combination_review": "Generic planned HTTP/database/object/backup/telemetry/egress topology; region explicitly unknown; no client, geography, price, capacity or date copied from the private source corpus."
       }
     ],
     "source_corpus_count": 16,
@@ -393,11 +405,11 @@
   },
   "repository_checks": {
     "pytest": {
-      "passed": 378,
+      "passed": 386,
       "skipped": 1,
       "failed": 0,
       "skip_reason": "Windows symlink creation unavailable",
-      "command": "python -X utf8 -m pytest skill-updates/2026-10-07/cloud-estimation-suite/tests -q"
+      "command": "rtk proxy python -X utf8 -m pytest -q"
     },
     "diff_check_exit": 0,
     "bundles_byte_identical_rebuild": 11
@@ -429,7 +441,7 @@
   },
   "public_workbook": {
     "path": "examples/synthetic-cloud-estimate.xlsx",
-    "sha256": "63c0da1678dcf8ba97afce5a095ba8ad6fa2c636061deae252a4d43adc9b849c",
+    "sha256": "b68c4b629d2b333e4110932e3b67a9990501faebbfa638dfe71d579c8a672dd7",
     "recalculation": {
       "engine": "excel-com",
       "native_opened": true,
@@ -561,6 +573,40 @@
       "French and extended Latin glyphs are verified; this is not universal Unicode, emoji or CJK coverage",
       "Raster reproducibility is checked on this Pillow/FreeType environment, not promised across all versions",
       "Independent forward evaluator replay verdicts remain pending"
+    ]
+  },
+  "forward_fix_raster": {
+    "base_commit": "2bf766d0a41b62bad60da1112f8a41ba9e0b1997",
+    "baseline_diagram_passed": 33,
+    "red_initial_failed": 5,
+    "red_staggered_columns_failed": 1,
+    "red_zone_caption_collision_failed": 1,
+    "regression_green_passed": 8,
+    "targeted_diagram_forward_passed": 52,
+    "compatibility_regression_red_failed": 3,
+    "compatibility_and_raster_green_passed": 37,
+    "final_diagram_publication_raster_green_passed": 70,
+    "independent_replays": "pending",
+    "minimum_parallel_distance_px": 8,
+    "stroke_diameter_px": 2,
+    "rounding_reserve_px": 1,
+    "provider_png_gap_witness_pixels": 5,
+    "provider_runtime_identical": true,
+    "measured_diagram_cases": 11,
+    "provider_cases": 3,
+    "full_route_ids_and_labels_preserved": true,
+    "label_node_route_collisions": 0,
+    "corrections": [
+      "Allocate integer lanes 8 pixels apart and separate 32-pixel ports; grow layout margins and node height with the occupied footprint",
+      "Align columns across differently grouped environment bands so unrelated route lanes cannot alias",
+      "Attach each complete normalized flow ID to its source stub and include the same ID with the full measured label; reserve badge rectangles and measured group-caption boxes in the router",
+      "Independently check segment capsules, serialized coordinate rounding, all nodes and label rectangles; preserve input-order determinism across parallel, loop, chain and multi-zone graphs"
+    ],
+    "limitations": [
+      "Canvas dimensions grow with edge count and complete identifier width; dense diagrams should be viewed at native scale",
+      "Perpendicular route crossings remain possible and are not globally optimized; source ID badges and matching labeled legends preserve traceability",
+      "Raster byte determinism is verified on this Python/Pillow/FreeType host; SVG viewer fonts can differ",
+      "Independent forward evaluator verdicts remain pending; provider eligibility, recovery and actual price gates remain blocked"
     ]
   }
 }
