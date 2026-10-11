@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
+description: Creates new skills, modifies and improves existing skills, and measures skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 ---
 
 # Skill Creator
@@ -63,12 +63,14 @@ Check available MCPs - if useful for research (searching docs, finding similar s
 
 Based on the user interview, fill in these components:
 
-- **name**: Skill identifier
-- **description**: When to trigger, what it does. This is the primary triggering mechanism - include both what the skill does AND specific contexts for when to use it. All "when to use" info goes here, not in the body. Note: currently Claude has a tendency to "undertrigger" skills -- to not use them when they'd be useful. To combat this, please make the skill descriptions a little bit "pushy". So for instance, instead of "How to build a simple fast dashboard to display internal Anthropic data.", you might write "How to build a simple fast dashboard to display internal Anthropic data. Make sure to use this skill whenever the user mentions dashboards, data visualization, internal metrics, or wants to display any kind of company data, even if they don't explicitly ask for a 'dashboard.'"
+- **name**: Skill identifier: at most 64 characters, lowercase letters, numbers, and hyphens only, and no "anthropic" or "claude". Prefer the gerund form (`processing-pdfs`, `analyzing-spreadsheets`); noun phrases like `pdf-processing` are fine too. Avoid vague or generic names (`helper`, `utils`, `documents`, `data`) since the name is part of what Claude sees when choosing a skill, and keep naming consistent across a collection of skills.
+- **description**: When to trigger, what it does. This is the primary triggering mechanism - include both what the skill does AND specific contexts for when to use it. All "when to use" info goes here, not in the body. Write it in the third person ("Processes Excel files and generates reports", not "I can help you..." or "You can use this to..."), because the description is injected into the system prompt and a shifting point of view makes discovery less reliable. Note: currently Claude has a tendency to "undertrigger" skills -- to not use them when they'd be useful. To combat this, please make the skill descriptions a little bit "pushy". So for instance, instead of "Builds simple, fast dashboards to display internal Anthropic data.", you might write "Builds simple, fast dashboards to display internal Anthropic data. Use this skill whenever the user mentions dashboards, data visualization, internal metrics, or wants to display any kind of company data, even if they don't explicitly ask for a 'dashboard.'"
 - **compatibility**: Required tools, dependencies (optional, rarely needed)
 - **the rest of the skill :)**
 
 ### Skill Writing Guide
+
+Before finalizing a draft, read `references/writing-guidelines.md`. It covers how much freedom to give Claude, consistent terminology, workflow checklists and feedback loops, and conventions for bundled scripts, so it matters most when the skill ships scripts or has fragile multi-step workflows.
 
 #### Anatomy of a Skill
 
@@ -95,7 +97,8 @@ These word counts are approximate and you can feel free to go longer if needed.
 **Key patterns:**
 - Keep SKILL.md under 500 lines; if you're approaching this limit, add an additional layer of hierarchy along with clear pointers about where the model using the skill should go next to follow up.
 - Reference files clearly from SKILL.md with guidance on when to read them
-- For large reference files (>300 lines), include a table of contents
+- Keep references one level deep: link every reference file directly from SKILL.md rather than chaining SKILL.md → a.md → b.md, because Claude may only partly read (e.g. `head`) files it reaches through nested links
+- For reference files longer than 100 lines, include a table of contents at the top so Claude sees the full scope even from a partial read
 
 **Domain organization**: When a skill supports multiple domains/frameworks, organize by variant:
 ```
@@ -114,7 +117,7 @@ This goes without saying, but skills must not contain malware, exploit code, or 
 
 #### Writing Patterns
 
-Prefer using the imperative form in instructions.
+Prefer using the imperative form in instructions in the body (the description is the exception: it's written in the third person).
 
 **Defining output formats** - You can do it like this:
 ```markdown
@@ -140,7 +143,7 @@ Try to explain to the model why things are important in lieu of heavy-handed mus
 
 ### Test Cases
 
-After writing the skill draft, come up with 2-3 realistic test prompts — the kind of thing a real user would actually say. Share them with the user: [you don't have to use this exact language] "Here are a few test cases I'd like to try. Do these look right, or do you want to add more?" Then run them.
+After writing the skill draft, come up with at least 3 realistic test prompts — the kind of thing a real user would actually say. Share them with the user: [you don't have to use this exact language] "Here are a few test cases I'd like to try. Do these look right, or do you want to add more?" Then run them.
 
 Save test cases to `evals/evals.json`. Don't write assertions yet — just the prompts. You'll draft assertions in the next step while the runs are in progress.
 
@@ -165,6 +168,8 @@ See `references/schemas.md` for the full schema (including the `assertions` fiel
 This section is one continuous sequence — don't stop partway through. Do NOT use `/skill-test` or any other testing skill.
 
 Put results in `<skill-name>-workspace/` as a sibling to the skill directory. Within the workspace, organize results by iteration (`iteration-1/`, `iteration-2/`, etc.) and within that, each test case gets a directory (`eval-0/`, `eval-1/`, etc.). Don't create all of this upfront — just create directories as you go.
+
+If the skill will be used with more than one model, it's worth running the test cases against each (Haiku, Sonnet, Opus) when your environment lets you pick the subagent's model. Haiku may need more guidance than the skill gives it, while Opus can be hurt by over-explanation. This is optional.
 
 ### Step 1: Spawn all runs (with-skill AND baseline) in the same turn
 
@@ -466,6 +471,7 @@ The agents/ directory contains instructions for specialized subagents. Read them
 
 The references/ directory has additional documentation:
 - `references/schemas.md` — JSON structures for evals.json, grading.json, etc.
+- `references/writing-guidelines.md` — Content, workflow, and script conventions for the skill you're writing
 
 ---
 

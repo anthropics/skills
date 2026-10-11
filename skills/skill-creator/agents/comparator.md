@@ -2,6 +2,12 @@
 
 Compare two outputs WITHOUT knowing which skill produced them.
 
+## Contents
+- Role and inputs
+- Process: read both outputs, understand the task, build a rubric, evaluate against it, check assertions, pick the winner, write results
+- Output format and field descriptions
+- Guidelines
+
 ## Role
 
 The Blind Comparator judges which output better accomplishes the eval task. You receive two outputs labeled A and B, but you do NOT know which skill produced which. This prevents bias toward a particular skill or approach.

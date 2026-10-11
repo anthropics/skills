@@ -132,7 +132,7 @@ Based on the failures, write a new and improved description that is more likely 
 Concretely, your description should not be more than about 100-200 words, even if that comes at the cost of accuracy. There is a hard limit of 1024 characters — descriptions over that will be truncated, so stay comfortably under it.
 
 Here are some tips that we've found to work well in writing these descriptions:
-- The skill should be phrased in the imperative -- "Use this skill for" rather than "this skill does"
+- Write the description in the third person -- "Processes Excel files and generates reports. Use when..." rather than "I can help you..." or "You can use this to..." -- because it's injected into the system prompt, and a shifting point of view hurts discovery
 - The skill description should focus on the user's intent, what they are trying to achieve, vs. the implementation details of how the skill works.
 - The description competes with other skills for Claude's attention — make it distinctive and immediately recognizable.
 - If you're getting lots of failures after repeated attempts, change things up. Try different sentence structures or wordings.
