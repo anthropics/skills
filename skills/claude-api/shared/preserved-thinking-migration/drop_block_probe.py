@@ -44,7 +44,7 @@ reply is not needed and the replay stays cheap), and stream off unless --stream.
 other spelling of the mismatch-behavior field found under block_binding in a capture is removed so
 that only the documented name is sent. A request with no thinking configuration is sent with {type: adaptive} (on models with preserved thinking
 that is what the API runs anyway, and the thinking configuration is outside the compared prefix); a request
-with {type: enabled} is rewritten to adaptive for the same reason; thinking disabled is SKIPPED. On every
+with {type: enabled} or {type: between_tools} is rewritten to adaptive for the same reason; thinking disabled is SKIPPED. On every
 request that declares tools the probe sets tool_choice to none (outside the compared prefix) so that no
 tool -- server-side or the harness's own -- can run during a replay; it never removes tools from the
 capture, because the tool set IS compared. temperature is set to 1 and top_p / top_k are removed (a
@@ -77,7 +77,9 @@ key at all is also NOT EVALUATED: the check never saw the request (a gateway str
 header, or a surface without the controls). So is a 200 carrying a thinking_mismatch_allowed
 entry: the probe sets thinking.block_binding on every replay and a request that sets the field
 never receives one, so the field was stripped on the way (a gateway or proxy rebuilding the
-body) and the check ran record-only. Exit status: 0 clean, 1 inconclusive or errors,
+body) and the check ran record-only. So is a 200 whose only drops are organization_binding_mismatch:
+another account produced those blocks, so they were dropped before the prefix check (the usual
+cause is a replay key from a different account). Exit status: 0 clean, 1 inconclusive or errors,
 2 breaks found. --json is validated before the first request and written after every request, so
 a bad path costs nothing and a crash loses nothing.
 
@@ -311,6 +313,11 @@ def prepare(body, mode, model=None, stream=False, max_tokens=16):
         # check runs, and the configuration is outside the compared prefix.
         th = {"type": "adaptive"}
         notes.append("thinking {type: enabled} rewritten to {type: adaptive} (budget_tokens dropped; outside the compared prefix)")
+    if th.get("type") == "between_tools":
+        # block_binding is a 400 with this thinking type (it is accepted only with adaptive), and the thinking
+        # configuration is outside the compared prefix, so the replay goes out as adaptive.
+        th = {"type": "adaptive"}
+        notes.append("thinking {type: between_tools} rewritten to {type: adaptive} (block_binding is a 400 with between_tools; outside the compared prefix)")
     if not isinstance(bb, dict):
         bb = {}
     removed = [k for k in bb if k != "prefix_mismatch_behavior"]
@@ -673,7 +680,11 @@ def run_conversation(cid, reqs, args, api_key, betas, sink=None, flush=None):
         # check (the probe sets it on every request; a request that sets it never receives one): the check
         # ran record-only, so the turn measured nothing and reading it as clean would be a false pass.
         allowed_entries = [t for t in transformations if t.get("type") == ALLOWED_ENTRY["type"]]
-        other_drops = [t for t in transformations if t not in prefix_drops and t not in model_drops and t not in allowed_entries]
+        # An organization_binding_mismatch drop means another account produced the block. It is removed before
+        # the prefix check judges it, so a turn with only these measured nothing: reading it as clean would be
+        # a false pass (the usual cause is a replay key from a different account than the capture's).
+        account_drops = [t for t in transformations if t.get("type") == DROPPED_ENTRY["type"] and t.get("reason") == "organization_binding_mismatch"]
+        other_drops = [t for t in transformations if t not in prefix_drops and t not in model_drops and t not in allowed_entries and t not in account_drops]
         keys = {}
         for t in prefix_drops:
             keys[t.get("path")] = block_key(resolve_block(shaped, t.get("path") or ""), t.get("path") or "")
@@ -707,7 +718,8 @@ def run_conversation(cid, reqs, args, api_key, betas, sink=None, flush=None):
                 new_paths.append(p)
             seen_keys.add(kkey)
         binding_field_stripped = bool(allowed_entries) and status == 200
-        evaluated = (status == 200 and not missing_transformations and not binding_field_stripped) or rejected
+        other_account = bool(account_drops) and status == 200 and not prefix_drops
+        evaluated = (status == 200 and not missing_transformations and not binding_field_stripped and not other_account) or rejected
         if not evaluated:
             if missing_transformations:
                 unevaluated.append((turn, status, "200 without the input_transformations key: the check never saw this"
@@ -718,6 +730,10 @@ def run_conversation(cid, reqs, args, api_key, betas, sink=None, flush=None):
                                     " thinking.block_binding: the field was stripped before the check (a gateway or"
                                     " proxy rebuilding the body and dropping thinking.block_binding), so the check ran"
                                     " record-only; run --self-test through the same path"))
+            elif other_account:
+                unevaluated.append((turn, status, "200 with organization_binding_mismatch drops: another account produced"
+                                    " those blocks, so they were dropped before the prefix check; replay with a key from"
+                                    " the account that made the capture, or one linked to it"))
             else:
                 unevaluated.append((turn, status, (shareable_error(status, msg, error_text, False) or "")[:120]))
         is_break = bool(prefix_drops) or bool(rejected)
@@ -737,6 +753,7 @@ def run_conversation(cid, reqs, args, api_key, betas, sink=None, flush=None):
             "dropped_block_keys": sorted(set(keys.values())), "model_drops": len(model_drops),
             "model_dropped_paths": [t.get("path") for t in model_drops], "other_drops": other_drops,
             "mismatch_allowed": len(allowed_entries), "binding_field_stripped": binding_field_stripped,
+            "account_drops": len(account_drops), "account_dropped_paths": [t.get("path") for t in account_drops],
             "client_digests": digests(shaped), "retries": int(headers.get("x-probe-retries", 0)),
             "prefix_mismatch_header": hdr, "diagnosis": diag,
             "error": shareable_error(status, msg, error_text, bool(rejected)),
@@ -789,6 +806,8 @@ def print_turn(r, full_error=None):
             line += "  model_drops=%d paths=%s (model_binding_mismatch: this model cannot read those blocks -- a model switch, not a prefix edit)" % (r["model_drops"], r["model_dropped_paths"])
         if r["other_drops"]:
             line += "  other=%s" % [(t.get("type"), t.get("reason")) for t in r["other_drops"]]
+        if r.get("account_drops"):
+            line += "  account_drops=%d paths=%s" % (r["account_drops"], r["account_dropped_paths"])
     print(line + "  (%s, %.1fs%s)" % (r["request_id"], r["seconds"], ", %d retr." % r["retries"] if r.get("retries") else ""))
     if r["diagnosis"]:
         d = r["diagnosis"]
@@ -806,6 +825,10 @@ def print_turn(r, full_error=None):
         print("           thinking_mismatch_allowed on this 200 although the request set thinking.block_binding:"
               " the field was stripped before the check (a gateway or proxy rebuilding the body), so the check ran"
               " record-only -- not evaluated")
+    if r.get("account_drops"):
+        print("           organization_binding_mismatch: another account produced those blocks, so they were dropped"
+              " before the prefix check -- replay with a key from the account that made the capture, or one linked"
+              " to it%s" % ("" if r.get("evaluated") else " -- not evaluated"))
 
 
 def print_summary(summaries):

@@ -202,8 +202,9 @@ There the walk stops, pruning without running it the mid tier's high cell, which
 actual program paid real money to learn was priced above the incumbent. (That program's winner read -46% vs the same model's high setting and -43% vs the
 old-model baseline on fresh-run means, where the single cheapest selection pass read
 -50%/-48% on the same comparisons: report the fresh-run means, never the favorable
-end of a spread. Both arms billed on an internal page-counted route; on public
-breakpoint billing the reductions run a few points smaller - ~-40% on the baseline
+end of a spread. Both arms were costed from the eval harness's own token ledger; with
+both arms re-priced the way the API bills cached tokens (exact token counts from the
+cache breakpoints), the reductions run a few points smaller - ~-40% on the baseline
 comparison - and the arms compare like-for-like either way.) The frontier-hard case is also the cautionary half: the winner's
 pre-registered confirm FAILED its stability clause - the identical configuration drew
 11 of 20 on the selection pass and then 11, 6, and 11 across the three fresh confirm
@@ -233,12 +234,12 @@ you, in one bounded probe.
   will be cheaper than walk cost by the cache rate; either warm each cell or
   annotate the readings. Keep effort fixed within any session whose cost is being
   measured, or cache invalidation noise lands in the effort arm's numbers.
-- **State the billing basis per cell.** Eval-harness billing routes can differ from
-  what an API customer pays - some internal routes count cache in fixed-size pages
-  where the public API bills exact tokens from breakpoints - and the same run can
-  differ materially in reported cost across routes. Check which route the ledger
-  rides before quoting absolute costs; ratios between cells on the same route are
-  more robust than absolutes.
+- **State the billing basis per cell.** An eval harness's cost ledger can differ from
+  what an API customer pays - a harness may count cache reads and writes differently
+  from how the API bills them (exact token counts from the cache breakpoints) - and
+  the same run can differ materially in reported cost across accountings. Check how
+  the ledger prices cache reads and writes before quoting absolute costs; ratios
+  between cells on the same basis are more robust than absolutes.
 
 *Declare a quality probe, or the ceiling goes unmeasured.* By construction the walk
 never fires the expensive corner, so a migration that passes early never learns what

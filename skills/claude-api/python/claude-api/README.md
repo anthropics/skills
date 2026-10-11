@@ -252,6 +252,7 @@ If `cache_read_input_tokens` is zero across repeated identical-prefix requests, 
 > **Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, Opus 4.7, Opus 4.6, and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is removed on Fable 5, Claude Opus 5.5, Claude Opus 5, Opus 4.8, and 4.7 (400 if sent); deprecated on Opus 4.6 and Sonnet 4.6.
 > **Claude Opus 5.5:** thinking is always on - omit `thinking` (or send `{"type": "adaptive"}`, which is equivalent); `{"type": "disabled"}` returns a 400 at every effort, as does a thinking budget. Control depth with `output_config.effort` instead - the default is `medium` on this model, where Claude Opus 5 defaults to `high`.
 > **Claude Opus 5:** thinking is on by default - omitting `thinking` runs adaptive (`{"type": "adaptive"}` is equivalent), unlike Opus 4.8/4.7 where omitting it meant no thinking. `{"type": "disabled"}` is accepted only at effort `high` or lower; pairing it with `xhigh`/`max` returns a 400.
+> **Claude Haiku 5.5:** adaptive thinking only, on by default; `budget_tokens` returns a 400.
 > **Older models:** Use `thinking: {type: "enabled", budget_tokens: N}` (must be < `max_tokens`, min 1024).
 
 ```python
@@ -507,8 +508,9 @@ standard_response = client.messages.create(
 
 # Use Haiku only for simple, speed-critical tasks
 simple_response = client.messages.create(
-    model="claude-haiku-4-5",  # $1.00/$5.00 per 1M tokens
-    max_tokens=256,
+    model="claude-haiku-5-5",  # $0.10/$0.50 per 1M tokens
+    max_tokens=1024,
+    output_config={"effort": "low"},
     messages=[{"role": "user", "content": "Classify this as positive or negative"}]
 )
 ```
