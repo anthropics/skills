@@ -29,6 +29,7 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 - **`PageBreak` must be inside a `Paragraph`.**
 - **Never use `\n`** — use separate `Paragraph` elements.
 - **TOC:** headings must use built-in `HeadingLevel.*`; custom heading styles need `outlineLevel` set or they won't appear.
+- **Footnotes:** if a docx-js document with footnotes opens with Word's repair dialog, inspect `word/footnotes.xml` before delivery. The special separator and continuation-separator footnotes are structural markers, not ordinary content footnotes; remove any `w:footnoteRef` and `FootnoteReference` run style that docx-js emitted inside those special entries while preserving their separator runs, then repack and verify the document again.
 - **Don't use a table as a horizontal rule** — use a paragraph bottom border instead.
 - **Dot-leader / right-aligned-on-same-line:** use `PositionalTab` (`alignment: PositionalTabAlignment.RIGHT`, `leader: PositionalTabLeader.DOT`) inside a `TextRun`, not literal `.` or space padding.
 
