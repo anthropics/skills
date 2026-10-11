@@ -203,7 +203,9 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
 """)
 
     # Find best iteration for highlighting
-    if test_queries:
+    if not history:
+        best_iter = None
+    elif test_queries:
         best_iter = max(history, key=lambda h: h.get("test_passed") or 0).get("iteration")
     else:
         best_iter = max(history, key=lambda h: h.get("train_passed", h.get("passed", 0))).get("iteration")
@@ -217,7 +219,7 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
         test_total = h.get("test_total")
         description = h.get("description", "")
         train_results = h.get("train_results", h.get("results", []))
-        test_results = h.get("test_results", [])
+        test_results = h.get("test_results") or []
 
         # Create lookups for results by query
         train_by_query = {r["query"]: r for r in train_results}
