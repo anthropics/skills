@@ -33,7 +33,10 @@ fi
 
 # Clean previous build
 echo "🧹 Cleaning previous build..."
-rm -rf dist bundle.html
+rm -f bundle.html
+if [ -d dist ]; then
+  rm -r dist
+fi
 
 # Build with Parcel
 echo "🔨 Building with Parcel..."

@@ -1,0 +1,9 @@
+permissions:
+  shell:
+    allowed: [python]
+
+validation:
+  # SF5001: the SDK README URLs in SKILL.md track main on purpose - the skill
+  # exists to teach the current SDK, and a pinned commit would teach a stale one.
+  # They are fetched as documentation, never executed.
+  suppress: [SF5001]
