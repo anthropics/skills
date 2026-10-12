@@ -1,0 +1,151 @@
+# Technology Constraints
+
+> **Last Updated**: {{DATE}}
+> **Tech Lead**: {{NAME}}
+
+## Tech Stack
+
+### Languages
+
+| Purpose | Language | Version | Notes |
+|---------|----------|---------|-------|
+| Backend | {{language}} | {{version}} | |
+| Frontend | {{language}} | {{version}} | |
+| Scripts | {{language}} | {{version}} | |
+
+### Frameworks
+
+| Purpose | Framework | Version | Notes |
+|---------|-----------|---------|-------|
+| Web Framework | {{framework}} | {{version}} | |
+| ORM | {{framework}} | {{version}} | |
+| Testing | {{framework}} | {{version}} | |
+
+### Infrastructure
+
+| Component | Technology | Provider | Notes |
+|-----------|------------|----------|-------|
+| Database | {{tech}} | {{provider}} | |
+| Cache | {{tech}} | {{provider}} | |
+| Message Queue | {{tech}} | {{provider}} | |
+| Hosting | {{tech}} | {{provider}} | |
+
+## Performance Targets
+
+| Metric | Target | Current | Priority |
+|--------|--------|---------|----------|
+| API Response Time (p50) | {{ms}} | {{ms}} | High |
+| API Response Time (p99) | {{ms}} | {{ms}} | High |
+| Page Load Time | {{s}} | {{s}} | High |
+| Memory Usage | {{MB}} | {{MB}} | Medium |
+| CPU Utilization | {{%}} | {{%}} | Medium |
+
+## Scalability Requirements
+
+- **Concurrent Users**: {{number}}
+- **Requests per Second**: {{number}}
+- **Data Volume**: {{size}}
+- **Growth Rate**: {{percentage}} per {{period}}
+
+## Security Requirements
+
+### Authentication
+
+- {{authentication method}}
+- {{session management}}
+
+### Authorization
+
+- {{authorization model}}
+- {{role definitions}}
+
+### Data Protection
+
+- **Encryption at Rest**: {{requirement}}
+- **Encryption in Transit**: {{requirement}}
+- **PII Handling**: {{requirement}}
+
+### Compliance
+
+- [ ] {{compliance requirement 1}}
+- [ ] {{compliance requirement 2}}
+
+## Dependencies
+
+### External Services
+
+| Service | Purpose | Criticality | Fallback |
+|---------|---------|-------------|----------|
+| {{service}} | {{purpose}} | High/Medium/Low | {{fallback}} |
+
+### Internal Services
+
+| Service | Purpose | Owner | API Docs |
+|---------|---------|-------|----------|
+| {{service}} | {{purpose}} | {{team}} | {{link}} |
+
+## Development Environment
+
+### Required Tools
+
+- {{tool 1}} (version {{version}})
+- {{tool 2}} (version {{version}})
+
+### Setup
+
+```bash
+# Clone repository
+git clone {{repo}}
+
+# Install dependencies
+{{install command}}
+
+# Start development server
+{{start command}}
+```
+
+## Technical Debt
+
+### Known Issues
+
+| Issue | Impact | Priority | Plan |
+|-------|--------|----------|------|
+| {{issue}} | {{impact}} | High/Medium/Low | {{resolution plan}} |
+
+### Tech Debt Budget
+
+- {{percentage}}% of sprint capacity allocated to tech debt
+- Major refactoring requires spec
+
+## Constraints
+
+### Must Use
+
+<!-- Technologies that must be used -->
+
+- {{technology}}: {{reason}}
+
+### Must Not Use
+
+<!-- Technologies that are prohibited -->
+
+- {{technology}}: {{reason}}
+
+### Prefer
+
+<!-- Technologies to prefer when applicable -->
+
+- {{technology}}: {{reason}}
+
+## Architecture Decisions Records (ADRs)
+
+| ADR | Title | Status | Date |
+|-----|-------|--------|------|
+| ADR-001 | {{title}} | Accepted | {{date}} |
+| ADR-002 | {{title}} | Accepted | {{date}} |
+
+## Change History
+
+| Date | Change | Author |
+|------|--------|--------|
+| {{date}} | Initial tech constraints | {{author}} |

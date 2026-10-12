@@ -1,0 +1,200 @@
+# Code Structure
+
+> **Last Updated**: {{DATE}}
+> **Maintainer**: {{NAME}}
+
+## Project Layout
+
+```
+{{project-name}}/
+├── src/                    # Source code
+│   ├── {{module1}}/        # {{description}}
+│   ├── {{module2}}/        # {{description}}
+│   └── {{module3}}/        # {{description}}
+├── tests/                  # Test files
+│   ├── unit/               # Unit tests
+│   ├── integration/        # Integration tests
+│   └── e2e/                # End-to-end tests
+├── docs/                   # Documentation
+├── scripts/                # Build/deploy scripts
+├── .spec-flow/             # Spec-Driven Development files
+│   ├── steering/           # Project governance
+│   ├── active/             # Active specs
+│   └── archive/            # Completed specs
+└── {{other}}/              # {{description}}
+```
+
+## Module Organization
+
+### Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Files | {{convention}} | {{example}} |
+| Directories | {{convention}} | {{example}} |
+| Classes | {{convention}} | {{example}} |
+| Functions | {{convention}} | {{example}} |
+| Constants | {{convention}} | {{example}} |
+| Interfaces | {{convention}} | {{example}} |
+
+### Import Order
+
+1. Standard library imports
+2. Third-party imports
+3. Local application imports
+
+```{{language}}
+// Example
+import {{standard library}}
+import {{third party}}
+import {{local module}}
+```
+
+## Code Patterns
+
+### Component Structure
+
+<!-- Standard structure for components/modules -->
+
+```{{language}}
+{{component template}}
+```
+
+### Error Handling
+
+<!-- Standard error handling pattern -->
+
+```{{language}}
+{{error handling template}}
+```
+
+### Logging
+
+<!-- Standard logging pattern -->
+
+```{{language}}
+{{logging template}}
+```
+
+## Testing Conventions
+
+### Test File Location
+
+- Unit tests: `tests/unit/{{module}}/`
+- Integration tests: `tests/integration/`
+- E2E tests: `tests/e2e/`
+
+### Test Naming
+
+```
+test_{{function_name}}_{{scenario}}_{{expected_result}}
+```
+
+### Test Structure
+
+```{{language}}
+describe('{{Component}}', () => {
+  describe('{{method}}', () => {
+    it('should {{expected behavior}} when {{condition}}', () => {
+      // Arrange
+      // Act
+      // Assert
+    });
+  });
+});
+```
+
+## Documentation Standards
+
+### Code Comments
+
+- Use comments to explain WHY, not WHAT
+- Document public APIs with docstrings
+- Keep comments up-to-date with code changes
+
+### README Requirements
+
+Each module should have a README with:
+
+- [ ] Purpose description
+- [ ] Quick start example
+- [ ] API reference (or link)
+- [ ] Dependencies
+
+## Git Workflow
+
+### Branch Naming
+
+| Type | Format | Example |
+|------|--------|---------|
+| Feature | `feature/{{ticket}}-{{description}}` | `feature/PROJ-123-add-auth` |
+| Bugfix | `fix/{{ticket}}-{{description}}` | `fix/PROJ-456-null-check` |
+| Hotfix | `hotfix/{{description}}` | `hotfix/security-patch` |
+| Release | `release/{{version}}` | `release/1.2.0` |
+
+### Commit Messages
+
+```
+{{type}}({{scope}}): {{description}}
+
+{{body}}
+
+{{footer}}
+```
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+### Pull Request Template
+
+```markdown
+## Summary
+{{brief description}}
+
+## Changes
+- {{change 1}}
+- {{change 2}}
+
+## Testing
+- [ ] Unit tests
+- [ ] Integration tests
+- [ ] Manual testing
+
+## Spec Reference
+- [{{spec name}}](.spec-flow/active/{{feature}}/proposal.md)
+```
+
+## Dependency Management
+
+### Adding Dependencies
+
+1. Check if similar functionality exists in current deps
+2. Evaluate security (npm audit / safety check)
+3. Check maintenance status (last update, issues)
+4. Document reason in PR
+
+### Version Pinning
+
+- Lock exact versions in production
+- Allow minor updates in development
+- Review major updates explicitly
+
+## Performance Guidelines
+
+### Code-Level
+
+- Avoid N+1 queries
+- Use lazy loading for large data
+- Cache expensive computations
+- Profile before optimizing
+
+### Bundle Size (Frontend)
+
+- Maximum bundle size: {{size}}
+- Use code splitting for routes
+- Lazy load heavy components
+
+## Change History
+
+| Date | Change | Author |
+|------|--------|--------|
+| {{date}} | Initial structure guide | {{author}} |
