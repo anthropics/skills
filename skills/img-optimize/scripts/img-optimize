@@ -1,0 +1,223 @@
+#!/usr/bin/env python3
+"""Optimize images for Claude Code reading.
+
+Resizes images to reduce token cost and avoid API limits.
+Token formula: (width * height) / 750
+
+Usage:
+    img-optimize image.png                    # Single file → resize
+    img-optimize *.png                        # Multiple files → resize
+    img-optimize --dir ./screenshots          # Directory → resize all
+    img-optimize --max-dim 800 image.png      # Custom max dimension
+    img-optimize --ocr image.png              # Extract text via OCR (tesseract)
+    img-optimize --ocr --lang kor image.png   # Korean OCR
+    img-optimize --ocr --dir ./screenshots    # OCR all images in dir
+"""
+
+import sys
+import os
+import glob
+import argparse
+import subprocess
+import shutil
+from pathlib import Path
+
+try:
+    from PIL import Image
+except ImportError:
+    print("Error: Pillow not installed. Run: pip install Pillow")
+    sys.exit(1)
+
+
+DEFAULT_MAX_DIM = 1092  # Optimal for Claude: ~1,590 tokens
+MULTI_IMAGE_MAX_DIM = 1000  # When processing 20+ images: stay under 2000px limit
+OUTPUT_DIR = "/tmp/claude-images"
+OCR_OUTPUT_DIR = "/tmp/claude-ocr"
+
+
+def calc_tokens(width: int, height: int) -> int:
+    return (width * height) // 750
+
+
+def optimize_image(path: str, max_dim: int, output_dir: str) -> dict:
+    img = Image.open(path)
+    orig_w, orig_h = img.size
+    orig_tokens = calc_tokens(orig_w, orig_h)
+
+    # Check if resize needed
+    if max(orig_w, orig_h) <= max_dim:
+        out_path = os.path.join(output_dir, os.path.basename(path))
+        img.save(out_path, quality=90, optimize=True)
+        new_tokens = orig_tokens
+    else:
+        ratio = max_dim / max(orig_w, orig_h)
+        new_w = int(orig_w * ratio)
+        new_h = int(orig_h * ratio)
+        img = img.resize((new_w, new_h), Image.LANCZOS)
+        out_path = os.path.join(output_dir, os.path.basename(path))
+        img.save(out_path, quality=90, optimize=True)
+        new_tokens = calc_tokens(new_w, new_h)
+
+    orig_size = os.path.getsize(path)
+    new_size = os.path.getsize(out_path)
+
+    return {
+        "original": path,
+        "optimized": out_path,
+        "orig_dim": f"{orig_w}x{orig_h}",
+        "new_dim": f"{img.size[0]}x{img.size[1]}",
+        "orig_tokens": orig_tokens,
+        "new_tokens": new_tokens,
+        "orig_size_kb": orig_size // 1024,
+        "new_size_kb": new_size // 1024,
+        "saved_pct": round((1 - new_tokens / orig_tokens) * 100) if orig_tokens > 0 else 0,
+    }
+
+
+def ocr_image(path: str, lang: str, output_dir: str) -> dict:
+    """Extract text from image using Tesseract OCR."""
+    if not shutil.which("tesseract"):
+        print("Error: tesseract not installed. Run: sudo apt install tesseract-ocr")
+        sys.exit(1)
+
+    basename = Path(path).stem
+    out_path = os.path.join(output_dir, f"{basename}.txt")
+
+    result = subprocess.run(
+        ["tesseract", path, os.path.join(output_dir, basename), "-l", lang],
+        capture_output=True, text=True
+    )
+
+    if result.returncode != 0:
+        return {"original": path, "error": result.stderr.strip()}
+
+    # Read extracted text
+    text = ""
+    if os.path.exists(out_path):
+        with open(out_path) as f:
+            text = f.read().strip()
+
+    # Calculate savings
+    img = Image.open(path)
+    orig_tokens = calc_tokens(*img.size)
+    text_tokens = len(text) // 4  # rough estimate: 4 chars per token
+
+    return {
+        "original": path,
+        "text_file": out_path,
+        "orig_dim": f"{img.size[0]}x{img.size[1]}",
+        "orig_tokens": orig_tokens,
+        "text_tokens": text_tokens,
+        "text_chars": len(text),
+        "saved_pct": round((1 - text_tokens / orig_tokens) * 100) if orig_tokens > 0 else 0,
+    }
+
+
+def collect_files(args_files, args_dir):
+    files = list(args_files) if args_files else []
+    if args_dir:
+        for ext in ("*.png", "*.jpg", "*.jpeg", "*.webp", "*.gif", "*.bmp"):
+            files.extend(glob.glob(os.path.join(args_dir, ext)))
+            files.extend(glob.glob(os.path.join(args_dir, ext.upper())))
+    return files
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Optimize images for Claude Code")
+    parser.add_argument("files", nargs="*", help="Image files to process")
+    parser.add_argument("--dir", help="Directory of images to process")
+    parser.add_argument("--max-dim", type=int, default=DEFAULT_MAX_DIM,
+                        help=f"Max dimension in pixels (default: {DEFAULT_MAX_DIM})")
+    parser.add_argument("--output", default=None, help="Output directory")
+    parser.add_argument("--ocr", action="store_true", help="Extract text via OCR instead of resizing")
+    parser.add_argument("--lang", default="eng", help="OCR language (default: eng, use kor for Korean, eng+kor for both)")
+    args = parser.parse_args()
+
+    files = collect_files(args.files, args.dir)
+
+    if not files:
+        parser.print_help()
+        sys.exit(1)
+
+    # --- OCR mode ---
+    if args.ocr:
+        output_dir = args.output or OCR_OUTPUT_DIR
+        os.makedirs(output_dir, exist_ok=True)
+
+        total_orig = 0
+        total_text = 0
+        results = []
+
+        for f in sorted(files):
+            if not os.path.isfile(f):
+                print(f"[SKIP] {f} (not found)")
+                continue
+            r = ocr_image(f, args.lang, output_dir)
+            if "error" in r:
+                print(f"[ERR] {os.path.basename(f)}: {r['error']}")
+                continue
+            results.append(r)
+            total_orig += r["orig_tokens"]
+            total_text += r["text_tokens"]
+            print(f"[OCR] {os.path.basename(f)}: {r['text_chars']} chars extracted, "
+                  f"{r['orig_tokens']} → ~{r['text_tokens']} tokens (-{r['saved_pct']}%)")
+
+        if results:
+            saved = round((1 - total_text / total_orig) * 100) if total_orig > 0 else 0
+            print(f"\n--- OCR Summary ---")
+            print(f"Files: {len(results)}")
+            print(f"Tokens: {total_orig:,} → ~{total_text:,} ({saved}% saved)")
+            print(f"Output: {output_dir}/")
+
+            # Also create a combined file
+            combined = os.path.join(output_dir, "_combined.txt")
+            with open(combined, "w") as out:
+                for r in results:
+                    out.write(f"=== {os.path.basename(r['original'])} ===\n")
+                    with open(r["text_file"]) as tf:
+                        out.write(tf.read())
+                    out.write("\n\n")
+            print(f"Combined: {combined}")
+        return
+
+    # --- Resize mode ---
+    output_dir = args.output or OUTPUT_DIR
+    os.makedirs(output_dir, exist_ok=True)
+
+    max_dim = args.max_dim
+    if len(files) >= 20 and max_dim > MULTI_IMAGE_MAX_DIM:
+        max_dim = MULTI_IMAGE_MAX_DIM
+        print(f"[!] {len(files)} images detected. Auto-reducing max_dim to {max_dim}px")
+
+    results = []
+    total_orig_tokens = 0
+    total_new_tokens = 0
+
+    for f in sorted(files):
+        if not os.path.isfile(f):
+            print(f"[SKIP] {f} (not found)")
+            continue
+        try:
+            r = optimize_image(f, max_dim, output_dir)
+            results.append(r)
+            total_orig_tokens += r["orig_tokens"]
+            total_new_tokens += r["new_tokens"]
+            saved = f" (-{r['saved_pct']}%)" if r["saved_pct"] > 0 else ""
+            print(f"[OK] {os.path.basename(f)}: {r['orig_dim']} → {r['new_dim']}, "
+                  f"{r['orig_tokens']} → {r['new_tokens']} tokens{saved}")
+        except Exception as e:
+            print(f"[ERR] {f}: {e}")
+
+    if results:
+        saved_pct = round((1 - total_new_tokens / total_orig_tokens) * 100) if total_orig_tokens > 0 else 0
+        print(f"\n--- Summary ---")
+        print(f"Files: {len(results)}")
+        print(f"Tokens: {total_orig_tokens:,} → {total_new_tokens:,} ({saved_pct}% saved)")
+        print(f"Output: {output_dir}/")
+
+        if len(results) > 100:
+            print(f"\n[WARNING] {len(results)} images > 100. Split into batches of ~80.")
+
+
+if __name__ == "__main__":
+    main()
