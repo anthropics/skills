@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{PAGE_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0f0f;
+    --surface:  #111a1a;
+    --surface2: #162222;
+    --border:   #1e3030;
+    --accent:   #00e5c8;
+    --accent2:  #007a6a;
+    --accent-glow: rgba(0,229,200,0.15);
+    --text:     #e8f4f2;
+    --muted:    #6b9e98;
+    --danger:   #ff6b6b;
+    --section-num: rgba(0,229,200,0.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(10,15,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.85rem;
+    font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 160px 48px 100px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--border);
+    border-right: 3px solid var(--accent);
+    padding: 5px 14px;
+    margin-bottom: 28px;
+    background: rgba(0,229,200,0.04);
+  }
+  .hero h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 48px;
+    line-height: 1.8;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 56px;
+  }
+  .stat {
+    background: var(--surface);
+    padding: 24px 28px;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface2); }
+  .stat-num {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ─── MAIN CONTAINER ─── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 120px;
+  }
+
+  /* ─── SECTIONS (numbered) ─── */
+  .section {
+    position: relative;
+    padding: 80px 0 60px;
+    border-top: 1px solid var(--border);
+  }
+  .section-num {
+    position: absolute;
+    top: 48px;
+    left: -20px;
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 8rem;
+    font-weight: 900;
+    color: var(--section-num);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+  }
+  .section h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text);
+  }
+  .section h2 span { color: var(--accent); }
+  .section p { color: var(--muted); margin-bottom: 20px; max-width: 720px; }
+
+  /* ─── CARD GRID ─── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    margin-top: 40px;
+  }
+  .card {
+    background: var(--surface);
+    padding: 32px 28px;
+    transition: background 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px; height: 0;
+    background: var(--accent);
+    transition: height 0.3s;
+  }
+  .card:hover { background: var(--surface2); }
+  .card:hover::before { height: 100%; }
+  .card-icon {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .card h3 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .card p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+  /* ─── CALLOUT BOX ─── */
+  .callout {
+    background: var(--surface);
+    border-right: 4px solid var(--accent);
+    padding: 28px 32px;
+    margin: 40px 0;
+    position: relative;
+  }
+  .callout.warn { border-right-color: #f5a623; }
+  .callout.danger { border-right-color: var(--danger); }
+  .callout-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .callout.warn .callout-label { color: #f5a623; }
+  .callout.danger .callout-label { color: var(--danger); }
+  .callout p { color: var(--text); margin: 0; }
+
+  /* ─── COMPARISON TABLE ─── */
+  .table-wrap { overflow-x: auto; margin-top: 40px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  th {
+    text-align: right;
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 2px solid var(--accent2);
+    color: var(--accent);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+  tr:hover td { background: var(--surface); color: var(--text); }
+  .check { color: var(--accent); font-size: 1rem; }
+  .cross { color: var(--danger); font-size: 1rem; }
+
+  /* ─── TIMELINE ─── */
+  .timeline { margin-top: 40px; position: relative; padding-right: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    right: 10px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 36px 44px 0;
+  }
+  .timeline-dot {
+    position: absolute;
+    right: -6px; top: 4px;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .timeline-date {
+    font-size: 0.72rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .timeline-item h3 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .timeline-item p { font-size: 0.9rem; color: var(--muted); margin: 0; }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    margin-top: 80px;
+    text-align: center;
+    padding: 80px 48px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+  .cta-section p {
+    color: var(--muted);
+    margin-bottom: 36px;
+    font-size: 1.05rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+  .btn:hover {
+    background: #00fff5;
+    box-shadow: 0 0 30px rgba(0,229,200,0.4);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    margin-right: 16px;
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: none;
+    background: rgba(0,229,200,0.04);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* ─── ANIMATIONS ─── */
+  .animate {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
+  }
+  .animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .animate-delay-1 { transition-delay: 0.1s; }
+  .animate-delay-2 { transition-delay: 0.2s; }
+  .animate-delay-3 { transition-delay: 0.3s; }
+  .animate-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 20px 60px; }
+    .container { padding: 0 20px 80px; }
+    .section-num { display: none; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+    .cta-section { padding: 56px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">{{SITE_NAME}}</span>
+  <ul class="nav-links">
+    {{NAV_LINKS}}
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag animate">{{HERO_TAG}}</div>
+  <h1 class="animate animate-delay-1">{{HERO_HEADLINE}}</h1>
+  <p class="hero-sub animate animate-delay-2">{{HERO_SUBTITLE}}</p>
+
+  <div class="stats-bar animate animate-delay-3">
+    {{STATS}}
+    <!-- Example stat item:
+    <div class="stat">
+      <span class="stat-num">₪9M</span>
+      <span class="stat-label">שווי עסקאות</span>
+    </div>
+    -->
+  </div>
+</section>
+
+<!-- SECTIONS -->
+<div class="container">
+
+  <!-- SECTION 1 -->
+  <section class="section animate">
+    <span class="section-num">01</span>
+    <h2>{{SECTION_1_TITLE}}</h2>
+    {{SECTION_1_CONTENT}}
+  </section>
+
+  <!-- SECTION 2 — CARD GRID -->
+  <section class="section animate">
+    <span class="section-num">02</span>
+    <h2>{{SECTION_2_TITLE}}</h2>
+    <p>{{SECTION_2_SUBTITLE}}</p>
+    <div class="card-grid">
+      {{CARDS}}
+      <!-- Example card:
+      <div class="card">
+        <span class="card-icon">🔍</span>
+        <h3>כותרת כרטיס</h3>
+        <p>תיאור קצר</p>
+      </div>
+      -->
+    </div>
+  </section>
+
+  <!-- SECTION 3 — CALLOUT + TABLE -->
+  <section class="section animate">
+    <span class="section-num">03</span>
+    <h2>{{SECTION_3_TITLE}}</h2>
+
+    <div class="callout">
+      <div class="callout-label">הערה חשובה</div>
+      <p>{{CALLOUT_TEXT}}</p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>{{TABLE_HEADERS}}</tr>
+        </thead>
+        <tbody>
+          {{TABLE_ROWS}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 4 — TIMELINE -->
+  <section class="section animate">
+    <span class="section-num">04</span>
+    <h2>{{SECTION_4_TITLE}}</h2>
+    <div class="timeline">
+      {{TIMELINE_ITEMS}}
+      <!-- Example:
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-date">שלב 1</div>
+        <h3>כותרת שלב</h3>
+        <p>תיאור</p>
+      </div>
+      -->
+    </div>
+  </section>
+
+  <!-- SECTION 5 — EXTRA CONTENT -->
+  <section class="section animate">
+    <span class="section-num">05</span>
+    <h2>{{SECTION_5_TITLE}}</h2>
+    {{SECTION_5_CONTENT}}
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section animate">
+    <h2>{{CTA_HEADLINE}}</h2>
+    <p>{{CTA_SUBTITLE}}</p>
+    <a href="{{CTA_LINK}}" class="btn">{{CTA_BUTTON}}</a>
+    <a href="{{CTA_SECONDARY_LINK}}" class="btn btn-ghost">{{CTA_SECONDARY_BUTTON}}</a>
+  </div>
+
+</div>
+
+<footer>
+  <span>© {{YEAR}} {{SITE_NAME}}</span>
+  <span>{{FOOTER_LINKS}}</span>
+</footer>
+
+<script>
+// Intersection Observer for animate class
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  },
+  { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+);
+
+document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+// Stagger children of grids
+document.querySelectorAll('.card-grid, .stats-bar').forEach(grid => {
+  [...grid.children].forEach((child, i) => {
+    child.classList.add('animate', `animate-delay-${Math.min(i + 1, 4)}`);
+    observer.observe(child);
+  });
+});
+</script>
+</body>
+</html>
