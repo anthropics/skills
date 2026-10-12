@@ -1,0 +1,319 @@
+{
+  "frameworks": {
+    "tailwind": {
+      "layout": {
+        "HORIZONTAL": "flex flex-row",
+        "VERTICAL": "flex flex-col",
+        "WRAP": "flex flex-wrap",
+        "NONE": "relative"
+      },
+      "mainAxisAlign": {
+        "MIN": "justify-start",
+        "CENTER": "justify-center",
+        "MAX": "justify-end",
+        "SPACE_BETWEEN": "justify-between"
+      },
+      "crossAxisAlign": {
+        "MIN": "items-start",
+        "CENTER": "items-center",
+        "MAX": "items-end",
+        "STRETCH": "items-stretch",
+        "BASELINE": "items-baseline"
+      },
+      "sizing": {
+        "FIXED": "{dimension}",
+        "FILL": "w-full",
+        "HUG": "w-fit"
+      },
+      "overflow": {
+        "SCROLL": "overflow-auto",
+        "HIDDEN": "overflow-hidden"
+      },
+      "position": {
+        "ABSOLUTE": "absolute"
+      },
+      "textAlign": {
+        "LEFT": "text-left",
+        "CENTER": "text-center",
+        "RIGHT": "text-right",
+        "JUSTIFIED": "text-justify"
+      },
+      "textDecoration": {
+        "UNDERLINE": "underline",
+        "STRIKETHROUGH": "line-through"
+      },
+      "textTransform": {
+        "UPPER": "uppercase",
+        "LOWER": "lowercase",
+        "TITLE": "capitalize"
+      },
+      "blendMode": {
+        "MULTIPLY": "mix-blend-multiply",
+        "SCREEN": "mix-blend-screen",
+        "OVERLAY": "mix-blend-overlay",
+        "DARKEN": "mix-blend-darken",
+        "LIGHTEN": "mix-blend-lighten"
+      }
+    },
+    "react": {
+      "layout": {
+        "HORIZONTAL": "display: 'flex', flexDirection: 'row'",
+        "VERTICAL": "display: 'flex', flexDirection: 'column'",
+        "WRAP": "display: 'flex', flexWrap: 'wrap'",
+        "NONE": "position: 'relative'"
+      },
+      "mainAxisAlign": {
+        "MIN": "justifyContent: 'flex-start'",
+        "CENTER": "justifyContent: 'center'",
+        "MAX": "justifyContent: 'flex-end'",
+        "SPACE_BETWEEN": "justifyContent: 'space-between'"
+      },
+      "crossAxisAlign": {
+        "MIN": "alignItems: 'flex-start'",
+        "CENTER": "alignItems: 'center'",
+        "MAX": "alignItems: 'flex-end'",
+        "STRETCH": "alignItems: 'stretch'",
+        "BASELINE": "alignItems: 'baseline'"
+      },
+      "sizing": {
+        "FIXED": "{dimension}px",
+        "FILL": "width: '100%'",
+        "HUG": "width: 'auto'"
+      },
+      "componentTemplate": "jsx"
+    },
+    "vue": {
+      "layout": {
+        "HORIZONTAL": "display: flex; flex-direction: row",
+        "VERTICAL": "display: flex; flex-direction: column",
+        "WRAP": "display: flex; flex-wrap: wrap",
+        "NONE": "position: relative"
+      },
+      "mainAxisAlign": {
+        "MIN": "justify-content: flex-start",
+        "CENTER": "justify-content: center",
+        "MAX": "justify-content: flex-end",
+        "SPACE_BETWEEN": "justify-content: space-between"
+      },
+      "crossAxisAlign": {
+        "MIN": "align-items: flex-start",
+        "CENTER": "align-items: center",
+        "MAX": "align-items: flex-end",
+        "STRETCH": "align-items: stretch",
+        "BASELINE": "align-items: baseline"
+      },
+      "componentTemplate": "sfc"
+    },
+    "svelte": {
+      "layout": {
+        "HORIZONTAL": "display: flex; flex-direction: row",
+        "VERTICAL": "display: flex; flex-direction: column",
+        "WRAP": "display: flex; flex-wrap: wrap",
+        "NONE": "position: relative"
+      },
+      "componentTemplate": "svelte"
+    },
+    "react-native": {
+      "layout": {
+        "HORIZONTAL": "flexDirection: 'row'",
+        "VERTICAL": "flexDirection: 'column'",
+        "WRAP": "flexDirection: 'row', flexWrap: 'wrap'",
+        "NONE": "position: 'relative'"
+      },
+      "mainAxisAlign": {
+        "MIN": "justifyContent: 'flex-start'",
+        "CENTER": "justifyContent: 'center'",
+        "MAX": "justifyContent: 'flex-end'",
+        "SPACE_BETWEEN": "justifyContent: 'space-between'"
+      },
+      "crossAxisAlign": {
+        "MIN": "alignItems: 'flex-start'",
+        "CENTER": "alignItems: 'center'",
+        "MAX": "alignItems: 'flex-end'",
+        "STRETCH": "alignItems: 'stretch'"
+      },
+      "sizing": {
+        "FIXED": "{dimension}",
+        "FILL": "flex: 1",
+        "HUG": "alignSelf: 'flex-start'"
+      },
+      "componentTemplate": "rn"
+    },
+    "flutter": {
+      "layout": {
+        "HORIZONTAL": "Row",
+        "VERTICAL": "Column",
+        "WRAP": "Wrap",
+        "NONE": "Stack"
+      },
+      "mainAxisAlign": {
+        "MIN": "MainAxisAlignment.start",
+        "CENTER": "MainAxisAlignment.center",
+        "MAX": "MainAxisAlignment.end",
+        "SPACE_BETWEEN": "MainAxisAlignment.spaceBetween"
+      },
+      "crossAxisAlign": {
+        "MIN": "CrossAxisAlignment.start",
+        "CENTER": "CrossAxisAlignment.center",
+        "MAX": "CrossAxisAlignment.end",
+        "STRETCH": "CrossAxisAlignment.stretch"
+      },
+      "sizing": {
+        "FIXED": "SizedBox(width: {w}, height: {h})",
+        "FILL": "Expanded",
+        "HUG": "IntrinsicWidth / IntrinsicHeight"
+      },
+      "componentTemplate": "dart"
+    },
+    "css": {
+      "layout": {
+        "HORIZONTAL": "display: flex; flex-direction: row;",
+        "VERTICAL": "display: flex; flex-direction: column;",
+        "WRAP": "display: flex; flex-wrap: wrap;",
+        "NONE": "position: relative;"
+      },
+      "mainAxisAlign": {
+        "MIN": "justify-content: flex-start;",
+        "CENTER": "justify-content: center;",
+        "MAX": "justify-content: flex-end;",
+        "SPACE_BETWEEN": "justify-content: space-between;"
+      },
+      "crossAxisAlign": {
+        "MIN": "align-items: flex-start;",
+        "CENTER": "align-items: center;",
+        "MAX": "align-items: flex-end;",
+        "STRETCH": "align-items: stretch;",
+        "BASELINE": "align-items: baseline;"
+      },
+      "sizing": {
+        "FIXED": "{dimension}px",
+        "FILL": "width: 100%;",
+        "HUG": "width: fit-content;"
+      },
+      "componentTemplate": "html"
+    }
+  },
+  "figma_scales": {
+    "spacing": {
+      "0": "0",
+      "1": "px",
+      "2": "0.5",
+      "4": "1",
+      "6": "1.5",
+      "8": "2",
+      "10": "2.5",
+      "12": "3",
+      "14": "3.5",
+      "16": "4",
+      "20": "5",
+      "24": "6",
+      "28": "7",
+      "32": "8",
+      "36": "9",
+      "40": "10",
+      "44": "11",
+      "48": "12",
+      "56": "14",
+      "64": "16",
+      "80": "20",
+      "96": "24",
+      "112": "28",
+      "128": "32",
+      "144": "36",
+      "160": "40",
+      "176": "44",
+      "192": "48",
+      "208": "52",
+      "224": "56",
+      "240": "60",
+      "256": "64",
+      "288": "72",
+      "320": "80",
+      "384": "96"
+    },
+    "fontSize": {
+      "12": "xs",
+      "14": "sm",
+      "16": "base",
+      "18": "lg",
+      "20": "xl",
+      "24": "2xl",
+      "30": "3xl",
+      "36": "4xl",
+      "48": "5xl",
+      "60": "6xl",
+      "72": "7xl",
+      "96": "8xl",
+      "128": "9xl"
+    },
+    "fontWeight": {
+      "100": "thin",
+      "200": "extralight",
+      "300": "light",
+      "400": "normal",
+      "500": "medium",
+      "600": "semibold",
+      "700": "bold",
+      "800": "extrabold",
+      "900": "black"
+    },
+    "borderRadius": {
+      "0": "none",
+      "2": "sm",
+      "4": "DEFAULT",
+      "6": "md",
+      "8": "lg",
+      "12": "xl",
+      "16": "2xl",
+      "24": "3xl",
+      "9999": "full"
+    },
+    "opacity": {
+      "0": "0",
+      "0.05": "5",
+      "0.1": "10",
+      "0.15": "15",
+      "0.2": "20",
+      "0.25": "25",
+      "0.3": "30",
+      "0.35": "35",
+      "0.4": "40",
+      "0.45": "45",
+      "0.5": "50",
+      "0.55": "55",
+      "0.6": "60",
+      "0.65": "65",
+      "0.7": "70",
+      "0.75": "75",
+      "0.8": "80",
+      "0.85": "85",
+      "0.9": "90",
+      "0.95": "95",
+      "1": "100"
+    },
+    "shadow": {
+      "2": "sm",
+      "4": "DEFAULT",
+      "6": "md",
+      "10": "lg",
+      "15": "xl",
+      "25": "2xl"
+    },
+    "lineHeight": {
+      "1": "none",
+      "1.25": "tight",
+      "1.375": "snug",
+      "1.5": "normal",
+      "1.625": "relaxed",
+      "2": "loose"
+    },
+    "letterSpacing": {
+      "-0.05": "tighter",
+      "-0.025": "tight",
+      "0": "normal",
+      "0.025": "wide",
+      "0.05": "wider",
+      "0.1": "widest"
+    }
+  }
+}
