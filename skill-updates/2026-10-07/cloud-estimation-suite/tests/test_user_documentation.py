@@ -79,3 +79,11 @@ def test_suite_readme_links_both_user_guides():
     content = text(SUITE / "README.md")
     assert "../../../docs/guide-cloud-estimation.md" in content
     assert "../../../docs/cloud-estimation-guide.md" in content
+
+
+def test_guides_have_matching_skill_and_prompt_coverage():
+    french = text(GUIDES["fr"])
+    english = text(GUIDES["en"])
+    for name in SKILLS:
+        assert french.count(f"`{name}`") == english.count(f"`{name}`")
+    assert french.count("```text") == english.count("```text") == 14
