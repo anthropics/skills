@@ -1,0 +1,303 @@
+name: Repository Health Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  check-documentation:
+    runs-on: ubuntu-latest
+    name: Validate Documentation
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for broken markdown links
+        run: |
+          python3 << 'EOF'
+          import re
+          from pathlib import Path
+
+          # Check markdown files for broken internal links
+          markdown_files = list(Path('.').rglob('*.md'))
+
+          issues = []
+
+          for md_file in markdown_files:
+              if '.git' in md_file.parts:
+                  continue
+
+              content = md_file.read_text()
+
+              # Find markdown links [text](path)
+              pattern = r'\[([^\]]+)\]\(([^)]+)\)'
+              matches = re.finditer(pattern, content)
+
+              for match in matches:
+                  link = match.group(2)
+
+                  # Skip external links
+                  if link.startswith('http'):
+                      continue
+
+                  # Skip anchor-only links
+                  if link.startswith('#'):
+                      continue
+
+                  # Resolve relative path
+                  target = (md_file.parent / link).resolve()
+
+                  if not target.exists():
+                      issues.append(f"{md_file}: Link to {link} (resolved to {target})")
+
+          if issues:
+              print(f"⚠️  {len(issues)} potential broken links found:")
+              for issue in issues[:10]:
+                  print(f"  - {issue}")
+              if len(issues) > 10:
+                  print(f"  ... and {len(issues) - 10} more")
+
+          print('✅ Documentation check complete!')
+          EOF
+
+      - name: Validate README files
+        run: |
+          python3 << 'EOF'
+          from pathlib import Path
+
+          # Check that directories with content have README or SKILL.md
+          skills_dir = Path('skills')
+          issues = []
+
+          for skill_dir in skills_dir.iterdir():
+              if not skill_dir.is_dir() or skill_dir.name.startswith('.'):
+                  continue
+
+              has_doc = (skill_dir / 'README.md').exists() or (skill_dir / 'SKILL.md').exists()
+
+              if not has_doc:
+                  issues.append(f"No documentation in {skill_dir}")
+
+          if issues:
+              print(f"⚠️  {len(issues)} directories missing documentation:")
+              for issue in issues:
+                  print(f"  - {issue}")
+
+          print('✅ Documentation structure valid!')
+          EOF
+
+  check-yaml-consistency:
+    runs-on: ubuntu-latest
+    name: Check YAML Consistency
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate all YAML frontmatter
+        run: |
+          python3 << 'EOF'
+          import yaml
+          from pathlib import Path
+
+          skill_files = list(Path('skills').rglob('SKILL.md'))
+
+          if not skill_files:
+              print("No SKILL.md files found")
+              exit(0)
+
+          errors = []
+
+          for skill_file in sorted(skill_files):
+              content = skill_file.read_text()
+
+              if not content.startswith('---'):
+                  errors.append(f"{skill_file.parent.name}: Missing YAML frontmatter")
+                  continue
+
+              parts = content.split('---', 2)
+              if len(parts) < 3:
+                  errors.append(f"{skill_file.parent.name}: Invalid YAML format")
+                  continue
+
+              try:
+                  frontmatter = yaml.safe_load(parts[1])
+
+                  # Validate required fields
+                  if not isinstance(frontmatter, dict):
+                      errors.append(f"{skill_file.parent.name}: YAML is not a dict")
+                      continue
+
+                  if not frontmatter.get('name'):
+                      errors.append(f"{skill_file.parent.name}: Missing 'name'")
+
+                  if not frontmatter.get('description'):
+                      errors.append(f"{skill_file.parent.name}: Missing 'description'")
+
+                  # Check name format (should be lowercase with hyphens)
+                  name = frontmatter.get('name', '')
+                  if name and name != name.lower():
+                      errors.append(f"{skill_file.parent.name}: Name should be lowercase")
+
+              except yaml.YAMLError as e:
+                  errors.append(f"{skill_file.parent.name}: Invalid YAML - {str(e)[:50]}")
+
+          if errors:
+              print("❌ YAML consistency errors:")
+              for error in errors:
+                  print(f"  - {error}")
+              exit(1)
+
+          print(f"✅ All {len(skill_files)} SKILL.md files have valid YAML!")
+          EOF
+
+  check-file-size:
+    runs-on: ubuntu-latest
+    name: Check File Sizes
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for oversized files
+        run: |
+          python3 << 'EOF'
+          from pathlib import Path
+
+          max_size = 100 * 1024 * 1024  # 100MB
+
+          large_files = []
+
+          for file in Path('.').rglob('*'):
+              if not file.is_file():
+                  continue
+
+              if '.git' in file.parts:
+                  continue
+
+              size = file.stat().st_size
+
+              if size > max_size:
+                  large_files.append((file, size))
+
+          if large_files:
+              print(f"⚠️  {len(large_files)} files larger than 100MB:")
+              for file, size in large_files:
+                  print(f"  - {file} ({size / 1024 / 1024:.1f}MB)")
+
+          print('✅ File size check complete!')
+          EOF
+
+  check-licenses:
+    runs-on: ubuntu-latest
+    name: Verify Licenses
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check license files
+        run: |
+          python3 << 'EOF'
+          from pathlib import Path
+          import hashlib
+
+          skills_dir = Path('skills')
+          licenses = {}
+
+          # Collect all licenses
+          for license_file in skills_dir.rglob('LICENSE.txt'):
+              skill_name = license_file.parent.name
+              content = license_file.read_bytes()
+              file_hash = hashlib.md5(content).hexdigest()
+
+              if file_hash not in licenses:
+                  licenses[file_hash] = []
+              licenses[file_hash].append(skill_name)
+
+          # Report findings
+          print(f"Found {len(set(license_file.parent.name for license_file in skills_dir.rglob('LICENSE.txt')))} skills with licenses")
+
+          if len(licenses) == 1:
+              print("✅ All skills use the same license (consistent!)")
+          else:
+              print(f"ℹ️  {len(licenses)} different licenses found:")
+              for file_hash, skills in licenses.items():
+                  print(f"  - {', '.join(skills)}")
+          EOF
+
+  check-dependencies:
+    runs-on: ubuntu-latest
+    name: Check Dependencies
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check Python dependencies
+        run: |
+          python3 << 'EOF'
+          from pathlib import Path
+
+          requirements_files = list(Path('skills').rglob('requirements.txt'))
+
+          if requirements_files:
+              print(f"Found {len(requirements_files)} requirements.txt files:")
+              for req_file in requirements_files:
+                  print(f"  - {req_file}")
+          else:
+              print("No Python requirements.txt files found")
+
+          # Basic validation of requirements format
+          for req_file in requirements_files:
+              content = req_file.read_text()
+              lines = [line.strip() for line in content.split('\n') if line.strip() and not line.startswith('#')]
+
+              for line in lines:
+                  # Check basic format
+                  if '=' in line:
+                      parts = line.split('=')
+                      if len(parts) >= 2:
+                          pkg_name = parts[0].strip()
+                          if pkg_name and not pkg_name[0].isalpha():
+                              print(f"⚠️  Unusual package name in {req_file}: {pkg_name}")
+
+          print('✅ Dependencies check complete!')
+          EOF
+
+      - name: Check Node dependencies
+        run: |
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+
+          package_files = list(Path('skills').rglob('package.json'))
+
+          if package_files:
+              print(f"Found {len(package_files)} package.json files:")
+              for pkg_file in package_files:
+                  try:
+                      with open(pkg_file) as f:
+                          pkg = json.load(f)
+                      print(f"  - {pkg_file}: {pkg.get('name', 'unnamed')}")
+                  except json.JSONDecodeError:
+                      print(f"  - {pkg_file}: ⚠️  Invalid JSON")
+          else:
+              print("No Node.js package.json files found")
+
+          print('✅ Node dependencies check complete!')
+          EOF

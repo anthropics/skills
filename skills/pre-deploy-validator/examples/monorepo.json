@@ -1,0 +1,13 @@
+{
+  "checkCodeQuality": true,
+  "checkSecurity": true,
+  "checkTests": false,
+  "checkDependencies": true,
+  "checkDocumentation": false,
+  "failOnWarnings": false,
+  "packages": [
+    "packages/api",
+    "packages/frontend",
+    "packages/shared"
+  ]
+}
