@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "prompt": "Add Observe SDK instrumentation to this LlamaIndex agent file: examples/llama-index-example.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "from ioa_observe.sdk import Observe is present in imports",
+      "from ioa_observe.sdk.decorators import tool, agent, graph (or similar combination) is present",
+      "from ioa_observe.sdk.tracing import session_start is present",
+      "@tool decorator is applied to the multiply function",
+      "@tool decorator is applied to the add function",
+      "@agent decorator is applied to MathAgentWorkflow class",
+      "@graph decorator is applied to MathAgentWorkflow class (stacked above @agent)",
+      "session_start() is called in the main() function before running the workflow",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 2,
+    "prompt": "Instrument examples/llama-index-example.py with the ioa observe sdk so I can trace my agent",
+    "expectations": [
+      "Observe.init() is called with app_name parameter",
+      "Observe SDK imports are added (ioa_observe.sdk)",
+      "@tool decorator wraps the multiply function",
+      "@tool decorator wraps the add function",
+      "MathAgentWorkflow class has both @graph and @agent decorators applied",
+      "session_start() call appears in main() before the workflow runs",
+      "OTLP_HTTP_ENDPOINT environment variable is used in Observe.init()",
+      "No existing code is removed or broken - only additions are made"
+    ]
+  },
+  {
+    "id": 3,
+    "prompt": "Add observability to examples/llama-index-example.py using the observe SDK in this repo",
+    "expectations": [
+      "Observe.init() is added with a meaningful app_name string",
+      "ioa_observe decorators are imported",
+      "Both tool functions (multiply, add) have @tool decorator",
+      "MathAgentWorkflow has @agent decorator",
+      "MathAgentWorkflow has @graph decorator stacked above @agent",
+      "session_start() is added to the main async function",
+      "The modified file is shown to the user or the edits are applied",
+      "A summary of what was changed is provided to the user"
+    ]
+  },
+  {
+    "id": 4,
+    "prompt": "Add Observe SDK instrumentation to this LangGraph agent: evals/fixtures/langgraph-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "from ioa_observe.sdk import Observe is present in imports",
+      "from ioa_observe.sdk.decorators import agent, graph and tool (or observe_tool alias) are imported",
+      "from ioa_observe.sdk.tracing import session_start is present",
+      "@observe_tool (or @tool from ioa_observe) decorator is applied to get_exchange_rate, stacked below @langchain_tool",
+      "@observe_tool (or @tool from ioa_observe) decorator is applied to convert_currency, stacked below @langchain_tool",
+      "@agent decorator is applied to currency_agent_node function",
+      "@graph decorator is applied to build_graph function",
+      "session_start() is called in main() before the agent invocation loop",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 5,
+    "prompt": "Instrument evals/fixtures/langgraph-uninstrumented.py with the ioa observe sdk so I can trace my LangGraph agent",
+    "expectations": [
+      "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "ioa_observe SDK imports are added",
+      "get_exchange_rate has the observe @tool decorator applied",
+      "convert_currency has the observe @tool decorator applied",
+      "currency_agent_node has @agent decorator",
+      "build_graph has @graph decorator",
+      "session_start() is called before agent invocations in main()",
+      "No existing code is removed or broken - only additions are made"
+    ]
+  },
+  {
+    "id": 6,
+    "prompt": "Make my LangGraph currency converter agent observable using the observe SDK: evals/fixtures/langgraph-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is added after load_dotenv()",
+      "Observe SDK imports are present",
+      "Both tool functions are wrapped with the observe @tool decorator",
+      "The agent node function currency_agent_node is decorated with @agent",
+      "The graph builder function build_graph is decorated with @graph",
+      "session_start() appears in main() before the while loop or before agent invocation",
+      "Observe.init() uses a descriptive app_name string relevant to the service (not a placeholder)",
+      "The file remains functionally equivalent"
+    ]
+  },
+  {
+    "id": 7,
+    "prompt": "Add Observe SDK instrumentation to this CrewAI agent: evals/fixtures/crewai-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "from ioa_observe.sdk import Observe is present in imports",
+      "from ioa_observe.sdk.decorators imports include tool and workflow (or agent)",
+      "from ioa_observe.sdk.tracing import session_start is present",
+      "@tool decorator from ioa_observe is applied to search_topic",
+      "@tool decorator from ioa_observe is applied to summarize_findings",
+      "@workflow or @agent decorator is applied to run_crew function",
+      "session_start() is called in main() before run_crew()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 8,
+    "prompt": "Instrument evals/fixtures/crewai-uninstrumented.py with the ioa observe sdk so I can trace my CrewAI crew",
+    "expectations": [
+      "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "ioa_observe SDK imports are added",
+      "search_topic has the observe @tool decorator applied",
+      "summarize_findings has the observe @tool decorator applied",
+      "run_crew function is decorated with @workflow or @agent",
+      "session_start() is called in main() before run_crew()",
+      "No existing code is removed or broken - only additions are made"
+    ]
+  },
+  {
+    "id": 9,
+    "prompt": "Add Observe SDK instrumentation to this OpenAI SDK agent: evals/fixtures/openai-sdk-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "from ioa_observe.sdk import Observe is present in imports",
+      "from ioa_observe.sdk.decorators imports include tool and agent",
+      "from ioa_observe.sdk.tracing import session_start is present",
+      "@tool decorator from ioa_observe is applied to get_order_status",
+      "@tool decorator from ioa_observe is applied to process_refund",
+      "@agent decorator is applied to run_support_agent function",
+      "session_start() is called in main() before the agent invocation loop",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 10,
+    "prompt": "Instrument evals/fixtures/openai-sdk-uninstrumented.py with the ioa observe sdk so I can trace my OpenAI agent",
+    "expectations": [
+      "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "ioa_observe SDK imports are added",
+      "get_order_status has the observe @tool decorator applied",
+      "process_refund has the observe @tool decorator applied",
+      "run_support_agent is decorated with @agent",
+      "session_start() is called in main() before the while loop",
+      "No existing code is removed or broken - only additions are made"
+    ]
+  },
+  {
+    "id": 11,
+    "prompt": "Add Observe SDK instrumentation to this LangGraph multi-agent system: evals/fixtures/langgraph-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, graph, workflow and tool (or observe_tool alias)",
+      "session_start is imported and called once in main() before the agent loop",
+      "@observe_tool decorator is applied to search_web stacked below @langchain_tool",
+      "@observe_tool decorator is applied to format_article stacked below @langchain_tool",
+      "@agent decorator is applied to supervisor_node",
+      "@agent decorator is applied to research_node",
+      "@agent decorator is applied to write_node",
+      "@graph decorator is applied to build_graph",
+      "session_start() is NOT called inside individual agent node functions",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 12,
+    "prompt": "Add Observe SDK instrumentation to this LlamaIndex multi-agent pipeline: evals/fixtures/llama-index-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, graph, workflow and session_start",
+      "@graph and @agent decorators are stacked on ResearchAgent class (@graph above @agent)",
+      "@graph and @agent decorators are stacked on WritingAgent class (@graph above @agent)",
+      "get_workflow() method is added to ResearchAgent if not present",
+      "get_workflow() method is added to WritingAgent if not present",
+      "@workflow decorator is applied to run_pipeline function",
+      "session_start() is called once in main() before run_pipeline()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 13,
+    "prompt": "Add Observe SDK instrumentation to this CrewAI multi-crew pipeline: evals/fixtures/crewai-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including tool, workflow and session_start",
+      "@tool decorator from ioa_observe is applied to search_web (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to analyze_data (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to edit_content (stacked below @crewai_tool)",
+      "@tool decorator from ioa_observe is applied to format_for_publish (stacked below @crewai_tool)",
+      "@workflow decorator is applied to run_research_crew",
+      "@workflow decorator is applied to run_publishing_crew",
+      "@workflow decorator is applied to run_pipeline",
+      "session_start() is called once in main() before run_pipeline()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  },
+  {
+    "id": 14,
+    "prompt": "Add Observe SDK instrumentation to this OpenAI SDK multi-agent pipeline: evals/fixtures/openai-sdk-multi-agent-uninstrumented.py",
+    "expectations": [
+      "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "Observe SDK imports are added including agent, tool, workflow and session_start",
+      "@tool decorator is applied to search_web",
+      "@tool decorator is applied to summarize_text",
+      "@tool decorator is applied to draft_article",
+      "@tool decorator is applied to polish_draft",
+      "@agent decorator is applied to run_research_agent",
+      "@agent decorator is applied to run_writing_agent",
+      "@workflow decorator is applied to run_orchestrator",
+      "session_start() is called once in main() before run_orchestrator()",
+      "The file remains functionally equivalent - all original logic is preserved"
+    ]
+  }
+]
