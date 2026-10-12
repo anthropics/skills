@@ -29,7 +29,7 @@ client := anthropic.NewClient(
 
 ## Model IDs
 
-`anthropic.Model` is an alias for `string`, so pass the model as its plain id: `Model: "claude-opus-5-5"`. Default to Claude Opus 5.5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use `"claude-fable-5-1"`; if they ask for a cheaper tier, use the current generation - `"claude-sonnet-5-5"` or `"claude-haiku-4-5"` (see `shared/models.md` for the full resolution table).
+`anthropic.Model` is an alias for `string`, so pass the model as its plain id: `Model: "claude-opus-5-5"`. Default to Claude Opus 5.5 unless the user specifies otherwise; if they ask for Fable or the most powerful model, use `"claude-fable-5-1"`; if they ask for a cheaper tier, use the current generation - `"claude-sonnet-5-5"` or `"claude-haiku-5-5"` (see `shared/models.md` for the full resolution table).
 
 The SDK also ships typed `anthropic.ModelClaude*` constants, but they lag model launches - a given SDK release may have constants only for previous-generation models. Do not pick a model because it has a typed constant; the string id works for every model on every SDK version. Check the SDK release notes before assuming a typed constant exists for a current model.
 

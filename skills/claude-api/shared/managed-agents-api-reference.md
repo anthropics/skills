@@ -115,7 +115,7 @@ Per-subagent event streams in multiagent sessions. See `shared/managed-agents-mu
 | `GET`    | `/v1/environments/{environment_id}/work/stats`         | WorkQueueStats       | Self-hosted work-queue depth/pending/workers. `x-api-key` auth. See `shared/managed-agents-self-hosted-sandboxes.md`. |
 | `POST`   | `/v1/environments/{environment_id}/work/{work_id}/stop` | StopWork            | Self-hosted: stop a claimed work item. `x-api-key` auth. |
 
-For `type: "self_hosted"`, `config` is the bare `{"type": "self_hosted"}` - `networking` and `packages` do not apply. (`networking` never governs `web_search` / `web_fetch` in either type - those are restricted per-tool with `allowed_domains` / `blocked_domains` in the agent toolset; see `shared/managed-agents-tools.md`.)
+For `type: "self_hosted"`, `config` is the bare `{"type": "self_hosted"}` - `networking` and `packages` do not apply. (With `limited` networking, `allowed_hosts` also applies to `web_search` / `web_fetch`; `unrestricted` networking and self-hosted environments do not limit them. In both environment types they can be turned off (`enabled: false`) or restricted per-tool with `allowed_domains` / `blocked_domains` in the agent toolset; see `shared/managed-agents-tools.md`.)
 
 ## Deployments
 
@@ -239,7 +239,14 @@ Immutable per-mutation snapshots (`memver_...`) - the audit and rollback surface
   "description": "string (optional, up to 2048 chars)",
   "system": "string (optional, up to 100,000 chars)",
   "tools": [
-    { "type": "agent_toolset_20260401" }
+    {
+      "type": "agent_toolset_20260401",
+      "default_config": { "permission_policy": { "type": "auto" } },
+      "configs": [
+        { "name": "web_fetch", "enabled": false },
+        { "name": "web_search", "enabled": false }
+      ]
+    }
   ],
   "skills": [
     { "type": "anthropic", "skill_id": "xlsx" },
@@ -266,7 +273,7 @@ Immutable per-mutation snapshots (`memver_...`) - the audit and rollback surface
 }
 ```
 
-> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1-20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}` | `{type:"advisor",model}`, at most one advisor) - see `shared/managed-agents-multiagent.md`.
+> Limits: `tools` max 128, `skills` max 20, `mcp_servers` max 20 (unique names). `multiagent.agents` 1-20 entries (string ID | `{type:"agent",id,version?}` | `{type:"self"}` | `{type:"advisor",model}`, at most one advisor) - see `shared/managed-agents-multiagent.md`. `multiagent` can instead be `{type:"multiagent_20261001", workflows?, subagents?, advisor?}`, each member `{type:"enabled"}` or `{type:"disabled"}`; enabled `workflows` and `subagents` each take optional `predefined_agents` (up to 20, same entry forms minus advisor) and `inline_agents` (`{type:"enabled"}` or `{type:"disabled"}`, default enabled; disabled with an empty list is a 400), enabled `advisor` requires `model`; `workflows` and `subagents` default to enabled, `advisor` to disabled (§ Dynamic workflows).
 
 ### CreateSession Request Body
 
@@ -361,7 +368,7 @@ Immutable per-mutation snapshots (`memver_...`) - the audit and rollback surface
 }
 ```
 
-> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` - supported on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, and Claude Sonnet 5.5 (not Claude Sonnet 5), checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
+> `system.message` events (append system-level context for this turn and later ones) use the same envelope with `type: "system.message"` - supported on Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5 (not Claude Sonnet 5), checked against the agent's *primary* model only; see `shared/managed-agents-events.md` § Adding system context mid-session.
 
 ### Define Outcome Event
 
