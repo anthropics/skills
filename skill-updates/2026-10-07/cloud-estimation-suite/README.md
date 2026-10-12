@@ -7,6 +7,15 @@ The public example is completely synthetic: its suppliers, prices, workload,
 capacity, topology and source statements are invented. It is a methodology
 demonstration, not a provider quote or an approved production design.
 
+## User guides
+
+- [Guide d'utilisation en français](../../../docs/guide-cloud-estimation.md)
+- [English user guide](../../../docs/cloud-estimation-guide.md)
+
+The guides explain why and when to use each skill, which inputs to prepare,
+copy-ready prompts, and how to review the XLSX/JH deliverable. Start with
+`cloud-estimation-orchestrator` when two or more domains overlap.
+
 ## Install and route
 
 Use the eleven ZIP-compatible `.skill` files in [bundles](bundles/).
