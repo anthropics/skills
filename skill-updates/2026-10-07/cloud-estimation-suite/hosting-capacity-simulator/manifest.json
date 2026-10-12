@@ -11,7 +11,7 @@
     "scripts/fonts/lato/provenance.json": "0a39c534c037b0be50e826c304585dc3e6983dc4efb303ac999e1462f49ce051",
     "scripts/icon-policy.json": "38f7cce62cd171bd5660edba4b69c4d6f6606a2779cba748c68c2012101326ed",
     "scripts/model.py": "9448180b0779c0edbcb0486ee2640744eeb51c588ee9c0933a8ea1618af70585",
-    "scripts/publication.py": "bff172bf37364438bec32c8fb81c6dc8de090220a033467c6df54a4c6c6c7bc9",
+    "scripts/publication.py": "bc8357860edbf09f282c3854b3a0f9a5dc7f6711085cb61e7577d1de7a51ba08",
     "scripts/recalculate.py": "56cc6fa58b0af1f3b71524d29dc03e29ff30fe9369c19862fdc72a669ca43ece",
     "scripts/validate_capacity.py": "a7f3643919603a2b3fd1b703b29c42be045496801327b78d4c417c012fef5fc9",
     "scripts/workbook-contract.json": "2319bde2a7bf3669dcf9bb65d041b4de09fb57fa15c5ad9be496c2fbb604f34f",

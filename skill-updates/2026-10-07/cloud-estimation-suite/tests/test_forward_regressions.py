@@ -121,7 +121,98 @@ def test_office_structural_guid_is_not_a_cloud_account_but_cell_guid_still_is(tm
     assert not scan_tree(tmp_path).clean
 
 
+def test_excel_revision_document_id_numeric_guid_is_structural(tmp_path):
+    # Catches treating revisionPtr.documentId as a cloud account, or globally
+    # exempting its GUID when the same identifier occurs in business cells.
+    guid = "{00000000-0000-0000-0000-" + "0" * 12 + "}"
+    path = tmp_path / "revision.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"><xr:revisionPtr documentId="13_ncr:1_' + guid + '"/></workbook>')
+    original = path.read_bytes()
+    report = scan_tree(tmp_path)
+    assert report.clean, report.summary()
+    assert path.read_bytes() == original
+    with ZipFile(path, "a") as archive:
+        archive.writestr("xl/sharedStrings.xml", '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si><t>' + guid + '</t></si></sst>')
+    report = scan_tree(tmp_path)
+    assert not report.clean
+    assert {(item.path, item.rule) for item in report.matches} == {
+        ("revision.xlsx!xl/sharedStrings.xml", "cloud-account-id"),
+    }
+
+
+@pytest.mark.parametrize("attribute,clean", [
+    ('documentId="13_ncr:1_GUID"', True),
+    ('private-documentId="13_ncr:1_GUID"', False),
+    ('note="documentId=\'13_ncr:1_GUID\'"', False),
+    ('note="business documentId=\'13_ncr:1_GUID\' > additional data"', False),
+    ('p:documentId="13_ncr:1_GUID"', False),
+], ids=["exact", "hyphenated-name", "inside-note", "quoted-tag-delimiter", "prefixed"])
+def test_revision_document_id_exemption_requires_actual_unqualified_attribute(tmp_path, attribute, clean):
+    # Catches matching documentId inside another attribute's name or value.
+    guid = "{00000000-0000-0000-0000-" + "0" * 12 + "}"
+    path = tmp_path / "revision.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", '<xr:revisionPtr xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" xmlns:p="urn:synthetic" ' + attribute.replace("GUID", guid) + '/>')
+    original = path.read_bytes()
+    report = scan_tree(tmp_path)
+    assert report.clean is clean, report.summary()
+    assert path.read_bytes() == original
+    if not clean:
+        assert {(item.path, item.rule) for item in report.matches} == {
+            ("revision.xlsx!xl/workbook.xml", "cloud-account-id"),
+        }
+
+
+@pytest.mark.parametrize("quote", ['"', "'"], ids=["double-quoted", "single-quoted"])
+@pytest.mark.parametrize("note_first", [False, True], ids=["document-first", "note-first"])
+def test_document_id_exemption_does_not_mask_note_with_quoted_tag_delimiter(tmp_path, quote, note_first):
+    # Catches a truncated start tag granting the real ID's exemption to note text.
+    guid = "{00000000-0000-0000-0000-" + "0" * 12 + "}"
+    value = "13_ncr:1_" + guid
+    inner_quote = "'" if quote == '"' else '"'
+    structural_guid = "{00000000-0000-0000-0000-" + "a" * 12 + "}"
+    document_id = "documentId=" + quote + "13_ncr:1_" + structural_guid + quote
+    note = "note=" + quote + "business documentId=" + inner_quote + value + inner_quote + " > additional data" + quote
+    attributes = [note, document_id] if note_first else [document_id, note]
+    path = tmp_path / "revision.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr("xl/workbook.xml", '<xr:revisionPtr xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" ' + " ".join(attributes) + '/>')
+    original = path.read_bytes()
+    report = scan_tree(tmp_path)
+    assert not report.clean, report.summary()
+    assert {(item.path, item.rule) for item in report.matches} == {
+        ("revision.xlsx!xl/workbook.xml", "cloud-account-id"),
+    }
+    assert path.read_bytes() == original
+
+
+@pytest.mark.parametrize("quote", ['"', "'"], ids=["double-quoted", "single-quoted"])
+@pytest.mark.parametrize("part,start,attribute", [
+    ("xl/worksheets/sheet1.xml", '<worksheet xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"', "xr:uid"),
+    ("xl/workbook.xml", '<xr:revisionPtr xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" xmlns:xr10="http://schemas.microsoft.com/office/spreadsheetml/2016/revision10"', "xr10:uidLastSave"),
+    ("xl/drawings/drawing1.xml", '<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main"', "id"),
+], ids=["revision-uid", "revision-save", "drawing-id"])
+def test_structural_guid_exemption_does_not_mask_embedded_note_attribute(tmp_path, quote, part, start, attribute):
+    # Catches applying a structural GUID exemption to a substring of note text.
+    guid = "{00000000-0000-0000-0000-" + "0" * 12 + "}"
+    inner_quote = "'" if quote == '"' else '"'
+    xml = start + " note=" + quote + "business > " + attribute + "=" + inner_quote + guid + inner_quote + quote + "/>"
+    path = tmp_path / "embedded.xlsx"
+    with ZipFile(path, "w") as archive:
+        archive.writestr(part, xml)
+    original = path.read_bytes()
+    report = scan_tree(tmp_path)
+    assert not report.clean, report.summary()
+    assert {(item.path, item.rule) for item in report.matches} == {
+        ("embedded.xlsx!" + part, "cloud-account-id"),
+    }
+    assert path.read_bytes() == original
+
+
 @pytest.mark.parametrize("part,xml", [
+    ("xl/worksheets/sheet1.xml", '<worksheet xmlns:r="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2" r:uid="GUID"/>'),
+    ("xl/worksheets/sheet1.xml", '<worksheet xmlns:r="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" r:uid="GUID"/>'),
     ("xl/workbook.xml", '<xr:revisionPtr xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" xmlns:xr10="http://schemas.microsoft.com/office/spreadsheetml/2016/revision10" xr10:uidLastSave="GUID"/>'),
     ("xl/drawings/drawing1.xml", '<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="GUID"/>'),
 ])

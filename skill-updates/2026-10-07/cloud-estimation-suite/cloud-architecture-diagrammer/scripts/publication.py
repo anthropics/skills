@@ -59,7 +59,7 @@ def _element_spans(raw):
 
 
 def structural_guid_spans(content, part):
-    """Mask only Office revision uid attributes, never cell/customer identifiers.
+    """Mask only Office structural GUID attributes, never cell/customer identifiers.
 
     The part and the attribute's namespace are both checked. No global UUID
     allowlist, numerical-suffix exemption or modification of workbook IDs.
@@ -83,22 +83,38 @@ def structural_guid_spans(content, part):
         return []
     # Ignore declarations/comments; keep original offsets for safe diagnostics.
     lexical = re.sub(r"<!--.*?-->|<\?.*?\?>|<!\[CDATA\[.*?\]\]>", lambda m: " " * len(m.group()), content, flags=re.S)
-    tags = list(re.finditer(r"<(?![/!?])[^>]+>", lexical))
+    tags = list(re.finditer(r'''<(?![/!?])(?:[^>"']|"[^"]*"|'[^']*')+>''', lexical))
     if len(tags) != len(elements):
         return []  # Unsupported lexical structure: do not suppress detections.
     spans = []
+    attributes = re.compile(r'\s+([^\s=/>]+)\s*=\s*([\"\'])(.*?)\2', re.S)
     for token, (element, scope) in zip(tags, elements):
-        pattern = re.compile(r'(?<![\w:])([\w:]+)\s*=\s*([\"\'])(' + GUID.pattern + r')\2')
-        for match in pattern.finditer(token.group()):
+        for match in attributes.finditer(token.group()):
             name = match.group(1)
             prefix, local = name.split(":", 1) if ":" in name else ("", name)
             uri = scope.get(prefix) if prefix else None  # Unqualified attributes have no default namespace.
+            if prefix and uri is None:
+                continue
+            parsed_name = "{" + uri + "}" + local if uri else local
+            value = match.group(3)
+            if element.get(parsed_name) != value:
+                continue  # The lexical span must belong to this actual parsed attribute.
+            offset = token.start() + match.start(3)
+            revision_document = (part == "xl/workbook.xml" and element.tag == "{http://schemas.microsoft.com/office/spreadsheetml/2014/revision}revisionPtr"
+                                 and name == "documentId")
+            if revision_document:
+                document_id = re.fullmatch(r'[0-9]+_ncr:[0-9]+_(' + GUID.pattern + r')', value)
+                if document_id:
+                    spans.append((offset + document_id.start(1), offset + document_id.end(1)))
+                continue
+            if not GUID.fullmatch(value):
+                continue
             revision_uid = uri in REVISION_NAMESPACES and local == "uid"
             revision_save = (part == "xl/workbook.xml" and element.tag == "{http://schemas.microsoft.com/office/spreadsheetml/2014/revision}revisionPtr"
                              and uri == "http://schemas.microsoft.com/office/spreadsheetml/2016/revision10" and local == "uidLastSave")
             drawing_id = (part.startswith("xl/drawings/") and element.tag == "{http://schemas.microsoft.com/office/drawing/2014/main}creationId" and local == "id" and uri is None)
             if revision_uid or revision_save or drawing_id:
-                spans.append((token.start() + match.start(3), token.start() + match.end(3)))
+                spans.append((offset, offset + len(value)))
     return spans
 
 
