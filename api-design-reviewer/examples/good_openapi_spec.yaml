@@ -1,0 +1,573 @@
+openapi: 3.1.0
+info:
+  title: Example E-Commerce API
+  version: 1.0.0
+  description: |
+    Production-ready e-commerce API demonstrating best practices.
+
+    ## Authentication
+    All endpoints require Bearer JWT token unless marked as public.
+
+    ## Rate Limiting
+    - Public endpoints: 100 requests/minute per IP
+    - Authenticated: 1000 requests/hour per user
+    - Admin endpoints: 10000 requests/hour
+
+    ## Versioning
+    This API uses URL path versioning (/v1/, /v2/). We support current and previous major versions simultaneously.
+  contact:
+    name: API Support
+    email: api-support@example.com
+    url: https://api.example.com/support
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production
+  - url: https://api-staging.example.com/v1
+    description: Staging
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Users
+    description: User management operations
+  - name: Products
+    description: Product catalog
+  - name: Orders
+    description: Order processing
+
+paths:
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      description: Returns detailed user information. Users can only access their own data unless they are admins.
+      operationId: getUserById
+      tags: [Users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique user identifier
+          schema:
+            type: string
+            format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        - name: fields
+          in: query
+          required: false
+          description: Comma-separated list of fields to return
+          schema:
+            type: string
+          example: "id,email,name"
+      responses:
+        '200':
+          description: User found
+          headers:
+            ETag:
+              description: Entity tag for caching
+              schema:
+                type: string
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                email: "alice@example.com"
+                first_name: "Alice"
+                last_name: "Smith"
+                status: "active"
+                created_at: "2024-01-15T10:30:00Z"
+                updated_at: "2024-11-01T10:00:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+    patch:
+      summary: Update user
+      description: Partially update user information. Users can only update their own data.
+      operationId: updateUser
+      tags: [Users]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: If-Match
+          in: header
+          description: ETag for optimistic locking
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+            example:
+              first_name: "Alice Updated"
+              bio: "Software engineer passionate about APIs"
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          description: Precondition failed (ETag mismatch)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /products:
+    get:
+      summary: List products
+      description: Returns paginated list of products with optional filtering and sorting
+      operationId: listProducts
+      tags: [Products]
+      security: []  # Public endpoint
+      parameters:
+        - name: cursor
+          in: query
+          description: Pagination cursor from previous response
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of items to return (max 100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: category
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: min_price
+          in: query
+          description: Minimum price filter
+          schema:
+            type: number
+            format: double
+            minimum: 0
+        - name: max_price
+          in: query
+          description: Maximum price filter
+          schema:
+            type: number
+            format: double
+        - name: sort
+          in: query
+          description: Sort field and direction
+          schema:
+            type: string
+            enum: [price, -price, name, -name, created_at, -created_at]
+            default: -created_at
+      responses:
+        '200':
+          description: Products retrieved successfully
+          headers:
+            Cache-Control:
+              description: Caching policy
+              schema:
+                type: string
+                example: "public, max-age=300"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    $ref: '#/components/schemas/CursorPagination'
+              example:
+                data:
+                  - id: "prod_001"
+                    name: "Laptop"
+                    price: 999.99
+                    category: "electronics"
+                  - id: "prod_002"
+                    name: "Mouse"
+                    price: 29.99
+                    category: "electronics"
+                pagination:
+                  next_cursor: "eyJpZCI6InByb2RfMDAyIn0="
+                  has_more: true
+                  limit: 20
+
+  /orders:
+    post:
+      summary: Create order
+      description: Creates a new order. Supports idempotency via Idempotency-Key header.
+      operationId: createOrder
+      tags: [Orders]
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          description: Unique key for idempotent requests
+          required: true
+          schema:
+            type: string
+          example: "unique-client-key-123"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrder'
+            example:
+              items:
+                - product_id: "prod_001"
+                  quantity: 1
+                - product_id: "prod_002"
+                  quantity: 2
+              shipping_address:
+                street: "123 Main St"
+                city: "San Francisco"
+                state: "CA"
+                zip: "94105"
+                country: "US"
+      responses:
+        '201':
+          description: Order created successfully
+          headers:
+            Location:
+              description: URL of created order
+              schema:
+                type: string
+                example: "/v1/orders/order_12345"
+            Idempotent-Replayed:
+              description: Whether this response was served from cache
+              schema:
+                type: boolean
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /auth/login endpoint
+
+  headers:
+    X-RateLimit-Limit:
+      description: Request limit per window
+      schema:
+        type: integer
+        example: 1000
+    X-RateLimit-Remaining:
+      description: Remaining requests in current window
+      schema:
+        type: integer
+        example: 742
+    X-RateLimit-Reset:
+      description: Unix timestamp when limit resets
+      schema:
+        type: integer
+        example: 1635724860
+    X-Request-ID:
+      description: Unique request identifier for debugging
+      schema:
+        type: string
+        format: uuid
+        example: "req_a1b2c3d4e5f6"
+
+  schemas:
+    User:
+      type: object
+      required: [id, email, first_name, last_name, status, created_at]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User email address
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        bio:
+          type: string
+          maxLength: 1000
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive, suspended]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    UserUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        bio:
+          type: string
+          maxLength: 1000
+
+    Product:
+      type: object
+      required: [id, name, price, category]
+      properties:
+        id:
+          type: string
+          description: Unique product identifier
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: double
+          minimum: 0
+        category:
+          type: string
+        in_stock:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    CreateOrder:
+      type: object
+      required: [items, shipping_address]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [product_id, quantity]
+            properties:
+              product_id:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, shipped, delivered, cancelled]
+        items:
+          type: array
+          items:
+            type: object
+        total:
+          type: number
+          format: double
+        created_at:
+          type: string
+          format: date-time
+
+    Address:
+      type: object
+      required: [street, city, state, zip, country]
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+        country:
+          type: string
+          pattern: '^[A-Z]{2}$'
+
+    CursorPagination:
+      type: object
+      required: [has_more, limit]
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+        has_more:
+          type: boolean
+        limit:
+          type: integer
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  issue:
+                    type: string
+            request_id:
+              type: string
+              format: uuid
+            documentation_url:
+              type: string
+              format: uri
+
+  responses:
+    BadRequest:
+      description: Bad request - malformed syntax
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "BAD_REQUEST"
+              message: "Invalid JSON syntax"
+              request_id: "req_abc123"
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "UNAUTHORIZED"
+              message: "Authentication token required"
+
+    Forbidden:
+      description: Access denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "FORBIDDEN"
+              message: "Insufficient permissions to access this resource"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "NOT_FOUND"
+              message: "The requested resource was not found"
+
+    Conflict:
+      description: Conflict with current state
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "CONFLICT"
+              message: "Resource has been modified by another request"
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "VALIDATION_ERROR"
+              message: "Request validation failed"
+              details:
+                - field: "email"
+                  issue: "must be a valid email address"
+                - field: "age"
+                  issue: "must be between 0 and 150"
+
+    RateLimitExceeded:
+      description: Rate limit exceeded
+      headers:
+        Retry-After:
+          description: Seconds until rate limit resets
+          schema:
+            type: integer
+            example: 45
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              code: "RATE_LIMIT_EXCEEDED"
+              message: "Rate limit exceeded. Try again in 45 seconds."
